@@ -87,9 +87,8 @@ bool StepTidy_LineReducer::replaceDefinitionalRepresentation(
 {
   occ::handle<StepRepr_DefinitionalRepresentation> aSharing =
     occ::down_cast<StepRepr_DefinitionalRepresentation>(theSharing);
-  bool                                                                       isReplaced = false;
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems =
-    aSharing->Items();
+  bool                                         isReplaced = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems    = aSharing->Items();
   for (int anIndex = 1; anIndex <= aSharing->NbItems(); ++anIndex)
   {
     const occ::handle<StepRepr_RepresentationItem> aRepItem = anItems->Value(anIndex);

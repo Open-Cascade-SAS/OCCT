@@ -38,8 +38,7 @@ DEXCAF_ConfigurationNode::DEXCAF_ConfigurationNode()
 
 //=================================================================================================
 
-DEXCAF_ConfigurationNode::DEXCAF_ConfigurationNode(
-  const occ::handle<DEXCAF_ConfigurationNode>& theNode)
+DEXCAF_ConfigurationNode::DEXCAF_ConfigurationNode(const occ::handle<DEXCAF_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
@@ -89,8 +88,7 @@ TCollection_AsciiString DEXCAF_ConfigurationNode::Save() const
   aResult += "!Overwrites the existing attributes by the loaded ones";
   aResult += "!Default value: empty. Available values: {sequence<string>}\n";
   aResult += aScope + "read.skip.values :\t ";
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(InternalParameters.ReadSkipValues);
-       anIt.More();
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(InternalParameters.ReadSkipValues); anIt.More();
        anIt.Next())
   {
     aResult += anIt.Value() + " ";
@@ -103,8 +101,7 @@ TCollection_AsciiString DEXCAF_ConfigurationNode::Save() const
              "shouldn't be '0' after -read)\n";
   aResult += "!Default value: empty. Available values: {sequence<string>}\n";
   aResult += aScope + "read.values :\t ";
-  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(InternalParameters.ReadValues);
-       anIt.More();
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIt(InternalParameters.ReadValues); anIt.More();
        anIt.Next())
   {
     aResult += anIt.Value() + " ";

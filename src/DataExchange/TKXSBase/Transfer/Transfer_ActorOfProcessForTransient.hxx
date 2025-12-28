@@ -59,7 +59,7 @@ public:
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transferring(
     const occ::handle<Standard_Transient>&           start,
     const occ::handle<Transfer_ProcessForTransient>& TP,
-    const Message_ProgressRange&                     theProgress = Message_ProgressRange());
+    const Message_ProgressRange&                theProgress = Message_ProgressRange());
 
   //! Prepares and Returns a Binder for a Transient Result
   //! Returns a Null Handle if <res> is itself Null
@@ -93,7 +93,7 @@ public:
 
 private:
   occ::handle<Transfer_ActorOfProcessForTransient> thenext;
-  bool                                             thelast;
+  bool                            thelast;
 };
 
 #endif // _Transfer_ActorOfProcessForTransient_HeaderFile

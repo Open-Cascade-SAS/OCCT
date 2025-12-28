@@ -17,15 +17,15 @@
 #ifndef ChFiKPart_ComputeData_Rotule_HeaderFile
 #define ChFiKPart_ComputeData_Rotule_HeaderFile
 
-bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&         DStr,
-                          const occ::handle<ChFiDS_SurfData>& Data,
-                          const gp_Pln&                       pl,
-                          const gp_Pln&                       pl1,
-                          const gp_Pln&                       pl2,
-                          const TopAbs_Orientation            opl,
-                          const TopAbs_Orientation            opl1,
-                          const TopAbs_Orientation            opl2,
-                          const double                        r,
-                          const TopAbs_Orientation            ofpl);
+bool ChFiKPart_MakeRotule(TopOpeBRepDS_DataStructure&    DStr,
+                                      const occ::handle<ChFiDS_SurfData>& Data,
+                                      const gp_Pln&                  pl,
+                                      const gp_Pln&                  pl1,
+                                      const gp_Pln&                  pl2,
+                                      const TopAbs_Orientation       opl,
+                                      const TopAbs_Orientation       opl1,
+                                      const TopAbs_Orientation       opl2,
+                                      const double            r,
+                                      const TopAbs_Orientation       ofpl);
 
 #endif

@@ -26,8 +26,8 @@ math_PSO::math_PSO(math_MultipleVarFunction* theFunc,
                    const math_Vector&        theLowBorder,
                    const math_Vector&        theUppBorder,
                    const math_Vector&        theSteps,
-                   const int                 theNbParticles,
-                   const int                 theNbIter)
+                   const int    theNbParticles,
+                   const int    theNbIter)
     : myLowBorder(1, theFunc->NbVariables()),
       myUppBorder(1, theFunc->NbVariables()),
       mySteps(1, theFunc->NbVariables())
@@ -45,20 +45,20 @@ math_PSO::math_PSO(math_MultipleVarFunction* theFunc,
 //=================================================================================================
 
 void math_PSO::Perform(math_PSOParticlesPool& theParticles,
-                       int                    theNbParticles,
-                       double&                theValue,
+                       int       theNbParticles,
+                       double&         theValue,
                        math_Vector&           theOutPnt,
-                       const int              theNbIter)
+                       const int theNbIter)
 {
   performPSOWithGivenParticles(theParticles, theNbParticles, theValue, theOutPnt, theNbIter);
 }
 
 //=================================================================================================
 
-void math_PSO::Perform(const math_Vector& theSteps,
-                       double&            theValue,
-                       math_Vector&       theOutPnt,
-                       const int          theNbIter)
+void math_PSO::Perform(const math_Vector&     theSteps,
+                       double&         theValue,
+                       math_Vector&           theOutPnt,
+                       const int theNbIter)
 {
   // Initialization.
   math_Vector aMinUV(1, myN), aMaxUV(1, myN);
@@ -71,9 +71,9 @@ void math_PSO::Perform(const math_Vector& theSteps,
   math_PSOParticlesPool aPool(myNbParticles, myN);
 
   // Generate initial particles distribution.
-  bool        isRegularGridFinished = false;
-  double      aCurrValue;
-  math_Vector aCurrPoint(1, myN);
+  bool isRegularGridFinished = false;
+  double    aCurrValue;
+  math_Vector      aCurrPoint(1, myN);
 
   PSO_Particle* aParticle = aPool.GetWorstParticle();
   aCurrPoint              = aMinUV;
@@ -119,10 +119,10 @@ void math_PSO::Perform(const math_Vector& theSteps,
 //=================================================================================================
 
 void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
-                                            int                    theNbParticles,
-                                            double&                theValue,
+                                            int       theNbParticles,
+                                            double&         theValue,
                                             math_Vector&           theOutPnt,
-                                            const int              theNbIter)
+                                            const int theNbIter)
 {
   math_Vector aMinUV(1, myN), aMaxUV(1, myN);
   aMinUV                            = myLowBorder + (myUppBorder - myLowBorder) / aBorderDivisor;
@@ -143,7 +143,7 @@ void math_PSO::performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
     aParticle = aParticles.GetParticle(aPartIdx);
     for (int aDimIdx = 1; aDimIdx <= myN; ++aDimIdx)
     {
-      const double aKsi                = aRandom.NextReal();
+      const double aKsi         = aRandom.NextReal();
       aParticle->Velocity[aDimIdx - 1] = mySteps(aDimIdx) * (aKsi - 0.5) * 2.0;
     }
   }

@@ -92,8 +92,8 @@ void ShapeFix_EdgeProjAux::Compute(const double preci)
       std::cout << "Parametres inverses ... " << std::endl;
 #endif
       double tmp = U1;
-      U1         = U2;
-      U2         = tmp;
+      U1                = U2;
+      U2                = tmp;
     }
     myFirstParam = U1;
     myFirstDone  = true;
@@ -158,11 +158,11 @@ bool ShapeFix_EdgeProjAux::IsIso(const occ::handle<Geom2d_Curve>& /*theCurve2d*/
 // ----------------------------------------------------------------------------
 
 static bool FindParameterWithExt(const gp_Pnt&                   Pt1,
-                                 const Adaptor3d_CurveOnSurface& COnS,
-                                 const double                    Uinf,
-                                 const double                    Usup,
-                                 const double                    preci,
-                                 double&                         w1)
+                                             const Adaptor3d_CurveOnSurface& COnS,
+                                             const double             Uinf,
+                                             const double             Usup,
+                                             const double             preci,
+                                             double&                  w1)
 {
   try
   { // et allez donc !
@@ -207,7 +207,7 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
 {
   double cl = 0., cf = 0.;
   // Extract Geometries
-  myFirstDone = myLastDone             = false;
+  myFirstDone = myLastDone        = false;
   occ::handle<Geom_Surface> theSurface = BRep_Tool::Surface(myFace);
   occ::handle<Geom2d_Curve> theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
   if (theCurve2d.IsNull())
@@ -218,8 +218,8 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
   TopExp::Vertices(myEdge, V1, V2);
   gp_Pnt Pt1, Pt2;
   // pdn 28.12.98: r_39-db.stp #605: use ends of 3d curve instead of vertices
-  ShapeAnalysis_Edge      sae;
-  double                  a, b;
+  ShapeAnalysis_Edge sae;
+  double      a, b;
   occ::handle<Geom_Curve> C3d;
   if (sae.Curve3d(myEdge, C3d, a, b, false))
   {
@@ -236,8 +236,8 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
   if (V1.IsSame(V2))
   {
     occ::handle<ShapeAnalysis_Surface> stsu = new ShapeAnalysis_Surface(theSurface);
-    gp_Pnt2d                           aPt1, aPt2;
-    double                             firstpar, lastpar;
+    gp_Pnt2d                      aPt1, aPt2;
+    double                 firstpar, lastpar;
     if (stsu->DegeneratedValues(Pt1, preci, aPt1, aPt2, firstpar, lastpar))
     {
 
@@ -259,8 +259,8 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
     }
   }
 
-  bool                             parU = false, parV = false;
-  GeomAdaptor_Surface              SA     = GeomAdaptor_Surface(theSurface);
+  bool            parU = false, parV = false;
+  GeomAdaptor_Surface         SA     = GeomAdaptor_Surface(theSurface);
   occ::handle<GeomAdaptor_Surface> myHSur = new GeomAdaptor_Surface(SA);
 
   cf = theCurve2d->FirstParameter();
@@ -293,10 +293,10 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
       if (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul) && !Precision::IsInfinite(vf)
           && !Precision::IsInfinite(vl))
       {
-        double                   cfi, cli;
+        double       cfi, cli;
         occ::handle<Geom2d_Line> lin = occ::down_cast<Geom2d_Line>(theCurve2d);
-        gp_Pnt2d                 pnt = lin->Location();
-        gp_Dir2d                 dir = lin->Direction();
+        gp_Pnt2d            pnt = lin->Location();
+        gp_Dir2d            dir = lin->Direction();
         if (dir.Y() == 0)
         {
           parU = true;
@@ -341,14 +341,14 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
       else if (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul))
       {
         occ::handle<Geom2d_Line> lin = occ::down_cast<Geom2d_Line>(theCurve2d);
-        gp_Dir2d                 dir = lin->Direction();
+        gp_Dir2d            dir = lin->Direction();
         if (dir.X() != 0)
         {
           if (dir.Y() == 0)
             parU = true;
-          gp_Pnt2d pnt = lin->Location(); // szv#4:S4163:12Mar99 moved
-          double   cfi = (uf - pnt.X()) / dir.X();
-          double   cli = (ul - pnt.X()) / dir.X();
+          gp_Pnt2d      pnt = lin->Location(); // szv#4:S4163:12Mar99 moved
+          double cfi = (uf - pnt.X()) / dir.X();
+          double cli = (ul - pnt.X()) / dir.X();
           if (cfi < cli)
           {
             cf = cfi;
@@ -399,7 +399,7 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
     }
   }
 
-  Geom2dAdaptor_Curve              CA     = Geom2dAdaptor_Curve(theCurve2d, cf, cl);
+  Geom2dAdaptor_Curve         CA     = Geom2dAdaptor_Curve(theCurve2d, cf, cl);
   occ::handle<Geom2dAdaptor_Curve> myHCur = new Geom2dAdaptor_Curve(CA);
 
   Adaptor3d_CurveOnSurface COnS = Adaptor3d_CurveOnSurface(myHCur, myHSur);
@@ -410,10 +410,10 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
   double Uinf = COnS.FirstParameter();
   double Usup = COnS.LastParameter();
 
-  double              w1 = 0., w2 = 0.;
+  double       w1 = 0., w2 = 0.;
   ShapeAnalysis_Curve sac;
   gp_Pnt              pnt;
-  double              dist = sac.Project(COnS, Pt1, preci, pnt, w1, false);
+  double       dist = sac.Project(COnS, Pt1, preci, pnt, w1, false);
   // if distance is infinite then projection is not performed
   if (Precision::IsInfinite(dist))
     return;
@@ -476,7 +476,7 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
       UpdateParam2d(theCurve2d);
       return;
     }
-    gp_Pnt mid = C3d1->Value((cf + cl) / 2);
+    gp_Pnt        mid = C3d1->Value((cf + cl) / 2);
     double wmid;
     sac.Project(COnS, mid, preci, pnt, wmid, false);
     wmid += ShapeAnalysis::AdjustToPeriod(wmid, 0, period);
@@ -533,10 +533,10 @@ void ShapeFix_EdgeProjAux::Init3d(const double preci)
   gp_Pnt Pt1 = BRep_Tool::Pnt(V1);
   gp_Pnt Pt2 = BRep_Tool::Pnt(V2);
 
-  GeomAdaptor_Surface              SA     = GeomAdaptor_Surface(theSurface);
+  GeomAdaptor_Surface         SA     = GeomAdaptor_Surface(theSurface);
   occ::handle<GeomAdaptor_Surface> myHSur = new GeomAdaptor_Surface(SA);
 
-  Geom2dAdaptor_Curve              CA     = Geom2dAdaptor_Curve(theCurve2d);
+  Geom2dAdaptor_Curve         CA     = Geom2dAdaptor_Curve(theCurve2d);
   occ::handle<Geom2dAdaptor_Curve> myHCur = new Geom2dAdaptor_Curve(CA);
 
   Adaptor3d_CurveOnSurface COnS = Adaptor3d_CurveOnSurface(myHCur, myHSur);

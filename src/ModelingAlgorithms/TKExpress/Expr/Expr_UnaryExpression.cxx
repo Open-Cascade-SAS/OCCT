@@ -46,7 +46,8 @@ int Expr_UnaryExpression::NbSubExpressions() const
   return 1;
 }
 
-const occ::handle<Expr_GeneralExpression>& Expr_UnaryExpression::SubExpression(const int I) const
+const occ::handle<Expr_GeneralExpression>& Expr_UnaryExpression::SubExpression(
+  const int I) const
 {
   if (I != 1)
   {

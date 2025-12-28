@@ -39,7 +39,7 @@ public:
   {
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theF      = dx * dx + 2.0 * dy * dy;
+    theF             = dx * dx + 2.0 * dy * dy;
     return true;
   }
 
@@ -57,7 +57,10 @@ public:
     return true;
   }
 
-  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
+  bool Values(const math_Vector& theX,
+                          double&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
@@ -82,7 +85,7 @@ public:
     double y  = theX(2);
     double dx = 1.0 - x;
     double dy = y - x * x;
-    theF      = dx * dx + 100.0 * dy * dy;
+    theF             = dx * dx + 100.0 * dy * dy;
     return true;
   }
 
@@ -90,8 +93,8 @@ public:
   {
     double x = theX(1);
     double y = theX(2);
-    theG(1)  = -2.0 * (1.0 - x) + 200.0 * (y - x * x) * (-2.0 * x);
-    theG(2)  = 200.0 * (y - x * x);
+    theG(1)         = -2.0 * (1.0 - x) + 200.0 * (y - x * x) * (-2.0 * x);
+    theG(2)         = 200.0 * (y - x * x);
     return true;
   }
 
@@ -102,7 +105,10 @@ public:
     return true;
   }
 
-  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
+  bool Values(const math_Vector& theX,
+                          double&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
     double x = theX(1);
     double y = theX(2);
@@ -130,7 +136,7 @@ public:
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
     double dz = theX(3) - 3.0;
-    theF      = dx * dx + 2.0 * dy * dy + 3.0 * dz * dz;
+    theF             = dx * dx + 2.0 * dy * dy + 3.0 * dz * dz;
     return true;
   }
 
@@ -149,7 +155,10 @@ public:
     return true;
   }
 
-  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
+  bool Values(const math_Vector& theX,
+                          double&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
     Value(theX, theF);
     Gradient(theX, theG);
@@ -173,7 +182,7 @@ public:
   {
     double x = theX(1);
     double y = theX(2);
-    theF     = x * x - y * y;
+    theF            = x * x - y * y;
     return true;
   }
 
@@ -191,7 +200,10 @@ public:
     return true;
   }
 
-  bool Values(const math_Vector& theX, double& theF, math_Vector& theG, math_Matrix& theH) override
+  bool Values(const math_Vector& theX,
+                          double&     theF,
+                          math_Vector&       theG,
+                          math_Matrix&       theH) override
   {
     Value(theX, theF);
     Gradient(theX, theG);

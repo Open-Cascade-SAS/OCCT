@@ -40,7 +40,8 @@ public:
 
   Standard_EXPORT ChFiDS_FilSpine(const double Tol);
 
-  Standard_EXPORT virtual void Reset(const bool AllData = false) override;
+  Standard_EXPORT virtual void Reset(const bool AllData = false)
+    override;
 
   //! initializes the constant vector on edge E.
   Standard_EXPORT void SetRadius(const double Radius, const TopoDS_Edge& E);
@@ -100,8 +101,8 @@ private:
 
   Standard_EXPORT void AppendLaw(const occ::handle<ChFiDS_ElSpine>& Els);
 
-  NCollection_Sequence<gp_XY>                 parandrad;
-  NCollection_List<occ::handle<Law_Function>> laws;
+  NCollection_Sequence<gp_XY> parandrad;
+  NCollection_List<occ::handle<Law_Function>>            laws;
 };
 
 #endif // _ChFiDS_FilSpine_HeaderFile

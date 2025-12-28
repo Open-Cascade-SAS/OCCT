@@ -170,13 +170,12 @@ occ::handle<TDF_Attribute> TDocStd_Modified::NewEmpty() const
 void TDocStd_Modified::Restore(const occ::handle<TDF_Attribute>& With)
 {
   occ::handle<TDocStd_Modified> MDF = occ::down_cast<TDocStd_Modified>(With);
-  myModified                        = MDF->myModified;
+  myModified                   = MDF->myModified;
 }
 
 //=================================================================================================
 
-void TDocStd_Modified::Paste(const occ::handle<TDF_Attribute>&,
-                             const occ::handle<TDF_RelocationTable>&) const
+void TDocStd_Modified::Paste(const occ::handle<TDF_Attribute>&, const occ::handle<TDF_RelocationTable>&) const
 {
 }
 

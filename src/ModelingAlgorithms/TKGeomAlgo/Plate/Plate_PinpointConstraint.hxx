@@ -32,10 +32,10 @@ public:
 
   Standard_EXPORT Plate_PinpointConstraint();
 
-  Standard_EXPORT Plate_PinpointConstraint(const gp_XY&  point2d,
-                                           const gp_XYZ& ImposedValue,
-                                           const int     iu = 0,
-                                           const int     iv = 0);
+  Standard_EXPORT Plate_PinpointConstraint(const gp_XY&           point2d,
+                                           const gp_XYZ&          ImposedValue,
+                                           const int iu = 0,
+                                           const int iv = 0);
 
   const gp_XY& Pnt2d() const;
 
@@ -46,10 +46,10 @@ public:
   const gp_XYZ& Value() const;
 
 private:
-  gp_XYZ value;
-  gp_XY  pnt2d;
-  int    idu;
-  int    idv;
+  gp_XYZ           value;
+  gp_XY            pnt2d;
+  int idu;
+  int idv;
 };
 
 #include <Plate_PinpointConstraint.lxx>

@@ -43,7 +43,8 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_BracketMinim
   return o;
 }
 
-inline void math_BracketMinimum::SetLimits(const double theLeft, const double theRight)
+inline void math_BracketMinimum::SetLimits(const double theLeft,
+                                           const double theRight)
 {
   myLeft      = theLeft;
   myRight     = theRight;

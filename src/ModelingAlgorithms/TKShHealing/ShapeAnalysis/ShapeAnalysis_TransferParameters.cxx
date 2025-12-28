@@ -46,10 +46,10 @@ void ShapeAnalysis_TransferParameters::Init(const TopoDS_Edge& E, const TopoDS_F
 {
   myScale = 1.;
   myShift = 0.;
-  double          l, f, l2d = 0.0, f2d = 0.0;
+  double   l, f, l2d = 0.0, f2d = 0.0;
   TopLoc_Location L;
   myEdge = E;
-  ShapeAnalysis_Edge      sae;
+  ShapeAnalysis_Edge sae;
   occ::handle<Geom_Curve> curve3d; // = BRep_Tool::Curve (E,f,l);
   sae.Curve3d(E, curve3d, f, l, false);
   myFirst = f;
@@ -68,8 +68,8 @@ void ShapeAnalysis_TransferParameters::Init(const TopoDS_Edge& E, const TopoDS_F
 
   double ln2d = l2d - f2d;
   double ln3d = l - f;
-  myScale     = (ln3d <= gp::Resolution() ? 1. : ln2d / ln3d);
-  myShift     = f2d - f * myScale;
+  myScale            = (ln3d <= gp::Resolution() ? 1. : ln2d / ln3d);
+  myShift            = f2d - f * myScale;
 }
 
 //=================================================================================================
@@ -83,7 +83,7 @@ void ShapeAnalysis_TransferParameters::SetMaxTolerance(const double maxtol)
 
 occ::handle<NCollection_HSequence<double>> ShapeAnalysis_TransferParameters::Perform(
   const occ::handle<NCollection_HSequence<double>>& Params,
-  const bool                                        To2d)
+  const bool                 To2d)
 {
   occ::handle<NCollection_HSequence<double>> res = new NCollection_HSequence<double>;
   for (int i = 1; i <= Params->Length(); i++)
@@ -93,7 +93,8 @@ occ::handle<NCollection_HSequence<double>> ShapeAnalysis_TransferParameters::Per
 
 //=================================================================================================
 
-double ShapeAnalysis_TransferParameters::Perform(const double Param, const bool To2d)
+double ShapeAnalysis_TransferParameters::Perform(const double    Param,
+                                                        const bool To2d)
 {
   double NewParam;
   if (To2d)
@@ -105,10 +106,10 @@ double ShapeAnalysis_TransferParameters::Perform(const double Param, const bool 
 
 //=================================================================================================
 
-void ShapeAnalysis_TransferParameters::TransferRange(TopoDS_Edge& newEdge,
-                                                     const double prevPar,
-                                                     const double currPar,
-                                                     const bool   Is2d)
+void ShapeAnalysis_TransferParameters::TransferRange(TopoDS_Edge&           newEdge,
+                                                     const double    prevPar,
+                                                     const double    currPar,
+                                                     const bool Is2d)
 {
   ShapeBuild_Edge sbe;
   if (Is2d)

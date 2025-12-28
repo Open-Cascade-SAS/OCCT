@@ -49,6 +49,10 @@
 
 #include <TopOpeBRepDS_Interference.hxx>
 
+#include <NCollection_List.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
@@ -86,8 +90,7 @@
 #define MDSt TopOpeBRepDS_Transition
 
 #define MDSsd TopOpeBRepDS_ShapeData
-#define MDSmosd                                                                                    \
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>
+#define MDSmosd NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>
 #define MDSitl TopOpeBRepDS_InterferenceTool
 
 #endif

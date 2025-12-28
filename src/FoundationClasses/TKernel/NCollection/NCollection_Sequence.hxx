@@ -434,7 +434,10 @@ public:
   TheItemType& operator()(const int theIndex) { return ChangeValue(theIndex); }
 
   //! Set item value by theIndex
-  void SetValue(const int theIndex, const TheItemType& theItem) { ChangeValue(theIndex) = theItem; }
+  void SetValue(const int theIndex, const TheItemType& theItem)
+  {
+    ChangeValue(theIndex) = theItem;
+  }
 
   // ******** Destructor - clears the Sequence
   virtual ~NCollection_Sequence(void) { Clear(); }

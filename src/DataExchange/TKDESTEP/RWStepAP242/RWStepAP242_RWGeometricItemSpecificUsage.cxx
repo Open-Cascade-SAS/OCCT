@@ -22,12 +22,13 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_Representation.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 RWStepAP242_RWGeometricItemSpecificUsage::RWStepAP242_RWGeometricItemSpecificUsage() {}
 
 void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepAP242_GeometricItemSpecificUsage>& ent) const
 {
@@ -60,9 +61,9 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
                    aRepresentation);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems;
-  occ::handle<StepRepr_RepresentationItem>                                   anEnt;
-  int                                                                        nbSub;
-  Interface_ParamType aType = data->ParamType(num, 5);
+  occ::handle<StepRepr_RepresentationItem>          anEnt;
+  int                             nbSub;
+  Interface_ParamType                          aType = data->ParamType(num, 5);
   if (aType == Interface_ParamIdent)
   {
     data->ReadEntity(num,
@@ -81,7 +82,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
                              nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    anItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nbElements);
+    anItems                     = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub,
@@ -100,7 +101,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::ReadStep(
 }
 
 void RWStepAP242_RWGeometricItemSpecificUsage::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepAP242_GeometricItemSpecificUsage>& ent) const
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
@@ -128,7 +129,7 @@ void RWStepAP242_RWGeometricItemSpecificUsage::WriteStep(
 
 void RWStepAP242_RWGeometricItemSpecificUsage::Share(
   const occ::handle<StepAP242_GeometricItemSpecificUsage>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
   // Inherited fields of ItemIdentifiedRepresentationUsage
 

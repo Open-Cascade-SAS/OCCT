@@ -28,8 +28,12 @@
 #include <StepFEA_NodeRepresentation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepFEA_NodeRepresentation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=================================================================================================
 
@@ -39,7 +43,7 @@ RWStepFEA_RWCurve3dElementRepresentation::RWStepFEA_RWCurve3dElementRepresentati
 
 void RWStepFEA_RWCurve3dElementRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepFEA_Curve3dElementRepresentation>& ent) const
 {
@@ -53,12 +57,11 @@ void RWStepFEA_RWCurve3dElementRepresentation::ReadStep(
   data->ReadString(num, 1, "representation.name", ach, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                                                                        sub2 = 0;
+  int                             sub2 = 0;
   if (data->ReadSubList(num, 2, "representation.items", ach, sub2))
   {
-    int nb0 = data->NbParams(sub2);
-    aRepresentation_Items =
-      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int nb0  = data->NbParams(sub2);
+    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -83,15 +86,13 @@ void RWStepFEA_RWCurve3dElementRepresentation::ReadStep(
 
   // Inherited fields of ElementRepresentation
 
-  occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>
-      aElementRepresentation_NodeList;
-  int sub4 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> aElementRepresentation_NodeList;
+  int                            sub4 = 0;
   if (data->ReadSubList(num, 4, "element_representation.node_list", ach, sub4))
   {
-    int nb0 = data->NbParams(sub4);
-    aElementRepresentation_NodeList =
-      new NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>(1, nb0);
-    int num2 = sub4;
+    int nb0            = data->NbParams(sub4);
+    aElementRepresentation_NodeList = new NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>(1, nb0);
+    int num2           = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepFEA_NodeRepresentation> anIt0;
@@ -139,7 +140,7 @@ void RWStepFEA_RWCurve3dElementRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurve3dElementRepresentation::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepFEA_Curve3dElementRepresentation>& ent) const
 {
 
@@ -150,8 +151,7 @@ void RWStepFEA_RWCurve3dElementRepresentation::WriteStep(
   SW.OpenSub();
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -161,7 +161,8 @@ void RWStepFEA_RWCurve3dElementRepresentation::WriteStep(
   // Inherited fields of ElementRepresentation
 
   SW.OpenSub();
-  for (int i3 = 1; i3 <= ent->StepFEA_ElementRepresentation::NodeList()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->StepFEA_ElementRepresentation::NodeList()->Length();
+       i3++)
   {
     occ::handle<StepFEA_NodeRepresentation> Var0 =
       ent->StepFEA_ElementRepresentation::NodeList()->Value(i3);
@@ -184,15 +185,14 @@ void RWStepFEA_RWCurve3dElementRepresentation::WriteStep(
 
 void RWStepFEA_RWCurve3dElementRepresentation::Share(
   const occ::handle<StepFEA_Curve3dElementRepresentation>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 
@@ -200,7 +200,8 @@ void RWStepFEA_RWCurve3dElementRepresentation::Share(
 
   // Inherited fields of ElementRepresentation
 
-  for (int i3 = 1; i3 <= ent->StepFEA_ElementRepresentation::NodeList()->Length(); i3++)
+  for (int i3 = 1; i3 <= ent->StepFEA_ElementRepresentation::NodeList()->Length();
+       i3++)
   {
     occ::handle<StepFEA_NodeRepresentation> Var0 =
       ent->StepFEA_ElementRepresentation::NodeList()->Value(i3);

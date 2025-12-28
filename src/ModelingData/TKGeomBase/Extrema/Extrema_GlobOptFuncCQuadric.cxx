@@ -76,7 +76,8 @@ void Extrema_GlobOptFuncCQuadric::value(double ct, double& F)
 
 //=================================================================================================
 
-bool Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X, double& ct)
+bool Extrema_GlobOptFuncCQuadric::checkInputData(const math_Vector& X,
+                                                             double&     ct)
 {
   ct = X(X.Lower());
 
@@ -93,8 +94,8 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
                                                          const Adaptor3d_Surface* S)
     : myC(C)
 {
-  myTf        = myC->FirstParameter();
-  myTl        = myC->LastParameter();
+  myTf               = myC->FirstParameter();
+  myTl               = myC->LastParameter();
   double anUf = S->FirstUParameter(), anUl = S->LastUParameter();
   double aVf = S->FirstVParameter(), aVl = S->LastVParameter();
   LoadQuad(S, anUf, anUl, aVf, aVl);
@@ -112,8 +113,8 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
 //=================================================================================================
 
 Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C,
-                                                         const double           theTf,
-                                                         const double           theTl)
+                                                         const double    theTf,
+                                                         const double    theTl)
     : myC(C),
       myTf(theTf),
       myTl(theTl)
@@ -123,10 +124,10 @@ Extrema_GlobOptFuncCQuadric::Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* 
 //=================================================================================================
 
 void Extrema_GlobOptFuncCQuadric::LoadQuad(const Adaptor3d_Surface* S,
-                                           const double             theUf,
-                                           const double             theUl,
-                                           const double             theVf,
-                                           const double             theVl)
+                                           const double      theUf,
+                                           const double      theUl,
+                                           const double      theVf,
+                                           const double      theVl)
 {
   myS  = S;
   myUf = theUf;
@@ -219,7 +220,7 @@ void Extrema_GlobOptFuncCQuadric::QuadricParameters(const math_Vector& theCT,
   // points  myPTrim[]
   double uext[4] = {myUf, myUl, myUl, myUf};
   double vext[4] = {myVf, myVf, myVl, myVl};
-  gp_Pnt aCP     = myC->Value(theCT(1));
+  gp_Pnt        aCP     = myC->Value(theCT(1));
   switch (mySType)
   {
     case GeomAbs_Plane:

@@ -24,7 +24,7 @@
 RWStepBasic_RWSiUnit::RWStepBasic_RWSiUnit() {}
 
 void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                    const int                                   num,
+                                    const int                 num,
                                     occ::handle<Interface_Check>&               ach,
                                     const occ::handle<StepBasic_SiUnit>&        ent) const
 {
@@ -39,13 +39,13 @@ void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& 
 
   // --- own field : prefix ---
   StepBasic_SiPrefix aPrefix    = StepBasic_spExa;
-  bool               hasAprefix = false;
+  bool   hasAprefix = false;
   if (data->IsParamDefined(num, 2))
   {
     if (data->ParamType(num, 2) == Interface_ParamEnum)
     {
       const char* text = data->ParamCValue(num, 2);
-      hasAprefix       = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
+      hasAprefix            = RWStepBasic_RWSiPrefix::ConvertToEnum(text, aPrefix);
       if (!hasAprefix)
       {
         ach->AddFail("Enumeration si_prefix has not an allowed value");
@@ -74,7 +74,7 @@ void RWStepBasic_RWSiUnit::ReadStep(const occ::handle<StepData_StepReaderData>& 
   ent->Init(hasAprefix, aPrefix, aName);
 }
 
-void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter&                 SW,
+void RWStepBasic_RWSiUnit::WriteStep(StepData_StepWriter&            SW,
                                      const occ::handle<StepBasic_SiUnit>& ent) const
 {
 

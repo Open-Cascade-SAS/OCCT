@@ -66,8 +66,7 @@ void StepElement_MeasureOrUnspecifiedValue::SetContextDependentMeasure(const dou
     occ::down_cast<StepElement_MeasureOrUnspecifiedValueMember>(Value());
   if (SelMem.IsNull())
     return;
-  occ::handle<TCollection_HAsciiString> name =
-    new TCollection_HAsciiString("CONTEXT_DEPENDENT_MEASURE");
+  occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("CONTEXT_DEPENDENT_MEASURE");
   SelMem->SetName(name->ToCString());
   SelMem->SetReal(val);
 }
@@ -114,11 +113,10 @@ StepElement_UnspecifiedValue StepElement_MeasureOrUnspecifiedValue::UnspecifiedV
     return StepElement_Unspecified;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString;
   name->AssignCat(SelMem->Name());
-  occ::handle<TCollection_HAsciiString> nameitem =
-    new TCollection_HAsciiString("UNSPECIFIED_VALUE");
+  occ::handle<TCollection_HAsciiString> nameitem = new TCollection_HAsciiString("UNSPECIFIED_VALUE");
   if (name->IsDifferent(nameitem))
     return StepElement_Unspecified;
-  int                          numit = SelMem->Enum();
+  int             numit = SelMem->Enum();
   StepElement_UnspecifiedValue val;
   switch (numit)
   {

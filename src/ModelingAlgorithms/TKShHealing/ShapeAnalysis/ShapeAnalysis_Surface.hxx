@@ -22,6 +22,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Bnd_Box.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
 
 class Geom_Surface;
@@ -125,13 +128,13 @@ public:
   //! V-iso (False).
   //! Returns False if <num> is out of range, else returns True.
   Standard_EXPORT bool Singularity(const int num,
-                                   double&   preci,
-                                   gp_Pnt&   P3d,
-                                   gp_Pnt2d& firstP2d,
-                                   gp_Pnt2d& lastP2d,
-                                   double&   firstpar,
-                                   double&   lastpar,
-                                   bool&     uisodeg);
+                                               double&         preci,
+                                               gp_Pnt&                P3d,
+                                               gp_Pnt2d&              firstP2d,
+                                               gp_Pnt2d&              lastP2d,
+                                               double&         firstpar,
+                                               double&         lastpar,
+                                               bool&      uisodeg);
 
   //! Returns True if there is at least one surface boundary which
   //! is considered as degenerated with <preci> and distance
@@ -145,13 +148,14 @@ public:
   //! <preci> (like IsDegenerated).
   //! Returns characteristics of the first found boundary matching
   //! those criteria.
-  Standard_EXPORT bool DegeneratedValues(const gp_Pnt& P3d,
-                                         const double  preci,
-                                         gp_Pnt2d&     firstP2d,
-                                         gp_Pnt2d&     lastP2d,
-                                         double&       firstpar,
-                                         double&       lastpar,
-                                         const bool    forward = true);
+  Standard_EXPORT bool
+    DegeneratedValues(const gp_Pnt&          P3d,
+                      const double    preci,
+                      gp_Pnt2d&              firstP2d,
+                      gp_Pnt2d&              lastP2d,
+                      double&         firstpar,
+                      double&         lastpar,
+                      const bool forward = true);
 
   //! Projects a point <P3d> on a singularity by computing
   //! one of the coordinates of preliminary computed <result>.
@@ -165,21 +169,21 @@ public:
   //! resolution (computed from <preci> by Geom_Adaptor).
   //! Then sets not yet computed <result>'s coordinate taking it
   //! from <neighbour> and returns True.
-  Standard_EXPORT bool ProjectDegenerated(const gp_Pnt&   P3d,
-                                          const double    preci,
-                                          const gp_Pnt2d& neighbour,
-                                          gp_Pnt2d&       result);
+  Standard_EXPORT bool ProjectDegenerated(const gp_Pnt&       P3d,
+                                                      const double preci,
+                                                      const gp_Pnt2d&     neighbour,
+                                                      gp_Pnt2d&           result);
 
   //! Checks points at the beginning (direct is True) or end
   //! (direct is False) of array <points> to lie in singularity of
   //! surface, and if yes, adjusts the indeterminate 2d coordinate
   //! of these points by nearest point which is not in singularity.
   //! Returns True if some points were adjusted.
-  Standard_EXPORT bool ProjectDegenerated(const int                           nbrPnt,
-                                          const NCollection_Sequence<gp_Pnt>& points,
-                                          NCollection_Sequence<gp_Pnt2d>&     pnt2d,
-                                          const double                        preci,
-                                          const bool                          direct);
+  Standard_EXPORT bool ProjectDegenerated(const int      nbrPnt,
+                                                      const NCollection_Sequence<gp_Pnt>& points,
+                                                      NCollection_Sequence<gp_Pnt2d>&     pnt2d,
+                                                      const double         preci,
+                                                      const bool      direct);
 
   //! Returns True if straight pcurve going from point p2d1 to p2d2
   //! is degenerate, i.e. lies in the singularity of the surface.
@@ -194,14 +198,17 @@ public:
   //! the Resolution computed from max distance in 3d
   //! (max3d < tol && max2d > ratio * Resolution(max3d))
   //! NOTE: <ratio> should be >1 (e.g. 10)
-  Standard_EXPORT bool IsDegenerated(const gp_Pnt2d& p2d1,
-                                     const gp_Pnt2d& p2d2,
-                                     const double    tol,
-                                     const double    ratio);
+  Standard_EXPORT bool IsDegenerated(const gp_Pnt2d&     p2d1,
+                                                 const gp_Pnt2d&     p2d2,
+                                                 const double tol,
+                                                 const double ratio);
 
   //! Returns the bounds of the surface
   //! (from Bounds from Surface, but buffered)
-  void Bounds(double& ufirst, double& ulast, double& vfirst, double& vlast) const;
+  void Bounds(double& ufirst,
+              double& ulast,
+              double& vfirst,
+              double& vlast) const;
 
   //! Computes bound isos (protected against exceptions)
   Standard_EXPORT void ComputeBoundIsos();
@@ -266,10 +273,10 @@ public:
   //! P3D is greater than <maxpreci>, that solution is considered
   //! as bad, and ValueOfUV() is used.
   //! If not succeeded, calls ValueOfUV()
-  Standard_EXPORT gp_Pnt2d NextValueOfUV(const gp_Pnt2d& p2dPrev,
-                                         const gp_Pnt&   P3D,
-                                         const double    preci,
-                                         const double    maxpreci = -1.0);
+  Standard_EXPORT gp_Pnt2d NextValueOfUV(const gp_Pnt2d&     p2dPrev,
+                                         const gp_Pnt&       P3D,
+                                         const double preci,
+                                         const double maxpreci = -1.0);
 
   //! Tries a refinement of an already computed couple (U,V) by
   //! using projecting 3D point on iso-lines:
@@ -280,7 +287,10 @@ public:
   //! direction)
   //! Returns the best resulting distance between P3D and Value(U,V)
   //! in the case of success. Else, returns a very great value
-  Standard_EXPORT double UVFromIso(const gp_Pnt& P3D, const double preci, double& U, double& V);
+  Standard_EXPORT double UVFromIso(const gp_Pnt&       P3D,
+                                          const double preci,
+                                          double&      U,
+                                          double&      V);
 
   //! Returns minimum value to consider the surface as U-closed
   double UCloseVal() const;
@@ -301,35 +311,35 @@ public:
 protected:
   occ::handle<Geom_Surface>        mySurf;
   occ::handle<GeomAdaptor_Surface> myAdSur;
-  Extrema_ExtPS                    myExtPS;
-  bool                             myExtOK;
-  int                              myNbDeg;
-  double                           myPreci[4];
-  gp_Pnt                           myP3d[4];
-  gp_Pnt2d                         myFirstP2d[4];
-  gp_Pnt2d                         myLastP2d[4];
-  double                           myFirstPar[4];
-  double                           myLastPar[4];
-  bool                             myUIsoDeg[4];
-  bool                             myIsos;
-  double                           myUF;
-  double                           myUL;
-  double                           myVF;
-  double                           myVL;
+  Extrema_ExtPS               myExtPS;
+  bool            myExtOK;
+  int            myNbDeg;
+  double               myPreci[4];
+  gp_Pnt                      myP3d[4];
+  gp_Pnt2d                    myFirstP2d[4];
+  gp_Pnt2d                    myLastP2d[4];
+  double               myFirstPar[4];
+  double               myLastPar[4];
+  bool            myUIsoDeg[4];
+  bool            myIsos;
+  double               myUF;
+  double               myUL;
+  double               myVF;
+  double               myVL;
   occ::handle<Geom_Curve>          myIsoUF;
   occ::handle<Geom_Curve>          myIsoUL;
   occ::handle<Geom_Curve>          myIsoVF;
   occ::handle<Geom_Curve>          myIsoVL;
-  bool                             myIsoBoxes;
-  Bnd_Box                          myBndUF;
-  Bnd_Box                          myBndUL;
-  Bnd_Box                          myBndVF;
-  Bnd_Box                          myBndVL;
-  double                           myGap;
-  double                           myUDelt;
-  double                           myVDelt;
-  double                           myUCloseVal;
-  double                           myVCloseVal;
+  bool            myIsoBoxes;
+  Bnd_Box                     myBndUF;
+  Bnd_Box                     myBndUL;
+  Bnd_Box                     myBndVF;
+  Bnd_Box                     myBndVL;
+  double               myGap;
+  double               myUDelt;
+  double               myVDelt;
+  double               myUCloseVal;
+  double               myVCloseVal;
 
 private:
   //! Computes singularities on the surface.
@@ -353,10 +363,10 @@ private:
   Standard_EXPORT void ComputeBoxes();
 
   //! @return 0, 1 or 2.
-  Standard_EXPORT int SurfaceNewton(const gp_Pnt2d& p2dPrev,
-                                    const gp_Pnt&   P3D,
-                                    const double    preci,
-                                    gp_Pnt2d&       sol);
+  Standard_EXPORT int SurfaceNewton(const gp_Pnt2d&     p2dPrev,
+                                                 const gp_Pnt&       P3D,
+                                                 const double preci,
+                                                 gp_Pnt2d&           sol);
 
   Standard_EXPORT void SortSingularities();
 };

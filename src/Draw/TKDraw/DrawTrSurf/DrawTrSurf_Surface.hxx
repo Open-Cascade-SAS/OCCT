@@ -37,13 +37,13 @@ public:
   Standard_EXPORT DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S);
 
   Standard_EXPORT DrawTrSurf_Surface(const occ::handle<Geom_Surface>& S,
-                                     const int                        Nu,
-                                     const int                        Nv,
-                                     const Draw_Color&                BoundsColor,
-                                     const Draw_Color&                IsosColor,
-                                     const int                        Discret,
-                                     const double                     Deflection,
-                                     const int                        DrawMode);
+                                     const int      Nu,
+                                     const int      Nv,
+                                     const Draw_Color&           BoundsColor,
+                                     const Draw_Color&           IsosColor,
+                                     const int      Discret,
+                                     const double         Deflection,
+                                     const int      DrawMode);
 
   Draw_Color BoundsColor() const { return boundsLook; }
 
@@ -91,10 +91,10 @@ public:
 
 protected:
   occ::handle<Geom_Surface> surf;
-  Draw_Color                boundsLook;
-  Draw_Color                isosLook;
-  int                       nbUIsos;
-  int                       nbVIsos;
+  Draw_Color           boundsLook;
+  Draw_Color           isosLook;
+  int     nbUIsos;
+  int     nbVIsos;
 };
 
 #endif // _DrawTrSurf_Surface_HeaderFile

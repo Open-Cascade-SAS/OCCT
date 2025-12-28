@@ -19,7 +19,8 @@
 
 // Articulation Points of a Graph: these are the "required passages" of the graph
 // Algorithm taken from Sedgewick, p 392
-IFGraph_Articulations::IFGraph_Articulations(const Interface_Graph& agraph, const bool whole)
+IFGraph_Articulations::IFGraph_Articulations(const Interface_Graph& agraph,
+                                             const bool whole)
     : thegraph(agraph)
 {
   if (whole)
@@ -75,7 +76,7 @@ int IFGraph_Articulations::Visit(const int num)
        iter.Next())
   {
     const occ::handle<Standard_Transient>& ent    = iter.Value();
-    int                                    nument = thegraph.EntityNumber(ent);
+    int                  nument = thegraph.EntityNumber(ent);
     if (!thegraph.IsPresent(num))
     {
       thegraph.GetFromEntity(ent, false);

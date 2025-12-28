@@ -36,12 +36,12 @@ static int parsing(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   TCollection_AsciiString aStrTok(argv[1]);
-  int                     nbIter = 1;
+  int        nbIter = 1;
   if (argc > 2)
     nbIter = Draw::Atoi(argv[2]);
   UnitsAPI::SetLocalSystem();
   occ::handle<Units_Token> atoken;
-  Units_UnitSentence       aUnitSent(aStrTok.ToCString());
+  Units_UnitSentence  aUnitSent(aStrTok.ToCString());
 
   if (!aUnitSent.IsDone())
   {
@@ -65,7 +65,9 @@ static int parsing(Draw_Interpretor& di, int argc, const char** argv)
 // function : unitsdico
 // purpose  : dump dictionary of units
 //=======================================================================
-static int unitsdico(Draw_Interpretor& /* di */, int /*argc*/, const char** /*argv*/)
+static int unitsdico(Draw_Interpretor& /* di */,
+                                  int /*argc*/,
+                                  const char** /*argv*/)
 {
   UnitsAPI::SetLocalSystem();
   int mode = 2;
@@ -83,7 +85,7 @@ static int converttoSI(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  double      aData = Draw::Atof(argv[1]);
+  double    aData = Draw::Atof(argv[1]);
   const char* aUnit = argv[2];
 
   double res = UnitsAPI::AnyToSI(aData, aUnit);
@@ -94,7 +96,9 @@ static int converttoSI(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-static int converttoMDTV(Draw_Interpretor& di, int argc, const char** argv)
+static int converttoMDTV(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 3)
   {
@@ -102,7 +106,7 @@ static int converttoMDTV(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  double      aData = Draw::Atof(argv[1]);
+  double    aData = Draw::Atof(argv[1]);
   const char* aUnit = argv[2];
 
   UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);

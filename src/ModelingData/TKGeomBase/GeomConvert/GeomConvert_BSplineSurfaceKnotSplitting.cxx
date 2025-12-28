@@ -26,8 +26,8 @@ typedef NCollection_HArray1<int> HArray1OfInteger;
 GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting(
 
   const occ::handle<Geom_BSplineSurface>& BasisSurface,
-  const int                               UContinuityRange,
-  const int                               VContinuityRange
+  const int             UContinuityRange,
+  const int             VContinuityRange
 
 )
 {
@@ -53,8 +53,8 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    int             NbUKnots = BasisSurface->NbUKnots();
-    Array1OfInteger UMults(1, NbUKnots);
+    int NbUKnots = BasisSurface->NbUKnots();
+    Array1OfInteger  UMults(1, NbUKnots);
     BasisSurface->UMultiplicities(UMults);
     int Mmax = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
     if (UDegree - Mmax >= UContinuityRange)
@@ -65,10 +65,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
     }
     else
     {
-      Array1OfInteger USplit(1, LastUIndex - FirstUIndex + 1);
-      int             NbUSplit = 1;
-      int             UIndex   = FirstUIndex;
-      USplit(NbUSplit)         = UIndex;
+      Array1OfInteger  USplit(1, LastUIndex - FirstUIndex + 1);
+      int NbUSplit = 1;
+      int UIndex   = FirstUIndex;
+      USplit(NbUSplit)          = UIndex;
       UIndex++;
       NbUSplit++;
       while (UIndex < LastUIndex)
@@ -97,8 +97,8 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    int             NbVKnots = BasisSurface->NbVKnots();
-    Array1OfInteger VMults(1, NbVKnots);
+    int NbVKnots = BasisSurface->NbVKnots();
+    Array1OfInteger  VMults(1, NbVKnots);
     BasisSurface->VMultiplicities(VMults);
     int Mmax = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
     if (VDegree - Mmax >= VContinuityRange)
@@ -109,10 +109,10 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
     }
     else
     {
-      Array1OfInteger VSplit(1, LastVIndex - FirstVIndex + 1);
-      int             NbVSplit = 1;
-      int             VIndex   = FirstVIndex;
-      VSplit(NbVSplit)         = VIndex;
+      Array1OfInteger  VSplit(1, LastVIndex - FirstVIndex + 1);
+      int NbVSplit = 1;
+      int VIndex   = FirstVIndex;
+      VSplit(NbVSplit)          = VIndex;
       VIndex++;
       NbVSplit++;
       while (VIndex < LastVIndex)

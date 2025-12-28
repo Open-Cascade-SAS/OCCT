@@ -27,10 +27,9 @@ StepFEA_Curve3dElementProperty::StepFEA_Curve3dElementProperty() {}
 //=================================================================================================
 
 void StepFEA_Curve3dElementProperty::Init(
-  const occ::handle<TCollection_HAsciiString>& aPropertyId,
-  const occ::handle<TCollection_HAsciiString>& aDescription,
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>&
-    aIntervalDefinitions,
+  const occ::handle<TCollection_HAsciiString>&                aPropertyId,
+  const occ::handle<TCollection_HAsciiString>&                aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>&   aIntervalDefinitions,
   const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndOffset>>>&  aEndOffsets,
   const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndRelease>>>& aEndReleases)
 {
@@ -78,8 +77,8 @@ void StepFEA_Curve3dElementProperty::SetDescription(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>
-  StepFEA_Curve3dElementProperty::IntervalDefinitions() const
+occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>> StepFEA_Curve3dElementProperty::IntervalDefinitions()
+  const
 {
   return theIntervalDefinitions;
 }
@@ -87,16 +86,14 @@ occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>
 //=================================================================================================
 
 void StepFEA_Curve3dElementProperty::SetIntervalDefinitions(
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>&
-    aIntervalDefinitions)
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementInterval>>>& aIntervalDefinitions)
 {
   theIntervalDefinitions = aIntervalDefinitions;
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndOffset>>>
-  StepFEA_Curve3dElementProperty::EndOffsets() const
+occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndOffset>>> StepFEA_Curve3dElementProperty::EndOffsets() const
 {
   return theEndOffsets;
 }
@@ -111,8 +108,7 @@ void StepFEA_Curve3dElementProperty::SetEndOffsets(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndRelease>>>
-  StepFEA_Curve3dElementProperty::EndReleases() const
+occ::handle<NCollection_HArray1<occ::handle<StepFEA_CurveElementEndRelease>>> StepFEA_Curve3dElementProperty::EndReleases() const
 {
   return theEndReleases;
 }

@@ -33,6 +33,7 @@ public:
 
   //! Performs calculations
   Standard_EXPORT virtual void Perform() override;
+
 };
 
 #endif // _HelixGeom_BuilderHelixCoil_HeaderFile

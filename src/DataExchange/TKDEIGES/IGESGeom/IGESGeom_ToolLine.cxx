@@ -62,7 +62,7 @@ void IGESGeom_ToolLine::ReadOwnParams(const occ::handle<IGESGeom_Line>& ent,
 }
 
 void IGESGeom_ToolLine::WriteOwnParams(const occ::handle<IGESGeom_Line>& ent,
-                                       IGESData_IGESWriter&              IW) const
+                                       IGESData_IGESWriter&         IW) const
 {
   IW.Send(ent->StartPoint().X());
   IW.Send(ent->StartPoint().Y());
@@ -103,8 +103,8 @@ void IGESGeom_ToolLine::OwnCheck(const occ::handle<IGESGeom_Line>& /* ent */,
 
 void IGESGeom_ToolLine::OwnDump(const occ::handle<IGESGeom_Line>& ent,
                                 const IGESData_IGESDumper& /* dumper */,
-                                Standard_OStream& S,
-                                const int         level) const
+                                Standard_OStream&      S,
+                                const int level) const
 {
   int infin = ent->Infinite();
   switch (infin)

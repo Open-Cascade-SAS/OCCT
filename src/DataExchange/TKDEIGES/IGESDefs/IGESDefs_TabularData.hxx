@@ -21,9 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class IGESBasic_HArray1OfHArray1OfReal;
 
 //! Defines IGES Tabular Data, Type <406> Form <11>,
@@ -45,8 +48,8 @@ public:
   //! - valuesInd   : Values of independent variables
   //! - valuesDep   : Values of dependent variables
   //! raises exception if lengths of typeInd and nbValuesInd are not same
-  Standard_EXPORT void Init(const int                                            nbProps,
-                            const int                                            propType,
+  Standard_EXPORT void Init(const int                          nbProps,
+                            const int                          propType,
                             const occ::handle<NCollection_HArray1<int>>&         typesInd,
                             const occ::handle<NCollection_HArray1<int>>&         nbValuesInd,
                             const occ::handle<IGESBasic_HArray1OfHArray1OfReal>& valuesInd,
@@ -79,17 +82,19 @@ public:
   //! raises exception if num <= 0 or num > NbIndependents()
   Standard_EXPORT int NbValues(const int num) const;
 
-  Standard_EXPORT double IndependentValue(const int variablenum, const int valuenum) const;
+  Standard_EXPORT double IndependentValue(const int variablenum,
+                                                 const int valuenum) const;
 
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> DependentValues(const int num) const;
 
-  Standard_EXPORT double DependentValue(const int variablenum, const int valuenum) const;
+  Standard_EXPORT double DependentValue(const int variablenum,
+                                               const int valuenum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_TabularData, IGESData_IGESEntity)
 
 private:
-  int                                           theNbPropertyValues;
-  int                                           thePropertyType;
+  int                         theNbPropertyValues;
+  int                         thePropertyType;
   occ::handle<NCollection_HArray1<int>>         theTypeOfIndependentVariables;
   occ::handle<NCollection_HArray1<int>>         theNbValues;
   occ::handle<IGESBasic_HArray1OfHArray1OfReal> theIndependentValues;

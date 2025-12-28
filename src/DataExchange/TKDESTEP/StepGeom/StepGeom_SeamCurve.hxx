@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepGeom_SeamCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_SeamCurve, StepGeom_SurfaceCurve)
+
 };
 
 #endif // _StepGeom_SeamCurve_HeaderFile

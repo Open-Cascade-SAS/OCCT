@@ -24,6 +24,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 class StepFEA_FeaModel3d;
 class StepElement_Curve3dElementDescriptor;
 class StepFEA_Curve3dElementProperty;
@@ -41,12 +43,10 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-                                                       aRepresentation_Items,
-    const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
-    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&
-                                                             aElementRepresentation_NodeList,
+    const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
+    const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
+    const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&  aElementRepresentation_NodeList,
     const occ::handle<StepFEA_FeaModel3d>&                   aModelRef,
     const occ::handle<StepElement_Curve3dElementDescriptor>& aElementDescriptor,
     const occ::handle<StepFEA_Curve3dElementProperty>&       aProperty,

@@ -37,7 +37,9 @@ BlendFunc_Chamfer::BlendFunc_Chamfer(const occ::handle<Adaptor3d_Surface>& S1,
 
 //=================================================================================================
 
-void BlendFunc_Chamfer::Set(const double Dist1, const double Dist2, const int Choix)
+void BlendFunc_Chamfer::Set(const double    Dist1,
+                            const double    Dist2,
+                            const int Choix)
 {
   corde1.SetDist(Dist1);
   corde2.SetDist(Dist2);
@@ -64,8 +66,8 @@ bool BlendFunc_Chamfer::IsSolution(const math_Vector& Sol, const double Tol)
   Sol2(2) = Sol(4);
 
   bool issol = corde1.IsSolution(Sol1, Tol);
-  issol      = issol && corde2.IsSolution(Sol2, Tol);
-  tol        = Tol;
+  issol                  = issol && corde2.IsSolution(Sol2, Tol);
+  tol                    = Tol;
   if (issol)
     distmin = std::min(distmin, corde1.PointOnS().Distance(corde2.PointOnS()));
 
@@ -97,9 +99,9 @@ bool BlendFunc_Chamfer::Value(const math_Vector& X, math_Vector& F)
 
 bool BlendFunc_Chamfer::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  int         i, j;
-  math_Vector x(1, 2);
-  math_Matrix d(1, 2, 1, 2);
+  int i, j;
+  math_Vector      x(1, 2);
+  math_Matrix      d(1, 2, 1, 2);
 
   x(1) = X(1);
   x(2) = X(2);
@@ -187,16 +189,16 @@ void BlendFunc_Chamfer::Tangent(const double U1,
                                 const double V1,
                                 const double U2,
                                 const double V2,
-                                gp_Vec&      TgF,
-                                gp_Vec&      TgL,
-                                gp_Vec&      NmF,
-                                gp_Vec&      NmL) const
+                                gp_Vec&             TgF,
+                                gp_Vec&             TgL,
+                                gp_Vec&             NmF,
+                                gp_Vec&             NmL) const
 {
-  gp_Pnt pt1, pt2, ptgui;
-  gp_Vec d1u1, d1v1, d1u2, d1v2;
-  gp_Vec nplan;
-  bool   revF = false;
-  bool   revL = false;
+  gp_Pnt           pt1, pt2, ptgui;
+  gp_Vec           d1u1, d1v1, d1u2, d1v2;
+  gp_Vec           nplan;
+  bool revF = false;
+  bool revL = false;
 
   ptgui = corde1.PointOnGuide();
   nplan = corde1.NPlan();

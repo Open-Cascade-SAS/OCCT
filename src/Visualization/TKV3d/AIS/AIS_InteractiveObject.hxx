@@ -117,12 +117,13 @@ public:
   //! @param[in] theDragTo    drag end point
   //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
-  Standard_EXPORT virtual bool ProcessDragging(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                               const occ::handle<V3d_View>&               theView,
-                                               const occ::handle<SelectMgr_EntityOwner>&  theOwner,
-                                               const NCollection_Vec2<int>& theDragFrom,
-                                               const NCollection_Vec2<int>& theDragTo,
-                                               const AIS_DragAction         theAction);
+  Standard_EXPORT virtual bool ProcessDragging(
+    const occ::handle<AIS_InteractiveContext>& theCtx,
+    const occ::handle<V3d_View>&               theView,
+    const occ::handle<SelectMgr_EntityOwner>&  theOwner,
+    const NCollection_Vec2<int>&                theDragFrom,
+    const NCollection_Vec2<int>&                theDragTo,
+    const AIS_DragAction                  theAction);
 
 public:
   //! Returns the context pointer to the interactive context.
@@ -140,7 +141,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   //! The TypeOfPresention3d means that the interactive object

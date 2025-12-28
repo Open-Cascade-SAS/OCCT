@@ -35,11 +35,11 @@
 //===================================================================
 void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const gp_Ax2&                          theAxe,
-                                      const gp_Pnt&                          MidPoint,
-                                      const gp_Pnt&                          Position,
-                                      const gp_Pnt&                          AttachPoint,
-                                      const bool                             first)
+                                      const gp_Ax2&                     theAxe,
+                                      const gp_Pnt&                     MidPoint,
+                                      const gp_Pnt&                     Position,
+                                      const gp_Pnt&                     AttachPoint,
+                                      const bool            first)
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
 
@@ -55,9 +55,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     aPresentation->NewGroup();
     aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-    const double alpha = 2. * M_PI;
-    const int    nbp   = 100;
-    const double dteta = alpha / (nbp - 1);
+    const double    alpha = 2. * M_PI;
+    const int nbp   = 100;
+    const double    dteta = alpha / (nbp - 1);
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
@@ -102,13 +102,13 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 //===================================================================
 void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const gp_Ax2&                          theAxe,
-                                      const gp_Pnt&                          MidPoint,
-                                      const gp_Pnt&                          Position,
-                                      const gp_Pnt&                          AttachPoint,
-                                      const gp_Pnt&                          Point1,
-                                      const gp_Pnt&                          Point2,
-                                      const bool                             first)
+                                      const gp_Ax2&                     theAxe,
+                                      const gp_Pnt&                     MidPoint,
+                                      const gp_Pnt&                     Position,
+                                      const gp_Pnt&                     AttachPoint,
+                                      const gp_Pnt&                     Point1,
+                                      const gp_Pnt&                     Point2,
+                                      const bool            first)
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
@@ -132,9 +132,9 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
   if (first)
   {
     // center of the symmetry - circle around the MidPoint
-    const double alpha = 2. * M_PI;
-    const int    nbp   = 100;
-    const double dteta = alpha / (nbp - 1);
+    const double    alpha = 2. * M_PI;
+    const int nbp   = 100;
+    const double    dteta = alpha / (nbp - 1);
 
     aPrims = new Graphic3d_ArrayOfPolylines(nbp + 2, 2);
     aPrims->AddBound(nbp);
@@ -171,13 +171,13 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 //===================================================================
 void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const gp_Circ&                         aCircle,
-                                      const gp_Pnt&                          MidPoint,
-                                      const gp_Pnt&                          Position,
-                                      const gp_Pnt&                          AttachPoint,
-                                      const gp_Pnt&                          Point1,
-                                      const gp_Pnt&                          Point2,
-                                      const bool                             first)
+                                      const gp_Circ&                    aCircle,
+                                      const gp_Pnt&                     MidPoint,
+                                      const gp_Pnt&                     Position,
+                                      const gp_Pnt&                     AttachPoint,
+                                      const gp_Pnt&                     Point1,
+                                      const gp_Pnt&                     Point2,
+                                      const bool            first)
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
@@ -200,7 +200,7 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     alpha += 2. * M_PI;
   const int nb    = (int)(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
-  double    dteta = alpha / (nbp - 1);
+  double          dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (int i = 1; i <= nbp; i++)
@@ -251,13 +251,13 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
 //===================================================================
 void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                       const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                      const gp_Elips&                        aCircle,
-                                      const gp_Pnt&                          MidPoint,
-                                      const gp_Pnt&                          Position,
-                                      const gp_Pnt&                          AttachPoint,
-                                      const gp_Pnt&                          Point1,
-                                      const gp_Pnt&                          Point2,
-                                      const bool                             first)
+                                      const gp_Elips&                   aCircle,
+                                      const gp_Pnt&                     MidPoint,
+                                      const gp_Pnt&                     Position,
+                                      const gp_Pnt&                     AttachPoint,
+                                      const gp_Pnt&                     Point1,
+                                      const gp_Pnt&                     Point2,
+                                      const bool            first)
 {
   double rad = AttachPoint.Distance(MidPoint) / 20.0;
   if (rad <= Precision::Confusion())
@@ -280,7 +280,7 @@ void DsgPrs_MidPointPresentation::Add(const occ::handle<Prs3d_Presentation>& aPr
     alpha += 2 * M_PI;
   const int nb    = (int)(50.0 * alpha / M_PI);
   int       nbp   = std::max(4, nb);
-  double    dteta = alpha / (nbp - 1);
+  double          dteta = alpha / (nbp - 1);
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (int i = 1; i <= nbp; i++)

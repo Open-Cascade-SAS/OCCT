@@ -55,25 +55,25 @@ public:
 
   static int NbVIntervals(const HLRBRep_Surface* theSurf, const GeomAbs_Shape theSh);
 
-  static void UIntervals(const HLRBRep_Surface*      theSurf,
-                         NCollection_Array1<double>& theT,
-                         const GeomAbs_Shape         theSh);
+  static void UIntervals(const HLRBRep_Surface* theSurf,
+                         NCollection_Array1<double>&  theT,
+                         const GeomAbs_Shape    theSh);
 
-  static void VIntervals(const HLRBRep_Surface*      theSurf,
-                         NCollection_Array1<double>& theT,
-                         const GeomAbs_Shape         theSh);
+  static void VIntervals(const HLRBRep_Surface* theSurf,
+                         NCollection_Array1<double>&  theT,
+                         const GeomAbs_Shape    theSh);
 
   //! If <theFirst> >= <theLast>
   static occ::handle<Adaptor3d_Surface> UTrim(const HLRBRep_Surface* theSurf,
-                                              const double           theFirst,
-                                              const double           theLast,
-                                              const double           theTol);
+                                         const double           theFirst,
+                                         const double           theLast,
+                                         const double           theTol);
 
   //! If <theFirst> >= <theLast>
   static occ::handle<Adaptor3d_Surface> VTrim(const HLRBRep_Surface* theSurf,
-                                              const double           theFirst,
-                                              const double           theLast,
-                                              const double           theTol);
+                                         const double           theFirst,
+                                         const double           theLast,
+                                         const double           theTol);
 
   static bool IsUClosed(const HLRBRep_Surface* theSurf);
 
@@ -172,6 +172,7 @@ public:
   Standard_EXPORT static int NbSamplesV(const HLRBRep_Surface* theSurf,
                                         const double           theV1,
                                         const double           theV2);
+
 };
 
 #include <HLRBRep_SurfaceTool.lxx>

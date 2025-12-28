@@ -26,6 +26,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
 class ShapeExtend_WireData;
 class TopoDS_Wire;
 class TopoDS_Edge;
@@ -63,7 +64,7 @@ public:
 
   //! Creates segment and initializes it with wire and orientation.
   Standard_EXPORT ShapeFix_WireSegment(const occ::handle<ShapeExtend_WireData>& wire,
-                                       const TopAbs_Orientation ori = TopAbs_EXTERNAL);
+                                       const TopAbs_Orientation            ori = TopAbs_EXTERNAL);
 
   //! Creates segment and initializes it with wire and orientation.
   Standard_EXPORT ShapeFix_WireSegment(const TopoDS_Wire&       wire,
@@ -111,12 +112,12 @@ public:
 
   //! Insert a new edge with index i and explicitly defined
   //! patch indices. If i==0, edge is inserted at end of wire.
-  Standard_EXPORT void AddEdge(const int          i,
-                               const TopoDS_Edge& edge,
-                               const int          iumin,
-                               const int          iumax,
-                               const int          ivmin,
-                               const int          ivmax);
+  Standard_EXPORT void AddEdge(const int i,
+                               const TopoDS_Edge&     edge,
+                               const int iumin,
+                               const int iumax,
+                               const int ivmin,
+                               const int ivmax);
 
   //! Set patch indices for edge i.
   Standard_EXPORT void SetPatchIndex(const int i,
@@ -155,8 +156,8 @@ public:
 
 private:
   occ::handle<ShapeExtend_WireData>       myWire;
-  TopoDS_Vertex                           myVertex;
-  TopAbs_Orientation                      myOrient;
+  TopoDS_Vertex                      myVertex;
+  TopAbs_Orientation                 myOrient;
   occ::handle<NCollection_HSequence<int>> myIUMin;
   occ::handle<NCollection_HSequence<int>> myIUMax;
   occ::handle<NCollection_HSequence<int>> myIVMin;

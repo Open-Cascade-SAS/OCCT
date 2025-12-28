@@ -28,7 +28,7 @@ StepKinematics_RotationAboutDirection::StepKinematics_RotationAboutDirection() {
 void StepKinematics_RotationAboutDirection::Init(
   const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
   const occ::handle<StepGeom_Direction>&       theDirectionOfAxis,
-  const double                                 theRotationAngle)
+  const double                     theRotationAngle)
 {
   StepGeom_GeometricRepresentationItem::Init(theRepresentationItem_Name);
 

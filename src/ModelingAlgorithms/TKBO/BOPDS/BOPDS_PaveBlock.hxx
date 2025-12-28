@@ -21,9 +21,11 @@
 #include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_Pave.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
 //! The class BOPDS_PaveBlock is to store
@@ -133,7 +135,7 @@ public:
   //! <theFlag> - if true, the first and second
   //! pave are used to produce new pave blocks.
   Standard_EXPORT void Update(NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB,
-                              const bool                                      theFlag = true);
+                              const bool theFlag = true);
 
   //! Query
   //! Returns true if the extra paves contain the pave
@@ -141,28 +143,28 @@ public:
   //! <theTol>  - the value of the tolerance to compare
   //! <theInd>  - index of the found pave
   Standard_EXPORT bool ContainsParameter(const double thePrm,
-                                         const double theTol,
-                                         int&         theInd) const;
+                                                     const double theTol,
+                                                     int&   theInd) const;
 
   //! Modifier
   //! Sets the shrunk data for the pave block
   //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
-  Standard_EXPORT void SetShrunkData(const double   theTS1,
-                                     const double   theTS2,
-                                     const Bnd_Box& theBox,
-                                     const bool     theIsSplittable);
+  Standard_EXPORT void SetShrunkData(const double    theTS1,
+                                     const double    theTS2,
+                                     const Bnd_Box&         theBox,
+                                     const bool theIsSplittable);
 
   //! Selector
   //! Returns the shrunk data for the pave block
   //! <theTS1>, <theTS2> - shrunk range
   //! <theBox> - the bounding box
   //! <theIsSplittable> - defines whether the edge can be split
-  Standard_EXPORT void ShrunkData(double&  theTS1,
-                                  double&  theTS2,
-                                  Bnd_Box& theBox,
-                                  bool&    theIsSplittable) const;
+  Standard_EXPORT void ShrunkData(double&    theTS1,
+                                  double&    theTS2,
+                                  Bnd_Box&          theBox,
+                                  bool& theIsSplittable) const;
 
   //! Query
   //! Returns true if the pave block contains
@@ -180,16 +182,17 @@ public:
 
 protected:
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  int                                    myEdge;
-  int                                    myOriginalEdge;
-  BOPDS_Pave                             myPave1;
-  BOPDS_Pave                             myPave2;
-  NCollection_List<BOPDS_Pave>           myExtPaves;
-  double                                 myTS1;
-  double                                 myTS2;
-  Bnd_Box                                myShrunkBox;
-  NCollection_Map<int>                   myMFence;
-  bool                                   myIsSplittable;
+  int                  myEdge;
+  int                  myOriginalEdge;
+  BOPDS_Pave                        myPave1;
+  BOPDS_Pave                        myPave2;
+  NCollection_List<BOPDS_Pave>                  myExtPaves;
+  double                     myTS1;
+  double                     myTS2;
+  Bnd_Box                           myShrunkBox;
+  NCollection_Map<int>              myMFence;
+  bool                  myIsSplittable;
+
 };
 
 #endif // _BOPDS_PaveBlock_HeaderFile

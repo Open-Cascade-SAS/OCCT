@@ -31,13 +31,17 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
 int IGESConvGeom::SplineCurveFromIGES(const occ::handle<IGESGeom_SplineCurve>& st,
-                                      const double /*epscoef*/,
-                                      const double                    epsgeom,
-                                      occ::handle<Geom_BSplineCurve>& res)
+                                                   const double /*epscoef*/,
+                                                   const double        epsgeom,
+                                                   occ::handle<Geom_BSplineCurve>& res)
 {
   int returned = 0;
 
@@ -62,7 +66,7 @@ int IGESConvGeom::SplineCurveFromIGES(const occ::handle<IGESGeom_SplineCurve>& s
   // Array of knots.
   NCollection_Array1<double> knots(1, nbKnots);
   NCollection_Array1<double> delta(1, nbSegs);
-  int                        i; // svv Jan 10 2000 : porting on DEC
+  int     i; // svv Jan 10 2000 : porting on DEC
   for (i = 1; i <= nbKnots; i++)
     knots.SetValue(i, st->BreakPoint(i));
 
@@ -70,7 +74,7 @@ int IGESConvGeom::SplineCurveFromIGES(const occ::handle<IGESGeom_SplineCurve>& s
     delta.SetValue(i, st->BreakPoint(i + 1) - st->BreakPoint(i));
 
   NCollection_Array1<gp_Pnt> bspoles(1, nbSegs * degree + 1);
-  int                        ibspole = bspoles.Lower() - 1; // Bspole Index.
+  int   ibspole = bspoles.Lower() - 1; // Bspole Index.
   // we need to reparameterize before passing to PLib.
   // we are between [0, T(i+1)-T(i)] and we want [0,1]
 
@@ -158,13 +162,13 @@ int IGESConvGeom::SplineCurveFromIGES(const occ::handle<IGESGeom_SplineCurve>& s
 //=================================================================================================
 
 int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom_BSplineCurve>& res,
-                                          const double                          epsgeom,
-                                          const int                             continuity)
+                                                       const double              epsgeom,
+                                                       const int           continuity)
 {
   if (continuity < 1)
     return continuity;
   bool isC1 = true, isC2 = true;
-  int  degree = res->Degree();
+  int degree = res->Degree();
 
   bool isModified;
   do
@@ -177,7 +181,7 @@ int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom_BSplineCurve>& 
         {
           if (!res->RemoveKnot(i, degree - 2, epsgeom))
           {
-            isC2       = false;
+            isC2                   = false;
             bool locOK = res->RemoveKnot(i, degree - 1, epsgeom); // is C1 ?
             isC1 &= locOK;
             isModified |= locOK;
@@ -204,13 +208,13 @@ int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom_BSplineCurve>& 
 //=================================================================================================
 
 int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom2d_BSplineCurve>& res,
-                                          const double                            epsgeom,
-                                          const int                               continuity)
+                                                       const double                epsgeom,
+                                                       const int continuity)
 {
   if (continuity < 1)
     return continuity;
   bool isC1 = true, isC2 = true;
-  int  degree = res->Degree();
+  int degree = res->Degree();
 
   bool isModified;
   do
@@ -223,7 +227,7 @@ int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom2d_BSplineCurve>
         {
           if (!res->RemoveKnot(i, degree - 2, epsgeom))
           {
-            isC2       = false;
+            isC2                   = false;
             bool locOK = res->RemoveKnot(i, degree - 1, epsgeom); // is C1 ?
             isC1 &= locOK;
             isModified |= locOK;
@@ -250,9 +254,9 @@ int IGESConvGeom::IncreaseCurveContinuity(const occ::handle<Geom2d_BSplineCurve>
 //=================================================================================================
 
 int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface>& st,
-                                        const double /*epscoef*/,
-                                        const double                      epsgeom,
-                                        occ::handle<Geom_BSplineSurface>& res)
+                                                     const double /*epscoef*/,
+                                                     const double          epsgeom,
+                                                     occ::handle<Geom_BSplineSurface>& res)
 {
   int returned = 0;
   int degree   = st->BoundaryType();
@@ -306,7 +310,7 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
 
   NCollection_Array2<gp_Pnt> BsPole(1, NbUPoles, 1, NbVPoles);
 
-  int  iBs, jBs, iBz, jBz;
+  int iBs, jBs, iBz, jBz;
   bool wasC0 = true;
 
   //  Patch (1,1)
@@ -320,15 +324,15 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
   occ::handle<NCollection_HArray1<double>> ZPoly = st->ZPolynomial(USeg, VSeg);
 
   NCollection_Array2<gp_Pnt> Coef(1, DegreeU + 1, 1, DegreeV + 1);
-  double                     ParamU, ParamV;
+  double      ParamU, ParamV;
   ParamU = 1.;
   for (i = 1; i <= DegreeU + 1; i++)
   {
     ParamV = 1.;
     for (j = 1; j <= DegreeV + 1; j++)
     {
-      int    PolyIndex = i + 4 * (j - 1);
-      gp_Pnt aPoint(XPoly->Value(PolyIndex) * ParamU * ParamV,
+      int PolyIndex = i + 4 * (j - 1);
+      gp_Pnt           aPoint(XPoly->Value(PolyIndex) * ParamU * ParamV,
                     YPoly->Value(PolyIndex) * ParamU * ParamV,
                     ZPoly->Value(PolyIndex) * ParamU * ParamV);
       Coef.SetValue(i, j, aPoint);
@@ -366,8 +370,8 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
       ParamV = 1.;
       for (j = Coef.LowerCol(); j <= Coef.UpperCol(); j++)
       {
-        int    PolyIndex = i + 4 * (j - 1);
-        gp_Pnt aPoint;
+        int PolyIndex = i + 4 * (j - 1);
+        gp_Pnt           aPoint;
         aPoint.SetCoord(XPoly->Value(PolyIndex) * ParamU * ParamV,
                         YPoly->Value(PolyIndex) * ParamU * ParamV,
                         ZPoly->Value(PolyIndex) * ParamU * ParamV);
@@ -381,16 +385,19 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
     //  C0 check and correction for poles lying on isoparametrics U=0 & V=0
     int iBsPole = BsPole.LowerRow() + (USeg - 1) * DegreeU;
     int jBsPole = BsPole.LowerCol();
-    iBz         = BzPole.LowerRow();
+    iBz                      = BzPole.LowerRow();
     for (jBz = BzPole.LowerCol(); jBz <= BzPole.UpperCol(); jBz++)
     {
       if (!BzPole.Value(iBz, jBz).IsEqual(BsPole.Value(iBsPole, jBsPole), epsgeom))
       {
         wasC0 = false;
-        gp_Pnt MidPoint;
-        double XCoord = 0.5 * (BzPole.Value(iBz, jBz).X() + BsPole.Value(iBsPole, jBsPole).X());
-        double YCoord = 0.5 * (BzPole.Value(iBz, jBz).Y() + BsPole.Value(iBsPole, jBsPole).Y());
-        double ZCoord = 0.5 * (BzPole.Value(iBz, jBz).Z() + BsPole.Value(iBsPole, jBsPole).Z());
+        gp_Pnt        MidPoint;
+        double XCoord =
+          0.5 * (BzPole.Value(iBz, jBz).X() + BsPole.Value(iBsPole, jBsPole).X());
+        double YCoord =
+          0.5 * (BzPole.Value(iBz, jBz).Y() + BsPole.Value(iBsPole, jBsPole).Y());
+        double ZCoord =
+          0.5 * (BzPole.Value(iBz, jBz).Z() + BsPole.Value(iBsPole, jBsPole).Z());
         MidPoint.SetCoord(XCoord, YCoord, ZCoord);
         BsPole.SetValue(iBsPole, jBsPole++, MidPoint);
       }
@@ -427,8 +434,8 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
       ParamV = 1.;
       for (j = Coef.LowerCol(); j <= Coef.UpperCol(); j++)
       {
-        int    PolyIndex = i + 4 * (j - 1);
-        gp_Pnt aPoint;
+        int PolyIndex = i + 4 * (j - 1);
+        gp_Pnt           aPoint;
         aPoint.SetCoord(XPoly->Value(PolyIndex) * ParamU * ParamV,
                         YPoly->Value(PolyIndex) * ParamU * ParamV,
                         ZPoly->Value(PolyIndex) * ParamU * ParamV);
@@ -448,7 +455,7 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
       if (!BzPole.Value(iBz, jBz).IsEqual(BsPole.Value(iBs, jBs), epsgeom))
       {
         wasC0 = false;
-        gp_Pnt MidPoint;
+        gp_Pnt        MidPoint;
         double XCoord = 0.5 * (BzPole.Value(iBz, jBz).X() + BsPole.Value(iBs, jBs).X());
         double YCoord = 0.5 * (BzPole.Value(iBz, jBz).Y() + BsPole.Value(iBs, jBs).Y());
         double ZCoord = 0.5 * (BzPole.Value(iBz, jBz).Z() + BsPole.Value(iBs, jBs).Z());
@@ -488,8 +495,8 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
         ParamV = 1.;
         for (j = Coef.LowerCol(); j <= Coef.UpperCol(); j++)
         {
-          int    PolyIndex = i + 4 * (j - 1);
-          gp_Pnt aPoint;
+          int PolyIndex = i + 4 * (j - 1);
+          gp_Pnt           aPoint;
           aPoint.SetCoord(XPoly->Value(PolyIndex) * ParamU * ParamV,
                           YPoly->Value(PolyIndex) * ParamU * ParamV,
                           ZPoly->Value(PolyIndex) * ParamU * ParamV);
@@ -509,7 +516,7 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
         if (!BzPole.Value(iBz, jBz).IsEqual(BsPole.Value(iBs, jBs), epsgeom))
         {
           wasC0 = false;
-          gp_Pnt MidPoint;
+          gp_Pnt        MidPoint;
           double XCoord = 0.5 * (BzPole.Value(iBz, jBz).X() + BsPole.Value(iBs, jBs).X());
           double YCoord = 0.5 * (BzPole.Value(iBz, jBz).Y() + BsPole.Value(iBs, jBs).Y());
           double ZCoord = 0.5 * (BzPole.Value(iBz, jBz).Z() + BsPole.Value(iBs, jBs).Z());
@@ -528,7 +535,7 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
         if (!BzPole.Value(iBz, jBz).IsEqual(BsPole.Value(iBs, jBs), epsgeom))
         {
           wasC0 = false;
-          gp_Pnt MidPoint;
+          gp_Pnt        MidPoint;
           double XCoord = 0.5 * (BzPole.Value(iBz, jBz).X() + BsPole.Value(iBs, jBs).X());
           double YCoord = 0.5 * (BzPole.Value(iBz, jBz).Y() + BsPole.Value(iBs, jBs).Y());
           double ZCoord = 0.5 * (BzPole.Value(iBz, jBz).Z() + BsPole.Value(iBs, jBs).Z());
@@ -556,9 +563,9 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
 
   if (st->HasTransf())
   {
-    gp_GTrsf GSplTrsf(st->CompoundLocation());
-    gp_Trsf  SplTrsf;
-    double   epsilon = 1.E-04;
+    gp_GTrsf      GSplTrsf(st->CompoundLocation());
+    gp_Trsf       SplTrsf;
+    double epsilon = 1.E-04;
     if (IGESData_ToolLocation::ConvertLocation(epsilon, GSplTrsf, SplTrsf))
       for (iBs = BsPole.LowerRow(); iBs <= BsPole.UpperRow(); iBs++)
         for (jBs = BsPole.LowerCol(); jBs <= BsPole.UpperCol(); jBs++)
@@ -576,13 +583,13 @@ int IGESConvGeom::SplineSurfaceFromIGES(const occ::handle<IGESGeom_SplineSurface
 //=================================================================================================
 
 int IGESConvGeom::IncreaseSurfaceContinuity(const occ::handle<Geom_BSplineSurface>& res,
-                                            const double                            epsgeom,
-                                            const int                               continuity)
+                                                         const double                epsgeom,
+                                                         const int continuity)
 {
   if (continuity < 1)
     return continuity;
   bool isC1 = true, isC2 = true;
-  int  DegreeU = res->UDegree();
+  int DegreeU = res->UDegree();
 
   bool isModified;
   do
@@ -595,7 +602,7 @@ int IGESConvGeom::IncreaseSurfaceContinuity(const occ::handle<Geom_BSplineSurfac
         {
           if (!res->RemoveUKnot(i, DegreeU - 2, epsgeom))
           {
-            isC2       = false;
+            isC2                   = false;
             bool locOK = res->RemoveUKnot(i, DegreeU - 1, epsgeom); // is C1 ?
             isC1 &= locOK;
             isModified |= locOK;
@@ -623,7 +630,7 @@ int IGESConvGeom::IncreaseSurfaceContinuity(const occ::handle<Geom_BSplineSurfac
         {
           if (!res->RemoveVKnot(i, DegreeV - 2, epsgeom))
           {
-            isC2       = false;
+            isC2                   = false;
             bool locOK = res->RemoveVKnot(i, DegreeV - 1, epsgeom); // is C1 ?
             isC1 &= locOK;
             isModified |= locOK;

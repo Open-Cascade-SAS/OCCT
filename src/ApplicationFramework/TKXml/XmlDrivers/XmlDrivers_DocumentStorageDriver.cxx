@@ -50,7 +50,7 @@ bool XmlDrivers_DocumentStorageDriver::WriteShapeSection(
   const TDocStd_FormatVersion  theStorageFormatVersion,
   const Message_ProgressRange& theRange)
 {
-  bool                        isShape(false);
+  bool       isShape(false);
   occ::handle<XmlMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
   {

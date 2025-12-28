@@ -37,6 +37,7 @@ public:
   //! Sets the number of cuts applied to divide closed faces.
   //! The number of resulting faces will be num+1.
   Standard_EXPORT void SetNbSplitPoints(const int num);
+
 };
 
 #endif // _ShapeUpgrade_ShapeDivideClosed_HeaderFile

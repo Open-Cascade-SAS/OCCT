@@ -35,7 +35,8 @@ public:
     return thePolygon.Bounding();
   }
 
-  static double DeflectionOverEstimation(const IntCurveSurface_ThePolygonOfHInter& thePolygon)
+  static double DeflectionOverEstimation(
+    const IntCurveSurface_ThePolygonOfHInter& thePolygon)
   {
     return thePolygon.DeflectionOverEstimation();
   }
@@ -52,14 +53,14 @@ public:
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& BeginOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
-                                  const int                                 Index)
+                                  const int                    Index)
   {
     return thePolygon.BeginOfSeg(Index);
   }
 
   //! Give the point of range Index in the Polygon.
   static const gp_Pnt& EndOfSeg(const IntCurveSurface_ThePolygonOfHInter& thePolygon,
-                                const int                                 Index)
+                                const int                    Index)
   {
     return thePolygon.EndOfSeg(Index);
   }

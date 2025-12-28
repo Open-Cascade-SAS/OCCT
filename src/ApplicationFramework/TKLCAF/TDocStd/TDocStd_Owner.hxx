@@ -42,13 +42,11 @@ public:
   Standard_EXPORT static void SetDocument(const occ::handle<TDF_Data>&         indata,
                                           const occ::handle<TDocStd_Document>& doc);
 
-  Standard_EXPORT static void SetDocument(const occ::handle<TDF_Data>& indata,
-                                          TDocStd_Document*            doc);
+  Standard_EXPORT static void SetDocument(const occ::handle<TDF_Data>& indata, TDocStd_Document* doc);
 
   //! Owner methods
   //! ===============
-  Standard_EXPORT static occ::handle<TDocStd_Document> GetDocument(
-    const occ::handle<TDF_Data>& ofdata);
+  Standard_EXPORT static occ::handle<TDocStd_Document> GetDocument(const occ::handle<TDF_Data>& ofdata);
 
   Standard_EXPORT TDocStd_Owner();
 
@@ -70,7 +68,8 @@ public:
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDocStd_Owner, TDF_Attribute)
 

@@ -18,9 +18,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_PolyLoop, StepShape_Loop)
 
 StepShape_PolyLoop::StepShape_PolyLoop() {}
 
-void StepShape_PolyLoop::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon)
+void StepShape_PolyLoop::Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                              const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon)
 {
   // --- classe own fields ---
   polygon = aPolygon;
@@ -28,14 +27,12 @@ void StepShape_PolyLoop::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_PolyLoop::SetPolygon(
-  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon)
+void StepShape_PolyLoop::SetPolygon(const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPolygon)
 {
   polygon = aPolygon;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> StepShape_PolyLoop::Polygon()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> StepShape_PolyLoop::Polygon() const
 {
   return polygon;
 }

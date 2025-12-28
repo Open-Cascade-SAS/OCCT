@@ -31,11 +31,9 @@ TopoDSToStep_Tool::TopoDSToStep_Tool(const occ::handle<StepData_StepModel>& theM
 
 //=================================================================================================
 
-TopoDSToStep_Tool::TopoDSToStep_Tool(
-  const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>&
-             M,
-  const bool FacetedContext,
-  int        theSurfCurveMode)
+TopoDSToStep_Tool::TopoDSToStep_Tool(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                                     const bool                  FacetedContext,
+                                     int                        theSurfCurveMode)
     : myLowestTol(0.),
       myReversedSurface(false)
 {
@@ -44,11 +42,9 @@ TopoDSToStep_Tool::TopoDSToStep_Tool(
 
 //=================================================================================================
 
-void TopoDSToStep_Tool::Init(
-  const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>&
-             M,
-  const bool FacetedContext,
-  int        theSurfCurveMode)
+void TopoDSToStep_Tool::Init(const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& M,
+                             const bool                  FacetedContext,
+                             int                        theSurfCurveMode)
 {
   myDataMap        = M;
   myFacetedContext = FacetedContext;
@@ -64,7 +60,7 @@ bool TopoDSToStep_Tool::IsBound(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-void TopoDSToStep_Tool::Bind(const TopoDS_Shape&                                         S,
+void TopoDSToStep_Tool::Bind(const TopoDS_Shape&                                    S,
                              const occ::handle<StepShape_TopologicalRepresentationItem>& T)
 {
   myDataMap.Bind(S, T);
@@ -254,8 +250,7 @@ bool TopoDSToStep_Tool::SurfaceReversed() const
 
 //=================================================================================================
 
-const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>&
-  TopoDSToStep_Tool::Map() const
+const NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>& TopoDSToStep_Tool::Map() const
 {
   return myDataMap;
 }

@@ -38,7 +38,7 @@ public:
   //! @param theSurface underlying geometry
   //! @param theTrsf transformation to apply
   Standard_EXPORT GeomAdaptor_TransformedSurface(const occ::handle<Geom_Surface>& theSurface,
-                                                 const gp_Trsf&                   theTrsf);
+                                                 const gp_Trsf&              theTrsf);
 
   //! Creates a surface adaptor with transformation and parameter bounds.
   //! @param theSurface underlying geometry
@@ -50,13 +50,13 @@ public:
   //! @param theTolU tolerance in U direction
   //! @param theTolV tolerance in V direction
   Standard_EXPORT GeomAdaptor_TransformedSurface(const occ::handle<Geom_Surface>& theSurface,
-                                                 const double                     theUFirst,
-                                                 const double                     theULast,
-                                                 const double                     theVFirst,
-                                                 const double                     theVLast,
-                                                 const gp_Trsf&                   theTrsf,
-                                                 const double                     theTolU = 0.0,
-                                                 const double                     theTolV = 0.0);
+                                                 const double         theUFirst,
+                                                 const double         theULast,
+                                                 const double         theVFirst,
+                                                 const double         theVLast,
+                                                 const gp_Trsf&              theTrsf,
+                                                 const double         theTolU = 0.0,
+                                                 const double         theTolV = 0.0);
 
   //! Shallow copy of adaptor.
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
@@ -74,12 +74,12 @@ public:
   //! @param theTolU tolerance in U direction
   //! @param theTolV tolerance in V direction
   void Load(const occ::handle<Geom_Surface>& theSurface,
-            const double                     theUFirst,
-            const double                     theULast,
-            const double                     theVFirst,
-            const double                     theVLast,
-            const double                     theTolU = 0.0,
-            const double                     theTolV = 0.0)
+            const double         theUFirst,
+            const double         theULast,
+            const double         theVFirst,
+            const double         theVLast,
+            const double         theTolU = 0.0,
+            const double         theTolV = 0.0)
   {
     mySurf.Load(theSurface, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
@@ -101,11 +101,17 @@ public:
   const occ::handle<Geom_Surface>& GeomSurface() const { return mySurf.Surface(); }
 
   // Parameter range methods - delegate to underlying surface
-  virtual double FirstUParameter() const override { return mySurf.FirstUParameter(); }
+  virtual double FirstUParameter() const override
+  {
+    return mySurf.FirstUParameter();
+  }
 
   virtual double LastUParameter() const override { return mySurf.LastUParameter(); }
 
-  virtual double FirstVParameter() const override { return mySurf.FirstVParameter(); }
+  virtual double FirstVParameter() const override
+  {
+    return mySurf.FirstVParameter();
+  }
 
   virtual double LastVParameter() const override { return mySurf.LastVParameter(); }
 
@@ -124,18 +130,20 @@ public:
   }
 
   Standard_EXPORT void UIntervals(NCollection_Array1<double>& theT,
-                                  const GeomAbs_Shape         theS) const override;
+                                  const GeomAbs_Shape   theS) const override;
 
   Standard_EXPORT void VIntervals(NCollection_Array1<double>& theT,
-                                  const GeomAbs_Shape         theS) const override;
+                                  const GeomAbs_Shape   theS) const override;
 
   Standard_EXPORT occ::handle<Adaptor3d_Surface> UTrim(const double theFirst,
-                                                       const double theLast,
-                                                       const double theTol) const override;
+                                                  const double theLast,
+                                                  const double theTol) const
+    override;
 
   Standard_EXPORT occ::handle<Adaptor3d_Surface> VTrim(const double theFirst,
-                                                       const double theLast,
-                                                       const double theTol) const override;
+                                                  const double theLast,
+                                                  const double theTol) const
+    override;
 
   virtual bool IsUClosed() const override { return mySurf.IsUClosed(); }
 
@@ -151,52 +159,55 @@ public:
 
   //! Computes the point of parameters U,V on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Pnt Value(const double theU, const double theV) const override final;
+  Standard_EXPORT gp_Pnt Value(const double theU,
+                               const double theV) const override final;
 
   //! Computes the point of parameters U,V on the surface.
   //! Applies transformation after evaluation.
-  Standard_EXPORT void D0(const double theU, const double theV, gp_Pnt& theP) const override final;
+  Standard_EXPORT void D0(const double theU,
+                          const double theV,
+                          gp_Pnt&             theP) const override final;
 
   //! Computes the point and the first derivatives on the surface.
   //! Applies transformation after evaluation.
   Standard_EXPORT void D1(const double theU,
                           const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V) const override final;
+                          gp_Pnt&             theP,
+                          gp_Vec&             theD1U,
+                          gp_Vec&             theD1V) const override final;
 
   //! Computes the point, the first and second derivatives on the surface.
   //! Applies transformation after evaluation.
   Standard_EXPORT void D2(const double theU,
                           const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V,
-                          gp_Vec&      theD2U,
-                          gp_Vec&      theD2V,
-                          gp_Vec&      theD2UV) const override final;
+                          gp_Pnt&             theP,
+                          gp_Vec&             theD1U,
+                          gp_Vec&             theD1V,
+                          gp_Vec&             theD2U,
+                          gp_Vec&             theD2V,
+                          gp_Vec&             theD2UV) const override final;
 
   //! Computes the point, the first, second and third derivatives on the surface.
   //! Applies transformation after evaluation.
   Standard_EXPORT void D3(const double theU,
                           const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V,
-                          gp_Vec&      theD2U,
-                          gp_Vec&      theD2V,
-                          gp_Vec&      theD2UV,
-                          gp_Vec&      theD3U,
-                          gp_Vec&      theD3V,
-                          gp_Vec&      theD3UUV,
-                          gp_Vec&      theD3UVV) const override final;
+                          gp_Pnt&             theP,
+                          gp_Vec&             theD1U,
+                          gp_Vec&             theD1V,
+                          gp_Vec&             theD2U,
+                          gp_Vec&             theD2V,
+                          gp_Vec&             theD2UV,
+                          gp_Vec&             theD3U,
+                          gp_Vec&             theD3V,
+                          gp_Vec&             theD3UUV,
+                          gp_Vec&             theD3UVV) const override final;
 
   //! Computes the derivative of order Nu in the direction U and Nv in the direction V.
   //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Vec DN(const double theU,
-                            const double theV,
-                            const int    theNu,
-                            const int    theNv) const override final;
+  Standard_EXPORT gp_Vec DN(const double    theU,
+                            const double    theV,
+                            const int theNu,
+                            const int theNv) const override final;
 
   virtual double UResolution(const double theR3d) const override
   {

@@ -21,11 +21,10 @@
 
 RWStepGeom_RWAxis2Placement3d::RWStepGeom_RWAxis2Placement3d() {}
 
-void RWStepGeom_RWAxis2Placement3d::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepGeom_Axis2Placement3d>& ent) const
+void RWStepGeom_RWAxis2Placement3d::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepGeom_Axis2Placement3d>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -48,7 +47,7 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep(
   // --- own field : axis ---
 
   occ::handle<StepGeom_Direction> aAxis;
-  bool                            hasAaxis = false;
+  bool           hasAaxis = false;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -62,7 +61,7 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep(
   // --- own field : refDirection ---
 
   occ::handle<StepGeom_Direction> aRefDirection;
-  bool                            hasArefDirection = false;
+  bool           hasArefDirection = false;
   if (data->IsParamDefined(num, 4))
   {
     // szv#4:S4163:12Mar99 `bool stat4 =` not needed
@@ -83,9 +82,8 @@ void RWStepGeom_RWAxis2Placement3d::ReadStep(
   ent->Init(aName, aLocation, hasAaxis, aAxis, hasArefDirection, aRefDirection);
 }
 
-void RWStepGeom_RWAxis2Placement3d::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepGeom_Axis2Placement3d>& ent) const
+void RWStepGeom_RWAxis2Placement3d::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepGeom_Axis2Placement3d>& ent) const
 {
 
   // --- inherited field name ---
@@ -122,7 +120,7 @@ void RWStepGeom_RWAxis2Placement3d::WriteStep(
 }
 
 void RWStepGeom_RWAxis2Placement3d::Share(const occ::handle<StepGeom_Axis2Placement3d>& ent,
-                                          Interface_EntityIterator&                     iter) const
+                                          Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->Location());

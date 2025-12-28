@@ -23,7 +23,9 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
 class Adaptor3d_Curve;
@@ -54,10 +56,13 @@ public:
   Standard_EXPORT bool Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculation of Fi'(U,V).
-  Standard_EXPORT bool Derivatives(const math_Vector& UV, math_Matrix& DF) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& UV,
+                                               math_Matrix&       DF) override;
 
   //! Calculation of Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT bool Values(const math_Vector& UV, math_Vector& F, math_Matrix& DF) override;
+  Standard_EXPORT bool Values(const math_Vector& UV,
+                                          math_Vector&       F,
+                                          math_Matrix&       DF) override;
 
   //! Save the found extremum.
   Standard_EXPORT virtual int GetStateNumber() override;
@@ -84,18 +89,18 @@ public:
   NCollection_Sequence<Extrema_POnSurf>& PointsOnSurf() { return myPoint2; }
 
 private:
-  const Adaptor3d_Curve*                myC;
-  const Adaptor3d_Surface*              myS;
-  gp_Pnt                                myP1;
-  gp_Pnt                                myP2;
-  double                                myt;
-  double                                myU;
-  double                                myV;
-  NCollection_Sequence<double>          mySqDist;
+  const Adaptor3d_Curve*    myC;
+  const Adaptor3d_Surface*  myS;
+  gp_Pnt                    myP1;
+  gp_Pnt                    myP2;
+  double             myt;
+  double             myU;
+  double             myV;
+  NCollection_Sequence<double>    mySqDist;
   NCollection_Sequence<Extrema_POnCurv> myPoint1;
   NCollection_Sequence<Extrema_POnSurf> myPoint2;
-  bool                                  myCinit;
-  bool                                  mySinit;
+  bool          myCinit;
+  bool          mySinit;
 };
 
 #endif // _Extrema_FuncExtCS_HeaderFile

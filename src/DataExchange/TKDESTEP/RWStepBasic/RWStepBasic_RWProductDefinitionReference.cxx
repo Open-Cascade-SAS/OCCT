@@ -30,7 +30,7 @@ RWStepBasic_RWProductDefinitionReference::RWStepBasic_RWProductDefinitionReferen
 
 void RWStepBasic_RWProductDefinitionReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_ProductDefinitionReference>& ent) const
 {
@@ -72,7 +72,7 @@ void RWStepBasic_RWProductDefinitionReference::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductDefinitionReference::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_ProductDefinitionReference>& ent) const
 {
 
@@ -99,7 +99,7 @@ void RWStepBasic_RWProductDefinitionReference::WriteStep(
 
 void RWStepBasic_RWProductDefinitionReference::Share(
   const occ::handle<StepBasic_ProductDefinitionReference>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
   iter.GetOneItem(ent->Source());
 }

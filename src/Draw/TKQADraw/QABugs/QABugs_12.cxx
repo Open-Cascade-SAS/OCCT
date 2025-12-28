@@ -45,10 +45,10 @@ static int OCC895(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  const double rad     = 1.0;
-  const double angle   = (argc > 2) ? Draw::Atof(argv[2]) : 0.0;
-  const int    reverse = (argc > 3) ? Draw::Atoi(argv[3]) : 0;
-  const int    order   = (argc > 4) ? Draw::Atoi(argv[4]) : 0;
+  const double    rad     = 1.0;
+  const double    angle   = (argc > 2) ? Draw::Atof(argv[2]) : 0.0;
+  const int reverse = (argc > 3) ? Draw::Atoi(argv[3]) : 0;
+  const int order   = (argc > 4) ? Draw::Atoi(argv[4]) : 0;
 
   // Make a wire from the first arc for ThruSections.
   //

@@ -82,7 +82,7 @@ static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
   if (std::abs(X) > Precision::PConfusion() || std::abs(Y) > Precision::PConfusion())
   {
     double UU = std::atan2(Y, X);
-    U         = ElCLib::InPeriod(UU, 0., 2 * M_PI);
+    U                = ElCLib::InPeriod(UU, 0., 2 * M_PI);
   }
   else
   {
@@ -118,7 +118,7 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
   Ys = mySphere.Position().YDirection();
   Zs = mySphere.Position().Direction();
 
-  bool             isIsoU, isIsoV;
+  bool        isIsoU, isIsoV;
   constexpr double Tol = Precision::Confusion();
 
   isIsoU = Zc.IsNormal(Zs, Tol) && O.IsEqual(C.Location(), Tol);
@@ -171,9 +171,9 @@ void ProjLib_Sphere::Project(const gp_Circ& C)
       U += 2 * M_PI;
     double Z = gp_Vec(O, C.Location()).Dot(Zs);
     double V = std::asin(Z / mySphere.Radius());
-    P2d1     = gp_Pnt2d(U, V);
-    D2d      = gp_Dir2d((Xc ^ Yc).Dot(Xs ^ Ys), 0.);
-    isDone   = true;
+    P2d1            = gp_Pnt2d(U, V);
+    D2d             = gp_Dir2d((Xc ^ Yc).Dot(Xs ^ Ys), 0.);
+    isDone          = true;
   }
   myLin = gp_Lin2d(P2d1, D2d);
 }
@@ -210,11 +210,11 @@ void ProjLib_Sphere::SetInBounds(const double U)
 
   myLin.Translate(gp_Vec2d(0., newY - Y));
 
-  gp_Pnt2d  P = ElCLib::Value(U, myLin);
-  gp_Trsf2d Trsf;
-  gp_Ax2d   Axis;
-  double    Tol = 1.e-7;
-  gp_Dir2d  D2d = myLin.Direction();
+  gp_Pnt2d      P = ElCLib::Value(U, myLin);
+  gp_Trsf2d     Trsf;
+  gp_Ax2d       Axis;
+  double Tol = 1.e-7;
+  gp_Dir2d      D2d = myLin.Direction();
   //  Modified by skv - Tue Aug  1 16:29:59 2006 OCC13116 Begin
   //   if ((P.Y() > M_PI/2) ||
   if ((P.Y() - M_PI / 2 > Tol) ||

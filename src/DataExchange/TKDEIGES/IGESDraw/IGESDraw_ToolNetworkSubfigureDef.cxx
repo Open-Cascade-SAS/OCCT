@@ -38,13 +38,13 @@ IGESDraw_ToolNetworkSubfigureDef::IGESDraw_ToolNetworkSubfigureDef() {}
 void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
   const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
   const occ::handle<IGESData_IGESReaderData>&      IR,
-  IGESData_ParamReader&                            PR) const
+  IGESData_ParamReader&                       PR) const
 {
   // bool  st; //szv#4:S4163:12Mar99 not needed
 
-  int                                   tempDepth, tempNbEntities1, tempTypeFlag, tempNbEntities2;
-  occ::handle<TCollection_HAsciiString> tempName, tempDesignator;
-  occ::handle<IGESGraph_TextDisplayTemplate>                           tempTemplate;
+  int                       tempDepth, tempNbEntities1, tempTypeFlag, tempNbEntities2;
+  occ::handle<TCollection_HAsciiString>       tempName, tempDesignator;
+  occ::handle<IGESGraph_TextDisplayTemplate>  tempTemplate;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   tempEntities;
   occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>> tempPointEntities;
 
@@ -88,11 +88,11 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
     PR.AddWarning("Primary Reference Designator : Null");
 
   bool st = PR.ReadEntity(IR,
-                          PR.Current(),
-                          "Primary Reference Designator",
-                          STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
-                          tempTemplate,
-                          true);
+                                      PR.Current(),
+                                      "Primary Reference Designator",
+                                      STANDARD_TYPE(IGESGraph_TextDisplayTemplate),
+                                      tempTemplate,
+                                      true);
 
   if (PR.DefinedElseSkip())
     st = PR.ReadInteger(PR.Current(), "Number Of Connect Points", tempNbEntities2);
@@ -104,15 +104,14 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
     if (tempNbEntities2 < 0)
       PR.AddFail("Number Of Connect Points : Less Than Zero");
     else if (tempNbEntities2 > 0)
-      tempPointEntities =
-        new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, tempNbEntities2);
+      tempPointEntities = new NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>(1, tempNbEntities2);
   }
 
   // Read the HArray1 only if its Length was read without any Error
   if (!tempPointEntities.IsNull())
   {
     occ::handle<IGESDraw_ConnectPoint> tempConnectPoint;
-    int                                I;
+    int              I;
     for (I = 1; I <= tempNbEntities2; I++)
     {
       // st = PR.ReadEntity(IR, PR.Current(),"Associated Connect Point Entity",
@@ -140,7 +139,7 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams(
 
 void IGESDraw_ToolNetworkSubfigureDef::WriteOwnParams(
   const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
-  IGESData_IGESWriter&                             IW) const
+  IGESData_IGESWriter&                        IW) const
 {
   int up = ent->NbEntities();
   IW.Send(ent->Depth());
@@ -158,9 +157,8 @@ void IGESDraw_ToolNetworkSubfigureDef::WriteOwnParams(
     IW.Send(ent->PointEntity(I));
 }
 
-void IGESDraw_ToolNetworkSubfigureDef::OwnShared(
-  const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
-  Interface_EntityIterator&                        iter) const
+void IGESDraw_ToolNetworkSubfigureDef::OwnShared(const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
+                                                 Interface_EntityIterator& iter) const
 {
   int I;
   int up = ent->NbEntities();
@@ -171,15 +169,14 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnShared(
     iter.GetOneItem(ent->PointEntity(I));
 }
 
-void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(
-  const occ::handle<IGESDraw_NetworkSubfigureDef>& another,
-  const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
-  Interface_CopyTool&                              TC) const
+void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(const occ::handle<IGESDraw_NetworkSubfigureDef>& another,
+                                               const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
+                                               Interface_CopyTool&                         TC) const
 {
-  int                                   tempDepth = another->Depth();
-  occ::handle<TCollection_HAsciiString> tempName  = new TCollection_HAsciiString(another->Name());
+  int                     tempDepth = another->Depth();
+  occ::handle<TCollection_HAsciiString>     tempName  = new TCollection_HAsciiString(another->Name());
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempEntities;
-  int                                                                up = another->NbEntities();
+  int                     up = another->NbEntities();
   if (up > 0)
     tempEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, up);
   int I;
@@ -188,7 +185,7 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCopy(
     DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Entity(I)));
     tempEntities->SetValue(I, tempEntity);
   }
-  int                                   tempTypeFlag = another->TypeFlag();
+  int                 tempTypeFlag = another->TypeFlag();
   occ::handle<TCollection_HAsciiString> tempDesignator;
   if (!another->Designator().IsNull())
     tempDesignator = new TCollection_HAsciiString(another->Designator());
@@ -248,10 +245,9 @@ IGESData_DirChecker IGESDraw_ToolNetworkSubfigureDef::DirChecker(
   return DC;
 }
 
-void IGESDraw_ToolNetworkSubfigureDef::OwnCheck(
-  const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void IGESDraw_ToolNetworkSubfigureDef::OwnCheck(const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
+                                                const Interface_ShareTool&,
+                                                occ::handle<Interface_Check>& ach) const
 {
   if ((ent->TypeFlag() < 0) || (ent->TypeFlag() > 2))
     ach->AddFail("TypeFlag has Invalid value");
@@ -260,9 +256,9 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCheck(
 }
 
 void IGESDraw_ToolNetworkSubfigureDef::OwnDump(const occ::handle<IGESDraw_NetworkSubfigureDef>& ent,
-                                               const IGESData_IGESDumper& dumper,
-                                               Standard_OStream&          S,
-                                               const int                  level) const
+                                               const IGESData_IGESDumper&                  dumper,
+                                               Standard_OStream&                           S,
+                                               const int level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 

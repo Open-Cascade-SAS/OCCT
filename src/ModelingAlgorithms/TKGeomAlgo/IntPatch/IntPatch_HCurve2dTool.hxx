@@ -52,8 +52,8 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(const occ::handle<Adaptor2d_Curve2d>& C,
-                        NCollection_Array1<double>&           T,
-                        const GeomAbs_Shape                   S);
+                        NCollection_Array1<double>&            T,
+                        const GeomAbs_Shape              S);
 
   static bool IsClosed(const occ::handle<Adaptor2d_Curve2d>& C);
 
@@ -71,35 +71,40 @@ public:
   //! first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  static void D1(const occ::handle<Adaptor2d_Curve2d>& C, const double U, gp_Pnt2d& P, gp_Vec2d& V);
+  static void D1(const occ::handle<Adaptor2d_Curve2d>& C,
+                 const double              U,
+                 gp_Pnt2d&                        P,
+                 gp_Vec2d&                        V);
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
   static void D2(const occ::handle<Adaptor2d_Curve2d>& C,
-                 const double                          U,
-                 gp_Pnt2d&                             P,
-                 gp_Vec2d&                             V1,
-                 gp_Vec2d&                             V2);
+                 const double              U,
+                 gp_Pnt2d&                        P,
+                 gp_Vec2d&                        V1,
+                 gp_Vec2d&                        V2);
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const occ::handle<Adaptor2d_Curve2d>& C,
-                 const double                          U,
-                 gp_Pnt2d&                             P,
-                 gp_Vec2d&                             V1,
-                 gp_Vec2d&                             V2,
-                 gp_Vec2d&                             V3);
+                 const double              U,
+                 gp_Pnt2d&                        P,
+                 gp_Vec2d&                        V1,
+                 gp_Vec2d&                        V2,
+                 gp_Vec2d&                        V3);
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  static gp_Vec2d DN(const occ::handle<Adaptor2d_Curve2d>& C, const double U, const int N);
+  static gp_Vec2d DN(const occ::handle<Adaptor2d_Curve2d>& C,
+                     const double              U,
+                     const int           N);
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -125,8 +130,9 @@ public:
   static occ::handle<Geom2d_BSplineCurve> BSpline(const occ::handle<Adaptor2d_Curve2d>& C);
 
   Standard_EXPORT static int NbSamples(const occ::handle<Adaptor2d_Curve2d>& C,
-                                       const double                          U0,
-                                       const double                          U1);
+                                                    const double              U0,
+                                                    const double              U1);
+
 };
 
 #include <IntPatch_HCurve2dTool.lxx>

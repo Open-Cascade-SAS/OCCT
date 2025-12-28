@@ -41,7 +41,7 @@ void IGESSolid_ToolConeFrustum::ReadOwnParams(const occ::handle<IGESSolid_ConeFr
                                               IGESData_ParamReader& PR) const
 {
   double tempHeight, tempR1, tempR2, tempreal;
-  gp_XYZ tempCenter, tempAxis;
+  gp_XYZ        tempCenter, tempAxis;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Height", tempHeight); // szv#4:S4163:12Mar99 `st=` not needed
@@ -123,7 +123,7 @@ void IGESSolid_ToolConeFrustum::ReadOwnParams(const occ::handle<IGESSolid_ConeFr
 }
 
 void IGESSolid_ToolConeFrustum::WriteOwnParams(const occ::handle<IGESSolid_ConeFrustum>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   IW.Send(ent->Height());
   IW.Send(ent->LargerRadius());
@@ -182,8 +182,8 @@ void IGESSolid_ToolConeFrustum::OwnCheck(const occ::handle<IGESSolid_ConeFrustum
 
 void IGESSolid_ToolConeFrustum::OwnDump(const occ::handle<IGESSolid_ConeFrustum>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream& S,
-                                        const int         level) const
+                                        Standard_OStream&      S,
+                                        const int level) const
 {
   S << "IGESSolid_ConeFrustum\n"
     << "Height : " << ent->Height() << "  "

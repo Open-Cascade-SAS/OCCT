@@ -41,27 +41,29 @@ public:
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, according to a Case Number <CN> (provided by HeaderSection
   //! Protocol).
-  Standard_EXPORT void FillSharedCase(const int                              CN,
+  Standard_EXPORT void FillSharedCase(const int            CN,
                                       const occ::handle<Standard_Transient>& ent,
-                                      Interface_EntityIterator&              iter) const override;
+                                      Interface_EntityIterator& iter) const override;
 
   //! Specific Checking of an Entity <ent>
-  Standard_EXPORT void CheckCase(const int                              CN,
+  Standard_EXPORT void CheckCase(const int            CN,
                                  const occ::handle<Standard_Transient>& ent,
-                                 const Interface_ShareTool&             shares,
+                                 const Interface_ShareTool&        shares,
                                  occ::handle<Interface_Check>&          ach) const override;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! Use method Transferred from CopyTool to work
-  Standard_EXPORT void CopyCase(const int                              CN,
+  Standard_EXPORT void CopyCase(const int            CN,
                                 const occ::handle<Standard_Transient>& entfrom,
                                 const occ::handle<Standard_Transient>& entto,
-                                Interface_CopyTool&                    TC) const override;
+                                Interface_CopyTool&               TC) const override;
 
-  Standard_EXPORT bool NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT bool NewVoid(const int      CN,
+                                           occ::handle<Standard_Transient>& ent) const override;
 
   DEFINE_STANDARD_RTTIEXT(RWHeaderSection_GeneralModule, StepData_GeneralModule)
+
 };
 
 #endif // _RWHeaderSection_GeneralModule_HeaderFile

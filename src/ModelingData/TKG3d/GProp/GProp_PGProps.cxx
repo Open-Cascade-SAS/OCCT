@@ -17,11 +17,11 @@
 #include <Standard_DomainError.hxx>
 
 // #include <gp.hxx>
-typedef gp_Pnt                     Pnt;
-typedef gp_Mat                     Mat;
-typedef gp_XYZ                     XYZ;
-typedef NCollection_Array1<gp_Pnt> Array1OfPnt;
-typedef NCollection_Array2<gp_Pnt> Array2OfPnt;
+typedef gp_Pnt               Pnt;
+typedef gp_Mat               Mat;
+typedef gp_XYZ               XYZ;
+typedef NCollection_Array1<gp_Pnt>   Array1OfPnt;
+typedef NCollection_Array2<gp_Pnt>   Array2OfPnt;
 typedef NCollection_Array1<double> Array1OfReal;
 typedef NCollection_Array2<double> Array2OfReal;
 
@@ -43,7 +43,7 @@ void GProp_PGProps::AddPoint(const Pnt& P)
   double Ixx = Yp * Yp + Zp * Zp;
   double Iyy = Xp * Xp + Zp * Zp;
   double Izz = Xp * Xp + Yp * Yp;
-  Mat    Mp(XYZ(Ixx, Ixy, Ixz), XYZ(Ixy, Iyy, Iyz), XYZ(Ixz, Iyz, Izz));
+  Mat           Mp(XYZ(Ixx, Ixy, Ixz), XYZ(Ixy, Iyy, Iyz), XYZ(Ixz, Iyz, Izz));
   if (dim == 0)
   {
     dim     = 1;
@@ -78,7 +78,7 @@ void GProp_PGProps::AddPoint(const gp_Pnt& P, const double Density)
   double Ixx = Yp * Yp + Zp * Zp;
   double Iyy = Xp * Xp + Zp * Zp;
   double Izz = Xp * Xp + Yp * Yp;
-  Mat    Mp(XYZ(Ixx, Ixy, Ixz), XYZ(Ixy, Iyy, Iyz), XYZ(Ixz, Iyz, Izz));
+  Mat           Mp(XYZ(Ixx, Ixy, Ixz), XYZ(Ixy, Iyy, Iyz), XYZ(Ixz, Iyz, Izz));
   if (dim == 0)
   {
     dim     = Density;
@@ -159,15 +159,15 @@ GProp_PGProps::GProp_PGProps(const Array2OfPnt& Pnts, const Array2OfReal& Densit
 
 void GProp_PGProps::Barycentre(const Array1OfPnt&  Pnts,
                                const Array1OfReal& Density,
-                               double&             Mass,
+                               double&      Mass,
                                Pnt&                G)
 {
   if (Pnts.Length() != Density.Length())
     throw Standard_DimensionError();
-  int ip   = Pnts.Lower();
-  int id   = Density.Lower();
-  Mass     = Density(id);
-  XYZ Gxyz = Pnts(ip).XYZ();
+  int ip = Pnts.Lower();
+  int id = Density.Lower();
+  Mass                = Density(id);
+  XYZ Gxyz            = Pnts(ip).XYZ();
   Gxyz.Multiply(Mass);
   while (ip <= Pnts.Upper())
   {
@@ -182,7 +182,7 @@ void GProp_PGProps::Barycentre(const Array1OfPnt&  Pnts,
 
 void GProp_PGProps::Barycentre(const Array2OfPnt&  Pnts,
                                const Array2OfReal& Density,
-                               double&             Mass,
+                               double&      Mass,
                                Pnt&                G)
 {
   if (Pnts.RowLength() != Density.RowLength() || Pnts.ColLength() != Density.ColLength())
@@ -191,7 +191,7 @@ void GProp_PGProps::Barycentre(const Array2OfPnt&  Pnts,
   int id = Density.LowerRow();
   int jp = Pnts.LowerCol();
   int jd = Density.LowerCol();
-  Mass   = 0.0;
+  Mass                = 0.0;
   XYZ Gxyz(0.0, 0.0, 0.0);
   while (jp <= Pnts.UpperCol())
   {

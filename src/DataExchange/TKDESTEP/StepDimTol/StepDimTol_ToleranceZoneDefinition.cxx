@@ -28,7 +28,7 @@ StepDimTol_ToleranceZoneDefinition::StepDimTol_ToleranceZoneDefinition() {}
 //=================================================================================================
 
 void StepDimTol_ToleranceZoneDefinition::Init(
-  const occ::handle<StepDimTol_ToleranceZone>&                               theZone,
+  const occ::handle<StepDimTol_ToleranceZone>&      theZone,
   const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries)
 {
   myBoundaries = theBoundaries;

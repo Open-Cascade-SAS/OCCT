@@ -22,22 +22,37 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_SurfaceData.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_CurveData.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_PointData.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ShapeData.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_Curve.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Geom_Surface.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ShapeWithState.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 class Geom_Surface;
 class TopoDS_Edge;
@@ -90,8 +105,8 @@ public:
 
   //! Insert a new point. Returns the index.
   Standard_EXPORT int AddPointSS(const TopOpeBRepDS_Point& PDS,
-                                 const TopoDS_Shape&       S1,
-                                 const TopoDS_Shape&       S2);
+                                              const TopoDS_Shape&       S1,
+                                              const TopoDS_Shape&       S2);
 
   Standard_EXPORT void RemovePoint(const int I);
 
@@ -109,9 +124,11 @@ public:
   //! Insert a shape S which ancestor is I = 1 or 2. Returns the index.
   Standard_EXPORT int AddShape(const TopoDS_Shape& S, const int I);
 
-  Standard_EXPORT bool KeepShape(const int I, const bool FindKeep = true) const;
+  Standard_EXPORT bool KeepShape(const int I,
+                                             const bool FindKeep = true) const;
 
-  Standard_EXPORT bool KeepShape(const TopoDS_Shape& S, const bool FindKeep = true) const;
+  Standard_EXPORT bool KeepShape(const TopoDS_Shape&    S,
+                                             const bool FindKeep = true) const;
 
   Standard_EXPORT void ChangeKeepShape(const int I, const bool FindKeep);
 
@@ -121,38 +138,38 @@ public:
 
   Standard_EXPORT int AddSectionEdge(const TopoDS_Edge& E);
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                        SurfaceInterferences(const int I) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& SurfaceInterferences(
+    const int I) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                  ChangeSurfaceInterferences(const int I);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeSurfaceInterferences(
+    const int I);
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                        CurveInterferences(const int I) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& CurveInterferences(
+    const int I) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                  ChangeCurveInterferences(const int I);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeCurveInterferences(
+    const int I);
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                        PointInterferences(const int I) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& PointInterferences(
+    const int I) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                  ChangePointInterferences(const int I);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangePointInterferences(
+    const int I);
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                        ShapeInterferences(const TopoDS_Shape& S, const bool FindKeep = true) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ShapeInterferences(
+    const TopoDS_Shape&    S,
+    const bool FindKeep = true) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                  ChangeShapeInterferences(const TopoDS_Shape& S);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeShapeInterferences(const TopoDS_Shape& S);
 
-  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                        ShapeInterferences(const int I, const bool FindKeep = true) const;
+  Standard_EXPORT const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ShapeInterferences(
+    const int I,
+    const bool FindKeep = true) const;
 
-  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&
-                  ChangeShapeInterferences(const int I);
+  Standard_EXPORT NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& ChangeShapeInterferences(
+    const int I);
 
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ShapeSameDomain(
-    const TopoDS_Shape& S) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ShapeSameDomain(const TopoDS_Shape& S) const;
 
   Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeShapeSameDomain(const TopoDS_Shape& S);
 
@@ -160,10 +177,7 @@ public:
 
   Standard_EXPORT NCollection_List<TopoDS_Shape>& ChangeShapeSameDomain(const int I);
 
-  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape,
-                                             TopOpeBRepDS_ShapeData,
-                                             TopTools_ShapeMapHasher>&
-                  ChangeShapes();
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>& ChangeShapes();
 
   Standard_EXPORT void AddShapeSameDomain(const TopoDS_Shape& S, const TopoDS_Shape& SSD);
 
@@ -201,21 +215,21 @@ public:
 
   Standard_EXPORT void AncestorRank(const TopoDS_Shape& S, const int Ianc);
 
-  Standard_EXPORT void AddShapeInterference(const TopoDS_Shape&                           S,
+  Standard_EXPORT void AddShapeInterference(const TopoDS_Shape&                      S,
                                             const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void RemoveShapeInterference(const TopoDS_Shape&                           S,
+  Standard_EXPORT void RemoveShapeInterference(const TopoDS_Shape&                      S,
                                                const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void FillShapesSameDomain(const TopoDS_Shape& S1,
-                                            const TopoDS_Shape& S2,
-                                            const bool          refFirst = true);
+  Standard_EXPORT void FillShapesSameDomain(const TopoDS_Shape&    S1,
+                                            const TopoDS_Shape&    S2,
+                                            const bool refFirst = true);
 
   Standard_EXPORT void FillShapesSameDomain(const TopoDS_Shape&       S1,
                                             const TopoDS_Shape&       S2,
                                             const TopOpeBRepDS_Config c1,
                                             const TopOpeBRepDS_Config c2,
-                                            const bool                refFirst = true);
+                                            const bool    refFirst = true);
 
   Standard_EXPORT void UnfillShapesSameDomain(const TopoDS_Shape& S1, const TopoDS_Shape& S2);
 
@@ -251,18 +265,24 @@ public:
 
   //! returns the shape of index I stored in
   //! the map myShapes, accessing a list of interference.
-  Standard_EXPORT const TopoDS_Shape& Shape(const int I, const bool FindKeep = true) const;
+  Standard_EXPORT const TopoDS_Shape& Shape(const int I,
+                                            const bool FindKeep = true) const;
 
   //! returns the index of shape <S> stored in
   //! the map myShapes, accessing a list of interference.
   //! returns 0 if <S> is not in the map.
-  Standard_EXPORT int Shape(const TopoDS_Shape& S, const bool FindKeep = true) const;
+  Standard_EXPORT int Shape(const TopoDS_Shape&    S,
+                                         const bool FindKeep = true) const;
 
-  Standard_EXPORT const TopoDS_Edge& SectionEdge(const int I, const bool FindKeep = true) const;
+  Standard_EXPORT const TopoDS_Edge& SectionEdge(
+    const int I,
+    const bool FindKeep = true) const;
 
-  Standard_EXPORT int SectionEdge(const TopoDS_Edge& E, const bool FindKeep = true) const;
+  Standard_EXPORT int
+    SectionEdge(const TopoDS_Edge& E, const bool FindKeep = true) const;
 
-  Standard_EXPORT bool IsSectionEdge(const TopoDS_Edge& E, const bool FindKeep = true) const;
+  Standard_EXPORT bool
+    IsSectionEdge(const TopoDS_Edge& E, const bool FindKeep = true) const;
 
   //! Returns True if <S> has new geometries, i.e :
   //! True si :
@@ -273,7 +293,8 @@ public:
   Standard_EXPORT bool HasGeometry(const TopoDS_Shape& S) const;
 
   //! Returns True if <S> est dans myShapes
-  Standard_EXPORT bool HasShape(const TopoDS_Shape& S, const bool FindKeep = true) const;
+  Standard_EXPORT bool HasShape(const TopoDS_Shape&    S,
+                                            const bool FindKeep = true) const;
 
   Standard_EXPORT void SetNewSurface(const TopoDS_Shape& F, const occ::handle<Geom_Surface>& S);
 
@@ -285,65 +306,52 @@ public:
 
   Standard_EXPORT bool Isfafa() const;
 
-  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape,
-                                             TopOpeBRepDS_ShapeWithState,
-                                             TopTools_ShapeMapHasher>&
-                  ChangeMapOfShapeWithStateObj();
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& ChangeMapOfShapeWithStateObj();
 
-  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape,
-                                             TopOpeBRepDS_ShapeWithState,
-                                             TopTools_ShapeMapHasher>&
-                  ChangeMapOfShapeWithStateTool();
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& ChangeMapOfShapeWithStateTool();
 
-  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape,
-                                             TopOpeBRepDS_ShapeWithState,
-                                             TopTools_ShapeMapHasher>&
-                  ChangeMapOfShapeWithState(const TopoDS_Shape& aShape, bool& aFlag);
+  Standard_EXPORT NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>& ChangeMapOfShapeWithState(
+    const TopoDS_Shape& aShape,
+    bool&   aFlag);
 
   Standard_EXPORT const TopOpeBRepDS_ShapeWithState& GetShapeWithState(
     const TopoDS_Shape& aShape) const;
 
-  Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
-                  ChangeMapOfRejectedShapesObj();
+  Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ChangeMapOfRejectedShapesObj();
 
-  Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
-                  ChangeMapOfRejectedShapesTool();
+  Standard_EXPORT NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ChangeMapOfRejectedShapesTool();
 
   friend class TopOpeBRepDS_SurfaceExplorer;
   friend class TopOpeBRepDS_CurveExplorer;
   friend class TopOpeBRepDS_PointExplorer;
 
 private:
-  Standard_EXPORT bool FindInterference(
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
-    const occ::handle<TopOpeBRepDS_Interference>&                       I) const;
+  Standard_EXPORT bool
+    FindInterference(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator& IT,
+                     const occ::handle<TopOpeBRepDS_Interference>&       I) const;
 
-  int                                                myNbSurfaces;
-  NCollection_DataMap<int, TopOpeBRepDS_SurfaceData> mySurfaces;
-  int                                                myNbCurves;
-  NCollection_DataMap<int, TopOpeBRepDS_CurveData>   myCurves;
-  int                                                myNbPoints;
-  NCollection_DataMap<int, TopOpeBRepDS_PointData>   myPoints;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>
-                                                                myShapes;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mySectionEdges;
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>      myEmptyListOfInterference;
-  NCollection_List<TopoDS_Shape>                                myEmptyListOfShape;
-  TopoDS_Shape                                                  myEmptyShape;
-  TopOpeBRepDS_Point                                            myEmptyPoint;
-  TopOpeBRepDS_Surface                                          myEmptySurface;
-  TopOpeBRepDS_Curve                                            myEmptyCurve;
-  occ::handle<Geom_Surface>                                     myEmptyGSurface;
-  NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Surface>, TopTools_ShapeMapHasher>
-       myNewSurface;
-  bool myIsfafa;
-  int  myI;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>
-    myMapOfShapeWithStateObj;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher>
-                                                                myMapOfShapeWithStateTool;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapOfRejectedShapesObj;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapOfRejectedShapesTool;
+  int                            myNbSurfaces;
+  NCollection_DataMap<int, TopOpeBRepDS_SurfaceData>                   mySurfaces;
+  int                            myNbCurves;
+  NCollection_DataMap<int, TopOpeBRepDS_CurveData>                     myCurves;
+  int                            myNbPoints;
+  NCollection_DataMap<int, TopOpeBRepDS_PointData>                     myPoints;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeData, TopTools_ShapeMapHasher>                 myShapes;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                  mySectionEdges;
+  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>             myEmptyListOfInterference;
+  NCollection_List<TopoDS_Shape>                        myEmptyListOfShape;
+  TopoDS_Shape                                myEmptyShape;
+  TopOpeBRepDS_Point                          myEmptyPoint;
+  TopOpeBRepDS_Surface                        myEmptySurface;
+  TopOpeBRepDS_Curve                          myEmptyCurve;
+  occ::handle<Geom_Surface>                        myEmptyGSurface;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Surface>, TopTools_ShapeMapHasher>                   myNewSurface;
+  bool                            myIsfafa;
+  int                            myI;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher> myMapOfShapeWithStateObj;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepDS_ShapeWithState, TopTools_ShapeMapHasher> myMapOfShapeWithStateTool;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                  myMapOfRejectedShapesObj;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                  myMapOfRejectedShapesTool;
 };
 
 #endif // _TopOpeBRepDS_DataStructure_HeaderFile

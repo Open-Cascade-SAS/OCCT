@@ -41,9 +41,9 @@ occ::handle<TDF_Attribute> BinMDF_ReferenceDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   BinObjMgt_RRelocationTable&) const
+bool BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theTarget);
 
@@ -62,7 +62,7 @@ bool BinMDF_ReferenceDriver::Paste(const BinObjMgt_Persistent&       theSource,
 //=======================================================================
 
 void BinMDF_ReferenceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   BinObjMgt_Persistent&             theTarget,
+                                   BinObjMgt_Persistent&        theTarget,
                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDF_Reference> aRef = occ::down_cast<TDF_Reference>(theSource);

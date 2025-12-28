@@ -46,8 +46,12 @@
 #include <Standard_Failure.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -58,16 +62,15 @@
 
 //=================================================================================================
 
-occ::handle<Geom_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
-  const occ::handle<Geom_Curve>& C3D,
-  const double                   First,
-  const double                   Last,
-  const double                   Tol3d,
-  const GeomAbs_Shape            Continuity,
-  const int                      MaxSegments,
-  const int                      MaxDegree)
+occ::handle<Geom_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(const occ::handle<Geom_Curve>& C3D,
+                                                                const double       First,
+                                                                const double       Last,
+                                                                const double       Tol3d,
+                                                                const GeomAbs_Shape    Continuity,
+                                                                const int MaxSegments,
+                                                                const int MaxDegree)
 {
-  int                            MaxDeg = MaxDegree;
+  int          MaxDeg = MaxDegree;
   occ::handle<Geom_BSplineCurve> aBSpline;
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
     aBSpline = occ::down_cast<Geom_BSplineCurve>(C3D);
@@ -106,12 +109,12 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
 
 occ::handle<Geom2d_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
   const occ::handle<Geom2d_Curve>& C2D,
-  const double                     First,
-  const double                     Last,
-  const double                     Tol2d,
-  const GeomAbs_Shape              Continuity,
-  const int                        MaxSegments,
-  const int                        MaxDegree)
+  const double         First,
+  const double         Last,
+  const double         Tol2d,
+  const GeomAbs_Shape         Continuity,
+  const int      MaxSegments,
+  const int      MaxDegree)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline2d;
   if (C2D->IsKind(STANDARD_TYPE(Geom2d_Conic)))
@@ -144,14 +147,14 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct::ConvertCurveToBSpline(
 
 occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
   const occ::handle<Geom_Surface>& surf,
-  const double                     UF,
-  const double                     UL,
-  const double                     VF,
-  const double                     VL,
-  const double                     Tol3d,
-  const GeomAbs_Shape              Continuity,
-  const int                        MaxSegments,
-  const int                        MaxDegree)
+  const double         UF,
+  const double         UL,
+  const double         VF,
+  const double         VL,
+  const double         Tol3d,
+  const GeomAbs_Shape         Continuity,
+  const int      MaxSegments,
+  const int      MaxDegree)
 {
   occ::handle<Geom_BSplineSurface> res;
 
@@ -173,12 +176,11 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
 
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
   {
-    occ::handle<Geom_SurfaceOfLinearExtrusion> extr =
-      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(S);
-    occ::handle<Geom_Curve> basis = extr->BasisCurve();
+    occ::handle<Geom_SurfaceOfLinearExtrusion> extr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(S);
+    occ::handle<Geom_Curve>                    basis = extr->BasisCurve();
     // gp_Dir direction = extr->Direction(); // direction not used (skl)
 
-    GeomAbs_Shape                  cnt = (Continuity > GeomAbs_C2 ? GeomAbs_C2 : Continuity);
+    GeomAbs_Shape             cnt = (Continuity > GeomAbs_C2 ? GeomAbs_C2 : Continuity);
     occ::handle<Geom_BSplineCurve> bspl =
       ConvertCurveToBSpline(basis, UF, UL, Tol3d, cnt, MaxSegments, MaxDegree);
 
@@ -186,19 +188,19 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
     shiftF.SetTranslation(extr->Value(UF, 0), extr->Value(UF, VF));
     shiftL.SetTranslation(extr->Value(UF, 0), extr->Value(UF, VL));
 
-    int                        nbPoles = bspl->NbPoles();
-    NCollection_Array1<gp_Pnt> poles(1, nbPoles);
-    NCollection_Array1<double> weights(1, nbPoles);
-    int                        nbKnots = bspl->NbKnots();
-    NCollection_Array1<double> knots(1, nbKnots);
-    NCollection_Array1<int>    mults(1, nbKnots);
+    int        nbPoles = bspl->NbPoles();
+    NCollection_Array1<gp_Pnt>      poles(1, nbPoles);
+    NCollection_Array1<double>    weights(1, nbPoles);
+    int        nbKnots = bspl->NbKnots();
+    NCollection_Array1<double>    knots(1, nbKnots);
+    NCollection_Array1<int> mults(1, nbKnots);
 
     bspl->Poles(poles);
     bspl->Knots(knots);
     bspl->Multiplicities(mults);
     bspl->Weights(weights);
 
-    NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
+    NCollection_Array2<gp_Pnt>   resPoles(1, nbPoles, 1, 2);
     NCollection_Array2<double> resWeigth(1, nbPoles, 1, 2);
     for (int j = 1; j <= nbPoles; j++)
     {
@@ -208,22 +210,22 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
       resWeigth(j, 2) = weights(j);
     }
 
-    NCollection_Array1<double> vknots(1, 2);
-    NCollection_Array1<int>    vmults(1, 2);
+    NCollection_Array1<double>    vknots(1, 2);
+    NCollection_Array1<int> vmults(1, 2);
     vknots(1) = VF;
     vknots(2) = VL;
     vmults(1) = vmults(2) = 2;
 
     occ::handle<Geom_BSplineSurface> bspline = new Geom_BSplineSurface(resPoles,
-                                                                       resWeigth,
-                                                                       knots,
-                                                                       vknots,
-                                                                       mults,
-                                                                       vmults,
-                                                                       bspl->Degree(),
-                                                                       1,
-                                                                       bspl->IsPeriodic(),
-                                                                       false);
+                                                                  resWeigth,
+                                                                  knots,
+                                                                  vknots,
+                                                                  mults,
+                                                                  vmults,
+                                                                  bspl->Degree(),
+                                                                  1,
+                                                                  bspl->IsPeriodic(),
+                                                                  false);
     return bspline;
   }
 
@@ -237,7 +239,7 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
       cnt               = (cnt > GeomAbs_C2 ? GeomAbs_C2 : cnt);
       occ::handle<Geom_BSplineCurve> bspl =
         ConvertCurveToBSpline(basis, VF, VL, Tol3d, cnt, MaxSegments, MaxDegree);
-      gp_Ax1                                axis     = revol->Axis();
+      gp_Ax1                           axis     = revol->Axis();
       occ::handle<Geom_SurfaceOfRevolution> newRevol = new Geom_SurfaceOfRevolution(bspl, axis);
 #ifdef OCCT_DEBUG
       std::cout << " Revolution on offset converted" << std::endl;
@@ -255,17 +257,18 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
       OCC_CATCH_SIGNALS
       GeomAbs_Shape aCont = (GeomAbs_Shape)cnt;
       GeomConvert_ApproxSurface
-           anApprox(aSurface, Tol3d / 2, aCont, aCont, MaxDegree, MaxDegree, MaxSegments, 0);
+        anApprox(aSurface, Tol3d / 2, aCont, aCont, MaxDegree, MaxDegree, MaxSegments, 0);
       bool Done = anApprox.IsDone();
       if (anApprox.MaxError() <= Tol3d && Done)
       {
 
 #ifdef OCCT_DEBUG
-        int nbOfSpan = (anApprox.Surface()->NbUKnots() - 1) * (anApprox.Surface()->NbVKnots() - 1);
+        int nbOfSpan =
+          (anApprox.Surface()->NbUKnots() - 1) * (anApprox.Surface()->NbVKnots() - 1);
         std::cout << "\terror = " << anApprox.MaxError() << "\tspans = " << nbOfSpan << std::endl;
         std::cout << " Surface is approximated with continuity " << (GeomAbs_Shape)cnt << std::endl;
 #endif
-        S                                    = anApprox.Surface();
+        S                               = anApprox.Surface();
         occ::handle<Geom_BSplineSurface> Bsc = occ::down_cast<Geom_BSplineSurface>(S);
         return Bsc;
       }
@@ -300,8 +303,8 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
 //=================================================================================================
 
 bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& edges,
-                                 const TopoDS_Face&                                      theFace,
-                                 TopoDS_Edge&                                            theEdge)
+                                             const TopoDS_Face&                       theFace,
+                                             TopoDS_Edge&                             theEdge)
 {
   ShapeAnalysis_Edge sae;
   BRep_Builder       B;
@@ -319,10 +322,10 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
     if (aGeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
       return true;
 
-    bool                      IsEdgeSeam = false;
+    bool     IsEdgeSeam = false;
     occ::handle<Geom2d_Curve> aCrvRes1, aCrvRes2;
-    TopAbs_Orientation        resOrient;
-    double                    newf = 0., newl = 0.;
+    TopAbs_Orientation   resOrient;
+    double        newf = 0., newl = 0.;
     // iterates on edges
     int i = 1;
     for (; i <= edges->Length(); i++)
@@ -337,7 +340,7 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
 
       resOrient = TopAbs_FORWARD;
       occ::handle<Geom2d_Curve> c2d, c2d2;
-      double                    first, last, first2, last2;
+      double        first, last, first2, last2;
       if (!sae.PCurve(Edge, theFace, c2d, first, last, false))
         break;
 
@@ -361,7 +364,7 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
       else
       {
         occ::handle<Geom2d_Curve> newCrv;
-        bool                      isRev1, isRev2;
+        bool     isRev1, isRev2;
         if (!JoinCurves(aCrvRes1,
                         c2d,
                         resOrient,
@@ -378,7 +381,7 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
         if (IsEdgeSeam)
         {
           occ::handle<Geom2d_Curve> newCrv2;
-          double                    newf2 = newf, newl2 = newl;
+          double        newf2 = newf, newl2 = newl;
 
           if (!JoinCurves(aCrvRes2,
                           c2d2,
@@ -394,7 +397,7 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
             break;
           aCrvRes2 = newCrv2;
         }
-        aCrvRes1    = newCrv;
+        aCrvRes1           = newCrv;
         double fp2d = newCrv->FirstParameter();
         double lp2d = newCrv->LastParameter();
         newl += (last - first);
@@ -430,15 +433,15 @@ bool ShapeConstruct::JoinPCurves(const occ::handle<NCollection_HSequence<TopoDS_
 
 template <class HCurve>
 static inline HCurve GetCurveCopy(const HCurve&             curve,
-                                  double&                   first,
-                                  double&                   last,
+                                  double&            first,
+                                  double&            last,
                                   const TopAbs_Orientation& orient)
 {
   if (orient == TopAbs_REVERSED)
   {
     double cf = first;
-    first     = curve->ReversedParameter(last);
-    last      = curve->ReversedParameter(cf);
+    first            = curve->ReversedParameter(last);
+    last             = curve->ReversedParameter(cf);
     return curve->Reversed();
   }
   return HCurve::DownCast(curve->Copy());
@@ -459,12 +462,12 @@ static inline void SegmentCurve(HCurve& curve, const double first, const double 
 }
 
 template <class HPoint>
-static inline void GetReversedParameters(const HPoint& p11,
-                                         const HPoint& p12,
-                                         const HPoint& p21,
-                                         const HPoint& p22,
-                                         bool&         isRev1,
-                                         bool&         isRev2)
+static inline void GetReversedParameters(const HPoint&     p11,
+                                         const HPoint&     p12,
+                                         const HPoint&     p21,
+                                         const HPoint&     p22,
+                                         bool& isRev1,
+                                         bool& isRev2)
 {
   isRev1 = false;
   isRev2 = false;
@@ -491,24 +494,24 @@ static inline void GetReversedParameters(const HPoint& p11,
 //=================================================================================================
 
 bool ShapeConstruct::JoinCurves(const occ::handle<Geom_Curve>& ac3d1,
-                                const occ::handle<Geom_Curve>& ac3d2,
-                                const TopAbs_Orientation       Orient1,
-                                const TopAbs_Orientation       Orient2,
-                                double&                        first1,
-                                double&                        last1,
-                                double&                        first2,
-                                double&                        last2,
-                                occ::handle<Geom_Curve>&       c3dOut,
-                                bool&                          isRev1,
-                                bool&                          isRev2)
+                                            const occ::handle<Geom_Curve>& ac3d2,
+                                            const TopAbs_Orientation  Orient1,
+                                            const TopAbs_Orientation  Orient2,
+                                            double&            first1,
+                                            double&            last1,
+                                            double&            first2,
+                                            double&            last2,
+                                            occ::handle<Geom_Curve>&       c3dOut,
+                                            bool&         isRev1,
+                                            bool&         isRev2)
 
 {
   occ::handle<Geom_Curve> c3d1, c3d2;
 
   c3d1 = GetCurveCopy(ac3d1, first1, last1, Orient1);
   c3d2 = GetCurveCopy(ac3d2, first2, last2, Orient2);
-  ShapeConstruct_Curve           scc;
-  bool                           After = true;
+  ShapeConstruct_Curve      scc;
+  bool          After = true;
   occ::handle<Geom_BSplineCurve> bsplc1 =
     scc.ConvertToBSpline(c3d1, first1, last1, Precision::Confusion());
   occ::handle<Geom_BSplineCurve> bsplc2 =
@@ -551,23 +554,23 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom_Curve>& ac3d1,
 //=================================================================================================
 
 bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
-                                const occ::handle<Geom2d_Curve>& aC2d2,
-                                const TopAbs_Orientation         Orient1,
-                                const TopAbs_Orientation         Orient2,
-                                double&                          first1,
-                                double&                          last1,
-                                double&                          first2,
-                                double&                          last2,
-                                occ::handle<Geom2d_Curve>&       C2dOut,
-                                bool&                            isRev1,
-                                bool&                            isRev2,
-                                const bool                       isError)
+                                            const occ::handle<Geom2d_Curve>& aC2d2,
+                                            const TopAbs_Orientation    Orient1,
+                                            const TopAbs_Orientation    Orient2,
+                                            double&              first1,
+                                            double&              last1,
+                                            double&              first2,
+                                            double&              last2,
+                                            occ::handle<Geom2d_Curve>&       C2dOut,
+                                            bool&           isRev1,
+                                            bool&           isRev2,
+                                            const bool      isError)
 {
   occ::handle<Geom2d_Curve> c2d1, c2d2;
   c2d1 = GetCurveCopy(aC2d1, first1, last1, Orient1);
   c2d2 = GetCurveCopy(aC2d2, first2, last2, Orient2);
   ShapeConstruct_Curve scc;
-  bool                 After = true;
+  bool     After = true;
 
   occ::handle<Geom2d_BSplineCurve> bsplc12d =
     scc.ConvertToBSpline(c2d1, first1, last1, Precision::Confusion());
@@ -606,8 +609,8 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
     gp_Pnt2d pp2 = bsplc12d->Value(bsplc12d->LastParameter());
     gp_Pnt2d pp3 = bsplc12d->Value((bsplc12d->FirstParameter() + bsplc12d->LastParameter()) * 0.5);
 
-    double leng     = pp1.Distance(pp2);
-    bool   isCircle = (leng < pp1.Distance(pp3) + Precision::PConfusion());
+    double    leng     = pp1.Distance(pp2);
+    bool isCircle = (leng < pp1.Distance(pp3) + Precision::PConfusion());
     if ((pp1.Distance(bsplc22d->Pole(1)) < leng) && !isCircle)
       return false;
   }
@@ -620,9 +623,9 @@ bool ShapeConstruct::JoinCurves(const occ::handle<Geom2d_Curve>& aC2d1,
   // second curve before merging; this is quite not suitable
   // Use 3d tool instead
   //      Geom2dConvert_CompCurveToBSplineCurve connect2d(bsplc12d);
-  gp_Pnt                         vPnt(0, 0, 0);
-  gp_Vec                         vDir(0, 0, 1);
-  gp_Pln                         vPln(vPnt, vDir);
+  gp_Pnt                    vPnt(0, 0, 0);
+  gp_Vec                    vDir(0, 0, 1);
+  gp_Pln                    vPln(vPnt, vDir);
   occ::handle<Geom_BSplineCurve> bspl1 =
     occ::down_cast<Geom_BSplineCurve>(GeomAPI::To3d(bsplc12d, vPln));
   occ::handle<Geom_BSplineCurve> bspl2 =

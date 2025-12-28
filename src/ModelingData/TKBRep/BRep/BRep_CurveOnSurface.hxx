@@ -36,7 +36,7 @@ class BRep_CurveOnSurface : public BRep_GCurve
 public:
   Standard_EXPORT BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
                                       const occ::handle<Geom_Surface>& S,
-                                      const TopLoc_Location&           L);
+                                      const TopLoc_Location&      L);
 
   void SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
@@ -50,7 +50,8 @@ public:
 
   //! A curve in the parametric space of a surface.
   Standard_EXPORT virtual bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const override;
+                                                            const TopLoc_Location&      L) const
+    override;
 
   Standard_EXPORT virtual const occ::handle<Geom_Surface>& Surface() const override;
 
@@ -67,7 +68,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 

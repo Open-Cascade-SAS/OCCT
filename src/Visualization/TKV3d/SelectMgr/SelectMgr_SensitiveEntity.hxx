@@ -47,13 +47,14 @@ public:
   void SetActiveForSelection() const { myIsActiveForSelection = true; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity, Standard_Transient) // Type definition
 
 private:
   occ::handle<Select3D_SensitiveEntity> mySensitive;            //!< Related SelectBasics entity
-  mutable bool                          myIsActiveForSelection; //!< Selection activity status
+  mutable bool         myIsActiveForSelection; //!< Selection activity status
 };
 
 #endif // _SelectMgr_SensitiveEntity_HeaderFile

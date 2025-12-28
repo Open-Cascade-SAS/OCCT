@@ -41,12 +41,12 @@ public:
   /**
    * Empty constructor
    */
-  inline VrmlData_Faceted(const VrmlData_Scene& theScene,
-                          const char*           theName,
-                          const bool            isCCW,
-                          const bool            isSolid,
-                          const bool            isConvex,
-                          const double          theCreaseAngle)
+  inline VrmlData_Faceted(const VrmlData_Scene&  theScene,
+                          const char*            theName,
+                          const bool isCCW,
+                          const bool isSolid,
+                          const bool isConvex,
+                          const double    theCreaseAngle)
       : VrmlData_Geometry(theScene, theName),
         myCreaseAngle(theCreaseAngle),
         myIsCCW(isCCW),
@@ -102,10 +102,10 @@ protected:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  double myCreaseAngle;
-  bool   myIsCCW : 1;
-  bool   myIsSolid : 1;
-  bool   myIsConvex : 1;
+  double    myCreaseAngle;
+  bool myIsCCW : 1;
+  bool myIsSolid : 1;
+  bool myIsConvex : 1;
 
 public:
   // Declaration of CASCADE RTTI

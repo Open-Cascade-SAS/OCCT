@@ -124,21 +124,21 @@ protected:
   Standard_EXPORT void TestCurveOnSurface();
 
 private:
-  TopoDS_Shape                          myShape1;
-  TopoDS_Shape                          myShape2;
-  bool                                  myStopOnFirst;
-  BOPAlgo_Operation                     myOperation;
-  bool                                  myArgumentTypeMode;
-  bool                                  mySelfInterMode;
-  bool                                  mySmallEdgeMode;
-  bool                                  myRebuildFaceMode;
-  bool                                  myTangentMode;
-  bool                                  myMergeVertexMode;
-  bool                                  myMergeEdgeMode;
-  bool                                  myContinuityMode;
-  bool                                  myCurveOnSurfaceMode;
-  bool                                  myEmpty1;
-  bool                                  myEmpty2;
+  TopoDS_Shape              myShape1;
+  TopoDS_Shape              myShape2;
+  bool          myStopOnFirst;
+  BOPAlgo_Operation         myOperation;
+  bool          myArgumentTypeMode;
+  bool          mySelfInterMode;
+  bool          mySmallEdgeMode;
+  bool          myRebuildFaceMode;
+  bool          myTangentMode;
+  bool          myMergeVertexMode;
+  bool          myMergeEdgeMode;
+  bool          myContinuityMode;
+  bool          myCurveOnSurfaceMode;
+  bool          myEmpty1;
+  bool          myEmpty2;
   NCollection_List<BOPAlgo_CheckResult> myResult;
 };
 

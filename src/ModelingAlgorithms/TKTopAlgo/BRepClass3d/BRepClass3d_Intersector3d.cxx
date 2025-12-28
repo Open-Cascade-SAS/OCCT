@@ -40,8 +40,8 @@ BRepClass3d_Intersector3d::BRepClass3d_Intersector3d()
 //============================================================================
 void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
                                         const double /*Prm*/,
-                                        const double       Tol,
-                                        const TopoDS_Face& Face)
+                                        const double Tol,
+                                        const TopoDS_Face&  Face)
 {
 
   IntCurveSurface_HInter   HICS;
@@ -49,14 +49,14 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
   BRepClass_FaceClassifier classifier2d;
 
   occ::handle<Geom_Line> geomline = new Geom_Line(L);
-  GeomAdaptor_Curve      LL(geomline);
+  GeomAdaptor_Curve LL(geomline);
 
   surface.Initialize(Face, true);
 
-  const bool   IsUPer  = surface.IsUPeriodic();
-  const bool   IsVPer  = surface.IsVPeriodic();
-  const double uperiod = IsUPer ? surface.UPeriod() : 0.0;
-  const double vperiod = IsVPer ? surface.VPeriod() : 0.0;
+  const bool IsUPer  = surface.IsUPeriodic();
+  const bool IsVPer  = surface.IsVPeriodic();
+  const double    uperiod = IsUPer ? surface.UPeriod() : 0.0;
+  const double    vperiod = IsVPer ? surface.VPeriod() : 0.0;
 
   double U1 = surface.FirstUParameter();
   double U2 = surface.LastUParameter();
@@ -113,7 +113,7 @@ void BRepClass3d_Intersector3d::Perform(const gp_Lin& L,
       if (currentstate == TopAbs_IN || currentstate == TopAbs_ON)
       {
         const IntCurveSurface_IntersectionPoint& HICSPoint = HICS.Point(index);
-        double                                   HICSW     = HICSPoint.W();
+        double                            HICSW     = HICSPoint.W();
         //  Modified by skv - Fri Mar  4 12:07:34 2005 OCC7966 Begin
         if ((W > HICSW) && (HICSW > -Tol))
         {

@@ -102,27 +102,27 @@ public:
   //! Alpha    : Angle of arrow.
   //! Lng      : Length of arrow.
   Standard_EXPORT static void ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
-                                            const double                        X0,
-                                            const double                        Y0,
-                                            const double                        Z0,
-                                            const double                        DX,
-                                            const double                        DY,
-                                            const double                        DZ,
-                                            const double                        Alpha,
-                                            const double                        Lng);
+                                            const double            X0,
+                                            const double            Y0,
+                                            const double            Z0,
+                                            const double            DX,
+                                            const double            DY,
+                                            const double            DZ,
+                                            const double            Alpha,
+                                            const double            Lng);
 
   //! Compute the graphic structure of circle.
   //! X0,Y0,Z0 : Center of circle.
   //! VX,VY,VZ : Axis of circle.
   //! Radius   : Radius of circle.
   Standard_EXPORT static void CircleInPlane(const occ::handle<Graphic3d_Group>& gcircle,
-                                            const double                        X0,
-                                            const double                        Y0,
-                                            const double                        Z0,
-                                            const double                        VX,
-                                            const double                        VY,
-                                            const double                        VZ,
-                                            const double                        Radius);
+                                            const double            X0,
+                                            const double            Y0,
+                                            const double            Z0,
+                                            const double            VX,
+                                            const double            VY,
+                                            const double            VZ,
+                                            const double            Radius);
 
   Standard_EXPORT static void SwitchViewsinWindow(const occ::handle<V3d_View>& aPreviousView,
                                                   const occ::handle<V3d_View>& aNextView);
@@ -148,8 +148,9 @@ public:
   //! @param theTypeString string identifier
   //! @param theType detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool TypeOfOrientationFromString(const char*            theTypeString,
-                                                          V3d_TypeOfOrientation& theType);
+  Standard_EXPORT static bool TypeOfOrientationFromString(
+    const char* theTypeString,
+    V3d_TypeOfOrientation& theType);
 };
 
 #endif // _V3d_HeaderFile

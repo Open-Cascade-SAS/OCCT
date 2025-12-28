@@ -21,10 +21,15 @@
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 
 class math_Matrix;
 class gp_Lin;
@@ -47,7 +52,9 @@ public:
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
+  Standard_EXPORT bool Values(const math_Vector& X,
+                                          math_Vector&       F,
+                                          math_Matrix&       D) override;
 
   //! Sets the value of the parameter along the guide line.
   //! This determines the plane in which the solution has
@@ -60,16 +67,20 @@ public:
   //! function is not Cn.
   Standard_EXPORT void Set(const double First, const double Last) override;
 
-  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override;
+  Standard_EXPORT void GetTolerance(math_Vector&        Tolerance,
+                                    const double Tol) const override;
 
-  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const override;
+  Standard_EXPORT void GetBounds(math_Vector& InfBound,
+                                 math_Vector& SupBound) const override;
 
   //! Returns the minimal Distance between two
   //! extremities of calculated sections.
   Standard_EXPORT double GetMinimalDistance() const override;
 
   //! Sets the distances and the "quadrant".
-  Standard_EXPORT virtual void Set(const double Dist1, const double Dist2, const int Choix) = 0;
+  Standard_EXPORT virtual void Set(const double    Dist1,
+                                   const double    Dist2,
+                                   const int Choix) = 0;
 
   //! Returns False
   Standard_EXPORT bool IsRational() const override;
@@ -90,9 +101,12 @@ public:
   //! raises
   //! OutOfRange from Standard
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
-  Standard_EXPORT void GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d) override;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) override;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
@@ -102,8 +116,8 @@ public:
   Standard_EXPORT void GetTolerance(const double BoundTol,
                                     const double SurfTol,
                                     const double AngleTol,
-                                    math_Vector& Tol3d,
-                                    math_Vector& Tol1D) const override;
+                                    math_Vector&        Tol3d,
+                                    math_Vector&        Tol1D) const override;
 
   Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) override;
 
@@ -117,46 +131,47 @@ public:
                                const double V2,
                                double&      Pdeb,
                                double&      Pfin,
-                               gp_Lin&      C);
+                               gp_Lin&             C);
 
   //! Used for the first and last section
-  Standard_EXPORT bool Section(const Blend_Point&            P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Vec>&   D2Poles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                               NCollection_Array1<double>&   Weigths,
-                               NCollection_Array1<double>&   DWeigths,
-                               NCollection_Array1<double>&   D2Weigths) override;
+  Standard_EXPORT bool Section(const Blend_Point&    P,
+                                           NCollection_Array1<gp_Pnt>&   Poles,
+                                           NCollection_Array1<gp_Vec>&   DPoles,
+                                           NCollection_Array1<gp_Vec>&   D2Poles,
+                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                           NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                           NCollection_Array1<double>& Weigths,
+                                           NCollection_Array1<double>& DWeigths,
+                                           NCollection_Array1<double>& D2Weigths) override;
 
   //! Used for the first and last section
-  Standard_EXPORT bool Section(const Blend_Point&            P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                               NCollection_Array1<double>&   Weigths,
-                               NCollection_Array1<double>&   DWeigths) override;
+  Standard_EXPORT bool Section(const Blend_Point&    P,
+                                           NCollection_Array1<gp_Pnt>&   Poles,
+                                           NCollection_Array1<gp_Vec>&   DPoles,
+                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                           NCollection_Array1<double>& Weigths,
+                                           NCollection_Array1<double>& DWeigths) override;
 
-  Standard_EXPORT void Section(const Blend_Point&            P,
+  Standard_EXPORT void Section(const Blend_Point&    P,
                                NCollection_Array1<gp_Pnt>&   Poles,
                                NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<double>&   Weigths) override;
+                               NCollection_Array1<double>& Weigths) override;
 
-  Standard_EXPORT void Resolution(const int    IC2d,
-                                  const double Tol,
-                                  double&      TolU,
-                                  double&      TolV) const override;
+  Standard_EXPORT void Resolution(const int IC2d,
+                                  const double    Tol,
+                                  double&         TolU,
+                                  double&         TolV) const override;
 
 protected:
   occ::handle<Adaptor3d_Surface> surf1;
   occ::handle<Adaptor3d_Surface> surf2;
   occ::handle<Adaptor3d_Curve>   curv;
-  int                            choix;
-  double                         tol;
-  double                         distmin;
+  int          choix;
+  double             tol;
+  double             distmin;
+
 };
 
 #endif // _BlendFunc_GenChamfer_HeaderFile

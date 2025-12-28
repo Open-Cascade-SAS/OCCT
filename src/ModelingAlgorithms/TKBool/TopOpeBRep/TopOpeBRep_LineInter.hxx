@@ -54,8 +54,8 @@ public:
   TopOpeBRep_LineInter();
 
   Standard_EXPORT void SetLine(const occ::handle<IntPatch_Line>& L,
-                               const BRepAdaptor_Surface&        S1,
-                               const BRepAdaptor_Surface&        S2);
+                               const BRepAdaptor_Surface&   S1,
+                               const BRepAdaptor_Surface&   S2);
 
   void SetFaces(const TopoDS_Face& F1, const TopoDS_Face& F2);
 
@@ -85,7 +85,9 @@ public:
 
   Standard_EXPORT void SetVPBounds();
 
-  Standard_EXPORT void VPBounds(int& f, int& l, int& n) const;
+  Standard_EXPORT void VPBounds(int& f,
+                                int& l,
+                                int& n) const;
 
   Standard_EXPORT bool IsPeriodic() const;
 
@@ -109,7 +111,8 @@ public:
 
   Standard_EXPORT occ::handle<Geom_Curve> Curve() const;
 
-  Standard_EXPORT occ::handle<Geom_Curve> Curve(const double parmin, const double parmax) const;
+  Standard_EXPORT occ::handle<Geom_Curve> Curve(const double parmin,
+                                           const double parmax) const;
 
   //! returns the edge of a RESTRICTION line (or a null edge).
   Standard_EXPORT const TopoDS_Shape& Arc() const;
@@ -138,7 +141,7 @@ public:
 
   Standard_EXPORT void DumpType() const;
 
-  Standard_EXPORT void DumpVPoint(const int                      I,
+  Standard_EXPORT void DumpVPoint(const int         I,
                                   const TCollection_AsciiString& s1,
                                   const TCollection_AsciiString& s2) const;
 
@@ -153,31 +156,31 @@ public:
   Standard_EXPORT Standard_OStream& DumpLineTransitions(Standard_OStream& OS) const;
 
 private:
-  bool                                                     myOK;
-  int                                                      myIndex;
-  int                                                      myNbVPoint;
-  bool                                                     myIsVClosed;
-  bool                                                     myHasVPonR;
-  bool                                                     myINL;
-  bool                                                     myVPBDefined;
-  int                                                      myVPF;
-  int                                                      myVPL;
-  int                                                      myVPN;
-  TopOpeBRep_TypeLineCurve                                 myTypeLineCurve;
-  occ::handle<IntPatch_Line>                               myIL;
-  occ::handle<IntPatch_ALine>                              myILA;
-  occ::handle<IntPatch_RLine>                              myILR;
-  occ::handle<IntPatch_WLine>                              myILW;
-  occ::handle<IntPatch_GLine>                              myILG;
-  TopOpeBRep_WPointInter                                   myCurrentWP;
+  bool                        myOK;
+  int                        myIndex;
+  int                        myNbVPoint;
+  bool                        myIsVClosed;
+  bool                        myHasVPonR;
+  bool                        myINL;
+  bool                        myVPBDefined;
+  int                        myVPF;
+  int                        myVPL;
+  int                        myVPN;
+  TopOpeBRep_TypeLineCurve                myTypeLineCurve;
+  occ::handle<IntPatch_Line>                   myIL;
+  occ::handle<IntPatch_ALine>                  myILA;
+  occ::handle<IntPatch_RLine>                  myILR;
+  occ::handle<IntPatch_WLine>                  myILW;
+  occ::handle<IntPatch_GLine>                  myILG;
+  TopOpeBRep_WPointInter                  myCurrentWP;
   occ::handle<NCollection_HArray1<TopOpeBRep_VPointInter>> myHAVP;
-  TopoDS_Face                                              myF1;
-  TopoDS_Face                                              myF2;
-  TopOpeBRepDS_Transition                                  myLineTonF1;
-  TopOpeBRepDS_Transition                                  myLineTonF2;
-  TopoDS_Shape                                             myNullShape;
-  int                                                      myexF1;
-  int                                                      myexF2;
+  TopoDS_Face                             myF1;
+  TopoDS_Face                             myF2;
+  TopOpeBRepDS_Transition                 myLineTonF1;
+  TopOpeBRepDS_Transition                 myLineTonF2;
+  TopoDS_Shape                            myNullShape;
+  int                        myexF1;
+  int                        myexF2;
 };
 
 #include <TopOpeBRep_LineInter.lxx>

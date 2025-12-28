@@ -25,7 +25,7 @@
 #include <NCollection_Array2.hxx>
 
 static void AddPoles(const occ::handle<Prs3d_Presentation>& aPresentation,
-                     const NCollection_Array2<gp_Pnt>&      A,
+                     const NCollection_Array2<gp_Pnt>&         A,
                      const occ::handle<Prs3d_Drawer>&       aDrawer)
 {
   int       i, j;
@@ -56,7 +56,7 @@ static void AddPoles(const occ::handle<Prs3d_Presentation>& aPresentation,
 //=================================================================================================
 
 void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                               const Adaptor3d_Surface&               aSurface,
+                               const Adaptor3d_Surface&          aSurface,
                                const occ::handle<Prs3d_Drawer>&       aDrawer)
 {
 
@@ -67,8 +67,8 @@ void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentat
     if (SType == GeomAbs_BezierSurface)
     {
       occ::handle<Geom_BezierSurface> B = aSurface.Bezier();
-      n                                 = aSurface.NbUPoles();
-      m                                 = aSurface.NbVPoles();
+      n                            = aSurface.NbUPoles();
+      m                            = aSurface.NbVPoles();
       NCollection_Array2<gp_Pnt> A(1, n, 1, m);
       (aSurface.Bezier())->Poles(A);
       AddPoles(aPresentation, A, aDrawer);
@@ -76,8 +76,8 @@ void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentat
     else if (SType == GeomAbs_BSplineSurface)
     {
       occ::handle<Geom_BSplineSurface> B = aSurface.BSpline();
-      n                                  = (aSurface.BSpline())->NbUPoles();
-      m                                  = (aSurface.BSpline())->NbVPoles();
+      n                             = (aSurface.BSpline())->NbUPoles();
+      m                             = (aSurface.BSpline())->NbVPoles();
       NCollection_Array2<gp_Pnt> A(1, n, 1, m);
       (aSurface.BSpline())->Poles(A);
       AddPoles(aPresentation, A, aDrawer);

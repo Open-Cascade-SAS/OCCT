@@ -19,6 +19,9 @@
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -40,13 +43,13 @@ namespace IntCurveSurface_PolygonUtils
 //! @param[in,out] theBnd         Bounding box to update
 //! @param[out]    theDeflection  Estimated maximum deflection
 template <typename CurveType, typename CurveTool>
-void InitUniform(const CurveType&            theCurve,
-                 const double                theBinf,
-                 const double                theBsup,
-                 const int                   theNbPntIn,
+void InitUniform(const CurveType&    theCurve,
+                 const double        theBinf,
+                 const double        theBsup,
+                 const int           theNbPntIn,
                  NCollection_Array1<gp_Pnt>& thePnts,
-                 Bnd_Box&                    theBnd,
-                 double&                     theDeflection)
+                 Bnd_Box&            theBnd,
+                 double&             theDeflection)
 {
   const double du = (theBsup - theBinf) / static_cast<double>(theNbPntIn - 1);
   double       u  = theBinf;
@@ -98,12 +101,12 @@ void InitUniform(const CurveType&            theCurve,
 //! @param[out]    theDeflection  Estimated maximum deflection
 //! @param[out]    theParams      Handle to store copy of parameters (created internally)
 template <typename CurveType, typename CurveTool>
-void InitWithParams(const CurveType&                          theCurve,
-                    const NCollection_Array1<double>&         theUpars,
-                    const int                                 theNbPntIn,
-                    NCollection_Array1<gp_Pnt>&               thePnts,
-                    Bnd_Box&                                  theBnd,
-                    double&                                   theDeflection,
+void InitWithParams(const CurveType&               theCurve,
+                    const NCollection_Array1<double>&    theUpars,
+                    const int                      theNbPntIn,
+                    NCollection_Array1<gp_Pnt>&            thePnts,
+                    Bnd_Box&                       theBnd,
+                    double&                        theDeflection,
                     occ::handle<NCollection_HArray1<double>>& theParams)
 {
   theParams    = new NCollection_HArray1<double>(1, theUpars.Length());
@@ -152,11 +155,11 @@ void InitWithParams(const CurveType&                          theCurve,
 //! @param[in] theNbPntIn     Number of points in polygon
 //! @param[in] theParams      Optional explicit parameter array (may be null for uniform)
 //! @return Approximate parameter value on the curve
-inline double ApproxParamOnCurve(int                                             theIndex,
-                                 double                                          theParamOnLine,
-                                 const double                                    theBinf,
-                                 const double                                    theBsup,
-                                 const int                                       theNbPntIn,
+inline double ApproxParamOnCurve(int                                  theIndex,
+                                 double                               theParamOnLine,
+                                 const double                         theBinf,
+                                 const double                         theBsup,
+                                 const int                            theNbPntIn,
                                  const occ::handle<NCollection_HArray1<double>>& theParams)
 {
   if (theParamOnLine < 0.0 || theParamOnLine > 1.0)

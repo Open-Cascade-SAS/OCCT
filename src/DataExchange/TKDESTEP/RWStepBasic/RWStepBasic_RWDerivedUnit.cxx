@@ -16,6 +16,7 @@
 #include "RWStepBasic_RWDerivedUnit.pxx"
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
+#include <StepBasic_DerivedUnitElement.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -24,7 +25,7 @@
 RWStepBasic_RWDerivedUnit::RWStepBasic_RWDerivedUnit() {}
 
 void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepBasic_DerivedUnit>&   ent) const
 {
@@ -37,12 +38,12 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- own field : elements ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>> elts;
-  occ::handle<StepBasic_DerivedUnitElement>                                   anelt;
-  int                                                                         nsub1;
+  occ::handle<StepBasic_DerivedUnitElement>          anelt;
+  int                              nsub1;
   if (data->ReadSubList(num, 1, "elements", ach, nsub1))
   {
     int nb1 = data->NbParams(nsub1);
-    elts    = new NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>(1, nb1);
+    elts                 = new NCollection_HArray1<occ::handle<StepBasic_DerivedUnitElement>>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       // szv#4:S4163:12Mar99 `bool st1 =` not needed
@@ -61,7 +62,7 @@ void RWStepBasic_RWDerivedUnit::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(elts);
 }
 
-void RWStepBasic_RWDerivedUnit::WriteStep(StepData_StepWriter&                      SW,
+void RWStepBasic_RWDerivedUnit::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepBasic_DerivedUnit>& ent) const
 {
 
@@ -77,7 +78,7 @@ void RWStepBasic_RWDerivedUnit::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepBasic_RWDerivedUnit::Share(const occ::handle<StepBasic_DerivedUnit>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   int i, nb = ent->NbElements();

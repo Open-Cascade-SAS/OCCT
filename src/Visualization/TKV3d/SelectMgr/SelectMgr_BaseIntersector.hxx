@@ -23,11 +23,13 @@
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_SelectionType.hxx>
 #include <gp_Trsf.hxx>
+#include <NCollection_Mat4.hxx>
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vec4.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 
 class Graphic3d_Camera;
 class SelectMgr_FrustumBuilder;
@@ -73,8 +75,8 @@ public:
   //! @return a copy of the frustum resized according to the scale factor given and transforms it
   //! using the matrix given
   virtual occ::handle<SelectMgr_BaseIntersector> ScaleAndTransform(
-    const int                                    theScaleFactor,
-    const gp_GTrsf&                              theTrsf,
+    const int                  theScaleFactor,
+    const gp_GTrsf&                         theTrsf,
     const occ::handle<SelectMgr_FrustumBuilder>& theBuilder) const = 0;
 
   //! @param[in] theBuilder  argument that represents corresponding settings for re-constructing
@@ -93,11 +95,13 @@ public:
 
   //! Returns current window size.
   //! This method doesn't set any output values for the base class.
-  Standard_EXPORT virtual void WindowSize(int& theWidth, int& theHeight) const;
+  Standard_EXPORT virtual void WindowSize(int& theWidth,
+                                          int& theHeight) const;
 
   //! Sets current window size.
   //! This method does nothing for the base class.
-  Standard_EXPORT virtual void SetWindowSize(const int theWidth, const int theHeight);
+  Standard_EXPORT virtual void SetWindowSize(const int theWidth,
+                                             const int theHeight);
 
   //! Sets viewport parameters.
   //! This method does nothing for the base class.
@@ -132,21 +136,21 @@ public:
 
 public:
   //! SAT intersection test between defined volume and given axis-aligned box
-  virtual bool OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
-                           const NCollection_Vec3<double>& theBoxMax,
-                           const SelectMgr_ViewClipRange&  theClipRange,
-                           SelectBasics_PickResult&        thePickResult) const = 0;
+  virtual bool OverlapsBox(const NCollection_Vec3<double>&          theBoxMin,
+                                       const NCollection_Vec3<double>&          theBoxMax,
+                                       const SelectMgr_ViewClipRange& theClipRange,
+                                       SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
   //! with minimum corner at point theMinPt and maximum at point theMaxPt
   virtual bool OverlapsBox(const NCollection_Vec3<double>& theBoxMin,
-                           const NCollection_Vec3<double>& theBoxMax,
-                           bool*                           theInside = NULL) const = 0;
+                                       const NCollection_Vec3<double>& theBoxMax,
+                                       bool*     theInside = NULL) const = 0;
 
   //! Intersection test between defined volume and given point
   virtual bool OverlapsPoint(const gp_Pnt&                  thePnt,
-                             const SelectMgr_ViewClipRange& theClipRange,
-                             SelectBasics_PickResult&       thePickResult) const = 0;
+                                         const SelectMgr_ViewClipRange& theClipRange,
+                                         SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Intersection test between defined volume and given point
   //! Does not perform depth calculation, so this method is defined as helper function for inclusion
@@ -157,77 +161,79 @@ public:
   //! SAT intersection test between defined volume and given ordered set of points,
   //! representing line segments. The test may be considered of interior part or
   //! boundary line defined by segments depending on given sensitivity type
-  virtual bool OverlapsPolygon(const NCollection_Array1<gp_Pnt>& theArrayOfPnts,
-                               Select3D_TypeOfSensitivity        theSensType,
-                               const SelectMgr_ViewClipRange&    theClipRange,
-                               SelectBasics_PickResult&          thePickResult) const = 0;
+  virtual bool OverlapsPolygon(const NCollection_Array1<gp_Pnt>&      theArrayOfPnts,
+                                           Select3D_TypeOfSensitivity     theSensType,
+                                           const SelectMgr_ViewClipRange& theClipRange,
+                                           SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Checks if line segment overlaps selecting frustum
   virtual bool OverlapsSegment(const gp_Pnt&                  thePnt1,
-                               const gp_Pnt&                  thePnt2,
-                               const SelectMgr_ViewClipRange& theClipRange,
-                               SelectBasics_PickResult&       thePickResult) const = 0;
+                                           const gp_Pnt&                  thePnt2,
+                                           const SelectMgr_ViewClipRange& theClipRange,
+                                           SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! SAT intersection test between defined volume and given triangle. The test may
   //! be considered of interior part or boundary line defined by triangle vertices
   //! depending on given sensitivity type
   virtual bool OverlapsTriangle(const gp_Pnt&                  thePnt1,
-                                const gp_Pnt&                  thePnt2,
-                                const gp_Pnt&                  thePnt3,
-                                Select3D_TypeOfSensitivity     theSensType,
-                                const SelectMgr_ViewClipRange& theClipRange,
-                                SelectBasics_PickResult&       thePickResult) const = 0;
+                                            const gp_Pnt&                  thePnt2,
+                                            const gp_Pnt&                  thePnt3,
+                                            Select3D_TypeOfSensitivity     theSensType,
+                                            const SelectMgr_ViewClipRange& theClipRange,
+                                            SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt& theCenter,
-                                              const double  theRadius,
-                                              bool*         theInside = NULL) const = 0;
+  Standard_EXPORT virtual bool OverlapsSphere(
+    const gp_Pnt&       theCenter,
+    const double theRadius,
+    bool*   theInside = NULL) const = 0;
 
   //! Returns true if selecting volume is overlapped by sphere with center theCenter
   //! and radius theRadius
-  Standard_EXPORT virtual bool OverlapsSphere(const gp_Pnt&                  theCenter,
-                                              const double                   theRadius,
-                                              const SelectMgr_ViewClipRange& theClipRange,
-                                              SelectBasics_PickResult& thePickResult) const = 0;
+  Standard_EXPORT virtual bool OverlapsSphere(
+    const gp_Pnt&                  theCenter,
+    const double            theRadius,
+    const SelectMgr_ViewClipRange& theClipRange,
+    SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  virtual bool OverlapsCylinder(const double                   theBottomRad,
-                                const double                   theTopRad,
-                                const double                   theHeight,
-                                const gp_Trsf&                 theTrsf,
-                                const bool                     theIsHollow,
-                                const SelectMgr_ViewClipRange& theClipRange,
-                                SelectBasics_PickResult&       thePickResult) const = 0;
+  virtual bool OverlapsCylinder(const double            theBottomRad,
+                                            const double            theTopRad,
+                                            const double            theHeight,
+                                            const gp_Trsf&                 theTrsf,
+                                            const bool         theIsHollow,
+                                            const SelectMgr_ViewClipRange& theClipRange,
+                                            SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses
   //! theBottomRad and theTopRad, height theHeight and transformation to apply theTrsf.
-  virtual bool OverlapsCylinder(const double   theBottomRad,
-                                const double   theTopRad,
-                                const double   theHeight,
-                                const gp_Trsf& theTrsf,
-                                const bool     theIsHollow,
-                                bool*          theInside = NULL) const = 0;
+  virtual bool OverlapsCylinder(const double    theBottomRad,
+                                            const double    theTopRad,
+                                            const double    theHeight,
+                                            const gp_Trsf&         theTrsf,
+                                            const bool theIsHollow,
+                                            bool*      theInside = NULL) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  virtual bool OverlapsCircle(const double                   theBottomRad,
-                              const gp_Trsf&                 theTrsf,
-                              const bool                     theIsFilled,
-                              const SelectMgr_ViewClipRange& theClipRange,
-                              SelectBasics_PickResult&       thePickResult) const = 0;
+  virtual bool OverlapsCircle(const double            theBottomRad,
+                                          const gp_Trsf&                 theTrsf,
+                                          const bool         theIsFilled,
+                                          const SelectMgr_ViewClipRange& theClipRange,
+                                          SelectBasics_PickResult&       thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by circle with radius theRadius,
   //! boolean theIsFilled and transformation to apply theTrsf.
   //! The position and orientation of the circle are specified
   //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
-  virtual bool OverlapsCircle(const double   theBottomRad,
-                              const gp_Trsf& theTrsf,
-                              const bool     theIsFilled,
-                              bool*          theInside = NULL) const = 0;
+  virtual bool OverlapsCircle(const double    theBottomRad,
+                                          const gp_Trsf&         theTrsf,
+                                          const bool theIsFilled,
+                                          bool*      theInside = NULL) const = 0;
 
 public:
   //! Measures distance between 3d projection of user-picked
@@ -242,16 +248,17 @@ public:
   Standard_EXPORT virtual gp_Pnt DetectedPoint(const double theDepth) const;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   //! Checks whether the ray that starts at the point theLoc and directs with the direction
   //! theRayDir intersects with the sphere with center at theCenter and radius TheRadius
-  Standard_EXPORT virtual bool RaySphereIntersection(const gp_Pnt& theCenter,
-                                                     const double  theRadius,
-                                                     const gp_Pnt& theLoc,
-                                                     const gp_Dir& theRayDir,
-                                                     double&       theTimeEnter,
-                                                     double&       theTimeLeave) const;
+  Standard_EXPORT virtual bool RaySphereIntersection(const gp_Pnt&       theCenter,
+                                                                 const double theRadius,
+                                                                 const gp_Pnt&       theLoc,
+                                                                 const gp_Dir&       theRayDir,
+                                                                 double&      theTimeEnter,
+                                                                 double& theTimeLeave) const;
 
   //! Checks whether the ray that starts at the point theLoc and directs with the direction
   //! theRayDir intersects with the hollow cylinder (or cone)
@@ -263,14 +270,15 @@ public:
   //! @param[in]  theIsHollow     true if the cylinder is hollow
   //! @param[out] theTimeEnter    the entering the intersection
   //! @param[out] theTimeLeave    the leaving the intersection
-  Standard_EXPORT virtual bool RayCylinderIntersection(const double  theBottomRadius,
-                                                       const double  theTopRadius,
-                                                       const double  theHeight,
-                                                       const gp_Pnt& theLoc,
-                                                       const gp_Dir& theRayDir,
-                                                       const bool    theIsHollow,
-                                                       double&       theTimeEnter,
-                                                       double&       theTimeLeave) const;
+  Standard_EXPORT virtual bool RayCylinderIntersection(
+    const double    theBottomRadius,
+    const double    theTopRadius,
+    const double    theHeight,
+    const gp_Pnt&          theLoc,
+    const gp_Dir&          theRayDir,
+    const bool theIsHollow,
+    double&         theTimeEnter,
+    double&         theTimeLeave) const;
 
   //! Checks whether the ray that starts at the point theLoc and directs with the direction
   //! theRayDir intersects with the circle
@@ -279,11 +287,11 @@ public:
   //! @param[in]  theRayDir   the ray direction
   //! @param[in]  theIsFilled true if it's a circle, false if it's a circle outline
   //! @param[out] theTime     the intersection
-  Standard_EXPORT virtual bool RayCircleIntersection(const double  theRadius,
-                                                     const gp_Pnt& theLoc,
-                                                     const gp_Dir& theRayDir,
-                                                     const bool    theIsFilled,
-                                                     double&       theTime) const;
+  Standard_EXPORT virtual bool RayCircleIntersection(const double    theRadius,
+                                                                 const gp_Pnt&          theLoc,
+                                                                 const gp_Dir&          theRayDir,
+                                                                 const bool theIsFilled,
+                                                                 double& theTime) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseIntersector, Standard_Transient)
 

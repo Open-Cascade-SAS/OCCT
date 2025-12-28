@@ -45,7 +45,7 @@ IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSessio
   if (!deja)
   { // at least this one :
     occ::handle<IFSelect_BasicDumper> basedumper = new IFSelect_BasicDumper;
-    deja                                         = 1;
+    deja                                    = 1;
   }
   thedone    = false;
   thelastgen = 0;
@@ -53,14 +53,14 @@ IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSessio
 }
 
 IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS,
-                                           const char*                              filename)
+                                           const char*              filename)
 {
   ClearLines();
   themode = true;
   if (!deja)
   { // at least this one :
     occ::handle<IFSelect_BasicDumper> basedumper = new IFSelect_BasicDumper;
-    deja                                         = 1;
+    deja                                    = 1;
   }
   thedone    = false;
   theownflag = false;
@@ -99,8 +99,8 @@ void IFSelect_SessionFile::RemoveLastLine()
 
 bool IFSelect_SessionFile::WriteFile(const char* filename)
 {
-  FILE* lefic = OSD_OpenFile(filename, "w");
-  int   nbl   = thelist.Length();
+  FILE*            lefic = OSD_OpenFile(filename, "w");
+  int nbl   = thelist.Length();
   for (int i = 1; i <= nbl; i++)
     fprintf(lefic, "%s\n", thelist.Value(i).ToCString());
   fclose(lefic);
@@ -165,8 +165,8 @@ bool IFSelect_SessionFile::RecognizeFile(const char* headerline)
 
 int IFSelect_SessionFile::Write(const char* filename)
 {
-  thenewnum = 0;
-  int stat  = WriteSession();
+  thenewnum             = 0;
+  int stat = WriteSession();
   if (stat != 0)
     return stat;
   stat = WriteEnd();
@@ -179,8 +179,8 @@ int IFSelect_SessionFile::Read(const char* filename)
 {
   if (!ReadFile(filename))
     return -1;
-  thenewnum = 0;
-  int stat  = ReadSession();
+  thenewnum             = 0;
+  int stat = ReadSession();
   if (stat != 0)
     return stat;
   stat = ReadEnd();
@@ -197,7 +197,7 @@ int IFSelect_SessionFile::WriteSession()
   //  ...  Specific Preparation
   thenames.Clear();
   int nbidents = thesess->MaxIdent();
-  thenums      = new NCollection_HArray1<int>(0, nbidents);
+  thenums                   = new NCollection_HArray1<int>(0, nbidents);
   thenums->Init(0);
   int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nbidents; i++)
@@ -215,7 +215,7 @@ int IFSelect_SessionFile::WriteSession()
   Sprintf(laligne, "ErrorHandle %d", (thesess->ErrorHandle() ? 1 : 0));
   WriteLine(laligne, '\n');
   occ::handle<NCollection_HSequence<int>> idents;
-  int                                     nb;
+  int                   nb;
   occ::handle<TCollection_HAsciiString>   name;
 
   idents = thesess->ItemIdents(STANDARD_TYPE(IFSelect_IntParam));
@@ -225,9 +225,9 @@ int IFSelect_SessionFile::WriteSession()
   int j; // svv Jan11 2000 : porting on DEC
   for (j = 1; j <= nb; j++)
   {
-    i                                = idents->Value(j);
+    i                           = idents->Value(j);
     occ::handle<IFSelect_IntParam> P = thesess->IntParam(i);
-    name                             = thesess->Name(P);
+    name                        = thesess->Name(P);
     if (name.IsNull())
     {
       thenewnum++;
@@ -245,9 +245,9 @@ int IFSelect_SessionFile::WriteSession()
     WriteLine("!TEXTS", '\n');
   for (j = 1; j <= nb; j++)
   {
-    i                                       = idents->Value(j);
+    i                                  = idents->Value(j);
     occ::handle<TCollection_HAsciiString> P = thesess->TextParam(i);
-    name                                    = thesess->Name(P);
+    name                               = thesess->Name(P);
     if (name.IsNull())
     {
       thenewnum++;
@@ -265,7 +265,7 @@ int IFSelect_SessionFile::WriteSession()
     WriteLine("!SELECTIONS", '\n');
   for (j = 1; j <= nb; j++)
   {
-    i                                 = idents->Value(j);
+    i                            = idents->Value(j);
     occ::handle<IFSelect_Selection> P = thesess->Selection(i);
     NewItem(i, P);
     //  ..  Particular writings
@@ -295,9 +295,9 @@ int IFSelect_SessionFile::WriteSession()
     WriteLine("!SOURCES", '\n');
   for (j = 1; j <= nb; j++)
   {
-    i                                   = idents->Value(j);
+    i                              = idents->Value(j);
     occ::handle<IFSelect_Selection> P   = thesess->Selection(i);
-    int                             nbs = thesess->NbSources(P);
+    int           nbs = thesess->NbSources(P);
     if (nbs == 0)
       continue;
     name = thesess->Name(P);
@@ -318,7 +318,7 @@ int IFSelect_SessionFile::WriteSession()
   for (j = 1; j <= nb; j++)
   {
     //  Basic description of Modifiers, so without Selection or Dispatch-Rank
-    i                                       = idents->Value(j);
+    i                                  = idents->Value(j);
     occ::handle<IFSelect_GeneralModifier> P = thesess->GeneralModifier(i);
     NewItem(i, P);
     SetOwn(true);
@@ -334,7 +334,7 @@ int IFSelect_SessionFile::WriteSession()
   for (j = 1; j <= nb; j++)
   {
     //  Description of Transformers
-    i                                   = idents->Value(j);
+    i                              = idents->Value(j);
     occ::handle<IFSelect_Transformer> P = thesess->Transformer(i);
     NewItem(i, P);
     SetOwn(true);
@@ -350,7 +350,7 @@ int IFSelect_SessionFile::WriteSession()
     WriteLine("!DISPATCHES", '\n');
   for (j = 1; j <= nb; j++)
   {
-    i                                = idents->Value(j);
+    i                           = idents->Value(j);
     occ::handle<IFSelect_Dispatch> P = thesess->Dispatch(i);
     NewItem(i, P);
     //  ..  Final Selection
@@ -389,7 +389,7 @@ int IFSelect_SessionFile::WriteSession()
 
   for (j = 1; j <= nb; j++)
   {
-    i                                = idents->Value(j);
+    i                           = idents->Value(j);
     occ::handle<IFSelect_Dispatch> P = thesess->Dispatch(i);
     if (!P->HasRootName())
       continue;
@@ -417,7 +417,7 @@ int IFSelect_SessionFile::WriteSession()
       WriteLine("!FILEMODIFIERS", '\n');
     for (j = 1; j <= nb; j++)
     {
-      i                                       = idents->Value(j);
+      i                                  = idents->Value(j);
       occ::handle<IFSelect_GeneralModifier> P = thesess->GeneralModifier(i);
       SetOwn(false);
       SendItem(P);
@@ -570,7 +570,7 @@ int IFSelect_SessionFile::ReadSession()
     }
     //    Caution, a text can contain blanks ... restart from line(thenl)
     TCollection_AsciiString oneline = thelist.Value(thenl);
-    int                     iw = 0, inc = 0;
+    int        iw = 0, inc = 0;
     for (int ic = 1; ic <= oneline.Length(); ic++)
     {
       char unc = oneline.Value(1);
@@ -599,9 +599,9 @@ int IFSelect_SessionFile::ReadSession()
     }
     //  ..  Analysis of certain general cases
     occ::handle<IFSelect_IntParam> low, up;
-    int                            firstown = 3;
-    int                            direct   = 0;
-    int                            numlist  = 0;
+    int          firstown = 3;
+    int          direct   = 0;
+    int          numlist  = 0;
     if (theline.Length() > 2)
     {
       if (theline.Value(3).IsEqual("D"))
@@ -881,7 +881,7 @@ void IFSelect_SessionFile::SplitLine(const char* line)
 {
   char mot[80];
   theline.Clear();
-  int  nbc  = 0;
+  int nbc  = 0;
   bool word = (line[0] > ' ');
   for (int i = 0; line[i] != '\0'; i++)
   {
@@ -935,12 +935,13 @@ bool IFSelect_SessionFile::ReadOwn(occ::handle<Standard_Transient>& item)
   return (!dumper.IsNull()); // IsNull -> echec
 }
 
-void IFSelect_SessionFile::AddItem(const occ::handle<Standard_Transient>& item, const bool active)
+void IFSelect_SessionFile::AddItem(const occ::handle<Standard_Transient>& item,
+                                   const bool            active)
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
 
   const TCollection_AsciiString& name = theline.Value(1);
-  int                            id   = 0;
+  int               id   = 0;
   if (!item.IsNull())
   {
     if (name.Value(1) == '#')
@@ -968,7 +969,8 @@ occ::handle<IFSelect_WorkSession> IFSelect_SessionFile::WorkSession() const
 
 //  ########                Unit WRITING Actions               ########
 
-void IFSelect_SessionFile::NewItem(const int ident, const occ::handle<Standard_Transient>& par)
+void IFSelect_SessionFile::NewItem(const int            ident,
+                                   const occ::handle<Standard_Transient>& par)
 {
   char laligne[100];
   if (!thesess->HasName(par))
@@ -997,9 +999,9 @@ void IFSelect_SessionFile::SendItem(const occ::handle<Standard_Transient>& par)
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
 
-  char laligne[100];
-  int  filenum = 0;
-  int  id      = thesess->ItemIdent(par);
+  char             laligne[100];
+  int filenum = 0;
+  int id      = thesess->ItemIdent(par);
   if (id != 0)
     filenum = thenums->Value(id);
   if (filenum == 0)
@@ -1071,7 +1073,7 @@ const TCollection_AsciiString& IFSelect_SessionFile::ParamValue(const int num) c
 
 TCollection_AsciiString IFSelect_SessionFile::TextValue(const int num) const
 {
-  int                     nm = num + thelastgen;
+  int        nm = num + thelastgen;
   TCollection_AsciiString res;
   if (nm <= 0 || nm > theline.Length())
     return res;
@@ -1090,10 +1092,10 @@ occ::handle<Standard_Transient> IFSelect_SessionFile::ItemValue(const int num) c
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
 
   occ::handle<Standard_Transient> res;
-  int                             nm = num + thelastgen;
+  int           nm = num + thelastgen;
   if (nm <= 0 || nm > theline.Length())
     return res;
-  int                     id;
+  int        id;
   TCollection_AsciiString name = theline.Value(nm);
   if (name.Value(1) == ':')
     name.Remove(1);

@@ -74,15 +74,13 @@ void STEPConstruct_Part::MakeSDR(const occ::handle<StepShape_ShapeRepresentation
       PC = new StepBasic_MechanicalContext;
       break;
   }
-  occ::handle<TCollection_HAsciiString> PCname = new TCollection_HAsciiString("");
-  occ::handle<TCollection_HAsciiString> PCdisciplineType =
-    new TCollection_HAsciiString("mechanical");
+  occ::handle<TCollection_HAsciiString> PCname           = new TCollection_HAsciiString("");
+  occ::handle<TCollection_HAsciiString> PCdisciplineType = new TCollection_HAsciiString("mechanical");
   PC->Init(PCname, AC, PCdisciplineType);
 
   // create product
-  occ::handle<StepBasic_Product>                                          P = new StepBasic_Product;
-  occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> PCs =
-    new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, 1);
+  occ::handle<StepBasic_Product>                 P   = new StepBasic_Product;
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_ProductContext>>> PCs = new NCollection_HArray1<occ::handle<StepBasic_ProductContext>>(1, 1);
   PCs->SetValue(1, PC);
   occ::handle<TCollection_HAsciiString> Pdescription = new TCollection_HAsciiString("");
   P->Init(aName, aName, Pdescription, PCs);
@@ -137,7 +135,7 @@ void STEPConstruct_Part::MakeSDR(const occ::handle<StepShape_ShapeRepresentation
   occ::handle<StepRepr_ProductDefinitionShape> PDS            = new StepRepr_ProductDefinitionShape;
   occ::handle<TCollection_HAsciiString>        PDSname        = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString>        PDSdescription = new TCollection_HAsciiString("");
-  StepRepr_CharacterizedDefinition             CD;
+  StepRepr_CharacterizedDefinition        CD;
   CD.SetValue(PD);
   PDS->Init(PDSname, true, PDSdescription, CD);
 
@@ -167,8 +165,7 @@ void STEPConstruct_Part::MakeSDR(const occ::handle<StepShape_ShapeRepresentation
       PRPCName = new TCollection_HAsciiString("detail"); // !!!!! or "assembly"
       break;
   }
-  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> PRPCproducts =
-    new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> PRPCproducts = new NCollection_HArray1<occ::handle<StepBasic_Product>>(1, 1);
   PRPCproducts->SetValue(1, P);
   myPRPC->Init(PRPCName, false, 0, PRPCproducts);
 
@@ -523,7 +520,8 @@ void STEPConstruct_Part::SetPDFdescription(const occ::handle<TCollection_HAsciiS
 
 occ::handle<StepRepr_ProductDefinitionShape> STEPConstruct_Part::PDS() const
 {
-  return occ::down_cast<StepRepr_ProductDefinitionShape>(mySDR->Definition().PropertyDefinition());
+  return occ::down_cast<StepRepr_ProductDefinitionShape>(
+    mySDR->Definition().PropertyDefinition());
 }
 
 //=================================================================================================

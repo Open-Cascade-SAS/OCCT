@@ -33,13 +33,13 @@ public:
 
   Standard_EXPORT IntPatch_LineConstructor(const int mode);
 
-  Standard_EXPORT void Perform(const NCollection_Sequence<occ::handle<IntPatch_Line>>& SL,
-                               const occ::handle<IntPatch_Line>&                       L,
-                               const occ::handle<Adaptor3d_Surface>&                   S1,
-                               const occ::handle<Adaptor3d_TopolTool>&                 D1,
-                               const occ::handle<Adaptor3d_Surface>&                   S2,
-                               const occ::handle<Adaptor3d_TopolTool>&                 D2,
-                               const double                                            Tol);
+  Standard_EXPORT void Perform(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     SL,
+                               const occ::handle<IntPatch_Line>&       L,
+                               const occ::handle<Adaptor3d_Surface>&   S1,
+                               const occ::handle<Adaptor3d_TopolTool>& D1,
+                               const occ::handle<Adaptor3d_Surface>&   S2,
+                               const occ::handle<Adaptor3d_TopolTool>& D2,
+                               const double                Tol);
 
   Standard_EXPORT int NbLines() const;
 

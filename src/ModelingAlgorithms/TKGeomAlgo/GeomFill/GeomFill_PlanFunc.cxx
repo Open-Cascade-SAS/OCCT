@@ -19,8 +19,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-GeomFill_PlanFunc::GeomFill_PlanFunc(const gp_Pnt&                       theP,
-                                     const gp_Vec&                       theV,
+GeomFill_PlanFunc::GeomFill_PlanFunc(const gp_Pnt&                  theP,
+                                     const gp_Vec&                  theV,
                                      const occ::handle<Adaptor3d_Curve>& theC)
     : myCurve(theC)
 {
@@ -45,7 +45,9 @@ bool GeomFill_PlanFunc::Derivative(const double X, double& D)
   return true;
 }
 
-bool GeomFill_PlanFunc::Values(const double X, double& F, double& D)
+bool GeomFill_PlanFunc::Values(const double X,
+                                           double&      F,
+                                           double&      D)
 {
   gp_Vec dg;
   myCurve->D1(X, G, dg);
@@ -62,15 +64,18 @@ bool GeomFill_PlanFunc::Values(const double X, double& F, double& D)
 //			    double& D2)
 void GeomFill_PlanFunc::D2(const double, double&, double&, double&) {}
 
-void GeomFill_PlanFunc::DEDT(const double X, const gp_Vec& DPnt, const gp_Vec& DVec, double& DFDT)
+void GeomFill_PlanFunc::DEDT(const double X,
+                             const gp_Vec&       DPnt,
+                             const gp_Vec&       DVec,
+                             double&      DFDT)
 {
   myCurve->D0(X, G);
   V.SetLinearForm(-1, myPnt, G.XYZ());
   DFDT = DVec.Dot(V) - myVec.Dot(DPnt.XYZ());
 }
 
-void GeomFill_PlanFunc::D2E(const double  X,
-                            const gp_Vec& DP,
+void GeomFill_PlanFunc::D2E(const double X,
+                            const gp_Vec&       DP,
                             //			     const gp_Vec& D2P,
                             const gp_Vec&,
                             const gp_Vec& DV,

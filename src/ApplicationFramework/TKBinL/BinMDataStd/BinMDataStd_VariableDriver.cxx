@@ -40,9 +40,9 @@ occ::handle<TDF_Attribute> BinMDataStd_VariableDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       BinObjMgt_RRelocationTable&) const
+bool BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theTarget);
 
@@ -61,10 +61,9 @@ bool BinMDataStd_VariableDriver::Paste(const BinObjMgt_Persistent&       theSour
 
 //=================================================================================================
 
-void BinMDataStd_VariableDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_VariableDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_Variable> aV = occ::down_cast<TDataStd_Variable>(theSource);
   theTarget << aV->IsConstant() << aV->Unit();

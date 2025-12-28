@@ -34,10 +34,10 @@ HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus()
 
 //=================================================================================================
 
-HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const double Start,
-                                       const float  TolStart,
-                                       const double End,
-                                       const float  TolEnd)
+HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const double      Start,
+                                       const float TolStart,
+                                       const double      End,
+                                       const float TolEnd)
     : myStart(Start),
       myEnd(End),
       myTolStart(TolStart),
@@ -50,10 +50,10 @@ HLRAlgo_EdgeStatus::HLRAlgo_EdgeStatus(const double Start,
 
 //=================================================================================================
 
-void HLRAlgo_EdgeStatus::Initialize(const double Start,
-                                    const float  TolStart,
-                                    const double End,
-                                    const float  TolEnd)
+void HLRAlgo_EdgeStatus::Initialize(const double      Start,
+                                    const float TolStart,
+                                    const double      End,
+                                    const float TolEnd)
 {
   myStart    = Start;
   myTolStart = TolStart;
@@ -77,9 +77,9 @@ int HLRAlgo_EdgeStatus::NbVisiblePart() const
 //=================================================================================================
 
 void HLRAlgo_EdgeStatus::VisiblePart(const int Index,
-                                     double&   Start,
+                                     double&         Start,
                                      float&    TolStart,
-                                     double&   End,
+                                     double&         End,
                                      float&    TolEnd) const
 {
   if (AllVisible())
@@ -90,10 +90,10 @@ void HLRAlgo_EdgeStatus::VisiblePart(const int Index,
 
 //=================================================================================================
 
-void HLRAlgo_EdgeStatus::Hide(const double Start,
-                              const float  TolStart,
-                              const double End,
-                              const float  TolEnd,
+void HLRAlgo_EdgeStatus::Hide(const double      Start,
+                              const float TolStart,
+                              const double      End,
+                              const float TolEnd,
                               const bool   OnFace,
                               const bool)
 {

@@ -32,7 +32,7 @@ const char* StepData_FreeFormEntity::StepType() const
 }
 
 void StepData_FreeFormEntity::SetNext(const occ::handle<StepData_FreeFormEntity>& next,
-                                      const bool                                  last)
+                                      const bool                 last)
 {
   if (next.IsNull())
     thenext.Nullify();
@@ -68,11 +68,9 @@ occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Typed(const char* 
   return thenext->Typed(typenam);
 }
 
-occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_FreeFormEntity::TypeList()
-  const
+occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_FreeFormEntity::TypeList() const
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> li =
-    new NCollection_HSequence<TCollection_AsciiString>();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> li = new NCollection_HSequence<TCollection_AsciiString>();
   li->Append(thetype);
   occ::handle<StepData_FreeFormEntity> next = thenext;
   while (!next.IsNull())
@@ -90,7 +88,7 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
     return false;
   if (!ent->IsComplex())
     return false;
-  bool                                 afr = false; // flag: any reordering needed
+  bool                afr = false; // flag: any reordering needed
   occ::handle<StepData_FreeFormEntity> e1  = ent;
   occ::handle<StepData_FreeFormEntity> e2  = ent->Next();
   // Check if entities are already in alphabetical order
@@ -116,8 +114,7 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
     e1 = e1->Next();
   }
   //  First clear the current 'next' links to break the chain...
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
-         dic);
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(dic);
        iter.More();
        iter.Next())
   {
@@ -127,8 +124,7 @@ bool StepData_FreeFormEntity::Reorder(occ::handle<StepData_FreeFormEntity>& ent)
   }
   //  ... then rebuild the chain in alphabetical order
   e1.Nullify();
-  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(
-         dic);
+  for (NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>::Iterator iter(dic);
        iter.More();
        iter.Next())
   {

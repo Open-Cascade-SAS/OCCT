@@ -25,19 +25,19 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 //=================================================================================================
 
 MeshVS_SensitiveMesh::MeshVS_SensitiveMesh(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                           const int                                 theMode)
+                                           const int               theMode)
     : Select3D_SensitiveEntity(theOwnerId)
 {
-  myMode                                = theMode;
+  myMode                           = theMode;
   occ::handle<MeshVS_MeshOwner> anOwner = occ::down_cast<MeshVS_MeshOwner>(OwnerId());
   if (!anOwner.IsNull())
   {
     occ::handle<MeshVS_DataSource> aDS = anOwner->GetDataSource();
     if (!aDS.IsNull())
     {
-      Bnd_Box aBox = aDS->GetBoundingBox();
-      double  aXMin, aYMin, aZMin;
-      double  aXMax, aYMax, aZMax;
+      Bnd_Box       aBox = aDS->GetBoundingBox();
+      double aXMin, aYMin, aZMin;
+      double aXMax, aYMax, aZMax;
       aBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
       NCollection_Vec3<double> aMinPnt(aXMin, aYMin, aZMin);
       NCollection_Vec3<double> aMaxPnt(aXMax, aYMax, aZMax);

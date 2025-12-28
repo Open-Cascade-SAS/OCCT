@@ -80,7 +80,8 @@ inline ChFiDS_State ChFiDS_Spine::Status(const bool IsFirst) const
 
 //=================================================================================================
 
-inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency, const bool IsFirst)
+inline void ChFiDS_Spine::SetTangencyExtremity(const bool IsTangency,
+                                               const bool IsFirst)
 {
   if (IsFirst)
     firstistgt = IsTangency;

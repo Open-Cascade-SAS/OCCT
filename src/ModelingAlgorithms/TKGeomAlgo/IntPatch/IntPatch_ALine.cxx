@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IntPatch_ALine, IntPatch_Line)
 #define DEBUG 0
 
 IntPatch_ALine::IntPatch_ALine(const IntAna_Curve&     C,
-                               const bool              Tang,
+                               const bool  Tang,
                                const IntSurf_TypeTrans Trans1,
                                const IntSurf_TypeTrans Trans2)
     : IntPatch_Line(Tang, Trans1, Trans2),
@@ -38,7 +38,7 @@ IntPatch_ALine::IntPatch_ALine(const IntAna_Curve&     C,
 }
 
 IntPatch_ALine::IntPatch_ALine(const IntAna_Curve&     C,
-                               const bool              Tang,
+                               const bool  Tang,
                                const IntSurf_Situation Situ1,
                                const IntSurf_Situation Situ2)
     : IntPatch_Line(Tang, Situ1, Situ2),
@@ -226,11 +226,11 @@ void IntPatch_ALine::AddVertex(const IntPatch_Point& VTXj)
 
 void IntPatch_ALine::ComputeVertexParameters(const double Tol)
 {
-  bool   SortIsOK, APointDeleted;
-  bool   SortAgain = true;
-  int    nbvtx, i, j;
-  double ParamMinOnLine, ParamMaxOnLine;
-  bool   OpenFirst, OpenLast;
+  bool SortIsOK, APointDeleted;
+  bool SortAgain = true;
+  int nbvtx, i, j;
+  double    ParamMinOnLine, ParamMaxOnLine;
+  bool OpenFirst, OpenLast;
 
   ParamMinOnLine = FirstParameter(OpenFirst);
   ParamMaxOnLine = LastParameter(OpenLast);
@@ -253,11 +253,11 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
   for (i = 1; i <= nbvtx; i++)
   {
     IntPatch_Point& VTX     = svtx.ChangeValue(i);
-    double          p       = VTX.ParameterOnLine();
-    double          pmpimpi = p - M_PI - M_PI;
+    double   p       = VTX.ParameterOnLine();
+    double   pmpimpi = p - M_PI - M_PI;
     if (pmpimpi >= ParamMinOnLine)
     {
-      gp_Pnt P1 = Value(pmpimpi);
+      gp_Pnt        P1 = Value(pmpimpi);
       double d1 = P1.Distance(VTX.Value());
       if (d1 < Tol)
       {
@@ -269,7 +269,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
     pmpimpi = p + M_PI + M_PI;
     if (pmpimpi <= ParamMaxOnLine)
     {
-      gp_Pnt P1 = Value(pmpimpi);
+      gp_Pnt        P1 = Value(pmpimpi);
       double d1 = P1.Distance(VTX.Value());
       if (d1 < Tol)
       {
@@ -441,9 +441,9 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
       IntPatch_Point& VTX = svtx.ChangeValue(i);
       for (j = 1; j < i && SortIsOK; j++)
       {
-        IntPatch_Point& VTXM1  = svtx.ChangeValue(j);
-        bool            kill   = false;
-        bool            killm1 = false;
+        IntPatch_Point&  VTXM1  = svtx.ChangeValue(j);
+        bool kill   = false;
+        bool killm1 = false;
         if (std::abs(VTXM1.ParameterOnLine() - VTX.ParameterOnLine()) < PCONFUSION)
         {
           if (VTXM1.IsOnDomS1() && VTX.IsOnDomS1())
@@ -591,7 +591,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
     {
       if (VTXN.ParameterOnLine() != ParamMaxOnLine)
       {
-        gp_Pnt PN = Value(ParamMaxOnLine);
+        gp_Pnt        PN = Value(ParamMaxOnLine);
         double d  = PN.Distance(VTX0.Value());
         if (d <= Tol)
         {
@@ -606,7 +606,7 @@ void IntPatch_ALine::ComputeVertexParameters(const double Tol)
         {
           if (VTX0.ParameterOnLine() != ParamMinOnLine)
           {
-            gp_Pnt P0 = Value(ParamMinOnLine);
+            gp_Pnt        P0 = Value(ParamMinOnLine);
             double d  = P0.Distance(VTX0.Value());
             if (d <= Tol)
             {

@@ -36,7 +36,9 @@ constexpr int USECS_PER_SEC  = 1000000; // microseconds per second
 //! @param theUSec total microseconds
 //! @param theMis output: milliseconds part
 //! @param theMics output: remaining microseconds part
-inline void extractMillisAndMicros(const int theUSec, int& theMis, int& theMics) noexcept
+inline void extractMillisAndMicros(const int theUSec,
+                                   int&      theMis,
+                                   int&      theMics) noexcept
 {
   theMis  = theUSec / USECS_PER_MSEC;
   theMics = theUSec - (theMis * USECS_PER_MSEC);
@@ -47,7 +49,10 @@ inline void extractMillisAndMicros(const int theUSec, int& theMis, int& theMics)
 //! @param theHH output: hours
 //! @param theMN output: minutes
 //! @param theSS output: seconds
-inline void extractTimeComponents(int& theCarry, int& theHH, int& theMN, int& theSS) noexcept
+inline void extractTimeComponents(int& theCarry,
+                                  int& theHH,
+                                  int& theMN,
+                                  int& theSS) noexcept
 {
   theHH = theCarry / SECONDS_PER_HOUR;
   theCarry -= SECONDS_PER_HOUR * theHH;

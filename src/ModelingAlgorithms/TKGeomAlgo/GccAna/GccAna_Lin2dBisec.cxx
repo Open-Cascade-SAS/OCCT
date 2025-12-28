@@ -68,7 +68,7 @@ GccAna_Lin2dBisec::GccAna_Lin2dBisec(const gp_Lin2d& Lin1, const gp_Lin2d& Lin2)
         // so dist = 0.0 (test of the angle too strict ?)
         double dist  = Lin1.Distance(Lin2.Location()) / 2.0;
         double cross = gp_Vec2d(-Lin2.Direction().Y(), Lin2.Direction().X())
-                         .Dot(gp_Vec2d(Lin2.Location(), Lin1.Location()));
+                                .Dot(gp_Vec2d(Lin2.Location(), Lin1.Location()));
         if (cross < 0)
           dist = -dist;
         NbrSol++;
@@ -144,9 +144,9 @@ gp_Lin2d GccAna_Lin2dBisec::ThisSolution(const int Index) const
 }
 
 void GccAna_Lin2dBisec::Intersection1(const int Index,
-                                      double&   ParSol,
-                                      double&   ParArg,
-                                      gp_Pnt2d& PntSol) const
+                                      double&         ParSol,
+                                      double&         ParArg,
+                                      gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {
@@ -165,9 +165,9 @@ void GccAna_Lin2dBisec::Intersection1(const int Index,
 }
 
 void GccAna_Lin2dBisec::Intersection2(const int Index,
-                                      double&   ParSol,
-                                      double&   ParArg,
-                                      gp_Pnt2d& PntSol) const
+                                      double&         ParSol,
+                                      double&         ParArg,
+                                      gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {

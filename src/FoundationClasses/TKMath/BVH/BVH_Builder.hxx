@@ -39,7 +39,8 @@ public:
 
 protected:
   //! Creates new abstract BVH builder.
-  BVH_BuilderTransient(const int theLeafNodeSize, const int theMaxTreeDepth)
+  BVH_BuilderTransient(const int theLeafNodeSize,
+                       const int theMaxTreeDepth)
       : myMaxTreeDepth(theMaxTreeDepth),
         myLeafNodeSize(theLeafNodeSize),
         myIsParallel(false)
@@ -47,8 +48,8 @@ protected:
   }
 
 protected:
-  int  myMaxTreeDepth; //!< Maximum depth of constructed BVH
-  int  myLeafNodeSize; //!< Maximum number of objects per leaf
+  int myMaxTreeDepth; //!< Maximum depth of constructed BVH
+  int myLeafNodeSize; //!< Maximum number of objects per leaf
   bool myIsParallel;   //!< Parallel execution flag.
 };
 

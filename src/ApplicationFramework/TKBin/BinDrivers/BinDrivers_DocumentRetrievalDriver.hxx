@@ -39,7 +39,7 @@ public:
   Standard_EXPORT virtual void ReadShapeSection(
     BinLDrivers_DocumentSection& theSection,
     Standard_IStream&            theIS,
-    const bool                   isMess   = false,
+    const bool       isMess   = false,
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void CheckShapeSection(const Storage_Position& thePos,
@@ -51,7 +51,7 @@ public:
   //! Enables reading in the quick part access mode.
   Standard_EXPORT virtual void EnableQuickPartReading(
     const occ::handle<Message_Messenger>& theMessageDriver,
-    bool                                  theValue) override;
+    bool                 theValue) override;
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver, BinLDrivers_DocumentRetrievalDriver)
 };

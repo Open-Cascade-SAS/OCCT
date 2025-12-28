@@ -27,6 +27,7 @@
 #include <TDF_DeltaOnResume.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_DeltaOnModification.hxx>
+#include <TDF_AttributeDelta.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -34,7 +35,9 @@
 // function : UpdateXLinks
 //=======================================================================
 
-static int DDocStd_UpdateXLinks(Draw_Interpretor& /*di*/, int n, const char** a)
+static int DDocStd_UpdateXLinks(Draw_Interpretor& /*di*/,
+                                             int n,
+                                             const char**     a)
 {
   if (n < 3)
     return 1;
@@ -52,7 +55,9 @@ static int DDocStd_UpdateXLinks(Draw_Interpretor& /*di*/, int n, const char** a)
 // purpose  : DumpDocument (DOC)
 //=======================================================================
 
-static int DDocStd_DumpCommand(Draw_Interpretor& di, int nb, const char** arg)
+static int DDocStd_DumpCommand(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb == 2)
   {
@@ -60,14 +65,14 @@ static int DDocStd_DumpCommand(Draw_Interpretor& di, int nb, const char** arg)
     if (!DDocStd::GetDocument(arg[1], D))
       return 1;
     //
-    NCollection_List<occ::handle<TDF_AttributeDelta>> added, forgoten, resumed, removed, modified;
-    occ::handle<TDF_AttributeDelta>                   AD;
+    NCollection_List<occ::handle<TDF_AttributeDelta>>     added, forgoten, resumed, removed, modified;
+    occ::handle<TDF_AttributeDelta> AD;
     if (D->GetUndos().IsEmpty())
     {
       di << "no UNDO available\n";
       return 0;
     }
-    occ::handle<TDF_Delta>                                      DELTA = D->GetUndos().Last();
+    occ::handle<TDF_Delta>                    DELTA = D->GetUndos().Last();
     NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator it(DELTA->AttributeDeltas());
     for (; it.More(); it.Next())
     {

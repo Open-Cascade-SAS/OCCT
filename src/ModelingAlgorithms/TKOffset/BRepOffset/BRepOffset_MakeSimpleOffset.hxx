@@ -66,10 +66,11 @@ public:
 
   //! Constructor.
   Standard_EXPORT BRepOffset_MakeSimpleOffset(const TopoDS_Shape& theInputShape,
-                                              const double        theOffsetValue);
+                                              const double theOffsetValue);
 
   //! Initialise shape for modifications.
-  Standard_EXPORT void Initialize(const TopoDS_Shape& theInputShape, const double theOffsetValue);
+  Standard_EXPORT void Initialize(const TopoDS_Shape& theInputShape,
+                                  const double theOffsetValue);
 
   //! Computes offset shape.
   Standard_EXPORT void Perform();

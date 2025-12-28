@@ -31,23 +31,23 @@
 
 void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                   const TCollection_ExtendedString&      aText,
-                                   const gp_Pnt&                          AttachmentPoint1,
-                                   const gp_Pnt&                          AttachmentPoint2,
-                                   const gp_Dir&                          aDirection,
-                                   const gp_Pnt&                          OffsetPoint)
+                                   const TCollection_ExtendedString& aText,
+                                   const gp_Pnt&                     AttachmentPoint1,
+                                   const gp_Pnt&                     AttachmentPoint2,
+                                   const gp_Dir&                     aDirection,
+                                   const gp_Pnt&                     OffsetPoint)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  gp_Lin L1(AttachmentPoint1, aDirection);
-  gp_Lin L2(AttachmentPoint2, aDirection);
-  gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
-  gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
-  gp_Lin L3    = gce_MakeLin(Proj1, Proj2);
+  gp_Lin        L1(AttachmentPoint1, aDirection);
+  gp_Lin        L2(AttachmentPoint2, aDirection);
+  gp_Pnt        Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
+  gp_Pnt        Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
+  gp_Lin        L3    = gce_MakeLin(Proj1, Proj2);
   double parmin, parmax, parcur;
-  parmin      = ElCLib::Parameter(L3, Proj1);
-  parmax      = parmin;
-  parcur      = ElCLib::Parameter(L3, Proj2);
+  parmin             = ElCLib::Parameter(L3, Proj1);
+  parmax             = parmin;
+  parcur             = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;
@@ -126,25 +126,25 @@ void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPrese
 //==========================================================================
 void DsgPrs_ParalPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                   const TCollection_ExtendedString&      aText,
-                                   const gp_Pnt&                          AttachmentPoint1,
-                                   const gp_Pnt&                          AttachmentPoint2,
-                                   const gp_Dir&                          aDirection,
-                                   const gp_Pnt&                          OffsetPoint,
-                                   const DsgPrs_ArrowSide                 ArrowPrs)
+                                   const TCollection_ExtendedString& aText,
+                                   const gp_Pnt&                     AttachmentPoint1,
+                                   const gp_Pnt&                     AttachmentPoint2,
+                                   const gp_Dir&                     aDirection,
+                                   const gp_Pnt&                     OffsetPoint,
+                                   const DsgPrs_ArrowSide            ArrowPrs)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-  gp_Lin L1(AttachmentPoint1, aDirection);
-  gp_Lin L2(AttachmentPoint2, aDirection);
-  gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
-  gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
-  gp_Lin L3    = gce_MakeLin(Proj1, Proj2);
+  gp_Lin        L1(AttachmentPoint1, aDirection);
+  gp_Lin        L2(AttachmentPoint2, aDirection);
+  gp_Pnt        Proj1 = ElCLib::Value(ElCLib::Parameter(L1, OffsetPoint), L1);
+  gp_Pnt        Proj2 = ElCLib::Value(ElCLib::Parameter(L2, OffsetPoint), L2);
+  gp_Lin        L3    = gce_MakeLin(Proj1, Proj2);
   double parmin, parmax, parcur;
-  parmin      = ElCLib::Parameter(L3, Proj1);
-  parmax      = parmin;
-  parcur      = ElCLib::Parameter(L3, Proj2);
+  parmin             = ElCLib::Parameter(L3, Proj1);
+  parmax             = parmin;
+  parcur             = ElCLib::Parameter(L3, Proj2);
   double dist = std::abs(parmin - parcur);
   if (parcur < parmin)
     parmin = parcur;

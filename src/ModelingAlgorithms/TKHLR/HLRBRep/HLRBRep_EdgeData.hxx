@@ -44,19 +44,19 @@ public:
     Selected(true);
   }
 
-  Standard_EXPORT void Set(const bool         Reg1,
-                           const bool         RegN,
-                           const TopoDS_Edge& EG,
-                           const int          V1,
-                           const int          V2,
-                           const bool         Out1,
-                           const bool         Out2,
-                           const bool         Cut1,
-                           const bool         Cut2,
-                           const double       Start,
-                           const float        TolStart,
-                           const double       End,
-                           const float        TolEnd);
+  Standard_EXPORT void Set(const bool   Reg1,
+                           const bool   RegN,
+                           const TopoDS_Edge&       EG,
+                           const int   V1,
+                           const int   V2,
+                           const bool   Out1,
+                           const bool   Out2,
+                           const bool   Cut1,
+                           const bool   Cut2,
+                           const double      Start,
+                           const float TolStart,
+                           const double      End,
+                           const float TolEnd);
 
   bool Selected() const;
 
@@ -158,14 +158,14 @@ protected:
   };
 
 private:
-  int                               myFlags;
-  int                               myHideCount;
-  int                               myVSta;
-  int                               myVEnd;
+  int                  myFlags;
+  int                  myHideCount;
+  int                  myVSta;
+  int                  myVEnd;
   HLRAlgo_EdgesBlock::MinMaxIndices myMinMax;
   HLRAlgo_EdgeStatus                myStatus;
   HLRBRep_Curve                     myGeometry;
-  float                             myTolerance;
+  float                myTolerance;
 };
 
 #include <HLRBRep_EdgeData.lxx>

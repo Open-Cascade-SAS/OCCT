@@ -29,7 +29,8 @@ double computeHypotenuseLength(const double theX, const double theY)
 }
 
 // Shifts subdiagonal elements for QL algorithm initialization
-void shiftSubdiagonalElements(NCollection_Array1<double>& theSubdiagWork, const int theSize)
+void shiftSubdiagonalElements(NCollection_Array1<double>& theSubdiagWork,
+                              const int             theSize)
 {
   for (int anIdx = 2; anIdx <= theSize; anIdx++)
     theSubdiagWork(anIdx - 1) = theSubdiagWork(anIdx);
@@ -38,9 +39,9 @@ void shiftSubdiagonalElements(NCollection_Array1<double>& theSubdiagWork, const 
 
 // Finds the end of the current unreduced submatrix using deflation
 int findSubmatrixEnd(const NCollection_Array1<double>& theDiagWork,
-                     const NCollection_Array1<double>& theSubdiagWork,
-                     const int                         theStart,
-                     const int                         theSize)
+                                  const NCollection_Array1<double>& theSubdiagWork,
+                                  const int                   theStart,
+                                  const int                   theSize)
 {
   int aSubmatrixEnd;
   for (aSubmatrixEnd = theStart; aSubmatrixEnd <= theSize - 1; aSubmatrixEnd++)
@@ -63,9 +64,9 @@ int findSubmatrixEnd(const NCollection_Array1<double>& theDiagWork,
 
 // Computes Wilkinson's shift for accelerated convergence
 double computeWilkinsonShift(const NCollection_Array1<double>& theDiagWork,
-                             const NCollection_Array1<double>& theSubdiagWork,
-                             const int                         theStart,
-                             const int                         theEnd)
+                                    const NCollection_Array1<double>& theSubdiagWork,
+                                    const int                   theStart,
+                                    const int                   theEnd)
 {
   double aShift =
     (theDiagWork(theStart + 1) - theDiagWork(theStart)) / (2.0 * theSubdiagWork(theStart));
@@ -83,12 +84,12 @@ double computeWilkinsonShift(const NCollection_Array1<double>& theDiagWork,
 
 // Performs a single QL step with implicit shift
 bool performQLStep(NCollection_Array1<double>& theDiagWork,
-                   NCollection_Array1<double>& theSubdiagWork,
-                   NCollection_Array2<double>& theEigenVecWork,
-                   const int                   theStart,
-                   const int                   theEnd,
-                   const double                theShift,
-                   const int                   theSize)
+                               NCollection_Array1<double>& theSubdiagWork,
+                               NCollection_Array2<double>& theEigenVecWork,
+                               const int             theStart,
+                               const int             theEnd,
+                               const double                theShift,
+                               const int             theSize)
 {
   double aSine     = 1.0;
   double aCosine   = 1.0;
@@ -99,10 +100,10 @@ bool performQLStep(NCollection_Array1<double>& theDiagWork,
   int aRowIdx;
   for (aRowIdx = theEnd - 1; aRowIdx >= theStart; aRowIdx--)
   {
-    const double aTempVal       = aSine * theSubdiagWork(aRowIdx);
-    const double aSubdiagTemp   = aCosine * theSubdiagWork(aRowIdx);
-    aRadius                     = computeHypotenuseLength(aTempVal, aShift);
-    theSubdiagWork(aRowIdx + 1) = aRadius;
+    const double aTempVal     = aSine * theSubdiagWork(aRowIdx);
+    const double aSubdiagTemp = aCosine * theSubdiagWork(aRowIdx);
+    aRadius                          = computeHypotenuseLength(aTempVal, aShift);
+    theSubdiagWork(aRowIdx + 1)      = aRadius;
 
     if (aRadius == 0.0)
     {
@@ -144,9 +145,9 @@ bool performQLStep(NCollection_Array1<double>& theDiagWork,
 
 // Performs the complete QL algorithm iteration
 bool performQLAlgorithm(NCollection_Array1<double>& theDiagWork,
-                        NCollection_Array1<double>& theSubdiagWork,
-                        NCollection_Array2<double>& theEigenVecWork,
-                        const int                   theSize)
+                                    NCollection_Array1<double>& theSubdiagWork,
+                                    NCollection_Array2<double>& theEigenVecWork,
+                                    const int             theSize)
 {
   for (int aSubmatrixStart = 1; aSubmatrixStart <= theSize; aSubmatrixStart++)
   {

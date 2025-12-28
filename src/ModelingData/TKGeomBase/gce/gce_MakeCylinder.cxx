@@ -54,8 +54,8 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const double Radius)
   }
   else
   {
-    gp_Dir D(Axis.Direction());
-    gp_Dir Direc;
+    gp_Dir        D(Axis.Direction());
+    gp_Dir        Direc;
     double x = D.X();
     double y = D.Y();
     double z = D.Z();
@@ -100,8 +100,8 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
   }
   else
   {
-    gp_Dir D1(P2.XYZ() - P1.XYZ());
-    gp_Dir D2;
+    gp_Dir        D1(P2.XYZ() - P1.XYZ());
+    gp_Dir        D2;
     double x = D1.X();
     double y = D1.Y();
     double z = D1.Z();
@@ -149,9 +149,9 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist)
 
 gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const gp_Pnt& P)
 {
-  gp_Lin L(Cyl.Axis());
-  double Rad  = L.Distance(P);
-  TheCylinder = gp_Cylinder(Cyl);
+  gp_Lin        L(Cyl.Axis());
+  double Rad = L.Distance(P);
+  TheCylinder       = gp_Cylinder(Cyl);
   TheCylinder.SetRadius(Rad);
   TheError = gce_Done;
 }

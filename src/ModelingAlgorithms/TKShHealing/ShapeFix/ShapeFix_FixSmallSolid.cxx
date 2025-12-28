@@ -23,9 +23,20 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_FixSmallSolid, ShapeFix_Root)
@@ -89,7 +100,7 @@ static bool IsValidInput(const TopoDS_Shape& theShape)
 // function : Remove
 // purpose  : Remove small solids from the given shape
 //=======================================================================
-TopoDS_Shape ShapeFix_FixSmallSolid::Remove(const TopoDS_Shape&                    theShape,
+TopoDS_Shape ShapeFix_FixSmallSolid::Remove(const TopoDS_Shape&               theShape,
                                             const occ::handle<ShapeBuild_ReShape>& theContext) const
 {
   // Check if at least one smallness criterion is set and the shape is valid
@@ -135,11 +146,9 @@ static double ShapeVolume(const TopoDS_Shape& theShape)
 //=================================================================================================
 
 // Append an item to a list of shapes mapped to a shape
-static void AddToMap(
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                      theMap,
-  const TopoDS_Shape& theKey,
-  const TopoDS_Shape& theItem)
+static void AddToMap(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,
+                     const TopoDS_Shape&                 theKey,
+                     const TopoDS_Shape&                 theItem)
 {
   NCollection_List<TopoDS_Shape>* aListPtr = theMap.ChangeSeek(theKey);
   if (aListPtr == NULL)
@@ -155,11 +164,9 @@ static void AddToMap(
 //=================================================================================================
 
 // Append items to a list of shapes mapped to a shape
-static void AddToMap(
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                  theMap,
-  const TopoDS_Shape&             theKey,
-  NCollection_List<TopoDS_Shape>& theItems)
+static void AddToMap(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,
+                     const TopoDS_Shape&                 theKey,
+                     NCollection_List<TopoDS_Shape>&               theItems)
 {
   if (theItems.IsEmpty())
     return;
@@ -175,9 +182,7 @@ static void AddToMap(
 
 // Map faces from a solid with their shells;
 // unmap faces shared between two shells
-static void MapFacesToShells(
-  const TopoDS_Shape&                                                       theSolid,
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
+static void MapFacesToShells(const TopoDS_Shape& theSolid, NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
 {
   TopoDS_Iterator aShellIter(theSolid);
   for (; aShellIter.More(); aShellIter.Next())
@@ -204,17 +209,16 @@ static void MapFacesToShells(
 // Find an outer shell having greatest sum area of
 // all faces shared with the solid
 static bool FindMostSharedShell(
-  const TopoDS_Shape& theSolid,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-                                  theMapFacesToOuterShells,
-  TopoDS_Shape&                   theMostSharedOuterShell,
-  TopoDS_Shape&                   theMostSharedSolidShell,
-  NCollection_List<TopoDS_Shape>& theOtherSolidShells)
+  const TopoDS_Shape&                 theSolid,
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMapFacesToOuterShells,
+  TopoDS_Shape&                       theMostSharedOuterShell,
+  TopoDS_Shape&                       theMostSharedSolidShell,
+  NCollection_List<TopoDS_Shape>&               theOtherSolidShells)
 {
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aSharedAreas;
-  double                                                             aMaxSharedArea = 0.0;
-  const TopoDS_Shape* aMostSharedOuterShellPtr                                      = NULL;
-  const TopoDS_Shape* aMostSharedSolidShellPtr                                      = NULL;
+  double               aMaxSharedArea           = 0.0;
+  const TopoDS_Shape*         aMostSharedOuterShellPtr = NULL;
+  const TopoDS_Shape*         aMostSharedSolidShellPtr = NULL;
 
   // check every shell in the solid for faces shared with outer shells
   TopoDS_Iterator aShellIter(theSolid);
@@ -278,13 +282,10 @@ static bool FindMostSharedShell(
 //=================================================================================================
 
 // Merge some shells to a base shell
-static TopoDS_Shape MergeShells(
-  const TopoDS_Shape&             theBaseShell,
-  NCollection_List<TopoDS_Shape>& theShellsToMerge,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-    theMapFacesToOuterShells,
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-    theMapNewFreeFacesToShells)
+static TopoDS_Shape MergeShells(const TopoDS_Shape&                 theBaseShell,
+                                NCollection_List<TopoDS_Shape>&               theShellsToMerge,
+                                const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMapFacesToOuterShells,
+                                NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       theMapNewFreeFacesToShells)
 {
   // Create a new shell
   BRep_Builder aBuilder;
@@ -364,7 +365,7 @@ static TopoDS_Shape MergeShells(
 //=================================================================================================
 
 // Add some shells to a base shell
-static TopoDS_Compound AddShells(const TopoDS_Shape&             theBaseShell,
+static TopoDS_Compound AddShells(const TopoDS_Shape&   theBaseShell,
                                  NCollection_List<TopoDS_Shape>& theShellsToAdd)
 {
   // Create a compound
@@ -386,7 +387,7 @@ static TopoDS_Compound AddShells(const TopoDS_Shape&             theBaseShell,
   return aCompound;
 }
 
-TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                    theShape,
+TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&               theShape,
                                            const occ::handle<ShapeBuild_ReShape>& theContext) const
 {
   // Check if at least one smallness criterion is set and the shape is valid
@@ -396,7 +397,7 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
   // Find all small solids and put them in a list;
   // Build a map of faces belonging to non-small solids
   // but not shared between two non-small solids
-  NCollection_List<TopoDS_Shape>                                           aSmallSolids;
+  NCollection_List<TopoDS_Shape>         aSmallSolids;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aMapFacesToShells;
 
   TopExp_Explorer aSolidIter(theShape, TopAbs_SOLID);
@@ -412,17 +413,14 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
   // Merge all small solids adjacent to at least one non-small one;
   // repeat this until no small solids remain or no new solids can be merged
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>  aNewMapFacesToShells;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* aMapFacesToShellsPtr =
-    &aMapFacesToShells;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*
-    aNewMapFacesToShellsPtr = &aNewMapFacesToShells;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* aMapFacesToShellsPtr    = &aMapFacesToShells;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* aNewMapFacesToShellsPtr = &aNewMapFacesToShells;
   while (!aSmallSolids.IsEmpty())
   {
     // find small solids that may be merged on the current iteration;
     // compose their shells in lists associated with non-small solids' shells
     // which they should be merged to
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                             aShellsToMerge, aShellsToAdd;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aShellsToMerge, aShellsToAdd;
     NCollection_List<TopoDS_Shape>::Iterator aSmallIter(aSmallSolids);
     while (aSmallIter.More())
     {
@@ -430,8 +428,8 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
 
       // find a non-small solid's shell having greatest sum area of
       // all faces shared with the current small solid
-      TopoDS_Shape                   aNonSmallSolidShell;
-      TopoDS_Shape                   anAdjacentShell;
+      TopoDS_Shape         aNonSmallSolidShell;
+      TopoDS_Shape         anAdjacentShell;
       NCollection_List<TopoDS_Shape> aNotAdjacentShells;
       if (FindMostSharedShell(aSmallSolid,
                               *aMapFacesToShellsPtr,
@@ -460,15 +458,13 @@ TopoDS_Shape ShapeFix_FixSmallSolid::Merge(const TopoDS_Shape&                  
 
     // update needed non-small solids' shells by
     // merging and adding the listed small solids' shells to them
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-      Iterator aShellIter(aShellsToMerge);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator aShellIter(aShellsToMerge);
     for (; aShellIter.More(); aShellIter.Next())
     {
       // get the current non-small solid's shell
       // and corresponding small solids' shells
-      const TopoDS_Shape&             aBaseShell = aShellIter.Key();
-      NCollection_List<TopoDS_Shape>& aShellsToBeMerged =
-        (NCollection_List<TopoDS_Shape>&)aShellIter.Value();
+      const TopoDS_Shape&   aBaseShell          = aShellIter.Key();
+      NCollection_List<TopoDS_Shape>& aShellsToBeMerged   = (NCollection_List<TopoDS_Shape>&)aShellIter.Value();
       NCollection_List<TopoDS_Shape>* aShellsToBeAddedPtr = aShellsToAdd.ChangeSeek(aBaseShell);
 
       // merge needed shells

@@ -59,10 +59,10 @@ public:
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTarget);
 
 private:
-  double        myTol;
-  bool          myIsNeedAdd;
-  VectorOfPoint myPoints;
-  gp_XYZ        myCurrent;
+  double    myTol;
+  bool myIsNeedAdd;
+  VectorOfPoint    myPoints;
+  gp_XYZ           myCurrent;
 };
 
 typedef typename BRepExtrema_ProximityDistTool::ProxPnt_Status ProxPnt_Status;
@@ -84,11 +84,10 @@ public:
   Standard_EXPORT BRepExtrema_ProximityValueTool();
 
   //! Creates new proximity tool for the given element sets.
-  Standard_EXPORT BRepExtrema_ProximityValueTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList2);
+  Standard_EXPORT BRepExtrema_ProximityValueTool(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+                                                 const occ::handle<BRepExtrema_TriangleSet>& theSet2,
+                                                 const NCollection_Vector<TopoDS_Shape>& theShapeList1,
+                                                 const NCollection_Vector<TopoDS_Shape>& theShapeList2);
 
 public:
   //! Loads the given element sets into the proximity tool.
@@ -101,7 +100,8 @@ public:
 
   //! Sets number of sample points used for proximity calculation for each shape.
   //! If number is less or equal zero, all triangulation nodes are used.
-  Standard_EXPORT void SetNbSamplePoints(const int theSamples1 = 0, const int theSamples2 = 0);
+  Standard_EXPORT void SetNbSamplePoints(const int theSamples1 = 0,
+                                         const int theSamples2 = 0);
 
   //! Performs the computation of the proximity value.
   Standard_EXPORT void Perform(double& theTolerance);
@@ -132,44 +132,44 @@ public:
 private:
   //! Gets shape data for further refinement.
   bool getInfoForRefinement(const TopoDS_Shape& theShapes,
-                            TopAbs_ShapeEnum&   theShapeType,
-                            int&                theNbNodes,
-                            double&             theStep);
+                                        TopAbs_ShapeEnum&   theShapeType,
+                                        int&   theNbNodes,
+                                        double&      theStep);
 
   //! Returns the computed proximity value from first BVH to another one.
-  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-                              const int                                   theNbSamples1,
-                              const BVH_Array3d&                          theAddVertices1,
-                              const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-                              const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-                              const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-                              const NCollection_Vector<TopoDS_Shape>&     theShapeList2,
-                              BVH_Vec3d&                                  thePoint1,
-                              BVH_Vec3d&                                  thePoint2,
-                              ProxPnt_Status&                             thePointStatus1,
-                              ProxPnt_Status&                             thePointStatus2) const;
+  double computeProximityDist(const occ::handle<BRepExtrema_TriangleSet>&    theSet1,
+                                     const int                    theNbSamples1,
+                                     const BVH_Array3d&                        theAddVertices1,
+                                     const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
+                                     const occ::handle<BRepExtrema_TriangleSet>&    theSet2,
+                                     const NCollection_Vector<TopoDS_Shape>&              theShapeList1,
+                                     const NCollection_Vector<TopoDS_Shape>&              theShapeList2,
+                                     BVH_Vec3d&                                thePoint1,
+                                     BVH_Vec3d&                                thePoint2,
+                                     ProxPnt_Status&                           thePointStatus1,
+                                     ProxPnt_Status& thePointStatus2) const;
 
   //! Gets additional vertices on shapes with refining a coarser one if it's needed.
   bool getShapesAdditionalVertices();
 
   //! Gets additional vertices and their statuses on the edge with the input step.
   bool getEdgeAdditionalVertices(const TopoDS_Edge&                  theEdge,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
-                                 NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+                                             const double                 theStep,
+                                             BVH_Array3d&                        theAddVertices,
+                                             NCollection_Vector<ProxPnt_Status>& theAddStatuses);
 
   //! Gets additional vertices and their statuses on the face with the input step (triangle square).
   bool getFaceAdditionalVertices(const TopoDS_Face&                  theFace,
-                                 const double                        theStep,
-                                 BVH_Array3d&                        theAddVertices,
-                                 NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+                                             const double                 theStep,
+                                             BVH_Array3d&                        theAddVertices,
+                                             NCollection_Vector<ProxPnt_Status>& theAddStatuses);
 
   //! Splits the triangle recursively, halving the longest side
   //! to the area of the current triangle > input step
   void doRecurTrgSplit(const gp_Pnt (&theTrg)[3],
                        const ProxPnt_Status (&theEdgesStatus)[3],
-                       const double                        theTol,
-                       const double                        theStep,
+                       const double                 theTol,
+                       const double                 theStep,
                        BVH_Array3d&                        theAddVertices,
                        NCollection_Vector<ProxPnt_Status>& theAddStatuses);
 
@@ -209,14 +209,14 @@ private:
   double myStep1; //!< Step for getting vertices on the 1st shape.
   double myStep2; //!< Step for getting vertices on the 2nd shape.
 
-  NCollection_CellFilter<BRepExtrema_VertexInspector> myCells;
-  BRepExtrema_VertexInspector                         myInspector;
+  NCollection_CellFilter<BRepExtrema_VertexInspector>      myCells;
+  BRepExtrema_VertexInspector myInspector;
 
   TopAbs_ShapeEnum myShapeType1; //!< 1st shape type.
   TopAbs_ShapeEnum myShapeType2; //!< 2nd shape type.
 
-  double myDistance; //!< Distance
-  bool   myIsDone;   //!< State of the algorithm
+  double    myDistance; //!< Distance
+  bool myIsDone;   //!< State of the algorithm
 
   int myNbSamples1; //!< Number of samples points on the first shape
   int myNbSamples2; //!< Number of samples points on the second shape

@@ -28,6 +28,7 @@
 #include <NCollection_DataMap.hxx>
 #include <GeomAbs_JoinType.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Edge;
 class TopoDS_Vertex;
@@ -50,8 +51,8 @@ public:
   Standard_EXPORT BRepOffset_Offset();
 
   Standard_EXPORT BRepOffset_Offset(const TopoDS_Face&     Face,
-                                    const double           Offset,
-                                    const bool             OffsetOutside = true,
+                                    const double    Offset,
+                                    const bool OffsetOutside = true,
                                     const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
 
   //! This method will be called when you want to share
@@ -66,78 +67,76 @@ public:
   //! E = an edge of <Face>
   //! E' = the image of E in the offsetting of another
   //! face sharing E with a continuity at least G1
-  Standard_EXPORT BRepOffset_Offset(
-    const TopoDS_Face&                                                              Face,
-    const double                                                                    Offset,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
-    const bool             OffsetOutside = true,
-    const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
+  Standard_EXPORT BRepOffset_Offset(const TopoDS_Face&                  Face,
+                                    const double                 Offset,
+                                    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
+                                    const bool OffsetOutside = true,
+                                    const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
 
-  Standard_EXPORT BRepOffset_Offset(const TopoDS_Edge&  Path,
-                                    const TopoDS_Edge&  Edge1,
-                                    const TopoDS_Edge&  Edge2,
-                                    const double        Offset,
-                                    const bool          Polynomial = false,
-                                    const double        Tol        = 1.0e-4,
-                                    const GeomAbs_Shape Conti      = GeomAbs_C1);
+  Standard_EXPORT BRepOffset_Offset(const TopoDS_Edge&     Path,
+                                    const TopoDS_Edge&     Edge1,
+                                    const TopoDS_Edge&     Edge2,
+                                    const double    Offset,
+                                    const bool Polynomial = false,
+                                    const double    Tol        = 1.0e-4,
+                                    const GeomAbs_Shape    Conti      = GeomAbs_C1);
 
-  Standard_EXPORT BRepOffset_Offset(const TopoDS_Edge&  Path,
-                                    const TopoDS_Edge&  Edge1,
-                                    const TopoDS_Edge&  Edge2,
-                                    const double        Offset,
-                                    const TopoDS_Edge&  FirstEdge,
-                                    const TopoDS_Edge&  LastEdge,
-                                    const bool          Polynomial = false,
-                                    const double        Tol        = 1.0e-4,
-                                    const GeomAbs_Shape Conti      = GeomAbs_C1);
+  Standard_EXPORT BRepOffset_Offset(const TopoDS_Edge&     Path,
+                                    const TopoDS_Edge&     Edge1,
+                                    const TopoDS_Edge&     Edge2,
+                                    const double    Offset,
+                                    const TopoDS_Edge&     FirstEdge,
+                                    const TopoDS_Edge&     LastEdge,
+                                    const bool Polynomial = false,
+                                    const double    Tol        = 1.0e-4,
+                                    const GeomAbs_Shape    Conti      = GeomAbs_C1);
 
   //! Tol and Conti are only used if Polynomial is True
   //! (Used to perform the approximation)
-  Standard_EXPORT BRepOffset_Offset(const TopoDS_Vertex&                  Vertex,
+  Standard_EXPORT BRepOffset_Offset(const TopoDS_Vertex&        Vertex,
                                     const NCollection_List<TopoDS_Shape>& LEdge,
-                                    const double                          Offset,
-                                    const bool                            Polynomial = false,
-                                    const double                          Tol        = 1.0e-4,
-                                    const GeomAbs_Shape                   Conti      = GeomAbs_C1);
+                                    const double         Offset,
+                                    const bool      Polynomial = false,
+                                    const double         Tol        = 1.0e-4,
+                                    const GeomAbs_Shape         Conti      = GeomAbs_C1);
 
   Standard_EXPORT void Init(const TopoDS_Face&     Face,
-                            const double           Offset,
-                            const bool             OffsetOutside = true,
+                            const double    Offset,
+                            const bool OffsetOutside = true,
                             const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
 
-  Standard_EXPORT void Init(
-    const TopoDS_Face&                                                              Face,
-    const double                                                                    Offset,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
-    const bool             OffsetOutside = true,
-    const GeomAbs_JoinType JoinType      = GeomAbs_Arc);
+  Standard_EXPORT void Init(const TopoDS_Face&                  Face,
+                            const double                 Offset,
+                            const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
+                            const bool              OffsetOutside = true,
+                            const GeomAbs_JoinType              JoinType      = GeomAbs_Arc);
 
-  Standard_EXPORT void Init(const TopoDS_Edge&  Path,
-                            const TopoDS_Edge&  Edge1,
-                            const TopoDS_Edge&  Edge2,
-                            const double        Offset,
-                            const bool          Polynomial = false,
-                            const double        Tol        = 1.0e-4,
-                            const GeomAbs_Shape Conti      = GeomAbs_C1);
+  Standard_EXPORT void Init(const TopoDS_Edge&     Path,
+                            const TopoDS_Edge&     Edge1,
+                            const TopoDS_Edge&     Edge2,
+                            const double    Offset,
+                            const bool Polynomial = false,
+                            const double    Tol        = 1.0e-4,
+                            const GeomAbs_Shape    Conti      = GeomAbs_C1);
 
-  Standard_EXPORT void Init(const TopoDS_Edge&  Path,
-                            const TopoDS_Edge&  Edge1,
-                            const TopoDS_Edge&  Edge2,
-                            const double        Offset,
-                            const TopoDS_Edge&  FirstEdge,
-                            const TopoDS_Edge&  LastEdge,
-                            const bool          Polynomial = false,
-                            const double        Tol        = 1.0e-4,
-                            const GeomAbs_Shape Conti      = GeomAbs_C1);
+  Standard_EXPORT void Init(const TopoDS_Edge&     Path,
+                            const TopoDS_Edge&     Edge1,
+                            const TopoDS_Edge&     Edge2,
+                            const double    Offset,
+                            const TopoDS_Edge&     FirstEdge,
+                            const TopoDS_Edge&     LastEdge,
+                            const bool Polynomial = false,
+                            const double    Tol        = 1.0e-4,
+                            const GeomAbs_Shape    Conti      = GeomAbs_C1);
 
   //! Tol and Conti are only used if Polynomial is True
   //! (Used to perform the approximation)
-  Standard_EXPORT void Init(const TopoDS_Vertex&                  Vertex,
+  Standard_EXPORT void Init(const TopoDS_Vertex&        Vertex,
                             const NCollection_List<TopoDS_Shape>& LEdge,
-                            const double                          Offset,
-                            const bool                            Polynomial = false,
-                            const double                          Tol        = 1.0e-4,
-                            const GeomAbs_Shape                   Conti      = GeomAbs_C1);
+                            const double         Offset,
+                            const bool      Polynomial = false,
+                            const double         Tol        = 1.0e-4,
+                            const GeomAbs_Shape         Conti      = GeomAbs_C1);
 
   //! Only used in Rolling Ball. Pipe on Free Boundary
   Standard_EXPORT void Init(const TopoDS_Edge& Edge, const double Offset);
@@ -151,9 +150,9 @@ public:
   Standard_EXPORT BRepOffset_Status Status() const;
 
 private:
-  TopoDS_Shape                                                             myShape;
-  BRepOffset_Status                                                        myStatus;
-  TopoDS_Face                                                              myFace;
+  TopoDS_Shape                 myShape;
+  BRepOffset_Status            myStatus;
+  TopoDS_Face                  myFace;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 

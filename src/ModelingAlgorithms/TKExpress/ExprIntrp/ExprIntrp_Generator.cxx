@@ -35,8 +35,7 @@ void ExprIntrp_Generator::Use(const occ::handle<Expr_NamedExpression>& named)
   myNamed.Append(named);
 }
 
-const NCollection_Sequence<occ::handle<Expr_NamedFunction>>& ExprIntrp_Generator::GetFunctions()
-  const
+const NCollection_Sequence<occ::handle<Expr_NamedFunction>>& ExprIntrp_Generator::GetFunctions() const
 {
   return myFunctions;
 }

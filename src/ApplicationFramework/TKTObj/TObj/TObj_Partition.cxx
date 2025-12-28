@@ -34,7 +34,8 @@ TObj_Partition::TObj_Partition(const TDF_Label& theLabel, const bool theSetName)
 
 //=================================================================================================
 
-occ::handle<TObj_Partition> TObj_Partition::Create(const TDF_Label& theLabel, const bool theSetName)
+occ::handle<TObj_Partition> TObj_Partition::Create(const TDF_Label&       theLabel,
+                                              const bool theSetName)
 {
   occ::handle<TObj_Partition> aPartition = new TObj_Partition(theLabel, theSetName);
   aPartition->SetLastIndex(0);
@@ -60,13 +61,14 @@ void TObj_Partition::SetNamePrefix(const occ::handle<TCollection_HExtendedString
 
 //=================================================================================================
 
-occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(const bool theIsToChangeCount)
+occ::handle<TCollection_HExtendedString> TObj_Partition::GetNewName(
+  const bool theIsToChangeCount)
 {
   if (myPrefix.IsNull())
     return 0;
 
-  int                                      aRank    = GetLastIndex() + 1;
-  int                                      saveRank = aRank;
+  int                    aRank    = GetLastIndex() + 1;
+  int                    saveRank = aRank;
   occ::handle<TCollection_HExtendedString> aName;
   do
   {
@@ -122,9 +124,9 @@ void TObj_Partition::SetLastIndex(const int theIndex)
 
 bool TObj_Partition::copyData(const occ::handle<TObj_Object>& theTargetObject)
 {
-  bool                        IsDone;
+  bool       IsDone;
   occ::handle<TObj_Partition> aTargetPartition = occ::down_cast<TObj_Partition>(theTargetObject);
-  IsDone                                       = aTargetPartition.IsNull() ? false : true;
+  IsDone = aTargetPartition.IsNull() ? false : true;
   if (IsDone)
   {
     IsDone = TObj_Object::copyData(theTargetObject);

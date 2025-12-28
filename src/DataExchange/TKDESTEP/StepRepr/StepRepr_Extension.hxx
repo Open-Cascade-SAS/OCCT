@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepRepr_Extension();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_Extension, StepRepr_DerivedShapeAspect)
+
 };
 
 #endif // _StepRepr_Extension_HeaderFile

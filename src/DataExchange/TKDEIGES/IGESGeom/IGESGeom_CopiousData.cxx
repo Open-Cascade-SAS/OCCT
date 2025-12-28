@@ -31,8 +31,8 @@ IGESGeom_CopiousData::IGESGeom_CopiousData()
   theDataType = 0; // to allow Setting Form Number before Init
 }
 
-void IGESGeom_CopiousData::Init(const int                                       aDataType,
-                                const double                                    aZPlane,
+void IGESGeom_CopiousData::Init(const int               aDataType,
+                                const double                  aZPlane,
                                 const occ::handle<NCollection_HArray1<double>>& allData)
 {
   // PTV OCC386 crash application while reading So5771b.igs
@@ -99,7 +99,8 @@ int IGESGeom_CopiousData::NbPoints() const
   return nbtuples;
 }
 
-double IGESGeom_CopiousData::Data(const int nump, const int numdata) const
+double IGESGeom_CopiousData::Data(const int nump,
+                                         const int numdata) const
 {
   int numd = 0;
   if (theDataType == 1)
@@ -118,9 +119,9 @@ double IGESGeom_CopiousData::ZPlane() const
 
 gp_Pnt IGESGeom_CopiousData::Point(const int anIndex) const
 {
-  int    lower = theData->Lower();
-  int    real_index;
-  double X = 0., Y = 0., Z = 0.;
+  int lower = theData->Lower();
+  int real_index;
+  double    X = 0., Y = 0., Z = 0.;
   if (theDataType == 1)
   {
     real_index = lower + 2 * (anIndex - 1);
@@ -164,10 +165,10 @@ gp_Vec IGESGeom_CopiousData::Vector(const int anIndex) const
   int Real_Index;
   if (theDataType != 3)
     return gp_Vec(0.0, 0.0, 0.0);
-  Real_Index = lower + 6 * (anIndex - 1) + 3;
-  double I   = theData->Value(Real_Index);
-  double J   = theData->Value(Real_Index + 1);
-  double K   = theData->Value(Real_Index + 2);
+  Real_Index      = lower + 6 * (anIndex - 1) + 3;
+  double I = theData->Value(Real_Index);
+  double J = theData->Value(Real_Index + 1);
+  double K = theData->Value(Real_Index + 2);
   return gp_Vec(I, J, K);
 }
 

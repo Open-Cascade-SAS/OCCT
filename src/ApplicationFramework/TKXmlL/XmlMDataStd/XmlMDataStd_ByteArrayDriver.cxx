@@ -50,11 +50,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_ByteArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    XmlObjMgt_RRelocationTable& theRelocTable) const
 {
-  int                      aFirstInd, aLastInd, aValue;
+  int         aFirstInd, aLastInd, aValue;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -103,12 +103,10 @@ bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
 
   aByteArray->SetID(aGUID);
 
-  occ::handle<NCollection_HArray1<uint8_t>> hArr =
-    new NCollection_HArray1<uint8_t>(aFirstInd, aLastInd);
-  NCollection_Array1<uint8_t>& arr = hArr->ChangeArray1();
+  occ::handle<NCollection_HArray1<uint8_t>> hArr = new NCollection_HArray1<uint8_t>(aFirstInd, aLastInd);
+  NCollection_Array1<uint8_t>&         arr  = hArr->ChangeArray1();
 
-  const char* aValueStr =
-    static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+  const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
   int i = arr.Lower(), upper = arr.Upper();
   for (; i <= upper; i++)
   {
@@ -157,7 +155,7 @@ bool XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        XmlObjMgt_Persistent&             theTarget,
+                                        XmlObjMgt_Persistent&        theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_ByteArray> aByteArray = occ::down_cast<TDataStd_ByteArray>(theSource);
@@ -196,7 +194,7 @@ void XmlMDataStd_ByteArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (aByteArray->ID() != TDataStd_ByteArray::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aByteArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

@@ -96,7 +96,8 @@ public:
                                         int& theY2) const override;
 
   //! Return the window size in pixels.
-  Standard_EXPORT virtual void Size(int& theWidth, int& theHeight) const override;
+  Standard_EXPORT virtual void Size(int& theWidth,
+                                    int& theHeight) const override;
 
   //! Set new window size in logical (density-independent units).
   //! Backing store will be resized basing on DevicePixelRatio().
@@ -122,11 +123,14 @@ public:
   virtual double DevicePixelRatio() const override { return myDevicePixelRatio; }
 
   //! Sets device pixel ratio for a window with IsVirtual() flag.
-  void SetDevicePixelRatio(double theDevicePixelRatio) { myDevicePixelRatio = theDevicePixelRatio; }
+  void SetDevicePixelRatio(double theDevicePixelRatio)
+  {
+    myDevicePixelRatio = theDevicePixelRatio;
+  }
 
   //! Invalidate entire window content through generation of Expose event.
-  Standard_EXPORT virtual void InvalidateContent(
-    const occ::handle<Aspect_DisplayConnection>& theDisp) override;
+  Standard_EXPORT virtual void InvalidateContent(const occ::handle<Aspect_DisplayConnection>& theDisp)
+    override;
 
 public:
   //! Process a single window message.
@@ -193,11 +197,11 @@ public:
                                                  const EmscriptenFocusEvent* theEvent);
 
 protected:
-  TCollection_AsciiString myCanvasId;
-  NCollection_Vec2<int>   mySize;
-  double                  myDevicePixelRatio;
-  bool                    myToScaleBacking;
-  mutable bool            myIsMapped;
+  TCollection_AsciiString  myCanvasId;
+  NCollection_Vec2<int>          mySize;
+  double            myDevicePixelRatio;
+  bool         myToScaleBacking;
+  mutable bool myIsMapped;
 };
 
 #endif // _Wasm_Window_HeaderFile

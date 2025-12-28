@@ -30,7 +30,7 @@ StepShape_DimensionalCharacteristicRepresentation::
 //=================================================================================================
 
 void StepShape_DimensionalCharacteristicRepresentation::Init(
-  const StepShape_DimensionalCharacteristic&                 aDimension,
+  const StepShape_DimensionalCharacteristic&            aDimension,
   const occ::handle<StepShape_ShapeDimensionRepresentation>& aRepresentation)
 {
 
@@ -57,8 +57,8 @@ void StepShape_DimensionalCharacteristicRepresentation::SetDimension(
 
 //=================================================================================================
 
-occ::handle<StepShape_ShapeDimensionRepresentation>
-  StepShape_DimensionalCharacteristicRepresentation::Representation() const
+occ::handle<StepShape_ShapeDimensionRepresentation> StepShape_DimensionalCharacteristicRepresentation::
+  Representation() const
 {
   return theRepresentation;
 }

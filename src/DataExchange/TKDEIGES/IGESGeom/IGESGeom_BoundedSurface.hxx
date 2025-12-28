@@ -42,10 +42,9 @@ public:
   //! - aType     : Type of bounded surface representation
   //! - aSurface  : Surface entity to be bounded
   //! - allBounds : Array of boundary entities
-  Standard_EXPORT void Init(
-    const int                                                               aType,
-    const occ::handle<IGESData_IGESEntity>&                                 aSurface,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& allBounds);
+  Standard_EXPORT void Init(const int                    aType,
+                            const occ::handle<IGESData_IGESEntity>&        aSurface,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& allBounds);
 
   //! returns the type of Bounded surface representation
   //! 0 = The boundary entities may only reference model space curves
@@ -66,8 +65,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_BoundedSurface, IGESData_IGESEntity)
 
 private:
-  int                                                              theType;
-  occ::handle<IGESData_IGESEntity>                                 theSurface;
+  int                   theType;
+  occ::handle<IGESData_IGESEntity>        theSurface;
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>> theBoundaries;
 };
 

@@ -21,8 +21,8 @@ StepGeom_ToroidalSurface::StepGeom_ToroidalSurface() {}
 
 void StepGeom_ToroidalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                     const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                                    const double                                  aMajorRadius,
-                                    const double                                  aMinorRadius)
+                                    const double                      aMajorRadius,
+                                    const double                      aMinorRadius)
 {
   // --- classe own fields ---
   majorRadius = aMajorRadius;

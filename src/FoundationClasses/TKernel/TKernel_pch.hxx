@@ -42,6 +42,8 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_Macro.hxx>
+#include <Standard_Macro.hxx>
+#include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <Standard_Transient.hxx>

@@ -44,28 +44,28 @@ Extrema_ExtPElC::Extrema_ExtPElC()
 
 //=================================================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt& P,
-                                 const gp_Lin& L,
-                                 const double  Tol,
-                                 const double  Uinf,
-                                 const double  Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
+                                 const gp_Lin&       L,
+                                 const double Tol,
+                                 const double Uinf,
+                                 const double Usup)
 {
   Perform(P, L, Tol, Uinf, Usup);
 }
 
 //=================================================================================================
 
-void Extrema_ExtPElC::Perform(const gp_Pnt& P,
-                              const gp_Lin& L,
-                              const double  Tol,
-                              const double  Uinf,
-                              const double  Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
+                              const gp_Lin&       L,
+                              const double Tol,
+                              const double Uinf,
+                              const double Usup)
 {
   myDone  = false;
   myNbExt = 0;
-  gp_Vec V1(L.Direction());
-  gp_Pnt OR = L.Location();
-  gp_Vec V(OR, P);
+  gp_Vec        V1(L.Direction());
+  gp_Pnt        OR = L.Location();
+  gp_Vec        V(OR, P);
   double Mydist = V1.Dot(V);
   if ((Mydist >= Uinf - Tol) && (Mydist <= Usup + Tol))
   {
@@ -80,20 +80,20 @@ void Extrema_ExtPElC::Perform(const gp_Pnt& P,
   }
 }
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&  P,
-                                 const gp_Circ& C,
-                                 const double   Tol,
-                                 const double   Uinf,
-                                 const double   Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
+                                 const gp_Circ&      C,
+                                 const double Tol,
+                                 const double Uinf,
+                                 const double Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&  P,
-                              const gp_Circ& C,
-                              const double   Tol,
-                              const double   Uinf,
-                              const double   Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
+                              const gp_Circ&      C,
+                              const double Tol,
+                              const double Uinf,
+                              const double Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u such as:
@@ -164,7 +164,7 @@ Method:
 
   // 3- Calculate extrema in [Umin,Umax] ...
 
-  gp_Pnt Cu;
+  gp_Pnt        Cu;
   double Us;
   for (int NoSol = 0; NoSol <= 1; NoSol++)
   {
@@ -183,20 +183,20 @@ Method:
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&   P,
-                                 const gp_Elips& C,
-                                 const double    Tol,
-                                 const double    Uinf,
-                                 const double    Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
+                                 const gp_Elips&     C,
+                                 const double Tol,
+                                 const double Uinf,
+                                 const double Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&   P,
-                              const gp_Elips& C,
-                              const double    Tol,
-                              const double    Uinf,
-                              const double    Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
+                              const gp_Elips&     C,
+                              const double Tol,
+                              const double Uinf,
+                              const double Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u so that:
@@ -228,11 +228,11 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  int    NoSol, NbSol;
-  double A = C.MajorRadius();
-  double B = C.MinorRadius();
-  gp_Vec OPp(O, Pp);
-  double OPpMagn = OPp.Magnitude();
+  int NoSol, NbSol;
+  double    A = C.MajorRadius();
+  double    B = C.MinorRadius();
+  gp_Vec           OPp(O, Pp);
+  double    OPpMagn = OPp.Magnitude();
   if (OPpMagn < Tol)
   {
     if (std::abs(A - B) < Tol)
@@ -254,7 +254,7 @@ Method:
   {
     return;
   }
-  gp_Pnt Cu;
+  gp_Pnt        Cu;
   double Us;
   NbSol = Sol.NbSolutions();
   for (NoSol = 1; NoSol <= NbSol; NoSol++)
@@ -272,20 +272,20 @@ Method:
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&  P,
-                                 const gp_Hypr& C,
-                                 const double   Tol,
-                                 const double   Uinf,
-                                 const double   Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
+                                 const gp_Hypr&      C,
+                                 const double Tol,
+                                 const double Uinf,
+                                 const double Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
 
-void Extrema_ExtPElC::Perform(const gp_Pnt&  P,
-                              const gp_Hypr& C,
-                              const double   Tol,
-                              const double   Uinf,
-                              const double   Usup)
+void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
+                              const gp_Hypr&      C,
+                              const double Tol,
+                              const double Uinf,
+                              const double Usup)
 /*-----------------------------------------------------------------------------
 Function:
   Find values of parameter u so that:
@@ -330,22 +330,22 @@ Method:
   double Tol2 = Tol * Tol;
   double R    = C.MajorRadius();
   double r    = C.MinorRadius();
-  gp_Vec OPp(O, Pp);
+  gp_Vec        OPp(O, Pp);
   double X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
   double Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
 
-  double                     C1 = (R * R + r * r) / 4.;
+  double              C1 = (R * R + r * r) / 4.;
   math_DirectPolynomialRoots Sol(C1, -(X * R + Y * r) / 2., 0., (X * R - Y * r) / 2., -C1);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt Cu;
-  double Us, Vs;
-  int    NbSol = Sol.NbSolutions();
-  bool   DejaEnr;
-  int    NoExt;
-  gp_Pnt TbExt[4];
+  gp_Pnt           Cu;
+  double    Us, Vs;
+  int NbSol = Sol.NbSolutions();
+  bool DejaEnr;
+  int NoExt;
+  gp_Pnt           TbExt[4];
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Vs = Sol.Value(NoSol);
@@ -380,11 +380,11 @@ Method:
 
 //=============================================================================
 
-Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&   P,
-                                 const gp_Parab& C,
-                                 const double    Tol,
-                                 const double    Uinf,
-                                 const double    Usup)
+Extrema_ExtPElC::Extrema_ExtPElC(const gp_Pnt&       P,
+                                 const gp_Parab&     C,
+                                 const double Tol,
+                                 const double Uinf,
+                                 const double Usup)
 {
   Perform(P, C, Tol, Uinf, Usup);
 }
@@ -426,21 +426,21 @@ Method:
 
   // 2- Calculation of solutions ...
 
-  double                     F = C.Focal();
+  double              F = C.Focal();
   gp_Vec                     OPp(O, Pp);
-  double                     X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
-  double                     Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
+  double              X = OPp.Dot(gp_Vec(C.XAxis().Direction()));
+  double              Y = OPp.Dot(gp_Vec(C.YAxis().Direction()));
   math_DirectPolynomialRoots Sol(1. / (4. * F), 0., 2. * F - X, -2. * F * Y);
   if (!Sol.IsDone())
   {
     return;
   }
-  gp_Pnt Cu;
-  double Us;
-  int    NbSol = Sol.NbSolutions();
-  bool   DejaEnr;
-  int    NoExt;
-  gp_Pnt TbExt[3];
+  gp_Pnt           Cu;
+  double    Us;
+  int NbSol = Sol.NbSolutions();
+  bool DejaEnr;
+  int NoExt;
+  gp_Pnt           TbExt[3];
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     Us = Sol.Value(NoSol);

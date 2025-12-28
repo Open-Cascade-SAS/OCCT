@@ -86,7 +86,7 @@ static bool parseColor(VrmlData_ErrorStatus& theStatus,
 
 static bool parseScalar(VrmlData_ErrorStatus& theStatus,
                         VrmlData_InBuffer&    theBuffer,
-                        double&               theValue,
+                        double&        theValue,
                         const VrmlData_Scene& theScene)
 {
   if (!VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -142,9 +142,9 @@ VrmlData_Material::VrmlData_Material()
 
 VrmlData_Material::VrmlData_Material(const VrmlData_Scene& theScene,
                                      const char*           theName,
-                                     const double          theAmbientIntens,
-                                     const double          theShininess,
-                                     const double          theTransparency)
+                                     const double   theAmbientIntens,
+                                     const double   theShininess,
+                                     const double   theTransparency)
     : VrmlData_Node(theScene, theName),
       myAmbientIntensity(theAmbientIntens < 0. ? 0.2 : theAmbientIntens),
       myShininess(theShininess < 0. ? 0.2 : theShininess),
@@ -158,8 +158,7 @@ VrmlData_Material::VrmlData_Material(const VrmlData_Scene& theScene,
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_Material::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Material::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_Material> aResult =
     occ::down_cast<VrmlData_Material>(VrmlData_Node::Clone(theOther));
@@ -181,7 +180,7 @@ occ::handle<VrmlData_Node> VrmlData_Material::Clone(
 VrmlData_ErrorStatus VrmlData_Material::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  double               anIntensity[3] = {0.2, 0.2, 0.};
+  double        anIntensity[3] = {0.2, 0.2, 0.};
   gp_XYZ               aColor[4]      = {gp_XYZ(0.0, 0.0, 0.0),
                                          gp_XYZ(0.8, 0.8, 0.8),
                                          gp_XYZ(0.0, 0.0, 0.0),
@@ -252,9 +251,9 @@ VrmlData_ErrorStatus VrmlData_Material::Write(const char* thePrefix) const
       && OK(aStatus, aScene.WriteLine(thePrefix, header, GlobalIndent())))
   {
     char                       buf[128];
-    double                     val[3];
+    double              val[3];
     const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
-    constexpr double           aConf(0.001 * Precision::Confusion());
+    constexpr double    aConf(0.001 * Precision::Confusion());
 
     if (OK(aStatus) && fabs(myAmbientIntensity - 0.2) > aConf)
     {
@@ -311,11 +310,11 @@ VrmlData_ErrorStatus VrmlData_Material::Write(const char* thePrefix) const
 bool VrmlData_Material::IsDefault() const
 {
   constexpr double aConf(0.001 * Precision::Confusion());
-  bool             aResult(false);
+  bool        aResult(false);
   if (fabs(myAmbientIntensity - 0.2) < aConf && fabs(myShininess - 0.2) < aConf
       && myTransparency < aConf)
   {
-    double                     val[3][3];
+    double              val[3][3];
     const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
     myDiffuseColor.Values(val[0][0], val[0][1], val[0][2], bidType);
     myEmissiveColor.Values(val[1][0], val[1][1], val[1][2], bidType);

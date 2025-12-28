@@ -31,10 +31,7 @@ BRepClass_Edge::BRepClass_Edge()
 
 //=================================================================================================
 
-void BRepClass_Edge::SetNextEdge(
-  const NCollection_IndexedDataMap<TopoDS_Shape,
-                                   NCollection_List<TopoDS_Shape>,
-                                   TopTools_ShapeMapHasher>& theMapVE)
+void BRepClass_Edge::SetNextEdge(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapVE)
 {
   if (theMapVE.IsEmpty() || myEdge.IsNull())
   {

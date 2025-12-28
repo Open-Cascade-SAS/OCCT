@@ -35,6 +35,7 @@ public:
 
 protected:
   TopoDS_Face myPlane;
+
 };
 
 #endif // _DrawDim_PlanarDimension_HeaderFile

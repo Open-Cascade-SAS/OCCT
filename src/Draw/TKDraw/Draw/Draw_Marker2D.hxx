@@ -33,12 +33,12 @@ public:
   Standard_EXPORT Draw_Marker2D(const gp_Pnt2d&        P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const int              Size = 5);
+                                const int Size = 5);
 
   Standard_EXPORT Draw_Marker2D(const gp_Pnt2d&        P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const double           RSize);
+                                const double    RSize);
 
   //! myPos field
   Standard_EXPORT gp_Pnt2d& ChangePos();
@@ -47,8 +47,9 @@ public:
 
   //! Returns always false
   Standard_EXPORT virtual bool PickReject(const double X,
-                                          const double Y,
-                                          const double Prec) const override;
+                                                      const double Y,
+                                                      const double Prec) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Marker2D, Draw_Drawable2D)
 
@@ -56,7 +57,7 @@ private:
   gp_Pnt2d         myPos;
   Draw_Color       myCol;
   Draw_MarkerShape myTyp;
-  int              mySiz;
+  int mySiz;
 };
 
 #endif // _Draw_Marker2D_HeaderFile

@@ -47,10 +47,10 @@ public:
   //! address is stored as such. Else, <val> is copied in a locally
   //! (quickly) managed Page of Characters
   //! Returns new count of recorded Parameters
-  Standard_EXPORT int Append(const char*               val,
-                             const int                 lnval,
-                             const Interface_ParamType typ,
-                             const int                 nument);
+  Standard_EXPORT int Append(const char*    val,
+                                          const int    lnval,
+                                          const Interface_ParamType typ,
+                                          const int    nument);
 
   //! Adds a parameter at the end of the ParamSet (transparent
   //! about reservation and "Next")
@@ -72,7 +72,8 @@ public:
   //! Builds and returns the sub-list corresponding to parameters,
   //! from "num" included, with count "nb"
   //! If <num> and <nb> are zero, returns the whole list
-  Standard_EXPORT occ::handle<Interface_ParamList> Params(const int num, const int nb) const;
+  Standard_EXPORT occ::handle<Interface_ParamList> Params(const int num,
+                                                     const int nb) const;
 
   //! Destructor (waiting for transparent memory management)
   Standard_EXPORT void Destroy();
@@ -82,11 +83,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Interface_ParamSet, Standard_Transient)
 
 private:
-  Standard_PCharacter              theval;
-  int                              thelnval;
-  int                              thelnres;
-  int                              thenbpar;
-  int                              themxpar;
+  Standard_PCharacter         theval;
+  int            thelnval;
+  int            thelnres;
+  int            thenbpar;
+  int            themxpar;
   occ::handle<Interface_ParamList> thelist;
   occ::handle<Interface_ParamSet>  thenext;
 };

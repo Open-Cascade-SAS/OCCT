@@ -125,17 +125,14 @@ OpenGl_VariableSetterSelector::OpenGl_VariableSetterSelector()
     new OpenGl_VariableSetter<int>())(Graphic3d_UniformValueTypeID<float>::ID,
                                       new OpenGl_VariableSetter<float>())(
     Graphic3d_UniformValueTypeID<NCollection_Vec2<float>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec2<float>>())(
-    Graphic3d_UniformValueTypeID<NCollection_Vec3<float>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec3<float>>())(
+    new OpenGl_VariableSetter<NCollection_Vec2<float>>())(Graphic3d_UniformValueTypeID<NCollection_Vec3<float>>::ID,
+                                              new OpenGl_VariableSetter<NCollection_Vec3<float>>())(
     Graphic3d_UniformValueTypeID<NCollection_Vec4<float>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec4<float>>())(
-    Graphic3d_UniformValueTypeID<NCollection_Vec2<int>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec2<int>>())(
+    new OpenGl_VariableSetter<NCollection_Vec4<float>>())(Graphic3d_UniformValueTypeID<NCollection_Vec2<int>>::ID,
+                                              new OpenGl_VariableSetter<NCollection_Vec2<int>>())(
     Graphic3d_UniformValueTypeID<NCollection_Vec3<int>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec3<int>>())(
-    Graphic3d_UniformValueTypeID<NCollection_Vec4<int>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec4<int>>());
+    new OpenGl_VariableSetter<NCollection_Vec3<int>>())(Graphic3d_UniformValueTypeID<NCollection_Vec4<int>>::ID,
+                                               new OpenGl_VariableSetter<NCollection_Vec4<int>>());
 }
 
 // =======================================================================
@@ -144,9 +141,7 @@ OpenGl_VariableSetterSelector::OpenGl_VariableSetterSelector()
 // =======================================================================
 OpenGl_VariableSetterSelector::~OpenGl_VariableSetterSelector()
 {
-  for (NCollection_DataMap<size_t, OpenGl_SetterInterface*>::Iterator anIt(mySetterList);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_DataMap<size_t, OpenGl_SetterInterface*>::Iterator anIt(mySetterList); anIt.More(); anIt.Next())
   {
     delete anIt.Value();
   }
@@ -160,7 +155,7 @@ OpenGl_VariableSetterSelector::~OpenGl_VariableSetterSelector()
 // =======================================================================
 void OpenGl_VariableSetterSelector::Set(const occ::handle<OpenGl_Context>&           theCtx,
                                         const occ::handle<Graphic3d_ShaderVariable>& theVariable,
-                                        OpenGl_ShaderProgram* theProgram) const
+                                        OpenGl_ShaderProgram*                   theProgram) const
 {
   Standard_ASSERT_RETURN(mySetterList.IsBound(theVariable->Value()->TypeID()),
                          "The type of user-defined uniform variable is not supported...", );
@@ -173,7 +168,7 @@ void OpenGl_VariableSetterSelector::Set(const occ::handle<OpenGl_Context>&      
 // purpose  : Creates uninitialized shader program
 // =======================================================================
 OpenGl_ShaderProgram::OpenGl_ShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProxy,
-                                           const TCollection_AsciiString&              theId)
+                                           const TCollection_AsciiString&         theId)
     : OpenGl_NamedResource(!theProxy.IsNull() ? theProxy->GetId() : theId),
       myProgramID(NO_PROGRAM),
       myProxy(theProxy),
@@ -194,9 +189,8 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram(const occ::handle<Graphic3d_ShaderPro
 // function : Initialize
 // purpose  : Initializes program object with the list of shader objects
 // =======================================================================
-bool OpenGl_ShaderProgram::Initialize(
-  const occ::handle<OpenGl_Context>&                               theCtx,
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& theShaders)
+bool OpenGl_ShaderProgram::Initialize(const occ::handle<OpenGl_Context>&     theCtx,
+                                                  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& theShaders)
 {
   myHasTessShader = false;
   if (theCtx.IsNull() || !Create(theCtx))
@@ -207,9 +201,7 @@ bool OpenGl_ShaderProgram::Initialize(
   TCollection_AsciiString aHeaderVer =
     !myProxy.IsNull() ? myProxy->Header() : TCollection_AsciiString();
   int aShaderMask = 0;
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders); anIter.More(); anIter.Next())
   {
     aShaderMask |= anIter.Value()->Type();
   }
@@ -345,9 +337,7 @@ bool OpenGl_ShaderProgram::Initialize(
     }
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIter(theShaders); anIter.More(); anIter.Next())
   {
     if (!anIter.Value()->IsDone())
     {
@@ -575,8 +565,7 @@ bool OpenGl_ShaderProgram::Initialize(
   // bind custom Vertex Attributes
   if (!myProxy.IsNull())
   {
-    for (NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>::Iterator anAttribIter(
-           myProxy->VertexAttributes());
+    for (NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>::Iterator anAttribIter(myProxy->VertexAttributes());
          anAttribIter.More();
          anAttribIter.Next())
     {
@@ -678,7 +667,7 @@ bool OpenGl_ShaderProgram::Initialize(
   }
 
   const TCollection_AsciiString aSamplerNamePrefix("occSampler");
-  const int                     aNbUnitsMax =
+  const int        aNbUnitsMax =
     std::max(theCtx->MaxCombinedTextureUnits(), static_cast<int>(Graphic3d_TextureUnit_NB));
   for (GLint aUnitIter = 0; aUnitIter < aNbUnitsMax; ++aUnitIter)
   {
@@ -709,16 +698,14 @@ OpenGl_ShaderProgram::~OpenGl_ShaderProgram()
 // purpose  : Attaches shader object to the program object
 // =======================================================================
 bool OpenGl_ShaderProgram::AttachShader(const occ::handle<OpenGl_Context>&      theCtx,
-                                        const occ::handle<OpenGl_ShaderObject>& theShader)
+                                                    const occ::handle<OpenGl_ShaderObject>& theShader)
 {
   if (myProgramID == NO_PROGRAM || theShader.IsNull())
   {
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects); anIter.More(); anIter.Next())
   {
     if (theShader == anIter.Value())
     {
@@ -736,7 +723,7 @@ bool OpenGl_ShaderProgram::AttachShader(const occ::handle<OpenGl_Context>&      
 // purpose  : Detaches shader object to the program object
 // =======================================================================
 bool OpenGl_ShaderProgram::DetachShader(const occ::handle<OpenGl_Context>&      theCtx,
-                                        const occ::handle<OpenGl_ShaderObject>& theShader)
+                                                    const occ::handle<OpenGl_ShaderObject>& theShader)
 {
   if (myProgramID == NO_PROGRAM || theShader.IsNull())
   {
@@ -838,7 +825,7 @@ bool OpenGl_ShaderProgram::Link(const occ::handle<OpenGl_Context>& theCtx, bool 
 // purpose  : Fetches information log of the last link operation
 // =======================================================================
 bool OpenGl_ShaderProgram::FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx,
-                                        TCollection_AsciiString&           theOutput)
+                                                    TCollection_AsciiString&      theOutput)
 {
   if (myProgramID == NO_PROGRAM)
   {
@@ -868,9 +855,7 @@ bool OpenGl_ShaderProgram::ApplyVariables(const occ::handle<OpenGl_Context>& the
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>::Iterator anIter(
-         myProxy->Variables());
-       anIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>::Iterator anIter(myProxy->Variables()); anIter.More();
        anIter.Next())
   {
     mySetterSelector.Set(theCtx, anIter.Value(), this);
@@ -886,7 +871,7 @@ bool OpenGl_ShaderProgram::ApplyVariables(const occ::handle<OpenGl_Context>& the
 // =======================================================================
 OpenGl_ShaderUniformLocation OpenGl_ShaderProgram::GetUniformLocation(
   const occ::handle<OpenGl_Context>& theCtx,
-  const GLchar*                      theName) const
+  const GLchar*                 theName) const
 {
   return OpenGl_ShaderUniformLocation(
     myProgramID != NO_PROGRAM ? theCtx->core20fwd->glGetUniformLocation(myProgramID, theName)
@@ -898,7 +883,7 @@ OpenGl_ShaderUniformLocation OpenGl_ShaderProgram::GetUniformLocation(
 // purpose  : Returns location (index) of the generic vertex attribute
 // =======================================================================
 GLint OpenGl_ShaderProgram::GetAttributeLocation(const occ::handle<OpenGl_Context>& theCtx,
-                                                 const GLchar*                      theName) const
+                                                 const GLchar*                 theName) const
 {
   return myProgramID != NO_PROGRAM ? theCtx->core20fwd->glGetAttribLocation(myProgramID, theName)
                                    : INVALID_LOCATION;
@@ -909,8 +894,8 @@ GLint OpenGl_ShaderProgram::GetAttributeLocation(const occ::handle<OpenGl_Contex
 // purpose  : Returns the value of the integer uniform variable
 // =======================================================================
 bool OpenGl_ShaderProgram::GetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      NCollection_Vec4<int>&             theValue) const
+                                                  GLint                         theLocation,
+                                                  NCollection_Vec4<int>&                 theValue) const
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -926,8 +911,8 @@ bool OpenGl_ShaderProgram::GetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Returns the value of the floating-point uniform variable
 // =======================================================================
 bool OpenGl_ShaderProgram::GetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      NCollection_Vec4<float>&           theValue) const
+                                                  GLint                         theLocation,
+                                                  NCollection_Vec4<float>&                  theValue) const
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -943,8 +928,8 @@ bool OpenGl_ShaderProgram::GetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Returns the integer vertex attribute
 // =======================================================================
 bool OpenGl_ShaderProgram::GetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        NCollection_Vec4<int>&             theValue) const
+                                                    GLint                         theIndex,
+                                                    NCollection_Vec4<int>&                 theValue) const
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -960,8 +945,8 @@ bool OpenGl_ShaderProgram::GetAttribute(const occ::handle<OpenGl_Context>& theCt
 // purpose  : Returns the floating-point vertex attribute
 // =======================================================================
 bool OpenGl_ShaderProgram::GetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        NCollection_Vec4<float>&           theValue) const
+                                                    GLint                         theIndex,
+                                                    NCollection_Vec4<float>&                  theValue) const
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -975,8 +960,8 @@ bool OpenGl_ShaderProgram::GetAttribute(const occ::handle<OpenGl_Context>& theCt
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetAttributeName(const occ::handle<OpenGl_Context>& theCtx,
-                                            GLint                              theIndex,
-                                            const GLchar*                      theName)
+                                                        GLint                         theIndex,
+                                                        const GLchar*                 theName)
 {
   theCtx->core20fwd->glBindAttribLocation(myProgramID, theIndex, theName);
   return true;
@@ -985,8 +970,8 @@ bool OpenGl_ShaderProgram::SetAttributeName(const occ::handle<OpenGl_Context>& t
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        GLfloat                            theValue)
+                                                    GLint                         theIndex,
+                                                    GLfloat                       theValue)
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -1000,8 +985,8 @@ bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCt
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        const NCollection_Vec2<float>&     theValue)
+                                                    GLint                         theIndex,
+                                                    const NCollection_Vec2<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -1015,8 +1000,8 @@ bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCt
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        const NCollection_Vec3<float>&     theValue)
+                                                    GLint                         theIndex,
+                                                    const NCollection_Vec3<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -1030,8 +1015,8 @@ bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCt
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        GLint                              theIndex,
-                                        const NCollection_Vec4<float>&     theValue)
+                                                    GLint                         theIndex,
+                                                    const NCollection_Vec4<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theIndex == INVALID_LOCATION)
   {
@@ -1047,8 +1032,8 @@ bool OpenGl_ShaderProgram::SetAttribute(const occ::handle<OpenGl_Context>& theCt
 // purpose  : Specifies the value of the integer uniform variable
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLint                              theValue)
+                                                  GLint                         theLocation,
+                                                  GLint                         theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1061,9 +1046,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 
 //=================================================================================================
 
-bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
-                                      GLint                                 theLocation,
-                                      const NCollection_Vec2<unsigned int>& theValue)
+bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec2<unsigned int>&           theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1092,20 +1077,20 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
 
 //=================================================================================================
 
-bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
-                                      const GLchar*                         theName,
-                                      const GLsizei                         theCount,
-                                      const NCollection_Vec2<unsigned int>* theValue)
+bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                                  const GLchar*                 theName,
+                                                  const GLsizei                 theCount,
+                                                  const NCollection_Vec2<unsigned int>*           theValue)
 {
   return SetUniform(theCtx, GetUniformLocation(theCtx, theName), theCount, theValue);
 }
 
 //=================================================================================================
 
-bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theCtx,
-                                      GLint                                 theLocation,
-                                      const GLsizei                         theCount,
-                                      const NCollection_Vec2<unsigned int>* theValue)
+bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                                  GLint                         theLocation,
+                                                  const GLsizei                 theCount,
+                                                  const NCollection_Vec2<unsigned int>*           theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1136,8 +1121,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&    theC
 // purpose  : Specifies the value of the floating-point uniform variable
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLfloat                            theValue)
+                                                  GLint                         theLocation,
+                                                  GLfloat                       theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1153,8 +1138,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the integer uniform 2D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec2<int>&       theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec2<int>&           theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1170,8 +1155,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the integer uniform 3D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec3<int>&       theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec3<int>&           theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1187,8 +1172,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the integer uniform 4D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec4<int>&       theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec4<int>&           theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1204,8 +1189,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the floating-point uniform 2D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec2<float>&     theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec2<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1221,8 +1206,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the floating-point uniform 3D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec3<float>&     theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec3<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1238,8 +1223,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the floating-point uniform 4D vector
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Vec4<float>&     theValue)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Vec4<float>&            theValue)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1252,10 +1237,10 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 
 //=================================================================================================
 
-bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Mat3<float>*     theData)
+bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>&  theCtx,
+                                                  GLint                          theLocation,
+                                                  GLuint                         theCount,
+                                                  const NCollection_Mat3<float>* theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1271,9 +1256,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the floating-point uniform 4x4 matrix
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const NCollection_Mat4<float>&     theValue,
-                                      GLboolean                          theTranspose)
+                                                  GLint                         theLocation,
+                                                  const NCollection_Mat4<float>&            theValue,
+                                                  GLboolean                     theTranspose)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1291,9 +1276,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 //=================================================================================================
 
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Mat4<float>*     theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Mat4<float>*            theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1309,9 +1294,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the float uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const float*                       theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const float*     theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1327,9 +1312,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the float2 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec2<float>*     theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec2<float>*            theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1345,9 +1330,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the float3 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec3<float>*     theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec3<float>*            theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1363,9 +1348,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the float4 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec4<float>*     theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec4<float>*            theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1381,9 +1366,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the integer uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const int*                         theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const int*       theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1399,9 +1384,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the int2 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec2<int>*       theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec2<int>*           theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1417,9 +1402,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the int3 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec3<int>*       theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec3<int>*           theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1435,9 +1420,9 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the int4 uniform array
 // =======================================================================
 bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      GLuint                             theCount,
-                                      const NCollection_Vec4<int>*       theData)
+                                                  GLint                         theLocation,
+                                                  GLuint                        theCount,
+                                                  const NCollection_Vec4<int>*           theData)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1453,8 +1438,8 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Specifies the value of the sampler uniform variable
 // =======================================================================
 bool OpenGl_ShaderProgram::SetSampler(const occ::handle<OpenGl_Context>& theCtx,
-                                      GLint                              theLocation,
-                                      const Graphic3d_TextureUnit        theTextureUnit)
+                                                  GLint                         theLocation,
+                                                  const Graphic3d_TextureUnit   theTextureUnit)
 {
   if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
@@ -1494,9 +1479,7 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
     theCtx != NULL,
     "OpenGl_ShaderProgram destroyed without GL context! Possible GPU memory leakage...", );
 
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects); anIter.More(); anIter.Next())
   {
     if (!anIter.Value().IsNull())
     {
@@ -1515,10 +1498,10 @@ void OpenGl_ShaderProgram::Release(OpenGl_Context* theCtx)
 
 //=================================================================================================
 
-bool OpenGl_ShaderProgram::UpdateDebugDump(const occ::handle<OpenGl_Context>& theCtx,
-                                           const TCollection_AsciiString&     theFolder,
-                                           bool                               theToBeautify,
-                                           bool                               theToReset)
+bool OpenGl_ShaderProgram::UpdateDebugDump(const occ::handle<OpenGl_Context>&  theCtx,
+                                                       const TCollection_AsciiString& theFolder,
+                                                       bool               theToBeautify,
+                                                       bool               theToReset)
 {
   if (myProgramID == NO_PROGRAM)
   {
@@ -1537,9 +1520,7 @@ bool OpenGl_ShaderProgram::UpdateDebugDump(const occ::handle<OpenGl_Context>& th
   }
 
   bool hasUpdates = false;
-  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<OpenGl_ShaderObject>>::Iterator anIter(myShaderObjects); anIter.More(); anIter.Next())
   {
     if (!anIter.Value().IsNull())
     {

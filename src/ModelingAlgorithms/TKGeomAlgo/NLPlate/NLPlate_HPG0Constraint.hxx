@@ -34,7 +34,8 @@ public:
 
   Standard_EXPORT virtual void SetUVFreeSliding(const bool UVFree) override;
 
-  Standard_EXPORT virtual void SetIncrementalLoadAllowed(const bool ILA) override;
+  Standard_EXPORT virtual void SetIncrementalLoadAllowed(const bool ILA)
+    override;
 
   Standard_EXPORT virtual bool UVFreeSliding() const override;
 
@@ -49,9 +50,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(NLPlate_HPG0Constraint, NLPlate_HGPPConstraint)
 
 private:
-  gp_XYZ myXYZTarget;
-  bool   UVIsFree;
-  bool   IncrementalLoadingAllowed;
+  gp_XYZ           myXYZTarget;
+  bool UVIsFree;
+  bool IncrementalLoadingAllowed;
 };
 
 #endif // _NLPlate_HPG0Constraint_HeaderFile

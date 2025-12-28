@@ -18,6 +18,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_RebuildGroups.hxx>
 #include <Interface_CopyTool.hxx>
@@ -26,6 +27,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RebuildGroups, IGESSelect_ModelModifier)
 
@@ -34,9 +36,9 @@ IGESSelect_RebuildGroups::IGESSelect_RebuildGroups()
 {
 }
 
-void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&            ctx,
                                           const occ::handle<IGESData_IGESModel>& target,
-                                          Interface_CopyTool&                    TC) const
+                                          Interface_CopyTool&               TC) const
 {
   //  We rebuild the groups that can be
   //  For each group of the original, we look at the transferred components
@@ -59,15 +61,15 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
     occ::handle<IGESData_IGESEntity> ent = original->Entity(i);
     if (ent->TypeNumber() != 402)
       continue;
-    int                             casenum = 0;
+    int           casenum = 0;
     occ::handle<Standard_Transient> newent;
-    Interface_EntityIterator        newlist;
+    Interface_EntityIterator   newlist;
     if (TC.Search(ent, newent))
       continue; // deja passe
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_Group)))
     {
       DeclareAndCast(IGESBasic_Group, g, ent);
-      casenum = 1;
+      casenum              = 1;
       int nbg = g->NbEntities();
       for (int ig = 1; ig <= nbg; ig++)
       {
@@ -78,7 +80,7 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_GroupWithoutBackP)))
     {
       DeclareAndCast(IGESBasic_GroupWithoutBackP, g, ent);
-      casenum = 2;
+      casenum              = 2;
       int nbg = g->NbEntities();
       for (int ig = 1; ig <= nbg; ig++)
       {
@@ -89,7 +91,7 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_OrderedGroup)))
     {
       DeclareAndCast(IGESBasic_OrderedGroup, g, ent);
-      casenum = 3;
+      casenum              = 3;
       int nbg = g->NbEntities();
       for (int ig = 1; ig <= nbg; ig++)
       {
@@ -100,7 +102,7 @@ void IGESSelect_RebuildGroups::Performing(IFSelect_ContextModif&                
     if (ent->IsKind(STANDARD_TYPE(IGESBasic_OrderedGroupWithoutBackP)))
     {
       DeclareAndCast(IGESBasic_OrderedGroupWithoutBackP, g, ent);
-      casenum = 4;
+      casenum              = 4;
       int nbg = g->NbEntities();
       for (int ig = 1; ig <= nbg; ig++)
       {

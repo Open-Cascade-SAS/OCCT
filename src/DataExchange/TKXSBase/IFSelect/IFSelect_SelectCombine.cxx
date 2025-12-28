@@ -44,7 +44,8 @@ int IFSelect_SelectCombine::InputRank(const occ::handle<IFSelect_Selection>& sel
   return 0;
 }
 
-void IFSelect_SelectCombine::Add(const occ::handle<IFSelect_Selection>& sel, const int atnum)
+void IFSelect_SelectCombine::Add(const occ::handle<IFSelect_Selection>& sel,
+                                 const int            atnum)
 {
   if (atnum <= 0 || atnum > thelist.Length())
     thelist.Append(sel);

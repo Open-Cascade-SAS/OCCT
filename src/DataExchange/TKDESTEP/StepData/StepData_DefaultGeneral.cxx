@@ -34,16 +34,16 @@ StepData_DefaultGeneral::StepData_DefaultGeneral()
   Interface_GeneralLib::SetGlobal(this, StepData::Protocol());
 }
 
-void StepData_DefaultGeneral::FillSharedCase(const int                              casenum,
+void StepData_DefaultGeneral::FillSharedCase(const int            casenum,
                                              const occ::handle<Standard_Transient>& ent,
-                                             Interface_EntityIterator&              iter) const
+                                             Interface_EntityIterator&         iter) const
 {
   // Fill iterator with shared entities from UndefinedEntity parameters
   if (casenum != 1)
     return; // Only handles case 1 (UndefinedEntity)
   DeclareAndCast(StepData_UndefinedEntity, undf, ent);
   occ::handle<Interface_UndefinedContent> cont = undf->UndefinedContent();
-  int                                     nb   = cont->NbParams();
+  int                   nb   = cont->NbParams();
   // Iterate through all parameters looking for entity references
   for (int i = 1; i <= nb; i++)
   {
@@ -69,7 +69,8 @@ void StepData_DefaultGeneral::CheckCase(const int,
 {
 } //  No validation check performed on an UndefinedEntity
 
-bool StepData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
+bool StepData_DefaultGeneral::NewVoid(const int      CN,
+                                                  occ::handle<Standard_Transient>& ent) const
 {
   // Create a new empty entity instance (only UndefinedEntity supported)
   if (CN != 1)
@@ -78,10 +79,10 @@ bool StepData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transie
   return true;
 }
 
-void StepData_DefaultGeneral::CopyCase(const int                              casenum,
+void StepData_DefaultGeneral::CopyCase(const int            casenum,
                                        const occ::handle<Standard_Transient>& entfrom,
                                        const occ::handle<Standard_Transient>& entto,
-                                       Interface_CopyTool&                    TC) const
+                                       Interface_CopyTool&               TC) const
 {
   // Copy content from source UndefinedEntity to target UndefinedEntity
   if (casenum != 1)

@@ -42,7 +42,8 @@ public:
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
+  Standard_EXPORT bool
+    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
   //! returns a string representing <me> in a readable way.
   Standard_EXPORT TCollection_AsciiString String() const override;

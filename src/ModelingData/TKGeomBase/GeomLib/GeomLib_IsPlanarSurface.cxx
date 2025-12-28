@@ -28,24 +28,26 @@
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
-                     const double                      Tol,
-                     const occ::handle<Geom_Surface>&  S,
-                     gp_Pln&                           Plan)
+static bool Controle(const NCollection_Array1<gp_Pnt>&   Poles,
+                                 const double         Tol,
+                                 const occ::handle<Geom_Surface>& S,
+                                 gp_Pln&                     Plan)
 {
-  bool             IsPlan = false;
+  bool        IsPlan = false;
   double           gx, gy, gz;
-  gp_Pnt           Bary;
-  gp_Dir           DX, DY;
+  gp_Pnt                  Bary;
+  gp_Dir                  DX, DY;
   constexpr double aTolSingular = Precision::Confusion();
 
   GeomLib::Inertia(Poles, Bary, DX, DY, gx, gy, gz);
   if (gz < Tol && gy > aTolSingular)
   {
-    gp_Pnt P;
-    gp_Vec DU, DV;
+    gp_Pnt        P;
+    gp_Vec        DU, DV;
     double umin, umax, vmin, vmax;
     S->Bounds(umin, umax, vmin, vmax);
     S->D1((umin + umax) / 2, (vmin + vmax) / 2, P, DU, DV);
@@ -53,7 +55,7 @@ static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
     if (DU.SquareMagnitude() > gp::Resolution() && DV.SquareMagnitude() > gp::Resolution())
     {
       // On prend DX le plus proche possible de DU
-      gp_Dir du(DU);
+      gp_Dir        du(DU);
       double Angle1 = du.Angle(DX);
       double Angle2 = du.Angle(DY);
       if (Angle1 > M_PI / 2)
@@ -80,10 +82,12 @@ static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
   return IsPlan;
 }
 
-static bool Controle(const occ::handle<Geom_Curve>& C, const gp_Pln& Plan, const double Tol)
+static bool Controle(const occ::handle<Geom_Curve>& C,
+                                 const gp_Pln&             Plan,
+                                 const double       Tol)
 {
-  bool              B = true;
-  int               ii, Nb;
+  bool  B = true;
+  int  ii, Nb;
   GeomAbs_CurveType Type;
   GeomAdaptor_Curve AC(C);
   Type = AC.GetType();
@@ -133,7 +137,7 @@ static bool Controle(const occ::handle<Geom_Curve>& C, const gp_Pln& Plan, const
 }
 
 GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>& S,
-                                                 const double                     Tol)
+                                                 const double         Tol)
 
 {
   GeomAdaptor_Surface AS(S);
@@ -157,11 +161,11 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>
     }
 
     case GeomAbs_SurfaceOfRevolution: {
-      bool   Essai = true;
-      gp_Pnt P;
-      gp_Vec DU, DV, Dn;
-      gp_Dir Dir = AS.AxeOfRevolution().Direction();
-      double Umin, Umax, Vmin, Vmax;
+      bool Essai = true;
+      gp_Pnt           P;
+      gp_Vec           DU, DV, Dn;
+      gp_Dir           Dir = AS.AxeOfRevolution().Direction();
+      double    Umin, Umax, Vmin, Vmax;
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin + Umax) / 2, (Vmin + Vmax) / 2, P, DU, DV);
       if (DU.Magnitude() <= gp::Resolution() || DV.Magnitude() <= gp::Resolution())
@@ -198,11 +202,11 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>
       break;
     }
     case GeomAbs_SurfaceOfExtrusion: {
-      bool   Essai = false;
-      double Umin, Umax, Vmin, Vmax;
-      double norm;
-      gp_Vec Du, Dv, Dn;
-      gp_Pnt P;
+      bool Essai = false;
+      double    Umin, Umax, Vmin, Vmax;
+      double    norm;
+      gp_Vec           Du, Dv, Dn;
+      gp_Pnt           P;
 
       S->Bounds(Umin, Umax, Vmin, Vmax);
       S->D1((Umin + Umax) / 2, (Vmin + Vmax) / 2, P, Du, Dv);
@@ -218,7 +222,7 @@ GeomLib_IsPlanarSurface::GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>
       {
         Dn /= norm;
         double angmax = Tol / (Vmax - Vmin);
-        gp_Dir D(Dn);
+        gp_Dir        D(Dn);
         Essai = (D.IsNormal(AS.Direction(), angmax));
       }
       if (Essai)

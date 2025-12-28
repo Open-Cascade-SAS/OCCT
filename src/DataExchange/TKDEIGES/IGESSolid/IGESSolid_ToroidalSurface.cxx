@@ -29,8 +29,8 @@ IGESSolid_ToroidalSurface::IGESSolid_ToroidalSurface() {}
 
 void IGESSolid_ToroidalSurface::Init(const occ::handle<IGESGeom_Point>&     aCenter,
                                      const occ::handle<IGESGeom_Direction>& anAxis,
-                                     const double                           majRadius,
-                                     const double                           minRadius,
+                                     const double               majRadius,
+                                     const double               minRadius,
                                      const occ::handle<IGESGeom_Direction>& Refdir)
 {
   theCenter      = aCenter;

@@ -22,11 +22,14 @@
 #include <Standard_Handle.hxx>
 
 #include <Bnd_Box.hxx>
+#include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 
 #include <array>
@@ -70,7 +73,7 @@ public:
   //! box is known in advance to avoid calculating it again inside the algorithm.
   //! @param theEnclosingBox The bounding box that contains all the boxes in @p theSetOfBoxes.
   //! @param theSetOfBoxes The set of bounding boxes to be used by this algorithm.
-  Standard_EXPORT void Initialize(const Bnd_Box&                                   theEnclosingBox,
+  Standard_EXPORT void Initialize(const Bnd_Box&                  theEnclosingBox,
                                   const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes);
 
   //! Initializes this comparison algorithm with the bounding box that encloses all the boxes
@@ -78,7 +81,8 @@ public:
   //! Boxes to be considered can then be added using the Add() method.
   //! @param theEnclosingBox The bounding box that contains all the boxes to be sorted.
   //! @param theNbComponents The number of components to be added.
-  Standard_EXPORT void Initialize(const Bnd_Box& theEnclosingBox, const int theNbBoxes);
+  Standard_EXPORT void Initialize(const Bnd_Box&         theEnclosingBox,
+                                  const int theNbBoxes);
 
   //! Adds the bounding box theBox at position boxIndex in the internal array of boxes
   //! to be sorted by this comparison algorithm. This function is used only in
@@ -136,15 +140,15 @@ private:
   //! @param theIndex The index of the bounding box in myBoxes.
   void addBox(const Bnd_Box& theBox, const int theIndex);
 
-  Bnd_Box myEnclosingBox; //!< The bounding box that contains all the boxes to be sorted.
+  Bnd_Box myEnclosingBox;            //!< The bounding box that contains all the boxes to be sorted.
   occ::handle<NCollection_HArray1<Bnd_Box>> myBoxes;  //!< The set of bounding boxes to be sorted.
-  double                                    myCoeffX; //!< Coefficient for X direction.
-  double                                    myCoeffY; //!< Coefficient for Y direction.
-  double                                    myCoeffZ; //!< Coefficient for Z direction.
-  int                        myResolution;            //!< The number of voxels in each direction.
-  NCollection_List<int>      myLastResult;            //!< The last result of the Compare() method.
-  VectorInt                  myLargeBoxes;            //!< The list of large boxes.
-  occ::handle<Bnd_VoxelGrid> myVoxelGrid; //!< The voxel grid used for sorting the boxes.
+  double            myCoeffX; //!< Coefficient for X direction.
+  double            myCoeffY; //!< Coefficient for Y direction.
+  double            myCoeffZ; //!< Coefficient for Z direction.
+  int         myResolution; //!< The number of voxels in each direction.
+  NCollection_List<int>    myLastResult; //!< The last result of the Compare() method.
+  VectorInt                myLargeBoxes; //!< The list of large boxes.
+  occ::handle<Bnd_VoxelGrid>    myVoxelGrid;  //!< The voxel grid used for sorting the boxes.
 };
 
 #endif // _Bnd_BoundSortBox_HeaderFile

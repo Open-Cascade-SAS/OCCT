@@ -34,10 +34,9 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aMaterialId,
-    const occ::handle<TCollection_HAsciiString>& aDescription,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
-      aProperties);
+    const occ::handle<TCollection_HAsciiString>&                         aMaterialId,
+    const occ::handle<TCollection_HAsciiString>&                         aDescription,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>& aProperties);
 
   //! Returns field MaterialId
   Standard_EXPORT occ::handle<TCollection_HAsciiString> MaterialId() const;
@@ -52,22 +51,18 @@ public:
   Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field Properties
-  Standard_EXPORT occ::handle<
-    NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>
-    Properties() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>> Properties() const;
 
   //! Set field Properties
   Standard_EXPORT void SetProperties(
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>&
-      Properties);
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>& Properties);
 
   DEFINE_STANDARD_RTTIEXT(StepElement_ElementMaterial, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString> theMaterialId;
-  occ::handle<TCollection_HAsciiString> theDescription;
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>
-    theProperties;
+  occ::handle<TCollection_HAsciiString>                         theMaterialId;
+  occ::handle<TCollection_HAsciiString>                         theDescription;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>> theProperties;
 };
 
 #endif // _StepElement_ElementMaterial_HeaderFile

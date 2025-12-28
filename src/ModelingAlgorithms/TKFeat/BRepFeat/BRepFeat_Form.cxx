@@ -41,6 +41,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -48,9 +49,7 @@
 extern bool BRepFeat_GettraceFEAT();
 #endif
 
-static void Descendants(const TopoDS_Shape&,
-                        BRepFeat_Builder&,
-                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
+static void Descendants(const TopoDS_Shape&, BRepFeat_Builder&, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 
 //=======================================================================
 // function : Perform
@@ -77,8 +76,8 @@ void BRepFeat_Form::GlobalPerform()
   }
 
   //--- Initialisation
-  TopExp_Explorer                                                                    exp, exp2;
-  int                                                                                theOpe = 2;
+  TopExp_Explorer                               exp, exp2;
+  int                              theOpe = 2;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
 
   if (myJustFeat && !myFuse)
@@ -158,7 +157,7 @@ void BRepFeat_Form::GlobalPerform()
   }
 
   NCollection_List<TopoDS_Shape>::Iterator it, it2;
-  int                                      sens = 0;
+  int                   sens = 0;
 
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   Curves(scur);
@@ -350,10 +349,9 @@ void BRepFeat_Form::GlobalPerform()
       }
     }
 
-    LocOpe_FindEdges theFE;
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                    locmap;
-    TopExp_Explorer expp(Comp, TopAbs_SOLID);
+    LocOpe_FindEdges                   theFE;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> locmap;
+    TopExp_Explorer                    expp(Comp, TopAbs_SOLID);
     if (expp.More() && !Comp.IsNull() && !myGShape.IsNull())
     {
       BRepAlgoAPI_Cut trP(myGShape, Comp);
@@ -456,7 +454,7 @@ void BRepFeat_Form::GlobalPerform()
           theGlue.Init(mySbase, theGShape);
           for (itm.Initialize(myGluedF); itm.More(); itm.Next())
           {
-            const TopoDS_Face&             gl = TopoDS::Face(itm.Key());
+            const TopoDS_Face&   gl = TopoDS::Face(itm.Key());
             NCollection_List<TopoDS_Shape> ldsc;
             if (trP.IsDeleted(gl))
             {
@@ -736,7 +734,7 @@ void BRepFeat_Form::GlobalPerform()
           TopExp_Explorer ex(mySFrom, TopAbs_FACE);
           for (; ex.More(); ex.Next())
           {
-            const TopoDS_Face&             fac = TopoDS::Face(ex.Current());
+            const TopoDS_Face&   fac = TopoDS::Face(ex.Current());
             NCollection_List<TopoDS_Shape> thelist4;
             myMap.Bind(fac, thelist4);
             if (trP.IsDeleted(fac))
@@ -758,7 +756,7 @@ void BRepFeat_Form::GlobalPerform()
           TopExp_Explorer ex(mySUntil, TopAbs_FACE);
           for (; ex.More(); ex.Next())
           {
-            const TopoDS_Face&             fac = TopoDS::Face(ex.Current());
+            const TopoDS_Face&   fac = TopoDS::Face(ex.Current());
             NCollection_List<TopoDS_Shape> thelist5;
             myMap.Bind(fac, thelist5);
             if (trP.IsDeleted(fac))
@@ -778,7 +776,7 @@ void BRepFeat_Form::GlobalPerform()
     //
 
     //--- generation of "just feature" for assembly = Parts of tool
-    bool             bFlag = (myPerfSelection == BRepFeat_NoSelection) ? 0 : 1;
+    bool bFlag = (myPerfSelection == BRepFeat_NoSelection) ? 0 : 1;
     BRepFeat_Builder theBuilder;
     theBuilder.Init(mySbase, theGShape);
     theBuilder.SetOperation(myFuse, bFlag);
@@ -787,10 +785,10 @@ void BRepFeat_Form::GlobalPerform()
     NCollection_List<TopoDS_Shape> lshape;
     theBuilder.PartsOfTool(lshape);
     //
-    double                  pbmin = RealLast(), pbmax = RealFirst();
-    double                  prmin = RealLast() - 2 * Precision::Confusion();
-    double                  prmax = RealFirst() + 2 * Precision::Confusion();
-    bool                    flag1 = false;
+    double      pbmin = RealLast(), pbmax = RealFirst();
+    double      prmin = RealLast() - 2 * Precision::Confusion();
+    double      prmax = RealFirst() + 2 * Precision::Confusion();
+    bool   flag1 = false;
     occ::handle<Geom_Curve> C;
 
     //--- Selection of pieces of tool to be preserved
@@ -822,7 +820,7 @@ void BRepFeat_Form::GlobalPerform()
         if (C->IsPeriodic())
         {
           double period = C->Period();
-          prmax         = prmax2;
+          prmax                = prmax2;
           if (flag1)
           {
             prmin = ElCLib::InPeriod(prmin1, prmax - period, prmax);
@@ -925,9 +923,9 @@ void BRepFeat_Form::GlobalPerform()
               {
                 if (mapFuntil.Contains(expf.Current()))
                 {
-                  bool   flag2, flag3;
-                  double prmin1, prmax1, prbmin1, prbmax1;
-                  double prmin2, prmax2, prbmin2, prbmax2;
+                  bool flag2, flag3;
+                  double    prmin1, prmax1, prbmin1, prbmax1;
+                  double    prmin2, prmax2, prbmin2, prbmax2;
                   BRepFeat::ParametricMinMax(expf.Current(),
                                              C,
                                              prmin1,
@@ -1012,9 +1010,9 @@ void BRepFeat_Form::GlobalPerform()
               {
                 if (mapFfrom.Contains(expf.Current()))
                 {
-                  bool   flag2, flag3;
-                  double prmin1, prmax1, prbmin1, prbmax1;
-                  double prmin2, prmax2, prbmin2, prbmax2;
+                  bool flag2, flag3;
+                  double    prmin1, prmax1, prbmin1, prbmax1;
+                  double    prmin2, prmax2, prbmin2, prbmax2;
                   BRepFeat::ParametricMinMax(expf.Current(),
                                              C,
                                              prmin1,
@@ -1091,17 +1089,24 @@ void BRepFeat_Form::GlobalPerform()
       // Parse PartsOfTool to preserve or not depending on ParametricMinMax
       if (!myJustFeat)
       {
-        bool   KeepParts = false;
-        double prmin1, prmax1, prbmin1, prbmax1;
-        double min, max, pmin, pmax;
-        bool   flag2;
+        bool KeepParts = false;
+        double    prmin1, prmax1, prbmin1, prbmax1;
+        double    min, max, pmin, pmax;
+        bool flag2;
         for (it.Initialize(lshape); it.More(); it.Next())
         {
           if (C->IsPeriodic())
           {
             double period = C->Period();
             double pr, prb;
-            BRepFeat::ParametricMinMax(it.Value(), C, pr, prmax1, prb, prbmax1, flag2, true);
+            BRepFeat::ParametricMinMax(it.Value(),
+                                       C,
+                                       pr,
+                                       prmax1,
+                                       prb,
+                                       prbmax1,
+                                       flag2,
+                                       true);
             if (flag2)
             {
               prmin1 = ElCLib::InPeriod(pr, prmax1 - period, prmax1);
@@ -1153,10 +1158,10 @@ void BRepFeat_Form::GlobalPerform()
       else
       {
         // case JustFeature -> all PartsOfTool are preserved
-        double       prmin1, prmax1, prbmin1, prbmax1;
-        double       min, max, pmin, pmax;
-        bool         flag2;
-        TopoDS_Shape Compo;
+        double    prmin1, prmax1, prbmin1, prbmax1;
+        double    min, max, pmin, pmax;
+        bool flag2;
+        TopoDS_Shape     Compo;
         B.MakeCompound(TopoDS::Compound(Compo));
         for (it.Initialize(lshape); it.More(); it.Next())
         {
@@ -1277,14 +1282,13 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_Form::Generated(const TopoDS_Shap
 
 void BRepFeat_Form::UpdateDescendants(const LocOpe_Gluer& G)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator                                                       itdm;
-  NCollection_List<TopoDS_Shape>::Iterator                         it, it2;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdm;
+  NCollection_List<TopoDS_Shape>::Iterator                  it, it2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator                    itm;
 
   for (itdm.Initialize(myMap); itdm.More(); itdm.Next())
   {
-    const TopoDS_Shape&                                    orig = itdm.Key();
+    const TopoDS_Shape& orig = itdm.Key();
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> newdsc;
     for (it.Initialize(itdm.Value()); it.More(); it.Next())
     {
@@ -1422,7 +1426,7 @@ bool BRepFeat_Form::TransformShapeFU(const int flag)
   {
     for (exp.ReInit(); exp.More(); exp.Next())
     {
-      const TopoDS_Shape&            fac = exp.Current();
+      const TopoDS_Shape&  fac = exp.Current();
       NCollection_List<TopoDS_Shape> thelist8;
       myMap.Bind(fac, thelist8);
       myMap(fac).Append(fac);
@@ -1449,17 +1453,15 @@ BRepFeat_StatusError BRepFeat_Form::CurrentStatusError() const
 
 //=================================================================================================
 
-static void Descendants(const TopoDS_Shape&                                     S,
-                        BRepFeat_Builder&                                       theFB,
-                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& mapF)
+static void Descendants(const TopoDS_Shape& S, BRepFeat_Builder& theFB, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& mapF)
 {
   mapF.Clear();
   NCollection_List<TopoDS_Shape>::Iterator it;
-  TopExp_Explorer                          exp;
+  TopExp_Explorer                    exp;
   for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
   {
 
-    const TopoDS_Face&                    fdsc = TopoDS::Face(exp.Current());
+    const TopoDS_Face&          fdsc = TopoDS::Face(exp.Current());
     const NCollection_List<TopoDS_Shape>& aLM  = theFB.Modified(fdsc);
     it.Initialize(aLM);
     for (; it.More(); it.Next())
@@ -1473,13 +1475,12 @@ static void Descendants(const TopoDS_Shape&                                     
 
 void BRepFeat_Form::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
                                       const TopoDS_Shape&                 S,
-                                      const bool                          SkipFace)
+                                      const bool              SkipFace)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator                                                       itdm;
-  NCollection_List<TopoDS_Shape>::Iterator                         it, it2;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
-  TopExp_Explorer                                                  exp;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdm;
+  NCollection_List<TopoDS_Shape>::Iterator                  it, it2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator                    itm;
+  TopExp_Explorer                                     exp;
 
   for (itdm.Initialize(myMap); itdm.More(); itdm.Next())
   {
@@ -1511,8 +1512,8 @@ void BRepFeat_Form::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
       }
       if (!exp.More())
       {
-        BRepAlgoAPI_BooleanOperation*         pBOP = (BRepAlgoAPI_BooleanOperation*)&aBOP;
-        const NCollection_List<TopoDS_Shape>& aLM  = pBOP->Modified(fdsc);
+        BRepAlgoAPI_BooleanOperation* pBOP = (BRepAlgoAPI_BooleanOperation*)&aBOP;
+        const NCollection_List<TopoDS_Shape>&   aLM  = pBOP->Modified(fdsc);
         it2.Initialize(aLM);
         for (; it2.More(); it2.Next())
         {

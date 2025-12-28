@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <BRepBuilderAPI_Command.hxx>
 #include <Message_ProgressRange.hxx>
@@ -60,8 +61,9 @@ public:
 protected:
   Standard_EXPORT BRepBuilderAPI_MakeShape();
 
-  TopoDS_Shape                   myShape;
+  TopoDS_Shape         myShape;
   NCollection_List<TopoDS_Shape> myGenerated;
+
 };
 
 #endif // _BRepBuilderAPI_MakeShape_HeaderFile

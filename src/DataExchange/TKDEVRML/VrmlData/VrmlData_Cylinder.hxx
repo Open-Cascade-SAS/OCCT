@@ -43,8 +43,8 @@ public:
    */
   inline VrmlData_Cylinder(const VrmlData_Scene& theScene,
                            const char*           theName,
-                           const double          theRadius = 1.,
-                           const double          theHeight = 2.)
+                           const double   theRadius = 1.,
+                           const double   theHeight = 2.)
       : VrmlData_Geometry(theScene, theName),
         myRadius(theRadius),
         myHeight(theHeight),
@@ -100,7 +100,9 @@ public:
   /**
    * Set which faces are included
    */
-  inline void SetFaces(const bool hasBottom, const bool hasSide, const bool hasTop)
+  inline void SetFaces(const bool hasBottom,
+                       const bool hasSide,
+                       const bool hasTop)
   {
     myHasBottom = hasBottom;
     myHasSide   = hasSide;
@@ -119,8 +121,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
-    const occ::handle<VrmlData_Node>& theOther) const override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
+    override;
 
   /**
    * Fill the Node internal data from the given input stream.
@@ -134,11 +136,11 @@ public:
 
 private:
   // ---------- PRIVATE FIELDS ----------
-  double myRadius;
-  double myHeight;
-  bool   myHasBottom : 1;
-  bool   myHasSide : 1;
-  bool   myHasTop : 1;
+  double    myRadius;
+  double    myHeight;
+  bool myHasBottom : 1;
+  bool myHasSide : 1;
+  bool myHasTop : 1;
 
 public:
   // Declaration of CASCADE RTTI

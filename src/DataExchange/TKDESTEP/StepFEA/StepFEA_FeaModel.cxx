@@ -28,14 +28,13 @@ StepFEA_FeaModel::StepFEA_FeaModel() {}
 //=================================================================================================
 
 void StepFEA_FeaModel::Init(
-  const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-                                                                   aRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>&               aRepresentation_ContextOfItems,
-  const occ::handle<TCollection_HAsciiString>&                     aCreatingSoftware,
-  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aIntendedAnalysisCode,
-  const occ::handle<TCollection_HAsciiString>&                     aDescription,
-  const occ::handle<TCollection_HAsciiString>&                     aAnalysisType)
+  const occ::handle<TCollection_HAsciiString>&             aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&       aRepresentation_ContextOfItems,
+  const occ::handle<TCollection_HAsciiString>&             aCreatingSoftware,
+  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>&         aIntendedAnalysisCode,
+  const occ::handle<TCollection_HAsciiString>&             aDescription,
+  const occ::handle<TCollection_HAsciiString>&             aAnalysisType)
 {
   StepRepr_Representation::Init(aRepresentation_Name,
                                 aRepresentation_Items,
@@ -67,8 +66,7 @@ void StepFEA_FeaModel::SetCreatingSoftware(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<TCollection_AsciiString>> StepFEA_FeaModel::IntendedAnalysisCode()
-  const
+occ::handle<NCollection_HArray1<TCollection_AsciiString>> StepFEA_FeaModel::IntendedAnalysisCode() const
 {
   return theIntendedAnalysisCode;
 }

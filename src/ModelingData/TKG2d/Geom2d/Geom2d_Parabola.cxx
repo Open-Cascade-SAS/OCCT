@@ -58,7 +58,9 @@ Geom2d_Parabola::Geom2d_Parabola(const gp_Parab2d& Prb)
 
 //=================================================================================================
 
-Geom2d_Parabola::Geom2d_Parabola(const Ax2d& MirrorAxis, const double Focal, const bool Sense)
+Geom2d_Parabola::Geom2d_Parabola(const Ax2d&            MirrorAxis,
+                                 const double    Focal,
+                                 const bool Sense)
     : focalLength(Focal)
 {
   if (Focal < 0.0)

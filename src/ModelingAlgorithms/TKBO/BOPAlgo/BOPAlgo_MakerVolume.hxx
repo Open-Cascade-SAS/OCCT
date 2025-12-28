@@ -25,6 +25,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 class BOPAlgo_PaveFiller;
@@ -164,13 +165,12 @@ protected:
   Standard_EXPORT void MakeBox(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces);
 
   //! Builds solids.
-  Standard_EXPORT void BuildSolids(NCollection_List<TopoDS_Shape>& theLSR,
-                                   const Message_ProgressRange&    theRange);
+  Standard_EXPORT void BuildSolids(NCollection_List<TopoDS_Shape>&        theLSR,
+                                   const Message_ProgressRange& theRange);
 
   //! Removes the covering box.
-  Standard_EXPORT void RemoveBox(
-    NCollection_List<TopoDS_Shape>&                               theLSR,
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces);
+  Standard_EXPORT void RemoveBox(NCollection_List<TopoDS_Shape>&      theLSR,
+                                 const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theBoxFaces);
 
   //! Fills the solids with internal shapes.
   Standard_EXPORT void FillInternalShapes(const NCollection_List<TopoDS_Shape>& theLSR);
@@ -197,11 +197,12 @@ protected:
   Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
 
 protected:
-  bool                           myIntersect;
-  Bnd_Box                        myBBox;
-  TopoDS_Solid                   mySBox;
+  bool     myIntersect;
+  Bnd_Box              myBBox;
+  TopoDS_Solid         mySBox;
   NCollection_List<TopoDS_Shape> myFaces;
-  bool                           myAvoidInternalShapes;
+  bool     myAvoidInternalShapes;
+
 };
 
 #include <BOPAlgo_MakerVolume.lxx>

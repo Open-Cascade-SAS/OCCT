@@ -21,8 +21,8 @@ StepGeom_PointOnSurface::StepGeom_PointOnSurface() {}
 
 void StepGeom_PointOnSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                    const occ::handle<StepGeom_Surface>&         aBasisSurface,
-                                   const double                                 aPointParameterU,
-                                   const double                                 aPointParameterV)
+                                   const double                     aPointParameterU,
+                                   const double                     aPointParameterV)
 {
   // --- classe own fields ---
   basisSurface    = aBasisSurface;

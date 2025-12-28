@@ -62,11 +62,11 @@ void TDF_CopyLabel::Load(const TDF_Label& aSource, const TDF_Label& aTarget)
 
 //=================================================================================================
 
-void TDF_CopyLabel::ExternalReferences(const TDF_Label&                             aRefLabel,
-                                       const TDF_Label&                             aLabel,
-                                       NCollection_Map<occ::handle<TDF_Attribute>>& aExternals,
-                                       const TDF_IDFilter&                          aFilter,
-                                       occ::handle<TDF_DataSet>&                    ds)
+void TDF_CopyLabel::ExternalReferences(const TDF_Label&     aRefLabel,
+                                       const TDF_Label&     aLabel,
+                                       NCollection_Map<occ::handle<TDF_Attribute>>&    aExternals,
+                                       const TDF_IDFilter&  aFilter,
+                                       occ::handle<TDF_DataSet>& ds)
 {
   //  TCollection_AsciiString entr1,entr2; //d
   for (TDF_AttributeIterator itr(aLabel); itr.More(); itr.Next())
@@ -76,8 +76,7 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label&                         
     //     TDF_Tool::Entry(itr.Value()->Label(), entr1);  //d
     //     std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<" Label =
     //     "<<entr1 <<std::endl;
-    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More();
-         attMItr.Next())
+    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(attMap); attMItr.More(); attMItr.Next())
     {
       const occ::handle<TDF_Attribute>& att = attMItr.Key();
 
@@ -95,8 +94,7 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label&                         
     }
 
     //     const NCollection_Map<TDF_Label>& labMap = ds->Labels();
-    //     for (NCollection_Map<TDF_Label>::Iterator labMItr(labMap);labMItr.More(); labMItr.Next())
-    //     {
+    //     for (NCollection_Map<TDF_Label>::Iterator labMItr(labMap);labMItr.More(); labMItr.Next()) {
     //       TDF_Tool::Entry(labMItr.Key(), entr1);
     // 	std::cout<<"\t\tLABELS from DS of Attr:: Lab = "<<entr1<<std::endl;
     //       if (!labMItr.Key().IsDescendant(aRefLabel) && labMItr.Key().IsDifferent(aRefLabel)) {
@@ -118,9 +116,9 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label&                         
 
 //=================================================================================================
 
-bool TDF_CopyLabel::ExternalReferences(const TDF_Label&                             L,
-                                       NCollection_Map<occ::handle<TDF_Attribute>>& aExternals,
-                                       const TDF_IDFilter&                          aFilter)
+bool TDF_CopyLabel::ExternalReferences(const TDF_Label&    L,
+                                                   NCollection_Map<occ::handle<TDF_Attribute>>&   aExternals,
+                                                   const TDF_IDFilter& aFilter)
 {
   occ::handle<TDF_DataSet> ds = new TDF_DataSet();
   ExternalReferences(L, L, aExternals, aFilter, ds);
@@ -161,16 +159,15 @@ void TDF_CopyLabel::Perform()
 
   bool extReferers = ExternalReferences(mySL, myMapOfExt, myFilter);
 
-  myRT                        = new TDF_RelocationTable(true);
+  myRT                   = new TDF_RelocationTable(true);
   occ::handle<TDF_DataSet> ds = new TDF_DataSet();
-  TDF_ClosureMode          mode(true); // descendant plus reference
+  TDF_ClosureMode     mode(true); // descendant plus reference
   ds->AddLabel(mySL);
   myRT->SetRelocation(mySL, myTL);
   TDF_ClosureTool::Closure(ds, myFilter, mode);
   if (extReferers)
   {
-    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(myMapOfExt); attMItr.More();
-         attMItr.Next())
+    for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(myMapOfExt); attMItr.More(); attMItr.Next())
     {
       const occ::handle<TDF_Attribute>& att = attMItr.Key();
       myRT->SetRelocation(att, att);

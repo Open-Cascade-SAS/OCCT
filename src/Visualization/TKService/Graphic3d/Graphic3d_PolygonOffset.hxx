@@ -22,8 +22,8 @@
 struct Graphic3d_PolygonOffset
 {
   Aspect_PolygonOffsetMode Mode;
-  float                    Factor;
-  float                    Units;
+  float       Factor;
+  float       Units;
 
   //! Empty constructor.
   Graphic3d_PolygonOffset()

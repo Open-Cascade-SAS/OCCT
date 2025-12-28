@@ -113,28 +113,18 @@ public:
   Standard_EXPORT bool DetachShader(const occ::handle<Graphic3d_ShaderObject>& theShader);
 
   //! Returns list of attached shader objects.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& ShaderObjects() const
-  {
-    return myShaderObjects;
-  }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>& ShaderObjects() const { return myShaderObjects; }
 
   //! The list of currently pushed but not applied custom uniform variables.
   //! This list is automatically cleared after applying to GLSL program.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>& Variables() const
-  {
-    return myVariables;
-  }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>& Variables() const { return myVariables; }
 
   //! Return the list of custom vertex attributes.
-  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& VertexAttributes() const
-  {
-    return myAttributes;
-  }
+  const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& VertexAttributes() const { return myAttributes; }
 
   //! Assign the list of custom vertex attributes.
   //! Should be done before GLSL program initialization.
-  Standard_EXPORT void SetVertexAttributes(
-    const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes);
+  Standard_EXPORT void SetVertexAttributes(const NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>& theAttributes);
 
   //! Returns the number (1+) of Fragment Shader outputs to be written to
   //! (more than 1 can be in case of multiple draw buffers); 1 by default.
@@ -198,21 +188,21 @@ public:
 
   //! Pushes vec2 uniform.
   bool PushVariableVec2(const TCollection_AsciiString& theName,
-                        const NCollection_Vec2<float>& theValue)
+                                    const NCollection_Vec2<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec3 uniform.
   bool PushVariableVec3(const TCollection_AsciiString& theName,
-                        const NCollection_Vec3<float>& theValue)
+                                    const NCollection_Vec3<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec4 uniform.
   bool PushVariableVec4(const TCollection_AsciiString& theName,
-                        const NCollection_Vec4<float>& theValue)
+                                    const NCollection_Vec4<float>&          theValue)
   {
     return PushVariable(theName, theValue);
   }
@@ -225,21 +215,21 @@ public:
 
   //! Pushes vec2i uniform.
   bool PushVariableVec2i(const TCollection_AsciiString& theName,
-                         const NCollection_Vec2<int>&   theValue)
+                                     const NCollection_Vec2<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec3i uniform.
   bool PushVariableVec3i(const TCollection_AsciiString& theName,
-                         const NCollection_Vec3<int>&   theValue)
+                                     const NCollection_Vec3<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
 
   //! Pushes vec4i uniform.
   bool PushVariableVec4i(const TCollection_AsciiString& theName,
-                         const NCollection_Vec4<int>&   theValue)
+                                     const NCollection_Vec4<int>&         theValue)
   {
     return PushVariable(theName, theValue);
   }
@@ -251,13 +241,10 @@ public:
   Standard_EXPORT static const TCollection_AsciiString& ShadersFolder();
 
 private:
-  TCollection_AsciiString myID; //!< the unique identifier of program object
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>
-    myShaderObjects; //!< the list of attached shader objects
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>
-    myVariables; //!< the list of custom uniform variables
-  NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>>
-    myAttributes; //!< the list of custom vertex attributes
+  TCollection_AsciiString       myID;            //!< the unique identifier of program object
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>    myShaderObjects; //!< the list of attached shader objects
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderVariable>>  myVariables;     //!< the list of custom uniform variables
+  NCollection_Sequence<occ::handle<Graphic3d_ShaderAttribute>> myAttributes;    //!< the list of custom vertex attributes
   // clang-format off
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
   int              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
@@ -277,11 +264,11 @@ private:
 // purpose  : Pushes custom uniform variable to the program
 // =======================================================================
 template <class T>
-inline bool Graphic3d_ShaderProgram::PushVariable(const TCollection_AsciiString& theName,
-                                                  const T&                       theValue)
+inline bool Graphic3d_ShaderProgram::PushVariable(
+  const TCollection_AsciiString& theName,
+  const T&                       theValue)
 {
-  occ::handle<Graphic3d_ShaderVariable> aVariable =
-    Graphic3d_ShaderVariable::Create(theName, theValue);
+  occ::handle<Graphic3d_ShaderVariable> aVariable = Graphic3d_ShaderVariable::Create(theName, theValue);
   if (aVariable.IsNull() || !aVariable->IsDone())
   {
     return false;

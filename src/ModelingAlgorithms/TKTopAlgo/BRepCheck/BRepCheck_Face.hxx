@@ -45,7 +45,8 @@ public:
 
   Standard_EXPORT BRepCheck_Status ClassifyWires(const bool Update = false);
 
-  Standard_EXPORT BRepCheck_Status OrientationOfWires(const bool Update = false);
+  Standard_EXPORT BRepCheck_Status
+    OrientationOfWires(const bool Update = false);
 
   Standard_EXPORT void SetUnorientable();
 
@@ -61,15 +62,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Face, BRepCheck_Result)
 
 private:
-  bool             myIntdone;
-  BRepCheck_Status myIntres;
-  bool             myImbdone;
-  BRepCheck_Status myImbres;
-  bool             myOridone;
-  BRepCheck_Status myOrires;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-       myMapImb;
-  bool myGctrl;
+  bool                   myIntdone;
+  BRepCheck_Status                   myIntres;
+  bool                   myImbdone;
+  BRepCheck_Status                   myImbres;
+  bool                   myOridone;
+  BRepCheck_Status                   myOrires;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapImb;
+  bool                   myGctrl;
 };
 
 #endif // _BRepCheck_Face_HeaderFile

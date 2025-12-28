@@ -67,7 +67,7 @@ public:
 
   //! Returns global instance of exception
   Standard_EXPORT static occ::handle<Standard_OutOfMemory> NewInstance(const char* theMessage,
-                                                                       const char* theStackTrace);
+                                                                  const char* theStackTrace);
 
   DEFINE_STANDARD_RTTIEXT(Standard_OutOfMemory, Standard_ProgramError)
 

@@ -19,11 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationRelationship, Standard_Transie
 
 StepRepr_RepresentationRelationship::StepRepr_RepresentationRelationship() {}
 
-void StepRepr_RepresentationRelationship::Init(
-  const occ::handle<TCollection_HAsciiString>& aName,
-  const occ::handle<TCollection_HAsciiString>& aDescription,
-  const occ::handle<StepRepr_Representation>&  aRep1,
-  const occ::handle<StepRepr_Representation>&  aRep2)
+void StepRepr_RepresentationRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
+                                               const occ::handle<TCollection_HAsciiString>& aDescription,
+                                               const occ::handle<StepRepr_Representation>&  aRep1,
+                                               const occ::handle<StepRepr_Representation>&  aRep2)
 {
   // --- classe own fields ---
   name        = aName;
@@ -32,8 +31,7 @@ void StepRepr_RepresentationRelationship::Init(
   rep2        = aRep2;
 }
 
-void StepRepr_RepresentationRelationship::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepRepr_RepresentationRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }

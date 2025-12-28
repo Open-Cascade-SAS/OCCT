@@ -60,7 +60,9 @@ public:
 protected:
   //! @brief Filter cells according to the given set of ids.
   //! Note: Data arrays are not passed through if filtering is turned on.
-  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
+  virtual int RequestData(vtkInformation*,
+                          vtkInformationVector**,
+                          vtkInformationVector*) override;
 
   IVtkTools_SubPolyDataFilter();
   virtual ~IVtkTools_SubPolyDataFilter();
@@ -68,9 +70,9 @@ protected:
 protected:
   //! Set of ids to be passed through this filter.
   NCollection_Map<IVtk_IdType> myIdsSet;
-  const char*                  myIdsArrayName;
-  bool                         myDoFiltering;
-  bool                         myToCopyNormals;
+  const char*    myIdsArrayName;
+  bool           myDoFiltering;
+  bool           myToCopyNormals;
 };
 
 #ifdef _MSC_VER

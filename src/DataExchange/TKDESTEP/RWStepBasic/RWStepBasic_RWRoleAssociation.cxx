@@ -28,11 +28,10 @@ RWStepBasic_RWRoleAssociation::RWStepBasic_RWRoleAssociation() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWRoleAssociation::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepBasic_RoleAssociation>& ent) const
+void RWStepBasic_RWRoleAssociation::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepBasic_RoleAssociation>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "role_association"))
@@ -52,9 +51,8 @@ void RWStepBasic_RWRoleAssociation::ReadStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWRoleAssociation::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepBasic_RoleAssociation>& ent) const
+void RWStepBasic_RWRoleAssociation::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepBasic_RoleAssociation>& ent) const
 {
 
   // Own fields of RoleAssociation
@@ -67,7 +65,7 @@ void RWStepBasic_RWRoleAssociation::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWRoleAssociation::Share(const occ::handle<StepBasic_RoleAssociation>& ent,
-                                          Interface_EntityIterator&                     iter) const
+                                          Interface_EntityIterator&                iter) const
 {
 
   // Own fields of RoleAssociation

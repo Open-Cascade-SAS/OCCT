@@ -35,23 +35,17 @@ public:
   //! Returns a StyledItem
   StepVisual_StyledItem() {}
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
-                                           aStyles,
-    const occ::handle<Standard_Transient>& aItem);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&                        aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles,
+                            const occ::handle<Standard_Transient>&                              aItem);
 
   Standard_EXPORT void SetStyles(
-    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
-      aStyles);
+    const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& aStyles);
 
-  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>&
-    Styles() const
-  {
-    return myStyles;
-  }
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>& Styles() const { return myStyles; }
 
-  const occ::handle<StepVisual_PresentationStyleAssignment>& StylesValue(const int num) const
+  const occ::handle<StepVisual_PresentationStyleAssignment>& StylesValue(
+    const int num) const
   {
     return myStyles->Value(num);
   }

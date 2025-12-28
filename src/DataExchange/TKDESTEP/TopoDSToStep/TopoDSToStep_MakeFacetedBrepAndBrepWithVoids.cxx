@@ -28,11 +28,14 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -50,28 +53,28 @@
 // containing more than one closed shell
 //=============================================================================
 TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBrepWithVoids(
-  const TopoDS_Solid&                        aSolid,
+  const TopoDS_Solid&                   aSolid,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   done = false;
-  TopoDS_Iterator                                                                             It;
+  TopoDS_Iterator                  It;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
-  NCollection_Sequence<occ::handle<Standard_Transient>>                                       S;
-  TopoDS_Shell aOutShell;
+  NCollection_Sequence<occ::handle<Standard_Transient>>      S;
+  TopoDS_Shell                     aOutShell;
 
-  occ::handle<StepShape_TopologicalRepresentationItem>                         aItem;
-  occ::handle<StepShape_ClosedShell>                                           aOuter, aCShell;
-  occ::handle<StepShape_OrientedClosedShell>                                   aOCShell;
-  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
-  NCollection_Sequence<occ::handle<Standard_Transient>>                        aTessShells;
+  occ::handle<StepShape_TopologicalRepresentationItem> aItem;
+  occ::handle<StepShape_ClosedShell>                   aOuter, aCShell;
+  occ::handle<StepShape_OrientedClosedShell>           aOCShell;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>  aVoids;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                     aTessShells;
 
   aOutShell = BRepClass3d::OuterShell(aSolid);
 
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
-  TopoDSToStep_Builder            StepB;
-  TopoDSToStep_Tool               aTool(aStepModel);
+  TopoDSToStep_Builder       StepB;
+  TopoDSToStep_Tool          aTool(aStepModel);
 
   if (!aOutShell.IsNull())
   {
@@ -108,16 +111,14 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
           }
           else
           {
-            occ::handle<TransferBRep_ShapeMapper> errShape =
-              new TransferBRep_ShapeMapper(CurrentShell);
+            occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(CurrentShell);
             FP->AddWarning(errShape, " Shell from Solid not mapped to FacetedBrepAndBrepWithVoids");
           }
         }
         else
         {
-          done = false;
-          occ::handle<TransferBRep_ShapeMapper> errShape =
-            new TransferBRep_ShapeMapper(CurrentShell);
+          done                                      = false;
+          occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(CurrentShell);
           FP->AddWarning(errShape,
                          " Shell from Solid not closed; not mapped to FacetedBrepAndBrepWithVoids");
         }
@@ -129,7 +130,7 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
   int N = S.Length();
   if (N >= 1)
   {
-    aVoids = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, N);
+    aVoids                                 = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, N);
     occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
     for (int i = 1; i <= N; i++)
     {
@@ -144,10 +145,8 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
     {
       occ::handle<StepVisual_TessellatedSolid> aTessSolid = new StepVisual_TessellatedSolid();
       occ::handle<TCollection_HAsciiString>    aTessName  = new TCollection_HAsciiString("");
-      int                                      aNbItems   = 0;
-      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells);
-           anIt.More();
-           anIt.Next())
+      int                    aNbItems   = 0;
+      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
       {
         occ::handle<StepVisual_TessellatedShell> aTessShell =
           occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
@@ -155,9 +154,7 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
       }
       occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
         new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, aNbItems);
-      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells);
-           anIt.More();
-           anIt.Next())
+      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
       {
         occ::handle<StepVisual_TessellatedShell> aTessShell =
           occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
@@ -175,7 +172,7 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
   }
   else
   {
-    done                                           = false;
+    done                                      = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aSolid);
     FP->AddWarning(errShape,
                    " Solid contains no Shell to be mapped to FacetedBrepAndBrepWithVoids");
@@ -186,8 +183,8 @@ TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::TopoDSToStep_MakeFacetedBrepAndBre
 // renvoi des valeurs
 //=============================================================================
 
-const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>&
-  TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::Value() const
+const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::
+  Value() const
 {
   StdFail_NotDone_Raise_if(!done,
                            "TopoDSToStep_MakeFacetedBrepAndBrepWithVoids::Value() - no result");

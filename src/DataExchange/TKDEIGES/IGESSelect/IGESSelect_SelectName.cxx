@@ -35,9 +35,10 @@ occ::handle<TCollection_HAsciiString> IGESSelect_SelectName::Name() const
   return thename;
 }
 
-bool IGESSelect_SelectName::Sort(const int /*rank*/,
-                                 const occ::handle<Standard_Transient>& ent,
-                                 const occ::handle<Interface_InterfaceModel>& /*model*/) const
+bool IGESSelect_SelectName::Sort(
+  const int /*rank*/,
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())

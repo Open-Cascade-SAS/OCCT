@@ -35,7 +35,9 @@
 // traitee separement. Les tests effectues ont montre que le code effectue
 // specialement pour celle-ci etait plus long qu'une simple recopie. C'est
 // donc cette solution de recopie initiale qui a ete retenue.
-math_Householder::math_Householder(const math_Matrix& A, const math_Vector& B, const double EPS)
+math_Householder::math_Householder(const math_Matrix&  A,
+                                   const math_Vector&  B,
+                                   const double EPS)
     : Sol(1, A.ColNumber(), 1, 1),
       Q(1, A.RowNumber(), 1, A.ColNumber()),
       Done(false)
@@ -50,7 +52,9 @@ math_Householder::math_Householder(const math_Matrix& A, const math_Vector& B, c
   Perform(A, B1, EPS);
 }
 
-math_Householder::math_Householder(const math_Matrix& A, const math_Matrix& B, const double EPS)
+math_Householder::math_Householder(const math_Matrix&  A,
+                                   const math_Matrix&  B,
+                                   const double EPS)
     : Sol(1, A.ColNumber(), 1, B.ColNumber()),
       Q(1, A.RowNumber(), A.LowerCol(), A.UpperCol()),
       Done(false)
@@ -63,13 +67,13 @@ math_Householder::math_Householder(const math_Matrix& A, const math_Matrix& B, c
   Perform(A, B, EPS);
 }
 
-math_Householder::math_Householder(const math_Matrix& A,
-                                   const math_Matrix& B,
-                                   const int          lowerArow,
-                                   const int          upperArow,
-                                   const int          lowerAcol,
-                                   const int          upperAcol,
-                                   const double       EPS)
+math_Householder::math_Householder(const math_Matrix&     A,
+                                   const math_Matrix&     B,
+                                   const int lowerArow,
+                                   const int upperArow,
+                                   const int lowerAcol,
+                                   const int upperAcol,
+                                   const double    EPS)
     : Sol(1, upperAcol - lowerAcol + 1, 1, B.ColNumber()),
       Q(1, upperArow - lowerArow + 1, 1, upperAcol - lowerAcol + 1),
       Done(false)
@@ -85,10 +89,10 @@ math_Householder::math_Householder(const math_Matrix& A,
 void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B, const double EPS)
 {
 
-  int    i, j, k, n, l, m;
-  double f, g, h = 0., alfaii;
-  double qki;
-  double cj;
+  int i, j, k, n, l, m;
+  double    f, g, h = 0., alfaii;
+  double    qki;
+  double    cj;
   n = Q.ColNumber();
   l = Q.RowNumber();
   m = B.ColNumber();

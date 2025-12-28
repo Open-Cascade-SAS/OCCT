@@ -58,7 +58,8 @@ public:
   Standard_OStream& operator<<(Standard_OStream& OS) const { return Dump(OS); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(TDF_AttributeDelta, Standard_Transient)
 
@@ -67,7 +68,7 @@ protected:
 
 private:
   occ::handle<TDF_Attribute> myAttribute;
-  TDF_Label                  myLabel;
+  TDF_Label             myLabel;
 };
 
 #endif // _TDF_AttributeDelta_HeaderFile

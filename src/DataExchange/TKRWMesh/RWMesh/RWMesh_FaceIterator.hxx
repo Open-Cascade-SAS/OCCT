@@ -39,7 +39,7 @@ public:
   //! @param[in] theStyle Style information for the face
   Standard_EXPORT RWMesh_FaceIterator(const TDF_Label&       theLabel,
                                       const TopLoc_Location& theLocation,
-                                      const bool             theToMapColors = false,
+                                      const bool theToMapColors = false,
                                       const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
@@ -128,7 +128,10 @@ public:
   }
 
   //! Return number of nodes for the current face.
-  int NbNodes() const override { return !myPolyTriang.IsNull() ? myPolyTriang->NbNodes() : 0; }
+  int NbNodes() const override
+  {
+    return !myPolyTriang.IsNull() ? myPolyTriang->NbNodes() : 0;
+  }
 
   //! Lower node index in current triangulation.
   int NodeLower() const override { return 1; }
@@ -144,13 +147,19 @@ public:
 
 public:
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node(const int theNode) const override { return myPolyTriang->Node(theNode); }
+  gp_Pnt node(const int theNode) const override
+  {
+    return myPolyTriang->Node(theNode);
+  }
 
   //! Return normal at specified node index without face transformation applied.
   Standard_EXPORT gp_Dir normal(int theNode) const;
 
   //! Return triangle with specified index.
-  Poly_Triangle triangle(int theElemIndex) const { return myPolyTriang->Triangle(theElemIndex); }
+  Poly_Triangle triangle(int theElemIndex) const
+  {
+    return myPolyTriang->Triangle(theElemIndex);
+  }
 
 private:
   //! Reset information for current face.

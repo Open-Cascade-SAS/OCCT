@@ -63,7 +63,7 @@ public:
   //! Stores minimum depth, distance to center of geometry and closest point detected into
   //! thePickResult
   virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) = 0;
+                                   SelectBasics_PickResult&             thePickResult) = 0;
 
   //! Returns the number of sub-entities or elements in sensitive entity.
   //! Is used to determine if entity is complex and needs to pre-build BVH at the creation of
@@ -103,7 +103,8 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 protected:
   Standard_EXPORT Select3D_SensitiveEntity(const occ::handle<SelectMgr_EntityOwner>& theOwnerId);
@@ -111,7 +112,7 @@ protected:
 protected:
   occ::handle<SelectMgr_EntityOwner>   myOwnerId;
   occ::handle<Graphic3d_TransformPers> myTrsfPers;
-  int                                  mySFactor;
+  int                mySFactor;
 };
 
 #endif // _Select3D_SensitiveEntity_HeaderFile

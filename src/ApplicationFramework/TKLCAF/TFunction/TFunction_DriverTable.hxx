@@ -23,6 +23,9 @@
 #include <TFunction_Driver.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TFunction_Driver.hxx>
+#include <Standard_GUID.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
@@ -45,17 +48,18 @@ public:
   Standard_EXPORT TFunction_DriverTable();
 
   //! Returns true if the driver has been added successfully to the driver table.
-  Standard_EXPORT bool AddDriver(const Standard_GUID&                 guid,
-                                 const occ::handle<TFunction_Driver>& driver,
-                                 const int                            thread = 0);
+  Standard_EXPORT bool AddDriver(const Standard_GUID&            guid,
+                                             const occ::handle<TFunction_Driver>& driver,
+                                             const int          thread = 0);
 
   //! Returns true if the driver exists in the driver table.
-  Standard_EXPORT bool HasDriver(const Standard_GUID& guid, const int thread = 0) const;
+  Standard_EXPORT bool HasDriver(const Standard_GUID&   guid,
+                                             const int thread = 0) const;
 
   //! Returns true if the driver was found.
-  Standard_EXPORT bool FindDriver(const Standard_GUID&           guid,
-                                  occ::handle<TFunction_Driver>& driver,
-                                  const int                      thread = 0) const;
+  Standard_EXPORT bool FindDriver(const Standard_GUID&      guid,
+                                              occ::handle<TFunction_Driver>& driver,
+                                              const int    thread = 0) const;
 
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const;
 
@@ -63,7 +67,8 @@ public:
 
   //! Removes a driver with the given GUID.
   //! Returns true if the driver has been removed successfully.
-  Standard_EXPORT bool RemoveDriver(const Standard_GUID& guid, const int thread = 0);
+  Standard_EXPORT bool RemoveDriver(const Standard_GUID&   guid,
+                                                const int thread = 0);
 
   //! Removes all drivers. Returns true if the driver has been removed successfully.
   Standard_EXPORT void Clear();
@@ -71,10 +76,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(TFunction_DriverTable, Standard_Transient)
 
 private:
-  NCollection_DataMap<Standard_GUID, occ::handle<TFunction_Driver>> myDrivers;
-  occ::handle<
-    NCollection_HArray1<NCollection_DataMap<Standard_GUID, occ::handle<TFunction_Driver>>>>
-    myThreadDrivers;
+  NCollection_DataMap<Standard_GUID, occ::handle<TFunction_Driver>>                  myDrivers;
+  occ::handle<NCollection_HArray1<NCollection_DataMap<Standard_GUID, occ::handle<TFunction_Driver>>>> myThreadDrivers;
 };
 
 #endif // _TFunction_DriverTable_HeaderFile

@@ -54,16 +54,16 @@ public:
   //! Translate the contents of <aSource> and put it
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
-  Standard_EXPORT virtual bool Paste(const XmlObjMgt_Persistent&       aSource,
-                                     const occ::handle<TDF_Attribute>& aTarget,
-                                     XmlObjMgt_RRelocationTable&       aRelocTable) const = 0;
+  Standard_EXPORT virtual bool Paste(const XmlObjMgt_Persistent&  aSource,
+                                                 const occ::handle<TDF_Attribute>& aTarget,
+                                                 XmlObjMgt_RRelocationTable& aRelocTable) const = 0;
 
   //! Translate the contents of <aSource> and put it
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
   Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& aSource,
-                                     XmlObjMgt_Persistent&             aTarget,
-                                     XmlObjMgt_SRelocationTable&       aRelocTable) const = 0;
+                                     XmlObjMgt_Persistent&        aTarget,
+                                     XmlObjMgt_SRelocationTable&  aRelocTable) const = 0;
 
   //! Returns the current message driver of this driver
   const occ::handle<Message_Messenger>& MessageDriver() const { return myMessageDriver; }
@@ -72,11 +72,11 @@ public:
 
 protected:
   Standard_EXPORT XmlMDF_ADriver(const occ::handle<Message_Messenger>& theMessageDriver,
-                                 const char*                           theNamespace,
-                                 const char*                           theName = NULL);
+                                 const char*           theNamespace,
+                                 const char*           theName = NULL);
 
-  TCollection_AsciiString        myTypeName;
-  TCollection_AsciiString        myNamespace;
+  TCollection_AsciiString   myTypeName;
+  TCollection_AsciiString   myNamespace;
   occ::handle<Message_Messenger> myMessageDriver;
 
 private:

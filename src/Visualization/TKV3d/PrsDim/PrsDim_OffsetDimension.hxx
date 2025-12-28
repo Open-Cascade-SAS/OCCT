@@ -34,11 +34,14 @@ public:
   //! dimension aVal, and the text aText.
   Standard_EXPORT PrsDim_OffsetDimension(const TopoDS_Shape&               FistShape,
                                          const TopoDS_Shape&               SecondShape,
-                                         const double                      aVal,
+                                         const double               aVal,
                                          const TCollection_ExtendedString& aText);
 
   //! Indicates that the dimension we are concerned with is an offset.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_OFFSET; }
+  virtual PrsDim_KindOfDimension KindOfDimension() const override
+  {
+    return PrsDim_KOD_OFFSET;
+  }
 
   //! Returns true if the offset datum is movable.
   virtual bool IsMovable() const override { return true; }
@@ -56,13 +59,13 @@ private:
                                                 const int theMode) override;
 
   Standard_EXPORT void ComputeTwoFacesOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                             const gp_Trsf&                         aTrsf);
+                                             const gp_Trsf&                    aTrsf);
 
   Standard_EXPORT void ComputeTwoAxesOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                            const gp_Trsf&                         aTrsf);
+                                            const gp_Trsf&                    aTrsf);
 
   Standard_EXPORT void ComputeAxeFaceOffset(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                            const gp_Trsf&                         aTrsf);
+                                            const gp_Trsf&                    aTrsf);
 
 private:
   gp_Pnt  myFAttach;

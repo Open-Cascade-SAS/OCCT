@@ -213,7 +213,7 @@ Transfer_Binder::~Transfer_Binder()
     while (!aCurr->thenextr.IsNull() && aCurr->thenextr->GetRefCount() == 1)
     {
       occ::handle<Transfer_Binder> aPrev = aCurr;
-      aCurr                              = aCurr->thenextr;
+      aCurr                         = aCurr->thenextr;
       aPrev->thenextr.Nullify();
     }
   }

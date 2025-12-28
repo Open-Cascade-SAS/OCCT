@@ -792,7 +792,7 @@ TEST(Bnd_BoxTest, DumpJsonAndInitFromJson)
   // Try to deserialize
   std::stringstream anIStream(aJsonStr);
   Bnd_Box           aDeserializedBox;
-  int               aStreamPos = 1;
+  int  aStreamPos = 1;
 
   EXPECT_TRUE(aDeserializedBox.InitFromJson(anIStream, aStreamPos))
     << "Deserialization should succeed with proper JSON format";
@@ -825,9 +825,9 @@ TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
   // Create points with X coordinate varying from 0 to 1000
   // and compute cumulative bounding box by adding boxes for all the
   // points, enlarged on tolerance
-  const double aTol    = 1e-3;
-  const int    aNbStep = 1000;
-  Bnd_Box      aBox;
+  const double    aTol    = 1e-3;
+  const int aNbStep = 1000;
+  Bnd_Box                aBox;
 
   for (int i = 0; i <= aNbStep; i++)
   {

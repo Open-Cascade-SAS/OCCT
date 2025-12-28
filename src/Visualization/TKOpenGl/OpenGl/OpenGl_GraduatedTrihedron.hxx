@@ -40,8 +40,8 @@ public:
   Standard_EXPORT virtual ~OpenGl_GraduatedTrihedron();
 
   //! Draw the element.
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    override;
 
   //! Release OpenGL resources.
   Standard_EXPORT virtual void Release(OpenGl_Context* theCtx) override;
@@ -52,19 +52,18 @@ public:
   //! Sets up-to-date values of scene bounding box.
   //! Can be used in callback mechanism to get up-to-date values.
   //! @sa Graphic3d_GraduatedTrihedron::CubicAxesCallback
-  Standard_EXPORT void SetMinMax(const NCollection_Vec3<float>& theMin,
-                                 const NCollection_Vec3<float>& theMax);
+  Standard_EXPORT void SetMinMax(const NCollection_Vec3<float>& theMin, const NCollection_Vec3<float>& theMax);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
   //! Axis of trihedron. It incapsulates geometry and style.
   class Axis
   {
   public:
-    NCollection_Vec3<float>       Direction;
+    NCollection_Vec3<float>                   Direction;
     Quantity_Color                NameColor;
     OpenGl_Aspects                LineAspect;
     mutable OpenGl_Text           Label;
@@ -82,14 +81,12 @@ private:
     Axis& operator=(const Axis& theOther);
 
     void InitArrow(const occ::handle<OpenGl_Context>& theContext,
-                   const float                        theLength,
-                   const NCollection_Vec3<float>&     theNormal) const;
+                   const float      theLength,
+                   const NCollection_Vec3<float>&            theNormal) const;
 
-    void InitTickmark(const occ::handle<OpenGl_Context>& theContext,
-                      const NCollection_Vec3<float>&     theDir) const;
+    void InitTickmark(const occ::handle<OpenGl_Context>& theContext, const NCollection_Vec3<float>& theDir) const;
 
-    void InitLine(const occ::handle<OpenGl_Context>& theContext,
-                  const NCollection_Vec3<float>&     theDir) const;
+    void InitLine(const occ::handle<OpenGl_Context>& theContext, const NCollection_Vec3<float>& theDir) const;
 
     void Release(OpenGl_Context* theCtx);
   };
@@ -131,7 +128,7 @@ private:
   //! @param[out] theNormal  normal of the view out of user
   //! @return distance corresponding to 1 pixel
   float getNormal(const occ::handle<OpenGl_Context>& theContext,
-                  NCollection_Vec3<float>&           theNormal) const;
+                               NCollection_Vec3<float>&                  theNormal) const;
 
   //! Gets distance to point (theX, theY, theZ) of bounding box along the normal
   //! @param[in] theNormal  normal of the view out of user
@@ -139,16 +136,17 @@ private:
   //! @param[in] theX  x of target point
   //! @param[in] theY  y of target point
   //! @param[in] theZ  z of terget point
-  float getDistanceToCorner(const NCollection_Vec3<float>& theNormal,
-                            const NCollection_Vec3<float>& theCenter,
-                            const float                    theX,
-                            const float                    theY,
-                            const float                    theZ) const;
+  float getDistanceToCorner(const NCollection_Vec3<float>&       theNormal,
+                                         const NCollection_Vec3<float>&       theCenter,
+                                         const float theX,
+                                         const float theY,
+                                         const float theZ) const;
 
   //! Gets axes of grid
   //! @param[in] theCorners  the corners of grid
   //! @param[out] theGridAxes  grid axes, the base of graduated trihedron grid.
-  char16_t getGridAxes(const float theCorners[8], GridAxes& theGridAxes) const;
+  char16_t getGridAxes(const float theCorners[8],
+                                    GridAxes&                theGridAxes) const;
 
   //! Render line from the transformed primitive array myLine
   //! @param[in] theWorkspace  the OpenGl Workspace
@@ -157,12 +155,12 @@ private:
   //! @param thaTx the X for vector of translation
   //! @param thaTy the Y for vector of translation
   //! @param thaTz the Z for vector of translation
-  void renderLine(const OpenGl_PrimitiveArray&         theLine,
+  void renderLine(const OpenGl_PrimitiveArray&    theLine,
                   const occ::handle<OpenGl_Workspace>& theWorkspace,
-                  const NCollection_Mat4<float>&       theMat,
-                  const float                          theXt,
-                  const float                          theYt,
-                  const float                          theZt) const;
+                  const NCollection_Mat4<float>&              theMat,
+                  const float        theXt,
+                  const float        theYt,
+                  const float        theZt) const;
 
   //! Render grid lines perpendecular the axis of input index
   //! @param[in] theWorkspace  the OpenGl Workspace
@@ -171,9 +169,9 @@ private:
   //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
   void renderGridPlane(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                       const int&                           theIndex,
-                       const GridAxes&                      theGridAxes,
-                       NCollection_Mat4<float>&             theMat) const;
+                       const int&         theIndex,
+                       const GridAxes&                 theGridAxes,
+                       NCollection_Mat4<float>&                    theMat) const;
 
   //! Render the axis of input index
   //! @param[in] theWorkspace  the OpenGl Workspace
@@ -181,8 +179,8 @@ private:
   //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
   void renderAxis(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                  const int&                           theIndex,
-                  const NCollection_Mat4<float>&       theMat) const;
+                  const int&         theIndex,
+                  const NCollection_Mat4<float>&              theMat) const;
 
   //! Render grid labels, tickmark lines and labels
   //! @param[in] theWorkspace  the OpenGl Workspace
@@ -192,10 +190,10 @@ private:
   //! @param[in] theGridAxes  grid axes
   //! @param[in] theDpix  distance corresponding to 1 pixel
   void renderTickmarkLabels(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                            const NCollection_Mat4<float>&       theMat,
-                            const int                            theIndex,
-                            const GridAxes&                      theGridAxes,
-                            const float                          theDpix) const;
+                            const NCollection_Mat4<float>&              theMat,
+                            const int          theIndex,
+                            const GridAxes&                 theGridAxes,
+                            const float        theDpix) const;
 
 protected: //! @name Scene bounding box values
   NCollection_Vec3<float> myMin;

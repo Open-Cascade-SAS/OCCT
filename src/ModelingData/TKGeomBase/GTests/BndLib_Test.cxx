@@ -63,10 +63,15 @@
 #include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 #include <limits>
@@ -834,11 +839,10 @@ TEST(BndLibTest, Sphere_WithTolerance)
 TEST(BndLib_Add3dCurveTest, Circle_Full)
 {
   // Create a 3D circle using Geom_Circle
-  occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
-  GeomAdaptor_Curve aCurve(aCircle);
-  Bnd_Box           aBox;
-  double            aTol = 0.;
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
+  GeomAdaptor_Curve   aCurve(aCircle);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, aTol, aBox);
 
@@ -856,11 +860,10 @@ TEST(BndLib_Add3dCurveTest, Circle_Full)
 TEST(BndLib_Add3dCurveTest, Circle_Arc)
 {
   // Circle arc from 0 to PI/2
-  occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
-  GeomAdaptor_Curve aCurve(aCircle);
-  Bnd_Box           aBox;
-  double            aTol = 0.;
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
+  GeomAdaptor_Curve   aCurve(aCircle);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, 0., M_PI / 2., aTol, aBox);
 
@@ -898,9 +901,9 @@ TEST(BndLib_Add3dCurveTest, Line_Segment)
   // Line segment from (0,0,0) to (10,0,0)
   occ::handle<Geom_Line>         aLine    = new Geom_Line(gp_Pnt(0., 0., 0.), gp_Dir(1., 0., 0.));
   occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aLine, 0., 10.);
-  GeomAdaptor_Curve              aCurve(aTrimmed);
-  Bnd_Box                        aBox;
-  double                         aTol = 0.;
+  GeomAdaptor_Curve         aCurve(aTrimmed);
+  Bnd_Box                   aBox;
+  double                    aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, aTol, aBox);
 
@@ -925,9 +928,9 @@ TEST(BndLib_Add3dCurveTest, BezierCurve)
   aPoles(4) = gp_Pnt(4., 0., 0.);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve             aCurve(aBezier);
-  Bnd_Box                       aBox;
-  double                        aTol = 0.;
+  GeomAdaptor_Curve        aCurve(aBezier);
+  Bnd_Box                  aBox;
+  double                   aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, aTol, aBox);
 
@@ -963,9 +966,9 @@ TEST(BndLib_Add3dCurveTest, BSplineCurve)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve              aCurve(aBSpline);
-  Bnd_Box                        aBox;
-  double                         aTol = 0.;
+  GeomAdaptor_Curve         aCurve(aBSpline);
+  Bnd_Box                   aBox;
+  double                    aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, aTol, aBox);
 
@@ -980,11 +983,10 @@ TEST(BndLib_Add3dCurveTest, BSplineCurve)
 TEST(BndLib_Add3dCurveTest, AddOptimal_Circle)
 {
   // Test AddOptimal method with a circle
-  occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
-  GeomAdaptor_Curve aCurve(aCircle);
-  Bnd_Box           aBox;
-  double            aTol = 0.;
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)), 5.);
+  GeomAdaptor_Curve   aCurve(aCircle);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   BndLib_Add3dCurve::AddOptimal(aCurve, aTol, aBox);
 
@@ -1000,11 +1002,10 @@ TEST(BndLib_Add3dCurveTest, AddOptimal_Circle)
 TEST(BndLib_Add3dCurveTest, Circle_Rotated)
 {
   // Circle in YZ plane (axis along X)
-  occ::handle<Geom_Circle> aCircle =
-    new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(1., 0., 0.)), 4.);
-  GeomAdaptor_Curve aCurve(aCircle);
-  Bnd_Box           aBox;
-  double            aTol = 0.;
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0., 0., 0.), gp_Dir(1., 0., 0.)), 4.);
+  GeomAdaptor_Curve   aCurve(aCircle);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   BndLib_Add3dCurve::Add(aCurve, aTol, aBox);
 
@@ -1111,9 +1112,9 @@ TEST(BndLib_Add2dCurveTest, BezierCurve)
   aPoles(4) = gp_Pnt2d(4., 0.);
 
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
-  Geom2dAdaptor_Curve             aCurve(aBezier);
-  Bnd_Box2d                       aBox;
-  double                          aTol = 0.;
+  Geom2dAdaptor_Curve        aCurve(aBezier);
+  Bnd_Box2d                  aBox;
+  double                     aTol = 0.;
 
   BndLib_Add2dCurve::Add(aCurve, aTol, aBox);
 
@@ -1173,10 +1174,10 @@ TEST(BndLib_Add2dCurveTest, Adaptor_Circle)
 TEST(BndLib_AddSurfaceTest, Plane)
 {
   // Create a plane and add a finite patch
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)));
-  GeomAdaptor_Surface     aSurf(aPlane);
-  Bnd_Box                 aBox;
-  double                  aTol = 0.;
+  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)));
+  GeomAdaptor_Surface aSurf(aPlane);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   // Add a 10x10 patch centered at origin
   BndLib_AddSurface::Add(aSurf, -5., 5., -5., 5., aTol, aBox);
@@ -1319,9 +1320,9 @@ TEST(BndLib_AddSurfaceTest, BezierSurface)
   aPoles(2, 2) = gp_Pnt(10., 10., 0.);
 
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
-  GeomAdaptor_Surface             aSurf(aBezier);
-  Bnd_Box                         aBox;
-  double                          aTol = 0.;
+  GeomAdaptor_Surface        aSurf(aBezier);
+  Bnd_Box                    aBox;
+  double                     aTol = 0.;
 
   BndLib_AddSurface::Add(aSurf, aTol, aBox);
 
@@ -1385,10 +1386,10 @@ TEST(BndLib_AddSurfaceTest, Plane_Tilted)
 {
   // Create a tilted plane (normal at 45 degrees)
   // gp_Dir automatically normalizes the input vector
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 1., 1.)));
-  GeomAdaptor_Surface     aSurf(aPlane);
-  Bnd_Box                 aBox;
-  double                  aTol = 0.;
+  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 1., 1.)));
+  GeomAdaptor_Surface aSurf(aPlane);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   // Add a unit square patch
   BndLib_AddSurface::Add(aSurf, 0., 1., 0., 1., aTol, aBox);
@@ -1414,9 +1415,9 @@ TEST(BndLib_AddSurfaceTest, LargeParameters_PrecisionTest)
     }
   }
   occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
-  GeomAdaptor_Surface             aSurf(aBezier);
-  Bnd_Box                         aBox;
-  double                          aTol = 0.;
+  GeomAdaptor_Surface        aSurf(aBezier);
+  Bnd_Box                    aBox;
+  double                     aTol = 0.;
 
   // Use large parameter offset with small parameter range
   // This simulates the edge case where UMin/UMax are large but (UMax-UMin) is small
@@ -1440,10 +1441,10 @@ TEST(BndLib_AddSurfaceTest, LargeParameters_PrecisionTest)
 TEST(BndLib_AddSurfaceTest, OffsetSurface_ParameterPrecision)
 {
   // Create a simple plane
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)));
-  GeomAdaptor_Surface     aSurf(aPlane);
-  Bnd_Box                 aBox;
-  double                  aTol = 0.;
+  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp_Ax3(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.)));
+  GeomAdaptor_Surface aSurf(aPlane);
+  Bnd_Box             aBox;
+  double              aTol = 0.;
 
   // Test with very large parameter values but small range
   // UMin = 1e10, UMax = 1e10 + 100, so dU ~ 100/(Nu-1) ~ small relative to 1e10

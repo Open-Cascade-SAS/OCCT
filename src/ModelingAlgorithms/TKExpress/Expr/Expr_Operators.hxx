@@ -26,44 +26,41 @@
 #include <Expr_Division.hxx>
 
 Standard_EXPORT occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
-                                                const occ::handle<Expr_GeneralExpression>& y);
+                                           const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT occ::handle<Expr_Sum> operator+(const double                               x,
-                                                const occ::handle<Expr_GeneralExpression>& y);
+Standard_EXPORT occ::handle<Expr_Sum> operator+(const double                   x,
+                                           const occ::handle<Expr_GeneralExpression>& y);
 
 Standard_EXPORT occ::handle<Expr_Sum> operator+(const occ::handle<Expr_GeneralExpression>& x,
-                                                const double                               y);
-
-Standard_EXPORT occ::handle<Expr_Difference> operator-(
-  const occ::handle<Expr_GeneralExpression>& x,
-  const occ::handle<Expr_GeneralExpression>& y);
-
-Standard_EXPORT occ::handle<Expr_Difference> operator-(
-  const double                               x,
-  const occ::handle<Expr_GeneralExpression>& y);
+                                           const double                   y);
 
 Standard_EXPORT occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x,
-                                                       const double y);
+                                                  const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT occ::handle<Expr_UnaryMinus> operator-(
-  const occ::handle<Expr_GeneralExpression>& x);
+Standard_EXPORT occ::handle<Expr_Difference> operator-(const double                   x,
+                                                  const occ::handle<Expr_GeneralExpression>& y);
+
+Standard_EXPORT occ::handle<Expr_Difference> operator-(const occ::handle<Expr_GeneralExpression>& x,
+                                                  const double                   y);
+
+Standard_EXPORT occ::handle<Expr_UnaryMinus> operator-(const occ::handle<Expr_GeneralExpression>& x);
 
 Standard_EXPORT occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
-                                                    const occ::handle<Expr_GeneralExpression>& y);
+                                               const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT occ::handle<Expr_Product> operator*(const double                               x,
-                                                    const occ::handle<Expr_GeneralExpression>& y);
+Standard_EXPORT occ::handle<Expr_Product> operator*(const double                   x,
+                                               const occ::handle<Expr_GeneralExpression>& y);
 
 Standard_EXPORT occ::handle<Expr_Product> operator*(const occ::handle<Expr_GeneralExpression>& x,
-                                                    const double                               y);
+                                               const double                   y);
 
 Standard_EXPORT occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
-                                                     const occ::handle<Expr_GeneralExpression>& y);
+                                                const occ::handle<Expr_GeneralExpression>& y);
 
-Standard_EXPORT occ::handle<Expr_Division> operator/(const double                               x,
-                                                     const occ::handle<Expr_GeneralExpression>& y);
+Standard_EXPORT occ::handle<Expr_Division> operator/(const double                   x,
+                                                const occ::handle<Expr_GeneralExpression>& y);
 
 Standard_EXPORT occ::handle<Expr_Division> operator/(const occ::handle<Expr_GeneralExpression>& x,
-                                                     const double                               y);
+                                                const double                   y);
 
 #endif

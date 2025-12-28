@@ -22,8 +22,10 @@
 #include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 #include <BOPAlgo_Algo.hxx>
+#include <BOPTools_ConnexityBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! The class provides the splitting of the set of connected faces
@@ -58,9 +60,10 @@ public:
 protected:
   Standard_EXPORT void MakeShells(const Message_ProgressRange& theRange);
 
-  NCollection_List<TopoDS_Shape>            myStartShapes;
-  NCollection_List<TopoDS_Shape>            myShells;
+  NCollection_List<TopoDS_Shape>          myStartShapes;
+  NCollection_List<TopoDS_Shape>          myShells;
   NCollection_List<BOPTools_ConnexityBlock> myLCB;
+
 };
 
 #endif // _BOPAlgo_ShellSplitter_HeaderFile

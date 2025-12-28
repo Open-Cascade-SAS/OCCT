@@ -27,33 +27,35 @@ public:
   DEFINE_INC_ALLOC
 
   //! Constructor.
-  Standard_EXPORT BRepMeshData_PCurve(const IMeshData::IFacePtr&                   theDFace,
-                                      const TopAbs_Orientation                     theOrientation,
+  Standard_EXPORT BRepMeshData_PCurve(const IMeshData::IFacePtr&              theDFace,
+                                      const TopAbs_Orientation                theOrientation,
                                       const occ::handle<NCollection_IncAllocator>& theAllocator);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMeshData_PCurve();
 
   //! Inserts new discretization point at the given position.
-  Standard_EXPORT virtual void InsertPoint(const int       thePosition,
-                                           const gp_Pnt2d& thePoint,
-                                           const double    theParamOnPCurve) override;
+  Standard_EXPORT virtual void InsertPoint(const int thePosition,
+                                           const gp_Pnt2d&        thePoint,
+                                           const double theParamOnPCurve) override;
 
   //! Adds new discretization point to pcurve.
-  Standard_EXPORT virtual void AddPoint(const gp_Pnt2d& thePoint,
-                                        const double    theParamOnPCurve) override;
+  Standard_EXPORT virtual void AddPoint(const gp_Pnt2d&     thePoint,
+                                        const double theParamOnPCurve) override;
 
   //! Returns discretization point with the given index.
   Standard_EXPORT virtual gp_Pnt2d& GetPoint(const int theIndex) override;
 
   //! Returns index in mesh corresponded to discretization point with the given index.
-  Standard_EXPORT virtual int& GetIndex(const int theIndex) override;
+  Standard_EXPORT virtual int& GetIndex(const int theIndex)
+    override;
 
   //! Removes point with the given index.
   Standard_EXPORT virtual void RemovePoint(const int theIndex) override;
 
   //! Returns parameter with the given index.
-  Standard_EXPORT virtual double& GetParameter(const int theIndex) override;
+  Standard_EXPORT virtual double& GetParameter(const int theIndex)
+    override;
 
   //! Returns number of parameters stored in pcurve.
   Standard_EXPORT virtual int ParametersNb() const override;

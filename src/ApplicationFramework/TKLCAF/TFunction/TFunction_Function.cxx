@@ -57,7 +57,7 @@ occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label& L)
 //=======================================================================
 
 occ::handle<TFunction_Function> TFunction_Function::Set(const TDF_Label&     L,
-                                                        const Standard_GUID& DriverID)
+                                                   const Standard_GUID& DriverID)
 {
   occ::handle<TFunction_Function> F;
   if (!L.FindAttribute(TFunction_Function::GetID(), F))
@@ -131,8 +131,8 @@ void TFunction_Function::SetFailure(const int mode)
 void TFunction_Function::Restore(const occ::handle<TDF_Attribute>& other)
 {
   occ::handle<TFunction_Function> F = occ::down_cast<TFunction_Function>(other);
-  myFailure                         = F->myFailure;
-  myDriverGUID                      = F->myDriverGUID;
+  myFailure                    = F->myFailure;
+  myDriverGUID                 = F->myDriverGUID;
 }
 
 //=======================================================================

@@ -21,7 +21,7 @@
 RWStepGeom_RWPolyline::RWStepGeom_RWPolyline() {}
 
 void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                                   num,
+                                     const int                 num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepGeom_Polyline>&       ent) const
 {
@@ -40,12 +40,12 @@ void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>&
   // --- own field : points ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aPoints;
-  occ::handle<StepGeom_CartesianPoint>                                   anent2;
-  int                                                                    nsub2;
+  occ::handle<StepGeom_CartesianPoint>          anent2;
+  int                         nsub2;
   if (data->ReadSubList(num, 2, "points", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aPoints = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    aPoints              = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -64,7 +64,7 @@ void RWStepGeom_RWPolyline::ReadStep(const occ::handle<StepData_StepReaderData>&
   ent->Init(aName, aPoints);
 }
 
-void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&                  SW,
+void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&             SW,
                                       const occ::handle<StepGeom_Polyline>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepGeom_RWPolyline::WriteStep(StepData_StepWriter&                  SW,
 }
 
 void RWStepGeom_RWPolyline::Share(const occ::handle<StepGeom_Polyline>& ent,
-                                  Interface_EntityIterator&             iter) const
+                                  Interface_EntityIterator&        iter) const
 {
 
   int nbElem1 = ent->NbPoints();

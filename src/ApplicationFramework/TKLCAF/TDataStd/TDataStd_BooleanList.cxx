@@ -37,8 +37,7 @@ const Standard_GUID& TDataStd_BooleanList::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_BooleanList> SetAttr(const TDF_Label&     label,
-                                                 const Standard_GUID& theGuid)
+static occ::handle<TDataStd_BooleanList> SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_BooleanList> A;
   if (!label.FindAttribute(theGuid, A))
@@ -69,7 +68,7 @@ occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label& lab
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label&     label,
-                                                            const Standard_GUID& theGuid)
+                                                       const Standard_GUID& theGuid)
 {
   return SetAttr(label, theGuid);
 }
@@ -137,10 +136,11 @@ const NCollection_List<uint8_t>& TDataStd_BooleanList::List() const
 // function : InsertBefore
 // purpose  : Inserts the <value> before the <index> position.
 //=======================================================================
-bool TDataStd_BooleanList::InsertBefore(const int index, const bool before_value)
+bool TDataStd_BooleanList::InsertBefore(const int index,
+                                                    const bool before_value)
 {
-  int                                 i(1);
-  bool                                found(false);
+  int                  i(1);
+  bool                  found(false);
   NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -159,10 +159,11 @@ bool TDataStd_BooleanList::InsertBefore(const int index, const bool before_value
 // function : InsertAfter
 // purpose  : Inserts the <value> after the <index> position.
 //=======================================================================
-bool TDataStd_BooleanList::InsertAfter(const int index, const bool after_value)
+bool TDataStd_BooleanList::InsertAfter(const int index,
+                                                   const bool after_value)
 {
-  int                                 i(1);
-  bool                                found(false);
+  int                  i(1);
+  bool                  found(false);
   NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -183,8 +184,8 @@ bool TDataStd_BooleanList::InsertAfter(const int index, const bool after_value)
 //=======================================================================
 bool TDataStd_BooleanList::Remove(const int index)
 {
-  int                                 i(1);
-  bool                                found(false);
+  int                  i(1);
+  bool                  found(false);
   NCollection_List<uint8_t>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -236,7 +237,7 @@ occ::handle<TDF_Attribute> TDataStd_BooleanList::NewEmpty() const
 void TDataStd_BooleanList::Restore(const occ::handle<TDF_Attribute>& With)
 {
   myList.Clear();
-  occ::handle<TDataStd_BooleanList>   aList = occ::down_cast<TDataStd_BooleanList>(With);
+  occ::handle<TDataStd_BooleanList>      aList = occ::down_cast<TDataStd_BooleanList>(With);
   NCollection_List<uint8_t>::Iterator itr(aList->List());
   for (; itr.More(); itr.Next())
   {

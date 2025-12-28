@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepRepr_ParametricRepresentationContext();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ParametricRepresentationContext, StepRepr_RepresentationContext)
+
 };
 
 #endif // _StepRepr_ParametricRepresentationContext_HeaderFile

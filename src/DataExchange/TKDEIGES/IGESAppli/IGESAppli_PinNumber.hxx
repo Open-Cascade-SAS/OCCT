@@ -38,7 +38,7 @@ public:
   //! PinNumber
   //! - nbPropVal : Number of property values (always = 1)
   //! - aValue    : Pin Number value
-  Standard_EXPORT void Init(const int                                    nbPropVal,
+  Standard_EXPORT void Init(const int                  nbPropVal,
                             const occ::handle<TCollection_HAsciiString>& aValue);
 
   //! returns the number of property values
@@ -51,7 +51,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PinNumber, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
+  int                 theNbPropertyValues;
   occ::handle<TCollection_HAsciiString> thePinNumber;
 };
 

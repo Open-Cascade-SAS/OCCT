@@ -71,14 +71,14 @@ bool FUN_UisoLineOnSphe(const TopoDS_Shape& F, const occ::handle<Geom2d_Curve>& 
   occ::handle<Geom2d_Curve>  LLL      = ::BASISCURVE2D(PC);
   occ::handle<Standard_Type> TS       = SSS->DynamicType();
   occ::handle<Standard_Type> T2       = LLL->DynamicType();
-  bool                       issphere = (TS == STANDARD_TYPE(Geom_SphericalSurface));
-  bool                       isline2d = (T2 == STANDARD_TYPE(Geom2d_Line));
-  bool                       isisoU   = false;
+  bool      issphere = (TS == STANDARD_TYPE(Geom_SphericalSurface));
+  bool      isline2d = (T2 == STANDARD_TYPE(Geom2d_Line));
+  bool      isisoU   = false;
   if (issphere && isline2d)
   {
     occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(LLL);
-    const gp_Dir2d&          d = L->Direction();
-    isisoU                     = (std::abs(d.X()) < Precision::Parametric(Precision::Confusion()));
+    const gp_Dir2d&     d = L->Direction();
+    isisoU                = (std::abs(d.X()) < Precision::Parametric(Precision::Confusion()));
   }
   return isisoU;
 }
@@ -180,7 +180,7 @@ void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape& E, const TopOpeBRepDS_Curve&
       // in case of a closed curve, insert in E a vertex located at the origin
       // of the curve C.
       TopoDS_Vertex V;
-      double        first = GC->FirstParameter();
+      double first = GC->FirstParameter();
       gp_Pnt        P     = GC->Value(first);
       myBuilder.MakeVertex(V, P, C.Tolerance());
       myBuilder.Add(E, V);
@@ -201,8 +201,8 @@ void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape& E, const TopOpeBRepDS_Curve&
 
   if (setrange)
   {
-    double first, last;
-    bool   rangedef = C.Range(first, last);
+    double    first, last;
+    bool rangedef = C.Range(first, last);
     if (rangedef)
     {
       Range(E, first, last);
@@ -230,9 +230,9 @@ void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape&                     E,
     // JYL 22-09-94
     const occ::handle<TopOpeBRepDS_Interference>&      I = C.GetSCI1();
     occ::handle<TopOpeBRepDS_SurfaceCurveInterference> SCI;
-    SCI                                  = occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(I);
-    int                              iS  = SCI->Support();
-    const TopOpeBRepDS_Surface&      DSS = BDS.Surface(iS);
+    SCI                             = occ::down_cast<TopOpeBRepDS_SurfaceCurveInterference>(I);
+    int            iS  = SCI->Support();
+    const TopOpeBRepDS_Surface& DSS = BDS.Surface(iS);
     const occ::handle<Geom_Surface>& GS  = DSS.Surface();
     const occ::handle<Geom2d_Curve>& PC  = SCI->PCurve();
     myBuilder.UpdateEdge(EE, PC, GS, TopLoc_Location(), DSS.Tolerance());
@@ -247,9 +247,9 @@ void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape&                     E,
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape&                  E,
+void TopOpeBRepDS_BuildTool::MakeEdge(TopoDS_Shape&             E,
                                       const occ::handle<Geom_Curve>& C,
-                                      const double                   Tol) const
+                                      const double       Tol) const
 {
   myBuilder.MakeEdge(TopoDS::Edge(E), C, Tol);
 }
@@ -308,8 +308,8 @@ void TopOpeBRepDS_BuildTool::CopyEdge(const TopoDS_Shape& Ein, TopoDS_Shape& Eou
   // contenter du simplissime Eou = Ein.EmptyCopied();
   // merci les amis : correction bug PRO2586
 
-  double      f, l;
-  TopoDS_Edge E1 = TopoDS::Edge(Ein);
+  double f, l;
+  TopoDS_Edge   E1 = TopoDS::Edge(Ein);
   BRep_Tool::Range(E1, f, l);
   Eou            = Ein.EmptyCopied();
   TopoDS_Edge E2 = TopoDS::Edge(Eou);
@@ -321,8 +321,8 @@ void TopOpeBRepDS_BuildTool::CopyEdge(const TopoDS_Shape& Ein, TopoDS_Shape& Eou
 void TopOpeBRepDS_BuildTool::GetOrientedEdgeVertices(TopoDS_Edge&   E,
                                                      TopoDS_Vertex& Vmin,
                                                      TopoDS_Vertex& Vmax,
-                                                     double&        Parmin,
-                                                     double&        Parmax) const
+                                                     double& Parmin,
+                                                     double& Parmax) const
 {
   if (E.Orientation() == TopAbs_FORWARD)
     TopExp::Vertices(E, Vmin, Vmax);
@@ -341,7 +341,7 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
   //(const TopoDS_Face& F1,const TopoDS_Face& F2,
   (const TopoDS_Face&,
    const TopoDS_Face&,
-   TopoDS_Edge&                   E,
+   TopoDS_Edge&              E,
    const occ::handle<Geom_Curve>& C3Dnew,
    // const double tol3d,
    const double,
@@ -383,7 +383,7 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
   //  newtol *= 1.5;
 
   TopoDS_Vertex Vmin, Vmax;
-  double        parmin = 0.0, parmax = 0.0;
+  double parmin = 0.0, parmax = 0.0;
   GetOrientedEdgeVertices(E, Vmin, Vmax, parmin, parmax);
 
   double tolmin = BRep_Tool::Tolerance(Vmin);
@@ -441,9 +441,9 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
     if (vi.Orientation() != TopAbs_INTERNAL)
       continue;
     gp_Pnt                      P     = BRep_Tool::Pnt(vi);
-    double                      tolvi = TopOpeBRepTool_ShapeTool::Tolerance(vi);
+    double               tolvi = TopOpeBRepTool_ShapeTool::Tolerance(vi);
     GeomAPI_ProjectPointOnCurve dm(P, C3Dnew, newparmin, newparmax);
-    bool                        dmdone = dm.Extrema().IsDone();
+    bool            dmdone = dm.Extrema().IsDone();
     if (dmdone)
     {
       if (dm.NbPoints())
@@ -457,9 +457,9 @@ void TopOpeBRepDS_BuildTool::UpdateEdgeCurveTol
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::ApproxCurves(const TopOpeBRepDS_Curve&                       C,
-                                          TopoDS_Edge&                                    E,
-                                          int&                                            inewC,
+void TopOpeBRepDS_BuildTool::ApproxCurves(const TopOpeBRepDS_Curve&                  C,
+                                          TopoDS_Edge&                               E,
+                                          int&                          inewC,
                                           const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const
 {
   TopOpeBRepDS_Curve newC1;
@@ -480,25 +480,25 @@ void TopOpeBRepDS_BuildTool::ApproxCurves(const TopOpeBRepDS_Curve&             
   // and their parameters parmin,parmax .
 
   TopoDS_Vertex Vmin, Vmax;
-  double        parmin = 0.0, parmax = 0.0;
+  double parmin = 0.0, parmax = 0.0;
   GetOrientedEdgeVertices(E, Vmin, Vmax, parmin, parmax);
 
   occ::handle<Geom_Curve>   C3Dnew;
   occ::handle<Geom2d_Curve> PC1new;
   occ::handle<Geom2d_Curve> PC2new;
-  double                    tolreached3d = 0.0, tolreached2d = 0.0;
-  bool                      approxMade = myCurveTool.MakeCurves(parmin,
-                                           parmax,
-                                           C3D,
-                                           PC1,
-                                           PC2,
-                                           F1,
-                                           F2,
-                                           C3Dnew,
-                                           PC1new,
-                                           PC2new,
-                                           tolreached3d,
-                                           tolreached2d);
+  double        tolreached3d = 0.0, tolreached2d = 0.0;
+  bool     approxMade = myCurveTool.MakeCurves(parmin,
+                                                       parmax,
+                                                       C3D,
+                                                       PC1,
+                                                       PC2,
+                                                       F1,
+                                                       F2,
+                                                       C3Dnew,
+                                                       PC1new,
+                                                       PC2new,
+                                                       tolreached3d,
+                                                       tolreached2d);
 
   double newtol = 0.0, newparmin = 0.0, newparmax = 0.0;
   // MSV Nov 12, 2001: if approx failed than leave old curves of degree 1
@@ -540,10 +540,10 @@ void TopOpeBRepDS_BuildTool::ApproxCurves(const TopOpeBRepDS_Curve&             
 //=================================================================================================
 
 bool FUN_getUV(const occ::handle<Geom_Surface>& surf,
-               const occ::handle<Geom_Curve>&   C3D,
-               const double                     par3d,
-               double&                          u0,
-               double&                          v0)
+                           const occ::handle<Geom_Curve>&   C3D,
+                           const double         par3d,
+                           double&              u0,
+                           double&              v0)
 {
   gp_Pnt P3d;
   C3D->D0(par3d, P3d);
@@ -555,17 +555,17 @@ bool FUN_getUV(const occ::handle<Geom_Surface>& surf,
 }
 
 bool FUN_reversePC(occ::handle<Geom2d_Curve> PCnew,
-                   const TopoDS_Face&        F,
-                   const gp_Pnt&             P3DC3D,
-                   const double              par2d,
-                   const double              tol)
+                               const TopoDS_Face&   F,
+                               const gp_Pnt&        P3DC3D,
+                               const double  par2d,
+                               const double  tol)
 {
   gp_Pnt2d P2D;
   PCnew->D0(par2d, P2D);
   BRepAdaptor_Surface BAS(F, false);
   gp_Pnt              P3D        = BAS.Value(P2D.X(), P2D.Y());
-  bool                PCreversed = false;
-  bool                sam        = P3D.IsEqual(P3DC3D, tol);
+  bool    PCreversed = false;
+  bool    sam        = P3D.IsEqual(P3DC3D, tol);
   PCreversed                     = !sam;
 
   if (PCreversed)
@@ -574,7 +574,7 @@ bool FUN_reversePC(occ::handle<Geom2d_Curve> PCnew,
     if (!PC.IsNull())
     {
       occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(PC);
-      gp_Dir2d                 d = L->Direction();
+      gp_Dir2d            d = L->Direction();
       d.Reverse();
       L->SetDirection(d);
     }
@@ -582,20 +582,20 @@ bool FUN_reversePC(occ::handle<Geom2d_Curve> PCnew,
   return PCreversed;
 }
 
-bool FUN_makeUisoLineOnSphe(const TopoDS_Face&             F, // with geometry the spherical surface
-                            const occ::handle<Geom_Curve>& C3D,
-                            occ::handle<Geom2d_Curve>      PCnew,
-                            const double                   tol3d)
+bool FUN_makeUisoLineOnSphe(const TopoDS_Face& F, // with geometry the spherical surface
+                                        const occ::handle<Geom_Curve>& C3D,
+                                        occ::handle<Geom2d_Curve>      PCnew,
+                                        const double       tol3d)
 {
   // p3df,p3dl : C3d first and last parameters
   double p3df = C3D->FirstParameter();
   double p3dl = C3D->LastParameter();
 
   // u0,v0 : C3d(par3d) UV parameters
-  double                    deltainf = 0.243234, deltasup = 0.543345;
-  double                    par3dinf = (1 - deltainf) * p3df + deltainf * p3dl;
-  double                    par3dsup = (1 - deltasup) * p3df + deltasup * p3dl;
-  double                    uinf, vinf, usup, vsup;
+  double        deltainf = 0.243234, deltasup = 0.543345;
+  double        par3dinf = (1 - deltainf) * p3df + deltainf * p3dl;
+  double        par3dsup = (1 - deltasup) * p3df + deltasup * p3dl;
+  double        uinf, vinf, usup, vsup;
   occ::handle<Geom_Surface> surf = BRep_Tool::Surface(F);
   if (!FUN_getUV(surf, C3D, par3dinf, uinf, vinf))
     return false;
@@ -605,8 +605,8 @@ bool FUN_makeUisoLineOnSphe(const TopoDS_Face&             F, // with geometry t
   if (std::abs(uinf - usup) > tol)
     return false;
 
-  bool     isvgrowing = (vsup - vinf > -tol);
-  gp_Dir2d vdir;
+  bool isvgrowing = (vsup - vinf > -tol);
+  gp_Dir2d         vdir;
   if (isvgrowing)
     vdir = gp_Dir2d(gp_Dir2d::D::Y);
   else
@@ -627,9 +627,9 @@ bool FUN_makeUisoLineOnSphe(const TopoDS_Face&             F, // with geometry t
 void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
                                             TopoDS_Edge&              E,
                                             TopOpeBRepDS_Curve&       newC,
-                                            const bool                comppc1,
-                                            const bool                comppc2,
-                                            const bool                compc3d) const
+                                            const bool    comppc1,
+                                            const bool    comppc2,
+                                            const bool    compc3d) const
 {
   const TopoDS_Face& F1 = TopoDS::Face(newC.Shape1());
   const TopoDS_Face& F2 = TopoDS::Face(newC.Shape2());
@@ -639,14 +639,14 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
   // get bounding vertices Vmin,Vmax supported by the new edge <E>
   // and their corresponding parameters parmin,parmax .
   TopoDS_Vertex Vmin, Vmax;
-  double        parmin = 0.0, parmax = 0.0;
+  double parmin = 0.0, parmax = 0.0;
   GetOrientedEdgeVertices(E, Vmin, Vmax, parmin, parmax);
 
   occ::handle<Geom2d_Curve> PC1new, PC2new;
   if (C3D.IsNull())
   {
     double tolreached2d1 = Precision::Confusion(), tolreached2d2 = Precision::Confusion(),
-           tol = Precision::Confusion();
+                  tol = Precision::Confusion();
     if (comppc1)
       PC1new = myCurveTool.MakePCurveOnFace(F1, C3D, tolreached2d1);
     if (comppc2)
@@ -654,8 +654,8 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
 
     double r1 = TopOpeBRepTool_ShapeTool::Resolution3d(F1, tolreached2d1);
     double r2 = TopOpeBRepTool_ShapeTool::Resolution3d(F2, tolreached2d2);
-    tol       = std::max(tol, r1);
-    tol       = std::max(tol, r2);
+    tol              = std::max(tol, r1);
+    tol              = std::max(tol, r2);
     newC.Tolerance(tol);
 
     if (!PC1new.IsNull())
@@ -717,12 +717,12 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
   //       est une isos de la sphere
   // NYI : enlever FUN_reversePC
   bool UisoLineOnSphe1 = false;
-  UisoLineOnSphe1      = ::FUN_UisoLineOnSphe(F1, PC1new);
+  UisoLineOnSphe1                  = ::FUN_UisoLineOnSphe(F1, PC1new);
   if (UisoLineOnSphe1)
     ::FUN_makeUisoLineOnSphe(F1, C3Dnew, PC1new, newtol);
 
   bool UisoLineOnSphe2 = false;
-  UisoLineOnSphe2      = ::FUN_UisoLineOnSphe(F2, PC2new);
+  UisoLineOnSphe2                  = ::FUN_UisoLineOnSphe(F2, PC2new);
   if (UisoLineOnSphe2)
     ::FUN_makeUisoLineOnSphe(F2, C3Dnew, PC2new, newtol);
   // xpu : 17-06-97
@@ -743,18 +743,18 @@ void TopOpeBRepDS_BuildTool::ComputePCurves(const TopOpeBRepDS_Curve& C,
 
 void TopOpeBRepDS_BuildTool::PutPCurves(const TopOpeBRepDS_Curve& newC,
                                         TopoDS_Edge&              E,
-                                        const bool                comppc1,
-                                        const bool                comppc2) const
+                                        const bool    comppc1,
+                                        const bool    comppc2) const
 {
 
-  TopoDS_Face&                     F1  = *((TopoDS_Face*)(void*)&(TopoDS::Face(newC.Shape1())));
+  TopoDS_Face&                F1  = *((TopoDS_Face*)(void*)&(TopoDS::Face(newC.Shape1())));
   const occ::handle<Geom2d_Curve>& PC1 = newC.Curve1();
   if (!PC1.IsNull() && comppc1)
   {
     PCurve(F1, E, PC1);
   }
 
-  TopoDS_Face&                     F2  = *((TopoDS_Face*)(void*)&(TopoDS::Face(newC.Shape2())));
+  TopoDS_Face&                F2  = *((TopoDS_Face*)(void*)&(TopoDS::Face(newC.Shape2())));
   const occ::handle<Geom2d_Curve>& PC2 = newC.Curve2();
   if (!PC2.IsNull() && comppc2)
   {
@@ -764,21 +764,20 @@ void TopOpeBRepDS_BuildTool::PutPCurves(const TopOpeBRepDS_Curve& newC,
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::RecomputeCurves(
-  const TopOpeBRepDS_Curve& C,
-  // const TopoDS_Edge& oldE,
-  const TopoDS_Edge&,
-  TopoDS_Edge&                                    E,
-  int&                                            inewC,
-  const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const
+void TopOpeBRepDS_BuildTool::RecomputeCurves(const TopOpeBRepDS_Curve& C,
+                                             // const TopoDS_Edge& oldE,
+                                             const TopoDS_Edge&,
+                                             TopoDS_Edge&                               E,
+                                             int&                          inewC,
+                                             const occ::handle<TopOpeBRepDS_HDataStructure>& HDS) const
 {
   const TopOpeBRepTool_GeomTool& GT      = myCurveTool.GetGeomTool();
-  const bool                     compc3d = GT.CompC3D();
-  const bool                     comppc1 = GT.CompPC1();
-  const bool                     comppc2 = GT.CompPC2();
-  const bool                     comppc  = comppc1 || comppc2;
-  const bool                     iswalk  = C.IsWalk();
-  const bool                     approx  = Approximation();
+  const bool         compc3d = GT.CompC3D();
+  const bool         comppc1 = GT.CompPC1();
+  const bool         comppc2 = GT.CompPC2();
+  const bool         comppc  = comppc1 || comppc2;
+  const bool         iswalk  = C.IsWalk();
+  const bool         approx  = Approximation();
 
   const occ::handle<Geom_Curve>& C3D = C.Curve();
   if (comppc1 && C.Shape1().IsNull())
@@ -886,15 +885,15 @@ void TopOpeBRepDS_BuildTool::AddSolidShell(TopoDS_Shape& S, const TopoDS_Shape& 
 
 void TopOpeBRepDS_BuildTool::Parameter(const TopoDS_Shape& E,
                                        const TopoDS_Shape& V,
-                                       const double        P) const
+                                       const double P) const
 {
   const TopoDS_Edge&   e = TopoDS::Edge(E);
   const TopoDS_Vertex& v = TopoDS::Vertex(V);
-  double               p = P;
+  double        p = P;
 
   // 13/07/95 :
-  TopLoc_Location         loc;
-  double                  f, l;
+  TopLoc_Location    loc;
+  double      f, l;
   occ::handle<Geom_Curve> C = BRep_Tool::Curve(e, loc, f, l);
   if (!C.IsNull() && C->IsPeriodic())
   {
@@ -919,7 +918,7 @@ void TopOpeBRepDS_BuildTool::Parameter(const TopoDS_Shape& E,
         if (p < f)
         {
           double pp = ElCLib::InPeriod(p, f, f + per);
-          p         = pp;
+          p                = pp;
         }
       }
     }
@@ -932,8 +931,8 @@ void TopOpeBRepDS_BuildTool::Parameter(const TopoDS_Shape& E,
 //=================================================================================================
 
 void TopOpeBRepDS_BuildTool::Range(const TopoDS_Shape& E,
-                                   const double        first,
-                                   const double        last) const
+                                   const double first,
+                                   const double last) const
 {
   myBuilder.Range(TopoDS::Edge(E), first, last);
 }
@@ -942,9 +941,9 @@ void TopOpeBRepDS_BuildTool::Range(const TopoDS_Shape& E,
 
 void TopOpeBRepDS_BuildTool::UpdateEdge(const TopoDS_Shape& Ein, TopoDS_Shape& Eou) const
 {
-  TopLoc_Location         loc;
-  double                  f1, l1;
-  double                  f2, l2;
+  TopLoc_Location    loc;
+  double      f1, l1;
+  double      f2, l2;
   occ::handle<Geom_Curve> Cin = BRep_Tool::Curve(TopoDS::Edge(Ein), loc, f1, l1);
   occ::handle<Geom_Curve> Cou = BRep_Tool::Curve(TopoDS::Edge(Eou), loc, f2, l2);
   if (Cin.IsNull() || Cou.IsNull())
@@ -966,10 +965,12 @@ void TopOpeBRepDS_BuildTool::UpdateEdge(const TopoDS_Shape& Ein, TopoDS_Shape& E
 // purpose  : project a vertex on a curve
 //=======================================================================
 
-static bool Project(const occ::handle<Geom_Curve>& C, const TopoDS_Vertex& V, double& p)
+static bool Project(const occ::handle<Geom_Curve>& C,
+                                const TopoDS_Vertex&      V,
+                                double&            p)
 {
   gp_Pnt            P   = BRep_Tool::Pnt(V);
-  double            tol = BRep_Tool::Tolerance(V);
+  double     tol = BRep_Tool::Tolerance(V);
   GeomAdaptor_Curve GAC(C);
   Extrema_ExtPC     extrema(P, GAC);
   if (extrema.IsDone())
@@ -1004,22 +1005,22 @@ void TopOpeBRepDS_BuildTool::Parameter(const TopOpeBRepDS_Curve& C,
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::Curve3D(TopoDS_Shape&                  E,
+void TopOpeBRepDS_BuildTool::Curve3D(TopoDS_Shape&             E,
                                      const occ::handle<Geom_Curve>& C,
-                                     const double                   Tol) const
+                                     const double       Tol) const
 {
   myBuilder.UpdateEdge(TopoDS::Edge(E), C, Tol);
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&              F,
-                                                 TopoDS_Shape&              E,
+void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&         F,
+                                                 TopoDS_Shape&         E,
                                                  occ::handle<Geom2d_Curve>& PC) const
 {
   // get range C3Df,C3Dl of 3d curve C3D of E
   TopLoc_Location L;
-  double          C3Df, C3Dl;
+  double   C3Df, C3Dl;
   //  occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(TopoDS::Edge(E),L,C3Df,C3Dl);
   occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(TopoDS::Edge(E), C3Df, C3Dl); // 13-07-97: xpu
 
@@ -1039,8 +1040,8 @@ void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&              F,
 
   double du, dv;
 
-  gp_Pnt2d ptest;
-  double   t = (first + last) * .5;
+  gp_Pnt2d      ptest;
+  double t = (first + last) * .5;
   PC->D0(t, ptest);
   double u1 = ptest.X(), u2 = u1;
   double v1 = ptest.Y(), v2 = v1;
@@ -1049,10 +1050,10 @@ void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&              F,
   {
     if (UisoLineOnSphe)
     {
-      occ::handle<Geom_Curve>    c3d = BRep_Tool::Curve(TopoDS::Edge(E), C3Df, C3Dl);
+      occ::handle<Geom_Curve>         c3d = BRep_Tool::Curve(TopoDS::Edge(E), C3Df, C3Dl);
       GeomAdaptor_Curve          GC(c3d);
       gp_Pnt                     p3dtest = GC.Value(t);
-      occ::handle<Geom_Surface>  surf    = BRep_Tool::Surface(TopoDS::Face(F));
+      occ::handle<Geom_Surface>       surf    = BRep_Tool::Surface(TopoDS::Face(F));
       GeomAPI_ProjectPointOnSurf pons(p3dtest, surf);
       if (!(pons.NbPoints() < 1))
         pons.LowerDistanceParameters(u2, v2);
@@ -1076,16 +1077,16 @@ void TopOpeBRepDS_BuildTool::TranslateOnPeriodic(TopoDS_Shape&              F,
 // RLE - IAB 16 june 94
 // should be provided by the BRep_Builder
 
-Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&              B,
-                                               TopoDS_Edge&                     E,
-                                               const TopoDS_Face&               F,
-                                               const TopAbs_Orientation         O,
+Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&         B,
+                                               TopoDS_Edge&                E,
+                                               const TopoDS_Face&          F,
+                                               const TopAbs_Orientation    O,
                                                const occ::handle<Geom2d_Curve>& C)
 {
   // check if there is already a pcurve on non planar faces
-  double                    f, l;
+  double        f, l;
   occ::handle<Geom2d_Curve> OC;
-  TopLoc_Location           SL;
+  TopLoc_Location      SL;
   occ::handle<Geom_Plane>   GP = occ::down_cast<Geom_Plane>(BRep_Tool::Surface(F, SL));
   if (GP.IsNull())
     OC = BRep_Tool::CurveOnSurface(E, F, f, l);
@@ -1107,14 +1108,14 @@ Standard_EXPORT void TopOpeBRepDS_SetThePCurve(const BRep_Builder&              
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
-                                    TopoDS_Shape&                    E,
+void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&               F,
+                                    TopoDS_Shape&               E,
                                     const occ::handle<Geom2d_Curve>& PC) const
 {
   if (!PC.IsNull())
   {
-    TopoDS_Face               FF  = TopoDS::Face(F);
-    TopoDS_Edge               EE  = TopoDS::Edge(E);
+    TopoDS_Face          FF  = TopoDS::Face(F);
+    TopoDS_Edge          EE  = TopoDS::Edge(E);
     occ::handle<Geom2d_Curve> PCT = PC;
 
     // pour iab, ajout de Translate
@@ -1154,9 +1155,9 @@ void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
 
 //=================================================================================================
 
-void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
-                                    TopoDS_Shape&                    E,
-                                    const TopOpeBRepDS_Curve&        CDS,
+void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&               F,
+                                    TopoDS_Shape&               E,
+                                    const TopOpeBRepDS_Curve&   CDS,
                                     const occ::handle<Geom2d_Curve>& PC) const
 {
   if (!PC.IsNull())
@@ -1165,27 +1166,27 @@ void TopOpeBRepDS_BuildTool::PCurve(TopoDS_Shape&                    F,
     TopoDS_Edge EE = TopoDS::Edge(E);
 
     const occ::handle<Geom2d_Curve>& PCT = PC;
-    double                           CDSmin, CDSmax;
-    bool                             rangedef = CDS.Range(CDSmin, CDSmax);
+    double               CDSmin, CDSmax;
+    bool            rangedef = CDS.Range(CDSmin, CDSmax);
 
-    TopLoc_Location         L;
-    double                  Cf, Cl;
+    TopLoc_Location    L;
+    double      Cf, Cl;
     occ::handle<Geom_Curve> C = BRep_Tool::Curve(EE, L, Cf, Cl);
 
     if (!C.IsNull())
     {
-      bool                     deca     = (std::abs(Cf - CDSmin) > Precision::PConfusion());
+      bool    deca     = (std::abs(Cf - CDSmin) > Precision::PConfusion());
       occ::handle<Geom2d_Line> line2d   = occ::down_cast<Geom2d_Line>(PCT);
-      bool                     isline2d = !line2d.IsNull();
-      bool                     tran     = (rangedef && deca && C->IsPeriodic() && isline2d);
+      bool    isline2d = !line2d.IsNull();
+      bool    tran     = (rangedef && deca && C->IsPeriodic() && isline2d);
       if (tran)
       {
-        TopLoc_Location                 Loc;
+        TopLoc_Location            Loc;
         const occ::handle<Geom_Surface> Surf     = BRep_Tool::Surface(FF, Loc);
-        bool                            isUperio = Surf->IsUPeriodic();
-        bool                            isVperio = Surf->IsVPeriodic();
-        gp_Dir2d                        dir2d    = line2d->Direction();
-        double                          delta;
+        bool           isUperio = Surf->IsUPeriodic();
+        bool           isVperio = Surf->IsVPeriodic();
+        gp_Dir2d                   dir2d    = line2d->Direction();
+        double              delta;
         if (isUperio && dir2d.IsParallel(gp::DX2d(), Precision::Angular()))
         {
           delta = (CDSmin - Cf) * dir2d.X();
@@ -1231,12 +1232,12 @@ bool TopOpeBRepDS_BuildTool::Approximation() const
   return myCurveTool.GetGeomTool().TypeC3D() != TopOpeBRepTool_BSPLINE1;
 }
 
-void TopOpeBRepDS_BuildTool::UpdateSurface(const TopoDS_Shape&              F,
+void TopOpeBRepDS_BuildTool::UpdateSurface(const TopoDS_Shape&         F,
                                            const occ::handle<Geom_Surface>& SU) const
 {
   BRep_Builder    BB;
   TopLoc_Location L;
-  double          tol = BRep_Tool::Tolerance(TopoDS::Face(F));
+  double   tol = BRep_Tool::Tolerance(TopoDS::Face(F));
   BB.UpdateFace(TopoDS::Face(F), SU, L, tol);
 }
 
@@ -1244,8 +1245,8 @@ void TopOpeBRepDS_BuildTool::UpdateSurface(const TopoDS_Shape& E,
                                            const TopoDS_Shape& oldF,
                                            const TopoDS_Shape& newF) const
 {
-  BRep_Builder                     BB;
-  double                           f, l;
+  BRep_Builder                BB;
+  double               f, l;
   const occ::handle<Geom2d_Curve>& PC =
     BRep_Tool::CurveOnSurface(TopoDS::Edge(E), TopoDS::Face(oldF), f, l);
   double tol = BRep_Tool::Tolerance(TopoDS::Face(oldF));

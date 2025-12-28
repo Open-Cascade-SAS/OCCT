@@ -20,10 +20,10 @@
 
 //=================================================================================================
 
-bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
-                                      int&                    N,
-                                      NCollection_ListNode**& data1,
-                                      NCollection_ListNode**& data2) const
+bool NCollection_BaseMap::BeginResize(const int  NbBuckets,
+                                                  int&       N,
+                                                  NCollection_ListNode**& data1,
+                                                  NCollection_ListNode**& data2) const
 {
   // get next size for the buckets array
   N = NextPrimeForMap(NbBuckets);
@@ -46,8 +46,8 @@ bool NCollection_BaseMap::BeginResize(const int               NbBuckets,
 
 //=================================================================================================
 
-void NCollection_BaseMap::EndResize(const int              theNbBuckets,
-                                    const int              N,
+void NCollection_BaseMap::EndResize(const int theNbBuckets,
+                                    const int N,
                                     NCollection_ListNode** data1,
                                     NCollection_ListNode** data2) noexcept
 {
@@ -109,8 +109,8 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
     return;
 
   // compute statistics on 1
-  int*                   sizes = new int[mySize + 1];
-  int                    i, l, nb;
+  int*      sizes = new int[mySize + 1];
+  int       i, l, nb;
   NCollection_ListNode*  p;
   NCollection_ListNode** data;
 

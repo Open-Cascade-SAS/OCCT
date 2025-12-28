@@ -24,6 +24,9 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;
@@ -62,9 +65,9 @@ public:
   Standard_EXPORT ShapeExtend_WireData();
 
   //! Constructor initializing the data from TopoDS_Wire. Calls Init(wire,chained).
-  Standard_EXPORT ShapeExtend_WireData(const TopoDS_Wire& wire,
-                                       const bool         chained         = true,
-                                       const bool         theManifoldMode = true);
+  Standard_EXPORT ShapeExtend_WireData(const TopoDS_Wire&     wire,
+                                       const bool chained         = true,
+                                       const bool theManifoldMode = true);
 
   //! Copies data from another WireData
   Standard_EXPORT void Init(const occ::handle<ShapeExtend_WireData>& other);
@@ -79,9 +82,9 @@ public:
   //! will be found (because of limitations of
   //! BRepTools_WireExplorer for disconnected wires and wires
   //! with seam edges).
-  Standard_EXPORT bool Init(const TopoDS_Wire& wire,
-                            const bool         chained         = true,
-                            const bool         theManifoldMode = true);
+  Standard_EXPORT bool Init(const TopoDS_Wire&     wire,
+                                        const bool chained         = true,
+                                        const bool theManifoldMode = true);
 
   //! Clears data about Wire.
   Standard_EXPORT void Clear();
@@ -121,7 +124,8 @@ public:
   Standard_EXPORT void Add(const TopoDS_Wire& wire, const int atnum = 0);
 
   //! Adds a wire in the form of WireData
-  Standard_EXPORT void Add(const occ::handle<ShapeExtend_WireData>& wire, const int atnum = 0);
+  Standard_EXPORT void Add(const occ::handle<ShapeExtend_WireData>& wire,
+                           const int              atnum = 0);
 
   //! Adds an edge or a wire invoking corresponding method Add
   Standard_EXPORT void Add(const TopoDS_Shape& shape, const int atnum = 0);
@@ -218,12 +222,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeExtend_WireData, Standard_Transient)
 
 private:
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> myEdges;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> myNonmanifoldEdges;
-  occ::handle<NCollection_HSequence<int>>          mySeams;
-  int                                              mySeamF;
-  int                                              mySeamR;
-  bool                                             myManifoldMode;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>  myEdges;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>  myNonmanifoldEdges;
+  occ::handle<NCollection_HSequence<int>> mySeams;
+  int                   mySeamF;
+  int                   mySeamR;
+  bool                   myManifoldMode;
 };
 
 #endif // _ShapeExtend_WireData_HeaderFile

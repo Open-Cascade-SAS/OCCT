@@ -20,9 +20,9 @@
 //=================================================================================================
 
 TopOpeBRepTool_GeomTool::TopOpeBRepTool_GeomTool(const TopOpeBRepTool_OutCurveType TypeC3D,
-                                                 const bool                        CompC3D,
-                                                 const bool                        CompPC1,
-                                                 const bool                        CompPC2)
+                                                 const bool            CompC3D,
+                                                 const bool            CompPC1,
+                                                 const bool            CompPC2)
     : myTypeC3D(TypeC3D),
       myCompC3D(CompC3D),
       myCompPC1(CompPC1),
@@ -36,9 +36,9 @@ TopOpeBRepTool_GeomTool::TopOpeBRepTool_GeomTool(const TopOpeBRepTool_OutCurveTy
 //=================================================================================================
 
 void TopOpeBRepTool_GeomTool::Define(const TopOpeBRepTool_OutCurveType TypeC3D,
-                                     const bool                        CompC3D,
-                                     const bool                        CompPC1,
-                                     const bool                        CompPC2)
+                                     const bool            CompC3D,
+                                     const bool            CompPC1,
+                                     const bool            CompPC2)
 {
   myTypeC3D = TypeC3D;
   myCompC3D = CompC3D;

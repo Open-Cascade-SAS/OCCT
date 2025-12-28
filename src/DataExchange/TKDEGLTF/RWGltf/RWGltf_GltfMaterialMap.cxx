@@ -48,7 +48,7 @@ const occ::handle<Image_Texture>& RWGltf_GltfMaterialMap::baseColorTexture(
 //=================================================================================================
 
 RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap(const TCollection_AsciiString& theFile,
-                                               const int                      theDefSamplerId)
+                                               const int         theDefSamplerId)
     : RWMesh_MaterialMap(theFile),
       myWriter(NULL),
       myDefSamplerId(theDefSamplerId)
@@ -67,7 +67,7 @@ RWGltf_GltfMaterialMap::~RWGltf_GltfMaterialMap()
 
 void RWGltf_GltfMaterialMap::AddImages(RWGltf_GltfOStreamWriter* theWriter,
                                        const XCAFPrs_Style&      theStyle,
-                                       bool&                     theIsStarted)
+                                       bool&         theIsStarted)
 {
   if (theWriter == NULL || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
   {
@@ -99,9 +99,9 @@ void RWGltf_GltfMaterialMap::AddGlbImages(std::ostream& theBinFile, const XCAFPr
 
 //=================================================================================================
 
-void RWGltf_GltfMaterialMap::addImage(RWGltf_GltfOStreamWriter*         theWriter,
+void RWGltf_GltfMaterialMap::addImage(RWGltf_GltfOStreamWriter*    theWriter,
                                       const occ::handle<Image_Texture>& theTexture,
-                                      bool&                             theIsStarted)
+                                      bool&            theIsStarted)
 {
 #ifdef HAVE_RAPIDJSON
   if (theTexture.IsNull() || myImageMap.Contains(theTexture) || myImageFailMap.Contains(theTexture))
@@ -140,7 +140,7 @@ void RWGltf_GltfMaterialMap::addImage(RWGltf_GltfOStreamWriter*         theWrite
 
 //=================================================================================================
 
-void RWGltf_GltfMaterialMap::addGlbImage(std::ostream&                     theBinFile,
+void RWGltf_GltfMaterialMap::addGlbImage(std::ostream&                theBinFile,
                                          const occ::handle<Image_Texture>& theTexture)
 {
   if (theTexture.IsNull() || myImageMap.Contains(theTexture) || myImageFailMap.Contains(theTexture))
@@ -178,8 +178,8 @@ void RWGltf_GltfMaterialMap::addGlbImage(std::ostream&                     theBi
 //=================================================================================================
 
 void RWGltf_GltfMaterialMap::FlushGlbBufferViews(RWGltf_GltfOStreamWriter* theWriter,
-                                                 const int                 theBinDataBufferId,
-                                                 int&                      theBuffViewId)
+                                                 const int    theBinDataBufferId,
+                                                 int&         theBuffViewId)
 {
 #ifdef HAVE_RAPIDJSON
   for (NCollection_IndexedDataMap<occ::handle<Image_Texture>, RWGltf_GltfBufferView>::Iterator
@@ -222,7 +222,7 @@ void RWGltf_GltfMaterialMap::FlushGlbImages(RWGltf_GltfOStreamWriter* theWriter)
        aBufViewIter.Next())
   {
     const occ::handle<Image_Texture>& aTexture  = aBufViewIter.Key();
-    const RWGltf_GltfBufferView&      aBuffView = aBufViewIter.Value();
+    const RWGltf_GltfBufferView& aBuffView = aBufViewIter.Value();
     if (aBuffView.ByteLength <= 0)
     {
       continue;
@@ -264,7 +264,7 @@ void RWGltf_GltfMaterialMap::FlushGlbImages(RWGltf_GltfOStreamWriter* theWriter)
 
 void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
                                          const XCAFPrs_Style&      theStyle,
-                                         bool&                     theIsStarted)
+                                         bool&         theIsStarted)
 {
 #ifdef HAVE_RAPIDJSON
   if (theWriter == NULL
@@ -294,7 +294,7 @@ void RWGltf_GltfMaterialMap::AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
 
 void RWGltf_GltfMaterialMap::AddTextures(RWGltf_GltfOStreamWriter* theWriter,
                                          const XCAFPrs_Style&      theStyle,
-                                         bool&                     theIsStarted)
+                                         bool&         theIsStarted)
 {
   if (theWriter == NULL || theStyle.Material().IsNull() || theStyle.Material()->IsEmpty())
   {
@@ -310,9 +310,9 @@ void RWGltf_GltfMaterialMap::AddTextures(RWGltf_GltfOStreamWriter* theWriter,
 
 //=================================================================================================
 
-void RWGltf_GltfMaterialMap::addTexture(RWGltf_GltfOStreamWriter*         theWriter,
+void RWGltf_GltfMaterialMap::addTexture(RWGltf_GltfOStreamWriter*    theWriter,
                                         const occ::handle<Image_Texture>& theTexture,
-                                        bool&                             theIsStarted)
+                                        bool&            theIsStarted)
 {
 #ifdef HAVE_RAPIDJSON
   if (theTexture.IsNull() || myTextureMap.Contains(theTexture) || !myImageMap.Contains(theTexture))
@@ -430,9 +430,10 @@ void RWGltf_GltfMaterialMap::DefineMaterial(const XCAFPrs_Style& theStyle,
         myWriter->Double(aPbrMat.Metallic);
       }
 
-      const int aMetRoughImageIdx = !aPbrMat.MetallicRoughnessTexture.IsNull()
-                                      ? myImageMap.FindIndex(aPbrMat.MetallicRoughnessTexture) - 1
-                                      : -1;
+      const int aMetRoughImageIdx =
+        !aPbrMat.MetallicRoughnessTexture.IsNull()
+          ? myImageMap.FindIndex(aPbrMat.MetallicRoughnessTexture) - 1
+          : -1;
       if (aMetRoughImageIdx != -1)
       {
         myWriter->Key("metallicRoughnessTexture");

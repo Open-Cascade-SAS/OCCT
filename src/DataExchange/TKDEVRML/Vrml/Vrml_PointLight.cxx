@@ -22,10 +22,10 @@ Vrml_PointLight::Vrml_PointLight()
   //
 }
 
-Vrml_PointLight::Vrml_PointLight(const bool            aOnOff,
-                                 const double          aIntensity,
-                                 const Quantity_Color& aColor,
-                                 const gp_Vec&         aLocation)
+Vrml_PointLight::Vrml_PointLight(const bool aOnOff,
+                                 const double    aIntensity,
+                                 const Quantity_Color&  aColor,
+                                 const gp_Vec&          aLocation)
 {
   if (aIntensity < 0. || aIntensity > 1.)
   {

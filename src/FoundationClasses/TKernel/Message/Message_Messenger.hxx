@@ -173,8 +173,8 @@ public:
   //! Dispatch a message to all the printers in the list.
   //! Three versions of string representations are accepted for
   //! convenience, by default all are converted to ExtendedString.
-  Standard_EXPORT void Send(const char*           theString,
-                            const Message_Gravity theGravity = Message_Warning) const;
+  Standard_EXPORT void Send(const char* theString,
+                            const Message_Gravity  theGravity = Message_Warning) const;
 
   //! See above
   Standard_EXPORT void Send(const Standard_SStream& theStream,
@@ -193,7 +193,7 @@ public:
 
   //! See above
   Standard_EXPORT void Send(const occ::handle<Standard_Transient>& theObject,
-                            const Message_Gravity theGravity = Message_Warning) const;
+                            const Message_Gravity             theGravity = Message_Warning) const;
 
   //! Create string buffer for sending Fail message
   StreamBuffer SendFail() { return Send(Message_Fail); }

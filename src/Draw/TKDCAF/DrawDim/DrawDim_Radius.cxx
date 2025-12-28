@@ -64,21 +64,20 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
 
 //=================================================================================================
 
-// void PrsDim_RadiusDimension::ComputeOneFaceRadius(const occ::handle<Prs3d_Presentation>&
-// aPresentation)
+// void PrsDim_RadiusDimension::ComputeOneFaceRadius(const occ::handle<Prs3d_Presentation>& aPresentation)
 //{
 #ifdef OCCT_DEBUG
   std::cout << "entree dans computeonefaceradius" << std::endl;
 #endif
   BRepAdaptor_Surface surfAlgo(TopoDS::Face(myFShape));
-  double              uFirst, uLast, vFirst, vLast;
-  uFirst      = surfAlgo.FirstUParameter();
-  uLast       = surfAlgo.LastUParameter();
-  vFirst      = surfAlgo.FirstVParameter();
-  vLast       = surfAlgo.LastVParameter();
+  double       uFirst, uLast, vFirst, vLast;
+  uFirst             = surfAlgo.FirstUParameter();
+  uLast              = surfAlgo.LastUParameter();
+  vFirst             = surfAlgo.FirstVParameter();
+  vLast              = surfAlgo.LastVParameter();
   double uMoy = (uFirst + uLast) / 2;
   double vMoy = (vFirst + vLast) / 2;
-  gp_Pnt curpos;
+  gp_Pnt        curpos;
   surfAlgo.D0(uMoy, vMoy, curpos);
   const occ::handle<Geom_Surface>& surf = surfAlgo.Surface().Surface();
   occ::handle<Geom_Curve>          aCurve;

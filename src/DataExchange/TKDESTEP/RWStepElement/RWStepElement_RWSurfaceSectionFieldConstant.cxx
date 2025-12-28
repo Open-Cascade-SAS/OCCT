@@ -30,7 +30,7 @@ RWStepElement_RWSurfaceSectionFieldConstant::RWStepElement_RWSurfaceSectionField
 
 void RWStepElement_RWSurfaceSectionFieldConstant::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent) const
 {
@@ -51,7 +51,7 @@ void RWStepElement_RWSurfaceSectionFieldConstant::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldConstant::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent) const
 {
 
@@ -64,7 +64,7 @@ void RWStepElement_RWSurfaceSectionFieldConstant::WriteStep(
 
 void RWStepElement_RWSurfaceSectionFieldConstant::Share(
   const occ::handle<StepElement_SurfaceSectionFieldConstant>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Own fields of SurfaceSectionFieldConstant

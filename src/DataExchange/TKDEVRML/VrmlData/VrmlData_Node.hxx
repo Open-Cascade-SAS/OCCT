@@ -68,7 +68,7 @@ public:
    *   Otherwise the created node is matched and an error is returned if
    *   no match detected.
    */
-  Standard_EXPORT VrmlData_ErrorStatus ReadNode(VrmlData_InBuffer&                theBuffer,
+  Standard_EXPORT VrmlData_ErrorStatus ReadNode(VrmlData_InBuffer&           theBuffer,
                                                 occ::handle<VrmlData_Node>&       theNode,
                                                 const occ::handle<Standard_Type>& Type = NULL);
 
@@ -105,7 +105,7 @@ public:
    * Read one boolean value (TRUE or FALSE).
    */
   Standard_EXPORT static VrmlData_ErrorStatus ReadBoolean(VrmlData_InBuffer& theBuffer,
-                                                          bool&              theResult);
+                                                          bool&  theResult);
 
   /**
    * Read one quoted string, the quotes are removed.
@@ -126,9 +126,13 @@ public:
   Standard_EXPORT static VrmlData_ErrorStatus ReadInteger(VrmlData_InBuffer& theBuffer,
                                                           long&              theResult);
 
-  static inline bool OK(const VrmlData_ErrorStatus theStat) { return theStat == VrmlData_StatusOK; }
+  static inline bool OK(const VrmlData_ErrorStatus theStat)
+  {
+    return theStat == VrmlData_StatusOK;
+  }
 
-  static inline bool OK(VrmlData_ErrorStatus& outStat, const VrmlData_ErrorStatus theStat)
+  static inline bool OK(VrmlData_ErrorStatus&      outStat,
+                                    const VrmlData_ErrorStatus theStat)
   {
     return (outStat = theStat) == VrmlData_StatusOK;
   }
@@ -181,7 +185,7 @@ public:
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 Standard_EXPORT bool IsEqual(const occ::handle<VrmlData_Node>& theOne,
-                             const occ::handle<VrmlData_Node>& theTwo);
+                                         const occ::handle<VrmlData_Node>& theTwo);
 
 namespace std
 {

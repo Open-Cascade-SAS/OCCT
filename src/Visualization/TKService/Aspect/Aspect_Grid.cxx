@@ -15,9 +15,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Aspect_Grid, Standard_Transient)
 
-Aspect_Grid::Aspect_Grid(const double          theXOrigin,
-                         const double          theYOrigin,
-                         const double          theAngle,
+Aspect_Grid::Aspect_Grid(const double   theXOrigin,
+                         const double   theYOrigin,
+                         const double   theAngle,
                          const Quantity_Color& theColor,
                          const Quantity_Color& theTenthColor)
     : myRotationAngle(theAngle),

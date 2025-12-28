@@ -86,8 +86,8 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (myCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    occ::handle<Geom_TrimmedCurve>      tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
-    occ::handle<Geom_Curve>             BasCurve = tmp->BasisCurve();
+    occ::handle<Geom_TrimmedCurve>           tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
+    occ::handle<Geom_Curve>                  BasCurve = tmp->BasisCurve();
     ShapeUpgrade_SplitCurve3dContinuity spc;
     //    spc.Init(BasCurve,Max(tmp->FirstParameter(),First),Min(tmp->LastParameter(),Last));
     spc.Init(BasCurve, First, Last);
@@ -148,7 +148,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
   // it is a BSplineCurve
   //  if (ShapeUpgrade::Debug()) std::cout<<". curve is a Bspline"<<std::endl;
 
-  myNbCurves  = 1;
+  myNbCurves               = 1;
   int Deg     = MyBSpline->Degree();
   int NbKnots = MyBSpline->NbKnots();
   //  if (ShapeUpgrade::Debug()) std::cout<<". NbKnots="<<NbKnots<<std::endl;
@@ -157,7 +157,8 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
     return;
   }
   // Only the internal knots are checked.
-  int FirstInd = MyBSpline->FirstUKnotIndex() + 1, LastInd = MyBSpline->LastUKnotIndex() - 1;
+  int FirstInd = MyBSpline->FirstUKnotIndex() + 1,
+                   LastInd  = MyBSpline->LastUKnotIndex() - 1;
   for (int j = 2; j <= mySplitValues->Length(); j++)
   {
     Last = mySplitValues->Value(j);
@@ -173,7 +174,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
       {
         // At this knot, the curve is C0; try to remove Knot.
         bool corrected       = false;
-        int  newMultiplicity = Deg - myCont;
+        int newMultiplicity = Deg - myCont;
         if (newMultiplicity < 0)
           newMultiplicity = 0;
         {

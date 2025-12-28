@@ -96,7 +96,7 @@ occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
   occ::handle<BRep_TEdge> TE = new BRep_TEdge();
   TE->Tolerance(myTolerance);
   // copy the curves representations
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>&          l = TE->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>&              l = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves);
 
   while (itr.More())
@@ -128,8 +128,7 @@ void BRep_TEdge::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFlags)
 
-  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves); itr.More();
-       itr.Next())
+  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves); itr.More(); itr.Next())
   {
     const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = itr.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aCurveRepresentation.get())

@@ -40,8 +40,7 @@ DEIGES_ConfigurationNode::DEIGES_ConfigurationNode()
 
 //=================================================================================================
 
-DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(
-  const occ::handle<DEIGES_ConfigurationNode>& theNode)
+DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const occ::handle<DEIGES_ConfigurationNode>& theNode)
     : DE_ShapeFixConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

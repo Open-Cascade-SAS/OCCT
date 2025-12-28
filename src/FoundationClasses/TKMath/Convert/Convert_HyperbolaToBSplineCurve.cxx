@@ -22,7 +22,12 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 static int TheDegree  = 2;
 static int MaxNbKnots = 2;
@@ -30,9 +35,9 @@ static int MaxNbPoles = 3;
 
 //=================================================================================================
 
-Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d& H,
-                                                                 const double     U1,
-                                                                 const double     U2)
+Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d&    H,
+                                                                 const double U1,
+                                                                 const double U2)
 
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
@@ -51,11 +56,11 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
 
   // construction of hyperbola in the reference xOy.
 
-  double   R  = H.MajorRadius();
-  double   r  = H.MinorRadius();
-  gp_Dir2d Ox = H.Axis().XDirection();
-  gp_Dir2d Oy = H.Axis().YDirection();
-  double   S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
+  double R  = H.MajorRadius();
+  double r  = H.MinorRadius();
+  gp_Dir2d      Ox = H.Axis().XDirection();
+  gp_Dir2d      Oy = H.Axis().YDirection();
+  double S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
 
   // poles expressed in the reference mark
   // the 2nd pole is at the intersection of 2 tangents to the curve
@@ -66,9 +71,9 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
   weights->ChangeArray1()(2) = std::cosh((UL - UF) / 2);
   weights->ChangeArray1()(3) = 1.;
 
-  double delta             = std::sinh(UL - UF);
-  double x                 = R * (std::sinh(UL) - std::sinh(UF)) / delta;
-  double y                 = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
+  double delta      = std::sinh(UL - UF);
+  double x          = R * (std::sinh(UL) - std::sinh(UF)) / delta;
+  double y          = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
   poles->ChangeArray1()(1) = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
   poles->ChangeArray1()(2) = gp_Pnt2d(x, y);
   poles->ChangeArray1()(3) = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));

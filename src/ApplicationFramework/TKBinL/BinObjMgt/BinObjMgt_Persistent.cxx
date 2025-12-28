@@ -65,7 +65,7 @@ void BinObjMgt_Persistent::Init()
     void* aPiece = Standard::Allocate(BP_PIECESIZE);
     myData.Append(aPiece);
   }
-  int* aData               = (int*)myData(1);
+  int* aData  = (int*)myData(1);
   aData[0]                 = 0; // Type Id
   aData[1]                 = 0; // Object Id
   aData[2]                 = 0; // Data length
@@ -83,7 +83,8 @@ void BinObjMgt_Persistent::Init()
 //           const BinObjMgt_Persistent&) is also available
 //=======================================================================
 
-Standard_OStream& BinObjMgt_Persistent::Write(Standard_OStream& theOS, const bool theDirectStream)
+Standard_OStream& BinObjMgt_Persistent::Write(Standard_OStream&      theOS,
+                                              const bool theDirectStream)
 {
   if (myDirectWritingIsEnabled)
   { // if direct writing was enabled, everything is already written, just pass this stage
@@ -129,9 +130,9 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
   myIsError = false;
 
   int* aData = (int*)myData(1);
-  aData[0]   = 0; // Type Id
-  aData[1]   = 0; // Object Id
-  aData[2]   = 0; // Data length
+  aData[0]                = 0; // Type Id
+  aData[1]                = 0; // Object Id
+  aData[2]                = 0; // Data length
 
   // read TypeId
   theIS.read((char*)&aData[0], BP_INTSIZE);
@@ -162,8 +163,8 @@ Standard_IStream& BinObjMgt_Persistent::Read(Standard_IStream& theIS)
           void* aPiece = Standard::Allocate(BP_PIECESIZE);
           myData.Append(aPiece);
         }
-        int   nbToRead = std::min(mySize - nbRead, BP_PIECESIZE);
-        char* ptr      = (char*)myData(i);
+        int nbToRead = std::min(mySize - nbRead, BP_PIECESIZE);
+        char*            ptr      = (char*)myData(i);
         if (i == 1)
         {
           // 1st piece: reduce the number of bytes by header size
@@ -217,7 +218,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharacter(const char theValue)
   alignOffset(1);
   prepareForPut(1);
   char* aData = (char*)myData(myIndex) + myOffset;
-  *aData      = theValue;
+  *aData                    = theValue;
   myOffset++;
   return *this;
 }
@@ -229,7 +230,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutByte(const uint8_t theValue)
   alignOffset(1);
   prepareForPut(1);
   uint8_t* aData = (uint8_t*)myData(myIndex) + myOffset;
-  *aData         = theValue;
+  *aData               = theValue;
   myOffset++;
   return *this;
 }
@@ -436,8 +437,8 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutGUID(const Standard_GUID& theValu
 // purpose  : Put C array of char, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(const BinObjMgt_PChar theArray,
-                                                         const int             theLength)
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(const BinObjMgt_PChar  theArray,
+                                                         const int theLength)
 {
   alignOffset(1);
   prepareForPut(theLength);
@@ -450,8 +451,8 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutCharArray(const BinObjMgt_PChar t
 // purpose  : Put C array of byte, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(const BinObjMgt_PByte theArray,
-                                                         const int             theLength)
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(const BinObjMgt_PByte  theArray,
+                                                         const int theLength)
 {
   alignOffset(1);
   prepareForPut(theLength);
@@ -465,7 +466,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutByteArray(const BinObjMgt_PByte t
 //=======================================================================
 
 BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray(const BinObjMgt_PExtChar theArray,
-                                                            const int                theLength)
+                                                            const int   theLength)
 {
   alignOffset(BP_EXTCHARSIZE, true);
   int aSize = theLength * BP_EXTCHARSIZE;
@@ -487,7 +488,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutExtCharArray(const BinObjMgt_PExt
 //=======================================================================
 
 BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray(const BinObjMgt_PInteger theArray,
-                                                        const int                theLength)
+                                                        const int   theLength)
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_INTSIZE;
@@ -508,8 +509,8 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutIntArray(const BinObjMgt_PInteger
 // purpose  : Put C array of double, theLength is the number of elements
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(const BinObjMgt_PReal theArray,
-                                                         const int             theLength)
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(const BinObjMgt_PReal  theArray,
+                                                         const int theLength)
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_REALSIZE;
@@ -531,7 +532,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutRealArray(const BinObjMgt_PReal t
 //=======================================================================
 
 BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortRealArray(const BinObjMgt_PShortReal theArray,
-                                                              const int                  theLength)
+                                                              const int     theLength)
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_SHORTREALSIZE;
@@ -555,7 +556,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharacter(char& theValue) c
   if (noMoreData(1))
     return *this;
   char* aData = (char*)myData(myIndex) + myOffset;
-  theValue    = *aData;
+  theValue                  = *aData;
   ((BinObjMgt_Persistent*)this)->myOffset++;
   return *this;
 }
@@ -568,14 +569,15 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByte(uint8_t& theValue) con
   if (noMoreData(1))
     return *this;
   uint8_t* aData = (uint8_t*)myData(myIndex) + myOffset;
-  theValue       = *aData;
+  theValue             = *aData;
   ((BinObjMgt_Persistent*)this)->myOffset++;
   return *this;
 }
 
 //=================================================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharacter(char16_t& theValue) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharacter(
+  char16_t& theValue) const
 {
   alignOffset(BP_EXTCHARSIZE);
   if (noMoreData(BP_EXTCHARSIZE))
@@ -624,7 +626,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetReal(double& theValue) cons
   {
     // the value fits in the current piece => get it quickly
     double* aData = (double*)((char*)myData(myIndex) + myOffset);
-    theValue      = *aData;
+    theValue             = *aData;
     ((BinObjMgt_Persistent*)this)->myOffset += BP_REALSIZE;
   }
 #ifdef DO_INVERSE
@@ -656,8 +658,8 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetAsciiString(
   TCollection_AsciiString& theValue) const
 {
   alignOffset(BP_INTSIZE);
-  int                   aStartIndex  = myIndex;
-  int                   aStartOffset = myOffset;
+  int      aStartIndex  = myIndex;
+  int      aStartOffset = myOffset;
   BinObjMgt_Persistent* me           = (BinObjMgt_Persistent*)this;
   char*                 aData        = (char*)myData(myIndex) + myOffset;
 
@@ -687,10 +689,10 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetAsciiString(
   else
   {
     // work through buffer string
-    int   aSize   = (myIndex - aStartIndex) * BP_PIECESIZE + myOffset - aStartOffset;
+    int aSize   = (myIndex - aStartIndex) * BP_PIECESIZE + myOffset - aStartOffset;
     void* aString = Standard::Allocate(aSize);
-    me->myIndex   = aStartIndex;
-    me->myOffset  = aStartOffset;
+    me->myIndex              = aStartIndex;
+    me->myOffset             = aStartOffset;
     getArray(aString, aSize);
     theValue = (char*)aString;
     Standard::Free(aString);
@@ -705,10 +707,10 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtendedString(
   TCollection_ExtendedString& theValue) const
 {
   alignOffset(BP_INTSIZE);
-  int                   aStartIndex  = myIndex;
-  int                   aStartOffset = myOffset;
-  BinObjMgt_Persistent* me           = (BinObjMgt_Persistent*)this;
-  char16_t*             aData        = (char16_t*)((char*)myData(myIndex) + myOffset);
+  int       aStartIndex  = myIndex;
+  int       aStartOffset = myOffset;
+  BinObjMgt_Persistent*  me           = (BinObjMgt_Persistent*)this;
+  char16_t* aData        = (char16_t*)((char*)myData(myIndex) + myOffset);
 
   // count the string length
   while (!noMoreData(1) && *aData++)
@@ -736,10 +738,10 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtendedString(
   else
   {
     // work through buffer string
-    int   aSize   = (myIndex - aStartIndex) * BP_PIECESIZE + (myOffset - aStartOffset);
+    int aSize   = (myIndex - aStartIndex) * BP_PIECESIZE + (myOffset - aStartOffset);
     void* aString = Standard::Allocate(aSize);
-    me->myIndex   = aStartIndex;
-    me->myOffset  = aStartOffset;
+    me->myIndex              = aStartIndex;
+    me->myOffset             = aStartOffset;
     getArray(aString, aSize);
     theValue = (char16_t*)aString;
     Standard::Free(aString);
@@ -756,7 +758,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtendedString(
 //=================================================================================================
 
 const BinObjMgt_Persistent& BinObjMgt_Persistent::GetLabel(const occ::handle<TDF_Data>& theDS,
-                                                           TDF_Label& theValue) const
+                                                           TDF_Label&              theValue) const
 {
   theValue.Nullify();
   alignOffset(BP_INTSIZE);
@@ -833,8 +835,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetGUID(Standard_GUID& theValu
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(const BinObjMgt_PChar theArray,
-                                                               const int theLength) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(
+  const BinObjMgt_PChar  theArray,
+  const int theLength) const
 {
   alignOffset(1);
   if (noMoreData(theLength))
@@ -850,8 +853,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetCharArray(const BinObjMgt_P
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(const BinObjMgt_PByte theArray,
-                                                               const int theLength) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(
+  const BinObjMgt_PByte  theArray,
+  const int theLength) const
 {
   alignOffset(1);
   if (noMoreData(theLength))
@@ -867,8 +871,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetByteArray(const BinObjMgt_P
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(const BinObjMgt_PExtChar theArray,
-                                                                  const int theLength) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(
+  const BinObjMgt_PExtChar theArray,
+  const int   theLength) const
 {
   alignOffset(BP_EXTCHARSIZE, true);
   int aSize = theLength * BP_EXTCHARSIZE;
@@ -889,8 +894,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetExtCharArray(const BinObjMg
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(const BinObjMgt_PInteger theArray,
-                                                              const int theLength) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(
+  const BinObjMgt_PInteger theArray,
+  const int   theLength) const
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_INTSIZE;
@@ -911,8 +917,9 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetIntArray(const BinObjMgt_PI
 //           space enough to place theLength elements
 //=======================================================================
 
-const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(const BinObjMgt_PReal theArray,
-                                                               const int theLength) const
+const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(
+  const BinObjMgt_PReal  theArray,
+  const int theLength) const
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_REALSIZE;
@@ -935,7 +942,7 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetRealArray(const BinObjMgt_P
 
 const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray(
   const BinObjMgt_PShortReal theArray,
-  const int                  theLength) const
+  const int     theLength) const
 {
   alignOffset(BP_INTSIZE, true);
   int aSize = theLength * BP_SHORTREALSIZE;
@@ -956,8 +963,8 @@ const BinObjMgt_Persistent& BinObjMgt_Persistent::GetShortRealArray(
 
 void BinObjMgt_Persistent::putArray(void* const theArray, const int theSize)
 {
-  char* aPtr = (char*)theArray;
-  int   aLen = theSize;
+  char*            aPtr = (char*)theArray;
+  int aLen = theSize;
   while (aLen > 0)
   {
     if (myOffset >= BP_PIECESIZE)
@@ -965,8 +972,8 @@ void BinObjMgt_Persistent::putArray(void* const theArray, const int theSize)
       myIndex++;
       myOffset = 0;
     }
-    int   aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
-    char* aData       = (char*)myData(myIndex) + myOffset;
+    int aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
+    char*            aData       = (char*)myData(myIndex) + myOffset;
     memcpy(aData, aPtr, aLenInPiece);
     aLen -= aLenInPiece;
     aPtr += aLenInPiece;
@@ -979,10 +986,11 @@ void BinObjMgt_Persistent::putArray(void* const theArray, const int theSize)
 // purpose  : Gets theLength bytes into theArray
 //=======================================================================
 
-void BinObjMgt_Persistent::getArray(void* const theArray, const int theSize) const
+void BinObjMgt_Persistent::getArray(void* const theArray,
+                                    const int theSize) const
 {
   char*                 aPtr = (char*)theArray;
-  int                   aLen = theSize;
+  int      aLen = theSize;
   BinObjMgt_Persistent* me   = (BinObjMgt_Persistent*)this;
   while (aLen > 0)
   {
@@ -991,8 +999,8 @@ void BinObjMgt_Persistent::getArray(void* const theArray, const int theSize) con
       me->myIndex++;
       me->myOffset = 0;
     }
-    int   aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
-    char* aData       = (char*)myData(myIndex) + myOffset;
+    int aLenInPiece = std::min(aLen, BP_PIECESIZE - myOffset);
+    char*            aData       = (char*)myData(myIndex) + myOffset;
     memcpy(aPtr, aData, aLenInPiece);
     aLen -= aLenInPiece;
     aPtr += aLenInPiece;
@@ -1015,7 +1023,7 @@ void BinObjMgt_Persistent::inverseExtCharData(const int theIndex,
   while (aLen > 0)
   {
     int       aLenInPiece = std::min(aLen, BP_PIECESIZE - anOffset);
-    char16_t* aData       = (char16_t*)((char*)myData(anIndex) + anOffset);
+    char16_t* aData = (char16_t*)((char*)myData(anIndex) + anOffset);
     for (int i = 0; i < aLenInPiece / BP_EXTCHARSIZE; i++)
       aData[i] = FSD_BinaryFile::InverseExtChar(aData[i]);
     aLen -= aLenInPiece;
@@ -1070,8 +1078,8 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
   int aLen     = theSize;
 
   union {
-    double* aRealData;
-    int*    aIntData;
+    double*    aRealData;
+    int* aIntData;
   } aWrapUnion;
 
   void* aPrevPtr = 0;
@@ -1084,9 +1092,9 @@ void BinObjMgt_Persistent::inverseRealData(const int theIndex,
     if (aPrevPtr)
     {
       int aTmp;
-      aTmp                 = FSD_BinaryFile::InverseInt(*(int*)aPrevPtr);
-      *(int*)aPrevPtr      = FSD_BinaryFile::InverseInt(*aWrapUnion.aIntData);
-      *aWrapUnion.aIntData = aTmp;
+      aTmp                         = FSD_BinaryFile::InverseInt(*(int*)aPrevPtr);
+      *(int*)aPrevPtr = FSD_BinaryFile::InverseInt(*aWrapUnion.aIntData);
+      *aWrapUnion.aIntData         = aTmp;
       aWrapUnion.aIntData++;
       aPrevPtr = 0;
     }

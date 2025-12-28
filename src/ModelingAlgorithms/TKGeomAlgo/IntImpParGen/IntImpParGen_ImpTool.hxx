@@ -52,6 +52,7 @@ public:
   //! the implicit curve must be coherent with the way
   //! of determination of the signed distance.
   Standard_EXPORT double FindParameter(const gp_Pnt2d& P) const;
+
 };
 
 #endif // _IntImpParGen_ImpTool_HeaderFile

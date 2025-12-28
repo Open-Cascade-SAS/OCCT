@@ -57,14 +57,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SweptSurface, Geom_Surface)
 
 protected:
   occ::handle<Geom_Curve> basisCurve;
-  gp_Dir                  direction;
-  GeomAbs_Shape           smooth;
+  gp_Dir             direction;
+  GeomAbs_Shape      smooth;
+
 };
 
 #endif // _Geom_SweptSurface_HeaderFile

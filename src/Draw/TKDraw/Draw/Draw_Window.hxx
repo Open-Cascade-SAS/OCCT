@@ -38,7 +38,10 @@ struct Draw_XSegment
 
   const NCollection_Vec2<short>& operator[](int theIndex) const { return Points[theIndex]; }
 
-  void Init(int theXStart, int theYStart, int theXEnd, int theYEnd)
+  void Init(int theXStart,
+            int theYStart,
+            int theXEnd,
+            int theYEnd)
   {
     Points[0].SetValues((short)theXStart, (short)theYStart);
     Points[1].SetValues((short)theXEnd, (short)theYEnd);
@@ -66,8 +69,8 @@ extern wchar_t console_command[DRAW_COMMAND_SIZE + 1];
 
 // PROCEDURE DE DRAW WINDOW
 Standard_EXPORT bool Init_Appli(HINSTANCE, HINSTANCE, int, HWND&);
-Standard_EXPORT void Run_Appli(HWND);
-Standard_EXPORT void Destroy_Appli(HINSTANCE);
+Standard_EXPORT void             Run_Appli(HWND);
+Standard_EXPORT void             Destroy_Appli(HINSTANCE);
 
 #else
 
@@ -120,7 +123,8 @@ public:
   Standard_EXPORT static void RemoveCallbackBeforeTerminate(FCallbackBeforeTerminate theCB);
 
   //! @sa SetColor()
-  Standard_EXPORT static bool DefineColor(const int theIndex, const char* theColorName);
+  Standard_EXPORT static bool DefineColor(const int theIndex,
+                                                      const char*            theColorName);
 
   //! XFlush() wrapper (X11), has no effect on other platforms.
   Standard_EXPORT static void Flush();
@@ -179,10 +183,13 @@ public:
   Standard_EXPORT void SetMode(int theMode);
 
   //! Draw the string.
-  Standard_EXPORT void DrawString(int theX, int theY, const char* theText);
+  Standard_EXPORT void DrawString(int theX,
+                                  int theY,
+                                  const char*      theText);
 
   //! Draw array of segments.
-  Standard_EXPORT void DrawSegments(const Draw_XSegment* theSegments, int theNumberOfElements);
+  Standard_EXPORT void DrawSegments(const Draw_XSegment* theSegments,
+                                    int     theNumberOfElements);
 
   //! Redraw window content.
   Standard_EXPORT void Redraw();
@@ -228,11 +235,11 @@ public:
   //! Event structure.
   struct Draw_XEvent
   {
-    int    type;
-    Window window;
-    int    button;
-    int    x;
-    int    y;
+    int type;
+    Window           window;
+    int button;
+    int x;
+    int y;
   };
 
   //! Retrieve event.
@@ -243,10 +250,10 @@ public:
   bool IsEqualWindows(const long theWindowNumber);
 
   static void GetNextEvent(bool  theWait,
-                           long& theWindowNumber,
-                           int&  theX,
-                           int&  theY,
-                           int&  theButton);
+                           long&             theWindowNumber,
+                           int& theX,
+                           int& theY,
+                           int& theButton);
 #endif
 
 private:
@@ -261,11 +268,11 @@ private:
 
 private:
 #if defined(_WIN32)
-  HWND    myWindow; //!< native window
-  HBITMAP myMemHbm;
-  HBITMAP myOldHbm;
-  int     myCurrPen;
-  int     myCurrMode;
+  HWND             myWindow; //!< native window
+  HBITMAP          myMemHbm;
+  HBITMAP          myOldHbm;
+  int myCurrPen;
+  int myCurrMode;
 #elif defined(HAVE_XLIB)
   Window                       myWindow; //!< native window
   Window                       myMother; //!< parent native window
@@ -278,7 +285,7 @@ private:
 #else
   Aspect_Drawable myWindow;
 #endif
-  int  myCurrentColor;
+  int myCurrentColor;
   bool myUseBuffer;
 };
 

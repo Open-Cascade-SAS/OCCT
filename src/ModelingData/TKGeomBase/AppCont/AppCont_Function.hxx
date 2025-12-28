@@ -56,19 +56,21 @@ public:
   virtual double LastParameter() const = 0;
 
   //! Returns the point at parameter <theU>.
-  virtual bool Value(const double                  theU,
-                     NCollection_Array1<gp_Pnt2d>& thePnt2d,
-                     NCollection_Array1<gp_Pnt>&   thePnt) const = 0;
+  virtual bool Value(const double           theU,
+                                 NCollection_Array1<gp_Pnt2d>& thePnt2d,
+                                 NCollection_Array1<gp_Pnt>&   thePnt) const = 0;
 
   //! Returns the derivative at parameter <theU>.
-  virtual bool D1(const double                  theU,
-                  NCollection_Array1<gp_Vec2d>& theVec2d,
-                  NCollection_Array1<gp_Vec>&   theVec) const = 0;
+  virtual bool D1(const double           theU,
+                              NCollection_Array1<gp_Vec2d>& theVec2d,
+                              NCollection_Array1<gp_Vec>&   theVec) const = 0;
 
   //! Return information about peridicity in output paramateters space.
   //! @param theDimIdx Defines index in output parameters space. 1 <= theDimIdx <= 3 * myNbPnt + 2 *
   //! myNbPnt2d.
-  virtual void PeriodInformation(const int /*theDimIdx*/, bool& IsPeriodic, double& thePeriod) const
+  virtual void PeriodInformation(const int /*theDimIdx*/,
+                                 bool& IsPeriodic,
+                                 double&    thePeriod) const
   {
     IsPeriodic = false;
     thePeriod  = 0.0;

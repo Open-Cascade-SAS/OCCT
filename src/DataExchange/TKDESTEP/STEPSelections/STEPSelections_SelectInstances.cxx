@@ -35,6 +35,7 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplore)
@@ -42,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectInstances, IFSelect_SelectExplor
 namespace
 {
 thread_local occ::handle<Interface_HGraph> myGraph;
-thread_local Interface_EntityIterator      myEntities;
+thread_local Interface_EntityIterator myEntities;
 } // namespace
 
 STEPSelections_SelectInstances::STEPSelections_SelectInstances()
@@ -51,8 +52,8 @@ STEPSelections_SelectInstances::STEPSelections_SelectInstances()
 }
 
 static void AddAllSharings(const occ::handle<Standard_Transient>& start,
-                           const Interface_Graph&                 graph,
-                           Interface_EntityIterator&              explored)
+                           const Interface_Graph&            graph,
+                           Interface_EntityIterator&         explored)
 {
   if (start.IsNull())
     return;
@@ -65,8 +66,8 @@ static void AddAllSharings(const occ::handle<Standard_Transient>& start,
 }
 
 static void AddInstances(const occ::handle<Standard_Transient>& start,
-                         const Interface_Graph&                 graph,
-                         Interface_EntityIterator&              explored)
+                         const Interface_Graph&            graph,
+                         Interface_EntityIterator&         explored)
 {
   if (start.IsNull())
     return;
@@ -166,8 +167,8 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
 
   if (HasInput() || HasAlternate())
   {
-    Interface_EntityIterator                                select     = InputResult(G);
-    int                                                     nbSelected = select.NbEntities();
+    Interface_EntityIterator      select     = InputResult(G);
+    int              nbSelected = select.NbEntities();
     NCollection_IndexedMap<occ::handle<Standard_Transient>> filter(nbSelected);
     for (select.Start(); select.More(); select.Next())
       filter.Add(select.Value());
@@ -182,9 +183,9 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
 }
 
 bool STEPSelections_SelectInstances::Explore(const int,
-                                             const occ::handle<Standard_Transient>&,
-                                             const Interface_Graph&,
-                                             Interface_EntityIterator&) const
+                                                         const occ::handle<Standard_Transient>&,
+                                                         const Interface_Graph&,
+                                                         Interface_EntityIterator&) const
 {
   return false;
 }

@@ -21,9 +21,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities, IFSelect_SelectExtract)
 
 IFSelect_SelectErrorEntities::IFSelect_SelectErrorEntities() {}
 
-bool IFSelect_SelectErrorEntities::Sort(const int,
-                                        const occ::handle<Standard_Transient>&       ent,
-                                        const occ::handle<Interface_InterfaceModel>& model) const
+bool IFSelect_SelectErrorEntities::Sort(
+  const int,
+  const occ::handle<Standard_Transient>&       ent,
+  const occ::handle<Interface_InterfaceModel>& model) const
 //.. cannot work, the model is also needed ! ex. via the graph ...
 {
   return model->IsErrorEntity(model->Number(ent));

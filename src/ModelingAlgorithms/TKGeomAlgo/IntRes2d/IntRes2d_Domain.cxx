@@ -56,12 +56,12 @@ void IntRes2d_Domain::SetValues()
 // purpose  : Creates a bounded Domain.
 //=======================================================================
 
-IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d& Pnt1,
-                                 const double    Par1,
-                                 const double    Tol1,
-                                 const gp_Pnt2d& Pnt2,
-                                 const double    Par2,
-                                 const double    Tol2)
+IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&     Pnt1,
+                                 const double Par1,
+                                 const double Tol1,
+                                 const gp_Pnt2d&     Pnt2,
+                                 const double Par2,
+                                 const double Tol2)
 {
 
   SetValues(Pnt1, Par1, Tol1, Pnt2, Par2, Tol2);
@@ -72,12 +72,12 @@ IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d& Pnt1,
 // purpose  : Sets the values for a bounded domain.
 //=======================================================================
 
-void IntRes2d_Domain::SetValues(const gp_Pnt2d& Pnt1,
-                                const double    Par1,
-                                const double    Tol1,
-                                const gp_Pnt2d& Pnt2,
-                                const double    Par2,
-                                const double    Tol2)
+void IntRes2d_Domain::SetValues(const gp_Pnt2d&     Pnt1,
+                                const double Par1,
+                                const double Tol1,
+                                const gp_Pnt2d&     Pnt2,
+                                const double Par2,
+                                const double Tol2)
 {
 
   status      = 3;
@@ -92,10 +92,10 @@ void IntRes2d_Domain::SetValues(const gp_Pnt2d& Pnt1,
   last_tol = Tol2;
 }
 
-IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d& Pnt,
+IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d&        Pnt,
                                  const double    Par,
                                  const double    Tol,
-                                 const bool      First)
+                                 const bool First)
     : first_param(0.0),
       last_param(0.0),
       first_tol(0.0),
@@ -106,10 +106,10 @@ IntRes2d_Domain::IntRes2d_Domain(const gp_Pnt2d& Pnt,
   SetValues(Pnt, Par, Tol, First);
 }
 
-void IntRes2d_Domain::SetValues(const gp_Pnt2d& Pnt,
+void IntRes2d_Domain::SetValues(const gp_Pnt2d&        Pnt,
                                 const double    Par,
                                 const double    Tol,
-                                const bool      First)
+                                const bool First)
 {
 
   periodfirst = periodlast = 0.0;

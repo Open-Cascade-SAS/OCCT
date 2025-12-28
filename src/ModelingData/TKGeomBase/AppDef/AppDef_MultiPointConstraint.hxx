@@ -25,9 +25,13 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class gp_Vec;
 class gp_Vec2d;
@@ -57,7 +61,8 @@ public:
   //! constructs a set of Points used to approximate a Multiline.
   //! These Points can be of 2 or 3 dimensions.
   //! Points will be initialized with SetPoint and SetPoint2d.
-  Standard_EXPORT AppDef_MultiPointConstraint(const int NbPoints, const int NbPoints2d);
+  Standard_EXPORT AppDef_MultiPointConstraint(const int NbPoints,
+                                              const int NbPoints2d);
 
   //! creates a MultiPoint only composed of 3D points.
   Standard_EXPORT AppDef_MultiPointConstraint(const NCollection_Array1<gp_Pnt>& tabP);

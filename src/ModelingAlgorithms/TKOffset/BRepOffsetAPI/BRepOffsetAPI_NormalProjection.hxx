@@ -66,11 +66,11 @@ public:
   //! used for approximation
   //! MaxDeg and MaxSeg are the maximum degree and the maximum
   //! number of segment for BSpline resulting of an approximation.
-  Standard_EXPORT void SetParams(const double        Tol3D,
-                                 const double        Tol2D,
-                                 const GeomAbs_Shape InternalContinuity,
-                                 const int           MaxDegree,
-                                 const int           MaxSeg);
+  Standard_EXPORT void SetParams(const double    Tol3D,
+                                 const double    Tol2D,
+                                 const GeomAbs_Shape    InternalContinuity,
+                                 const int MaxDegree,
+                                 const int MaxSeg);
 
   //! Sets the maximum distance between target shape and
   //! shape to project. If this condition is not satisfied then corresponding
@@ -114,8 +114,8 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
   //! Returns the initial edge corresponding to the edge E
   //! resulting from the computation of the projection.

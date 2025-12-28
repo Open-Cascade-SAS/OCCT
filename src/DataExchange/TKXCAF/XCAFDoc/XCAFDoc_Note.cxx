@@ -116,7 +116,7 @@ occ::handle<XCAFNoteObjects_NoteObject> XCAFDoc_Note::GetObject() const
   }
 
   occ::handle<TNaming_NamedShape> aNS;
-  TDF_Label                       aLPres = Label().FindChild(ChildLab_Presentation);
+  TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);

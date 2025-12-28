@@ -65,14 +65,15 @@ public:
   Standard_EXPORT int NbIntervals(const GeomAbs_Shape S) const override;
 
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                                            const double Last,
-                                                            const double Tol) const override;
+                                                       const double Last,
+                                                       const double Tol) const
+    override;
 
   Standard_EXPORT virtual double Resolution(const double R3d) const override;
 
@@ -88,18 +89,20 @@ public:
 
   Standard_EXPORT virtual void D0(const double AbsC, gp_Pnt& P) const override;
 
-  Standard_EXPORT virtual void D1(const double AbsC, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT virtual void D1(const double AbsC,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1) const override;
 
   Standard_EXPORT virtual void D2(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2) const override;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1,
+                                  gp_Vec&             V2) const override;
 
   Standard_EXPORT virtual void D3(const double AbsC,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const override;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1,
+                                  gp_Vec&             V2,
+                                  gp_Vec&             V3) const override;
 
   Standard_EXPORT void FirstParameter(const double P);
 
@@ -150,20 +153,20 @@ public:
   Standard_EXPORT occ::handle<Geom_BSplineCurve> BSpline() const override;
 
 private:
-  GeomAdaptor_Curve            curve;
-  gp_Pnt                       ptfirst;
-  gp_Pnt                       ptlast;
-  gp_Vec                       tgfirst;
-  gp_Vec                       tglast;
-  NCollection_Sequence<gp_Ax1> VerticesWithTangents;
+  GeomAdaptor_Curve       curve;
+  gp_Pnt                  ptfirst;
+  gp_Pnt                  ptlast;
+  gp_Vec                  tgfirst;
+  gp_Vec                  tglast;
+  NCollection_Sequence<gp_Ax1>    VerticesWithTangents;
   occ::handle<ChFiDS_SurfData> previous;
   occ::handle<ChFiDS_SurfData> next;
-  double                       pfirst;
-  double                       plast;
-  double                       period;
-  bool                         periodic;
-  double                       pfirstsav;
-  double                       plastsav;
+  double           pfirst;
+  double           plast;
+  double           period;
+  bool        periodic;
+  double           pfirstsav;
+  double           plastsav;
 };
 
 #endif // _ChFiDS_ElSpine_HeaderFile

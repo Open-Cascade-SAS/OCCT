@@ -73,14 +73,14 @@ private:
   void updateAspect(const occ::handle<Graphic3d_Aspects>& theObjAspect);
 
 private:
-  OpenGl_PrimitiveArray            myPrimitives; //!< vertices and texture coordinates for rendering
-  NCollection_Mat4<float>          myOrientation;    //!< plane transformation matrix.
-  OpenGl_Aspects*                  myAspect;         //!< capping face aspect.
+  OpenGl_PrimitiveArray       myPrimitives;     //!< vertices and texture coordinates for rendering
+  NCollection_Mat4<float>                 myOrientation;    //!< plane transformation matrix.
+  OpenGl_Aspects*             myAspect;         //!< capping face aspect.
   occ::handle<Graphic3d_ClipPlane> myPlaneRoot;      //!< parent clipping plane structure.
   occ::handle<Graphic3d_Aspects>   myFillAreaAspect; //!< own capping aspect
-  gp_XYZ                           myLocalOrigin;    //!< layer origin
-  unsigned int                     myEquationMod;    //!< modification counter for plane equation.
-  unsigned int                     myAspectMod;      //!< modification counter for aspect.
+  gp_XYZ                      myLocalOrigin;    //!< layer origin
+  unsigned int                myEquationMod;    //!< modification counter for plane equation.
+  unsigned int                myAspectMod;      //!< modification counter for aspect.
 
 public:
   DEFINE_STANDARD_RTTIEXT(OpenGl_CappingPlaneResource, OpenGl_Resource) // Type definition

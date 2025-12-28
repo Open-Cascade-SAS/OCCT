@@ -23,9 +23,17 @@
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <LocOpe_Operation.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Face;
 class TopoDS_Edge;
@@ -66,18 +74,17 @@ public:
 private:
   Standard_EXPORT void AddEdges();
 
-  bool                                                                            myDone;
-  TopoDS_Shape                                                                    mySb;
-  TopoDS_Shape                                                                    mySn;
-  TopoDS_Shape                                                                    myRes;
-  TopAbs_Orientation                                                              myOri;
-  LocOpe_Operation                                                                myOpe;
+  bool                    myDone;
+  TopoDS_Shape                        mySb;
+  TopoDS_Shape                        mySn;
+  TopoDS_Shape                        myRes;
+  TopAbs_Orientation                  myOri;
+  LocOpe_Operation                    myOpe;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapEF;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>        myMapEE;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                 myDescF;
-  NCollection_List<TopoDS_Shape> myEdges;
-  NCollection_List<TopoDS_Shape> myTgtEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>  myDescF;
+  NCollection_List<TopoDS_Shape>                myEdges;
+  NCollection_List<TopoDS_Shape>                myTgtEdges;
 };
 
 #include <LocOpe_Gluer.lxx>

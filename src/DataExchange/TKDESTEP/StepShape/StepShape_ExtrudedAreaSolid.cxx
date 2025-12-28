@@ -23,7 +23,7 @@ StepShape_ExtrudedAreaSolid::StepShape_ExtrudedAreaSolid() {}
 void StepShape_ExtrudedAreaSolid::Init(const occ::handle<TCollection_HAsciiString>&     aName,
                                        const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
                                        const occ::handle<StepGeom_Direction>& aExtrudedDirection,
-                                       const double                           aDepth)
+                                       const double               aDepth)
 {
   // --- classe own fields ---
   extrudedDirection = aExtrudedDirection;

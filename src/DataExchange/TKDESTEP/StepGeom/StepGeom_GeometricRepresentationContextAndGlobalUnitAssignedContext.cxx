@@ -39,9 +39,9 @@ void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
 }
 
 void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::Init(
-  const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
-  const occ::handle<TCollection_HAsciiString>& aContextType,
-  const int                                    aCoordinateSpaceDimension,
+  const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&     aContextType,
+  const int                      aCoordinateSpaceDimension,
   const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits)
 {
   // --- classe inherited fields ---
@@ -95,8 +95,8 @@ void StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
   geometricRepresentationContext->SetCoordinateSpaceDimension(aCoordinateSpaceDimension);
 }
 
-int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::CoordinateSpaceDimension()
-  const
+int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  CoordinateSpaceDimension() const
 {
   return geometricRepresentationContext->CoordinateSpaceDimension();
 }
@@ -115,14 +115,14 @@ occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>
   return globalUnitAssignedContext->Units();
 }
 
-occ::handle<StepBasic_NamedUnit>
-  StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::UnitsValue(
-    const int num) const
+occ::handle<StepBasic_NamedUnit> StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::
+  UnitsValue(const int num) const
 {
   return globalUnitAssignedContext->UnitsValue(num);
 }
 
-int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits() const
+int StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext::NbUnits()
+  const
 {
   return globalUnitAssignedContext->NbUnits();
 }

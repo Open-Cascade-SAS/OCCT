@@ -23,8 +23,12 @@
 #include <Standard_Transient.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom_BSplineSurface;
 class gp_Pnt;
@@ -36,29 +40,29 @@ class GeomFill_SectionLaw : public Standard_Transient
 
 public:
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<double>& Weigths) = 0;
+  Standard_EXPORT virtual bool D0(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<double>& Weigths) = 0;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths);
+  Standard_EXPORT virtual bool D1(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths);
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<gp_Vec>& D2Poles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths,
-                                  NCollection_Array1<double>& D2Weigths);
+  Standard_EXPORT virtual bool D2(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<gp_Vec>&   D2Poles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths,
+                                              NCollection_Array1<double>& D2Weigths);
 
   //! give if possible an bspline Surface, like iso-v are the
   //! section. If it is not possible this method have to
@@ -66,7 +70,9 @@ public:
   Standard_EXPORT virtual occ::handle<Geom_BSplineSurface> BSplineSurface() const;
 
   //! get the format of an section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const = 0;
+  Standard_EXPORT virtual void SectionShape(int& NbPoles,
+                                            int& NbKnots,
+                                            int& Degree) const = 0;
 
   //! get the Knots of the section
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const = 0;
@@ -93,8 +99,7 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the function
@@ -116,9 +121,9 @@ public:
   //! at the Boundary AngleTol tangent error at the
   //! Boundary (in radian) SurfTol error inside the
   //! surface.
-  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
+  Standard_EXPORT virtual void GetTolerance(const double   BoundTol,
+                                            const double   SurfTol,
+                                            const double   AngleTol,
                                             NCollection_Array1<double>& Tol3d) const = 0;
 
   //! Is useful, if <me> has to run numerical
@@ -162,6 +167,7 @@ public:
   Standard_EXPORT virtual occ::handle<Geom_Curve> CirclSection(const double Param) const;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_SectionLaw, Standard_Transient)
+
 };
 
 #endif // _GeomFill_SectionLaw_HeaderFile

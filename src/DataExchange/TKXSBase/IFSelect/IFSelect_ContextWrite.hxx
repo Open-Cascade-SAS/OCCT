@@ -58,13 +58,13 @@ public:
   Standard_EXPORT IFSelect_ContextWrite(const occ::handle<Interface_InterfaceModel>&  model,
                                         const occ::handle<Interface_Protocol>&        proto,
                                         const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                        const char*                                   filename);
+                                        const char*                   filename);
 
   //! Same as above but with an already computed Graph
   Standard_EXPORT IFSelect_ContextWrite(const occ::handle<Interface_HGraph>&          hgraph,
                                         const occ::handle<Interface_Protocol>&        proto,
                                         const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                        const char*                                   filename);
+                                        const char*                   filename);
 
   //! Returns the Model
   Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;
@@ -128,15 +128,15 @@ public:
   //! If <start> is not an Entity from the model (e.g. the
   //! model itself) this message is added to Global Check.
   Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
-                                  const char*                            mess,
-                                  const char*                            orig = "");
+                                  const char*            mess,
+                                  const char*            orig = "");
 
   //! Adds a Fail Message for an Entity from the Model
   //! If <start> is not an Entity from the model (e.g. the
   //! model itself) this message is added to Global Check.
   Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start,
-                               const char*                            mess,
-                               const char*                            orig = "");
+                               const char*            mess,
+                               const char*            orig = "");
 
   //! Returns a Check given an Entity number (in the Model)
   //! by default a Global Check. Creates it the first time.
@@ -155,13 +155,13 @@ public:
 private:
   occ::handle<Interface_InterfaceModel>  themodel;
   occ::handle<Interface_Protocol>        theproto;
-  TCollection_AsciiString                thefile;
+  TCollection_AsciiString           thefile;
   occ::handle<IFSelect_AppliedModifiers> theapply;
   occ::handle<Interface_HGraph>          thehgraf;
-  Interface_CheckIterator                thecheck;
-  int                                    thenumod;
-  int                                    thenbent;
-  int                                    thecurr;
+  Interface_CheckIterator           thecheck;
+  int                  thenumod;
+  int                  thenbent;
+  int                  thecurr;
   occ::handle<IFSelect_GeneralModifier>  themodif;
 };
 

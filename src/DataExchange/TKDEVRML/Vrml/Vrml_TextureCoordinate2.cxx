@@ -22,8 +22,7 @@ Vrml_TextureCoordinate2::Vrml_TextureCoordinate2()
   myPoint = new NCollection_HArray1<gp_Vec2d>(1, 1, tmpVec);
 }
 
-Vrml_TextureCoordinate2::Vrml_TextureCoordinate2(
-  const occ::handle<NCollection_HArray1<gp_Vec2d>>& aPoint)
+Vrml_TextureCoordinate2::Vrml_TextureCoordinate2(const occ::handle<NCollection_HArray1<gp_Vec2d>>& aPoint)
 {
   myPoint = aPoint;
 }

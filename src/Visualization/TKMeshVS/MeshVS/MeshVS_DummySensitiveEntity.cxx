@@ -34,8 +34,9 @@ int MeshVS_DummySensitiveEntity::NbSubElements() const
 
 //=================================================================================================
 
-bool MeshVS_DummySensitiveEntity::Matches(SelectBasics_SelectingVolumeManager& /*theMgr*/,
-                                          SelectBasics_PickResult& /*thePickResult*/)
+bool MeshVS_DummySensitiveEntity::Matches(
+  SelectBasics_SelectingVolumeManager& /*theMgr*/,
+  SelectBasics_PickResult& /*thePickResult*/)
 {
   return false;
 }

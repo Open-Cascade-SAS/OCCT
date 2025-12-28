@@ -67,7 +67,7 @@ void IGESGeom_ToolDirection::ReadOwnParams(const occ::handle<IGESGeom_Direction>
 }
 
 void IGESGeom_ToolDirection::WriteOwnParams(const occ::handle<IGESGeom_Direction>& ent,
-                                            IGESData_IGESWriter&                   IW) const
+                                            IGESData_IGESWriter&              IW) const
 {
   IW.Send(ent->Value().X());
   IW.Send(ent->Value().Y());
@@ -112,8 +112,8 @@ void IGESGeom_ToolDirection::OwnCheck(const occ::handle<IGESGeom_Direction>& ent
 
 void IGESGeom_ToolDirection::OwnDump(const occ::handle<IGESGeom_Direction>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
-                                     Standard_OStream& S,
-                                     const int         level) const
+                                     Standard_OStream&      S,
+                                     const int level) const
 {
   S << "IGESGeom_Direction\n\n"
     << "Value : ";

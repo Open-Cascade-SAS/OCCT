@@ -33,10 +33,10 @@
 #include <Standard_NullValue.hxx>
 
 // ==================================================================
-FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
-                                   const gp_Pnt2d& P2,
-                                   const double    Height,
-                                   const double    Slope)
+FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d&     P1,
+                                   const gp_Pnt2d&     P2,
+                                   const double Height,
+                                   const double Slope)
     // ==================================================================
     : myCode(FairCurve_OK),
       OldP1(P1),
@@ -68,9 +68,9 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
   //
   //   Initialize by a straight line (2 poles)
   //
-  occ::handle<NCollection_HArray1<double>>   Iknots = new NCollection_HArray1<double>(1, 2);
-  occ::handle<NCollection_HArray1<int>>      Imults = new NCollection_HArray1<int>(1, 2);
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> Ipoles = new NCollection_HArray1<gp_Pnt2d>(1, 2);
+  occ::handle<NCollection_HArray1<double>>    Iknots = new NCollection_HArray1<double>(1, 2);
+  occ::handle<NCollection_HArray1<int>> Imults = new NCollection_HArray1<int>(1, 2);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    Ipoles = new NCollection_HArray1<gp_Pnt2d>(1, 2);
 
   Iknots->SetValue(1, 0);
   Iknots->SetValue(2, 1);
@@ -83,11 +83,10 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 
   //  Increase the degree
 
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> Npoles =
-    new NCollection_HArray1<gp_Pnt2d>(1, Degree + 1);
-  occ::handle<NCollection_HArray1<double>> Nweight = new NCollection_HArray1<double>(1, 2);
-  occ::handle<NCollection_HArray1<double>> Nknots  = new NCollection_HArray1<double>(1, 2);
-  occ::handle<NCollection_HArray1<int>>    Nmults  = new NCollection_HArray1<int>(1, 2);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    Npoles  = new NCollection_HArray1<gp_Pnt2d>(1, Degree + 1);
+  occ::handle<NCollection_HArray1<double>>    Nweight = new NCollection_HArray1<double>(1, 2);
+  occ::handle<NCollection_HArray1<double>>    Nknots  = new NCollection_HArray1<double>(1, 2);
+  occ::handle<NCollection_HArray1<int>> Nmults  = new NCollection_HArray1<int>(1, 2);
 
   BSplCLib::IncreaseDegree(1,
                            Degree,
@@ -109,9 +108,9 @@ FairCurve_Batten::FairCurve_Batten(const gp_Pnt2d& P1,
 
   // calculate "plane" nodes
 
-  Flatknots =
-    new NCollection_HArray1<double>(1,
-                                    BSplCLib::KnotSequenceLength(Mults->Array1(), Degree, false));
+  Flatknots = new NCollection_HArray1<double>(
+    1,
+    BSplCLib::KnotSequenceLength(Mults->Array1(), Degree, false));
 
   BSplCLib::KnotSequence(Knots->Array1(),
                          Mults->Array1(),
@@ -126,8 +125,8 @@ FairCurve_Batten::~FairCurve_Batten() {}
 void FairCurve_Batten::Angles(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 // ==================================================================
 {
-  gp_Vec2d VOld(NewP1, NewP2), VNew(P1, P2);
-  double   Dangle = VOld.Angle(VNew);
+  gp_Vec2d      VOld(NewP1, NewP2), VNew(P1, P2);
+  double Dangle = VOld.Angle(VNew);
   NewAngle1 -= Dangle;
   NewAngle2 += Dangle;
 }
@@ -154,14 +153,14 @@ void FairCurve_Batten::SetP2(const gp_Pnt2d& P2)
 
 // ==================================================================
 bool FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
-                               const int               NbIterations,
-                               const double            Tolerance)
+                                           const int  NbIterations,
+                                           const double     Tolerance)
 // ==================================================================
 {
-  bool   Ok = true, End = false;
-  double AngleMax = 0.7;            // parameter ruling the function of increment ( 40 degrees )
-  double AngleMin = 2 * M_PI / 100; // parameter ruling the function of increment
-                                    // full passage should not cost more than 100 steps.
+  bool Ok = true, End = false;
+  double    AngleMax = 0.7; // parameter ruling the function of increment ( 40 degrees )
+  double    AngleMin = 2 * M_PI / 100; // parameter ruling the function of increment
+                                              // full passage should not cost more than 100 steps.
   double DAngle1, DAngle2, Ratio, Fraction, Toler;
   double OldDist, NewDist;
 
@@ -224,27 +223,26 @@ bool FairCurve_Batten::Compute(FairCurve_AnalysisCode& ACode,
 }
 // =============================================================================
 bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
-                               const gp_Vec2d&         DeltaP2,
-                               const double            DeltaAngle1,
-                               const double            DeltaAngle2,
-                               FairCurve_AnalysisCode& ACode,
-                               const int               NbIterations,
-                               const double            Tolerance)
+                                           const gp_Vec2d&         DeltaP2,
+                                           const double     DeltaAngle1,
+                                           const double     DeltaAngle2,
+                                           FairCurve_AnalysisCode& ACode,
+                                           const int  NbIterations,
+                                           const double     Tolerance)
 // =============================================================================
 {
   bool Ok, OkCompute = true;
   ACode = FairCurve_OK;
 
   // Deformation of the curve by adding a polynom of interpolation
-  int                        L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
+  int     L = 2 + NewConstraintOrder1 + NewConstraintOrder2, kk, ii;
   NCollection_Array1<double> knots(1, 2);
   knots(1) = 0;
   knots(2) = 1;
-  NCollection_Array1<int>                    mults(1, 2);
-  NCollection_Array1<gp_Pnt2d>               HermitePoles(1, L);
-  NCollection_Array1<gp_Pnt2d>               Interpolation(1, L);
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> NPoles =
-    new NCollection_HArray1<gp_Pnt2d>(1, Poles->Length());
+  NCollection_Array1<int>       mults(1, 2);
+  NCollection_Array1<gp_Pnt2d>          HermitePoles(1, L);
+  NCollection_Array1<gp_Pnt2d>          Interpolation(1, L);
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> NPoles = new NCollection_HArray1<gp_Pnt2d>(1, Poles->Length());
 
   // Polynoms of Hermite
   math_Matrix HermiteCoef(1, L, 1, L);
@@ -255,7 +253,7 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
   // Definition of constraints of interpolation
   NCollection_Array1<gp_XY> ADelta(1, L);
   gp_Vec2d VOld(OldP1, OldP2), VNew(-(OldP1.XY() + DeltaP1.XY()) + (OldP2.XY() + DeltaP2.XY()));
-  double   DAngleRef = VNew.Angle(VOld);
+  double DAngleRef = VNew.Angle(VOld);
 
   ADelta(1) = DeltaP1.XY();
   kk        = 2;
@@ -442,9 +440,9 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     ACode = FairCurve_InfiniteSliding;
 
   // Eventual insertion of Nodes
-  bool   NewKnots = false;
-  int    NbKnots  = Knots->Length();
-  double ValAngles =
+  bool NewKnots = false;
+  int NbKnots  = Knots->Length();
+  double    ValAngles =
     (std::abs(OldAngle1) + std::abs(OldAngle2) + 2 * std::abs(OldAngle2 - OldAngle1));
   while (ValAngles > (2 * (NbKnots - 2) + 1) * (1 + 2 * NbKnots))
   {
@@ -467,8 +465,7 @@ bool FairCurve_Batten::Compute(const gp_Vec2d&         DeltaP1,
     }
 
     NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);
-    occ::handle<NCollection_HArray1<gp_Pnt2d>> NewNPoles =
-      new NCollection_HArray1<gp_Pnt2d>(1, NewBS->NbPoles());
+    occ::handle<NCollection_HArray1<gp_Pnt2d>> NewNPoles = new NCollection_HArray1<gp_Pnt2d>(1, NewBS->NbPoles());
     NewBS->Poles(NewNPoles->ChangeArray1());
     NewBS->Multiplicities(NMults->ChangeArray1());
     NewBS->Knots(NKnots->ChangeArray1());
@@ -496,8 +493,8 @@ double FairCurve_Batten::SlidingOfReference() const
 }
 // ==================================================================
 double FairCurve_Batten::SlidingOfReference(const double Dist,
-                                            const double Angle1,
-                                            const double Angle2) const
+                                                   const double Angle1,
+                                                   const double Angle2) const
 // ==================================================================
 {
   double a1, a2;
@@ -535,7 +532,9 @@ double FairCurve_Batten::SlidingOfReference(const double Dist,
 }
 
 // ==================================================================
-double FairCurve_Batten::Compute(const double Dist, const double Angle1, const double Angle2) const
+double FairCurve_Batten::Compute(const double Dist,
+                                        const double Angle1,
+                                        const double Angle2) const
 // ==================================================================
 {
   double L1 = Compute(Dist, Angle1);

@@ -30,15 +30,15 @@
 // Geom2d
 //=============================================================================
 GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom2d_Hyperbola>& C,
-                                                   const StepData_Factors& theLocalFactors)
+                                                   const StepData_Factors&         theLocalFactors)
 {
   gp_Hypr2d gpHyp;
   gpHyp = C->Hypr2d();
 
   occ::handle<StepGeom_Hyperbola>        HStep = new StepGeom_Hyperbola;
-  StepGeom_Axis2Placement                Ax2;
+  StepGeom_Axis2Placement           Ax2;
   occ::handle<StepGeom_Axis2Placement2d> Ax2Step;
-  double                                 majorR, minorR;
+  double                     majorR, minorR;
 
   GeomToStep_MakeAxis2Placement2d MkAxis2(gpHyp.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
@@ -57,15 +57,15 @@ GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom2d_Hype
 //=============================================================================
 
 GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom_Hyperbola>& C,
-                                                   const StepData_Factors& theLocalFactors)
+                                                   const StepData_Factors&       theLocalFactors)
 {
   gp_Hypr gpHyp;
   gpHyp = C->Hypr();
 
   occ::handle<StepGeom_Hyperbola>        HStep = new StepGeom_Hyperbola;
-  StepGeom_Axis2Placement                Ax2;
+  StepGeom_Axis2Placement           Ax2;
   occ::handle<StepGeom_Axis2Placement3d> Ax2Step;
-  double                                 majorR, minorR;
+  double                     majorR, minorR;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(gpHyp.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
@@ -73,7 +73,7 @@ GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const occ::handle<Geom_Hyperb
   minorR  = gpHyp.MinorRadius();
   Ax2.SetValue(Ax2Step);
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
-  double                                fact = theLocalFactors.LengthFactor();
+  double                    fact = theLocalFactors.LengthFactor();
   HStep->Init(name, Ax2, majorR / fact, minorR / fact);
   theHyperbola = HStep;
   done         = true;

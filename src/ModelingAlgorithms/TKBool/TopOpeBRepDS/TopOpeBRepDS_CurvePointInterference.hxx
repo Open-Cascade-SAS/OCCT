@@ -33,10 +33,10 @@ class TopOpeBRepDS_CurvePointInterference : public TopOpeBRepDS_Interference
 public:
   Standard_EXPORT TopOpeBRepDS_CurvePointInterference(const TopOpeBRepDS_Transition& T,
                                                       const TopOpeBRepDS_Kind        ST,
-                                                      const int                      S,
+                                                      const int         S,
                                                       const TopOpeBRepDS_Kind        GT,
-                                                      const int                      G,
-                                                      const double                   P);
+                                                      const int         G,
+                                                      const double            P);
 
   Standard_EXPORT double Parameter() const;
 

@@ -60,7 +60,9 @@ using ExternalFileMap =
 
 //=================================================================================================
 
-static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int stepread(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -70,7 +72,7 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
   // Progress indicator
   occ::handle<Draw_ProgressIndicator> progress = new Draw_ProgressIndicator(theDI, 1);
-  Message_ProgressScope               aPSRoot(progress->Start(), "Reading", 100);
+  Message_ProgressScope          aPSRoot(progress->Start(), "Reading", 100);
 
   STEPControl_Reader      sr(XSDRAW::Session(), false);
   TCollection_AsciiString fnom, rnom;
@@ -87,7 +89,7 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
   bool fromtcl   = false;
   bool aFullMode = false;
-  int  k         = 3;
+  int k         = 3;
   if (theNbArgs > k)
   {
     if (theArgVec[k][0] == 'f' || theArgVec[3][0] == 'F')
@@ -291,7 +293,9 @@ static int stepread(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int testreadstep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int testreadstep(Draw_Interpretor& theDI,
+                                     int  theNbArgs,
+                                     const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -301,9 +305,9 @@ static int testreadstep(Draw_Interpretor& theDI, int theNbArgs, const char** the
     return 1;
   }
 
-  bool        useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
+  bool useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
   const char* aShName   = useStream ? theArgVec[theNbArgs - 2] : theArgVec[theNbArgs - 1];
-  int         aSize     = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
+  int aSize     = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
   NCollection_Array1<TopoDS_Shape>                           aShapes(0, aSize);
   NCollection_Array1<TCollection_AsciiString>                aFileNames(0, aSize);
   NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> aShapesMap;
@@ -364,7 +368,9 @@ static int testreadstep(Draw_Interpretor& theDI, int theNbArgs, const char** the
 
 //=================================================================================================
 
-static int steptrans(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int steptrans(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   if (theNbArgs < 5)
   {
@@ -372,14 +378,14 @@ static int steptrans(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
     return 1;
   }
   occ::handle<XSControl_WorkSession> aWS   = XSDRAW::Session();
-  TopoDS_Shape                       shape = DBRep::Get(theArgVec[1]);
+  TopoDS_Shape                  shape = DBRep::Get(theArgVec[1]);
   if (shape.IsNull())
   {
     theDI << "Not a shape : " << theArgVec[1] << "\n";
     return 1;
   }
   occ::handle<StepGeom_Axis2Placement3d> ax1, ax2;
-  int                                    n1 = 0, n2 = 0;
+  int                  n1 = 0, n2 = 0;
   n1 = XSDRAW::GetEntityNumber(theArgVec[3]);
   if (theNbArgs > 4)
     n2 = XSDRAW::GetEntityNumber(theArgVec[4]);
@@ -403,7 +409,9 @@ static int steptrans(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
 //=================================================================================================
 
-static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int stepwrite(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   occ::handle<XSControl_WorkSession>  aWS = XSDRAW::Session();
   occ::handle<STEPControl_Controller> aCtl =
@@ -451,13 +459,13 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   if (!ActWrite.IsNull())
     ActWrite->SetGroupMode(Interface_Static::IVal("write.step.assembly"));
 
-  TopoDS_Shape                          shape = DBRep::Get(theArgVec[2]);
-  STEPControl_Writer                    sw(aWS, false);
+  TopoDS_Shape                     shape = DBRep::Get(theArgVec[2]);
+  STEPControl_Writer               sw(aWS, false);
   occ::handle<Interface_InterfaceModel> stepmodel = sw.Model();
-  int nbavant = (stepmodel.IsNull() ? 0 : stepmodel->NbEntities());
+  int                 nbavant   = (stepmodel.IsNull() ? 0 : stepmodel->NbEntities());
 
   occ::handle<Draw_ProgressIndicator> progress = new Draw_ProgressIndicator(theDI, 1);
-  Message_ProgressScope               aPSRoot(progress->Start(), "Translating", 100);
+  Message_ProgressScope          aPSRoot(progress->Start(), "Translating", 100);
   progress->Show(aPSRoot);
 
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
@@ -479,7 +487,7 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   progress->Show(aPSRoot);
 
   //   Que s est-il passe
-  stepmodel   = sw.Model();
+  stepmodel                = sw.Model();
   int nbapres = (stepmodel.IsNull() ? 0 : stepmodel->NbEntities());
   if (nbavant > 0)
     theDI << "Beware : Model not empty before transferring\n";
@@ -519,7 +527,9 @@ static int stepwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
 //=================================================================================================
 
-static int testwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int testwrite(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -529,9 +539,9 @@ static int testwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
     return 1;
   }
 
-  bool        useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
+  bool useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
   const char* aShName   = useStream ? theArgVec[theNbArgs - 2] : theArgVec[theNbArgs - 1];
-  int         aSize     = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
+  int aSize     = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
   NCollection_Array1<TCollection_AsciiString>                aFileNames(0, aSize);
   NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> aShapesMap;
   for (int anInd = 1; anInd <= aSize; ++anInd)
@@ -589,14 +599,15 @@ static int testwrite(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
 //=================================================================================================
 
-static int countexpected(Draw_Interpretor& theDI, int /*theNbArgs*/, const char** /*theArgVec*/)
+static int countexpected(Draw_Interpretor& theDI,
+                                      int /*theNbArgs*/,
+                                      const char** /*theArgVec*/)
 {
   occ::handle<XSControl_WorkSession> WS    = XSDRAW::Session();
-  const Interface_Graph&             graph = WS->Graph();
+  const Interface_Graph&        graph = WS->Graph();
 
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> roots =
-    WS->GiveList("xst-transferrable-roots", "");
-  STEPSelections_Counter cnt;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> roots = WS->GiveList("xst-transferrable-roots", "");
+  STEPSelections_Counter               cnt;
 
   for (int i = 1; i <= roots->Length(); i++)
   {
@@ -620,10 +631,12 @@ static int countexpected(Draw_Interpretor& theDI, int /*theNbArgs*/, const char*
 
 //=================================================================================================
 
-static int dumpassembly(Draw_Interpretor& /*theDI*/, int /*theNbArgs*/, const char** /*theArgVec*/)
+static int dumpassembly(Draw_Interpretor& /*theDI*/,
+                                     int /*theNbArgs*/,
+                                     const char** /*theArgVec*/)
 {
   occ::handle<XSControl_WorkSession> WS    = XSDRAW::Session();
-  const Interface_Graph&             graph = WS->Graph();
+  const Interface_Graph&        graph = WS->Graph();
 
   STEPSelections_AssemblyExplorer exp(graph);
   exp.Dump(std::cout);
@@ -632,7 +645,9 @@ static int dumpassembly(Draw_Interpretor& /*theDI*/, int /*theNbArgs*/, const ch
 
 //=================================================================================================
 
-static int stepfileunits(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int stepfileunits(Draw_Interpretor& theDI,
+                                      int  theNbArgs,
+                                      const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -676,7 +691,9 @@ static int stepfileunits(Draw_Interpretor& theDI, int theNbArgs, const char** th
 // function : ReadStep
 // purpose  : Read STEP file to DECAF document
 //=======================================================================
-static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int ReadStep(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   DeclareAndCast(STEPControl_Controller, aController, XSDRAW::Controller());
   if (aController.IsNull())
@@ -684,7 +701,7 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     XSDRAW::SetNorm("STEP");
   }
 
-  const char*             aDocumentName = NULL;
+  const char*        aDocumentName = NULL;
   TCollection_AsciiString aFilePath, aModeStr;
   bool                    toTestStream = false;
 
@@ -717,7 +734,7 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   }
 
   TCollection_AsciiString aFileName, anOldVarName;
-  bool                    isFileMode =
+  bool        isFileMode =
     XSDRAW::FileAndVar(aFilePath.ToCString(), aDocumentName, "STEP", aFileName, anOldVarName);
 
   if (isFileMode)
@@ -767,7 +784,7 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   }
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI);
-  Message_ProgressScope aRootScope(aProgress->Start(), "STEP import", isFileMode ? 2 : 1);
+  Message_ProgressScope          aRootScope(aProgress->Start(), "STEP import", isFileMode ? 2 : 1);
 
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
 
@@ -849,7 +866,9 @@ static int ReadStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 // function : WriteStep
 // purpose  : Write DECAF document to STEP
 //=======================================================================
-static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int WriteStep(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   DeclareAndCast(STEPControl_Controller, aController, XSDRAW::Controller());
   if (aController.IsNull())
@@ -859,12 +878,12 @@ static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
 
   STEPCAFControl_Writer aWriter(XSDRAW::Session(), true);
 
-  occ::handle<TDocStd_Document> aDocument;
-  TCollection_AsciiString       aDocumentName, aFilePath;
-  STEPControl_StepModelType     aMode      = STEPControl_AsIs;
-  bool                          hasModeArg = false, toTestStream = false;
-  TCollection_AsciiString       aMultiFilePrefix, aLabelName;
-  TDF_Label                     aLabel;
+  occ::handle<TDocStd_Document>  aDocument;
+  TCollection_AsciiString   aDocumentName, aFilePath;
+  STEPControl_StepModelType aMode      = STEPControl_AsIs;
+  bool                      hasModeArg = false, toTestStream = false;
+  TCollection_AsciiString   aMultiFilePrefix, aLabelName;
+  TDF_Label                 aLabel;
 
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -980,14 +999,14 @@ static int WriteStep(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   }
 
   TCollection_AsciiString aFileName, anOldVarName;
-  const bool              isFileMode = XSDRAW::FileAndVar(aFilePath.ToCString(),
-                                             aDocumentName.ToCString(),
-                                             "STEP",
-                                             aFileName,
-                                             anOldVarName);
+  const bool  isFileMode = XSDRAW::FileAndVar(aFilePath.ToCString(),
+                                                         aDocumentName.ToCString(),
+                                                         "STEP",
+                                                         aFileName,
+                                                         anOldVarName);
 
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI);
-  Message_ProgressScope aRootScope(aProgress->Start(), "STEP export", isFileMode ? 2 : 1);
+  Message_ProgressScope          aRootScope(aProgress->Start(), "STEP export", isFileMode ? 2 : 1);
 
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
     XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");

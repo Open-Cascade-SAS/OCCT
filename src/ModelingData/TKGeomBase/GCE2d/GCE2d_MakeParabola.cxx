@@ -29,9 +29,9 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Parab2d& Prb)
   TheParabola = new Geom2d_Parabola(Prb);
 }
 
-GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d& MirrorAxis,
-                                       const double   Focal,
-                                       const bool     Sense)
+GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d&         MirrorAxis,
+                                       const double    Focal,
+                                       const bool Sense)
 {
   if (Focal < 0.0)
   {
@@ -57,7 +57,9 @@ GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax22d& Axis, const double Focal)
   }
 }
 
-GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d& D, const gp_Pnt2d& F, const bool Sense)
+GCE2d_MakeParabola::GCE2d_MakeParabola(const gp_Ax2d&         D,
+                                       const gp_Pnt2d&        F,
+                                       const bool Sense)
 {
   TheError = gce_Done;
   gp_Parab2d para(D, F, Sense);

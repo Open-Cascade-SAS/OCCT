@@ -123,7 +123,7 @@ BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier(const TopoDS_Shape& S)
 
 BRepClass3d_SolidClassifier::BRepClass3d_SolidClassifier(const TopoDS_Shape& S,
                                                          const gp_Pnt&       P,
-                                                         const double        Tol)
+                                                         const double Tol)
     : explorer(S)
 {
 #if LBRCOMPT

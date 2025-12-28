@@ -22,6 +22,7 @@
 
 #include <CDM_Document.hxx>
 #include <NCollection_List.hxx>
+#include <CDM_Document.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Transient.hxx>
 #include <PCDM_StoreStatus.hxx>
@@ -41,7 +42,7 @@ public:
   //! stores each object of the storelist in the reverse
   //! order of which they had been added.
   Standard_EXPORT PCDM_StoreStatus
-    Store(occ::handle<CDM_MetaData>&   aMetaData,
+    Store(occ::handle<CDM_MetaData>&        aMetaData,
           TCollection_ExtendedString&  aStatusAssociatedText,
           const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -58,10 +59,10 @@ public:
 private:
   Standard_EXPORT void Add(const occ::handle<CDM_Document>& aDocument);
 
-  NCollection_Map<occ::handle<CDM_Document>>           myItems;
-  NCollection_List<occ::handle<CDM_Document>>          myStack;
+  NCollection_Map<occ::handle<CDM_Document>>              myItems;
+  NCollection_List<occ::handle<CDM_Document>>             myStack;
   NCollection_Map<occ::handle<CDM_Document>>::Iterator myIterator;
-  occ::handle<CDM_Document>                            myMainDocument;
+  occ::handle<CDM_Document>           myMainDocument;
 };
 
 #endif // _CDF_StoreList_HeaderFile

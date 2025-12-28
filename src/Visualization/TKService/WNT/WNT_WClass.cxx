@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(WNT_WClass, Standard_Transient)
 //=================================================================================================
 
 WNT_WClass::WNT_WClass(const TCollection_AsciiString& theClassName,
-                       void* const                    theWndProc,
+                       void* const         theWndProc,
                        const unsigned int             theStyle,
-                       const int                      theClassExtra,
-                       const int                      theWindowExtra,
+                       const int         theClassExtra,
+                       const int         theWindowExtra,
                        const Aspect_Handle            theCursor,
                        const Aspect_Handle            theIcon,
                        const TCollection_AsciiString& theMenuName)

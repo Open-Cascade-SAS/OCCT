@@ -74,12 +74,12 @@ occ::handle<Image_PixMap> Graphic3d_Texture3D::GetImage(
     return base_type::GetImage(theSupported);
   }
 
-  occ::handle<Image_PixMap> anImage3D;
-  const int                 aNbSlices = myPaths.Length();
+  occ::handle<Image_PixMap>   anImage3D;
+  const int aNbSlices = myPaths.Length();
   for (int aSlice = 0; aSlice < aNbSlices; ++aSlice)
   {
     const TCollection_AsciiString& aSlicePath = myPaths[myPaths.Lower() + aSlice];
-    occ::handle<Image_AlienPixMap> anImage    = new Image_AlienPixMap();
+    occ::handle<Image_AlienPixMap>      anImage    = new Image_AlienPixMap();
     if (!anImage->Load(aSlicePath))
     {
       Message::SendFail() << "Graphic3d_Texture3D::GetImage() failed to load slice " << aSlice

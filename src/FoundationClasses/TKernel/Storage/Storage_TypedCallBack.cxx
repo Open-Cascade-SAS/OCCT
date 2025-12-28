@@ -23,7 +23,7 @@ Storage_TypedCallBack::Storage_TypedCallBack()
 {
 }
 
-Storage_TypedCallBack::Storage_TypedCallBack(const TCollection_AsciiString&       aTypeName,
+Storage_TypedCallBack::Storage_TypedCallBack(const TCollection_AsciiString&  aTypeName,
                                              const occ::handle<Storage_CallBack>& aCallBack)
     : myIndex(0)
 {

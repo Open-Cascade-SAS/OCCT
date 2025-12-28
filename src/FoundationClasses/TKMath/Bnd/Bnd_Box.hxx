@@ -264,7 +264,10 @@ public:
   [[nodiscard]] bool IsOpenZmax() const noexcept { return (Flags & ZmaxMask) != 0; }
 
   //! Returns true if this bounding box is infinite in all 6 directions (WholeSpace flag).
-  [[nodiscard]] bool IsWhole() const noexcept { return (Flags & WholeMask) == WholeMask; }
+  [[nodiscard]] bool IsWhole() const noexcept
+  {
+    return (Flags & WholeMask) == WholeMask;
+  }
 
   //! Returns true if this bounding box is empty (Void flag).
   [[nodiscard]] bool IsVoid() const noexcept { return (Flags & VoidMask) != 0; }
@@ -318,20 +321,21 @@ public:
 
   //! Returns False if the transformed <Box> intersects
   //! or is inside <me>.
-  [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box& Other, const gp_Trsf& T) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box& Other,
+                                                       const gp_Trsf& T) const;
 
   //! Returns False if the transformed <Box> intersects
   //! or is inside the transformed box <me>.
   [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Trsf& T1,
-                                           const Bnd_Box& Other,
-                                           const gp_Trsf& T2) const;
+                                                       const Bnd_Box& Other,
+                                                       const gp_Trsf& T2) const;
 
   //! Returns False if the flat band lying between two parallel
   //! lines represented by their reference points <P1>, <P2> and
   //! direction <D> intersects the box.
   [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt& P1,
-                                           const gp_Pnt& P2,
-                                           const gp_Dir& D) const;
+                                                       const gp_Pnt& P2,
+                                                       const gp_Dir& D) const;
 
   //! Computes the minimum distance between two boxes.
   [[nodiscard]] Standard_EXPORT double Distance(const Bnd_Box& Other) const;
@@ -370,13 +374,17 @@ public:
   }
 
   //! Returns TRUE if this box has finite part.
-  [[nodiscard]] bool HasFinitePart() const noexcept { return !IsVoid() && Xmax >= Xmin; }
+  [[nodiscard]] bool HasFinitePart() const noexcept
+  {
+    return !IsVoid() && Xmax >= Xmin;
+  }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 protected:
   //! Bit flags.
@@ -393,14 +401,14 @@ protected:
   };
 
 private:
-  double Xmin;
-  double Xmax;
-  double Ymin;
-  double Ymax;
-  double Zmin;
-  double Zmax;
-  double Gap;
-  int    Flags;
+  double    Xmin;
+  double    Xmax;
+  double    Ymin;
+  double    Ymax;
+  double    Zmin;
+  double    Zmax;
+  double    Gap;
+  int Flags;
 };
 
 #endif // _Bnd_Box_HeaderFile

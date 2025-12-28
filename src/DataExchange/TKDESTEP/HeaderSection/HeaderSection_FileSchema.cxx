@@ -32,8 +32,7 @@ void HeaderSection_FileSchema::SetSchemaIdentifiers(
   schemaIdentifiers = aSchemaIdentifiers;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileSchema::
-  SchemaIdentifiers() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileSchema::SchemaIdentifiers() const
 {
   return schemaIdentifiers;
 }

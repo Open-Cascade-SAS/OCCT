@@ -36,7 +36,8 @@ public:
   Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const double MaxAngle);
 
   //! Initialize by a Shape.
-  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const double MaxAngle, const TopoDS_Shape& S);
+  Standard_EXPORT ShapeUpgrade_ShapeDivideAngle(const double MaxAngle,
+                                                const TopoDS_Shape& S);
 
   //! Resets tool for splitting face with given angle
   Standard_EXPORT void InitTool(const double MaxAngle);
@@ -46,6 +47,7 @@ public:
 
   //! Returns maximal angle
   Standard_EXPORT double MaxAngle() const;
+
 };
 
 #endif // _ShapeUpgrade_ShapeDivideAngle_HeaderFile

@@ -60,6 +60,7 @@ public:
     const TopoDS_Shape&          S2,
     const BOPAlgo_PaveFiller&    PF,
     const Message_ProgressRange& theRange = Message_ProgressRange());
+
 };
 
 #endif // _BRepAlgoAPI_Common_HeaderFile

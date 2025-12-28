@@ -39,28 +39,30 @@ public:
 
   //! Specific filling of the list of Entities shared by an Entity
   //! <ent>, which is an UnknownEntity from StepData.
-  Standard_EXPORT void FillSharedCase(const int                              casenum,
+  Standard_EXPORT void FillSharedCase(const int            casenum,
                                       const occ::handle<Standard_Transient>& ent,
-                                      Interface_EntityIterator&              iter) const override;
+                                      Interface_EntityIterator& iter) const override;
 
   //! Specific Checking of an Entity <ent>
-  Standard_EXPORT void CheckCase(const int                              casenum,
+  Standard_EXPORT void CheckCase(const int            casenum,
                                  const occ::handle<Standard_Transient>& ent,
-                                 const Interface_ShareTool&             shares,
+                                 const Interface_ShareTool&        shares,
                                  occ::handle<Interface_Check>&          ach) const override;
 
   //! Specific creation of a new void entity
-  Standard_EXPORT bool NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const override;
+  Standard_EXPORT bool
+    NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const override;
 
   //! Specific Copy ("Deep") from <entfrom> to <entto> (same type)
   //! by using a CopyTool which provides its working Map.
   //! Use method Transferred from TransferControl to work
-  Standard_EXPORT void CopyCase(const int                              casenum,
+  Standard_EXPORT void CopyCase(const int            casenum,
                                 const occ::handle<Standard_Transient>& entfrom,
                                 const occ::handle<Standard_Transient>& entto,
-                                Interface_CopyTool&                    TC) const override;
+                                Interface_CopyTool&               TC) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_DefaultGeneral, StepData_GeneralModule)
+
 };
 
 #endif // _StepData_DefaultGeneral_HeaderFile

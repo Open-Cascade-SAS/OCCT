@@ -46,9 +46,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop, Standard_Transient)
 
 protected:
-  bool                          myIsShape;
+  bool              myIsShape;
   TopoDS_Shape                  myShape;
   TopOpeBRepBuild_BlockIterator myBlockIterator;
+
 };
 
 #endif // _TopOpeBRepBuild_Loop_HeaderFile

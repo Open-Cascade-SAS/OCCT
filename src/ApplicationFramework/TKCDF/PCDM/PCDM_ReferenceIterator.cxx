@@ -41,7 +41,7 @@ PCDM_ReferenceIterator::PCDM_ReferenceIterator(const occ::handle<Message_Messeng
 void PCDM_ReferenceIterator::LoadReferences(const occ::handle<CDM_Document>&    aDocument,
                                             const occ::handle<CDM_MetaData>&    aMetaData,
                                             const occ::handle<CDM_Application>& anApplication,
-                                            const bool UseStorageConfiguration)
+                                            const bool         UseStorageConfiguration)
 {
   for (Init(aMetaData); More(); Next())
   {
@@ -81,9 +81,8 @@ void PCDM_ReferenceIterator::Next()
 
 //=================================================================================================
 
-occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
-  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-  const bool) const
+occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+                                                      const bool) const
 {
 
   TCollection_ExtendedString theFolder, theName;
@@ -91,14 +90,14 @@ occ::handle<CDM_MetaData> PCDM_ReferenceIterator::MetaData(
   TCollection_ExtendedString f(theFile);
 #ifndef _WIN32
 
-  int                        i = f.SearchFromEnd("/");
+  int           i = f.SearchFromEnd("/");
   TCollection_ExtendedString n = f.Split(i);
   f.Trunc(f.Length() - 1);
   theFolder = f;
   theName   = n;
 #else
   OSD_Path                   p = UTL::Path(f);
-  char16_t                   chr;
+  char16_t      chr;
   TCollection_ExtendedString dir, dirRet, name;
 
   dir = UTL::Disk(p);

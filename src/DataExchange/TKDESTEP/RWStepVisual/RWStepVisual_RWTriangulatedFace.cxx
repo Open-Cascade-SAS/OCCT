@@ -28,6 +28,12 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
 #include <StepVisual_FaceOrSurface.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
@@ -37,7 +43,7 @@ RWStepVisual_RWTriangulatedFace::RWStepVisual_RWTriangulatedFace() {}
 
 void RWStepVisual_RWTriangulatedFace::ReadStep(
   const occ::handle<StepData_StepReaderData>&     theData,
-  const int                                       theNum,
+  const int                     theNum,
   occ::handle<Interface_Check>&                   theCheck,
   const occ::handle<StepVisual_TriangulatedFace>& theEnt) const
 {
@@ -66,11 +72,11 @@ void RWStepVisual_RWTriangulatedFace::ReadStep(
   theData->ReadInteger(theNum, 3, "tessellated_face.pnmax", theCheck, aTessellatedFace_Pnmax);
 
   occ::handle<NCollection_HArray2<double>> aTessellatedFace_Normals;
-  int                                      sub4 = 0;
+  int              sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_face.normals", theCheck, sub4))
   {
-    int nb0                  = theData->NbParams(sub4);
-    int nbj0                 = theData->NbParams(theData->ParamNumber(sub4, 1));
+    int nb0     = theData->NbParams(sub4);
+    int nbj0    = theData->NbParams(theData->ParamNumber(sub4, 1));
     aTessellatedFace_Normals = new NCollection_HArray2<double>(1, nb0, 1, nbj0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -89,7 +95,7 @@ void RWStepVisual_RWTriangulatedFace::ReadStep(
   }
 
   StepVisual_FaceOrSurface aTessellatedFace_GeometricLink;
-  bool                     hasTessellatedFace_GeometricLink = true;
+  bool         hasTessellatedFace_GeometricLink = true;
   if (theData->IsParamDefined(theNum, 5))
   {
     theData->ReadEntity(theNum,
@@ -107,11 +113,11 @@ void RWStepVisual_RWTriangulatedFace::ReadStep(
   // Own fields of TriangulatedFace
 
   occ::handle<NCollection_HArray1<int>> aPnindex;
-  int                                   sub6 = 0;
+  int                 sub6 = 0;
   if (theData->ReadSubList(theNum, 6, "pnindex", theCheck, sub6))
   {
     int nb0  = theData->NbParams(sub6);
-    aPnindex = new NCollection_HArray1<int>(1, nb0);
+    aPnindex              = new NCollection_HArray1<int>(1, nb0);
     int num2 = sub6;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -122,12 +128,12 @@ void RWStepVisual_RWTriangulatedFace::ReadStep(
   }
 
   occ::handle<NCollection_HArray2<int>> aTriangles;
-  int                                   sub7 = 0;
+  int                 sub7 = 0;
   if (theData->ReadSubList(theNum, 7, "triangles", theCheck, sub7))
   {
-    int nb0    = theData->NbParams(sub7);
-    int nbj0   = theData->NbParams(theData->ParamNumber(sub7, 1));
-    aTriangles = new NCollection_HArray2<int>(1, nb0, 1, nbj0);
+    int nb0  = theData->NbParams(sub7);
+    int nbj0 = theData->NbParams(theData->ParamNumber(sub7, 1));
+    aTriangles            = new NCollection_HArray2<int>(1, nb0, 1, nbj0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int subj7 = 0;
@@ -163,7 +169,7 @@ void RWStepVisual_RWTriangulatedFace::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTriangulatedFace::WriteStep(
-  StepData_StepWriter&                            theSW,
+  StepData_StepWriter&                       theSW,
   const occ::handle<StepVisual_TriangulatedFace>& theEnt) const
 {
 

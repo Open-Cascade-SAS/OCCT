@@ -109,9 +109,9 @@ inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode(const NCollection_Ve
   if (myInvTol <= 0.0f)
   {
     // compute DJB2 hash of a string
-    const size_t aLength   = sizeof(NCollection_Vec3<float>);
-    unsigned int aHashCode = 0;
-    const char*  c         = (const char*)&thePos;
+    const size_t              aLength   = sizeof(NCollection_Vec3<float>);
+    unsigned int              aHashCode = 0;
+    const char* c         = (const char*)&thePos;
     for (size_t i = 0; i < aLength; ++i, ++c)
     {
       aHashCode = ((aHashCode << 5) + aHashCode) ^ (*c);
@@ -395,8 +395,8 @@ void Poly_MergeNodesTool::PushLastElement(int theNbNodes)
 //=================================================================================================
 
 void Poly_MergeNodesTool::AddTriangulation(const occ::handle<Poly_Triangulation>& theTris,
-                                           const gp_Trsf&                         theTrsf,
-                                           const bool                             theToReverse)
+                                           const gp_Trsf&                    theTrsf,
+                                           const bool            theToReverse)
 {
   if (theTris.IsNull())
   {
@@ -446,11 +446,11 @@ occ::handle<Poly_Triangulation> Poly_MergeNodesTool::Result()
 
 occ::handle<Poly_Triangulation> Poly_MergeNodesTool::MergeNodes(
   const occ::handle<Poly_Triangulation>& theTris,
-  const gp_Trsf&                         theTrsf,
-  const bool                             theToReverse,
-  const double                           theSmoothAngle,
-  const double                           theMergeTolerance,
-  const bool                             theToForce)
+  const gp_Trsf&                    theTrsf,
+  const bool            theToReverse,
+  const double                      theSmoothAngle,
+  const double                      theMergeTolerance,
+  const bool                        theToForce)
 {
   if (theTris.IsNull() || theTris->NbNodes() < 3 || theTris->NbTriangles() < 1)
   {

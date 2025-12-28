@@ -61,9 +61,9 @@ public:
   //! @param[in]  shapeID id of the subshape to which the polyline belongs.
   //! @param[in]  pointIds vector of point ids
   //! @param[in]  meshType mesh type of the subshape (MT_Undefined by default)
-  virtual void InsertLine(const IVtk_IdType                     theShapeID,
+  virtual void InsertLine(const IVtk_IdType       theShapeID,
                           const NCollection_List<IVtk_PointId>* thePointIds,
-                          const IVtk_MeshType                   theMeshType = MT_Undefined) = 0;
+                          const IVtk_MeshType     theMeshType = MT_Undefined) = 0;
 
   //! Insert a triangle
   //! @param[in]  theShapeID id of the subshape to which the triangle belongs.

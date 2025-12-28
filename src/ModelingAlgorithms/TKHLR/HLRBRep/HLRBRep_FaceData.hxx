@@ -40,22 +40,22 @@ public:
   //! face.
   Standard_EXPORT void Set(const TopoDS_Face&       FG,
                            const TopAbs_Orientation Or,
-                           const bool               Cl,
-                           const int                NW);
+                           const bool   Cl,
+                           const int   NW);
 
   //! Set <NE> the number of edges of the wire number
   //! <WI>.
   Standard_EXPORT void SetWire(const int WI, const int NE);
 
   //! Set the edge number <EWI> of the wire <WI>.
-  Standard_EXPORT void SetWEdge(const int                WI,
-                                const int                EWI,
-                                const int                EI,
+  Standard_EXPORT void SetWEdge(const int   WI,
+                                const int   EWI,
+                                const int   EI,
                                 const TopAbs_Orientation Or,
-                                const bool               OutL,
-                                const bool               Inte,
-                                const bool               Dble,
-                                const bool               IsoL);
+                                const bool   OutL,
+                                const bool   Inte,
+                                const bool   Dble,
+                                const bool   IsoL);
 
   bool Selected() const;
 
@@ -143,11 +143,11 @@ protected:
   };
 
 private:
-  int                             myFlags;
+  int           myFlags;
   occ::handle<HLRAlgo_WiresBlock> myWires;
-  HLRBRep_Surface                 myGeometry;
-  double                          mySize;
-  float                           myTolerance;
+  HLRBRep_Surface            myGeometry;
+  double              mySize;
+  float         myTolerance;
 };
 
 #include <HLRBRep_FaceData.lxx>

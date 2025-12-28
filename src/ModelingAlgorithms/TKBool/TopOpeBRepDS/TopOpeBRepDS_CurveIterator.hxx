@@ -37,8 +37,7 @@ public:
 
   //! Creates an iterator on the curves on surface
   //! described by the interferences in <L>.
-  Standard_EXPORT TopOpeBRepDS_CurveIterator(
-    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
+  Standard_EXPORT TopOpeBRepDS_CurveIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L);
 
   //! Returns True if the Interference <I> has a
   //! GeometryType() TopOpeBRepDS_CURVE
@@ -52,6 +51,7 @@ public:
   Standard_EXPORT TopAbs_Orientation Orientation(const TopAbs_State S) const;
 
   Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve() const;
+
 };
 
 #endif // _TopOpeBRepDS_CurveIterator_HeaderFile

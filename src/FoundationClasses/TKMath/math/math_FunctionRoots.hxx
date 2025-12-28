@@ -22,6 +22,8 @@
 
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class math_FunctionWithDerivative;
 
@@ -40,13 +42,13 @@ public:
   //! The function is considered as null between A and B if
   //! abs(F-K) <= EpsNull within this range.
   Standard_EXPORT math_FunctionRoots(math_FunctionWithDerivative& F,
-                                     const double                 A,
-                                     const double                 B,
-                                     const int                    NbSample,
-                                     const double                 EpsX    = 0.0,
-                                     const double                 EpsF    = 0.0,
-                                     const double                 EpsNull = 0.0,
-                                     const double                 K       = 0.0);
+                                     const double          A,
+                                     const double          B,
+                                     const int       NbSample,
+                                     const double          EpsX    = 0.0,
+                                     const double          EpsF    = 0.0,
+                                     const double          EpsNull = 0.0,
+                                     const double          K       = 0.0);
 
   //! Returns true if the computations are successful, otherwise returns false.
   bool IsDone() const;
@@ -76,10 +78,10 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool                         Done;
-  bool                         AllNull;
-  NCollection_Sequence<double> Sol;
-  NCollection_Sequence<int>    NbStateSol;
+  bool          Done;
+  bool          AllNull;
+  NCollection_Sequence<double>    Sol;
+  NCollection_Sequence<int> NbStateSol;
 };
 
 #include <math_FunctionRoots.lxx>

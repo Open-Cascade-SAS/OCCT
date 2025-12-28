@@ -69,7 +69,8 @@ public:
   //! Returns BRepCheck_NoError, or BRepCheck_NotClosed
   //! If <Update> is set to true, registers the
   //! status in the list.
-  Standard_EXPORT BRepCheck_Status Closed2d(const TopoDS_Face& F, const bool Update = false);
+  Standard_EXPORT BRepCheck_Status Closed2d(const TopoDS_Face&     F,
+                                            const bool Update = false);
 
   //! Checks if the oriented edges of the wire are
   //! correctly oriented. An internal call is made to
@@ -82,7 +83,8 @@ public:
   //! BRepCheck_BadOrientationOfSubshape,
   //! BRepCheck_NotClosed,
   //! BRepCheck_NoError
-  Standard_EXPORT BRepCheck_Status Orientation(const TopoDS_Face& F, const bool Update = false);
+  Standard_EXPORT BRepCheck_Status Orientation(const TopoDS_Face&     F,
+                                               const bool Update = false);
 
   //! Checks if the wire intersect itself on the face
   //! <F>. <E1> and <E2> are the first intersecting
@@ -95,10 +97,10 @@ public:
   //! BRepCheck_SelfIntersectingWire,
   //! BRepCheck_NoCurveOnSurface,
   //! BRepCheck_NoError
-  Standard_EXPORT BRepCheck_Status SelfIntersect(const TopoDS_Face& F,
-                                                 TopoDS_Edge&       E1,
-                                                 TopoDS_Edge&       E2,
-                                                 const bool         Update = false);
+  Standard_EXPORT BRepCheck_Status SelfIntersect(const TopoDS_Face&     F,
+                                                 TopoDS_Edge&           E1,
+                                                 TopoDS_Edge&           E2,
+                                                 const bool Update = false);
 
   //! report SelfIntersect() check would be (is) done
   Standard_EXPORT bool GeometricControls() const;
@@ -112,11 +114,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Wire, BRepCheck_Result)
 
 private:
-  bool             myCdone;
-  BRepCheck_Status myCstat;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-       myMapVE;
-  bool myGctrl;
+  bool                          myCdone;
+  BRepCheck_Status                          myCstat;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapVE;
+  bool                          myGctrl;
 };
 
 #endif // _BRepCheck_Wire_HeaderFile

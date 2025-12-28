@@ -24,14 +24,15 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 static bool CheckParameters(const NCollection_Array1<double>& Parameters)
 {
-  int    ii;
-  double distance;
-  bool   result = true;
+  int ii;
+  double    distance;
+  bool result = true;
   for (ii = Parameters.Lower(); result && ii < Parameters.Upper(); ii++)
   {
     distance = Parameters.Value(ii + 1) - Parameters.Value(ii);
@@ -42,13 +43,13 @@ static bool CheckParameters(const NCollection_Array1<double>& Parameters)
 
 //=================================================================================================
 
-static void BuildParameters(const bool                                PeriodicFlag,
-                            const NCollection_Array1<double>&         PointsArray,
+static void BuildParameters(const bool         PeriodicFlag,
+                            const NCollection_Array1<double>&    PointsArray,
                             occ::handle<NCollection_HArray1<double>>& ParametersPtr)
 {
-  int    ii, index = 2;
-  double distance;
-  int    num_parameters = PointsArray.Length();
+  int ii, index = 2;
+  double    distance;
+  int num_parameters = PointsArray.Length();
   if (PeriodicFlag)
   {
     num_parameters += 1;
@@ -73,7 +74,7 @@ static void BuildParameters(const bool                                PeriodicFl
 
 static void BuildPeriodicTangent(const NCollection_Array1<double>& PointsArray,
                                  NCollection_Array1<double>&       TangentsArray,
-                                 NCollection_Array1<bool>&         TangentFlags,
+                                 NCollection_Array1<bool>&    TangentFlags,
                                  const NCollection_Array1<double>& ParametersArray)
 {
   double point_array[3], parameter_array[3], eval_result[2];
@@ -88,15 +89,15 @@ static void BuildPeriodicTangent(const NCollection_Array1<double>& PointsArray,
     // Pour les periodiques on evalue la tangente du point de fermeture
     // par une interpolation de degre 2 entre le dernier point, le point
     // de fermeture et le deuxieme point.
-    int    degree      = 2;
-    double period      = (ParametersArray.Value(ParametersArray.Upper())
-                     - ParametersArray.Value(ParametersArray.Lower()));
-    point_array[0]     = PointsArray.Value(PointsArray.Upper());
-    point_array[1]     = PointsArray.Value(PointsArray.Lower());
-    point_array[2]     = PointsArray.Value(PointsArray.Lower() + 1);
-    parameter_array[0] = ParametersArray.Value(ParametersArray.Upper() - 1) - period;
-    parameter_array[1] = ParametersArray.Value(ParametersArray.Lower());
-    parameter_array[2] = ParametersArray.Value(ParametersArray.Lower() + 1);
+    int degree = 2;
+    double    period = (ParametersArray.Value(ParametersArray.Upper())
+                            - ParametersArray.Value(ParametersArray.Lower()));
+    point_array[0]          = PointsArray.Value(PointsArray.Upper());
+    point_array[1]          = PointsArray.Value(PointsArray.Lower());
+    point_array[2]          = PointsArray.Value(PointsArray.Lower() + 1);
+    parameter_array[0]      = ParametersArray.Value(ParametersArray.Upper() - 1) - period;
+    parameter_array[1]      = ParametersArray.Value(ParametersArray.Lower());
+    parameter_array[2]      = ParametersArray.Value(ParametersArray.Lower() + 1);
     TangentFlags.SetValue(1, true);
     PLib::EvalLagrange(parameter_array[1],
                        1,
@@ -113,11 +114,11 @@ static void BuildPeriodicTangent(const NCollection_Array1<double>& PointsArray,
 
 static void BuildTangents(const NCollection_Array1<double>& PointsArray,
                           NCollection_Array1<double>&       TangentsArray,
-                          NCollection_Array1<bool>&         TangentFlags,
+                          NCollection_Array1<bool>&    TangentFlags,
                           const NCollection_Array1<double>& ParametersArray)
 {
-  int     degree = 3; //,ii;
-  double *point_array, *parameter_array, eval_result[2];
+  int degree = 3; //,ii;
+  double *  point_array, *parameter_array, eval_result[2];
 
   if (PointsArray.Length() < 3)
   {
@@ -145,8 +146,8 @@ static void BuildTangents(const NCollection_Array1<double>& PointsArray,
   {
     point_array = (double*)&PointsArray.Value(PointsArray.Upper() - degree);
     TangentFlags.SetValue(TangentFlags.Upper(), true);
-    int iup         = ParametersArray.Upper() - degree;
-    parameter_array = (double*)&ParametersArray.Value(iup);
+    int iup = ParametersArray.Upper() - degree;
+    parameter_array      = (double*)&ParametersArray.Value(iup);
     PLib::EvalLagrange(ParametersArray.Value(ParametersArray.Upper()),
                        1,
                        degree,
@@ -161,8 +162,8 @@ static void BuildTangents(const NCollection_Array1<double>& PointsArray,
 //=================================================================================================
 
 Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& PointsPtr,
-                                 const bool                                      PeriodicFlag,
-                                 const double                                    Tolerance)
+                                 const bool               PeriodicFlag,
+                                 const double                  Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
       myIsDone(false),
@@ -182,8 +183,8 @@ Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>&
 
 Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>& PointsPtr,
                                  const occ::handle<NCollection_HArray1<double>>& ParametersPtr,
-                                 const bool                                      PeriodicFlag,
-                                 const double                                    Tolerance)
+                                 const bool               PeriodicFlag,
+                                 const double                  Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
       myIsDone(false),
@@ -199,9 +200,9 @@ Law_Interpolate::Law_Interpolate(const occ::handle<NCollection_HArray1<double>>&
       throw Standard_ConstructionError();
     }
   }
-  myTangents     = new NCollection_HArray1<double>(myPoints->Lower(), myPoints->Upper());
-  myTangentFlags = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
-  bool result    = CheckParameters(ParametersPtr->Array1());
+  myTangents              = new NCollection_HArray1<double>(myPoints->Lower(), myPoints->Upper());
+  myTangentFlags          = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
+  bool result = CheckParameters(ParametersPtr->Array1());
   if (!result)
   {
     throw Standard_ConstructionError();
@@ -286,11 +287,11 @@ void Law_Interpolate::PerformPeriodic()
       }
     }
   }
-  NCollection_Array1<double> parameters(1, num_poles);
-  NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
-  NCollection_Array1<int>    mults(1, num_distinct_knots);
-  NCollection_Array1<int>    contact_order_array(1, num_poles);
-  NCollection_Array1<double> poles(1, num_poles);
+  NCollection_Array1<double>    parameters(1, num_poles);
+  NCollection_Array1<double>    flatknots(1, num_poles + degree + 1);
+  NCollection_Array1<int> mults(1, num_distinct_knots);
+  NCollection_Array1<int> contact_order_array(1, num_poles);
+  NCollection_Array1<double>    poles(1, num_poles);
 
   for (ii = 1; ii <= half_order; ii++)
   {
@@ -428,12 +429,12 @@ void Law_Interpolate::PerformNonPeriodic()
       }
     }
   }
-  NCollection_Array1<double> parameters(1, num_poles);
-  NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
-  NCollection_Array1<int>    mults(1, num_distinct_knots);
-  NCollection_Array1<double> knots(1, num_distinct_knots);
-  NCollection_Array1<int>    contact_order_array(1, num_poles);
-  NCollection_Array1<double> poles(1, num_poles);
+  NCollection_Array1<double>    parameters(1, num_poles);
+  NCollection_Array1<double>    flatknots(1, num_poles + degree + 1);
+  NCollection_Array1<int> mults(1, num_distinct_knots);
+  NCollection_Array1<double>    knots(1, num_distinct_knots);
+  NCollection_Array1<int> contact_order_array(1, num_poles);
+  NCollection_Array1<double>    poles(1, num_poles);
 
   for (ii = 1; ii <= degree + 1; ii++)
   {

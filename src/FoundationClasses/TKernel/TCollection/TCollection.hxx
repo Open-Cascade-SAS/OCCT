@@ -37,7 +37,10 @@ public:
   //! around 1 000 000). This is not a limit of the number
   //! of items but a limit in the number of buckets. i.e.
   //! there will be more collisions in the map.
-  static int NextPrimeForMap(const int I) { return NCollection_Primes::NextPrimeForMap(I); }
+  static int NextPrimeForMap(const int I)
+  {
+    return NCollection_Primes::NextPrimeForMap(I);
+  }
 };
 
 #endif // _TCollection_HeaderFile

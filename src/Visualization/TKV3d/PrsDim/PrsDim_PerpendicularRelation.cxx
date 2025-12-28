@@ -46,8 +46,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_PerpendicularRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&            aFShape,
-                                                           const TopoDS_Shape&            aSShape,
+PrsDim_PerpendicularRelation::PrsDim_PerpendicularRelation(const TopoDS_Shape&       aFShape,
+                                                           const TopoDS_Shape&       aSShape,
                                                            const occ::handle<Geom_Plane>& aPlane)
     : PrsDim_Relation()
 {
@@ -95,14 +95,13 @@ void PrsDim_PerpendicularRelation::Compute(const occ::handle<PrsMgr_Presentation
 
 //=================================================================================================
 
-void PrsDim_PerpendicularRelation::ComputeSelection(
-  const occ::handle<SelectMgr_Selection>& aSelection,
-  const int)
+void PrsDim_PerpendicularRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                                    const int)
 {
   occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
-  const gp_Pnt&                          pos = myPosition;
+  const gp_Pnt&                     pos = myPosition;
   occ::handle<Select3D_SensitiveSegment> seg;
-  bool                                   ok1(false), ok2(false);
+  bool                  ok1(false), ok2(false);
 
   if (!myFAttach.IsEqual(pos, Precision::Confusion()))
   {
@@ -119,8 +118,8 @@ void PrsDim_PerpendicularRelation::ComputeSelection(
 
   if (ok1 && ok2)
   {
-    gp_Vec vec1(gce_MakeDir(pos, myFAttach));
-    gp_Vec vec2(gce_MakeDir(pos, mySAttach));
+    gp_Vec        vec1(gce_MakeDir(pos, myFAttach));
+    gp_Vec        vec2(gce_MakeDir(pos, mySAttach));
     double dist1(pos.Distance(myFAttach));
     double dist2(pos.Distance(mySAttach));
     vec1 *= dist1;
@@ -152,8 +151,8 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
 {
   // 3d lines
   occ::handle<Geom_Curve> geom1, geom2;
-  gp_Pnt                  pint3d, p1, p2, pAx1, pAx2, ptat11, ptat12, ptat21, ptat22;
-  bool                    isInfinite1, isInfinite2;
+  gp_Pnt             pint3d, p1, p2, pAx1, pAx2, ptat11, ptat12, ptat21, ptat22;
+  bool   isInfinite1, isInfinite2;
   occ::handle<Geom_Curve> extCurv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
                                TopoDS::Edge(mySShape),
@@ -180,12 +179,12 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
     // construct lines through focuses
     gp_Ax1 elAx = geom_el->XAxis();
     gp_Lin ll(elAx);
-    geom_lin1       = new Geom_Line(ll);
+    geom_lin1              = new Geom_Line(ll);
     double focex    = geom_el->MajorRadius() - geom_el->Focal() / 2.0;
-    gp_Vec transvec = gp_Vec(elAx.Direction()) * focex;
-    ptat11          = geom_el->Focus1().Translated(transvec);
-    ptat12          = geom_el->Focus2().Translated(-transvec);
-    interOut1       = true;
+    gp_Vec        transvec = gp_Vec(elAx.Direction()) * focex;
+    ptat11                 = geom_el->Focus1().Translated(transvec);
+    ptat12                 = geom_el->Focus2().Translated(-transvec);
+    interOut1              = true;
   }
   else if (geom1->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
@@ -200,12 +199,12 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
     // construct lines through focuses
     gp_Ax1 elAx = geom_el->XAxis();
     gp_Lin ll(elAx);
-    geom_lin2       = new Geom_Line(ll);
+    geom_lin2              = new Geom_Line(ll);
     double focex    = geom_el->MajorRadius() - geom_el->Focal() / 2.0;
-    gp_Vec transvec = gp_Vec(elAx.Direction()) * focex;
-    ptat21          = geom_el->Focus1().Translated(transvec);
-    ptat22          = geom_el->Focus2().Translated(-transvec);
-    interOut2       = true;
+    gp_Vec        transvec = gp_Vec(elAx.Direction()) * focex;
+    ptat21                 = geom_el->Focus1().Translated(transvec);
+    ptat22                 = geom_el->Focus2().Translated(-transvec);
+    interOut2              = true;
   }
   else if (geom2->IsInstance(STANDARD_TYPE(Geom_Line)))
   {
@@ -221,8 +220,8 @@ void PrsDim_PerpendicularRelation::ComputeTwoEdgesPerpendicular(
   // 2d lines => projection of 3d on current plane
   occ::handle<Geom2d_Curve> aGeom2dCurve = GeomAPI::To2d(geom_lin1, myPlane->Pln());
   occ::handle<Geom2d_Line>  lin1_2d      = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
-  aGeom2dCurve                           = GeomAPI::To2d(geom_lin2, myPlane->Pln());
-  occ::handle<Geom2d_Line> lin2_2d       = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
+  aGeom2dCurve                      = GeomAPI::To2d(geom_lin2, myPlane->Pln());
+  occ::handle<Geom2d_Line>      lin2_2d  = occ::down_cast<Geom2d_Line>(aGeom2dCurve);
   IntAna2d_AnaIntersection inter(lin1_2d->Lin2d(), lin2_2d->Lin2d());
   if (!inter.IsDone())
     return;

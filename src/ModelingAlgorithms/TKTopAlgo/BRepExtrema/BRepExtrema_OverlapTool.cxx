@@ -28,9 +28,8 @@ BRepExtrema_OverlapTool::BRepExtrema_OverlapTool()
 
 //=================================================================================================
 
-BRepExtrema_OverlapTool::BRepExtrema_OverlapTool(
-  const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-  const occ::handle<BRepExtrema_TriangleSet>& theSet2)
+BRepExtrema_OverlapTool::BRepExtrema_OverlapTool(const occ::handle<BRepExtrema_TriangleSet>& theSet1,
+                                                 const occ::handle<BRepExtrema_TriangleSet>& theSet2)
     : myFilter(NULL),
       myTolerance(0.0)
 {
@@ -82,19 +81,19 @@ public:
   }
 
   //! Creates new bounding prism for the given triangle.
-  BRepExtrema_BoundingPrism(const BVH_Vec3d& theVertex0,
-                            const BVH_Vec3d& theVertex1,
-                            const BVH_Vec3d& theVertex2,
-                            const double     theDeflect)
+  BRepExtrema_BoundingPrism(const BVH_Vec3d&    theVertex0,
+                            const BVH_Vec3d&    theVertex1,
+                            const BVH_Vec3d&    theVertex2,
+                            const double theDeflect)
   {
     Init(theVertex0, theVertex1, theVertex2, theDeflect);
   }
 
   //! Calculates bounding prism for the given triangle.
-  void Init(const BVH_Vec3d& theVertex0,
-            const BVH_Vec3d& theVertex1,
-            const BVH_Vec3d& theVertex2,
-            const double     theDeflect)
+  void Init(const BVH_Vec3d&    theVertex0,
+            const BVH_Vec3d&    theVertex1,
+            const BVH_Vec3d&    theVertex2,
+            const double theDeflect)
   {
     Edges[0] = theVertex1 - theVertex0;
     Edges[1] = theVertex2 - theVertex0;
@@ -134,7 +133,8 @@ public:
   }
 
   //! Checks if two prisms are separated along the given axis.
-  bool Separated(const BRepExtrema_BoundingPrism& thePrism, const BVH_Vec3d& theAxis) const
+  bool Separated(const BRepExtrema_BoundingPrism& thePrism,
+                             const BVH_Vec3d&                 theAxis) const
   {
     double aMin1 = DBL_MAX;
     double aMax1 = -DBL_MAX;
@@ -166,11 +166,11 @@ public:
 
 //=================================================================================================
 
-double sign(const BVH_Vec3d& theVertex0,
-            const BVH_Vec3d& theVertex1,
-            const BVH_Vec3d& theVertex2,
-            const int        theX,
-            const int        theY)
+double sign(const BVH_Vec3d&       theVertex0,
+                   const BVH_Vec3d&       theVertex1,
+                   const BVH_Vec3d&       theVertex2,
+                   const int theX,
+                   const int theY)
 {
   return (theVertex0[theX] - theVertex2[theX]) * (theVertex1[theY] - theVertex2[theY])
          - (theVertex1[theX] - theVertex2[theX]) * (theVertex0[theY] - theVertex2[theY]);
@@ -178,12 +178,12 @@ double sign(const BVH_Vec3d& theVertex0,
 
 //=================================================================================================
 
-bool pointInTriangle(const BVH_Vec3d& theTestPnt,
-                     const BVH_Vec3d& theTrgVtx0,
-                     const BVH_Vec3d& theTrgVtx1,
-                     const BVH_Vec3d& theTrgVtx2,
-                     const int        theX,
-                     const int        theY)
+bool pointInTriangle(const BVH_Vec3d&       theTestPnt,
+                                 const BVH_Vec3d&       theTrgVtx0,
+                                 const BVH_Vec3d&       theTrgVtx1,
+                                 const BVH_Vec3d&       theTrgVtx2,
+                                 const int theX,
+                                 const int theY)
 {
   const bool aSign0 = sign(theTestPnt, theTrgVtx0, theTrgVtx1, theX, theY) <= 0.0;
   const bool aSign1 = sign(theTestPnt, theTrgVtx1, theTrgVtx2, theX, theY) <= 0.0;
@@ -197,9 +197,9 @@ bool pointInTriangle(const BVH_Vec3d& theTestPnt,
 // purpose  : Checks if two line segments are intersected
 // =======================================================================
 bool segmentsIntersected(const BVH_Vec2d& theOriginSeg0,
-                         const BVH_Vec2d& theOriginSeg1,
-                         const BVH_Vec2d& theDirectSeg0,
-                         const BVH_Vec2d& theDirectSeg1)
+                                     const BVH_Vec2d& theOriginSeg1,
+                                     const BVH_Vec2d& theDirectSeg0,
+                                     const BVH_Vec2d& theDirectSeg1)
 {
   const double aDet =
     -theDirectSeg1.x() * theDirectSeg0.y() + theDirectSeg0.x() * theDirectSeg1.y();
@@ -231,7 +231,8 @@ bool segmentsIntersected(const BVH_Vec2d& theOriginSeg0,
 
   const BVH_Vec2d aDelta = theOriginSeg0 - theOriginSeg1;
 
-  const double aU = (-theDirectSeg0.y() * aDelta.x() + theDirectSeg0.x() * aDelta.y()) / aDet;
+  const double aU =
+    (-theDirectSeg0.y() * aDelta.x() + theDirectSeg0.x() * aDelta.y()) / aDet;
   const double aV = (theDirectSeg1.x() * aDelta.y() - theDirectSeg1.y() * aDelta.x()) / aDet;
 
   return aU >= 0.0 && aU <= 1.0 && aV >= 0.0 && aV <= 1.0;
@@ -243,11 +244,11 @@ bool segmentsIntersected(const BVH_Vec2d& theOriginSeg0,
 //            ("A Fast Triangle-Triangle Intersection Test" by T. Moller)
 // =======================================================================
 bool trianglesIntersected(const BVH_Vec3d& theTrng0Vert0,
-                          const BVH_Vec3d& theTrng0Vert1,
-                          const BVH_Vec3d& theTrng0Vert2,
-                          const BVH_Vec3d& theTrng1Vert0,
-                          const BVH_Vec3d& theTrng1Vert1,
-                          const BVH_Vec3d& theTrng1Vert2)
+                                      const BVH_Vec3d& theTrng0Vert1,
+                                      const BVH_Vec3d& theTrng0Vert2,
+                                      const BVH_Vec3d& theTrng1Vert0,
+                                      const BVH_Vec3d& theTrng1Vert1,
+                                      const BVH_Vec3d& theTrng1Vert2)
 {
   const BVH_Vec3d aTrng1Normal =
     BVH_Vec3d::Cross(theTrng1Vert1 - theTrng1Vert0, theTrng1Vert2 - theTrng1Vert0).Normalized();
@@ -301,15 +302,15 @@ bool trianglesIntersected(const BVH_Vec3d& theTrng0Vert0,
     }
 
     double aTime1 = fabs(aDistTrng0Vert0) <= DBL_EPSILON
-                      ? aProjTrng0Vert0
-                      : aProjTrng0Vert0
-                          + (aProjTrng0Vert1 - aProjTrng0Vert0) * aDistTrng0Vert0
-                              / (aDistTrng0Vert0 - aDistTrng0Vert1);
+                             ? aProjTrng0Vert0
+                             : aProjTrng0Vert0
+                                 + (aProjTrng0Vert1 - aProjTrng0Vert0) * aDistTrng0Vert0
+                                     / (aDistTrng0Vert0 - aDistTrng0Vert1);
     double aTime2 = fabs(aDistTrng0Vert2) <= DBL_EPSILON
-                      ? aProjTrng0Vert2
-                      : aProjTrng0Vert2
-                          + (aProjTrng0Vert1 - aProjTrng0Vert2) * aDistTrng0Vert2
-                              / (aDistTrng0Vert2 - aDistTrng0Vert1);
+                             ? aProjTrng0Vert2
+                             : aProjTrng0Vert2
+                                 + (aProjTrng0Vert1 - aProjTrng0Vert2) * aDistTrng0Vert2
+                                     / (aDistTrng0Vert2 - aDistTrng0Vert1);
 
     const double aTimeMin1 = std::min(aTime1, aTime2);
     const double aTimeMax1 = std::max(aTime1, aTime2);
@@ -414,7 +415,7 @@ bool trianglesIntersected(const BVH_Vec3d& theTrng0Vert0,
 //            (test uses SAT - Separating Axis Theorem)
 // =======================================================================
 bool prismsIntersected(const BRepExtrema_BoundingPrism& thePrism1,
-                       const BRepExtrema_BoundingPrism& thePrism2)
+                                   const BRepExtrema_BoundingPrism& thePrism2)
 {
   if (thePrism1.Separated(thePrism2, thePrism1.Normal))
   {
@@ -464,11 +465,11 @@ bool prismsIntersected(const BRepExtrema_BoundingPrism& thePrism1,
 // function : overlapBoxes
 // purpose  : Checks if two boxes (AABBs) are overlapped
 // =======================================================================
-inline bool overlapBoxes(const BVH_Vec3d& theBoxMin1,
-                         const BVH_Vec3d& theBoxMax1,
-                         const BVH_Vec3d& theBoxMin2,
-                         const BVH_Vec3d& theBoxMax2,
-                         const double     theTolerance)
+inline bool overlapBoxes(const BVH_Vec3d&    theBoxMin1,
+                                     const BVH_Vec3d&    theBoxMax1,
+                                     const BVH_Vec3d&    theBoxMin2,
+                                     const BVH_Vec3d&    theBoxMax2,
+                                     const double theTolerance)
 {
   // Check for overlap
   return !(theBoxMin1.x() > theBoxMax2.x() + theTolerance
@@ -481,9 +482,8 @@ inline bool overlapBoxes(const BVH_Vec3d& theBoxMin1,
 
 //=================================================================================================
 
-TColStd_PackedMapOfInteger& getSetOfFaces(
-  NCollection_DataMap<int, TColStd_PackedMapOfInteger>& theFaces,
-  const int                                             theFaceIdx)
+TColStd_PackedMapOfInteger& getSetOfFaces(NCollection_DataMap<int, TColStd_PackedMapOfInteger>& theFaces,
+                                          const int                      theFaceIdx)
 {
   if (!theFaces.IsBound(theFaceIdx))
   {
@@ -496,7 +496,8 @@ TColStd_PackedMapOfInteger& getSetOfFaces(
 
 //=================================================================================================
 
-void BRepExtrema_OverlapTool::intersectTrianglesExact(const int theTrgIdx1, const int theTrgIdx2)
+void BRepExtrema_OverlapTool::intersectTrianglesExact(const int theTrgIdx1,
+                                                      const int theTrgIdx2)
 {
   const int aFaceIdx1 = mySet1->GetFaceID(theTrgIdx1);
 
@@ -573,9 +574,9 @@ void BRepExtrema_OverlapTool::intersectTrianglesExact(const int theTrgIdx1, cons
 
 //=================================================================================================
 
-void BRepExtrema_OverlapTool::intersectTrianglesToler(const int    theTrgIdx1,
-                                                      const int    theTrgIdx2,
-                                                      const double theToler)
+void BRepExtrema_OverlapTool::intersectTrianglesToler(const int theTrgIdx1,
+                                                      const int theTrgIdx2,
+                                                      const double    theToler)
 {
   const int aFaceIdx1 = mySet1->GetFaceID(theTrgIdx1);
 
@@ -655,17 +656,18 @@ void BRepExtrema_OverlapTool::Perform(const double theTolerance)
 //=================================================================================================
 
 bool BRepExtrema_OverlapTool::RejectNode(const BVH_Vec3d& theCornerMin1,
-                                         const BVH_Vec3d& theCornerMax1,
-                                         const BVH_Vec3d& theCornerMin2,
-                                         const BVH_Vec3d& theCornerMax2,
-                                         double&) const
+                                                     const BVH_Vec3d& theCornerMax1,
+                                                     const BVH_Vec3d& theCornerMin2,
+                                                     const BVH_Vec3d& theCornerMax2,
+                                                     double&) const
 {
   return !overlapBoxes(theCornerMin1, theCornerMax1, theCornerMin2, theCornerMax2, myTolerance);
 }
 
 //=================================================================================================
 
-bool BRepExtrema_OverlapTool::Accept(const int theTrgIdx1, const int theTrgIdx2)
+bool BRepExtrema_OverlapTool::Accept(const int theTrgIdx1,
+                                                 const int theTrgIdx2)
 {
   if (myTolerance == 0.0)
   {

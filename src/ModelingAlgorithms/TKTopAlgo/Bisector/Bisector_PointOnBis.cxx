@@ -30,11 +30,11 @@ Bisector_PointOnBis::Bisector_PointOnBis()
 
 //=================================================================================================
 
-Bisector_PointOnBis::Bisector_PointOnBis(const double    Param1,
-                                         const double    Param2,
-                                         const double    ParamBis,
-                                         const double    Distance,
-                                         const gp_Pnt2d& P)
+Bisector_PointOnBis::Bisector_PointOnBis(const double Param1,
+                                         const double Param2,
+                                         const double ParamBis,
+                                         const double Distance,
+                                         const gp_Pnt2d&     P)
     : param1(Param1),
       param2(Param2),
       paramBis(ParamBis),

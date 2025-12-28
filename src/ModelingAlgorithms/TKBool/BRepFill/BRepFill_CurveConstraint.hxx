@@ -39,18 +39,19 @@ public:
   //! TolCurv is the maximum error to satisfy for G2 constraints
   //! These errors can be replaced by laws of criterion.
   Standard_EXPORT BRepFill_CurveConstraint(const occ::handle<Adaptor3d_CurveOnSurface>& Boundary,
-                                           const int                                    Order,
-                                           const int                                    NPt = 10,
-                                           const double TolDist = 0.0001,
-                                           const double TolAng  = 0.01,
-                                           const double TolCurv = 0.1);
+                                           const int                  Order,
+                                           const int                  NPt     = 10,
+                                           const double                     TolDist = 0.0001,
+                                           const double                     TolAng  = 0.01,
+                                           const double                     TolCurv = 0.1);
 
   Standard_EXPORT BRepFill_CurveConstraint(const occ::handle<Adaptor3d_Curve>& Boundary,
-                                           const int                           Tang,
-                                           const int                           NPt     = 10,
-                                           const double                        TolDist = 0.0001);
+                                           const int         Tang,
+                                           const int         NPt     = 10,
+                                           const double            TolDist = 0.0001);
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_CurveConstraint, GeomPlate_CurveConstraint)
+
 };
 
 #endif // _BRepFill_CurveConstraint_HeaderFile

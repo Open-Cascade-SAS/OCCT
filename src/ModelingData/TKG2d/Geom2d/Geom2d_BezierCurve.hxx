@@ -25,6 +25,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
@@ -104,7 +106,7 @@ public:
   //! or one weight value is lower or equal to Resolution from
   //! package gp.
   Standard_EXPORT Geom2d_BezierCurve(const NCollection_Array1<gp_Pnt2d>& CurvePoles,
-                                     const NCollection_Array1<double>&   PoleWeights);
+                                     const NCollection_Array1<double>& PoleWeights);
 
   //! Copy constructor for optimized copying without validation.
   Standard_EXPORT Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther);
@@ -122,8 +124,8 @@ public:
   //!
   //! Raised if the resulting number of poles is greater than
   //! MaxDegree + 1.
-  Standard_EXPORT void InsertPoleAfter(const int       Index,
-                                       const gp_Pnt2d& P,
+  Standard_EXPORT void InsertPoleAfter(const int Index,
+                                       const gp_Pnt2d&        P,
                                        const double    Weight = 1.0);
 
   //! Inserts a pole with its weight in the set of poles after
@@ -133,8 +135,8 @@ public:
   //!
   //! Raised if the resulting number of poles is greater than
   //! MaxDegree + 1.
-  Standard_EXPORT void InsertPoleBefore(const int       Index,
-                                        const gp_Pnt2d& P,
+  Standard_EXPORT void InsertPoleBefore(const int Index,
+                                        const gp_Pnt2d&        P,
                                         const double    Weight = 1.0);
 
   //! Removes the pole of range Index.
@@ -178,7 +180,9 @@ public:
   //! all the weights are identical.
   //! Raised if Index is not in the range [1, NbPoles]
   //! Raised if Weight <= Resolution from package gp
-  Standard_EXPORT void SetPole(const int Index, const gp_Pnt2d& P, const double Weight);
+  Standard_EXPORT void SetPole(const int Index,
+                               const gp_Pnt2d&        P,
+                               const double    Weight);
 
   //! Changes the weight of the pole of range Index.
   //! If the curve <me> is not rational it can become rational
@@ -217,13 +221,16 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2) const override;
 
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const override;
 
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -233,7 +240,8 @@ public:
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
   //! Raises RangeError if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Returns the end point or start point of this Bezier curve.
   Standard_EXPORT gp_Pnt2d EndPoint() const override;
@@ -303,7 +311,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BezierCurve, Geom2d_BoundedCurve)
 
@@ -318,14 +326,14 @@ private:
   //!
   //! if nbpoles < 2 or nbboles > MaDegree + 1
   void Init(const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-            const occ::handle<NCollection_HArray1<double>>&   Weights);
+            const occ::handle<NCollection_HArray1<double>>& Weights);
 
-  bool                                       rational;
-  bool                                       closed;
+  bool              rational;
+  bool              closed;
   occ::handle<NCollection_HArray1<gp_Pnt2d>> poles;
-  occ::handle<NCollection_HArray1<double>>   weights;
-  double                                     maxderivinv;
-  bool                                       maxderivinvok;
+  occ::handle<NCollection_HArray1<double>> weights;
+  double                 maxderivinv;
+  bool              maxderivinvok;
 };
 
 #endif // _Geom2d_BezierCurve_HeaderFile

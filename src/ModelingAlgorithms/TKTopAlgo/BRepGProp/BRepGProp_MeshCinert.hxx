@@ -18,6 +18,8 @@
 #include <Standard_Handle.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GProp_GProps.hxx>
 class gp_Pnt;
@@ -46,8 +48,9 @@ public:
   //! Prepare set of 3d points on base of any available edge polygons:
   //! 3D polygon, polygon on triangulation, 2d polygon on surface
   //! If edge has no polygons, array thePolyg is left unchanged
-  Standard_EXPORT static void PreparePolygon(const TopoDS_Edge&                        theE,
+  Standard_EXPORT static void PreparePolygon(const TopoDS_Edge&           theE,
                                              occ::handle<NCollection_HArray1<gp_Pnt>>& thePolyg);
+
 };
 
 #endif // _BRepGProp_MeshCinert_HeaderFile

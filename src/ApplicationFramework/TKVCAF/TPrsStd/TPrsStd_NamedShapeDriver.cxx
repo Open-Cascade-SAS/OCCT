@@ -46,8 +46,8 @@ TPrsStd_NamedShapeDriver::TPrsStd_NamedShapeDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_NamedShapeDriver::Update(const TDF_Label&                    aLabel,
-                                      occ::handle<AIS_InteractiveObject>& AIS)
+bool TPrsStd_NamedShapeDriver::Update(const TDF_Label&               aLabel,
+                                                  occ::handle<AIS_InteractiveObject>& AIS)
 {
   occ::handle<TNaming_NamedShape> NS;
 

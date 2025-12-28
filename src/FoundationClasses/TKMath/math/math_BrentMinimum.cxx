@@ -32,9 +32,9 @@ inline void SHFT(double& theA, double& theB, double& theC, double& theD)
 
 //=================================================================================================
 
-math_BrentMinimum::math_BrentMinimum(const double theTolX,
-                                     const int    theNbIterations,
-                                     const double theZEPS)
+math_BrentMinimum::math_BrentMinimum(const double    theTolX,
+                                     const int theNbIterations,
+                                     const double    theZEPS)
     : a(0.0),
       b(0.0),
       x(0.0),
@@ -52,10 +52,10 @@ math_BrentMinimum::math_BrentMinimum(const double theTolX,
 
 //=================================================================================================
 
-math_BrentMinimum::math_BrentMinimum(const double theTolX,
-                                     const double theFbx,
-                                     const int    theNbIterations,
-                                     const double theZEPS)
+math_BrentMinimum::math_BrentMinimum(const double    theTolX,
+                                     const double    theFbx,
+                                     const int theNbIterations,
+                                     const double    theZEPS)
     : a(0.0),
       b(0.0),
       x(0.0),
@@ -77,13 +77,16 @@ math_BrentMinimum::~math_BrentMinimum() {}
 
 //=================================================================================================
 
-void math_BrentMinimum::Perform(math_Function& F, const double ax, const double bx, const double cx)
+void math_BrentMinimum::Perform(math_Function&      F,
+                                const double ax,
+                                const double bx,
+                                const double cx)
 {
-  bool   OK;
-  double etemp, fu, p, q, r;
-  double tol1, tol2, u, v, w, xm;
-  double e = 0.0;
-  double d = RealLast();
+  bool OK;
+  double    etemp, fu, p, q, r;
+  double    tol1, tol2, u, v, w, xm;
+  double    e = 0.0;
+  double    d = RealLast();
 
   a = ((ax < cx) ? ax : cx);
   b = ((ax > cx) ? ax : cx);

@@ -28,20 +28,22 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=======================================================================
 // function : OnSurface_Value
 // purpose  : Evaluate current point of the projected curve
 //=======================================================================
-static gp_Pnt OnSurface_Value(const double                        U,
+static gp_Pnt OnSurface_Value(const double            U,
                               const occ::handle<Adaptor3d_Curve>& myCurve,
-                              Extrema_ExtPS*                      myExtPS)
+                              Extrema_ExtPS*                 myExtPS)
 {
   // Try to find the closest solution point.
   myExtPS->Perform(myCurve->Value(U));
 
-  double Dist2Min = RealLast();
-  int    Index    = 0;
+  double    Dist2Min = RealLast();
+  int Index    = 0;
 
   for (int i = 1; i <= myExtPS->NbExt(); i++)
   {
@@ -64,11 +66,11 @@ static gp_Pnt OnSurface_Value(const double                        U,
 
 //=================================================================================================
 
-static bool OnSurface_D1(const double,                        // U,
-                         gp_Pnt&,                             // P,
-                         gp_Vec&,                             // V,
-                         const occ::handle<Adaptor3d_Curve>&, //  myCurve,
-                         Extrema_ExtPS*)                      // myExtPS)
+static bool OnSurface_D1(const double,            // U,
+                                     gp_Pnt&,                        // P,
+                                     gp_Vec&,                        // V,
+                                     const occ::handle<Adaptor3d_Curve>&, //  myCurve,
+                                     Extrema_ExtPS*)                 // myExtPS)
 {
   return false;
 }
@@ -85,12 +87,12 @@ public:
   ProjLib_OnSurface(const occ::handle<Adaptor3d_Curve>& C, const occ::handle<Adaptor3d_Surface>& S)
       : myCurve(C)
   {
-    myNbPnt              = 1;
-    myNbPnt2d            = 0;
+    myNbPnt                     = 1;
+    myNbPnt2d                   = 0;
     double           U   = myCurve->FirstParameter();
-    gp_Pnt           P   = myCurve->Value(U);
+    gp_Pnt                  P   = myCurve->Value(U);
     constexpr double Tol = Precision::PConfusion();
-    myExtPS              = new Extrema_ExtPS(P, *S, Tol, Tol);
+    myExtPS                     = new Extrema_ExtPS(P, *S, Tol, Tol);
   }
 
   ~ProjLib_OnSurface() { delete myExtPS; }
@@ -100,16 +102,16 @@ public:
   double LastParameter() const { return myCurve->LastParameter(); }
 
   bool Value(const double theT,
-             NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
-             NCollection_Array1<gp_Pnt>& thePnt) const
+                         NCollection_Array1<gp_Pnt2d>& /*thePnt2d*/,
+                         NCollection_Array1<gp_Pnt>& thePnt) const
   {
     thePnt(1) = OnSurface_Value(theT, myCurve, myExtPS);
     return true;
   }
 
   bool D1(const double theT,
-          NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
-          NCollection_Array1<gp_Vec>& theVec) const
+                      NCollection_Array1<gp_Vec2d>& /*theVec2d*/,
+                      NCollection_Array1<gp_Vec>& theVec) const
   {
     gp_Pnt aPnt;
     return OnSurface_D1(theT, aPnt, theVec(1), myCurve, myExtPS);
@@ -121,7 +123,7 @@ private:
 
 private:
   occ::handle<Adaptor3d_Curve> myCurve;
-  Extrema_ExtPS*               myExtPS;
+  Extrema_ExtPS*          myExtPS;
 };
 
 //=====================================================================//
@@ -179,9 +181,9 @@ void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Curve>& C, const
                             Precision::Approximation(),
                             Precision::PApproximation(),
                             true);
-    int                 i;
-    int                 NbCurves = Fit.NbMultiCurves();
-    int                 MaxDeg   = 0;
+    int    i;
+    int    NbCurves = Fit.NbMultiCurves();
+    int    MaxDeg   = 0;
 
     // To convert the MultiCurve to BSpline, all constituent Bezier curves
     // must have the same degree -> Calculate MaxDeg
@@ -189,7 +191,7 @@ void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Curve>& C, const
     for (i = 1; i <= NbCurves; i++)
     {
       int Deg = Fit.Value(i).Degree();
-      MaxDeg  = std::max(MaxDeg, Deg);
+      MaxDeg               = std::max(MaxDeg, Deg);
     }
     NbPoles = MaxDeg * NbCurves + 1; // Poles on the BSpline
     NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
@@ -203,8 +205,8 @@ void ProjLib_ProjectOnSurface::Load(const occ::handle<Adaptor3d_Curve>& C, const
     {
       Fit.Parameters(i, Knots(i), Knots(i + 1));
 
-      AppParCurves_MultiCurve    MC = Fit.Value(i);              // Load the i-th Curve
-      NCollection_Array1<gp_Pnt> LocalPoles(1, MC.Degree() + 1); // Get the poles
+      AppParCurves_MultiCurve MC = Fit.Value(i);              // Load the i-th Curve
+      NCollection_Array1<gp_Pnt>      LocalPoles(1, MC.Degree() + 1); // Get the poles
       MC.Curve(1, Poles);
 
       // Possible degree elevation

@@ -43,10 +43,10 @@
 //=================================================================================================
 
 Geom2dHatch_Hatcher::Geom2dHatch_Hatcher(const Geom2dHatch_Intersector& Intersector,
-                                         const double                   Confusion2d,
-                                         const double                   Confusion3d,
-                                         const bool                     KeepPnt,
-                                         const bool                     KeepSeg)
+                                         const double            Confusion2d,
+                                         const double            Confusion3d,
+                                         const bool         KeepPnt,
+                                         const bool         KeepSeg)
     : myIntersector(Intersector),
       myConfusion2d(Confusion2d),
       myConfusion3d(Confusion3d),
@@ -153,7 +153,7 @@ void Geom2dHatch_Hatcher::KeepSegments(const bool Keep)
 //=======================================================================
 
 int Geom2dHatch_Hatcher::AddElement(const Geom2dAdaptor_Curve& Curve,
-                                    const TopAbs_Orientation   Orientation)
+                                                 const TopAbs_Orientation   Orientation)
 {
   int IndE;
   for (IndE = 1; IndE <= myNbElements && myElements.IsBound(IndE); IndE++)
@@ -191,7 +191,7 @@ void Geom2dHatch_Hatcher::RemElement(const int IndE)
     if (myHatchings.IsBound(IndH))
     {
       Geom2dHatch_Hatching& Hatching       = myHatchings.ChangeFind(IndH);
-      bool                  DomainsToClear = false;
+      bool      DomainsToClear = false;
       for (int IPntH = Hatching.NbPoints(); IPntH > 0; IPntH--)
       {
         HatchGen_PointOnHatching PntH = Hatching.ChangePoint(IPntH);
@@ -385,7 +385,8 @@ void Geom2dHatch_Hatcher::Trim(const int IndH)
 // Purpose  : Dump of the intersection point.
 //=======================================================================
 
-static void IntersectionPointDump(const IntRes2d_IntersectionPoint& Pnt, const int Index)
+static void IntersectionPointDump(const IntRes2d_IntersectionPoint& Pnt,
+                                  const int            Index)
 {
   int SavedPrecision = std::cout.precision();
   std::cout.precision(15);
@@ -612,7 +613,8 @@ bool Geom2dHatch_Hatcher::Trim(const int IndH, const int IndE)
       // `hatcher'.
       //-----------------------------------------------------------------------
 
-      bool Conf2d = std::abs(Pnt1.ParamOnFirst() - Pnt2.ParamOnFirst()) <= myConfusion2d;
+      bool Conf2d =
+        std::abs(Pnt1.ParamOnFirst() - Pnt2.ParamOnFirst()) <= myConfusion2d;
 
       //-----------------------------------------------------------------------
       // Les deux points peuvent etre `confondus' au regard des intersections.
@@ -824,14 +826,14 @@ bool Geom2dHatch_Hatcher::Trim(const int IndH, const int IndE)
 
 bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
 {
-  TopAbs_State StateBefore  = TopAbs_UNKNOWN;
-  TopAbs_State StateAfter   = TopAbs_UNKNOWN;
-  bool         SegmentBegin = false;
-  bool         SegmentEnd   = false;
+  TopAbs_State     StateBefore  = TopAbs_UNKNOWN;
+  TopAbs_State     StateAfter   = TopAbs_UNKNOWN;
+  bool SegmentBegin = false;
+  bool SegmentEnd   = false;
 
-  gp_Dir2d Tangente2d, Normale2d;
-  gp_Dir   Tangente, Normale;
-  double   Courbure;
+  gp_Dir2d      Tangente2d, Normale2d;
+  gp_Dir        Tangente, Normale;
+  double Courbure;
 
   const Geom2dAdaptor_Curve& CurveH = HatchingCurve(Point.Index());
 
@@ -871,8 +873,8 @@ bool Geom2dHatch_Hatcher::GlobalTransition(HatchGen_PointOnHatching& Point)
     const Geom2dAdaptor_Curve& CurveE  = Element.Curve();
 
     TopAbs_Orientation ElementOrientation = Element.Orientation();
-    bool               ToReverse          = (ElementOrientation == TopAbs_REVERSED);
-    double             Param;
+    bool   ToReverse          = (ElementOrientation == TopAbs_REVERSED);
+    double      Param;
     switch (PntE.Position())
     {
       case TopAbs_FORWARD:
@@ -1121,11 +1123,11 @@ void Geom2dHatch_Hatcher::ComputeDomains(const int IndH)
 
   bool Points           = myKeepPoints;
   bool Segments         = myKeepSegments;
-  int  ISav             = 0;
+  int ISav             = 0;
   bool SavPnt           = false;
-  int  NbOpenedSegments = 0;
-  int  NbPnt            = Hatching.NbPoints();
-  int  IPnt             = 1;
+  int NbOpenedSegments = 0;
+  int NbPnt            = Hatching.NbPoints();
+  int IPnt             = 1;
 
   if (NbPnt == 0)
   {
@@ -1162,10 +1164,10 @@ void Geom2dHatch_Hatcher::ComputeDomains(const int IndH)
     // Calcul des domaines.
     //-----------------------------------------------------------------------
 
-    TopAbs_State StateBefore  = CurPnt.StateBefore();
-    TopAbs_State StateAfter   = CurPnt.StateAfter();
-    bool         SegmentBegin = CurPnt.SegmentBeginning();
-    bool         SegmentEnd   = CurPnt.SegmentEnd();
+    TopAbs_State     StateBefore  = CurPnt.StateBefore();
+    TopAbs_State     StateAfter   = CurPnt.StateAfter();
+    bool SegmentBegin = CurPnt.SegmentBeginning();
+    bool SegmentEnd   = CurPnt.SegmentEnd();
 
     HatchGen_Domain domain;
 
@@ -1725,7 +1727,8 @@ void Geom2dHatch_Hatcher::ComputeDomains(const int IndH)
 // Purpose  : Returns the IDom-th domain of the IndH-th hatching.
 //=======================================================================
 
-const HatchGen_Domain& Geom2dHatch_Hatcher::Domain(const int IndH, const int IDom) const
+const HatchGen_Domain& Geom2dHatch_Hatcher::Domain(const int IndH,
+                                                   const int IDom) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if(!myHatchings.IsBound(IndH), "");
@@ -1781,7 +1784,7 @@ void Geom2dHatch_Hatcher::Dump() const
     else
     {
       const Geom2dHatch_Hatching& Hatching = myHatchings.Find(IndH);
-      int                         NbPnt    = Hatching.NbPoints();
+      int            NbPnt    = Hatching.NbPoints();
       std::cout << " contains " << NbPnt << " restriction points :" << std::endl;
       for (int IPnt = 1; IPnt <= NbPnt; IPnt++)
       {

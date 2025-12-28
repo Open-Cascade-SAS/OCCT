@@ -28,7 +28,9 @@ inline int convertBlockSize(const int aBlockSize)
   return ((aBlockSize - 1) / sizeof(int)) + 1;
 }
 
-inline bool compareStrings(char* const str, const char* theString, const int theLength)
+inline bool compareStrings(char* const            str,
+                                       const char*            theString,
+                                       const int theLength)
 {
   // ** This is a bit dangerous (can override the boundary of allocated memory)
   //  return (str[theLength] == '\0' &&
@@ -41,7 +43,8 @@ inline bool compareStrings(char* const str, const char* theString, const int the
 
 //=================================================================================================
 
-inline LDOM_MemManager::MemBlock::MemBlock(const int aSize, LDOM_MemManager::MemBlock* aFirst)
+inline LDOM_MemManager::MemBlock::MemBlock(const int     aSize,
+                                           LDOM_MemManager::MemBlock* aFirst)
     : mySize(aSize),
       myNext(aFirst)
 {
@@ -65,11 +68,11 @@ inline void* LDOM_MemManager::MemBlock::Allocate(const int aSize)
 //=================================================================================================
 
 void* LDOM_MemManager::MemBlock::AllocateAndCheck(
-  const int                         aSize,
+  const int            aSize,
   const LDOM_MemManager::MemBlock*& aFirstWithoutRoom)
 {
-  void* aResult = NULL;
-  int   aRoom   = (int)(myEndBlock - myFreeSpace);
+  void*            aResult = NULL;
+  int aRoom   = (int)(myEndBlock - myFreeSpace);
   if (aSize <= aRoom)
   {
     aResult = myFreeSpace;
@@ -186,15 +189,15 @@ int LDOM_MemManager::HashTable::Hash(const char* aString, const int aLen)
 // purpose  : Add or find a string in the hash table
 //=======================================================================
 
-const char* LDOM_MemManager::HashTable::AddString(const char* theString,
-                                                  const int   theLen,
-                                                  int&        theHashIndex)
+const char* LDOM_MemManager::HashTable::AddString(const char*            theString,
+                                                  const int theLen,
+                                                  int&      theHashIndex)
 {
   const char* aResult = NULL;
   if (theString == NULL)
     return NULL;
-  int        aHashIndex = Hash(theString, theLen);
-  TableItem* aNode      = &myTable[aHashIndex];
+  int aHashIndex = Hash(theString, theLen);
+  TableItem*       aNode      = &myTable[aHashIndex];
   if (aNode->str == NULL)
   {
     LDOM_HashValue* anAlloc =
@@ -255,8 +258,8 @@ LDOM_MemManager::LDOM_MemManager(const int aBlockSize)
 LDOM_MemManager::~LDOM_MemManager()
 {
 #ifdef OCCT_DEBUG
-  int       aSomme = 0, aCount = 0;
-  MemBlock* aBlock = myFirstBlock;
+  int aSomme = 0, aCount = 0;
+  MemBlock*        aBlock = myFirstBlock;
   // FILE * out = fopen ("/tmp/dump","w");
   while (aBlock)
   {
@@ -285,8 +288,8 @@ LDOM_MemManager::~LDOM_MemManager()
 
 void* LDOM_MemManager::Allocate(const int theSize)
 {
-  void* aResult = NULL;
-  int   aSize   = convertBlockSize(theSize);
+  void*            aResult = NULL;
+  int aSize   = convertBlockSize(theSize);
 
   if (aSize >= myBlockSize)
   {
@@ -329,7 +332,9 @@ void* LDOM_MemManager::Allocate(const int theSize)
 //           if already present
 //=======================================================================
 
-const char* LDOM_MemManager::HashedAllocate(const char* theString, const int theLen, int& theHash)
+const char* LDOM_MemManager::HashedAllocate(const char*            theString,
+                                            const int theLen,
+                                            int&      theHash)
 {
   if (myHashTable == NULL)
     myHashTable = new HashTable(*this);
@@ -342,22 +347,22 @@ const char* LDOM_MemManager::HashedAllocate(const char* theString, const int the
 //           if already present
 //=======================================================================
 
-void LDOM_MemManager::HashedAllocate(const char*      aString,
-                                     const int        theLen,
-                                     LDOMBasicString& theResult)
+void LDOM_MemManager::HashedAllocate(const char*            aString,
+                                     const int theLen,
+                                     LDOMBasicString&       theResult)
 {
   theResult.myType = LDOMBasicString::LDOM_AsciiHashed;
-  int         aDummy;
-  const char* aHashedString = HashedAllocate(aString, theLen, aDummy);
+  int aDummy;
+  const char*      aHashedString = HashedAllocate(aString, theLen, aDummy);
   if (aHashedString != NULL)
     theResult.myVal.ptr = (void*)aHashedString;
 }
 
 //=================================================================================================
 
-bool LDOM_MemManager::CompareStrings(const char* theString,
-                                     const int   theHashValue,
-                                     const char* theHashedStr)
+bool LDOM_MemManager::CompareStrings(const char*            theString,
+                                                 const int theHashValue,
+                                                 const char*            theHashedStr)
 {
   if (((LDOM_HashValue*)theHashedStr)[-1] == LDOM_HashValue(theHashValue))
     if (!strcmp(theString, theHashedStr))

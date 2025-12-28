@@ -37,8 +37,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT Bisector_FunctionH(const occ::handle<Geom2d_Curve>& C2,
-                                     const gp_Pnt2d&                  P1,
-                                     const gp_Vec2d&                  T1);
+                                     const gp_Pnt2d&             P1,
+                                     const gp_Vec2d&             T1);
 
   //! Computes the values of the Functions for the variable <X>.
   Standard_EXPORT bool Value(const double X, double& F);
@@ -47,12 +47,14 @@ public:
 
   //! Returns the values of the functions and the derivatives
   //! for the variable <X>.
-  Standard_EXPORT bool Values(const double X, double& F, double& D);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      D);
 
 private:
   occ::handle<Geom2d_Curve> curve2;
-  gp_Pnt2d                  p1;
-  gp_Vec2d                  t1;
+  gp_Pnt2d             p1;
+  gp_Vec2d             t1;
 };
 
 #endif // _Bisector_FunctionH_HeaderFile

@@ -51,16 +51,19 @@ public:
   Standard_EXPORT virtual int NbResources() const override;
 
   //! Returns a Resource, given a rank. Here, rank of calling Add
-  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const override;
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const
+    override;
 
   //! Returns a Case Number, specific of each recognized Type
   //! Here, NO Type at all is recognized properly : all Types are
   //! recognized by the resources
-  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
+  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const
+    override;
 
   //! Calls GlobalCheck for each of its recorded resources
-  Standard_EXPORT virtual bool GlobalCheck(const Interface_Graph&        G,
-                                           occ::handle<Interface_Check>& ach) const override;
+  Standard_EXPORT virtual bool GlobalCheck(const Interface_Graph&   G,
+                                                       occ::handle<Interface_Check>& ach) const
+    override;
 
   //! Returns the Schema Name attached to each class of Protocol
   //! To be redefined by each sub-class

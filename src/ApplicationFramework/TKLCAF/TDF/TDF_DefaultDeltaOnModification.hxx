@@ -36,6 +36,7 @@ public:
   Standard_EXPORT virtual void Apply() override;
 
   DEFINE_STANDARD_RTTIEXT(TDF_DefaultDeltaOnModification, TDF_DeltaOnModification)
+
 };
 
 #endif // _TDF_DefaultDeltaOnModification_HeaderFile

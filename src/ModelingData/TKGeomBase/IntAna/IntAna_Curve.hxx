@@ -39,41 +39,41 @@ public:
 
   //! Sets the parameters used to compute Points and Derivative
   //! on the curve.
-  Standard_EXPORT void SetCylinderQuadValues(const gp_Cylinder& Cylinder,
-                                             const double       Qxx,
-                                             const double       Qyy,
-                                             const double       Qzz,
-                                             const double       Qxy,
-                                             const double       Qxz,
-                                             const double       Qyz,
-                                             const double       Qx,
-                                             const double       Qy,
-                                             const double       Qz,
-                                             const double       Q1,
-                                             const double       Tol,
-                                             const double       DomInf,
-                                             const double       DomSup,
-                                             const bool         TwoZForATheta,
-                                             const bool         ZIsPositive);
+  Standard_EXPORT void SetCylinderQuadValues(const gp_Cylinder&     Cylinder,
+                                             const double    Qxx,
+                                             const double    Qyy,
+                                             const double    Qzz,
+                                             const double    Qxy,
+                                             const double    Qxz,
+                                             const double    Qyz,
+                                             const double    Qx,
+                                             const double    Qy,
+                                             const double    Qz,
+                                             const double    Q1,
+                                             const double    Tol,
+                                             const double    DomInf,
+                                             const double    DomSup,
+                                             const bool TwoZForATheta,
+                                             const bool ZIsPositive);
 
   //! Sets the parameters used to compute Points and
   //! Derivative on the curve.
-  Standard_EXPORT void SetConeQuadValues(const gp_Cone& Cone,
-                                         const double   Qxx,
-                                         const double   Qyy,
-                                         const double   Qzz,
-                                         const double   Qxy,
-                                         const double   Qxz,
-                                         const double   Qyz,
-                                         const double   Qx,
-                                         const double   Qy,
-                                         const double   Qz,
-                                         const double   Q1,
-                                         const double   Tol,
-                                         const double   DomInf,
-                                         const double   DomSup,
-                                         const bool     TwoZForATheta,
-                                         const bool     ZIsPositive);
+  Standard_EXPORT void SetConeQuadValues(const gp_Cone&         Cone,
+                                         const double    Qxx,
+                                         const double    Qyy,
+                                         const double    Qzz,
+                                         const double    Qxy,
+                                         const double    Qxz,
+                                         const double    Qyz,
+                                         const double    Qx,
+                                         const double    Qy,
+                                         const double    Qz,
+                                         const double    Q1,
+                                         const double    Tol,
+                                         const double    DomInf,
+                                         const double    DomSup,
+                                         const bool TwoZForATheta,
+                                         const bool ZIsPositive);
 
   //! Returns TRUE if the curve is not infinite at the
   //! last parameter or at the first parameter of the domain.
@@ -118,7 +118,8 @@ public:
 
 protected:
   //! Protected function.
-  Standard_EXPORT gp_Pnt InternalValue(const double Theta1, const double Theta2) const;
+  Standard_EXPORT gp_Pnt InternalValue(const double Theta1,
+                                       const double Theta2) const;
 
   //! Protected function.
   Standard_EXPORT void InternalUVValue(const double Param,
@@ -132,37 +133,37 @@ protected:
                                        double&      Di) const;
 
 private:
-  double Z0Cte;
-  double Z0Sin;
-  double Z0Cos;
-  double Z0SinSin;
-  double Z0CosCos;
-  double Z0CosSin;
-  double Z1Cte;
-  double Z1Sin;
-  double Z1Cos;
-  double Z1SinSin;
-  double Z1CosCos;
-  double Z1CosSin;
-  double Z2Cte;
-  double Z2Sin;
-  double Z2Cos;
-  double Z2SinSin;
-  double Z2CosCos;
-  double Z2CosSin;
-  bool   TwoCurves;
-  bool   TakeZPositive;
-  double Tolerance;
+  double    Z0Cte;
+  double    Z0Sin;
+  double    Z0Cos;
+  double    Z0SinSin;
+  double    Z0CosCos;
+  double    Z0CosSin;
+  double    Z1Cte;
+  double    Z1Sin;
+  double    Z1Cos;
+  double    Z1SinSin;
+  double    Z1CosCos;
+  double    Z1CosSin;
+  double    Z2Cte;
+  double    Z2Sin;
+  double    Z2Cos;
+  double    Z2SinSin;
+  double    Z2CosCos;
+  double    Z2CosSin;
+  bool TwoCurves;
+  bool TakeZPositive;
+  double    Tolerance;
 
   //! Internal fields defining the default domain
-  double              DomainInf, DomainSup;
-  bool                RestrictedInf;
-  bool                RestrictedSup;
-  bool                firstbounded;
-  bool                lastbounded;
+  double       DomainInf, DomainSup;
+  bool    RestrictedInf;
+  bool    RestrictedSup;
+  bool    firstbounded;
+  bool    lastbounded;
   GeomAbs_SurfaceType typequadric;
-  double              RCyl;
-  double              Angle;
+  double       RCyl;
+  double       Angle;
   gp_Ax3              Ax3;
 
   //! Trim boundaries

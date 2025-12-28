@@ -23,11 +23,17 @@
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Trsf.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomFill_SectionLaw.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom_BSplineSurface;
 class gp_Pnt;
@@ -43,63 +49,63 @@ public:
 
   //! Make a SectionLaw with N Curves and N associated parameters.
   Standard_EXPORT GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                     const NCollection_Sequence<double>&                  NP);
+                                     const NCollection_Sequence<double>&   NP);
 
   //! Make a SectionLaw with N Curves and N associated parameters.
   //! UF and UL are the parametric bounds of the NSections
   Standard_EXPORT GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                     const NCollection_Sequence<double>&                  NP,
-                                     const double                                         UF,
-                                     const double                                         UL);
+                                     const NCollection_Sequence<double>&   NP,
+                                     const double             UF,
+                                     const double             UL);
 
   //! Make a SectionLaw with N Curves and N associated parameters.
   //! UF and UL are the parametric bounds of the NSections
   //! VF and VL are the parametric bounds of the path
   Standard_EXPORT GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                     const NCollection_Sequence<double>&                  NP,
-                                     const double                                         UF,
-                                     const double                                         UL,
-                                     const double                                         VF,
-                                     const double                                         VL);
+                                     const NCollection_Sequence<double>&   NP,
+                                     const double             UF,
+                                     const double             UL,
+                                     const double             VF,
+                                     const double             VL);
 
   //! Make a SectionLaw with N Curves and N associated parameters.
   //! UF and UL are the parametric bounds of the NSections
   //! VF and VL are the parametric bounds of the path
   //! UF and UL are the parametric bounds of the NSections
   //! Surf is a reference surface used by BRepFill_NSections
-  Standard_EXPORT GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>& NC,
-                                     const NCollection_Sequence<gp_Trsf>&                 Trsfs,
-                                     const NCollection_Sequence<double>&                  NP,
-                                     const double                                         UF,
-                                     const double                                         UL,
-                                     const double                                         VF,
-                                     const double                                         VL,
-                                     const occ::handle<Geom_BSplineSurface>&              Surf);
+  Standard_EXPORT GeomFill_NSections(const NCollection_Sequence<occ::handle<Geom_Curve>>&    NC,
+                                     const NCollection_Sequence<gp_Trsf>&     Trsfs,
+                                     const NCollection_Sequence<double>&      NP,
+                                     const double                UF,
+                                     const double                UL,
+                                     const double                VF,
+                                     const double                VL,
+                                     const occ::handle<Geom_BSplineSurface>& Surf);
 
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<double>& Weigths) override;
+  Standard_EXPORT virtual bool D0(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<double>& Weigths) override;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths) override;
+  Standard_EXPORT virtual bool D1(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths) override;
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<gp_Vec>& D2Poles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths,
-                                  NCollection_Array1<double>& D2Weigths) override;
+  Standard_EXPORT virtual bool D2(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<gp_Vec>&   D2Poles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths,
+                                              NCollection_Array1<double>& D2Weigths) override;
 
   //! Sets the reference surface
   Standard_EXPORT void SetSurface(const occ::handle<Geom_BSplineSurface>& RefSurf);
@@ -113,7 +119,9 @@ public:
   Standard_EXPORT virtual occ::handle<Geom_BSplineSurface> BSplineSurface() const override;
 
   //! get the format of an section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const override;
+  Standard_EXPORT virtual void SectionShape(int& NbPoles,
+                                            int& NbKnots,
+                                            int& Degree) const override;
 
   //! get the Knots of the section
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const override;
@@ -133,7 +141,8 @@ public:
   //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -141,31 +150,34 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const double First, const double Last) override;
+  Standard_EXPORT virtual void SetInterval(const double First,
+                                           const double Last) override;
 
   //! Gets the bounds of the parametric interval on
   //! the function
-  Standard_EXPORT virtual void GetInterval(double& First, double& Last) const override;
+  Standard_EXPORT virtual void GetInterval(double& First,
+                                           double& Last) const override;
 
   //! Gets the bounds of the function parametric domain.
   //! Warning: This domain it is not modified by the
   //! SetValue method
-  Standard_EXPORT virtual void GetDomain(double& First, double& Last) const override;
+  Standard_EXPORT virtual void GetDomain(double& First,
+                                         double& Last) const override;
 
   //! Returns the tolerances associated at each poles to
   //! reach in approximation, to satisfy: BoundTol error
   //! at the Boundary AngleTol tangent error at the
   //! Boundary (in radian) SurfTol error inside the
   //! surface.
-  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
+  Standard_EXPORT virtual void GetTolerance(const double   BoundTol,
+                                            const double   SurfTol,
+                                            const double   AngleTol,
                                             NCollection_Array1<double>& Tol3d) const override;
 
   //! Get the barycentre of Surface.
@@ -185,7 +197,8 @@ public:
   //! This information is useful to control error
   //! in rational approximation.
   //! Warning: Used only if <me> IsRational
-  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const override;
+  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const
+    override;
 
   //! return True If the Law isConstant
   Standard_EXPORT virtual bool IsConstant(double& Error) const override;
@@ -196,24 +209,26 @@ public:
   //! Returns True if all section are circle, with same
   //! plane,same center and linear radius evolution
   //! Return False by Default.
-  Standard_EXPORT virtual bool IsConicalLaw(double& Error) const override;
+  Standard_EXPORT virtual bool IsConicalLaw(double& Error) const
+    override;
 
   //! Return the circle section at parameter <Param>, if
   //! <me> a IsConicalLaw
-  Standard_EXPORT virtual occ::handle<Geom_Curve> CirclSection(const double Param) const override;
+  Standard_EXPORT virtual occ::handle<Geom_Curve> CirclSection(const double Param) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_NSections, GeomFill_SectionLaw)
 
 private:
-  double                                        UFirst;
-  double                                        ULast;
-  double                                        VFirst;
-  double                                        VLast;
-  NCollection_Sequence<occ::handle<Geom_Curve>> mySections;
-  NCollection_Sequence<gp_Trsf>                 myTrsfs;
-  NCollection_Sequence<double>                  myParams;
-  occ::handle<Geom_BSplineSurface>              mySurface;
-  occ::handle<Geom_BSplineSurface>              myRefSurf;
+  double               UFirst;
+  double               ULast;
+  double               VFirst;
+  double               VLast;
+  NCollection_Sequence<occ::handle<Geom_Curve>>    mySections;
+  NCollection_Sequence<gp_Trsf>     myTrsfs;
+  NCollection_Sequence<double>      myParams;
+  occ::handle<Geom_BSplineSurface> mySurface;
+  occ::handle<Geom_BSplineSurface> myRefSurf;
 };
 
 #endif // _GeomFill_NSections_HeaderFile

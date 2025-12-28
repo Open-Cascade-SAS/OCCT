@@ -203,10 +203,7 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingCustomHatch(const occ::handle<Graphic3d_HatchStyle>& theStyle);
 
   //! @return hatching style.
-  const occ::handle<Graphic3d_HatchStyle>& CappingCustomHatch() const
-  {
-    return myAspect->HatchStyle();
-  }
+  const occ::handle<Graphic3d_HatchStyle>& CappingCustomHatch() const { return myAspect->HatchStyle(); }
 
   //! Turn on hatching.
   Standard_EXPORT void SetCappingHatchOn();
@@ -401,7 +398,8 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 public: // @name modification counters
   //! @return modification counter for equation.
@@ -430,7 +428,7 @@ private:
 
 private:
   occ::handle<Graphic3d_AspectFillArea3d> myAspect; //!< fill area aspect
-                                                    // clang-format off
+                                               // clang-format off
   occ::handle<Graphic3d_ClipPlane>   myNextInChain;    //!< next     plane in a chain of planes defining logical AND operation
   Graphic3d_ClipPlane*          myPrevInChain;    //!< previous plane in a chain of planes defining logical AND operation
   TCollection_AsciiString myId;                   //!< resource id
@@ -438,12 +436,12 @@ private:
   NCollection_Vec4<double>         myEquation;             //!< plane equation vector
   NCollection_Vec4<double>         myEquationRev;          //!< reversed plane equation
   int        myChainLenFwd;          //!< chain length in forward direction (including this item)
-                                                    // clang-format on
-  unsigned int myFlags;                             //!< capping flags
-  unsigned int myEquationMod;                       //!< modification counter for equation
-  unsigned int myAspectMod;                         //!< modification counter of aspect
-  bool         myIsOn;                              //!< state of the clipping plane
-  bool         myIsCapping;                         //!< state of graphic driver capping
+                                               // clang-format on
+  unsigned int     myFlags;                    //!< capping flags
+  unsigned int     myEquationMod;              //!< modification counter for equation
+  unsigned int     myAspectMod;                //!< modification counter of aspect
+  bool myIsOn;                     //!< state of the clipping plane
+  bool myIsCapping;                //!< state of graphic driver capping
 };
 
 #endif

@@ -23,6 +23,7 @@
 #include <NCollection_HArray1.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
+#include <TDF_Label.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_GUID.hxx>
 
@@ -40,16 +41,16 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   //! Finds or creates an array of reference values (labels) attribute.
-  Standard_EXPORT static occ::handle<TDataStd_ReferenceArray> Set(const TDF_Label& label,
-                                                                  const int        lower,
-                                                                  const int        upper);
+  Standard_EXPORT static occ::handle<TDataStd_ReferenceArray> Set(const TDF_Label&       label,
+                                                             const int lower,
+                                                             const int upper);
 
   //! Finds or creates an array of reference values (labels) attribute with explicit user defined
   //! <guid>.
-  Standard_EXPORT static occ::handle<TDataStd_ReferenceArray> Set(const TDF_Label&     label,
-                                                                  const Standard_GUID& theGuid,
-                                                                  const int            lower,
-                                                                  const int            upper);
+  Standard_EXPORT static occ::handle<TDataStd_ReferenceArray> Set(const TDF_Label&       label,
+                                                             const Standard_GUID&   theGuid,
+                                                             const int lower,
+                                                             const int upper);
 
   //! Initialize the inner array with bounds from <lower> to <upper>
   Standard_EXPORT void Init(const int lower, const int upper);
@@ -101,13 +102,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_ReferenceArray, TDF_Attribute)
 
 private:
   occ::handle<NCollection_HArray1<TDF_Label>> myArray;
-  Standard_GUID                               myID;
+  Standard_GUID                 myID;
 };
 
 #endif // _TDataStd_ReferenceArray_HeaderFile

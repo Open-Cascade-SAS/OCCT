@@ -53,7 +53,10 @@ public:
 
   //! Returns the value of the function and its gradient at
   //! the point X,Y.
-  Standard_EXPORT void ValAndGrad(const double X, const double Y, double& Val, gp_XY& Grd) const;
+  Standard_EXPORT void ValAndGrad(const double X,
+                                  const double Y,
+                                  double&      Val,
+                                  gp_XY&              Grd) const;
 
   //! returns the coefficients of the polynomial equation
   //! which defines the conic:
@@ -69,12 +72,12 @@ public:
   //! ( written in the natural coordinates system )
   //! A x x + B y y + 2 C x y + 2 D x + 2 E y + F
   //! in the local coordinates system defined by Axis
-  Standard_EXPORT void NewCoefficients(double&        A,
-                                       double&        B,
-                                       double&        C,
-                                       double&        D,
-                                       double&        E,
-                                       double&        F,
+  Standard_EXPORT void NewCoefficients(double& A,
+                                       double& B,
+                                       double& C,
+                                       double& D,
+                                       double& E,
+                                       double& F,
                                        const gp_Ax2d& Axis) const;
 
 private:

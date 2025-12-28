@@ -47,11 +47,13 @@
 // purpose  : SetPoint (DF, entry, [drawpoint])
 //=======================================================================
 
-static int DDataStd_SetPoint(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetPoint(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   if (nb < 3)
     return 1;
-  TDF_Label             L;
+  TDF_Label        L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
@@ -82,11 +84,13 @@ static int DDataStd_SetPoint(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : SetAxis (DF, entry, drawline])
 //=======================================================================
 
-static int DDataStd_SetAxis(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetAxis(Draw_Interpretor& di,
+                                         int  nb,
+                                         const char**      arg)
 {
   if (nb < 3)
     return 1;
-  TDF_Label             L;
+  TDF_Label        L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
@@ -114,11 +118,13 @@ static int DDataStd_SetAxis(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : SetPlane (DF, entry, [drawplane])
 //=======================================================================
 
-static int DDataStd_SetPlane(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetPlane(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   if (nb < 3)
     return 1;
-  TDF_Label             L;
+  TDF_Label        L;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
     return 1;
@@ -154,7 +160,7 @@ static int DDataStd_GetPoint(Draw_Interpretor&, int nb, const char** arg)
   if (!DDF::GetDF(arg[1], DF))
     return 1;
   occ::handle<TDataXtd_Point> A;
-  gp_Pnt                      P;
+  gp_Pnt                 P;
   if (!DDF::Find(DF, arg[2], TDataXtd_Point::GetID(), A))
     return 1;
   if (TDataXtd_Geometry::Point(A->Label(), P))
@@ -228,7 +234,9 @@ static int DDataStd_GetPlane(Draw_Interpretor&, int nb, const char** arg)
 // function : DDataStd_SetGeometry
 // purpose  : SetGeometry (DF, entry, [type], [shape])
 //=======================================================================
-static int DDataStd_SetGeometry(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetGeometry(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb < 3)
     return 1;
@@ -299,7 +307,9 @@ static int DDataStd_SetGeometry(Draw_Interpretor& di, int nb, const char** arg)
 // function : DDataStd_GetGeometryType
 // purpose  : GetGeometryType (DF, entry)
 //=======================================================================
-static int DDataStd_GetGeometryType(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetGeometryType(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
   if (nb != 3)
     return 1;

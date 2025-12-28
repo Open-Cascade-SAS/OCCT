@@ -56,8 +56,8 @@ public:
 
 private:
   occ::handle<HLRBRep_Data> MyData;
-  HLRAlgo_EdgeIterator      myEdgeIterator;
-  int                       MyCurrentEdgeNumber;
+  HLRAlgo_EdgeIterator myEdgeIterator;
+  int     MyCurrentEdgeNumber;
 };
 
 #endif // _StdPrs_HLRToolShape_HeaderFile

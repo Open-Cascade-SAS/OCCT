@@ -52,7 +52,7 @@ STEPSelections_Counter::STEPSelections_Counter()
   myNbEdges  = 0;
 }
 
-void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
+void STEPSelections_Counter::Count(const Interface_Graph&            graph,
                                    const occ::handle<Standard_Transient>& start)
 {
   if (start.IsNull())
@@ -152,7 +152,7 @@ void STEPSelections_Counter::Count(const Interface_Graph&                 graph,
     int nbElem = gs->NbElements();
     for (int i = 1; i <= nbElem; i++)
     {
-      StepShape_GeometricSetSelect           aGSS   = gs->ElementsValue(i);
+      StepShape_GeometricSetSelect      aGSS   = gs->ElementsValue(i);
       const occ::handle<Standard_Transient>& ent    = aGSS.Value();
       occ::handle<StepGeom_CompositeCurve>   ccurve = occ::down_cast<StepGeom_CompositeCurve>(ent);
       if (!ccurve.IsNull())

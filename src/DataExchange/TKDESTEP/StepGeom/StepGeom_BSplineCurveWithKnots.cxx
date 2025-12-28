@@ -19,15 +19,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurveWithKnots, StepGeom_BSplineCurve
 StepGeom_BSplineCurveWithKnots::StepGeom_BSplineCurveWithKnots() {}
 
 void StepGeom_BSplineCurveWithKnots::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const int                                                                     aDegree,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
   const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineCurveForm                                               aCurveForm,
-  const StepData_Logical                                                        aClosedCurve,
-  const StepData_Logical                                                        aSelfIntersect,
-  const occ::handle<NCollection_HArray1<int>>&                                  aKnotMultiplicities,
-  const occ::handle<NCollection_HArray1<double>>&                               aKnots,
-  const StepGeom_KnotType                                                       aKnotSpec)
+  const StepGeom_BSplineCurveForm                 aCurveForm,
+  const StepData_Logical                          aClosedCurve,
+  const StepData_Logical                          aSelfIntersect,
+  const occ::handle<NCollection_HArray1<int>>&         aKnotMultiplicities,
+  const occ::handle<NCollection_HArray1<double>>&            aKnots,
+  const StepGeom_KnotType                         aKnotSpec)
 {
   // --- classe own fields ---
   knotMultiplicities = aKnotMultiplicities;
@@ -53,7 +53,8 @@ occ::handle<NCollection_HArray1<int>> StepGeom_BSplineCurveWithKnots::KnotMultip
   return knotMultiplicities;
 }
 
-int StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(const int num) const
+int StepGeom_BSplineCurveWithKnots::KnotMultiplicitiesValue(
+  const int num) const
 {
   return knotMultiplicities->Value(num);
 }
@@ -63,8 +64,7 @@ int StepGeom_BSplineCurveWithKnots::NbKnotMultiplicities() const
   return knotMultiplicities->Length();
 }
 
-void StepGeom_BSplineCurveWithKnots::SetKnots(
-  const occ::handle<NCollection_HArray1<double>>& aKnots)
+void StepGeom_BSplineCurveWithKnots::SetKnots(const occ::handle<NCollection_HArray1<double>>& aKnots)
 {
   knots = aKnots;
 }

@@ -33,6 +33,7 @@ public:
   Standard_EXPORT IGESBasic_GroupWithoutBackP();
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_GroupWithoutBackP, IGESBasic_Group)
+
 };
 
 #endif // _IGESBasic_GroupWithoutBackP_HeaderFile

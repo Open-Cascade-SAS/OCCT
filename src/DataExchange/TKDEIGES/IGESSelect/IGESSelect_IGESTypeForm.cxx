@@ -26,7 +26,8 @@ static char typeval[30]; // une seule reponse a la fois ...
 
 IGESSelect_IGESTypeForm::IGESSelect_IGESTypeForm(const bool withform)
     // JR/Hp
-    : IFSelect_Signature((const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number"))
+    : IFSelect_Signature(
+        (const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number"))
 //: IFSelect_Signature (withform ? "IGES Type & Form Numbers" : "IGES Type Number")
 {
   theform = withform;
@@ -37,7 +38,8 @@ void IGESSelect_IGESTypeForm::SetForm(const bool withform)
   theform = withform;
   thename.Clear();
   // JR/Hp
-  const char* astr = (const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number");
+  const char* astr =
+    (const char*)(withform ? "IGES Type & Form Numbers" : "IGES Type Number");
   thename.AssignCat(astr);
 }
 
@@ -51,8 +53,8 @@ const char* IGESSelect_IGESTypeForm::Value(
   if (igesent.IsNull())
     return &falsetype[0];
   bool unk     = ent->IsKind(STANDARD_TYPE(IGESData_UndefinedEntity));
-  int  typenum = igesent->TypeNumber();
-  int  formnum = igesent->FormNumber();
+  int typenum = igesent->TypeNumber();
+  int formnum = igesent->FormNumber();
   if (unk)
   {
     if (theform)

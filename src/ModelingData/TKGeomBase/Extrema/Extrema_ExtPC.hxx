@@ -23,6 +23,7 @@
 #include <Extrema_ExtPElC.hxx>
 #include <Extrema_GGExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <Extrema_POnCurv.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>

@@ -23,8 +23,11 @@
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_Translator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=======================================================================
@@ -33,7 +36,9 @@
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static int DNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg)
+static int DNaming_CheckHasSame(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb < 4)
     return 1;
@@ -98,14 +103,15 @@ static int DNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg)
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static int DNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
+static int DNaming_TCopyShape(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
   TNaming_Translator TR;
   if (nb < 2)
     return (1);
 
-  NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>
-    aDMapOfShapeOfName;
+  NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher> aDMapOfShapeOfName;
   for (int i = 1; i < nb; i++)
   {
     TopoDS_Shape            S = DBRep::Get(arg[i]);
@@ -134,8 +140,7 @@ static int DNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
   {
     di << "DNaming_CopyShape:: Copy is Done \n";
 
-    NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::Iterator
-      itrn(aDMapOfShapeOfName);
+    NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::Iterator itrn(aDMapOfShapeOfName);
     for (; itrn.More(); itrn.Next())
     {
       const TCollection_AsciiString& name   = itrn.Value();
@@ -155,7 +160,9 @@ static int DNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
 //           - for test TNaming_CopyShape::CopyTool mechanism
 //=======================================================================
 
-static int DNaming_TCopyTool(Draw_Interpretor& di, int nb, const char** arg)
+static int DNaming_TCopyTool(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   if (nb < 2)
   {
@@ -163,11 +170,11 @@ static int DNaming_TCopyTool(Draw_Interpretor& di, int nb, const char** arg)
     return 1;
   }
 
-  int                     i;
-  TCollection_AsciiString aCopyNames;
-  BRep_Builder            aBuilder;
+  int                           i;
+  TCollection_AsciiString                    aCopyNames;
+  BRep_Builder                               aBuilder;
   NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> aMap;
-  TopoDS_Shape aResult;
+  TopoDS_Shape                               aResult;
 
   for (i = 1; i < nb; i++)
   {

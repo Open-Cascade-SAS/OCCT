@@ -24,8 +24,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <GeomAbs_Shape.hxx>
 class math_Matrix;
 
@@ -47,39 +51,35 @@ public:
   inline static NCollection_Array2<double>* NoWeights2() { return NULL; }
 
   //! Copy in FP the coordinates of the poles.
-  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt>& Poles,
-                                       NCollection_Array1<double>&       FP);
+  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt>& Poles, NCollection_Array1<double>& FP);
 
   //! Copy in FP the coordinates of the poles.
-  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt>& Poles,
+  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt>&   Poles,
                                        const NCollection_Array1<double>& Weights,
                                        NCollection_Array1<double>&       FP);
 
   //! Get from FP the coordinates of the poles.
-  Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array1<gp_Pnt>&       Poles);
+  Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP, NCollection_Array1<gp_Pnt>& Poles);
 
   //! Get from FP the coordinates of the poles.
   Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array1<gp_Pnt>&       Poles,
+                                       NCollection_Array1<gp_Pnt>&         Poles,
                                        NCollection_Array1<double>&       Weights);
 
   //! Copy in FP the coordinates of the poles.
-  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt2d>& Poles,
-                                       NCollection_Array1<double>&         FP);
+  Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt2d>& Poles, NCollection_Array1<double>& FP);
 
   //! Copy in FP the coordinates of the poles.
   Standard_EXPORT static void SetPoles(const NCollection_Array1<gp_Pnt2d>& Poles,
-                                       const NCollection_Array1<double>&   Weights,
-                                       NCollection_Array1<double>&         FP);
+                                       const NCollection_Array1<double>& Weights,
+                                       NCollection_Array1<double>&       FP);
+
+  //! Get from FP the coordinates of the poles.
+  Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP, NCollection_Array1<gp_Pnt2d>& Poles);
 
   //! Get from FP the coordinates of the poles.
   Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array1<gp_Pnt2d>&     Poles);
-
-  //! Get from FP the coordinates of the poles.
-  Standard_EXPORT static void GetPoles(const NCollection_Array1<double>& FP,
-                                       NCollection_Array1<gp_Pnt2d>&     Poles,
+                                       NCollection_Array1<gp_Pnt2d>&       Poles,
                                        NCollection_Array1<double>&       Weights);
 
   //! Returns the Binomial Cnp. N should be <= BSplCLib::MaxDegree().
@@ -116,11 +116,11 @@ public:
   //! x(1)/w , x(2)/w ,  ... derivated <N> times
   //!
   //! Warning: <RDers> must be dimensioned properly.
-  Standard_EXPORT static void RationalDerivative(const int  Degree,
-                                                 const int  N,
-                                                 const int  Dimension,
-                                                 double&    Ders,
-                                                 double&    RDers,
+  Standard_EXPORT static void RationalDerivative(const int Degree,
+                                                 const int N,
+                                                 const int Dimension,
+                                                 double&         Ders,
+                                                 double&         RDers,
                                                  const bool All = true);
 
   //! Computes DerivativesRequest derivatives of a ratio at
@@ -154,9 +154,9 @@ public:
   //! Warning: <RationalDerivates> must be dimensioned properly.
   Standard_EXPORT static void RationalDerivatives(const int DerivativesRequest,
                                                   const int Dimension,
-                                                  double&   PolesDerivatives,
-                                                  double&   WeightsDerivatives,
-                                                  double&   RationalDerivates);
+                                                  double&         PolesDerivatives,
+                                                  double&         WeightsDerivatives,
+                                                  double&         RationalDerivates);
 
   //! Performs Horner method with synthetic division for derivatives
   //! parameter <U>, with <Degree> and <Dimension>.
@@ -184,20 +184,20 @@ public:
   //! this just evaluates the point at parameter U
   //!
   //! Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
-  Standard_EXPORT static void EvalPolynomial(const double  U,
-                                             const int     DerivativeOrder,
-                                             const int     Degree,
-                                             const int     Dimension,
-                                             const double& PolynomialCoeff,
-                                             double&       Results);
+  Standard_EXPORT static void EvalPolynomial(const double    U,
+                                             const int DerivativeOrder,
+                                             const int Degree,
+                                             const int Dimension,
+                                             const double&   PolynomialCoeff,
+                                             double&         Results);
 
   //! Same as above with DerivativeOrder = 0;
-  Standard_EXPORT static void NoDerivativeEvalPolynomial(const double  U,
-                                                         const int     Degree,
-                                                         const int     Dimension,
-                                                         const int     DegreeDimension,
-                                                         const double& PolynomialCoeff,
-                                                         double&       Results);
+  Standard_EXPORT static void NoDerivativeEvalPolynomial(const double    U,
+                                                         const int Degree,
+                                                         const int Dimension,
+                                                         const int DegreeDimension,
+                                                         const double&   PolynomialCoeff,
+                                                         double&         Results);
 
   //! Applies EvalPolynomial twice to evaluate the derivative
   //! of orders UDerivativeOrder in U, VDerivativeOrder in V
@@ -236,15 +236,15 @@ public:
   //! f(1)             f(2)  ....     f(Dimension)
   //! @endcode
   //! Warning: <Results> and <PolynomialCoeff> must be dimensioned properly
-  Standard_EXPORT static void EvalPoly2Var(const double U,
-                                           const double V,
-                                           const int    UDerivativeOrder,
-                                           const int    VDerivativeOrder,
-                                           const int    UDegree,
-                                           const int    VDegree,
-                                           const int    Dimension,
-                                           double&      PolynomialCoeff,
-                                           double&      Results);
+  Standard_EXPORT static void EvalPoly2Var(const double    U,
+                                           const double    V,
+                                           const int UDerivativeOrder,
+                                           const int VDerivativeOrder,
+                                           const int UDegree,
+                                           const int VDegree,
+                                           const int Dimension,
+                                           double&         PolynomialCoeff,
+                                           double&         Results);
 
   //! Performs the Lagrange Interpolation of
   //! given series of points with given parameters
@@ -257,13 +257,13 @@ public:
   //!
   //! [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
   //! @endcode
-  Standard_EXPORT static int EvalLagrange(const double U,
-                                          const int    DerivativeOrder,
-                                          const int    Degree,
-                                          const int    Dimension,
-                                          double&      ValueArray,
-                                          double&      ParameterArray,
-                                          double&      Results);
+  Standard_EXPORT static int EvalLagrange(const double    U,
+                                                       const int DerivativeOrder,
+                                                       const int Degree,
+                                                       const int Dimension,
+                                                       double&         ValueArray,
+                                                       double&         ParameterArray,
+                                                       double&         Results);
 
   //! Performs the Cubic Hermite Interpolation of
   //! given series of points with given parameters
@@ -301,13 +301,13 @@ public:
   //!
   //! [d *Dimension],  [d*Dimension + Dimension-1]: dth   derivative
   //! @endcode
-  Standard_EXPORT static int EvalCubicHermite(const double U,
-                                              const int    DerivativeOrder,
-                                              const int    Dimension,
-                                              double&      ValueArray,
-                                              double&      DerivativeArray,
-                                              double&      ParameterArray,
-                                              double&      Results);
+  Standard_EXPORT static int EvalCubicHermite(const double    U,
+                                                           const int DerivativeOrder,
+                                                           const int Dimension,
+                                                           double&         ValueArray,
+                                                           double&         DerivativeArray,
+                                                           double&         ParameterArray,
+                                                           double&         Results);
 
   //! This build the coefficient of Hermite's polynomes on
   //! [FirstParameter, LastParameter]
@@ -327,67 +327,67 @@ public:
   //! - |FirstParameter| +|LastParameter| < 1/100
   //! -   |LastParameter - FirstParameter|
   //! / (|FirstParameter| +|LastParameter|)  < 1/100
-  Standard_EXPORT static bool HermiteCoefficients(const double FirstParameter,
-                                                  const double LastParameter,
-                                                  const int    FirstOrder,
-                                                  const int    LastOrder,
-                                                  math_Matrix& MatrixCoefs);
+  Standard_EXPORT static bool HermiteCoefficients(const double    FirstParameter,
+                                                              const double    LastParameter,
+                                                              const int FirstOrder,
+                                                              const int LastOrder,
+                                                              math_Matrix&           MatrixCoefs);
 
-  Standard_EXPORT static void CoefficientsPoles(const NCollection_Array1<gp_Pnt>& Coefs,
+  Standard_EXPORT static void CoefficientsPoles(const NCollection_Array1<gp_Pnt>&   Coefs,
                                                 const NCollection_Array1<double>* WCoefs,
-                                                NCollection_Array1<gp_Pnt>&       Poles,
+                                                NCollection_Array1<gp_Pnt>&         Poles,
                                                 NCollection_Array1<double>*       WPoles);
 
   Standard_EXPORT static void CoefficientsPoles(const NCollection_Array1<gp_Pnt2d>& Coefs,
-                                                const NCollection_Array1<double>*   WCoefs,
+                                                const NCollection_Array1<double>* WCoefs,
                                                 NCollection_Array1<gp_Pnt2d>&       Poles,
-                                                NCollection_Array1<double>*         WPoles);
+                                                NCollection_Array1<double>*       WPoles);
 
   Standard_EXPORT static void CoefficientsPoles(const NCollection_Array1<double>& Coefs,
                                                 const NCollection_Array1<double>* WCoefs,
                                                 NCollection_Array1<double>&       Poles,
                                                 NCollection_Array1<double>*       WPoles);
 
-  Standard_EXPORT static void CoefficientsPoles(const int                         dim,
+  Standard_EXPORT static void CoefficientsPoles(const int      dim,
                                                 const NCollection_Array1<double>& Coefs,
                                                 const NCollection_Array1<double>* WCoefs,
                                                 NCollection_Array1<double>&       Poles,
                                                 NCollection_Array1<double>*       WPoles);
 
-  Standard_EXPORT static void Trimming(const double                U1,
-                                       const double                U2,
-                                       NCollection_Array1<gp_Pnt>& Coeffs,
+  Standard_EXPORT static void Trimming(const double   U1,
+                                       const double   U2,
+                                       NCollection_Array1<gp_Pnt>&   Coeffs,
                                        NCollection_Array1<double>* WCoeffs);
 
-  Standard_EXPORT static void Trimming(const double                  U1,
-                                       const double                  U2,
+  Standard_EXPORT static void Trimming(const double   U1,
+                                       const double   U2,
                                        NCollection_Array1<gp_Pnt2d>& Coeffs,
-                                       NCollection_Array1<double>*   WCoeffs);
+                                       NCollection_Array1<double>* WCoeffs);
 
-  Standard_EXPORT static void Trimming(const double                U1,
-                                       const double                U2,
+  Standard_EXPORT static void Trimming(const double   U1,
+                                       const double   U2,
                                        NCollection_Array1<double>& Coeffs,
                                        NCollection_Array1<double>* WCoeffs);
 
-  Standard_EXPORT static void Trimming(const double                U1,
-                                       const double                U2,
-                                       const int                   dim,
-                                       NCollection_Array1<double>& Coeffs,
-                                       NCollection_Array1<double>* WCoeffs);
+  Standard_EXPORT static void Trimming(const double    U1,
+                                       const double    U2,
+                                       const int dim,
+                                       NCollection_Array1<double>&  Coeffs,
+                                       NCollection_Array1<double>*  WCoeffs);
 
-  Standard_EXPORT static void CoefficientsPoles(const NCollection_Array2<gp_Pnt>& Coefs,
+  Standard_EXPORT static void CoefficientsPoles(const NCollection_Array2<gp_Pnt>&   Coefs,
                                                 const NCollection_Array2<double>* WCoefs,
-                                                NCollection_Array2<gp_Pnt>&       Poles,
+                                                NCollection_Array2<gp_Pnt>&         Poles,
                                                 NCollection_Array2<double>*       WPoles);
 
-  Standard_EXPORT static void UTrimming(const double                U1,
-                                        const double                U2,
-                                        NCollection_Array2<gp_Pnt>& Coeffs,
+  Standard_EXPORT static void UTrimming(const double   U1,
+                                        const double   U2,
+                                        NCollection_Array2<gp_Pnt>&   Coeffs,
                                         NCollection_Array2<double>* WCoeffs);
 
-  Standard_EXPORT static void VTrimming(const double                V1,
-                                        const double                V2,
-                                        NCollection_Array2<gp_Pnt>& Coeffs,
+  Standard_EXPORT static void VTrimming(const double   V1,
+                                        const double   V2,
+                                        NCollection_Array2<gp_Pnt>&   Coeffs,
                                         NCollection_Array2<double>* WCoeffs);
 
   //! Compute the coefficients in the canonical base of the
@@ -396,14 +396,15 @@ public:
   //! The array FirstContr(i,j) i=1,Dimension j=0,FirstOrder
   //! contains the values of the constraint at parameter FirstParameter
   //! idem for LastConstr
-  Standard_EXPORT static bool HermiteInterpolate(const int                         Dimension,
-                                                 const double                      FirstParameter,
-                                                 const double                      LastParameter,
-                                                 const int                         FirstOrder,
-                                                 const int                         LastOrder,
-                                                 const NCollection_Array2<double>& FirstConstr,
-                                                 const NCollection_Array2<double>& LastConstr,
-                                                 NCollection_Array1<double>&       Coefficients);
+  Standard_EXPORT static bool HermiteInterpolate(
+    const int      Dimension,
+    const double         FirstParameter,
+    const double         LastParameter,
+    const int      FirstOrder,
+    const int      LastOrder,
+    const NCollection_Array2<double>& FirstConstr,
+    const NCollection_Array2<double>& LastConstr,
+    NCollection_Array1<double>&       Coefficients);
 
   //! Compute the number of points used for integral
   //! computations (NbGaussPoints) and the degree of Jacobi
@@ -419,11 +420,11 @@ public:
   //! =  2 calcul rapide avec meilleure precision.
   //! =  3 calcul un peu plus lent avec bonne precision.
   //! =  4 calcul lent avec la meilleure precision possible.
-  Standard_EXPORT static void JacobiParameters(const GeomAbs_Shape ConstraintOrder,
-                                               const int           MaxDegree,
-                                               const int           Code,
-                                               int&                NbGaussPoints,
-                                               int&                WorkDegree);
+  Standard_EXPORT static void JacobiParameters(const GeomAbs_Shape    ConstraintOrder,
+                                               const int MaxDegree,
+                                               const int Code,
+                                               int&      NbGaussPoints,
+                                               int&      WorkDegree);
 
   //! translates from GeomAbs_Shape to Integer
   Standard_EXPORT static int NivConstr(const GeomAbs_Shape ConstraintOrder);
@@ -431,21 +432,21 @@ public:
   //! translates from Integer to GeomAbs_Shape
   Standard_EXPORT static GeomAbs_Shape ConstraintOrder(const int NivConstr);
 
-  Standard_EXPORT static void EvalLength(const int    Degree,
-                                         const int    Dimension,
-                                         double&      PolynomialCoeff,
-                                         const double U1,
-                                         const double U2,
-                                         double&      Length);
+  Standard_EXPORT static void EvalLength(const int Degree,
+                                         const int Dimension,
+                                         double&         PolynomialCoeff,
+                                         const double    U1,
+                                         const double    U2,
+                                         double&         Length);
 
-  Standard_EXPORT static void EvalLength(const int    Degree,
-                                         const int    Dimension,
-                                         double&      PolynomialCoeff,
-                                         const double U1,
-                                         const double U2,
-                                         const double Tol,
-                                         double&      Length,
-                                         double&      Error);
+  Standard_EXPORT static void EvalLength(const int Degree,
+                                         const int Dimension,
+                                         double&         PolynomialCoeff,
+                                         const double    U1,
+                                         const double    U2,
+                                         const double    Tol,
+                                         double&         Length,
+                                         double&         Error);
 };
 
 #endif // _PLib_HeaderFile

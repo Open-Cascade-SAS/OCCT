@@ -24,8 +24,15 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 class IGESDraw_ConnectPoint;
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
@@ -51,17 +58,15 @@ public:
   //! - allFlowNames      : Flow Names
   //! - allTextDisps      : Text Display Template Entities
   //! - allContFlowAssocs : Continuation Flow Associativity Entities
-  Standard_EXPORT void Init(
-    const int                                                                      nbContextFlags,
-    const int                                                                      aFlowType,
-    const int                                                                      aFuncFlag,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allFlowAssocs,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>&    allConnectPoints,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allJoins,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allFlowNames,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>&
-                                                                              allTextDisps,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allContFlowAssocs);
+  Standard_EXPORT void Init(const int                                nbContextFlags,
+                            const int                                aFlowType,
+                            const int                                aFuncFlag,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allFlowAssocs,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>&         allConnectPoints,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allJoins,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&        allFlowNames,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& allTextDisps,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allContFlowAssocs);
 
   //! forces NbContextFalgs to 2, returns True if changed
   Standard_EXPORT bool OwnCorrect();
@@ -120,21 +125,21 @@ public:
 
   //! returns Continuation Flow Associativity Entity
   //! raises exception if Index <= 0 or Index > NbContFlowAssociativities()
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> ContFlowAssociativity(const int Index) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ContFlowAssociativity(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESAppli_Flow, IGESData_IGESEntity)
 
 private:
-  int                                                                     theNbContextFlags;
-  int                                                                     theTypeOfFlow;
-  int                                                                     theFunctionFlag;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      theFlowAssociativities;
-  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>    theConnectPoints;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      theJoins;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theFlowNames;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
-                                                                     theTextDisplayTemplates;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theContFlowAssociativities;
+  int                               theNbContextFlags;
+  int                               theTypeOfFlow;
+  int                               theFunctionFlag;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           theFlowAssociativities;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>         theConnectPoints;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           theJoins;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>        theFlowNames;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> theTextDisplayTemplates;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           theContFlowAssociativities;
 };
 
 #endif // _IGESAppli_Flow_HeaderFile

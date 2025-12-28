@@ -272,9 +272,10 @@ occ::handle<IGESData_ColorEntity> IGESData_IGESEntity::Color() const
 
 //=================================================================================================
 
-bool IGESData_IGESEntity::CResValues(const char* res1, const char* res2) const
+bool IGESData_IGESEntity::CResValues(const char* res1,
+                                                 const char* res2) const
 {
-  bool                res = false;
+  bool    res = false;
   Standard_PCharacter pres1, pres2;
   //
   pres1 = (Standard_PCharacter)res1;
@@ -319,13 +320,14 @@ int IGESData_IGESEntity::SubScriptNumber() const
 
 //  ....                (Re)Initialisation du Directory                 ....
 
-void IGESData_IGESEntity::InitTypeAndForm(const int typenum, const int formnum)
+void IGESData_IGESEntity::InitTypeAndForm(const int typenum,
+                                          const int formnum)
 {
   theType = typenum;
   theForm = formnum;
 }
 
-void IGESData_IGESEntity::InitDirFieldEntity(const int                               num,
+void IGESData_IGESEntity::InitDirFieldEntity(const int             num,
                                              const occ::handle<IGESData_IGESEntity>& ent)
 {
   if (num == 3)
@@ -355,19 +357,21 @@ void IGESData_IGESEntity::InitView(const occ::handle<IGESData_ViewKindEntity>& e
 }
 
 void IGESData_IGESEntity::InitLineFont(const occ::handle<IGESData_LineFontEntity>& ent,
-                                       const int                                   rank)
+                                       const int                 rank)
 {
   theDefLineFont.SetRank((ent.IsNull() ? rank : -1));
   theLineFont = ent;
 }
 
-void IGESData_IGESEntity::InitLevel(const occ::handle<IGESData_LevelListEntity>& ent, const int val)
+void IGESData_IGESEntity::InitLevel(const occ::handle<IGESData_LevelListEntity>& ent,
+                                    const int                  val)
 {
   theLevelList = ent;
   theDefLevel  = (ent.IsNull() ? val : -1);
 }
 
-void IGESData_IGESEntity::InitColor(const occ::handle<IGESData_ColorEntity>& ent, const int rank)
+void IGESData_IGESEntity::InitColor(const occ::handle<IGESData_ColorEntity>& ent,
+                                    const int              rank)
 {
   theDefColor.SetRank((ent.IsNull() ? rank : -1));
   theColor = ent;
@@ -385,7 +389,7 @@ void IGESData_IGESEntity::InitStatus(const int blank,
 }
 
 void IGESData_IGESEntity::SetLabel(const occ::handle<TCollection_HAsciiString>& label,
-                                   const int                                    sub)
+                                   const int                  sub)
 {
   theShortLabel = label;
   theSubScriptN = sub;
@@ -393,7 +397,7 @@ void IGESData_IGESEntity::SetLabel(const occ::handle<TCollection_HAsciiString>& 
 
 void IGESData_IGESEntity::InitMisc(const occ::handle<IGESData_IGESEntity>&         str,
                                    const occ::handle<IGESData_LabelDisplayEntity>& lab,
-                                   const int                                       weightnum)
+                                   const int                     weightnum)
 {
   theStructure  = str;
   theLabDisplay = lab;
@@ -512,7 +516,8 @@ Interface_EntityIterator IGESData_IGESEntity::Associativities() const
   return iter;
 }
 
-int IGESData_IGESEntity::NbTypedAssociativities(const occ::handle<Standard_Type>& atype) const
+int IGESData_IGESEntity::NbTypedAssociativities(
+  const occ::handle<Standard_Type>& atype) const
 {
   return theAssocs.NbTypedEntities(atype);
 }
@@ -582,9 +587,8 @@ int IGESData_IGESEntity::NbTypedProperties(const occ::handle<Standard_Type>& aty
   return theProps.NbTypedEntities(atype);
 }
 
-occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::TypedProperty(
-  const occ::handle<Standard_Type>& atype,
-  const int                         anum) const
+occ::handle<IGESData_IGESEntity> IGESData_IGESEntity::TypedProperty(const occ::handle<Standard_Type>& atype,
+                                                               const int anum) const
 {
   return GetCasted(IGESData_IGESEntity, theProps.TypedEntity(atype, anum));
 }
@@ -612,7 +616,9 @@ void IGESData_IGESEntity::ClearProperties()
 
 // ....                     Actions liees au Transfert                     ....
 
-void IGESData_IGESEntity::SetLineWeight(const double defw, const double maxw, const int gradw)
+void IGESData_IGESEntity::SetLineWeight(const double    defw,
+                                        const double    maxw,
+                                        const int gradw)
 {
   if (theLWeightNum == 0)
     theLWeightVal = defw;

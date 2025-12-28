@@ -39,7 +39,8 @@ StepAP214_ExternalIdentificationItem::StepAP214_ExternalIdentificationItem() {}
 
 //=================================================================================================
 
-int StepAP214_ExternalIdentificationItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepAP214_ExternalIdentificationItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -101,8 +102,7 @@ occ::handle<StepAP214_ExternallyDefinedGeneralProperty> StepAP214_ExternalIdenti
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinition> StepAP214_ExternalIdentificationItem::ProductDefinition()
-  const
+occ::handle<StepBasic_ProductDefinition> StepAP214_ExternalIdentificationItem::ProductDefinition() const
 {
   return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }

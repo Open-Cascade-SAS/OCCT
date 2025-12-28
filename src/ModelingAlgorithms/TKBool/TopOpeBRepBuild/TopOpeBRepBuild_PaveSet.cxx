@@ -58,31 +58,31 @@ void TopOpeBRepBuild_PaveSet::Append(const occ::handle<TopOpeBRepBuild_Pave>& PV
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-void TopOpeBRepBuild_PaveSet::SortPave(
-  const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& List,
-  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>&       SortedList)
+void TopOpeBRepBuild_PaveSet::SortPave(const NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>& List,
+                                       NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>&       SortedList)
 {
   // NYI : sort a list o Items, giving a sorting function is impossible
   // NYI : --> foobar method complexity n2.
 
-  int                                    iPV = 0, nPV = List.Extent();
+  int                 iPV = 0, nPV = List.Extent();
   occ::handle<NCollection_HArray1<bool>> HT = new NCollection_HArray1<bool>(0, nPV, false);
-  NCollection_Array1<bool>&              T  = HT->ChangeArray1();
+  NCollection_Array1<bool>&         T  = HT->ChangeArray1();
 
   occ::handle<TopOpeBRepBuild_Pave> PV1;
   for (int i = 1; i <= nPV; i++)
   {
-    double                                                        parmin = RealLast();
+    double                            parmin = RealLast();
     NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it(List);
     for (int itest = 1; it.More(); it.Next(), itest++)
     {
       if (!T(itest))
       {
         const occ::handle<TopOpeBRepBuild_Pave>& PV2 = it.Value();
-        double                                   par = PV2->Parameter();
+        double                       par = PV2->Parameter();
         if (par < parmin)
         {
           parmin = par;
@@ -97,9 +97,9 @@ void TopOpeBRepBuild_PaveSet::SortPave(
 
   // tete = FORWARD
   // modifier TopOpeBRepBuild_DataStructure::SortOnParameter
-  bool                                                          found = false;
+  bool                         found = false;
   NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it(SortedList);
-  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>           L1, L2;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>               L1, L2;
 
   for (; it.More(); it.Next())
   {
@@ -128,10 +128,10 @@ static bool FUN_islook(const TopoDS_Edge& e)
 {
   TopoDS_Vertex v1, v2;
   TopExp::Vertices(e, v1, v2);
-  gp_Pnt p1     = BRep_Tool::Pnt(v1);
-  gp_Pnt p2     = BRep_Tool::Pnt(v2);
-  double dp1p2  = p1.Distance(p2);
-  bool   islook = (std::abs(dp1p2) > 1.e-8) ? true : false;
+  gp_Pnt           p1     = BRep_Tool::Pnt(v1);
+  gp_Pnt           p2     = BRep_Tool::Pnt(v2);
+  double    dp1p2  = p1.Distance(p2);
+  bool islook = (std::abs(dp1p2) > 1.e-8) ? true : false;
   return islook;
 }
 
@@ -153,8 +153,8 @@ void TopOpeBRepBuild_PaveSet::Prepare()
 
 #ifdef OCCT_DEBUG
   bool trc = false;
-  trc      = trc || TopOpeBRepTool_GettraceVC();
-  int iv   = 0; //,nv=myVertices.Extent();
+  trc                  = trc || TopOpeBRepTool_GettraceVC();
+  int iv  = 0; //,nv=myVertices.Extent();
   if (trc)
   {
     NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator itd(myVertices);
@@ -162,13 +162,13 @@ void TopOpeBRepBuild_PaveSet::Prepare()
     for (; itd.More(); itd.Next())
     {
       const occ::handle<TopOpeBRepBuild_Pave>& PV     = itd.Value();
-      TopoDS_Vertex&                           VI     = TopoDS::Vertex(PV->ChangeVertex());
-      bool                                     hasVSD = PV->HasSameDomain();
-      TopoDS_Vertex                            VSD;
+      TopoDS_Vertex&                      VI     = TopoDS::Vertex(PV->ChangeVertex());
+      bool                    hasVSD = PV->HasSameDomain();
+      TopoDS_Vertex                       VSD;
       if (hasVSD)
         VSD = TopoDS::Vertex(PV->SameDomain());
       TopAbs_Orientation VIori = VI.Orientation();
-      double             p     = PV->Parameter();
+      double      p     = PV->Parameter();
       std::cout << "pvs : v " << ++iv << " par " << p << " ";
       TopAbs::Print(VIori, std::cout);
       std::cout << std::endl;
@@ -177,7 +177,7 @@ void TopOpeBRepBuild_PaveSet::Prepare()
 #endif
 
   bool isEd            = BRep_Tool::Degenerated(myEdge);
-  int  EdgeVertexCount = 0;
+  int EdgeVertexCount = 0;
 
   if (myRemovePV)
   { // jyl + 980217
@@ -188,9 +188,9 @@ void TopOpeBRepBuild_PaveSet::Prepare()
       // VE = edge vertex
       const TopoDS_Vertex& VE      = TopoDS::Vertex(EVexp.Current());
       TopAbs_Orientation   VEori   = VE.Orientation();
-      bool                 VEbound = (VEori == TopAbs_FORWARD) || (VEori == TopAbs_REVERSED);
+      bool     VEbound = (VEori == TopAbs_FORWARD) || (VEori == TopAbs_REVERSED);
 
-      int  EdgeVertexIndex = 0;
+      int EdgeVertexIndex = 0;
       bool addVE           = true;
 
       bool add = false; // ofv
@@ -204,15 +204,15 @@ void TopOpeBRepBuild_PaveSet::Prepare()
 
         // PV = Parametrized vertex, VI = interference vertex
         const occ::handle<TopOpeBRepBuild_Pave>& PV     = it.Value();
-        TopoDS_Vertex&                           VI     = TopoDS::Vertex(PV->ChangeVertex());
-        bool                                     hasVSD = PV->HasSameDomain();
-        TopoDS_Vertex                            VSD;
+        TopoDS_Vertex&                      VI     = TopoDS::Vertex(PV->ChangeVertex());
+        bool                    hasVSD = PV->HasSameDomain();
+        TopoDS_Vertex                       VSD;
         if (hasVSD)
           VSD = TopoDS::Vertex(PV->SameDomain());
 
         TopAbs_Orientation VIori     = VI.Orientation();
-        bool               visameve  = (VI.IsSame(VE));
-        bool               vsdsameve = false;
+        bool   visameve  = (VI.IsSame(VE));
+        bool   vsdsameve = false;
         if (hasVSD)
           vsdsameve = (VSD.IsSame(VE));
         bool samevertexprocessing = (visameve || vsdsameve) && !isEd;
@@ -256,7 +256,7 @@ void TopOpeBRepBuild_PaveSet::Prepare()
       // if VE not found in the list, add it
       if (addVE)
       {
-        double                            parVE = BRep_Tool::Parameter(VE, myEdge);
+        double                parVE = BRep_Tool::Parameter(VE, myEdge);
         occ::handle<TopOpeBRepBuild_Pave> newPV = new TopOpeBRepBuild_Pave(VE, parVE, true);
         myVertices.Prepend(newPV);
 
@@ -290,9 +290,9 @@ void TopOpeBRepBuild_PaveSet::Prepare()
     for (; MoreLoop(); NextLoop())
     {
       occ::handle<TopOpeBRepBuild_Pave> PV = occ::down_cast<TopOpeBRepBuild_Pave>(Loop());
-      const TopoDS_Vertex&              v  = TopoDS::Vertex(PV->Vertex());
-      double                            p  = PV->Parameter();
-      bool                              b  = PV->IsShape();
+      const TopoDS_Vertex&         v  = TopoDS::Vertex(PV->Vertex());
+      double                p  = PV->Parameter();
+      bool             b  = PV->IsShape();
       TopOpeBRepBuild_Builder::GdumpORIPARPNT(v.Orientation(), p, BRep_Tool::Pnt(v));
       if (b)
         std::cout << " is bound";
@@ -351,7 +351,7 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
 {
   myHasEqualParameters = false;
   NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it1, it2;
-  double                                                        p1, p2;
+  double                            p1, p2;
 
   for (it1.Initialize(myVertices); (!myHasEqualParameters) && it1.More(); it1.Next())
   {
@@ -364,7 +364,7 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
       if (v2.IsEqual(v1))
         continue;
 
-      p2       = it2.Value()->Parameter();
+      p2              = it2.Value()->Parameter();
       double d = std::abs(p1 - p2);
 #ifdef OCCT_DEBUG
       if (TopOpeBRepTool_GettraceVC())
@@ -382,11 +382,11 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
 
   if (!myHasEqualParameters)
   {
-    bool   rd;
-    double f = 0;
+    bool rd;
+    double    f = 0;
     {
-      TopLoc_Location         loc;
-      double                  ff, ll;
+      TopLoc_Location    loc;
+      double      ff, ll;
       occ::handle<Geom_Curve> CmyEdge = BRep_Tool::Curve(myEdge, loc, ff, ll);
       if (CmyEdge.IsNull())
         rd = false;
@@ -403,7 +403,7 @@ bool TopOpeBRepBuild_PaveSet::HasEqualParameters()
 #ifdef OCCT_DEBUG
 //	const TopoDS_Shape& v1 = it1.Value()->Vertex();
 #endif
-        p1       = it1.Value()->Parameter();
+        p1              = it1.Value()->Parameter();
         double d = std::abs(p1 - f);
         if (d < Precision::PConfusion())
         {
@@ -447,13 +447,12 @@ bool TopOpeBRepBuild_PaveSet::ClosedVertices()
   if (myVertices.IsEmpty())
     return false;
 
-  TopoDS_Shape Vmin, Vmax;
-  double       parmin = RealLast(), parmax = RealFirst();
-  for (NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it(myVertices); it.More();
-       it.Next())
+  TopoDS_Shape  Vmin, Vmax;
+  double parmin = RealLast(), parmax = RealFirst();
+  for (NCollection_List<occ::handle<TopOpeBRepBuild_Pave>>::Iterator it(myVertices); it.More(); it.Next())
   {
     const TopoDS_Shape& V   = it.Value()->Vertex();
-    double              par = it.Value()->Parameter();
+    double       par = it.Value()->Parameter();
     if (par > parmax)
     {
       Vmax   = V;

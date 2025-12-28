@@ -44,8 +44,11 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_RevolutionDriver, TFunction_Driver)
@@ -81,7 +84,7 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
 
   // Save location
   occ::handle<TNaming_NamedShape> aPrevRevol = DNaming::GetFunctionResult(aFunction);
-  TopLoc_Location                 aLocation;
+  TopLoc_Location            aLocation;
   if (!aPrevRevol.IsNull() && !aPrevRevol->IsEmpty())
   {
     aLocation = aPrevRevol->Get().Location();
@@ -117,7 +120,7 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
   }
 
   occ::handle<TNaming_NamedShape> aContextOfBasis;
-  bool                            anIsAttachment = false;
+  bool           anIsAttachment = false;
   if (DNaming::IsAttachment(aBasObject))
   {
     aContextOfBasis = DNaming::GetAttachmentsContext(aBasObject); // a Context of Revolution basis
@@ -132,8 +135,8 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
   // Axis
   occ::handle<TDataStd_UAttribute> anAxObject = DNaming::GetObjectArg(aFunction, REVOL_AXIS);
   occ::handle<TNaming_NamedShape>  anAxNS     = DNaming::GetObjectValue(anAxObject);
-  gp_Ax1                           anAXIS;
-  TopoDS_Shape                     aTopoDSAxis;
+  gp_Ax1                      anAXIS;
+  TopoDS_Shape                aTopoDSAxis;
   if (anAxNS.IsNull() || anAxNS->IsEmpty())
   {
     aFunction->SetFailure(WRONG_ARGUMENT);
@@ -141,7 +144,7 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
   }
   else
   {
-    aTopoDSAxis   = anAxNS->Get();
+    aTopoDSAxis               = anAxNS->Get();
     bool anAxisOK = false;
     if (!aTopoDSAxis.IsNull())
     {
@@ -152,8 +155,8 @@ int DNaming_RevolutionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) co
           TopExp_Explorer anExplorer(aTopoDSAxis, TopAbs_EDGE);
           aTopoDSAxis = anExplorer.Current();
         }
-        const TopoDS_Edge&      anEdge = TopoDS::Edge(aTopoDSAxis);
-        double                  aFirst, aLast;
+        const TopoDS_Edge& anEdge = TopoDS::Edge(aTopoDSAxis);
+        double      aFirst, aLast;
         occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
         if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)))
         {
@@ -292,14 +295,14 @@ static void LoadSeamEdge(BRepPrimAPI_MakeRevol& mkRevol,
 
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
-  TopExp_Explorer                                        ShapeExplorer(ShapeIn, TopAbs_EDGE);
-  bool                                                   isFound(false);
+  TopExp_Explorer     ShapeExplorer(ShapeIn, TopAbs_EDGE);
+  bool    isFound(false);
   for (; ShapeExplorer.More(); ShapeExplorer.Next())
   {
     const TopoDS_Shape& Root = ShapeExplorer.Current();
     if (!View.Add(Root))
       continue;
-    const NCollection_List<TopoDS_Shape>&    Shapes = mkRevol.Generated(Root);
+    const NCollection_List<TopoDS_Shape>&        Shapes = mkRevol.Generated(Root);
     NCollection_List<TopoDS_Shape>::Iterator ShapesIterator(Shapes);
     for (; ShapesIterator.More(); ShapesIterator.Next())
     {
@@ -346,8 +349,7 @@ static bool HasDangle(const TopoDS_Shape& ShapeIn)
 }
 
 //=======================================================================
-static void BuildAtomicMap(const TopoDS_Shape&                                     S,
-                           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
+static void BuildAtomicMap(const TopoDS_Shape& S, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
   if (S.ShapeType() == TopAbs_COMPOUND || S.ShapeType() == TopAbs_COMPSOLID)
   {
@@ -412,15 +414,15 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
   DNaming::LoadAndOrientGeneratedShapes(MS, Basis, TopAbs_EDGE, LateralFaceBuilder, SubShapes);
 
   // is full
-  TopoDS_Shape StartShape = MS.FirstShape();
-  TopoDS_Shape EndShape   = MS.LastShape();
-  bool         isFull(false);
+  TopoDS_Shape     StartShape = MS.FirstShape();
+  TopoDS_Shape     EndShape   = MS.LastShape();
+  bool isFull(false);
   if (!StartShape.IsNull() && !EndShape.IsNull())
     isFull = StartShape.IsEqual(EndShape);
 
-  bool          hasDangle = HasDangleShapes(MS.Shape());
-  bool          isBasisClosed(true);
-  TopoDS_Vertex Vfirst, Vlast;
+  bool hasDangle = HasDangleShapes(MS.Shape());
+  bool isBasisClosed(true);
+  TopoDS_Vertex    Vfirst, Vlast;
   if (Basis.ShapeType() == TopAbs_WIRE)
   {
     occ::handle<BRepCheck_Wire> aCheck = new BRepCheck_Wire(TopoDS::Wire(Basis));
@@ -438,7 +440,7 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
     {
       occ::handle<BRepCheck_Wire> aCheck = new BRepCheck_Wire(aMakeWire.Wire());
       if (aCheck->Closed() != BRepCheck_NoError)
-      {                        // check for circle case
+      {                                 // check for circle case
         isBasisClosed = false; // open
         TopExp::Vertices(TopoDS::Edge(Basis), Vfirst, Vlast);
       }
@@ -454,7 +456,7 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
       if (!isBasisClosed)
       {
         // dangle edges
-        const NCollection_List<TopoDS_Shape>&    Shapes = MS.Generated(Vfirst);
+        const NCollection_List<TopoDS_Shape>&        Shapes = MS.Generated(Vfirst);
         NCollection_List<TopoDS_Shape>::Iterator it(Shapes);
         for (; it.More(); it.Next())
         {
@@ -566,7 +568,7 @@ void DNaming_RevolutionDriver::LoadNamingDS(const TDF_Label&       theResultLabe
       if (!isBasisClosed)
       {
         // dangle edges
-        const NCollection_List<TopoDS_Shape>&    Shapes = MS.Generated(Vfirst);
+        const NCollection_List<TopoDS_Shape>&        Shapes = MS.Generated(Vfirst);
         NCollection_List<TopoDS_Shape>::Iterator it(Shapes);
         for (; it.More(); it.Next())
         {

@@ -44,11 +44,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(DrawDim_PlanarAngle, DrawDim_PlanarDimension)
 
 private:
-  TopoDS_Shape myLine1;
-  TopoDS_Shape myLine2;
-  bool         myIsReversed;
-  bool         myIsInverted;
-  double       myPosition;
+  TopoDS_Shape     myLine1;
+  TopoDS_Shape     myLine2;
+  bool myIsReversed;
+  bool myIsInverted;
+  double    myPosition;
 };
 
 #endif // _DrawDim_PlanarAngle_HeaderFile

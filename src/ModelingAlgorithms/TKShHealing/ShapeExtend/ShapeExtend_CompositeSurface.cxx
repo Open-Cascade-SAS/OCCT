@@ -35,7 +35,7 @@ ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface() {}
 
 ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface(
   const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-  const ShapeExtend_Parametrisation                                  param)
+  const ShapeExtend_Parametrisation        param)
 {
   Init(GridSurf, param);
 }
@@ -44,8 +44,8 @@ ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface(
 
 ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface(
   const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-  const NCollection_Array1<double>&                                  UJoints,
-  const NCollection_Array1<double>&                                  VJoints)
+  const NCollection_Array1<double>&              UJoints,
+  const NCollection_Array1<double>&              VJoints)
 {
   Init(GridSurf, UJoints, VJoints);
 }
@@ -54,7 +54,7 @@ ShapeExtend_CompositeSurface::ShapeExtend_CompositeSurface(
 
 bool ShapeExtend_CompositeSurface::Init(
   const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-  const ShapeExtend_Parametrisation                                  param)
+  const ShapeExtend_Parametrisation        param)
 {
   if (GridSurf.IsNull())
     return false;
@@ -67,8 +67,8 @@ bool ShapeExtend_CompositeSurface::Init(
 
 bool ShapeExtend_CompositeSurface::Init(
   const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& GridSurf,
-  const NCollection_Array1<double>&                                  UJoints,
-  const NCollection_Array1<double>&                                  VJoints)
+  const NCollection_Array1<double>&              UJoints,
+  const NCollection_Array1<double>&              VJoints)
 {
   if (GridSurf.IsNull())
     return false;
@@ -103,15 +103,15 @@ int ShapeExtend_CompositeSurface::NbVPatches() const
 
 //=================================================================================================
 
-const occ::handle<Geom_Surface>& ShapeExtend_CompositeSurface::Patch(const int i, const int j) const
+const occ::handle<Geom_Surface>& ShapeExtend_CompositeSurface::Patch(const int i,
+                                                                const int j) const
 {
   return myPatches->Value(i, j);
 }
 
 //=================================================================================================
 
-const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& ShapeExtend_CompositeSurface::
-  Patches() const
+const occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>>& ShapeExtend_CompositeSurface::Patches() const
 {
   return myPatches;
 }
@@ -152,8 +152,7 @@ bool ShapeExtend_CompositeSurface::SetUJointValues(const NCollection_Array1<doub
   if (UJoints.Length() != NbU + 1)
     return false;
 
-  occ::handle<NCollection_HArray1<double>> UJointValues =
-    new NCollection_HArray1<double>(1, NbU + 1);
+  occ::handle<NCollection_HArray1<double>> UJointValues = new NCollection_HArray1<double>(1, NbU + 1);
   for (int i = 1, j = UJoints.Lower(); i <= NbU + 1; i++, j++)
   {
     UJointValues->SetValue(i, UJoints(j));
@@ -172,8 +171,7 @@ bool ShapeExtend_CompositeSurface::SetVJointValues(const NCollection_Array1<doub
   if (VJoints.Length() != NbV + 1)
     return false;
 
-  occ::handle<NCollection_HArray1<double>> VJointValues =
-    new NCollection_HArray1<double>(1, NbV + 1);
+  occ::handle<NCollection_HArray1<double>> VJointValues = new NCollection_HArray1<double>(1, NbV + 1);
   for (int i = 1, j = VJoints.Lower(); i <= NbV + 1; i++, j++)
   {
     VJointValues->SetValue(i, VJoints(j));
@@ -191,8 +189,8 @@ void ShapeExtend_CompositeSurface::SetUFirstValue(const double UFirst)
   if (myUJointValues.IsNull())
     return;
 
-  double shift = UFirst - myUJointValues->Value(1);
-  int    NbU   = myUJointValues->Length();
+  double    shift = UFirst - myUJointValues->Value(1);
+  int NbU   = myUJointValues->Length();
   for (int i = 1; i <= NbU; i++)
   {
     myUJointValues->SetValue(i, myUJointValues->Value(i) + shift);
@@ -206,8 +204,8 @@ void ShapeExtend_CompositeSurface::SetVFirstValue(const double VFirst)
   if (myVJointValues.IsNull())
     return;
 
-  double shift = VFirst - myVJointValues->Value(1);
-  int    NbV   = myVJointValues->Length();
+  double    shift = VFirst - myVJointValues->Value(1);
+  int NbV   = myVJointValues->Length();
   for (int i = 1; i <= NbV; i++)
   {
     myVJointValues->SetValue(i, myVJointValues->Value(i) + shift);
@@ -238,7 +236,9 @@ int ShapeExtend_CompositeSurface::LocateVParameter(const double V) const
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::LocateUVPoint(const gp_Pnt2d& pnt, int& i, int& j) const
+void ShapeExtend_CompositeSurface::LocateUVPoint(const gp_Pnt2d&   pnt,
+                                                 int& i,
+                                                 int& j) const
 {
   i = LocateUParameter(pnt.X());
   j = LocateVParameter(pnt.Y());
@@ -247,7 +247,7 @@ void ShapeExtend_CompositeSurface::LocateUVPoint(const gp_Pnt2d& pnt, int& i, in
 //=================================================================================================
 
 const occ::handle<Geom_Surface>& ShapeExtend_CompositeSurface::Patch(const double U,
-                                                                     const double V) const
+                                                                const double V) const
 {
   return myPatches->Value(LocateUParameter(U), LocateVParameter(V));
 }
@@ -261,7 +261,9 @@ const occ::handle<Geom_Surface>& ShapeExtend_CompositeSurface::Patch(const gp_Pn
 
 //=================================================================================================
 
-double ShapeExtend_CompositeSurface::ULocalToGlobal(const int i, const int j, const double u) const
+double ShapeExtend_CompositeSurface::ULocalToGlobal(const int i,
+                                                           const int j,
+                                                           const double    u) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -273,7 +275,9 @@ double ShapeExtend_CompositeSurface::ULocalToGlobal(const int i, const int j, co
 
 //=================================================================================================
 
-double ShapeExtend_CompositeSurface::VLocalToGlobal(const int i, const int j, const double v) const
+double ShapeExtend_CompositeSurface::VLocalToGlobal(const int i,
+                                                           const int j,
+                                                           const double    v) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -285,9 +289,9 @@ double ShapeExtend_CompositeSurface::VLocalToGlobal(const int i, const int j, co
 
 //=================================================================================================
 
-gp_Pnt2d ShapeExtend_CompositeSurface::LocalToGlobal(const int       i,
-                                                     const int       j,
-                                                     const gp_Pnt2d& uv) const
+gp_Pnt2d ShapeExtend_CompositeSurface::LocalToGlobal(const int i,
+                                                     const int j,
+                                                     const gp_Pnt2d&        uv) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -301,7 +305,9 @@ gp_Pnt2d ShapeExtend_CompositeSurface::LocalToGlobal(const int       i,
 
 //=================================================================================================
 
-double ShapeExtend_CompositeSurface::UGlobalToLocal(const int i, const int j, const double U) const
+double ShapeExtend_CompositeSurface::UGlobalToLocal(const int i,
+                                                           const int j,
+                                                           const double    U) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -313,7 +319,9 @@ double ShapeExtend_CompositeSurface::UGlobalToLocal(const int i, const int j, co
 
 //=================================================================================================
 
-double ShapeExtend_CompositeSurface::VGlobalToLocal(const int i, const int j, const double V) const
+double ShapeExtend_CompositeSurface::VGlobalToLocal(const int i,
+                                                           const int j,
+                                                           const double    V) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -325,9 +333,9 @@ double ShapeExtend_CompositeSurface::VGlobalToLocal(const int i, const int j, co
 
 //=================================================================================================
 
-gp_Pnt2d ShapeExtend_CompositeSurface::GlobalToLocal(const int       i,
-                                                     const int       j,
-                                                     const gp_Pnt2d& UV) const
+gp_Pnt2d ShapeExtend_CompositeSurface::GlobalToLocal(const int i,
+                                                     const int j,
+                                                     const gp_Pnt2d&        UV) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
@@ -342,16 +350,16 @@ gp_Pnt2d ShapeExtend_CompositeSurface::GlobalToLocal(const int       i,
 
 //=================================================================================================
 
-bool ShapeExtend_CompositeSurface::GlobalToLocalTransformation(const int  i,
-                                                               const int  j,
-                                                               double&    uFact,
-                                                               gp_Trsf2d& Trsf) const
+bool ShapeExtend_CompositeSurface::GlobalToLocalTransformation(const int i,
+                                                                           const int j,
+                                                                           double& uFact,
+                                                                           gp_Trsf2d& Trsf) const
 {
   double u1, u2, v1, v2;
   myPatches->Value(i, j)->Bounds(u1, u2, v1, v2);
 
-  double   scaleu = (u2 - u1) / (myUJointValues->Value(i + 1) - myUJointValues->Value(i));
-  double   scalev = (v2 - v1) / (myVJointValues->Value(j + 1) - myVJointValues->Value(j));
+  double scaleu = (u2 - u1) / (myUJointValues->Value(i + 1) - myUJointValues->Value(i));
+  double scalev = (v2 - v1) / (myVJointValues->Value(j + 1) - myVJointValues->Value(j));
   gp_Vec2d shift(u1 / scaleu - myUJointValues->Value(i), v1 / scalev - myVJointValues->Value(j));
 
   uFact = scaleu / scalev;
@@ -420,7 +428,10 @@ double ShapeExtend_CompositeSurface::VReversedParameter(const double V) const
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
+void ShapeExtend_CompositeSurface::Bounds(double& U1,
+                                          double& U2,
+                                          double& V1,
+                                          double& V2) const
 {
   U1 = UJointValue(1);
   V1 = VJointValue(1);
@@ -497,9 +508,9 @@ bool ShapeExtend_CompositeSurface::IsVClosed() const
 
 void ShapeExtend_CompositeSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  int      i  = LocateUParameter(U);
-  int      j  = LocateVParameter(V);
-  gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
+  int i  = LocateUParameter(U);
+  int j  = LocateVParameter(V);
+  gp_Pnt2d         uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
   myPatches->Value(i, j)->D0(uv.X(), uv.Y(), P);
 }
 
@@ -507,13 +518,13 @@ void ShapeExtend_CompositeSurface::D0(const double U, const double V, gp_Pnt& P)
 
 void ShapeExtend_CompositeSurface::D1(const double U,
                                       const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V) const
+                                      gp_Pnt&             P,
+                                      gp_Vec&             D1U,
+                                      gp_Vec&             D1V) const
 {
-  int      i  = LocateUParameter(U);
-  int      j  = LocateVParameter(V);
-  gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
+  int i  = LocateUParameter(U);
+  int j  = LocateVParameter(V);
+  gp_Pnt2d         uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
   myPatches->Value(i, j)->D1(uv.X(), uv.Y(), P, D1U, D1V);
 }
 
@@ -521,16 +532,16 @@ void ShapeExtend_CompositeSurface::D1(const double U,
 
 void ShapeExtend_CompositeSurface::D2(const double U,
                                       const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V,
-                                      gp_Vec&      D2U,
-                                      gp_Vec&      D2V,
-                                      gp_Vec&      D2UV) const
+                                      gp_Pnt&             P,
+                                      gp_Vec&             D1U,
+                                      gp_Vec&             D1V,
+                                      gp_Vec&             D2U,
+                                      gp_Vec&             D2V,
+                                      gp_Vec&             D2UV) const
 {
-  int      i  = LocateUParameter(U);
-  int      j  = LocateVParameter(V);
-  gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
+  int i  = LocateUParameter(U);
+  int j  = LocateVParameter(V);
+  gp_Pnt2d         uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
   myPatches->Value(i, j)->D2(uv.X(), uv.Y(), P, D1U, D1V, D2U, D2V, D2UV);
 }
 
@@ -538,33 +549,33 @@ void ShapeExtend_CompositeSurface::D2(const double U,
 
 void ShapeExtend_CompositeSurface::D3(const double U,
                                       const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V,
-                                      gp_Vec&      D2U,
-                                      gp_Vec&      D2V,
-                                      gp_Vec&      D2UV,
-                                      gp_Vec&      D3U,
-                                      gp_Vec&      D3V,
-                                      gp_Vec&      D3UUV,
-                                      gp_Vec&      D3UVV) const
+                                      gp_Pnt&             P,
+                                      gp_Vec&             D1U,
+                                      gp_Vec&             D1V,
+                                      gp_Vec&             D2U,
+                                      gp_Vec&             D2V,
+                                      gp_Vec&             D2UV,
+                                      gp_Vec&             D3U,
+                                      gp_Vec&             D3V,
+                                      gp_Vec&             D3UUV,
+                                      gp_Vec&             D3UVV) const
 {
-  int      i  = LocateUParameter(U);
-  int      j  = LocateVParameter(V);
-  gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
+  int i  = LocateUParameter(U);
+  int j  = LocateVParameter(V);
+  gp_Pnt2d         uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
   myPatches->Value(i, j)->D3(uv.X(), uv.Y(), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-gp_Vec ShapeExtend_CompositeSurface::DN(const double U,
-                                        const double V,
-                                        const int    Nu,
-                                        const int    Nv) const
+gp_Vec ShapeExtend_CompositeSurface::DN(const double    U,
+                                        const double    V,
+                                        const int Nu,
+                                        const int Nv) const
 {
-  int      i  = LocateUParameter(U);
-  int      j  = LocateVParameter(V);
-  gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
+  int i  = LocateUParameter(U);
+  int j  = LocateVParameter(V);
+  gp_Pnt2d         uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
   return myPatches->Value(i, j)->DN(uv.X(), uv.Y(), Nu, Nv);
 }
 
@@ -572,10 +583,10 @@ gp_Vec ShapeExtend_CompositeSurface::DN(const double U,
 
 gp_Pnt ShapeExtend_CompositeSurface::Value(const gp_Pnt2d& pnt) const
 {
-  int      i  = LocateUParameter(pnt.X());
-  int      j  = LocateVParameter(pnt.Y());
-  gp_Pnt2d uv = GlobalToLocal(i, j, pnt);
-  gp_Pnt   point;
+  int i  = LocateUParameter(pnt.X());
+  int j  = LocateVParameter(pnt.Y());
+  gp_Pnt2d         uv = GlobalToLocal(i, j, pnt);
+  gp_Pnt           point;
   myPatches->Value(i, j)->D0(uv.X(), uv.Y(), point);
   return point;
 }
@@ -584,15 +595,15 @@ gp_Pnt ShapeExtend_CompositeSurface::Value(const gp_Pnt2d& pnt) const
 
 void ShapeExtend_CompositeSurface::ComputeJointValues(const ShapeExtend_Parametrisation param)
 {
-  int NbU        = NbUPatches();
-  int NbV        = NbVPatches();
-  myUJointValues = new NCollection_HArray1<double>(1, NbU + 1);
-  myVJointValues = new NCollection_HArray1<double>(1, NbV + 1);
+  int NbU = NbUPatches();
+  int NbV = NbVPatches();
+  myUJointValues       = new NCollection_HArray1<double>(1, NbU + 1);
+  myVJointValues       = new NCollection_HArray1<double>(1, NbV + 1);
 
   if (param == ShapeExtend_Natural)
   {
-    double U1, U2, V1, V2, U = 0, V = 0;
-    int    i; // svv Jan 10 2000 : porting on DEC
+    double    U1, U2, V1, V2, U = 0, V = 0;
+    int i; // svv Jan 10 2000 : porting on DEC
     for (i = 1; i <= NbU; i++)
     {
       myPatches->Value(i, 1)->Bounds(U1, U2, V1, V2);
@@ -634,10 +645,10 @@ static inline double LimitValue(const double& par)
 }
 
 static void GetLimitedBounds(const occ::handle<Geom_Surface>& surf,
-                             double&                          U1,
-                             double&                          U2,
-                             double&                          V1,
-                             double&                          V2)
+                             double&              U1,
+                             double&              U2,
+                             double&              V1,
+                             double&              V2)
 {
   surf->Bounds(U1, U2, V1, V2);
   U1 = LimitValue(U1);
@@ -649,7 +660,7 @@ static void GetLimitedBounds(const occ::handle<Geom_Surface>& surf,
 bool ShapeExtend_CompositeSurface::CheckConnectivity(const double Prec)
 {
   const int NPOINTS = 23;
-  bool      ok      = true;
+  bool       ok      = true;
   int       NbU     = NbUPatches();
   int       NbV     = NbVPatches();
 
@@ -662,7 +673,7 @@ bool ShapeExtend_CompositeSurface::CheckConnectivity(const double Prec)
     {
       occ::handle<Geom_Surface> sj = myPatches->Value(j, k);
       occ::handle<Geom_Surface> si = myPatches->Value(i, k);
-      double                    Uj1, Uj2, Vj1, Vj2;
+      double        Uj1, Uj2, Vj1, Vj2;
       GetLimitedBounds(sj, Uj1, Uj2, Vj1, Vj2);
       double Ui1, Ui2, Vi1, Vi2;
       GetLimitedBounds(si, Ui1, Ui2, Vi1, Vi2);
@@ -691,7 +702,7 @@ bool ShapeExtend_CompositeSurface::CheckConnectivity(const double Prec)
     {
       occ::handle<Geom_Surface> sj = myPatches->Value(k, j);
       occ::handle<Geom_Surface> si = myPatches->Value(k, i);
-      double                    Uj1, Uj2, Vj1, Vj2;
+      double        Uj1, Uj2, Vj1, Vj2;
       GetLimitedBounds(sj, Uj1, Uj2, Vj1, Vj2);
       double Ui1, Ui2, Vi1, Vi2;
       GetLimitedBounds(si, Ui1, Ui2, Vi1, Vi2);

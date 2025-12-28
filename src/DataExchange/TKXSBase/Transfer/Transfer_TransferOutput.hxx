@@ -44,9 +44,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a TransferOutput ready to use, with a TransientProcess
-  Standard_EXPORT Transfer_TransferOutput(
-    const occ::handle<Transfer_ActorOfTransientProcess>& actor,
-    const occ::handle<Interface_InterfaceModel>&         amodel);
+  Standard_EXPORT Transfer_TransferOutput(const occ::handle<Transfer_ActorOfTransientProcess>& actor,
+                                          const occ::handle<Interface_InterfaceModel>&         amodel);
 
   //! Creates a TransferOutput from an already existing
   //! TransientProcess, and a Model
@@ -73,7 +72,7 @@ public:
   //! Protocol given as Argument
   Standard_EXPORT void TransferRoots(
     const occ::handle<Interface_Protocol>& protocol,
-    const Message_ProgressRange&           theProgress = Message_ProgressRange());
+    const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Runs transfer on the roots defined by a Graph of dependences
   //! (which detains also a Model and its Entities)
@@ -98,8 +97,9 @@ public:
   //! - <roots> True (Default), considers only roots of Transfer
   //! (the Entities recorded at highest level)
   //! This method is based on AbnormalResult from TransferProcess
-  Standard_EXPORT Interface_EntityIterator ListForStatus(const bool normal,
-                                                         const bool roots = true) const;
+  Standard_EXPORT Interface_EntityIterator
+    ListForStatus(const bool normal,
+                  const bool roots = true) const;
 
   //! Fills a Model with the list determined by ListForStatus
   //! This model starts from scratch (made by NewEmptyModel from the
@@ -111,8 +111,8 @@ public:
   //! "which works well" (with normal = True)
   Standard_EXPORT occ::handle<Interface_InterfaceModel> ModelForStatus(
     const occ::handle<Interface_Protocol>& protocol,
-    const bool                             normal,
-    const bool                             roots = true) const;
+    const bool            normal,
+    const bool            roots = true) const;
 
 private:
   occ::handle<Transfer_TransientProcess> theproc;

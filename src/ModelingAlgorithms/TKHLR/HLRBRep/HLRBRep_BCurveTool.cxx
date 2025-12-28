@@ -19,14 +19,17 @@
 #include <HLRBRep_BCurveTool.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C, const double U0, const double U1)
+int HLRBRep_BCurveTool::NbSamples(const BRepAdaptor_Curve& C,
+                                               const double      U0,
+                                               const double      U1)
 {
-  GeomAbs_CurveType typC     = C.GetType();
-  static double     nbsOther = 10.0;
-  double            nbs      = nbsOther;
+  GeomAbs_CurveType    typC     = C.GetType();
+  static double nbsOther = 10.0;
+  double        nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -58,9 +61,9 @@ void HLRBRep_BCurveTool::Poles(const BRepAdaptor_Curve& C, NCollection_Array1<gp
 
 //=================================================================================================
 
-void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve&    C,
-                                         NCollection_Array1<gp_Pnt>& T,
-                                         NCollection_Array1<double>& W)
+void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve& C,
+                                         NCollection_Array1<gp_Pnt>&      T,
+                                         NCollection_Array1<double>&    W)
 {
   if (C.GetType() == GeomAbs_BezierCurve)
   {

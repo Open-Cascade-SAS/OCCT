@@ -24,6 +24,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
@@ -73,10 +74,10 @@ public:
   //! connected <E1> and <E2>. <AddChamfer> returns the
   //! chamfer edge. This edge has sense only if the
   //! status <status> is <IsDone>.
-  Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge& E1,
-                                         const TopoDS_Edge& E2,
-                                         const double       D1,
-                                         const double       D2);
+  Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&  E1,
+                                         const TopoDS_Edge&  E2,
+                                         const double D1,
+                                         const double D2);
 
   //! Add a chamfer on the wire between the two edges
   //! connected to the vertex <V>. The chamfer will make
@@ -87,27 +88,27 @@ public:
   //! Warning: The value of <Ang> must be expressed in Radian.
   Standard_EXPORT TopoDS_Edge AddChamfer(const TopoDS_Edge&   E,
                                          const TopoDS_Vertex& V,
-                                         const double         D,
-                                         const double         Ang);
+                                         const double  D,
+                                         const double  Ang);
 
   //! modify the chamfer <Chamfer> and returns the new
   //! chamfer edge.
   //! This edge as sense only if the status <status> is
   //! <IsDone>.
-  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge& Chamfer,
-                                            const TopoDS_Edge& E1,
-                                            const TopoDS_Edge& E2,
-                                            const double       D1,
-                                            const double       D2);
+  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
+                                            const TopoDS_Edge&  E1,
+                                            const TopoDS_Edge&  E2,
+                                            const double D1,
+                                            const double D2);
 
   //! modify the chamfer <Chamfer> and returns the new
   //! chamfer edge. This edge as sense only if the
   //! status <status> is <IsDone>.
   //! Warning: The value of <Ang> must be expressed in Radian.
-  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge& Chamfer,
-                                            const TopoDS_Edge& E,
-                                            const double       D,
-                                            const double       Ang);
+  Standard_EXPORT TopoDS_Edge ModifyChamfer(const TopoDS_Edge&  Chamfer,
+                                            const TopoDS_Edge&  E,
+                                            const double D,
+                                            const double Ang);
 
   //! removes the chamfer <Chamfer> and returns the
   //! vertex connecting the two adjacent edges to this
@@ -149,7 +150,7 @@ private:
   Standard_EXPORT void ComputeFillet(const TopoDS_Vertex& V,
                                      const TopoDS_Edge&   E1,
                                      const TopoDS_Edge&   E2,
-                                     const double         Radius,
+                                     const double  Radius,
                                      TopoDS_Edge&         TrimE1,
                                      TopoDS_Edge&         TrimE2,
                                      TopoDS_Edge&         Fillet);
@@ -162,8 +163,8 @@ private:
   Standard_EXPORT void ComputeChamfer(const TopoDS_Vertex& V,
                                       const TopoDS_Edge&   E1,
                                       const TopoDS_Edge&   E2,
-                                      const double         D1,
-                                      const double         D2,
+                                      const double  D1,
+                                      const double  D2,
                                       TopoDS_Edge&         TrimE1,
                                       TopoDS_Edge&         TrimE2,
                                       TopoDS_Edge&         Chamfer);
@@ -176,8 +177,8 @@ private:
   //! <IsDone>
   Standard_EXPORT void ComputeChamfer(const TopoDS_Vertex& V,
                                       const TopoDS_Edge&   E1,
-                                      const double         D,
-                                      const double         Ang,
+                                      const double  D,
+                                      const double  Ang,
                                       const TopoDS_Edge&   E2,
                                       TopoDS_Edge&         TrimE1,
                                       TopoDS_Edge&         TrimE2,
@@ -195,7 +196,7 @@ private:
   Standard_EXPORT TopoDS_Edge BuildFilletEdge(const TopoDS_Vertex& V,
                                               const TopoDS_Edge&   AdjEdge1,
                                               const TopoDS_Edge&   AdjEdge2,
-                                              const double         Radius,
+                                              const double  Radius,
                                               TopoDS_Vertex&       NewExtr1,
                                               TopoDS_Vertex&       NewExtr2);
 
@@ -207,8 +208,8 @@ private:
   Standard_EXPORT TopoDS_Edge BuildChamferEdge(const TopoDS_Vertex& V,
                                                const TopoDS_Edge&   AdjEdge1,
                                                const TopoDS_Edge&   AdjEdge2,
-                                               const double         D1,
-                                               const double         D2,
+                                               const double  D1,
+                                               const double  D2,
                                                TopoDS_Vertex&       NewExtr1,
                                                TopoDS_Vertex&       NewExtr2);
 
@@ -219,8 +220,8 @@ private:
   //! <status> is equal to <IsDone>
   Standard_EXPORT TopoDS_Edge BuildChamferEdge(const TopoDS_Vertex& V,
                                                const TopoDS_Edge&   AdjEdge2,
-                                               const double         D,
-                                               const double         Ang,
+                                               const double  D,
+                                               const double  Ang,
                                                const TopoDS_Edge&   AdjEdge1,
                                                TopoDS_Vertex&       NewExtr1,
                                                TopoDS_Vertex&       NewExtr2);
@@ -247,19 +248,19 @@ private:
   Standard_EXPORT TopoDS_Edge BuildNewEdge(const TopoDS_Edge&   E1,
                                            const TopoDS_Vertex& OldExtr,
                                            const TopoDS_Vertex& NewExtr,
-                                           bool&                IsDegenerated) const;
+                                           bool&    IsDegenerated) const;
 
   //! Writes <NewEdge> in <fillets> if <Id> is equal to
   //! 1, or in <chamfers> if <Id> is Equal to 2.
   //! Writes the modifications in <history>:
   //! <TrimE1> is given by <E1>, <TrimE2> by <E2>
   //! if <TrimE1> and <TrimE2> are not degenerated.
-  Standard_EXPORT void UpDateHistory(const TopoDS_Edge& E1,
-                                     const TopoDS_Edge& E2,
-                                     const TopoDS_Edge& TrimE1,
-                                     const TopoDS_Edge& TrimE2,
-                                     const TopoDS_Edge& NewEdge,
-                                     const int          Id);
+  Standard_EXPORT void UpDateHistory(const TopoDS_Edge&     E1,
+                                     const TopoDS_Edge&     E2,
+                                     const TopoDS_Edge&     TrimE1,
+                                     const TopoDS_Edge&     TrimE2,
+                                     const TopoDS_Edge&     NewEdge,
+                                     const int Id);
 
   //! Writes the modifications in <history>.
   //! <TrimE1> is given by <E1>, <TrimE2> by <E2>.
@@ -272,11 +273,11 @@ private:
 
   Standard_EXPORT bool IsAChamfer(const TopoDS_Edge& E) const;
 
-  ChFi2d_ConstructionError                                                 status;
-  TopoDS_Face                                                              refFace;
-  TopoDS_Face                                                              newFace;
-  NCollection_Sequence<TopoDS_Shape>                                       fillets;
-  NCollection_Sequence<TopoDS_Shape>                                       chamfers;
+  ChFi2d_ConstructionError     status;
+  TopoDS_Face                  refFace;
+  TopoDS_Face                  newFace;
+  NCollection_Sequence<TopoDS_Shape>     fillets;
+  NCollection_Sequence<TopoDS_Shape>     chamfers;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> history;
 };
 

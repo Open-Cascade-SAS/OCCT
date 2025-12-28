@@ -57,9 +57,9 @@ struct OpenGl_MaterialPBR
 {
 
   NCollection_Vec4<float> BaseColor; //!< base color of PBR material with alpha component
-                                     // clang-format off
+                         // clang-format off
   NCollection_Vec4<float> EmissionIOR; //!< light intensity which is emitted by PBR material and index of refraction
-                                     // clang-format on
+                         // clang-format on
   NCollection_Vec4<float> Params;    //!< extra packed parameters
 
   float Metallic() const { return Params.b(); }
@@ -79,10 +79,7 @@ struct OpenGl_MaterialPBR
   }
 
   //! Set material color.
-  void SetColor(const NCollection_Vec3<float>& theColor)
-  {
-    BaseColor.SetValues(theColor, BaseColor.a());
-  }
+  void SetColor(const NCollection_Vec3<float>& theColor) { BaseColor.SetValues(theColor, BaseColor.a()); }
 };
 
 //! OpenGL material definition
@@ -124,18 +121,12 @@ struct OpenGl_Material
   bool operator!=(const OpenGl_Material& theOther) const { return !IsEqual(theOther); }
 
   //! Returns packed (serialized) representation of common material properties
-  const NCollection_Vec4<float>* PackedCommon() const
-  {
-    return reinterpret_cast<const NCollection_Vec4<float>*>(Common);
-  }
+  const NCollection_Vec4<float>* PackedCommon() const { return reinterpret_cast<const NCollection_Vec4<float>*>(Common); }
 
   static int NbOfVec4Common() { return 4 * 2; }
 
   //! Returns packed (serialized) representation of PBR material properties
-  const NCollection_Vec4<float>* PackedPbr() const
-  {
-    return reinterpret_cast<const NCollection_Vec4<float>*>(Pbr);
-  }
+  const NCollection_Vec4<float>* PackedPbr() const { return reinterpret_cast<const NCollection_Vec4<float>*>(Pbr); }
 
   static int NbOfVec4Pbr() { return 3 * 2; }
 
@@ -144,7 +135,7 @@ private:
   void init(const OpenGl_Context&           theCtx,
             const Graphic3d_MaterialAspect& theMat,
             const Quantity_Color&           theColor,
-            const int                       theIndex);
+            const int          theIndex);
 };
 
 //! Material flag

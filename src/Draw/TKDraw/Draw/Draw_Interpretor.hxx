@@ -34,7 +34,9 @@ class Draw_Interpretor
 
 public:
   //! Global callback function definition
-  typedef int (*CommandFunction)(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec);
+  typedef int (*CommandFunction)(Draw_Interpretor& theDI,
+                                              int  theArgNb,
+                                              const char**      theArgVec);
 
   //! Callback for TCL (interface)
   struct CallBackData
@@ -50,7 +52,9 @@ public:
     virtual ~CallBackData() {}
 
     //! Invoke function
-    virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec) = 0;
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
+                                    const char**      theArgVec) = 0;
 
     Draw_Interpretor* myDI; //!< pointer to Draw Interpreter
 
@@ -69,7 +73,9 @@ protected:
     {
     }
 
-    virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
+                                    const char**      theArgVec)
     {
       return myFunc != NULL ? myFunc(theDI, theArgNb, theArgVec) : 1;
     }
@@ -82,7 +88,9 @@ protected:
   struct CallBackDataMethod : public CallBackData
   {
     typedef typename theObjHandle::element_type element_type;
-    typedef int (element_type::*methodType)(Draw_Interpretor&, int, const char**);
+    typedef int (element_type::*methodType)(Draw_Interpretor&,
+                                                         int,
+                                                         const char**);
 
     CallBackDataMethod(Draw_Interpretor* theDI, const theObjHandle& theObjPtr, methodType theMethod)
         : CallBackData(theDI),
@@ -91,7 +99,9 @@ protected:
     {
     }
 
-    virtual int Invoke(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+    virtual int Invoke(Draw_Interpretor& theDI,
+                                    int  theArgNb,
+                                    const char**      theArgVec)
     {
       return myMethod != NULL && !myObjPtr.IsNull()
                ? (myObjPtr.operator->()->*myMethod)(theDI, theArgNb, theArgVec)
@@ -111,10 +121,10 @@ public:
 
   //! Creates a new command with name <theCommandName>, help string <theHelp> in group <theGroup>.
   //! @param theFunction callback implementation
-  inline void Add(const char*     theCommandName,
-                  const char*     theHelp,
-                  CommandFunction theFunction,
-                  const char*     theGroup = "User Commands")
+  inline void Add(const char* theCommandName,
+                  const char* theHelp,
+                  CommandFunction  theFunction,
+                  const char* theGroup = "User Commands")
   {
     Add(theCommandName, theHelp, "", theFunction, theGroup);
   }
@@ -122,11 +132,11 @@ public:
   //! Creates a new command with name <theCommandName>, help string <theHelp> in group <theGroup>.
   //! @theFunction callback implementation
   //! @theFileName the name of the file that contains the implementation of the command
-  inline void Add(const char*     theCommandName,
-                  const char*     theHelp,
-                  const char*     theFileName,
-                  CommandFunction theFunction,
-                  const char*     theGroup = "User Commands")
+  inline void Add(const char* theCommandName,
+                  const char* theHelp,
+                  const char* theFileName,
+                  CommandFunction  theFunction,
+                  const char* theGroup = "User Commands")
   {
     CallBackDataFunc* aCallback = new CallBackDataFunc(this, theFunction);
     add(theCommandName, theHelp, theFileName, aCallback, theGroup);
@@ -138,12 +148,12 @@ public:
   //! @param theFileName the name of the file that contains the implementation of the command
   template <typename theHandleType>
   inline void Add(
-    const char*                                                              theCommandName,
-    const char*                                                              theHelp,
-    const char*                                                              theFileName,
+    const char*                                                         theCommandName,
+    const char*                                                         theHelp,
+    const char*                                                         theFileName,
     const theHandleType&                                                     theObjPtr,
     typename Draw_Interpretor::CallBackDataMethod<theHandleType>::methodType theMethod,
-    const char*                                                              theGroup)
+    const char*                                                         theGroup)
   {
     Draw_Interpretor::CallBackDataMethod<theHandleType>* aCallback =
       new Draw_Interpretor::CallBackDataMethod<theHandleType>(this, theObjPtr, theMethod);
@@ -162,7 +172,10 @@ public:
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const char* theResult);
 
-  inline Draw_Interpretor& operator<<(const char* theResult) { return Append(theResult); }
+  inline Draw_Interpretor& operator<<(const char* theResult)
+  {
+    return Append(theResult);
+  }
 
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const TCollection_AsciiString& theResult);
@@ -183,7 +196,10 @@ public:
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const int theResult);
 
-  inline Draw_Interpretor& operator<<(const int theResult) { return Append(theResult); }
+  inline Draw_Interpretor& operator<<(const int theResult)
+  {
+    return Append(theResult);
+  }
 
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const double theResult);
@@ -206,7 +222,8 @@ public:
 
   //! Eval the script and returns OK = 0, ERROR = 1
   //! Store the script in the history record.
-  Standard_EXPORT int RecordAndEval(const char* theScript, const int theFlags = 0);
+  Standard_EXPORT int RecordAndEval(const char* theScript,
+                                                 const int theFlags = 0);
 
   //! Eval the content on the file and returns status
   Standard_EXPORT int EvalFile(const char* theFileName);
@@ -259,19 +276,19 @@ public:
   Standard_EXPORT void SetToColorize(bool theToColorize);
 
 protected:
-  Standard_EXPORT void add(const char*   theCommandName,
-                           const char*   theHelp,
-                           const char*   theFileName,
-                           CallBackData* theCallback,
-                           const char*   theGroup);
+  Standard_EXPORT void add(const char* theCommandName,
+                           const char* theHelp,
+                           const char* theFileName,
+                           CallBackData*    theCallback,
+                           const char* theGroup);
 
 private:
-  Draw_PInterp myInterp;
-  bool         isAllocated;
-  bool         myDoLog;
-  bool         myDoEcho;
-  bool         myToColorize;
-  int          myFDLog; //!< file descriptor of log file
+  Draw_PInterp     myInterp;
+  bool isAllocated;
+  bool myDoLog;
+  bool myDoEcho;
+  bool myToColorize;
+  int myFDLog; //!< file descriptor of log file
 
 public:
   DEFINE_STANDARD_ALLOC

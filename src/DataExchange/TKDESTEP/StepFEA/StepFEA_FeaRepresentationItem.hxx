@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepFEA_FeaRepresentationItem();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaRepresentationItem, StepRepr_RepresentationItem)
+
 };
 
 #endif // _StepFEA_FeaRepresentationItem_HeaderFile

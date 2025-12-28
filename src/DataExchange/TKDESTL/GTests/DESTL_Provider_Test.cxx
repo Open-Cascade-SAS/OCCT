@@ -28,6 +28,9 @@
 #include <gp_Dir.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Poly_Triangle.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <Poly_Triangle.hxx>
 #include <NCollection_Array1.hxx>
 #include <BRep_Tool.hxx>
 #include <TopLoc_Location.hxx>
@@ -46,7 +49,7 @@ protected:
   {
     // Initialize provider with default configuration
     occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
-    myProvider                                 = new DESTL_Provider(aNode);
+    myProvider                            = new DESTL_Provider(aNode);
 
     // Create triangulated shape for testing (STL format requires triangulated data)
 
@@ -112,7 +115,7 @@ protected:
 
 protected:
   occ::handle<DESTL_Provider>   myProvider;
-  TopoDS_Shape                  myTriangularFace;
+  TopoDS_Shape             myTriangularFace;
   occ::handle<TDocStd_Document> myDocument;
 };
 
@@ -164,7 +167,7 @@ TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
 {
   // Add triangulated shape to document
   occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                      aShapeLabel = aShapeTool->AddShape(myTriangularFace);
+  TDF_Label                 aShapeLabel = aShapeTool->AddShape(myTriangularFace);
   EXPECT_FALSE(aShapeLabel.IsNull());
 
   std::ostringstream           anOStream;
@@ -192,9 +195,8 @@ TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
     EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
     // Validate document content
-    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
-      XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-    NCollection_Sequence<TDF_Label> aLabels;
+    occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+    NCollection_Sequence<TDF_Label>         aLabels;
     aNewShapeTool->GetShapes(aLabels);
     EXPECT_GT(aLabels.Length(), 0); // Should have at least one shape in document
   }
@@ -204,7 +206,7 @@ TEST_F(DESTL_ProviderTest, StreamDocumentWriteRead)
 TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
 {
   // Initialize DE_Wrapper and bind STL provider
-  DE_Wrapper                           aWrapper;
+  DE_Wrapper                      aWrapper;
   occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
 
   // Bind the configured node to wrapper
@@ -236,8 +238,8 @@ TEST_F(DESTL_ProviderTest, DE_WrapperIntegration)
     aReadStreams2.Append(DE_Provider::ReadStreamNode("test.stl", anIStream2));
 
     occ::handle<DESTL_Provider> aDirectProvider = new DESTL_Provider(aNode);
-    TopoDS_Shape                aDirectShape;
-    bool                        aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
+    TopoDS_Shape           aDirectShape;
+    bool                   aDirectResult = aDirectProvider->Read(aReadStreams2, aDirectShape);
 
     // REQUIREMENT: DE_Wrapper must work exactly the same as direct provider
     EXPECT_EQ(aWrapperResult, aDirectResult);
@@ -349,7 +351,7 @@ TEST_F(DESTL_ProviderTest, MultipleShapesInDocument)
 {
   // Add triangulated face to document multiple times (to create multiple shapes)
   occ::handle<XCAFDoc_ShapeTool> aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(myDocument->Main());
-  TDF_Label                      aFaceLabel1 = aShapeTool->AddShape(myTriangularFace);
+  TDF_Label                 aFaceLabel1 = aShapeTool->AddShape(myTriangularFace);
   TDF_Label aFaceLabel2 = aShapeTool->AddShape(myTriangularFace); // Add same face again
 
   EXPECT_FALSE(aFaceLabel1.IsNull());
@@ -377,9 +379,8 @@ TEST_F(DESTL_ProviderTest, MultipleShapesInDocument)
   EXPECT_TRUE(myProvider->Read(aReadStreams, aNewDocument));
 
   // Validate document content
-  occ::handle<XCAFDoc_ShapeTool> aNewShapeTool =
-    XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
-  NCollection_Sequence<TDF_Label> aLabels;
+  occ::handle<XCAFDoc_ShapeTool> aNewShapeTool = XCAFDoc_DocumentTool::ShapeTool(aNewDocument->Main());
+  NCollection_Sequence<TDF_Label>         aLabels;
   aNewShapeTool->GetShapes(aLabels);
   EXPECT_GT(aLabels.Length(), 0);
 }
@@ -411,7 +412,7 @@ TEST_F(DESTL_ProviderTest, TriangulatedFaceHandling)
 // Test DE_Wrapper with different file extensions
 TEST_F(DESTL_ProviderTest, DE_WrapperFileExtensions)
 {
-  DE_Wrapper                           aWrapper;
+  DE_Wrapper                      aWrapper;
   occ::handle<DESTL_ConfigurationNode> aNode = new DESTL_ConfigurationNode();
   EXPECT_TRUE(aWrapper.Bind(aNode));
 

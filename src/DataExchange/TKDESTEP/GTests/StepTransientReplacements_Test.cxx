@@ -114,14 +114,14 @@ protected:
   }
 
   // Common test objects
-  occ::handle<StepBasic_MeasureWithUnit>                     myMeasureWithUnit;
-  occ::handle<StepRepr_ReprItemAndMeasureWithUnit>           myReprItemAndMeasureWithUnit;
-  occ::handle<StepBasic_DimensionalExponents>                myDimensionalExponents;
-  occ::handle<TCollection_HAsciiString>                      myName;
-  occ::handle<TCollection_HAsciiString>                      myDescription;
-  occ::handle<StepBasic_ProductDefinition>                   myProductDefinition;
-  occ::handle<StepRepr_ProductDefinitionShape>               myProductDefinitionShape;
-  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> myQualifiers;
+  occ::handle<StepBasic_MeasureWithUnit>           myMeasureWithUnit;
+  occ::handle<StepRepr_ReprItemAndMeasureWithUnit> myReprItemAndMeasureWithUnit;
+  occ::handle<StepBasic_DimensionalExponents>      myDimensionalExponents;
+  occ::handle<TCollection_HAsciiString>            myName;
+  occ::handle<TCollection_HAsciiString>            myDescription;
+  occ::handle<StepBasic_ProductDefinition>         myProductDefinition;
+  occ::handle<StepRepr_ProductDefinitionShape>     myProductDefinitionShape;
+  occ::handle<NCollection_HArray1<StepShape_ValueQualifier>>   myQualifiers;
 };
 
 // Test ConversionBasedUnit with different transient types
@@ -336,8 +336,7 @@ TEST_F(StepTransientReplacements, GetMeasureWithUnit_ExtractsCorrectly)
   // We recreate the function here for testing
 
   auto GetMeasureWithUnit =
-    [](
-      const occ::handle<Standard_Transient>& theMeasure) -> occ::handle<StepBasic_MeasureWithUnit> {
+    [](const occ::handle<Standard_Transient>& theMeasure) -> occ::handle<StepBasic_MeasureWithUnit> {
     if (theMeasure.IsNull())
     {
       return nullptr;
@@ -374,6 +373,6 @@ TEST_F(StepTransientReplacements, GetMeasureWithUnit_ExtractsCorrectly)
 
   // Test with unrelated type
   occ::handle<Standard_Transient> anUnrelatedTransient = myName;
-  aExtracted                                           = GetMeasureWithUnit(anUnrelatedTransient);
+  aExtracted                                      = GetMeasureWithUnit(anUnrelatedTransient);
   EXPECT_TRUE(aExtracted.IsNull());
 }

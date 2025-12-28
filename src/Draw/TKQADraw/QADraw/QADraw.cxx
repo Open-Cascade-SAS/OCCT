@@ -29,14 +29,18 @@
 #include <Draw_PluginMacro.hxx>
 #include <OSD_Timer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <stdio.h>
 
 //=================================================================================================
 
-static int QATestExtremaSS(Draw_Interpretor& theInterpretor, int theArgNb, const char** theArgs)
+static int QATestExtremaSS(Draw_Interpretor& theInterpretor,
+                                        int  theArgNb,
+                                        const char**      theArgs)
 {
   if (theArgNb < 3 || theArgNb > 4)
   {
@@ -87,7 +91,7 @@ static int QATestExtremaSS(Draw_Interpretor& theInterpretor, int theArgNb, const
   aZmax *= aScaleFactor;
 
   NCollection_Sequence<TopoDS_Shape> aList;
-  NCollection_Sequence<gp_XYZ>       aPoints;
+  NCollection_Sequence<gp_XYZ>     aPoints;
   for (double aX = aXmin + 0.5 * aStep; aX < aXmax; aX += aStep)
   {
     for (double aY = aYmin + 0.5 * aStep; aY < aYmax; aY += aStep)

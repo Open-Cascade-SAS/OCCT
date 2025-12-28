@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <BRepFill_SectionLaw.hxx>
@@ -38,15 +39,17 @@ class BRepFill_ShapeLaw : public BRepFill_SectionLaw
 
 public:
   //! Construct an constant Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Vertex& V, const bool Build = true);
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Vertex&   V,
+                                    const bool Build = true);
 
   //! Construct an constant Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire& W, const bool Build = true);
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&     W,
+                                    const bool Build = true);
 
   //! Construct an evolutive Law
-  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&               W,
+  Standard_EXPORT BRepFill_ShapeLaw(const TopoDS_Wire&          W,
                                     const occ::handle<Law_Function>& L,
-                                    const bool                       Build = true);
+                                    const bool      Build = true);
 
   //! Say if the input shape is a vertex.
   Standard_EXPORT virtual bool IsVertex() const override;
@@ -57,12 +60,16 @@ public:
   //! Give the law build on a concatenated section
   Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const override;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int    Index,
-                                                   const double TolAngular) const override;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int Index,
+                                                   const double    TolAngular) const
+    override;
 
-  Standard_EXPORT virtual double VertexTol(const int Index, const double Param) const override;
+  Standard_EXPORT virtual double VertexTol(const int Index,
+                                                  const double    Param) const
+    override;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index, const double Param) const override;
+  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index,
+                                               const double Param) const override;
 
   Standard_EXPORT virtual void D0(const double Param, TopoDS_Shape& S) override;
 
@@ -76,9 +83,9 @@ protected:
 private:
   Standard_EXPORT void Init(const bool B);
 
-  TopoDS_Shape                                   myShape;
+  TopoDS_Shape                    myShape;
   occ::handle<NCollection_HArray1<TopoDS_Shape>> myEdges;
-  occ::handle<Law_Function>                      TheLaw;
+  occ::handle<Law_Function>            TheLaw;
 };
 
 #include <BRepFill_ShapeLaw.lxx>

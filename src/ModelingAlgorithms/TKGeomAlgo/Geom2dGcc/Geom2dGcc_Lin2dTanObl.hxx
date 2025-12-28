@@ -24,7 +24,11 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class gp_Lin2d;
 class gp_Pnt2d;
@@ -53,8 +57,8 @@ public:
   //! Tolang is the angular tolerance.
   Standard_EXPORT Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qualified1,
                                         const gp_Lin2d&                 TheLin,
-                                        const double                    TolAng,
-                                        const double                    Angle);
+                                        const double             TolAng,
+                                        const double             Angle);
 
   //! This class implements the algorithm used to
   //! create 2d line tangent to a curve and doing an
@@ -71,9 +75,9 @@ public:
   //! the argument it qualifies (for example, enclosed for a circle).
   Standard_EXPORT Geom2dGcc_Lin2dTanObl(const Geom2dGcc_QualifiedCurve& Qualified1,
                                         const gp_Lin2d&                 TheLin,
-                                        const double                    TolAng,
-                                        const double                    Param1,
-                                        const double                    Angle);
+                                        const double             TolAng,
+                                        const double             Param1,
+                                        const double             Angle);
 
   //! Returns true if the construction algorithm does not fail
   //! (even if it finds no solution).
@@ -117,9 +121,9 @@ public:
   //! ParArg is the intrinsic parameter of the point PntSol on
   //! the argument curv.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns the point of intersection PntSol between the
   //! solution of index Index and the second argument (the line) of this algorithm.
@@ -132,9 +136,9 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   Standard_EXPORT void Intersection2(const int Index,
-                                     double&   ParSol,
-                                     double&   ParArg,
-                                     gp_Pnt2d& PntSol) const;
+                                     double&         ParSol,
+                                     double&         ParArg,
+                                     gp_Pnt2d&              PntSol) const;
 
   //! Returns true if the line and the solution are parallel. This
   //! is the case when the angle given at the time of
@@ -143,22 +147,22 @@ public:
   Standard_EXPORT bool IsParallel2() const;
 
 private:
-  Standard_EXPORT bool Add(const int                        theIndex,
-                           const Geom2dGcc_Lin2dTanOblIter& theLin,
-                           const double                     theTol,
-                           const Geom2dAdaptor_Curve&       theC1);
+  Standard_EXPORT bool Add(const int           theIndex,
+                                       const Geom2dGcc_Lin2dTanOblIter& theLin,
+                                       const double              theTol,
+                                       const Geom2dAdaptor_Curve&       theC1);
 
-  bool                                WellDone;
-  bool                                Paral2;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Lin2d>        linsol;
+  bool        WellDone;
+  bool        Paral2;
+  int        NbrSol;
+  NCollection_Array1<gp_Lin2d>    linsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pntint2sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pntint2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
 };
 
 #endif // _Geom2dGcc_Lin2dTanObl_HeaderFile

@@ -51,6 +51,7 @@ public:
 
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PresentationSet> PresentationSet() const;
+
 };
 
 #endif // _StepVisual_StyleContextSelect_HeaderFile

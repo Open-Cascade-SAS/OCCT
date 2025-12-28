@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_MutableIndexBuffer, Graphic3d_IndexBuffer)
 
 const occ::handle<NCollection_BaseAllocator>& Graphic3d_Buffer::DefaultAllocator()
 {
-  static const occ::handle<NCollection_BaseAllocator> THE_ALLOC =
-    new NCollection_AlignedAllocator(16);
+  static const occ::handle<NCollection_BaseAllocator> THE_ALLOC = new NCollection_AlignedAllocator(16);
   return THE_ALLOC;
 }
 

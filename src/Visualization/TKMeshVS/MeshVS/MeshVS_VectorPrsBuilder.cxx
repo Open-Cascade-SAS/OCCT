@@ -28,6 +28,7 @@
 #include <Standard_Type.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
@@ -36,13 +37,13 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_VectorPrsBuilder, MeshVS_PrsBuilder)
 //=================================================================================================
 
 MeshVS_VectorPrsBuilder::MeshVS_VectorPrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
-                                                 const double                          MaxLength,
-                                                 const Quantity_Color&                 VectorColor,
-                                                 const MeshVS_DisplayModeFlags&        Flags,
+                                                 const double              MaxLength,
+                                                 const Quantity_Color&            VectorColor,
+                                                 const MeshVS_DisplayModeFlags&   Flags,
                                                  const occ::handle<MeshVS_DataSource>& DS,
-                                                 const int                             Id,
-                                                 const MeshVS_BuilderPriority&         Priority,
-                                                 const bool                            IsSimplePrs)
+                                                 const int           Id,
+                                                 const MeshVS_BuilderPriority&    Priority,
+                                                 const bool           IsSimplePrs)
     : MeshVS_PrsBuilder(Parent, Flags, DS, Id, Priority),
       myIsSimplePrs(IsSimplePrs),
       mySimpleWidthPrm(2.5),
@@ -71,7 +72,7 @@ const NCollection_DataMap<int, gp_Vec>& MeshVS_VectorPrsBuilder::GetVectors(
 
 //=================================================================================================
 
-void MeshVS_VectorPrsBuilder::SetVectors(const bool                              IsElements,
+void MeshVS_VectorPrsBuilder::SetVectors(const bool               IsElements,
                                          const NCollection_DataMap<int, gp_Vec>& theMap)
 {
   if (IsElements)
@@ -92,7 +93,9 @@ bool MeshVS_VectorPrsBuilder::HasVectors(const bool IsElement) const
 
 //=================================================================================================
 
-bool MeshVS_VectorPrsBuilder::GetVector(const bool IsElement, const int ID, gp_Vec& Vect) const
+bool MeshVS_VectorPrsBuilder::GetVector(const bool IsElement,
+                                                    const int ID,
+                                                    gp_Vec&                Vect) const
 {
   const NCollection_DataMap<int, gp_Vec>* aMap = &myNodeVectorMap;
   if (IsElement)
@@ -107,7 +110,9 @@ bool MeshVS_VectorPrsBuilder::GetVector(const bool IsElement, const int ID, gp_V
 
 //=================================================================================================
 
-void MeshVS_VectorPrsBuilder::SetVector(const bool IsElement, const int ID, const gp_Vec& Vect)
+void MeshVS_VectorPrsBuilder::SetVector(const bool IsElement,
+                                        const int ID,
+                                        const gp_Vec&          Vect)
 {
   NCollection_DataMap<int, gp_Vec>* aMap = &myNodeVectorMap;
   if (IsElement)
@@ -123,8 +128,8 @@ void MeshVS_VectorPrsBuilder::SetVector(const bool IsElement, const int ID, cons
 //=================================================================================================
 
 void MeshVS_VectorPrsBuilder::GetMinMaxVectorValue(const bool IsElement,
-                                                   double&    MinValue,
-                                                   double&    MaxValue) const
+                                                   double&         MinValue,
+                                                   double&         MaxValue) const
 {
   const NCollection_DataMap<int, gp_Vec>* aMap = &myNodeVectorMap;
   if (IsElement)
@@ -154,10 +159,10 @@ void MeshVS_VectorPrsBuilder::GetMinMaxVectorValue(const bool IsElement,
 #define NB_FANS 1
 
 void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                    const TColStd_PackedMapOfInteger&      IDs,
-                                    TColStd_PackedMapOfInteger&            IDsToExclude,
-                                    const bool                             IsElement,
-                                    const int                              theDisplayMode) const
+                                    const TColStd_PackedMapOfInteger& IDs,
+                                    TColStd_PackedMapOfInteger&       IDsToExclude,
+                                    const bool            IsElement,
+                                    const int            theDisplayMode) const
 {
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
@@ -165,22 +170,22 @@ void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
       || (theDisplayMode & GetFlags()) == 0)
     return;
 
-  int    aMaxFaceNodes;
-  double aMaxLen, anArrowPart = 0.1;
+  int aMaxFaceNodes;
+  double    aMaxLen, anArrowPart = 0.1;
 
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0
       || !aDrawer->GetDouble(MeshVS_DA_VectorMaxLength, aMaxLen) || aMaxLen <= 0
       || !aDrawer->GetDouble(MeshVS_DA_VectorArrowPart, anArrowPart) || anArrowPart <= 0)
     return;
 
-  MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
+  MeshVS_Buffer        aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
-  int                        NbNodes;
-  MeshVS_EntityType          aType;
+  int     NbNodes;
+  MeshVS_EntityType    aType;
 
   // DECLARE ARRAYS OF PRIMITIVES
   const NCollection_DataMap<int, gp_Vec>& aMap       = GetVectors(IsElement);
-  int                                     aNbVectors = aMap.Extent();
+  int                     aNbVectors = aMap.Extent();
 
   if (aNbVectors <= 0)
     return;
@@ -188,20 +193,19 @@ void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   // polylines
   int aNbVertices = aNbVectors * NB_VERTICES;
 
-  occ::handle<Graphic3d_ArrayOfPrimitives> aLineArray = new Graphic3d_ArrayOfSegments(aNbVertices);
-  occ::handle<Graphic3d_ArrayOfPrimitives> aArrowLineArray =
-    new Graphic3d_ArrayOfSegments(aNbVertices);
+  occ::handle<Graphic3d_ArrayOfPrimitives> aLineArray      = new Graphic3d_ArrayOfSegments(aNbVertices);
+  occ::handle<Graphic3d_ArrayOfPrimitives> aArrowLineArray = new Graphic3d_ArrayOfSegments(aNbVertices);
 
   occ::handle<Graphic3d_ArrayOfPrimitives> aTriangleArray = new Graphic3d_ArrayOfSegments(
     aNbVectors * 8 /* vertices per arrow */,
     aNbVectors * 12 /* segments per arrow */ * 2 /* indices per segment */);
 
   NCollection_Array1<gp_Pnt> anArrowPnt(1, 8);
-  double                     k, b, aMaxValue, aMinValue, aValue, X, Y, Z;
+  double      k, b, aMaxValue, aMinValue, aValue, X, Y, Z;
 
-  double  aMinLength = calculateArrow(anArrowPnt, aMaxLen, anArrowPart);
-  gp_Vec  aVec;
-  gp_Trsf aTrsf;
+  double aMinLength = calculateArrow(anArrowPnt, aMaxLen, anArrowPart);
+  gp_Vec        aVec;
+  gp_Trsf       aTrsf;
 
   GetMinMaxVectorValue(IsElement, aMinValue, aMaxValue);
 
@@ -321,18 +325,19 @@ void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
 // Purpose : Fill arrays of primitives for drawing force
 //=======================================================================
 void MeshVS_VectorPrsBuilder::DrawVector(
-  const gp_Trsf&                                  theTrsf,
-  const double                                    theLength,
-  const double                                    theMaxLength,
-  const NCollection_Array1<gp_Pnt>&               theArrowPoints,
+  const gp_Trsf&                             theTrsf,
+  const double                        theLength,
+  const double                        theMaxLength,
+  const NCollection_Array1<gp_Pnt>&                  theArrowPoints,
   const occ::handle<Graphic3d_ArrayOfPrimitives>& theLines,
   const occ::handle<Graphic3d_ArrayOfPrimitives>& theArrowLines,
   const occ::handle<Graphic3d_ArrayOfPrimitives>& theTriangles) const
 {
   const int PntNum = 8;
 
-  const double aMinLength   = theMaxLength * (1 - mySimpleStartPrm);
-  const double aLocalLength = (!myIsSimplePrs || theLength > aMinLength ? theLength : aMinLength);
+  const double aMinLength = theMaxLength * (1 - mySimpleStartPrm);
+  const double aLocalLength =
+    (!myIsSimplePrs || theLength > aMinLength ? theLength : aMinLength);
   // draw line
   gp_Pnt aLinePnt[2] = {gp_Pnt(0, 0, 0), gp_Pnt(0, 0, aLocalLength)};
   theTrsf.Transforms(aLinePnt[0].ChangeCoord());
@@ -377,7 +382,7 @@ void MeshVS_VectorPrsBuilder::DrawVector(
   {
     const double aEndPos      = aLocalLength - theMaxLength * (1 - mySimpleEndPrm);
     const double aArrowLength = theMaxLength * (mySimpleEndPrm - mySimpleStartPrm);
-    gp_Pnt       aArrowPnt[2] = {gp_Pnt(0, 0, aEndPos - aArrowLength), gp_Pnt(0, 0, aEndPos)};
+    gp_Pnt aArrowPnt[2] = {gp_Pnt(0, 0, aEndPos - aArrowLength), gp_Pnt(0, 0, aEndPos)};
     theTrsf.Transforms(aArrowPnt[0].ChangeCoord());
     theTrsf.Transforms(aArrowPnt[1].ChangeCoord());
 
@@ -391,21 +396,21 @@ void MeshVS_VectorPrsBuilder::DrawVector(
 // Purpose : Calculate points of arrow ( 8 pnts )
 //=======================================================================
 double MeshVS_VectorPrsBuilder::calculateArrow(NCollection_Array1<gp_Pnt>& Points,
-                                               const double                Length,
-                                               const double                ArrowPart)
+                                                      const double Length,
+                                                      const double ArrowPart)
 {
   double h = Length * ArrowPart;
   double w = h / 5.;
 
-  int f         = Points.Lower();
-  Points(f)     = gp_Pnt(0, 0, 0);
-  Points(f + 1) = gp_Pnt(0, -w, -h);
-  Points(f + 2) = gp_Pnt(w * 0.866, -w * 0.5, -h);
-  Points(f + 3) = gp_Pnt(w * 0.866, w * 0.5, -h);
-  Points(f + 4) = gp_Pnt(0, w, -h);
-  Points(f + 5) = gp_Pnt(-w * 0.866, w * 0.5, -h);
-  Points(f + 6) = gp_Pnt(-w * 0.866, -w * 0.5, -h);
-  Points(f + 7) = gp_Pnt(0, -w, -h);
+  int f = Points.Lower();
+  Points(f)          = gp_Pnt(0, 0, 0);
+  Points(f + 1)      = gp_Pnt(0, -w, -h);
+  Points(f + 2)      = gp_Pnt(w * 0.866, -w * 0.5, -h);
+  Points(f + 3)      = gp_Pnt(w * 0.866, w * 0.5, -h);
+  Points(f + 4)      = gp_Pnt(0, w, -h);
+  Points(f + 5)      = gp_Pnt(-w * 0.866, w * 0.5, -h);
+  Points(f + 6)      = gp_Pnt(-w * 0.866, -w * 0.5, -h);
+  Points(f + 7)      = gp_Pnt(0, -w, -h);
 
   return h;
 }

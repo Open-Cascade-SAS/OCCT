@@ -30,7 +30,7 @@ RWStepRepr_RWShapeAspectDerivingRelationship::RWStepRepr_RWShapeAspectDerivingRe
 
 void RWStepRepr_RWShapeAspectDerivingRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num,
+  const int                                  num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepRepr_ShapeAspectDerivingRelationship>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepRepr_RWShapeAspectDerivingRelationship::ReadStep(
   data->ReadString(num, 1, "shape_aspect_relationship.name", ach, aShapeAspectRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Description;
-  bool                                  hasShapeAspectRelationship_Description = true;
+  bool                 hasShapeAspectRelationship_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -85,7 +85,7 @@ void RWStepRepr_RWShapeAspectDerivingRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWShapeAspectDerivingRelationship::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepRepr_ShapeAspectDerivingRelationship>& ent) const
 {
 
@@ -109,7 +109,7 @@ void RWStepRepr_RWShapeAspectDerivingRelationship::WriteStep(
 
 void RWStepRepr_RWShapeAspectDerivingRelationship::Share(
   const occ::handle<StepRepr_ShapeAspectDerivingRelationship>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   // Inherited fields of ShapeAspectRelationship

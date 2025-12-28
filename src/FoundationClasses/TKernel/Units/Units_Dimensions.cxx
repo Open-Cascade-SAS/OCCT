@@ -54,7 +54,7 @@ Units_Dimensions::Units_Dimensions(const double amass,
 //=======================================================================
 
 static occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> quantitySequence;
-static TCollection_AsciiString                                         quantityName;
+static TCollection_AsciiString          quantityName;
 
 const char* Units_Dimensions::Quantity() const
 {
@@ -98,8 +98,7 @@ occ::handle<Units_Dimensions> Units_Dimensions::Multiply(
 
 //=================================================================================================
 
-occ::handle<Units_Dimensions> Units_Dimensions::Divide(
-  const occ::handle<Units_Dimensions>& adimensions) const
+occ::handle<Units_Dimensions> Units_Dimensions::Divide(const occ::handle<Units_Dimensions>& adimensions) const
 {
   return new Units_Dimensions(themass - adimensions->Mass(),
                               thelength - adimensions->Length(),
@@ -192,7 +191,7 @@ void Units_Dimensions::Dump(const int ashift) const
 //=======================================================================
 
 occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>& adimension1,
-                                        const occ::handle<Units_Dimensions>& adimension2)
+                                   const occ::handle<Units_Dimensions>& adimension2)
 {
   return adimension1->Multiply(adimension2);
 }
@@ -203,15 +202,14 @@ occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>& adi
 //=======================================================================
 
 occ::handle<Units_Dimensions> operator/(const occ::handle<Units_Dimensions>& adimension1,
-                                        const occ::handle<Units_Dimensions>& adimension2)
+                                   const occ::handle<Units_Dimensions>& adimension2)
 {
   return adimension1->Divide(adimension2);
 }
 
 //=================================================================================================
 
-occ::handle<Units_Dimensions> pow(const occ::handle<Units_Dimensions>& adimension,
-                                  const double                         areal)
+occ::handle<Units_Dimensions> pow(const occ::handle<Units_Dimensions>& adimension, const double areal)
 {
   return adimension->Power(areal);
 }

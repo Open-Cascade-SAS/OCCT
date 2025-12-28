@@ -66,6 +66,7 @@ public:
 
   //! returns Value as a RightCircularCylinder (Null if another type)
   Standard_EXPORT occ::handle<StepShape_RightCircularCylinder> RightCircularCylinder() const;
+
 };
 
 #endif // _StepShape_CsgPrimitive_HeaderFile

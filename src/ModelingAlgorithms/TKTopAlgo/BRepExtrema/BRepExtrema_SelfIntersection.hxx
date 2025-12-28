@@ -41,7 +41,7 @@ public:
 
   //! Creates self-intersection tool for the given shape.
   Standard_EXPORT BRepExtrema_SelfIntersection(const TopoDS_Shape& theShape,
-                                               const double        theTolerance = 0.0);
+                                               const double theTolerance = 0.0);
 
 public:
   //! Returns tolerance value used for self-intersection test.

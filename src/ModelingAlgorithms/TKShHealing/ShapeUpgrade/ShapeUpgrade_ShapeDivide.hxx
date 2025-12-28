@@ -68,7 +68,8 @@ public:
   //! If newContext is True (default), the internal context
   //! will be cleared at start, else previous substitutions
   //! will be acting.
-  Standard_EXPORT virtual bool Perform(const bool newContext = true);
+  Standard_EXPORT virtual bool Perform(
+    const bool newContext = true);
 
   //! Gives the resulting Shape, or Null shape if not done.
   Standard_EXPORT TopoDS_Shape Result() const;
@@ -123,14 +124,14 @@ protected:
 
   occ::handle<ShapeBuild_ReShape>              myContext;
   occ::handle<ShapeExtend_BasicMsgRegistrator> myMsgReg;
-  TopoDS_Shape                                 myShape;
-  TopoDS_Shape                                 myResult;
-  double                                       myPrecision;
-  double                                       myMinTol;
-  double                                       myMaxTol;
-  bool                                         mySegmentMode;
-  int                                          myStatus;
-  int                                          myEdgeMode;
+  TopoDS_Shape                            myShape;
+  TopoDS_Shape                            myResult;
+  double                           myPrecision;
+  double                           myMinTol;
+  double                           myMaxTol;
+  bool                        mySegmentMode;
+  int                        myStatus;
+  int                        myEdgeMode;
 
 private:
   occ::handle<ShapeUpgrade_FaceDivide> mySplitFaceTool;

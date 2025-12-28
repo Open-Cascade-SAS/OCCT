@@ -90,12 +90,12 @@ private:
   //! Returns number of steps to be used to move point iterator.
   int checkControlPointAndMoveOn(const int theIndex)
   {
-    int aMoveSteps     = 0;
-    myCurrControlParam = myControlParams->Value(theIndex);
+    int aMoveSteps = 0;
+    myCurrControlParam          = myControlParams->Value(theIndex);
     myIso->D1(myCurrControlParam, myCurrControlPnt, myCurrControlVec);
 
     const double aMidParam = 0.5 * (myPrevControlParam + myCurrControlParam);
-    const gp_Pnt aMidPnt   = myIso->Value(aMidParam);
+    const gp_Pnt        aMidPnt   = myIso->Value(aMidParam);
 
     const double aSqDist =
       BRepMesh_GeomTool::SquareDeflectionOfSegment(myPrevControlPnt, myCurrControlPnt, aMidPnt);
@@ -152,7 +152,7 @@ private:
     myIso->D1(theParam, aTmpPnt, aTmpVec);
 
     const double aTmpMidParam = 0.5 * (myPrevControlParam + theParam);
-    const gp_Pnt aTmpMidPnt   = myIso->Value(aTmpMidParam);
+    const gp_Pnt        aTmpMidPnt   = myIso->Value(aTmpMidParam);
 
     // Lets check next parameter.
     // If it also fits deflection, we can remove previous parameter.
@@ -187,8 +187,8 @@ private:
 
 private:
   IMeshData::IFaceHandle            myDFace;
-  occ::handle<Geom_Surface>         mySurface;
-  bool                              myIsoU;
+  occ::handle<Geom_Surface>              mySurface;
+  bool                  myIsoU;
   Handle(IMeshData::SequenceOfReal) myParams;
   Handle(IMeshData::SequenceOfReal) myControlParams;
 
@@ -196,7 +196,7 @@ private:
   Handle(IMeshData::MapOfReal) myControlParamsForbiddenToRemove;
 
   occ::handle<NCollection_IncAllocator> myAllocator;
-  Handle(IMeshData::MapOfReal)          myControlParamsToRemove;
+  Handle(IMeshData::MapOfReal)     myControlParamsToRemove;
 
   IMeshTools_Parameters                 myParameters;
   NCollection_Handle<GeomAdaptor_Curve> myIso;
@@ -204,18 +204,18 @@ private:
   double myCurrParam;
 
   double myCurrControlParam;
-  gp_Pnt myCurrControlPnt;
-  gp_Vec myCurrControlVec;
+  gp_Pnt        myCurrControlPnt;
+  gp_Vec        myCurrControlVec;
 
   double myPrevControlParam;
-  gp_Pnt myPrevControlPnt;
-  gp_Vec myPrevControlVec;
+  gp_Pnt        myPrevControlPnt;
+  gp_Vec        myPrevControlVec;
 };
 
 //! Adds param to map if it fits specified range.
-bool addParam(const double&                    theParam,
-              const std::pair<double, double>& theRange,
-              IMeshData::IMapOfReal&           theParams)
+bool addParam(const double&                           theParam,
+                          const std::pair<double, double>& theRange,
+                          IMeshData::IMapOfReal&                         theParams)
 {
   if (theParam < theRange.first || theParam > theRange.second)
   {
@@ -228,9 +228,9 @@ bool addParam(const double&                    theParam,
 
 //! Initializes parameters map using CN intervals.
 bool initParamsFromIntervals(const NCollection_Array1<double>& theIntervals,
-                             const std::pair<double, double>&  theRange,
-                             const bool                        isSplitIntervals,
-                             IMeshData::IMapOfReal&            theParams)
+                                         const std::pair<double, double>& theRange,
+                                         const bool isSplitIntervals,
+                                         IMeshData::IMapOfReal& theParams)
 {
   bool isAdded = false;
 
@@ -259,7 +259,7 @@ bool initParamsFromIntervals(const NCollection_Array1<double>& theIntervals,
 //! Returns true in case if it is impossible to compute normal
 //! directly on intervals, false is returned elsewhere.
 bool toSplitIntervals(const occ::handle<Geom_Surface>& theSurf,
-                      const NCollection_Array1<double> (&theIntervals)[2])
+                                  const NCollection_Array1<double> (&theIntervals)[2])
 {
   int aIntervalU = theIntervals[0].Lower();
   for (; aIntervalU <= theIntervals[0].Upper(); ++aIntervalU)
@@ -271,7 +271,7 @@ bool toSplitIntervals(const occ::handle<Geom_Surface>& theSurf,
     int aIntervalV = theIntervals[1].Lower();
     for (; aIntervalV <= theIntervals[1].Upper(); ++aIntervalV)
     {
-      gp_Dir       aNorm;
+      gp_Dir              aNorm;
       const double aParamV = theIntervals[1].Value(aIntervalV);
       if (Precision::IsInfinite(aParamV))
         continue;
@@ -320,7 +320,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
   const std::pair<double, double>& aRangeV = GetRangeV();
   const std::pair<double, double>& aDelta  = GetDelta();
 
-  const double                            aDefFace = GetDFace()->GetDeflection();
+  const double                aDefFace = GetDFace()->GetDeflection();
   const occ::handle<BRepAdaptor_Surface>& gFace    = GetSurface();
   occ::handle<Geom_Surface>               aSurface = gFace->Surface().Surface();
 
@@ -399,7 +399,7 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
 
 int BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
   const occ::handle<Adaptor3d_Surface>& theSurface,
-  const bool                            isU,
+  const bool           isU,
   const GeomAbs_Shape /*theContinuity*/) const
 {
   return (isU ? theSurface->NbUPoles() : theSurface->NbVPoles()) - 1;
@@ -408,11 +408,11 @@ int BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
 //=================================================================================================
 
 void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
-  const occ::handle<Adaptor3d_Surface>& theSurface,
-  const bool                            isU,
-  const GeomAbs_Shape                   theContinuity,
-  const std::pair<double, double>&      theRange,
-  NCollection_Array1<double>&           theIntervals) const
+  const occ::handle<Adaptor3d_Surface>&               theSurface,
+  const bool                         isU,
+  const GeomAbs_Shape                            theContinuity,
+  const std::pair<double, double>& theRange,
+  NCollection_Array1<double>&                          theIntervals) const
 {
   int aIntervalsNb =
     isU ? theSurface->NbUIntervals(theContinuity) : theSurface->NbVIntervals(theContinuity);
@@ -422,7 +422,7 @@ void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
     aIntervalsNb = getUndefinedIntervalNb(theSurface, isU, theContinuity);
     if (aIntervalsNb > 1)
     {
-      theIntervals       = NCollection_Array1<double>(1, aIntervalsNb - 1);
+      theIntervals              = NCollection_Array1<double>(1, aIntervalsNb - 1);
       const double aDiff = (theRange.second - theRange.first) / aIntervalsNb;
       for (int i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
       {
@@ -449,14 +449,15 @@ void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
 
 bool BRepMesh_NURBSRangeSplitter::initParameters() const
 {
-  const GeomAbs_Shape                     aContinuity = GeomAbs_CN;
+  const GeomAbs_Shape                aContinuity = GeomAbs_CN;
   const occ::handle<BRepAdaptor_Surface>& aSurface    = GetSurface();
 
   NCollection_Array1<double> aIntervals[2];
   getUndefinedInterval(aSurface, true, aContinuity, GetRangeU(), aIntervals[0]);
   getUndefinedInterval(aSurface, false, aContinuity, GetRangeV(), aIntervals[1]);
 
-  const bool isSplitIntervals = toSplitIntervals(aSurface->Surface().Surface(), aIntervals);
+  const bool isSplitIntervals =
+    toSplitIntervals(aSurface->Surface().Surface(), aIntervals);
 
   if (!initParamsFromIntervals(aIntervals[0],
                                GetRangeU(),
@@ -485,8 +486,9 @@ bool BRepMesh_NURBSRangeSplitter::initParameters() const
 
 //=================================================================================================
 
-bool BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(const EdgeType theEdgeType,
-                                                    const int      theParamDimensionFlag) const
+bool BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(
+  const EdgeType         theEdgeType,
+  const int theParamDimensionFlag) const
 {
   if ((theParamDimensionFlag & (Param_U | Param_V)) == 0)
   {
@@ -534,11 +536,11 @@ bool BRepMesh_NURBSRangeSplitter::grabParamsOfEdges(const EdgeType theEdgeType,
 //=================================================================================================
 
 Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFilterParameters(
-  const IMeshData::IMapOfReal&                 theSourceParams,
-  const double                                 theTol2d,
-  const double                                 theRangeDiff,
-  const double                                 theDelta,
-  const IMeshTools_Parameters&                 theParameters,
+  const IMeshData::IMapOfReal&            theSourceParams,
+  const double                     theTol2d,
+  const double                     theRangeDiff,
+  const double                     theDelta,
+  const IMeshTools_Parameters&            theParameters,
   const occ::handle<NCollection_IncAllocator>& theAllocator) const
 {
   // Sort and filter sequence of parameters
@@ -550,7 +552,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFi
 
   const occ::handle<BRepAdaptor_Surface>& aSurface = GetSurface();
   const double aMinSize2d = std::max(aSurface->UResolution(theParameters.MinSize),
-                                     aSurface->VResolution(theParameters.MinSize));
+                                            aSurface->VResolution(theParameters.MinSize));
 
   aMinDiff = std::max(aMinSize2d, aMinDiff);
 
@@ -563,9 +565,9 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFi
 //=================================================================================================
 
 Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
-  const IMeshData::IMapOfReal&                 theParams,
-  const double                                 theMinDist,
-  const double                                 theFilterDist,
+  const IMeshData::IMapOfReal&            theParams,
+  const double                     theMinDist,
+  const double                     theFilterDist,
   const occ::handle<NCollection_IncAllocator>& theAllocator) const
 {
   Handle(IMeshData::SequenceOfReal) aResult = new IMeshData::SequenceOfReal(theAllocator);
@@ -579,7 +581,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
   }
 
   NCollection_Array1<double> aParamArray(1, anInitLen);
-  int                        j;
+  int     j;
   for (j = 1; j <= anInitLen; j++)
     aParamArray(j) = theParams(j);
 
@@ -597,10 +599,10 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::filterParameters(
   }
 
   // perform filtering on series
-  double aLastAdded, aLastCandidate;
-  bool   isCandidateDefined = false;
-  aLastAdded                = aParamArray(1);
-  aLastCandidate            = aLastAdded;
+  double    aLastAdded, aLastCandidate;
+  bool isCandidateDefined = false;
+  aLastAdded                          = aParamArray(1);
+  aLastCandidate                      = aLastAdded;
   aResult->Append(aLastAdded);
 
   for (j = 2; j < aParamLength; j++)

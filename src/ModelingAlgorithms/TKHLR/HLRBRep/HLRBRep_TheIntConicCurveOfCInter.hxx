@@ -47,32 +47,32 @@ public:
                                    const IntRes2d_Domain&  D1,
                                    const HLRBRep_CurvePtr& PCurve,
                                    const IntRes2d_Domain&  D2,
-                                   const double            TolConf,
-                                   const double            Tol);
+                                   const double     TolConf,
+                                   const double     Tol);
 
   //! Intersection between a line and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Circ2d&        C,
                                                    const IntRes2d_Domain&  D1,
                                                    const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
-                                                   const double            TolConf,
-                                                   const double            Tol);
+                                                   const double     TolConf,
+                                                   const double     Tol);
 
   //! Intersection between an ellipse and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Elips2d&       E,
                                                    const IntRes2d_Domain&  D1,
                                                    const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
-                                                   const double            TolConf,
-                                                   const double            Tol);
+                                                   const double     TolConf,
+                                                   const double     Tol);
 
   //! Intersection between a parabola and a parametric curve.
   Standard_EXPORT HLRBRep_TheIntConicCurveOfCInter(const gp_Parab2d&       Prb,
                                                    const IntRes2d_Domain&  D1,
                                                    const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
-                                                   const double            TolConf,
-                                                   const double            Tol);
+                                                   const double     TolConf,
+                                                   const double     Tol);
 
   //! Intersection between the main branch of an hyperbola
   //! and a parametric curve.
@@ -80,40 +80,40 @@ public:
                                                    const IntRes2d_Domain&  D1,
                                                    const HLRBRep_CurvePtr& PCurve,
                                                    const IntRes2d_Domain&  D2,
-                                                   const double            TolConf,
-                                                   const double            Tol);
+                                                   const double     TolConf,
+                                                   const double     Tol);
 
   //! Intersection between a line and a parametric curve.
   void Perform(const gp_Lin2d&         L,
                const IntRes2d_Domain&  D1,
                const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
-               const double            TolConf,
-               const double            Tol);
+               const double     TolConf,
+               const double     Tol);
 
   //! Intersection between a line and a parametric curve.
   void Perform(const gp_Circ2d&        C,
                const IntRes2d_Domain&  D1,
                const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
-               const double            TolConf,
-               const double            Tol);
+               const double     TolConf,
+               const double     Tol);
 
   //! Intersection between an ellipse and a parametric curve.
   void Perform(const gp_Elips2d&       E,
                const IntRes2d_Domain&  D1,
                const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
-               const double            TolConf,
-               const double            Tol);
+               const double     TolConf,
+               const double     Tol);
 
   //! Intersection between a parabola and a parametric curve.
   void Perform(const gp_Parab2d&       Prb,
                const IntRes2d_Domain&  D1,
                const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
-               const double            TolConf,
-               const double            Tol);
+               const double     TolConf,
+               const double     Tol);
 
   //! Intersection between the main branch of an hyperbola
   //! and a parametric curve.
@@ -121,8 +121,8 @@ public:
                const IntRes2d_Domain&  D1,
                const HLRBRep_CurvePtr& PCurve,
                const IntRes2d_Domain&  D2,
-               const double            TolConf,
-               const double            Tol);
+               const double     TolConf,
+               const double     Tol);
 
 private:
   //! Intersection between a conic fom gp
@@ -131,8 +131,8 @@ private:
                const IntRes2d_Domain&     D1,
                const HLRBRep_CurvePtr&    PCurve,
                const IntRes2d_Domain&     D2,
-               const double               TolConf,
-               const double               Tol);
+               const double        TolConf,
+               const double        Tol);
 };
 
 #define TheImpTool IntCurve_IConicTool

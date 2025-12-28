@@ -20,7 +20,7 @@
 RWStepGeom_RWCircle::RWStepGeom_RWCircle() {}
 
 void RWStepGeom_RWCircle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                                   num,
+                                   const int                 num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepGeom_Circle>&         ent) const
 {
@@ -53,7 +53,7 @@ void RWStepGeom_RWCircle::ReadStep(const occ::handle<StepData_StepReaderData>& d
   ent->Init(aName, aPosition, aRadius);
 }
 
-void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&                SW,
+void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&           SW,
                                     const occ::handle<StepGeom_Circle>& ent) const
 {
 
@@ -71,7 +71,7 @@ void RWStepGeom_RWCircle::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepGeom_RWCircle::Share(const occ::handle<StepGeom_Circle>& ent,
-                                Interface_EntityIterator&           iter) const
+                                Interface_EntityIterator&      iter) const
 {
 
   iter.GetOneItem(ent->Position().Value());

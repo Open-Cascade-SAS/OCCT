@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TgtOnCoons, GeomFill_TgtField)
 
 //=================================================================================================
 
-GeomFill_TgtOnCoons::GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K, const int I)
+GeomFill_TgtOnCoons::GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K,
+                                         const int                I)
     : myK(K),
       ibound(I)
 {
@@ -67,7 +68,7 @@ gp_Vec GeomFill_TgtOnCoons::Value(const double W) const
       break;
   }
 
-  gp_Vec n    = myK->Bound(ibound)->Norm(W);
+  gp_Vec        n    = myK->Bound(ibound)->Norm(W);
   double scal = tgk.Dot(n);
   n.Multiply(-scal);
   tgk.Add(n);
@@ -116,13 +117,13 @@ gp_Vec GeomFill_TgtOnCoons::D1(const double W) const
   myK->Bound(ibound)->D1Norm(W, n, dn);
 
   double scal  = tgsc.Dot(n);
-  gp_Vec scaln = n.Multiplied(-scal);
+  gp_Vec        scaln = n.Multiplied(-scal);
   tgsc.Add(scaln);
 
   gp_Vec scaldn = dn.Multiplied(-scal);
 
   double scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
-  gp_Vec temp  = n.Multiplied(scal2);
+  gp_Vec        temp  = n.Multiplied(scal2);
 
   temp.Add(scaldn);
   gp_Vec dtpur = dtgsc.Added(temp);
@@ -172,13 +173,13 @@ void GeomFill_TgtOnCoons::D1(const double W, gp_Vec& T, gp_Vec& DT) const
   myK->Bound(ibound)->D1Norm(W, n, dn);
 
   double scal  = tgsc.Dot(n);
-  gp_Vec scaln = n.Multiplied(-scal);
-  T            = tgsc.Added(scaln);
+  gp_Vec        scaln = n.Multiplied(-scal);
+  T                   = tgsc.Added(scaln);
 
   gp_Vec scaldn = dn.Multiplied(-scal);
 
   double scal2 = -dtgsc.Dot(n) - tgsc.Dot(dn);
-  gp_Vec temp  = n.Multiplied(scal2);
+  gp_Vec        temp  = n.Multiplied(scal2);
 
   temp.Add(scaldn);
   DT = dtgsc.Added(temp);

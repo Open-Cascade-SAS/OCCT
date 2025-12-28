@@ -51,11 +51,12 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                           const occ::handle<TDF_Attribute>& theTarget,
-                                           XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataStd_IntegerArrayDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  int                      aFirstInd, aLastInd, aValue, ind;
+  int         aFirstInd, aLastInd, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -110,8 +111,7 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
   else
   {
     // Warning: check implementation of XmlObjMgt_DOMString !! For LDOM this is OK
-    const char* aValueStr =
-      static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -156,13 +156,13 @@ bool XmlMDataStd_IntegerArrayDriver::Paste(const XmlObjMgt_Persistent&       the
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                           XmlObjMgt_Persistent&             theTarget,
+                                           XmlObjMgt_Persistent&        theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_IntegerArray> anIntArray = occ::down_cast<TDataStd_IntegerArray>(theSource);
   const occ::handle<NCollection_HArray1<int>>& hIntArray = anIntArray->Array();
-  const NCollection_Array1<int>&               intArray  = hIntArray->Array1();
-  int                                          aL = intArray.Lower(), anU = intArray.Upper();
+  const NCollection_Array1<int>&          intArray  = hIntArray->Array1();
+  int                        aL = intArray.Lower(), anU = intArray.Upper();
 
   if (aL != 1)
     theTarget.Element().setAttribute(::FirstIndexString(), aL);
@@ -171,7 +171,7 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
 
   // Allocation of 12 chars for each integer including the space.
   // An example: -2 147 483 648
-  int                          iChar = 0;
+  int                           iChar = 0;
   NCollection_LocalArray<char> str;
   if (intArray.Length())
     str.Allocate(12 * intArray.Length() + 1);
@@ -194,7 +194,7 @@ void XmlMDataStd_IntegerArrayDriver::Paste(const occ::handle<TDF_Attribute>& the
   if (anIntArray->ID() != TDataStd_IntegerArray::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anIntArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

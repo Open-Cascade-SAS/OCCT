@@ -46,6 +46,7 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin& L, const StepData_Factors
 GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d&         L,
                                          const StepData_Factors& theLocalFactors){
 #define Vec_gen gp_Vec2d
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 
@@ -54,11 +55,12 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const gp_Lin2d&         L,
 //=============================================================================
 
 GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom_Line>& Gline,
-                                         const StepData_Factors&       theLocalFactors)
+                                         const StepData_Factors&  theLocalFactors)
 {
   gp_Lin L;
   L = Gline->Lin();
 #define Vec_gen gp_Vec
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 
@@ -67,11 +69,12 @@ GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom_Line>& Gline,
 //=============================================================================
 
 GeomToStep_MakeLine::GeomToStep_MakeLine(const occ::handle<Geom2d_Line>& Gline,
-                                         const StepData_Factors&         theLocalFactors)
+                                         const StepData_Factors&    theLocalFactors)
 {
   gp_Lin2d L;
   L = Gline->Lin2d();
 #define Vec_gen gp_Vec2d
+#include "GeomToStep_MakeLine_gen.pxx"
 #undef Vec_gen
 }
 

@@ -97,7 +97,7 @@ TCollection_AsciiString TopOpeBRepDS::SPrint(const TopOpeBRepDS_Kind k)
 }
 
 TCollection_AsciiString TopOpeBRepDS::SPrint(const TopOpeBRepDS_Kind        k,
-                                             const int                      i,
+                                             const int         i,
                                              const TCollection_AsciiString& S1,
                                              const TCollection_AsciiString& S2)
 {
@@ -116,7 +116,7 @@ Standard_OStream& TopOpeBRepDS::Print(const TopOpeBRepDS_Kind k, Standard_OStrea
 }
 
 Standard_OStream& TopOpeBRepDS::Print(const TopOpeBRepDS_Kind        k,
-                                      const int                      i,
+                                      const int         i,
                                       Standard_OStream&              OS,
                                       const TCollection_AsciiString& S1,
                                       const TCollection_AsciiString& S2)
@@ -139,7 +139,9 @@ TCollection_AsciiString TopOpeBRepDS::SPrint(const TopAbs_ShapeEnum t, const int
   return TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(t), i);
 }
 
-Standard_OStream& TopOpeBRepDS::Print(const TopAbs_ShapeEnum t, const int i, Standard_OStream& s)
+Standard_OStream& TopOpeBRepDS::Print(const TopAbs_ShapeEnum t,
+                                      const int i,
+                                      Standard_OStream&      s)
 {
   s << TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(t), i);
   return s;

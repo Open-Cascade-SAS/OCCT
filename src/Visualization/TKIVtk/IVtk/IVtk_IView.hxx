@@ -77,9 +77,9 @@ public:
   virtual void GetWindowSize(int& theX, int& theY) const = 0;
 
   //! Gets camera projection and orientation matrices
-  virtual void GetCamera(NCollection_Mat4<double>& theProj,
-                         NCollection_Mat4<double>& theOrient,
-                         bool&                     theIsOrtho) const = 0;
+  virtual void GetCamera(NCollection_Mat4<double>&  theProj,
+                         NCollection_Mat4<double>&  theOrient,
+                         bool& theIsOrtho) const = 0;
 
   //! Converts 3D display coordinates into 3D world coordinates.
   //! @param[in]  theDisplayPnt 2d point of display coordinates

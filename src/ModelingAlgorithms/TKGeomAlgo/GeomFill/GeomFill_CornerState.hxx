@@ -56,12 +56,12 @@ public:
   Standard_EXPORT void DoKill(const double Scal);
 
 private:
-  double gap;
-  double tgtang;
-  bool   isconstrained;
-  double norang;
-  double scal;
-  bool   coonscnd;
+  double    gap;
+  double    tgtang;
+  bool isconstrained;
+  double    norang;
+  double    scal;
+  bool coonscnd;
 };
 
 #endif // _GeomFill_CornerState_HeaderFile

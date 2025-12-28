@@ -28,7 +28,7 @@ RWStepRepr_RWApex::RWStepRepr_RWApex() {}
 //=================================================================================================
 
 void RWStepRepr_RWApex::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                 const int                                   num,
+                                 const int                 num,
                                  occ::handle<Interface_Check>&               ach,
                                  const occ::handle<StepRepr_Apex>&           ent) const
 {
@@ -71,8 +71,7 @@ void RWStepRepr_RWApex::ReadStep(const occ::handle<StepData_StepReaderData>& dat
 
 //=================================================================================================
 
-void RWStepRepr_RWApex::WriteStep(StepData_StepWriter&              SW,
-                                  const occ::handle<StepRepr_Apex>& ent) const
+void RWStepRepr_RWApex::WriteStep(StepData_StepWriter& SW, const occ::handle<StepRepr_Apex>& ent) const
 {
 
   // Inherited fields of ShapeAspect
@@ -89,7 +88,7 @@ void RWStepRepr_RWApex::WriteStep(StepData_StepWriter&              SW,
 //=================================================================================================
 
 void RWStepRepr_RWApex::Share(const occ::handle<StepRepr_Apex>& ent,
-                              Interface_EntityIterator&         iter) const
+                              Interface_EntityIterator&    iter) const
 {
 
   // Inherited fields of ShapeAspect

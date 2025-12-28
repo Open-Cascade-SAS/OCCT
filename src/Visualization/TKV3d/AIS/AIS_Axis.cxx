@@ -50,25 +50,24 @@ AIS_Axis::AIS_Axis(const occ::handle<Geom_Line>& aComponent)
   myDrawer->SetLineAspect(new Prs3d_LineAspect(Quantity_NOC_RED, Aspect_TOL_DOTDASH, 1.));
   SetInfiniteState();
 
-  gp_Dir thedir  = myComponent->Position().Direction();
-  gp_Pnt loc     = myComponent->Position().Location();
+  gp_Dir        thedir  = myComponent->Position().Direction();
+  gp_Pnt        loc     = myComponent->Position().Location();
   double aLength = UnitsAPI::AnyToLS(250000., "mm");
-  myPfirst       = loc.XYZ() + aLength * thedir.XYZ();
-  myPlast        = loc.XYZ() - aLength * thedir.XYZ();
+  myPfirst              = loc.XYZ() + aLength * thedir.XYZ();
+  myPlast               = loc.XYZ() - aLength * thedir.XYZ();
 }
 
 //=======================================================================
 // function : AIS_Axis
 // purpose  :  Xaxis, YAxis, ZAxis
 //=======================================================================
-AIS_Axis::AIS_Axis(const occ::handle<Geom_Axis2Placement>& aComponent,
-                   const AIS_TypeOfAxis                    anAxisType)
+AIS_Axis::AIS_Axis(const occ::handle<Geom_Axis2Placement>& aComponent, const AIS_TypeOfAxis anAxisType)
     : myAx2(aComponent),
       myTypeOfAxis(anAxisType),
       myIsXYZAxis(true)
 {
   occ::handle<Prs3d_DatumAspect> DA = new Prs3d_DatumAspect();
-  double                         aLength;
+  double             aLength;
   try
   {
     aLength = UnitsAPI::AnyToLS(100., "mm");
@@ -97,11 +96,11 @@ AIS_Axis::AIS_Axis(const occ::handle<Geom_Axis1Placement>& anAxis)
   myDrawer->SetLineAspect(new Prs3d_LineAspect(Quantity_NOC_RED, Aspect_TOL_DOTDASH, 1.));
   SetInfiniteState();
 
-  gp_Dir thedir  = myComponent->Position().Direction();
-  gp_Pnt loc     = myComponent->Position().Location();
+  gp_Dir        thedir  = myComponent->Position().Direction();
+  gp_Pnt        loc     = myComponent->Position().Location();
   double aLength = UnitsAPI::AnyToLS(250000., "mm");
-  myPfirst       = loc.XYZ() + aLength * thedir.XYZ();
-  myPlast        = loc.XYZ() - aLength * thedir.XYZ();
+  myPfirst              = loc.XYZ() + aLength * thedir.XYZ();
+  myPlast               = loc.XYZ() - aLength * thedir.XYZ();
 }
 
 //=================================================================================================
@@ -138,17 +137,17 @@ void AIS_Axis::SetComponent(const occ::handle<Geom_Line>& aComponent)
   myIsXYZAxis  = false;
   SetInfiniteState();
 
-  gp_Dir thedir  = myComponent->Position().Direction();
-  gp_Pnt loc     = myComponent->Position().Location();
+  gp_Dir        thedir  = myComponent->Position().Direction();
+  gp_Pnt        loc     = myComponent->Position().Location();
   double aLength = UnitsAPI::AnyToLS(250000., "mm");
-  myPfirst       = loc.XYZ() + aLength * thedir.XYZ();
-  myPlast        = loc.XYZ() - aLength * thedir.XYZ();
+  myPfirst              = loc.XYZ() + aLength * thedir.XYZ();
+  myPlast               = loc.XYZ() - aLength * thedir.XYZ();
 }
 
 //=================================================================================================
 
 void AIS_Axis::SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
-                                 const AIS_TypeOfAxis                    anAxisType)
+                                 const AIS_TypeOfAxis               anAxisType)
 {
   myAx2        = aComponent;
   myTypeOfAxis = anAxisType;
@@ -189,11 +188,11 @@ void AIS_Axis::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 
 //=================================================================================================
 
-void AIS_Axis::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection, const int)
+void AIS_Axis::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                const int)
 {
   occ::handle<SelectMgr_EntityOwner>     eown = new SelectMgr_EntityOwner(this, 3);
-  occ::handle<Select3D_SensitiveSegment> seg =
-    new Select3D_SensitiveSegment(eown, myPfirst, myPlast);
+  occ::handle<Select3D_SensitiveSegment> seg  = new Select3D_SensitiveSegment(eown, myPfirst, myPlast);
   aSelection->Add(seg);
 }
 
@@ -247,12 +246,12 @@ void AIS_Axis::ComputeFields()
   {
     // compute myPFirst,myPlast
     occ::handle<Prs3d_DatumAspect> DA     = myDrawer->DatumAspect();
-    gp_Ax2                         anAxis = myAx2->Ax2();
-    const gp_Pnt&                  Orig   = anAxis.Location();
-    const gp_Dir&                  oX     = anAxis.XDirection();
-    const gp_Dir&                  oY     = anAxis.YDirection();
-    const gp_Dir&                  oZ     = anAxis.Direction();
-    double                         xo, yo, zo, x = 0., y = 0., z = 0.;
+    gp_Ax2                    anAxis = myAx2->Ax2();
+    const gp_Pnt&             Orig   = anAxis.Location();
+    const gp_Dir&             oX     = anAxis.XDirection();
+    const gp_Dir&             oY     = anAxis.YDirection();
+    const gp_Dir&             oZ     = anAxis.Direction();
+    double             xo, yo, zo, x = 0., y = 0., z = 0.;
     Orig.Coord(xo, yo, zo);
     myPfirst.SetCoord(xo, yo, zo);
 

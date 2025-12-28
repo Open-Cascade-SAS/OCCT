@@ -44,10 +44,10 @@
 //   sections of L1 with OnCirc and the radius the distance between Point1 and   +
 //   the point calculated below.                                          +
 //=========================================================================
-GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&  Point1,
-                                         const gp_Pnt2d&  Point2,
-                                         const gp_Circ2d& OnCirc,
-                                         const double     Tolerance)
+GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
+                                         const gp_Pnt2d&     Point2,
+                                         const gp_Circ2d&    OnCirc,
+                                         const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -66,13 +66,13 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&  Point1,
   TheSame2.Init(0);
   WellDone = false;
   NbrSol   = 0;
-  gp_Dir2d  dirx(gp_Dir2d::D::X);
-  double    Tol    = std::abs(Tolerance);
-  double    dist   = Point1.Distance(Point2);
-  double    dp1cen = Point1.Distance(OnCirc.Location());
-  double    dp2cen = Point2.Distance(OnCirc.Location());
-  double    R      = OnCirc.Radius();
-  gp_Circ2d C1     = OnCirc;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol    = std::abs(Tolerance);
+  double dist   = Point1.Distance(Point2);
+  double dp1cen = Point1.Distance(OnCirc.Location());
+  double dp2cen = Point2.Distance(OnCirc.Location());
+  double R      = OnCirc.Radius();
+  gp_Circ2d     C1     = OnCirc;
   if (dist < Tol || std::abs(dp1cen + 2 * R - dp2cen) < Tol
       || std::abs(dp2cen + 2 * R - dp1cen) < Tol)
   {

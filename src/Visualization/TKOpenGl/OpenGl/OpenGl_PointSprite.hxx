@@ -36,7 +36,10 @@ public:
   virtual bool IsPointSprite() const override { return true; }
 
   //! @return true if current object was initialized
-  virtual bool IsValid() const override { return myBitmapList != 0 || myTextureId != NO_TEXTURE; }
+  virtual bool IsValid() const override
+  {
+    return myBitmapList != 0 || myTextureId != NO_TEXTURE;
+  }
 
   //! @return true if this is display list bitmap
   inline bool IsDisplayList() const { return myBitmapList != 0; }
@@ -47,7 +50,7 @@ public:
 
   //! Initialize point sprite as display list
   Standard_EXPORT void SetDisplayList(const occ::handle<OpenGl_Context>& theCtx,
-                                      const GLuint                       theBitmapList);
+                                      const GLuint                  theBitmapList);
 
 protected:
   // clang-format off

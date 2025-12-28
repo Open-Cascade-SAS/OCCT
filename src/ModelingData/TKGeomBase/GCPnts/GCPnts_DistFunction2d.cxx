@@ -17,8 +17,8 @@
 //=================================================================================================
 
 GCPnts_DistFunction2d::GCPnts_DistFunction2d(const Adaptor2d_Curve2d& theCurve,
-                                             const double             U1,
-                                             const double             U2)
+                                             const double      U1,
+                                             const double      U2)
     : myCurve(theCurve),
       myU1(U1),
       myU2(U2)

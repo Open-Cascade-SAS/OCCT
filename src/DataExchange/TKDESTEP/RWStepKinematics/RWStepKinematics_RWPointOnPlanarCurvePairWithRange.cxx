@@ -39,7 +39,7 @@ RWStepKinematics_RWPointOnPlanarCurvePairWithRange::
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&                        theData,
-  const int                                                          theNum,
+  const int                                        theNum,
   occ::handle<Interface_Check>&                                      theArch,
   const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt) const
 {
@@ -62,7 +62,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                                  hasItemDefinedTransformation_Description = true;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -130,8 +130,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
                       STANDARD_TYPE(StepGeom_TrimmedCurve),
                       aRangeOnPairCurve);
 
-  double aLowerLimitYaw;
-  bool   hasLowerLimitYaw = true;
+  double    aLowerLimitYaw;
+  bool hasLowerLimitYaw = true;
   if (theData->IsParamDefined(theNum, 10))
   {
     theData->ReadReal(theNum, 10, "lower_limit_yaw", theArch, aLowerLimitYaw);
@@ -142,8 +142,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
     aLowerLimitYaw   = 0;
   }
 
-  double aUpperLimitYaw;
-  bool   hasUpperLimitYaw = true;
+  double    aUpperLimitYaw;
+  bool hasUpperLimitYaw = true;
   if (theData->IsParamDefined(theNum, 11))
   {
     theData->ReadReal(theNum, 11, "upper_limit_yaw", theArch, aUpperLimitYaw);
@@ -154,8 +154,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
     aUpperLimitYaw   = 0;
   }
 
-  double aLowerLimitPitch;
-  bool   hasLowerLimitPitch = true;
+  double    aLowerLimitPitch;
+  bool hasLowerLimitPitch = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     theData->ReadReal(theNum, 12, "lower_limit_pitch", theArch, aLowerLimitPitch);
@@ -166,8 +166,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
     aLowerLimitPitch   = 0;
   }
 
-  double aUpperLimitPitch;
-  bool   hasUpperLimitPitch = true;
+  double    aUpperLimitPitch;
+  bool hasUpperLimitPitch = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum, 13, "upper_limit_pitch", theArch, aUpperLimitPitch);
@@ -178,8 +178,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
     aUpperLimitPitch   = 0;
   }
 
-  double aLowerLimitRoll;
-  bool   hasLowerLimitRoll = true;
+  double    aLowerLimitRoll;
+  bool hasLowerLimitRoll = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum, 14, "lower_limit_roll", theArch, aLowerLimitRoll);
@@ -190,8 +190,8 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
     aLowerLimitRoll   = 0;
   }
 
-  double aUpperLimitRoll;
-  bool   hasUpperLimitRoll = true;
+  double    aUpperLimitRoll;
+  bool hasUpperLimitRoll = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum, 15, "upper_limit_roll", theArch, aUpperLimitRoll);
@@ -230,7 +230,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
-  StepData_StepWriter&                                               theSW,
+  StepData_StepWriter&                                          theSW,
   const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt) const
 {
 
@@ -314,7 +314,7 @@ void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::WriteStep(
 
 void RWStepKinematics_RWPointOnPlanarCurvePairWithRange::Share(
   const occ::handle<StepKinematics_PointOnPlanarCurvePairWithRange>& theEnt,
-  Interface_EntityIterator&                                          iter) const
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of RepresentationItem

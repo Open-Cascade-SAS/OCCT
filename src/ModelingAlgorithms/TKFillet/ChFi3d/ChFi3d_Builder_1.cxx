@@ -34,6 +34,8 @@
 #include <NCollection_List.hxx>
 #include <ChFiDS_Spine.hxx>
 #include <ChFiDS_State.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -86,10 +88,7 @@ static void ReorderFaces(TopoDS_Face&         theF1,
   TopoDS_Face CurFace;
   for (;;)
   {
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      aVertexEdgeMap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aVertexEdgeMap;
     TopExp::MapShapesAndAncestors(PrevFace, TopAbs_VERTEX, TopAbs_EDGE, aVertexEdgeMap);
     for (const auto& anEdge : aVertexEdgeMap.FindFromKey(theCommonVertex))
     {
@@ -98,7 +97,7 @@ static void ReorderFaces(TopoDS_Face&         theF1,
         continue;
       }
 
-      CurEdge                                     = TopoDS::Edge(anEdge);
+      CurEdge                           = TopoDS::Edge(anEdge);
       const NCollection_List<TopoDS_Shape>& Flist = theEFmap.FindFromKey(CurEdge);
       CurFace = PrevFace.IsSame(TopoDS::Face(Flist.First())) ? TopoDS::Face(Flist.Last())
                                                              : TopoDS::Face(Flist.First());
@@ -124,12 +123,12 @@ static void ConcatCurves(NCollection_Sequence<occ::handle<Geom_Curve>>& theCurve
   while (!theCurves.IsEmpty())
   {
     GeomConvert_CompCurveToBSplineCurve Concat;
-    bool                                Success = false;
+    bool                    Success = false;
     for (int i = 1; i <= theCurves.Length(); i++)
     {
       const occ::handle<Geom_Curve>& aCurve        = theCurves(i);
       occ::handle<Geom_BoundedCurve> aBoundedCurve = occ::down_cast<Geom_BoundedCurve>(aCurve);
-      Success                                      = Concat.Add(aBoundedCurve, 1.e-5, true);
+      Success                                 = Concat.Add(aBoundedCurve, 1.e-5, true);
       if (!Success)
         Success = Concat.Add(aBoundedCurve, 1.e-5, false);
       if (Success)
@@ -144,21 +143,21 @@ static void ConcatCurves(NCollection_Sequence<occ::handle<Geom_Curve>>& theCurve
 }
 
 static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
-                                  const double               Distance,
+                                  const double        Distance,
                                   const BRepAdaptor_Surface& S1,
                                   const BRepAdaptor_Surface& S2)
 {
   TopoDS_Edge OffsetEdge;
 
-  const TopoDS_Face&        F1     = S1.Face();
-  const TopoDS_Face&        F2     = S2.Face();
+  const TopoDS_Face&   F1     = S1.Face();
+  const TopoDS_Face&   F2     = S2.Face();
   occ::handle<Geom_Surface> GS1    = BRep_Tool::Surface(F1);
   occ::handle<Geom_Surface> TrGS1  = new Geom_RectangularTrimmedSurface(GS1,
-                                                                       S1.FirstUParameter(),
-                                                                       S1.LastUParameter(),
-                                                                       S1.FirstVParameter(),
-                                                                       S1.LastVParameter());
-  double                    Offset = -Distance;
+                                                                  S1.FirstUParameter(),
+                                                                  S1.LastUParameter(),
+                                                                  S1.FirstVParameter(),
+                                                                  S1.LastVParameter());
+  double        Offset = -Distance;
   if (F1.Orientation() == TopAbs_REVERSED)
     Offset = Distance;
   occ::handle<Geom_OffsetSurface> MakeOffsetSurf = new Geom_OffsetSurface(TrGS1, Offset);
@@ -167,19 +166,19 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
     OffsetTrGS1 = MakeOffsetSurf;
   occ::handle<Geom_Surface> GS2   = BRep_Tool::Surface(F2);
   occ::handle<Geom_Surface> TrGS2 = new Geom_RectangularTrimmedSurface(GS2,
-                                                                       S2.FirstUParameter(),
-                                                                       S2.LastUParameter(),
-                                                                       S2.FirstVParameter(),
-                                                                       S2.LastVParameter());
-  GeomInt_IntSS             Intersector(OffsetTrGS1, TrGS2, Precision::Confusion());
+                                                                  S2.FirstUParameter(),
+                                                                  S2.LastUParameter(),
+                                                                  S2.FirstVParameter(),
+                                                                  S2.LastVParameter());
+  GeomInt_IntSS        Intersector(OffsetTrGS1, TrGS2, Precision::Confusion());
   if (!Intersector.IsDone() || Intersector.NbLines() == 0)
   {
     return OffsetEdge;
   }
 
   occ::handle<Geom_Curve> IntCurve = Intersector.Line(1);
-  gp_Pnt                  Ends[2];
-  BRepAdaptor_Curve       aBAcurve(theEdge);
+  gp_Pnt             Ends[2];
+  BRepAdaptor_Curve  aBAcurve(theEdge);
   Ends[0] = aBAcurve.Value(aBAcurve.FirstParameter());
   Ends[1] = aBAcurve.Value(aBAcurve.LastParameter());
 
@@ -191,8 +190,8 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
 
     ConcatCurves(Curves, NewCurves);
 
-    double MinDist = RealLast();
-    int    imin    = 1;
+    double    MinDist = RealLast();
+    int imin    = 1;
     for (int i = 1; i <= NewCurves.Length(); i++)
     {
       GeomAdaptor_Curve GAcurve(NewCurves(i));
@@ -217,13 +216,13 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
   }
   // Projection of extremities onto <IntCurve>
   GeomAdaptor_Curve GAcurve(IntCurve);
-  double            Params[2];
+  double     Params[2];
   for (int ind_end = 0; ind_end < 2; ind_end++)
   {
     if (ind_end == 1 && aBAcurve.IsClosed() /*HGuide->IsPeriodic()*/ /*HGuide->IsClosed()*/)
       break;
     Extrema_ExtPC Projector(Ends[ind_end], GAcurve);
-    double        param[4], dist[4];
+    double param[4], dist[4];
     gp_Pnt        Pnt[4];
     param[1] = GAcurve.FirstParameter();
     param[2] = GAcurve.LastParameter();
@@ -251,9 +250,9 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
     Params[1] = GAcurve.LastParameter(); // temporary
   if (Params[0] > Params[1])
   {
-    bool   IsClosed = false;
-    gp_Pnt fpnt     = IntCurve->Value(IntCurve->FirstParameter());
-    gp_Pnt lpnt     = IntCurve->Value(IntCurve->LastParameter());
+    bool IsClosed = false;
+    gp_Pnt           fpnt     = IntCurve->Value(IntCurve->FirstParameter());
+    gp_Pnt           lpnt     = IntCurve->Value(IntCurve->LastParameter());
     if (fpnt.SquareDistance(lpnt) <= Precision::SquareConfusion())
       IsClosed = true;
     if (IsClosed)
@@ -302,7 +301,10 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
 
 static TopOpeBRepDS_BuildTool mkbuildtool()
 {
-  TopOpeBRepTool_GeomTool GT2(TopOpeBRepTool_BSPLINE1, true, false, false);
+  TopOpeBRepTool_GeomTool GT2(TopOpeBRepTool_BSPLINE1,
+                              true,
+                              false,
+                              false);
   TopOpeBRepDS_BuildTool  BT(GT2);
   BT.OverWrite(false);
   BT.Translate(false);
@@ -346,7 +348,7 @@ void ChFi3d_Builder::SetParams(const double Tang,
 //=================================================================================================
 
 void ChFi3d_Builder::SetContinuity(const GeomAbs_Shape InternalContinuity,
-                                   const double        AngularTolerance)
+                                   const double AngularTolerance)
 {
   myConti     = InternalContinuity;
   tolappangle = AngularTolerance;
@@ -379,8 +381,8 @@ int ChFi3d_Builder::NbFaultyContours() const
 int ChFi3d_Builder::FaultyContour(const int I) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    k = 0;
-  occ::handle<ChFiDS_Stripe>                             st;
+  int                  k = 0;
+  occ::handle<ChFiDS_Stripe>             st;
   for (itel.Initialize(badstripes); itel.More(); itel.Next())
   {
     k += 1;
@@ -407,8 +409,8 @@ int ChFi3d_Builder::FaultyContour(const int I) const
 int ChFi3d_Builder::NbComputedSurfaces(const int IC) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    k = 0;
-  occ::handle<ChFiDS_Stripe>                             st;
+  int                  k = 0;
+  occ::handle<ChFiDS_Stripe>             st;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
     k += 1;
@@ -430,11 +432,12 @@ int ChFi3d_Builder::NbComputedSurfaces(const int IC) const
 
 //=================================================================================================
 
-occ::handle<Geom_Surface> ChFi3d_Builder::ComputedSurface(const int IC, const int IS) const
+occ::handle<Geom_Surface> ChFi3d_Builder::ComputedSurface(const int IC,
+                                                     const int IS) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    k = 0;
-  occ::handle<ChFiDS_Stripe>                             st;
+  int                  k = 0;
+  occ::handle<ChFiDS_Stripe>             st;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
     k += 1;
@@ -445,7 +448,7 @@ occ::handle<Geom_Surface> ChFi3d_Builder::ComputedSurface(const int IC, const in
     }
   }
   occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>> hd    = st->SetOfSurfData();
-  int                                                              isurf = hd->Value(IS)->Surf();
+  int     isurf = hd->Value(IS)->Surf();
   return myDS->Surface(isurf).Surface();
 }
 
@@ -461,8 +464,8 @@ int ChFi3d_Builder::NbFaultyVertices() const
 TopoDS_Vertex ChFi3d_Builder::FaultyVertex(const int IV) const
 {
   NCollection_List<TopoDS_Shape>::Iterator it;
-  TopoDS_Vertex                            V;
-  int                                      k = 0;
+  TopoDS_Vertex                      V;
+  int                   k = 0;
   for (it.Initialize(badvertices); it.More(); it.Next())
   {
     k += 1;
@@ -495,8 +498,8 @@ TopoDS_Shape ChFi3d_Builder::BadShape() const
 ChFiDS_ErrorStatus ChFi3d_Builder::StripeStatus(const int IC) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    k = 0;
-  occ::handle<ChFiDS_Stripe>                             st;
+  int                  k = 0;
+  occ::handle<ChFiDS_Stripe>             st;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next())
   {
     k += 1;
@@ -525,13 +528,13 @@ occ::handle<TopOpeBRepBuild_HBuilder> ChFi3d_Builder::Builder() const
 //=======================================================================
 
 bool ChFi3d_Builder::FaceTangency(const TopoDS_Edge&   E0,
-                                  const TopoDS_Edge&   E1,
-                                  const TopoDS_Vertex& V) const
+                                              const TopoDS_Edge&   E1,
+                                              const TopoDS_Vertex& V) const
 {
   NCollection_List<TopoDS_Shape>::Iterator It, Jt;
-  TopoDS_Edge                              Ec;
-  int                                      Nbf;
-  TopoDS_Face                              F[2];
+  TopoDS_Edge                        Ec;
+  int                   Nbf;
+  TopoDS_Face                        F[2];
 
   // It is checked if the connection is not on a regular edge.
   for (It.Initialize(myEFMap(E1)), Nbf = 0; It.More(); It.Next(), Nbf++)
@@ -580,12 +583,12 @@ bool ChFi3d_Builder::FaceTangency(const TopoDS_Edge&   E0,
 // function : TangentExtremity
 // purpose  : Test if 2 faces are tangent at the end of an edge
 //=======================================================================
-static bool TangentExtremity(const TopoDS_Vertex&                    V,
-                             const TopoDS_Edge&                      E,
-                             const occ::handle<BRepAdaptor_Surface>& hs1,
-                             const occ::handle<BRepAdaptor_Surface>& hs2,
-                             //					 const double t3d,
-                             const double tang)
+static bool TangentExtremity(const TopoDS_Vertex&               V,
+                                         const TopoDS_Edge&                 E,
+                                         const occ::handle<BRepAdaptor_Surface>& hs1,
+                                         const occ::handle<BRepAdaptor_Surface>& hs2,
+                                         //					 const double t3d,
+                                         const double tang)
 {
   TopoDS_Face        f1 = hs1->Face();
   TopAbs_Orientation O1 = f1.Orientation();
@@ -598,10 +601,10 @@ static bool TangentExtremity(const TopoDS_Vertex&                    V,
   e2.Orientation(TopAbs_FORWARD);
   if (f1.IsSame(f2) && BRep_Tool::IsClosed(e1, f1))
     e2.Orientation(TopAbs_REVERSED);
-  double                    p1 = BRep_Tool::Parameter(V, e1, f1);
-  double                    p2 = BRep_Tool::Parameter(V, e2, f2);
-  double                    u, v, f, l, Eps = 1.e-9;
-  gp_Vec                    n1, n2; //   gp_Pnt pt1,pt2;
+  double        p1 = BRep_Tool::Parameter(V, e1, f1);
+  double        p2 = BRep_Tool::Parameter(V, e2, f2);
+  double        u, v, f, l, Eps = 1.e-9;
+  gp_Vec               n1, n2; //   gp_Pnt pt1,pt2;
   occ::handle<Geom2d_Curve> pc1 = BRep_Tool::CurveOnSurface(e1, f1, f, l);
   pc1->Value(p1).Coord(u, v);
   BRepLProp_SLProps theProp1(*hs1, u, v, 1, Eps);
@@ -634,9 +637,9 @@ static bool TangentExtremity(const TopoDS_Vertex&                    V,
 // purpose  : Test if support faces of an edge are tangent at end.
 //=======================================================================
 static bool TangentOnVertex(const TopoDS_Vertex& V,
-                            const TopoDS_Edge&   E,
-                            const ChFiDS_Map&    EFMap,
-                            const double         tang)
+                                        const TopoDS_Edge&   E,
+                                        const ChFiDS_Map&    EFMap,
+                                        const double  tang)
 {
   TopoDS_Face ff1, ff2;
   ChFi3d_conexfaces(E, ff1, ff2, EFMap);
@@ -660,10 +663,10 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
 
   for (int ii = 1; ii <= 2; ii++)
   {
-    TopoDS_Edge                      E[3];
-    TopoDS_Vertex                    V;
-    ChFiDS_State                     sst;
-    int                              iedge;
+    TopoDS_Edge                 E[3];
+    TopoDS_Vertex               V;
+    ChFiDS_State                sst;
+    int            iedge;
     occ::handle<BRepAdaptor_Surface> hs1, hs2;
     if (ii == 1)
     {
@@ -687,11 +690,11 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
 
     if (sst == ChFiDS_BreakPoint)
     {
-      int                                                    aLocNbG1Connections = 0;
-      NCollection_List<TopoDS_Shape>::Iterator               It; //,Jt;
-      bool                                                   sommetpourri = false;
-      NCollection_IndexedMap<TopoDS_Shape>                   EdgesOfV;
-      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Edges;
+      int                   aLocNbG1Connections = 0;
+      NCollection_List<TopoDS_Shape>::Iterator It; //,Jt;
+      bool                   sommetpourri = false;
+      NCollection_IndexedMap<TopoDS_Shape> EdgesOfV;
+      NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                Edges;
       Edges.Add(E[0]);
       EdgesOfV.Add(E[0]);
       int IndOfE = 0;
@@ -761,11 +764,11 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
   if (!Spine->IsPeriodic())
   {
     NCollection_List<TopoDS_Shape>::Iterator It, Jt;
-    int                                      nbf = 0, jf = 0;
+    int                   nbf = 0, jf = 0;
     for (It.Initialize(myVFMap(Spine->FirstVertex())); It.More(); It.Next())
     {
       jf++;
-      int                 kf  = 1;
+      int    kf  = 1;
       const TopoDS_Shape& cur = It.Value();
       for (Jt.Initialize(myVFMap(Spine->FirstVertex())); Jt.More() && (kf < jf); Jt.Next(), kf++)
       {
@@ -784,7 +787,7 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
     for (It.Initialize(myVFMap(Spine->LastVertex())); It.More(); It.Next())
     {
       jf++;
-      int                 kf  = 1;
+      int    kf  = 1;
       const TopoDS_Shape& cur = It.Value();
       for (Jt.Initialize(myVFMap(Spine->LastVertex())); Jt.More() && (kf < jf); Jt.Next(), kf++)
       {
@@ -810,19 +813,19 @@ void ChFi3d_Builder::PerformExtremity(const occ::handle<ChFiDS_Spine>& Spine)
 //=======================================================================
 
 bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
-                                    const double                     Offset,
-                                    const TopoDS_Face&               theFirstFace)
+                                                const double         Offset,
+                                                const TopoDS_Face&          theFirstFace)
 {
-  double                                   ta = angular;
+  double                      ta = angular;
   NCollection_List<TopoDS_Shape>::Iterator It;
-  int                                      Nbface;
+  int                   Nbface;
   NCollection_List<TopoDS_Shape>::Iterator Jt;
-  double                                   Wl, Wf;
-  bool                                     degeneOnEc;
-  gp_Pnt                                   P2;
-  gp_Vec                                   V1, V2;
-  TopoDS_Vertex                            Ve1, VStart, FVEc, LVEc, FVEv, LVEv;
-  TopoDS_Edge                              Ev, Ec(Spine->Edges(1));
+  double                      Wl, Wf;
+  bool                   degeneOnEc;
+  gp_Pnt                             P2;
+  gp_Vec                             V1, V2;
+  TopoDS_Vertex                      Ve1, VStart, FVEc, LVEc, FVEv, LVEv;
+  TopoDS_Edge                        Ev, Ec(Spine->Edges(1));
   if (BRep_Tool::Degenerated(Ec))
     return 0;
   // it is checked if the edge is a cut edge
@@ -846,10 +849,11 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
   myEdgeFirstFace.Bind(Ec, FirstFace);
 
   // Define concavity
-  ChFiDS_TypeOfConcavity TypeOfConcavity = ChFi3d::DefineConnectType(Ec, ff1, ff2, 1.e-5, true);
+  ChFiDS_TypeOfConcavity TypeOfConcavity =
+    ChFi3d::DefineConnectType(Ec, ff1, ff2, 1.e-5, true);
   Spine->SetTypeOfConcavity(TypeOfConcavity);
 
-  bool                ToRestrict = (Offset > 0) ? true : false;
+  bool    ToRestrict = (Offset > 0) ? true : false;
   BRepAdaptor_Surface Sb1(ff1, ToRestrict);
   BRepAdaptor_Surface Sb2(ff2, ToRestrict);
   if (Offset > 0)
@@ -863,9 +867,9 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
   TopAbs_Orientation curor = Ec.Orientation();
   TopExp::Vertices(Ec, VStart, LVEc);
 
-  bool         Fini = false;
-  int          Nb;
-  ChFiDS_State CurSt = ChFiDS_Closed;
+  bool Fini = false;
+  int Nb;
+  ChFiDS_State     CurSt = ChFiDS_Closed;
   if (VStart.IsSame(LVEc))
   { // case if only one edge is closed
     CEc.Initialize(Ec);
@@ -924,9 +928,9 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
           Wf = BRep_Tool::Parameter(FVEv, Ev);
           CEv.Initialize(Ev);
           CEv.D1(Wf, P2, V2);
-          double av1v2    = V1.Angle(V2);
-          bool   rev      = (Or1 != curor);
-          bool   OnAjoute = false;
+          double    av1v2    = V1.Angle(V2);
+          bool rev      = (Or1 != curor);
+          bool OnAjoute = false;
           if (FaceTangency(Ec, Ev, FVEv))
           {
             // there is no need of tolerance
@@ -1031,9 +1035,9 @@ bool ChFi3d_Builder::PerformElement(const occ::handle<ChFiDS_Spine>& Spine,
             Wf = BRep_Tool::Parameter(LVEv, Ev);
             CEv.Initialize(Ev);
             CEv.D1(Wf, P2, V2);
-            double av1v2    = V1.Angle(V2);
-            bool   rev      = (Or1 != curor);
-            bool   OnAjoute = false;
+            double    av1v2    = V1.Angle(V2);
+            bool rev      = (Or1 != curor);
+            bool OnAjoute = false;
             if (FaceTangency(Ec, Ev, LVEv))
             {
               OnAjoute = ((!rev && av1v2 < M_PI / 2) || (rev && av1v2 > M_PI / 2));
@@ -1121,7 +1125,7 @@ occ::handle<ChFiDS_Spine> ChFi3d_Builder::Value(const int I) const
 
 int ChFi3d_Builder::NbElements() const
 {
-  int                                                    i = 0;
+  int                  i = 0;
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(myListStripe);
   for (; itel.More(); itel.Next())
   {
@@ -1137,7 +1141,7 @@ int ChFi3d_Builder::NbElements() const
 
 int ChFi3d_Builder::Contains(const TopoDS_Edge& E) const
 {
-  int                                                    i = 1, j;
+  int                  i = 1, j;
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(myListStripe);
   for (; itel.More(); itel.Next(), i++)
   {
@@ -1155,10 +1159,11 @@ int ChFi3d_Builder::Contains(const TopoDS_Edge& E) const
 
 //=================================================================================================
 
-int ChFi3d_Builder::Contains(const TopoDS_Edge& E, int& IndexInSpine) const
+int ChFi3d_Builder::Contains(const TopoDS_Edge& E,
+                                          int&  IndexInSpine) const
 {
-  int i        = 1, j;
-  IndexInSpine = 0;
+  int i = 1, j;
+  IndexInSpine       = 0;
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(myListStripe);
   for (; itel.More(); itel.Next(), i++)
   {
@@ -1224,7 +1229,8 @@ double ChFi3d_Builder::Abscissa(const int IC, const TopoDS_Vertex& V) const
 
 //=================================================================================================
 
-double ChFi3d_Builder::RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const
+double ChFi3d_Builder::RelativeAbscissa(const int IC,
+                                               const TopoDS_Vertex&   V) const
 {
   if (IC <= NbElements())
   {

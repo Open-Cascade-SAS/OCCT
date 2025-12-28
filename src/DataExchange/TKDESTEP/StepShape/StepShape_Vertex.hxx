@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_Vertex();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_Vertex, StepShape_TopologicalRepresentationItem)
+
 };
 
 #endif // _StepShape_Vertex_HeaderFile

@@ -38,9 +38,9 @@ const Standard_GUID& TDataStd_Integer::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_Integer> SetAttr(const TDF_Label&     label,
-                                             const int            V,
-                                             const Standard_GUID& theGuid)
+static occ::handle<TDataStd_Integer> SetAttr(const TDF_Label&       label,
+                                        const int V,
+                                        const Standard_GUID&   theGuid)
 {
   occ::handle<TDataStd_Integer> A;
   if (!label.FindAttribute(theGuid, A))
@@ -66,9 +66,9 @@ occ::handle<TDataStd_Integer> TDataStd_Integer::Set(const TDF_Label& L, const in
 // purpose  : Set user defined attribute
 //=======================================================================
 
-occ::handle<TDataStd_Integer> TDataStd_Integer::Set(const TDF_Label&     L,
-                                                    const Standard_GUID& theGuid,
-                                                    const int            V)
+occ::handle<TDataStd_Integer> TDataStd_Integer::Set(const TDF_Label&       L,
+                                               const Standard_GUID&   theGuid,
+                                               const int V)
 {
   return SetAttr(L, V, theGuid);
 }
@@ -146,8 +146,8 @@ occ::handle<TDF_Attribute> TDataStd_Integer::NewEmpty() const
 void TDataStd_Integer::Restore(const occ::handle<TDF_Attribute>& With)
 {
   occ::handle<TDataStd_Integer> anInt = occ::down_cast<TDataStd_Integer>(With);
-  myValue                             = anInt->Get();
-  myID                                = anInt->ID();
+  myValue                        = anInt->Get();
+  myID                           = anInt->ID();
 }
 
 //=================================================================================================

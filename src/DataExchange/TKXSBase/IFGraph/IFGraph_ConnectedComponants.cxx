@@ -23,7 +23,7 @@
 //  Honestly, if it doesn't work, see ConnectedVerticesIterator class
 //  from GraphTools which does basically the same thing
 IFGraph_ConnectedComponants::IFGraph_ConnectedComponants(const Interface_Graph& agraph,
-                                                         const bool             whole)
+                                                         const bool whole)
     : IFGraph_SubPartsIterator(agraph, whole)
 {
 }

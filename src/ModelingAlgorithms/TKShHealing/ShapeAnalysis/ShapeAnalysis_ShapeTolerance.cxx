@@ -19,6 +19,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -29,7 +30,11 @@ ShapeAnalysis_ShapeTolerance::ShapeAnalysis_ShapeTolerance()
 {
 }
 
-static void AddTol(const double tol, int& nbt, double& cmin, double& cmoy, double& cmax)
+static void AddTol(const double tol,
+                   int&   nbt,
+                   double&      cmin,
+                   double&      cmoy,
+                   double&      cmax)
 {
   nbt++;
   if (nbt == 1)
@@ -61,8 +66,8 @@ static void AddTol(const double tol, int& nbt, double& cmin, double& cmoy, doubl
 //=================================================================================================
 
 double ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape&    shape,
-                                               const int              mode,
-                                               const TopAbs_ShapeEnum type)
+                                                      const int mode,
+                                                      const TopAbs_ShapeEnum type)
 {
   InitTolerance();
   AddTolerance(shape, type);
@@ -73,7 +78,7 @@ double ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape&    shape,
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::OverTolerance(
   const TopoDS_Shape&    shape,
-  const double           value,
+  const double    value,
   const TopAbs_ShapeEnum type) const
 {
   if (value >= 0)
@@ -86,12 +91,12 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::O
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::InTolerance(
   const TopoDS_Shape&    shape,
-  const double           valmin,
-  const double           valmax,
+  const double    valmin,
+  const double    valmax,
   const TopAbs_ShapeEnum type) const
 {
-  double                                           tol;
-  bool                                             over = (valmax < valmin); // pas de liminite max
+  double                     tol;
+  bool                  over = (valmax < valmin); // pas de liminite max
   occ::handle<NCollection_HSequence<TopoDS_Shape>> sl   = new NCollection_HSequence<TopoDS_Shape>();
 
   TopExp_Explorer myExp;
@@ -147,13 +152,12 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeAnalysis_ShapeTolerance::I
     myExp.Init(shape, TopAbs_SHELL);
     while (myExp.More())
     {
-      bool         iashell = false;
-      TopoDS_Shape ash     = myExp.Current();
+      bool iashell = false;
+      TopoDS_Shape     ash     = myExp.Current();
       for (TopExp_Explorer face(ash, TopAbs_FACE); face.More(); face.Next())
       {
         mapface.Add(face.Current());
-        occ::handle<NCollection_HSequence<TopoDS_Shape>> fc =
-          InTolerance(face.Current(), valmin, valmax, type);
+        occ::handle<NCollection_HSequence<TopoDS_Shape>> fc = InTolerance(face.Current(), valmin, valmax, type);
         if (fc->Length() > 0)
         {
           sl->Append(fc);
@@ -210,8 +214,8 @@ void ShapeAnalysis_ShapeTolerance::InitTolerance()
 void ShapeAnalysis_ShapeTolerance::AddTolerance(const TopoDS_Shape&    shape,
                                                 const TopAbs_ShapeEnum type)
 {
-  int    nbt = 0;
-  double tol, cmin = 0., cmoy = 0., cmax = 0.;
+  int nbt = 0;
+  double    tol, cmin = 0., cmoy = 0., cmax = 0.;
 
   TopExp_Explorer myExp;
 

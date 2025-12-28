@@ -35,7 +35,7 @@ IGESSolid_ToolSolidAssembly::IGESSolid_ToolSolidAssembly() {}
 
 void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_SolidAssembly>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader& PR) const
+                                                IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   int nbitems; // szv#4:S4163:12Mar99 `i` moved in for
@@ -51,7 +51,7 @@ void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_Soli
     tempMatrices = new NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>(1, nbitems);
 
     occ::handle<IGESData_IGESEntity> anent;
-    int                              i; // svv Jan 10 2000 : porting on DEC
+    int            i; // svv Jan 10 2000 : porting on DEC
     for (i = 1; i <= nbitems; i++)
     {
       // st = PR.ReadEntity(IR,PR.Current(), "Solid assembly items", anent); //szv#4:S4163:12Mar99
@@ -83,7 +83,7 @@ void IGESSolid_ToolSolidAssembly::ReadOwnParams(const occ::handle<IGESSolid_Soli
 }
 
 void IGESSolid_ToolSolidAssembly::WriteOwnParams(const occ::handle<IGESSolid_SolidAssembly>& ent,
-                                                 IGESData_IGESWriter& IW) const
+                                                 IGESData_IGESWriter&                   IW) const
 {
   int nbitems = ent->NbItems();
   int i;
@@ -96,7 +96,7 @@ void IGESSolid_ToolSolidAssembly::WriteOwnParams(const occ::handle<IGESSolid_Sol
 }
 
 void IGESSolid_ToolSolidAssembly::OwnShared(const occ::handle<IGESSolid_SolidAssembly>& ent,
-                                            Interface_EntityIterator&                   iter) const
+                                            Interface_EntityIterator&              iter) const
 {
   int nbitems = ent->NbItems();
   int i;
@@ -108,14 +108,13 @@ void IGESSolid_ToolSolidAssembly::OwnShared(const occ::handle<IGESSolid_SolidAss
 
 void IGESSolid_ToolSolidAssembly::OwnCopy(const occ::handle<IGESSolid_SolidAssembly>& another,
                                           const occ::handle<IGESSolid_SolidAssembly>& ent,
-                                          Interface_CopyTool&                         TC) const
+                                          Interface_CopyTool&                    TC) const
 {
-  int                              nbitems, i;
+  int            nbitems, i;
   occ::handle<IGESData_IGESEntity> anent;
 
-  nbitems = another->NbItems();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempItems =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbitems);
+  nbitems                                        = another->NbItems();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempItems = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbitems);
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>> tempMatrices =
     new NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>(1, nbitems);
 
@@ -156,9 +155,9 @@ void IGESSolid_ToolSolidAssembly::OwnCheck(const occ::handle<IGESSolid_SolidAsse
 }
 
 void IGESSolid_ToolSolidAssembly::OwnDump(const occ::handle<IGESSolid_SolidAssembly>& ent,
-                                          const IGESData_IGESDumper&                  dumper,
-                                          Standard_OStream&                           S,
-                                          const int                                   level) const
+                                          const IGESData_IGESDumper&             dumper,
+                                          Standard_OStream&                      S,
+                                          const int                 level) const
 {
   //  int upper = ent->NbItems();
   S << "IGESSolid_SolidAssembly\n"

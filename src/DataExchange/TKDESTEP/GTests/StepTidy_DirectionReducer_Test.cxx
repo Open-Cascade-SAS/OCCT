@@ -69,8 +69,8 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis1Placement)
   occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating Cartesian point for the location.
-  occ::handle<StepGeom_CartesianPoint>     aLocation       = new StepGeom_CartesianPoint;
-  occ::handle<NCollection_HArray1<double>> aLocationCoords = new NCollection_HArray1<double>(1, 3);
+  occ::handle<StepGeom_CartesianPoint> aLocation       = new StepGeom_CartesianPoint;
+  occ::handle<NCollection_HArray1<double>>   aLocationCoords = new NCollection_HArray1<double>(1, 3);
   aLocationCoords->SetValue(1, 0.);
   aLocationCoords->SetValue(2, 0.);
   aLocationCoords->SetValue(3, 0.);
@@ -104,8 +104,8 @@ TEST_F(StepTidy_DirectionReducerTest, StepGeom_Axis2Placement)
   occ::handle<StepGeom_Direction> aDir2 = addDirection();
 
   // Creating Cartesian point for the location.
-  occ::handle<StepGeom_CartesianPoint>     aLocation       = new StepGeom_CartesianPoint;
-  occ::handle<NCollection_HArray1<double>> aLocationCoords = new NCollection_HArray1<double>(1, 3);
+  occ::handle<StepGeom_CartesianPoint> aLocation       = new StepGeom_CartesianPoint;
+  occ::handle<NCollection_HArray1<double>>   aLocationCoords = new NCollection_HArray1<double>(1, 3);
   aLocationCoords->SetValue(1, 0.);
   aLocationCoords->SetValue(2, 0.);
   aLocationCoords->SetValue(3, 0.);

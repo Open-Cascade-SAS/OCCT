@@ -32,8 +32,7 @@ StepFEA_CurveElementIntervalLinearlyVarying::StepFEA_CurveElementIntervalLinearl
 void StepFEA_CurveElementIntervalLinearlyVarying::Init(
   const occ::handle<StepFEA_CurveElementLocation>& aCurveElementInterval_FinishPosition,
   const occ::handle<StepBasic_EulerAngles>&        aCurveElementInterval_EuAngles,
-  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>&
-    aSections)
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& aSections)
 {
   StepFEA_CurveElementInterval::Init(aCurveElementInterval_FinishPosition,
                                      aCurveElementInterval_EuAngles);
@@ -52,8 +51,7 @@ occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefin
 //=================================================================================================
 
 void StepFEA_CurveElementIntervalLinearlyVarying::SetSections(
-  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>&
-    aSections)
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_CurveElementSectionDefinition>>>& aSections)
 {
   theSections = aSections;
 }

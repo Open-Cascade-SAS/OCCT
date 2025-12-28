@@ -24,7 +24,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D, Standard_Transient)
 
 //! Return the map of factory functions.
-static NCollection_DataMap<const char*, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher>&
+static NCollection_DataMap<const char*,
+                           Draw_Drawable3D::FactoryFunction_t,
+                           Standard_CStringHasher>&
   getFactoryMap()
 {
   static NCollection_DataMap<const char*,
@@ -36,15 +38,16 @@ static NCollection_DataMap<const char*, Draw_Drawable3D::FactoryFunction_t, Stan
 
 //=================================================================================================
 
-void Draw_Drawable3D::RegisterFactory(const char* theType, const FactoryFunction_t& theFactory)
+void Draw_Drawable3D::RegisterFactory(const char*   theType,
+                                      const FactoryFunction_t& theFactory)
 {
   getFactoryMap().Bind(theType, theFactory);
 }
 
 //=================================================================================================
 
-occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char*       theType,
-                                                      Standard_IStream& theStream)
+occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char* theType,
+                                                 Standard_IStream&      theStream)
 {
   FactoryFunction_t aFactory = NULL;
   if (getFactoryMap().Find(theType, aFactory))
@@ -69,7 +72,9 @@ Draw_Drawable3D::Draw_Drawable3D()
 
 //=================================================================================================
 
-bool Draw_Drawable3D::PickReject(const double X, const double Y, const double Prec) const
+bool Draw_Drawable3D::PickReject(const double X,
+                                             const double Y,
+                                             const double Prec) const
 {
   return ((X + Prec < myXmin) || (X - Prec > myXmax) || (Y + Prec < myYmin) || (Y - Prec > myYmax));
 }

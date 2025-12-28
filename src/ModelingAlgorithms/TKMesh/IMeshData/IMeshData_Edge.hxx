@@ -46,7 +46,8 @@ public:
     const TopAbs_Orientation   theOrientation) const = 0;
 
   //! Returns pcurve with the given index.
-  Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(const int theIndex) const = 0;
+  Standard_EXPORT virtual const IMeshData::IPCurveHandle& GetPCurve(
+    const int theIndex) const = 0;
 
   //! Returns an array of pcurves indices for the specified discrete face.
   Standard_EXPORT virtual const IMeshData::ListOfInteger& GetPCurves(
@@ -113,10 +114,10 @@ protected:
   }
 
 private:
-  bool                    mySameParam;
-  bool                    mySameRange;
-  bool                    myDegenerated;
-  double                  myAngDeflection;
+  bool        mySameParam;
+  bool        mySameRange;
+  bool        myDegenerated;
+  double           myAngDeflection;
   IMeshData::ICurveHandle myCurve;
 };
 

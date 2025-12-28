@@ -19,6 +19,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
@@ -148,7 +151,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  int                                       i;
+  int              i;
   occ::handle<NCollection_HArray1<uint8_t>> BArr = aCurAtt->InternalArray();
   if (BArr.IsNull())
     return;
@@ -157,8 +160,7 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
       BArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
   else if (aCase == 2)
   {
-    occ::handle<NCollection_HArray1<uint8_t>> byteArr =
-      new NCollection_HArray1<uint8_t>(BArr->Lower(), myUp1);
+    occ::handle<NCollection_HArray1<uint8_t>> byteArr = new NCollection_HArray1<uint8_t>(BArr->Lower(), myUp1);
     for (i = BArr->Lower(); i <= myUp1 && i <= BArr->Upper(); i++)
       byteArr->SetValue(i, BArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -168,9 +170,8 @@ void TDataStd_DeltaOnModificationOfByteArray::Apply()
   }
   else
   { // aCase == 3
-    int                                       low = BArr->Lower();
-    occ::handle<NCollection_HArray1<uint8_t>> byteArr =
-      new NCollection_HArray1<uint8_t>(low, myUp1);
+    int              low     = BArr->Lower();
+    occ::handle<NCollection_HArray1<uint8_t>> byteArr = new NCollection_HArray1<uint8_t>(low, myUp1);
     for (i = BArr->Lower(); i <= myUp2 && i <= BArr->Upper(); i++)
       byteArr->SetValue(i, BArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())

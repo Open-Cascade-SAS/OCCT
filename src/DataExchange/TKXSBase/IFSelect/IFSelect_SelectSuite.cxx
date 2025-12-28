@@ -69,7 +69,7 @@ void IFSelect_SelectSuite::SetLabel(const char* lab)
 Interface_EntityIterator IFSelect_SelectSuite::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter;
-  bool                     firstin = (HasInput() || HasAlternate());
+  bool         firstin = (HasInput() || HasAlternate());
   if (firstin)
     iter = InputResult(G);
   //   Starting : we take the Input/Alternate IF one of the 2 is set

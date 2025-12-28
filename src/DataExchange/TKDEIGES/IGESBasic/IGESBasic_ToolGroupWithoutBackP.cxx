@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -39,10 +40,9 @@
 // MGE 03/08/98
 IGESBasic_ToolGroupWithoutBackP::IGESBasic_ToolGroupWithoutBackP() {}
 
-void IGESBasic_ToolGroupWithoutBackP::ReadOwnParams(
-  const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
-  const occ::handle<IGESData_IGESReaderData>&     IR,
-  IGESData_ParamReader&                           PR) const
+void IGESBasic_ToolGroupWithoutBackP::ReadOwnParams(const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
+                                                    IGESData_ParamReader& PR) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -52,7 +52,7 @@ void IGESBasic_ToolGroupWithoutBackP::ReadOwnParams(
   //========================================
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                                                nbval = 0;
+  int                     nbval = 0;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray;
   //  Msg202.Arg(7);
   // st = PR.ReadInteger( PR.Current(), Msg202, nbval); //szv#4:S4163:12Mar99 not needed
@@ -75,9 +75,8 @@ void IGESBasic_ToolGroupWithoutBackP::ReadOwnParams(
   ent->Init(EntArray);
 }
 
-void IGESBasic_ToolGroupWithoutBackP::WriteOwnParams(
-  const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESBasic_ToolGroupWithoutBackP::WriteOwnParams(const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   int upper = ent->NbEntities();
   IW.Send(upper);
@@ -93,16 +92,14 @@ void IGESBasic_ToolGroupWithoutBackP::OwnShared(const occ::handle<IGESBasic_Grou
     iter.GetOneItem(ent->Entity(i));
 }
 
-void IGESBasic_ToolGroupWithoutBackP::OwnCopy(
-  const occ::handle<IGESBasic_GroupWithoutBackP>& another,
-  const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
-  Interface_CopyTool&                             TC) const
+void IGESBasic_ToolGroupWithoutBackP::OwnCopy(const occ::handle<IGESBasic_GroupWithoutBackP>& another,
+                                              const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
+                                              Interface_CopyTool&                        TC) const
 {
   int lower, upper;
-  lower = 1;
-  upper = another->NbEntities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
+  lower                                         = 1;
+  upper                                         = another->NbEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
   for (int i = lower; i <= upper; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->Entity(i)));
@@ -159,7 +156,7 @@ void IGESBasic_ToolGroupWithoutBackP::OwnCheck(const occ::handle<IGESBasic_Group
                                                occ::handle<Interface_Check>& /* ach */) const
 {
   bool ianul = false;
-  int  i, nb = ent->NbEntities();
+  int i, nb = ent->NbEntities();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
@@ -175,9 +172,9 @@ void IGESBasic_ToolGroupWithoutBackP::OwnCheck(const occ::handle<IGESBasic_Group
 }
 
 void IGESBasic_ToolGroupWithoutBackP::OwnDump(const occ::handle<IGESBasic_GroupWithoutBackP>& ent,
-                                              const IGESData_IGESDumper& dumper,
-                                              Standard_OStream&          S,
-                                              const int                  level) const
+                                              const IGESData_IGESDumper&                 dumper,
+                                              Standard_OStream&                          S,
+                                              const int level) const
 {
   S << "IGESBasic_GroupWithoutBackP\n"
     << "Entries in the Group : ";

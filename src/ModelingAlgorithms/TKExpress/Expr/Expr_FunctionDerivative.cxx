@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Expr_FunctionDerivative, Expr_GeneralFunction)
 
 Expr_FunctionDerivative::Expr_FunctionDerivative(const occ::handle<Expr_GeneralFunction>& func,
                                                  const occ::handle<Expr_NamedUnknown>&    withX,
-                                                 const int                                deg)
+                                                 const int              deg)
 {
   myFunction = func;
   myDerivate = withX;
@@ -49,9 +49,8 @@ occ::handle<Expr_NamedUnknown> Expr_FunctionDerivative::Variable(const int index
   return myFunction->Variable(index);
 }
 
-double Expr_FunctionDerivative::Evaluate(
-  const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-  const NCollection_Array1<double>&                         values) const
+double Expr_FunctionDerivative::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                                const NCollection_Array1<double>&      values) const
 {
   if (vars.Length() != values.Length())
   {
@@ -73,7 +72,7 @@ occ::handle<Expr_GeneralFunction> Expr_FunctionDerivative::Derivative(
 
 occ::handle<Expr_GeneralFunction> Expr_FunctionDerivative::Derivative(
   const occ::handle<Expr_NamedUnknown>& var,
-  const int                             deg) const
+  const int           deg) const
 {
   if (var == myDerivate)
   {
@@ -83,7 +82,8 @@ occ::handle<Expr_GeneralFunction> Expr_FunctionDerivative::Derivative(
   return new Expr_FunctionDerivative(me, var, deg);
 }
 
-bool Expr_FunctionDerivative::IsIdentical(const occ::handle<Expr_GeneralFunction>& func) const
+bool Expr_FunctionDerivative::IsIdentical(
+  const occ::handle<Expr_GeneralFunction>& func) const
 {
   if (!func->IsKind(STANDARD_TYPE(Expr_FunctionDerivative)))
   {
@@ -170,14 +170,13 @@ void Expr_FunctionDerivative::UpdateExpression()
 {
   if (myFunction->IsKind(STANDARD_TYPE(Expr_FunctionDerivative)))
   {
-    occ::handle<Expr_FunctionDerivative> defunc =
-      occ::down_cast<Expr_FunctionDerivative>(myFunction);
+    occ::handle<Expr_FunctionDerivative> defunc = occ::down_cast<Expr_FunctionDerivative>(myFunction);
     defunc->UpdateExpression();
     myExp = defunc->Expression()->NDerivative(myDerivate, myDegree);
   }
   else
   {
     occ::handle<Expr_NamedFunction> nafunc = occ::down_cast<Expr_NamedFunction>(myFunction);
-    myExp = nafunc->Expression()->NDerivative(myDerivate, myDegree);
+    myExp                             = nafunc->Expression()->NDerivative(myDerivate, myDegree);
   }
 }

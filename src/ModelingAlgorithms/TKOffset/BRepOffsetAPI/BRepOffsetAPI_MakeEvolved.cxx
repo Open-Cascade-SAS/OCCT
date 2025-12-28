@@ -33,12 +33,12 @@ BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved() {}
 BRepOffsetAPI_MakeEvolved::BRepOffsetAPI_MakeEvolved(const TopoDS_Shape&    Spine,
                                                      const TopoDS_Wire&     Profil,
                                                      const GeomAbs_JoinType Join,
-                                                     const bool             AxeProf,
-                                                     const bool             Solid,
-                                                     const bool             ProfOnSpine,
-                                                     const double           Tol,
-                                                     const bool             theIsVolume,
-                                                     const bool             theRunInParallel)
+                                                     const bool AxeProf,
+                                                     const bool Solid,
+                                                     const bool ProfOnSpine,
+                                                     const double    Tol,
+                                                     const bool theIsVolume,
+                                                     const bool theRunInParallel)
     : myIsVolume(theIsVolume)
 {
   if (Spine.ShapeType() != TopAbs_WIRE && Spine.ShapeType() != TopAbs_FACE)

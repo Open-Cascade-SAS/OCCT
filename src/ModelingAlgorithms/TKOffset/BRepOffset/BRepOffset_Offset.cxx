@@ -73,12 +73,15 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 #ifdef OCCT_DEBUG
 static bool Affich   = false;
-static int  NbOFFSET = 0;
+static int NbOFFSET = 0;
 #endif
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
@@ -93,7 +96,7 @@ static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
   TopExp::MapShapes(aWire, TopAbs_VERTEX, Vertices);
 
   double MaxDist = 0.;
-  gp_Pnt thePoint;
+  gp_Pnt        thePoint;
   for (int i = 1; i <= Vertices.Extent(); i++)
     for (int j = 1; j <= Vertices.Extent(); j++)
     {
@@ -101,7 +104,7 @@ static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
       const TopoDS_Vertex& V2    = TopoDS::Vertex(Vertices(j));
       gp_Pnt               P1    = BRep_Tool::Pnt(V1);
       gp_Pnt               P2    = BRep_Tool::Pnt(V2);
-      double               aDist = P1.SquareDistance(P2);
+      double        aDist = P1.SquareDistance(P2);
       if (aDist > MaxDist)
       {
         MaxDist  = aDist;
@@ -114,13 +117,13 @@ static gp_Pnt GetFarestCorner(const TopoDS_Wire& aWire)
 
 //=================================================================================================
 
-static void UpdateEdge(const TopoDS_Edge&             E,
+static void UpdateEdge(const TopoDS_Edge&        E,
                        const occ::handle<Geom_Curve>& C,
-                       const TopLoc_Location&         L,
-                       const double                   Tol)
+                       const TopLoc_Location&    L,
+                       const double       Tol)
 {
   // Cut curves to avoid copies in the extensions.
-  BRep_Builder                   B;
+  BRep_Builder              B;
   occ::handle<Geom_TrimmedCurve> BC = occ::down_cast<Geom_TrimmedCurve>(C);
   if (!BC.IsNull())
   {
@@ -134,13 +137,13 @@ static void UpdateEdge(const TopoDS_Edge&             E,
 
 //=================================================================================================
 
-static void UpdateEdge(const TopoDS_Edge&               E,
+static void UpdateEdge(const TopoDS_Edge&          E,
                        const occ::handle<Geom2d_Curve>& C,
-                       const TopoDS_Face&               F,
-                       const double                     Tol)
+                       const TopoDS_Face&          F,
+                       const double         Tol)
 {
   // Cut curves to avoid copies in the extensions.
-  BRep_Builder                     B;
+  BRep_Builder                B;
   occ::handle<Geom2d_TrimmedCurve> BC = occ::down_cast<Geom2d_TrimmedCurve>(C);
   if (!BC.IsNull())
   {
@@ -154,14 +157,14 @@ static void UpdateEdge(const TopoDS_Edge&               E,
 
 //=================================================================================================
 
-static void UpdateEdge(const TopoDS_Edge&               E,
+static void UpdateEdge(const TopoDS_Edge&          E,
                        const occ::handle<Geom2d_Curve>& C1,
                        const occ::handle<Geom2d_Curve>& C2,
-                       const TopoDS_Face&               F,
-                       const double                     Tol)
+                       const TopoDS_Face&          F,
+                       const double         Tol)
 {
   // Cut curves to avoid copies in the extensions.
-  BRep_Builder                     B;
+  BRep_Builder                B;
   occ::handle<Geom2d_Curve>        NC1, NC2;
   occ::handle<Geom2d_TrimmedCurve> BC1 = occ::down_cast<Geom2d_TrimmedCurve>(C1);
   occ::handle<Geom2d_TrimmedCurve> BC2 = occ::down_cast<Geom2d_TrimmedCurve>(C2);
@@ -181,11 +184,11 @@ static void UpdateEdge(const TopoDS_Edge&               E,
 // purpose  : Particular case of Curve On Surface.
 //=======================================================================
 
-static void ComputeCurve3d(const TopoDS_Edge&               Edge,
+static void ComputeCurve3d(const TopoDS_Edge&          Edge,
                            const occ::handle<Geom2d_Curve>& Curve,
                            const occ::handle<Geom_Surface>& Surf,
-                           const TopLoc_Location&           Loc,
-                           double                           Tol)
+                           const TopLoc_Location&      Loc,
+                           double               Tol)
 {
   // try to find the particular case
   // if not found call BRepLib::BuildCurve3d
@@ -369,8 +372,8 @@ BRepOffset_Offset::BRepOffset_Offset() {}
 //=================================================================================================
 
 BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Face&     Face,
-                                     const double           Offset,
-                                     const bool             OffsetOutside,
+                                     const double    Offset,
+                                     const bool OffsetOutside,
                                      const GeomAbs_JoinType JoinType)
 {
   Init(Face, Offset, OffsetOutside, JoinType);
@@ -378,52 +381,51 @@ BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Face&     Face,
 
 //=================================================================================================
 
-BRepOffset_Offset::BRepOffset_Offset(
-  const TopoDS_Face&                                                              Face,
-  const double                                                                    Offset,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
-  const bool                                                                      OffsetOutside,
-  const GeomAbs_JoinType                                                          JoinType)
+BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Face&                  Face,
+                                     const double                 Offset,
+                                     const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
+                                     const bool              OffsetOutside,
+                                     const GeomAbs_JoinType              JoinType)
 {
   Init(Face, Offset, Created, OffsetOutside, JoinType);
 }
 
 //=================================================================================================
 
-BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Edge&  Path,
-                                     const TopoDS_Edge&  Edge1,
-                                     const TopoDS_Edge&  Edge2,
-                                     const double        Offset,
-                                     const bool          Polynomial,
-                                     const double        Tol,
-                                     const GeomAbs_Shape Conti)
+BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Edge&     Path,
+                                     const TopoDS_Edge&     Edge1,
+                                     const TopoDS_Edge&     Edge2,
+                                     const double    Offset,
+                                     const bool Polynomial,
+                                     const double    Tol,
+                                     const GeomAbs_Shape    Conti)
 {
   Init(Path, Edge1, Edge2, Offset, Polynomial, Tol, Conti);
 }
 
 //=================================================================================================
 
-BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Edge&  Path,
-                                     const TopoDS_Edge&  Edge1,
-                                     const TopoDS_Edge&  Edge2,
-                                     const double        Offset,
-                                     const TopoDS_Edge&  FirstEdge,
-                                     const TopoDS_Edge&  LastEdge,
-                                     const bool          Polynomial,
-                                     const double        Tol,
-                                     const GeomAbs_Shape Conti)
+BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Edge&     Path,
+                                     const TopoDS_Edge&     Edge1,
+                                     const TopoDS_Edge&     Edge2,
+                                     const double    Offset,
+                                     const TopoDS_Edge&     FirstEdge,
+                                     const TopoDS_Edge&     LastEdge,
+                                     const bool Polynomial,
+                                     const double    Tol,
+                                     const GeomAbs_Shape    Conti)
 {
   Init(Path, Edge1, Edge2, Offset, FirstEdge, LastEdge, Polynomial, Tol, Conti);
 }
 
 //=================================================================================================
 
-BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Vertex&                  Vertex,
+BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Vertex&        Vertex,
                                      const NCollection_List<TopoDS_Shape>& LEdge,
-                                     const double                          Offset,
-                                     const bool                            Polynomial,
-                                     const double                          Tol,
-                                     const GeomAbs_Shape                   Conti)
+                                     const double         Offset,
+                                     const bool      Polynomial,
+                                     const double         Tol,
+                                     const GeomAbs_Shape         Conti)
 {
   Init(Vertex, LEdge, Offset, Polynomial, Tol, Conti);
 }
@@ -431,8 +433,8 @@ BRepOffset_Offset::BRepOffset_Offset(const TopoDS_Vertex&                  Verte
 //=================================================================================================
 
 void BRepOffset_Offset::Init(const TopoDS_Face&     Face,
-                             const double           Offset,
-                             const bool             OffsetOutside,
+                             const double    Offset,
+                             const bool OffsetOutside,
                              const GeomAbs_JoinType JoinType)
 {
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> Empty;
@@ -441,23 +443,21 @@ void BRepOffset_Offset::Init(const TopoDS_Face&     Face,
 
 //=================================================================================================
 
-void BRepOffset_Offset::Init(
-  const TopoDS_Face&                                                              Face,
-  const double                                                                    Offset,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
-  const bool                                                                      OffsetOutside,
-  const GeomAbs_JoinType                                                          JoinType)
+void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
+                             const double                 Offset,
+                             const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Created,
+                             const bool              OffsetOutside,
+                             const GeomAbs_JoinType              JoinType)
 {
-  myShape         = Face;
+  myShape                = Face;
   double myOffset = Offset;
   if (Face.Orientation() == TopAbs_REVERSED)
     myOffset *= -1.;
 
-  TopLoc_Location           L;
+  TopLoc_Location      L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(Face, L);
   // On detrime les surfaces, evite des recopies dans les extensions.
-  occ::handle<Geom_RectangularTrimmedSurface> RT =
-    occ::down_cast<Geom_RectangularTrimmedSurface>(S);
+  occ::handle<Geom_RectangularTrimmedSurface> RT = occ::down_cast<Geom_RectangularTrimmedSurface>(S);
   if (!RT.IsNull())
     S = RT->BasisSurface();
   bool IsTransformed = false;
@@ -477,7 +477,7 @@ void BRepOffset_Offset::Init(
   if (!Co.IsNull())
   {
     double Uc, Vc;
-    gp_Pnt Apex = Co->Apex();
+    gp_Pnt        Apex = Co->Apex();
     ElSLib::Parameters(Co->Cone(), Apex, Uc, Vc);
     double UU1, UU2, VV1, VV2;
     BRepTools::UVBounds(Face, UU1, UU2, VV1, VV2);
@@ -492,28 +492,28 @@ void BRepOffset_Offset::Init(
   occ::handle<Geom_Surface> TheSurf = BRepOffset::Surface(S, myOffset, myStatus);
 
   // processing offsets of faces with possible degenerated edges
-  bool   UminDegen = false;
-  bool   UmaxDegen = false;
-  bool   VminDegen = false;
-  bool   VmaxDegen = false;
-  bool   UisoDegen = false;
-  gp_Pnt MinApex, MaxApex;
-  bool   HasSingularity = false;
-  double uf1, uf2, vf1, vf2, fpar, lpar;
+  bool UminDegen = false;
+  bool UmaxDegen = false;
+  bool VminDegen = false;
+  bool VmaxDegen = false;
+  bool UisoDegen = false;
+  gp_Pnt           MinApex, MaxApex;
+  bool HasSingularity = false;
+  double    uf1, uf2, vf1, vf2, fpar, lpar;
   BRepTools::UVBounds(Face, uf1, uf2, vf1, vf2);
   if (!(OffsetOutside && JoinType == GeomAbs_Arc)
       && (TheSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface)
           || TheSurf->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface)))
   {
     NCollection_Sequence<TopoDS_Shape> DegEdges;
-    TopExp_Explorer                    Explo(Face, TopAbs_EDGE);
+    TopExp_Explorer          Explo(Face, TopAbs_EDGE);
     for (; Explo.More(); Explo.Next())
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
 
       if (BRep_Tool::Degenerated(anEdge))
       {
-        double                    aF, aL;
+        double        aF, aL;
         occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(anEdge, Face, aF, aL);
 
         gp_Pnt2d aFPnt2d = c2d->Value(aF), aLPnt2d = c2d->Value(aL);
@@ -534,10 +534,10 @@ void BRepOffset_Offset::Init(
     {
       const double TolApex = 1.e-5;
       // define the iso of singularity (u or v)
-      TopoDS_Edge               theDegEdge = TopoDS::Edge(DegEdges(1));
-      occ::handle<Geom2d_Curve> aCurve = BRep_Tool::CurveOnSurface(theDegEdge, Face, fpar, lpar);
-      gp_Pnt2d                  fp2d   = aCurve->Value(fpar);
-      gp_Pnt2d                  lp2d   = aCurve->Value(lpar);
+      TopoDS_Edge          theDegEdge = TopoDS::Edge(DegEdges(1));
+      occ::handle<Geom2d_Curve> aCurve     = BRep_Tool::CurveOnSurface(theDegEdge, Face, fpar, lpar);
+      gp_Pnt2d             fp2d       = aCurve->Value(fpar);
+      gp_Pnt2d             lp2d       = aCurve->Value(lpar);
       if (std::abs(fp2d.X() - lp2d.X()) <= Precision::PConfusion())
         UisoDegen = true;
 
@@ -573,9 +573,9 @@ void BRepOffset_Offset::Init(
       }
       if (TheSurf->DynamicType() == STANDARD_TYPE(Geom_ConicalSurface))
       {
-        gp_Cone theCone = occ::down_cast<Geom_ConicalSurface>(TheSurf)->Cone();
-        gp_Pnt  apex    = theCone.Apex();
-        double  Uapex, Vapex;
+        gp_Cone       theCone = occ::down_cast<Geom_ConicalSurface>(TheSurf)->Cone();
+        gp_Pnt        apex    = theCone.Apex();
+        double Uapex, Vapex;
         ElSLib::Parameters(theCone, apex, Uapex, Vapex);
         if (VminDegen)
         {
@@ -605,9 +605,9 @@ void BRepOffset_Offset::Init(
             Pquart                                  = TheSurf->Value(uf1, 0.75 * vf1 + 0.25 * vf2);
             Pmid                                    = TheSurf->Value(uf1, 0.5 * (vf1 + vf2));
             gp_Vec                    DirApex       = gp_Vec(Pfirst, Pquart) ^ gp_Vec(Pfirst, Pmid);
-            occ::handle<Geom_Line>    LineApex      = new Geom_Line(Papex, DirApex);
+            occ::handle<Geom_Line>         LineApex      = new Geom_Line(Papex, DirApex);
             gp_Vec                    DirGeneratrix = BasisSurf->DN(uf1, vf1, 1, 0);
-            occ::handle<Geom_Line>    LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
+            occ::handle<Geom_Line>         LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
             GeomAPI_ExtremaCurveCurve theExtrema(LineGeneratrix, LineApex);
             gp_Pnt                    Pint1, Pint2;
             theExtrema.NearestPoints(Pint1, Pint2);
@@ -624,9 +624,9 @@ void BRepOffset_Offset::Init(
             }
             else
             {
-              occ::handle<Geom_Curve>     viso = TheSurf->VIso(vf1);
+              occ::handle<Geom_Curve>          viso = TheSurf->VIso(vf1);
               GeomAPI_ProjectPointOnCurve Projector(Pint1, viso);
-              double                      NewFirstU = Projector.LowerDistanceParameter();
+              double               NewFirstU = Projector.LowerDistanceParameter();
               TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, NewFirstU, uf2, vf1, vf2);
               MinApex = TheSurf->Value(NewFirstU, vf1);
             }
@@ -646,9 +646,9 @@ void BRepOffset_Offset::Init(
             Pquart                                  = TheSurf->Value(uf2, 0.75 * vf1 + 0.25 * vf2);
             Pmid                                    = TheSurf->Value(uf2, 0.5 * (vf1 + vf2));
             gp_Vec                    DirApex       = gp_Vec(Pfirst, Pquart) ^ gp_Vec(Pfirst, Pmid);
-            occ::handle<Geom_Line>    LineApex      = new Geom_Line(Papex, DirApex);
+            occ::handle<Geom_Line>         LineApex      = new Geom_Line(Papex, DirApex);
             gp_Vec                    DirGeneratrix = BasisSurf->DN(uf2, vf1, 1, 0);
-            occ::handle<Geom_Line>    LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
+            occ::handle<Geom_Line>         LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
             GeomAPI_ExtremaCurveCurve theExtrema(LineGeneratrix, LineApex);
             gp_Pnt                    Pint1, Pint2;
             theExtrema.NearestPoints(Pint1, Pint2);
@@ -665,9 +665,9 @@ void BRepOffset_Offset::Init(
             }
             else
             {
-              occ::handle<Geom_Curve>     viso = TheSurf->VIso(vf1);
+              occ::handle<Geom_Curve>          viso = TheSurf->VIso(vf1);
               GeomAPI_ProjectPointOnCurve Projector(Pint1, viso);
-              double                      NewLastU = Projector.LowerDistanceParameter();
+              double               NewLastU = Projector.LowerDistanceParameter();
               TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, NewLastU, vf1, vf2);
               MaxApex = TheSurf->Value(NewLastU, vf1);
             }
@@ -687,9 +687,9 @@ void BRepOffset_Offset::Init(
             Pquart                                  = TheSurf->Value(0.75 * uf1 + 0.25 * uf2, vf1);
             Pmid                                    = TheSurf->Value(0.5 * (uf1 + uf2), vf1);
             gp_Vec                    DirApex       = gp_Vec(Pfirst, Pquart) ^ gp_Vec(Pfirst, Pmid);
-            occ::handle<Geom_Line>    LineApex      = new Geom_Line(Papex, DirApex);
+            occ::handle<Geom_Line>         LineApex      = new Geom_Line(Papex, DirApex);
             gp_Vec                    DirGeneratrix = BasisSurf->DN(uf1, vf1, 0, 1);
-            occ::handle<Geom_Line>    LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
+            occ::handle<Geom_Line>         LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
             GeomAPI_ExtremaCurveCurve theExtrema(LineGeneratrix, LineApex);
             gp_Pnt                    Pint1, Pint2;
             theExtrema.NearestPoints(Pint1, Pint2);
@@ -706,9 +706,9 @@ void BRepOffset_Offset::Init(
             }
             else
             {
-              occ::handle<Geom_Curve>     uiso = TheSurf->UIso(uf1);
+              occ::handle<Geom_Curve>          uiso = TheSurf->UIso(uf1);
               GeomAPI_ProjectPointOnCurve Projector(Pint1, uiso);
-              double                      NewFirstV = Projector.LowerDistanceParameter();
+              double               NewFirstV = Projector.LowerDistanceParameter();
               TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, NewFirstV, vf2);
               MinApex = TheSurf->Value(uf1, NewFirstV);
               // TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1+length, vf2);
@@ -730,9 +730,9 @@ void BRepOffset_Offset::Init(
             Pquart                                  = TheSurf->Value(0.75 * uf1 + 0.25 * uf2, vf2);
             Pmid                                    = TheSurf->Value(0.5 * (uf1 + uf2), vf2);
             gp_Vec                    DirApex       = gp_Vec(Pfirst, Pquart) ^ gp_Vec(Pfirst, Pmid);
-            occ::handle<Geom_Line>    LineApex      = new Geom_Line(Papex, DirApex);
+            occ::handle<Geom_Line>         LineApex      = new Geom_Line(Papex, DirApex);
             gp_Vec                    DirGeneratrix = BasisSurf->DN(uf1, vf2, 0, 1);
-            occ::handle<Geom_Line>    LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
+            occ::handle<Geom_Line>         LineGeneratrix = new Geom_Line(Pfirst, DirGeneratrix);
             GeomAPI_ExtremaCurveCurve theExtrema(LineGeneratrix, LineApex);
             gp_Pnt                    Pint1, Pint2;
             theExtrema.NearestPoints(Pint1, Pint2);
@@ -749,9 +749,9 @@ void BRepOffset_Offset::Init(
             }
             else
             {
-              occ::handle<Geom_Curve>     uiso = TheSurf->UIso(uf1);
+              occ::handle<Geom_Curve>          uiso = TheSurf->UIso(uf1);
               GeomAPI_ProjectPointOnCurve Projector(Pint1, uiso);
-              double                      NewLastV = Projector.LowerDistanceParameter();
+              double               NewLastV = Projector.LowerDistanceParameter();
               TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, NewLastV);
               MaxApex = TheSurf->Value(uf1, NewLastV);
               // TheSurf = new Geom_RectangularTrimmedSurface(TheSurf, uf1, uf2, vf1, vf2-length);
@@ -781,7 +781,7 @@ void BRepOffset_Offset::Init(
   //  TopoDS_Face CurFace = TopoDS::Face(Face.Oriented(TopAbs_FORWARD));
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> VonDegen;
-  double                                                 u1, u2, v1, v2;
+  double       u1, u2, v1, v2;
   TheSurf->Bounds(u1, u2, v1, v2);
 
   TopExp_Explorer exp(CurFace, TopAbs_EDGE);
@@ -825,16 +825,16 @@ void BRepOffset_Offset::Init(
       const TopoDS_Edge& E = TopoDS::Edge(expe.Current());
       TopoDS_Vertex      V1, V2;
       TopExp::Vertices(E, V1, V2);
-      gp_Pnt2d                  P2d1, P2d2;
-      gp_Pnt                    P1, P2;
-      double                    vstart, vend;
-      double                    f, l;
+      gp_Pnt2d             P2d1, P2d2;
+      gp_Pnt               P1, P2;
+      double        vstart, vend;
+      double        f, l;
       occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(E, CurFace, f, l);
-      TopoDS_Edge               OE;
+      TopoDS_Edge          OE;
       if (MapSS.IsBound(E) && !VonDegen.Contains(V1) && !VonDegen.Contains(V2))
       { // c`est un edge de couture
-        OE                                    = TopoDS::Edge(MapSS(E));
-        TopoDS_Shape              aLocalShape = E.Reversed();
+        OE                               = TopoDS::Edge(MapSS(E));
+        TopoDS_Shape         aLocalShape = E.Reversed();
         occ::handle<Geom2d_Curve> C2d_1 =
           BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShape), CurFace, f, l);
         //	occ::handle<Geom2d_Curve> C2d_1 =
@@ -964,7 +964,7 @@ void BRepOffset_Offset::Init(
           myBuilder.Range(OE, myFace, f, l);
           if (!BRep_Tool::Degenerated(E) && TheSurf->IsUClosed())
           {
-            TopoDS_Shape              aLocalShapeReversedE = E.Reversed();
+            TopoDS_Shape         aLocalShapeReversedE = E.Reversed();
             occ::handle<Geom2d_Curve> C2d_1 =
               BRep_Tool::CurveOnSurface(TopoDS::Edge(aLocalShapeReversedE), CurFace, f, l);
             P2d1 = C2d_1->Value(BRep_Tool::Parameter(V1, E, CurFace));
@@ -1009,13 +1009,13 @@ void BRepOffset_Offset::Init(
 
 //=================================================================================================
 
-void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
-                             const TopoDS_Edge&  Edge1,
-                             const TopoDS_Edge&  Edge2,
-                             const double        Offset,
-                             const bool          Polynomial,
-                             const double        Tol,
-                             const GeomAbs_Shape Conti)
+void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
+                             const TopoDS_Edge&     Edge1,
+                             const TopoDS_Edge&     Edge2,
+                             const double    Offset,
+                             const bool Polynomial,
+                             const double    Tol,
+                             const GeomAbs_Shape    Conti)
 {
   TopoDS_Edge FirstEdge, LastEdge;
   Init(Path, Edge1, Edge2, Offset, FirstEdge, LastEdge, Polynomial, Tol, Conti);
@@ -1023,33 +1023,33 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
 
 //=================================================================================================
 
-void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
-                             const TopoDS_Edge&  Edge1,
-                             const TopoDS_Edge&  Edge2,
-                             const double        Offset,
-                             const TopoDS_Edge&  FirstEdge,
-                             const TopoDS_Edge&  LastEdge,
-                             const bool          Polynomial,
-                             const double        Tol,
-                             const GeomAbs_Shape Conti)
+void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
+                             const TopoDS_Edge&     Edge1,
+                             const TopoDS_Edge&     Edge2,
+                             const double    Offset,
+                             const TopoDS_Edge&     FirstEdge,
+                             const TopoDS_Edge&     LastEdge,
+                             const bool Polynomial,
+                             const double    Tol,
+                             const GeomAbs_Shape    Conti)
 {
   bool C1Denerated = false;
   bool C2Denerated = false;
-  myStatus         = BRepOffset_Good;
-  myShape          = Path;
+  myStatus                     = BRepOffset_Good;
+  myShape                      = Path;
 
   TopLoc_Location Loc;
-  double          f[3], l[3];
+  double   f[3], l[3];
 
   occ::handle<Geom_Curve> CP = BRep_Tool::Curve(Path, Loc, f[0], l[0]);
-  CP                         = new Geom_TrimmedCurve(CP, f[0], l[0]);
+  CP                    = new Geom_TrimmedCurve(CP, f[0], l[0]);
   CP->Transform(Loc.Transformation());
   occ::handle<GeomAdaptor_Curve> HCP = new GeomAdaptor_Curve(CP);
 
   occ::handle<Geom_Curve> C1 = BRep_Tool::Curve(Edge1, Loc, f[1], l[1]);
 
   occ::handle<Adaptor3d_Curve> HEdge1;
-  bool                         C1is3D = true;
+  bool        C1is3D = true;
   if (C1.IsNull())
   {
     C1is3D = false;
@@ -1060,7 +1060,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     C12d = new Geom2d_TrimmedCurve(C12d, f[1], l[1]);
     occ::handle<GeomAdaptor_Surface> HS1 = new GeomAdaptor_Surface(S1);
     occ::handle<Geom2dAdaptor_Curve> HC1 = new Geom2dAdaptor_Curve(C12d);
-    Adaptor3d_CurveOnSurface         Cons(HC1, HS1);
+    Adaptor3d_CurveOnSurface    Cons(HC1, HS1);
     HEdge1 = new Adaptor3d_CurveOnSurface(Cons);
   }
   else
@@ -1078,7 +1078,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
   occ::handle<Geom_Curve> C2 = BRep_Tool::Curve(Edge2, Loc, f[2], l[2]);
 
   occ::handle<Adaptor3d_Curve> HEdge2;
-  bool                         C2is3D = true;
+  bool        C2is3D = true;
   if (C2.IsNull())
   {
     C2is3D = false;
@@ -1089,7 +1089,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
     C12d = new Geom2d_TrimmedCurve(C12d, f[2], l[2]);
     occ::handle<GeomAdaptor_Surface> HS1 = new GeomAdaptor_Surface(S1);
     occ::handle<Geom2dAdaptor_Curve> HC1 = new Geom2dAdaptor_Curve(C12d);
-    Adaptor3d_CurveOnSurface         Cons(HC1, HS1);
+    Adaptor3d_CurveOnSurface    Cons(HC1, HS1);
     HEdge2 = new Adaptor3d_CurveOnSurface(Cons);
   }
   else
@@ -1112,20 +1112,20 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
   double ErrorPipe = Pipe.ErrorOnSurf();
 
   occ::handle<Geom_Surface> S      = Pipe.Surface();
-  bool                      ExchUV = Pipe.ExchangeUV();
-  double                    f1, l1, f2, l2;
+  bool     ExchUV = Pipe.ExchangeUV();
+  double        f1, l1, f2, l2;
   S->Bounds(f1, l1, f2, l2);
 
   // Perform the face
-  double       PathTol = BRep_Tool::Tolerance(Path);
-  double       TheTol;
-  BRep_Builder myBuilder;
+  double PathTol = BRep_Tool::Tolerance(Path);
+  double TheTol;
+  BRep_Builder  myBuilder;
   myBuilder.MakeFace(myFace);
   TopLoc_Location Id;
   myBuilder.UpdateFace(myFace, S, Id, PathTol);
 
   // update de Edge1. (Rem : has already a 3d curve)
-  double                    U, U1, U2;
+  double        U, U1, U2;
   occ::handle<Geom2d_Curve> PC;
   if (ExchUV)
   {
@@ -1436,12 +1436,12 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&  Path,
 
 //=================================================================================================
 
-void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
+void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
                              const NCollection_List<TopoDS_Shape>& LEdge,
-                             const double                          Offset,
-                             const bool                            Polynomial,
-                             const double                          TolApp,
-                             const GeomAbs_Shape                   Conti)
+                             const double         Offset,
+                             const bool      Polynomial,
+                             const double         TolApp,
+                             const GeomAbs_Shape         Conti)
 {
   myStatus = BRepOffset_Good;
   myShape  = Vertex;
@@ -1449,7 +1449,7 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
   // evaluate the Ax3 of the Sphere
   // find 3 different vertices in LEdge
   NCollection_List<TopoDS_Shape>::Iterator it;
-  TopoDS_Vertex                            V1, V2, V3, V4;
+  TopoDS_Vertex                      V1, V2, V3, V4;
 
 #ifdef OCCT_DEBUG
   char* name = new char[100];
@@ -1560,8 +1560,8 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
     // of the sphere. Else move it.
     // the transformation is : U` = U + PI + 2 k  PI
     //                         V` = +/- PI + 2 k` PI
-    gp_Pnt2d P2d        = PCurve->Value(f);
-    bool     IsToAdjust = false;
+    gp_Pnt2d         P2d        = PCurve->Value(f);
+    bool IsToAdjust = false;
     if (P2d.Y() < -M_PI / 2.)
     {
       IsToAdjust = true;
@@ -1602,14 +1602,14 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&                  Vertex,
 
 void BRepOffset_Offset::Init(const TopoDS_Edge& Edge, const double Offset)
 {
-  myShape         = Edge;
+  myShape                = Edge;
   double myOffset = std::abs(Offset);
 
-  double          f, l;
+  double   f, l;
   TopLoc_Location Loc;
 
   occ::handle<Geom_Curve> CP = BRep_Tool::Curve(Edge, Loc, f, l);
-  CP                         = new Geom_TrimmedCurve(CP, f, l);
+  CP                    = new Geom_TrimmedCurve(CP, f, l);
   CP->Transform(Loc.Transformation());
 
   GeomFill_Pipe Pipe(CP, myOffset);

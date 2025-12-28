@@ -58,8 +58,8 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
 {
 #define IS_EQUAL(_ptr, _string) (!memcmp(_ptr, _string, sizeof(_string) - 1))
 
-  char *aSrcPtr = theSrc, *aDstPtr = theSrc;
-  int   anIncrCount = 0;
+  char *           aSrcPtr = theSrc, *aDstPtr = theSrc;
+  int anIncrCount = 0;
   for (;;)
   {
     char* aPtr = strchr(aSrcPtr, '&');
@@ -151,7 +151,9 @@ char* LDOM_CharReference::Decode(char* theSrc, int& theLen)
 //           the returned string (whatever the case)
 //=======================================================================
 
-char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isAttribute)
+char* LDOM_CharReference::Encode(const char*            theSrc,
+                                 int&      theLen,
+                                 const bool isAttribute)
 {
   // Initialising the constants
   static const struct entityRef entity_ref[6] = {entityRef(NULL, 0),
@@ -161,9 +163,9 @@ char* LDOM_CharReference::Encode(const char* theSrc, int& theLen, const bool isA
                                                  entityRef("&quot;", 6),
                                                  entityRef("&apos;", 6)};
 
-  const char *endSrc, *ptrSrc = theSrc;
-  char*       aDest  = (char*)theSrc;
-  int         aCount = 0;
+  const char *     endSrc, *ptrSrc = theSrc;
+  char*            aDest  = (char*)theSrc;
+  int aCount = 0;
   //    Analyse if there is a non-standard character in the string
   for (;;)
   {

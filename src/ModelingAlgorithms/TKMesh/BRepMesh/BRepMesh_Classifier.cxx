@@ -18,6 +18,7 @@
 #include <Precision.hxx>
 #include <gp_Pnt2d.hxx>
 #include <CSLib_Class2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
@@ -35,7 +36,7 @@ BRepMesh_Classifier::~BRepMesh_Classifier() {}
 TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
 {
   bool isOut = false;
-  int  aNb   = myTabClass.Length();
+  int aNb   = myTabClass.Length();
 
   for (int i = 0; i < aNb; i++)
   {
@@ -61,10 +62,10 @@ TopAbs_State BRepMesh_Classifier::Perform(const gp_Pnt2d& thePoint) const
 
 //=================================================================================================
 
-void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d*>& theWire,
-                                       const std::pair<double, double>&             theTolUV,
-                                       const std::pair<double, double>&             theRangeU,
-                                       const std::pair<double, double>&             theRangeV)
+void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d*>&   theWire,
+                                       const std::pair<double, double>& theTolUV,
+                                       const std::pair<double, double>& theRangeU,
+                                       const std::pair<double, double>& theRangeV)
 {
   const int aNbPnts = theWire.Length();
   if (aNbPnts < 2)
@@ -74,8 +75,8 @@ void BRepMesh_Classifier::RegisterWire(const NCollection_Sequence<const gp_Pnt2d
 
   // Accumulate angle
   NCollection_Array1<gp_Pnt2d> aPClass(1, aNbPnts);
-  double                       anAngle = 0.0;
-  const gp_Pnt2d *             p1 = theWire(1), *p2 = theWire(2), *p3;
+  double        anAngle = 0.0;
+  const gp_Pnt2d *     p1 = theWire(1), *p2 = theWire(2), *p3;
   aPClass(1) = *p1;
   aPClass(2) = *p2;
 

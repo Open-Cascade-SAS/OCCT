@@ -57,9 +57,9 @@ public:
   //! Sets the value of the arc and of the parameter on
   //! this arc of the point.
   void SetArc(const occ::handle<Adaptor2d_Curve2d>& A,
-              const double                          Param,
-              const IntSurf_Transition&             TLine,
-              const IntSurf_Transition&             TArc);
+              const double              Param,
+              const IntSurf_Transition&        TLine,
+              const IntSurf_Transition&        TArc);
 
   void SetMultiple();
 
@@ -115,19 +115,19 @@ public:
   bool IsInternal() const;
 
 private:
-  gp_Pnt                         pt;
-  double                         uparam;
-  double                         vparam;
-  double                         paraline;
-  bool                           onarc;
+  gp_Pnt                    pt;
+  double             uparam;
+  double             vparam;
+  double             paraline;
+  bool          onarc;
   occ::handle<Adaptor2d_Curve2d> arc;
-  IntSurf_Transition             traline;
-  IntSurf_Transition             traarc;
-  double                         prmarc;
-  bool                           isvtx;
+  IntSurf_Transition        traline;
+  IntSurf_Transition        traarc;
+  double             prmarc;
+  bool          isvtx;
   occ::handle<Adaptor3d_HVertex> vtx;
-  bool                           ismult;
-  bool                           myInternal;
+  bool          ismult;
+  bool          myInternal;
 };
 
 #include <Contap_Point.lxx>

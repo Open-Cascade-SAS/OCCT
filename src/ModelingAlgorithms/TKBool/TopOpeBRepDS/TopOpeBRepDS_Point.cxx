@@ -46,8 +46,8 @@ TopOpeBRepDS_Point::TopOpeBRepDS_Point(const TopoDS_Shape& S)
 
 bool TopOpeBRepDS_Point::IsEqual(const TopOpeBRepDS_Point& P) const
 {
-  double t = std::max(myTolerance, P.Tolerance());
-  bool   b = myPoint.IsEqual(P.Point(), t);
+  double    t = std::max(myTolerance, P.Tolerance());
+  bool b = myPoint.IsEqual(P.Point(), t);
   return b;
 }
 

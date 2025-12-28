@@ -28,6 +28,7 @@
 #include <MeshVS_MeshPrsBuilder.hxx>
 #include <MeshVS_SymmetricPairHasher.hxx>
 #include <MeshVS_Tool.hxx>
+#include <NCollection_Map.hxx>
 #include <NCollection_Vector.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
@@ -38,9 +39,11 @@
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 
 #ifdef _WIN32
@@ -55,17 +58,18 @@ namespace
 // Function : ProcessFace
 // Purpose  : Fill array with triangles for the face
 //================================================================
-static void ProcessFace(const NCollection_Sequence<int>&         theFaceNodes,
-                        const NCollection_Array1<double>&        theNodes,
-                        const double*                            theCenter,
-                        const double                             theShrinkCoef,
-                        const bool                               theIsShrinked,
-                        const bool                               theIsShaded,
+static void ProcessFace(const NCollection_Sequence<int>&    theFaceNodes,
+                        const NCollection_Array1<double>&         theNodes,
+                        const double*                theCenter,
+                        const double                 theShrinkCoef,
+                        const bool              theIsShrinked,
+                        const bool              theIsShaded,
                         occ::handle<Graphic3d_ArrayOfPrimitives> theArray)
 {
   const int aNbPolyNodes = theFaceNodes.Length();
 
-  double* aPolyNodesBuf = (double*)alloca((3 * aNbPolyNodes + 1) * sizeof(double));
+  double* aPolyNodesBuf =
+    (double*)alloca((3 * aNbPolyNodes + 1) * sizeof(double));
   NCollection_Array1<double> aPolyNodes(*aPolyNodesBuf, 0, 3 * aNbPolyNodes);
 
   for (int aNodeIdx = 0; aNodeIdx < aNbPolyNodes; ++aNodeIdx)
@@ -129,10 +133,10 @@ static void ProcessFace(const NCollection_Sequence<int>&         theFaceNodes,
 //=================================================================================================
 
 MeshVS_MeshPrsBuilder::MeshVS_MeshPrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
-                                             const int&                            DisplayModeMask,
+                                             const int&          DisplayModeMask,
                                              const occ::handle<MeshVS_DataSource>& DS,
-                                             const int                             Id,
-                                             const MeshVS_BuilderPriority&         Priority)
+                                             const int           Id,
+                                             const MeshVS_BuilderPriority&    Priority)
     : MeshVS_PrsBuilder(Parent, DisplayModeMask, DS, Id, Priority)
 {
 }
@@ -140,16 +144,16 @@ MeshVS_MeshPrsBuilder::MeshVS_MeshPrsBuilder(const occ::handle<MeshVS_Mesh>&    
 //=================================================================================================
 
 void MeshVS_MeshPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                  const TColStd_PackedMapOfInteger&      IDs,
-                                  TColStd_PackedMapOfInteger&            IDsToExclude,
-                                  const bool                             IsElement,
-                                  const int                              DisplayMode) const
+                                  const TColStd_PackedMapOfInteger& IDs,
+                                  TColStd_PackedMapOfInteger&       IDsToExclude,
+                                  const bool            IsElement,
+                                  const int            DisplayMode) const
 {
   if (DisplayMode <= 0)
     return;
 
   bool HasHilightFlag = ((DisplayMode & MeshVS_DMF_HilightPrs) != 0);
-  int  Extent         = IDs.Extent();
+  int Extent         = IDs.Extent();
 
   if (HasHilightFlag && Extent == 1)
     BuildHilightPrs(Prs, IDs, IsElement);
@@ -162,9 +166,9 @@ void MeshVS_MeshPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
 //=================================================================================================
 
 void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Prs,
-                                       const TColStd_PackedMapOfInteger&      IDs,
-                                       TColStd_PackedMapOfInteger&            IDsToExclude,
-                                       const int                              DisplayMode) const
+                                       const TColStd_PackedMapOfInteger& IDs,
+                                       TColStd_PackedMapOfInteger&       IDsToExclude,
+                                       const int            DisplayMode) const
 {
   occ::handle<MeshVS_DataSource>        aSource   = GetDataSource();
   occ::handle<MeshVS_Drawer>            aDrawer   = GetDrawer();
@@ -177,10 +181,10 @@ void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Pr
   bool HasSelectFlag  = ((DisplayMode & MeshVS_DMF_SelectionPrs) != 0);
   bool HasHilightFlag = ((DisplayMode & MeshVS_DMF_HilightPrs) != 0);
 
-  double                     aCoordsBuf[3];
+  double        aCoordsBuf[3];
   NCollection_Array1<double> aCoords(*aCoordsBuf, 1, 3);
-  int                        NbNodes;
-  MeshVS_EntityType          aType;
+  int     NbNodes;
+  MeshVS_EntityType    aType;
 
   if (!DisplayFreeNodes)
     return;
@@ -200,8 +204,8 @@ void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Pr
   if (upper <= 0)
     return;
 
-  occ::handle<Graphic3d_ArrayOfPoints>    aNodePoints = new Graphic3d_ArrayOfPoints(upper);
-  int                                     k           = 0;
+  occ::handle<Graphic3d_ArrayOfPoints>         aNodePoints = new Graphic3d_ArrayOfPoints(upper);
+  int                        k           = 0;
   TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
   for (; it.More(); it.Next())
   {
@@ -226,9 +230,9 @@ void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Pr
 //=================================================================================================
 
 void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>& Prs,
-                                          const TColStd_PackedMapOfInteger&      IDs,
-                                          TColStd_PackedMapOfInteger&            IDsToExclude,
-                                          const int                              DisplayMode) const
+                                          const TColStd_PackedMapOfInteger& IDs,
+                                          TColStd_PackedMapOfInteger&       IDsToExclude,
+                                          const int            DisplayMode) const
 {
   int maxnodes;
 
@@ -253,11 +257,13 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
   double aShrinkCoef = 0.0;
   aDrawer->GetDouble(MeshVS_DA_ShrinkCoeff, aShrinkCoef);
 
-  bool IsWireFrame = (aDispMode == MeshVS_DMF_WireFrame),
-       IsShading = (aDispMode == MeshVS_DMF_Shading), IsShrink = (aDispMode == MeshVS_DMF_Shrink),
-       HasHilightFlag = ((DisplayMode & MeshVS_DMF_HilightPrs) != 0),
-       HasSelectFlag = ((DisplayMode & MeshVS_DMF_SelectionPrs) != 0), IsMeshReflect = false,
-       IsMeshAllowOverlap = false, IsMeshSmoothShading = false;
+  bool IsWireFrame    = (aDispMode == MeshVS_DMF_WireFrame),
+                   IsShading      = (aDispMode == MeshVS_DMF_Shading),
+                   IsShrink       = (aDispMode == MeshVS_DMF_Shrink),
+                   HasHilightFlag = ((DisplayMode & MeshVS_DMF_HilightPrs) != 0),
+                   HasSelectFlag  = ((DisplayMode & MeshVS_DMF_SelectionPrs) != 0),
+                   IsMeshReflect = false, IsMeshAllowOverlap = false,
+                   IsMeshSmoothShading = false;
 
   aDrawer->GetBoolean(MeshVS_DA_Reflection, IsMeshReflect);
   aDrawer->GetBoolean(MeshVS_DA_IsAllowOverlapped, IsMeshAllowOverlap);
@@ -278,12 +284,12 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
     AMat.SetSpecularColor(Quantity_NOC_BLACK);
     AMat.SetEmissiveColor(Quantity_NOC_BLACK);
   }
-  occ::handle<Graphic3d_AspectFillArea3d> aFill =
-    MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
-  occ::handle<Graphic3d_AspectLine3d> aBeam = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
+  occ::handle<Graphic3d_AspectFillArea3d> aFill = MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
+  occ::handle<Graphic3d_AspectLine3d>     aBeam = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
   //-------------------------------------------------------------------
 
-  bool IsOverlapControl = !IsMeshAllowOverlap && (IsWireFrame || IsShading) && !HasSelectFlag;
+  bool IsOverlapControl =
+    !IsMeshAllowOverlap && (IsWireFrame || IsShading) && !HasSelectFlag;
 
   // subtract the hidden elements and ids to exclude (to minimize allocated memory)
   TColStd_PackedMapOfInteger anIDs;
@@ -294,18 +300,18 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
   anIDs.Subtract(IDsToExclude);
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  TColStd_MapIteratorOfPackedMapOfInteger                     it(anIDs);
+  TColStd_MapIteratorOfPackedMapOfInteger   it(anIDs);
 
   bool showEdges = true;
   aDrawer->GetBoolean(MeshVS_DA_ShowEdges, showEdges);
 
   showEdges = IsWireFrame || showEdges;
 
-  int*    aNodesBuf  = (int*)alloca(maxnodes * sizeof(int));
-  double* aCoordsBuf = (double*)alloca(3 * maxnodes * sizeof(double));
+  int* aNodesBuf  = (int*)alloca(maxnodes * sizeof(int));
+  double*    aCoordsBuf = (double*)alloca(3 * maxnodes * sizeof(double));
 
-  NCollection_Array1<int>    aNodes(*aNodesBuf, 1, maxnodes);
-  NCollection_Array1<double> aCoords(*aCoordsBuf, 1, 3 * maxnodes);
+  NCollection_Array1<int> aNodes(*aNodesBuf, 1, maxnodes);
+  NCollection_Array1<double>    aCoords(*aCoordsBuf, 1, 3 * maxnodes);
 
   int aNbFacePrimitives = 0;
   int aNbVolmPrimitives = 0;
@@ -386,8 +392,8 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
 
   TColStd_PackedMapOfInteger aCustomElements;
 
-  Quantity_Color                   anOldEdgeColor;
-  Quantity_Color                   anEdgeColor = aFill->EdgeColor();
+  Quantity_Color       anOldEdgeColor;
+  Quantity_Color       anEdgeColor = aFill->EdgeColor();
   NCollection_Map<MeshVS_TwoNodes> aLinkNodes;
 
   // Forbid drawings of edges which overlap with some links
@@ -592,8 +598,8 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
 //=================================================================================================
 
 void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation>& Prs,
-                                            const TColStd_PackedMapOfInteger&      IDs,
-                                            const bool                             IsElement) const
+                                            const TColStd_PackedMapOfInteger& IDs,
+                                            const bool            IsElement) const
 {
   int maxnodes;
 
@@ -605,7 +611,7 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
   if (aDrawer.IsNull() || !aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, maxnodes) || maxnodes <= 0)
     return;
 
-  MeshVS_Buffer              aCoordsBuf(3 * maxnodes * sizeof(double));
+  MeshVS_Buffer        aCoordsBuf(3 * maxnodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * maxnodes);
 
   Graphic3d_MaterialAspect AMat;
@@ -615,14 +621,13 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
   AMat.SetSpecularColor(Quantity_NOC_BLACK);
   AMat.SetEmissiveColor(Quantity_NOC_BLACK);
 
-  occ::handle<Graphic3d_AspectFillArea3d> aFill =
-    MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
-  occ::handle<Graphic3d_AspectLine3d>   aBeam     = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
-  occ::handle<Graphic3d_AspectMarker3d> aNodeMark = MeshVS_Tool::CreateAspectMarker3d(GetDrawer());
+  occ::handle<Graphic3d_AspectFillArea3d> aFill = MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
+  occ::handle<Graphic3d_AspectLine3d>     aBeam = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
+  occ::handle<Graphic3d_AspectMarker3d>   aNodeMark = MeshVS_Tool::CreateAspectMarker3d(GetDrawer());
 
   // Hilight one element or node
   TColStd_MapIteratorOfPackedMapOfInteger it(IDs);
-  int                                     ID = it.Key(), NbNodes;
+  int                        ID = it.Key(), NbNodes;
   MeshVS_EntityType                       aType;
 
   if (!aSource->GetGeom(ID, IsElement, aCoords, NbNodes, aType))
@@ -680,7 +685,7 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
           for (i = lo; i <= up; i++)
           {
             const NCollection_Sequence<int>& aSeq = aTopo->Value(i);
-            const int                        m    = aSeq.Length();
+            const int           m    = aSeq.Length();
             aPrims->AddBound(m);
             for (j = 1; j <= m; j++)
             {
@@ -703,10 +708,10 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::AddLinkPrs(const NCollection_Array1<double>&             theCoords,
+void MeshVS_MeshPrsBuilder::AddLinkPrs(const NCollection_Array1<double>&              theCoords,
                                        const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
-                                       const bool                                    theIsShrinked,
-                                       const double theShrinkCoef) const
+                                       const bool                   theIsShrinked,
+                                       const double                      theShrinkCoef) const
 {
   double aX1 = theCoords(1);
   double aY1 = theCoords(2);
@@ -736,12 +741,11 @@ void MeshVS_MeshPrsBuilder::AddLinkPrs(const NCollection_Array1<double>&        
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::AddFaceWirePrs(
-  const NCollection_Array1<double>&             theCoords,
-  const int                                     theNbNodes,
-  const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
-  const bool                                    theIsShrinked,
-  const double                                  theShrinkingCoef) const
+void MeshVS_MeshPrsBuilder::AddFaceWirePrs(const NCollection_Array1<double>&              theCoords,
+                                           const int                   theNbNodes,
+                                           const occ::handle<Graphic3d_ArrayOfSegments>& theSegments,
+                                           const bool                   theIsShrinked,
+                                           const double theShrinkingCoef) const
 {
   double aCenterX = 0.0;
   double aCenterY = 0.0;
@@ -786,16 +790,15 @@ void MeshVS_MeshPrsBuilder::AddFaceWirePrs(
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
-  const int                                      theID,
-  const NCollection_Array1<double>&              theCoords,
-  const int                                      theNbNodes,
-  const int                                      theMaxNodes,
-  const occ::handle<Graphic3d_ArrayOfTriangles>& theTriangles,
-  const bool                                     theIsShaded,
-  const bool                                     theIsShrinked,
-  const double                                   theShrinkingCoef,
-  const bool                                     theIsSmoothShading) const
+void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(const int                    theID,
+                                            const NCollection_Array1<double>&               theCoords,
+                                            const int                    theNbNodes,
+                                            const int                    theMaxNodes,
+                                            const occ::handle<Graphic3d_ArrayOfTriangles>& theTriangles,
+                                            const bool                    theIsShaded,
+                                            const bool                    theIsShrinked,
+                                            const double    theShrinkingCoef,
+                                            const bool theIsSmoothShading) const
 {
   occ::handle<MeshVS_DataSource> aDataSource = myParentMesh->GetDataSource();
 
@@ -886,15 +889,14 @@ void MeshVS_MeshPrsBuilder::AddFaceSolidPrs(
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::AddVolumePrs(
-  const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
-  const NCollection_Array1<double>&                                  theNodes,
-  const int                                                          theNbNodes,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>&                    theArray,
-  const bool                                                         theIsShaded,
-  const bool                                                         theIsShrinked,
-  const bool                                                         theIsSelected,
-  const double                                                       theShrinkCoef)
+void MeshVS_MeshPrsBuilder::AddVolumePrs(const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
+                                         const NCollection_Array1<double>&                      theNodes,
+                                         const int                     theNbNodes,
+                                         const occ::handle<Graphic3d_ArrayOfPrimitives>& theArray,
+                                         const bool                     theIsShaded,
+                                         const bool                     theIsShrinked,
+                                         const bool                     theIsSelected,
+                                         const double                        theShrinkCoef)
 {
   double aCenter[] = {0.0, 0.0, 0.0};
 
@@ -932,7 +934,9 @@ void MeshVS_MeshPrsBuilder::AddVolumePrs(
   }
   else if (theIsSelected)
   {
-    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper();
+         aFaceIdx <= topoup;
+         ++aFaceIdx)
     {
       const NCollection_Sequence<int>& aFaceNodes = theTopo->Value(aFaceIdx);
 
@@ -950,7 +954,8 @@ void MeshVS_MeshPrsBuilder::AddVolumePrs(
       aFaceCenter[1] /= aFaceNodes.Length();
       aFaceCenter[2] /= aFaceNodes.Length();
 
-      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
+      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes;
+           ++aNodeIdx)
       {
         for (int aSubIdx = 0; aSubIdx < 2; ++aSubIdx) // add segment
         {
@@ -972,11 +977,14 @@ void MeshVS_MeshPrsBuilder::AddVolumePrs(
     // Find all pairs of nodes (edges) to draw (will be drawn only once)
     NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher> aEdgeMap;
 
-    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper();
+         aFaceIdx <= topoup;
+         ++aFaceIdx)
     {
       const NCollection_Sequence<int>& aFaceNodes = theTopo->Value(aFaceIdx);
 
-      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
+      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes;
+           ++aNodeIdx)
       {
         const int aNextIdx = (aNodeIdx + 1) % aNbNodes;
 
@@ -1015,13 +1023,12 @@ void MeshVS_MeshPrsBuilder::AddVolumePrs(
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::HowManyPrimitives(
-  const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Topo,
-  const bool                                                         AsPolygons,
-  const bool                                                         IsSelect,
-  const int                                                          NbNodes,
-  int&                                                               Vertices,
-  int&                                                               Bounds)
+void MeshVS_MeshPrsBuilder::HowManyPrimitives(const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Topo,
+                                              const bool AsPolygons,
+                                              const bool IsSelect,
+                                              const int NbNodes,
+                                              int&      Vertices,
+                                              int&      Bounds)
 {
   if (!Topo.IsNull())
   {
@@ -1048,32 +1055,32 @@ void MeshVS_MeshPrsBuilder::HowManyPrimitives(
 
 //=================================================================================================
 
-void MeshVS_MeshPrsBuilder::DrawArrays(
-  const occ::handle<Prs3d_Presentation>&          Prs,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>& thePolygons,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>& theLines,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>& theLinkLines,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>& theVolumesInShad,
-  const bool                                      IsPolygonsEdgesOff,
-  const bool                                      IsSelected,
-  const occ::handle<Graphic3d_AspectFillArea3d>&  theFillAsp,
-  const occ::handle<Graphic3d_AspectLine3d>&      theLineAsp) const
+void MeshVS_MeshPrsBuilder::DrawArrays(const occ::handle<Prs3d_Presentation>&          Prs,
+                                       const occ::handle<Graphic3d_ArrayOfPrimitives>& thePolygons,
+                                       const occ::handle<Graphic3d_ArrayOfPrimitives>& theLines,
+                                       const occ::handle<Graphic3d_ArrayOfPrimitives>& theLinkLines,
+                                       const occ::handle<Graphic3d_ArrayOfPrimitives>& theVolumesInShad,
+                                       const bool                    IsPolygonsEdgesOff,
+                                       const bool                    IsSelected,
+                                       const occ::handle<Graphic3d_AspectFillArea3d>& theFillAsp,
+                                       const occ::handle<Graphic3d_AspectLine3d>&     theLineAsp) const
 {
   if (theFillAsp.IsNull())
     return;
 
-  bool IsFacePolygons   = (!thePolygons.IsNull() && thePolygons->ItemNumber() > 0),
-       IsVolumePolygons = (!theVolumesInShad.IsNull() && theVolumesInShad->ItemNumber() > 0),
-       IsPolygons       = IsFacePolygons || IsVolumePolygons,
-       IsPolylines      = (!theLines.IsNull() && theLines->ItemNumber() > 0),
-       IsLinkPolylines  = (!theLinkLines.IsNull() && theLinkLines->ItemNumber() > 0);
+  bool IsFacePolygons = (!thePolygons.IsNull() && thePolygons->ItemNumber() > 0),
+                   IsVolumePolygons =
+                     (!theVolumesInShad.IsNull() && theVolumesInShad->ItemNumber() > 0),
+                   IsPolygons      = IsFacePolygons || IsVolumePolygons,
+                   IsPolylines     = (!theLines.IsNull() && theLines->ItemNumber() > 0),
+                   IsLinkPolylines = (!theLinkLines.IsNull() && theLinkLines->ItemNumber() > 0);
 
   Quantity_Color anIntColor  = theFillAsp->InteriorColor();
   Quantity_Color aBackColor  = theFillAsp->BackInteriorColor();
   Quantity_Color anEdgeColor = theFillAsp->EdgeColor();
-  double         aWidth      = theFillAsp->EdgeWidth();
+  double  aWidth      = theFillAsp->EdgeWidth();
 
-  bool                       isSupressBackFaces = false;
+  bool      isSupressBackFaces = false;
   occ::handle<MeshVS_Drawer> aDrawer            = GetDrawer();
   if (!aDrawer.IsNull())
   {
@@ -1164,10 +1171,10 @@ void MeshVS_MeshPrsBuilder::DrawArrays(
 //=================================================================================================
 
 void MeshVS_MeshPrsBuilder::CalculateCenter(const NCollection_Array1<double>& theCoords,
-                                            const int                         NbNodes,
-                                            double&                           xG,
-                                            double&                           yG,
-                                            double&                           zG)
+                                            const int      NbNodes,
+                                            double&              xG,
+                                            double&              yG,
+                                            double&              zG)
 {
   xG = yG = zG = 0;
   if (NbNodes < 4)

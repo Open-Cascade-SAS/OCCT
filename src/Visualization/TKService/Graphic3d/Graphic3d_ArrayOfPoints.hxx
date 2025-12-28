@@ -38,7 +38,7 @@ public:
   //! color
   //! @param theHasVNormals when TRUE, AddVertex(Point,Normal) should be used for specifying vertex
   //! normal
-  Graphic3d_ArrayOfPoints(int  theMaxVertexs,
+  Graphic3d_ArrayOfPoints(int theMaxVertexs,
                           bool theHasVColors  = false,
                           bool theHasVNormals = false)
       : Graphic3d_ArrayOfPrimitives(

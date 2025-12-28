@@ -47,36 +47,36 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESDimen_SectionedArea>& ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader&                       PR) const;
+                                     IGESData_ParamReader&                  PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                      IGESData_IGESWriter&                        IW) const;
+                                      IGESData_IGESWriter&                   IW) const;
 
   //! Lists the Entities shared by a SectionedArea <ent>, from
   //! its specific (own) parameters
   Standard_EXPORT void OwnShared(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                 Interface_EntityIterator&                   iter) const;
+                                 Interface_EntityIterator&              iter) const;
 
   //! Returns specific DirChecker
-  Standard_EXPORT IGESData_DirChecker
-    DirChecker(const occ::handle<IGESDimen_SectionedArea>& ent) const;
+  Standard_EXPORT IGESData_DirChecker DirChecker(const occ::handle<IGESDimen_SectionedArea>& ent) const;
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESDimen_SectionedArea>& ent,
-                                const Interface_ShareTool&                  shares,
+                                const Interface_ShareTool&             shares,
                                 occ::handle<Interface_Check>&               ach) const;
 
   //! Copies Specific Parameters
   Standard_EXPORT void OwnCopy(const occ::handle<IGESDimen_SectionedArea>& entfrom,
                                const occ::handle<IGESDimen_SectionedArea>& entto,
-                               Interface_CopyTool&                         TC) const;
+                               Interface_CopyTool&                    TC) const;
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESDimen_SectionedArea>& ent,
-                               const IGESData_IGESDumper&                  dumper,
-                               Standard_OStream&                           S,
-                               const int                                   own) const;
+                               const IGESData_IGESDumper&             dumper,
+                               Standard_OStream&                      S,
+                               const int                 own) const;
+
 };
 
 #endif // _IGESDimen_ToolSectionedArea_HeaderFile

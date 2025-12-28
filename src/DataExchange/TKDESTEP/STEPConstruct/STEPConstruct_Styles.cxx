@@ -40,6 +40,7 @@
 #include <StepVisual_FillAreaStyle.hxx>
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <StepVisual_FillStyleSelect.hxx>
+#include <StepVisual_FillStyleSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_Invisibility.hxx>
@@ -81,8 +82,9 @@ namespace
 //           (even if color and transparency data couldn't be extracted
 //           for some reason), otherwise returns false.
 //=======================================================================
-bool ProcessAsSurfaceStyleRendering(const StepVisual_SurfaceStyleElementSelect& theSSES,
-                                    STEPConstruct_RenderingProperties&          theRenderingProps)
+bool ProcessAsSurfaceStyleRendering(
+  const StepVisual_SurfaceStyleElementSelect& theSSES,
+  STEPConstruct_RenderingProperties&          theRenderingProps)
 {
   const occ::handle<StepVisual_SurfaceStyleRendering> aSSR = theSSES.SurfaceStyleRendering();
   if (aSSR.IsNull())
@@ -108,7 +110,7 @@ bool ProcessAsSurfaceStyleRendering(const StepVisual_SurfaceStyleElementSelect& 
 //           for some reason), otherwise returns false.
 //=======================================================================
 bool ProcessAsSurfaceStyleBoundary(const StepVisual_SurfaceStyleElementSelect& theSSES,
-                                   occ::handle<StepVisual_Colour>&             theBoundaryColour)
+                                               occ::handle<StepVisual_Colour>& theBoundaryColour)
 {
   const occ::handle<StepVisual_SurfaceStyleBoundary> aSSB = theSSES.SurfaceStyleBoundary();
   if (aSSB.IsNull())
@@ -134,8 +136,8 @@ bool ProcessAsSurfaceStyleBoundary(const StepVisual_SurfaceStyleElementSelect& t
 //           false.
 //=======================================================================
 bool ProcessAsSurfaceStyleFillArea(const StepVisual_SurfaceStyleElementSelect& theSSES,
-                                   const StepVisual_SurfaceSide                theSide,
-                                   occ::handle<StepVisual_Colour>&             theSurfaceColour)
+                                               const StepVisual_SurfaceSide                theSide,
+                                               occ::handle<StepVisual_Colour>& theSurfaceColour)
 {
   const occ::handle<StepVisual_SurfaceStyleFillArea> aSSFA = theSSES.SurfaceStyleFillArea();
   if (aSSFA.IsNull())
@@ -150,7 +152,7 @@ bool ProcessAsSurfaceStyleFillArea(const StepVisual_SurfaceStyleElementSelect& t
 
   for (int aFSSIndex = 1; aFSSIndex <= aFAS->NbFillStyles(); aFSSIndex++)
   {
-    const StepVisual_FillStyleSelect                  aFSS  = aFAS->FillStylesValue(aFSSIndex);
+    const StepVisual_FillStyleSelect             aFSS  = aFAS->FillStylesValue(aFSSIndex);
     const occ::handle<StepVisual_FillAreaStyleColour> aFASC = aFSS.FillAreaStyleColour();
     if (!aFASC.IsNull()
         // If current surface color is null, we will use negative side color.
@@ -174,9 +176,9 @@ bool ProcessAsSurfaceStyleFillArea(const StepVisual_SurfaceStyleElementSelect& t
 //           otherwise returns false.
 //=======================================================================
 bool ProcessAsSurfaceStyleUsage(const StepVisual_PresentationStyleSelect& thePSS,
-                                occ::handle<StepVisual_Colour>&           theSurfaceColour,
-                                occ::handle<StepVisual_Colour>&           theBoundaryColour,
-                                STEPConstruct_RenderingProperties&        theRenderingProps)
+                                            occ::handle<StepVisual_Colour>&         theSurfaceColour,
+                                            occ::handle<StepVisual_Colour>&         theBoundaryColour,
+                                            STEPConstruct_RenderingProperties& theRenderingProps)
 {
   const occ::handle<StepVisual_SurfaceStyleUsage> aSSU = thePSS.SurfaceStyleUsage();
   if (aSSU.IsNull())
@@ -207,7 +209,7 @@ bool ProcessAsSurfaceStyleUsage(const StepVisual_PresentationStyleSelect& thePSS
 //           for some reason), otherwise returns false.
 //=======================================================================
 bool ProcessAsCurveStyle(const StepVisual_PresentationStyleSelect& thePSS,
-                         occ::handle<StepVisual_Colour>&           theCurveColour)
+                                     occ::handle<StepVisual_Colour>&                theCurveColour)
 {
   const occ::handle<StepVisual_CurveStyle> aCS = thePSS.CurveStyle();
   if (aCS.IsNull())
@@ -301,13 +303,12 @@ occ::handle<StepVisual_StyledItem> STEPConstruct_Styles::AddStyle(
   if (Override.IsNull())
   {
     occ::handle<TCollection_HAsciiString> StyName = new TCollection_HAsciiString("color");
-    Style                                         = new StepVisual_StyledItem;
+    Style                                    = new StepVisual_StyledItem;
     Style->Init(StyName, Styles, item);
   }
   else
   {
-    occ::handle<TCollection_HAsciiString> StyName =
-      new TCollection_HAsciiString("overriding color");
+    occ::handle<TCollection_HAsciiString> StyName = new TCollection_HAsciiString("overriding color");
     occ::handle<StepVisual_OverRidingStyledItem> OStyle = new StepVisual_OverRidingStyledItem;
     OStyle->Init(StyName, Styles, item, Override);
     Style = OStyle;
@@ -323,7 +324,7 @@ occ::handle<StepVisual_StyledItem> STEPConstruct_Styles::AddStyle(
 //=================================================================================================
 
 occ::handle<StepVisual_StyledItem> STEPConstruct_Styles::AddStyle(
-  const TopoDS_Shape&                                        Shape,
+  const TopoDS_Shape&                                   Shape,
   const occ::handle<StepVisual_PresentationStyleAssignment>& PSA,
   const occ::handle<StepVisual_StyledItem>&                  Override)
 {
@@ -360,7 +361,7 @@ bool STEPConstruct_Styles::CreateMDGPR(
   // for AP203, add subschema name
   if (theStepModel->InternalParameters.WriteSchema == 3)
   {
-    APIHeaderSection_MakeHeader           mkHdr(occ::down_cast<StepData_StepModel>(Model()));
+    APIHeaderSection_MakeHeader      mkHdr(occ::down_cast<StepData_StepModel>(Model()));
     occ::handle<TCollection_HAsciiString> subSchema =
       new TCollection_HAsciiString("SHAPE_APPEARANCE_LAYER_MIM");
     mkHdr.AddSchemaIdentifier(subSchema);
@@ -431,8 +432,8 @@ occ::handle<StepRepr_RepresentationContext> STEPConstruct_Styles::FindContext(
 {
   // find context of items
   occ::handle<StepRepr_RepresentationContext> Context;
-  occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(FinderProcess(), Shape);
-  occ::handle<StepShape_ShapeRepresentation> sr;
+  occ::handle<TransferBRep_ShapeMapper>       mapper = TransferBRep::ShapeMapper(FinderProcess(), Shape);
+  occ::handle<StepShape_ShapeRepresentation>  sr;
   if (FinderProcess()->FindTypedTransient(mapper, STANDARD_TYPE(StepShape_ShapeRepresentation), sr))
   {
 #ifdef OCCT_DEBUG
@@ -485,7 +486,7 @@ bool STEPConstruct_Styles::LoadStyles()
 
   // find all MDGPRs and DMs and collect all defined styles in myStyles
   occ::handle<Interface_InterfaceModel> model = Model();
-  int                                   nb    = model->NbEntities();
+  int                 nb    = model->NbEntities();
   occ::handle<Standard_Type>            tMDGPR =
     STANDARD_TYPE(StepVisual_MechanicalDesignGeometricPresentationRepresentation);
   occ::handle<Standard_Type> tDM = STANDARD_TYPE(StepVisual_DraughtingModel);
@@ -496,8 +497,7 @@ bool STEPConstruct_Styles::LoadStyles()
     occ::handle<Standard_Transient> enti = model->Value(i);
     if (enti->DynamicType() == tMDGPR || enti->DynamicType() == tDM)
     {
-      occ::handle<StepRepr_Representation> container =
-        occ::down_cast<StepRepr_Representation>(enti);
+      occ::handle<StepRepr_Representation> container = occ::down_cast<StepRepr_Representation>(enti);
 
       int nbi = container->NbItems();
       for (int j = 1; j <= nbi; j++)
@@ -520,7 +520,7 @@ bool STEPConstruct_Styles::LoadStyles()
     else if (enti->IsKind(STANDARD_TYPE(StepVisual_StyledItem)))
     {
       occ::handle<StepVisual_StyledItem> aStyledItem = occ::down_cast<StepVisual_StyledItem>(enti);
-      auto                               anItem      = aStyledItem->ItemAP242().Value();
+      auto                          anItem      = aStyledItem->ItemAP242().Value();
       if (!anItem.IsNull() && anItem->IsKind(tSR) && !myRootStyles.Contains(aStyledItem))
       {
         myRootStyles.Add(aStyledItem);
@@ -540,7 +540,7 @@ bool STEPConstruct_Styles::LoadInvisStyles(
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theInvStyles) const
 {
   occ::handle<Interface_InterfaceModel> model         = Model();
-  int                                   nb            = model->NbEntities();
+  int                 nb            = model->NbEntities();
   occ::handle<Standard_Type>            tInvisibility = STANDARD_TYPE(StepVisual_Invisibility);
   // search for invisibility
   for (int i = 1; i <= nb; i++)
@@ -550,10 +550,10 @@ bool STEPConstruct_Styles::LoadInvisStyles(
       continue;
     // search for styled items
     occ::handle<StepVisual_Invisibility> container = occ::down_cast<StepVisual_Invisibility>(enti);
-    int                                  nbi       = container->NbInvisibleItems();
+    int                nbi       = container->NbInvisibleItems();
     for (int j = 1; j <= nbi; j++)
     {
-      StepVisual_InvisibleItem           anInvItem = container->InvisibleItemsValue(j);
+      StepVisual_InvisibleItem      anInvItem = container->InvisibleItemsValue(j);
       occ::handle<StepVisual_StyledItem> style     = anInvItem.StyledItem();
       if (style.IsNull())
         continue;
@@ -570,13 +570,13 @@ bool STEPConstruct_Styles::LoadInvisStyles(
 
 occ::handle<StepVisual_PresentationStyleAssignment> STEPConstruct_Styles::MakeColorPSA(
   const occ::handle<StepRepr_RepresentationItem>& /*item*/,
-  const occ::handle<StepVisual_Colour>&    SurfCol,
-  const occ::handle<StepVisual_Colour>&    CurveCol,
+  const occ::handle<StepVisual_Colour>&         SurfCol,
+  const occ::handle<StepVisual_Colour>&         CurveCol,
   const STEPConstruct_RenderingProperties& theRenderingProps,
-  const bool                               isForNAUO) const
+  const bool                   isForNAUO) const
 {
-  occ::handle<StepVisual_PresentationStyleAssignment>   PSA;
-  NCollection_Sequence<occ::handle<Standard_Transient>> items;
+  occ::handle<StepVisual_PresentationStyleAssignment> PSA;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                    items;
 
   // surface color
   if (!SurfCol.IsNull())
@@ -702,12 +702,13 @@ occ::handle<StepVisual_PresentationStyleAssignment> STEPConstruct_Styles::GetCol
 
 //=================================================================================================
 
-bool STEPConstruct_Styles::GetColors(const occ::handle<StepVisual_StyledItem>& theStyle,
-                                     occ::handle<StepVisual_Colour>&           theSurfaceColour,
-                                     occ::handle<StepVisual_Colour>&           theBoundaryColour,
-                                     occ::handle<StepVisual_Colour>&           theCurveColour,
-                                     STEPConstruct_RenderingProperties&        theRenderingProps,
-                                     bool&                                     theIsComponent) const
+bool STEPConstruct_Styles::GetColors(
+  const occ::handle<StepVisual_StyledItem>& theStyle,
+  occ::handle<StepVisual_Colour>&           theSurfaceColour,
+  occ::handle<StepVisual_Colour>&           theBoundaryColour,
+  occ::handle<StepVisual_Colour>&           theCurveColour,
+  STEPConstruct_RenderingProperties&   theRenderingProps,
+  bool&                    theIsComponent) const
 {
   theSurfaceColour.Nullify();
   theBoundaryColour.Nullify();
@@ -717,8 +718,7 @@ bool STEPConstruct_Styles::GetColors(const occ::handle<StepVisual_StyledItem>& t
   // parse on styles
   for (int aPSAIndex = 1; aPSAIndex <= theStyle->NbStyles(); ++aPSAIndex)
   {
-    const occ::handle<StepVisual_PresentationStyleAssignment> aPSA =
-      theStyle->StylesValue(aPSAIndex);
+    const occ::handle<StepVisual_PresentationStyleAssignment> aPSA = theStyle->StylesValue(aPSAIndex);
     if (aPSA.IsNull() || aPSA->Styles().IsNull())
     {
       continue;
@@ -764,9 +764,8 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(const Quantity_
 
   if (cName)
   {
-    occ::handle<StepVisual_DraughtingPreDefinedColour> ColPr =
-      new StepVisual_DraughtingPreDefinedColour;
-    occ::handle<StepVisual_PreDefinedItem> preDef = new StepVisual_PreDefinedItem;
+    occ::handle<StepVisual_DraughtingPreDefinedColour> ColPr = new StepVisual_DraughtingPreDefinedColour;
+    occ::handle<StepVisual_PreDefinedItem>             preDef = new StepVisual_PreDefinedItem;
     preDef->Init(new TCollection_HAsciiString(cName));
     ColPr->SetPreDefinedItem(preDef);
     return ColPr;
@@ -775,7 +774,7 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(const Quantity_
   {
     occ::handle<TCollection_HAsciiString> ColName = new TCollection_HAsciiString("");
     occ::handle<StepVisual_ColourRgb>     ColRGB  = new StepVisual_ColourRgb;
-    NCollection_Vec3<double>              aColor_sRGB;
+    NCollection_Vec3<double>  aColor_sRGB;
     C.Values(aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
     ColRGB->Init(ColName, aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b());
     return ColRGB;
@@ -785,9 +784,9 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(const Quantity_
 //=================================================================================================
 
 occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
-  const Quantity_Color&                                                          C,
+  const Quantity_Color&                        C,
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& DPDCs,
-  NCollection_DataMap<gp_Pnt, occ::handle<Standard_Transient>>&                  ColRGBs)
+  NCollection_DataMap<gp_Pnt, occ::handle<Standard_Transient>>&       ColRGBs)
 {
   // detect if color corresponds to one of pre-defined colors
   const char* cName = 0;
@@ -811,14 +810,14 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
   if (cName)
   {
     occ::handle<StepVisual_DraughtingPreDefinedColour> ColPr;
-    TCollection_AsciiString                            aName(cName);
+    TCollection_AsciiString                       aName(cName);
     if (DPDCs.IsBound(aName))
     {
       ColPr = occ::down_cast<StepVisual_DraughtingPreDefinedColour>(DPDCs.Find(aName));
       if (!ColPr.IsNull())
         return ColPr;
     }
-    ColPr                                         = new StepVisual_DraughtingPreDefinedColour;
+    ColPr                                    = new StepVisual_DraughtingPreDefinedColour;
     occ::handle<StepVisual_PreDefinedItem> preDef = new StepVisual_PreDefinedItem;
     preDef->Init(new TCollection_HAsciiString(cName));
     ColPr->SetPreDefinedItem(preDef);
@@ -828,7 +827,7 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
   else
   {
     occ::handle<StepVisual_ColourRgb> ColRGB;
-    gp_Pnt                            P;
+    gp_Pnt                       P;
     C.Values(P.ChangeCoord().ChangeData()[0],
              P.ChangeCoord().ChangeData()[1],
              P.ChangeCoord().ChangeData()[2],
@@ -840,7 +839,7 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
         return ColRGB;
     }
     occ::handle<TCollection_HAsciiString> ColName = new TCollection_HAsciiString("");
-    ColRGB                                        = new StepVisual_ColourRgb;
+    ColRGB                                   = new StepVisual_ColourRgb;
     ColRGB->Init(ColName, P.Coord(1), P.Coord(2), P.Coord(3));
     ColRGBs.Bind(P, ColRGB);
     return ColRGB;
@@ -850,7 +849,7 @@ occ::handle<StepVisual_Colour> STEPConstruct_Styles::EncodeColor(
 //=================================================================================================
 
 bool STEPConstruct_Styles::DecodeColor(const occ::handle<StepVisual_Colour>& Colour,
-                                       Quantity_Color&                       Col)
+                                                   Quantity_Color&                  Col)
 {
   if (Colour->IsKind(STANDARD_TYPE(StepVisual_ColourRgb)))
   {
@@ -870,10 +869,9 @@ bool STEPConstruct_Styles::DecodeColor(const occ::handle<StepVisual_Colour>& Col
   }
   else if (Colour->IsKind(STANDARD_TYPE(StepVisual_PreDefinedColour)))
   {
-    occ::handle<StepVisual_PreDefinedColour> pdc =
-      occ::down_cast<StepVisual_PreDefinedColour>(Colour);
-    occ::handle<StepVisual_PreDefinedItem> pdi  = pdc->GetPreDefinedItem();
-    const TCollection_AsciiString          name = pdi->Name()->String();
+    occ::handle<StepVisual_PreDefinedColour> pdc = occ::down_cast<StepVisual_PreDefinedColour>(Colour);
+    occ::handle<StepVisual_PreDefinedItem>   pdi = pdc->GetPreDefinedItem();
+    const TCollection_AsciiString       name = pdi->Name()->String();
     if (name.IsEqual("red"))
       Col.SetValues(Quantity_NOC_RED);
     else if (name.IsEqual("green"))

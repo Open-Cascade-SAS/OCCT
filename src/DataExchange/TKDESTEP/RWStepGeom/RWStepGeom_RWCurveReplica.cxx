@@ -21,7 +21,7 @@
 RWStepGeom_RWCurveReplica::RWStepGeom_RWCurveReplica() {}
 
 void RWStepGeom_RWCurveReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_CurveReplica>&   ent) const
 {
@@ -59,7 +59,7 @@ void RWStepGeom_RWCurveReplica::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aParentCurve, aTransformation);
 }
 
-void RWStepGeom_RWCurveReplica::WriteStep(StepData_StepWriter&                      SW,
+void RWStepGeom_RWCurveReplica::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepGeom_CurveReplica>& ent) const
 {
 
@@ -77,7 +77,7 @@ void RWStepGeom_RWCurveReplica::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepGeom_RWCurveReplica::Share(const occ::handle<StepGeom_CurveReplica>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->ParentCurve());

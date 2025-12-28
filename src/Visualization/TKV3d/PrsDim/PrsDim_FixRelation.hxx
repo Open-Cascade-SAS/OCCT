@@ -38,31 +38,30 @@ public:
   //! initializes the vertex aShape, the
   //! plane aPlane and the wire aWire, which connects
   //! the two vertices in a fixed relation.
-  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&            aShape,
+  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                      const occ::handle<Geom_Plane>& aPlane,
-                                     const TopoDS_Wire&             aWire);
+                                     const TopoDS_Wire&        aWire);
 
   //! initializes the vertex aShape, the
   //! plane aPlane and the wire aWire, the position
   //! aPosition, the arrow size anArrowSize and the
   //! wire aWire, which connects the two vertices in a fixed relation.
-  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&            aShape,
+  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                      const occ::handle<Geom_Plane>& aPlane,
-                                     const TopoDS_Wire&             aWire,
-                                     const gp_Pnt&                  aPosition,
-                                     const double                   anArrowSize = 0.01);
+                                     const TopoDS_Wire&        aWire,
+                                     const gp_Pnt&             aPosition,
+                                     const double       anArrowSize = 0.01);
 
   //! initializes the edge aShape and the plane aPlane.
-  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&            aShape,
-                                     const occ::handle<Geom_Plane>& aPlane);
+  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape& aShape, const occ::handle<Geom_Plane>& aPlane);
 
   //! initializes the edge aShape, the
   //! plane aPlane, the position aPosition and the arrow
   //! size anArrowSize.
-  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&            aShape,
+  Standard_EXPORT PrsDim_FixRelation(const TopoDS_Shape&       aShape,
                                      const occ::handle<Geom_Plane>& aPlane,
-                                     const gp_Pnt&                  aPosition,
-                                     const double                   anArrowSize = 0.01);
+                                     const gp_Pnt&             aPosition,
+                                     const double       anArrowSize = 0.01);
 
   //! Returns the wire which connects vertices in a fixed relation.
   const TopoDS_Wire& Wire() { return myWire; }
@@ -88,33 +87,33 @@ private:
 
   Standard_EXPORT gp_Pnt ComputePosition(const occ::handle<Geom_Curve>& curv1,
                                          const occ::handle<Geom_Curve>& curv2,
-                                         const gp_Pnt&                  firstp1,
-                                         const gp_Pnt&                  lastp1,
-                                         const gp_Pnt&                  firstp2,
-                                         const gp_Pnt&                  lastp2) const;
+                                         const gp_Pnt&             firstp1,
+                                         const gp_Pnt&             lastp1,
+                                         const gp_Pnt&             firstp2,
+                                         const gp_Pnt&             lastp2) const;
 
   Standard_EXPORT gp_Pnt ComputePosition(const occ::handle<Geom_Curve>& curv,
-                                         const gp_Pnt&                  firstp,
-                                         const gp_Pnt&                  lastp) const;
+                                         const gp_Pnt&             firstp,
+                                         const gp_Pnt&             lastp) const;
 
   //! computes the presentation for <myFixShape> if it's a
   //! edge.
   Standard_EXPORT void ComputeEdge(const TopoDS_Edge& FixEdge, gp_Pnt& curpos);
 
-  Standard_EXPORT void ComputeLinePosition(const gp_Lin& glin,
-                                           gp_Pnt&       pos,
-                                           double&       pfirst,
-                                           double&       plast);
+  Standard_EXPORT void ComputeLinePosition(const gp_Lin&  glin,
+                                           gp_Pnt&        pos,
+                                           double& pfirst,
+                                           double& plast);
 
   Standard_EXPORT void ComputeCirclePosition(const gp_Circ& gcirc,
                                              gp_Pnt&        pos,
-                                             double&        pfirst,
-                                             double&        plast);
+                                             double& pfirst,
+                                             double& plast);
 
   Standard_EXPORT static bool ConnectedEdges(const TopoDS_Wire&   aWire,
-                                             const TopoDS_Vertex& aVertex,
-                                             TopoDS_Edge&         Edge1,
-                                             TopoDS_Edge&         Edge2);
+                                                         const TopoDS_Vertex& aVertex,
+                                                         TopoDS_Edge&         Edge1,
+                                                         TopoDS_Edge&         Edge2);
 
 private:
   TopoDS_Wire myWire;

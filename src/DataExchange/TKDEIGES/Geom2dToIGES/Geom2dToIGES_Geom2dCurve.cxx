@@ -52,8 +52,8 @@ Geom2dToIGES_Geom2dCurve::Geom2dToIGES_Geom2dCurve(const Geom2dToIGES_Geom2dEnti
 
 occ::handle<IGESData_IGESEntity> Geom2dToIGES_Geom2dCurve::Transfer2dCurve(
   const occ::handle<Geom2d_Curve>& start,
-  const double                     Udeb,
-  const double                     Ufin)
+  const double         Udeb,
+  const double         Ufin)
 {
   occ::handle<IGESData_IGESEntity> res;
   if (start.IsNull())

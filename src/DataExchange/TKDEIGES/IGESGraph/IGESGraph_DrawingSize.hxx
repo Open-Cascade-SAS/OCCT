@@ -40,7 +40,9 @@ public:
   //! - nbProps : Number of property values (NP = 2)
   //! - aXSize  : Extent of Drawing along positive XD axis
   //! - aYSize  : Extent of Drawing along positive YD axis
-  Standard_EXPORT void Init(const int nbProps, const double aXSize, const double aYSize);
+  Standard_EXPORT void Init(const int nbProps,
+                            const double    aXSize,
+                            const double    aYSize);
 
   //! returns the number of property values in <me> (NP = 2)
   Standard_EXPORT int NbPropertyValues() const;
@@ -54,9 +56,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingSize, IGESData_IGESEntity)
 
 private:
-  int    theNbPropertyValues;
-  double theXSize;
-  double theYSize;
+  int theNbPropertyValues;
+  double    theXSize;
+  double    theYSize;
 };
 
 #endif // _IGESGraph_DrawingSize_HeaderFile

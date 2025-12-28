@@ -28,19 +28,18 @@ public:
   Standard_EXPORT static occ::handle<Geom2d_Curve> RadianToDegree(
     const occ::handle<Geom2d_Curve>& theCurve,
     const occ::handle<Geom_Surface>& theSurface,
-    const double                     theLengthFactor,
-    const double                     theFactorRadianDegree);
+    const double         theLengthFactor,
+    const double         theFactorRadianDegree);
 
   //! Convert 2d curve for change angle unit from degree to radian
   Standard_EXPORT static occ::handle<Geom2d_Curve> DegreeToRadian(
     const occ::handle<Geom2d_Curve>& theCurve,
     const occ::handle<Geom_Surface>& theSurface,
-    const double                     theLengthFactor,
-    const double                     theFactorRadianDegree);
+    const double         theLengthFactor,
+    const double         theFactorRadianDegree);
 
   //! return 2d curve as 'mirror' for given
-  Standard_EXPORT static occ::handle<Geom2d_Curve> MirrorPCurve(
-    const occ::handle<Geom2d_Curve>& theCurve);
+  Standard_EXPORT static occ::handle<Geom2d_Curve> MirrorPCurve(const occ::handle<Geom2d_Curve>& theCurve);
 };
 
 #endif // _GeomConvert_Units_HeaderFile

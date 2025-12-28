@@ -46,6 +46,7 @@ public:
 
   //! Returns Value as ElementGroup (or Null if another type)
   Standard_EXPORT occ::handle<StepFEA_ElementGroup> ElementGroup() const;
+
 };
 
 #endif // _StepFEA_ElementOrElementGroup_HeaderFile

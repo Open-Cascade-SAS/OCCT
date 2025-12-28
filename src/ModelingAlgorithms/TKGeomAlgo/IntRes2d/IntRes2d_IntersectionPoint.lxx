@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 inline IntRes2d_IntersectionPoint::IntRes2d_IntersectionPoint(const gp_Pnt2d&            P,
-                                                              const double               Uc1,
-                                                              const double               Uc2,
+                                                              const double        Uc1,
+                                                              const double        Uc2,
                                                               const IntRes2d_Transition& Trans1,
                                                               const IntRes2d_Transition& Trans2,
                                                               const bool ReversedFlag)
@@ -36,11 +36,11 @@ inline IntRes2d_IntersectionPoint::IntRes2d_IntersectionPoint(const gp_Pnt2d&   
 }
 
 inline void IntRes2d_IntersectionPoint::SetValues(const gp_Pnt2d&            P,
-                                                  const double               Uc1,
-                                                  const double               Uc2,
+                                                  const double        Uc1,
+                                                  const double        Uc2,
                                                   const IntRes2d_Transition& Trans1,
                                                   const IntRes2d_Transition& Trans2,
-                                                  const bool                 ReversedFlag)
+                                                  const bool     ReversedFlag)
 {
   pt = P;
   if (!ReversedFlag)

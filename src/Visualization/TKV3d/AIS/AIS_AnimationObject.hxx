@@ -32,11 +32,11 @@ public:
   //! @param[in] theTrsfStart     local transformation at the start of animation (e.g.
   //! theObject->LocalTransformation())
   //! @param[in] theTrsfEnd       local transformation at the end   of animation
-  Standard_EXPORT AIS_AnimationObject(const TCollection_AsciiString&             theAnimationName,
+  Standard_EXPORT AIS_AnimationObject(const TCollection_AsciiString&        theAnimationName,
                                       const occ::handle<AIS_InteractiveContext>& theContext,
                                       const occ::handle<AIS_InteractiveObject>&  theObject,
-                                      const gp_Trsf&                             theTrsfStart,
-                                      const gp_Trsf&                             theTrsfEnd);
+                                      const gp_Trsf&                        theTrsfStart,
+                                      const gp_Trsf&                        theTrsfEnd);
 
 protected:
   //! Update the progress.

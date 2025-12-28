@@ -55,7 +55,7 @@ public:
   //! If Found, returns True and fills <res>
   //! Else, returns False and nullifies <res>
   Standard_EXPORT bool Search(const occ::handle<Standard_Transient>& ent,
-                              occ::handle<Standard_Transient>&       res) const override;
+                                          occ::handle<Standard_Transient>& res) const override;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_DispatchControl, Interface_CopyControl)
 

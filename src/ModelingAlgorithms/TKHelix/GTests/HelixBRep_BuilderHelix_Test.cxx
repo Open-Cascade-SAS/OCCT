@@ -31,7 +31,9 @@
 #include <gp_Dir.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
@@ -67,7 +69,7 @@ protected:
     return aLProps.Mass();
   }
 
-  gp_Ax3 myAxis;
+  gp_Ax3        myAxis;
   double myTolerance;
 };
 
@@ -116,7 +118,7 @@ TEST_F(TKHelixTest, HelixGeomHelixCurve_CustomParameters)
 TEST_F(TKHelixTest, HelixGeomHelixCurve_TaperedHelix)
 {
   HelixGeom_HelixCurve aHelix;
-  double               aTaperAngle = 0.1; // Small taper angle
+  double        aTaperAngle = 0.1; // Small taper angle
   aHelix.Load(0.0, 2.0 * M_PI, 5.0, 2.0, aTaperAngle, true);
 
   // At start
@@ -124,7 +126,7 @@ TEST_F(TKHelixTest, HelixGeomHelixCurve_TaperedHelix)
   EXPECT_DOUBLE_EQ(aP0.X(), 2.0);
 
   // At end - radius should be larger due to taper
-  gp_Pnt aP1             = aHelix.Value(2.0 * M_PI);
+  gp_Pnt        aP1             = aHelix.Value(2.0 * M_PI);
   double aExpectedRadius = 2.0 + (5.0 / (2.0 * M_PI)) * tan(aTaperAngle) * (2.0 * M_PI);
   EXPECT_DOUBLE_EQ(aP1.X(), aExpectedRadius);
 }
@@ -343,17 +345,17 @@ TEST_F(TKHelixTest, HelixBRepBuilder_NumberOfTurnsInterface)
 TEST_F(TKHelixTest, HelixGeomTools_ApprHelix)
 {
   occ::handle<Geom_BSplineCurve> aBSpline;
-  double                         aMaxError;
+  double             aMaxError;
 
-  int aResult = HelixGeom_Tools::ApprHelix(0.0,         // T1
-                                           2.0 * M_PI,  // T2
-                                           10.0,        // Pitch
-                                           5.0,         // Start radius
-                                           0.0,         // Taper angle
-                                           true,        // Clockwise
-                                           myTolerance, // Tolerance
-                                           aBSpline,    // Result
-                                           aMaxError    // Max error
+  int aResult = HelixGeom_Tools::ApprHelix(0.0,           // T1
+                                                        2.0 * M_PI,    // T2
+                                                        10.0,          // Pitch
+                                                        5.0,           // Start radius
+                                                        0.0,           // Taper angle
+                                                        true, // Clockwise
+                                                        myTolerance,   // Tolerance
+                                                        aBSpline,      // Result
+                                                        aMaxError      // Max error
   );
 
   EXPECT_EQ(aResult, 0); // Success

@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepDimTol_FlatnessTolerance();
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_FlatnessTolerance, StepDimTol_GeometricTolerance)
+
 };
 
 #endif // _StepDimTol_FlatnessTolerance_HeaderFile

@@ -60,7 +60,7 @@ public:
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
   IGESCAFControl_Reader(const occ::handle<XSControl_WorkSession>& theWS,
-                        const bool                                FromScratch = true)
+                        const bool               FromScratch = true)
       : myColorMode(true),
         myNameMode(true),
         myLayerMode(true)
@@ -70,21 +70,23 @@ public:
 
   //! Translates currently loaded IGES file into the document
   //! Returns True if succeeded, and False in case of fail
-  Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Transfer(const occ::handle<TDocStd_Document>& theDoc,
+             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
-  bool Perform(const TCollection_AsciiString&       theFileName,
-               const occ::handle<TDocStd_Document>& theDoc,
-               const Message_ProgressRange&         theProgress = Message_ProgressRange())
+  bool Perform(const TCollection_AsciiString&  theFileName,
+                           const occ::handle<TDocStd_Document>& theDoc,
+                           const Message_ProgressRange&    theProgress = Message_ProgressRange())
   {
     return Perform(theFileName.ToCString(), theDoc, theProgress);
   }
 
   //! Translate IGES file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT bool Perform(const char*                          theFileName,
-                               const occ::handle<TDocStd_Document>& theDoc,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Perform(const char*          theFileName,
+            const occ::handle<TDocStd_Document>& theDoc,
+            const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Set ColorMode for indicate read Colors or not.
   void SetColorMode(const bool theMode) { myColorMode = theMode; }

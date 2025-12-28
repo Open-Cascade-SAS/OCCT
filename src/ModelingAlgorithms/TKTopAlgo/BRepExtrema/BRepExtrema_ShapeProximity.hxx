@@ -50,12 +50,14 @@ class BRepExtrema_ShapeProximity
 
 public:
   //! Creates empty proximity tool.
-  Standard_EXPORT BRepExtrema_ShapeProximity(const double theTolerance = Precision::Infinite());
+  Standard_EXPORT BRepExtrema_ShapeProximity(
+    const double theTolerance = Precision::Infinite());
 
   //! Creates proximity tool for the given two shapes.
-  Standard_EXPORT BRepExtrema_ShapeProximity(const TopoDS_Shape& theShape1,
-                                             const TopoDS_Shape& theShape2,
-                                             const double theTolerance = Precision::Infinite());
+  Standard_EXPORT BRepExtrema_ShapeProximity(
+    const TopoDS_Shape& theShape1,
+    const TopoDS_Shape& theShape2,
+    const double theTolerance = Precision::Infinite());
 
 public:
   //! Returns tolerance value for overlap test (distance between shapes).
@@ -100,10 +102,16 @@ public:
   }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape1(const int theID) const { return myShapeList1.Value(theID); }
+  const TopoDS_Shape& GetSubShape1(const int theID) const
+  {
+    return myShapeList1.Value(theID);
+  }
 
   //! Returns sub-shape from 1st shape with the given index (started from 0).
-  const TopoDS_Shape& GetSubShape2(const int theID) const { return myShapeList2.Value(theID); }
+  const TopoDS_Shape& GetSubShape2(const int theID) const
+  {
+    return myShapeList2.Value(theID);
+  }
 
   //! Returns set of all the face triangles of the 1st shape.
   const occ::handle<BRepExtrema_TriangleSet>& ElementSet1() const { return myElementSet1; }

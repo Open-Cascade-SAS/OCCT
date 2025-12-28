@@ -27,11 +27,11 @@ int FairCurve_DistributionOfEnergy::NbEquations() const
 }
 
 FairCurve_DistributionOfEnergy::FairCurve_DistributionOfEnergy(
-  const int                                         BSplOrder,
-  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
   const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-  const int                                         DerivativeOrder,
-  const int                                         NbValAux)
+  const int               DerivativeOrder,
+  const int               NbValAux)
     : MyBSplOrder(BSplOrder),
       MyFlatKnots(FlatKnots),
       MyPoles(Poles),

@@ -39,9 +39,9 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const int thePriority)
 
 //=================================================================================================
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape& theShape,
-                                         const int           thePriority,
-                                         const bool          theComesFromDecomposition)
+StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&    theShape,
+                                         const int thePriority,
+                                         const bool theComesFromDecomposition)
     : SelectMgr_EntityOwner(thePriority),
       myShape(theShape),
       myCurMode(0)
@@ -51,9 +51,9 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape& theShape,
 
 //=================================================================================================
 
-StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                            theShape,
+StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                       theShape,
                                          const occ::handle<SelectMgr_SelectableObject>& theOrigin,
-                                         const int                                      thePriority,
+                                         const int                    thePriority,
                                          const bool theComesFromDecomposition)
     : SelectMgr_EntityOwner(theOrigin, thePriority),
       myShape(theShape),
@@ -65,7 +65,7 @@ StdSelect_BRepOwner::StdSelect_BRepOwner(const TopoDS_Shape&                    
 //=================================================================================================
 
 bool StdSelect_BRepOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& PM,
-                                      const int                                      aMode) const
+                                                  const int aMode) const
 {
   int M = (aMode < 0) ? myCurMode : aMode;
   if (myPrsSh.IsNull())
@@ -77,16 +77,16 @@ bool StdSelect_BRepOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManag
 
 void StdSelect_BRepOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
                                            const occ::handle<Prs3d_Drawer>&               theStyle,
-                                           const int                                      theMode)
+                                           const int                    theMode)
 {
   if (!HasSelectable())
   {
     return;
   }
 
-  const int                               aDispMode = (theMode < 0) ? myCurMode : theMode;
+  const int             aDispMode = (theMode < 0) ? myCurMode : theMode;
   occ::handle<SelectMgr_SelectableObject> aSel      = Selectable();
-  const Graphic3d_ZLayerId                aHiLayer =
+  const Graphic3d_ZLayerId           aHiLayer =
     theStyle->ZLayer() != Graphic3d_ZLayerId_UNKNOWN ? theStyle->ZLayer() : aSel->ZLayer();
   if (!myFromDecomposition)
   {
@@ -132,7 +132,8 @@ void StdSelect_BRepOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager
   }
 }
 
-void StdSelect_BRepOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& PM, const int aMode)
+void StdSelect_BRepOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& PM,
+                                const int                    aMode)
 {
   int M = (aMode < 0) ? myCurMode : aMode;
   if (!myPrsSh.IsNull())
@@ -151,10 +152,9 @@ void StdSelect_BRepOwner::SetLocation(const TopLoc_Location& aLoc)
 
 //=================================================================================================
 
-void StdSelect_BRepOwner::UpdateHighlightTrsf(
-  const occ::handle<V3d_Viewer>&                 theViewer,
-  const occ::handle<PrsMgr_PresentationManager>& theManager,
-  const int                                      theDispMode)
+void StdSelect_BRepOwner::UpdateHighlightTrsf(const occ::handle<V3d_Viewer>&                 theViewer,
+                                              const occ::handle<PrsMgr_PresentationManager>& theManager,
+                                              const int                    theDispMode)
 {
   if (!myPrsSh.IsNull() || HasSelectable())
   {

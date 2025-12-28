@@ -87,7 +87,9 @@ static void DDocStd_StorageErrorMessage(Draw_Interpretor& theDI, const Storage_E
 // function : DDocStd_ShapeSchema_Write
 //=======================================================================
 
-static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** theArgs)
+static int DDocStd_fsdwrite(Draw_Interpretor& theDI,
+                                         int  theArgNb,
+                                         const char**      theArgs)
 {
   if (theArgNb < 3)
   {
@@ -105,7 +107,7 @@ static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** 
   occ::handle<Storage_BaseDriver> aFileDriver(new FSD_File);
 
   bool hasStorageDriver = false;
-  int  iArgN            = theArgNb - 1;
+  int iArgN            = theArgNb - 1;
 
   if (strncmp(theArgs[iArgN], "gen", 3) == 0)
   {
@@ -134,7 +136,7 @@ static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** 
     return 0;
   }
 
-  NCollection_Sequence<TopoDS_Shape>                aShapes;
+  NCollection_Sequence<TopoDS_Shape>                                       aShapes;
   NCollection_DataMap<TCollection_AsciiString, int> aShapeNames;
   for (int i = 1; i < iArgN; ++i)
   {
@@ -194,7 +196,9 @@ static int DDocStd_fsdwrite(Draw_Interpretor& theDI, int theArgNb, const char** 
 // function : DDocStd_ShapeSchema_Read
 //=======================================================================
 
-static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** theArgs)
+static int DDocStd_fsdread(Draw_Interpretor& theDI,
+                                        int  theArgNb,
+                                        const char**      theArgs)
 {
   if (theArgNb < 3)
   {
@@ -213,7 +217,7 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
   if (strcmp(theArgs[2], "restore_with_names") == 0)
     rflag = true;
   occ::handle<StdStorage_Data> aData;
-  Storage_Error anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
+  Storage_Error           anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
   {
     DDocStd_StorageErrorMessage(theDI, anError);
@@ -222,13 +226,12 @@ static int DDocStd_fsdread(Draw_Interpretor& theDI, int theArgNb, const char** t
 
   NCollection_Sequence<TopoDS_Shape> aShapes;
 
-  occ::handle<StdStorage_TypeData>                                 aTypeData = aData->TypeData();
-  occ::handle<StdStorage_RootData>                                 aRootData = aData->RootData();
+  occ::handle<StdStorage_TypeData>         aTypeData = aData->TypeData();
+  occ::handle<StdStorage_RootData>         aRootData = aData->RootData();
   occ::handle<NCollection_HSequence<occ::handle<StdStorage_Root>>> aRoots    = aRootData->Roots();
   if (!aRoots.IsNull())
   {
-    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More();
-         anIt.Next())
+    for (NCollection_HSequence<occ::handle<StdStorage_Root>>::Iterator anIt(*aRoots); anIt.More(); anIt.Next())
     {
       occ::handle<StdStorage_Root>&     aRoot    = anIt.ChangeValue();
       occ::handle<StdObjMgt_Persistent> aPObject = aRoot->Object();

@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_Circle, StepGeom_Conic)
 StepGeom_Circle::StepGeom_Circle() {}
 
 void StepGeom_Circle::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                           const StepGeom_Axis2Placement&               aPosition,
-                           const double                                 aRadius)
+                           const StepGeom_Axis2Placement&          aPosition,
+                           const double                     aRadius)
 {
   // --- classe own fields ---
   radius = aRadius;

@@ -37,7 +37,7 @@ namespace
 // ================================================================
 template <typename StepShapeType>
 occ::handle<StepShapeType> GetSharing(const occ::handle<Standard_Transient>& theStepEntity,
-                                      const Interface_ShareTool&             theShareTool)
+                                 const Interface_ShareTool&        theShareTool)
 {
   Interface_EntityIterator aSharedEntitiesIt = theShareTool.Sharings(theStepEntity);
   aSharedEntitiesIt.SelectType(STANDARD_TYPE(StepShapeType), true);
@@ -53,7 +53,7 @@ occ::handle<StepShapeType> GetSharing(const occ::handle<Standard_Transient>& the
 //            returns true (to preserve pre-refactoring behavior).
 // ================================================================
 bool GetFaceBoundOrientation(const occ::handle<StepShape_OrientedEdge>& theOrientedEdge,
-                             const Interface_ShareTool&                 theShareTool)
+                                         const Interface_ShareTool&            theShareTool)
 {
   if (!theShareTool.IsShared(theOrientedEdge))
   {
@@ -112,9 +112,9 @@ bool AreEndsMatch(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve)
 //=================================================================================================
 
 void RWStepShape_RWEdgeCurve::ReadStep(const occ::handle<StepData_StepReaderData>& theStepData,
-                                       const int                                   theRecordID,
+                                       const int                 theRecordID,
                                        occ::handle<Interface_Check>&               theMessageTool,
-                                       const occ::handle<StepShape_EdgeCurve>& theEdgeCurve) const
+                                       const occ::handle<StepShape_EdgeCurve>&     theEdgeCurve) const
 {
   // --- Number of Parameter Control ---
   if (!theStepData->CheckNbParams(theRecordID, 5, theMessageTool, "edge_curve"))
@@ -163,7 +163,7 @@ void RWStepShape_RWEdgeCurve::ReadStep(const occ::handle<StepData_StepReaderData
 
 //=================================================================================================
 
-void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&                    theStepWriter,
+void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&               theStepWriter,
                                         const occ::handle<StepShape_EdgeCurve>& theEdgeCurve) const
 {
   // --- inherited field name ---
@@ -185,7 +185,7 @@ void RWStepShape_RWEdgeCurve::WriteStep(StepData_StepWriter&                    
 //=================================================================================================
 
 void RWStepShape_RWEdgeCurve::Share(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
-                                    Interface_EntityIterator& theSharedEntitiesIt) const
+                                    Interface_EntityIterator&          theSharedEntitiesIt) const
 {
   theSharedEntitiesIt.GetOneItem(theEdgeCurve->EdgeStart());
 
@@ -197,7 +197,7 @@ void RWStepShape_RWEdgeCurve::Share(const occ::handle<StepShape_EdgeCurve>& theE
 //=================================================================================================
 
 void RWStepShape_RWEdgeCurve::Check(const occ::handle<StepShape_EdgeCurve>& theEdgeCurve,
-                                    const Interface_ShareTool&              theShareTool,
+                                    const Interface_ShareTool&         theShareTool,
                                     occ::handle<Interface_Check>&           theMessageTool) const
 {
   // 1- First Vertex != LastVertex but First VertexPoint == Last VertexPoint
@@ -226,15 +226,17 @@ void RWStepShape_RWEdgeCurve::Check(const occ::handle<StepShape_EdgeCurve>& theE
 
   const occ::handle<StepShape_OrientedEdge> anOrientedEdge1 =
     occ::down_cast<StepShape_OrientedEdge>(aSharedEntitiesIt.Value());
-  const bool aFaceBoundOrientation1 = GetFaceBoundOrientation(anOrientedEdge1, theShareTool);
-  const bool anIsCumulated1         = aFaceBoundOrientation1 != anOrientedEdge1->Orientation();
+  const bool aFaceBoundOrientation1 =
+    GetFaceBoundOrientation(anOrientedEdge1, theShareTool);
+  const bool anIsCumulated1 = aFaceBoundOrientation1 != anOrientedEdge1->Orientation();
 
   aSharedEntitiesIt.Next();
 
   const occ::handle<StepShape_OrientedEdge> anOrientedEdge2 =
     occ::down_cast<StepShape_OrientedEdge>(aSharedEntitiesIt.Value());
-  const bool aFaceBoundOrientation2 = GetFaceBoundOrientation(anOrientedEdge2, theShareTool);
-  const bool anIsCumulated2         = aFaceBoundOrientation2 != anOrientedEdge2->Orientation();
+  const bool aFaceBoundOrientation2 =
+    GetFaceBoundOrientation(anOrientedEdge2, theShareTool);
+  const bool anIsCumulated2 = aFaceBoundOrientation2 != anOrientedEdge2->Orientation();
 
   // the orientation of the OrientedEdges must be opposite
   if (anIsCumulated1 == anIsCumulated2)

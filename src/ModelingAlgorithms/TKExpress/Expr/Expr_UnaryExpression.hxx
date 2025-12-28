@@ -48,7 +48,8 @@ public:
   Standard_EXPORT bool ContainsUnknowns() const override;
 
   //! Tests if <exp> is contained in <me>.
-  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+  Standard_EXPORT bool
+    Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>
   //! Raises InvalidOperand if <with> contains <me>.

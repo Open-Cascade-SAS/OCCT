@@ -57,8 +57,8 @@ const Standard_GUID& TDataStd_GenericExtString::ID() const
 void TDataStd_GenericExtString::Restore(const occ::handle<TDF_Attribute>& with)
 {
   occ::handle<TDataStd_GenericExtString> anAtt = occ::down_cast<TDataStd_GenericExtString>(with);
-  myString                                     = anAtt->Get();
-  myID                                         = anAtt->ID();
+  myString                                = anAtt->Get();
+  myID                                    = anAtt->ID();
 }
 
 //=================================================================================================
@@ -73,7 +73,8 @@ void TDataStd_GenericExtString::Paste(const occ::handle<TDF_Attribute>& into,
 
 //=================================================================================================
 
-void TDataStd_GenericExtString::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void TDataStd_GenericExtString::DumpJson(Standard_OStream& theOStream,
+                                         int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)

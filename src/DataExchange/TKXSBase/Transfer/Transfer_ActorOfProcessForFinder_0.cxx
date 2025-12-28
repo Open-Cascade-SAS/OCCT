@@ -27,6 +27,9 @@
 #include <Transfer_ProcessForFinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Transfer_Binder.hxx>
+#include <Transfer_Finder.hxx>
+#include <Transfer_FindHasher.hxx>
 
 //=================================================================================================
 
@@ -34,7 +37,8 @@ Transfer_ActorOfProcessForFinder::Transfer_ActorOfProcessForFinder() {}
 
 //=================================================================================================
 
-bool Transfer_ActorOfProcessForFinder::Recognize(const occ::handle<Transfer_Finder>& /*start*/)
+bool Transfer_ActorOfProcessForFinder::Recognize(
+  const occ::handle<Transfer_Finder>& /*start*/)
 {
   return true;
 }
@@ -72,8 +76,7 @@ occ::handle<Transfer_Binder> Transfer_ActorOfProcessForFinder::NullResult() cons
 
 //=================================================================================================
 
-void Transfer_ActorOfProcessForFinder::SetNext(
-  const occ::handle<Transfer_ActorOfProcessForFinder>& next)
+void Transfer_ActorOfProcessForFinder::SetNext(const occ::handle<Transfer_ActorOfProcessForFinder>& next)
 {
   if (thenext == next)
     return;

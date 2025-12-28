@@ -32,13 +32,12 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
                             const occ::handle<StepGeom_Direction>&       theDirectionOfAxis,
-                            const double                                 theRotationAngle);
+                            const double                     theRotationAngle);
 
   //! Returns field DirectionOfAxis
   Standard_EXPORT occ::handle<StepGeom_Direction> DirectionOfAxis() const;
   //! Sets field DirectionOfAxis
-  Standard_EXPORT void SetDirectionOfAxis(
-    const occ::handle<StepGeom_Direction>& theDirectionOfAxis);
+  Standard_EXPORT void SetDirectionOfAxis(const occ::handle<StepGeom_Direction>& theDirectionOfAxis);
 
   //! Returns field RotationAngle
   Standard_EXPORT double RotationAngle() const;
@@ -50,6 +49,6 @@ public:
 
 private:
   occ::handle<StepGeom_Direction> myDirectionOfAxis;
-  double                          myRotationAngle;
+  double              myRotationAngle;
 };
 #endif // _StepKinematics_RotationAboutDirection_HeaderFile_

@@ -60,20 +60,17 @@ public:
 
   const occ::handle<Graphic3d_AspectLine3d>& Aspect() const { return myArrowAspect; }
 
-  void SetAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect)
-  {
-    myArrowAspect = theAspect;
-  }
+  void SetAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect) { myArrowAspect = theAspect; }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   occ::handle<Graphic3d_AspectLine3d> myArrowAspect;
-  double                              myAngle;
-  double                              myLength;
-  bool                                myIsZoomable;
+  double                  myAngle;
+  double                  myLength;
+  bool               myIsZoomable;
 };
 
 #endif // _Prs3d_ArrowAspect_HeaderFile

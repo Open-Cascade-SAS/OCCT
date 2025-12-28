@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <BRepCheck_Result.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -56,10 +57,10 @@ public:
   //! BRepCheck_InvalidToleranceValue NYI
   //! For a wire:
   //! BRepCheck_SelfIntersectingWire
-  BRepCheck_Analyzer(const TopoDS_Shape& S,
-                     const bool          GeomControls  = true,
-                     const bool          theIsParallel = false,
-                     const bool          theIsExact    = false)
+  BRepCheck_Analyzer(const TopoDS_Shape&    S,
+                     const bool GeomControls  = true,
+                     const bool theIsParallel = false,
+                     const bool theIsExact    = false)
       : myIsParallel(theIsParallel),
         myIsExact(theIsExact)
   {
@@ -82,7 +83,8 @@ public:
   //! BRepCheck_InvalidTolerance NYI
   //! For a wire:
   //! BRepCheck_SelfIntersectingWire
-  Standard_EXPORT void Init(const TopoDS_Shape& S, const bool GeomControls = true);
+  Standard_EXPORT void Init(const TopoDS_Shape&    S,
+                            const bool GeomControls = true);
 
   //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
   //! is false, faster, but possible not correct result) or exact calculating by using
@@ -156,13 +158,14 @@ private:
 
   Standard_EXPORT void Perform();
 
-  Standard_EXPORT bool ValidSub(const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const;
+  Standard_EXPORT bool ValidSub(const TopoDS_Shape&    S,
+                                            const TopAbs_ShapeEnum SubType) const;
 
 private:
-  TopoDS_Shape                                                            myShape;
+  TopoDS_Shape                          myShape;
   NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>> myMap;
-  bool                                                                    myIsParallel;
-  bool                                                                    myIsExact;
+  bool                      myIsParallel;
+  bool                      myIsExact;
 };
 
 #endif // _BRepCheck_Analyzer_HeaderFile

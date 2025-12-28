@@ -35,6 +35,7 @@ public:
   Standard_EXPORT IGESBasic_OrderedGroup();
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_OrderedGroup, IGESBasic_Group)
+
 };
 
 #endif // _IGESBasic_OrderedGroup_HeaderFile

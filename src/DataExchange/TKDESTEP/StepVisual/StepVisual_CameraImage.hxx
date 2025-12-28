@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepVisual_CameraImage();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage, StepRepr_MappedItem)
+
 };
 
 #endif // _StepVisual_CameraImage_HeaderFile

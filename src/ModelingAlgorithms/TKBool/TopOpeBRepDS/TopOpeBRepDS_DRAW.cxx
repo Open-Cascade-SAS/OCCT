@@ -27,7 +27,10 @@
   #include <Geom_TrimmedCurve.hxx>
   #include <BRep_TEdge.hxx>
   #include <BRep_CurveRepresentation.hxx>
+#include <NCollection_List.hxx>
+  #include <BRep_CurveRepresentation.hxx>
   #include <NCollection_List.hxx>
+  #include <BRep_CurveRepresentation.hxx>
   #include <BRep_Tool.hxx>
   #include <GeomAPI_ProjectPointOnSurf.hxx>
   #include <TopoDS.hxx>
@@ -90,28 +93,24 @@ Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa, const Topo
 }
 
 Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa,
-                                   const occ::handle<Geom_Curve>& C,
-                                   const double&                  f,
-                                   const double&                  l)
+                                   const occ::handle<Geom_Curve>&      C,
+                                   const double&           f,
+                                   const double&           l)
 {
   FUN_tool_draw(aa, C, f, l);
 }
 
-Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa,
-                                   const occ::handle<Geom_Curve>& C)
+Standard_EXPORT void FUN_brep_draw(const TCollection_AsciiString& aa, const occ::handle<Geom_Curve>& C)
 {
   FUN_tool_draw(aa, C);
 }
 
-Standard_EXPORT void FUN_DrawMap(
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    DataforDegenEd)
+Standard_EXPORT void FUN_DrawMap(const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& DataforDegenEd)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itemap(DataforDegenEd);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itemap(DataforDegenEd);
   for (; itemap.More(); itemap.Next())
   {
-    TopoDS_Shape                             v = itemap.Key();
+    TopoDS_Shape                       v = itemap.Key();
     NCollection_List<TopoDS_Shape>::Iterator itoflos(itemap.Value());
     if (!itoflos.More())
       continue;
@@ -133,18 +132,18 @@ Standard_EXPORT void FUN_DrawMap(
 
 static bool FUN_hascurveonsurf(const TopoDS_Edge& edge, const TopoDS_Face& face)
 {
-  TopLoc_Location           L;
+  TopLoc_Location      L;
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(face, L);
 
-  occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&edge.TShape());
-  const NCollection_List<occ::handle<BRep_CurveRepresentation>>&    lcr = TE->Curves();
+  occ::handle<BRep_TEdge>&                          TE  = *((occ::handle<BRep_TEdge>*)&edge.TShape());
+  const NCollection_List<occ::handle<BRep_CurveRepresentation>>&        lcr = TE->Curves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  bool                                                              iscurveonS = false;
+  bool                             iscurveonS = false;
 
   for (; itcr.More(); itcr.Next())
   {
     const occ::handle<BRep_CurveRepresentation>& cr               = itcr.Value();
-    bool                                         iscurveonsurface = cr->IsCurveOnSurface();
+    bool                        iscurveonsurface = cr->IsCurveOnSurface();
     if (!iscurveonsurface)
       continue;
     iscurveonS = cr->IsCurveOnSurface(S, L);
@@ -156,37 +155,37 @@ static bool FUN_hascurveonsurf(const TopoDS_Edge& edge, const TopoDS_Face& face)
 
 Standard_EXPORT void FUN_draw2de(const TopoDS_Shape& ed, const TopoDS_Shape& fa)
 {
-  char*  nnn = TCollection_AsciiString("name").ToCString();
+  char*         nnn = TCollection_AsciiString("name").ToCString();
   double f, l;
   if (ed.IsNull())
     return;
   if (fa.IsNull())
     return;
-  TopoDS_Edge edge    = TopoDS::Edge(ed);
-  TopoDS_Face face    = TopoDS::Face(fa);
-  bool        hascons = FUN_hascurveonsurf(edge, face);
+  TopoDS_Edge      edge    = TopoDS::Edge(ed);
+  TopoDS_Face      face    = TopoDS::Face(fa);
+  bool hascons = FUN_hascurveonsurf(edge, face);
   if (!hascons)
     return;
 
-  TopAbs_Orientation        ori   = edge.Orientation();
-  bool                      sense = (ori == TopAbs_FORWARD) ? true : false;
+  TopAbs_Orientation   ori   = edge.Orientation();
+  bool     sense = (ori == TopAbs_FORWARD) ? true : false;
   occ::handle<Geom2d_Curve> C2d   = BRep_Tool::CurveOnSurface(edge, face, f, l);
 
   occ::handle<Geom2d_TrimmedCurve> tC2d = new Geom2d_TrimmedCurve(C2d, f, l, sense);
   DrawTrSurf::Set(nnn, tC2d);
 } // FUN_draw2de
 
-Standard_EXPORT void FUN_draw2d(const double&      par,
-                                const TopoDS_Edge& E,
-                                const TopoDS_Edge& Eref,
-                                const TopoDS_Face& Fref)
+Standard_EXPORT void FUN_draw2d(const double& par,
+                                const TopoDS_Edge&   E,
+                                const TopoDS_Edge&   Eref,
+                                const TopoDS_Face&   Fref)
 {
   TopAbs_Orientation oriE       = E.Orientation();
   TopAbs_Orientation oriEref    = Eref.Orientation();
-  bool               ErefonFref = false;
-  bool               EonFref    = false;
+  bool   ErefonFref = false;
+  bool   EonFref    = false;
   TopExp_Explorer    ex;
-  int                ne = 0;
+  int   ne = 0;
   for (ex.Init(Fref, TopAbs_EDGE); ex.More(); ex.Next())
     ne++;
   if (ne < 1)
@@ -208,7 +207,7 @@ Standard_EXPORT void FUN_draw2d(const double&      par,
   gp_Pnt2d p2d;
   if (ErefonFref || EonFref)
   {
-    double                    f, l;
+    double        f, l;
     occ::handle<Geom2d_Curve> C2d;
     if (ErefonFref)
     {
@@ -224,11 +223,11 @@ Standard_EXPORT void FUN_draw2d(const double&      par,
   }
   else
   {
-    double                  f, l;
+    double      f, l;
     occ::handle<Geom_Curve> C3d = BRep_Tool::Curve(Eref, f, l);
-    gp_Pnt                  P;
+    gp_Pnt             P;
     C3d->D0(par, P);
-    occ::handle<Geom_Surface>  S = BRep_Tool::Surface(Fref);
+    occ::handle<Geom_Surface>       S = BRep_Tool::Surface(Fref);
     GeomAPI_ProjectPointOnSurf PonS(P, S);
     if (!PonS.Extrema().IsDone())
       return;

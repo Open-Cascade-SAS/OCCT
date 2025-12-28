@@ -52,9 +52,10 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Point, Geom2d_Geometry)
+
 };
 
 #endif // _Geom2d_Point_HeaderFile

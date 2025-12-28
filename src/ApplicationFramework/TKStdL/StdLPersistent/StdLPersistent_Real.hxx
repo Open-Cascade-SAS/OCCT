@@ -53,8 +53,8 @@ public:
   }
 
 private:
-  double myValue;
-  int    myDimension;
+  double    myValue;
+  int myDimension;
 };
 
 #endif

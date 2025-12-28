@@ -99,7 +99,7 @@ public:
 
   //! Make empty P-Curve <aC> of relevant to <PC> type
   Standard_EXPORT static void MakePCurveOfType(const ProjLib_ProjectedCurve& PC,
-                                               occ::handle<Geom2d_Curve>&    aC);
+                                               occ::handle<Geom2d_Curve>&         aC);
 
   //! Returns "true" if surface is analytical, that is it can be
   //! Plane, Cylinder, Cone, Sphere, Torus.

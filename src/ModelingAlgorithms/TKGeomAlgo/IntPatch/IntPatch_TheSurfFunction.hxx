@@ -37,7 +37,7 @@ public:
   Standard_EXPORT IntPatch_TheSurfFunction();
 
   Standard_EXPORT IntPatch_TheSurfFunction(const occ::handle<Adaptor3d_Surface>& PS,
-                                           const IntSurf_Quadric&                IS);
+                                           const IntSurf_Quadric&           IS);
 
   Standard_EXPORT IntPatch_TheSurfFunction(const IntSurf_Quadric& IS);
 
@@ -76,23 +76,23 @@ public:
   const IntSurf_Quadric& ISurface() const;
 
 private:
-  void*    surf;
-  void*    func;
-  double   u;
-  double   v;
-  double   tol;
-  gp_Pnt   pntsol;
-  double   valf;
-  bool     computed;
-  bool     tangent;
-  double   tgdu;
-  double   tgdv;
-  gp_Vec   gradient;
-  bool     derived;
-  gp_Vec   d1u;
-  gp_Vec   d1v;
-  gp_Vec   d3d;
-  gp_Dir2d d2d;
+  void* surf;
+  void* func;
+  double    u;
+  double    v;
+  double    tol;
+  gp_Pnt           pntsol;
+  double    valf;
+  bool computed;
+  bool tangent;
+  double    tgdu;
+  double    tgdv;
+  gp_Vec           gradient;
+  bool derived;
+  gp_Vec           d1u;
+  gp_Vec           d1v;
+  gp_Vec           d3d;
+  gp_Dir2d         d2d;
 };
 
 #define ThePSurface occ::handle<Adaptor3d_Surface>

@@ -29,12 +29,12 @@
 
 //=================================================================================================
 
-FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape&                   S,
+FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape&         S,
                                        const NCollection_List<TopoDS_Shape>& E,
-                                       const double                          R,
-                                       const double                          Ta,
-                                       const double                          Tapp3d,
-                                       const double                          Tapp2d)
+                                       const double         R,
+                                       const double         Ta,
+                                       const double         Tapp3d,
+                                       const double         Tapp2d)
     : myIntBuild(S, ChFi3d_Polynomial, Ta, Tapp3d, Tapp2d)
 {
   myisdone      = FilletSurf_IsOk;
@@ -316,8 +316,8 @@ int FilletSurf_Builder::NbSection(const int IndexSurf) const
 // IndexSec  of  SurfaceFillet(IndexSurf)  (The   basis curve  of the
 // trimmed curve is a Geom_Circle)
 //=======================================================================
-void FilletSurf_Builder::Section(const int                       IndexSurf,
-                                 const int                       IndexSec,
+void FilletSurf_Builder::Section(const int     IndexSurf,
+                                 const int     IndexSec,
                                  occ::handle<Geom_TrimmedCurve>& Circ) const
 {
   if ((IndexSurf < 1) || (IndexSurf > NbSurface()))

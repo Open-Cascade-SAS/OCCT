@@ -47,9 +47,9 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop()
 
 StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(
   const occ::handle<StepShape_VertexLoop>& VL,
-  StepToTopoDS_Tool&                       T,
-  StepToTopoDS_NMTool&                     NMTool,
-  const StepData_Factors&                  theLocalFactors)
+  StepToTopoDS_Tool&                  T,
+  StepToTopoDS_NMTool&                NMTool,
+  const StepData_Factors&             theLocalFactors)
 {
   Init(VL, T, NMTool, theLocalFactors);
 }
@@ -60,21 +60,21 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(
 // ============================================================================
 
 void StepToTopoDS_TranslateVertexLoop::Init(const occ::handle<StepShape_VertexLoop>& VL,
-                                            StepToTopoDS_Tool&                       aTool,
-                                            StepToTopoDS_NMTool&                     NMTool,
-                                            const StepData_Factors& theLocalFactors)
+                                            StepToTopoDS_Tool&                  aTool,
+                                            StepToTopoDS_NMTool&                NMTool,
+                                            const StepData_Factors&             theLocalFactors)
 {
   // A Vertex Loop shall be mapped onto a Vertex + Edge + Wire;
   if (!aTool.IsBound(VL))
   {
-    BRep_Builder                           B;
+    BRep_Builder                      B;
     occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
     //: S4136    double preci = BRepAPI::Precision();
     occ::handle<StepShape_Vertex> Vtx;
-    TopoDS_Vertex                 V1, V2;
-    TopoDS_Edge                   E;
-    TopoDS_Wire                   W;
+    TopoDS_Vertex            V1, V2;
+    TopoDS_Edge              E;
+    TopoDS_Wire              W;
     Vtx = VL->LoopVertex();
     StepToTopoDS_TranslateVertex myTranVtx(Vtx, aTool, NMTool, theLocalFactors);
     if (myTranVtx.IsDone())

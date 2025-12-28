@@ -19,6 +19,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 #include <utility>
 
@@ -89,18 +91,18 @@ std::pair<double, double> toLocalParams(double                      theU,
 //! @param[in] theVDerivMax maximum V derivative
 //! @param[out] theResultArray array to store the results
 void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePolesWeights,
-                         const BSplCLib_CacheParams&                     theParamsU,
-                         const BSplCLib_CacheParams&                     theParamsV,
-                         const bool                                      theIsRational,
-                         double                                          theLocalU,
-                         double                                          theLocalV,
-                         int                                             theUDerivMax,
-                         int                                             theVDerivMax,
-                         double*                                         theResultArray)
+                         const BSplCLib_CacheParams&          theParamsU,
+                         const BSplCLib_CacheParams&          theParamsV,
+                         const bool               theIsRational,
+                         double                               theLocalU,
+                         double                               theLocalV,
+                         int                                  theUDerivMax,
+                         int                                  theVDerivMax,
+                         double*                       theResultArray)
 {
-  double* const aPolesArray = ConvertArray(thePolesWeights);
-  const int     aDimension  = theIsRational ? 4 : 3;
-  const int     aCacheCols  = thePolesWeights->RowLength();
+  double* const   aPolesArray = ConvertArray(thePolesWeights);
+  const int aDimension  = theIsRational ? 4 : 3;
+  const int aCacheCols  = thePolesWeights->RowLength();
 
   const bool isMaxU = (theParamsU.Degree > theParamsV.Degree);
   const auto [aMinParam, aMaxParam] =
@@ -193,7 +195,7 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
     // RationalDerivative is NOT safe for in-place operation because it reads 4-component data
     // and writes 3-component data to potentially overlapping memory locations.
     // We need a separate temporary storage for the output.
-    const int                      aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
+    const int                             aResultSize = (theUDerivMax + 1) * (theVDerivMax + 1) * 3;
     NCollection_LocalArray<double> aTempStorage(aResultSize);
 
     if (isMaxU)
@@ -229,11 +231,11 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
 
 //==================================================================================================
 
-BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
-                               const bool&                       thePeriodicU,
+BSplSLib_Cache::BSplSLib_Cache(const int&     theDegreeU,
+                               const bool&     thePeriodicU,
                                const NCollection_Array1<double>& theFlatKnotsU,
-                               const int&                        theDegreeV,
-                               const bool&                       thePeriodicV,
+                               const int&     theDegreeV,
+                               const bool&     thePeriodicV,
                                const NCollection_Array1<double>& theFlatKnotsV,
                                const NCollection_Array2<double>* theWeights)
     : myIsRational(theWeights != NULL),
@@ -243,24 +245,24 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
   int aMinDegree   = std::min(theDegreeU, theDegreeV);
   int aMaxDegree   = std::max(theDegreeU, theDegreeV);
   int aPWColNumber = (myIsRational ? 4 : 3);
-  myPolesWeights =
-    new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
+  myPolesWeights = new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
 }
 
 //==================================================================================================
 
-bool BSplSLib_Cache::IsCacheValid(double theParameterU, double theParameterV) const
+bool BSplSLib_Cache::IsCacheValid(double theParameterU,
+                                              double theParameterV) const
 {
   return myParamsU.IsCacheValid(theParameterU) && myParamsV.IsCacheValid(theParameterV);
 }
 
 //==================================================================================================
 
-void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
-                                const double&                     theParameterV,
+void BSplSLib_Cache::BuildCache(const double&        theParameterU,
+                                const double&        theParameterV,
                                 const NCollection_Array1<double>& theFlatKnotsU,
                                 const NCollection_Array1<double>& theFlatKnotsV,
-                                const NCollection_Array2<gp_Pnt>& thePoles,
+                                const NCollection_Array2<gp_Pnt>&   thePoles,
                                 const NCollection_Array2<double>* theWeights)
 {
   // Normalize the parameters for periodical B-splines
@@ -298,7 +300,9 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
 
 //==================================================================================================
 
-void BSplSLib_Cache::D0(const double& theU, const double& theV, gp_Pnt& thePoint) const
+void BSplSLib_Cache::D0(const double& theU,
+                        const double& theV,
+                        gp_Pnt&              thePoint) const
 {
   const auto [aLocalU, aLocalV] = toLocalParamsD0(theU, theV, myParamsU, myParamsV);
   D0Local(aLocalU, aLocalV, thePoint);
@@ -474,9 +478,9 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
 
 void BSplSLib_Cache::D1(const double& theU,
                         const double& theV,
-                        gp_Pnt&       thePoint,
-                        gp_Vec&       theTangentU,
-                        gp_Vec&       theTangentV) const
+                        gp_Pnt&              thePoint,
+                        gp_Vec&              theTangentU,
+                        gp_Vec&              theTangentV) const
 {
   // Use the same inverse values for both parameter transformation and derivative scaling
   // to maintain numerical consistency with the original implementation
@@ -525,12 +529,12 @@ void BSplSLib_Cache::D1(const double& theU,
 
 void BSplSLib_Cache::D2(const double& theU,
                         const double& theV,
-                        gp_Pnt&       thePoint,
-                        gp_Vec&       theTangentU,
-                        gp_Vec&       theTangentV,
-                        gp_Vec&       theCurvatureU,
-                        gp_Vec&       theCurvatureV,
-                        gp_Vec&       theCurvatureUV) const
+                        gp_Pnt&              thePoint,
+                        gp_Vec&              theTangentU,
+                        gp_Vec&              theTangentV,
+                        gp_Vec&              theCurvatureU,
+                        gp_Vec&              theCurvatureV,
+                        gp_Vec&              theCurvatureUV) const
 {
   // Use the same inverse values for both parameter transformation and derivative scaling
   // to maintain numerical consistency with the original implementation

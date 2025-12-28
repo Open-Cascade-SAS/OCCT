@@ -31,27 +31,27 @@ public:
 
   Standard_EXPORT IntPatch_ThePathPointOfTheSOnBounds();
 
-  Standard_EXPORT IntPatch_ThePathPointOfTheSOnBounds(const gp_Pnt&                         P,
-                                                      const double                          Tol,
+  Standard_EXPORT IntPatch_ThePathPointOfTheSOnBounds(const gp_Pnt&                    P,
+                                                      const double              Tol,
                                                       const occ::handle<Adaptor3d_HVertex>& V,
                                                       const occ::handle<Adaptor2d_Curve2d>& A,
-                                                      const double Parameter);
+                                                      const double              Parameter);
 
-  Standard_EXPORT IntPatch_ThePathPointOfTheSOnBounds(const gp_Pnt&                         P,
-                                                      const double                          Tol,
+  Standard_EXPORT IntPatch_ThePathPointOfTheSOnBounds(const gp_Pnt&                    P,
+                                                      const double              Tol,
                                                       const occ::handle<Adaptor2d_Curve2d>& A,
-                                                      const double Parameter);
+                                                      const double              Parameter);
 
-  void SetValue(const gp_Pnt&                         P,
-                const double                          Tol,
+  void SetValue(const gp_Pnt&                    P,
+                const double              Tol,
                 const occ::handle<Adaptor3d_HVertex>& V,
                 const occ::handle<Adaptor2d_Curve2d>& A,
-                const double                          Parameter);
+                const double              Parameter);
 
-  void SetValue(const gp_Pnt&                         P,
-                const double                          Tol,
+  void SetValue(const gp_Pnt&                    P,
+                const double              Tol,
                 const occ::handle<Adaptor2d_Curve2d>& A,
-                const double                          Parameter);
+                const double              Parameter);
 
   const gp_Pnt& Value() const;
 
@@ -66,20 +66,20 @@ public:
   double Parameter() const;
 
 private:
-  gp_Pnt                         point;
-  double                         tol;
-  bool                           isnew;
+  gp_Pnt                    point;
+  double             tol;
+  bool          isnew;
   occ::handle<Adaptor3d_HVertex> vtx;
   occ::handle<Adaptor2d_Curve2d> arc;
-  double                         param;
+  double             param;
 };
 
 //=================================================================================================
 // Inline implementations
 //=================================================================================================
 
-inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                         P,
-                                                          const double                          Tol,
+inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
+                                                          const double              Tol,
                                                           const occ::handle<Adaptor3d_HVertex>& V,
                                                           const occ::handle<Adaptor2d_Curve2d>& A,
                                                           const double Parameter)
@@ -92,8 +92,8 @@ inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&         
   param = Parameter;
 }
 
-inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                         P,
-                                                          const double                          Tol,
+inline void IntPatch_ThePathPointOfTheSOnBounds::SetValue(const gp_Pnt&                    P,
+                                                          const double              Tol,
                                                           const occ::handle<Adaptor2d_Curve2d>& A,
                                                           const double Parameter)
 {

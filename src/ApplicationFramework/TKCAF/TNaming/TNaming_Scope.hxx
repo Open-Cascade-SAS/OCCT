@@ -52,11 +52,13 @@ public:
 
   Standard_EXPORT void Valid(const TDF_Label& L);
 
-  Standard_EXPORT void ValidChildren(const TDF_Label& L, const bool withroot = true);
+  Standard_EXPORT void ValidChildren(const TDF_Label&       L,
+                                     const bool withroot = true);
 
   Standard_EXPORT void Unvalid(const TDF_Label& L);
 
-  Standard_EXPORT void UnvalidChildren(const TDF_Label& L, const bool withroot = true);
+  Standard_EXPORT void UnvalidChildren(const TDF_Label&       L,
+                                       const bool withroot = true);
 
   Standard_EXPORT bool IsValid(const TDF_Label& L) const;
 
@@ -69,8 +71,8 @@ public:
   Standard_EXPORT TopoDS_Shape CurrentShape(const occ::handle<TNaming_NamedShape>& NS) const;
 
 private:
-  bool                       myWithValid;
-  NCollection_Map<TDF_Label> myValid;
+  bool myWithValid;
+  NCollection_Map<TDF_Label>     myValid;
 };
 
 #endif // _TNaming_Scope_HeaderFile

@@ -68,7 +68,7 @@ occ::handle<TDataStd_RealList> TDataStd_RealList::Set(const TDF_Label& label)
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 occ::handle<TDataStd_RealList> TDataStd_RealList::Set(const TDF_Label&     label,
-                                                      const Standard_GUID& theGuid)
+                                                 const Standard_GUID& theGuid)
 {
   return SetAttr(label, theGuid);
 }
@@ -105,7 +105,8 @@ void TDataStd_RealList::Append(const double value)
 
 //=================================================================================================
 
-bool TDataStd_RealList::InsertBefore(const double value, const double before_value)
+bool TDataStd_RealList::InsertBefore(const double value,
+                                                 const double before_value)
 {
   NCollection_List<double>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
@@ -122,10 +123,11 @@ bool TDataStd_RealList::InsertBefore(const double value, const double before_val
 
 // Inserts the <value> before the <index> position.
 // The indices start with 1 .. Extent().
-bool TDataStd_RealList::InsertBeforeByIndex(const int index, const double before_value)
+bool TDataStd_RealList::InsertBeforeByIndex(const int index,
+                                                        const double    before_value)
 {
-  int                                i(1);
-  bool                               found(false);
+  int                 i(1);
+  bool                 found(false);
   NCollection_List<double>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -142,7 +144,8 @@ bool TDataStd_RealList::InsertBeforeByIndex(const int index, const double before
 
 //=================================================================================================
 
-bool TDataStd_RealList::InsertAfter(const double value, const double after_value)
+bool TDataStd_RealList::InsertAfter(const double value,
+                                                const double after_value)
 {
   NCollection_List<double>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
@@ -159,10 +162,11 @@ bool TDataStd_RealList::InsertAfter(const double value, const double after_value
 
 // Inserts the <value> after the <index> position.
 // The indices start with 1 .. Extent().
-bool TDataStd_RealList::InsertAfterByIndex(const int index, const double after_value)
+bool TDataStd_RealList::InsertAfterByIndex(const int index,
+                                                       const double    after_value)
 {
-  int                                i(1);
-  bool                               found(false);
+  int                 i(1);
+  bool                 found(false);
   NCollection_List<double>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -200,8 +204,8 @@ bool TDataStd_RealList::Remove(const double value)
 //=======================================================================
 bool TDataStd_RealList::RemoveByIndex(const int index)
 {
-  int                                i(1);
-  bool                               found(false);
+  int                 i(1);
+  bool                 found(false);
   NCollection_List<double>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -282,7 +286,7 @@ occ::handle<TDF_Attribute> TDataStd_RealList::NewEmpty() const
 void TDataStd_RealList::Restore(const occ::handle<TDF_Attribute>& With)
 {
   myList.Clear();
-  occ::handle<TDataStd_RealList>     aList = occ::down_cast<TDataStd_RealList>(With);
+  occ::handle<TDataStd_RealList>        aList = occ::down_cast<TDataStd_RealList>(With);
   NCollection_List<double>::Iterator itr(aList->List());
   for (; itr.More(); itr.Next())
   {

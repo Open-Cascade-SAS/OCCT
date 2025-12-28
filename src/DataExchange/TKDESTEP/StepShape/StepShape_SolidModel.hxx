@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_SolidModel();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_SolidModel, StepGeom_GeometricRepresentationItem)
+
 };
 
 #endif // _StepShape_SolidModel_HeaderFile

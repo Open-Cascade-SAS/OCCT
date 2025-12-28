@@ -28,26 +28,29 @@ public:
   //! @param[in] theNbStacks  number of stacks within V parameter
   //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
-  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(const double   theRadius,
-                                                                        const int      theNbSlices,
-                                                                        const int      theNbStacks,
-                                                                        const gp_Trsf& theTrsf);
+  Standard_EXPORT static occ::handle<Graphic3d_ArrayOfTriangles> Create(
+    const double    theRadius,
+    const int theNbSlices,
+    const int theNbStacks,
+    const gp_Trsf&         theTrsf);
 
 public:
   //! Initializes the algorithm creating a sphere.
   //! @param[in] theRadius    sphere radius
   //! @param[in] theNbSlices  number of slices within U parameter
   //! @param[in] theNbStacks  number of stacks within V parameter
-  Standard_EXPORT Prs3d_ToolSphere(const double theRadius,
-                                   const int    theNbSlices,
-                                   const int    theNbStacks);
+  Standard_EXPORT Prs3d_ToolSphere(const double    theRadius,
+                                   const int theNbSlices,
+                                   const int theNbStacks);
 
 protected:
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex(const double theU, const double theV) const override;
+  Standard_EXPORT virtual gp_Pnt Vertex(const double theU,
+                                        const double theV) const override;
 
   //! Computes normal at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Dir Normal(const double theU, const double theV) const override;
+  Standard_EXPORT virtual gp_Dir Normal(const double theU,
+                                        const double theV) const override;
 
 protected:
   double myRadius; //!< sphere radius

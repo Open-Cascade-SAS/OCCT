@@ -19,6 +19,7 @@
 #include <NCollection_List.hxx>
 #include <VrmlData_Node.hxx>
 #include <NCollection_Map.hxx>
+#include <VrmlData_Node.hxx>
 #include <VrmlData_ErrorStatus.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <TopoDS_Shape.hxx>
@@ -99,10 +100,7 @@ public:
   /**
    * Get the iterator of named nodes.
    */
-  inline NCollection_Map<occ::handle<VrmlData_Node>>::Iterator NamedNodesIterator() const
-  {
-    return myNamedNodes;
-  }
+  inline NCollection_Map<occ::handle<VrmlData_Node>>::Iterator NamedNodesIterator() const { return myNamedNodes; }
 
   /**
    * Allocator used by all nodes contained in the Scene.
@@ -114,8 +112,9 @@ public:
    * <p>VrmlData_WorldInfo cannot be added, in this case the method
    * returns a NULL handle.
    */
-  Standard_EXPORT const occ::handle<VrmlData_Node>& AddNode(const occ::handle<VrmlData_Node>& theN,
-                                                            const bool isTopLevel = true);
+  Standard_EXPORT const occ::handle<VrmlData_Node>& AddNode(
+    const occ::handle<VrmlData_Node>& theN,
+    const bool       isTopLevel = true);
 
   /**
    * Find a node by its name.
@@ -126,9 +125,8 @@ public:
    *   given name is returned. If theType is given, only the node that has
    *   that type is returned.
    */
-  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(
-    const char*                       theName,
-    const occ::handle<Standard_Type>& theType = 0L) const;
+  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char*                  theName,
+                                                 const occ::handle<Standard_Type>& theType = 0L) const;
 
   /**
    * Find a node by its name.
@@ -137,8 +135,7 @@ public:
    * @param theLocation
    *   Location of the found node with respect to the whole VRML shape.
    */
-  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char* theName,
-                                                      gp_Trsf&    theLocation) const;
+  Standard_EXPORT occ::handle<VrmlData_Node> FindNode(const char* theName, gp_Trsf& theLocation) const;
 
   /**
    * Export to text stream (file or else).
@@ -177,8 +174,7 @@ public:
    *   TopoDS_Shape (Compound) holding all the scene, similar to the result of
    *   explicit TopoDS_Shape conversion operator.
    */
-  Standard_EXPORT TopoDS_Shape
-    GetShape(NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>& M);
+  Standard_EXPORT TopoDS_Shape GetShape(NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>& M);
 
   /**
    * Query the WorldInfo member.
@@ -214,30 +210,30 @@ public:
    * Read one real value.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadReal(VrmlData_InBuffer& theBuffer,
-                                                double&            theResult,
-                                                bool               isApplyScale,
-                                                bool               isOnlyPositive) const;
+                                                double&     theResult,
+                                                bool   isApplyScale,
+                                                bool   isOnlyPositive) const;
 
   /**
    * Read one triplet of real values.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadXYZ(VrmlData_InBuffer& theBuffer,
                                                gp_XYZ&            theXYZ,
-                                               bool               isApplyScale,
-                                               bool               isOnlyPositive) const;
+                                               bool   isApplyScale,
+                                               bool   isOnlyPositive) const;
 
   /**
    * Read one doublet of real values.
    */
   Standard_EXPORT VrmlData_ErrorStatus ReadXY(VrmlData_InBuffer& theBuffer,
                                               gp_XY&             theXYZ,
-                                              bool               isApplyScale,
-                                              bool               isOnlyPositive) const;
+                                              bool   isApplyScale,
+                                              bool   isOnlyPositive) const;
   /**
    * Read an array of integer indices, for IndexedfaceSet and IndexedLineSet.
    */
-  Standard_EXPORT VrmlData_ErrorStatus ReadArrIndex(VrmlData_InBuffer& theBuffer,
-                                                    const int**&       theArr,
+  Standard_EXPORT VrmlData_ErrorStatus ReadArrIndex(VrmlData_InBuffer&        theBuffer,
+                                                    const int**& theArr,
                                                     size_t&            theNBl) const;
 
   /**
@@ -261,15 +257,15 @@ public:
    * @param thePostfix
    *   Optional string that is added before the end of the line.
    */
-  Standard_EXPORT VrmlData_ErrorStatus WriteXYZ(const gp_XYZ& theXYZ,
-                                                const bool    isScale,
-                                                const char*   thePostfix = 0L) const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteXYZ(const gp_XYZ&          theXYZ,
+                                                const bool isScale,
+                                                const char*            thePostfix = 0L) const;
   /**
    * Write an array of integer indices, for IndexedFaceSet and IndexedLineSet.
    */
-  Standard_EXPORT VrmlData_ErrorStatus WriteArrIndex(const char*  thePrefix,
-                                                     const int**  theArr,
-                                                     const size_t theNbBl) const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteArrIndex(const char*              thePrefix,
+                                                     const int** theArr,
+                                                     const size_t      theNbBl) const;
 
   /**
    * Write a string to the output stream respecting the indentation. The string
@@ -287,9 +283,9 @@ public:
    * @return
    *   Error status of the stream, or a special error if myOutput == NULL.
    */
-  Standard_EXPORT VrmlData_ErrorStatus WriteLine(const char* theLine0,
-                                                 const char* theLine1  = 0L,
-                                                 const int   theIndent = 0) const;
+  Standard_EXPORT VrmlData_ErrorStatus WriteLine(const char*            theLine0,
+                                                 const char*            theLine1  = 0L,
+                                                 const int theIndent = 0) const;
 
   /**
    * Write the given node to output stream 'myOutput'.
@@ -330,37 +326,36 @@ protected:
    *   Otherwise the created node is matched and an error is returned if
    *   no match detected.
    */
-  Standard_EXPORT VrmlData_ErrorStatus createNode(VrmlData_InBuffer&                theBuffer,
+  Standard_EXPORT VrmlData_ErrorStatus createNode(VrmlData_InBuffer&           theBuffer,
                                                   occ::handle<VrmlData_Node>&       theNode,
                                                   const occ::handle<Standard_Type>& Type);
 
   /**
    * Create a single Shape object from all geometric nodes in the list.
    */
-  Standard_EXPORT static void createShape(
-    TopoDS_Shape& outShape,
-    const NCollection_List<occ::handle<VrmlData_Node>>&,
-    NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>*);
+  Standard_EXPORT static void createShape(TopoDS_Shape& outShape,
+                                          const NCollection_List<occ::handle<VrmlData_Node>>&,
+                                          NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>*);
 
 private:
   // ---------- PRIVATE FIELDS ----------
-  double                                       myLinearScale;
-  NCollection_List<occ::handle<VrmlData_Node>> myLstNodes; ///! top-level nodes
-  NCollection_List<occ::handle<VrmlData_Node>> myAllNodes; ///! all nodes
-  VrmlData_ErrorStatus                         myStatus;
-  occ::handle<NCollection_IncAllocator>        myAllocator;
-  occ::handle<VrmlData_WorldInfo>              myWorldInfo;
-  NCollection_Map<occ::handle<VrmlData_Node>>  myNamedNodes;
+  double                    myLinearScale;
+  NCollection_List<occ::handle<VrmlData_Node>>              myLstNodes; ///! top-level nodes
+  NCollection_List<occ::handle<VrmlData_Node>>              myAllNodes; ///! all nodes
+  VrmlData_ErrorStatus             myStatus;
+  occ::handle<NCollection_IncAllocator> myAllocator;
+  occ::handle<VrmlData_WorldInfo>       myWorldInfo;
+  NCollection_Map<occ::handle<VrmlData_Node>>               myNamedNodes;
 
   // read from stream
   NCollection_List<TCollection_ExtendedString> myVrmlDir;
   std::mutex                                   myMutex;
-  int                                          myLineError; ///! #0 if error
+  int                             myLineError; ///! #0 if error
 
   // write to stream
   Standard_OStream* myOutput;
-  int               myIndent;
-  int               myCurrentIndent;
+  int  myIndent;
+  int  myCurrentIndent;
   /**
    * This map is used to avoid multiple storage of the same named node: each
    * named node is added here when it is written the first time.
@@ -373,7 +368,7 @@ private:
    * assigned a name.
    */
   NCollection_Map<void*> myUnnamedNodesOut;
-  int                    myAutoNameCounter;
+  int                  myAutoNameCounter;
   friend class VrmlData_Group;
   friend class VrmlData_Node;
 };

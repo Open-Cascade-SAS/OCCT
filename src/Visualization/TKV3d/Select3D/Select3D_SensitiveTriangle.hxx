@@ -32,14 +32,15 @@ public:
   //! owner theOwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity.
   Standard_EXPORT Select3D_SensitiveTriangle(
     const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-    const gp_Pnt&                             thePnt0,
-    const gp_Pnt&                             thePnt1,
-    const gp_Pnt&                             thePnt2,
-    const Select3D_TypeOfSensitivity          theType = Select3D_TOS_INTERIOR);
+    const gp_Pnt&                        thePnt0,
+    const gp_Pnt&                        thePnt1,
+    const gp_Pnt&                        thePnt2,
+    const Select3D_TypeOfSensitivity     theType = Select3D_TOS_INTERIOR);
 
   //! Checks whether the triangle overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns the 3D points P1, P2, P3 used at the time of construction.
   void Points3D(gp_Pnt& thePnt0, gp_Pnt& thePnt1, gp_Pnt& thePnt2) const
@@ -69,7 +70,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 

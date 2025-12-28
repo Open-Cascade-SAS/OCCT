@@ -52,7 +52,7 @@ public: //! @name mesher API
   };
 
   typedef NCollection_Shared<NCollection_Vector<Segment>>                         Segments;
-  typedef NCollection_Shared<NCollection_Array1<occ::handle<Segments>>>           ArrayOfSegments;
+  typedef NCollection_Shared<NCollection_Array1<occ::handle<Segments>>>                ArrayOfSegments;
   typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::BndBox2dTree)>> ArrayOfBndBoxTree;
   typedef NCollection_Shared<NCollection_Array1<Handle(IMeshData::MapOfIEdgePtr)>>
     ArrayOfMapOfIEdgePtr;
@@ -81,7 +81,10 @@ public: //! @name mesher API
 
 private:
   //! Returns True in case if check can be performed in parallel mode.
-  bool isParallel() const { return (myParameters.InParallel && myDFace->WiresNb() > 1); }
+  bool isParallel() const
+  {
+    return (myParameters.InParallel && myDFace->WiresNb() > 1);
+  }
 
   //! Collects face segments.
   void collectSegments();
@@ -101,10 +104,10 @@ private:
   IMeshData::IFaceHandle       myDFace;
   const IMeshTools_Parameters& myParameters;
 
-  occ::handle<ArrayOfSegments>      myWiresSegments;
-  occ::handle<ArrayOfBndBoxTree>    myWiresBndBoxTree;
-  occ::handle<ArrayOfMapOfIEdgePtr> myWiresIntersectingEdges;
-  Handle(IMeshData::MapOfIEdgePtr)  myIntersectingEdges;
+  occ::handle<ArrayOfSegments>          myWiresSegments;
+  occ::handle<ArrayOfBndBoxTree>        myWiresBndBoxTree;
+  occ::handle<ArrayOfMapOfIEdgePtr>     myWiresIntersectingEdges;
+  Handle(IMeshData::MapOfIEdgePtr) myIntersectingEdges;
 };
 
 #endif

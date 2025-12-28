@@ -33,8 +33,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Axis1Placement>&  aPosition,
-                            const double                                 aHeight,
-                            const double                                 aRadius);
+                            const double                     aHeight,
+                            const double                     aRadius);
 
   Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition);
 
@@ -52,8 +52,8 @@ public:
 
 private:
   occ::handle<StepGeom_Axis1Placement> position;
-  double                               height;
-  double                               radius;
+  double                   height;
+  double                   radius;
 };
 
 #endif // _StepShape_RightCircularCylinder_HeaderFile

@@ -139,7 +139,7 @@ void HLRAlgo::EncodeMinMax(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
 //=================================================================================================
 
 double HLRAlgo::SizeBox(HLRAlgo_EdgesBlock::MinMaxIndices& Min,
-                        HLRAlgo_EdgesBlock::MinMaxIndices& Max)
+                               HLRAlgo_EdgesBlock::MinMaxIndices& Max)
 {
   double s = Max.Min[0] - Min.Min[0];
   for (int aI = 1; aI < 8; ++aI)

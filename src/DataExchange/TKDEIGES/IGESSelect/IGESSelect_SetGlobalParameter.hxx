@@ -59,9 +59,9 @@ public:
   //! Specific action : only <target> is used : the form of the new
   //! value is checked regarding the parameter number (given at
   //! creation time).
-  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&                    TC) const override;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Sets Global Parameter <numpar> to <new value>"
@@ -70,7 +70,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SetGlobalParameter, IGESSelect_ModelModifier)
 
 private:
-  int                                   thenum;
+  int                 thenum;
   occ::handle<TCollection_HAsciiString> theval;
 };
 

@@ -41,7 +41,7 @@ IGESGeom_ToolPoint::IGESGeom_ToolPoint() {}
 
 void IGESGeom_ToolPoint::ReadOwnParams(const occ::handle<IGESGeom_Point>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_ParamReader&                       PR) const
+                                       IGESData_ParamReader&                  PR) const
 {
   // MGE 28/07/98
   // Building of messages
@@ -49,9 +49,9 @@ void IGESGeom_ToolPoint::ReadOwnParams(const occ::handle<IGESGeom_Point>&       
   Message_Msg Msg73("XSTEP_73");
   //==================================
 
-  gp_XYZ                              aPoint;
+  gp_XYZ                         aPoint;
   occ::handle<IGESBasic_SubfigureDef> aSymbol;
-  IGESData_Status                     aStatus;
+  IGESData_Status                aStatus;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadXYZ(PR.CurrentList(1, 3), Msg73, aPoint); // szv#4:S4163:12Mar99 `st=` not needed
@@ -101,7 +101,7 @@ void IGESGeom_ToolPoint::ReadOwnParams(const occ::handle<IGESGeom_Point>&       
 }
 
 void IGESGeom_ToolPoint::WriteOwnParams(const occ::handle<IGESGeom_Point>& ent,
-                                        IGESData_IGESWriter&               IW) const
+                                        IGESData_IGESWriter&          IW) const
 {
   IW.Send(ent->Value().X());
   IW.Send(ent->Value().Y());
@@ -110,14 +110,14 @@ void IGESGeom_ToolPoint::WriteOwnParams(const occ::handle<IGESGeom_Point>& ent,
 }
 
 void IGESGeom_ToolPoint::OwnShared(const occ::handle<IGESGeom_Point>& ent,
-                                   Interface_EntityIterator&          iter) const
+                                   Interface_EntityIterator&     iter) const
 {
   iter.GetOneItem(ent->DisplaySymbol());
 }
 
 void IGESGeom_ToolPoint::OwnCopy(const occ::handle<IGESGeom_Point>& another,
                                  const occ::handle<IGESGeom_Point>& ent,
-                                 Interface_CopyTool&                TC) const
+                                 Interface_CopyTool&           TC) const
 {
   gp_XYZ aPoint = (another->Value()).XYZ();
 
@@ -145,9 +145,9 @@ void IGESGeom_ToolPoint::OwnCheck(const occ::handle<IGESGeom_Point>& /* ent */,
 }
 
 void IGESGeom_ToolPoint::OwnDump(const occ::handle<IGESGeom_Point>& ent,
-                                 const IGESData_IGESDumper&         dumper,
-                                 Standard_OStream&                  S,
-                                 const int                          level) const
+                                 const IGESData_IGESDumper&    dumper,
+                                 Standard_OStream&             S,
+                                 const int        level) const
 {
   S << "IGESGeom_Point\n"
     << " Value         : ";

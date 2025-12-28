@@ -87,7 +87,9 @@ static int DDataStd_Rmdraw(Draw_Interpretor&, int nb, const char** arg)
 // purpose  : DrawOwner (drawable)
 //=======================================================================
 
-static int DDataStd_DrawOwner(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DrawOwner(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
   if (nb == 2)
   {
@@ -96,7 +98,7 @@ static int DDataStd_DrawOwner(Draw_Interpretor& di, int nb, const char** arg)
     {
       TCollection_AsciiString entry;
       TCollection_AsciiString name(D->Name());
-      int                     index = name.Search("_0:");
+      int        index = name.Search("_0:");
       if (index > 0)
       {
         entry = name.Split(index);
@@ -119,7 +121,9 @@ static int DDataStd_DrawOwner(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : DDisplay (DOC,entry)
 //=======================================================================
 
-static int DDataStd_DrawDisplay(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DrawDisplay(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 3)
   {
@@ -162,7 +166,9 @@ static int DDataStd_DrawDisplay(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : DrawErase (DOC,entry)
 //=======================================================================
 
-static int DDataStd_DrawErase(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DrawErase(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
   if (nb == 3)
   {
@@ -184,7 +190,9 @@ static int DDataStd_DrawErase(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : DrawUpdate (DOC,entry)
 //=======================================================================
 
-static int DDataStd_DrawUpdate(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DrawUpdate(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb == 3)
   {
@@ -203,7 +211,9 @@ static int DDataStd_DrawUpdate(Draw_Interpretor& di, int nb, const char** arg)
 
 //=================================================================================================
 
-static int DDataStd_DrawRepaint(Draw_Interpretor& /*di*/, int /*nb*/, const char** /*arg*/)
+static int DDataStd_DrawRepaint(Draw_Interpretor& /*di*/,
+                                             int /*nb*/,
+                                             const char** /*arg*/)
 {
   dout.Repaint3D();
   dout.Flush();

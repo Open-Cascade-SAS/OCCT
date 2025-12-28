@@ -23,6 +23,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_BezierCurve2d, DrawTrSurf_Curve2d)
 
@@ -34,10 +35,10 @@ DrawTrSurf_BezierCurve2d::DrawTrSurf_BezierCurve2d(const occ::handle<Geom2d_Bezi
 }
 
 DrawTrSurf_BezierCurve2d::DrawTrSurf_BezierCurve2d(const occ::handle<Geom2d_BezierCurve>& C,
-                                                   const Draw_Color&                      CurvColor,
-                                                   const Draw_Color& PolesColor,
-                                                   const bool        ShowPoles,
-                                                   const int         Discret)
+                                                   const Draw_Color&                 CurvColor,
+                                                   const Draw_Color&                 PolesColor,
+                                                   const bool            ShowPoles,
+                                                   const int            Discret)
     : DrawTrSurf_Curve2d(C, CurvColor, Discret)
 {
   drawPoles = ShowPoles;
@@ -62,19 +63,19 @@ void DrawTrSurf_BezierCurve2d::DrawOn(Draw_Display& dis) const
   DrawTrSurf_Curve2d::DrawOn(dis);
 }
 
-void DrawTrSurf_BezierCurve2d::FindPole(const double        X,
-                                        const double        Y,
+void DrawTrSurf_BezierCurve2d::FindPole(const double X,
+                                        const double Y,
                                         const Draw_Display& D,
-                                        const double        XPrec,
-                                        int&                Index) const
+                                        const double XPrec,
+                                        int&   Index) const
 {
   occ::handle<Geom2d_BezierCurve> bz = occ::down_cast<Geom2d_BezierCurve>(curv);
-  gp_Pnt2d                        p1(X / D.Zoom(), Y / D.Zoom());
-  double                          Prec = XPrec / D.Zoom();
+  gp_Pnt2d                   p1(X / D.Zoom(), Y / D.Zoom());
+  double              Prec = XPrec / D.Zoom();
   Index++;
-  int      NbPoles = bz->NbPoles();
-  gp_Pnt   P;
-  gp_Pnt2d P2d;
+  int NbPoles = bz->NbPoles();
+  gp_Pnt           P;
+  gp_Pnt2d         P2d;
   while (Index <= NbPoles)
   {
     P2d = bz->Pole(Index);
@@ -104,14 +105,13 @@ occ::handle<Draw_Drawable3D> DrawTrSurf_BezierCurve2d::Copy() const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_BezierCurve2d::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params&        aParams = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&   aParams = DrawTrSurf::Parameters();
   occ::handle<Geom2d_BezierCurve> aGeomCurve =
     occ::down_cast<Geom2d_BezierCurve>(GeomTools_Curve2dSet::ReadCurve2d(theStream));
-  occ::handle<DrawTrSurf_BezierCurve2d> aDrawCurve =
-    new DrawTrSurf_BezierCurve2d(aGeomCurve,
-                                 aParams.CurvColor,
-                                 aParams.PolesColor,
-                                 aParams.IsShowPoles,
-                                 aParams.Discret);
+  occ::handle<DrawTrSurf_BezierCurve2d> aDrawCurve = new DrawTrSurf_BezierCurve2d(aGeomCurve,
+                                                                             aParams.CurvColor,
+                                                                             aParams.PolesColor,
+                                                                             aParams.IsShowPoles,
+                                                                             aParams.Discret);
   return aDrawCurve;
 }

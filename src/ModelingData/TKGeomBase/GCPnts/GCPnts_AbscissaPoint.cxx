@@ -68,10 +68,10 @@ static GCPnts_AbscissaType computeType(const TheCurve& theC, double& theRatio)
 template <class TheCurve>
 static void Compute(CPnts_AbscissaPoint& theComputer,
                     const TheCurve&      theC,
-                    double&              theAbscis,
-                    double&              theU0,
-                    double&              theUi,
-                    const double         theEPSILON)
+                    double&       theAbscis,
+                    double&       theU0,
+                    double&       theUi,
+                    const double  theEPSILON)
 {
   // test for easy solution
   if (std::abs(theAbscis) <= Precision::Confusion())
@@ -80,7 +80,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
     return;
   }
 
-  double                    aRatio = 1.0;
+  double             aRatio = 1.0;
   const GCPnts_AbscissaType aType  = computeType(theC, aRatio);
   switch (aType)
   {
@@ -94,11 +94,11 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
       return;
     }
     case GCPnts_AbsComposite: {
-      const int                  aNbIntervals = theC.NbIntervals(GeomAbs_CN);
-      NCollection_Array1<double> aTI(1, aNbIntervals + 1);
+      const int aNbIntervals = theC.NbIntervals(GeomAbs_CN);
+      NCollection_Array1<double>   aTI(1, aNbIntervals + 1);
       theC.Intervals(aTI, GeomAbs_CN);
-      double aL = 0.0, aSign = 1.0;
-      int    anIndex = 1;
+      double    aL = 0.0, aSign = 1.0;
+      int anIndex = 1;
       BSplCLib::Hunt(aTI, theU0, anIndex);
       int aDirection = 1;
       if (theAbscis < 0)
@@ -165,12 +165,12 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
 template <class TheCurve>
 static void AdvCompute(CPnts_AbscissaPoint& theComputer,
                        const TheCurve&      theC,
-                       double&              theAbscis,
-                       double&              theU0,
-                       double&              theUi,
-                       const double         theEPSILON)
+                       double&       theAbscis,
+                       double&       theU0,
+                       double&       theUi,
+                       const double  theEPSILON)
 {
-  double                    aRatio = 1.0;
+  double             aRatio = 1.0;
   const GCPnts_AbscissaType aType  = computeType(theC, aRatio);
   switch (aType)
   {
@@ -185,11 +185,11 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
       return;
     }
     case GCPnts_AbsComposite: {
-      const int                  aNbIntervals = theC.NbIntervals(GeomAbs_CN);
-      NCollection_Array1<double> aTI(1, aNbIntervals + 1);
+      const int aNbIntervals = theC.NbIntervals(GeomAbs_CN);
+      NCollection_Array1<double>   aTI(1, aNbIntervals + 1);
       theC.Intervals(aTI, GeomAbs_CN);
-      double aL = 0.0, aSign = 1.0;
-      int    anIndex = 1;
+      double    aL = 0.0, aSign = 1.0;
+      int anIndex = 1;
       BSplCLib::Hunt(aTI, theU0, anIndex);
 
       int aDirection = 1;
@@ -272,8 +272,8 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
 
       // Push a little bit outside the limits (hairy !!!)
       const bool isNonPeriodic = !theC.IsPeriodic();
-      theUi                    = theU0 + aSign * 0.1;
-      double aU1               = theU0 + aSign * 0.2;
+      theUi                                = theU0 + aSign * 0.1;
+      double aU1                    = theU0 + aSign * 0.2;
       if (isNonPeriodic)
       {
         if (aSign > 0)
@@ -326,7 +326,8 @@ double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC, const double th
 
 //=================================================================================================
 
-double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC, const double theTol)
+double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
+                                           const double      theTol)
 {
   return GCPnts_AbscissaPoint::Length(theC, theC.FirstParameter(), theC.LastParameter(), theTol);
 }
@@ -334,8 +335,8 @@ double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC, const double 
 //=================================================================================================
 
 double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC,
-                                    const double           theU1,
-                                    const double           theU2)
+                                           const double    theU1,
+                                           const double    theU2)
 {
   return length(theC, theU1, theU2, NULL);
 }
@@ -343,8 +344,8 @@ double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
-                                    const double             theU1,
-                                    const double             theU2)
+                                           const double      theU1,
+                                           const double      theU2)
 {
   return length(theC, theU1, theU2, NULL);
 }
@@ -352,9 +353,9 @@ double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
 //=================================================================================================
 
 double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC,
-                                    const double           theU1,
-                                    const double           theU2,
-                                    const double           theTol)
+                                           const double    theU1,
+                                           const double    theU2,
+                                           const double    theTol)
 {
   return length(theC, theU1, theU2, &theTol);
 }
@@ -362,9 +363,9 @@ double GCPnts_AbscissaPoint::Length(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
-                                    const double             theU1,
-                                    const double             theU2,
-                                    const double             theTol)
+                                           const double      theU1,
+                                           const double      theU2,
+                                           const double      theTol)
 {
   return length(theC, theU1, theU2, &theTol);
 }
@@ -372,12 +373,12 @@ double GCPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& theC,
 //=================================================================================================
 
 template <class TheCurve>
-double GCPnts_AbscissaPoint::length(const TheCurve& theC,
-                                    const double    theU1,
-                                    const double    theU2,
-                                    const double*   theTol)
+double GCPnts_AbscissaPoint::length(const TheCurve&      theC,
+                                           const double  theU1,
+                                           const double  theU2,
+                                           const double* theTol)
 {
-  double                    aRatio = 1.0;
+  double             aRatio = 1.0;
   const GCPnts_AbscissaType aType  = computeType(theC, aRatio);
   switch (aType)
   {
@@ -389,8 +390,8 @@ double GCPnts_AbscissaPoint::length(const TheCurve& theC,
                             : CPnts_AbscissaPoint::Length(theC, theU1, theU2);
     }
     case GCPnts_AbsComposite: {
-      const int                  aNbIntervals = theC.NbIntervals(GeomAbs_CN);
-      NCollection_Array1<double> aTI(1, aNbIntervals + 1);
+      const int aNbIntervals = theC.NbIntervals(GeomAbs_CN);
+      NCollection_Array1<double>   aTI(1, aNbIntervals + 1);
       theC.Intervals(aTI, GeomAbs_CN);
       const double aUU1 = std::min(theU1, theU2);
       const double aUU2 = std::max(theU1, theU2);
@@ -428,9 +429,9 @@ double GCPnts_AbscissaPoint::length(const TheCurve& theC,
 //=================================================================================================
 
 template <class TheCurve>
-void GCPnts_AbscissaPoint::compute(const TheCurve& theC,
-                                   const double    theAbscissa,
-                                   const double    theU0)
+void GCPnts_AbscissaPoint::compute(const TheCurve&     theC,
+                                   const double theAbscissa,
+                                   const double theU0)
 {
   const double aL = GCPnts_AbscissaPoint::Length(theC);
   if (aL < Precision::Confusion())
@@ -447,8 +448,8 @@ void GCPnts_AbscissaPoint::compute(const TheCurve& theC,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
-                                           const double           theAbscissa,
-                                           const double           theU0)
+                                           const double    theAbscissa,
+                                           const double    theU0)
 {
   compute(theC, theAbscissa, theU0);
 }
@@ -456,8 +457,8 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& theC,
-                                           const double             theAbscissa,
-                                           const double             theU0)
+                                           const double      theAbscissa,
+                                           const double      theU0)
 {
   compute(theC, theAbscissa, theU0);
 }
@@ -465,10 +466,10 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& theC,
 //=================================================================================================
 
 template <class TheCurve>
-void GCPnts_AbscissaPoint::advCompute(const double    theTol,
-                                      const TheCurve& theC,
-                                      const double    theAbscissa,
-                                      const double    theU0)
+void GCPnts_AbscissaPoint::advCompute(const double theTol,
+                                      const TheCurve&     theC,
+                                      const double theAbscissa,
+                                      const double theU0)
 {
   const double aL = GCPnts_AbscissaPoint::Length(theC, theTol);
   /*if (aL < Precision::Confusion())
@@ -491,20 +492,20 @@ void GCPnts_AbscissaPoint::advCompute(const double    theTol,
 
 //=================================================================================================
 
-GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const double           theTol,
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const double    theTol,
                                            const Adaptor3d_Curve& theC,
-                                           const double           theAbscissa,
-                                           const double           theU0)
+                                           const double    theAbscissa,
+                                           const double    theU0)
 {
   advCompute(theTol, theC, theAbscissa, theU0);
 }
 
 //=================================================================================================
 
-GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const double             theTol,
+GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const double      theTol,
                                            const Adaptor2d_Curve2d& theC,
-                                           const double             theAbscissa,
-                                           const double             theU0)
+                                           const double      theAbscissa,
+                                           const double      theU0)
 {
   advCompute(theTol, theC, theAbscissa, theU0);
 }
@@ -512,9 +513,9 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const double             theTol,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
-                                           const double           theAbscissa,
-                                           const double           theU0,
-                                           const double           theUi)
+                                           const double    theAbscissa,
+                                           const double    theU0,
+                                           const double    theUi)
 {
   double anAbscis = theAbscissa, aUU0 = theU0, aUUi = theUi;
   Compute(myComputer, theC, anAbscis, aUU0, aUUi, theC.Resolution(Precision::Confusion()));
@@ -523,9 +524,9 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& theC,
-                                           const double             theAbscissa,
-                                           const double             theU0,
-                                           const double             theUi)
+                                           const double      theAbscissa,
+                                           const double      theU0,
+                                           const double      theUi)
 {
   double anAbscis = theAbscissa, aUU0 = theU0, aUUi = theUi;
   Compute(myComputer, theC, anAbscis, aUU0, aUUi, theC.Resolution(Precision::Confusion()));
@@ -534,10 +535,10 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& theC,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
-                                           const double           theAbscissa,
-                                           const double           theU0,
-                                           const double           theUi,
-                                           const double           theTol)
+                                           const double    theAbscissa,
+                                           const double    theU0,
+                                           const double    theUi,
+                                           const double    theTol)
 {
   double anAbscis = theAbscissa, aUU0 = theU0, aUUi = theUi;
   AdvCompute(myComputer, theC, anAbscis, aUU0, aUUi, theTol);
@@ -546,10 +547,10 @@ GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 GCPnts_AbscissaPoint::GCPnts_AbscissaPoint(const Adaptor2d_Curve2d& theC,
-                                           const double             theAbscissa,
-                                           const double             theU0,
-                                           const double             theUi,
-                                           const double             theTol)
+                                           const double      theAbscissa,
+                                           const double      theU0,
+                                           const double      theUi,
+                                           const double      theTol)
 {
   double anAbscis = theAbscissa, aUU0 = theU0, aUUi = theUi;
   AdvCompute(myComputer, theC, anAbscis, aUU0, aUUi, theTol);

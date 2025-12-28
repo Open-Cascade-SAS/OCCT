@@ -30,6 +30,7 @@
 #include <ProjLib.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 
@@ -172,7 +173,7 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
   if (myType == GeomAbs_Line)
   {
     // compute the values for a line
-    gp_Lin L;
+    gp_Lin        L;
     double l3d = 1.; // length of the 3d bezier curve
     if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_Line)
     {
@@ -196,7 +197,7 @@ double HLRBRep_Curve::Update(double TotMin[16], double TotMax[16])
       gp_Vec2d VFX;
       D1(0., F, VFX);
       VFX.Normalize();
-      myVX     = (VFX.X() * V.X() + VFX.Y() * V.Y()) * l3d;
+      myVX            = (VFX.X() * V.X() + VFX.Y() * V.Y()) * l3d;
       double l = -(VFX.X() * F.X() + VFX.Y() * F.Y());
       F.SetCoord(F.X() + VFX.X() * l, F.Y() + VFX.Y() * l);
       myOX = VFX.X() * (P.X() - F.X()) + VFX.Y() * (P.Y() - F.Y());
@@ -225,12 +226,12 @@ double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
 
   if (myType != GeomAbs_Line)
   {
-    int    nbPnt = 30;
-    int    i;
-    double step = (b - a) / (nbPnt + 1);
-    double xa, ya, za, xb = 0., yb = 0., zb = 0.;
-    double dx1, dy1, dz1, dd1;
-    double dx2, dy2, dz2, dd2;
+    int nbPnt = 30;
+    int i;
+    double    step = (b - a) / (nbPnt + 1);
+    double    xa, ya, za, xb = 0., yb = 0., zb = 0.;
+    double    dx1, dy1, dz1, dd1;
+    double    dx2, dy2, dz2, dd2;
 
     for (i = 1; i <= nbPnt; i++)
     {
@@ -258,10 +259,10 @@ double HLRBRep_Curve::UpdateMinMax(double TotMin[16], double TotMax[16])
           if (dd2 > 0)
           {
             double p = (dx1 * dx2 + dy1 * dy2 + dz1 * dz2) / (dd1 * dd2);
-            dx1      = xa + p * dx1 - xb;
-            dy1      = ya + p * dy1 - yb;
-            dz1      = za + p * dz1 - zb;
-            dd1      = sqrt(dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
+            dx1             = xa + p * dx1 - xb;
+            dy1             = ya + p * dy1 - yb;
+            dz1             = za + p * dz1 - zb;
+            dd1             = sqrt(dx1 * dx1 + dy1 * dy1 + dz1 * dz1);
             if (dd1 > tolMinMax)
               tolMinMax = dd1;
           }
@@ -289,7 +290,7 @@ double HLRBRep_Curve::Z(const double U) const
 void HLRBRep_Curve::Tangent(const bool AtStart, gp_Pnt2d& P, gp_Dir2d& D) const
 {
   double U = AtStart ? HLRBRep_BCurveTool::FirstParameter(myCurve)
-                     : HLRBRep_BCurveTool::LastParameter(myCurve);
+                            : HLRBRep_BCurveTool::LastParameter(myCurve);
 
   D0(U, P);
   HLRBRep_CLProps      CLP(2, Epsilon(1.));
@@ -435,7 +436,7 @@ gp_Elips2d HLRBRep_Curve::Ellipse() const
   const gp_Dir& D1  = C.Axis().Direction();
   const gp_Dir& D3  = D1.Crossed(gp::DZ());
   const gp_Dir& D2  = D1.Crossed(D3);
-  double        rap = sqrt(D2.X() * D2.X() + D2.Y() * D2.Y());
+  double rap = sqrt(D2.X() * D2.X() + D2.Y() * D2.Y());
   gp_Dir2d      d(D1.Y(), -D1.X());
   gp_Pnt2d      p(C.Location().X(), C.Location().Y());
   gp_Elips2d    El(gp_Ax2d(p, d), C.Radius(), C.Radius() * rap);
@@ -462,8 +463,8 @@ gp_Parab2d HLRBRep_Curve::Parabola() const
 
 void HLRBRep_Curve::Poles(NCollection_Array1<gp_Pnt2d>& TP) const
 {
-  int                        i1 = TP.Lower();
-  int                        i2 = TP.Upper();
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
   NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::Poles(myCurve,TP3);
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
@@ -483,11 +484,10 @@ void HLRBRep_Curve::Poles(NCollection_Array1<gp_Pnt2d>& TP) const
 
 //=================================================================================================
 
-void HLRBRep_Curve::Poles(const occ::handle<Geom_BSplineCurve>& aCurve,
-                          NCollection_Array1<gp_Pnt2d>&         TP) const
+void HLRBRep_Curve::Poles(const occ::handle<Geom_BSplineCurve>& aCurve, NCollection_Array1<gp_Pnt2d>& TP) const
 {
-  int                        i1 = TP.Lower();
-  int                        i2 = TP.Upper();
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
   NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::Poles(myCurve,TP3);
   aCurve->Poles(TP3);
@@ -501,11 +501,10 @@ void HLRBRep_Curve::Poles(const occ::handle<Geom_BSplineCurve>& aCurve,
 
 //=================================================================================================
 
-void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
-                                    NCollection_Array1<double>&   TW) const
+void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP, NCollection_Array1<double>& TW) const
 {
-  int                        i1 = TP.Lower();
-  int                        i2 = TP.Upper();
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
   NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
 
@@ -533,11 +532,11 @@ void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
 //=================================================================================================
 
 void HLRBRep_Curve::PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve,
-                                    NCollection_Array1<gp_Pnt2d>&         TP,
-                                    NCollection_Array1<double>&           TW) const
+                                    NCollection_Array1<gp_Pnt2d>&            TP,
+                                    NCollection_Array1<double>&            TW) const
 {
-  int                        i1 = TP.Lower();
-  int                        i2 = TP.Upper();
+  int   i1 = TP.Lower();
+  int   i2 = TP.Upper();
   NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
 

@@ -57,9 +57,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESGraph_GeneralModule::IGESGraph_GeneralModule() {}
 
-void IGESGraph_GeneralModule::OwnSharedCase(const int                               CN,
+void IGESGraph_GeneralModule::OwnSharedCase(const int             CN,
                                             const occ::handle<IGESData_IGESEntity>& ent,
-                                            Interface_EntityIterator&               iter) const
+                                            Interface_EntityIterator&          iter) const
 {
   switch (CN)
   {
@@ -181,7 +181,7 @@ void IGESGraph_GeneralModule::OwnSharedCase(const int                           
 }
 
 IGESData_DirChecker IGESGraph_GeneralModule::DirChecker(
-  const int                               CN,
+  const int             CN,
   const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
@@ -290,9 +290,9 @@ IGESData_DirChecker IGESGraph_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESGraph_GeneralModule::OwnCheckCase(const int                               CN,
+void IGESGraph_GeneralModule::OwnCheckCase(const int             CN,
                                            const occ::handle<IGESData_IGESEntity>& ent,
-                                           const Interface_ShareTool&              shares,
+                                           const Interface_ShareTool&         shares,
                                            occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
@@ -414,7 +414,8 @@ void IGESGraph_GeneralModule::OwnCheckCase(const int                            
   }
 }
 
-bool IGESGraph_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
+bool IGESGraph_GeneralModule::NewVoid(const int      CN,
+                                                  occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -466,10 +467,10 @@ bool IGESGraph_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transie
   return true;
 }
 
-void IGESGraph_GeneralModule::OwnCopyCase(const int                               CN,
+void IGESGraph_GeneralModule::OwnCopyCase(const int             CN,
                                           const occ::handle<IGESData_IGESEntity>& entfrom,
                                           const occ::handle<IGESData_IGESEntity>& entto,
-                                          Interface_CopyTool&                     TC) const
+                                          Interface_CopyTool&                TC) const
 {
   switch (CN)
   {
@@ -577,8 +578,8 @@ void IGESGraph_GeneralModule::OwnCopyCase(const int                             
 }
 
 int IGESGraph_GeneralModule::CategoryNumber(const int /*CN*/,
-                                            const occ::handle<Standard_Transient>&,
-                                            const Interface_ShareTool&) const
+                                                         const occ::handle<Standard_Transient>&,
+                                                         const Interface_ShareTool&) const
 {
   return Interface_Category::Number("Drawing");
 }

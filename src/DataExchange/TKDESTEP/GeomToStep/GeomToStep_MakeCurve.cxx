@@ -48,19 +48,19 @@
 // Creation d' une Curve de prostep a partir d' une Curve de Geom
 //=============================================================================
 GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom_Curve>& C,
-                                           const StepData_Factors&        theLocalFactors)
+                                           const StepData_Factors&   theLocalFactors)
 {
   done = true;
   if (C->IsKind(STANDARD_TYPE(Geom_Line)))
   {
-    occ::handle<Geom_Line> L = occ::down_cast<Geom_Line>(C);
-    GeomToStep_MakeLine    MkLine(L, theLocalFactors);
+    occ::handle<Geom_Line>   L = occ::down_cast<Geom_Line>(C);
+    GeomToStep_MakeLine MkLine(L, theLocalFactors);
     theCurve = MkLine.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_Conic)))
   {
-    occ::handle<Geom_Conic> L = occ::down_cast<Geom_Conic>(C);
-    GeomToStep_MakeConic    MkConic(L, theLocalFactors);
+    occ::handle<Geom_Conic>   L = occ::down_cast<Geom_Conic>(C);
+    GeomToStep_MakeConic MkConic(L, theLocalFactors);
     theCurve = MkConic.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
@@ -93,8 +93,8 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom_Curve>& C,
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_BoundedCurve)))
   {
-    occ::handle<Geom_BoundedCurve> L = occ::down_cast<Geom_BoundedCurve>(C);
-    GeomToStep_MakeBoundedCurve    MkBoundedC(L, theLocalFactors);
+    occ::handle<Geom_BoundedCurve>   L = occ::down_cast<Geom_BoundedCurve>(C);
+    GeomToStep_MakeBoundedCurve MkBoundedC(L, theLocalFactors);
     theCurve = MkBoundedC.Value();
   }
   else
@@ -106,13 +106,13 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom_Curve>& C,
 //=============================================================================
 
 GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom2d_Curve>& C,
-                                           const StepData_Factors&          theLocalFactors)
+                                           const StepData_Factors&     theLocalFactors)
 {
   done = true;
   if (C->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
     occ::handle<Geom2d_Line> L = occ::down_cast<Geom2d_Line>(C);
-    GeomToStep_MakeLine      MkLine(L, theLocalFactors);
+    GeomToStep_MakeLine MkLine(L, theLocalFactors);
     theCurve = MkLine.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_Conic)))
@@ -127,58 +127,56 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve(const occ::handle<Geom2d_Curve>& C,
     if (C->IsKind(STANDARD_TYPE(Geom2d_Circle)))
     {
       occ::handle<Geom2d_Circle> theC2d = occ::down_cast<Geom2d_Circle>(C);
-      gp_Circ2d                  C2d    = theC2d->Circ2d();
+      gp_Circ2d             C2d    = theC2d->Circ2d();
       if (!C2d.IsDirect())
       {
 #ifdef OCCT_DEBUG
         std::cout << "Warning : Circle converted to BSpline." << std::endl;
 #endif
-        occ::handle<Geom2d_BSplineCurve> aBSplineCurve2d =
-          Geom2dConvert::CurveToBSplineCurve(theC2d);
-        const occ::handle<Geom2d_BoundedCurve>& aBC2d = aBSplineCurve2d; // to avoid ambiguity
-        GeomToStep_MakeBoundedCurve             MkBoundedC(aBC2d, theLocalFactors);
+        occ::handle<Geom2d_BSplineCurve> aBSplineCurve2d = Geom2dConvert::CurveToBSplineCurve(theC2d);
+        const occ::handle<Geom2d_BoundedCurve>& aBC2d    = aBSplineCurve2d; // to avoid ambiguity
+        GeomToStep_MakeBoundedCurve        MkBoundedC(aBC2d, theLocalFactors);
         theCurve = MkBoundedC.Value();
       }
       else
       {
         occ::handle<Geom2d_Conic> L = occ::down_cast<Geom2d_Conic>(C);
-        GeomToStep_MakeConic      MkConic(L, theLocalFactors);
+        GeomToStep_MakeConic MkConic(L, theLocalFactors);
         theCurve = MkConic.Value();
       }
     }
     else if (C->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
     {
       occ::handle<Geom2d_Ellipse> theE2d = occ::down_cast<Geom2d_Ellipse>(C);
-      gp_Elips2d                  E2d    = theE2d->Elips2d();
+      gp_Elips2d             E2d    = theE2d->Elips2d();
       if (!E2d.IsDirect())
       {
 #ifdef OCCT_DEBUG
         std::cout << "Warning : Ellipse converted to BSpline." << std::endl;
 #endif
-        occ::handle<Geom2d_BSplineCurve> aBSplineCurve2d =
-          Geom2dConvert::CurveToBSplineCurve(theE2d);
-        const occ::handle<Geom2d_BoundedCurve>& aBC2d = aBSplineCurve2d; // to avoid ambiguity
-        GeomToStep_MakeBoundedCurve             MkBoundedC(aBC2d, theLocalFactors);
+        occ::handle<Geom2d_BSplineCurve> aBSplineCurve2d = Geom2dConvert::CurveToBSplineCurve(theE2d);
+        const occ::handle<Geom2d_BoundedCurve>& aBC2d    = aBSplineCurve2d; // to avoid ambiguity
+        GeomToStep_MakeBoundedCurve        MkBoundedC(aBC2d, theLocalFactors);
         theCurve = MkBoundedC.Value();
       }
       else
       {
         occ::handle<Geom2d_Conic> L = occ::down_cast<Geom2d_Conic>(C);
-        GeomToStep_MakeConic      MkConic(L, theLocalFactors);
+        GeomToStep_MakeConic MkConic(L, theLocalFactors);
         theCurve = MkConic.Value();
       }
     }
     else
     {
       occ::handle<Geom2d_Conic> L = occ::down_cast<Geom2d_Conic>(C);
-      GeomToStep_MakeConic      MkConic(L, theLocalFactors);
+      GeomToStep_MakeConic MkConic(L, theLocalFactors);
       theCurve = MkConic.Value();
     }
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_BoundedCurve)))
   {
     occ::handle<Geom2d_BoundedCurve> L = occ::down_cast<Geom2d_BoundedCurve>(C);
-    GeomToStep_MakeBoundedCurve      MkBoundedC(L, theLocalFactors);
+    GeomToStep_MakeBoundedCurve MkBoundedC(L, theLocalFactors);
     theCurve = MkBoundedC.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))

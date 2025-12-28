@@ -36,14 +36,18 @@ public:
   Standard_EXPORT Geom_VectorWithMagnitude(const gp_Vec& V);
 
   //! Creates a vector with three cartesian coordinates.
-  Standard_EXPORT Geom_VectorWithMagnitude(const double X, const double Y, const double Z);
+  Standard_EXPORT Geom_VectorWithMagnitude(const double X,
+                                           const double Y,
+                                           const double Z);
 
   //! Creates a vector from the point P1 to the point P2.
   //! The magnitude of the vector is the distance between P1 and P2
   Standard_EXPORT Geom_VectorWithMagnitude(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Assigns the values X, Y and Z to the coordinates of this vector.
-  Standard_EXPORT void SetCoord(const double X, const double Y, const double Z);
+  Standard_EXPORT void SetCoord(const double X,
+                                const double Y,
+                                const double Z);
 
   //! Converts the gp_Vec vector V into this vector.
   Standard_EXPORT void SetVec(const gp_Vec& V);
@@ -76,8 +80,8 @@ public:
 
   //! Computes the cross product between <me> and Other
   //! <me> ^ Other. A new vector is returned.
-  Standard_EXPORT occ::handle<Geom_Vector> Crossed(
-    const occ::handle<Geom_Vector>& Other) const override;
+  Standard_EXPORT occ::handle<Geom_Vector> Crossed(const occ::handle<Geom_Vector>& Other) const
+    override;
 
   //! Computes the triple vector product <me> ^ (V1 ^ V2).
   Standard_EXPORT void CrossCross(const occ::handle<Geom_Vector>& V1,
@@ -85,9 +89,9 @@ public:
 
   //! Computes the triple vector product <me> ^ (V1 ^ V2).
   //! A new vector is returned.
-  Standard_EXPORT occ::handle<Geom_Vector> CrossCrossed(
-    const occ::handle<Geom_Vector>& V1,
-    const occ::handle<Geom_Vector>& V2) const override;
+  Standard_EXPORT occ::handle<Geom_Vector> CrossCrossed(const occ::handle<Geom_Vector>& V1,
+                                                   const occ::handle<Geom_Vector>& V2) const
+    override;
 
   //! Divides <me> by a scalar.
   Standard_EXPORT void Divide(const double Scalar);
@@ -130,6 +134,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_VectorWithMagnitude, Geom_Vector)
+
 };
 
 #endif // _Geom_VectorWithMagnitude_HeaderFile

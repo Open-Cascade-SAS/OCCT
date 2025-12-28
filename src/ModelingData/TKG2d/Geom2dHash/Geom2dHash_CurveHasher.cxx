@@ -37,8 +37,7 @@
 
 //=================================================================================================
 
-std::size_t Geom2dHash_CurveHasher::operator()(
-  const occ::handle<Geom2d_Curve>& theCurve) const noexcept
+std::size_t Geom2dHash_CurveHasher::operator()(const occ::handle<Geom2d_Curve>& theCurve) const noexcept
 {
   if (theCurve.IsNull())
   {
@@ -135,11 +134,13 @@ bool Geom2dHash_CurveHasher::operator()(const occ::handle<Geom2d_Curve>& theCurv
   }
   if (occ::handle<Geom2d_BSplineCurve> aBSpl1 = occ::down_cast<Geom2d_BSplineCurve>(theCurve1))
   {
-    return Geom2dHash_BSplineCurveHasher{}(aBSpl1, occ::down_cast<Geom2d_BSplineCurve>(theCurve2));
+    return Geom2dHash_BSplineCurveHasher{}(aBSpl1,
+                                           occ::down_cast<Geom2d_BSplineCurve>(theCurve2));
   }
   if (occ::handle<Geom2d_TrimmedCurve> aTrim1 = occ::down_cast<Geom2d_TrimmedCurve>(theCurve1))
   {
-    return Geom2dHash_TrimmedCurveHasher{}(aTrim1, occ::down_cast<Geom2d_TrimmedCurve>(theCurve2));
+    return Geom2dHash_TrimmedCurveHasher{}(aTrim1,
+                                           occ::down_cast<Geom2d_TrimmedCurve>(theCurve2));
   }
   if (occ::handle<Geom2d_OffsetCurve> aOff1 = occ::down_cast<Geom2d_OffsetCurve>(theCurve1))
   {

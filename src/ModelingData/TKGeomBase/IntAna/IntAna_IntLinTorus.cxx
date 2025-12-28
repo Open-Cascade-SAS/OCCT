@@ -47,9 +47,9 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
 
   // Reparametrize the line:
   // set its location as nearest to the location of torus
-  gp_Pnt TorLoc       = T.Location();
+  gp_Pnt        TorLoc       = T.Location();
   double ParamOfNewPL = gp_Vec(PL, TorLoc).Dot(gp_Vec(DL));
-  gp_Pnt NewPL(PL.XYZ() + ParamOfNewPL * DL.XYZ());
+  gp_Pnt        NewPL(PL.XYZ() + ParamOfNewPL * DL.XYZ());
 
   //--------------------------------------------------------------
   //-- Coefficients de la ligne dans le repere du cone
@@ -84,7 +84,7 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
   a1 = 2.0 * b * c + 8.0 * R2 * z1 * z0;
   a0 = c * c + 4.0 * R2 * (z0 * z0 - r2);
 
-  double                     u, v;
+  double              u, v;
   math_DirectPolynomialRoots mdpr(a4, a3, a2, a1, a0);
   if (mdpr.IsDone())
   {

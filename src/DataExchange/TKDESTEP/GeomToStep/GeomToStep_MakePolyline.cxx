@@ -21,6 +21,9 @@
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
 #include <StepGeom_Polyline.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -28,7 +31,7 @@
 // Creation d' une polyline Step a partir d' une Array1OfPnt
 //=============================================================================
 GeomToStep_MakePolyline::GeomToStep_MakePolyline(const NCollection_Array1<gp_Pnt>& P,
-                                                 const StepData_Factors&           theLocalFactors)
+                                                 const StepData_Factors&   theLocalFactors)
 {
   gp_Pnt P1;
 #include "GeomToStep_MakePolyline_gen.pxx"
@@ -39,9 +42,10 @@ GeomToStep_MakePolyline::GeomToStep_MakePolyline(const NCollection_Array1<gp_Pnt
 //=============================================================================
 
 GeomToStep_MakePolyline::GeomToStep_MakePolyline(const NCollection_Array1<gp_Pnt2d>& P,
-                                                 const StepData_Factors& theLocalFactors)
+                                                 const StepData_Factors&     theLocalFactors)
 {
   gp_Pnt2d P1;
+#include "GeomToStep_MakePolyline_gen.pxx"
 }
 
 //=============================================================================

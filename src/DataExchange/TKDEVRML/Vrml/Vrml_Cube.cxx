@@ -13,7 +13,9 @@
 
 #include <Vrml_Cube.hxx>
 
-Vrml_Cube::Vrml_Cube(const double aWidth, const double aHeight, const double aDepth)
+Vrml_Cube::Vrml_Cube(const double aWidth,
+                     const double aHeight,
+                     const double aDepth)
 {
   myWidth  = aWidth;
   myHeight = aHeight;

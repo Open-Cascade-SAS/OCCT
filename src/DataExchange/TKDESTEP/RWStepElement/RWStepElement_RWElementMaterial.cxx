@@ -24,6 +24,7 @@
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepRepr_MaterialPropertyRepresentation.hxx>
 
 //=================================================================================================
 
@@ -31,11 +32,10 @@ RWStepElement_RWElementMaterial::RWStepElement_RWElementMaterial() {}
 
 //=================================================================================================
 
-void RWStepElement_RWElementMaterial::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepElement_ElementMaterial>& ent) const
+void RWStepElement_RWElementMaterial::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepElement_ElementMaterial>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "element_material"))
@@ -49,14 +49,12 @@ void RWStepElement_RWElementMaterial::ReadStep(
   occ::handle<TCollection_HAsciiString> aDescription;
   data->ReadString(num, 2, "description", ach, aDescription);
 
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>>
-      aProperties;
-  int sub3 = 0;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>> aProperties;
+  int                                         sub3 = 0;
   if (data->ReadSubList(num, 3, "properties", ach, sub3))
   {
-    int nb0 = data->NbParams(sub3);
-    aProperties =
-      new NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>(1, nb0);
+    int nb0  = data->NbParams(sub3);
+    aProperties           = new NCollection_HArray1<occ::handle<StepRepr_MaterialPropertyRepresentation>>(1, nb0);
     int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -78,7 +76,7 @@ void RWStepElement_RWElementMaterial::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWElementMaterial::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepElement_ElementMaterial>& ent) const
 {
 
@@ -100,7 +98,7 @@ void RWStepElement_RWElementMaterial::WriteStep(
 //=================================================================================================
 
 void RWStepElement_RWElementMaterial::Share(const occ::handle<StepElement_ElementMaterial>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   // Own fields of ElementMaterial

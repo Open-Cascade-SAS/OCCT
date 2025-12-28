@@ -36,18 +36,16 @@ public:
 
   Standard_HIDDEN RWStepVisual_RWTessellatedStructuredItem();
 
-  Standard_HIDDEN void ReadStep(
-    const occ::handle<StepData_StepReaderData>&              theData,
-    const int                                                theNum,
-    occ::handle<Interface_Check>&                            theCheck,
-    const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&              theData,
+                                const int                              theNum,
+                                occ::handle<Interface_Check>&                            theCheck,
+                                const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                     theSW,
-    const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                theSW,
+                                 const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepVisual_TessellatedStructuredItem>& theEnt,
-                             Interface_EntityIterator& theIter) const;
+                             Interface_EntityIterator&                           theIter) const;
 };
 
 #endif // _RWStepVisual_RWTessellatedStructuredItem_HeaderFile_

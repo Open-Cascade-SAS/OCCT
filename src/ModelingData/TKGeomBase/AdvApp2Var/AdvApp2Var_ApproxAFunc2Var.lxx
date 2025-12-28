@@ -43,7 +43,8 @@ inline int AdvApp2Var_ApproxAFunc2Var::VDegree() const
   return myDegreeInV;
 }
 
-inline int AdvApp2Var_ApproxAFunc2Var::NumSubSpaces(const int Dimension) const
+inline int AdvApp2Var_ApproxAFunc2Var::NumSubSpaces(
+  const int Dimension) const
 {
   return myNumSubSpaces[Dimension - 1];
 }

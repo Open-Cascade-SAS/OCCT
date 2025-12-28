@@ -28,6 +28,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
@@ -41,10 +43,10 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
   myLFrom.Clear();
   myLTo.Clear();
 
-  TopExp_Explorer            expf, expt;
+  TopExp_Explorer       expf, expt;
   occ::handle<Geom_Curve>    Cf, Ct;
-  TopLoc_Location            Loc;
-  double                     ff, lf, ft, lt;
+  TopLoc_Location       Loc;
+  double         ff, lf, ft, lt;
   occ::handle<Standard_Type> Tf, Tt;
 
   for (expf.Init(myFFrom, TopAbs_EDGE); expf.More(); expf.Next())
@@ -54,7 +56,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
     if (!Loc.IsIdentity())
     {
       occ::handle<Geom_Geometry> GGf = Cf->Transformed(Loc.Transformation());
-      Cf                             = occ::down_cast<Geom_Curve>(GGf);
+      Cf                        = occ::down_cast<Geom_Curve>(GGf);
     }
     Tf = Cf->DynamicType();
     if (Tf == STANDARD_TYPE(Geom_TrimmedCurve))
@@ -75,7 +77,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       if (!Loc.IsIdentity())
       {
         occ::handle<Geom_Geometry> GGt = Ct->Transformed(Loc.Transformation());
-        Ct                             = occ::down_cast<Geom_Curve>(GGt);
+        Ct                        = occ::down_cast<Geom_Curve>(GGt);
       }
       Tt = Ct->DynamicType();
       if (Tt == STANDARD_TYPE(Geom_TrimmedCurve))
@@ -91,10 +93,10 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
       double Tol = Precision::Confusion();
       if (Tt == STANDARD_TYPE(Geom_Line))
       {
-        gp_Lin lif  = occ::down_cast<Geom_Line>(Cf)->Lin();
-        gp_Lin lit  = occ::down_cast<Geom_Line>(Ct)->Lin();
-        gp_Pnt p1   = ElCLib::Value(ff, lif);
-        gp_Pnt p2   = ElCLib::Value(lf, lif);
+        gp_Lin        lif  = occ::down_cast<Geom_Line>(Cf)->Lin();
+        gp_Lin        lit  = occ::down_cast<Geom_Line>(Ct)->Lin();
+        gp_Pnt        p1   = ElCLib::Value(ff, lif);
+        gp_Pnt        p2   = ElCLib::Value(lf, lif);
         double prm1 = ElCLib::Parameter(lit, p1);
         double prm2 = ElCLib::Parameter(lit, p2);
         if (prm1 >= ft - Tol && prm1 <= lt + Tol && prm2 >= ft - Tol && prm2 <= lt + Tol)
@@ -190,7 +192,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
           p2 = ElCLib::Value(lf, cif);
 
           double prm1 = ElCLib::Parameter(cit, p1);
-          prm1        = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
+          prm1               = ElCLib::InPeriod(prm1, ft, ft + 2. * M_PI);
           ElCLib::D1(prm1, cit, p1, tgt);
 
           double prm2 = ElCLib::Parameter(cit, p2);

@@ -21,11 +21,10 @@
 
 RWStepShape_RWRevolvedFaceSolid::RWStepShape_RWRevolvedFaceSolid() {}
 
-void RWStepShape_RWRevolvedFaceSolid::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepShape_RevolvedFaceSolid>& ent) const
+void RWStepShape_RWRevolvedFaceSolid::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_RevolvedFaceSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -63,7 +62,7 @@ void RWStepShape_RWRevolvedFaceSolid::ReadStep(
 }
 
 void RWStepShape_RWRevolvedFaceSolid::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepShape_RevolvedFaceSolid>& ent) const
 {
 
@@ -85,7 +84,7 @@ void RWStepShape_RWRevolvedFaceSolid::WriteStep(
 }
 
 void RWStepShape_RWRevolvedFaceSolid::Share(const occ::handle<StepShape_RevolvedFaceSolid>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->SweptFace());

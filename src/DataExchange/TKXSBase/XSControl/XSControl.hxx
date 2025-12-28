@@ -39,8 +39,7 @@ public:
 
   //! Returns the Vars of a SessionPilot, it is brought by Session
   //! it provides access to external variables
-  Standard_EXPORT static occ::handle<XSControl_Vars> Vars(
-    const occ::handle<IFSelect_SessionPilot>& pilot);
+  Standard_EXPORT static occ::handle<XSControl_Vars> Vars(const occ::handle<IFSelect_SessionPilot>& pilot);
 };
 
 #endif // _XSControl_HeaderFile

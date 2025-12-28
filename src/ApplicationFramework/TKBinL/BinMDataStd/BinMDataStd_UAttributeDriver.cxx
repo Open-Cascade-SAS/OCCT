@@ -39,13 +39,13 @@ occ::handle<TDF_Attribute> BinMDataStd_UAttributeDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         BinObjMgt_RRelocationTable&) const
+bool BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
+                                                     BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataStd_UAttribute> anUAttr = occ::down_cast<TDataStd_UAttribute>(theTarget);
-  Standard_GUID                    aGUID;
-  bool                             ok = theSource >> aGUID;
+  Standard_GUID               aGUID;
+  bool            ok = theSource >> aGUID;
   if (ok)
     anUAttr->SetID(aGUID);
   return ok;
@@ -53,10 +53,9 @@ bool BinMDataStd_UAttributeDriver::Paste(const BinObjMgt_Persistent&       theSo
 
 //=================================================================================================
 
-void BinMDataStd_UAttributeDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_UAttributeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_UAttribute> anUAttr = occ::down_cast<TDataStd_UAttribute>(theSource);
   theTarget << anUAttr->ID();

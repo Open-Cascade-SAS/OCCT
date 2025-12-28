@@ -40,7 +40,8 @@ public:
   //! try to retrieve a NoteBook attribute at <current> label
   //! or in fathers label of <current>. Returns True if
   //! found and set <N>.
-  Standard_EXPORT static bool Find(const TDF_Label& current, occ::handle<TDataStd_NoteBook>& N);
+  Standard_EXPORT static bool Find(const TDF_Label&           current,
+                                               occ::handle<TDataStd_NoteBook>& N);
 
   //! Create an enpty NoteBook attribute, located at
   //! <label>. Raises if <label> has attribute
@@ -55,20 +56,22 @@ public:
   //! Tool to Create an Integer attribute from <value>,
   //! Insert it in a new son label of <me>. The Real
   //! attribute is returned.
-  Standard_EXPORT occ::handle<TDataStd_Real> Append(const double value,
-                                                    const bool   isExported = false);
+  Standard_EXPORT occ::handle<TDataStd_Real> Append(const double    value,
+                                               const bool isExported = false);
 
   //! Tool to Create an Real attribute from <value>, Insert
   //! it in a new son label of <me>. The Integer attribute
   //! is returned.
-  Standard_EXPORT occ::handle<TDataStd_Integer> Append(const int  value,
-                                                       const bool isExported = false);
+  Standard_EXPORT occ::handle<TDataStd_Integer> Append(
+    const int value,
+    const bool isExported = false);
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
+
 };
 
 #endif // _TDataStd_NoteBook_HeaderFile

@@ -62,18 +62,19 @@ public:
   //! to pcurve (if To2d is True) or back (if To2d is False)
   Standard_EXPORT virtual occ::handle<NCollection_HSequence<double>> Perform(
     const occ::handle<NCollection_HSequence<double>>& Params,
-    const bool                                        To2d);
+    const bool                 To2d);
 
   //! Transfers parameter given by sequence Params from 3d curve
   //! to pcurve (if To2d is True) or back (if To2d is False)
-  Standard_EXPORT virtual double Perform(const double Param, const bool To2d);
+  Standard_EXPORT virtual double Perform(const double    Param,
+                                                const bool To2d);
 
   //! Recomputes range of curves from NewEdge.
   //! If Is2d equals True parameters are recomputed by curve2d else by curve3d.
-  Standard_EXPORT virtual void TransferRange(TopoDS_Edge& newEdge,
-                                             const double prevPar,
-                                             const double currPar,
-                                             const bool   To2d);
+  Standard_EXPORT virtual void TransferRange(TopoDS_Edge&           newEdge,
+                                             const double    prevPar,
+                                             const double    currPar,
+                                             const bool To2d);
 
   //! Returns True if 3d curve of edge and pcurve are SameRange
   //! (in default implementation, if myScale == 1 and myShift == 0)
@@ -82,17 +83,17 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeAnalysis_TransferParameters, Standard_Transient)
 
 protected:
-  double      myFirst;
-  double      myLast;
-  TopoDS_Edge myEdge;
-  double      myMaxTolerance;
+  double myFirst;
+  double myLast;
+  TopoDS_Edge   myEdge;
+  double myMaxTolerance;
 
 private:
-  double      myShift;
-  double      myScale;
-  double      myFirst2d;
-  double      myLast2d;
-  TopoDS_Face myFace;
+  double myShift;
+  double myScale;
+  double myFirst2d;
+  double myLast2d;
+  TopoDS_Face   myFace;
 };
 
 #endif // _ShapeAnalysis_TransferParameters_HeaderFile

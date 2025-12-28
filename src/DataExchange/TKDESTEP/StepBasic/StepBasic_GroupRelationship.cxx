@@ -31,7 +31,7 @@ StepBasic_GroupRelationship::StepBasic_GroupRelationship()
 //=================================================================================================
 
 void StepBasic_GroupRelationship::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                       const bool                                   hasDescription,
+                                       const bool                  hasDescription,
                                        const occ::handle<TCollection_HAsciiString>& aDescription,
                                        const occ::handle<StepBasic_Group>&          aRelatingGroup,
                                        const occ::handle<StepBasic_Group>&          aRelatedGroup)
@@ -97,8 +97,7 @@ occ::handle<StepBasic_Group> StepBasic_GroupRelationship::RelatingGroup() const
 
 //=================================================================================================
 
-void StepBasic_GroupRelationship::SetRelatingGroup(
-  const occ::handle<StepBasic_Group>& aRelatingGroup)
+void StepBasic_GroupRelationship::SetRelatingGroup(const occ::handle<StepBasic_Group>& aRelatingGroup)
 {
   theRelatingGroup = aRelatingGroup;
 }

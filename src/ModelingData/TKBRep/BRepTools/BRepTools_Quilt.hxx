@@ -90,7 +90,7 @@ public:
 
 private:
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myBounds;
-  bool                                                                            hasCopy;
+  bool                    hasCopy;
 };
 
 #endif // _BRepTools_Quilt_HeaderFile

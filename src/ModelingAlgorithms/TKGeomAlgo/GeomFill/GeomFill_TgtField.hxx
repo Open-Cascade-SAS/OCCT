@@ -48,6 +48,7 @@ public:
   Standard_EXPORT virtual void D1(const double W, gp_Vec& V, gp_Vec& DV) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_TgtField, Standard_Transient)
+
 };
 
 #endif // _GeomFill_TgtField_HeaderFile

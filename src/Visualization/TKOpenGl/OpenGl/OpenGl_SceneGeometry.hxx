@@ -92,7 +92,7 @@ public:
 
 //! Shared pointer to quad BVH (QBVH) tree.
 typedef opencascade::handle<BVH_Tree<float, 3, BVH_QuadTree>> QuadBvhHandle;
-typedef BVH_Triangulation<float, 3>                           OpenGl_BVHTriangulation3f;
+typedef BVH_Triangulation<float, 3> OpenGl_BVHTriangulation3f;
 
 //! Triangulation of single OpenGL primitive array.
 class OpenGl_TriangleSet : public OpenGl_BVHTriangulation3f
@@ -104,8 +104,9 @@ public:
 
 public:
   //! Creates new OpenGL element triangulation.
-  Standard_EXPORT OpenGl_TriangleSet(const size_t                                      theArrayID,
-                                     const opencascade::handle<BVH_Builder<float, 3>>& theBuilder);
+  Standard_EXPORT OpenGl_TriangleSet(
+    const size_t                                            theArrayID,
+    const opencascade::handle<BVH_Builder<float, 3>>& theBuilder);
 
   //! Returns ID of associated primitive array.
   size_t AssociatedPArrayID() const { return myArrayID; }
@@ -137,7 +138,9 @@ public:
   using BVH_Triangulation<float, 3>::Box;
 
   //! Returns centroid position along the given axis.
-  Standard_EXPORT virtual float Center(const int theIndex, const int theAxis) const override;
+  Standard_EXPORT virtual float Center(const int theIndex,
+                                                    const int theAxis) const
+    override;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
   Standard_EXPORT const QuadBvhHandle& QuadBVH();

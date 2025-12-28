@@ -21,7 +21,7 @@ RWStepRepr_RWRealRepresentationItem::RWStepRepr_RWRealRepresentationItem() {}
 
 void RWStepRepr_RWRealRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&         theData,
-  const int                                           theNum,
+  const int                         theNum,
   occ::handle<Interface_Check>&                       theAch,
   const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const
 {
@@ -42,7 +42,7 @@ void RWStepRepr_RWRealRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWRealRepresentationItem::WriteStep(
-  StepData_StepWriter&                                theSW,
+  StepData_StepWriter&                           theSW,
   const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const
 {
   theSW.Send(theEnt->Name());

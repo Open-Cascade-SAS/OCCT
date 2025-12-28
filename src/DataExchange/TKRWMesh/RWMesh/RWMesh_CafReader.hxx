@@ -56,9 +56,9 @@ public:
   //! Structure holding tools for filling the document.
   struct CafDocumentTools
   {
-    occ::handle<XCAFDoc_ShapeTool>                                        ShapeTool;
-    occ::handle<XCAFDoc_ColorTool>                                        ColorTool;
-    occ::handle<XCAFDoc_VisMaterialTool>                                  VisMaterialTool;
+    occ::handle<XCAFDoc_ShapeTool>                                             ShapeTool;
+    occ::handle<XCAFDoc_ColorTool>                                             ColorTool;
+    occ::handle<XCAFDoc_VisMaterialTool>                                       VisMaterialTool;
     NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> ComponentMap;
     NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> OriginalShapeMap;
   };
@@ -127,10 +127,16 @@ public:
 
   //! Set system length units to convert into while reading the file, defined as scale factor for m
   //! (meters).
-  void SetSystemLengthUnit(double theUnits) { myCoordSysConverter.SetOutputLengthUnit(theUnits); }
+  void SetSystemLengthUnit(double theUnits)
+  {
+    myCoordSysConverter.SetOutputLengthUnit(theUnits);
+  }
 
   //! Return TRUE if system coordinate system has been defined; FALSE by default.
-  bool HasSystemCoordinateSystem() const { return myCoordSysConverter.HasOutputCoordinateSystem(); }
+  bool HasSystemCoordinateSystem() const
+  {
+    return myCoordSysConverter.HasOutputCoordinateSystem();
+  }
 
   //! Return system coordinate system; UNDEFINED by default, which means that no conversion will be
   //! done.
@@ -157,10 +163,16 @@ public:
 
   //! Set (override) file length units to convert from while reading the file, defined as scale
   //! factor for m (meters).
-  void SetFileLengthUnit(double theUnits) { myCoordSysConverter.SetInputLengthUnit(theUnits); }
+  void SetFileLengthUnit(double theUnits)
+  {
+    myCoordSysConverter.SetInputLengthUnit(theUnits);
+  }
 
   //! Return TRUE if file origin coordinate system has been defined.
-  bool HasFileCoordinateSystem() const { return myCoordSysConverter.HasInputCoordinateSystem(); }
+  bool HasFileCoordinateSystem() const
+  {
+    return myCoordSysConverter.HasInputCoordinateSystem();
+  }
 
   //! Return file origin coordinate system; can be UNDEFINED, which means no conversion will be
   //! done.
@@ -211,15 +223,11 @@ public:
   }
 
   //! Return metadata map.
-  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& Metadata()
-    const
-  {
-    return myMetadata;
-  }
+  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& Metadata() const { return myMetadata; }
 
   //! Open stream and pass it to ProbeHeader method.
   bool ProbeHeader(const TCollection_AsciiString& theFile,
-                   const Message_ProgressRange&   theProgress = Message_ProgressRange())
+                               const Message_ProgressRange&   theProgress = Message_ProgressRange())
   {
     std::ifstream aStream;
     OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
@@ -230,8 +238,8 @@ public:
   //! The main purpose is collecting metadata and external references - for copying model into a new
   //! location, for example. Can be NOT implemented (unsupported by format / reader).
   bool ProbeHeader(std::istream&                  theStream,
-                   const TCollection_AsciiString& theFile     = "",
-                   const Message_ProgressRange&   theProgress = Message_ProgressRange())
+                               const TCollection_AsciiString& theFile     = "",
+                               const Message_ProgressRange&   theProgress = Message_ProgressRange())
   {
     return perform(theStream, theFile, theProgress, true);
   }
@@ -243,8 +251,8 @@ protected:
   //! @param theToProbe flag indicating that mesh data should be skipped and only basing information
   //! to be read
   Standard_EXPORT virtual bool perform(const TCollection_AsciiString& theFile,
-                                       const Message_ProgressRange&   theProgress,
-                                       const bool                     theToProbe);
+                                                   const Message_ProgressRange&   theProgress,
+                                                   const bool         theToProbe);
 
   //! Read the data from specified file.
   //! Default implementation calls performMesh() and fills XDE document from collected shapes.
@@ -254,14 +262,14 @@ protected:
   //! @param theToProbe flag indicating that mesh data should be skipped and only basing information
   //! to be read
   Standard_EXPORT virtual bool perform(std::istream&                  theStream,
-                                       const TCollection_AsciiString& theFile,
-                                       const Message_ProgressRange&   theProgress,
-                                       const bool                     theToProbe);
+                                                   const TCollection_AsciiString& theFile,
+                                                   const Message_ProgressRange&   theProgress,
+                                                   const bool         theToProbe);
 
   //! Read the mesh from specified file
   Standard_EXPORT virtual bool performMesh(const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe)
+                                                       const Message_ProgressRange&   theProgress,
+                                                       const bool         theToProbe)
   {
     std::ifstream aStream;
     OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
@@ -270,9 +278,9 @@ protected:
 
   //! Read the mesh from specified file - interface to be implemented by sub-classes.
   Standard_EXPORT virtual bool performMesh(std::istream&                  theStream,
-                                           const TCollection_AsciiString& theFile,
-                                           const Message_ProgressRange&   theProgress,
-                                           const bool                     theToProbe) = 0;
+                                                       const TCollection_AsciiString& theFile,
+                                                       const Message_ProgressRange&   theProgress,
+                                                       const bool theToProbe) = 0;
 
   //! @name tools for filling XDE document
 protected:
@@ -281,14 +289,14 @@ protected:
 
   //! Append new shape into the document (recursively).
   Standard_EXPORT bool addShapeIntoDoc(CafDocumentTools&              theTools,
-                                       const TopoDS_Shape&            theShape,
-                                       const TDF_Label&               theLabel,
-                                       const TCollection_AsciiString& theParentName);
+                                                   const TopoDS_Shape&            theShape,
+                                                   const TDF_Label&               theLabel,
+                                                   const TCollection_AsciiString& theParentName);
 
   //! Append new sub-shape into the document (recursively).
   Standard_EXPORT bool addSubShapeIntoDoc(CafDocumentTools&   theTools,
-                                          const TopoDS_Shape& theShape,
-                                          const TDF_Label&    theParentLabel);
+                                                      const TopoDS_Shape& theShape,
+                                                      const TDF_Label&    theParentLabel);
 
   //! Put name attribute onto the label.
   Standard_EXPORT void setShapeName(const TDF_Label&               theLabel,
@@ -303,14 +311,14 @@ protected:
                                      const XCAFPrs_Style&    theStyle);
 
   //! Put name data (metadata) attribute onto the label.
-  Standard_EXPORT void setShapeNamedData(const CafDocumentTools&                theTools,
-                                         const TDF_Label&                       theLabel,
+  Standard_EXPORT void setShapeNamedData(const CafDocumentTools&           theTools,
+                                         const TDF_Label&                  theLabel,
                                          const occ::handle<TDataStd_NamedData>& theNameData);
 
   //! Generate names for root labels starting from specified index.
   Standard_EXPORT void generateNames(const TCollection_AsciiString& theFile,
-                                     const int                      theRootLower,
-                                     const bool                     theWithSubLabels);
+                                     const int         theRootLower,
+                                     const bool         theWithSubLabels);
 
   //! Return shape type as string.
   //! @sa TopAbs::ShapeTypeToString()
@@ -324,8 +332,7 @@ protected:
 protected:
   occ::handle<TDocStd_Document> myXdeDoc; //!< target document
 
-  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>
-    myMetadata; //!< metadata map
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> myMetadata; //!< metadata map
   NCollection_IndexedMap<TCollection_AsciiString>
     // clang-format off
                             myExternalFiles;     //!< the list of complementary files - external references (textures, data, etc.)

@@ -31,8 +31,8 @@ public:
   //! @param theTolerance tolerance to be used for identification of shot circles.
   //! @param theReservedSize size to be reserved for vector of circles.
   //! @param theAllocator memory allocator to be used by internal collections.
-  BRepMesh_CircleInspector(const double                                 theTolerance,
-                           const int                                    theReservedSize,
+  BRepMesh_CircleInspector(const double                     theTolerance,
+                           const int                  theReservedSize,
                            const occ::handle<NCollection_IncAllocator>& theAllocator)
       : mySqTolerance(theTolerance * theTolerance),
         myResIndices(theAllocator),
@@ -72,8 +72,8 @@ public:
   //! @return status of the check.
   NCollection_CellFilter_Action Inspect(const int theTargetIndex)
   {
-    BRepMesh_Circle& aCircle = myCircles(theTargetIndex);
-    const double&    aRadius = aCircle.Radius();
+    BRepMesh_Circle&     aCircle = myCircles(theTargetIndex);
+    const double& aRadius = aCircle.Radius();
     if (aRadius < 0.)
       return CellFilter_Purge;
 
@@ -106,13 +106,14 @@ public:
   }
 
   //! Checks indices for equality.
-  static bool IsEqual(const int theIndex, const int theTargetIndex)
+  static bool IsEqual(const int theIndex,
+                                  const int theTargetIndex)
   {
     return (theIndex == theTargetIndex);
   }
 
 private:
-  double                    mySqTolerance;
+  double             mySqTolerance;
   IMeshData::ListOfInteger  myResIndices;
   IMeshData::VectorOfCircle myCircles;
   gp_XY                     myPoint;

@@ -19,7 +19,7 @@
 RWStepGeom_RWBoundedCurve::RWStepGeom_RWBoundedCurve() {}
 
 void RWStepGeom_RWBoundedCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_BoundedCurve>&   ent) const
 {
@@ -40,7 +40,7 @@ void RWStepGeom_RWBoundedCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName);
 }
 
-void RWStepGeom_RWBoundedCurve::WriteStep(StepData_StepWriter&                      SW,
+void RWStepGeom_RWBoundedCurve::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepGeom_BoundedCurve>& ent) const
 {
 

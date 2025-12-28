@@ -31,7 +31,7 @@ RWStepElement_RWSurfaceSectionFieldVarying::RWStepElement_RWSurfaceSectionFieldV
 
 void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                                  num,
+  const int                                num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent) const
 {
@@ -42,12 +42,12 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
   // Own fields of SurfaceSectionFieldVarying
 
   occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>> aDefinitions;
-  int                                                                       sub1 = 0;
+  int                            sub1 = 0;
   if (data->ReadSubList(num, 1, "definitions", ach, sub1))
   {
-    int nb0      = data->NbParams(sub1);
-    aDefinitions = new NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>(1, nb0);
-    int num2     = sub1;
+    int nb0  = data->NbParams(sub1);
+    aDefinitions          = new NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>(1, nb0);
+    int num2 = sub1;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepElement_SurfaceSection> anIt0;
@@ -71,7 +71,7 @@ void RWStepElement_RWSurfaceSectionFieldVarying::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWSurfaceSectionFieldVarying::WriteStep(
-  StepData_StepWriter&                                       SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent) const
 {
 
@@ -92,7 +92,7 @@ void RWStepElement_RWSurfaceSectionFieldVarying::WriteStep(
 
 void RWStepElement_RWSurfaceSectionFieldVarying::Share(
   const occ::handle<StepElement_SurfaceSectionFieldVarying>& ent,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Own fields of SurfaceSectionFieldVarying

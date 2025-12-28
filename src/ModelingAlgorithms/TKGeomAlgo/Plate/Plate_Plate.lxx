@@ -17,11 +17,11 @@
 #include <gp_XY.hxx>
 #include <gp_XYZ.hxx>
 
-inline double Plate_Plate::Polm(const gp_XY& point2d,
-                                const int    iu,
-                                const int    iv,
-                                const int    idu,
-                                const int    idv) const
+inline double Plate_Plate::Polm(const gp_XY&           point2d,
+                                       const int iu,
+                                       const int iv,
+                                       const int idu,
+                                       const int idv) const
 {
   if (idu > iu)
     return 0;

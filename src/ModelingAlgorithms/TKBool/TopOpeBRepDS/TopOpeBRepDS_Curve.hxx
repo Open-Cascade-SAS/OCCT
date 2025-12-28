@@ -36,12 +36,12 @@ public:
   Standard_EXPORT TopOpeBRepDS_Curve();
 
   Standard_EXPORT TopOpeBRepDS_Curve(const occ::handle<Geom_Curve>& P,
-                                     const double                   T,
-                                     const bool                     IsWalk = false);
+                                     const double       T,
+                                     const bool    IsWalk = false);
 
   Standard_EXPORT void DefineCurve(const occ::handle<Geom_Curve>& P,
-                                   const double                   T,
-                                   const bool                     IsWalk);
+                                   const double       T,
+                                   const bool    IsWalk);
 
   //! Update the tolerance
   Standard_EXPORT void Tolerance(const double tol);
@@ -107,18 +107,18 @@ public:
 
 private:
   occ::handle<Geom_Curve>                myCurve;
-  double                                 myFirst;
-  double                                 myLast;
-  bool                                   myRangeDefined;
-  double                                 myTolerance;
-  bool                                   myIsWalk;
-  TopoDS_Shape                           myS1;
-  TopoDS_Shape                           myS2;
+  double                     myFirst;
+  double                     myLast;
+  bool                  myRangeDefined;
+  double                     myTolerance;
+  bool                  myIsWalk;
+  TopoDS_Shape                      myS1;
+  TopoDS_Shape                      myS2;
   occ::handle<TopOpeBRepDS_Interference> mySCI1;
   occ::handle<TopOpeBRepDS_Interference> mySCI2;
-  bool                                   myKeep;
-  int                                    myMother;
-  int                                    myDSIndex;
+  bool                  myKeep;
+  int                  myMother;
+  int                  myDSIndex;
 };
 
 #endif // _TopOpeBRepDS_Curve_HeaderFile

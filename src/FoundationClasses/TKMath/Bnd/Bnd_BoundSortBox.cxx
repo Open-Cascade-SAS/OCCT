@@ -147,7 +147,8 @@ public:
   // @param theBoxIndex The index of the box to be added.
   // @param theVoxelBox An array of 6 integers representing the minimum and maximum voxel
   //                    coordinates of the box in the order: [minX, minY, minZ, maxX, maxY, maxZ].
-  void AddBox(const int theBoxIndex, const std::array<int, 6>& theVoxelBox);
+  void AddBox(const int                 theBoxIndex,
+              const std::array<int, 6>& theVoxelBox);
 
   // Returns the list of box indices that occupy the specified voxel index in the X direction.
   // In other words, the vector will contain the indices of boxes that occupy the voxels with
@@ -183,7 +184,9 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the X direction.
   // @param theVoxelIndexMax The maximum voxel index in the X direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceX(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
+  void AppendSliceX(const int theVoxelIndexMin,
+                    const int theVoxelIndexMax,
+                    const int theBoxIndex);
 
   // Appends a slice of the voxel grid in the Y direction.
   // This method is used to store the indices of boxes that occupy a specific voxel index in the Y
@@ -191,7 +194,9 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the Y direction.
   // @param theVoxelIndexMax The maximum voxel index in the Y direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceY(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
+  void AppendSliceY(const int theVoxelIndexMin,
+                    const int theVoxelIndexMax,
+                    const int theBoxIndex);
 
   // Appends a slice of the voxel grid in the Z direction.
   // This method is used to store the indices of boxes that occupy a specific voxel index in the Z
@@ -199,20 +204,23 @@ private:
   // @param theVoxelIndexMin The minimum voxel index in the Z direction.
   // @param theVoxelIndexMax The maximum voxel index in the Z direction.
   // @param theBoxIndex The index of the box to be added.
-  void AppendSliceZ(const int theVoxelIndexMin, const int theVoxelIndexMax, const int theBoxIndex);
+  void AppendSliceZ(const int theVoxelIndexMin,
+                    const int theVoxelIndexMax,
+                    const int theBoxIndex);
 
 private:
   occ::handle<NCollection_IncAllocator> myAllocator; //< Allocator for all vectors.
-  SliceArray                            mySlicesX; //< Array of box indices lists for each X slice.
-  SliceArray                            mySlicesY; //< Array of box indices lists for each Y slice.
-  SliceArray                            mySlicesZ; //< Array of box indices lists for each Z slice.
+  SliceArray                       mySlicesX;   //< Array of box indices lists for each X slice.
+  SliceArray                       mySlicesY;   //< Array of box indices lists for each Y slice.
+  SliceArray                       mySlicesZ;   //< Array of box indices lists for each Z slice.
 };
 
 IMPLEMENT_STANDARD_RTTIEXT(Bnd_VoxelGrid, Standard_Transient)
 
 //==================================================================================================
 
-Bnd_VoxelGrid::Bnd_VoxelGrid(const int theResolution, const int theExpectedBoxCount)
+Bnd_VoxelGrid::Bnd_VoxelGrid(const int theResolution,
+                             const int theExpectedBoxCount)
     : myAllocator(new NCollection_IncAllocator()),
       mySlicesX(0, theResolution - 1),
       mySlicesY(0, theResolution - 1),
@@ -231,7 +239,8 @@ Bnd_VoxelGrid::Bnd_VoxelGrid(const int theResolution, const int theExpectedBoxCo
 
 //==================================================================================================
 
-void Bnd_VoxelGrid::AddBox(const int theBoxIndex, const std::array<int, 6>& theVoxelBox)
+void Bnd_VoxelGrid::AddBox(const int                 theBoxIndex,
+                           const std::array<int, 6>& theVoxelBox)
 {
   const int aMinVoxelX = theVoxelBox[0];
   const int aMinVoxelY = theVoxelBox[1];
@@ -350,7 +359,7 @@ void Bnd_BoundSortBox::Initialize(const occ::handle<NCollection_HArray1<Bnd_Box>
 
 //==================================================================================================
 
-void Bnd_BoundSortBox::Initialize(const Bnd_Box&                                   theEnclosingBox,
+void Bnd_BoundSortBox::Initialize(const Bnd_Box&                  theEnclosingBox,
                                   const occ::handle<NCollection_HArray1<Bnd_Box>>& theSetOfBoxes)
 {
   myBoxes        = theSetOfBoxes;
@@ -580,17 +589,29 @@ std::array<int, 6> Bnd_BoundSortBox::getBoundingVoxels(const Bnd_Box& theBox) co
   // Note: adding and substracting one to make sure that that the box is inside the
   // voxel coordinates. Just a safety measure.
   const int aXMinIndex =
-    std::clamp(static_cast<int>((aXMin - aGridStart.X()) * myCoeffX) - 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aXMin - aGridStart.X()) * myCoeffX) - 1,
+               0,
+               myResolution - 1);
   const int aYMinIndex =
-    std::clamp(static_cast<int>((aYMin - aGridStart.Y()) * myCoeffY) - 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aYMin - aGridStart.Y()) * myCoeffY) - 1,
+               0,
+               myResolution - 1);
   const int aZMinIndex =
-    std::clamp(static_cast<int>((aZMin - aGridStart.Z()) * myCoeffZ) - 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aZMin - aGridStart.Z()) * myCoeffZ) - 1,
+               0,
+               myResolution - 1);
   const int aXMaxIndex =
-    std::clamp(static_cast<int>((aXMax - aGridStart.X()) * myCoeffX) + 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aXMax - aGridStart.X()) * myCoeffX) + 1,
+               0,
+               myResolution - 1);
   const int aYMaxIndex =
-    std::clamp(static_cast<int>((aYMax - aGridStart.Y()) * myCoeffY) + 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aYMax - aGridStart.Y()) * myCoeffY) + 1,
+               0,
+               myResolution - 1);
   const int aZMaxIndex =
-    std::clamp(static_cast<int>((aZmax - aGridStart.Z()) * myCoeffZ) + 1, 0, myResolution - 1);
+    std::clamp(static_cast<int>((aZmax - aGridStart.Z()) * myCoeffZ) + 1,
+               0,
+               myResolution - 1);
 
   return {aXMinIndex, aYMinIndex, aZMinIndex, aXMaxIndex, aYMaxIndex, aZMaxIndex};
 }

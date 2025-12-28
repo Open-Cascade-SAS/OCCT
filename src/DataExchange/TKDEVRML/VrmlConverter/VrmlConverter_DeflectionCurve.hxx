@@ -46,8 +46,8 @@ public:
   //! respect to the maximal chordial deviation defined
   //! by the drawer aDrawer.
   //! The aspect is defined by LineAspect in aDrawer.
-  Standard_EXPORT static void Add(Standard_OStream&                        anOStream,
-                                  Adaptor3d_Curve&                         aCurve,
+  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
+                                  Adaptor3d_Curve&                    aCurve,
                                   const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   //! adds to the OStream the drawing of the curve aCurve with
@@ -56,26 +56,26 @@ public:
   //! The aspect is defined by LineAspect in aDrawer.
   //! The drawing will be limited between the points of parameter
   //! U1 and U2.
-  Standard_EXPORT static void Add(Standard_OStream&                        anOStream,
-                                  Adaptor3d_Curve&                         aCurve,
-                                  const double                             U1,
-                                  const double                             U2,
+  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
+                                  Adaptor3d_Curve&                    aCurve,
+                                  const double                 U1,
+                                  const double                 U2,
                                   const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   //! adds to the OStream the drawing of the curve aCurve with
   //! respect to the maximal chordial deviation aDeflection.
   //! The aspect is the current aspect
-  Standard_EXPORT static void Add(Standard_OStream& anOStream,
-                                  Adaptor3d_Curve&  aCurve,
-                                  const double      aDeflection,
-                                  const double      aLimit);
+  Standard_EXPORT static void Add(Standard_OStream&   anOStream,
+                                  Adaptor3d_Curve&    aCurve,
+                                  const double aDeflection,
+                                  const double aLimit);
 
   //! adds to the OStream the drawing of the curve aCurve with
   //! respect to the maximal chordial deviation aDeflection.
   //! The aspect is the current aspect
-  Standard_EXPORT static void Add(Standard_OStream&                        anOStream,
-                                  Adaptor3d_Curve&                         aCurve,
-                                  const double                             aDeflection,
+  Standard_EXPORT static void Add(Standard_OStream&                   anOStream,
+                                  Adaptor3d_Curve&                    aCurve,
+                                  const double                 aDeflection,
                                   const occ::handle<VrmlConverter_Drawer>& aDrawer);
 
   //! adds to the OStream the drawing of the curve aCurve with
@@ -83,19 +83,20 @@ public:
   //! The aspect is the current aspect
   //! The drawing will be limited between the points of parameter
   //! U1 and U2.
-  Standard_EXPORT static void Add(Standard_OStream& anOStream,
-                                  Adaptor3d_Curve&  aCurve,
-                                  const double      U1,
-                                  const double      U2,
-                                  const double      aDeflection);
+  Standard_EXPORT static void Add(Standard_OStream&   anOStream,
+                                  Adaptor3d_Curve&    aCurve,
+                                  const double U1,
+                                  const double U2,
+                                  const double aDeflection);
 
   //! adds to the OStream the drawing of the curve aCurve with
   //! the array of parameters to retrieve points on curve.
-  Standard_EXPORT static void Add(Standard_OStream&                               anOStream,
-                                  const Adaptor3d_Curve&                          aCurve,
+  Standard_EXPORT static void Add(Standard_OStream&                    anOStream,
+                                  const Adaptor3d_Curve&               aCurve,
                                   const occ::handle<NCollection_HArray1<double>>& aParams,
-                                  const int                                       aNbNodes,
-                                  const occ::handle<VrmlConverter_Drawer>&        aDrawer);
+                                  const int               aNbNodes,
+                                  const occ::handle<VrmlConverter_Drawer>&  aDrawer);
+
 };
 
 #endif // _VrmlConverter_DeflectionCurve_HeaderFile

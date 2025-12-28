@@ -33,8 +33,7 @@ public:
   virtual const char* PName() const { return "PDocStd_Document"; }
 
   //! Import transient document from the persistent data.
-  Standard_EXPORT virtual void ImportDocument(
-    const occ::handle<TDocStd_Document>& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(const occ::handle<TDocStd_Document>& theDocument) const;
 
 private:
   occ::handle<StdLPersistent_Data> myData;

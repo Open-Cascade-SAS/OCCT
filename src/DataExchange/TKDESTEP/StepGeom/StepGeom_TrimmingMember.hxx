@@ -37,6 +37,7 @@ public:
   Standard_EXPORT virtual bool SetName(const char* name) override;
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_TrimmingMember, StepData_SelectReal)
+
 };
 
 #endif // _StepGeom_TrimmingMember_HeaderFile

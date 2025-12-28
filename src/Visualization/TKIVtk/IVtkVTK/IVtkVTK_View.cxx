@@ -178,9 +178,9 @@ void IVtkVTK_View::GetWindowSize(int& theX, int& theY) const
 
 //=================================================================================================
 
-void IVtkVTK_View::GetCamera(NCollection_Mat4<double>& theProj,
-                             NCollection_Mat4<double>& theOrient,
-                             bool&                     theIsOrtho) const
+void IVtkVTK_View::GetCamera(NCollection_Mat4<double>&  theProj,
+                             NCollection_Mat4<double>&  theOrient,
+                             bool& theIsOrtho) const
 {
   theIsOrtho = !IsPerspective();
 

@@ -20,9 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 
@@ -47,12 +50,11 @@ public:
   //! - allExchIdents   : Exchange File Level Identifications
   //! raises exception if allExchLevels, allNativeLevels, allPhysLevels
   //! and all ExchIdents are not of same dimensions
-  Standard_EXPORT void Init(
-    const int                                                                      nbPropVal,
-    const occ::handle<NCollection_HArray1<int>>&                                   allExchLevels,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allNativeLevels,
-    const occ::handle<NCollection_HArray1<int>>&                                   allPhysLevels,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allExchIdents);
+  Standard_EXPORT void Init(const int                         nbPropVal,
+                            const occ::handle<NCollection_HArray1<int>>&        allExchLevels,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allNativeLevels,
+                            const occ::handle<NCollection_HArray1<int>>&        allPhysLevels,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allExchIdents);
 
   //! returns number of property values
   Standard_EXPORT int NbPropertyValues() const;
@@ -78,10 +80,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_LevelToPWBLayerMap, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
-  occ::handle<NCollection_HArray1<int>> theExchangeFileLevelNumber;
+  int                        theNbPropertyValues;
+  occ::handle<NCollection_HArray1<int>>        theExchangeFileLevelNumber;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theNativeLevel;
-  occ::handle<NCollection_HArray1<int>>                                   thePhysicalLayerNumber;
+  occ::handle<NCollection_HArray1<int>>        thePhysicalLayerNumber;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theExchangeFileLevelIdent;
 };
 

@@ -50,8 +50,8 @@ static const int aNbSolMAX = 16;
 
 Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin& Qualified1,
                                                        const Geom2dGcc_QCurve&    Qualified2,
-                                                       const double               Radius,
-                                                       const double               Tolerance)
+                                                       const double        Radius,
+                                                       const double        Tolerance)
     :
 
       //========================================================================
@@ -75,18 +75,18 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
   // Traitement.                                                           +
   //========================================================================
 
-  double                     Tol      = std::abs(Tolerance);
-  double                     thefirst = -100000.;
-  double                     thelast  = 100000.;
-  double                     firstparam;
-  double                     lastparam;
-  gp_Dir2d                   dirx(gp_Dir2d::D::X);
+  double        Tol      = std::abs(Tolerance);
+  double        thefirst = -100000.;
+  double        thelast  = 100000.;
+  double        firstparam;
+  double        lastparam;
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   NCollection_Array1<double> cote1(1, 2);
   NCollection_Array1<double> cote2(1, 2);
-  int                        nbrcote1 = 0;
-  int                        nbrcote2 = 0;
-  WellDone                            = false;
-  NbrSol                              = 0;
+  int     nbrcote1 = 0;
+  int     nbrcote2 = 0;
+  WellDone                      = false;
+  NbrSol                        = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
            || Qualified2.IsUnqualified()))
@@ -96,10 +96,10 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
     return;
   }
   gp_Lin2d            L1    = Qualified1.Qualified();
-  double              x1dir = (L1.Direction()).X();
-  double              y1dir = (L1.Direction()).Y();
-  double              lxloc = (L1.Location()).X();
-  double              lyloc = (L1.Location()).Y();
+  double       x1dir = (L1.Direction()).X();
+  double       y1dir = (L1.Direction()).Y();
+  double       lxloc = (L1.Location()).X();
+  double       lyloc = (L1.Location()).Y();
   gp_Pnt2d            origin1(lxloc, lyloc);
   gp_Dir2d            normL1(-y1dir, x1dir);
   Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -264,8 +264,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin
 
 Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCirc& Qualified1,
                                                        const Geom2dGcc_QCurve&     Qualified2,
-                                                       const double                Radius,
-                                                       const double                Tolerance)
+                                                       const double         Radius,
+                                                       const double         Tolerance)
     :
 
       //========================================================================
@@ -289,18 +289,18 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
   // Traitement.                                                           +
   //========================================================================
 
-  double                     Tol      = std::abs(Tolerance);
-  double                     thefirst = -100000.;
-  double                     thelast  = 100000.;
-  double                     firstparam;
-  double                     lastparam;
-  gp_Dir2d                   dirx(gp_Dir2d::D::X);
+  double        Tol      = std::abs(Tolerance);
+  double        thefirst = -100000.;
+  double        thelast  = 100000.;
+  double        firstparam;
+  double        lastparam;
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   NCollection_Array1<double> cote1(1, 2);
   NCollection_Array1<double> cote2(1, 2);
-  int                        nbrcote1 = 0;
-  int                        nbrcote2 = 0;
-  WellDone                            = false;
-  NbrSol                              = 0;
+  int     nbrcote1 = 0;
+  int     nbrcote2 = 0;
+  WellDone                      = false;
+  NbrSol                        = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -396,7 +396,7 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
       cote2(1) = Radius;
       cote2(2) = -Radius;
     }
-    double                             R1 = C1.Radius();
+    double                      R1 = C1.Radius();
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (int jcote1 = 1; jcote1 <= nbrcote1 && NbrSol < aNbSolMAX; jcote1++)
     {
@@ -489,8 +489,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCir
 
 Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                        const gp_Pnt2d&         Point2,
-                                                       const double            Radius,
-                                                       const double            Tolerance)
+                                                       const double     Radius,
+                                                       const double     Tolerance)
     :
 
       //========================================================================
@@ -514,16 +514,16 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   // Traitement.                                                           +
   //========================================================================
 
-  double                     Tol      = std::abs(Tolerance);
-  double                     thefirst = -100000.;
-  double                     thelast  = 100000.;
-  double                     firstparam;
-  double                     lastparam;
-  gp_Dir2d                   dirx(gp_Dir2d::D::X);
+  double        Tol      = std::abs(Tolerance);
+  double        thefirst = -100000.;
+  double        thelast  = 100000.;
+  double        firstparam;
+  double        lastparam;
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   NCollection_Array1<double> cote1(1, 2);
-  int                        nbrcote1 = 0;
-  WellDone                            = false;
-  NbrSol                              = 0;
+  int     nbrcote1 = 0;
+  WellDone                      = false;
+  NbrSol                        = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -617,10 +617,10 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
 //=======================================================================
 static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
                      const Adaptor2d_OffsetCurve& theC2,
-                     const double                 theU0,
-                     const double                 theV0,
-                     double&                      theUfinal,
-                     double&                      theVfinal)
+                     const double          theU0,
+                     const double          theV0,
+                     double&               theUfinal,
+                     double&               theVfinal)
 {
   /*
   It is necessary for precision to solve the system
@@ -661,9 +661,9 @@ static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
 
   const int aNbIterMax = 100;
 
-  double   aU = theU0, aV = theV0;
-  gp_Pnt2d aPu, aPv;
-  gp_Vec2d aD1u, aD1v, aD2u, aD2v;
+  double aU = theU0, aV = theV0;
+  gp_Pnt2d      aPu, aPv;
+  gp_Vec2d      aD1u, aD1v, aD2u, aD2v;
 
   int aNbIter = 0;
 
@@ -782,8 +782,8 @@ static void PrecRoot(const Adaptor2d_OffsetCurve& theC1,
 //========================================================================
 Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                                        const Geom2dGcc_QCurve& Qualified2,
-                                                       const double            Radius,
-                                                       const double            Tolerance)
+                                                       const double     Radius,
+                                                       const double     Tolerance)
     :
 
       //========================================================================
@@ -812,13 +812,13 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
   const double thefirst = -100000.;
   const double thelast  = 100000.;
 #endif
-  gp_Dir2d                   dirx(gp_Dir2d::D::X);
+  gp_Dir2d             dirx(gp_Dir2d::D::X);
   NCollection_Array1<double> cote1(1, 2);
   NCollection_Array1<double> cote2(1, 2);
-  int                        nbrcote1 = 0;
-  int                        nbrcote2 = 0;
-  WellDone                            = false;
-  NbrSol                              = 0;
+  int     nbrcote1 = 0;
+  int     nbrcote2 = 0;
+  WellDone                      = false;
+  NbrSol                        = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified())
       || !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || Qualified2.IsOutside()
@@ -920,8 +920,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
       // Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
       Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
 #ifdef OCCT_DEBUG
-      double          firstparam = std::max(C1.FirstParameter(), thefirst);
-      double          lastparam  = std::min(C1.LastParameter(), thelast);
+      double   firstparam = std::max(C1.FirstParameter(), thefirst);
+      double   lastparam  = std::min(C1.LastParameter(), thelast);
       IntRes2d_Domain D2C1(C1.Value(firstparam),
                            firstparam,
                            Tol,
@@ -949,7 +949,8 @@ Geom2dGcc_Circ2d2TanRadGeo::Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Q
         {
           if (!Intp.IsEmpty())
           {
-            constexpr double aSQApproxTol = Precision::Approximation() * Precision::Approximation();
+            constexpr double aSQApproxTol =
+              Precision::Approximation() * Precision::Approximation();
             for (int i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
             {
               double aU0 = Intp.Point(i).ParamOnFirst();
@@ -1027,9 +1028,9 @@ gp_Circ2d Geom2dGcc_Circ2d2TanRadGeo::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2d2TanRadGeo::WhichQualifier(const int        Index,
-                                                GccEnt_Position& Qualif1,
-                                                GccEnt_Position& Qualif2) const
+void Geom2dGcc_Circ2d2TanRadGeo::WhichQualifier(const int Index,
+                                                GccEnt_Position&       Qualif1,
+                                                GccEnt_Position&       Qualif2) const
 {
   if (!WellDone)
   {
@@ -1047,9 +1048,9 @@ void Geom2dGcc_Circ2d2TanRadGeo::WhichQualifier(const int        Index,
 }
 
 void Geom2dGcc_Circ2d2TanRadGeo::Tangency1(const int Index,
-                                           double&   ParSol,
-                                           double&   ParArg,
-                                           gp_Pnt2d& PntSol) const
+                                           double&         ParSol,
+                                           double&         ParArg,
+                                           gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {
@@ -1075,9 +1076,9 @@ void Geom2dGcc_Circ2d2TanRadGeo::Tangency1(const int Index,
 }
 
 void Geom2dGcc_Circ2d2TanRadGeo::Tangency2(const int Index,
-                                           double&   ParSol,
-                                           double&   ParArg,
-                                           gp_Pnt2d& PntSol) const
+                                           double&         ParSol,
+                                           double&         ParArg,
+                                           gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {

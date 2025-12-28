@@ -20,10 +20,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_SurfacePatch, Standard_Transient)
 StepGeom_SurfacePatch::StepGeom_SurfacePatch() {}
 
 void StepGeom_SurfacePatch::Init(const occ::handle<StepGeom_BoundedSurface>& aParentSurface,
-                                 const StepGeom_TransitionCode               aUTransition,
-                                 const StepGeom_TransitionCode               aVTransition,
-                                 const bool                                  aUSense,
-                                 const bool                                  aVSense)
+                                 const StepGeom_TransitionCode          aUTransition,
+                                 const StepGeom_TransitionCode          aVTransition,
+                                 const bool                 aUSense,
+                                 const bool                 aVSense)
 {
   // --- classe own fields ---
   parentSurface = aParentSurface;
@@ -33,8 +33,7 @@ void StepGeom_SurfacePatch::Init(const occ::handle<StepGeom_BoundedSurface>& aPa
   vSense        = aVSense;
 }
 
-void StepGeom_SurfacePatch::SetParentSurface(
-  const occ::handle<StepGeom_BoundedSurface>& aParentSurface)
+void StepGeom_SurfacePatch::SetParentSurface(const occ::handle<StepGeom_BoundedSurface>& aParentSurface)
 {
   parentSurface = aParentSurface;
 }

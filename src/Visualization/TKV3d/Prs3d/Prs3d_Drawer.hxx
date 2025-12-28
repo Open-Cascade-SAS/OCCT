@@ -111,7 +111,10 @@ public:
 
   //! Defines the maximum value allowed for the first and last
   //! parameters of an infinite curve.
-  void SetMaximalParameterValue(const double theValue) { myMaximalParameterValue = theValue; }
+  void SetMaximalParameterValue(const double theValue)
+  {
+    myMaximalParameterValue = theValue;
+  }
 
   //! Sets the maximum value allowed for the first and last parameters of an infinite curve.
   //! By default, this value is 500000.
@@ -357,10 +360,7 @@ public:
   Standard_EXPORT const occ::handle<Prs3d_PointAspect>& PointAspect() const;
 
   //! Sets the parameter theAspect for display attributes of points
-  void SetPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect)
-  {
-    myPointAspect = theAspect;
-  }
+  void SetPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect) { myPointAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! point aspect that overrides the one in the link.
@@ -368,8 +368,8 @@ public:
 
   //! Sets own point aspect, which is a yellow Aspect_TOM_PLUS marker by default.
   //! Returns FALSE if the drawer already has its own attribute for point aspect.
-  Standard_EXPORT bool SetupOwnPointAspect(
-    const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT bool
+    SetupOwnPointAspect(const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
 
   //! Returns own settings for line aspects, settings from linked Drawer or NULL if neither was set.
   //! These attributes are used by the following algorithms:
@@ -391,13 +391,13 @@ public:
   //! yellow seen line (::SeenLineAspect()), dashed yellow hidden line (::HiddenLineAspect()),
   //! green free boundary (::FreeBoundaryAspect()), yellow unfree boundary
   //! (::UnFreeBoundaryAspect()). Returns FALSE if own line aspect are already set.
-  Standard_EXPORT bool SetOwnLineAspects(
-    const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT bool
+    SetOwnLineAspects(const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
 
   //! Sets own line aspects for datums.
   //! Returns FALSE if own line for datums are already set.
-  Standard_EXPORT bool SetOwnDatumAspects(
-    const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT bool
+    SetOwnDatumAspects(const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
 
   //! Returns own settings for text aspect, settings from linked Drawer or NULL if neither was set.
   Standard_EXPORT const occ::handle<Prs3d_TextAspect>& TextAspect() const;
@@ -425,8 +425,8 @@ public:
 
   //! Sets own shading aspect, which is Graphic3d_NameOfMaterial_Brass material by default.
   //! Returns FALSE if the drawer already has its own attribute for shading aspect.
-  Standard_EXPORT bool SetupOwnShadingAspect(
-    const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT bool
+    SetupOwnShadingAspect(const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
 
   //! Returns own settings for seen line aspects, settings of linked Drawer or NULL if neither was
   //! set.
@@ -447,10 +447,7 @@ public:
   Standard_EXPORT const occ::handle<Prs3d_PlaneAspect>& PlaneAspect() const;
 
   //! Sets the parameter theAspect for the display of planes.
-  void SetPlaneAspect(const occ::handle<Prs3d_PlaneAspect>& theAspect)
-  {
-    myPlaneAspect = theAspect;
-  }
+  void SetPlaneAspect(const occ::handle<Prs3d_PlaneAspect>& theAspect) { myPlaneAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! plane aspect that overrides the one in the link.
@@ -461,10 +458,7 @@ public:
   Standard_EXPORT const occ::handle<Prs3d_ArrowAspect>& ArrowAspect() const;
 
   //! Sets the parameter theAspect for display attributes of arrows.
-  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect)
-  {
-    myArrowAspect = theAspect;
-  }
+  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect) { myArrowAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! arrow aspect that overrides the one in the link.
@@ -536,10 +530,7 @@ public:
   Standard_EXPORT const occ::handle<Prs3d_LineAspect>& VectorAspect() const;
 
   //! Sets the modality theAspect for the display of vectors.
-  void SetVectorAspect(const occ::handle<Prs3d_LineAspect>& theAspect)
-  {
-    myVectorAspect = theAspect;
-  }
+  void SetVectorAspect(const occ::handle<Prs3d_LineAspect>& theAspect) { myVectorAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! vector aspect that overrides the one in the link.
@@ -559,17 +550,17 @@ public:
   //! Returns true if the vertex draw mode is not equal to <b>Prs3d_VDM_Inherited</b>.
   //! This means that individual vertex draw mode value (i.e. not inherited from the global
   //! drawer) is used for a specific interactive object.
-  bool HasOwnVertexDrawMode() const { return (myVertexDrawMode != Prs3d_VDM_Inherited); }
+  bool HasOwnVertexDrawMode() const
+  {
+    return (myVertexDrawMode != Prs3d_VDM_Inherited);
+  }
 
   //! Returns own settings for the appearance of datums, settings from linked Drawer or NULL if
   //! neither was set.
   Standard_EXPORT const occ::handle<Prs3d_DatumAspect>& DatumAspect() const;
 
   //! Sets the modality theAspect for the display of datums.
-  void SetDatumAspect(const occ::handle<Prs3d_DatumAspect>& theAspect)
-  {
-    myDatumAspect = theAspect;
-  }
+  void SetDatumAspect(const occ::handle<Prs3d_DatumAspect>& theAspect) { myDatumAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! datum aspect that overrides the one in the link.
@@ -580,10 +571,7 @@ public:
   Standard_EXPORT const occ::handle<Prs3d_LineAspect>& SectionAspect() const;
 
   //! Sets the parameter theAspect for display attributes of sections.
-  void SetSectionAspect(const occ::handle<Prs3d_LineAspect>& theAspect)
-  {
-    mySectionAspect = theAspect;
-  }
+  void SetSectionAspect(const occ::handle<Prs3d_LineAspect>& theAspect) { mySectionAspect = theAspect; }
 
   //! Returns true if the drawer has its own attribute for
   //! section aspect that overrides the one in the link.
@@ -693,8 +681,8 @@ public:
 
   //! Sets own face boundary aspect, which is a black solid line by default.
   //! Returns FALSE if the drawer already has its own attribute for face boundary aspect.
-  Standard_EXPORT bool SetupOwnFaceBoundaryAspect(
-    const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT bool
+    SetupOwnFaceBoundaryAspect(const occ::handle<Prs3d_Drawer>& theDefaults = occ::handle<Prs3d_Drawer>());
 
   //! Enables or disables face boundary drawing for shading presentations.
   //! The method sets drawing flag owned by the drawer that will be used during
@@ -722,7 +710,10 @@ public:
 
   //! Returns true if the drawer has its own attribute for face boundaries upper edge continuity
   //! class that overrides the one in the link.
-  bool HasOwnFaceBoundaryUpperContinuity() const { return myFaceBoundaryUpperContinuity != -1; }
+  bool HasOwnFaceBoundaryUpperContinuity() const
+  {
+    return myFaceBoundaryUpperContinuity != -1;
+  }
 
   //! Get the most edge continuity class; GeomAbs_CN by default (all edges).
   GeomAbs_Shape FaceBoundaryUpperContinuity() const
@@ -877,7 +868,7 @@ public:
   //! @return TRUE if presentation should be recomputed after creating aspects not previously
   //! customized (if theToOverrideDefaults is also TRUE)
   Standard_EXPORT bool SetShaderProgram(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
-                                        const Graphic3d_GroupAspect                 theAspect,
+                                        const Graphic3d_GroupAspect            theAspect,
                                         const bool theToOverrideDefaults = false);
 
   //! Sets Shading Model type for the shading aspect.
@@ -886,7 +877,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 public: //! @name deprecated methods
   Standard_DEPRECATED("SetDeviationAngle() should be used instead")
@@ -907,28 +898,28 @@ public: //! @name deprecated methods
 protected:
   occ::handle<Prs3d_Drawer> myLink;
 
-  int                     myNbPoints;
-  double                  myMaximalParameterValue;
-  double                  myChordialDeviation;
+  int        myNbPoints;
+  double           myMaximalParameterValue;
+  double           myChordialDeviation;
   Aspect_TypeOfDeflection myTypeOfDeflection;
-  bool                    myHasOwnTypeOfDeflection;
+  bool        myHasOwnTypeOfDeflection;
   Prs3d_TypeOfHLR         myTypeOfHLR;
-  double                  myDeviationCoefficient;
-  double                  myPreviousDeviationCoefficient;
-  double                  myDeviationAngle;
-  double                  myPreviousDeviationAngle;
-  bool                    myIsoOnPlane;
-  bool                    myHasOwnIsoOnPlane;
-  bool                    myIsoOnTriangulation;
-  bool                    myHasOwnIsoOnTriangulation;
-  bool                    myIsAutoTriangulated;
-  bool                    myHasOwnIsAutoTriangulated;
+  double           myDeviationCoefficient;
+  double           myPreviousDeviationCoefficient;
+  double           myDeviationAngle;
+  double           myPreviousDeviationAngle;
+  bool        myIsoOnPlane;
+  bool        myHasOwnIsoOnPlane;
+  bool        myIsoOnTriangulation;
+  bool        myHasOwnIsoOnTriangulation;
+  bool        myIsAutoTriangulated;
+  bool        myHasOwnIsAutoTriangulated;
 
   occ::handle<Prs3d_IsoAspect>     myUIsoAspect;
   occ::handle<Prs3d_IsoAspect>     myVIsoAspect;
   occ::handle<Prs3d_LineAspect>    myWireAspect;
-  bool                             myWireDraw;
-  bool                             myHasOwnWireDraw;
+  bool            myWireDraw;
+  bool            myHasOwnWireDraw;
   occ::handle<Prs3d_PointAspect>   myPointAspect;
   occ::handle<Prs3d_LineAspect>    myLineAspect;
   occ::handle<Prs3d_TextAspect>    myTextAspect;
@@ -936,22 +927,22 @@ protected:
   occ::handle<Prs3d_PlaneAspect>   myPlaneAspect;
   occ::handle<Prs3d_LineAspect>    mySeenLineAspect;
   occ::handle<Prs3d_ArrowAspect>   myArrowAspect;
-  bool                             myLineArrowDraw;
-  bool                             myHasOwnLineArrowDraw;
+  bool            myLineArrowDraw;
+  bool            myHasOwnLineArrowDraw;
   occ::handle<Prs3d_LineAspect>    myHiddenLineAspect;
-  bool                             myDrawHiddenLine;
-  bool                             myHasOwnDrawHiddenLine;
+  bool            myDrawHiddenLine;
+  bool            myHasOwnDrawHiddenLine;
   occ::handle<Prs3d_LineAspect>    myVectorAspect;
-  Prs3d_VertexDrawMode             myVertexDrawMode;
+  Prs3d_VertexDrawMode        myVertexDrawMode;
   occ::handle<Prs3d_DatumAspect>   myDatumAspect;
   occ::handle<Prs3d_LineAspect>    mySectionAspect;
 
   occ::handle<Prs3d_LineAspect> myFreeBoundaryAspect;
-  bool                          myFreeBoundaryDraw;
-  bool                          myHasOwnFreeBoundaryDraw;
+  bool         myFreeBoundaryDraw;
+  bool         myHasOwnFreeBoundaryDraw;
   occ::handle<Prs3d_LineAspect> myUnFreeBoundaryAspect;
-  bool                          myUnFreeBoundaryDraw;
-  bool                          myHasOwnUnFreeBoundaryDraw;
+  bool         myUnFreeBoundaryDraw;
+  bool         myHasOwnUnFreeBoundaryDraw;
   occ::handle<Prs3d_LineAspect> myFaceBoundaryAspect;
   // clang-format off
   int              myFaceBoundaryUpperContinuity; //!< the most edge continuity class (GeomAbs_Shape) to be included to face boundaries presentation, or -1 if undefined
@@ -960,12 +951,12 @@ protected:
   bool myHasOwnFaceBoundaryDraw;
 
   occ::handle<Prs3d_DimensionAspect> myDimensionAspect;
-  Prs3d_DimensionUnits               myDimensionModelUnits;
-  bool                               myHasOwnDimLengthModelUnits;
-  bool                               myHasOwnDimAngleModelUnits;
-  Prs3d_DimensionUnits               myDimensionDisplayUnits;
-  bool                               myHasOwnDimLengthDisplayUnits;
-  bool                               myHasOwnDimAngleDisplayUnits;
+  Prs3d_DimensionUnits          myDimensionModelUnits;
+  bool              myHasOwnDimLengthModelUnits;
+  bool              myHasOwnDimAngleModelUnits;
+  Prs3d_DimensionUnits          myDimensionDisplayUnits;
+  bool              myHasOwnDimLengthDisplayUnits;
+  bool              myHasOwnDimAngleDisplayUnits;
 };
 
 #endif // _Prs3d_Drawer_HeaderFile

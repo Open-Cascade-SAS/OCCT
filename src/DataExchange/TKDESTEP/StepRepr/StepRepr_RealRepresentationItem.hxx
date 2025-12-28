@@ -28,7 +28,7 @@ public:
   Standard_EXPORT StepRepr_RealRepresentationItem();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theName,
-                            const double                                 theValue);
+                            const double                     theValue);
 
   inline void SetValue(const double theValue) { value = theValue; }
 

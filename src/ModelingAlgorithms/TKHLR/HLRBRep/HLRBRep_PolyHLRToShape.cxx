@@ -25,6 +25,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -38,13 +39,13 @@ void HLRBRep_PolyHLRToShape::Update(const occ::handle<HLRBRep_PolyAlgo>& A)
 {
   myAlgo     = A;
   myHideMode = true;
-  double               sta, end;
-  float                tolsta, tolend;
+  double        sta, end;
+  float   tolsta, tolend;
   HLRAlgo_EdgeIterator It;
   myBiPntVis.Clear();
   myBiPntHid.Clear();
   TopoDS_Shape       S;
-  bool               reg1, regn, outl, intl;
+  bool   reg1, regn, outl, intl;
   const gp_Trsf&     T = myAlgo->Projector().Transformation();
   HLRAlgo_EdgeStatus status;
 
@@ -80,9 +81,9 @@ void HLRBRep_PolyHLRToShape::Update(const occ::handle<HLRBRep_PolyAlgo>& A)
 
 //=================================================================================================
 
-TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
-                                                      const bool          visible,
-                                                      const TopoDS_Shape& S)
+TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int typ,
+                                                      const bool visible,
+                                                      const TopoDS_Shape&    S)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Map;
   if (!S.IsNull())
@@ -93,10 +94,10 @@ TopoDS_Shape HLRBRep_PolyHLRToShape::InternalCompound(const int           typ,
     for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next())
       Map.Add(ex.Current());
   }
-  bool         todraw, reg1, regn, outl, intl;
-  bool         added = false;
-  TopoDS_Shape Result;
-  BRep_Builder B;
+  bool todraw, reg1, regn, outl, intl;
+  bool added = false;
+  TopoDS_Shape     Result;
+  BRep_Builder     B;
   B.MakeCompound(TopoDS::Compound(Result));
 
   if (myHideMode)

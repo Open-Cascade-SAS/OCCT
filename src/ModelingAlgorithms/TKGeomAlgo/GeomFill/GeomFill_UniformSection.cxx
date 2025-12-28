@@ -25,8 +25,10 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <stdio.h>
@@ -34,13 +36,13 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
 #ifdef DRAW
   #include <DrawTrSurf.hxx>
-static int  NumSec = 0;
+static int NumSec = 0;
 static bool Affich = 0;
 #endif
 
 GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& C,
-                                                 const double                   FirstParameter,
-                                                 const double                   LastParameter)
+                                                 const double       FirstParameter,
+                                                 const double       LastParameter)
     : First(FirstParameter),
       Last(LastParameter)
 {
@@ -70,8 +72,8 @@ GeomFill_UniformSection::GeomFill_UniformSection(const occ::handle<Geom_Curve>& 
 // Purpose :D0
 //=======================================================
 bool GeomFill_UniformSection::D0(const double,
-                                 NCollection_Array1<gp_Pnt>& Poles,
-                                 NCollection_Array1<double>& Weights)
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<double>& Weights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -83,10 +85,10 @@ bool GeomFill_UniformSection::D0(const double,
 // Purpose :D1
 //=======================================================
 bool GeomFill_UniformSection::D1(const double,
-                                 NCollection_Array1<gp_Pnt>& Poles,
-                                 NCollection_Array1<gp_Vec>& DPoles,
-                                 NCollection_Array1<double>& Weights,
-                                 NCollection_Array1<double>& DWeights)
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<gp_Vec>&   DPoles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -101,12 +103,12 @@ bool GeomFill_UniformSection::D1(const double,
 // Purpose :D2
 //=======================================================
 bool GeomFill_UniformSection::D2(const double,
-                                 NCollection_Array1<gp_Pnt>& Poles,
-                                 NCollection_Array1<gp_Vec>& DPoles,
-                                 NCollection_Array1<gp_Vec>& D2Poles,
-                                 NCollection_Array1<double>& Weights,
-                                 NCollection_Array1<double>& DWeights,
-                                 NCollection_Array1<double>& D2Weights)
+                                             NCollection_Array1<gp_Pnt>&   Poles,
+                                             NCollection_Array1<gp_Vec>&   DPoles,
+                                             NCollection_Array1<gp_Vec>&   D2Poles,
+                                             NCollection_Array1<double>& Weights,
+                                             NCollection_Array1<double>& DWeights,
+                                             NCollection_Array1<double>& D2Weights)
 {
   myCurve->Poles(Poles);
   myCurve->Weights(Weights);
@@ -124,10 +126,10 @@ bool GeomFill_UniformSection::D2(const double,
 //=======================================================
 occ::handle<Geom_BSplineSurface> GeomFill_UniformSection::BSplineSurface() const
 {
-  int                        ii, NbPoles = myCurve->NbPoles();
-  NCollection_Array2<gp_Pnt> Poles(1, NbPoles, 1, 2);
-  NCollection_Array1<double> UKnots(1, myCurve->NbKnots()), VKnots(1, 2);
-  NCollection_Array1<int>    UMults(1, myCurve->NbKnots()), VMults(1, 2);
+  int        ii, NbPoles = myCurve->NbPoles();
+  NCollection_Array2<gp_Pnt>      Poles(1, NbPoles, 1, 2);
+  NCollection_Array1<double>    UKnots(1, myCurve->NbKnots()), VKnots(1, 2);
+  NCollection_Array1<int> UMults(1, myCurve->NbKnots()), VMults(1, 2);
 
   for (ii = 1; ii <= NbPoles; ii++)
   {
@@ -142,13 +144,13 @@ occ::handle<Geom_BSplineSurface> GeomFill_UniformSection::BSplineSurface() const
   VMults.Init(2);
 
   occ::handle<Geom_BSplineSurface> BS = new (Geom_BSplineSurface)(Poles,
-                                                                  UKnots,
-                                                                  VKnots,
-                                                                  UMults,
-                                                                  VMults,
-                                                                  myCurve->Degree(),
-                                                                  1,
-                                                                  myCurve->IsPeriodic());
+                                                             UKnots,
+                                                             VKnots,
+                                                             UMults,
+                                                             VMults,
+                                                             myCurve->Degree(),
+                                                             1,
+                                                             myCurve->IsPeriodic());
 
   return BS;
 }
@@ -156,7 +158,9 @@ occ::handle<Geom_BSplineSurface> GeomFill_UniformSection::BSplineSurface() const
 //=======================================================
 // Purpose :SectionShape
 //=======================================================
-void GeomFill_UniformSection::SectionShape(int& NbPoles, int& NbKnots, int& Degree) const
+void GeomFill_UniformSection::SectionShape(int& NbPoles,
+                                           int& NbKnots,
+                                           int& Degree) const
 {
   NbPoles = myCurve->NbPoles();
   NbKnots = myCurve->NbKnots();
@@ -269,7 +273,7 @@ void GeomFill_UniformSection::GetTolerance(const double BoundTol,
 gp_Pnt GeomFill_UniformSection::BarycentreOfSurf() const
 {
   double U = mySection->FirstParameter(), Delta;
-  gp_Pnt P, Bary;
+  gp_Pnt        P, Bary;
 
   Delta = (myCurve->LastParameter() - U) / 20;
   Bary.SetCoord(0., 0., 0.);

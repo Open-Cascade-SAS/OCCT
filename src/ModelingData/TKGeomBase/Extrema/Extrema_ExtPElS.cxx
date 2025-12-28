@@ -70,11 +70,11 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cylinder& S, const doubl
   myNbExt = 0;
 
   // Projection of point P in plane XOY of the cylinder ...
-  gp_Ax3 Pos = S.Position();
-  gp_Pnt O   = Pos.Location();
-  gp_Vec OZ(Pos.Direction());
+  gp_Ax3        Pos = S.Position();
+  gp_Pnt        O   = Pos.Location();
+  gp_Vec        OZ(Pos.Direction());
   double V  = gp_Vec(O, P).Dot(OZ);
-  gp_Pnt Pp = P.Translated(OZ.Multiplied(-V));
+  gp_Pnt        Pp = P.Translated(OZ.Multiplied(-V));
 
   // Calculation of extrema
   gp_Vec OPp(O, Pp);
@@ -82,7 +82,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cylinder& S, const doubl
   {
     return;
   }
-  gp_Vec myZ = Pos.XDirection() ^ Pos.YDirection();
+  gp_Vec        myZ = Pos.XDirection() ^ Pos.YDirection();
   double U1  = gp_Vec(Pos.XDirection()).AngleWithRef(OPp, myZ); //-M_PI<U1<M_PI
   if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps)
   {
@@ -148,13 +148,13 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const double To
   myDone  = false;
   myNbExt = 0;
 
-  gp_Pnt M   = S.Apex();
-  gp_Ax3 Pos = S.Position();
-  gp_Pnt O   = Pos.Location();
+  gp_Pnt        M   = S.Apex();
+  gp_Ax3        Pos = S.Position();
+  gp_Pnt        O   = Pos.Location();
   double A   = S.SemiAngle();
-  gp_Vec OZ(Pos.Direction());
-  gp_Vec myZ = Pos.XDirection() ^ Pos.YDirection();
-  gp_Vec MP(M, P);
+  gp_Vec        OZ(Pos.Direction());
+  gp_Vec        myZ = Pos.XDirection() ^ Pos.YDirection();
+  gp_Vec        MP(M, P);
 
   double L2 = MP.SquareMagnitude();
   double Vm = -(S.RefRadius() / std::sin(A));
@@ -183,9 +183,9 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const double To
   gp_Vec OPp(O, Pp);
   if (OPp.SquareMagnitude() < Tol * Tol)
     return;
-  double U1, V1, U2, V2;
-  bool   Same = DirZ.Dot(MP) >= 0.0;
-  U1          = gp_Vec(Pos.XDirection()).AngleWithRef(OPp, myZ); //-M_PI<U1<M_PI
+  double    U1, V1, U2, V2;
+  bool Same = DirZ.Dot(MP) >= 0.0;
+  U1                    = gp_Vec(Pos.XDirection()).AngleWithRef(OPp, myZ); //-M_PI<U1<M_PI
   if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps)
   {
     U1 = 0.;
@@ -204,7 +204,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Cone& S, const double To
     U2 -= 2. * M_PI;
   }
   double B = MP.Angle(DirZ);
-  A        = std::abs(A);
+  A               = std::abs(A);
   double L = sqrt(L2);
   if (!Same)
   {
@@ -279,13 +279,13 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Sphere& S, const double 
   }
 
   // Projection if P in plane XOY of the sphere ...
-  gp_Pnt O = Pos.Location();
-  gp_Vec OZ(Pos.Direction());
+  gp_Pnt        O = Pos.Location();
+  gp_Vec        OZ(Pos.Direction());
   double Zp = OP.Dot(OZ);
-  gp_Pnt Pp = P.Translated(OZ.Multiplied(-Zp));
+  gp_Pnt        Pp = P.Translated(OZ.Multiplied(-Zp));
 
   // Calculation of extrema ...
-  gp_Vec OPp(O, Pp);
+  gp_Vec        OPp(O, Pp);
   double U1, U2, V;
   if (OPp.SquareMagnitude() < Tol * Tol)
   {
@@ -361,8 +361,8 @@ Function:
 void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Torus& S, const double Tol)
 {
   const double tol2 = Tol * Tol;
-  myDone            = false;
-  myNbExt           = 0;
+  myDone                   = false;
+  myNbExt                  = 0;
 
   // Projection of P in plane XOY ...
   gp_Ax3 Pos = S.Position();
@@ -371,14 +371,14 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Torus& S, const double T
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-(gp_Vec(O, P).Dot(Pos.Direction()))));
 
   // Calculation of extrema ...
-  gp_Vec OPp(O, Pp);
+  gp_Vec        OPp(O, Pp);
   double R2 = OPp.SquareMagnitude();
   if (R2 < tol2)
   {
     return;
   }
 
-  gp_Vec myZ = Pos.XDirection() ^ Pos.YDirection();
+  gp_Vec        myZ = Pos.XDirection() ^ Pos.YDirection();
   double U1  = gp_Vec(Pos.XDirection()).AngleWithRef(OPp, myZ);
   if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps)
   {
@@ -390,10 +390,10 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P, const gp_Torus& S, const double T
     U1 += 2. * M_PI;
   }
   double R   = sqrt(R2);
-  gp_Vec OO1 = OPp.Divided(R).Multiplied(S.MajorRadius());
-  gp_Vec OO2 = OO1.Multiplied(-1.);
-  gp_Pnt O1  = O.Translated(OO1);
-  gp_Pnt O2  = O.Translated(OO2);
+  gp_Vec        OO1 = OPp.Divided(R).Multiplied(S.MajorRadius());
+  gp_Vec        OO2 = OO1.Multiplied(-1.);
+  gp_Pnt        O1  = O.Translated(OO1);
+  gp_Pnt        O2  = O.Translated(OO2);
 
   if (O1.SquareDistance(P) < tol2)
   {
@@ -460,10 +460,10 @@ void Extrema_ExtPElS::Perform(const gp_Pnt& P,
   myNbExt = 0;
 
   // Projection of point P in plane XOY of the cylinder ...
-  gp_Pnt O = S.Location();
-  gp_Vec OZ(S.Axis().Direction());
+  gp_Pnt        O = S.Location();
+  gp_Vec        OZ(S.Axis().Direction());
   double U, V = gp_Vec(O, P).Dot(OZ);
-  gp_Pnt Pp = P.Translated(OZ.Multiplied(-V));
+  gp_Pnt        Pp = P.Translated(OZ.Multiplied(-V));
 
   ElSLib::Parameters(S, P, U, V);
   mySqDist[0] = Pp.SquareDistance(P);

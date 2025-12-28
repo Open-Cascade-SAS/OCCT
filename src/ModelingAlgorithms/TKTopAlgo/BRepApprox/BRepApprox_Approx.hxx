@@ -72,10 +72,10 @@ private:
     {
     }
 
-    bool                       myBezierApprox;
-    double                     Xo, Yo, Zo, U1o, V1o, U2o, V2o;
-    bool                       ApproxXYZ, ApproxU1V1, ApproxU2V2;
-    int                        indicemin, indicemax, myNbPntMax;
+    bool           myBezierApprox;
+    double              Xo, Yo, Zo, U1o, V1o, U2o, V2o;
+    bool           ApproxXYZ, ApproxU1V1, ApproxU2V2;
+    int           indicemin, indicemax, myNbPntMax;
     Approx_ParametrizationType parametrization;
   };
 
@@ -84,30 +84,30 @@ public:
 
   Standard_EXPORT BRepApprox_Approx();
 
-  Standard_EXPORT void Perform(const BRepAdaptor_Surface&                Surf1,
-                               const BRepAdaptor_Surface&                Surf2,
+  Standard_EXPORT void Perform(const BRepAdaptor_Surface&           Surf1,
+                               const BRepAdaptor_Surface&           Surf2,
                                const occ::handle<BRepApprox_ApproxLine>& aLine,
-                               const bool                                ApproxXYZ  = true,
-                               const bool                                ApproxU1V1 = true,
-                               const bool                                ApproxU2V2 = true,
-                               const int                                 indicemin  = 0,
-                               const int                                 indicemax  = 0);
+                               const bool               ApproxXYZ  = true,
+                               const bool               ApproxU1V1 = true,
+                               const bool               ApproxU2V2 = true,
+                               const int               indicemin  = 0,
+                               const int               indicemax  = 0);
 
   Standard_EXPORT void Perform(const occ::handle<BRepApprox_ApproxLine>& aLine,
-                               const bool                                ApproxXYZ  = true,
-                               const bool                                ApproxU1V1 = true,
-                               const bool                                ApproxU2V2 = true,
-                               const int                                 indicemin  = 0,
-                               const int                                 indicemax  = 0);
+                               const bool               ApproxXYZ  = true,
+                               const bool               ApproxU1V1 = true,
+                               const bool               ApproxU2V2 = true,
+                               const int               indicemin  = 0,
+                               const int               indicemax  = 0);
 
   Standard_EXPORT void SetParameters(
-    const double                     Tol3d,
-    const double                     Tol2d,
-    const int                        DegMin,
-    const int                        DegMax,
-    const int                        NbIterMax,
-    const int                        NbPntMax           = 30,
-    const bool                       ApproxWithTangency = true,
+    const double              Tol3d,
+    const double              Tol2d,
+    const int           DegMin,
+    const int           DegMax,
+    const int           NbIterMax,
+    const int           NbPntMax           = 30,
+    const bool           ApproxWithTangency = true,
     const Approx_ParametrizationType Parametrization    = Approx_ChordLength);
 
   Standard_EXPORT void Perform();
@@ -123,21 +123,21 @@ public:
   Standard_EXPORT const AppParCurves_MultiBSpCurve& Value(const int Index) const;
 
   Standard_EXPORT static void Parameters(const BRepApprox_TheMultiLineOfApprox& Line,
-                                         const int                              firstP,
-                                         const int                              lastP,
+                                         const int                 firstP,
+                                         const int                 lastP,
                                          const Approx_ParametrizationType       Par,
                                          math_Vector&                           TheParameters);
 
 private:
-  Standard_EXPORT void Perform(const IntSurf_Quadric&                    Surf1,
-                               const BRepAdaptor_Surface&                Surf2,
+  Standard_EXPORT void Perform(const IntSurf_Quadric&               Surf1,
+                               const BRepAdaptor_Surface&           Surf2,
                                const occ::handle<BRepApprox_ApproxLine>& aLine,
-                               const bool                                ApproxXYZ,
-                               const bool                                ApproxU1V1,
-                               const bool                                ApproxU2V2,
-                               const int                                 indicemin,
-                               const int                                 indicemax,
-                               const bool                                isTheQuadFirst);
+                               const bool               ApproxXYZ,
+                               const bool               ApproxU1V1,
+                               const bool               ApproxU2V2,
+                               const int               indicemin,
+                               const int               indicemax,
+                               const bool               isTheQuadFirst);
 
   Standard_EXPORT void UpdateTolReached();
 
@@ -148,30 +148,30 @@ private:
   Standard_EXPORT void prepareDS(const bool theApproxXYZ,
                                  const bool theApproxU1V1,
                                  const bool theApproxU2V2,
-                                 const int  indicemin,
-                                 const int  indicemax);
+                                 const int indicemin,
+                                 const int indicemax);
 
   //! Build knot sequence.
   Standard_EXPORT void buildKnots(const occ::handle<BRepApprox_ApproxLine>& theline,
-                                  void* const                               thePtrSVSurf);
+                                  void* const               thePtrSVSurf);
 
   //! Build curve.
   Standard_EXPORT void buildCurve(const occ::handle<BRepApprox_ApproxLine>& theline,
-                                  void* const                               thePtrSVSurf);
+                                  void* const               thePtrSVSurf);
 
   BRepApprox_TheComputeLineOfApprox       myComputeLine;
   BRepApprox_TheComputeLineBezierOfApprox myComputeLineBezier;
   Approx_MCurvesToBSpCurve                myBezToBSpl;
-  bool                                    myWithTangency;
-  double                                  myTol3d;
-  double                                  myTol2d;
-  int                                     myDegMin;
-  int                                     myDegMax;
-  int                                     myNbIterMax;
-  double                                  myTolReached3d;
-  double                                  myTolReached2d;
+  bool                        myWithTangency;
+  double                           myTol3d;
+  double                           myTol2d;
+  int                        myDegMin;
+  int                        myDegMax;
+  int                        myNbIterMax;
+  double                           myTolReached3d;
+  double                           myTolReached2d;
   Approx_Data                             myData;
-  NCollection_Vector<int>                 myKnots;
+  NCollection_Vector<int>    myKnots;
 };
 
 #endif // _BRepApprox_Approx_HeaderFile

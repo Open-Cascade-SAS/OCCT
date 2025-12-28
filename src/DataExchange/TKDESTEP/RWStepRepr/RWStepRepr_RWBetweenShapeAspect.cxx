@@ -27,11 +27,10 @@ RWStepRepr_RWBetweenShapeAspect::RWStepRepr_RWBetweenShapeAspect() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWBetweenShapeAspect::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepRepr_BetweenShapeAspect>& ent) const
+void RWStepRepr_RWBetweenShapeAspect::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepRepr_BetweenShapeAspect>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "between_shape_aspect"))
@@ -73,7 +72,7 @@ void RWStepRepr_RWBetweenShapeAspect::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWBetweenShapeAspect::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepRepr_BetweenShapeAspect>& ent) const
 {
 
@@ -91,7 +90,7 @@ void RWStepRepr_RWBetweenShapeAspect::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWBetweenShapeAspect::Share(const occ::handle<StepRepr_BetweenShapeAspect>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of ShapeAspect

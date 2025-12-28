@@ -46,6 +46,7 @@ public:
 
   //! returns Value as a Surface (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Surface> Surface() const;
+
 };
 
 #endif // _StepGeom_PcurveOrSurface_HeaderFile

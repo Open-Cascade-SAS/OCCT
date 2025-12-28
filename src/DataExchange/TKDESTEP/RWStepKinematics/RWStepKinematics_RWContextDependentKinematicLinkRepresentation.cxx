@@ -34,7 +34,7 @@ RWStepKinematics_RWContextDependentKinematicLinkRepresentation::
 
 void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                    theData,
-  const int                                                                      theNum,
+  const int                                                    theNum,
   occ::handle<Interface_Check>&                                                  theArch,
   const occ::handle<StepKinematics_ContextDependentKinematicLinkRepresentation>& theEnt) const
 {
@@ -70,7 +70,7 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep(
-  StepData_StepWriter&                                                           theSW,
+  StepData_StepWriter&                                                      theSW,
   const occ::handle<StepKinematics_ContextDependentKinematicLinkRepresentation>& theEnt) const
 {
 
@@ -85,7 +85,7 @@ void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::WriteStep(
 
 void RWStepKinematics_RWContextDependentKinematicLinkRepresentation::Share(
   const occ::handle<StepKinematics_ContextDependentKinematicLinkRepresentation>& theEnt,
-  Interface_EntityIterator&                                                      iter) const
+  Interface_EntityIterator&                                                 iter) const
 {
 
   // Own fields of ContextDependentKinematicLinkRepresentation

@@ -15,16 +15,16 @@
 // commercial license or contractual agreement.
 
 occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> BSWK;
-int                                                                Deg, N, i, Nknots, itampon;
-double                                                             rtampon;
+int                                              Deg, N, i, Nknots, itampon;
+double                                                 rtampon;
 occ::handle<StepGeom_CartesianPoint>                               Pt = new StepGeom_CartesianPoint;
-occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Listpoints;
-StepGeom_BSplineCurveForm                                              Form;
-StepData_Logical                                                       Fermeture, Selfinter;
-occ::handle<NCollection_HArray1<int>>                                  Mult;
-occ::handle<NCollection_HArray1<double>>                               ListKnots, ListWeights;
-GeomAbs_BSplKnotDistribution                                           Distribution;
-StepGeom_KnotType                                                      KnotSpec;
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>                      Listpoints;
+StepGeom_BSplineCurveForm                                     Form;
+StepData_Logical                                              Fermeture, Selfinter;
+occ::handle<NCollection_HArray1<int>>                              Mult;
+occ::handle<NCollection_HArray1<double>>                                 ListKnots, ListWeights;
+GeomAbs_BSplKnotDistribution                                  Distribution;
+StepGeom_KnotType                                             KnotSpec;
 
 Deg = BS->Degree();
 
@@ -86,7 +86,7 @@ for (i = W.Lower(); i <= W.Upper(); i++)
   ListWeights->SetValue(i, rtampon);
 }
 
-BSWK = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
+BSWK                                  = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
 BSWK
   ->Init(name, Deg, Listpoints, Form, Fermeture, Selfinter, Mult, ListKnots, KnotSpec, ListWeights);

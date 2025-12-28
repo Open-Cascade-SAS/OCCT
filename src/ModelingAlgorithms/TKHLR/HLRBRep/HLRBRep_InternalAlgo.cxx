@@ -82,7 +82,7 @@ void HLRBRep_InternalAlgo::Update()
 {
   if (!myShapes.IsEmpty())
   {
-    int                        n  = myShapes.Length();
+    int      n  = myShapes.Length();
     occ::handle<HLRBRep_Data>* DS = new occ::handle<HLRBRep_Data>[n];
 
     int i, dv, de, df, nv = 0, ne = 0, nf = 0;
@@ -143,16 +143,16 @@ void HLRBRep_InternalAlgo::Update()
 
     myDS->Update(myProj);
 
-    HLRAlgo_EdgesBlock::MinMaxIndices     ShapMin, ShapMax, MinMaxShap;
-    HLRAlgo_EdgesBlock::MinMaxIndices     TheMin, TheMax;
-    NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
+    HLRAlgo_EdgesBlock::MinMaxIndices ShapMin, ShapMax, MinMaxShap;
+    HLRAlgo_EdgesBlock::MinMaxIndices TheMin, TheMax;
+    NCollection_Array1<HLRBRep_EdgeData>&            aEDataArray = myDS->EDataArray();
+    NCollection_Array1<HLRBRep_FaceData>&            aFDataArray = myDS->FDataArray();
 
     for (i = 1; i <= n; i++)
     {
-      bool                 FirstTime = true;
+      bool     FirstTime = true;
       HLRBRep_ShapeBounds& SB        = myShapes(i);
-      int                  v1, v2, e1, e2, f1, f2;
+      int     v1, v2, e1, e2, f1, f2;
       SB.Bounds(v1, v2, e1, e2, f1, f2);
 
       for (int e = e1; e <= e2; e++)
@@ -184,7 +184,7 @@ void HLRBRep_InternalAlgo::Update()
 
 void HLRBRep_InternalAlgo::Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
                                 const occ::handle<Standard_Transient>&   SData,
-                                const int                                nbIso)
+                                const int              nbIso)
 {
   myShapes.Append(HLRBRep_ShapeBounds(S, SData, nbIso, 0, 0, 0, 0, 0, 0));
   myDS.Nullify();
@@ -225,7 +225,8 @@ void HLRBRep_InternalAlgo::Remove(const int I)
 
 //=================================================================================================
 
-void HLRBRep_InternalAlgo::ShapeData(const int I, const occ::handle<Standard_Transient>& SData)
+void HLRBRep_InternalAlgo::ShapeData(const int            I,
+                                     const occ::handle<Standard_Transient>& SData)
 {
   Standard_OutOfRange_Raise_if(I == 0 || I > myShapes.Length(),
                                "HLRBRep_InternalAlgo::ShapeData : unknown Shape");
@@ -261,13 +262,13 @@ HLRBRep_ShapeBounds& HLRBRep_InternalAlgo::ShapeBounds(const int I)
 
 void HLRBRep_InternalAlgo::InitEdgeStatus()
 {
-  bool                 visible;
+  bool     visible;
   HLRBRep_FaceIterator faceIt;
 
   NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
   NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-  int                                   ne          = myDS->NbEdges();
-  int                                   nf          = myDS->NbFaces();
+  int       ne          = myDS->NbEdges();
+  int       nf          = myDS->NbFaces();
 
   for (int e = 1; e <= ne; e++)
   {
@@ -322,7 +323,7 @@ void HLRBRep_InternalAlgo::InitEdgeStatus()
 
       for (faceIt.InitEdge(fd); faceIt.MoreEdge(); faceIt.NextEdge())
       {
-        int               E   = faceIt.Edge();
+        int  E   = faceIt.Edge();
         HLRBRep_EdgeData* edf = &(myDS->EDataArray().ChangeValue(E));
         if (edf->Selected() && !edf->Vertical())
           edf->Status().ShowAll();
@@ -339,8 +340,8 @@ void HLRBRep_InternalAlgo::Select()
   {
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
+    int       ne          = myDS->NbEdges();
+    int       nf          = myDS->NbFaces();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -370,8 +371,8 @@ void HLRBRep_InternalAlgo::Select(const int I)
 
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
+    int       ne          = myDS->NbEdges();
+    int       nf          = myDS->NbFaces();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -400,7 +401,7 @@ void HLRBRep_InternalAlgo::SelectEdge(const int I)
     myShapes(I).Bounds(v1, v2, e1, e2, f1, f2);
 
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    int                                   ne          = myDS->NbEdges();
+    int       ne          = myDS->NbEdges();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -423,7 +424,7 @@ void HLRBRep_InternalAlgo::SelectFace(const int I)
     myShapes(I).Bounds(v1, v2, e1, e2, f1, f2);
 
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   nf          = myDS->NbFaces();
+    int       nf          = myDS->NbFaces();
 
     for (int f = 1; f <= nf; f++)
     {
@@ -440,7 +441,7 @@ void HLRBRep_InternalAlgo::ShowAll()
   if (!myDS.IsNull())
   {
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    int                                   ne          = myDS->NbEdges();
+    int       ne          = myDS->NbEdges();
 
     for (int ie = 1; ie <= ne; ie++)
     {
@@ -462,7 +463,7 @@ void HLRBRep_InternalAlgo::ShowAll(const int I)
     Select(I);
 
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    int                                   ne          = myDS->NbEdges();
+    int       ne          = myDS->NbEdges();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -480,7 +481,7 @@ void HLRBRep_InternalAlgo::HideAll()
   if (!myDS.IsNull())
   {
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    int                                   ne          = myDS->NbEdges();
+    int       ne          = myDS->NbEdges();
 
     for (int ie = 1; ie <= ne; ie++)
     {
@@ -502,7 +503,7 @@ void HLRBRep_InternalAlgo::HideAll(const int I)
     Select(I);
 
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
-    int                                   ne          = myDS->NbEdges();
+    int       ne          = myDS->NbEdges();
 
     for (int e = 1; e <= ne; e++)
     {
@@ -636,17 +637,17 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
 #endif
 
   HLRBRep_ShapeBounds& SB = myShapes(I);
-  int                  v1, v2, e1, e2, f1, f2;
+  int     v1, v2, e1, e2, f1, f2;
   SB.Bounds(v1, v2, e1, e2, f1, f2);
 
   if (e2 >= e1)
   {
     myDS->InitBoundSort(SB.MinMax(), e1, e2);
-    HLRBRep_Hider                         Cache(myDS);
+    HLRBRep_Hider          Cache(myDS);
     NCollection_Array1<HLRBRep_EdgeData>& aEDataArray = myDS->EDataArray();
     NCollection_Array1<HLRBRep_FaceData>& aFDataArray = myDS->FDataArray();
-    int                                   ne          = myDS->NbEdges();
-    int                                   nf          = myDS->NbFaces();
+    int       ne          = myDS->NbEdges();
+    int       nf          = myDS->NbFaces();
 
     if (myDebug)
     {
@@ -703,7 +704,7 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
       return;
 
     int QWE = 0, QWEQWE;
-    QWEQWE  = nf / 10;
+    QWEQWE               = nf / 10;
 
     if (SideFace)
     {
@@ -740,9 +741,9 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
     }
 
     //--
-    NCollection_Array1<int>    Val(1, nf);
-    NCollection_Array1<double> Size(1, nf);
-    NCollection_Array1<int>    Index(1, nf);
+    NCollection_Array1<int> Val(1, nf);
+    NCollection_Array1<double>    Size(1, nf);
+    NCollection_Array1<int> Index(1, nf);
 
     for (f = 1; f <= nf; f++)
     {
@@ -857,7 +858,7 @@ void HLRBRep_InternalAlgo::HideSelected(const int I, const bool SideFace)
     QWE = 0;
     for (f = 1; f <= nf; f++)
     {
-      int               fi = Index(f);
+      int  fi = Index(f);
       HLRBRep_FaceData& fd = aFDataArray.ChangeValue(fi);
       if (fd.Selected())
       {

@@ -22,6 +22,7 @@
 #include <OSD_Environment.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <Resource_Manager.hxx>
+#include <TCollection_AsciiString.hxx>
 
 //! Searches for the existence of the plugin file according to its name thePluginName:
 //! - if thePluginName is empty then it defaults to DrawPlugin
@@ -33,7 +34,7 @@
 //!   explicitly set, it is forced to (for further reuse by Resource_Manager)
 //! @return TRUE if the file exists, otherwise - False
 static bool findPluginFile(TCollection_AsciiString& thePluginName,
-                           TCollection_AsciiString& thePluginDir)
+                                       TCollection_AsciiString& thePluginDir)
 {
   // check if the file name has been specified and use default value if not
   if (thePluginName.IsEmpty())
@@ -108,16 +109,15 @@ static bool findPluginFile(TCollection_AsciiString& thePluginName,
 //! (plugins to load).
 //! @param theMap [in] [out] map to resolve (will be rewritten)
 //! @param theResMgr [in] resource manager to resolve keys
-static void resolveKeys(NCollection_IndexedMap<TCollection_AsciiString>& theMap,
-                        const occ::handle<Resource_Manager>&             theResMgr)
+static void resolveKeys(NCollection_IndexedMap<TCollection_AsciiString>& theMap, const occ::handle<Resource_Manager>& theResMgr)
 {
   if (theResMgr.IsNull())
   {
     return;
   }
 
-  NCollection_IndexedMap<TCollection_AsciiString> aMap, aMap2;
-  const int                                       aMapExtent = theMap.Extent();
+  NCollection_IndexedMap<TCollection_AsciiString>  aMap, aMap2;
+  const int aMapExtent = theMap.Extent();
   for (int j = 1; j <= aMapExtent; ++j)
   {
     TCollection_AsciiString        aValue;
@@ -171,10 +171,12 @@ static void resolveKeys(NCollection_IndexedMap<TCollection_AsciiString>& theMap,
 
 //=================================================================================================
 
-static int Pload(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int Pload(Draw_Interpretor& theDI,
+                              int  theNbArgs,
+                              const char**      theArgVec)
 {
-  NCollection_IndexedMap<TCollection_AsciiString> aMap;
-  TCollection_AsciiString                         aPluginFileName;
+  NCollection_IndexedMap<TCollection_AsciiString>   aMap;
+  TCollection_AsciiString aPluginFileName;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     const TCollection_AsciiString aTK(theArgVec[anArgIter]);

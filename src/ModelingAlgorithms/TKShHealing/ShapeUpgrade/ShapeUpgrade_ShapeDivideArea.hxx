@@ -54,14 +54,15 @@ public:
 
 protected:
   //! Returns the tool for splitting faces.
-  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const override;
+  Standard_EXPORT virtual occ::handle<ShapeUpgrade_FaceDivide> GetSplitFaceTool() const
+    override;
 
 private:
-  double myMaxArea;
-  int    myNbParts;
-  int    myUnbSplit;
-  int    myVnbSplit;
-  bool   myIsSplittingByNumber;
+  double    myMaxArea;
+  int myNbParts;
+  int myUnbSplit;
+  int myVnbSplit;
+  bool myIsSplittingByNumber;
 };
 
 #include <ShapeUpgrade_ShapeDivideArea.lxx>

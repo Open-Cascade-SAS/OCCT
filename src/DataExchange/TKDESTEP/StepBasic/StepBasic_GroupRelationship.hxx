@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasDescription,
+                            const bool                  hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepBasic_Group>&          aRelatingGroup,
                             const occ::handle<StepBasic_Group>&          aRelatedGroup);
@@ -72,7 +72,7 @@ private:
   occ::handle<TCollection_HAsciiString> theDescription;
   occ::handle<StepBasic_Group>          theRelatingGroup;
   occ::handle<StepBasic_Group>          theRelatedGroup;
-  bool                                  defDescription;
+  bool                 defDescription;
 };
 
 #endif // _StepBasic_GroupRelationship_HeaderFile

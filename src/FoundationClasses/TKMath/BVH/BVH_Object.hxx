@@ -48,7 +48,7 @@ protected:
   }
 
 protected:
-  bool                        myIsDirty;    //!< Marks internal object state as outdated
+  bool       myIsDirty;    //!< Marks internal object state as outdated
   occ::handle<BVH_Properties> myProperties; //!< Generic properties assigned to the object
 };
 

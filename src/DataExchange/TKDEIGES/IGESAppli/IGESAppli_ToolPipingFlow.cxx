@@ -24,37 +24,46 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
+#include <IGESDraw_ConnectPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESAppli_ToolPipingFlow::IGESAppli_ToolPipingFlow() {}
 
 void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingFlow>&    ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                       PR) const
+                                             IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                                                                     tempNbContextFlags;
-  int                                                                     tempTypeOfFlow;
-  int                                                                     i, num;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempFlowAssocs;
-  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>    tempConnectPoints;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      tempJoins;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempFlowNames;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
-                                                                     tempTextDisplayTemplates;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempContFlowAssocs;
+  int                               tempNbContextFlags;
+  int                               tempTypeOfFlow;
+  int                               i, num;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempFlowAssocs;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>         tempConnectPoints;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempJoins;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>        tempFlowNames;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> tempTextDisplayTemplates;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempContFlowAssocs;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (PR.DefinedElseSkip())
@@ -93,8 +102,7 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
   if (!PR.ReadInteger(PR.Current(), "Number of Text Displays", num))
     num = 0;
   if (num > 0)
-    tempTextDisplayTemplates =
-      new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
+    tempTextDisplayTemplates = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
   else
     PR.AddFail("Number of Text Displays: Not Positive");
 
@@ -183,7 +191,7 @@ void IGESAppli_ToolPipingFlow::ReadOwnParams(const occ::handle<IGESAppli_PipingF
 }
 
 void IGESAppli_ToolPipingFlow::WriteOwnParams(const occ::handle<IGESAppli_PipingFlow>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   int i, num;
   IW.Send(ent->NbContextFlags());
@@ -209,7 +217,7 @@ void IGESAppli_ToolPipingFlow::WriteOwnParams(const occ::handle<IGESAppli_Piping
 }
 
 void IGESAppli_ToolPipingFlow::OwnShared(const occ::handle<IGESAppli_PipingFlow>& ent,
-                                         Interface_EntityIterator&                iter) const
+                                         Interface_EntityIterator&           iter) const
 {
   int i, num;
   for (num = ent->NbFlowAssociativities(), i = 1; i <= num; i++)
@@ -226,14 +234,13 @@ void IGESAppli_ToolPipingFlow::OwnShared(const occ::handle<IGESAppli_PipingFlow>
 
 void IGESAppli_ToolPipingFlow::OwnCopy(const occ::handle<IGESAppli_PipingFlow>& another,
                                        const occ::handle<IGESAppli_PipingFlow>& ent,
-                                       Interface_CopyTool&                      TC) const
+                                       Interface_CopyTool&                 TC) const
 {
   int tempNbContextFlags = another->NbContextFlags();
   int tempTypeOfFlow     = another->TypeOfFlow();
   int i, num;
-  num = another->NbFlowAssociativities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempFlowAssocs =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  num                                                 = another->NbFlowAssociativities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempFlowAssocs = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, new_item, TC.Transferred(another->FlowAssociativity(i)));
@@ -247,9 +254,8 @@ void IGESAppli_ToolPipingFlow::OwnCopy(const occ::handle<IGESAppli_PipingFlow>& 
     DeclareAndCast(IGESDraw_ConnectPoint, new_item, TC.Transferred(another->ConnectPoint(i)));
     tempConnectPoints->SetValue(i, new_item);
   }
-  num = another->NbJoins();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempJoins =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  num                                            = another->NbJoins();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempJoins = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, new_item, TC.Transferred(another->Join(i)));
@@ -261,9 +267,8 @@ void IGESAppli_ToolPipingFlow::OwnCopy(const occ::handle<IGESAppli_PipingFlow>& 
   for (i = 1; i <= num; i++)
     tempFlowNames->SetValue(i, new TCollection_HAsciiString(another->FlowName(i)));
   num = another->NbTextDisplayTemplates();
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
-    tempTextDisplayTemplates =
-      new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> tempTextDisplayTemplates =
+    new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, num);
   for (i = 1; i <= num; i++)
   {
     DeclareAndCast(IGESGraph_TextDisplayTemplate,
@@ -322,9 +327,9 @@ void IGESAppli_ToolPipingFlow::OwnCheck(const occ::handle<IGESAppli_PipingFlow>&
 }
 
 void IGESAppli_ToolPipingFlow::OwnDump(const occ::handle<IGESAppli_PipingFlow>& ent,
-                                       const IGESData_IGESDumper&               dumper,
-                                       Standard_OStream&                        S,
-                                       const int                                level) const
+                                       const IGESData_IGESDumper&          dumper,
+                                       Standard_OStream&                   S,
+                                       const int              level) const
 {
   S << "IGESAppli_PipingFlow\n";
   S << "Number of Context Flags : " << ent->NbContextFlags() << "\n";

@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepVisual_PlanarBox>&     aViewWindow,
-                            const bool                                   aViewWindowClipping);
+                            const bool                  aViewWindowClipping);
 
   Standard_EXPORT void SetViewWindow(const occ::handle<StepVisual_PlanarBox>& aViewWindow);
 
@@ -48,7 +48,7 @@ public:
 
 private:
   occ::handle<StepVisual_PlanarBox> viewWindow;
-  bool                              viewWindowClipping;
+  bool             viewWindowClipping;
 };
 
 #endif // _StepVisual_CameraModelD2_HeaderFile

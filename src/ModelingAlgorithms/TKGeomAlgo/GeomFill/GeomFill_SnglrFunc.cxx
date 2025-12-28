@@ -32,7 +32,7 @@ GeomFill_SnglrFunc::GeomFill_SnglrFunc(const occ::handle<Adaptor3d_Curve>& HC)
 occ::handle<Adaptor3d_Curve> GeomFill_SnglrFunc::ShallowCopy() const
 {
   occ::handle<GeomFill_SnglrFunc> aCopy = new GeomFill_SnglrFunc(myHCurve->ShallowCopy());
-  aCopy->ratio                          = ratio;
+  aCopy->ratio                     = ratio;
   return aCopy;
 }
 
@@ -140,7 +140,11 @@ void GeomFill_SnglrFunc::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) c
   V2 *= ratio;
 }
 
-void GeomFill_SnglrFunc::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+void GeomFill_SnglrFunc::D3(const double U,
+                            gp_Pnt&             P,
+                            gp_Vec&             V1,
+                            gp_Vec&             V2,
+                            gp_Vec&             V3) const
 {
   gp_Vec DC, D2C, D3C, D4C, D5C;
   myHCurve->D3(U, P, DC, D2C, D3C);

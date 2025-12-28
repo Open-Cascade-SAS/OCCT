@@ -60,8 +60,8 @@ public:
 private:
   void* startLeftArc;
   void* endLeftArc;
-  int   index;
-  int   geomIndex;
+  int index;
+  int geomIndex;
 };
 
 #endif // _MAT_BasicElt_HeaderFile

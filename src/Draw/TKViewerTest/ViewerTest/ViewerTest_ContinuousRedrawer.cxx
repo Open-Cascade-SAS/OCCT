@@ -47,7 +47,8 @@ ViewerTest_ContinuousRedrawer::~ViewerTest_ContinuousRedrawer()
 
 //=================================================================================================
 
-void ViewerTest_ContinuousRedrawer::Start(const occ::handle<V3d_View>& theView, double theTargetFps)
+void ViewerTest_ContinuousRedrawer::Start(const occ::handle<V3d_View>& theView,
+                                          double           theTargetFps)
 {
   if (myView != theView || myTargetFps != theTargetFps)
   {
@@ -109,7 +110,7 @@ void ViewerTest_ContinuousRedrawer::Pause()
 void ViewerTest_ContinuousRedrawer::doThreadLoop()
 {
   occ::handle<Aspect_DisplayConnection> aDisp = new Aspect_DisplayConnection();
-  OSD_Timer                             aTimer;
+  OSD_Timer                        aTimer;
   aTimer.Start();
   double       aTimeOld   = 0.0;
   const double aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;

@@ -33,7 +33,7 @@ public:
   //! otherwise
   Standard_EXPORT static void RegisterFactory(
     const occ::handle<Graphic3d_GraphicDriverFactory>& theFactory,
-    bool                                               theIsPreferred = false);
+    bool                                          theIsPreferred = false);
 
   //! Unregisters factory.
   Standard_EXPORT static void UnregisterFactory(const TCollection_AsciiString& theName);
@@ -42,8 +42,7 @@ public:
   Standard_EXPORT static occ::handle<Graphic3d_GraphicDriverFactory> DefaultDriverFactory();
 
   //! Return the global map of registered driver factories.
-  Standard_EXPORT static const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>&
-    DriverFactories();
+  Standard_EXPORT static const NCollection_List<occ::handle<Graphic3d_GraphicDriverFactory>>& DriverFactories();
 
 public:
   //! Creates new empty graphic driver.

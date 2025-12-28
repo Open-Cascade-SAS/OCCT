@@ -330,8 +330,7 @@ int StepData_PDescr::FieldRank() const
   return thefnum;
 }
 
-void StepData_PDescr::Check(const StepData_Field& /*afild*/,
-                            occ::handle<Interface_Check>& /*ach*/) const
+void StepData_PDescr::Check(const StepData_Field& /*afild*/, occ::handle<Interface_Check>& /*ach*/) const
 {
   //  For now...
 }

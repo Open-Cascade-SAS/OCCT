@@ -175,7 +175,8 @@ void Graphic3d_CLight::SetDirection(const gp_Dir& theDir)
   updateRevisionIf(
     std::abs(myDirection.x() - static_cast<float>(theDir.X())) > ShortRealEpsilon()
     || std::abs(myDirection.y() - static_cast<float>(theDir.Y())) > ShortRealEpsilon()
-    || std::abs(myDirection.z() - static_cast<float>(theDir.Z())) > ShortRealEpsilon());
+    || std::abs(myDirection.z() - static_cast<float>(theDir.Z()))
+         > ShortRealEpsilon());
 
   myDirection.x() = static_cast<float>(theDir.X());
   myDirection.y() = static_cast<float>(theDir.Y());
@@ -227,7 +228,8 @@ void Graphic3d_CLight::SetAngle(float theAngle)
 
 //=================================================================================================
 
-void Graphic3d_CLight::SetAttenuation(float theConstAttenuation, float theLinearAttenuation)
+void Graphic3d_CLight::SetAttenuation(float theConstAttenuation,
+                                      float theLinearAttenuation)
 {
   Standard_ProgramError_Raise_if(myType != Graphic3d_TypeOfLightSource_Positional
                                    && myType != Graphic3d_TypeOfLightSource_Spot,

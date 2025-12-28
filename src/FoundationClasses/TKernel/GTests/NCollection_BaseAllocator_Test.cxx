@@ -19,11 +19,13 @@
 // Simple struct to test allocations
 struct TestStruct
 {
-  int    myValue1;
-  double myValue2;
-  char   myChar;
+  int   myValue1;
+  double      myValue2;
+  char myChar;
 
-  TestStruct(int theVal1 = 0, double theVal2 = 0.0, char theChar = 'A')
+  TestStruct(int   theVal1 = 0,
+             double      theVal2 = 0.0,
+             char theChar = 'A')
       : myValue1(theVal1),
         myValue2(theVal2),
         myChar(theChar)
@@ -155,8 +157,7 @@ TEST(NCollection_BaseAllocatorTest, UsageWithVector)
   EXPECT_EQ(aVector(2).myChar, 'Z');
 
   // Create a custom allocator
-  occ::handle<NCollection_BaseAllocator> aCustomAlloc =
-    NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> aCustomAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection using custom allocator
   NCollection_Vector<TestStruct> aVectorWithCustomAlloc(5, aCustomAlloc);
@@ -178,8 +179,7 @@ TEST(NCollection_BaseAllocatorTest, UsageWithVector)
 
 TEST(NCollection_BaseAllocatorTest, CopyAndMove)
 {
-  occ::handle<NCollection_BaseAllocator> anAlloc1 =
-    NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> anAlloc1 = NCollection_BaseAllocator::CommonBaseAllocator();
 
   // Create a collection with allocator
   NCollection_Vector<TestStruct> aVector1(5, anAlloc1);
@@ -193,9 +193,8 @@ TEST(NCollection_BaseAllocatorTest, CopyAndMove)
   EXPECT_EQ(aVector2(1), TestStruct(20, 2.0, 'B'));
 
   // Create a new collection with new allocator
-  occ::handle<NCollection_BaseAllocator> anAlloc2 =
-    NCollection_BaseAllocator::CommonBaseAllocator();
-  NCollection_Vector<TestStruct> aVector3(5, anAlloc2);
+  occ::handle<NCollection_BaseAllocator> anAlloc2 = NCollection_BaseAllocator::CommonBaseAllocator();
+  NCollection_Vector<TestStruct>    aVector3(5, anAlloc2);
 
   // Assignment operator should preserve the destination's allocator
   aVector3 = aVector1;

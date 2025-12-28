@@ -30,9 +30,12 @@
 #include <gp_Pnt2d.hxx>
 #include <IntTools_FClass2d.hxx>
 #include <Precision.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_Orientation.hxx>
@@ -76,25 +79,25 @@ bool IntTools_FClass2d::IsHole() const
 
 void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
 {
-  bool   WireIsNotEmpty, Ancienpnt3dinitialise, degenerated;
-  int    firstpoint, NbEdges;
-  int    iX, aNbs1, nbs, Avant, BadWire;
-  double u, du, Tole, Tol, pfbid, plbid;
-  double FlecheU, FlecheV, TolVertex1, TolVertex;
-  double uFirst, uLast;
-  double aPrCf, aPrCf2;
+  bool WireIsNotEmpty, Ancienpnt3dinitialise, degenerated;
+  int firstpoint, NbEdges;
+  int iX, aNbs1, nbs, Avant, BadWire;
+  double    u, du, Tole, Tol, pfbid, plbid;
+  double    FlecheU, FlecheV, TolVertex1, TolVertex;
+  double    uFirst, uLast;
+  double    aPrCf, aPrCf2;
   //
-  TopoDS_Edge                    edge;
-  TopoDS_Vertex                  Va, Vb;
-  TopAbs_Orientation             Or;
-  BRepTools_WireExplorer         aWExp;
-  TopExp_Explorer                aExpF, aExp;
-  occ::handle<Geom2d_Curve>      aC2D;
-  gp_Pnt                         Ancienpnt3d;
-  NCollection_Sequence<gp_Pnt2d> SeqPnt2d;
-  NCollection_DataMap<int, int>  anIndexMap;
-  NCollection_Sequence<gp_Vec2d> aD1Prev;
-  NCollection_Sequence<gp_Vec2d> aD1Next;
+  TopoDS_Edge                     edge;
+  TopoDS_Vertex                   Va, Vb;
+  TopAbs_Orientation              Or;
+  BRepTools_WireExplorer          aWExp;
+  TopExp_Explorer                 aExpF, aExp;
+  occ::handle<Geom2d_Curve>            aC2D;
+  gp_Pnt                          Ancienpnt3d;
+  NCollection_Sequence<gp_Pnt2d>          SeqPnt2d;
+  NCollection_DataMap<int, int> anIndexMap;
+  NCollection_Sequence<gp_Vec2d>          aD1Prev;
+  NCollection_Sequence<gp_Vec2d>          aD1Next;
   //
   aPrCf    = Precision::Confusion();
   aPrCf2   = aPrCf * aPrCf;
@@ -201,15 +204,15 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         // check that whole curve is located in vicinity of its middle point
         // (within sphere of Precision::Confusion() diameter)
         C3d.Initialize(edge, Face);
-        gp_Pnt P3da       = C3d.Value(0.5 * (pfbid + plbid));
-        du                = plbid - pfbid;
-        const int NBSTEPS = 10;
-        double    aPrec2  = 0.25 * Precision::Confusion() * Precision::Confusion();
-        degenerated       = true;
+        gp_Pnt P3da           = C3d.Value(0.5 * (pfbid + plbid));
+        du                    = plbid - pfbid;
+        const int     NBSTEPS = 10;
+        double aPrec2  = 0.25 * Precision::Confusion() * Precision::Confusion();
+        degenerated           = true;
         for (int i = 0; i <= NBSTEPS; i++)
         {
           double U    = pfbid + i * du / NBSTEPS;
-          gp_Pnt P3db = C3d.Value(U);
+          gp_Pnt        P3db = C3d.Value(U);
           double aR2  = P3da.SquareDistance(P3db);
           if (aR2 > aPrec2)
           {
@@ -254,9 +257,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       if (nbs == 2)
       {
         double aCoef = 0.0025;
-        aPrms(1)     = uFirst;
-        aPrms(2)     = uFirst + aCoef * (uLast - uFirst);
-        aPrms(3)     = uLast;
+        aPrms(1)            = uFirst;
+        aPrms(2)            = uFirst + aCoef * (uLast - uFirst);
+        aPrms(3)            = uLast;
       }
       else if (nbs > 2)
       {
@@ -277,11 +280,11 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       Avant = SeqPnt2d.Length();
       for (iX = firstpoint; iX <= aNbs1; iX++)
       {
-        bool     IsRealCurve3d;
-        int      ii;
-        double   aDstX;
-        gp_Pnt2d P2d;
-        gp_Pnt   P3d;
+        bool IsRealCurve3d;
+        int ii;
+        double    aDstX;
+        gp_Pnt2d         P2d;
+        gp_Pnt           P3d;
         //
         u   = aPrms(iX);
         P2d = C.Value(u);
@@ -313,7 +316,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
           if (iX > 1)
           {
             double aDstX1;
-            gp_Pnt MidP3d;
+            gp_Pnt        MidP3d;
             //
             MidP3d = C3d.Value(0.5 * (u + aPrms(iX - 1)));
             aDstX1 = P3d.SquareDistance(MidP3d);
@@ -337,8 +340,8 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         ii = SeqPnt2d.Length();
         if (ii > (Avant + 4))
         {
-          double   ul, dU, dV;
-          gp_Pnt2d Pp;
+          double ul, dU, dV;
+          gp_Pnt2d      Pp;
           //
           gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
           ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
@@ -367,9 +370,9 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         firstpoint = 2;
       WireIsNotEmpty = true;
       // Append the derivative of the first parameter.
-      double   aU = aPrms(1);
-      gp_Pnt2d aP;
-      gp_Vec2d aV;
+      double aU = aPrms(1);
+      gp_Pnt2d      aP;
+      gp_Vec2d      aV;
 
       C.D1(aU, aP, aV);
 
@@ -402,7 +405,7 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
     {
       //-- count ++ with normal explorer and -- with Wire Explorer
       NCollection_Array1<gp_Pnt2d> PClass(1, 2);
-      gp_Pnt2d                     anInitPnt(0., 0.);
+      gp_Pnt2d             anInitPnt(0., 0.);
       //
       PClass.Init(anInitPnt);
       TabClass.Append(CSLib_Class2d(PClass, FlecheU, FlecheV, Umin, Vmin, Umax, Vmax));
@@ -415,16 +418,16 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
       if (SeqPnt2d.Length() > 3)
       {
 #ifdef DEBUG_PCLASS_POLYGON
-        NCollection_Array1<gp_Pnt2d> PClass(1, nbpnts);
-        NCollection_Array1<double>   aKnots(1, nbpnts);
-        NCollection_Array1<int>      aMults(1, nbpnts);
+        NCollection_Array1<gp_Pnt2d>    PClass(1, nbpnts);
+        NCollection_Array1<double>    aKnots(1, nbpnts);
+        NCollection_Array1<int> aMults(1, nbpnts);
         for (int i = 1; i <= nbpnts; i++)
         {
           aKnots(i)  = i;
           aMults(i)  = 1;
           PClass(ii) = SeqPnt2d.Value(ii);
         }
-        aMults(1) = aMults(nbpnts)            = 2;
+        aMults(1) = aMults(nbpnts)       = 2;
         occ::handle<Geom2d_BSplineCurve> aPol = new Geom2d_BSplineCurve(PClass, aKnots, aMults, 1);
         DrawTrSurf::Set("pol", aPol);
 #endif
@@ -433,10 +436,10 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
         double aPer = 0.;
         Poly::PolygonProperties(SeqPnt2d, aS, aPer);
 
-        double anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
-        double aDefl      = std::max(FlecheU, FlecheV);
-        double aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
-        bool   isChanged  = false;
+        double    anExpThick = std::max(2. * std::abs(aS) / aPer, 1e-7);
+        double    aDefl      = std::max(FlecheU, FlecheV);
+        double    aDiscrDefl = std::min(aDefl * 0.1, anExpThick * 10.);
+        bool isChanged  = false;
         while (aDefl > anExpThick && aDiscrDefl > 1e-7)
         {
           // Deflection of the polygon is too much for this ratio of area and perimeter,
@@ -477,12 +480,12 @@ void IntTools_FClass2d::Init(const TopoDS_Face& aFace, const double TolUV)
               }
               if (nbp > 2)
               {
-                int      ii = SeqPnt2d.Length();
+                int ii = SeqPnt2d.Length();
                 gp_Lin2d Lin(SeqPnt2d(ii - 2), gp_Dir2d(gp_Vec2d(SeqPnt2d(ii - 2), SeqPnt2d(ii))));
-                double   ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
-                gp_Pnt2d Pp = ElCLib::Value(ul, Lin);
-                double   dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
-                double   dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
+                double ul = ElCLib::Parameter(Lin, SeqPnt2d(ii - 1));
+                gp_Pnt2d      Pp = ElCLib::Value(ul, Lin);
+                double dU = std::abs(Pp.X() - SeqPnt2d(ii - 1).X());
+                double dV = std::abs(Pp.Y() - SeqPnt2d(ii - 1).Y());
                 if (dU > FlecheU)
                   FlecheU = dU;
                 if (dV > FlecheV)
@@ -594,7 +597,8 @@ TopAbs_State IntTools_FClass2d::PerformInfinitePoint() const
 
 //=================================================================================================
 
-TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool RecadreOnPeriodic) const
+TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d&        _Puv,
+                                        const bool RecadreOnPeriodic) const
 {
   int nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
@@ -603,22 +607,22 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
   }
 
   //-- U1 is the First Param and U2 is in this case U1+Period
-  double       u       = _Puv.X();
-  double       v       = _Puv.Y();
-  double       uu      = u;
-  double       vv      = v;
-  TopAbs_State aStatus = TopAbs_UNKNOWN;
+  double u       = _Puv.X();
+  double v       = _Puv.Y();
+  double uu      = u;
+  double vv      = v;
+  TopAbs_State  aStatus = TopAbs_UNKNOWN;
 
   occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
   surf->Initialize(Face, false);
 
-  const bool   IsUPer  = surf->IsUPeriodic();
-  const bool   IsVPer  = surf->IsVPeriodic();
-  const double uperiod = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod = IsVPer ? surf->VPeriod() : 0.0;
+  const bool IsUPer  = surf->IsUPeriodic();
+  const bool IsVPer  = surf->IsVPeriodic();
+  const double    uperiod = IsUPer ? surf->UPeriod() : 0.0;
+  const double    vperiod = IsVPer ? surf->VPeriod() : 0.0;
 
   bool urecadre, vrecadre, bUseClassifier;
-  int  dedans = 1;
+  int dedans = 1;
   //
   urecadre = false;
   vrecadre = false;
@@ -686,8 +690,8 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
     if (bUseClassifier)
     {
       // compute tolerance to use in face classifier
-      double aURes, aVRes, aFCTol;
-      bool   bUIn, bVIn;
+      double    aURes, aVRes, aFCTol;
+      bool bUIn, bVIn;
       //
       aURes = surf->UResolution(Toluv);
       aVRes = surf->VResolution(Toluv);
@@ -759,9 +763,9 @@ TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv, const bool Recadre
 
 //=================================================================================================
 
-TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
+TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d&        _Puv,
                                                   const double    Tol,
-                                                  const bool      RecadreOnPeriodic) const
+                                                  const bool RecadreOnPeriodic) const
 {
   int nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
@@ -776,13 +780,13 @@ TopAbs_State IntTools_FClass2d::TestOnRestriction(const gp_Pnt2d& _Puv,
 
   occ::handle<BRepAdaptor_Surface> surf = new BRepAdaptor_Surface();
   surf->Initialize(Face, false);
-  const bool   IsUPer   = surf->IsUPeriodic();
-  const bool   IsVPer   = surf->IsVPeriodic();
-  const double uperiod  = IsUPer ? surf->UPeriod() : 0.0;
-  const double vperiod  = IsVPer ? surf->VPeriod() : 0.0;
-  TopAbs_State aStatus  = TopAbs_UNKNOWN;
-  bool         urecadre = false, vrecadre = false;
-  int          dedans = 1;
+  const bool IsUPer   = surf->IsUPeriodic();
+  const bool IsVPer   = surf->IsVPeriodic();
+  const double    uperiod  = IsUPer ? surf->UPeriod() : 0.0;
+  const double    vperiod  = IsVPer ? surf->VPeriod() : 0.0;
+  TopAbs_State           aStatus  = TopAbs_UNKNOWN;
+  bool       urecadre = false, vrecadre = false;
+  int       dedans = 1;
 
   if (RecadreOnPeriodic)
   {

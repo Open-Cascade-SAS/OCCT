@@ -36,7 +36,9 @@ inline int IntPatch_Polygo::NbSegments() const
 
 //=================================================================================================
 
-inline void IntPatch_Polygo::Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const
+inline void IntPatch_Polygo::Segment(const int theIndex,
+                                     gp_Pnt2d&              theBegin,
+                                     gp_Pnt2d&              theEnd) const
 {
   theBegin = Point(theIndex);
   theEnd   = Point(theIndex + 1);

@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_PointConstraint, Standard_Transient)
 //---------------------------------------------------------
 //         Constructeurs avec un point
 //---------------------------------------------------------
-GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt& Pt,
-                                                     const int     Order,
-                                                     const double  TolDist)
+GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt&          Pt,
+                                                     const int Order,
+                                                     const double    TolDist)
     : myOrder(Order),
       myLProp(2, TolDist),
       myPoint(Pt),
@@ -48,13 +48,13 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt& Pt,
 //---------------------------------------------------------
 //         Constructeurs avec un point sur surface
 //---------------------------------------------------------
-GeomPlate_PointConstraint::GeomPlate_PointConstraint(const double                     U,
-                                                     const double                     V,
+GeomPlate_PointConstraint::GeomPlate_PointConstraint(const double         U,
+                                                     const double         V,
                                                      const occ::handle<Geom_Surface>& Surf,
-                                                     const int                        Order,
-                                                     const double                     TolDist,
-                                                     const double                     TolAng,
-                                                     const double                     TolCurv)
+                                                     const int      Order,
+                                                     const double         TolDist,
+                                                     const double         TolAng,
+                                                     const double         TolCurv)
     : myOrder(Order),
       myLProp(2, TolDist),
       mySurf(Surf),

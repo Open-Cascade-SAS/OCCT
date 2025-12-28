@@ -68,9 +68,9 @@ public:
 
 private:
   occ::handle<ShapeBuild_ReShape> myContext;
-  double                          myPrecision;
-  double                          myMinTol;
-  double                          myMaxTol;
+  double              myPrecision;
+  double              myMinTol;
+  double              myMaxTol;
 };
 
 #include <ShapeUpgrade_Tool.lxx>

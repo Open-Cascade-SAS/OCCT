@@ -48,10 +48,10 @@ static void RefineDir(gp_Dir& aDir);
 class ExtremaExtElC_TrigonometricRoots
 {
 private:
-  double Roots[4];
-  bool   done;
-  int    NbRoots;
-  bool   infinite_roots;
+  double    Roots[4];
+  bool done;
+  int NbRoots;
+  bool infinite_roots;
 
 public:
   ExtremaExtElC_TrigonometricRoots(const double CC,
@@ -129,8 +129,8 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const double 
     : NbRoots(0),
       infinite_roots(false)
 {
-  int    i, nbessai;
-  double cc, sc, c, s, cte;
+  int i, nbessai;
+  double    cc, sc, c, s, cte;
   //
   nbessai = 1;
   cc      = CC;
@@ -153,9 +153,9 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const double 
       }
       else
       { // else #1
-        bool   Triee;
-        int    j, SvNbRoots;
-        double aTwoPI, aMaxCoef, aPrecision;
+        bool Triee;
+        int j, SvNbRoots;
+        double    aTwoPI, aMaxCoef, aPrecision;
         //
         aTwoPI  = M_PI + M_PI;
         NbRoots = MTFR.NbSolutions();
@@ -185,7 +185,7 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const double 
           double y;
           double co = cos(Roots[i]);
           double si = sin(Roots[i]);
-          y         = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
+          y                = co * (CC * co + (SC + SC) * si + C) + S * si + Cte;
           // modified by OCC  Tue Oct  3 18:43:00 2006
           if (std::abs(y) > aPrecision)
           {
@@ -321,17 +321,17 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const d
     mySqDist[anIdx] = RealLast();
   }
 
-  const gp_Dir &aD1 = theC1.Position().Direction(), &aD2 = theC2.Position().Direction();
-  const double  aCosA   = aD1.Dot(aD2);
-  const double  aSqSinA = 1.0 - aCosA * aCosA;
-  double        aU1 = 0.0, aU2 = 0.0;
+  const gp_Dir &      aD1 = theC1.Position().Direction(), &aD2 = theC2.Position().Direction();
+  const double aCosA   = aD1.Dot(aD2);
+  const double aSqSinA = 1.0 - aCosA * aCosA;
+  double       aU1 = 0.0, aU2 = 0.0;
   if (aSqSinA < gp::Resolution() || aD1.IsParallel(aD2, Precision::Angular()))
   {
     myIsPar = true;
   }
   else
   {
-    const gp_XYZ aL1L2 = theC2.Location().XYZ() - theC1.Location().XYZ();
+    const gp_XYZ        aL1L2 = theC2.Location().XYZ() - theC1.Location().XYZ();
     const double aD1L = aD1.XYZ().Dot(aL1L2), aD2L = aD2.XYZ().Dot(aL1L2);
     aU1 = (aD1L - aCosA * aD2L) / aSqSinA;
     aU2 = (aCosA * aD1L - aD2L) / aSqSinA;
@@ -359,7 +359,8 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& theC1, const gp_Lin& theC2, const d
 
 //=================================================================================================
 
-bool Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin& theLin, const gp_Circ& theCirc)
+bool Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin&  theLin,
+                                                         const gp_Circ& theCirc)
 {
   const gp_Dir &aDirC = theCirc.Axis().Direction(), &aDirL = theLin.Direction();
 
@@ -471,7 +472,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double
 {
   double Dx, Dy, Dz, aRO2O1, aTolRO2O1;
   double R, A1, A2, A3, A4, A5, aTol;
-  gp_Dir x2, y2, z2, D, D1;
+  gp_Dir        x2, y2, z2, D, D1;
   //
   myIsPar = false;
   myDone  = false;
@@ -598,9 +599,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double
     return;
   }
   // Storage of solutions ...
-  int    NoSol, NbSol;
-  double U1, U2;
-  gp_Pnt P1, P2;
+  int NoSol, NbSol;
+  double    U1, U2;
+  gp_Pnt           P1, P2;
   //
   NbSol = Sol.NbSolutions();
   for (NoSol = 1; NoSol <= NbSol; ++NoSol)
@@ -668,9 +669,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
   gp_Dir D  = C1.Direction();
   gp_Dir D1 = D;
   gp_Dir x2, y2, z2;
-  x2        = C2.XAxis().Direction();
-  y2        = C2.YAxis().Direction();
-  z2        = C2.Axis().Direction();
+  x2               = C2.XAxis().Direction();
+  y2               = C2.YAxis().Direction();
+  z2               = C2.Axis().Direction();
   double Dx = D.Dot(x2);
   double Dy = D.Dot(y2);
   double Dz = D.Dot(z2);
@@ -724,9 +725,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Elips& C2)
   }
 
   // Storage of solutions ...
-  gp_Pnt P1, P2;
-  double U1, U2;
-  int    NbSol = Sol.NbSolutions();
+  gp_Pnt           P1, P2;
+  double    U1, U2;
+  int NbSol = Sol.NbSolutions();
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     U2                  = Sol.Value(NoSol);
@@ -791,9 +792,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
   gp_Dir D  = C1.Direction();
   gp_Dir D1 = D;
   gp_Dir x2, y2, z2;
-  x2        = C2.XAxis().Direction();
-  y2        = C2.YAxis().Direction();
-  z2        = C2.Axis().Direction();
+  x2               = C2.XAxis().Direction();
+  y2               = C2.YAxis().Direction();
+  z2               = C2.Axis().Direction();
   double Dx = D.Dot(x2);
   double Dy = D.Dot(y2);
   double Dz = D.Dot(z2);
@@ -804,7 +805,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
   gp_Pnt O2 = C2.Location();
   gp_Vec O2O1(O2, O1);
   O2O1.SetCoord(O2O1.Dot(x2), O2O1.Dot(y2), O2O1.Dot(z2));
-  gp_XYZ Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
+  gp_XYZ        Vxyz = (D.XYZ() * (O2O1.Dot(D))) - O2O1.XYZ();
   double Vx   = Vxyz.X();
   double Vy   = Vxyz.Y();
 
@@ -825,9 +826,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Hypr& C2)
   }
 
   // Store solutions ...
-  gp_Pnt P1, P2;
-  double U1, U2, v;
-  int    NbSol = Sol.NbSolutions();
+  gp_Pnt           P1, P2;
+  double    U1, U2, v;
+  int NbSol = Sol.NbSolutions();
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     v = Sol.Value(NoSol);
@@ -893,9 +894,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
   gp_Dir D  = C1.Direction();
   gp_Dir D1 = D;
   gp_Dir x2, y2, z2;
-  x2        = C2.XAxis().Direction();
-  y2        = C2.YAxis().Direction();
-  z2        = C2.Axis().Direction();
+  x2               = C2.XAxis().Direction();
+  y2               = C2.YAxis().Direction();
+  z2               = C2.Axis().Direction();
   double Dx = D.Dot(x2);
   double Dy = D.Dot(y2);
   double Dz = D.Dot(z2);
@@ -922,9 +923,9 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
   }
 
   // Storage of solutions ...
-  gp_Pnt P1, P2;
-  double U1, U2;
-  int    NbSol = Sol.NbSolutions();
+  gp_Pnt           P1, P2;
+  double    U1, U2;
+  int NbSol = Sol.NbSolutions();
   for (int NoSol = 1; NoSol <= NbSol; NoSol++)
   {
     U2                  = Sol.Value(NoSol);
@@ -943,10 +944,10 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Parab& C2)
 
 Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
 {
-  bool   bIsSamePlane, bIsSameAxe;
-  double aTolD, aTolD2, aTolA, aD2, aDC2;
-  gp_Pnt aPc1, aPc2;
-  gp_Dir aDc1, aDc2;
+  bool bIsSamePlane, bIsSameAxe;
+  double    aTolD, aTolD2, aTolA, aD2, aDC2;
+  gp_Pnt           aPc1, aPc2;
+  gp_Dir           aDc1, aDc2;
   //
   myIsPar = false;
   myDone  = false;
@@ -982,19 +983,19 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
   //
   if (bIsSameAxe)
   {
-    myIsPar          = true;
-    myNbExt          = 1;
-    myDone           = true;
+    myIsPar                 = true;
+    myNbExt                 = 1;
+    myDone                  = true;
     const double aDR = C1.Radius() - C2.Radius();
-    mySqDist[0]      = aDR * aDR;
+    mySqDist[0]             = aDR * aDR;
     return;
   }
 
-  bool    bIn, bOut;
-  int     j1, j2;
-  double  aR1, aR2, aD12, aT11, aT12, aT21, aT22;
-  gp_Circ aC1, aC2;
-  gp_Pnt  aP11, aP12, aP21, aP22;
+  bool bIn, bOut;
+  int j1, j2;
+  double    aR1, aR2, aD12, aT11, aT12, aT21, aT22;
+  gp_Circ          aC1, aC2;
+  gp_Pnt           aP11, aP12, aP21, aP22;
   //
   myDone = true;
   //
@@ -1060,10 +1061,10 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Circ& C1, const gp_Circ& C2)
   bIn  = aD12 < (aR1 - aR2 - aTolD);
   if (!bOut && !bIn)
   {
-    bool   bNbExt6;
-    double aAlpha, aBeta, aT[2], aVal, aDist2;
-    gp_Pnt aPt, aPL1, aPL2;
-    gp_Dir aDLt;
+    bool bNbExt6;
+    double    aAlpha, aBeta, aT[2], aVal, aDist2;
+    gp_Pnt           aPt, aPL1, aPL2;
+    gp_Dir           aDLt;
     //
     aAlpha = 0.5 * (aR1 * aR1 - aR2 * aR2 + aD12 * aD12) / aD12;
     aVal   = aR1 * aR1 - aAlpha * aAlpha;
@@ -1144,7 +1145,9 @@ double Extrema_ExtElC::SquareDistance(const int N) const
 
 //=================================================================================================
 
-void Extrema_ExtElC::Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P2) const
+void Extrema_ExtElC::Points(const int N,
+                            Extrema_POnCurv&       P1,
+                            Extrema_POnCurv&       P2) const
 {
   if (N < 1 || N > NbExt())
   {
@@ -1159,8 +1162,8 @@ void Extrema_ExtElC::Points(const int N, Extrema_POnCurv& P1, Extrema_POnCurv& P
 
 void RefineDir(gp_Dir& aDir)
 {
-  int    i, j, k, iK;
-  double aCx[3], aEps, aX1, aX2, aOne;
+  int i, j, k, iK;
+  double    aCx[3], aEps, aX1, aX2, aOne;
   //
   iK   = 3;
   aEps = RealEpsilon();

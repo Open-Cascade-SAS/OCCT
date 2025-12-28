@@ -22,6 +22,7 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_EdgeConnect.hxx>
+#include <gp_XYZ.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -30,9 +31,12 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 // #define POSITION_USES_MEAN_POINT
 //=======================================================================
@@ -65,8 +69,7 @@ void ShapeFix_EdgeConnect::Add(const TopoDS_Edge& aFirst, const TopoDS_Edge& aSe
         // Concatenate lists
         NCollection_List<TopoDS_Shape>& theFirstList  = myLists(theFirstShared);
         NCollection_List<TopoDS_Shape>& theSecondList = myLists(theSecondShared);
-        for (NCollection_List<TopoDS_Shape>::Iterator theIterator(theSecondList);
-             theIterator.More();
+        for (NCollection_List<TopoDS_Shape>::Iterator theIterator(theSecondList); theIterator.More();
              theIterator.Next())
         {
           // Rebind shared vertex for current one
@@ -156,21 +159,20 @@ void ShapeFix_EdgeConnect::Add(const TopoDS_Shape& aShape)
 
 void ShapeFix_EdgeConnect::Build()
 {
-  NCollection_List<TopoDS_Shape>::Iterator                          theLIterator;
+  NCollection_List<TopoDS_Shape>::Iterator           theLIterator;
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator theCIterator;
 
   NCollection_Sequence<gp_XYZ> thePositions;
-  gp_XYZ                       thePosition;
-  double                       theMaxDev;
-  BRep_Builder                 theBuilder;
+  gp_XYZ               thePosition;
+  double        theMaxDev;
+  BRep_Builder         theBuilder;
 
   // Iterate on shared vertices
-  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-         Iterator theSIterator(myLists);
+  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator theSIterator(myLists);
        theSIterator.More();
        theSIterator.Next())
   {
-    TopoDS_Vertex                         theSharedVertex = TopoDS::Vertex(theSIterator.Key());
+    TopoDS_Vertex               theSharedVertex = TopoDS::Vertex(theSIterator.Key());
     const NCollection_List<TopoDS_Shape>& theList         = theSIterator.Value();
 
     thePositions.Clear();
@@ -190,8 +192,7 @@ void ShapeFix_EdgeConnect::Build()
       bool use_end   = (theVertex.IsSame(theEnd));
 
       // Iterate on edge curves, accumulating positions
-      for (theCIterator.Initialize(
-             (*((occ::handle<BRep_TEdge>*)&theEdge.TShape()))->ChangeCurves());
+      for (theCIterator.Initialize((*((occ::handle<BRep_TEdge>*)&theEdge.TShape()))->ChangeCurves());
            theCIterator.More();
            theCIterator.Next())
       {

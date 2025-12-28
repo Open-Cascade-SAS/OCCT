@@ -26,10 +26,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedFunction, Expr_GeneralFunction)
 
-Expr_NamedFunction::Expr_NamedFunction(
-  const TCollection_AsciiString&                            name,
-  const occ::handle<Expr_GeneralExpression>&                exp,
-  const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars)
+Expr_NamedFunction::Expr_NamedFunction(const TCollection_AsciiString&        name,
+                                       const occ::handle<Expr_GeneralExpression>& exp,
+                                       const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&      vars)
     : myVariables(vars.Lower(), vars.Upper())
 {
   myVariables = vars;
@@ -58,7 +57,7 @@ occ::handle<Expr_NamedUnknown> Expr_NamedFunction::Variable(const int index) con
 }
 
 double Expr_NamedFunction::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                    const NCollection_Array1<double>& values) const
+                                           const NCollection_Array1<double>&      values) const
 {
   if (vars.Length() != values.Length())
   {
@@ -79,9 +78,8 @@ occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Derivative(
   return new Expr_FunctionDerivative(me, var, 1);
 }
 
-occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Derivative(
-  const occ::handle<Expr_NamedUnknown>& var,
-  const int                             deg) const
+occ::handle<Expr_GeneralFunction> Expr_NamedFunction::Derivative(const occ::handle<Expr_NamedUnknown>& var,
+                                                            const int deg) const
 {
   occ::handle<Expr_NamedFunction> me = this;
   return new Expr_FunctionDerivative(me, var, deg);

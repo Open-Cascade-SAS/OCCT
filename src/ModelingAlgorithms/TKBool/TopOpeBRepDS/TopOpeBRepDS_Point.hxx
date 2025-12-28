@@ -51,9 +51,9 @@ public:
   Standard_EXPORT void ChangeKeep(const bool B);
 
 private:
-  gp_Pnt myPoint;
-  double myTolerance;
-  bool   myKeep;
+  gp_Pnt           myPoint;
+  double    myTolerance;
+  bool myKeep;
 };
 
 #endif // _TopOpeBRepDS_Point_HeaderFile

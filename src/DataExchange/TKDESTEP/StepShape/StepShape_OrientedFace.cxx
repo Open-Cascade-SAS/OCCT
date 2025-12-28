@@ -20,7 +20,7 @@ StepShape_OrientedFace::StepShape_OrientedFace() {}
 
 void StepShape_OrientedFace::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_Face>&           aFaceElement,
-                                  const bool                                   aOrientation)
+                                  const bool                  aOrientation)
 {
   // --- classe own fields ---
   faceElement = aFaceElement;
@@ -51,16 +51,14 @@ bool StepShape_OrientedFace::Orientation() const
   return orientation;
 }
 
-void StepShape_OrientedFace::SetBounds(
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& /*aBounds*/)
+void StepShape_OrientedFace::SetBounds(const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& /*aBounds*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> StepShape_OrientedFace::Bounds()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> StepShape_OrientedFace::Bounds() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

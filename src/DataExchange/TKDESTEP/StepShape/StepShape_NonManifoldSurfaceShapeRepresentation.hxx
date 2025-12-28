@@ -31,6 +31,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_NonManifoldSurfaceShapeRepresentation,
                           StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_NonManifoldSurfaceShapeRepresentation_HeaderFile

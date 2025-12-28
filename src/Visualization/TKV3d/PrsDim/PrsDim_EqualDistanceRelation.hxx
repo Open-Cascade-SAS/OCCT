@@ -37,10 +37,10 @@ public:
   //! aShape3, aShape4 and the plane aPlane.
   //! The distance is the length of a projection from the
   //! shape to the plane.
-  Standard_EXPORT PrsDim_EqualDistanceRelation(const TopoDS_Shape&            aShape1,
-                                               const TopoDS_Shape&            aShape2,
-                                               const TopoDS_Shape&            aShape3,
-                                               const TopoDS_Shape&            aShape4,
+  Standard_EXPORT PrsDim_EqualDistanceRelation(const TopoDS_Shape&       aShape1,
+                                               const TopoDS_Shape&       aShape2,
+                                               const TopoDS_Shape&       aShape3,
+                                               const TopoDS_Shape&       aShape4,
                                                const occ::handle<Geom_Plane>& aPlane);
 
   //! Sets the shape aShape to be used as the shape
@@ -63,61 +63,60 @@ public:
   //! Computes the location of an intreval between
   //! between two edges. FirstAttach , SecondAttach
   //! are the returned extreme points of the interval.
-  Standard_EXPORT static void ComputeTwoEdgesLength(
-    const occ::handle<Prs3d_Presentation>& aPresentation,
-    const occ::handle<Prs3d_Drawer>&       aDrawer,
-    const double                           ArrowSize,
-    const TopoDS_Edge&                     FirstEdge,
-    const TopoDS_Edge&                     SecondEdge,
-    const occ::handle<Geom_Plane>&         Plane,
-    const bool                             AutomaticPos,
-    const bool                             IsSetBndBox,
-    const Bnd_Box&                         BndBox,
-    gp_Pnt&                                Position,
-    gp_Pnt&                                FirstAttach,
-    gp_Pnt&                                SecondAttach,
-    gp_Pnt&                                FirstExtreme,
-    gp_Pnt&                                SecondExtreme,
-    DsgPrs_ArrowSide&                      SymbolPrs);
+  Standard_EXPORT static void ComputeTwoEdgesLength(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                                    const occ::handle<Prs3d_Drawer>&       aDrawer,
+                                                    const double               ArrowSize,
+                                                    const TopoDS_Edge&                FirstEdge,
+                                                    const TopoDS_Edge&                SecondEdge,
+                                                    const occ::handle<Geom_Plane>&         Plane,
+                                                    const bool            AutomaticPos,
+                                                    const bool            IsSetBndBox,
+                                                    const Bnd_Box&                    BndBox,
+                                                    gp_Pnt&                           Position,
+                                                    gp_Pnt&                           FirstAttach,
+                                                    gp_Pnt&                           SecondAttach,
+                                                    gp_Pnt&                           FirstExtreme,
+                                                    gp_Pnt&                           SecondExtreme,
+                                                    DsgPrs_ArrowSide&                 SymbolPrs);
 
   //! Computes the interval position between two vertexs. FirstAttach,
   //! SecondAttach are the returned extreme points of the interval.
   Standard_EXPORT static void ComputeTwoVerticesLength(
     const occ::handle<Prs3d_Presentation>& aPresentation,
     const occ::handle<Prs3d_Drawer>&       aDrawer,
-    const double                           ArrowSize,
-    const TopoDS_Vertex&                   FirstVertex,
-    const TopoDS_Vertex&                   SecondVertex,
+    const double               ArrowSize,
+    const TopoDS_Vertex&              FirstVertex,
+    const TopoDS_Vertex&              SecondVertex,
     const occ::handle<Geom_Plane>&         Plane,
-    const bool                             AutomaticPos,
-    const bool                             IsSetBndBox,
-    const Bnd_Box&                         BndBox,
-    const PrsDim_TypeOfDist                TypeDist,
-    gp_Pnt&                                Position,
-    gp_Pnt&                                FirstAttach,
-    gp_Pnt&                                SecondAttach,
-    gp_Pnt&                                FirstExtreme,
-    gp_Pnt&                                SecondExtreme,
-    DsgPrs_ArrowSide&                      SymbolPrs);
+    const bool            AutomaticPos,
+    const bool            IsSetBndBox,
+    const Bnd_Box&                    BndBox,
+    const PrsDim_TypeOfDist           TypeDist,
+    gp_Pnt&                           Position,
+    gp_Pnt&                           FirstAttach,
+    gp_Pnt&                           SecondAttach,
+    gp_Pnt&                           FirstExtreme,
+    gp_Pnt&                           SecondExtreme,
+    DsgPrs_ArrowSide&                 SymbolPrs);
 
   //! Compute the interval location between a vertex and an edge. Edge may be
   //! a line or a circle.
   Standard_EXPORT static void ComputeOneEdgeOneVertexLength(
     const occ::handle<Prs3d_Presentation>& aPresentation,
     const occ::handle<Prs3d_Drawer>&       aDrawer,
-    const double                           ArrowSize,
-    const TopoDS_Shape&                    FirstShape,
-    const TopoDS_Shape&                    SecondShape,
+    const double               ArrowSize,
+    const TopoDS_Shape&               FirstShape,
+    const TopoDS_Shape&               SecondShape,
     const occ::handle<Geom_Plane>&         Plane,
-    const bool                             AutomaticPos,
-    const bool                             IsSetBndBox,
-    const Bnd_Box&                         BndBox,
-    gp_Pnt&                                Position,
-    gp_Pnt&                                FirstAttach,
-    gp_Pnt&                                SecondAttach,
-    gp_Pnt&                                FirstExtreme,
-    gp_Pnt&                                SecondExtreme,
-    DsgPrs_ArrowSide&                      SymbolPrs);
+    const bool            AutomaticPos,
+    const bool            IsSetBndBox,
+    const Bnd_Box&                    BndBox,
+    gp_Pnt&                           Position,
+    gp_Pnt&                           FirstAttach,
+    gp_Pnt&                           SecondAttach,
+    gp_Pnt&                           FirstExtreme,
+    gp_Pnt&                           SecondExtreme,
+    DsgPrs_ArrowSide&                 SymbolPrs);
 
 private:
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,

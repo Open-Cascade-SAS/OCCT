@@ -50,8 +50,8 @@ public:
   Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>& aNote,
                             const occ::handle<IGESDimen_WitnessLine>& aLine,
                             const occ::handle<IGESDimen_WitnessLine>& anotherLine,
-                            const gp_XY&                              aVertex,
-                            const double                              aRadius,
+                            const gp_XY&                         aVertex,
+                            const double                  aRadius,
                             const occ::handle<IGESDimen_LeaderArrow>& aLeader,
                             const occ::handle<IGESDimen_LeaderArrow>& anotherLeader);
 
@@ -92,8 +92,8 @@ private:
   occ::handle<IGESDimen_GeneralNote> theNote;
   occ::handle<IGESDimen_WitnessLine> theFirstWitnessLine;
   occ::handle<IGESDimen_WitnessLine> theSecondWitnessLine;
-  gp_XY                              theVertex;
-  double                             theRadius;
+  gp_XY                         theVertex;
+  double                 theRadius;
   occ::handle<IGESDimen_LeaderArrow> theFirstLeader;
   occ::handle<IGESDimen_LeaderArrow> theSecondLeader;
 };

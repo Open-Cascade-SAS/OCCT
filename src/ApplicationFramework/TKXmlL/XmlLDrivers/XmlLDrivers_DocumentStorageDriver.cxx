@@ -28,6 +28,7 @@
 #include <Storage_Data.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <XmlLDrivers.hxx>
@@ -79,14 +80,14 @@ void XmlLDrivers_DocumentStorageDriver::AddNamespace(const TCollection_AsciiStri
 
 //=================================================================================================
 
-void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  theDocument,
+void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&       theDocument,
                                               const TCollection_ExtendedString& theFileName,
                                               const Message_ProgressRange&      theRange)
 {
   myFileName = theFileName;
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aFileStream =
+  std::shared_ptr<std::ostream> aFileStream =
     aFileSystem->OpenOStream(theFileName, std::ios::out | std::ios::binary);
   if (aFileStream.get() != NULL && aFileStream->good())
   {
@@ -107,9 +108,9 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  
 
 //=================================================================================================
 
-void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& theDocument,
-                                              Standard_OStream&                theOStream,
-                                              const Message_ProgressRange&     theRange)
+void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>&  theDocument,
+                                              Standard_OStream&            theOStream,
+                                              const Message_ProgressRange& theRange)
 {
   occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
   ::take_time(~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
@@ -154,14 +155,14 @@ void XmlLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
 //=======================================================================
 
 bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
-  const occ::handle<CDM_Document>& theDocument,
-  XmlObjMgt_Element&               theElement,
-  const Message_ProgressRange&     theRange)
+  const occ::handle<CDM_Document>&  theDocument,
+  XmlObjMgt_Element&           theElement,
+  const Message_ProgressRange& theRange)
 {
   SetIsError(false);
   occ::handle<Message_Messenger> aMessageDriver = theDocument->Application()->MessageDriver();
   // 1. Write header information
-  int                i;
+  int   i;
   XmlObjMgt_Document aDOMDoc = theElement.getOwnerDocument();
 
   // 1.a File Format
@@ -184,7 +185,7 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
   //
   //  the order of search : by CSF_XmlOcafResource and then by CASROOT
   TCollection_AsciiString anHTTP            = "http://www.opencascade.org/OCAF/XML";
-  bool                    aToSetCSFVariable = false;
+  bool        aToSetCSFVariable = false;
   const char*             aCSFVariable[2]   = {"CSF_XmlOcafResource", "CASROOT"};
   OSD_Environment         anEnv(aCSFVariable[0]);
   TCollection_AsciiString aResourceDir = anEnv.Value();
@@ -370,12 +371,13 @@ bool XmlLDrivers_DocumentStorageDriver::WriteToDomDocument(
 
 //=================================================================================================
 
-int XmlLDrivers_DocumentStorageDriver::MakeDocument(const occ::handle<CDM_Document>& theTDoc,
-                                                    XmlObjMgt_Element&               theElement,
-                                                    const Message_ProgressRange&     theRange)
+int XmlLDrivers_DocumentStorageDriver::MakeDocument(
+  const occ::handle<CDM_Document>&  theTDoc,
+  XmlObjMgt_Element&           theElement,
+  const Message_ProgressRange& theRange)
 {
-  TCollection_ExtendedString    aMessage;
-  occ::handle<TDocStd_Document> TDOC = occ::down_cast<TDocStd_Document>(theTDoc);
+  TCollection_ExtendedString aMessage;
+  occ::handle<TDocStd_Document>   TDOC = occ::down_cast<TDocStd_Document>(theTDoc);
   if (!TDOC.IsNull())
   {
     //    myRelocTable.SetDocument (theElement.getOwnerDocument());
@@ -431,8 +433,8 @@ extern "C" int ftime(struct timeb* tp);
   #endif
 struct timeb tmbuf0;
 
-static void take_time(const int                             isReset,
-                      const char*                           aHeader,
+static void take_time(const int           isReset,
+                      const char*                      aHeader,
                       const occ::handle<Message_Messenger>& aMessageDriver)
 {
   struct timeb tmbuf;

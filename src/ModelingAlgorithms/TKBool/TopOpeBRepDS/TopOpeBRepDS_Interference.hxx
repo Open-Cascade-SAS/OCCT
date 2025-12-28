@@ -55,9 +55,9 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_Interference(const TopOpeBRepDS_Transition& Transition,
                                             const TopOpeBRepDS_Kind        SupportType,
-                                            const int                      Support,
+                                            const int         Support,
                                             const TopOpeBRepDS_Kind        GeometryType,
-                                            const int                      Geometry);
+                                            const int         Geometry);
 
   Standard_EXPORT TopOpeBRepDS_Interference(const occ::handle<TopOpeBRepDS_Interference>& I);
 
@@ -68,7 +68,10 @@ public:
   Standard_EXPORT void Transition(const TopOpeBRepDS_Transition& T);
 
   //! return GeometryType + Geometry + SupportType + Support
-  Standard_EXPORT void GKGSKS(TopOpeBRepDS_Kind& GK, int& G, TopOpeBRepDS_Kind& SK, int& S) const;
+  Standard_EXPORT void GKGSKS(TopOpeBRepDS_Kind& GK,
+                              int&  G,
+                              TopOpeBRepDS_Kind& SK,
+                              int&  S) const;
 
   Standard_EXPORT TopOpeBRepDS_Kind SupportType() const;
 
@@ -88,16 +91,18 @@ public:
 
   Standard_EXPORT void Geometry(const int G);
 
-  Standard_EXPORT bool HasSameSupport(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
+  Standard_EXPORT bool
+    HasSameSupport(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
 
-  Standard_EXPORT bool HasSameGeometry(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
+  Standard_EXPORT bool
+    HasSameGeometry(const occ::handle<TopOpeBRepDS_Interference>& Other) const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Interference, Standard_Transient)
 
 private:
   TopOpeBRepDS_Transition myTransition;
-  int                     mySupport;
-  int                     myGeometry;
+  int        mySupport;
+  int        myGeometry;
   TopOpeBRepDS_Kind       mySupportType;
   TopOpeBRepDS_Kind       myGeometryType;
 };

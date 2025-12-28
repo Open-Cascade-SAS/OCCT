@@ -39,16 +39,16 @@
 
 //=================================================================================================
 
-bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
-                          const occ::handle<ChFiDS_SurfData>& Data,
-                          const gp_Pln&                       Pl1,
-                          const gp_Pln&                       Pl2,
-                          const TopAbs_Orientation            Or1,
-                          const TopAbs_Orientation            Or2,
-                          const double                        Radius,
-                          const gp_Lin&                       Spine,
-                          const double                        First,
-                          const TopAbs_Orientation            Of1)
+bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&    DStr,
+                                      const occ::handle<ChFiDS_SurfData>& Data,
+                                      const gp_Pln&                  Pl1,
+                                      const gp_Pln&                  Pl2,
+                                      const TopAbs_Orientation       Or1,
+                                      const TopAbs_Orientation       Or2,
+                                      const double            Radius,
+                                      const gp_Lin&                  Spine,
+                                      const double            First,
+                                      const TopAbs_Orientation       Of1)
 {
 
   // calcul du cylindre
@@ -76,11 +76,11 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   {
     return false;
   }
-  gp_Dir AxisCylinder = Spine.Direction();
+  gp_Dir        AxisCylinder = Spine.Direction();
   double Ang          = D1.Angle(D2);
-  gp_Vec V            = gp_Vec(D1) + gp_Vec(D2);
-  gp_Dir S(V);
-  gp_Pnt C;
+  gp_Vec        V            = gp_Vec(D1) + gp_Vec(D2);
+  gp_Dir        S(V);
+  gp_Pnt        C;
   double Fac = Radius / std::cos(Ang / 2.);
   C.SetCoord(Pv.X() + Fac * S.X(), Pv.Y() + Fac * S.Y(), Pv.Z() + Fac * S.Z());
   gp_Dir xdir = D1.Reversed();
@@ -123,11 +123,11 @@ bool ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure&         DStr,
   gp_Dir2d dir2dPln(AxisCylinder.Dot(Pos1.XDirection()), AxisCylinder.Dot(Pos1.YDirection()));
   gp_Lin2d lin2dPln(p2dPln, dir2dPln);
   occ::handle<Geom2d_Line> GLin2dPln1 = new Geom2d_Line(lin2dPln);
-  gp_Lin                   linPln(P, AxisCylinder);
+  gp_Lin              linPln(P, AxisCylinder);
   occ::handle<Geom_Line>   GLinPln1 = new Geom_Line(linPln);
-  gp_Lin2d                 lin2dCyl(gp_Pnt2d(0., 0.), gp::DY2d());
+  gp_Lin2d            lin2dCyl(gp_Pnt2d(0., 0.), gp::DY2d());
   occ::handle<Geom2d_Line> GLin2dCyl1 = new Geom2d_Line(lin2dCyl);
-  TopAbs_Orientation       trans;
+  TopAbs_Orientation  trans;
   toreverse = (norcyl.Dot(norpl) <= 0.);
   if (toreverse)
   {

@@ -36,22 +36,23 @@ class QADNaming
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static TopoDS_Shape CurrentShape(const char*                  ShapeEntry,
+  Standard_EXPORT static TopoDS_Shape CurrentShape(const char*  ShapeEntry,
                                                    const occ::handle<TDF_Data>& Data);
 
-  Standard_EXPORT static void GetShape(const char*                     ShapeEntry,
-                                       const occ::handle<TDF_Data>&    Data,
-                                       NCollection_List<TopoDS_Shape>& Shapes);
+  Standard_EXPORT static void GetShape(const char*  ShapeEntry,
+                                       const occ::handle<TDF_Data>& Data,
+                                       NCollection_List<TopoDS_Shape>&   Shapes);
 
   //! theStatus = 0  Not found,
   //! theStatus = 1  One shape,
   //! theStatus = 2  More than one shape.
-  Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&          Shape,
+  Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&     Shape,
                                                           const occ::handle<TDF_Data>& Data,
-                                                          int&                         theStatus);
+                                                          int&       theStatus);
 
   //! returns label by first two arguments (df and entry string)
-  Standard_EXPORT static bool Entry(void* const theArguments, TDF_Label& theLabel);
+  Standard_EXPORT static bool Entry(void* const theArguments,
+                                                TDF_Label&             theLabel);
 
   Standard_EXPORT static void AllCommands(Draw_Interpretor& DI);
 
@@ -68,6 +69,7 @@ public:
 
   //! commands relatives to Naming
   Standard_EXPORT static void SelectionCommands(Draw_Interpretor& DI);
+
 };
 
 #endif // _QADNaming_HeaderFile

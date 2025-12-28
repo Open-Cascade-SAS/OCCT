@@ -47,8 +47,7 @@ void StepShape_SolidReplica::SetTransformation(
   transformation = aTransformation;
 }
 
-occ::handle<StepGeom_CartesianTransformationOperator3d> StepShape_SolidReplica::Transformation()
-  const
+occ::handle<StepGeom_CartesianTransformationOperator3d> StepShape_SolidReplica::Transformation() const
 {
   return transformation;
 }

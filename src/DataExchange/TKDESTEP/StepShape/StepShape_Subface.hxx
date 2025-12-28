@@ -34,10 +34,9 @@ public:
   Standard_EXPORT StepShape_Subface();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aFace_Bounds,
-    const occ::handle<StepShape_Face>&                                        aParentFace);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aFace_Bounds,
+                            const occ::handle<StepShape_Face>&               aParentFace);
 
   //! Returns field ParentFace
   Standard_EXPORT occ::handle<StepShape_Face> ParentFace() const;

@@ -46,14 +46,14 @@ occ::handle<TDF_Attribute> BinMFunction_FunctionDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        BinObjMgt_RRelocationTable&) const
+bool BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    BinObjMgt_RRelocationTable&) const
 {
 
   occ::handle<TFunction_Function> anAtt = occ::down_cast<TFunction_Function>(theTarget);
-  Standard_GUID                   aGUID("00000000-0000-0000-0000-000000000000");
-  bool                            ok = theSource >> aGUID;
+  Standard_GUID              aGUID("00000000-0000-0000-0000-000000000000");
+  bool           ok = theSource >> aGUID;
   if (ok)
   {
     anAtt->SetDriverGUID(aGUID);
@@ -70,10 +70,9 @@ bool BinMFunction_FunctionDriver::Paste(const BinObjMgt_Persistent&       theSou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMFunction_FunctionDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMFunction_FunctionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                        BinObjMgt_Persistent&        theTarget,
+                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TFunction_Function> aS = occ::down_cast<TFunction_Function>(theSource);
   theTarget << aS->GetDriverGUID();

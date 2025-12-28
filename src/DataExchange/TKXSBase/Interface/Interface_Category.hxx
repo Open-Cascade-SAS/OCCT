@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 #include <Interface_GTool.hxx>
 class Interface_Protocol;
@@ -87,7 +88,7 @@ public:
   //! Determines the Category Number for an entity in its context,
   //! by using general service CategoryNumber
   Standard_EXPORT int CatNum(const occ::handle<Standard_Transient>& theEnt,
-                             const Interface_ShareTool&             theShares);
+                                          const Interface_ShareTool&        theShares);
 
   //! Clears the recorded list of category numbers for a Model
   void ClearNums() { myNum.Nullify(); }
@@ -98,7 +99,7 @@ public:
   //! The Model itself is not recorded, this method is intended to
   //! be used in a wider context (which detains also a Graph, etc)
   Standard_EXPORT void Compute(const occ::handle<Interface_InterfaceModel>& theModel,
-                               const Interface_ShareTool&                   theShares);
+                               const Interface_ShareTool&              theShares);
 
   //! Returns the category number recorded for an entity number
   //! Returns 0 if out of range

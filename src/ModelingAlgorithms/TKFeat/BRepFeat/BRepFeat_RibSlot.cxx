@@ -57,6 +57,7 @@
 #include <LocOpe_Gluer.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -65,7 +66,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -99,8 +102,8 @@ void BRepFeat_RibSlot::LFPerform()
     return;
   }
 
-  TopExp_Explorer exp, exp2;
-  int             theOpe = 2;
+  TopExp_Explorer  exp, exp2;
+  int theOpe = 2;
 
   if (!myGluedF.IsEmpty())
   {
@@ -127,7 +130,7 @@ void BRepFeat_RibSlot::LFPerform()
     }
   }
 
-  NCollection_List<TopoDS_Shape>::Iterator                                           it, it2;
+  NCollection_List<TopoDS_Shape>::Iterator            it, it2;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
   // int sens = 0;
 
@@ -139,9 +142,8 @@ void BRepFeat_RibSlot::LFPerform()
   {
     bool Collage = true;
 
-    LocOpe_FindEdges theFE;
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-      locmap;
+    LocOpe_FindEdges                   theFE;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> locmap;
     theGlue.Init(mySbase, myGShape);
     for (itm.Initialize(myGluedF); itm.More(); itm.Next())
     {
@@ -212,10 +214,10 @@ void BRepFeat_RibSlot::LFPerform()
   // case without gluing
   if (theOpe == 2)
   {
-    BRepFeat_Builder                         theBuilder;
-    NCollection_List<TopoDS_Shape>           partsoftool;
-    BRepClass3d_SolidClassifier              oussa;
-    bool                                     bFlag;
+    BRepFeat_Builder                   theBuilder;
+    NCollection_List<TopoDS_Shape>               partsoftool;
+    BRepClass3d_SolidClassifier        oussa;
+    bool                   bFlag;
     NCollection_List<TopoDS_Shape>::Iterator aIt;
 
     bFlag = (myPerfSelection == BRepFeat_NoSelection) ? 0 : 1;
@@ -324,7 +326,7 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_S
     {
       myGenerated.Clear();
       NCollection_List<TopoDS_Shape>::Iterator it(myLFMap(S));
-      static NCollection_List<TopoDS_Shape>    list;
+      static NCollection_List<TopoDS_Shape>        list;
       list.Clear();
       for (; it.More(); it.Next())
       {
@@ -350,14 +352,13 @@ const NCollection_List<TopoDS_Shape>& BRepFeat_RibSlot::Generated(const TopoDS_S
 
 void BRepFeat_RibSlot::UpdateDescendants(const LocOpe_Gluer& G)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator                                                       itdm;
-  NCollection_List<TopoDS_Shape>::Iterator                         it, it2;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdm;
+  NCollection_List<TopoDS_Shape>::Iterator                  it, it2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator                    itm;
 
   for (itdm.Initialize(myMap); itdm.More(); itdm.Next())
   {
-    const TopoDS_Shape&                                    orig = itdm.Key();
+    const TopoDS_Shape& orig = itdm.Key();
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> newdsc;
     for (it.Initialize(itdm.Value()); it.More(); it.Next())
     {
@@ -443,11 +444,11 @@ gp_Pnt BRepFeat_RibSlot::CheckPoint(const TopoDS_Edge& e,
   // Vector product : normal to plane X direction Wire
   // -> gives the material side
   // Proofing point somewhat inside the material side
-  double                  f, l;
+  double      f, l;
   occ::handle<Geom_Curve> cc = BRep_Tool::Curve(e, f, l);
 
-  gp_Vec tgt;
-  gp_Pnt pp;
+  gp_Vec        tgt;
+  gp_Pnt        pp;
   double par = (f + l) / 2.;
 
   cc->D1(par, pp, tgt);
@@ -475,7 +476,7 @@ gp_Dir BRepFeat_RibSlot::Normal(const TopoDS_Face& F, const gp_Pnt& P)
     std::cout << "BRepFeat_RibSlot::Normal" << std::endl;
 #endif
   double U, V;
-  gp_Pnt pt;
+  gp_Pnt        pt;
 
   BRepAdaptor_Surface AS(F, true);
 
@@ -526,7 +527,7 @@ double BRepFeat_RibSlot::IntPar(const occ::handle<Geom_Curve>& C, const gp_Pnt& 
     return 0.;
 
   GeomAdaptor_Curve AC(C);
-  double            U;
+  double     U;
 
   switch (AC.GetType())
   {
@@ -563,14 +564,16 @@ double BRepFeat_RibSlot::IntPar(const occ::handle<Geom_Curve>& C, const gp_Pnt& 
 // purpose  : extension of a edge by tangence
 //=======================================================================
 
-void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e, const double bnd, const bool FirstLast)
+void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge&           e,
+                                     const double    bnd,
+                                     const bool FirstLast)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEAT();
   if (trc)
     std::cout << "BRepFeat_RibSlot::EdgeExtention" << std::endl;
 #endif
-  double                         f, l;
+  double             f, l;
   occ::handle<Geom_Curve>        cu = BRep_Tool::Curve(e, f, l);
   occ::handle<Geom_BoundedCurve> C  = new Geom_TrimmedCurve(cu, f, l);
 
@@ -596,9 +599,9 @@ void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e, const double bnd, const boo
   else
   {
     occ::handle<Geom_Line> ln;
-    gp_Pnt                 Pt;
-    gp_Pnt                 pnt;
-    gp_Vec                 vct;
+    gp_Pnt            Pt;
+    gp_Pnt            pnt;
+    gp_Vec            vct;
     if (FirstLast)
     {
       C->D1(f, pnt, vct);
@@ -626,9 +629,9 @@ void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e, const double bnd, const boo
 // purpose  : choose face of support in case of support on an edge
 //=======================================================================
 
-TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>& faces,
-                                            const occ::handle<Geom_Curve>&  cc,
-                                            const double                    par,
+TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>&     faces,
+                                            const occ::handle<Geom_Curve>& cc,
+                                            const double       par,
                                             const double, // bnd,
                                             const occ::handle<Geom_Plane>& Pln)
 
@@ -648,7 +651,7 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>& face
   occ::handle<Geom_Line> l1 = new Geom_Line(pp, tgt);
 
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
-  int                                           Counter = 0;
+  int         Counter = 0;
 
   gp_Ax1 Axe(pp, Pln->Position().Direction());
   for (int i = 1; i <= 8; i++)
@@ -691,9 +694,9 @@ TopoDS_Face BRepFeat_RibSlot::ChoiceOfFaces(NCollection_List<TopoDS_Shape>& face
 //=======================================================================
 
 double BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
-                                   const TopoDS_Shape& theSUntil,
-                                   gp_Pnt&             p1,
-                                   gp_Pnt&             p2)
+                                          const TopoDS_Shape& theSUntil,
+                                          gp_Pnt&             p1,
+                                          gp_Pnt&             p2)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEATRIB();
@@ -724,21 +727,21 @@ double BRepFeat_RibSlot::HeightMax(const TopoDS_Shape& theSbase,
 // purpose  : Calculate the base faces of the rib
 //=======================================================================
 
-bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
-                                    const double                   bnd,
-                                    const occ::handle<Geom_Plane>& Pln,
-                                    TopoDS_Edge&                   FirstEdge,
-                                    TopoDS_Edge&                   LastEdge,
-                                    TopoDS_Face&                   FirstFace,
-                                    TopoDS_Face&                   LastFace,
-                                    TopoDS_Vertex&                 FirstVertex,
-                                    TopoDS_Vertex&                 LastVertex,
-                                    bool&                          OnFirstFace,
-                                    bool&                          OnLastFace,
-                                    bool&                          PtOnFirstEdge,
-                                    bool&                          PtOnLastEdge,
-                                    TopoDS_Edge&                   OnFirstEdge,
-                                    TopoDS_Edge&                   OnLastEdge)
+bool BRepFeat_RibSlot::ExtremeFaces(const bool    RevolRib,
+                                                const double       bnd,
+                                                const occ::handle<Geom_Plane>& Pln,
+                                                TopoDS_Edge&              FirstEdge,
+                                                TopoDS_Edge&              LastEdge,
+                                                TopoDS_Face&              FirstFace,
+                                                TopoDS_Face&              LastFace,
+                                                TopoDS_Vertex&            FirstVertex,
+                                                TopoDS_Vertex&            LastVertex,
+                                                bool&         OnFirstFace,
+                                                bool&         OnLastFace,
+                                                bool&         PtOnFirstEdge,
+                                                bool&         PtOnLastEdge,
+                                                TopoDS_Edge&              OnFirstEdge,
+                                                TopoDS_Edge&              OnLastEdge)
 
 {
 #ifdef OCCT_DEBUG
@@ -762,8 +765,8 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 
   bool FirstOK = false, LastOK = false;
 
-  int             NumberOfEdges = 0;
-  TopExp_Explorer exp(myWire, TopAbs_EDGE);
+  int NumberOfEdges = 0;
+  TopExp_Explorer  exp(myWire, TopAbs_EDGE);
 
   for (; exp.More(); exp.Next())
   {
@@ -779,22 +782,22 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 #endif
     exp.ReInit();
     double f, l; //, f1, l1, temp;
-    gp_Pnt firstpoint, lastpoint;
+    gp_Pnt        firstpoint, lastpoint;
 
     // Points limit the unique edge
-    const TopoDS_Edge&      E  = TopoDS::Edge(exp.Current());
+    const TopoDS_Edge& E  = TopoDS::Edge(exp.Current());
     occ::handle<Geom_Curve> cc = BRep_Tool::Curve(E, f, l);
-    gp_Pnt                  p1 = BRep_Tool::Pnt(TopExp::FirstVertex(E, true));
-    gp_Pnt                  p2 = BRep_Tool::Pnt(TopExp::LastVertex(E, true));
+    gp_Pnt             p1 = BRep_Tool::Pnt(TopExp::FirstVertex(E, true));
+    gp_Pnt             p2 = BRep_Tool::Pnt(TopExp::LastVertex(E, true));
 
     double FirstPar = f;
     double LastPar  = l;
 
     // ---Find if 2 points limiting the unique edge of the wire
     //    are on an edge or a vertex of the base shape
-    bool          PtOnFirstVertex = false;
-    bool          PtOnLastVertex  = false;
-    TopoDS_Vertex OnFirstVertex, OnLastVertex;
+    bool PtOnFirstVertex = false;
+    bool PtOnLastVertex  = false;
+    TopoDS_Vertex    OnFirstVertex, OnLastVertex;
     PtOnEdgeVertex(RevolRib,
                    mySbase,
                    p1,
@@ -969,7 +972,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
     if (trc)
       std::cout << " FirstFace or LastFace null" << std::endl;
 #endif
-    LocOpe_CSIntersector                          ASI(mySbase);
+    LocOpe_CSIntersector     ASI(mySbase);
     NCollection_Sequence<occ::handle<Geom_Curve>> scur;
     scur.Clear();
     scur.Append(cc);
@@ -977,7 +980,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
     double lastpar, firstpar;
     if (ASI.IsDone() && ASI.NbPoints(1) >= 2)
     {
-      lastpar       = ASI.Point(1, ASI.NbPoints(1)).Parameter();
+      lastpar                    = ASI.Point(1, ASI.NbPoints(1)).Parameter();
       int lastindex = ASI.NbPoints(1);
       if (lastpar > l)
       {
@@ -993,7 +996,7 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
         }
       }
       int firstindex = lastindex - 1;
-      firstpar       = ASI.Point(1, firstindex).Parameter();
+      firstpar                    = ASI.Point(1, firstindex).Parameter();
 
       if (FirstFace.IsNull())
       {
@@ -1068,11 +1071,11 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
     BRepTools_WireExplorer ex(myWire);
     for (; ex.More(); ex.Next())
     {
-      const TopoDS_Edge&      E = TopoDS::Edge(ex.Current());
-      double                  f, l;
+      const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
+      double      f, l;
       occ::handle<Geom_Curve> Cur = BRep_Tool::Curve(E, f, l);
-      f                           = f - bnd / 10000;
-      l                           = l + bnd / 10000;
+      f                      = f - bnd / 10000;
+      l                      = l + bnd / 10000;
       occ::handle<Geom_TrimmedCurve> curve;
       curve = new Geom_TrimmedCurve(Cur, f, l, true);
 #ifdef OCCT_DEBUG
@@ -1081,14 +1084,14 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 #endif
       gp_Pnt P2 = BRep_Tool::Pnt(TopExp::LastVertex(E, true));
       ex1.Init(mySbase, TopAbs_FACE);
-      TopoDS_Vertex theVertex;
-      TopoDS_Edge   theEdge;
-      TopoDS_Face   theFace;
-      bool          PtOnEdge   = false;
-      bool          PtOnVertex = false;
-      TopoDS_Edge   OnEdge;
-      TopoDS_Vertex OnVertex;
-      double        intpar;
+      TopoDS_Vertex    theVertex;
+      TopoDS_Edge      theEdge;
+      TopoDS_Face      theFace;
+      bool PtOnEdge   = false;
+      bool PtOnVertex = false;
+      TopoDS_Edge      OnEdge;
+      TopoDS_Vertex    OnVertex;
+      double    intpar;
       for (; ex1.More(); ex1.Next())
       {
         const TopoDS_Face& aCurFace = TopoDS::Face(ex1.Current());
@@ -1299,15 +1302,15 @@ bool BRepFeat_RibSlot::ExtremeFaces(const bool                     RevolRib,
 //           are on an edge or a vertex of the base shape
 //=======================================================================
 
-void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
-                                      const TopoDS_Shape& shape,
-                                      const gp_Pnt&       point,
+void BRepFeat_RibSlot::PtOnEdgeVertex(const bool RevolRib,
+                                      const TopoDS_Shape&    shape,
+                                      const gp_Pnt&          point,
                                       const TopoDS_Vertex&, // FirstVertex,
                                       const TopoDS_Vertex&, // LastVertex,
-                                      bool&          PtOnEdge,
-                                      TopoDS_Edge&   OnEdge,
-                                      bool&          PtOnVertex,
-                                      TopoDS_Vertex& OnVertex)
+                                      bool& PtOnEdge,
+                                      TopoDS_Edge&      OnEdge,
+                                      bool& PtOnVertex,
+                                      TopoDS_Vertex&    OnVertex)
 
 {
 #ifdef OCCT_DEBUG
@@ -1334,7 +1337,7 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
       if (BRep_Tool::Degenerated(e))
         continue;
     }
-    double                  fff, lll;
+    double      fff, lll;
     occ::handle<Geom_Curve> ccc = BRep_Tool::Curve(e, fff, lll);
     if (!RevolRib)
     {
@@ -1382,19 +1385,19 @@ void BRepFeat_RibSlot::PtOnEdgeVertex(const bool          RevolRib,
 // purpose  : construction of the profile face in case of sliding
 //=======================================================================
 
-bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
-                                      const bool                     RevolRib,
-                                      const double                   myTol,
-                                      int&                           Concavite,
-                                      const occ::handle<Geom_Plane>& myPln,
-                                      const TopoDS_Face&             BndFace,
-                                      const gp_Pnt&                  CheckPnt,
-                                      const TopoDS_Face&             FirstFace,
-                                      const TopoDS_Face&             LastFace,
-                                      const TopoDS_Vertex&, // FirstVertex,
-                                      const TopoDS_Vertex&, // LastVertex,
-                                      const TopoDS_Edge& FirstEdge,
-                                      const TopoDS_Edge& LastEdge)
+bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&              Prof,
+                                                  const bool    RevolRib,
+                                                  const double       myTol,
+                                                  int&         Concavite,
+                                                  const occ::handle<Geom_Plane>& myPln,
+                                                  const TopoDS_Face&        BndFace,
+                                                  const gp_Pnt&             CheckPnt,
+                                                  const TopoDS_Face&        FirstFace,
+                                                  const TopoDS_Face&        LastFace,
+                                                  const TopoDS_Vertex&, // FirstVertex,
+                                                  const TopoDS_Vertex&, // LastVertex,
+                                                  const TopoDS_Edge& FirstEdge,
+                                                  const TopoDS_Edge& LastEdge)
 
 {
 #ifdef OCCT_DEBUG
@@ -1423,7 +1426,7 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
   }
 
   occ::handle<Geom_Line> ln1, ln2;
-  gp_Pnt                 Pt; //,p1, p2;
+  gp_Pnt            Pt; //,p1, p2;
 
   ln2 = new Geom_Line(myFirstPnt, FN);
   ln1 = new Geom_Line(myLastPnt, LN);
@@ -1493,9 +1496,9 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
     for (; explo.More(); explo.Next())
     {
       const TopoDS_Edge&        e = TopoDS::Edge(explo.Current());
-      double                    first, last;
-      occ::handle<Geom_Curve>   c   = BRep_Tool::Curve(e, first, last);
-      occ::handle<Geom2d_Curve> c2d = GeomAPI::To2d(c, myPln->Pln());
+      double             first, last;
+      occ::handle<Geom_Curve>        c   = BRep_Tool::Curve(e, first, last);
+      occ::handle<Geom2d_Curve>      c2d = GeomAPI::To2d(c, myPln->Pln());
       Geom2dAPI_InterCurveCurve intcln1(ln2d1, c2d, Precision::Confusion());
       if (intcln1.NbPoints() > 0)
       {
@@ -1630,7 +1633,7 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
   // BRepTools_WireExplorer : correct order - without repetition <> TopExp : non ordered
   BRepTools_WireExplorer EX(myWire);
 
-  double                  ff, ll;
+  double      ff, ll;
   occ::handle<Geom_Curve> FirstCurve = BRep_Tool::Curve(FirstEdge, ff, ll);
 
   if (!FirstEdge.IsSame(LastEdge))
@@ -1657,16 +1660,16 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
         break;
     }
     occ::handle<Geom_Curve> LastCurve = BRep_Tool::Curve(LastEdge, ff, ll);
-    TopoDS_Vertex           LFVert    = TopExp::FirstVertex(LastEdge, true);
-    gp_Pnt                  LFPnt     = BRep_Tool::Pnt(LFVert);
-    BRepLib_MakeEdge        el(LastCurve, LFPnt, myLastPnt);
+    TopoDS_Vertex      LFVert    = TopExp::FirstVertex(LastEdge, true);
+    gp_Pnt             LFPnt     = BRep_Tool::Pnt(LFVert);
+    BRepLib_MakeEdge   el(LastCurve, LFPnt, myLastPnt);
     WW.Add(el);
   }
   else
   {
     // only one edge : particular processing
-    double                  fpar = IntPar(FirstCurve, myFirstPnt);
-    double                  lpar = IntPar(FirstCurve, myLastPnt);
+    double      fpar = IntPar(FirstCurve, myFirstPnt);
+    double      lpar = IntPar(FirstCurve, myLastPnt);
     occ::handle<Geom_Curve> c;
     if (fpar > lpar)
       c = FirstCurve->Reversed();
@@ -1701,7 +1704,7 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
     // CheckPnt : point slightly inside the material side
     // Bndface  : face/cut of the bounding box in the plane of the profile
     BRepTopAdaptor_FClass2d Cl(fac, BRep_Tool::Tolerance(fac));
-    double                  u, v;
+    double           u, v;
     ElSLib::Parameters(myPln->Pln(), CheckPnt, u, v);
     gp_Pnt2d checkpnt2d(u, v);
     if (Cl.Perform(checkpnt2d, true) == TopAbs_OUT)
@@ -1737,22 +1740,22 @@ bool BRepFeat_RibSlot::SlidingProfile(TopoDS_Face&                   Prof,
 // purpose  : construction of the face profile in case of sliding
 //=======================================================================
 
-bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
-                                        const bool                     RevolRib,
-                                        const double                   myTol,
-                                        int&                           Concavite,
-                                        const occ::handle<Geom_Plane>& myPln,
-                                        const double                   bnd,
-                                        const TopoDS_Face&             BndFace,
-                                        const gp_Pnt&                  CheckPnt,
-                                        const TopoDS_Face&,   // FirstFace,
-                                        const TopoDS_Face&,   // LastFace,
-                                        const TopoDS_Vertex&, // FirstVertex,
-                                        const TopoDS_Vertex&, // LastVertex,
-                                        const TopoDS_Edge& FirstEdge,
-                                        const TopoDS_Edge& LastEdge,
-                                        const bool         OnFirstFace,
-                                        const bool         OnLastFace)
+bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&              Prof,
+                                                    const bool    RevolRib,
+                                                    const double       myTol,
+                                                    int&         Concavite,
+                                                    const occ::handle<Geom_Plane>& myPln,
+                                                    const double       bnd,
+                                                    const TopoDS_Face&        BndFace,
+                                                    const gp_Pnt&             CheckPnt,
+                                                    const TopoDS_Face&,   // FirstFace,
+                                                    const TopoDS_Face&,   // LastFace,
+                                                    const TopoDS_Vertex&, // FirstVertex,
+                                                    const TopoDS_Vertex&, // LastVertex,
+                                                    const TopoDS_Edge&     FirstEdge,
+                                                    const TopoDS_Edge&     LastEdge,
+                                                    const bool OnFirstFace,
+                                                    const bool OnLastFace)
 
 {
 #ifdef OCCT_DEBUG
@@ -1762,7 +1765,7 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
 #endif
   bool ProfileOK = true;
 
-  double        l1, f1, f2, l2; //, p;
+  double l1, f1, f2, l2; //, p;
   TopoDS_Vertex theFV;
   theFV.Nullify();
   gp_Pnt      theFirstpoint;
@@ -1832,9 +1835,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       double f, l;
       FalseFirstEdge = FirstEdge;
       EdgeExtention(FalseFirstEdge, bnd, true);
-      const TopoDS_Vertex& vv1   = TopExp::FirstVertex(FalseFirstEdge, true);
-      firstpoint                 = BRep_Tool::Pnt(vv1);
-      occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FalseFirstEdge, f, l);
+      const TopoDS_Vertex& vv1 = TopExp::FirstVertex(FalseFirstEdge, true);
+      firstpoint               = BRep_Tool::Pnt(vv1);
+      occ::handle<Geom_Curve> cc    = BRep_Tool::Curve(FalseFirstEdge, f, l);
       cc->D1(f, firstpoint, firstvect);
       lastln = new Geom_Line(firstpoint, -firstvect);
       if (FirstEdge.IsSame(LastEdge))
@@ -1859,9 +1862,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       {
         FalseOnlyOne = FalseLastEdge;
       }
-      const TopoDS_Vertex& vv2   = TopExp::LastVertex(FalseLastEdge, true);
-      lastpoint                  = BRep_Tool::Pnt(vv2);
-      occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FalseLastEdge, f, l);
+      const TopoDS_Vertex& vv2 = TopExp::LastVertex(FalseLastEdge, true);
+      lastpoint                = BRep_Tool::Pnt(vv2);
+      occ::handle<Geom_Curve> cc    = BRep_Tool::Curve(FalseLastEdge, f, l);
       cc->D1(l, lastpoint, lastvect);
       lastpoint = BRep_Tool::Pnt(vv2);
       firstln   = new Geom_Line(lastpoint, lastvect);
@@ -1878,9 +1881,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     for (; explo.More(); explo.Next())
     {
       const TopoDS_Edge&        e = TopoDS::Edge(explo.Current());
-      double                    first, last;
-      occ::handle<Geom_Curve>   c   = BRep_Tool::Curve(e, first, last);
-      occ::handle<Geom2d_Curve> c2d = GeomAPI::To2d(c, myPln->Pln());
+      double             first, last;
+      occ::handle<Geom_Curve>        c   = BRep_Tool::Curve(e, first, last);
+      occ::handle<Geom2d_Curve>      c2d = GeomAPI::To2d(c, myPln->Pln());
       Geom2dAPI_InterCurveCurve intcln1(ln2d1, c2d, Precision::Confusion());
       if (intcln1.NbPoints() > 0)
       {
@@ -2156,8 +2159,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     }
     if (OnFirstFace || OnLastFace)
     {
-      TopoDS_Edge             theEdge;
-      double                  f, l;
+      TopoDS_Edge        theEdge;
+      double      f, l;
       occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FalseOnlyOne, f, l);
       if (!theLastEdge.IsNull())
       {
@@ -2195,9 +2198,9 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     }
     else
     {
-      double                  f, l;
+      double      f, l;
       occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FirstEdge, f, l);
-      TopoDS_Edge             theEdge;
+      TopoDS_Edge        theEdge;
       if (!theLastEdge.IsNull())
       {
         const TopoDS_Vertex& v1 = TopExp::LastVertex(theLastEdge, true);
@@ -2243,8 +2246,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     }
     if (!OnFirstFace)
     {
-      TopoDS_Edge             theEdge;
-      double                  f, l;
+      TopoDS_Edge        theEdge;
+      double      f, l;
       occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FirstEdge, f, l);
       if (!theLastEdge.IsNull())
       {
@@ -2265,8 +2268,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     }
     else
     {
-      TopoDS_Edge             theEdge;
-      double                  f, l;
+      TopoDS_Edge        theEdge;
+      double      f, l;
       occ::handle<Geom_Curve> cc = BRep_Tool::Curve(FalseFirstEdge, f, l);
       if (!theLastEdge.IsNull())
       {
@@ -2306,8 +2309,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           NCollection_List<TopoDS_Shape> thelist2;
           myLFMap.Bind(E, thelist2);
         }
-        TopoDS_Edge             eee;
-        double                  f, l;
+        TopoDS_Edge        eee;
+        double      f, l;
         occ::handle<Geom_Curve> cc = BRep_Tool::Curve(E, f, l);
         if (!theLastEdge.IsNull())
         {
@@ -2340,8 +2343,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
           NCollection_List<TopoDS_Shape> thelist3;
           myLFMap.Bind(edg, thelist3);
         }
-        TopoDS_Edge             eee;
-        double                  f, l;
+        TopoDS_Edge        eee;
+        double      f, l;
         occ::handle<Geom_Curve> cc = BRep_Tool::Curve(edg, f, l);
         if (!theLastEdge.IsNull())
         {
@@ -2379,8 +2382,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
       }
       else
       {
-        TopoDS_Edge eee;
-        double      f, l;
+        TopoDS_Edge   eee;
+        double f, l;
         if (!myLFMap.IsBound(LastEdge))
         {
           NCollection_List<TopoDS_Shape> thelist4;
@@ -2424,8 +2427,8 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
     }
     else
     {
-      TopoDS_Edge eee;
-      double      f, l;
+      TopoDS_Edge   eee;
+      double f, l;
       if (!myLFMap.IsBound(LastEdge))
       {
         NCollection_List<TopoDS_Shape> thelist5;
@@ -2518,7 +2521,7 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
   if (Concavite == 3)
   {
     BRepTopAdaptor_FClass2d Cl(fac, BRep_Tool::Tolerance(fac));
-    double                  u, v;
+    double           u, v;
     ElSLib::Parameters(myPln->Pln(), CheckPnt, u, v);
     gp_Pnt2d checkpnt2d(u, v);
     if (Cl.Perform(checkpnt2d, true) == TopAbs_OUT)
@@ -2556,13 +2559,12 @@ bool BRepFeat_RibSlot::NoSlidingProfile(TopoDS_Face&                   Prof,
 
 void BRepFeat_RibSlot::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
                                          const TopoDS_Shape&                 S,
-                                         const bool                          SkipFace)
+                                         const bool              SkipFace)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator                                                       itdm;
-  NCollection_List<TopoDS_Shape>::Iterator                         it, it2;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
-  TopExp_Explorer                                                  exp;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itdm;
+  NCollection_List<TopoDS_Shape>::Iterator                  it, it2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator                    itm;
+  TopExp_Explorer                                     exp;
 
   for (itdm.Initialize(myMap); itdm.More(); itdm.Next())
   {
@@ -2591,8 +2593,8 @@ void BRepFeat_RibSlot::UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBO
       }
       if (!exp.More())
       {
-        BRepAlgoAPI_BooleanOperation*         pBOP = (BRepAlgoAPI_BooleanOperation*)&aBOP;
-        const NCollection_List<TopoDS_Shape>& aLM  = pBOP->Modified(fdsc);
+        BRepAlgoAPI_BooleanOperation* pBOP = (BRepAlgoAPI_BooleanOperation*)&aBOP;
+        const NCollection_List<TopoDS_Shape>&   aLM  = pBOP->Modified(fdsc);
         it2.Initialize(aLM);
         for (; it2.More(); it2.Next())
         {

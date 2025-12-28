@@ -24,10 +24,12 @@
 #include <TopoDS_Shape.hxx>
 #include <BRepFill_Section.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <GeomFill_Trihedron.hxx>
@@ -35,6 +37,12 @@
 #include <GeomFill_PipeError.hxx>
 #include <Standard_Transient.hxx>
 #include <BRepFill_TypeOfContact.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 class Law_Function;
 class BRepFill_LocationLaw;
 class BRepFill_SectionLaw;
@@ -97,7 +105,7 @@ public:
   //! becomes a boundary of the swept surface and the width of section varies
   //! along the path.
   Standard_EXPORT void Set(const TopoDS_Wire&           AuxiliarySpine,
-                           const bool                   CurvilinearEquivalence = true,
+                           const bool       CurvilinearEquivalence = true,
                            const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
 
   //! Define the maximum V degree of resulting surface
@@ -132,30 +140,30 @@ public:
   inline bool IsBuildHistory() const { return myIsBuildHistory; }
 
   //! Set an section. The correspondence with the spine, will be automatically performed.
-  Standard_EXPORT void Add(const TopoDS_Shape& Profile,
-                           const bool          WithContact    = false,
-                           const bool          WithCorrection = false);
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const bool WithContact    = false,
+                           const bool WithCorrection = false);
 
   //! Set an section. The correspondence with the spine, is given by Location.
-  Standard_EXPORT void Add(const TopoDS_Shape&  Profile,
-                           const TopoDS_Vertex& Location,
-                           const bool           WithContact    = false,
-                           const bool           WithCorrection = false);
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const TopoDS_Vertex&   Location,
+                           const bool WithContact    = false,
+                           const bool WithCorrection = false);
 
   //! Set an section and an homotetic law.
   //! The homotetie's centers is given by point on the <Spine>.
-  Standard_EXPORT void SetLaw(const TopoDS_Shape&              Profile,
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const occ::handle<Law_Function>& L,
-                              const bool                       WithContact    = false,
-                              const bool                       WithCorrection = false);
+                              const bool      WithContact    = false,
+                              const bool      WithCorrection = false);
 
   //! Set an section and an homotetic law.
   //! The homotetie center is given by point on the <Spine>
-  Standard_EXPORT void SetLaw(const TopoDS_Shape&              Profile,
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const occ::handle<Law_Function>& L,
-                              const TopoDS_Vertex&             Location,
-                              const bool                       WithContact    = false,
-                              const bool                       WithCorrection = false);
+                              const TopoDS_Vertex&        Location,
+                              const bool      WithContact    = false,
+                              const bool      WithCorrection = false);
 
   //! Delete an section.
   Standard_EXPORT void DeleteProfile(const TopoDS_Shape& Profile);
@@ -174,13 +182,13 @@ public:
   //! Set the Transition Mode to manage discontinuities
   //! on the sweep.
   Standard_EXPORT void SetTransition(const BRepFill_TransitionStyle Mode   = BRepFill_Modified,
-                                     const double                   Angmin = 1.0e-2,
-                                     const double                   Angmax = 6.0);
+                                     const double            Angmin = 1.0e-2,
+                                     const double            Angmax = 6.0);
 
   //! Perform simulation of the sweep:
   //! Some Section are returned.
-  Standard_EXPORT void Simulate(const int                       NumberOfSection,
-                                NCollection_List<TopoDS_Shape>& Sections);
+  Standard_EXPORT void Simulate(const int NumberOfSection,
+                                NCollection_List<TopoDS_Shape>&  Sections);
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT bool Build();
@@ -222,41 +230,39 @@ private:
   Standard_EXPORT void Place(const BRepFill_Section& Sec,
                              TopoDS_Wire&            W,
                              gp_Trsf&                Trsf,
-                             double&                 param);
+                             double&          param);
 
   Standard_EXPORT void ResetLoc();
 
   Standard_EXPORT void BuildHistory(const BRepFill_Sweep& theSweep);
 
-  TopoDS_Wire                            mySpine;
-  TopoDS_Shape                           myFirst;
-  TopoDS_Shape                           myLast;
-  TopoDS_Shape                           myShape;
-  NCollection_Sequence<BRepFill_Section> mySeq;
-  NCollection_Sequence<TopoDS_Shape>     WSeq;
-  NCollection_Sequence<int>              myIndOfSec;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myEdgeNewEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                 myGenMap;
-  double                                         myTol3d;
-  double                                         myBoundTol;
-  double                                         myTolAngular;
-  double                                         angmin;
-  double                                         angmax;
-  int                                            myMaxDegree;
-  int                                            myMaxSegments;
-  bool                                           myForceApproxC1;
-  occ::handle<Law_Function>                      myLaw;
-  bool                                           myIsAutomaticLaw;
-  occ::handle<BRepFill_LocationLaw>              myLocation;
-  occ::handle<BRepFill_SectionLaw>               mySection;
-  occ::handle<NCollection_HArray2<TopoDS_Shape>> myFaces;
-  GeomFill_Trihedron                             myTrihedron;
-  BRepFill_TransitionStyle                       myTransition;
-  GeomFill_PipeError                             myStatus;
-  double                                         myErrorOnSurf;
-  bool                                           myIsBuildHistory;
+  TopoDS_Wire                        mySpine;
+  TopoDS_Shape                       myFirst;
+  TopoDS_Shape                       myLast;
+  TopoDS_Shape                       myShape;
+  NCollection_Sequence<BRepFill_Section>         mySeq;
+  NCollection_Sequence<TopoDS_Shape>           WSeq;
+  NCollection_Sequence<int>          myIndOfSec;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myEdgeNewEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myGenMap;
+  double                      myTol3d;
+  double                      myBoundTol;
+  double                      myTolAngular;
+  double                      angmin;
+  double                      angmax;
+  int                   myMaxDegree;
+  int                   myMaxSegments;
+  bool                   myForceApproxC1;
+  occ::handle<Law_Function>               myLaw;
+  bool                   myIsAutomaticLaw;
+  occ::handle<BRepFill_LocationLaw>       myLocation;
+  occ::handle<BRepFill_SectionLaw>        mySection;
+  occ::handle<NCollection_HArray2<TopoDS_Shape>>    myFaces;
+  GeomFill_Trihedron                 myTrihedron;
+  BRepFill_TransitionStyle           myTransition;
+  GeomFill_PipeError                 myStatus;
+  double                      myErrorOnSurf;
+  bool                   myIsBuildHistory;
 };
 
 #endif // _BRepFill_PipeShell_HeaderFile

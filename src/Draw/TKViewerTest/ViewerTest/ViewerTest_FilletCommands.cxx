@@ -27,6 +27,7 @@
 #include <TopExp.hxx>
 
 #include <ChFi3d_FilletShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -38,12 +39,12 @@
   #include <stdio.h>
 #endif
 
-static double        tesp       = 1.e-4;
-static double        t3d        = 1.e-4;
-static double        t2d        = 1.e-5;
-static double        ta         = 1.e-2;
-static double        fl         = 1.e-3;
-static double        tapp_angle = 1.e-2;
+static double tesp       = 1.e-4;
+static double t3d        = 1.e-4;
+static double t2d        = 1.e-5;
+static double ta         = 1.e-2;
+static double fl         = 1.e-3;
+static double tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
@@ -69,9 +70,8 @@ static int VBLEND(Draw_Interpretor& di, int narg, const char** a)
   if (narg < 5)
     return 1;
 
-  int                                            NbToPick = (narg - 4) / 2;
-  occ::handle<NCollection_HArray1<TopoDS_Shape>> arr =
-    new NCollection_HArray1<TopoDS_Shape>(1, NbToPick);
+  int                NbToPick = (narg - 4) / 2;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> arr      = new NCollection_HArray1<TopoDS_Shape>(1, NbToPick);
   if (ViewerTest::PickShapes(TopAbs_EDGE, arr))
   {
     for (int i = 1; i <= NbToPick; i++)
@@ -102,9 +102,9 @@ static int VBLEND(Draw_Interpretor& di, int narg, const char** a)
   Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
   Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rakk->SetContinuity(blend_cont, tapp_angle);
-  double      Rad;
-  TopoDS_Edge E;
-  int         nbedge = 0;
+  double    Rad;
+  TopoDS_Edge      E;
+  int nbedge = 0;
   for (int ii = 1; ii < (narg - 1) / 2; ii++)
   {
     Rad                      = Draw::Atof(a[2 * ii + 1]);

@@ -27,8 +27,8 @@ StepShape_ConnectedEdgeSet::StepShape_ConnectedEdgeSet() {}
 //=================================================================================================
 
 void StepShape_ConnectedEdgeSet::Init(
-  const occ::handle<TCollection_HAsciiString>&                         aRepresentationItem_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>>& aCesEdges)
+  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>>&  aCesEdges)
 {
   StepShape_TopologicalRepresentationItem::Init(aRepresentationItem_Name);
 
@@ -37,16 +37,14 @@ void StepShape_ConnectedEdgeSet::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>> StepShape_ConnectedEdgeSet::CesEdges()
-  const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>> StepShape_ConnectedEdgeSet::CesEdges() const
 {
   return theCesEdges;
 }
 
 //=================================================================================================
 
-void StepShape_ConnectedEdgeSet::SetCesEdges(
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>>& aCesEdges)
+void StepShape_ConnectedEdgeSet::SetCesEdges(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Edge>>>& aCesEdges)
 {
   theCesEdges = aCesEdges;
 }

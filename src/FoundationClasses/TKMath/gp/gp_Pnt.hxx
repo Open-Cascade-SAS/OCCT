@@ -46,7 +46,9 @@ public:
   }
 
   //! Creates a point with its 3 cartesian's coordinates: theXp, theYp, theZp.
-  constexpr gp_Pnt(const double theXp, const double theYp, const double theZp) noexcept
+  constexpr gp_Pnt(const double theXp,
+                   const double theYp,
+                   const double theZp) noexcept
       : coord(theXp, theYp, theZp)
   {
   }
@@ -62,7 +64,9 @@ public:
   }
 
   //! For this point, assigns the values theXp, theYp and theZp to its three coordinates.
-  constexpr void SetCoord(const double theXp, const double theYp, const double theZp) noexcept
+  constexpr void SetCoord(const double theXp,
+                          const double theYp,
+                          const double theZp) noexcept
   {
     coord.SetCoord(theXp, theYp, theZp);
   }
@@ -85,10 +89,15 @@ public:
   //! theIndex = 3 => Z is returned
   //! Raises OutOfRange if theIndex != {1, 2, 3}.
   //! Raised if theIndex != {1, 2, 3}.
-  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
+  constexpr double Coord(const int theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this point gives its three coordinates theXp, theYp and theZp.
-  constexpr void Coord(double& theXp, double& theYp, double& theZp) const noexcept
+  constexpr void Coord(double& theXp,
+                       double& theYp,
+                       double& theZp) const noexcept
   {
     coord.Coord(theXp, theYp, theZp);
   }
@@ -114,7 +123,9 @@ public:
 
   //! Assigns the result of the following expression to this point
   //! (theAlpha*this + theBeta*theP) / (theAlpha + theBeta)
-  constexpr void BaryCenter(const double theAlpha, const gp_Pnt& theP, const double theBeta)
+  constexpr void BaryCenter(const double theAlpha,
+                            const gp_Pnt&       theP,
+                            const double theBeta)
   {
     coord.SetLinearForm(theAlpha, coord, theBeta, theP.coord);
     coord.Divide(theAlpha + theBeta);
@@ -169,7 +180,8 @@ public:
   //! Scales a point. theS is the scaling value.
   constexpr void Scale(const gp_Pnt& theP, const double theS) noexcept;
 
-  [[nodiscard]] constexpr gp_Pnt Scaled(const gp_Pnt& theP, const double theS) const noexcept
+  [[nodiscard]] constexpr gp_Pnt Scaled(const gp_Pnt&       theP,
+                                             const double theS) const noexcept
   {
     gp_Pnt aPres = *this;
     aPres.Scale(theP, theS);
@@ -199,7 +211,8 @@ public:
     coord.Subtract(theP1.coord);
   }
 
-  [[nodiscard]] constexpr gp_Pnt Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Pnt Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Pnt aP = *this;
     aP.Translate(theP1, theP2);
@@ -210,7 +223,8 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   gp_XYZ coord;
@@ -224,8 +238,8 @@ struct hash<gp_Pnt>
   size_t operator()(const gp_Pnt& thePnt) const noexcept
   {
     union {
-      double R[3];
-      int    I[6];
+      double    R[3];
+      int I[6];
     } U;
 
     thePnt.Coord(U.R[0], U.R[1], U.R[2]);
@@ -265,10 +279,10 @@ inline double gp_Pnt::Distance(const gp_Pnt& theOther) const
 
 inline constexpr double gp_Pnt::SquareDistance(const gp_Pnt& theOther) const noexcept
 {
-  const gp_XYZ& aXYZ = theOther.coord;
-  const double  aDx  = coord.X() - aXYZ.X();
-  const double  aDy  = coord.Y() - aXYZ.Y();
-  const double  aDz  = coord.Z() - aXYZ.Z();
+  const gp_XYZ&       aXYZ = theOther.coord;
+  const double aDx  = coord.X() - aXYZ.X();
+  const double aDy  = coord.Y() - aXYZ.Y();
+  const double aDz  = coord.Z() - aXYZ.Z();
   return aDx * aDx + aDy * aDy + aDz * aDz;
 }
 

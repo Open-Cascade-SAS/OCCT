@@ -38,6 +38,7 @@ public:
   //! Returns Type Name (string)
   //! Here, the true name of the Type of a Shape
   Standard_EXPORT static const char* TypeName(const TopoDS_Shape& ent);
+
 };
 
 #endif // _TransferBRep_ShapeInfo_HeaderFile

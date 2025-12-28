@@ -26,8 +26,8 @@ class GCPnts_DistFunction : public math_Function
 {
 public:
   Standard_EXPORT GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
-                                      const double           U1,
-                                      const double           U2);
+                                      const double    U1,
+                                      const double    U2);
   //
   Standard_EXPORT GCPnts_DistFunction(const GCPnts_DistFunction& theOther);
 
@@ -38,8 +38,8 @@ private:
 
   const Adaptor3d_Curve& myCurve;
   gp_Lin                 myLin;
-  double                 myU1;
-  double                 myU2;
+  double          myU1;
+  double          myU2;
 };
 
 //

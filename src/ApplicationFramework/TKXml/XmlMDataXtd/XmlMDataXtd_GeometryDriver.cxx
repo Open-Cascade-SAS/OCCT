@@ -23,7 +23,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_GeometryDriver, XmlMDF_ADriver)
 
 static const XmlObjMgt_DOMString& GeometryTypeString(const TDataXtd_GeometryEnum);
-static bool                       GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
+static bool           GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
                                                    TDataXtd_GeometryEnum&     theResult);
 
 IMPLEMENT_DOMSTRING(TypeString, "geomtype")
@@ -54,9 +54,9 @@ occ::handle<TDF_Attribute> XmlMDataXtd_GeometryDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       XmlObjMgt_RRelocationTable&) const
+bool XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataXtd_Geometry> aT = occ::down_cast<TDataXtd_Geometry>(theTarget);
 
@@ -77,7 +77,7 @@ bool XmlMDataXtd_GeometryDriver::Paste(const XmlObjMgt_Persistent&       theSour
 //=================================================================================================
 
 void XmlMDataXtd_GeometryDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&             theTarget,
+                                       XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataXtd_Geometry> aG = occ::down_cast<TDataXtd_Geometry>(theSource);
@@ -86,7 +86,8 @@ void XmlMDataXtd_GeometryDriver::Paste(const occ::handle<TDF_Attribute>& theSour
 
 //=================================================================================================
 
-static bool GeometryTypeEnum(const XmlObjMgt_DOMString& theString, TDataXtd_GeometryEnum& theResult)
+static bool GeometryTypeEnum(const XmlObjMgt_DOMString& theString,
+                                         TDataXtd_GeometryEnum&     theResult)
 {
   TDataXtd_GeometryEnum aResult = TDataXtd_ANY_GEOM;
   if (!theString.equals(::GeomAnyString()))

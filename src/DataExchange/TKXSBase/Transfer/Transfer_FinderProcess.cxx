@@ -33,7 +33,8 @@ occ::handle<Interface_InterfaceModel> Transfer_FinderProcess::Model() const
   return themodel;
 }
 
-int Transfer_FinderProcess::NextMappedWithAttribute(const char* name, const int num0) const
+int Transfer_FinderProcess::NextMappedWithAttribute(const char* name,
+                                                                 const int num0) const
 {
   int num, nb = NbMapped();
   for (num = num0 + 1; num <= nb; num++)
@@ -51,14 +52,14 @@ occ::handle<Transfer_TransientMapper> Transfer_FinderProcess::TransientMapper(
   const occ::handle<Standard_Transient>& obj) const
 {
   occ::handle<Transfer_TransientMapper> mapper = new Transfer_TransientMapper(obj);
-  int                                   index  = MapIndex(mapper);
+  int                 index  = MapIndex(mapper);
   if (index == 0)
     return mapper;
   return occ::down_cast<Transfer_TransientMapper>(Mapped(index));
 }
 
 void Transfer_FinderProcess::PrintTrace(const occ::handle<Transfer_Finder>& start,
-                                        Standard_OStream&                   S) const
+                                        Standard_OStream&              S) const
 {
   if (!start.IsNull())
     S << " Type:" << start->ValueTypeName();
@@ -81,7 +82,7 @@ void Transfer_FinderProcess::PrintStats(const int mode, Standard_OStream& S) con
       if (binder.IsNull())
         continue;
       const occ::handle<Interface_Check> ach  = binder->Check();
-      Transfer_StatusExec                stat = binder->StatusExec();
+      Transfer_StatusExec           stat = binder->StatusExec();
       if (stat != Transfer_StatusInitial && stat != Transfer_StatusDone)
         nbe++;
       else

@@ -22,8 +22,8 @@
 #ifdef OCCT_DEBUG
 extern int GLOBAL_iexE;
 extern int GLOBAL_iexF;
-bool       STATIC_trace_iexE = false;
-bool       STATIC_trace_iexF = false;
+bool        STATIC_trace_iexE = false;
+bool        STATIC_trace_iexF = false;
 
 Standard_EXPORT void debkeep(const int i)
 {
@@ -38,21 +38,21 @@ Standard_EXPORT void debkeep(const int i)
 // return true if LS is not empty && (position == TB)
 // (return always true if LS is empty)
 //=======================================================================
-bool TopOpeBRepBuild_Builder::GKeepShape(const TopoDS_Shape&                   S,
-                                         const NCollection_List<TopoDS_Shape>& LSclass,
-                                         const TopAbs_State                    TB)
+bool TopOpeBRepBuild_Builder::GKeepShape(const TopoDS_Shape&         S,
+                                                     const NCollection_List<TopoDS_Shape>& LSclass,
+                                                     const TopAbs_State          TB)
 {
   TopAbs_State pos;
   return GKeepShape1(S, LSclass, TB, pos);
 }
 
-bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   S,
-                                          const NCollection_List<TopoDS_Shape>& LSclass,
-                                          const TopAbs_State                    TB,
-                                          TopAbs_State&                         pos)
+bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&         S,
+                                                      const NCollection_List<TopoDS_Shape>& LSclass,
+                                                      const TopAbs_State          TB,
+                                                      TopAbs_State&               pos)
 {
   bool keep       = true;
-  pos             = TopAbs_UNKNOWN;
+  pos                         = TopAbs_UNKNOWN;
   bool toclassify = true;
   if (S.ShapeType() == TopAbs_FACE && !myDataStructure->HasShape(S) && myClassifyDef)
   {
@@ -67,9 +67,9 @@ bool TopOpeBRepBuild_Builder::GKeepShape1(const TopoDS_Shape&                   
       keep = false;
   }
 #ifdef OCCT_DEBUG
-  int  iS;
+  int iS;
   bool tSPS  = GtraceSPS(S, iS);
-  int  iface = 0, isoli = 0;
+  int iface = 0, isoli = 0;
   bool tSPSface = false;
   bool tSPSsoli = false;
   if (S.ShapeType() == TopAbs_EDGE)
@@ -127,12 +127,12 @@ void TopOpeBRepBuild_Builder::GKeepShapes
   (const TopoDS_Shape&,
 #endif
    const NCollection_List<TopoDS_Shape>& LSclass,
-   const TopAbs_State                    TB,
+   const TopAbs_State          TB,
    const NCollection_List<TopoDS_Shape>& Lin,
    NCollection_List<TopoDS_Shape>&       Lou)
 {
 #ifdef OCCT_DEBUG
-  int  iS;
+  int iS;
   bool tSPS = GtraceSPS(S, iS);
   if (tSPS)
     debkeep(iS);

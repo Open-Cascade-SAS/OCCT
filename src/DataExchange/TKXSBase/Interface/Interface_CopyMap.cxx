@@ -28,7 +28,7 @@ Interface_CopyMap::Interface_CopyMap(const occ::handle<Interface_InterfaceModel>
 
 void Interface_CopyMap::Clear()
 {
-  int                             nb = theres.Upper();
+  int           nb = theres.Upper();
   occ::handle<Standard_Transient> bid; // Null
   for (int i = 1; i <= nb; i++)
     theres.SetValue(i, bid);
@@ -52,7 +52,7 @@ void Interface_CopyMap::Bind(const occ::handle<Standard_Transient>& ent,
 }
 
 bool Interface_CopyMap::Search(const occ::handle<Standard_Transient>& ent,
-                               occ::handle<Standard_Transient>&       res) const
+                                           occ::handle<Standard_Transient>&       res) const
 {
   int num = themod->Number(ent);
   if (num == 0)

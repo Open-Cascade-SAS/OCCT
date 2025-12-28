@@ -29,11 +29,10 @@ RWStepBasic_RWActionAssignment::RWStepBasic_RWActionAssignment() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWActionAssignment::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepBasic_ActionAssignment>& ent) const
+void RWStepBasic_RWActionAssignment::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepBasic_ActionAssignment>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "action_assignment"))
@@ -51,9 +50,8 @@ void RWStepBasic_RWActionAssignment::ReadStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWActionAssignment::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepBasic_ActionAssignment>& ent) const
+void RWStepBasic_RWActionAssignment::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepBasic_ActionAssignment>& ent) const
 {
 
   // Own fields of ActionAssignment
@@ -64,7 +62,7 @@ void RWStepBasic_RWActionAssignment::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWActionAssignment::Share(const occ::handle<StepBasic_ActionAssignment>& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&                 iter) const
 {
 
   // Own fields of ActionAssignment

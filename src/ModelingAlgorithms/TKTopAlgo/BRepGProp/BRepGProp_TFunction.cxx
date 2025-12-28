@@ -24,12 +24,12 @@
 // function : Constructor.
 // purpose  :
 //=======================================================================
-BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face& theSurface,
-                                         const gp_Pnt&         theVertex,
-                                         const bool            IsByPoint,
-                                         const double*         theCoeffs,
-                                         const double          theUMin,
-                                         const double          theTolerance)
+BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face&  theSurface,
+                                         const gp_Pnt&          theVertex,
+                                         const bool IsByPoint,
+                                         const double*   theCoeffs,
+                                         const double    theUMin,
+                                         const double    theTolerance)
     : mySurface(theSurface),
       myUFunction(mySurface, theVertex, IsByPoint, theCoeffs),
       myUMin(theUMin),
@@ -58,9 +58,9 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
 {
   const double tolU = 1.e-9;
 
-  gp_Pnt2d                                 aP2d;
-  gp_Vec2d                                 aV2d;
-  double                                   aUMax;
+  gp_Pnt2d                      aP2d;
+  gp_Vec2d                      aV2d;
+  double                 aUMax;
   occ::handle<NCollection_HArray1<double>> anUKnots;
 
   mySurface.D12d(X, aP2d, aV2d);
@@ -76,8 +76,8 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   myUFunction.SetVParam(aP2d.Y());
 
   // Compute the integral from myUMin to aUMax of myUFunction.
-  int    i;
-  double aCoeff = aV2d.Y();
+  int i;
+  double    aCoeff = aV2d.Y();
   // int aNbUIntervals = anUKnots->Length() - 1;
   // double    aTol          = myTolerance/aNbUIntervals;
   double aTol = myTolerance;
@@ -118,11 +118,11 @@ bool BRepGProp_TFunction::Value(const double X, double& F)
   // else
   //   aTol = 0.1;
 
-  int                           iU = anUKnots->Upper();
-  int                           aNbPntsStart;
-  int                           aNbMaxIter = 1000;
+  int              iU = anUKnots->Upper();
+  int              aNbPntsStart;
+  int              aNbMaxIter = 1000;
   math_KronrodSingleIntegration anIntegral;
-  double                        aLocalErr = 0.;
+  double                 aLocalErr = 0.;
 
   i = anUKnots->Lower();
   F = 0.;

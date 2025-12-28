@@ -32,7 +32,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const StepElement_CurveElementFreedom& aReleaseFreedom,
-                            const double                           aReleaseStiffness);
+                            const double                    aReleaseStiffness);
 
   //! Returns field ReleaseFreedom
   Standard_EXPORT StepElement_CurveElementFreedom ReleaseFreedom() const;
@@ -50,7 +50,7 @@ public:
 
 private:
   StepElement_CurveElementFreedom theReleaseFreedom;
-  double                          theReleaseStiffness;
+  double                   theReleaseStiffness;
 };
 
 #endif // _StepElement_CurveElementEndReleasePacket_HeaderFile

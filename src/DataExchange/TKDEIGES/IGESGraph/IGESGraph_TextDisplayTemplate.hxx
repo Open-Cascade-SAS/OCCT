@@ -50,15 +50,15 @@ public:
   //! - aRotationFlag  : Rotate internal text flag
   //! - aCorner        : Lower left corner coordinates(Form No. 0),
   //! Increments from coordinates (Form No. 1)
-  Standard_EXPORT void Init(const double                              aWidth,
-                            const double                              aHeight,
-                            const int                                 aFontCode,
+  Standard_EXPORT void Init(const double                  aWidth,
+                            const double                  aHeight,
+                            const int               aFontCode,
                             const occ::handle<IGESGraph_TextFontDef>& aFontEntity,
-                            const double                              aSlantAngle,
-                            const double                              aRotationAngle,
-                            const int                                 aMirrorFlag,
-                            const int                                 aRotationFlag,
-                            const gp_XYZ&                             aCorner);
+                            const double                  aSlantAngle,
+                            const double                  aRotationAngle,
+                            const int               aMirrorFlag,
+                            const int               aRotationFlag,
+                            const gp_XYZ&                        aCorner);
 
   //! Sets <me> to be Incremental (Form 1) if <mode> is True,
   //! or Basolute (Form 0) else
@@ -119,15 +119,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_TextDisplayTemplate, IGESData_IGESEntity)
 
 private:
-  double                             theBoxWidth;
-  double                             theBoxHeight;
-  int                                theFontCode;
+  double                 theBoxWidth;
+  double                 theBoxHeight;
+  int              theFontCode;
   occ::handle<IGESGraph_TextFontDef> theFontEntity;
-  double                             theSlantAngle;
-  double                             theRotationAngle;
-  int                                theMirrorFlag;
-  int                                theRotateFlag;
-  gp_XYZ                             theCorner;
+  double                 theSlantAngle;
+  double                 theRotationAngle;
+  int              theMirrorFlag;
+  int              theRotateFlag;
+  gp_XYZ                        theCorner;
 };
 
 #endif // _IGESGraph_TextDisplayTemplate_HeaderFile

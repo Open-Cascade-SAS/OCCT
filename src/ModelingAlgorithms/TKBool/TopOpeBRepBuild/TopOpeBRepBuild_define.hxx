@@ -36,6 +36,16 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopOpeBRepBuild_ShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopOpeBRepBuild_ShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopOpeBRepBuild_ShapeListOfShape.hxx>
+#include <NCollection_List.hxx>
+#include <TopOpeBRepBuild_ShapeListOfShape.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
 
 #define MTBpwes TopOpeBRepBuild_PWireEdgeSet
@@ -52,14 +62,8 @@
 #define MTBbON TopOpeBRepBuild_BuilderON
 #define MTBb TopOpeBRepBuild_Builder
 #define MTBpb TopOpeBRepBuild_PBuilder
-#define MTBdmiodmosloslos                                                                          \
-  NCollection_DataMap<TopoDS_Shape,                                                                \
-                      NCollection_List<TopOpeBRepBuild_ShapeListOfShape>,                          \
-                      TopTools_ShapeMapHasher>::Iterator
-#define MTBdmosloslos                                                                              \
-  NCollection_DataMap<TopoDS_Shape,                                                                \
-                      NCollection_List<TopOpeBRepBuild_ShapeListOfShape>,                          \
-                      TopTools_ShapeMapHasher>
+#define MTBdmiodmosloslos NCollection_DataMap<TopoDS_Shape, NCollection_List<TopOpeBRepBuild_ShapeListOfShape>, TopTools_ShapeMapHasher>::Iterator
+#define MTBdmosloslos NCollection_DataMap<TopoDS_Shape, NCollection_List<TopOpeBRepBuild_ShapeListOfShape>, TopTools_ShapeMapHasher>
 #define MTBlioloslos NCollection_List<TopOpeBRepBuild_ShapeListOfShape>::Iterator
 #define MTBloslos NCollection_List<TopOpeBRepBuild_ShapeListOfShape>
 #define MTBslos TopOpeBRepBuild_ShapeListOfShape

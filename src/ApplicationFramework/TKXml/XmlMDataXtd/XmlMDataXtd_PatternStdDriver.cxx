@@ -57,14 +57,15 @@ occ::handle<TDF_Attribute> XmlMDataXtd_PatternStdDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataXtd_PatternStdDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataXtd_PatternStd> aP     = occ::down_cast<TDataXtd_PatternStd>(theTarget);
-  const XmlObjMgt_Element&         anElem = theSource;
+  const XmlObjMgt_Element&    anElem = theSource;
 
-  int                        aNb;
+  int           aNb;
   TCollection_ExtendedString aMsgString;
 
   int signature;
@@ -220,11 +221,11 @@ bool XmlMDataXtd_PatternStdDriver::Paste(const XmlObjMgt_Persistent&       theSo
 //=================================================================================================
 
 void XmlMDataXtd_PatternStdDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         XmlObjMgt_Persistent&             theTarget,
-                                         XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                         XmlObjMgt_Persistent&        theTarget,
+                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataXtd_PatternStd> aP     = occ::down_cast<TDataXtd_PatternStd>(theSource);
-  XmlObjMgt_Element&               anElem = theTarget;
+  XmlObjMgt_Element&          anElem = theTarget;
 
   int signature = aP->Signature();
   anElem.setAttribute(::SignatureString(), signature);

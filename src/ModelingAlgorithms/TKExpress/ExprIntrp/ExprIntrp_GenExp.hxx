@@ -51,7 +51,7 @@ private:
   //! Creates an empty generator
   Standard_EXPORT ExprIntrp_GenExp();
 
-  bool                                done;
+  bool               done;
   occ::handle<Expr_GeneralExpression> myExpression;
 };
 

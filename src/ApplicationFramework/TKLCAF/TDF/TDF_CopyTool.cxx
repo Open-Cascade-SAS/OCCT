@@ -24,8 +24,11 @@
 #include <TDF_DataSet.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <Standard_TypeMismatch.hxx>
@@ -44,7 +47,7 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
 
 void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                         const occ::handle<TDF_RelocationTable>& aRelocationTable,
-                        const TDF_IDFilter&                     aPrivilegeFilter)
+                        const TDF_IDFilter&                aPrivilegeFilter)
 {
   TDF_IDFilter refFilter; // Will not be used.
   TDF_CopyTool::Copy(aSourceDataSet, aRelocationTable, aPrivilegeFilter, refFilter, false);
@@ -54,20 +57,19 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
 
 void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                         const occ::handle<TDF_RelocationTable>& aRelocationTable,
-                        const TDF_IDFilter&                     aPrivilegeFilter,
+                        const TDF_IDFilter&                aPrivilegeFilter,
                         const TDF_IDFilter& /* aRefFilter */,
                         const bool /* setSelfContained */)
 {
   if (aSourceDataSet->IsEmpty())
     return;
 
-  NCollection_Map<TDF_Label>&                  srcLabs = aSourceDataSet->Labels();
+  NCollection_Map<TDF_Label>&     srcLabs = aSourceDataSet->Labels();
   NCollection_Map<occ::handle<TDF_Attribute>>& srcAtts = aSourceDataSet->Attributes();
-  NCollection_List<TDF_Label>&                 rootLst = aSourceDataSet->Roots();
+  NCollection_List<TDF_Label>&    rootLst = aSourceDataSet->Roots();
 
-  NCollection_DataMap<TDF_Label, TDF_Label>& theLabMap = aRelocationTable->LabelTable();
-  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& theAttMap =
-    aRelocationTable->AttributeTable();
+  NCollection_DataMap<TDF_Label, TDF_Label>&     theLabMap = aRelocationTable->LabelTable();
+  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& theAttMap = aRelocationTable->AttributeTable();
 
   // Parallel exploration of the root label structures:
   // * builds the target labels not found;
@@ -94,8 +96,7 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
   // but everybody can update the relocation table...
 
   // Now: the paste phase!
-  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator attItr2(
-    theAttMap);
+  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator attItr2(theAttMap);
   for (; attItr2.More(); attItr2.Next())
   {
     const occ::handle<TDF_Attribute>& sAtt = attItr2.Key();
@@ -116,13 +117,12 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
 // purpose  : Internal root label copy recursive method.
 //=======================================================================
 
-void TDF_CopyTool::CopyLabels(
-  const TDF_Label&                                                             aSLabel,
-  TDF_Label&                                                                   aTargetLabel,
-  NCollection_DataMap<TDF_Label, TDF_Label>&                                   aLabMap,
-  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& aAttMap,
-  const NCollection_Map<TDF_Label>&                                            aSrcLabelMap,
-  const NCollection_Map<occ::handle<TDF_Attribute>>&                           aSrcAttributeMap)
+void TDF_CopyTool::CopyLabels(const TDF_Label&        aSLabel,
+                              TDF_Label&              aTargetLabel,
+                              NCollection_DataMap<TDF_Label, TDF_Label>&       aLabMap,
+                              NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>&   aAttMap,
+                              const NCollection_Map<TDF_Label>&     aSrcLabelMap,
+                              const NCollection_Map<occ::handle<TDF_Attribute>>& aSrcAttributeMap)
 {
   TDF_CopyTool::CopyAttributes(aSLabel, aTargetLabel, aAttMap, aSrcAttributeMap);
 
@@ -158,11 +158,10 @@ void TDF_CopyTool::CopyLabels(
 // purpose  : Internal attribute copy method.
 //=======================================================================
 
-void TDF_CopyTool::CopyAttributes(
-  const TDF_Label&                                                             aSLabel,
-  TDF_Label&                                                                   aTargetLabel,
-  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& aAttMap,
-  const NCollection_Map<occ::handle<TDF_Attribute>>&                           aSrcAttributeMap)
+void TDF_CopyTool::CopyAttributes(const TDF_Label&        aSLabel,
+                                  TDF_Label&              aTargetLabel,
+                                  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>&   aAttMap,
+                                  const NCollection_Map<occ::handle<TDF_Attribute>>& aSrcAttributeMap)
 {
   occ::handle<TDF_Attribute> tAtt;
 

@@ -92,9 +92,9 @@ public:
 
   //! Create new object with default flags and prepare it for use
   //! (Loads analyzer with all the data for the wire and face)
-  Standard_EXPORT ShapeFix_Wire(const TopoDS_Wire& wire,
-                                const TopoDS_Face& face,
-                                const double       prec);
+  Standard_EXPORT ShapeFix_Wire(const TopoDS_Wire&  wire,
+                                const TopoDS_Face&  face,
+                                const double prec);
 
   //! Sets all modes to default
   Standard_EXPORT void ClearModes();
@@ -104,7 +104,9 @@ public:
 
   //! Load analyzer with all the data for the wire and face
   //! and drops all fixing statuses
-  Standard_EXPORT void Init(const TopoDS_Wire& wire, const TopoDS_Face& face, const double prec);
+  Standard_EXPORT void Init(const TopoDS_Wire&  wire,
+                            const TopoDS_Face&  face,
+                            const double prec);
 
   //! Load analyzer with all the data already prepared
   //! and drops all fixing statuses
@@ -122,8 +124,7 @@ public:
   void SetFace(const TopoDS_Face& face);
 
   //! Set working face for the wire and surface analysis object
-  void SetFace(const TopoDS_Face&                        theFace,
-               const occ::handle<ShapeAnalysis_Surface>& theSurfaceAnalysis);
+  void SetFace(const TopoDS_Face& theFace, const occ::handle<ShapeAnalysis_Surface>& theSurfaceAnalysis);
 
   //! Set surface analysis for the wire
   void SetSurface(const occ::handle<ShapeAnalysis_Surface>& theSurfaceAnalysis);
@@ -275,7 +276,8 @@ public:
   Standard_EXPORT bool FixReorder(bool theModeBoth = false);
 
   //! Applies FixSmall(num) to all edges in the wire
-  Standard_EXPORT int FixSmall(const bool lockvtx, const double precsmall = 0.0);
+  Standard_EXPORT int FixSmall(const bool lockvtx,
+                                            const double    precsmall = 0.0);
 
   //! Applies FixConnected(num) to all edges in the wire
   //! Connection between first and last edges is treated only if
@@ -343,14 +345,17 @@ public:
   //! Else, if lockvtx is False, it is removed and its end vertex
   //! is put on the preceding edge
   //! But if lockvtx is True, this edge must be kept ...
-  Standard_EXPORT bool FixSmall(const int num, const bool lockvtx, const double precsmall);
+  Standard_EXPORT bool FixSmall(const int num,
+                                            const bool lockvtx,
+                                            const double    precsmall);
 
   //! Fixes connected edges (preceding and current)
   //! Forces Vertices (end of preceding-begin of current) to be
   //! the same one
   //! Tests with starting preci or, if given greater, <prec>
   //! If <prec> is -1 then MaxTolerance() is taken.
-  Standard_EXPORT bool FixConnected(const int num, const double prec);
+  Standard_EXPORT bool FixConnected(const int num,
+                                                const double    prec);
 
   //! Fixes a seam edge
   //! A Seam edge has two pcurves, one for forward. one for reversed
@@ -395,19 +400,22 @@ public:
   //! of the vertex or add a new edge (straight in 2d space), in
   //! order to close wire in 2d.
   //! Returns True if edge was added or tolerance was increased.
-  Standard_EXPORT bool FixLacking(const int num, const bool force = false);
+  Standard_EXPORT bool FixLacking(const int num,
+                                              const bool force = false);
 
   Standard_EXPORT bool FixNotchedEdges();
 
   //! Fixes gap between ends of 3d curves on num-1 and num-th edges.
   //! myPrecision is used to detect the gap.
   //! If convert is True, converts curves to bsplines to bend.
-  Standard_EXPORT bool FixGap3d(const int num, const bool convert = false);
+  Standard_EXPORT bool FixGap3d(const int num,
+                                            const bool convert = false);
 
   //! Fixes gap between ends of pcurves on num-1 and num-th edges.
   //! myPrecision is used to detect the gap.
   //! If convert is True, converts pcurves to bsplines to bend.
-  Standard_EXPORT bool FixGap2d(const int num, const bool convert = false);
+  Standard_EXPORT bool FixGap2d(const int num,
+                                            const bool convert = false);
 
   Standard_EXPORT bool FixTails();
 
@@ -464,51 +472,51 @@ protected:
 
   occ::handle<ShapeFix_Edge>      myFixEdge;
   occ::handle<ShapeAnalysis_Wire> myAnalyzer;
-  bool                            myGeomMode;
-  bool                            myTopoMode;
-  bool                            myClosedMode;
-  bool                            myPreference2d;
-  bool                            myFixGapsByRanges;
-  int                             myFixReversed2dMode;
-  int                             myFixRemovePCurveMode;
-  int                             myFixAddPCurveMode;
-  int                             myFixRemoveCurve3dMode;
-  int                             myFixAddCurve3dMode;
-  int                             myFixSeamMode;
-  int                             myFixShiftedMode;
-  int                             myFixSameParameterMode;
-  int                             myFixVertexToleranceMode;
-  int                             myFixNotchedEdgesMode;
-  int                             myFixSelfIntersectingEdgeMode;
-  int                             myFixIntersectingEdgesMode;
-  int                             myFixNonAdjacentIntersectingEdgesMode;
-  int                             myFixTailMode;
-  int                             myRemoveLoopMode;
-  int                             myFixReorderMode;
-  int                             myFixSmallMode;
-  int                             myFixConnectedMode;
-  int                             myFixEdgeCurvesMode;
-  int                             myFixDegeneratedMode;
-  int                             myFixSelfIntersectionMode;
-  int                             myFixLackingMode;
-  int                             myFixGaps3dMode;
-  int                             myFixGaps2dMode;
-  int                             myLastFixStatus;
-  int                             myStatusReorder;
-  int                             myStatusSmall;
-  int                             myStatusConnected;
-  int                             myStatusEdgeCurves;
-  int                             myStatusDegenerated;
-  int                             myStatusClosed;
-  int                             myStatusSelfIntersection;
-  int                             myStatusLacking;
-  int                             myStatusGaps3d;
-  int                             myStatusGaps2d;
-  bool                            myStatusRemovedSegment;
-  int                             myStatusNotches;
-  int                             myStatusFixTails;
-  double                          myMaxTailAngleSine;
-  double                          myMaxTailWidth;
+  bool           myGeomMode;
+  bool           myTopoMode;
+  bool           myClosedMode;
+  bool           myPreference2d;
+  bool           myFixGapsByRanges;
+  int           myFixReversed2dMode;
+  int           myFixRemovePCurveMode;
+  int           myFixAddPCurveMode;
+  int           myFixRemoveCurve3dMode;
+  int           myFixAddCurve3dMode;
+  int           myFixSeamMode;
+  int           myFixShiftedMode;
+  int           myFixSameParameterMode;
+  int           myFixVertexToleranceMode;
+  int           myFixNotchedEdgesMode;
+  int           myFixSelfIntersectingEdgeMode;
+  int           myFixIntersectingEdgesMode;
+  int           myFixNonAdjacentIntersectingEdgesMode;
+  int           myFixTailMode;
+  int           myRemoveLoopMode;
+  int           myFixReorderMode;
+  int           myFixSmallMode;
+  int           myFixConnectedMode;
+  int           myFixEdgeCurvesMode;
+  int           myFixDegeneratedMode;
+  int           myFixSelfIntersectionMode;
+  int           myFixLackingMode;
+  int           myFixGaps3dMode;
+  int           myFixGaps2dMode;
+  int           myLastFixStatus;
+  int           myStatusReorder;
+  int           myStatusSmall;
+  int           myStatusConnected;
+  int           myStatusEdgeCurves;
+  int           myStatusDegenerated;
+  int           myStatusClosed;
+  int           myStatusSelfIntersection;
+  int           myStatusLacking;
+  int           myStatusGaps3d;
+  int           myStatusGaps2d;
+  bool           myStatusRemovedSegment;
+  int           myStatusNotches;
+  int           myStatusFixTails;
+  double              myMaxTailAngleSine;
+  double              myMaxTailWidth;
 
 private:
   //! Detect and fix self-intersecting pcurve of edge <num>.
@@ -534,7 +542,8 @@ private:
   //! Tests if two edges <num1> and <num2> are intersecting and
   //! fix intersection by increasing of tolerance of vertex
   //! nearest to the point of intersection.
-  Standard_EXPORT bool FixIntersectingEdges(const int num1, const int num2);
+  Standard_EXPORT bool FixIntersectingEdges(const int num1,
+                                                        const int num2);
 
   Standard_EXPORT void FixDummySeam(const int num);
 };

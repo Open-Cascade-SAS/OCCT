@@ -71,7 +71,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_IntParam, Standard_Transient)
 
 private:
-  int                     theval;
+  int        theval;
   TCollection_AsciiString thestn;
 };
 

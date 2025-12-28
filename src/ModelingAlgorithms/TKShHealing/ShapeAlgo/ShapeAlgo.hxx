@@ -32,8 +32,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Sets default AlgoContainer
-  Standard_EXPORT static void SetAlgoContainer(
-    const occ::handle<ShapeAlgo_AlgoContainer>& aContainer);
+  Standard_EXPORT static void SetAlgoContainer(const occ::handle<ShapeAlgo_AlgoContainer>& aContainer);
 
   //! Returns default AlgoContainer
   Standard_EXPORT static occ::handle<ShapeAlgo_AlgoContainer> AlgoContainer();

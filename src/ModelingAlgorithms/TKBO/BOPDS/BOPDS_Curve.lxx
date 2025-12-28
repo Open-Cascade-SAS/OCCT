@@ -138,7 +138,7 @@ inline Bnd_Box& BOPDS_Curve::ChangeBox()
 
 inline bool BOPDS_Curve::HasEdge() const
 {
-  bool                                                     bFlag;
+  bool                    bFlag;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
   //
   bFlag = false;
@@ -146,7 +146,7 @@ inline bool BOPDS_Curve::HasEdge() const
   for (; aItPB.More(); aItPB.Next())
   {
     const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
-    bFlag                                   = aPB->HasEdge();
+    bFlag                              = aPB->HasEdge();
     if (bFlag)
     {
       break;

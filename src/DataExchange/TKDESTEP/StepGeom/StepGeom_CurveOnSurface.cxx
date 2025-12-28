@@ -43,8 +43,7 @@ occ::handle<StepGeom_SurfaceCurve> StepGeom_CurveOnSurface::SurfaceCurve() const
   return GetCasted(StepGeom_SurfaceCurve, Value());
 }
 
-occ::handle<StepGeom_CompositeCurveOnSurface> StepGeom_CurveOnSurface::CompositeCurveOnSurface()
-  const
+occ::handle<StepGeom_CompositeCurveOnSurface> StepGeom_CurveOnSurface::CompositeCurveOnSurface() const
 {
   return GetCasted(StepGeom_CompositeCurveOnSurface, Value());
 }

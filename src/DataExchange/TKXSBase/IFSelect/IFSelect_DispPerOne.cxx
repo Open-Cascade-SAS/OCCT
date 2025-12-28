@@ -31,7 +31,8 @@ TCollection_AsciiString IFSelect_DispPerOne::Label() const
   return TCollection_AsciiString("One File per Input Entity");
 }
 
-bool IFSelect_DispPerOne::LimitedMax(const int nbent, int& pcount) const
+bool IFSelect_DispPerOne::LimitedMax(const int nbent,
+                                                 int&      pcount) const
 {
   pcount = nbent;
   return true;

@@ -27,6 +27,10 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Interface_CheckStatus.hxx>
 #include <Message_ProgressRange.hxx>
 
@@ -70,10 +74,7 @@ public:
 
   //! Sets the Actor directly : this value will be used if the
   //! Controller is not set
-  void SetActor(const occ::handle<Transfer_ActorOfTransientProcess>& theActor)
-  {
-    myActor = theActor;
-  }
+  void SetActor(const occ::handle<Transfer_ActorOfTransientProcess>& theActor) { myActor = theActor; }
 
   //! Returns the Actor, determined by the Controller, or if this
   //! one is unknown, directly set.
@@ -92,15 +93,15 @@ public:
 
   //! Sets a Context : according to receiving appli, to be
   //! interpreted by the Actor
-  Standard_EXPORT void SetContext(const char*                            theName,
+  Standard_EXPORT void SetContext(const char*            theName,
                                   const occ::handle<Standard_Transient>& theCtx);
 
   //! Returns the Context attached to a name, if set and if it is
   //! Kind of the type, else a Null Handle
   //! Returns True if OK, False if no Context
-  Standard_EXPORT bool GetContext(const char*                       theName,
-                                  const occ::handle<Standard_Type>& theType,
-                                  occ::handle<Standard_Transient>&  theCtx) const;
+  Standard_EXPORT bool GetContext(const char*       theName,
+                                              const occ::handle<Standard_Type>& theType,
+                                              occ::handle<Standard_Transient>&  theCtx) const;
 
   //! Returns (modifiable) the whole definition of Context
   //! Rather for internal use (ex.: preparing and setting in once)
@@ -149,8 +150,7 @@ public:
 
   //! Returns the list of entities to which a final result is
   //! attached (i.e. processed by RecordResult)
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> RecordedList()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> RecordedList() const;
 
   //! Note that an entity has been required for transfer but no
   //! result at all is available (typically : case not implemented)
@@ -176,11 +176,13 @@ public:
 
   //! Returns the number attached to the entity recorded for final,
   //! or zero if not recorded (looks in the ResultFromModel)
-  Standard_EXPORT int FinalEntityNumber(const occ::handle<Standard_Transient>& theEnt) const;
+  Standard_EXPORT int
+    FinalEntityNumber(const occ::handle<Standard_Transient>& theEnt) const;
 
   //! Returns the final result recorded for a NUMBER of entity
   //! (internal use). Null if out of range
-  Standard_EXPORT occ::handle<Transfer_ResultFromModel> ResultFromNumber(const int theNum) const;
+  Standard_EXPORT occ::handle<Transfer_ResultFromModel> ResultFromNumber(
+    const int theNum) const;
 
   //! Returns the resulting object as a Transient
   //! Null Handle if no result or result not transient
@@ -199,7 +201,7 @@ public:
   //! 11 for all : just label, status and filename are kept
   //! Returns True when done, False if nothing was to clear
   Standard_EXPORT bool ClearResult(const occ::handle<Standard_Transient>& theEnt,
-                                   const int                              theMode);
+                                               const int            theMode);
 
   //! Returns an entity from which a given result was produced.
   //! If <mode> = 0 (D), searches in last root transfers
@@ -211,20 +213,20 @@ public:
   //! Returns a Null Handle if <res> not recorded
   Standard_EXPORT occ::handle<Standard_Transient> EntityFromResult(
     const occ::handle<Standard_Transient>& theRes,
-    const int                              theMode = 0) const;
+    const int            theMode = 0) const;
 
   //! Returns an entity from which a given shape result was produced
   //! Returns a Null Handle if <res> not recorded or not a Shape
   Standard_EXPORT occ::handle<Standard_Transient> EntityFromShapeResult(
-    const TopoDS_Shape& theRes,
-    const int           theMode = 0) const;
+    const TopoDS_Shape&    theRes,
+    const int theMode = 0) const;
 
   //! Returns the list of entities from which some shapes were
   //! produced : it corresponds to a loop on EntityFromShapeResult,
   //! but is optimised
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-    EntitiesFromShapeList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& theRes,
-                          const int theMode = 0) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> EntitiesFromShapeList(
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& theRes,
+    const int                   theMode = 0) const;
 
   //! Returns the CheckList resulting from transferring <ent>, i.e.
   //! stored in its recorded form ResultFromModel
@@ -246,7 +248,7 @@ public:
   //! - failsonly = True  : fails only
   //! Returns False if <ent> is not recorded
   Standard_EXPORT bool HasChecks(const occ::handle<Standard_Transient>& theEnt,
-                                 const bool                             FailsOnly) const;
+                                             const bool            FailsOnly) const;
 
   //! Returns the list of starting entities to which a given check
   //! status is attached, IN FINAL RESULTS
@@ -263,8 +265,8 @@ public:
   //! Remark : result True and check=0 will give an empty list
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> CheckedList(
     const occ::handle<Standard_Transient>& theEnt,
-    const Interface_CheckStatus            WithCheck = Interface_CheckAny,
-    const bool                             theResult = true) const;
+    const Interface_CheckStatus       WithCheck = Interface_CheckAny,
+    const bool            theResult = true) const;
 
   //! Defines a new TransferProcess for reading transfer
   //! Returns True if done, False if data are not properly defined
@@ -279,39 +281,39 @@ public:
   //! Imagine, using the selected Actor for Read
   //! Returns count of transferred entities, ok or with fails (0/1)
   //! If <rec> is True (D), the result is recorded by RecordResult
-  Standard_EXPORT int TransferOne(
-    const occ::handle<Standard_Transient>& theEnt,
-    const bool                             theRec      = true,
-    const Message_ProgressRange&           theProgress = Message_ProgressRange());
+  Standard_EXPORT int
+    TransferOne(const occ::handle<Standard_Transient>& theEnt,
+                const bool            theRec      = true,
+                const Message_ProgressRange&      theProgress = Message_ProgressRange());
 
   //! Commands the transfer on reading for a list of entities to
   //! data for Imagine, using the selected Actor for Read
   //! Returns count of transferred entities, ok or with fails (0/1)
   //! If <rec> is True (D), the results are recorded by RecordResult
-  Standard_EXPORT int TransferList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theList,
-    const bool                                                                 theRec = true,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT int
+    TransferList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theList,
+                 const bool                      theRec      = true,
+                 const Message_ProgressRange&                theProgress = Message_ProgressRange());
 
   //! Transfers the content of the current Interface Model to
   //! data handled by Imagine, starting from its Roots (determined
   //! by the Graph <G>), using the selected Actor for Read
   //! Returns the count of performed root transfers (i.e. 0 if none)
   //! or -1 if no actor is defined
-  Standard_EXPORT int TransferRoots(
-    const Interface_Graph&       theGraph,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT int
+    TransferRoots(const Interface_Graph&       theGraph,
+                  const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Clears the results attached to an entity
   //! if <ents> equates the starting model, clears all results
   Standard_EXPORT void TransferClear(const occ::handle<Standard_Transient>& theEnt,
-                                     const int                              theLevel = 0);
+                                     const int            theLevel = 0);
 
   //! Prints statistics on current Trace File, according <what> and
   //! <mode>. See PrintStatsProcess for details
-  Standard_EXPORT void PrintStats(Standard_OStream& theStream,
-                                  const int         theWhat,
-                                  const int         theMode = 0) const;
+  Standard_EXPORT void PrintStats(Standard_OStream&      theStream,
+                                  const int theWhat,
+                                  const int theMode = 0) const;
 
   //! Returns the CheckList resulting from last TransferRead
   //! i.e. from TransientProcess itself, recorded from last Clear
@@ -321,8 +323,8 @@ public:
   //! i.e. from TransientProcess itself, recorded from last Clear
   //! If <roots> is True , considers only roots of transfer
   //! If <roots> is False, considers all entities bound with result
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-                  LastTransferList(const bool theRoots) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> LastTransferList(
+    const bool theRoots) const;
 
   //! Returns a list of result Shapes
   //! If <rec> is True , sees RecordedList
@@ -363,29 +365,28 @@ public:
   //! 3 : ListByItem        (count + entity numbers)
   //! 4 : EntitiesByItem    (count + entity numbers and labels)
   Standard_EXPORT static void PrintStatsProcess(const occ::handle<Transfer_TransientProcess>& theTP,
-                                                const int theWhat,
+                                                const int                   theWhat,
                                                 const int theMode = 0);
 
   //! Works as PrintStatsProcess, but displays data only on the
   //! entities which are in <list> (filter)
-  Standard_EXPORT static void PrintStatsOnList(
-    const occ::handle<Transfer_TransientProcess>&                              theTP,
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theList,
-    const int                                                                  theWhat,
-    const int                                                                  theMode = 0);
+  Standard_EXPORT static void PrintStatsOnList(const occ::handle<Transfer_TransientProcess>&    theTP,
+                                               const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& theList,
+                                               const int                      theWhat,
+                                               const int theMode = 0);
 
   DEFINE_STANDARD_RTTIEXT(XSControl_TransferReader, Standard_Transient)
 
 private:
   occ::handle<XSControl_Controller>                                             myController;
-  TCollection_AsciiString                                                       myFileName;
+  TCollection_AsciiString                                                  myFileName;
   occ::handle<Interface_InterfaceModel>                                         myModel;
   occ::handle<Interface_HGraph>                                                 myGraph;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> myContext;
   occ::handle<Transfer_ActorOfTransientProcess>                                 myActor;
   occ::handle<Transfer_TransientProcess>                                        myTP;
-  NCollection_DataMap<int, occ::handle<Standard_Transient>>                     myResults;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>                              myShapeResult;
+  NCollection_DataMap<int, occ::handle<Standard_Transient>>                                        myResults;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>                                        myShapeResult;
 };
 
 #endif // _XSControl_TransferReader_HeaderFile

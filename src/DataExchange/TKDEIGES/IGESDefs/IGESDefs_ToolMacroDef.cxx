@@ -32,6 +32,7 @@
 #include <NCollection_HArray1.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESDefs_ToolMacroDef::IGESDefs_ToolMacroDef() {}
 
@@ -41,10 +42,10 @@ void IGESDefs_ToolMacroDef::ReadOwnParams(const occ::handle<IGESDefs_MacroDef>& 
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  occ::handle<TCollection_HAsciiString>                                   macro;
-  int                                                                     entityTypeID;
+  occ::handle<TCollection_HAsciiString>        macro;
+  int                        entityTypeID;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> langStatements;
-  occ::handle<TCollection_HAsciiString>                                   endMacro;
+  occ::handle<TCollection_HAsciiString>        endMacro;
 
   PR.ReadText(PR.Current(), "MACRO", macro); // szv#4:S4163:12Mar99 `st=` not needed
 
@@ -84,7 +85,7 @@ void IGESDefs_ToolMacroDef::ReadOwnParams(const occ::handle<IGESDefs_MacroDef>& 
 }
 
 void IGESDefs_ToolMacroDef::WriteOwnParams(const occ::handle<IGESDefs_MacroDef>& ent,
-                                           IGESData_IGESWriter&                  IW) const
+                                           IGESData_IGESWriter&             IW) const
 {
   IW.Send(ent->MACRO());
   IW.Send(ent->EntityTypeID());
@@ -104,13 +105,12 @@ void IGESDefs_ToolMacroDef::OwnCopy(const occ::handle<IGESDefs_MacroDef>& anothe
                                     Interface_CopyTool& /* TC */) const
 {
 
-  occ::handle<TCollection_HAsciiString> macro = new TCollection_HAsciiString(another->MACRO());
-  int                                   entityTypeID = another->EntityTypeID();
-  occ::handle<TCollection_HAsciiString> endMacro =
-    new TCollection_HAsciiString(another->ENDMACRO());
+  occ::handle<TCollection_HAsciiString> macro        = new TCollection_HAsciiString(another->MACRO());
+  int                 entityTypeID = another->EntityTypeID();
+  occ::handle<TCollection_HAsciiString> endMacro     = new TCollection_HAsciiString(another->ENDMACRO());
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> langStatements;
-  int nbval      = another->NbStatements();
-  langStatements = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
+  int                        nbval = another->NbStatements();
+  langStatements                                = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nbval);
 
   for (int i = 1; i <= nbval; i++)
   {
@@ -144,8 +144,8 @@ void IGESDefs_ToolMacroDef::OwnCheck(const occ::handle<IGESDefs_MacroDef>& /* en
 
 void IGESDefs_ToolMacroDef::OwnDump(const occ::handle<IGESDefs_MacroDef>& ent,
                                     const IGESData_IGESDumper& /* dumper */,
-                                    Standard_OStream& S,
-                                    const int         level) const
+                                    Standard_OStream&      S,
+                                    const int level) const
 {
   S << "IGESDefs_MacroDef\n"
     << "MACRO : ";

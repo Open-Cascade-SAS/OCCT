@@ -36,11 +36,11 @@ public:
   //! @return merged triangulation or NULL on no result
   Standard_EXPORT static occ::handle<Poly_Triangulation> MergeNodes(
     const occ::handle<Poly_Triangulation>& theTris,
-    const gp_Trsf&                         theTrsf,
-    const bool                             theToReverse,
-    const double                           theSmoothAngle,
-    const double                           theMergeTolerance = 0.0,
-    const bool                             theToForce        = true);
+    const gp_Trsf&                    theTrsf,
+    const bool            theToReverse,
+    const double                      theSmoothAngle,
+    const double                      theMergeTolerance = 0.0,
+    const bool                        theToForce        = true);
 
 public:
   //! Constructor
@@ -102,8 +102,8 @@ public:
   //! @param[in] theTrsf transformation to apply
   //! @param[in] theToReverse reverse triangle nodes order
   Standard_EXPORT virtual void AddTriangulation(const occ::handle<Poly_Triangulation>& theTris,
-                                                const gp_Trsf& theTrsf      = gp_Trsf(),
-                                                const bool     theToReverse = false);
+                                                const gp_Trsf&         theTrsf      = gp_Trsf(),
+                                                const bool theToReverse = false);
 
   //! Prepare and return result triangulation (temporary data will be truncated to result size).
   Standard_EXPORT occ::handle<Poly_Triangulation> Result();
@@ -330,20 +330,20 @@ private:
   };
 
 private:
-  occ::handle<Poly_Triangulation>                          myPolyData;     //!< output triangulation
+  occ::handle<Poly_Triangulation>                               myPolyData;     //!< output triangulation
   MergedNodesMap                                           myNodeIndexMap; //!< map of merged nodes
   NCollection_Map<NCollection_Vec4<int>, MergedElemHasher> myElemMap;      //!< map of elements
   NCollection_Vec4<int>                                    myNodeInds;  //!< current element indexes
   NCollection_Vec3<float>                                  myTriNormal; //!< current triangle normal
   gp_XYZ myPlaces[4]; //!< current triangle/quad coordinates to push
 
-  double myUnitFactor;         //!< scale factor to apply
-  int    myNbNodes;            //!< number of output nodes
-  int    myNbElems;            //!< number of output elements
-  int    myNbDegenElems;       //!< number of degenerated elements
-  int    myNbMergedElems;      //!< number of merged elements
-  bool   myToDropDegenerative; //!< flag to filter our degenerate elements
-  bool   myToMergeElems;       //!< flag to merge elements
+  double    myUnitFactor;         //!< scale factor to apply
+  int myNbNodes;            //!< number of output nodes
+  int myNbElems;            //!< number of output elements
+  int myNbDegenElems;       //!< number of degenerated elements
+  int myNbMergedElems;      //!< number of merged elements
+  bool myToDropDegenerative; //!< flag to filter our degenerate elements
+  bool myToMergeElems;       //!< flag to merge elements
 };
 
 #endif // _Poly_MergeNodesTool_HeaderFile

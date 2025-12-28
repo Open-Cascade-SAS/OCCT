@@ -93,7 +93,7 @@ protected:
                        const TopLoc_Location& theLocation,
                        const TopAbs_ShapeEnum theShapeTypeFind,
                        const TopAbs_ShapeEnum theShapeTypeAvoid,
-                       const bool             theToMapColors = false,
+                       const bool theToMapColors = false,
                        const XCAFPrs_Style&   theStyle       = XCAFPrs_Style());
 
   //! Auxiliary constructor.
@@ -120,9 +120,9 @@ protected:
 
 protected:
   NCollection_DataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
-                myStyles;      //!< Shape -> Style map
-  XCAFPrs_Style myDefStyle;    //!< default style for shapes without dedicated style
-  bool          myToMapColors; //!< flag to dispatch styles
+                   myStyles;      //!< Shape -> Style map
+  XCAFPrs_Style    myDefStyle;    //!< default style for shapes without dedicated style
+  bool myToMapColors; //!< flag to dispatch styles
 
   TopExp_Explorer    myIter;      //!< shape explorer
   TopLoc_Location    myLocation;  //!< current shape location
@@ -130,7 +130,7 @@ protected:
   XCAFPrs_Style      myStyle;     //!< current shape style
   Quantity_ColorRGBA myColor;     //!< current shape color
   TopAbs_ShapeEnum   myShapeType; //!< type of shape
-  bool               myHasColor;  //!< flag indicating that current shape has assigned color
+  bool   myHasColor;  //!< flag indicating that current shape has assigned color
 };
 
 #endif // _RWMesh_ShapeIterator_HeaderFile

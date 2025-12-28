@@ -31,10 +31,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT ShapeConstruct_MakeTriangulation(const NCollection_Array1<gp_Pnt>& pnts,
-                                                   const double                      prec = 0.0);
-
-  Standard_EXPORT ShapeConstruct_MakeTriangulation(const TopoDS_Wire& wire,
                                                    const double       prec = 0.0);
+
+  Standard_EXPORT ShapeConstruct_MakeTriangulation(const TopoDS_Wire&  wire,
+                                                   const double prec = 0.0);
 
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
@@ -46,8 +46,8 @@ private:
 
   Standard_EXPORT void AddFacet(const TopoDS_Wire& wire);
 
-  double      myPrecision;
-  TopoDS_Wire myWire;
+  double myPrecision;
+  TopoDS_Wire   myWire;
 };
 
 #endif // _ShapeConstruct_MakeTriangulation_HeaderFile

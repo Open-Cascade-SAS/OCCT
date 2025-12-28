@@ -27,6 +27,7 @@
 #include <BRepCheck_Vertex.hxx>
 #include <BRepCheck_Wire.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Shared.hxx>
 #include <OSD_Parallel.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
@@ -34,6 +35,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
@@ -44,9 +46,8 @@
 class BRepCheck_ParallelAnalyzer
 {
 public:
-  BRepCheck_ParallelAnalyzer(
-    NCollection_Array1<NCollection_Array1<TopoDS_Shape>>&                          theArray,
-    const NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>>& theMap)
+  BRepCheck_ParallelAnalyzer(NCollection_Array1<NCollection_Array1<TopoDS_Shape>>& theArray,
+                             const NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>>&          theMap)
       : myArray(theArray),
         myMap(theMap)
   {
@@ -60,8 +61,8 @@ public:
          aShapeIter <= myArray[theVectorIndex].Upper();
          ++aShapeIter)
     {
-      const TopoDS_Shape&                  aShape  = myArray[theVectorIndex][aShapeIter];
-      const TopAbs_ShapeEnum               aType   = aShape.ShapeType();
+      const TopoDS_Shape&             aShape  = myArray[theVectorIndex][aShapeIter];
+      const TopAbs_ShapeEnum          aType   = aShape.ShapeType();
       const occ::handle<BRepCheck_Result>& aResult = myMap.FindFromKey(aShape);
       switch (aType)
       {
@@ -78,7 +79,7 @@ public:
           try
           {
             occ::handle<BRepCheck_Edge> aResEdge = occ::down_cast<BRepCheck_Edge>(aResult);
-            const BRepCheck_Status      ste =
+            const BRepCheck_Status ste =
               aResEdge->CheckPolygonOnTriangulation(TopoDS::Edge(aShape));
             if (ste != BRepCheck_NoError)
             {
@@ -97,7 +98,7 @@ public:
           NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapS;
           for (exp.Init(aShape, TopAbs_VERTEX); exp.More(); exp.Next())
           {
-            const TopoDS_Shape&           aVertex      = exp.Current();
+            const TopoDS_Shape&      aVertex      = exp.Current();
             occ::handle<BRepCheck_Result> aResOfVertex = myMap.FindFromKey(aVertex);
             try
             {
@@ -176,8 +177,7 @@ public:
                       : std::unique_lock<std::mutex>();
                   if (aFaceEdgeRes->IsStatusOnShape(aShape))
                   {
-                    NCollection_List<BRepCheck_Status>::Iterator itl(
-                      aFaceEdgeRes->StatusOnShape(aShape));
+                    NCollection_List<BRepCheck_Status>::Iterator itl(aFaceEdgeRes->StatusOnShape(aShape));
                     for (; itl.More(); itl.Next())
                     {
                       const BRepCheck_Status ste = itl.Value();
@@ -224,8 +224,7 @@ public:
                                            : std::unique_lock<std::mutex>();
                 if (aFaceWireRes->IsStatusOnShape(aShape))
                 {
-                  const NCollection_List<BRepCheck_Status>& aStatusList =
-                    aFaceWireRes->StatusOnShape(aShape);
+                  const NCollection_List<BRepCheck_Status>& aStatusList = aFaceWireRes->StatusOnShape(aShape);
                   NCollection_List<BRepCheck_Status>::Iterator itl(aStatusList);
                   for (; itl.More(); itl.Next())
                   {
@@ -306,7 +305,7 @@ public:
           exp.Init(aShape, TopAbs_SHELL);
           for (; exp.More(); exp.Next())
           {
-            const TopoDS_Shape&           aShell    = exp.Current();
+            const TopoDS_Shape&      aShell    = exp.Current();
             occ::handle<BRepCheck_Result> aSolidRes = myMap.FindFromKey(aShell);
             try
             {
@@ -340,8 +339,8 @@ private:
   BRepCheck_ParallelAnalyzer& operator=(const BRepCheck_ParallelAnalyzer&) = delete;
 
 private:
-  NCollection_Array1<NCollection_Array1<TopoDS_Shape>>&                          myArray;
-  const NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>>& myMap;
+  NCollection_Array1<NCollection_Array1<TopoDS_Shape>>& myArray;
+  const NCollection_IndexedDataMap<TopoDS_Shape, occ::handle<BRepCheck_Result>>&          myMap;
 };
 
 //=================================================================================================
@@ -416,12 +415,12 @@ void BRepCheck_Analyzer::Put(const TopoDS_Shape& theShape, const bool B)
 
 void BRepCheck_Analyzer::Perform()
 {
-  const int                          aMapSize     = myMap.Size();
-  const int                          aMinTaskSize = 10;
+  const int        aMapSize     = myMap.Size();
+  const int        aMinTaskSize = 10;
   const occ::handle<OSD_ThreadPool>& aThreadPool  = OSD_ThreadPool::DefaultPool();
-  const int                          aNbThreads   = aThreadPool->NbThreads();
-  int                                aNbTasks     = aNbThreads * 10;
-  int                                aTaskSize    = (int)std::ceil((double)aMapSize / aNbTasks);
+  const int        aNbThreads   = aThreadPool->NbThreads();
+  int              aNbTasks     = aNbThreads * 10;
+  int aTaskSize = (int)std::ceil((double)aMapSize / aNbTasks);
   if (aTaskSize < aMinTaskSize)
   {
     aTaskSize = aMinTaskSize;
@@ -480,8 +479,8 @@ bool BRepCheck_Analyzer::IsValid(const TopoDS_Shape& S) const
       //    break;
     case TopAbs_FACE: {
       bool valid = ValidSub(S, TopAbs_WIRE);
-      valid      = valid && ValidSub(S, TopAbs_EDGE);
-      valid      = valid && ValidSub(S, TopAbs_VERTEX);
+      valid                  = valid && ValidSub(S, TopAbs_EDGE);
+      valid                  = valid && ValidSub(S, TopAbs_VERTEX);
       return valid;
     }
 
@@ -503,10 +502,11 @@ bool BRepCheck_Analyzer::IsValid(const TopoDS_Shape& S) const
 
 //=================================================================================================
 
-bool BRepCheck_Analyzer::ValidSub(const TopoDS_Shape& S, const TopAbs_ShapeEnum SubType) const
+bool BRepCheck_Analyzer::ValidSub(const TopoDS_Shape&    S,
+                                              const TopAbs_ShapeEnum SubType) const
 {
   NCollection_List<BRepCheck_Status>::Iterator itl;
-  TopExp_Explorer                              exp;
+  TopExp_Explorer                      exp;
   for (exp.Init(S, SubType); exp.More(); exp.Next())
   {
     //  for (TopExp_Explorer exp(S,SubType);exp.More(); exp.Next()) {

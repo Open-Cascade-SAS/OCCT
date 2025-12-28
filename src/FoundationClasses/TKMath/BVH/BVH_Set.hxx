@@ -38,8 +38,8 @@ public:
   //! Returns AABB of the entire set of objects.
   virtual BVH_Box<T, N> Box() const
   {
-    BVH_Box<T, N> aBox;
-    const int     aSize = Size();
+    BVH_Box<T, N>          aBox;
+    const int aSize = Size();
     for (int anIndex = 0; anIndex < aSize; ++anIndex)
     {
       aBox.Combine(Box(anIndex));

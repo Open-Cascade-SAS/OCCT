@@ -59,7 +59,7 @@ public:
 
   //! Access program by index
   occ::handle<OpenGl_ShaderProgram>& ChangeValue(Graphic3d_TypeOfShadingModel theShadingModel,
-                                                 int                          theProgramBits)
+                                            int             theProgramBits)
   {
     occ::handle<OpenGl_SetOfPrograms>& aSet = myPrograms[theShadingModel - 1];
     if (aSet.IsNull())

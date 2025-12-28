@@ -34,8 +34,11 @@
 #include <gp_Dir.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Real.hxx>
+#include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Vector.hxx>
 #include <XCAFDimTolObjects_AngularQualifier.hxx>
@@ -145,18 +148,20 @@ public:
   //!                          of the ISO 286 limits-and-fits tolerance classification.
   //! \param theGrade - represents the quality or the accuracy grade of a tolerance.
   Standard_EXPORT void SetClassOfTolerance(
-    const bool                                    theHole,
+    const bool                        theHole,
     const XCAFDimTolObjects_DimensionFormVariance theFormVariance,
     const XCAFDimTolObjects_DimensionGrade        theGrade);
 
   //! Retrieves tolerance class parameters of the dimension.
   //! Returns True if the dimension is toleranced.
-  Standard_EXPORT bool GetClassOfTolerance(bool&                                    theHole,
-                                           XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
-                                           XCAFDimTolObjects_DimensionGrade&        theGrade) const;
+  Standard_EXPORT bool
+    GetClassOfTolerance(bool&                        theHole,
+                        XCAFDimTolObjects_DimensionFormVariance& theFormVariance,
+                        XCAFDimTolObjects_DimensionGrade&        theGrade) const;
 
   //! Sets the number of places to the left and right of the decimal point respectively.
-  Standard_EXPORT void SetNbOfDecimalPlaces(const int theL, const int theR);
+  Standard_EXPORT void SetNbOfDecimalPlaces(const int theL,
+                                            const int theR);
 
   //! Returns the number of places to the left and right of the decimal point respectively.
   Standard_EXPORT void GetNbOfDecimalPlaces(int& theL, int& theR) const;
@@ -293,7 +298,7 @@ public:
   }
 
   //! Set graphical presentation for the object.
-  void SetPresentation(const TopoDS_Shape&                          thePresentation,
+  void SetPresentation(const TopoDS_Shape&                     thePresentation,
                        const occ::handle<TCollection_HAsciiString>& thePresentationName)
   {
     myPresentation     = thePresentation;
@@ -343,10 +348,12 @@ public:
   }
 
   //! Returns true if the dimension type is a location.
-  Standard_EXPORT static bool IsDimensionalLocation(const XCAFDimTolObjects_DimensionType theType);
+  Standard_EXPORT static bool IsDimensionalLocation(
+    const XCAFDimTolObjects_DimensionType theType);
 
   //! Returns true if the dimension type is a size.
-  Standard_EXPORT static bool IsDimensionalSize(const XCAFDimTolObjects_DimensionType theType);
+  Standard_EXPORT static bool IsDimensionalSize(
+    const XCAFDimTolObjects_DimensionType theType);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -354,29 +361,29 @@ public:
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject, Standard_Transient)
 
 private:
-  XCAFDimTolObjects_DimensionType                        myType;
-  occ::handle<NCollection_HArray1<double>>               myVal;
-  XCAFDimTolObjects_DimensionQualifier                   myQualifier;
-  XCAFDimTolObjects_AngularQualifier                     myAngularQualifier;
-  bool                                                   myIsHole;
-  XCAFDimTolObjects_DimensionFormVariance                myFormVariance;
-  XCAFDimTolObjects_DimensionGrade                       myGrade;
-  int                                                    myL;
-  int                                                    myR;
-  NCollection_Sequence<XCAFDimTolObjects_DimensionModif> myModifiers;
-  TopoDS_Edge                                            myPath;
-  gp_Dir                                                 myDir;
-  gp_Ax2                                                 myConnection1, myConnection2;
-  bool                                                   myHasConnection1, myHasConnection2;
-  bool                                                   myConnectionIsPoint1, myConnectionIsPoint2;
-  occ::handle<TCollection_HAsciiString>                  myConnectionName1, myConnectionName2;
-  gp_Ax2                                                 myPlane;
-  bool                                                   myHasPlane;
-  bool                                                   myHasPntText;
-  gp_Pnt                                                 myPntText;
-  TopoDS_Shape                                           myPresentation;
-  occ::handle<TCollection_HAsciiString>                  mySemanticName;
-  occ::handle<TCollection_HAsciiString>                  myPresentationName;
+  XCAFDimTolObjects_DimensionType                      myType;
+  occ::handle<NCollection_HArray1<double>>                        myVal;
+  XCAFDimTolObjects_DimensionQualifier                 myQualifier;
+  XCAFDimTolObjects_AngularQualifier                   myAngularQualifier;
+  bool                                     myIsHole;
+  XCAFDimTolObjects_DimensionFormVariance              myFormVariance;
+  XCAFDimTolObjects_DimensionGrade                     myGrade;
+  int                                     myL;
+  int                                     myR;
+  NCollection_Sequence<XCAFDimTolObjects_DimensionModif>         myModifiers;
+  TopoDS_Edge                                          myPath;
+  gp_Dir                                               myDir;
+  gp_Ax2                                               myConnection1, myConnection2;
+  bool                                     myHasConnection1, myHasConnection2;
+  bool                                     myConnectionIsPoint1, myConnectionIsPoint2;
+  occ::handle<TCollection_HAsciiString>                     myConnectionName1, myConnectionName2;
+  gp_Ax2                                               myPlane;
+  bool                                     myHasPlane;
+  bool                                     myHasPntText;
+  gp_Pnt                                               myPntText;
+  TopoDS_Shape                                         myPresentation;
+  occ::handle<TCollection_HAsciiString>                     mySemanticName;
+  occ::handle<TCollection_HAsciiString>                     myPresentationName;
   NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptions;
   NCollection_Vector<occ::handle<TCollection_HAsciiString>> myDescriptionNames;
 };

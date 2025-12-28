@@ -72,7 +72,7 @@ public:
 
 private:
   gp_Pnt           myPoint;
-  bool             is3D;
+  bool is3D;
   Draw_MarkerShape myShape;
   Draw_Color       myColor;
 };

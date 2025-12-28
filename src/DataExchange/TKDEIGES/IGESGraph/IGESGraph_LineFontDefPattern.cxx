@@ -27,9 +27,8 @@ IGESGraph_LineFontDefPattern::IGESGraph_LineFontDefPattern() {}
 
 // This class inherits from IGESData_LineFontEntity
 
-void IGESGraph_LineFontDefPattern::Init(
-  const occ::handle<NCollection_HArray1<double>>& allSegLength,
-  const occ::handle<TCollection_HAsciiString>&    aPattern)
+void IGESGraph_LineFontDefPattern::Init(const occ::handle<NCollection_HArray1<double>>&    allSegLength,
+                                        const occ::handle<TCollection_HAsciiString>& aPattern)
 {
   if (allSegLength->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGraph_LineFontDefPattern : Init");
@@ -61,10 +60,10 @@ bool IGESGraph_LineFontDefPattern::IsVisible(const int Index) const
     return false;
 
   // Get the Character out of String, which contains the required BIT
-  char tempStr[2];
-  int  length = theDisplayPattern->Length();
-  tempStr[0]  = theDisplayPattern->Value(length - ((nbSegs - Index) / 4));
-  tempStr[1]  = 0;
+  char             tempStr[2];
+  int length  = theDisplayPattern->Length();
+  tempStr[0]               = theDisplayPattern->Value(length - ((nbSegs - Index) / 4));
+  tempStr[1]               = 0;
   int tempVal = (int)strtol(tempStr, (char**)NULL, 16);
   // Now get the BIT out of tempVal
   int mask = 0x01;

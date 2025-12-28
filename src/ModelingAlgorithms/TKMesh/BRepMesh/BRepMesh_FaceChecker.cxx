@@ -56,7 +56,7 @@ public:
     myWiresBndBoxTree->ChangeValue(theWireIndex) = aBndBoxTree;
 
     occ::handle<NCollection_IncAllocator> aTmpAlloc2 = new NCollection_IncAllocator();
-    IMeshData::BndBox2dTreeFiller         aBndBoxTreeFiller(*aBndBoxTree, aTmpAlloc2);
+    IMeshData::BndBox2dTreeFiller    aBndBoxTreeFiller(*aBndBoxTree, aTmpAlloc2);
 
     for (int aEdgeIt = 0; aEdgeIt < aDWire->EdgesNb(); ++aEdgeIt)
     {
@@ -116,7 +116,8 @@ public:
   }
 
   //! Resets current selector.
-  void Reset(const BRepMesh_FaceChecker::Segment* theSegment, const int theSelfSegmentIndex)
+  void Reset(const BRepMesh_FaceChecker::Segment* theSegment,
+             const int               theSelfSegmentIndex)
   {
     myIndices.Clear();
 
@@ -150,7 +151,7 @@ public:
     if (aIntStatus == BRepMesh_GeomTool::Cross)
     {
       const double aAngle = gp_Vec2d(mySegment->Point1->XY(), mySegment->Point2->XY())
-                              .Angle(gp_Vec2d(aSegment.Point1->XY(), aSegment.Point2->XY()));
+                                     .Angle(gp_Vec2d(aSegment.Point1->XY(), aSegment.Point2->XY()));
 
       if (std::abs(aAngle) < MaxTangentAngle)
       {
@@ -159,9 +160,9 @@ public:
 
       if (mySelfSegmentIndex != -1)
       {
-        gp_XY        aPrevVec;
-        double       aSumS   = 0.;
-        const gp_XY& aRefPnt = aIntPnt.Coord();
+        gp_XY         aPrevVec;
+        double aSumS   = 0.;
+        const gp_XY&  aRefPnt = aIntPnt.Coord();
         for (int i = mySelfSegmentIndex; i < theSegmentIndex; ++i)
         {
           const BRepMesh_FaceChecker::Segment& aCurrSegment = mySegments->Value(i);
@@ -193,8 +194,8 @@ public:
   const IMeshData::VectorOfInteger& Indices() const { return myIndices; }
 
 private:
-  double                                 myMaxLoopSize;
-  int                                    mySelfSegmentIndex;
+  double                          myMaxLoopSize;
+  int                       mySelfSegmentIndex;
   Handle(BRepMesh_FaceChecker::Segments) mySegments;
   const BRepMesh_FaceChecker::Segment*   mySegment;
   Bnd_Box2d                              myBox;
@@ -245,7 +246,7 @@ void BRepMesh_FaceChecker::collectSegments()
 
 void BRepMesh_FaceChecker::perform(const int theWireIndex) const
 {
-  const occ::handle<Segments>&      aSegments1 = myWiresSegments->Value(theWireIndex);
+  const occ::handle<Segments>&           aSegments1 = myWiresSegments->Value(theWireIndex);
   Handle(IMeshData::MapOfIEdgePtr)& aIntersections =
     myWiresIntersectingEdges->ChangeValue(theWireIndex);
 
@@ -254,7 +255,7 @@ void BRepMesh_FaceChecker::perform(const int theWireIndex) const
   for (int aWireIt = theWireIndex; aWireIt < myDFace->WiresNb(); ++aWireIt)
   {
     const Handle(IMeshData::BndBox2dTree)& aBndBoxTree2 = myWiresBndBoxTree->Value(aWireIt);
-    const occ::handle<Segments>&           aSegments2   = myWiresSegments->Value(aWireIt);
+    const occ::handle<Segments>&                aSegments2   = myWiresSegments->Value(aWireIt);
 
     aSelector.SetSegments(aSegments2);
     for (int aSegmentIt = 0; aSegmentIt < aSegments1->Size(); ++aSegmentIt)

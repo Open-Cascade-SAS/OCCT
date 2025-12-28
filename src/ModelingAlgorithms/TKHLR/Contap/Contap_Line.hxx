@@ -87,15 +87,15 @@ public:
   Standard_EXPORT IntSurf_TypeTrans TransitionOnS() const;
 
 private:
-  IntSurf_TypeTrans                                Trans;
-  occ::handle<IntSurf_LineOn2S>                    curv;
+  IntSurf_TypeTrans                  Trans;
+  occ::handle<IntSurf_LineOn2S>           curv;
   occ::handle<NCollection_HSequence<Contap_Point>> svtx;
-  occ::handle<Adaptor2d_Curve2d>                   thearc;
-  Contap_IType                                     typL;
-  gp_Pnt                                           pt;
-  gp_Dir                                           dir1;
-  gp_Dir                                           dir2;
-  double                                           rad;
+  occ::handle<Adaptor2d_Curve2d>          thearc;
+  Contap_IType                       typL;
+  gp_Pnt                             pt;
+  gp_Dir                             dir1;
+  gp_Dir                             dir2;
+  double                      rad;
 };
 
 #include <Contap_Line.lxx>

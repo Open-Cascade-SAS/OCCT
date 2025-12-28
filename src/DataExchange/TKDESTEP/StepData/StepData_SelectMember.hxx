@@ -108,6 +108,7 @@ public:
   Standard_EXPORT virtual void SetEnumText(const int val, const char* text);
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectMember, Standard_Transient)
+
 };
 
 #endif // _StepData_SelectMember_HeaderFile

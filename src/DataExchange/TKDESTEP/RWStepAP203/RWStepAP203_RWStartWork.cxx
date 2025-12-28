@@ -32,7 +32,7 @@ RWStepAP203_RWStartWork::RWStepAP203_RWStartWork() {}
 //=================================================================================================
 
 void RWStepAP203_RWStartWork::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                       const int                                   num,
+                                       const int                 num,
                                        occ::handle<Interface_Check>&               ach,
                                        const occ::handle<StepAP203_StartWork>&     ent) const
 {
@@ -53,12 +53,12 @@ void RWStepAP203_RWStartWork::ReadStep(const occ::handle<StepData_StepReaderData
   // Own fields of StartWork
 
   occ::handle<NCollection_HArray1<StepAP203_WorkItem>> aItems;
-  int                                                  sub2 = 0;
+  int                    sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems   = new NCollection_HArray1<StepAP203_WorkItem>(1, nb0);
+    aItems                = new NCollection_HArray1<StepAP203_WorkItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_WorkItem anIt0;
@@ -73,7 +73,7 @@ void RWStepAP203_RWStartWork::ReadStep(const occ::handle<StepData_StepReaderData
 
 //=================================================================================================
 
-void RWStepAP203_RWStartWork::WriteStep(StepData_StepWriter&                    SW,
+void RWStepAP203_RWStartWork::WriteStep(StepData_StepWriter&               SW,
                                         const occ::handle<StepAP203_StartWork>& ent) const
 {
 
@@ -95,7 +95,7 @@ void RWStepAP203_RWStartWork::WriteStep(StepData_StepWriter&                    
 //=================================================================================================
 
 void RWStepAP203_RWStartWork::Share(const occ::handle<StepAP203_StartWork>& ent,
-                                    Interface_EntityIterator&               iter) const
+                                    Interface_EntityIterator&          iter) const
 {
 
   // Inherited fields of ActionAssignment

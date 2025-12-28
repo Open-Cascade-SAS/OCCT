@@ -59,10 +59,10 @@ public:
   Standard_EXPORT occ::handle<GccInt_Bisec> ThisSolution(const int Index) const;
 
 private:
-  bool      WellDone;
-  int       NbrSol;
-  gp_Circ2d circle;
-  gp_Lin2d  line;
+  bool WellDone;
+  int NbrSol;
+  gp_Circ2d        circle;
+  gp_Lin2d         line;
 };
 
 #endif // _GccAna_CircLin2dBisec_HeaderFile

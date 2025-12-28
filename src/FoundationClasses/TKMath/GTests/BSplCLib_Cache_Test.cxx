@@ -19,8 +19,13 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
 
@@ -39,9 +44,9 @@ protected:
   void SetUp() override {}
 
   //! Creates flat knots array from knots and multiplicities
-  void createFlatKnots(const NCollection_Array1<double>& theKnots,
-                       const NCollection_Array1<int>&    theMults,
-                       NCollection_Array1<double>&       theFlatKnots) const
+  void createFlatKnots(const NCollection_Array1<double>&    theKnots,
+                       const NCollection_Array1<int>& theMults,
+                       NCollection_Array1<double>&          theFlatKnots) const
   {
     int aFlatIndex = theFlatKnots.Lower();
     for (int i = theKnots.Lower(); i <= theKnots.Upper(); ++i)
@@ -81,8 +86,7 @@ TEST_F(BSplCLib_CacheTest, D0_NonRationalCurve3D)
   const int aDegree = 3;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -130,8 +134,7 @@ TEST_F(BSplCLib_CacheTest, D1_NonRationalCurve3D)
   const int aDegree = 3;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -185,8 +188,7 @@ TEST_F(BSplCLib_CacheTest, D2_NonRationalCurve3D)
   const int aDegree = 3;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values
@@ -267,8 +269,7 @@ TEST_F(BSplCLib_CacheTest, D0_RationalCurve3D)
   const int aDegree = 2;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -323,8 +324,7 @@ TEST_F(BSplCLib_CacheTest, D1_RationalCurve3D)
   const int aDegree = 2;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -388,8 +388,7 @@ TEST_F(BSplCLib_CacheTest, D2_RationalCurve3D)
   const int aDegree = 2;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, &aWeights);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, &aWeights);
 
   // Test at several parameter values
@@ -472,8 +471,7 @@ TEST_F(BSplCLib_CacheTest, D3_NonRationalCurve3D)
   const int aDegree = 3;
 
   // Create cache
-  occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
+  occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree, false, aFlatKnots, aPoles, nullptr);
   aCache->BuildCache(0.5, aFlatKnots, aPoles, nullptr);
 
   // Test at several parameter values

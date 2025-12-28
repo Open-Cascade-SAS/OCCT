@@ -77,7 +77,7 @@ public:
   Standard_EXPORT bool Values(const double theX, double& theF, double& theD) override;
 
 private:
-  int                        myK0;    //!< Polynomial degree
+  int                  myK0;    //!< Polynomial degree
   NCollection_Array1<double> myTABli; //!< Array of coefficients li(i) for i = 0..myK0
 };
 

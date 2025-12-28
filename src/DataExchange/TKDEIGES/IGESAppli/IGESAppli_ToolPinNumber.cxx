@@ -37,7 +37,7 @@ void IGESAppli_ToolPinNumber::ReadOwnParams(const occ::handle<IGESAppli_PinNumbe
                                             const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                             IGESData_ParamReader& PR) const
 {
-  int                                   tempNbPropertyValues;
+  int                 tempNbPropertyValues;
   occ::handle<TCollection_HAsciiString> tempPinNumber;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -50,7 +50,7 @@ void IGESAppli_ToolPinNumber::ReadOwnParams(const occ::handle<IGESAppli_PinNumbe
 }
 
 void IGESAppli_ToolPinNumber::WriteOwnParams(const occ::handle<IGESAppli_PinNumber>& ent,
-                                             IGESData_IGESWriter&                    IW) const
+                                             IGESData_IGESWriter&               IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->PinNumberVal());
@@ -65,7 +65,7 @@ void IGESAppli_ToolPinNumber::OwnCopy(const occ::handle<IGESAppli_PinNumber>& an
                                       const occ::handle<IGESAppli_PinNumber>& ent,
                                       Interface_CopyTool& /* TC */) const
 {
-  int                                   aNbPropertyValues;
+  int                 aNbPropertyValues;
   occ::handle<TCollection_HAsciiString> aPinNumber =
     new TCollection_HAsciiString(another->PinNumberVal());
   aNbPropertyValues = another->NbPropertyValues();

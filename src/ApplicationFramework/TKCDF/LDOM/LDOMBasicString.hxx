@@ -110,8 +110,8 @@ public:
   Standard_EXPORT LDOMBasicString(const char* aValue, const occ::handle<LDOM_MemManager>& aDoc);
   //    Create LDOM_AsciiDoc
 
-  Standard_EXPORT LDOMBasicString(const char*                         aValue,
-                                  const int                           aLen,
+  Standard_EXPORT LDOMBasicString(const char*                    aValue,
+                                  const int         aLen,
                                   const occ::handle<LDOM_MemManager>& aDoc);
   //    Create LDOM_AsciiDoc
 

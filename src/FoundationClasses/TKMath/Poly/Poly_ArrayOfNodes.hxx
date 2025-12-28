@@ -96,7 +96,10 @@ public:
   }
 
   //! Move assignment operator; @sa Move()
-  Poly_ArrayOfNodes& operator=(Poly_ArrayOfNodes&& theOther) noexcept { return Move(theOther); }
+  Poly_ArrayOfNodes& operator=(Poly_ArrayOfNodes&& theOther) noexcept
+  {
+    return Move(theOther);
+  }
 
 public:
   //! A generalized accessor to point.
@@ -119,8 +122,7 @@ inline gp_Pnt Poly_ArrayOfNodes::Value(int theIndex) const
   }
   else
   {
-    const NCollection_Vec3<float>& aVec3 =
-      NCollection_AliasedArray::Value<NCollection_Vec3<float>>(theIndex);
+    const NCollection_Vec3<float>& aVec3 = NCollection_AliasedArray::Value<NCollection_Vec3<float>>(theIndex);
     return gp_Pnt(aVec3.x(), aVec3.y(), aVec3.z());
   }
 }
@@ -135,8 +137,7 @@ inline void Poly_ArrayOfNodes::SetValue(int theIndex, const gp_Pnt& theValue)
   }
   else
   {
-    NCollection_Vec3<float>& aVec3 =
-      NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
+    NCollection_Vec3<float>& aVec3 = NCollection_AliasedArray::ChangeValue<NCollection_Vec3<float>>(theIndex);
     aVec3.SetValues((float)theValue.X(), (float)theValue.Y(), (float)theValue.Z());
   }
 }

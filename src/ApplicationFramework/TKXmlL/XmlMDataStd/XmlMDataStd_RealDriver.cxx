@@ -45,9 +45,9 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               XmlObjMgt_RRelocationTable&) const
 {
   // attribute id
   Standard_GUID            aGUID;
@@ -60,9 +60,9 @@ bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 
   occ::down_cast<TDataStd_Real>(theTarget)->SetID(aGUID);
 
-  double                     aValue(0.);
+  double              aValue(0.);
   const XmlObjMgt_DOMString& aRealStr  = XmlObjMgt::GetStringValue(theSource);
-  const char*                aValueStr = static_cast<const char*>(aRealStr.GetString());
+  const char*           aValueStr = static_cast<const char*>(aRealStr.GetString());
   if (XmlObjMgt::GetReal(aRealStr, aValue) == false)
   {
     TCollection_ExtendedString aMessageString =
@@ -80,11 +80,11 @@ bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_RealDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   XmlObjMgt_Persistent&             theTarget,
+                                   XmlObjMgt_Persistent&        theTarget,
                                    XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_Real> anAtt = occ::down_cast<TDataStd_Real>(theSource);
-  char                       aValueChar[32];
+  char                  aValueChar[32];
   Sprintf(aValueChar, "%.17g", anAtt->Get());
   TCollection_AsciiString aValueStr(aValueChar);
   // No occurrence of '&', '<' and other irregular XML characters
@@ -92,7 +92,7 @@ void XmlMDataStd_RealDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   if (anAtt->ID() != TDataStd_Real::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anAtt->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

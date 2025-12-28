@@ -28,8 +28,8 @@ public:
   //! Creates equal relation of two arc's radiuses.
   //! If one of edges is not in the given plane,
   //! the presentation method projects it onto the plane.
-  Standard_EXPORT PrsDim_EqualRadiusRelation(const TopoDS_Edge&             aFirstEdge,
-                                             const TopoDS_Edge&             aSecondEdge,
+  Standard_EXPORT PrsDim_EqualRadiusRelation(const TopoDS_Edge&        aFirstEdge,
+                                             const TopoDS_Edge&        aSecondEdge,
                                              const occ::handle<Geom_Plane>& aPlane);
 
 private:

@@ -34,8 +34,8 @@ public:
   Standard_EXPORT StepVisual_CurveStyle();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepVisual_CurveStyleFontSelect&       aCurveFont,
-                            const StepBasic_SizeSelect&                  aCurveWidth,
+                            const StepVisual_CurveStyleFontSelect&  aCurveFont,
+                            const StepBasic_SizeSelect&             aCurveWidth,
                             const occ::handle<StepVisual_Colour>&        aCurveColour);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
@@ -58,8 +58,8 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> name;
-  StepVisual_CurveStyleFontSelect       curveFont;
-  StepBasic_SizeSelect                  curveWidth;
+  StepVisual_CurveStyleFontSelect  curveFont;
+  StepBasic_SizeSelect             curveWidth;
   occ::handle<StepVisual_Colour>        curveColour;
 };
 

@@ -56,7 +56,8 @@ Aspect_GradientFillMethod Aspect_GradientBackground::BgGradientFillMethod() cons
 
 //=================================================================================================
 
-void Aspect_GradientBackground::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Aspect_GradientBackground::DumpJson(Standard_OStream& theOStream,
+                                         int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Aspect_GradientBackground)
 

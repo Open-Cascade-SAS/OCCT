@@ -26,8 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver, Standard_Transient)
 //=================================================================================================
 
 XmlMDF_ADriver::XmlMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDriver,
-                               const char*                           theNS,
-                               const char*                           theName)
+                               const char*           theNS,
+                               const char*           theName)
     : myNamespace(theNS == NULL ? "" : theNS),
       myMessageDriver(theMsgDriver)
 {

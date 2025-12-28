@@ -49,12 +49,12 @@ public:
                                          const occ::handle<Geom_BSplineCurve>& C2,
                                          const occ::handle<Geom_BSplineCurve>& C3,
                                          const occ::handle<Geom_BSplineCurve>& C4,
-                                         const GeomFill_FillingStyle           Type);
+                                         const GeomFill_FillingStyle      Type);
 
   Standard_EXPORT GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
                                          const occ::handle<Geom_BSplineCurve>& C2,
                                          const occ::handle<Geom_BSplineCurve>& C3,
-                                         const GeomFill_FillingStyle           Type);
+                                         const GeomFill_FillingStyle      Type);
 
   //! Constructs a framework for building a BSpline surface from either
   //! -   the four contiguous BSpline curves, C1, C2, C3 and C4, or
@@ -71,20 +71,20 @@ public:
   //! Standard_ConstructionError if the curves are not contiguous.
   Standard_EXPORT GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
                                          const occ::handle<Geom_BSplineCurve>& C2,
-                                         const GeomFill_FillingStyle           Type);
+                                         const GeomFill_FillingStyle      Type);
 
   //! if the curves cannot be joined
   Standard_EXPORT void Init(const occ::handle<Geom_BSplineCurve>& C1,
                             const occ::handle<Geom_BSplineCurve>& C2,
                             const occ::handle<Geom_BSplineCurve>& C3,
                             const occ::handle<Geom_BSplineCurve>& C4,
-                            const GeomFill_FillingStyle           Type);
+                            const GeomFill_FillingStyle      Type);
 
   //! if the curves cannot be joined
   Standard_EXPORT void Init(const occ::handle<Geom_BSplineCurve>& C1,
                             const occ::handle<Geom_BSplineCurve>& C2,
                             const occ::handle<Geom_BSplineCurve>& C3,
-                            const GeomFill_FillingStyle           Type);
+                            const GeomFill_FillingStyle      Type);
 
   //! Initializes or reinitializes this algorithm with two, three,
   //! or four curves - C1, C2, C3, and C4 - and Type, one
@@ -97,7 +97,7 @@ public:
   //! Standard_ConstructionError if the curves are not contiguous.
   Standard_EXPORT void Init(const occ::handle<Geom_BSplineCurve>& C1,
                             const occ::handle<Geom_BSplineCurve>& C2,
-                            const GeomFill_FillingStyle           Type);
+                            const GeomFill_FillingStyle      Type);
 
   //! Returns the BSpline surface Surface resulting from
   //! the computation performed by this algorithm.

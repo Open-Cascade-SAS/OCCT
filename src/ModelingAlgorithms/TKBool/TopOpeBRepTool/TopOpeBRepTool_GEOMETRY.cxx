@@ -79,26 +79,26 @@ Standard_EXPORT gp_Dir FUN_tool_dirC(const double par, const occ::handle<Geom_Cu
 // ----------------------------------------------------------------------
 Standard_EXPORT bool FUN_tool_onapex(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S)
 {
-  bool                isapex = false;
+  bool    isapex = false;
   GeomAdaptor_Surface GS(S);
-  double              tol   = Precision::Confusion();
+  double       tol   = Precision::Confusion();
   GeomAbs_SurfaceType ST    = GS.GetType();
-  double              toluv = 1.e-8;
+  double       toluv = 1.e-8;
   if (ST == GeomAbs_Cone)
   {
-    gp_Cone co   = GS.Cone();
-    gp_Pnt  apex = co.Apex();
-    gp_Pnt  pnt  = GS.Value(p2d.X(), p2d.Y());
-    double  dist = pnt.Distance(apex);
-    isapex       = (dist < tol);
+    gp_Cone       co   = GS.Cone();
+    gp_Pnt        apex = co.Apex();
+    gp_Pnt        pnt  = GS.Value(p2d.X(), p2d.Y());
+    double dist = pnt.Distance(apex);
+    isapex             = (dist < tol);
   }
   if (ST == GeomAbs_Sphere)
   {
-    double pisur2       = M_PI * .5;
-    double v            = p2d.Y();
-    bool   vpisur2      = (std::abs(v - pisur2) < toluv);
-    bool   vmoinspisur2 = (std::abs(v + pisur2) < toluv);
-    isapex              = vpisur2 || vmoinspisur2;
+    double    pisur2       = M_PI * .5;
+    double    v            = p2d.Y();
+    bool vpisur2      = (std::abs(v - pisur2) < toluv);
+    bool vmoinspisur2 = (std::abs(v + pisur2) < toluv);
+    isapex                        = vpisur2 || vmoinspisur2;
   }
   return isapex;
 }
@@ -113,15 +113,15 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_
   gp_Vec d1u, d1v;
   S->D1(p2d.X(), p2d.Y(), p, d1u, d1v);
 
-  double du    = d1u.Magnitude();
-  double dv    = d1v.Magnitude();
-  double tol   = Precision::Confusion();
-  bool   kpart = (du < tol) || (dv < tol);
+  double    du    = d1u.Magnitude();
+  double    dv    = d1v.Magnitude();
+  double    tol   = Precision::Confusion();
+  bool kpart = (du < tol) || (dv < tol);
   if (kpart)
   {
     GeomAdaptor_Surface GS(S);
     GeomAbs_SurfaceType ST    = GS.GetType();
-    double              toluv = 1.e-8;
+    double       toluv = 1.e-8;
     if (ST == GeomAbs_Cone)
     {
       bool nullx = (std::abs(p2d.X()) < toluv);
@@ -135,8 +135,8 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_
       }
       else if (du < tol)
       {
-        double vf   = GS.FirstVParameter();
-        bool   onvf = std::abs(p2d.Y() - vf) < toluv;
+        double    vf   = GS.FirstVParameter();
+        bool onvf = std::abs(p2d.Y() - vf) < toluv;
 
         double x = p2d.X();
         double y = p2d.Y();
@@ -186,8 +186,8 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_
 Standard_EXPORT bool FUN_tool_line(const occ::handle<Geom_Curve>& C3d)
 {
   occ::handle<Geom_Curve> C = TopOpeBRepTool_ShapeTool::BASISCURVE(C3d);
-  GeomAdaptor_Curve       GC(C);
-  bool                    line = (GC.GetType() == GeomAbs_Line);
+  GeomAdaptor_Curve  GC(C);
+  bool   line = (GC.GetType() == GeomAbs_Line);
   return line;
 }
 
@@ -216,7 +216,7 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Curve>& C3d)
     return false;
   GeomAdaptor_Curve GC(C);
   GeomAbs_CurveType CT   = GC.GetType();
-  bool              quad = FUN_quadCT(CT);
+  bool  quad = FUN_quadCT(CT);
   return quad;
 }
 
@@ -228,7 +228,7 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom2d_Curve>& pc)
     return false;
   Geom2dAdaptor_Curve GC2d(pcb);
   GeomAbs_CurveType   typ    = GC2d.GetType();
-  bool                isquad = false;
+  bool    isquad = false;
   if (typ == GeomAbs_Line)
     isquad = true;
   if (typ == GeomAbs_Circle)
@@ -264,7 +264,7 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Surface>& S)
     return false;
   GeomAdaptor_Surface GAS(S);
   GeomAbs_SurfaceType typ    = GAS.GetType();
-  bool                isquad = false;
+  bool    isquad = false;
   if (typ == GeomAbs_Plane)
     isquad = true;
   if (typ == GeomAbs_Cylinder)
@@ -280,10 +280,10 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Surface>& S)
 
 // ----------------------------------------------------------------------
 Standard_EXPORT bool FUN_tool_closed(const occ::handle<Geom_Surface>& S,
-                                     bool&                            uclosed,
-                                     double&                          uperiod,
-                                     bool&                            vclosed,
-                                     double&                          vperiod)
+                                                 bool&           uclosed,
+                                                 double&              uperiod,
+                                                 bool&           vclosed,
+                                                 double&              vperiod)
 {
   uperiod = vperiod = 0.;
   if (S.IsNull())

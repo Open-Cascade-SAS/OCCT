@@ -28,7 +28,7 @@ RWStepRepr_RWReprItemAndLengthMeasureWithUnit::RWStepRepr_RWReprItemAndLengthMea
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                                     num0,
+  const int                                   num0,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                                          SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnit>& ent) const
 {
   SW.StartEntity("LENGTH_MEASURE_WITH_UNIT");

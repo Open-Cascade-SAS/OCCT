@@ -62,9 +62,9 @@ public:
   //! theVal+thePeriod*k, where k is an integer number (k = 0, +/-1, +/-2, ...).
   //! (let thePeriod in above example be 4 ==> we will obtain
   //! four ranges: [3, 5], [5, 9], [9, 13] and [13, 15].
-  Standard_EXPORT void Split(const double                 theVal,
+  Standard_EXPORT void Split(const double          theVal,
                              NCollection_List<Bnd_Range>& theList,
-                             const double                 thePeriod = 0.0) const;
+                             const double          thePeriod = 0.0) const;
 
   //! Checks if <this> intersects values like
   //!   theVal+k*thePeriod, where k is an integer number (k = 0, +/-1, +/-2, ...).
@@ -75,7 +75,8 @@ public:
   //!
   //! ATTENTION!!!
   //!  If (myFirst == myLast) then this function will return only either 0 or 2.
-  Standard_EXPORT int IsIntersected(const double theVal, const double thePeriod = 0.0) const;
+  Standard_EXPORT int IsIntersected(const double theVal,
+                                                 const double thePeriod = 0.0) const;
 
   //! Extends <this> to include theParameter
   void Add(const double theParameter)
@@ -154,7 +155,8 @@ public:
   //!   *  theLambda < 0 --> the value less than MIN will be returned;
   //!   *  theLambda > 1 --> the value greater than MAX will be returned.
   //! If <this> is VOID the method returns false.
-  bool GetIntermediatePoint(const double theLambda, double& theParameter) const
+  bool GetIntermediatePoint(const double theLambda,
+                                        double&      theParameter) const
   {
     if (IsVoid())
     {
@@ -227,7 +229,10 @@ public:
   }
 
   //! Returns True if the value is out of this range.
-  bool IsOut(double theValue) const { return IsVoid() || theValue < myFirst || theValue > myLast; }
+  bool IsOut(double theValue) const
+  {
+    return IsVoid() || theValue < myFirst || theValue > myLast;
+  }
 
   //! Returns True if the given range is out of this range.
   bool IsOut(const Bnd_Range& theRange) const

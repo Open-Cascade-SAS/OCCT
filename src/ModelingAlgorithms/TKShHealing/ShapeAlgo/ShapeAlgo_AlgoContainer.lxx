@@ -17,8 +17,7 @@
 
 //=================================================================================================
 
-inline void ShapeAlgo_AlgoContainer::SetToolContainer(
-  const occ::handle<ShapeAlgo_ToolContainer>& TC)
+inline void ShapeAlgo_AlgoContainer::SetToolContainer(const occ::handle<ShapeAlgo_ToolContainer>& TC)
 {
   myTC = TC;
 }

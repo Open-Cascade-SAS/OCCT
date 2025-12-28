@@ -37,10 +37,10 @@ public:
 
   //! compute the solution point with the close point
   Standard_EXPORT GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox(
-    const NCollection_Array1<double>&     Param,
+    const NCollection_Array1<double>&      Param,
     const occ::handle<Adaptor3d_Surface>& S1,
     const occ::handle<Adaptor3d_Surface>& S2,
-    const double                          TolTangency);
+    const double              TolTangency);
 
   //! initialize the parameters to compute the solution point
   //! it 's possible to write to optimize:
@@ -55,7 +55,7 @@ public:
   Standard_EXPORT GeomInt_TheInt2SOfThePrmPrmSvSurfacesOfWLApprox(
     const occ::handle<Adaptor3d_Surface>& S1,
     const occ::handle<Adaptor3d_Surface>& S2,
-    const double                          TolTangency);
+    const double              TolTangency);
 
   //! returns the best constant isoparametric to find
   //! the next intersection's point +stores the solution
@@ -63,16 +63,16 @@ public:
   //! to intersect the isoparametric with the other patch;
   //! the choice of the isoparametic is calculated)
   Standard_EXPORT IntImp_ConstIsoparametric Perform(const NCollection_Array1<double>& Param,
-                                                    math_FunctionSetRoot&             Rsnld);
+                                                    math_FunctionSetRoot&       Rsnld);
 
   //! returns the best constant isoparametric to find
   //! the next intersection's point +stores the solution
   //! point (the solution point is found with the close point
   //! to intersect the isoparametric with the other patch;
   //! the choice of the isoparametic is given by ChoixIso)
-  Standard_EXPORT IntImp_ConstIsoparametric Perform(const NCollection_Array1<double>& Param,
-                                                    math_FunctionSetRoot&             Rsnld,
-                                                    const IntImp_ConstIsoparametric   ChoixIso);
+  Standard_EXPORT IntImp_ConstIsoparametric Perform(const NCollection_Array1<double>&     Param,
+                                                    math_FunctionSetRoot&           Rsnld,
+                                                    const IntImp_ConstIsoparametric ChoixIso);
 
   //! Returns TRUE if the creation completed without failure.
   bool IsDone() const;
@@ -107,27 +107,27 @@ public:
   IntSurf_PntOn2S& ChangePoint();
 
 private:
-  bool                                                         done;
-  bool                                                         empty;
+  bool                                             done;
+  bool                                             empty;
   IntSurf_PntOn2S                                              pint;
-  bool                                                         tangent;
+  bool                                             tangent;
   gp_Dir                                                       d3d;
   gp_Dir2d                                                     d2d1;
   gp_Dir2d                                                     d2d2;
   GeomInt_TheFunctionOfTheInt2SOfThePrmPrmSvSurfacesOfWLApprox myZerParFunc;
-  double                                                       tol;
-  double                                                       ua0;
-  double                                                       va0;
-  double                                                       ua1;
-  double                                                       va1;
-  double                                                       ub0;
-  double                                                       vb0;
-  double                                                       ub1;
-  double                                                       vb1;
-  double                                                       ures1;
-  double                                                       ures2;
-  double                                                       vres1;
-  double                                                       vres2;
+  double                                                tol;
+  double                                                ua0;
+  double                                                va0;
+  double                                                ua1;
+  double                                                va1;
+  double                                                ub0;
+  double                                                vb0;
+  double                                                ub1;
+  double                                                vb1;
+  double                                                ures1;
+  double                                                ures2;
+  double                                                vres1;
+  double                                                vres2;
 };
 
 #define ThePSurface occ::handle<Adaptor3d_Surface>

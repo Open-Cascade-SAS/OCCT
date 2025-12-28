@@ -46,7 +46,7 @@ public:
   //! Sets a driver ID to the function.
   //! Returns the function attribute.
   Standard_EXPORT static occ::handle<TFunction_Function> Set(const TDF_Label&     L,
-                                                             const Standard_GUID& DriverID);
+                                                        const Standard_GUID& DriverID);
 
   //! Returns the GUID for functions.
   //! Returns a function found on the label.
@@ -84,19 +84,20 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
+    override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TFunction_Function, TDF_Attribute)
 
 private:
-  Standard_GUID myDriverGUID;
-  int           myFailure;
+  Standard_GUID    myDriverGUID;
+  int myFailure;
 };
 
 #endif // _TFunction_Function_HeaderFile

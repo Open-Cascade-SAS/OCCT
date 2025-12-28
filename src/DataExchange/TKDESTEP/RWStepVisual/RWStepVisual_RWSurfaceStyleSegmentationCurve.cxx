@@ -22,7 +22,7 @@ RWStepVisual_RWSurfaceStyleSegmentationCurve::RWStepVisual_RWSurfaceStyleSegment
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num,
+  const int                                  num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent) const
 {
 
@@ -60,7 +60,7 @@ void RWStepVisual_RWSurfaceStyleSegmentationCurve::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleSegmentationCurve::Share(
   const occ::handle<StepVisual_SurfaceStyleSegmentationCurve>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   iter.GetOneItem(ent->StyleOfSegmentationCurve());

@@ -120,8 +120,8 @@ protected:
   }
 
 private:
-  size_t myCounters[MemCounter_NB];       //!< Counters' values, in bytes
-  bool   myActiveCounters[MemCounter_NB]; //!< container of active state for a counter
+  size_t    myCounters[MemCounter_NB];       //!< Counters' values, in bytes
+  bool myActiveCounters[MemCounter_NB]; //!< container of active state for a counter
 };
 
 #endif // _OSD_MemInfo_H__

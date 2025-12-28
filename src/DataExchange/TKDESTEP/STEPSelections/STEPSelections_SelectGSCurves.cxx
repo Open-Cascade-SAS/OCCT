@@ -39,9 +39,9 @@ STEPSelections_SelectGSCurves::STEPSelections_SelectGSCurves()
 }
 
 bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
-                                            const occ::handle<Standard_Transient>& start,
-                                            const Interface_Graph&                 G,
-                                            Interface_EntityIterator&              explored) const
+                                                        const occ::handle<Standard_Transient>& start,
+                                                        const Interface_Graph&            G,
+                                                        Interface_EntityIterator& explored) const
 {
   if (start.IsNull())
     return false;
@@ -51,7 +51,7 @@ bool STEPSelections_SelectGSCurves::Explore(const int /*level*/,
     if (start->IsKind(STANDARD_TYPE(StepGeom_CompositeCurve)))
     {
       Interface_EntityIterator subs        = G.Sharings(start);
-      bool                     isInGeomSet = false;
+      bool         isInGeomSet = false;
       for (subs.Start(); subs.More() && !isInGeomSet; subs.Next())
         if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_GeometricSet)))
         {

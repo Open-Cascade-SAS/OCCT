@@ -22,10 +22,9 @@
 
 //=================================================================================================
 
-GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
-  const occ::handle<Geom2d_BSplineCurve>& Curve,
-  const double                            Tolerance,
-  const double                            AngularTolerance)
+GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(const occ::handle<Geom2d_BSplineCurve>& Curve,
+                                                         const double Tolerance,
+                                                         const double AngularTolerance)
     : myCurve(Curve),
       myDone(false),
       myFixFirstTangent(false),
@@ -35,8 +34,8 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
       myIndSecondPole(-1),
       myIndPrelastPole(-1)
 {
-  int    ii, num_poles;
-  double tangent_magnitude, value, vector_magnitude;
+  int ii, num_poles;
+  double    tangent_magnitude, value, vector_magnitude;
   num_poles = myCurve->NbPoles();
 
   if ((!myCurve->IsPeriodic()) && num_poles >= 4)
@@ -112,7 +111,8 @@ GeomLib_Check2dBSplineCurve::GeomLib_Check2dBSplineCurve(
 
 //=================================================================================================
 
-void GeomLib_Check2dBSplineCurve::NeedTangentFix(bool& FirstFlag, bool& LastFlag) const
+void GeomLib_Check2dBSplineCurve::NeedTangentFix(bool& FirstFlag,
+                                                 bool& LastFlag) const
 {
   FirstFlag = myFixFirstTangent;
   LastFlag  = myFixLastTangent;
@@ -120,8 +120,9 @@ void GeomLib_Check2dBSplineCurve::NeedTangentFix(bool& FirstFlag, bool& LastFlag
 
 //=================================================================================================
 
-occ::handle<Geom2d_BSplineCurve> GeomLib_Check2dBSplineCurve::FixedTangent(const bool FirstFlag,
-                                                                           const bool LastFlag)
+occ::handle<Geom2d_BSplineCurve> GeomLib_Check2dBSplineCurve::FixedTangent(
+  const bool FirstFlag,
+  const bool LastFlag)
 {
   occ::handle<Geom2d_BSplineCurve> new_curve;
   if ((myFixFirstTangent && FirstFlag) || (myFixLastTangent && LastFlag))
@@ -135,7 +136,8 @@ occ::handle<Geom2d_BSplineCurve> GeomLib_Check2dBSplineCurve::FixedTangent(const
 
 //=================================================================================================
 
-void GeomLib_Check2dBSplineCurve::FixTangent(const bool FirstFlag, const bool LastFlag)
+void GeomLib_Check2dBSplineCurve::FixTangent(const bool FirstFlag,
+                                             const bool LastFlag)
 {
   FixTangentOnCurve(myCurve, FirstFlag, LastFlag);
 }
@@ -143,18 +145,18 @@ void GeomLib_Check2dBSplineCurve::FixTangent(const bool FirstFlag, const bool La
 //=================================================================================================
 
 void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(occ::handle<Geom2d_BSplineCurve>& theCurve,
-                                                    const bool                        FirstFlag,
-                                                    const bool                        LastFlag)
+                                                    const bool       FirstFlag,
+                                                    const bool       LastFlag)
 {
   if (myFixFirstTangent && FirstFlag)
   {
-    gp_XY  XY1       = theCurve->Pole(1).XY();
-    gp_XY  XY2       = theCurve->Pole(myIndSecondPole).XY();
+    gp_XY         XY1       = theCurve->Pole(1).XY();
+    gp_XY         XY2       = theCurve->Pole(myIndSecondPole).XY();
     double NbSamples = myIndSecondPole - 1;
     for (int i = 2; i < myIndSecondPole; i++)
     {
-      double   ii = i - 1;
-      gp_Pnt2d aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
+      double ii = i - 1;
+      gp_Pnt2d      aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
       theCurve->SetPole(i, aNewPole);
     }
   }
@@ -163,13 +165,13 @@ void GeomLib_Check2dBSplineCurve::FixTangentOnCurve(occ::handle<Geom2d_BSplineCu
   {
     int num_poles = theCurve->NbPoles();
 
-    gp_XY  XY1       = theCurve->Pole(num_poles).XY();
-    gp_XY  XY2       = theCurve->Pole(myIndPrelastPole).XY();
+    gp_XY         XY1       = theCurve->Pole(num_poles).XY();
+    gp_XY         XY2       = theCurve->Pole(myIndPrelastPole).XY();
     double NbSamples = num_poles - myIndPrelastPole;
     for (int i = num_poles - 1; i > myIndPrelastPole; i--)
     {
-      double   ii = num_poles - i;
-      gp_Pnt2d aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
+      double ii = num_poles - i;
+      gp_Pnt2d      aNewPole((1. - ii / NbSamples) * XY1 + ii / NbSamples * XY2);
       theCurve->SetPole(i, aNewPole);
     }
   }

@@ -29,9 +29,9 @@
 #include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
-bool gp_Vec::IsEqual(const gp_Vec& theOther,
-                     const double  theLinearTolerance,
-                     const double  theAngularTolerance) const
+bool gp_Vec::IsEqual(const gp_Vec&       theOther,
+                                 const double theLinearTolerance,
+                                 const double theAngularTolerance) const
 {
   const double aMagnitude       = Magnitude();
   const double anOtherMagnitude = theOther.Magnitude();
@@ -53,10 +53,10 @@ void gp_Vec::Mirror(const gp_Vec& theVec) noexcept
   const double aMagnitude = theVec.coord.Modulus();
   if (aMagnitude > gp::Resolution())
   {
-    const gp_XYZ& aMirrorVecXYZ = theVec.coord;
-    const double  aOrigX        = coord.X();
-    const double  aOrigY        = coord.Y();
-    const double  aOrigZ        = coord.Z();
+    const gp_XYZ&       aMirrorVecXYZ = theVec.coord;
+    const double aOrigX        = coord.X();
+    const double aOrigY        = coord.Y();
+    const double aOrigZ        = coord.Z();
 
     // Normalize the mirror vector components
     const double aNormDirX = aMirrorVecXYZ.X() / aMagnitude;
@@ -79,13 +79,13 @@ void gp_Vec::Mirror(const gp_Vec& theVec) noexcept
 
 void gp_Vec::Mirror(const gp_Ax1& theAxis) noexcept
 {
-  const gp_XYZ& aDirectionXYZ = theAxis.Direction().XYZ();
-  const double  aOrigX        = coord.X();
-  const double  aOrigY        = coord.Y();
-  const double  aOrigZ        = coord.Z();
-  const double  aDirX         = aDirectionXYZ.X();
-  const double  aDirY         = aDirectionXYZ.Y();
-  const double  aDirZ         = aDirectionXYZ.Z();
+  const gp_XYZ&       aDirectionXYZ = theAxis.Direction().XYZ();
+  const double aOrigX        = coord.X();
+  const double aOrigY        = coord.Y();
+  const double aOrigZ        = coord.Z();
+  const double aDirX         = aDirectionXYZ.X();
+  const double aDirY         = aDirectionXYZ.Y();
+  const double aDirZ         = aDirectionXYZ.Z();
 
   // Precompute common terms for 3D reflection matrix
   const double aCrossTermXY = 2.0 * aDirX * aDirY;

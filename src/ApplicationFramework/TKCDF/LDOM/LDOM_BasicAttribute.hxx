@@ -67,9 +67,9 @@ private:
 
   //    Constructor
 
-  static LDOM_BasicAttribute& Create(const LDOMBasicString&              theName,
+  static LDOM_BasicAttribute& Create(const LDOMBasicString&         theName,
                                      const occ::handle<LDOM_MemManager>& theDoc,
-                                     int&                                theHashIndex);
+                                     int&              theHashIndex);
 
   LDOM_BasicAttribute(const LDOM_Attr& anAttr);
 

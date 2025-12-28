@@ -23,7 +23,7 @@
 RWStepAP242_RWIdAttribute::RWStepAP242_RWIdAttribute() {}
 
 void RWStepAP242_RWIdAttribute::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepAP242_IdAttribute>&   ent) const
 {
@@ -48,7 +48,7 @@ void RWStepAP242_RWIdAttribute::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(anAttributeValue, anIdentifiedItem);
 }
 
-void RWStepAP242_RWIdAttribute::WriteStep(StepData_StepWriter&                      SW,
+void RWStepAP242_RWIdAttribute::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepAP242_IdAttribute>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepAP242_RWIdAttribute::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepAP242_RWIdAttribute::Share(const occ::handle<StepAP242_IdAttribute>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
   iter.GetOneItem(ent->IdentifiedItem().Value());
 }

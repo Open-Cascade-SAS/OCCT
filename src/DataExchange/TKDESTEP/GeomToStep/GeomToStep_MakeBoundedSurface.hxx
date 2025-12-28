@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeBoundedSurface(
     const occ::handle<Geom_BoundedSurface>& C,
-    const StepData_Factors&                 theLocalFactors = StepData_Factors());
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_BoundedSurface>& Value() const;
 

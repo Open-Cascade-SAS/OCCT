@@ -21,10 +21,15 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TDF_Attribute.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Standard_Transient.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Handle.hxx>
+#include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class TDF_Attribute;
@@ -85,7 +90,8 @@ public:
   //!
   //! (See above SelfRelocate method for more
   //! explanation about the method behavior)
-  Standard_EXPORT bool HasRelocation(const TDF_Label& aSourceLabel, TDF_Label& aTargetLabel) const;
+  Standard_EXPORT bool HasRelocation(const TDF_Label& aSourceLabel,
+                                                 TDF_Label&       aTargetLabel) const;
 
   //! Sets the relocation value of <aSourceAttribute> to
   //! <aTargetAttribute>.
@@ -98,7 +104,7 @@ public:
   //! (See above SelfRelocate method for more
   //! explanation about the method behavior)
   Standard_EXPORT bool HasRelocation(const occ::handle<TDF_Attribute>& aSourceAttribute,
-                                     occ::handle<TDF_Attribute>&       aTargetAttribute) const;
+                                                 occ::handle<TDF_Attribute>& aTargetAttribute) const;
 
   //! Safe variant for arbitrary type of argument
   template <class T>
@@ -110,18 +116,17 @@ public:
 
   //! Sets the relocation value of <aSourceTransient> to
   //! <aTargetTransient>.
-  Standard_EXPORT void SetTransientRelocation(
-    const occ::handle<Standard_Transient>& aSourceTransient,
-    const occ::handle<Standard_Transient>& aTargetTransient);
+  Standard_EXPORT void SetTransientRelocation(const occ::handle<Standard_Transient>& aSourceTransient,
+                                              const occ::handle<Standard_Transient>& aTargetTransient);
 
   //! Finds the relocation value of <aSourceTransient>
   //! and returns it into <aTargetTransient>.
   //!
   //! (See above SelfRelocate method for more
   //! explanation about the method behavior)
-  Standard_EXPORT bool HasTransientRelocation(
-    const occ::handle<Standard_Transient>& aSourceTransient,
-    occ::handle<Standard_Transient>&       aTargetTransient) const;
+  Standard_EXPORT bool
+    HasTransientRelocation(const occ::handle<Standard_Transient>& aSourceTransient,
+                           occ::handle<Standard_Transient>&       aTargetTransient) const;
 
   //! Clears the relocation dictionary, but lets the
   //! self relocation flag to its current value.
@@ -134,36 +139,31 @@ public:
   //! Fills <anAttributeMap> with target relocation
   //! attributes. <anAttributeMap> is not cleared before
   //! use.
-  Standard_EXPORT void TargetAttributeMap(
-    NCollection_Map<occ::handle<TDF_Attribute>>& anAttributeMap) const;
+  Standard_EXPORT void TargetAttributeMap(NCollection_Map<occ::handle<TDF_Attribute>>& anAttributeMap) const;
 
   //! Returns <myLabelTable> to be used or updated.
   Standard_EXPORT NCollection_DataMap<TDF_Label, TDF_Label>& LabelTable();
 
   //! Returns <myAttributeTable> to be used or updated.
-  Standard_EXPORT NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>&
-                  AttributeTable();
+  Standard_EXPORT NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& AttributeTable();
 
   //! Returns <myTransientTable> to be used or updated.
-  Standard_EXPORT NCollection_IndexedDataMap<occ::handle<Standard_Transient>,
-                                             occ::handle<Standard_Transient>>&
-                  TransientTable();
+  Standard_EXPORT NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& TransientTable();
 
   //! Dumps the relocation table.
-  Standard_EXPORT Standard_OStream& Dump(const bool        dumpLabels,
-                                         const bool        dumpAttributes,
-                                         const bool        dumpTransients,
-                                         Standard_OStream& anOS) const;
+  Standard_EXPORT Standard_OStream& Dump(const bool dumpLabels,
+                                         const bool dumpAttributes,
+                                         const bool dumpTransients,
+                                         Standard_OStream&      anOS) const;
 
   DEFINE_STANDARD_RTTIEXT(TDF_RelocationTable, Standard_Transient)
 
 private:
-  bool                                                                        mySelfRelocate;
-  bool                                                                        myAfterRelocate;
-  NCollection_DataMap<TDF_Label, TDF_Label>                                   myLabelTable;
-  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>> myAttributeTable;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
-    myTransientTable;
+  bool                           mySelfRelocate;
+  bool                           myAfterRelocate;
+  NCollection_DataMap<TDF_Label, TDF_Label>                           myLabelTable;
+  NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>                       myAttributeTable;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myTransientTable;
 };
 
 #endif // _TDF_RelocationTable_HeaderFile

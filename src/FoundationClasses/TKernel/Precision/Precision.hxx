@@ -239,7 +239,10 @@ public:
   //! length of the tangent of the curve or the surface.
   //!
   //! Value is P / T
-  static constexpr double Parametric(const double P, const double T) { return P / T; }
+  static constexpr double Parametric(const double P, const double T)
+  {
+    return P / T;
+  }
 
   //! Returns a precision value in parametric space, which may be used :
   //! -   to test the coincidence of two points in the real space,
@@ -285,7 +288,10 @@ public:
   //! 2.Pi without impacting on the resulting point.
   //! Therefore, take great care when adjusting a parametric
   //! tolerance to your own algorithm.
-  static constexpr double PConfusion(const double T) { return Parametric(Confusion(), T); }
+  static constexpr double PConfusion(const double T)
+  {
+    return Parametric(Confusion(), T);
+  }
 
   //! Returns square of PConfusion.
   //! Created for speed and convenience.
@@ -304,7 +310,10 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Intersection() / 100., or Precision::Intersection() / T.
-  static constexpr double PIntersection(const double T) { return Parametric(Intersection(), T); }
+  static constexpr double PIntersection(const double T)
+  {
+    return Parametric(Intersection(), T);
+  }
 
   //! Returns a precision value in parametric space, which may
   //! be used by approximation algorithms. The purpose of this
@@ -319,7 +328,10 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Approximation() / 100., or Precision::Approximation() / T.
-  static constexpr double PApproximation(const double T) { return Parametric(Approximation(), T); }
+  static constexpr double PApproximation(const double T)
+  {
+    return Parametric(Approximation(), T);
+  }
 
   //! Convert a real space precision to a parametric
   //! space precision on a default curve.

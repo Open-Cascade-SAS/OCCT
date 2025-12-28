@@ -49,10 +49,10 @@ StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
 // ============================================================================
 
 void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFaceSet>& CFS,
-                                       StepToTopoDS_Tool&                             aTool,
-                                       StepToTopoDS_NMTool&                           NMTool,
-                                       const StepData_Factors&      theLocalFactors,
-                                       const Message_ProgressRange& theProgress)
+                                       StepToTopoDS_Tool&                        aTool,
+                                       StepToTopoDS_NMTool&                      NMTool,
+                                       const StepData_Factors&                   theLocalFactors,
+                                       const Message_ProgressRange&              theProgress)
 {
   // bug15697
   if (CFS.IsNull())
@@ -61,14 +61,14 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFace
   if (!aTool.IsBound(CFS))
   {
 
-    BRep_Builder                           B;
+    BRep_Builder                      B;
     occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
-    int          NbFc = CFS->NbCfsFaces();
-    TopoDS_Shell Sh;
+    int NbFc = CFS->NbCfsFaces();
+    TopoDS_Shell     Sh;
     B.MakeShell(Sh);
-    TopoDS_Face                 F;
-    TopoDS_Shape                S;
+    TopoDS_Face            F;
+    TopoDS_Shape           S;
     occ::handle<StepShape_Face> StepFace;
 
     StepToTopoDS_TranslateFace myTranFace;
@@ -81,7 +81,7 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFace
 #ifdef OCCT_DEBUG
       std::cout << "Processing Face : " << i << std::endl;
 #endif
-      StepFace                                 = CFS->CfsFacesValue(i);
+      StepFace                            = CFS->CfsFacesValue(i);
       occ::handle<StepShape_FaceSurface> theFS = occ::down_cast<StepShape_FaceSurface>(StepFace);
       if (!theFS.IsNull())
       {
@@ -122,10 +122,10 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepShape_ConnectedFace
 // ============================================================================
 
 void StepToTopoDS_TranslateShell::Init(const occ::handle<StepVisual_TessellatedShell>& theTSh,
-                                       StepToTopoDS_Tool&                              theTool,
-                                       StepToTopoDS_NMTool&                            theNMTool,
-                                       const bool              theReadTessellatedWhenNoBRepOnly,
-                                       bool&                   theHasGeom,
+                                       StepToTopoDS_Tool&                         theTool,
+                                       StepToTopoDS_NMTool&                       theNMTool,
+                                       const bool  theReadTessellatedWhenNoBRepOnly,
+                                       bool&       theHasGeom,
                                        const StepData_Factors& theLocalFactors,
                                        const Message_ProgressRange& theProgress)
 {
@@ -135,7 +135,7 @@ void StepToTopoDS_TranslateShell::Init(const occ::handle<StepVisual_TessellatedS
   BRep_Builder aB;
   TopoDS_Shell aSh;
 
-  int                   aNb = theTSh->NbItems();
+  int      aNb = theTSh->NbItems();
   Message_ProgressScope aPS(theProgress, "Face", theTSh->HasTopologicalLink() ? aNb + 1 : aNb);
 
   occ::handle<Transfer_TransientProcess> aTP = theTool.TransientProcess();

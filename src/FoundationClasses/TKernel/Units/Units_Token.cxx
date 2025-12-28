@@ -62,7 +62,9 @@ Units_Token::Units_Token(const char* aword, const char* amean)
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char* aword, const char* amean, const double avalue)
+Units_Token::Units_Token(const char* aword,
+                         const char* amean,
+                         const double    avalue)
 {
   theword       = aword;
   themean       = amean;
@@ -72,9 +74,9 @@ Units_Token::Units_Token(const char* aword, const char* amean, const double aval
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char*                          aword,
-                         const char*                          amean,
-                         const double                         avalue,
+Units_Token::Units_Token(const char*          aword,
+                         const char*          amean,
+                         const double             avalue,
                          const occ::handle<Units_Dimensions>& adimensions)
 {
   theword  = aword;
@@ -275,7 +277,8 @@ bool Units_Token::IsEqual(const char* astring) const
   unsigned int length = string.Length();
 #endif
   if (strlen(astring) == length)
-    return (strncmp(string.ToCString(), astring, unsigned(length)) == 0) ? true : false;
+    return (strncmp(string.ToCString(), astring, unsigned(length)) == 0) ? true
+                                                                         : false;
   else
     return false;
 }
@@ -286,7 +289,7 @@ bool Units_Token::IsEqual(const occ::handle<Units_Token>& atoken) const
 {
   TCollection_AsciiString string1 = Word();
   TCollection_AsciiString string2 = atoken->Word();
-  int                     length  = string1.Length();
+  int        length  = string1.Length();
   if (length == atoken->Length())
     return (strcmp(string1.ToCString(), string2.ToCString()) == 0) ? true : false;
   else
@@ -333,7 +336,7 @@ occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken, const
 //=======================================================================
 
 occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken1,
-                                   const occ::handle<Units_Token>& atoken2)
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Add(atoken2);
 }
@@ -344,7 +347,7 @@ occ::handle<Units_Token> operator+(const occ::handle<Units_Token>& atoken1,
 //=======================================================================
 
 occ::handle<Units_Token> operator-(const occ::handle<Units_Token>& atoken1,
-                                   const occ::handle<Units_Token>& atoken2)
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Subtract(atoken2);
 }
@@ -355,7 +358,7 @@ occ::handle<Units_Token> operator-(const occ::handle<Units_Token>& atoken1,
 //=======================================================================
 
 occ::handle<Units_Token> operator*(const occ::handle<Units_Token>& atoken1,
-                                   const occ::handle<Units_Token>& atoken2)
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Multiply(atoken2);
 }
@@ -366,15 +369,14 @@ occ::handle<Units_Token> operator*(const occ::handle<Units_Token>& atoken1,
 //=======================================================================
 
 occ::handle<Units_Token> operator/(const occ::handle<Units_Token>& atoken1,
-                                   const occ::handle<Units_Token>& atoken2)
+                              const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Divide(atoken2);
 }
 
 //=================================================================================================
 
-occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken1,
-                             const occ::handle<Units_Token>& atoken2)
+occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken1, const occ::handle<Units_Token>& atoken2)
 {
   return atoken1->Power(atoken2);
 }

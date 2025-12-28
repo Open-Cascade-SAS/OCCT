@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_WitnessLine, IGESData_IGESEntity)
 
 IGESDimen_WitnessLine::IGESDimen_WitnessLine() {}
 
-void IGESDimen_WitnessLine::Init(const int                                      dataType,
-                                 const double                                   aDisp,
+void IGESDimen_WitnessLine::Init(const int            dataType,
+                                 const double               aDisp,
                                  const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints)
 {
   if (dataPoints->Lower() != 1)

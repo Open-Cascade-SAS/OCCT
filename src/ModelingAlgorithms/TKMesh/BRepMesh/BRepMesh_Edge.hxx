@@ -31,8 +31,8 @@ public:
   }
 
   //! Constructs a link between two vertices.
-  BRepMesh_Edge(const int                      theFirstNode,
-                const int                      theLastNode,
+  BRepMesh_Edge(const int         theFirstNode,
+                const int         theLastNode,
                 const BRepMesh_DegreeOfFreedom theMovability)
       : BRepMesh_OrientedEdge(theFirstNode, theLastNode),
         myMovability(theMovability)

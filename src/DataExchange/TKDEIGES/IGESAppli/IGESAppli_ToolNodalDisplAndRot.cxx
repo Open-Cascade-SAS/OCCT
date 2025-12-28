@@ -21,6 +21,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESAppli_NodalDisplAndRot.hxx>
+#include <IGESAppli_Node.hxx>
 #include <IGESAppli_ToolNodalDisplAndRot.hxx>
 #include <IGESBasic_HArray1OfHArray1OfXYZ.hxx>
 #include <IGESData_DirChecker.hxx>
@@ -30,6 +31,9 @@
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
 #include <IGESDimen_GeneralNote.hxx>
+#include <IGESDimen_GeneralNote.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -37,23 +41,27 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESAppli_ToolNodalDisplAndRot::IGESAppli_ToolNodalDisplAndRot() {}
 
-void IGESAppli_ToolNodalDisplAndRot::ReadOwnParams(
-  const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
-  const occ::handle<IGESData_IGESReaderData>&    IR,
-  IGESData_ParamReader&                          PR) const
+void IGESAppli_ToolNodalDisplAndRot::ReadOwnParams(const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
+                                                   const occ::handle<IGESData_IGESReaderData>&    IR,
+                                                   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                                                  nbcases = 0;
-  int                                                                  nbnodes = 0;
-  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>> tempNotes;
-  occ::handle<NCollection_HArray1<int>>                                tempNodeIdentifiers;
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>        tempNodes;
-  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>                         tempTransParam;
-  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>                         tempRotParam;
+  int                        nbcases = 0;
+  int                        nbnodes = 0;
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>  tempNotes;
+  occ::handle<NCollection_HArray1<int>>        tempNodeIdentifiers;
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>         tempNodes;
+  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> tempTransParam;
+  occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> tempRotParam;
 
   bool tempFlag = PR.ReadInteger(PR.Current(), "No. of analysis cases", nbcases);
   if (tempFlag)
@@ -81,7 +89,7 @@ void IGESAppli_ToolNodalDisplAndRot::ReadOwnParams(
     for (int j = 1; j <= nbnodes; j++)
     {
       occ::handle<IGESAppli_Node> aNode = new IGESAppli_Node();
-      int                         nodeno;
+      int       nodeno;
       if (PR.ReadInteger(PR.Current(), "Node number", nodeno))
         tempNodeIdentifiers->SetValue(j, nodeno);
       if (PR.ReadEntity(IR,
@@ -116,9 +124,8 @@ void IGESAppli_ToolNodalDisplAndRot::ReadOwnParams(
   ent->Init(tempNotes, tempNodeIdentifiers, tempNodes, tempRotParam, tempTransParam);
 }
 
-void IGESAppli_ToolNodalDisplAndRot::WriteOwnParams(
-  const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
-  IGESData_IGESWriter&                           IW) const
+void IGESAppli_ToolNodalDisplAndRot::WriteOwnParams(const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
+                                                    IGESData_IGESWriter& IW) const
 {
   int nbcases = ent->NbCases();
   int nbnodes = ent->NbNodes();
@@ -144,7 +151,7 @@ void IGESAppli_ToolNodalDisplAndRot::WriteOwnParams(
 }
 
 void IGESAppli_ToolNodalDisplAndRot::OwnShared(const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator&                 iter) const
 {
   int nbcases = ent->NbCases();
   int nbnodes = ent->NbNodes();
@@ -157,15 +164,13 @@ void IGESAppli_ToolNodalDisplAndRot::OwnShared(const occ::handle<IGESAppli_Nodal
 
 void IGESAppli_ToolNodalDisplAndRot::OwnCopy(const occ::handle<IGESAppli_NodalDisplAndRot>& another,
                                              const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
-                                             Interface_CopyTool& TC) const
+                                             Interface_CopyTool&                       TC) const
 {
-  int                                                                  nbcases = another->NbCases();
-  int                                                                  nbnodes = another->NbNodes();
-  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>> aNotes =
-    new NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>(1, nbcases);
+  int                       nbcases = another->NbCases();
+  int                       nbnodes = another->NbNodes();
+  occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>> aNotes  = new NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>(1, nbcases);
   occ::handle<NCollection_HArray1<int>> aNodeIdentifiers = new NCollection_HArray1<int>(1, nbnodes);
-  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>> aNodes =
-    new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
+  occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>  aNodes           = new NCollection_HArray1<occ::handle<IGESAppli_Node>>(1, nbnodes);
   occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> aTransParam =
     new IGESBasic_HArray1OfHArray1OfXYZ(1, nbnodes);
   occ::handle<IGESBasic_HArray1OfHArray1OfXYZ> aRotParam =
@@ -184,10 +189,8 @@ void IGESAppli_ToolNodalDisplAndRot::OwnCopy(const occ::handle<IGESAppli_NodalDi
   }
   for (int n = 1; n <= nbnodes; n++)
   {
-    occ::handle<NCollection_HArray1<gp_XYZ>> tempArray1 =
-      new NCollection_HArray1<gp_XYZ>(1, nbcases);
-    occ::handle<NCollection_HArray1<gp_XYZ>> tempArray2 =
-      new NCollection_HArray1<gp_XYZ>(1, nbcases);
+    occ::handle<NCollection_HArray1<gp_XYZ>> tempArray1 = new NCollection_HArray1<gp_XYZ>(1, nbcases);
+    occ::handle<NCollection_HArray1<gp_XYZ>> tempArray2 = new NCollection_HArray1<gp_XYZ>(1, nbcases);
     for (int k = 1; k <= nbcases; k++)
     {
       tempArray1->SetValue(k, another->TranslationParameter(n, k));
@@ -210,17 +213,16 @@ IGESData_DirChecker IGESAppli_ToolNodalDisplAndRot::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolNodalDisplAndRot::OwnCheck(
-  const occ::handle<IGESAppli_NodalDisplAndRot>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESAppli_ToolNodalDisplAndRot::OwnCheck(const occ::handle<IGESAppli_NodalDisplAndRot>& /* ent */,
+                                              const Interface_ShareTool&,
+                                              occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESAppli_ToolNodalDisplAndRot::OwnDump(const occ::handle<IGESAppli_NodalDisplAndRot>& ent,
-                                             const IGESData_IGESDumper&                     dumper,
-                                             Standard_OStream&                              S,
-                                             const int level) const
+                                             const IGESData_IGESDumper&                dumper,
+                                             Standard_OStream&                         S,
+                                             const int                    level) const
 {
   S << "IGESAppli_NodalDisplAndRot\n";
 

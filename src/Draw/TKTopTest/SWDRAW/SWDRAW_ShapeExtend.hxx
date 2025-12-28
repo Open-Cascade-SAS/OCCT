@@ -32,6 +32,7 @@ public:
 
   //! Loads commands defined in ShapeExtend
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
+
 };
 
 #endif // _SWDRAW_ShapeExtend_HeaderFile

@@ -53,7 +53,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   Standard_EXPORT void UpdateDisplay() override;
@@ -70,18 +70,18 @@ private:
 private:
   occ::handle<Graphic3d_Structure> myStructure;
   occ::handle<Graphic3d_Group>     myGroup;
-  gp_Ax3                           myCurViewPlane;
-  V3d_ViewerPointer                myViewer;
-  bool                             myCurAreDefined;
-  bool                             myToComputePrs;
-  Aspect_GridDrawMode              myCurDrawMode;
-  double                           myCurXo;
-  double                           myCurYo;
-  double                           myCurAngle;
-  double                           myCurStep;
-  int                              myCurDivi;
-  double                           myRadius;
-  double                           myOffSet;
+  gp_Ax3                      myCurViewPlane;
+  V3d_ViewerPointer           myViewer;
+  bool            myCurAreDefined;
+  bool            myToComputePrs;
+  Aspect_GridDrawMode         myCurDrawMode;
+  double               myCurXo;
+  double               myCurYo;
+  double               myCurAngle;
+  double               myCurStep;
+  int            myCurDivi;
+  double               myRadius;
+  double               myOffSet;
 };
 
 #endif // _V3d_CircularGrid_HeaderFile

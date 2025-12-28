@@ -42,11 +42,11 @@ public:
   //! This syntax is used for display of symmetries between two segments.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          AttachmentPoint1,
-                                  const gp_Pnt&                          AttachmentPoint2,
-                                  const gp_Dir&                          aDirection1,
-                                  const gp_Lin&                          aAxis,
-                                  const gp_Pnt&                          OffsetPoint);
+                                  const gp_Pnt&                     AttachmentPoint1,
+                                  const gp_Pnt&                     AttachmentPoint2,
+                                  const gp_Dir&                     aDirection1,
+                                  const gp_Lin&                     aAxis,
+                                  const gp_Pnt&                     OffsetPoint);
 
   //! Adds the points OffsetPoint, AttachmentPoint1,
   //! AttachmentPoint2, the direction aDirection1 the circle
@@ -57,11 +57,11 @@ public:
   //! This syntax is used for display of symmetries between two arcs.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          AttachmentPoint1,
-                                  const gp_Pnt&                          AttachmentPoint2,
-                                  const gp_Circ&                         aCircle1,
-                                  const gp_Lin&                          aAxis,
-                                  const gp_Pnt&                          OffsetPoint);
+                                  const gp_Pnt&                     AttachmentPoint1,
+                                  const gp_Pnt&                     AttachmentPoint2,
+                                  const gp_Circ&                    aCircle1,
+                                  const gp_Lin&                     aAxis,
+                                  const gp_Pnt&                     OffsetPoint);
 
   //! Adds the points OffsetPoint, AttachmentPoint1,
   //! AttachmentPoint2 and the axis anAxis to the
@@ -71,10 +71,11 @@ public:
   //! This syntax is used for display of symmetries between two vertices.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          AttachmentPoint1,
-                                  const gp_Pnt&                          AttachmentPoint2,
-                                  const gp_Lin&                          aAxis,
-                                  const gp_Pnt&                          OffsetPoint);
+                                  const gp_Pnt&                     AttachmentPoint1,
+                                  const gp_Pnt&                     AttachmentPoint2,
+                                  const gp_Lin&                     aAxis,
+                                  const gp_Pnt&                     OffsetPoint);
+
 };
 
 #endif // _DsgPrs_SymmetricPresentation_HeaderFile

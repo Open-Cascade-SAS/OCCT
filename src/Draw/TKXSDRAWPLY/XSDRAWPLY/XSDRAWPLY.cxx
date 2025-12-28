@@ -40,18 +40,20 @@
 
 //=================================================================================================
 
-static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int WritePly(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   occ::handle<TDocStd_Document>    aDoc;
   occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
-  TCollection_AsciiString          aShapeName, aFileName;
+  TCollection_AsciiString     aShapeName, aFileName;
 
   double aDist     = 0.0;
   double aDens     = Precision::Infinite();
   double aTol      = Precision::Confusion();
-  bool   hasColors = true, hasNormals = true, hasTexCoords = false, hasPartId = true,
-       hasFaceId = false;
-  bool isPntSet = false, isDensityPoints = false;
+  bool          hasColors = true, hasNormals = true, hasTexCoords = false, hasPartId = true,
+       hasFaceId                                = false;
+  bool                                 isPntSet = false, isDensityPoints = false;
   NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aFileInfo;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -172,8 +174,8 @@ static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     return 1;
   }
 
-  NCollection_Sequence<TDF_Label> aRootLabels;
-  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  NCollection_Sequence<TDF_Label>         aRootLabels;
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
   aShapeTool->GetFreeShapes(aRootLabels);
   if (aRootLabels.IsEmpty())
   {
@@ -260,17 +262,14 @@ static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     }
 
     if (!aPlyCtx.Open(aFileName)
-        || !aPlyCtx.WriteHeader(
-          aNbPoints,
-          0,
-          NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>()))
+        || !aPlyCtx.WriteHeader(aNbPoints, 0, NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>()))
     {
       theDI << "Error: unable to create file '" << aFileName << "'";
       return 0;
     }
 
     bool isDone = isDensityPoints ? aPlyCtx.GeneratePointsByDensity(aDens)
-                                  : aPlyCtx.GeneratePointsByTriangulation();
+                                              : aPlyCtx.GeneratePointsByTriangulation();
     if (!isDone)
     {
       theDI << "Error: Point cloud was not generated in file '" << aFileName << "'";
@@ -287,7 +286,7 @@ static int WritePly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   else
   {
     occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
-    RWPly_CafWriter                     aPlyCtx(aFileName);
+    RWPly_CafWriter                aPlyCtx(aFileName);
     aPlyCtx.SetNormals(hasNormals);
     aPlyCtx.SetColors(hasColors);
     aPlyCtx.SetTexCoords(hasTexCoords);

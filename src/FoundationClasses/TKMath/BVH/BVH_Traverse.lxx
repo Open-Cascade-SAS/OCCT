@@ -52,15 +52,15 @@ int BVH_Traverse<NumType, Dimension, BVHSetType, MetricType>::Select(
       if (!this->AcceptMetric(aNode.Metric))
       {
         // Test the left branch
-        MetricType aMetricLft;
-        bool       isGoodLft =
+        MetricType       aMetricLft;
+        bool isGoodLft =
           !RejectNode(theBVH->MinPoint(aData.y()), theBVH->MaxPoint(aData.y()), aMetricLft);
         if (this->Stop())
           return aNbAccepted;
 
         // Test the right branch
-        MetricType aMetricRgh;
-        bool       isGoodRgh =
+        MetricType       aMetricRgh;
+        bool isGoodRgh =
           !RejectNode(theBVH->MinPoint(aData.z()), theBVH->MaxPoint(aData.z()), aMetricRgh);
         if (this->Stop())
           return aNbAccepted;
@@ -171,12 +171,12 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
     {
       // Outer/Outer - both nodes are leaves
       // Check if the leaf node bounding boxes overlap before testing elements
-      MetricType aMetric;
-      bool       isRejected = RejectNode(theBVH1->MinPoint(aNode.NodeID1),
-                                   theBVH1->MaxPoint(aNode.NodeID1),
-                                   theBVH2->MinPoint(aNode.NodeID2),
-                                   theBVH2->MaxPoint(aNode.NodeID2),
-                                   aMetric);
+      MetricType       aMetric;
+      bool isRejected = RejectNode(theBVH1->MinPoint(aNode.NodeID1),
+                                               theBVH1->MaxPoint(aNode.NodeID1),
+                                               theBVH2->MinPoint(aNode.NodeID2),
+                                               theBVH2->MaxPoint(aNode.NodeID2),
+                                               aMetric);
 
       if (!isRejected)
       {
@@ -197,7 +197,7 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
     else
     {
       BVH_PairNodesInStack aPairs[4];
-      int                  aNbPairs = 0;
+      int     aNbPairs = 0;
 
       if (aData1.x() == 0 && aData2.x() == 0)
       {
@@ -221,15 +221,15 @@ int BVH_PairTraverse<NumType, Dimension, BVHSetType, MetricType>::Select(
       }
 
       BVH_PairNodesInStack aKeptPairs[4];
-      int                  aNbKept = 0;
+      int     aNbKept = 0;
       // Compute metrics for the nodes
       for (int iPair = 0; iPair < aNbPairs; ++iPair)
       {
         const bool isPairRejected = RejectNode(theBVH1->MinPoint(aPairs[iPair].NodeID1),
-                                               theBVH1->MaxPoint(aPairs[iPair].NodeID1),
-                                               theBVH2->MinPoint(aPairs[iPair].NodeID2),
-                                               theBVH2->MaxPoint(aPairs[iPair].NodeID2),
-                                               aPairs[iPair].Metric);
+                                                           theBVH1->MaxPoint(aPairs[iPair].NodeID1),
+                                                           theBVH2->MinPoint(aPairs[iPair].NodeID2),
+                                                           theBVH2->MaxPoint(aPairs[iPair].NodeID2),
+                                                           aPairs[iPair].Metric);
         if (!isPairRejected)
         {
           // Put the item into the sorted array of pairs

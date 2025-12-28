@@ -71,12 +71,16 @@ public:
   Standard_EXPORT double GetLength() const;
 
   //! Returns true if the display mode selected, aMode, is valid.
-  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
+  Standard_EXPORT bool
+    AcceptDisplayMode(const int aMode) const override;
 
   virtual int Signature() const override { return 4; }
 
   //! Returns datum as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  virtual AIS_KindOfInteractive Type() const override
+  {
+    return AIS_KindOfInteractive_Datum;
+  }
 
   //! Allows you to provide settings for the color aColor.
   Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
@@ -97,8 +101,8 @@ private:
 private:
   occ::handle<Geom_Plane>            myPlane;
   occ::handle<AIS_InteractiveObject> myShapes[3];
-  TCollection_AsciiString            myXLabel;
-  TCollection_AsciiString            myYLabel;
+  TCollection_AsciiString       myXLabel;
+  TCollection_AsciiString       myYLabel;
 };
 
 #endif // _AIS_PlaneTrihedron_HeaderFile

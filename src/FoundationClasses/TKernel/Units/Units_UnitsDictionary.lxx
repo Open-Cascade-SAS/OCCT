@@ -17,12 +17,12 @@
 #include <Units_Quantity.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Units_Quantity.hxx>
 #include <Units_Explorer.hxx>
 
 //=================================================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Units_UnitsDictionary::
-  Sequence() const
+inline occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Units_UnitsDictionary::Sequence() const
 {
   return thequantitiessequence;
 }

@@ -25,6 +25,11 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 class ShapeExtend_WireData;
 class TopoDS_Wire;
 class gp_XYZ;
@@ -78,20 +83,24 @@ public:
   //! <num> is the End of preceding Edge, and its projection on the
   //! following one lies on it at the Precision of <me>
   //! <ufol> gives the parameter on the following edge
-  Standard_EXPORT void SetEnd(const int num, const gp_XYZ& pos, const double ufol);
+  Standard_EXPORT void SetEnd(const int num,
+                              const gp_XYZ&          pos,
+                              const double    ufol);
 
   //! <num> is the Start of following Edge, its projection on the
   //! preceding one lies on it at the Precision of <me>
   //! <upre> gives the parameter on the preceding edge
-  Standard_EXPORT void SetStart(const int num, const gp_XYZ& pos, const double upre);
+  Standard_EXPORT void SetStart(const int num,
+                                const gp_XYZ&          pos,
+                                const double    upre);
 
   //! <num> is the Intersection of both Edges
   //! <upre> is the parameter on preceding edge, <ufol> on
   //! following edge
-  Standard_EXPORT void SetInters(const int     num,
-                                 const gp_XYZ& pos,
-                                 const double  upre,
-                                 const double  ufol);
+  Standard_EXPORT void SetInters(const int num,
+                                 const gp_XYZ&          pos,
+                                 const double    upre,
+                                 const double    ufol);
 
   //! <num> cannot be said as same vertex
   Standard_EXPORT void SetDisjoined(const int num);
@@ -130,12 +139,16 @@ public:
   //! 4       Start      yes       yes         no
   //! 5       Inters     yes       yes         yes
   //! -1      Disjoined  no        no          no
-  Standard_EXPORT int Data(const int num, gp_XYZ& pos, double& upre, double& ufol) const;
+  Standard_EXPORT int Data(const int num,
+                                        gp_XYZ&                pos,
+                                        double&         upre,
+                                        double&         ufol) const;
 
   //! For a given status, returns the rank of the vertex which
   //! follows <num> and has the same status. 0 if no more
   //! Acts as an iterator, starts on the first one
-  Standard_EXPORT int NextStatus(const int stat, const int num = 0) const;
+  Standard_EXPORT int NextStatus(const int stat,
+                                              const int num = 0) const;
 
   //! For a given criter, returns the rank of the vertex which
   //! follows <num> and has the same status. 0 if no more
@@ -147,16 +160,17 @@ public:
   //! 3: same coods but not same vertex (status 1 2)
   //! 4: redefined coords (status 3 4 5)
   //! -1: no solution (status -1)
-  Standard_EXPORT int NextCriter(const int crit, const int num = 0) const;
+  Standard_EXPORT int NextCriter(const int crit,
+                                              const int num = 0) const;
 
 private:
-  occ::handle<ShapeExtend_WireData>        myWire;
-  occ::handle<NCollection_HArray1<int>>    myStat;
-  occ::handle<NCollection_HArray1<gp_XYZ>> myPos;
-  occ::handle<NCollection_HArray1<double>> myUPre;
-  occ::handle<NCollection_HArray1<double>> myUFol;
-  double                                   myPreci;
-  bool                                     myDone;
+  occ::handle<ShapeExtend_WireData>     myWire;
+  occ::handle<NCollection_HArray1<int>> myStat;
+  occ::handle<NCollection_HArray1<gp_XYZ>>      myPos;
+  occ::handle<NCollection_HArray1<double>>    myUPre;
+  occ::handle<NCollection_HArray1<double>>    myUFol;
+  double                    myPreci;
+  bool                 myDone;
 };
 
 #endif // _ShapeAnalysis_WireVertex_HeaderFile

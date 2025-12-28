@@ -98,7 +98,10 @@ private:
 
     virtual void Increment() override { ++myValue; }
 
-    virtual IteratorInterface* Clone() const override { return new IteratorWrapper<Type>(myValue); }
+    virtual IteratorInterface* Clone() const override
+    {
+      return new IteratorWrapper<Type>(myValue);
+    }
 
     const Type& Value() const { return myValue; }
 
@@ -276,13 +279,13 @@ private:
   Standard_EXPORT static void forEachOcct(UniversalIterator&      theBegin,
                                           UniversalIterator&      theEnd,
                                           const FunctorInterface& theFunctor,
-                                          int                     theNbItems);
+                                          int        theNbItems);
 
   //! Same as forEachOcct() but can be implemented using external threads library.
   Standard_EXPORT static void forEachExternal(UniversalIterator&      theBegin,
                                               UniversalIterator&      theEnd,
                                               const FunctorInterface& theFunctor,
-                                              int                     theNbItems);
+                                              int        theNbItems);
 
 public: //! @name public methods
   //! Returns TRUE if OCCT threads should be used instead of auxiliary threads library;
@@ -310,11 +313,11 @@ public: //! @name public methods
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   //! @param theNbItems number of items passed by iterator, -1 if unknown
   template <typename InputIterator, typename Functor>
-  static void ForEach(InputIterator  theBegin,
-                      InputIterator  theEnd,
-                      const Functor& theFunctor,
-                      const bool     isForceSingleThreadExecution = false,
-                      int            theNbItems                   = -1)
+  static void ForEach(InputIterator          theBegin,
+                      InputIterator          theEnd,
+                      const Functor&         theFunctor,
+                      const bool isForceSingleThreadExecution = false,
+                      int       theNbItems                   = -1)
   {
     if (isForceSingleThreadExecution || theNbItems == 1)
     {
@@ -349,10 +352,10 @@ public: //! @name public methods
   //!                   performing task for specified index
   //! @param isForceSingleThreadExecution if true, then no threads will be created
   template <typename Functor>
-  static void For(const int      theBegin,
-                  const int      theEnd,
-                  const Functor& theFunctor,
-                  const bool     isForceSingleThreadExecution = false)
+  static void For(const int theBegin,
+                  const int theEnd,
+                  const Functor&         theFunctor,
+                  const bool isForceSingleThreadExecution = false)
   {
     const int aRange = theEnd - theBegin;
     if (isForceSingleThreadExecution || aRange == 1)
@@ -362,7 +365,7 @@ public: //! @name public methods
     }
     else if (ToUseOcctThreads())
     {
-      const occ::handle<OSD_ThreadPool>&   aThreadPool = OSD_ThreadPool::DefaultPool();
+      const occ::handle<OSD_ThreadPool>&        aThreadPool = OSD_ThreadPool::DefaultPool();
       OSD_ThreadPool::Launcher             aPoolLauncher(*aThreadPool, aRange);
       FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
       aPoolLauncher.Perform(theBegin, theEnd, aFunctor);

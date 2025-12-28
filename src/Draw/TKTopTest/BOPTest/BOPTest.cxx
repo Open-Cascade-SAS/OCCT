@@ -87,9 +87,8 @@ void BOPTest::ReportAlerts(const occ::handle<Message_Report>& theReport)
   for (int iGravity = 0; iGravity < 2; iGravity++)
   {
     // report shapes for the same type of alert together
-    NCollection_Map<occ::handle<Standard_Transient>>    aPassedTypes;
-    const NCollection_List<occ::handle<Message_Alert>>& aList =
-      theReport->GetAlerts(anAlertTypes[iGravity]);
+    NCollection_Map<occ::handle<Standard_Transient>> aPassedTypes;
+    const NCollection_List<occ::handle<Message_Alert>>& aList = theReport->GetAlerts(anAlertTypes[iGravity]);
     for (NCollection_List<occ::handle<Message_Alert>>::Iterator aIt(aList); aIt.More(); aIt.Next())
     {
       // check that this type of warnings has not yet been processed
@@ -105,9 +104,8 @@ void BOPTest::ReportAlerts(const occ::handle<Message_Report>& theReport)
       if (BOPTest_Objects::DrawWarnShapes())
       {
         TCollection_AsciiString aShapeList;
-        int                     aNbShapes = 0;
-        for (NCollection_List<occ::handle<Message_Alert>>::Iterator aIt2(aIt); aIt2.More();
-             aIt2.Next())
+        int        aNbShapes = 0;
+        for (NCollection_List<occ::handle<Message_Alert>>::Iterator aIt2(aIt); aIt2.More(); aIt2.Next())
         {
           occ::handle<TopoDS_AlertWithShape> aShapeAlert =
             occ::down_cast<TopoDS_AlertWithShape>(aIt2.Value());

@@ -77,27 +77,29 @@ public:
 
   Standard_EXPORT virtual void AfterResume() override;
 
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+  Standard_EXPORT virtual bool BeforeUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   //! update draw viewer according to delta
   //! private methods
   //! ===============
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+  Standard_EXPORT virtual bool AfterUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   DEFINE_STANDARD_RTTIEXT(DDataStd_DrawPresentation, TDF_Attribute)
 
 private:
   Standard_EXPORT void DrawBuild();
 
-  Standard_EXPORT static void DrawDisplay(const TDF_Label&                              L,
+  Standard_EXPORT static void DrawDisplay(const TDF_Label&                         L,
                                           const occ::handle<DDataStd_DrawPresentation>& P);
 
-  Standard_EXPORT static void DrawErase(const TDF_Label&                              L,
+  Standard_EXPORT static void DrawErase(const TDF_Label&                         L,
                                         const occ::handle<DDataStd_DrawPresentation>& P);
 
-  bool                         isDisplayed;
+  bool        isDisplayed;
   occ::handle<Draw_Drawable3D> myDrawable;
 };
 

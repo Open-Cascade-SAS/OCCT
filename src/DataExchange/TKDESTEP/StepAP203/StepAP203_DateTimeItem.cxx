@@ -96,8 +96,8 @@ occ::handle<StepAP203_StartWork> StepAP203_DateTimeItem::StartWork() const
 
 //=================================================================================================
 
-occ::handle<StepBasic_ApprovalPersonOrganization> StepAP203_DateTimeItem::
-  ApprovalPersonOrganization() const
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP203_DateTimeItem::ApprovalPersonOrganization()
+  const
 {
   return occ::down_cast<StepBasic_ApprovalPersonOrganization>(Value());
 }

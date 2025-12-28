@@ -63,18 +63,18 @@ public:
   //! - aDepthClip          : Depth clipping indicator
   //! - aBackPlaneDistance  : Distance of back clipping plane
   //! - aFrontPlaneDistance : Distance of front clipping plane
-  Standard_EXPORT void Init(const int     aViewNumber,
-                            const double  aScaleFactor,
-                            const gp_XYZ& aViewNormalVector,
-                            const gp_XYZ& aViewReferencePoint,
-                            const gp_XYZ& aCenterOfProjection,
-                            const gp_XYZ& aViewUpVector,
-                            const double  aViewPlaneDistance,
-                            const gp_XY&  aTopLeft,
-                            const gp_XY&  aBottomRight,
-                            const int     aDepthClip,
-                            const double  aBackPlaneDistance,
-                            const double  aFrontPlaneDistance);
+  Standard_EXPORT void Init(const int aViewNumber,
+                            const double    aScaleFactor,
+                            const gp_XYZ&          aViewNormalVector,
+                            const gp_XYZ&          aViewReferencePoint,
+                            const gp_XYZ&          aCenterOfProjection,
+                            const gp_XYZ&          aViewUpVector,
+                            const double    aViewPlaneDistance,
+                            const gp_XY&           aTopLeft,
+                            const gp_XY&           aBottomRight,
+                            const int aDepthClip,
+                            const double    aBackPlaneDistance,
+                            const double    aFrontPlaneDistance);
 
   //! Returns True (for a single view)
   Standard_EXPORT bool IsSingle() const override;
@@ -83,7 +83,8 @@ public:
   Standard_EXPORT int NbViews() const override;
 
   //! For a single view, returns <me> whatever <num>
-  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int num) const override;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int num) const
+    override;
 
   //! returns the view number associated with <me>
   Standard_EXPORT int ViewNumber() const;
@@ -137,18 +138,18 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_PerspectiveView, IGESData_ViewKindEntity)
 
 private:
-  int    theViewNumber;
-  double theScaleFactor;
-  gp_XYZ theViewNormalVector;
-  gp_XYZ theViewReferencePoint;
-  gp_XYZ theCenterOfProjection;
-  gp_XYZ theViewUpVector;
-  double theViewPlaneDistance;
-  gp_XY  theTopLeft;
-  gp_XY  theBottomRight;
-  int    theDepthClip;
-  double theBackPlaneDistance;
-  double theFrontPlaneDistance;
+  int theViewNumber;
+  double    theScaleFactor;
+  gp_XYZ           theViewNormalVector;
+  gp_XYZ           theViewReferencePoint;
+  gp_XYZ           theCenterOfProjection;
+  gp_XYZ           theViewUpVector;
+  double    theViewPlaneDistance;
+  gp_XY            theTopLeft;
+  gp_XY            theBottomRight;
+  int theDepthClip;
+  double    theBackPlaneDistance;
+  double    theFrontPlaneDistance;
 };
 
 #endif // _IGESDraw_PerspectiveView_HeaderFile

@@ -64,7 +64,12 @@ public:
   //! Example of return values:
   //! 2 days, 15 hours, 0 minute , 0 second
   //! 0 millisecond and 0 microsecond
-  Standard_EXPORT void Values(int& dd, int& hh, int& mn, int& ss, int& mis, int& mics) const;
+  Standard_EXPORT void Values(int& dd,
+                              int& hh,
+                              int& mn,
+                              int& ss,
+                              int& mis,
+                              int& mics) const;
 
   //! Returns the number of seconds in Ss and the
   //! number of remainding microseconds in Mics of this period.
@@ -148,17 +153,18 @@ public:
   //! 0 <= mis
   //! 0 <= mics
   Standard_EXPORT static bool IsValid(const int dd,
-                                      const int hh,
-                                      const int mn,
-                                      const int ss,
-                                      const int mis  = 0,
-                                      const int mics = 0);
+                                                  const int hh,
+                                                  const int mn,
+                                                  const int ss,
+                                                  const int mis  = 0,
+                                                  const int mics = 0);
 
   //! Checks the validity of a Period in form (ss,mic)
   //! With:
   //! 0 <= ss
   //! 0 <= mics
-  Standard_EXPORT static bool IsValid(const int ss, const int mics = 0);
+  Standard_EXPORT static bool IsValid(const int ss,
+                                                  const int mics = 0);
 
 private:
   int mySec;

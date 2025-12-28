@@ -54,6 +54,7 @@ public:
   //! an Integer that allows retrieval of the state.
   Standard_EXPORT virtual int GetStateNumber();
   Standard_EXPORT virtual ~math_MultipleVarFunction();
+
 };
 
 #endif // _math_MultipleVarFunction_HeaderFile

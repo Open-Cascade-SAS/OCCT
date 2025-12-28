@@ -37,9 +37,9 @@ public:
    */
   Standard_EXPORT VrmlData_Material(const VrmlData_Scene& theScene,
                                     const char*           theName,
-                                    const double          theAmbientIntensity = -1.,
-                                    const double          theShininess        = -1.,
-                                    const double          theTransparency     = -1.);
+                                    const double   theAmbientIntensity = -1.,
+                                    const double   theShininess        = -1.,
+                                    const double   theTransparency     = -1.);
 
   /**
    * Query the Ambient Intensity value
@@ -92,7 +92,10 @@ public:
   /**
    * Set the Transparency value
    */
-  inline void SetTransparency(const double theTransparency) { myTransparency = theTransparency; }
+  inline void SetTransparency(const double theTransparency)
+  {
+    myTransparency = theTransparency;
+  }
 
   /**
    * Query the Ambient color
@@ -119,8 +122,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
-    const occ::handle<VrmlData_Node>& theOther) const override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
+    override;
 
   /**
    * Read the Node from input stream.
@@ -140,9 +143,9 @@ public:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  double         myAmbientIntensity;
-  double         myShininess;
-  double         myTransparency;
+  double  myAmbientIntensity;
+  double  myShininess;
+  double  myTransparency;
   Quantity_Color myAmbientColor;
   Quantity_Color myDiffuseColor;
   Quantity_Color myEmissiveColor;

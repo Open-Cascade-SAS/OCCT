@@ -23,8 +23,13 @@
 #include <Standard_Integer.hxx>
 #include <MAT_Arc.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <MAT_BasicElt.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <MAT_Node.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class MAT_ListOfBisector;
 class MAT_Arc;
@@ -47,10 +52,10 @@ public:
   //! <TheRoots>     : Set of the bisectors.
   //! <NbBasicElts>  : Number of Basic Elements.
   //! <NbArcs>       : Number of Arcs = Number of Bisectors.
-  Standard_EXPORT void Perform(const bool                             SemiInfinite,
+  Standard_EXPORT void Perform(const bool            SemiInfinite,
                                const occ::handle<MAT_ListOfBisector>& TheRoots,
-                               const int                              NbBasicElts,
-                               const int                              NbArcs);
+                               const int            NbBasicElts,
+                               const int            NbArcs);
 
   //! Return the Arc of index <Index> in <theArcs>.
   Standard_EXPORT occ::handle<MAT_Arc> Arc(const int Index) const;
@@ -91,10 +96,10 @@ public:
   //! Geometric Index of this arcs.
   Standard_EXPORT void FusionOfBasicElts(const int IndexElt1,
                                          const int IndexElt2,
-                                         bool&     MergeArc1,
+                                         bool&      MergeArc1,
                                          int&      GeomIndexArc1,
                                          int&      GeomIndexArc2,
-                                         bool&     MergeArc2,
+                                         bool&      MergeArc2,
                                          int&      GeomIndexArc3,
                                          int&      GeomIndexArc4);
 
@@ -102,8 +107,7 @@ public:
 
   Standard_EXPORT void CompactNodes();
 
-  Standard_EXPORT void ChangeBasicElts(
-    const NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap);
+  Standard_EXPORT void ChangeBasicElts(const NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap);
 
   Standard_EXPORT occ::handle<MAT_BasicElt> ChangeBasicElt(const int Index);
 
@@ -114,18 +118,17 @@ private:
   //! the first node of <Arc1>. Update of the first
   //! node and the neighbours of <Arc1>.
   //! <Arc2> is eliminated.
-  Standard_EXPORT void FusionOfArcs(const occ::handle<MAT_Arc>& Arc1,
-                                    const occ::handle<MAT_Arc>& Arc2);
+  Standard_EXPORT void FusionOfArcs(const occ::handle<MAT_Arc>& Arc1, const occ::handle<MAT_Arc>& Arc2);
 
   Standard_EXPORT void UpDateNodes(int& Index);
 
   NCollection_DataMap<int, occ::handle<MAT_Arc>>      theArcs;
   NCollection_DataMap<int, occ::handle<MAT_BasicElt>> theBasicElts;
   NCollection_DataMap<int, occ::handle<MAT_Node>>     theNodes;
-  int                                                 numberOfArcs;
-  int                                                 numberOfNodes;
-  int                                                 numberOfBasicElts;
-  int                                                 numberOfInfiniteNodes;
+  int             numberOfArcs;
+  int             numberOfNodes;
+  int             numberOfBasicElts;
+  int             numberOfInfiniteNodes;
 };
 
 #endif // _MAT_Graph_HeaderFile

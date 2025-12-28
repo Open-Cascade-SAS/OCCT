@@ -37,28 +37,28 @@
 
 void DsgPrs_FilletRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                           const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                          const double                           theval,
-                                          const TCollection_ExtendedString&      aText,
-                                          const gp_Pnt&                          aPosition,
-                                          const gp_Dir&                          aNormalDir,
-                                          const gp_Pnt&                          aBasePnt,
-                                          const gp_Pnt&                          aFirstPoint,
-                                          const gp_Pnt&                          aSecondPoint,
-                                          const gp_Pnt&                          aCenter,
-                                          const DsgPrs_ArrowSide                 ArrowPrs,
-                                          const bool                             drawRevers,
-                                          gp_Pnt&                                DrawPosition,
-                                          gp_Pnt&                                EndOfArrow,
+                                          const double               theval,
+                                          const TCollection_ExtendedString& aText,
+                                          const gp_Pnt&                     aPosition,
+                                          const gp_Dir&                     aNormalDir,
+                                          const gp_Pnt&                     aBasePnt,
+                                          const gp_Pnt&                     aFirstPoint,
+                                          const gp_Pnt&                     aSecondPoint,
+                                          const gp_Pnt&                     aCenter,
+                                          const DsgPrs_ArrowSide            ArrowPrs,
+                                          const bool            drawRevers,
+                                          gp_Pnt&                           DrawPosition,
+                                          gp_Pnt&                           EndOfArrow,
                                           occ::handle<Geom_TrimmedCurve>&        TrimCurve,
-                                          bool&                                  HasCircle)
+                                          bool&                 HasCircle)
 {
   char valcar[80];
   Sprintf(valcar, "%5.2f", theval);
 
-  double  FirstParCirc, LastParCirc;
-  bool    SpecCase;
-  gp_Dir  DirOfArrow;
-  gp_Circ FilletCirc;
+  double    FirstParCirc, LastParCirc;
+  bool SpecCase;
+  gp_Dir           DirOfArrow;
+  gp_Circ          FilletCirc;
   //  gp_Pnt NewPosition, EndOfArrow;
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -84,18 +84,18 @@ void DsgPrs_FilletRadiusPresentation::Add(const occ::handle<Prs3d_Presentation>&
   // Creating the fillet's arc
   if (!SpecCase)
   {
-    const double Alpha      = std::abs(LastParCirc - FirstParCirc);
-    const int    NodeNumber = std::max(4, int(50. * Alpha / M_PI));
-    const double delta      = Alpha / (NodeNumber - 1);
+    const double    Alpha      = std::abs(LastParCirc - FirstParCirc);
+    const int NodeNumber = std::max(4, int(50. * Alpha / M_PI));
+    const double    delta      = Alpha / (NodeNumber - 1);
 
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (int i = 0; i < NodeNumber; i++, FirstParCirc += delta)
       aPrims->AddVertex(ElCLib::Value(FirstParCirc, FilletCirc));
     aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-    HasCircle                       = true;
+    HasCircle                  = true;
     occ::handle<Geom_Circle> Circle = new Geom_Circle(FilletCirc);
-    TrimCurve                       = new Geom_TrimmedCurve(Circle, FirstParCirc, LastParCirc);
+    TrimCurve                  = new Geom_TrimmedCurve(Circle, FirstParCirc, LastParCirc);
   }
   else // null or PI anle or Radius = 0
   {

@@ -17,9 +17,8 @@
 
 //=================================================================================================
 
-ViewerTest_AutoUpdater::ViewerTest_AutoUpdater(
-  const occ::handle<AIS_InteractiveContext>& theContext,
-  const occ::handle<V3d_View>&               theView)
+ViewerTest_AutoUpdater::ViewerTest_AutoUpdater(const occ::handle<AIS_InteractiveContext>& theContext,
+                                               const occ::handle<V3d_View>&               theView)
     : myContext(theContext),
       myView(theView),
       myToUpdate(RedrawMode_Auto),

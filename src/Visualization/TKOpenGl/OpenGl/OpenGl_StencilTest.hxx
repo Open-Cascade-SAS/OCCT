@@ -25,8 +25,8 @@ public:
   Standard_EXPORT OpenGl_StencilTest();
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    override;
 
   Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
@@ -34,7 +34,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   //! Destructor

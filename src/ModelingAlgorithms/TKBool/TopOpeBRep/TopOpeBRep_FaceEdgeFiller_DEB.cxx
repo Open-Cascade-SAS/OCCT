@@ -59,17 +59,17 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT, const TopOpeBRepDS_
   {
     gp_Pnt2d pUV;
     FEINT.UVPoint(pUV);
-    TopAbs_State sta  = FEINT.State();
-    double       parE = FEINT.Parameter();
+    TopAbs_State  sta  = FEINT.State();
+    double parE = FEINT.Parameter();
 
     TopOpeBRepDS_Transition T1, T2;
     T1 = FEINT.Transition(1, EEori); // EEori bidon
     T2 = FEINT.Transition(2, FFori);
 
-    TopoDS_Vertex V1;
-    bool          isvertexF = FEINT.IsVertex(1, V1);
-    TopoDS_Vertex V2;
-    bool          isvertexE = FEINT.IsVertex(2, V2);
+    TopoDS_Vertex    V1;
+    bool isvertexF = FEINT.IsVertex(1, V1);
+    TopoDS_Vertex    V2;
+    bool isvertexE = FEINT.IsVertex(2, V2);
 
     std::cout << std::endl;
     std::cout << "P" << ip << " : ";

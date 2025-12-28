@@ -26,7 +26,7 @@ typedef NCollection_HArray1<int> HArray1OfInteger;
 GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting(
 
   const occ::handle<Geom_BSplineCurve>& BasisCurve,
-  const int                             ContinuityRange
+  const int           ContinuityRange
 
 )
 {
@@ -47,8 +47,8 @@ GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting(
   }
   else
   {
-    int             NbKnots = BasisCurve->NbKnots();
-    Array1OfInteger Mults(1, NbKnots);
+    int NbKnots = BasisCurve->NbKnots();
+    Array1OfInteger  Mults(1, NbKnots);
     BasisCurve->Multiplicities(Mults);
     int Mmax = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
     if (Degree - Mmax >= ContinuityRange)
@@ -59,10 +59,10 @@ GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting(
     }
     else
     {
-      Array1OfInteger Split(1, LastIndex - FirstIndex + 1);
-      int             NbSplit = 1;
-      int             Index   = FirstIndex;
-      Split(NbSplit)          = Index;
+      Array1OfInteger  Split(1, LastIndex - FirstIndex + 1);
+      int NbSplit = 1;
+      int Index   = FirstIndex;
+      Split(NbSplit)           = Index;
       Index++;
       NbSplit++;
       while (Index < LastIndex)

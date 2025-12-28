@@ -56,11 +56,11 @@ public:
   Standard_EXPORT const occ::handle<Adaptor2d_Curve2d>& AuxillarCurve() const;
 
 private:
-  void*  curve;
-  void*  surface1;
-  void*  surface2;
-  gp_Pnt p;
-  double f;
+  void* curve;
+  void* surface1;
+  void* surface2;
+  gp_Pnt           p;
+  double    f;
 };
 
 #endif // _IntPatch_CSFunction_HeaderFile

@@ -71,7 +71,7 @@ void BRepMesh_DefaultRangeSplitter::AdjustRange()
 
   const double aLengthU = computeLengthU();
   const double aLengthV = computeLengthV();
-  myIsValid             = aLengthU > Precision::PConfusion() && aLengthV > Precision::PConfusion();
+  myIsValid = aLengthU > Precision::PConfusion() && aLengthV > Precision::PConfusion();
 
   if (myIsValid)
   {
@@ -89,8 +89,8 @@ bool BRepMesh_DefaultRangeSplitter::IsValid()
 
 //=================================================================================================
 
-gp_Pnt2d BRepMesh_DefaultRangeSplitter::Scale(const gp_Pnt2d& thePoint,
-                                              const bool      isToFaceBasis) const
+gp_Pnt2d BRepMesh_DefaultRangeSplitter::Scale(const gp_Pnt2d&        thePoint,
+                                              const bool isToFaceBasis) const
 {
   return isToFaceBasis ? gp_Pnt2d((thePoint.X() - myRangeU.first) / myDelta.first,
                                   (thePoint.Y() - myRangeV.first) / myDelta.second)
@@ -116,19 +116,20 @@ void BRepMesh_DefaultRangeSplitter::computeTolerance(const double /*theLenU*/,
 
   // Slightly increase exact resolution so to cover links with approximate
   // length equal to resolution itself on sub-resolution differences.
-  const double             aTolerance = BRep_Tool::Tolerance(myDFace->GetFace());
+  const double      aTolerance = BRep_Tool::Tolerance(myDFace->GetFace());
   const Adaptor3d_Surface& aSurface   = GetSurface()->Surface();
-  const double             aResU      = aSurface.UResolution(aTolerance) * 1.1;
-  const double             aResV      = aSurface.VResolution(aTolerance) * 1.1;
+  const double      aResU      = aSurface.UResolution(aTolerance) * 1.1;
+  const double      aResV      = aSurface.VResolution(aTolerance) * 1.1;
 
   const double aDeflectionUV = 1.e-05;
-  myTolerance.first          = std::max(std::min(aDeflectionUV, aResU), 1e-7 * aDiffU);
-  myTolerance.second         = std::max(std::min(aDeflectionUV, aResV), 1e-7 * aDiffV);
+  myTolerance.first                 = std::max(std::min(aDeflectionUV, aResU), 1e-7 * aDiffU);
+  myTolerance.second                = std::max(std::min(aDeflectionUV, aResV), 1e-7 * aDiffV);
 }
 
 //=================================================================================================
 
-void BRepMesh_DefaultRangeSplitter::computeDelta(const double theLengthU, const double theLengthV)
+void BRepMesh_DefaultRangeSplitter::computeDelta(const double theLengthU,
+                                                 const double theLengthV)
 {
   const double aDiffU = myRangeU.second - myRangeU.first;
   const double aDiffV = myRangeV.second - myRangeV.first;
@@ -142,12 +143,12 @@ void BRepMesh_DefaultRangeSplitter::computeDelta(const double theLengthU, const 
 double BRepMesh_DefaultRangeSplitter::computeLengthU()
 {
   double longu = 0.0;
-  gp_Pnt P11, P12, P21, P22, P31, P32;
+  gp_Pnt        P11, P12, P21, P22, P31, P32;
 
-  double du     = 0.05 * (myRangeU.second - myRangeU.first);
-  double dfvave = 0.5 * (myRangeV.second + myRangeV.first);
-  double dfucur;
-  int    i1;
+  double    du     = 0.05 * (myRangeU.second - myRangeU.first);
+  double    dfvave = 0.5 * (myRangeV.second + myRangeV.first);
+  double    dfucur;
+  int i1;
 
   const occ::handle<BRepAdaptor_Surface>& gFace = GetSurface();
   gFace->D0(myRangeU.first, myRangeV.first, P11);
@@ -172,12 +173,12 @@ double BRepMesh_DefaultRangeSplitter::computeLengthU()
 double BRepMesh_DefaultRangeSplitter::computeLengthV()
 {
   double longv = 0.0;
-  gp_Pnt P11, P12, P21, P22, P31, P32;
+  gp_Pnt        P11, P12, P21, P22, P31, P32;
 
-  double dv     = 0.05 * (myRangeV.second - myRangeV.first);
-  double dfuave = 0.5 * (myRangeU.second + myRangeU.first);
-  double dfvcur;
-  int    i1;
+  double    dv     = 0.05 * (myRangeV.second - myRangeV.first);
+  double    dfuave = 0.5 * (myRangeU.second + myRangeU.first);
+  double    dfvcur;
+  int i1;
 
   const occ::handle<BRepAdaptor_Surface>& gFace = GetSurface();
   gFace->D0(myRangeU.first, myRangeV.first, P11);
@@ -199,11 +200,11 @@ double BRepMesh_DefaultRangeSplitter::computeLengthV()
 
 //=================================================================================================
 
-void BRepMesh_DefaultRangeSplitter::updateRange(const double theGeomFirst,
-                                                const double theGeomLast,
-                                                const bool   isPeriodic,
-                                                double&      theDiscreteFirst,
-                                                double&      theDiscreteLast)
+void BRepMesh_DefaultRangeSplitter::updateRange(const double    theGeomFirst,
+                                                const double    theGeomLast,
+                                                const bool isPeriodic,
+                                                double&         theDiscreteFirst,
+                                                double&         theDiscreteLast)
 {
   if (theDiscreteFirst < theGeomFirst || theDiscreteLast > theGeomLast)
   {

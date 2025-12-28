@@ -47,9 +47,9 @@
 // on the surface
 // ----------------------------------------------------------------------------
 int StepToTopoDS_GeometricTool::PCurve(const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
-                                       const occ::handle<StepGeom_Surface>&      BasisSurf,
-                                       occ::handle<StepGeom_Pcurve>&             thePCurve,
-                                       const int                                 last)
+                                                    const occ::handle<StepGeom_Surface>&      BasisSurf,
+                                                    occ::handle<StepGeom_Pcurve>&             thePCurve,
+                                                    const int               last)
 {
   int NbAssGeom = SurfCurve->NbAssociatedGeometry();
   thePCurve.Nullify();
@@ -72,10 +72,11 @@ int StepToTopoDS_GeometricTool::PCurve(const occ::handle<StepGeom_SurfaceCurve>&
 //           Then the surface_curve is a seam curve
 // ----------------------------------------------------------------------------
 
-bool StepToTopoDS_GeometricTool::IsSeamCurve(const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
-                                             const occ::handle<StepGeom_Surface>&      Surf,
-                                             const occ::handle<StepShape_Edge>&        StepEdge,
-                                             const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
+bool StepToTopoDS_GeometricTool::IsSeamCurve(
+  const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
+  const occ::handle<StepGeom_Surface>&      Surf,
+  const occ::handle<StepShape_Edge>&        StepEdge,
+  const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->IsKind(STANDARD_TYPE(StepGeom_SeamCurve)))
     return true;
@@ -118,10 +119,11 @@ bool StepToTopoDS_GeometricTool::IsSeamCurve(const occ::handle<StepGeom_SurfaceC
 //           range of gp_Resolution is not identified as closed
 // ----------------------------------------------------------------------------
 
-bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
-                                            const occ::handle<StepGeom_Surface>&      Surf,
-                                            const occ::handle<StepShape_Edge>&        StepEdge,
-                                            const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
+bool StepToTopoDS_GeometricTool::IsLikeSeam(
+  const occ::handle<StepGeom_SurfaceCurve>& SurfCurve,
+  const occ::handle<StepGeom_Surface>&      Surf,
+  const occ::handle<StepShape_Edge>&        StepEdge,
+  const occ::handle<StepShape_EdgeLoop>&    EdgeLoop)
 {
   if (SurfCurve->NbAssociatedGeometry() != 2)
     return false;
@@ -164,9 +166,9 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
           std::abs(line1->Pnt()->CoordinatesValue(2) - line2->Pnt()->CoordinatesValue(2));
 
         double DeltaDirX = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(1)
-                                    - line2->Dir()->Orientation()->DirectionRatiosValue(1));
+                                           - line2->Dir()->Orientation()->DirectionRatiosValue(1));
         double DeltaDirY = std::abs(line1->Dir()->Orientation()->DirectionRatiosValue(2)
-                                    - line2->Dir()->Orientation()->DirectionRatiosValue(2));
+                                           - line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
         // clang-format off
         double preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
@@ -205,9 +207,9 @@ bool StepToTopoDS_GeometricTool::IsLikeSeam(const occ::handle<StepGeom_SurfaceCu
 // ----------------------------------------------------------------------------
 
 bool StepToTopoDS_GeometricTool::UpdateParam3d(const occ::handle<Geom_Curve>& theCurve,
-                                               double&                        w1,
-                                               double&                        w2,
-                                               const double                   preci)
+                                                           double&            w1,
+                                                           double&            w2,
+                                                           const double       preci)
 {
   // w1 et/ou w2 peuvent etre en dehors des bornes naturelles de la courbe.
   // On donnera alors la valeur en bout a w1 et/ou w2
@@ -298,8 +300,8 @@ bool StepToTopoDS_GeometricTool::UpdateParam3d(const occ::handle<Geom_Curve>& th
                   << std::endl;
 #endif
         double tmp = w1;
-        w1         = w2;
-        w2         = tmp;
+        w1                = w2;
+        w2                = tmp;
       }
     }
   }
@@ -334,8 +336,8 @@ bool StepToTopoDS_GeometricTool::UpdateParam3d(const occ::handle<Geom_Curve>& th
                   << std::endl;
 #endif
         double tmp = w1;
-        w1         = w2;
-        w2         = tmp;
+        w1                = w2;
+        w2                = tmp;
       }
     }
     // abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw

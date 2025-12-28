@@ -36,8 +36,7 @@ void StepKinematics_UnconstrainedPairValue::Init(
 
 //=================================================================================================
 
-occ::handle<StepGeom_Axis2Placement3d> StepKinematics_UnconstrainedPairValue::ActualPlacement()
-  const
+occ::handle<StepGeom_Axis2Placement3d> StepKinematics_UnconstrainedPairValue::ActualPlacement() const
 {
   return myActualPlacement;
 }

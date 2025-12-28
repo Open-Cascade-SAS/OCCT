@@ -72,9 +72,9 @@ public:
   //! Note: the constructed framework can be reused to
   //! apply the same geometric transformation to other
   //! shapes: just specify them with the function Perform.
-  Standard_EXPORT BRepBuilderAPI_GTransform(const TopoDS_Shape& S,
-                                            const gp_GTrsf&     T,
-                                            const bool          Copy = false);
+  Standard_EXPORT BRepBuilderAPI_GTransform(const TopoDS_Shape&    S,
+                                            const gp_GTrsf&        T,
+                                            const bool Copy = false);
 
   //! Applies the geometric transformation defined at the
   //! time of construction of this framework to the shape S.
@@ -92,8 +92,8 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
+    override;
 
   //! Returns the modified shape corresponding to <S>.
   Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;

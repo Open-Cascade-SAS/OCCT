@@ -185,8 +185,8 @@ TCollection_AsciiString OpenGl_TextureFormat::FormatDataType(GLint theDataType)
 //=================================================================================================
 
 OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const occ::handle<OpenGl_Context>& theCtx,
-                                                      Image_Format                       theFormat,
-                                                      bool theIsColorMap)
+                                                      Image_Format                  theFormat,
+                                                      bool                          theIsColorMap)
 {
   OpenGl_TextureFormat aFormat;
   aFormat.SetImageFormat(theFormat);
@@ -518,9 +518,8 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat(const occ::handle<OpenGl_C
 
 //=================================================================================================
 
-OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(
-  const occ::handle<OpenGl_Context>& theCtx,
-  GLint                              theSizedFormat)
+OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(const occ::handle<OpenGl_Context>& theCtx,
+                                                           GLint theSizedFormat)
 {
   OpenGl_TextureFormat aFormat;
   switch (theSizedFormat)
@@ -710,8 +709,8 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat(
 
 OpenGl_TextureFormat OpenGl_TextureFormat::FindCompressedFormat(
   const occ::handle<OpenGl_Context>& theCtx,
-  Image_CompressedFormat             theFormat,
-  bool                               theIsColorMap)
+  Image_CompressedFormat        theFormat,
+  bool                          theIsColorMap)
 {
   OpenGl_TextureFormat aFormat;
   if (!theCtx->SupportedTextureFormats()->IsSupported(theFormat))

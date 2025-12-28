@@ -49,15 +49,17 @@ public:
   //! only the tangent, N should be equal to 1.
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
-  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C, const int N, const double Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*&  C,
+                                  const int N,
+                                  const double    Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
-  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*& C,
-                                  const double          U,
-                                  const int             N,
-                                  const double          Resolution);
+  Standard_EXPORT HLRBRep_CLProps(const HLRBRep_Curve*&  C,
+                                  const double    U,
+                                  const int N,
+                                  const double    Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -109,16 +111,16 @@ public:
 
 private:
   const HLRBRep_Curve* myCurve;
-  double               myU;
-  int                  myDerOrder;
-  double               myCN;
-  double               myLinTol;
+  double        myU;
+  int     myDerOrder;
+  double        myCN;
+  double        myLinTol;
   gp_Pnt2d             myPnt;
   gp_Vec2d             myDerivArr[3];
   gp_Dir2d             myTangent;
-  double               myCurvature;
+  double        myCurvature;
   LProp_Status         myTangentStatus;
-  int                  mySignificantFirstDerivativeOrder;
+  int     mySignificantFirstDerivativeOrder;
 };
 
 #endif // _HLRBRep_CLProps_HeaderFile

@@ -22,6 +22,7 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Dir2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
 #include <gtest/gtest.h>
@@ -38,18 +39,18 @@ TEST(Geom2dGcc_Circ2d2TanOn_Test, OCC27357_NoExceptions)
 
   occ::handle<Geom2d_BezierCurve> aCurve1 = new Geom2d_BezierCurve(aPoles);
   aPoles.SetValue(2, gp_Pnt2d(0., 1.5));
-  occ::handle<Geom2d_BezierCurve> aCurve2 = new Geom2d_BezierCurve(aPoles);
-  NCollection_List<int>           aDummyList;
-  int                             nP = 100;
+  occ::handle<Geom2d_BezierCurve>         aCurve2 = new Geom2d_BezierCurve(aPoles);
+  NCollection_List<int> aDummyList;
+  int                                nP = 100;
 
   for (int i = 0; i < nP; i++)
   {
-    double   u = i / (nP - 1.);
-    gp_Pnt2d aP1;
-    gp_Vec2d aTangent;
+    double u = i / (nP - 1.);
+    gp_Pnt2d      aP1;
+    gp_Vec2d      aTangent;
     aCurve1->D1(u, aP1, aTangent);
     gp_Vec2d                 aNormal(-aTangent.Y(), aTangent.X());
-    occ::handle<Geom2d_Line> aNormalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
+    occ::handle<Geom2d_Line>      aNormalLine = new Geom2d_Line(aP1, gp_Dir2d(aNormal));
     Geom2dGcc_QualifiedCurve aQualifiedC1(Geom2dAdaptor_Curve(aCurve1), GccEnt_unqualified);
     Geom2dGcc_QualifiedCurve aQualifiedC2(Geom2dAdaptor_Curve(aCurve2), GccEnt_unqualified);
 

@@ -62,9 +62,9 @@ public:
   //! In the first case the V parametric direction of the
   //! result has the same orientation as <A1>.
   //! In the other case it has the opposite orientation.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& A1,
-                                         const double  Radius,
-                                         const double  Height);
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1&       A1,
+                                         const double Radius,
+                                         const double Height);
 
   //! Returns the constructed trimmed cylinder.
   //! Exceptions

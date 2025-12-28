@@ -37,16 +37,16 @@ public:
 
   Standard_HIDDEN void ReadStep(
     const occ::handle<StepData_StepReaderData>&                           theData,
-    const int                                                             theNum,
+    const int                                           theNum,
     occ::handle<Interface_Check>&                                         theArch,
     const occ::handle<StepKinematics_KinematicTopologyDirectedStructure>& theEnt) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                                  theSW,
+    StepData_StepWriter&                                             theSW,
     const occ::handle<StepKinematics_KinematicTopologyDirectedStructure>& theEnt) const;
 
   Standard_HIDDEN void Share(
     const occ::handle<StepKinematics_KinematicTopologyDirectedStructure>& theEnt,
-    Interface_EntityIterator&                                             iter) const;
+    Interface_EntityIterator&                                        iter) const;
 };
 #endif // _RWStepKinematics_RWKinematicTopologyDirectedStructure_HeaderFile_

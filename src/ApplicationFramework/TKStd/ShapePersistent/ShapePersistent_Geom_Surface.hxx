@@ -62,7 +62,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   protected:
     occ::handle<Curve> myBasisCurve;
-    gp_Dir             myDirection;
+    gp_Dir        myDirection;
   };
 
   struct pSwept : pBase, pSweptData
@@ -139,8 +139,8 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual occ::handle<Geom_Surface> Import() const;
 
   private:
-    bool                                 myURational;
-    bool                                 myVRational;
+    bool                     myURational;
+    bool                     myVRational;
     Handle(ShapePersistent_HArray2::Pnt) myPoles;
     Handle(StdLPersistent_HArray2::Real) myWeights;
   };
@@ -197,12 +197,12 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     virtual occ::handle<Geom_Surface> Import() const;
 
   private:
-    bool                                    myURational;
-    bool                                    myVRational;
-    bool                                    myUPeriodic;
-    bool                                    myVPeriodic;
-    int                                     myUSpineDegree;
-    int                                     myVSpineDegree;
+    bool                        myURational;
+    bool                        myVRational;
+    bool                        myUPeriodic;
+    bool                        myVPeriodic;
+    int                        myUSpineDegree;
+    int                        myVSpineDegree;
     Handle(ShapePersistent_HArray2::Pnt)    myPoles;
     Handle(StdLPersistent_HArray2::Real)    myWeights;
     Handle(StdLPersistent_HArray1::Real)    myUKnots;
@@ -247,10 +247,10 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   private:
     occ::handle<Surface> myBasisSurface;
-    double               myFirstU;
-    double               myLastU;
-    double               myFirstV;
-    double               myLastV;
+    double   myFirstU;
+    double   myLastU;
+    double   myFirstV;
+    double   myLastV;
   };
 
   class pOffset : public pBase
@@ -284,7 +284,7 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
 
   private:
     occ::handle<Surface> myBasisSurface;
-    double               myOffsetValue;
+    double   myOffsetValue;
   };
 
 public:
@@ -308,67 +308,48 @@ public:
 
 public:
   //! Create a persistent object for a plane
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_Plane>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_Plane>&         theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
   //! Create a persistent object for a cylinder
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_CylindricalSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_CylindricalSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&      theMap);
   //! Create a persistent object for a cone
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_ConicalSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_ConicalSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&  theMap);
   //! Create a persistent object for a sphere
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_SphericalSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_SphericalSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&    theMap);
   //! Create a persistent object for a torus
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_ToroidalSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_ToroidalSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&   theMap);
   //! Create a persistent object for a surface of linear extrusion
   Standard_EXPORT static occ::handle<Surface> Translate(
     const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&            theMap);
   //! Create a persistent object for a surface of evolution
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_SurfaceOfRevolution>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_SurfaceOfRevolution>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&       theMap);
   //! Create a persistent object for a Bezier surface
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_BezierSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_BezierSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
   //! Create a persistent object for a BSpline surface
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_BSplineSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_BSplineSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&  theMap);
   //! Create a persistent object for a rectangylar trimmed surface
   Standard_EXPORT static occ::handle<Surface> Translate(
     const occ::handle<Geom_RectangularTrimmedSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&             theMap);
   //! Create a persistent object for an offset surface
-  Standard_EXPORT static occ::handle<Surface> Translate(
-    const occ::handle<Geom_OffsetSurface>& theSurf,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Surface> Translate(const occ::handle<Geom_OffsetSurface>& theSurf,
+                                                   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
 };
 
 //=======================================================================
 // Elementary
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>::PName() const;
+const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>::PName()
+  const;
 
 //=======================================================================
 // Plane

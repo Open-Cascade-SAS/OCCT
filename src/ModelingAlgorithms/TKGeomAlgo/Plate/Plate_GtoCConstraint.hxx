@@ -85,7 +85,7 @@ private:
   Plate_PinpointConstraint myPPC[9];
   Plate_D1                 myD1SurfInit;
   gp_XY                    pnt2d;
-  int                      nb_PPConstraints;
+  int         nb_PPConstraints;
 };
 
 #include <Plate_GtoCConstraint.lxx>

@@ -21,11 +21,12 @@
 #include <StepShape_OrientedEdge.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepShape_OrientedEdge.hxx>
 
 RWStepShape_RWEdgeLoop::RWStepShape_RWEdgeLoop() {}
 
 void RWStepShape_RWEdgeLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                                   num,
+                                      const int                 num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepShape_EdgeLoop>&      ent) const
 {
@@ -44,12 +45,12 @@ void RWStepShape_RWEdgeLoop::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- own field : edgeList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>> aEdgeList;
-  occ::handle<StepShape_OrientedEdge>                                   anent;
-  int                                                                   nsub1;
+  occ::handle<StepShape_OrientedEdge>          anent;
+  int                        nsub1;
   if (data->ReadSubList(num, 2, "edge_list", ach, nsub1))
   {
-    int nb1   = data->NbParams(nsub1);
-    aEdgeList = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb1);
+    int nb1 = data->NbParams(nsub1);
+    aEdgeList            = new NCollection_HArray1<occ::handle<StepShape_OrientedEdge>>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -68,7 +69,7 @@ void RWStepShape_RWEdgeLoop::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aEdgeList);
 }
 
-void RWStepShape_RWEdgeLoop::WriteStep(StepData_StepWriter&                   SW,
+void RWStepShape_RWEdgeLoop::WriteStep(StepData_StepWriter&              SW,
                                        const occ::handle<StepShape_EdgeLoop>& ent) const
 {
 
@@ -91,7 +92,7 @@ void RWStepShape_RWEdgeLoop::WriteStep(StepData_StepWriter&                   SW
 // ============================================================================
 
 void RWStepShape_RWEdgeLoop::Share(const occ::handle<StepShape_EdgeLoop>& ent,
-                                   Interface_EntityIterator&              iter) const
+                                   Interface_EntityIterator&         iter) const
 {
 
   int nbElem1 = ent->NbEdgeList();
@@ -124,7 +125,7 @@ void RWStepShape_RWEdgeLoop::Check(const occ::handle<StepShape_EdgeLoop>& ent,
   }
   for (int i = 2; i <= nbEdg; i++)
   {
-    theOE                                   = ent->EdgeListValue(i);
+    theOE                              = ent->EdgeListValue(i);
     occ::handle<StepShape_Vertex> theVxStrt = theOE->EdgeStart();
     if (theVxStrt != theVxLst)
     {

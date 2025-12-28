@@ -41,7 +41,7 @@ public:
   //! Defines the first point or the last point,
   //! depending on the value of the boolean First.
   Standard_EXPORT void SetLimitPoint(const IntPatch_ThePathPointOfTheSOnBounds& V,
-                                     const bool                                 First);
+                                     const bool                     First);
 
   //! Returns the geometric curve on the surface 's domain
   //! which is solution.
@@ -62,10 +62,10 @@ public:
   const IntPatch_ThePathPointOfTheSOnBounds& LastPoint() const;
 
 private:
-  occ::handle<Adaptor2d_Curve2d>      arc;
-  bool                                hasfp;
+  occ::handle<Adaptor2d_Curve2d>           arc;
+  bool                    hasfp;
   IntPatch_ThePathPointOfTheSOnBounds thefp;
-  bool                                haslp;
+  bool                    haslp;
   IntPatch_ThePathPointOfTheSOnBounds thelp;
 };
 

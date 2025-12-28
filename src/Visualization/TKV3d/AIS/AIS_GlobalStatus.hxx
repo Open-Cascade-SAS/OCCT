@@ -22,6 +22,7 @@
 #include <Prs3d_Drawer.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 
 //! Stores information about objects in graphic context:
@@ -54,7 +55,10 @@ public:
   const NCollection_List<int>& SelectionModes() const { return mySelModes; }
 
   //! Return TRUE if selection mode was registered.
-  bool IsSModeIn(int theMode) const { return mySelModes.Contains(theMode); }
+  bool IsSModeIn(int theMode) const
+  {
+    return mySelModes.Contains(theMode);
+  }
 
   //! Add selection mode.
   bool AddSelectionMode(const int theMode)
@@ -68,7 +72,10 @@ public:
   }
 
   //! Remove selection mode.
-  bool RemoveSelectionMode(const int theMode) { return mySelModes.Remove(theMode); }
+  bool RemoveSelectionMode(const int theMode)
+  {
+    return mySelModes.Remove(theMode);
+  }
 
   //! Remove all selection modes.
   void ClearSelectionModes() { mySelModes.Clear(); }
@@ -78,11 +85,11 @@ public:
   void SetSubIntensity(bool theIsOn) { mySubInt = theIsOn; }
 
 private:
-  NCollection_List<int>     mySelModes;
-  occ::handle<Prs3d_Drawer> myHiStyle;
-  int                       myDispMode;
-  bool                      myIsHilit;
-  bool                      mySubInt;
+  NCollection_List<int> mySelModes;
+  occ::handle<Prs3d_Drawer>  myHiStyle;
+  int      myDispMode;
+  bool      myIsHilit;
+  bool      mySubInt;
 };
 
 #endif // _AIS_GlobalStatus_HeaderFile

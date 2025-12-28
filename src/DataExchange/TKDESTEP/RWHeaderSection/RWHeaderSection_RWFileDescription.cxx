@@ -23,7 +23,7 @@ RWHeaderSection_RWFileDescription::RWHeaderSection_RWFileDescription() {}
 
 void RWHeaderSection_RWFileDescription::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<HeaderSection_FileDescription>& ent) const
 {
@@ -36,8 +36,8 @@ void RWHeaderSection_RWFileDescription::ReadStep(
   // --- own field : description ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aDescription;
-  occ::handle<TCollection_HAsciiString>                                   aDescriptionItem;
-  int nsub1 = data->SubListNumber(num, 1, false);
+  occ::handle<TCollection_HAsciiString>        aDescriptionItem;
+  int                        nsub1 = data->SubListNumber(num, 1, false);
   if (nsub1 != 0)
   {
     int nb1 = data->NbParams(nsub1);
@@ -69,7 +69,7 @@ void RWHeaderSection_RWFileDescription::ReadStep(
 }
 
 void RWHeaderSection_RWFileDescription::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<HeaderSection_FileDescription>& ent) const
 {
 

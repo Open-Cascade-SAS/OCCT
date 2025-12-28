@@ -26,7 +26,9 @@
 #include <STEPConstruct_AP203Context.hxx>
 #include <StepData_Factors.hxx>
 #include <StepData_StepModel.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class StepBasic_ApplicationProtocolDefinition;
 class StepGeom_Axis2Placement3d;
@@ -117,22 +119,22 @@ public:
 
   //! Produces and returns a full list of root entities required
   //! for part identified by SDRTool (including SDR itself)
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-                  GetRootsForPart(const STEPConstruct_Part& SDRTool);
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GetRootsForPart(
+    const STEPConstruct_Part& SDRTool);
 
   //! Produces and returns a full list of root entities required
   //! for assembly link identified by assembly (including NAUO and CDSR)
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-                  GetRootsForAssemblyLink(const STEPConstruct_Assembly& assembly);
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GetRootsForAssemblyLink(
+    const STEPConstruct_Assembly& assembly);
 
 private:
-  NCollection_Sequence<int>                            myLevel;
+  NCollection_Sequence<int>                       myLevel;
   occ::handle<StepBasic_ApplicationProtocolDefinition> theAPD;
-  STEPConstruct_AP203Context                           theAP203;
+  STEPConstruct_AP203Context                      theAP203;
   occ::handle<StepGeom_Axis2Placement3d>               myAxis;
-  StepData_Factors                                     myGlobalFactor;
-  DESTEP_Parameters::WriteMode_StepSchema              mySchema;
-  TCollection_AsciiString                              myProductName;
+  StepData_Factors                                myGlobalFactor;
+  DESTEP_Parameters::WriteMode_StepSchema         mySchema;
+  TCollection_AsciiString                         myProductName;
 };
 
 #endif // _STEPConstruct_ContextTool_HeaderFile

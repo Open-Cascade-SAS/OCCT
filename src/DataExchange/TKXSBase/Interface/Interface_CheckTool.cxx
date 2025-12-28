@@ -98,11 +98,11 @@ Interface_CheckTool::Interface_CheckTool(const occ::handle<Interface_HGraph>& hg
 //=================================================================================================
 
 void Interface_CheckTool::FillCheck(const occ::handle<Standard_Transient>& ent,
-                                    const Interface_ShareTool&             sh,
+                                    const Interface_ShareTool&        sh,
                                     occ::handle<Interface_Check>&          ach)
 {
   occ::handle<Interface_GeneralModule> module;
-  int                                  CN;
+  int                CN;
   if (thegtool->Select(ent, module, CN))
   {
     //    Without try/catch (done by caller, avoids try/catch in loop)
@@ -173,7 +173,7 @@ occ::handle<Interface_Check> Interface_CheckTool::Check(const int num)
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
   occ::handle<Standard_Transient>       ent   = model->Value(num);
   occ::handle<Interface_Check> ach = new Interface_Check(ent); // not filtered by "Warning": as is
-  errh                             = 1;
+  errh                        = 1;
   FillCheck(ent, theshare, ach);
   return ach;
 }
@@ -201,7 +201,7 @@ void Interface_CheckTool::CheckSuccess(const bool reset)
   if (thestat == 3)
     return; // everything tested and it passes
 
-  errh   = 0; // No try/catch, because we precisely raise
+  errh                = 0; // No try/catch, because we precisely raise
   int nb = model->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
@@ -233,9 +233,9 @@ void Interface_CheckTool::CheckSuccess(const bool reset)
 
 Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
 {
-  thestat                                     = 3;
+  thestat                                = 3;
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(model);
   occ::handle<Interface_Check> globch = model->GlobalCheck(); // GlobalCheck Statique
   if (!model->Protocol().IsNull())
@@ -302,11 +302,11 @@ Interface_CheckIterator Interface_CheckTool::CompleteCheckList()
 
 Interface_CheckIterator Interface_CheckTool::CheckList()
 {
-  thestat                                     = 3;
+  thestat                                = 3;
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(model);
-  int                          i = 0, n0 = 1, nb = model->NbEntities();
+  int        i = 0, n0 = 1, nb = model->NbEntities();
   occ::handle<Interface_Check> globch = model->GlobalCheck();
   if (!model->Protocol().IsNull())
     model->Protocol()->GlobalCheck(theshare.Graph(), globch);
@@ -371,9 +371,9 @@ Interface_CheckIterator Interface_CheckTool::CheckList()
 
 Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
 {
-  thestat                                     = 2;
+  thestat                                = 2;
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
@@ -389,7 +389,7 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
         if (!model->IsReportEntity(i))
           continue;
         occ::handle<Interface_ReportEntity> rep = model->ReportEntity(i);
-        ach                                     = rep->Check();
+        ach                                = rep->Check();
         if (ach->HasFailed() || ach->HasWarnings())
         {
           thestat |= 8;
@@ -415,9 +415,9 @@ Interface_CheckIterator Interface_CheckTool::AnalyseCheckList()
 
 Interface_CheckIterator Interface_CheckTool::VerifyCheckList()
 {
-  thestat                                     = 1;
+  thestat                                = 1;
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
@@ -465,9 +465,9 @@ Interface_CheckIterator Interface_CheckTool::VerifyCheckList()
 
 Interface_CheckIterator Interface_CheckTool::WarningCheckList()
 {
-  thestat                                     = 3;
+  thestat                                = 3;
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(model);
   int i = 0, n0 = 1, nb = model->NbEntities();
 
@@ -522,8 +522,8 @@ Interface_CheckIterator Interface_CheckTool::WarningCheckList()
 Interface_EntityIterator Interface_CheckTool::UnknownEntities()
 {
   occ::handle<Interface_InterfaceModel> model = theshare.Model();
-  Interface_EntityIterator              res;
-  int                                   nb = model->NbEntities();
+  Interface_EntityIterator         res;
+  int                 nb = model->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     if (model->IsUnknownEntity(i))

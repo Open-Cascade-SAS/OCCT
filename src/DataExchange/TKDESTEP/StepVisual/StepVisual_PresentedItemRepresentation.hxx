@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepVisual_PresentedItemRepresentation();
 
   Standard_EXPORT void Init(const StepVisual_PresentationRepresentationSelect& aPresentation,
-                            const occ::handle<StepVisual_PresentedItem>&       aItem);
+                            const occ::handle<StepVisual_PresentedItem>&            aItem);
 
   Standard_EXPORT void SetPresentation(
     const StepVisual_PresentationRepresentationSelect& aPresentation);
@@ -47,7 +47,7 @@ public:
 
 private:
   StepVisual_PresentationRepresentationSelect thePresentation;
-  occ::handle<StepVisual_PresentedItem>       theItem;
+  occ::handle<StepVisual_PresentedItem>            theItem;
 };
 
 #endif // _StepVisual_PresentedItemRepresentation_HeaderFile

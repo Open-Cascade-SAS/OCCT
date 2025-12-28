@@ -84,16 +84,20 @@ const QuadBvhHandle& OpenGl_TriangleSet::QuadBVH()
 // function : Center
 // purpose  : Returns centroid position along the given axis
 // =======================================================================
-float OpenGl_TriangleSet::Center(const int theIndex, const int theAxis) const
+float OpenGl_TriangleSet::Center(const int theIndex,
+                                              const int theAxis) const
 {
   // Note: Experiments show that the use of the box centroid (instead
   // of the triangle centroid) increases render performance up to 12%
 
   const BVH_Vec4i& aTriangle = Elements[theIndex];
 
-  const float aVertex0 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.x()], theAxis);
-  const float aVertex1 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.y()], theAxis);
-  const float aVertex2 = BVH::VecComp<float, 3>::Get(Vertices[aTriangle.z()], theAxis);
+  const float aVertex0 =
+    BVH::VecComp<float, 3>::Get(Vertices[aTriangle.x()], theAxis);
+  const float aVertex1 =
+    BVH::VecComp<float, 3>::Get(Vertices[aTriangle.y()], theAxis);
+  const float aVertex2 =
+    BVH::VecComp<float, 3>::Get(Vertices[aTriangle.z()], theAxis);
 
   return (std::min(std::min(aVertex0, aVertex1), aVertex2)
           + std::max(std::max(aVertex0, aVertex1), aVertex2))
@@ -106,7 +110,7 @@ float OpenGl_TriangleSet::Center(const int theIndex, const int theAxis) const
 // =======================================================================
 OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 {
-  BVH_BoxNt                      aBox = BVH_PrimitiveSet<float, 3>::Box();
+  BVH_BoxNt                                   aBox = BVH_PrimitiveSet<float, 3>::Box();
   const BVH_Transform<float, 4>* aTransform =
     dynamic_cast<const BVH_Transform<float, 4>*>(Properties().get());
   if (aTransform == NULL)
@@ -138,8 +142,9 @@ OpenGl_TriangleSet::BVH_BoxNt OpenGl_TriangleSet::Box() const
 // function : OpenGl_TriangleSet
 // purpose  : Creates new OpenGL element triangulation
 // =======================================================================
-OpenGl_TriangleSet::OpenGl_TriangleSet(const size_t                                      theArrayID,
-                                       const opencascade::handle<BVH_Builder<float, 3>>& theBuilder)
+OpenGl_TriangleSet::OpenGl_TriangleSet(
+  const size_t                                            theArrayID,
+  const opencascade::handle<BVH_Builder<float, 3>>& theBuilder)
     : BVH_Triangulation<float, 3>(theBuilder),
       myArrayID(theArrayID)
 {
@@ -395,7 +400,7 @@ bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>&
        aTexSrcIter.More();
        aTexSrcIter.Next(), ++aTexIter)
   {
-    GLuint64&                          aHandle  = myTextureHandles[aTexIter];
+    GLuint64&                     aHandle  = myTextureHandles[aTexIter];
     const occ::handle<OpenGl_Texture>& aTexture = aTexSrcIter.Value();
     if (!aTexture->Sampler()->IsValid() || !aTexture->Sampler()->IsImmutable())
     {
@@ -449,7 +454,8 @@ bool OpenGl_RaytraceGeometry::AcquireTextures(const occ::handle<OpenGl_Context>&
 // function : ReleaseTextures
 // purpose  : Makes the OpenGL texture handles non-resident
 // =======================================================================
-bool OpenGl_RaytraceGeometry::ReleaseTextures(const occ::handle<OpenGl_Context>& theContext) const
+bool OpenGl_RaytraceGeometry::ReleaseTextures(
+  const occ::handle<OpenGl_Context>& theContext) const
 {
   if (theContext->arbTexBindless == NULL)
   {
@@ -507,7 +513,8 @@ int OpenGl_RaytraceGeometry::AddTexture(const occ::handle<OpenGl_Texture>& theTe
 // function : UpdateTextureHandles
 // purpose  : Updates unique 64-bit texture handles to use in shaders
 // =======================================================================
-bool OpenGl_RaytraceGeometry::UpdateTextureHandles(const occ::handle<OpenGl_Context>& theContext)
+bool OpenGl_RaytraceGeometry::UpdateTextureHandles(
+  const occ::handle<OpenGl_Context>& theContext)
 {
   if (theContext->arbTexBindless == NULL)
   {

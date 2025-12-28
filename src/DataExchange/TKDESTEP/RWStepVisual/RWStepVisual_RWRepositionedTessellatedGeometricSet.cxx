@@ -21,6 +21,7 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_RepositionedTessellatedGeometricSet.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 
@@ -28,7 +29,7 @@
 
 void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&                        theData,
-  const int                                                          theNum,
+  const int                                        theNum,
   occ::handle<Interface_Check>&                                      theAch,
   const occ::handle<StepVisual_RepositionedTessellatedGeometricSet>& theEnt) const
 {
@@ -48,11 +49,11 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
 
   theData->NamedForComplex("TESSELLATED_GEOMETRIC_SET", theNum, aNum, theAch);
   NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> anItems;
-  int                                                                             aNSub2;
+  int                                       aNSub2;
   if (theData->ReadSubList(aNum, 1, "items", theAch, aNSub2))
   {
     int aNb2 = theData->NbParams(aNSub2);
-    anItems  = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, aNb2);
+    anItems               = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, aNb2);
     for (int i2 = 1; i2 <= aNb2; i2++)
     {
       occ::handle<StepVisual_TessellatedItem> anItem;
@@ -71,7 +72,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWRepositionedTessellatedGeometricSet::WriteStep(
-  StepData_StepWriter&                                               theSW,
+  StepData_StepWriter&                                          theSW,
   const occ::handle<StepVisual_RepositionedTessellatedGeometricSet>& theEnt) const
 {
   theSW.StartEntity("GEOMETRIC_REPRESENTATION_ITEM");
@@ -81,9 +82,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::WriteStep(
   theSW.Send(theEnt->Name());
   theSW.StartEntity("TESSELLATED_GEOMETRIC_SET");
   theSW.OpenSub();
-  for (NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>::Iterator anIter(
-         *theEnt->Items());
-       anIter.More();
+  for (NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>::Iterator anIter(*theEnt->Items()); anIter.More();
        anIter.Next())
   {
     theSW.Send(anIter.Value());
@@ -96,7 +95,7 @@ void RWStepVisual_RWRepositionedTessellatedGeometricSet::WriteStep(
 
 void RWStepVisual_RWRepositionedTessellatedGeometricSet::Share(
   const occ::handle<StepVisual_RepositionedTessellatedGeometricSet>& theEnt,
-  Interface_EntityIterator&                                          theIter) const
+  Interface_EntityIterator&                                     theIter) const
 {
   // Own field : children
   for (int i = 1; i <= theEnt->Items()->Length(); i++)

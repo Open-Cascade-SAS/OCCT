@@ -21,7 +21,7 @@
 RWStepGeom_RWSweptSurface::RWStepGeom_RWSweptSurface() {}
 
 void RWStepGeom_RWSweptSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_SweptSurface>&   ent) const
 {
@@ -48,7 +48,7 @@ void RWStepGeom_RWSweptSurface::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aSweptCurve);
 }
 
-void RWStepGeom_RWSweptSurface::WriteStep(StepData_StepWriter&                      SW,
+void RWStepGeom_RWSweptSurface::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepGeom_SweptSurface>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepGeom_RWSweptSurface::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepGeom_RWSweptSurface::Share(const occ::handle<StepGeom_SweptSurface>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->SweptCurve());

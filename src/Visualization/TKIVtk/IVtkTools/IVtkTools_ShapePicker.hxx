@@ -49,7 +49,8 @@ public:
 
   //! Pick entities in the given point.
   //! @return Number of detected entities.
-  virtual int Pick(double theX, double theY, double theZ, vtkRenderer* theRenderer = NULL) override;
+  virtual int Pick(double theX, double theY, double theZ, vtkRenderer* theRenderer = NULL)
+    override;
 
   //! Pick entities in the given rectangle area.
   //! @return Number of detected entities.
@@ -118,8 +119,7 @@ public:
   //! @param[in]  theIsAll Get all selected sub-shapes or just the
   //!        only top one is returned, has no effect during area selection.
   //! @return List of sub-shapes IDs
-  NCollection_List<IVtk_IdType> GetPickedSubShapesIds(const IVtk_IdType theId,
-                                                      bool              theIsAll = false) const;
+  NCollection_List<IVtk_IdType> GetPickedSubShapesIds(const IVtk_IdType theId, bool theIsAll = false) const;
 
   //! Access to the list of actors picked.
   //! @param[in]  theIsAll Get all selected actors or just the only

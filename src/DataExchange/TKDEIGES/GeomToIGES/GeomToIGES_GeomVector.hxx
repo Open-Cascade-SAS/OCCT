@@ -46,14 +46,13 @@ public:
   //! Transfer a GeometryEntity which answer True to the
   //! member : BRepToIGES::IsGeomVector(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT occ::handle<IGESGeom_Direction> TransferVector(
-    const occ::handle<Geom_Vector>& start);
+  Standard_EXPORT occ::handle<IGESGeom_Direction> TransferVector(const occ::handle<Geom_Vector>& start);
 
   Standard_EXPORT occ::handle<IGESGeom_Direction> TransferVector(
     const occ::handle<Geom_VectorWithMagnitude>& start);
 
-  Standard_EXPORT occ::handle<IGESGeom_Direction> TransferVector(
-    const occ::handle<Geom_Direction>& start);
+  Standard_EXPORT occ::handle<IGESGeom_Direction> TransferVector(const occ::handle<Geom_Direction>& start);
+
 };
 
 #endif // _GeomToIGES_GeomVector_HeaderFile

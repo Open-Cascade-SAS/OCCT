@@ -22,16 +22,16 @@
 
 //=================================================================================================
 
-BRepOffsetAPI_MakeFilling::BRepOffsetAPI_MakeFilling(const int    Degree,
-                                                     const int    NbPtsOnCur,
-                                                     const int    NbIter,
-                                                     const bool   Anisotropie,
-                                                     const double Tol2d,
-                                                     const double Tol3d,
-                                                     const double TolAng,
-                                                     const double TolCurv,
-                                                     const int    MaxDeg,
-                                                     const int    MaxSegments)
+BRepOffsetAPI_MakeFilling::BRepOffsetAPI_MakeFilling(const int Degree,
+                                                     const int NbPtsOnCur,
+                                                     const int NbIter,
+                                                     const bool Anisotropie,
+                                                     const double    Tol2d,
+                                                     const double    Tol3d,
+                                                     const double    TolAng,
+                                                     const double    TolCurv,
+                                                     const int MaxDeg,
+                                                     const int MaxSegments)
     : myFilling(Degree,
                 NbPtsOnCur,
                 NbIter,
@@ -57,9 +57,9 @@ void BRepOffsetAPI_MakeFilling::SetConstrParam(const double Tol2d,
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakeFilling::SetResolParam(const int  Degree,
-                                              const int  NbPtsOnCur,
-                                              const int  NbIter,
+void BRepOffsetAPI_MakeFilling::SetResolParam(const int Degree,
+                                              const int NbPtsOnCur,
+                                              const int NbIter,
                                               const bool Anisotropie)
 {
   myFilling.SetResolParam(Degree, NbPtsOnCur, NbIter, Anisotropie);
@@ -67,7 +67,8 @@ void BRepOffsetAPI_MakeFilling::SetResolParam(const int  Degree,
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakeFilling::SetApproxParam(const int MaxDeg, const int MaxSegments)
+void BRepOffsetAPI_MakeFilling::SetApproxParam(const int MaxDeg,
+                                               const int MaxSegments)
 {
   myFilling.SetApproxParam(MaxDeg, MaxSegments);
 }
@@ -83,9 +84,9 @@ void BRepOffsetAPI_MakeFilling::LoadInitSurface(const TopoDS_Face& Surf)
 // function : Add
 // purpose  : adds an edge as a constraint
 //======================================================================
-int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&  Constr,
-                                   const GeomAbs_Shape Order,
-                                   const bool          IsBound)
+int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&     Constr,
+                                                const GeomAbs_Shape    Order,
+                                                const bool IsBound)
 {
   return myFilling.Add(Constr, Order, IsBound);
 }
@@ -94,10 +95,10 @@ int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&  Constr,
 // function : Add
 // purpose  : adds an edge with supporting face as a constraint
 //======================================================================
-int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&  Constr,
-                                   const TopoDS_Face&  Support,
-                                   const GeomAbs_Shape Order,
-                                   const bool          IsBound)
+int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&     Constr,
+                                                const TopoDS_Face&     Support,
+                                                const GeomAbs_Shape    Order,
+                                                const bool IsBound)
 {
   return myFilling.Add(Constr, Support, Order, IsBound);
 }
@@ -106,7 +107,8 @@ int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Edge&  Constr,
 // function : Add
 // purpose  : adds a "free constraint": face without edge
 //======================================================================
-int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Face& Support, const GeomAbs_Shape Order)
+int BRepOffsetAPI_MakeFilling::Add(const TopoDS_Face&  Support,
+                                                const GeomAbs_Shape Order)
 {
   return myFilling.Add(Support, Order);
 }
@@ -124,10 +126,10 @@ int BRepOffsetAPI_MakeFilling::Add(const gp_Pnt& Point)
 // function : Add
 // purpose  : adds a point constraint on a face
 //======================================================================
-int BRepOffsetAPI_MakeFilling::Add(const double        U,
-                                   const double        V,
-                                   const TopoDS_Face&  Support,
-                                   const GeomAbs_Shape Order)
+int BRepOffsetAPI_MakeFilling::Add(const double U,
+                                                const double V,
+                                                const TopoDS_Face&  Support,
+                                                const GeomAbs_Shape Order)
 {
   return myFilling.Add(U, V, Support, Order);
 }

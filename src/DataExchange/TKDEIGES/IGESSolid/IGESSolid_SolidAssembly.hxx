@@ -23,6 +23,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESGeom_TransformationMatrix.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESGeom_TransformationMatrix;
 
@@ -47,10 +50,8 @@ public:
   //! item
   //! raises exception if the length of allItems & allMatrices
   //! do not match
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allItems,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>>&
-      allMatrices);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allItems,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_TransformationMatrix>>>& allMatrices);
 
   //! Tells if at least one item is a Brep, from FormNumber
   Standard_EXPORT bool HasBrep() const;
@@ -68,7 +69,8 @@ public:
 
   //! returns the transformation matrix of the Index'th item
   //! raises exception if Index <= 0 or Index > NbItems()
-  Standard_EXPORT occ::handle<IGESGeom_TransformationMatrix> TransfMatrix(const int Index) const;
+  Standard_EXPORT occ::handle<IGESGeom_TransformationMatrix> TransfMatrix(
+    const int Index) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESSolid_SolidAssembly, IGESData_IGESEntity)
 

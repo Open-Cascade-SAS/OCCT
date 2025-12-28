@@ -41,9 +41,10 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                              const occ::handle<TDF_Attribute>& theTarget,
-                                              XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = theSource;
 
@@ -82,7 +83,7 @@ bool XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const XmlObjMgt_Persistent&       
 //=================================================================================================
 
 void XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                              XmlObjMgt_Persistent&             theTarget,
+                                              XmlObjMgt_Persistent&        theTarget,
                                               XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theSource);
@@ -92,8 +93,8 @@ void XmlMXCAFDoc_AssemblyItemRefDriver::Paste(const occ::handle<TDF_Attribute>& 
 
   if (aThis->IsGUID())
   {
-    Standard_GUID aGUID = aThis->GetGUID();
-    char          aGUIDStr[Standard_GUID_SIZE + 1];
+    Standard_GUID      aGUID = aThis->GetGUID();
+    char aGUIDStr[Standard_GUID_SIZE + 1];
     aGUID.ToCString(aGUIDStr);
     aGUIDStr[Standard_GUID_SIZE] = '\0';
     XmlObjMgt_DOMString anAttrGUID(aGUIDStr);

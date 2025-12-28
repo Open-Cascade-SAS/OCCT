@@ -33,7 +33,6 @@ class CDM_MetaData;
 class PCDM_RetrievalDriver;
 class PCDM_StorageDriver;
 class CDF_Directory;
-
 class CDF_Application : public CDM_Application
 {
 
@@ -57,7 +56,7 @@ public:
   //! application, the new document is handled by the
   //! applicative session.
   Standard_EXPORT virtual void NewDocument(const TCollection_ExtendedString& theFormat,
-                                           occ::handle<CDM_Document>&        theDoc);
+                                           occ::handle<CDM_Document>&             theDoc);
 
   //! Initialize a document for the applicative session.
   //! This virtual function is called by NewDocument
@@ -93,11 +92,11 @@ public:
   //! Since the version is not specified in this syntax, the latest will be used.
   //! A link is kept with the database through an instance of CDM_MetaData
   Standard_EXPORT occ::handle<CDM_Document> Retrieve(
-    const TCollection_ExtendedString&     aFolder,
-    const TCollection_ExtendedString&     aName,
-    const bool                            UseStorageConfiguration = true,
-    const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theRange  = Message_ProgressRange());
+    const TCollection_ExtendedString& aFolder,
+    const TCollection_ExtendedString& aName,
+    const bool            UseStorageConfiguration = true,
+    const occ::handle<PCDM_ReaderFilter>&  theFilter               = occ::handle<PCDM_ReaderFilter>(),
+    const Message_ProgressRange&      theRange                = Message_ProgressRange());
 
   //! This method retrieves a document from the database.
   //! If the Document references other documents which have
@@ -114,12 +113,12 @@ public:
   //! A link is kept with the database through an instance
   //! of CDM_MetaData
   Standard_EXPORT occ::handle<CDM_Document> Retrieve(
-    const TCollection_ExtendedString&     aFolder,
-    const TCollection_ExtendedString&     aName,
-    const TCollection_ExtendedString&     aVersion,
-    const bool                            UseStorageConfiguration = true,
-    const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theRange  = Message_ProgressRange());
+    const TCollection_ExtendedString& aFolder,
+    const TCollection_ExtendedString& aName,
+    const TCollection_ExtendedString& aVersion,
+    const bool            UseStorageConfiguration = true,
+    const occ::handle<PCDM_ReaderFilter>&  theFilter               = occ::handle<PCDM_ReaderFilter>(),
+    const Message_ProgressRange&      theRange                = Message_ProgressRange());
 
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve(const TCollection_ExtendedString& theFolder,
                                                 const TCollection_ExtendedString& theName,
@@ -136,10 +135,10 @@ public:
   //! Reads theDocument from standard SEEKABLE stream theIStream,
   //! the stream should support SEEK functionality
   Standard_EXPORT void Read(
-    Standard_IStream&                     theIStream,
+    Standard_IStream&                theIStream,
     occ::handle<CDM_Document>&            theDocument,
     const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theRange  = Message_ProgressRange());
+    const Message_ProgressRange&     theRange  = Message_ProgressRange());
 
   //! Returns instance of read driver for specified format.
   //!
@@ -175,7 +174,7 @@ public:
   //! application resource by using extension.
   //! returns True if found
   Standard_EXPORT bool Format(const TCollection_ExtendedString& aFileName,
-                              TCollection_ExtendedString&       theFormat);
+                                          TCollection_ExtendedString&       theFormat);
 
   Standard_EXPORT const char16_t* DefaultFolder();
 
@@ -204,35 +203,35 @@ private:
   //! You do not need to call <Activate>, but you should redefine
   //! this method to implement application specific behavior.
   Standard_EXPORT virtual void Activate(const occ::handle<CDM_Document>& aDocument,
-                                        const CDF_TypeOfActivation       aTypeOfActivation);
+                                        const CDF_TypeOfActivation  aTypeOfActivation);
 
   Standard_EXPORT occ::handle<CDM_Document> Retrieve(
     const occ::handle<CDM_MetaData>&      aMetaData,
-    const bool                            UseStorageConfiguration,
+    const bool           UseStorageConfiguration,
     const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theRange  = Message_ProgressRange()) override;
+    const Message_ProgressRange&     theRange  = Message_ProgressRange()) override;
 
   Standard_EXPORT occ::handle<CDM_Document> Retrieve(
     const occ::handle<CDM_MetaData>&      aMetaData,
-    const bool                            UseStorageConfiguration,
-    const bool                            IsComponent,
+    const bool           UseStorageConfiguration,
+    const bool           IsComponent,
     const occ::handle<PCDM_ReaderFilter>& theFilter = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theRange  = Message_ProgressRange());
+    const Message_ProgressRange&     theRange  = Message_ProgressRange());
 
-  Standard_EXPORT int DocumentVersion(const occ::handle<CDM_MetaData>& theMetaData) override;
+  Standard_EXPORT int DocumentVersion(const occ::handle<CDM_MetaData>& theMetaData)
+    override;
 
   Standard_EXPORT CDF_TypeOfActivation TypeOfActivation(const occ::handle<CDM_MetaData>& aMetaData);
 
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve(const occ::handle<CDM_MetaData>& aMetaData,
-                                                const bool                       theAppendMode);
+                                                const bool                  theAppendMode);
 
 protected:
   Standard_EXPORT CDF_Application();
 
   PCDM_ReaderStatus myRetrievableStatus;
-  NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_RetrievalDriver>>
-                                                                                          myReaders;
-  NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_StorageDriver>> myWriters;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_RetrievalDriver>> myReaders;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, occ::handle<PCDM_StorageDriver>>   myWriters;
 
 private:
   TCollection_ExtendedString myDefaultFolder;

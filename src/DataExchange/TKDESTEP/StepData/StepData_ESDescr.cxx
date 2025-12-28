@@ -36,8 +36,7 @@ void StepData_ESDescr::SetNbFields(const int nb)
     thedescr.Nullify();
     return;
   }
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> li =
-    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> li = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb);
   if (oldnb == 0)
   {
     thedescr = li;
@@ -55,8 +54,8 @@ void StepData_ESDescr::SetNbFields(const int nb)
   thedescr = li;
 }
 
-void StepData_ESDescr::SetField(const int                           num,
-                                const char*                         name,
+void StepData_ESDescr::SetField(const int         num,
+                                const char*         name,
                                 const occ::handle<StepData_PDescr>& descr)
 {
   // Set field descriptor at specified position with given name and parameter descriptor
@@ -121,7 +120,7 @@ bool StepData_ESDescr::IsSub(const occ::handle<StepData_ESDescr>& other) const
   if (oth == thesuper)
     return true; // Direct superclass
   else if (thesuper.IsNull())
-    return false;              // No superclass
+    return false;     // No superclass
   return thesuper->IsSub(oth); // Check recursively up the hierarchy
 }
 
@@ -156,7 +155,7 @@ occ::handle<StepData_PDescr> StepData_ESDescr::Field(const int num) const
 occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* name) const
 {
   occ::handle<StepData_PDescr> pde;
-  int                          rank = Rank(name);
+  int        rank = Rank(name);
   if (rank > 0)
     pde = GetCasted(StepData_PDescr, thedescr->Value(rank));
   return pde;
@@ -168,7 +167,7 @@ bool StepData_ESDescr::Matches(const char* name) const
   if (thenom.IsEqual(name))
     return true; // Direct match
   if (thesuper.IsNull())
-    return false;                 // No superclass to check
+    return false;        // No superclass to check
   return thesuper->Matches(name); // Check superclass hierarchy
 }
 

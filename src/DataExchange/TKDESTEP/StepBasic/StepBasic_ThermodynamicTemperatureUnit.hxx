@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepBasic_ThermodynamicTemperatureUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ThermodynamicTemperatureUnit, StepBasic_NamedUnit)
+
 };
 
 #endif // _StepBasic_ThermodynamicTemperatureUnit_HeaderFile

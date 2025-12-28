@@ -36,10 +36,15 @@ public:
   }
 
   //! Sorts the set.
-  virtual void Perform(BVH_Set<T, N>* theSet) override { Perform(theSet, 0, theSet->Size() - 1); }
+  virtual void Perform(BVH_Set<T, N>* theSet) override
+  {
+    Perform(theSet, 0, theSet->Size() - 1);
+  }
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) override
+  virtual void Perform(BVH_Set<T, N>*         theSet,
+                       const int theStart,
+                       const int theFinal) override
   {
     const int aSize = theFinal - theStart + 1;
     if (aSize <= 1)
@@ -56,9 +61,11 @@ public:
 
     // Sort indices by center value using std::sort (introsort - O(n log n) guaranteed)
     const int anAxis = myAxis;
-    std::sort(anIndices.begin(), anIndices.end(), [theSet, theStart, anAxis](int a, int b) {
-      return theSet->Center(theStart + a, anAxis) < theSet->Center(theStart + b, anAxis);
-    });
+    std::sort(anIndices.begin(),
+              anIndices.end(),
+              [theSet, theStart, anAxis](int a, int b) {
+                return theSet->Center(theStart + a, anAxis) < theSet->Center(theStart + b, anAxis);
+              });
 
     // Compute inverse permutation: invPerm[i] = where element i should go
     std::vector<int, NCollection_Allocator<int>> anInvPerm(aSize);

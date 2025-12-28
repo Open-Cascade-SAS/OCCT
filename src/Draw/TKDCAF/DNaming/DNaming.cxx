@@ -52,11 +52,23 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=================================================================================================
@@ -73,13 +85,13 @@
 // }
 //=================================================================================================
 
-void DNaming::GetShape(const char*                     LabelName,
-                       const occ::handle<TDF_Data>&    DF,
-                       NCollection_List<TopoDS_Shape>& L)
+void DNaming::GetShape(const char*  LabelName,
+                       const occ::handle<TDF_Data>& DF,
+                       NCollection_List<TopoDS_Shape>&   L)
 {
   L.Clear();
-  TDF_Label Label;
-  bool      Found = DDF::AddLabel(DF, LabelName, Label);
+  TDF_Label        Label;
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (Found)
   {
     TNaming_Iterator it(Label, DF->Transaction());
@@ -106,9 +118,9 @@ void DNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& Lab)
 
 TopoDS_Shape DNaming::CurrentShape(const char* LabelName, const occ::handle<TDF_Data>& DF)
 {
-  TopoDS_Shape S;
-  TDF_Label    Label;
-  bool         Found = DDF::AddLabel(DF, LabelName, Label);
+  TopoDS_Shape     S;
+  TDF_Label        Label;
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (!Found)
   {
 #ifdef OCCT_DEBUG
@@ -132,9 +144,9 @@ TopoDS_Shape DNaming::CurrentShape(const char* LabelName, const occ::handle<TDF_
 
 //=================================================================================================
 
-TCollection_AsciiString DNaming::GetEntry(const TopoDS_Shape&          Shape,
+TCollection_AsciiString DNaming::GetEntry(const TopoDS_Shape&     Shape,
                                           const occ::handle<TDF_Data>& DF,
-                                          int&                         theStatus)
+                                          int&       theStatus)
 {
   theStatus = 0;
   // occ::handle<TNaming_UsedShapes> US;
@@ -144,7 +156,7 @@ TCollection_AsciiString DNaming::GetEntry(const TopoDS_Shape&          Shape,
   {
     return TCollection_AsciiString();
   }
-  int                     Transdef;
+  int        Transdef;
   TDF_Label               Lab = TNaming_Tool::Label(DF->Root(), Shape, Transdef);
   TCollection_AsciiString entry;
   TDF_Tool::Entry(Lab, entry);
@@ -185,10 +197,9 @@ void DNaming::AllCommands(Draw_Interpretor& theCommands)
 
 static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>& Tagger)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                 vertexNaborFaces;
-  NCollection_List<TopoDS_Shape> empty;
-  TopExp_Explorer                explF(S, TopAbs_FACE);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> vertexNaborFaces;
+  NCollection_List<TopoDS_Shape>               empty;
+  TopExp_Explorer                    explF(S, TopAbs_FACE);
   for (; explF.More(); explF.Next())
   {
     const TopoDS_Shape& aFace = explF.Current();
@@ -198,7 +209,7 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
       const TopoDS_Shape& aVertex = explV.Current();
       if (!vertexNaborFaces.IsBound(aVertex))
         vertexNaborFaces.Bind(aVertex, empty);
-      bool                                     faceIsNew = true;
+      bool                   faceIsNew = true;
       NCollection_List<TopoDS_Shape>::Iterator itrF(vertexNaborFaces.Find(aVertex));
       for (; itrF.More(); itrF.Next())
       {
@@ -215,8 +226,7 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
     }
   }
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itr(vertexNaborFaces);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itr(vertexNaborFaces);
   for (; itr.More(); itr.Next())
   {
     const NCollection_List<TopoDS_Shape>& naborFaces = itr.Value();
@@ -235,10 +245,9 @@ static void LoadC0Vertices(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
 
 static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>& Tagger)
 {
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                 edgeNaborFaces;
-  NCollection_List<TopoDS_Shape> empty;
-  TopExp_Explorer                explF(S, TopAbs_FACE);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edgeNaborFaces;
+  NCollection_List<TopoDS_Shape>               empty;
+  TopExp_Explorer                    explF(S, TopAbs_FACE);
   for (; explF.More(); explF.Next())
   {
     const TopoDS_Shape& aFace = explF.Current();
@@ -248,7 +257,7 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
       const TopoDS_Shape& anEdge = explV.Current();
       if (!edgeNaborFaces.IsBound(anEdge))
         edgeNaborFaces.Bind(anEdge, empty);
-      bool                                     faceIsNew = true;
+      bool                   faceIsNew = true;
       NCollection_List<TopoDS_Shape>::Iterator itrF(edgeNaborFaces.Find(anEdge));
       for (; itrF.More(); itrF.Next())
       {
@@ -271,15 +280,14 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
   // clang-format on
   for (; anEx.More(); anEx.Next())
   {
-    bool                aC0     = false;
+    bool    aC0     = false;
     const TopoDS_Shape& anEdge1 = anEx.Current();
     if (edgeNaborFaces.IsBound(anEdge1))
     {
       const NCollection_List<TopoDS_Shape>& aList1 = edgeNaborFaces.Find(anEdge1);
       if (aList1.Extent() < 2)
         continue; // mpv (06.09.2002): these edges already was loaded
-      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-        Iterator itr(edgeNaborFaces);
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itr(edgeNaborFaces);
       for (; itr.More(); itr.Next())
       {
         const TopoDS_Shape& anEdge2 = itr.Key();
@@ -292,10 +300,8 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
         if (aList1.Extent() == aList2.Extent())
         {
           int aMatches = 0;
-          for (NCollection_List<TopoDS_Shape>::Iterator aLIter1(aList1); aLIter1.More();
-               aLIter1.Next())
-            for (NCollection_List<TopoDS_Shape>::Iterator aLIter2(aList2); aLIter2.More();
-                 aLIter2.Next())
+          for (NCollection_List<TopoDS_Shape>::Iterator aLIter1(aList1); aLIter1.More(); aLIter1.Next())
+            for (NCollection_List<TopoDS_Shape>::Iterator aLIter2(aList2); aLIter2.More(); aLIter2.Next())
               if (aLIter1.Value().IsSame(aLIter2.Value()))
                 aMatches++;
           if (aMatches == aList1.Extent())
@@ -330,15 +336,13 @@ static void LoadC0Edges(const TopoDS_Shape& S, const occ::handle<TDF_TagSource>&
 // purpose  : Returns dangle sub shapes Generator - Dangle.
 //=======================================================================
 
-static bool GetDangleShapes(
-  const TopoDS_Shape&                                                       ShapeIn,
-  const TopAbs_ShapeEnum                                                    GeneratedFrom,
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Dangles)
+static bool GetDangleShapes(const TopoDS_Shape&           ShapeIn,
+                                        const TopAbs_ShapeEnum        GeneratedFrom,
+                                        NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Dangles)
 {
   Dangles.Clear();
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                   subShapeAndAncestors;
-  TopAbs_ShapeEnum GeneratedTo;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> subShapeAndAncestors;
+  TopAbs_ShapeEnum                          GeneratedTo;
   if (GeneratedFrom == TopAbs_FACE)
     GeneratedTo = TopAbs_EDGE;
   else if (GeneratedFrom == TopAbs_EDGE)
@@ -348,7 +352,7 @@ static bool GetDangleShapes(
   TopExp::MapShapesAndAncestors(ShapeIn, GeneratedTo, GeneratedFrom, subShapeAndAncestors);
   for (int i = 1; i <= subShapeAndAncestors.Extent(); i++)
   {
-    const TopoDS_Shape&                   mayBeDangle = subShapeAndAncestors.FindKey(i);
+    const TopoDS_Shape&         mayBeDangle = subShapeAndAncestors.FindKey(i);
     const NCollection_List<TopoDS_Shape>& ancestors   = subShapeAndAncestors.FindFromIndex(i);
     if (ancestors.Extent() == 1)
       Dangles.Bind(ancestors.First(), mayBeDangle);
@@ -401,10 +405,7 @@ static void LoadNextLevels(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
         bFace.Generated(aExp.Current());
       }
     }
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      anEdgeAndNeighbourFaces;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anEdgeAndNeighbourFaces;
     TopExp::MapShapesAndAncestors(S, TopAbs_EDGE, TopAbs_FACE, anEdgeAndNeighbourFaces);
     for (int i = 1; i <= anEdgeAndNeighbourFaces.Extent(); i++)
     {
@@ -417,7 +418,7 @@ static void LoadNextLevels(const TopoDS_Shape& S, const occ::handle<TDF_TagSourc
       else
       {
         NCollection_List<TopoDS_Shape>::Iterator anIter(aLL);
-        const TopoDS_Face&                       aFace = TopoDS::Face(anIter.Value());
+        const TopoDS_Face&                 aFace = TopoDS::Face(anIter.Value());
         anIter.Next();
         if (aFace.IsEqual(anIter.Value()))
         {
@@ -539,7 +540,7 @@ void DNaming::LoadPrime(const TDF_Label& theResultLabel, const TopoDS_Shape& the
 // purpose  : Gives the access to a real argument
 //=======================================================================
 occ::handle<TDataStd_Real> DNaming::GetReal(const occ::handle<TFunction_Function>& theFunction,
-                                            const int                              thePosition)
+                                       const int            thePosition)
 {
   occ::handle<TDataStd_Real> aReal;
   if (!POSITION(theFunction, thePosition).FindAttribute(TDataStd_Real::GetID(), aReal))
@@ -551,9 +552,8 @@ occ::handle<TDataStd_Real> DNaming::GetReal(const occ::handle<TFunction_Function
 // function : Integer
 // purpose  : Give an access to integer attribute
 //=======================================================================
-occ::handle<TDataStd_Integer> DNaming::GetInteger(
-  const occ::handle<TFunction_Function>& theFunction,
-  const int                              thePosition)
+occ::handle<TDataStd_Integer> DNaming::GetInteger(const occ::handle<TFunction_Function>& theFunction,
+                                             const int            thePosition)
 {
   occ::handle<TDataStd_Integer> anInteger;
   if (!POSITION(theFunction, thePosition).FindAttribute(TDataStd_Integer::GetID(), anInteger))
@@ -566,7 +566,7 @@ occ::handle<TDataStd_Integer> DNaming::GetInteger(
 // purpose  : Returns Name attribute
 //=======================================================================
 occ::handle<TDataStd_Name> DNaming::GetString(const occ::handle<TFunction_Function>& theFunction,
-                                              const int                              thePosition)
+                                         const int            thePosition)
 {
   occ::handle<TDataStd_Name> aString;
   if (!POSITION(theFunction, thePosition).FindAttribute(TDataStd_Name::GetID(), aString))
@@ -578,8 +578,7 @@ occ::handle<TDataStd_Name> DNaming::GetString(const occ::handle<TFunction_Functi
 // function : GetResult
 // purpose  : Returns a result of a function, which is stored on a second label
 //=======================================================================
-occ::handle<TNaming_NamedShape> DNaming::GetFunctionResult(
-  const occ::handle<TFunction_Function>& theFunction)
+occ::handle<TNaming_NamedShape> DNaming::GetFunctionResult(const occ::handle<TFunction_Function>& theFunction)
 {
   occ::handle<TNaming_NamedShape> aNShape;
   theFunction->Label()
@@ -592,9 +591,8 @@ occ::handle<TNaming_NamedShape> DNaming::GetFunctionResult(
 // function : Object
 // purpose  : Returns UAttribute associated with Object
 //=======================================================================
-occ::handle<TDataStd_UAttribute> DNaming::GetObjectArg(
-  const occ::handle<TFunction_Function>& theFunction,
-  const int                              thePosition)
+occ::handle<TDataStd_UAttribute> DNaming::GetObjectArg(const occ::handle<TFunction_Function>& theFunction,
+                                                  const int            thePosition)
 {
   occ::handle<TDataStd_UAttribute> anObject;
   occ::handle<TDF_Reference>       aReference;
@@ -608,7 +606,7 @@ occ::handle<TDataStd_UAttribute> DNaming::GetObjectArg(
 // purpose  : Replace the argument by new value.
 //=======================================================================
 void DNaming::SetObjectArg(const occ::handle<TFunction_Function>&  theFunction,
-                           const int                               thePosition,
+                           const int             thePosition,
                            const occ::handle<TDataStd_UAttribute>& theNewValue)
 {
 
@@ -621,8 +619,7 @@ void DNaming::SetObjectArg(const occ::handle<TFunction_Function>&  theFunction,
 // function : GetObjectValue
 // purpose  : Returns NamedShape of the Object
 //=======================================================================
-occ::handle<TNaming_NamedShape> DNaming::GetObjectValue(
-  const occ::handle<TDataStd_UAttribute>& theObject)
+occ::handle<TNaming_NamedShape> DNaming::GetObjectValue(const occ::handle<TDataStd_UAttribute>& theObject)
 {
   occ::handle<TNaming_NamedShape> aNS;
 
@@ -658,8 +655,7 @@ occ::handle<TNaming_NamedShape> DNaming::GetObjectValue(
 // function : GetPrevFunction
 // purpose  : Returns previous function
 //=======================================================================
-occ::handle<TFunction_Function> DNaming::GetPrevFunction(
-  const occ::handle<TFunction_Function>& theFunction)
+occ::handle<TFunction_Function> DNaming::GetPrevFunction(const occ::handle<TFunction_Function>& theFunction)
 {
   occ::handle<TFunction_Function> aPrevFun;
   if (!theFunction.IsNull())
@@ -694,8 +690,7 @@ occ::handle<TFunction_Function> DNaming::GetPrevFunction(
 // function : GetFirstFunction
 // purpose  : Returns first function
 //=======================================================================
-occ::handle<TFunction_Function> DNaming::GetFirstFunction(
-  const occ::handle<TDataStd_UAttribute>& theObject)
+occ::handle<TFunction_Function> DNaming::GetFirstFunction(const occ::handle<TDataStd_UAttribute>& theObject)
 {
   occ::handle<TFunction_Function> aFirstFun;
   if (!theObject.IsNull())
@@ -722,8 +717,7 @@ occ::handle<TFunction_Function> DNaming::GetFirstFunction(
 
 //=================================================================================================
 
-occ::handle<TFunction_Function> DNaming::GetLastFunction(
-  const occ::handle<TDataStd_UAttribute>& theObject)
+occ::handle<TFunction_Function> DNaming::GetLastFunction(const occ::handle<TDataStd_UAttribute>& theObject)
 {
   occ::handle<TFunction_Function> aLastFun;
   if (!theObject.IsNull())
@@ -808,21 +802,20 @@ void DNaming::LoadResult(const TDF_Label& ResultLabel, BRepAlgoAPI_BooleanOperat
 
 //=================================================================================================
 
-void DNaming::LoadAndOrientModifiedShapes(
-  BRepBuilderAPI_MakeShape&                                                       MS,
-  const TopoDS_Shape&                                                             ShapeIn,
-  const TopAbs_ShapeEnum                                                          KindOfShape,
-  TNaming_Builder&                                                                Builder,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapes)
+void DNaming::LoadAndOrientModifiedShapes(BRepBuilderAPI_MakeShape&           MS,
+                                          const TopoDS_Shape&                 ShapeIn,
+                                          const TopAbs_ShapeEnum              KindOfShape,
+                                          TNaming_Builder&                    Builder,
+                                          const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapes)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
-  TopExp_Explorer                                        ShapeExplorer(ShapeIn, KindOfShape);
+  TopExp_Explorer     ShapeExplorer(ShapeIn, KindOfShape);
   for (; ShapeExplorer.More(); ShapeExplorer.Next())
   {
     const TopoDS_Shape& Root = ShapeExplorer.Current();
     if (!View.Add(Root))
       continue;
-    const NCollection_List<TopoDS_Shape>&    Shapes = MS.Modified(Root);
+    const NCollection_List<TopoDS_Shape>&        Shapes = MS.Modified(Root);
     NCollection_List<TopoDS_Shape>::Iterator ShapesIterator(Shapes);
     for (; ShapesIterator.More(); ShapesIterator.Next())
     {
@@ -845,7 +838,7 @@ void DNaming::LoadDeletedShapes(BRepBuilderAPI_MakeShape& MS,
                                 TNaming_Builder&          Builder)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
-  TopExp_Explorer                                        ShapeExplorer(ShapeIn, KindOfShape);
+  TopExp_Explorer     ShapeExplorer(ShapeIn, KindOfShape);
   for (; ShapeExplorer.More(); ShapeExplorer.Next())
   {
     const TopoDS_Shape& Root = ShapeExplorer.Current();
@@ -860,21 +853,20 @@ void DNaming::LoadDeletedShapes(BRepBuilderAPI_MakeShape& MS,
 
 //=================================================================================================
 
-void DNaming::LoadAndOrientGeneratedShapes(
-  BRepBuilderAPI_MakeShape&                                                       MS,
-  const TopoDS_Shape&                                                             ShapeIn,
-  const TopAbs_ShapeEnum                                                          KindOfShape,
-  TNaming_Builder&                                                                Builder,
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapes)
+void DNaming::LoadAndOrientGeneratedShapes(BRepBuilderAPI_MakeShape&           MS,
+                                           const TopoDS_Shape&                 ShapeIn,
+                                           const TopAbs_ShapeEnum              KindOfShape,
+                                           TNaming_Builder&                    Builder,
+                                           const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapes)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
-  TopExp_Explorer                                        ShapeExplorer(ShapeIn, KindOfShape);
+  TopExp_Explorer     ShapeExplorer(ShapeIn, KindOfShape);
   for (; ShapeExplorer.More(); ShapeExplorer.Next())
   {
     const TopoDS_Shape& Root = ShapeExplorer.Current();
     if (!View.Add(Root))
       continue;
-    const NCollection_List<TopoDS_Shape>&    Shapes = MS.Generated(Root);
+    const NCollection_List<TopoDS_Shape>&        Shapes = MS.Generated(Root);
     NCollection_List<TopoDS_Shape>::Iterator ShapesIterator(Shapes);
     for (; ShapesIterator.More(); ShapesIterator.Next())
     {
@@ -907,8 +899,8 @@ bool DNaming::ComputeAxis(const occ::handle<TNaming_NamedShape>& theNS, gp_Ax1& 
       TopExp_Explorer anExplorer(aShape, TopAbs_EDGE);
       aShape = anExplorer.Current();
     }
-    const TopoDS_Edge&      anEdge = TopoDS::Edge(aShape);
-    double                  aFirst, aLast;
+    const TopoDS_Edge& anEdge = TopoDS::Edge(aShape);
+    double      aFirst, aLast;
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
     if (aCurve->IsKind(STANDARD_TYPE(Geom_Line)))
     {
@@ -945,8 +937,7 @@ bool DNaming::IsAttachment(const occ::handle<TDataStd_UAttribute>& anObj)
 
 //=================================================================================================
 
-occ::handle<TNaming_NamedShape> DNaming::GetAttachmentsContext(
-  const occ::handle<TDataStd_UAttribute>& anObj)
+occ::handle<TNaming_NamedShape> DNaming::GetAttachmentsContext(const occ::handle<TDataStd_UAttribute>& anObj)
 {
   occ::handle<TNaming_NamedShape> aNS;
   occ::handle<TFunction_Function> aFun = GetFirstFunction(anObj);
@@ -963,7 +954,8 @@ occ::handle<TNaming_NamedShape> DNaming::GetAttachmentsContext(
       {
         if (aRef->Get().FindAttribute(TFunction_Function::GetID(), aFunCnt))
         {
-          const TDF_Label& aResultLabel = aFunCnt->Label().FindChild(FUNCTION_RESULT_LABEL, true);
+          const TDF_Label& aResultLabel =
+            aFunCnt->Label().FindChild(FUNCTION_RESULT_LABEL, true);
           aResultLabel.FindAttribute(TNaming_NamedShape::GetID(), aNS);
         }
       }

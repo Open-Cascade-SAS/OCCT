@@ -63,7 +63,7 @@ private:
   Standard_EXPORT void Append(const LDOM_BasicNode& aNode) const;
 
   occ::handle<LDOM_MemManager> myDoc;
-  LDOM_BasicNodeSequence*      mySeq;
+  LDOM_BasicNodeSequence* mySeq;
 };
 
 #endif

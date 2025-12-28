@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_Sphere, StepGeom_GeometricRepresentationIte
 StepShape_Sphere::StepShape_Sphere() {}
 
 void StepShape_Sphere::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const double                                 aRadius,
+                            const double                     aRadius,
                             const occ::handle<StepGeom_Point>&           aCentre)
 {
   // --- classe own fields ---

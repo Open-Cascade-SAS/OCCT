@@ -44,11 +44,11 @@ protected:
 
   //! Updates counters for structures.
   Standard_EXPORT virtual void updateStructures(
-    int                                                        theViewId,
+    int                                           theViewId,
     const NCollection_IndexedMap<const Graphic3d_CStructure*>& theStructures,
-    bool                                                       theToCountElems,
-    bool                                                       theToCountTris,
-    bool                                                       theToCountMem);
+    bool                                           theToCountElems,
+    bool                                           theToCountTris,
+    bool                                           theToCountMem);
 };
 
 #endif // _OpenGl_FrameStats_HeaderFile

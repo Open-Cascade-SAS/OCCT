@@ -34,25 +34,28 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESGraph_ToolTextFontDef::IGESGraph_ToolTextFontDef() {}
 
 void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFontDef>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                       PR) const
+                                              IGESData_ParamReader&                  PR) const
 {
   // bool                            st; //szv#4:S4163:12Mar99 moved down
   int nbval;
 
-  int                                              fontCode;
+  int                            fontCode;
   occ::handle<TCollection_HAsciiString>            fontName;
-  int                                              supersededFont;
+  int                            supersededFont;
   occ::handle<IGESGraph_TextFontDef>               supersededEntity;
-  int                                              scale;
+  int                            scale;
   occ::handle<NCollection_HArray1<int>>            aSCIICodes;
   occ::handle<NCollection_HArray1<int>>            nextCharX, nextCharY;
   occ::handle<NCollection_HArray1<int>>            penMotions;
@@ -181,7 +184,7 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams(const occ::handle<IGESGraph_TextFo
 }
 
 void IGESGraph_ToolTextFontDef::WriteOwnParams(const occ::handle<IGESGraph_TextFontDef>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   int IX, IY;
   IW.Send(ent->FontCode());
@@ -214,7 +217,7 @@ void IGESGraph_ToolTextFontDef::WriteOwnParams(const occ::handle<IGESGraph_TextF
 }
 
 void IGESGraph_ToolTextFontDef::OwnShared(const occ::handle<IGESGraph_TextFontDef>& ent,
-                                          Interface_EntityIterator&                 iter) const
+                                          Interface_EntityIterator&            iter) const
 {
   if (ent->IsSupersededFontEntity())
     iter.GetOneItem(ent->SupersededFontEntity());
@@ -222,19 +225,19 @@ void IGESGraph_ToolTextFontDef::OwnShared(const occ::handle<IGESGraph_TextFontDe
 
 void IGESGraph_ToolTextFontDef::OwnCopy(const occ::handle<IGESGraph_TextFontDef>& another,
                                         const occ::handle<IGESGraph_TextFontDef>& ent,
-                                        Interface_CopyTool&                       TC) const
+                                        Interface_CopyTool&                  TC) const
 {
-  int                                              nbval;
-  int                                              fontCode;
+  int                            nbval;
+  int                            fontCode;
   occ::handle<TCollection_HAsciiString>            fontName;
-  int                                              supersededFont = 0;
+  int                            supersededFont = 0;
   occ::handle<IGESGraph_TextFontDef>               supersededEntity;
-  int                                              scale;
+  int                            scale;
   occ::handle<NCollection_HArray1<int>>            aSCIICodes, nextCharX, nextCharY;
   occ::handle<NCollection_HArray1<int>>            penMotions;
   occ::handle<IGESBasic_HArray1OfHArray1OfInteger> penFlags, movePenX, movePenY;
 
-  int                                   tempMotion;
+  int                 tempMotion;
   occ::handle<NCollection_HArray1<int>> intarray, xarray, yarray;
 
   nbval      = another->NbCharacters();
@@ -325,9 +328,9 @@ void IGESGraph_ToolTextFontDef::OwnCheck(const occ::handle<IGESGraph_TextFontDef
 }
 
 void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>& ent,
-                                        const IGESData_IGESDumper&                dumper,
-                                        Standard_OStream&                         S,
-                                        const int                                 level) const
+                                        const IGESData_IGESDumper&           dumper,
+                                        Standard_OStream&                    S,
+                                        const int               level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
   int nbchars  = ent->NbCharacters();
@@ -357,7 +360,7 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
   if (level > 4)
   {
     occ::handle<NCollection_HArray1<gp_XY>> arrXY;
-    int                                     I, J, nbmotions;
+    int           I, J, nbmotions;
     for (I = 1; I <= nbchars; I++)
     {
       int IX, IY;
@@ -375,7 +378,8 @@ void IGESGraph_ToolTextFontDef::OwnDump(const occ::handle<IGESGraph_TextFontDef>
         S << "\n";
         for (J = 1; J <= nbmotions; J++)
         {
-          S << "Pen up(1) / down(0) flag : " << (int)ent->IsPenUp(I, J) << " Next Pen Position : ";
+          S << "Pen up(1) / down(0) flag : " << (int)ent->IsPenUp(I, J)
+            << " Next Pen Position : ";
           ent->NextPenPosition(I, J, IX, IY);
           S << " X=" << IX << " Y=" << IY << "\n";
         }

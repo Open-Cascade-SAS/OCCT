@@ -77,7 +77,9 @@ public:
   //! theV, which is:
   //! -   right-handed if theIsSense is true (default value), or
   //! -   left-handed if theIsSense is false
-  constexpr gp_Ax22d(const gp_Pnt2d& theP, const gp_Dir2d& theV, const bool theIsSense = true)
+  constexpr gp_Ax22d(const gp_Pnt2d&        theP,
+                     const gp_Dir2d&        theV,
+                     const bool theIsSense = true)
       : point(theP),
         vxdir(theV)
   {
@@ -248,7 +250,7 @@ public:
   //! Translates an axis placement from the point <theP1> to the
   //! point <theP2>.
   [[nodiscard]] constexpr gp_Ax22d Translated(const gp_Pnt2d& theP1,
-                                              const gp_Pnt2d& theP2) const noexcept
+                                                   const gp_Pnt2d& theP2) const noexcept
   {
     gp_Ax22d aTemp = *this;
     aTemp.Translate(theP1, theP2);

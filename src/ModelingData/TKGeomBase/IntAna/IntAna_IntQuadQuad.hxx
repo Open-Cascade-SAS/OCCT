@@ -48,15 +48,19 @@ public:
   //! Tol est a definir plus precisemment.
   Standard_EXPORT IntAna_IntQuadQuad(const gp_Cylinder&    C,
                                      const IntAna_Quadric& Q,
-                                     const double          Tol);
+                                     const double   Tol);
 
   //! Creates the intersection between a cone and a quadric.
   //! Tol est a definir plus precisemment.
-  Standard_EXPORT IntAna_IntQuadQuad(const gp_Cone& C, const IntAna_Quadric& Q, const double Tol);
+  Standard_EXPORT IntAna_IntQuadQuad(const gp_Cone&        C,
+                                     const IntAna_Quadric& Q,
+                                     const double   Tol);
 
   //! Intersects a cylinder and a quadric .
   //! Tol est a definir plus precisemment.
-  Standard_EXPORT void Perform(const gp_Cylinder& C, const IntAna_Quadric& Q, const double Tol);
+  Standard_EXPORT void Perform(const gp_Cylinder&    C,
+                               const IntAna_Quadric& Q,
+                               const double   Tol);
 
   //! Intersects a cone and a quadric.
   //! Tol est a definir plus precisemment.
@@ -84,7 +88,9 @@ public:
   //! Returns the parameters on the "explicit quadric"
   //! (i.e. the cylinder or the cone, the first argument given to the constructor)
   //! of the point of range N.
-  Standard_EXPORT void Parameters(const int N, double& U1, double& U2) const;
+  Standard_EXPORT void Parameters(const int N,
+                                  double&         U1,
+                                  double&         U2) const;
 
   //! Returns True if the Curve I shares its last bound
   //! with another curve.
@@ -98,7 +104,8 @@ public:
   //! point. Else the last parameter of the curve I and
   //! the first parameter of the curve J are the same
   //! point.
-  Standard_EXPORT int NextCurve(const int I, bool& theOpposite) const;
+  Standard_EXPORT int NextCurve(const int I,
+                                             bool&      theOpposite) const;
 
   //! Returns True if the Curve I shares its first bound
   //! with another curve.
@@ -112,24 +119,25 @@ public:
   //! point. Else the first parameter of the curve I and
   //! the last parameter of the curve J are the same
   //! point.
-  Standard_EXPORT int PreviousCurve(const int I, bool& theOpposite) const;
+  Standard_EXPORT int PreviousCurve(const int I,
+                                                 bool&      theOpposite) const;
 
 protected:
   //! Set the next and previous fields. Private method.
   Standard_EXPORT void InternalSetNextAndPrevious();
 
 protected:
-  bool         done;
-  bool         identical;
-  IntAna_Curve TheCurve[12];
-  int          previouscurve[12];
-  int          nextcurve[12];
-  int          NbCurves;
-  int          Nbpoints;
-  gp_Pnt       Thepoints[2];
-  int          myNbMaxCurves;
-  double       myEpsilon;
-  double       myEpsilonCoeffPolyNull;
+  bool done;
+  bool identical;
+  IntAna_Curve     TheCurve[12];
+  int previouscurve[12];
+  int nextcurve[12];
+  int NbCurves;
+  int Nbpoints;
+  gp_Pnt           Thepoints[2];
+  int myNbMaxCurves;
+  double    myEpsilon;
+  double    myEpsilonCoeffPolyNull;
 };
 
 #include <IntAna_IntQuadQuad.lxx>

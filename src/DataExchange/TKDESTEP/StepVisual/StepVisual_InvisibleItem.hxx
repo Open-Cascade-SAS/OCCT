@@ -51,8 +51,8 @@ public:
     const;
 
   //! returns Value as a PresentationRepresentation (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation()
-    const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation() const;
+
 };
 
 #endif // _StepVisual_InvisibleItem_HeaderFile

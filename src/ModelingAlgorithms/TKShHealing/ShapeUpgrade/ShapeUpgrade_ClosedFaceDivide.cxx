@@ -79,28 +79,28 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
       || ::Precision::IsInfinite(Vl))
     return false;
 
-  TopLoc_Location           L;
+  TopLoc_Location      L;
   occ::handle<Geom_Surface> surf;
   surf = BRep_Tool::Surface(face, L);
 
-  bool                                       isUSplit = false;
-  bool                                       doSplit  = false;
+  bool                isUSplit = false;
+  bool                doSplit  = false;
   occ::handle<NCollection_HSequence<double>> split    = new NCollection_HSequence<double>;
 
   for (TopoDS_Iterator iter(face); iter.More() && !doSplit; iter.Next())
   {
     if (iter.Value().ShapeType() != TopAbs_WIRE)
       continue;
-    TopoDS_Wire                       wire = TopoDS::Wire(iter.Value());
+    TopoDS_Wire                  wire = TopoDS::Wire(iter.Value());
     occ::handle<ShapeExtend_WireData> sewd = new ShapeExtend_WireData(wire);
     for (int i = 1; i <= sewd->NbEdges() && !doSplit; i++)
       if (sewd->IsSeam(i))
       {
-        doSplit                        = true;
-        TopoDS_Edge               edge = sewd->Edge(i);
-        ShapeAnalysis_Edge        sae;
+        doSplit                   = true;
+        TopoDS_Edge          edge = sewd->Edge(i);
+        ShapeAnalysis_Edge   sae;
         occ::handle<Geom2d_Curve> c1, c2;
-        double                    f1, f2, l1, l2;
+        double        f1, f2, l1, l2;
         if (!sae.PCurve(edge, face, c1, f1, l1, false))
           continue;
         // smh#8
@@ -165,14 +165,14 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
   {
     // pdn try to define geometric closure.
     occ::handle<ShapeAnalysis_Surface> sas     = new ShapeAnalysis_Surface(surf);
-    bool                               uclosed = sas->IsUClosed(Precision());
-    bool                               vclosed = sas->IsVClosed(Precision());
-    double                             U1, U2, V1, V2;
+    bool              uclosed = sas->IsUClosed(Precision());
+    bool              vclosed = sas->IsVClosed(Precision());
+    double                 U1, U2, V1, V2;
     if (uclosed)
     {
       surf->Bounds(U1, U2, V1, V2);
       GeomAdaptor_Surface GAS(surf);
-      double              toler = GAS.UResolution(Precision());
+      double       toler = GAS.UResolution(Precision());
       if ((U2 - U1) - (Ul - Uf) < toler)
       {
         occ::handle<Geom_RectangularTrimmedSurface> rts =
@@ -180,7 +180,7 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
         occ::handle<ShapeAnalysis_Surface> sast = new ShapeAnalysis_Surface(rts);
         if (!sast->IsUClosed(Precision()))
         {
-          doSplit     = true;
+          doSplit            = true;
           double step = (Ul - Uf) / (myNbSplit + 1);
           double val  = Uf + step;
           for (int i = 1; i <= myNbSplit; i++, val += step)
@@ -197,7 +197,7 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
     {
       surf->Bounds(U1, U2, V1, V2);
       GeomAdaptor_Surface GAS(surf);
-      double              toler = GAS.VResolution(Precision());
+      double       toler = GAS.VResolution(Precision());
       if ((V2 - V1) - (Vl - Vf) < toler)
       {
         occ::handle<Geom_RectangularTrimmedSurface> rts =
@@ -205,7 +205,7 @@ bool ShapeUpgrade_ClosedFaceDivide::SplitSurface(const double)
         occ::handle<ShapeAnalysis_Surface> sast = new ShapeAnalysis_Surface(rts);
         if (!sast->IsVClosed(Precision()))
         {
-          doSplit     = true;
+          doSplit            = true;
           double step = (Vl - Vf) / (myNbSplit + 1);
           double val  = Vf + step;
           for (int i = 1; i <= myNbSplit; i++, val += step)

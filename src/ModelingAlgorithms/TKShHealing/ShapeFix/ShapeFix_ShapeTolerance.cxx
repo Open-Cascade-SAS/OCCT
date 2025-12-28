@@ -33,15 +33,15 @@ ShapeFix_ShapeTolerance::ShapeFix_ShapeTolerance() {}
 //=================================================================================================
 
 bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
-                                             const double           tmin,
-                                             const double           tmax,
-                                             const TopAbs_ShapeEnum styp) const
+                                                         const double    tmin,
+                                                         const double    tmax,
+                                                         const TopAbs_ShapeEnum styp) const
 {
   if (shape.IsNull() || tmin < 0)
     return false;
-  bool   iamax = (tmax >= tmin);
-  double prec;
-  bool   fait = false;
+  bool iamax = (tmax >= tmin);
+  double    prec;
+  bool fait = false;
   if (styp == TopAbs_VERTEX || styp == TopAbs_EDGE || styp == TopAbs_FACE)
   {
     for (TopExp_Explorer ex(shape, styp); ex.More(); ex.Next())
@@ -122,7 +122,7 @@ bool ShapeFix_ShapeTolerance::LimitTolerance(const TopoDS_Shape&    shape,
 //=================================================================================================
 
 void ShapeFix_ShapeTolerance::SetTolerance(const TopoDS_Shape&    shape,
-                                           const double           preci,
+                                           const double    preci,
                                            const TopAbs_ShapeEnum styp) const
 {
   //   VERTEX ou EDGE ou FACE : ces types seulement

@@ -39,15 +39,14 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<StepBasic_PersonAndOrganization>&
       aPersonAndOrganizationAssignment_AssignedPersonAndOrganization,
-    const occ::handle<StepBasic_PersonAndOrganizationRole>& aPersonAndOrganizationAssignment_Role,
+    const occ::handle<StepBasic_PersonAndOrganizationRole>&       aPersonAndOrganizationAssignment_Role,
     const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& aItems);
 
   //! Returns field Items
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(
-    const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_PersonOrganizationItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignPersonAndOrganizationAssignment,
                           StepBasic_PersonAndOrganizationAssignment)

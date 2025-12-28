@@ -71,14 +71,16 @@ inline gp_Pnt2d Geom2dInt_Geom2dCurveTool::Value(const Adaptor2d_Curve2d& C, con
 }
 
 //============================================================
-inline void Geom2dInt_Geom2dCurveTool::D0(const Adaptor2d_Curve2d& C, const double U, gp_Pnt2d& P)
+inline void Geom2dInt_Geom2dCurveTool::D0(const Adaptor2d_Curve2d& C,
+                                          const double      U,
+                                          gp_Pnt2d&                P)
 {
   C.D0(U, P);
 }
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D1(const Adaptor2d_Curve2d& C,
-                                          const double             U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T)
 {
@@ -87,7 +89,7 @@ inline void Geom2dInt_Geom2dCurveTool::D1(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D2(const Adaptor2d_Curve2d& C,
-                                          const double             U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T,
                                           gp_Vec2d&                N)
@@ -98,7 +100,7 @@ inline void Geom2dInt_Geom2dCurveTool::D2(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline void Geom2dInt_Geom2dCurveTool::D3(const Adaptor2d_Curve2d& C,
-                                          const double             U,
+                                          const double      U,
                                           gp_Pnt2d&                P,
                                           gp_Vec2d&                T,
                                           gp_Vec2d&                N,
@@ -110,8 +112,8 @@ inline void Geom2dInt_Geom2dCurveTool::D3(const Adaptor2d_Curve2d& C,
 
 //============================================================
 inline gp_Vec2d Geom2dInt_Geom2dCurveTool::DN(const Adaptor2d_Curve2d& C,
-                                              const double             U,
-                                              const int                N)
+                                              const double      U,
+                                              const int   N)
 {
   return C.DN(U, N);
 }
@@ -137,14 +139,15 @@ inline double Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d&)
 }
 
 //------------------------------------------------------------
-inline double Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d& C, const double Eps_XYZ)
+inline double Geom2dInt_Geom2dCurveTool::EpsX(const Adaptor2d_Curve2d& C,
+                                                     const double      Eps_XYZ)
 {
   return (C.Resolution(Eps_XYZ));
 }
 
 //============================================================
-inline void Geom2dInt_Geom2dCurveTool::Intervals(const Adaptor2d_Curve2d&    C,
-                                                 NCollection_Array1<double>& Tab)
+inline void Geom2dInt_Geom2dCurveTool::Intervals(const Adaptor2d_Curve2d& C,
+                                                 NCollection_Array1<double>&    Tab)
 {
 #if IS_C2_COMPOSITE
   C.Intervals(Tab, GeomAbs_C2);
@@ -156,10 +159,10 @@ inline void Geom2dInt_Geom2dCurveTool::Intervals(const Adaptor2d_Curve2d&    C,
 //============================================================
 // inline void Geom2dInt_Geom2dCurveTool::GetInterval(const Adaptor2d_Curve2d& C,
 inline void Geom2dInt_Geom2dCurveTool::GetInterval(const Adaptor2d_Curve2d&,
-                                                   const int                         i,
+                                                   const int      i,
                                                    const NCollection_Array1<double>& Tab,
-                                                   double&                           a,
-                                                   double&                           b)
+                                                   double&              a,
+                                                   double&              b)
 {
   a = Tab.Value(i);
   b = Tab.Value(i + 1);

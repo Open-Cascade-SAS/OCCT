@@ -52,14 +52,14 @@ public:
   //! Is it a curve in the parametric space of <S> with
   //! location <L>.
   Standard_EXPORT virtual bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const;
+                                                            const TopLoc_Location&      L) const;
 
   //! Is it a regularity between <S1> and <S2> with
   //! location <L1> and <L2>.
   Standard_EXPORT virtual bool IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                            const occ::handle<Geom_Surface>& S2,
-                                            const TopLoc_Location&           L1,
-                                            const TopLoc_Location&           L2) const;
+                                                        const occ::handle<Geom_Surface>& S2,
+                                                        const TopLoc_Location&      L1,
+                                                        const TopLoc_Location&      L2) const;
 
   //! A 3D polygon representation.
   Standard_EXPORT virtual bool IsPolygon3D() const;
@@ -70,8 +70,9 @@ public:
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
-  Standard_EXPORT virtual bool IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>& T,
-                                                        const TopLoc_Location& L) const;
+  Standard_EXPORT virtual bool IsPolygonOnTriangulation(
+    const occ::handle<Poly_Triangulation>& T,
+    const TopLoc_Location&            L) const;
 
   //! A representation by two arrays of nodes on a
   //! triangulation.
@@ -83,7 +84,7 @@ public:
   //! Is it a polygon in the parametric space of <S> with
   //! location <L>.
   Standard_EXPORT virtual bool IsPolygonOnSurface(const occ::handle<Geom_Surface>& S,
-                                                  const TopLoc_Location&           L) const;
+                                                              const TopLoc_Location&      L) const;
 
   //! Two 2D polygon representations in the parametric
   //! space of a surface.
@@ -121,11 +122,9 @@ public:
 
   Standard_EXPORT virtual const occ::handle<Poly_Triangulation>& Triangulation() const;
 
-  Standard_EXPORT virtual const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation()
-    const;
+  Standard_EXPORT virtual const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation() const;
 
-  Standard_EXPORT virtual void PolygonOnTriangulation(
-    const occ::handle<Poly_PolygonOnTriangulation>& P);
+  Standard_EXPORT virtual void PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& P);
 
   Standard_EXPORT virtual const occ::handle<Poly_PolygonOnTriangulation>& PolygonOnTriangulation2()
     const;
@@ -145,7 +144,8 @@ public:
   Standard_EXPORT virtual occ::handle<BRep_CurveRepresentation> Copy() const = 0;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation, Standard_Transient)
 
@@ -153,6 +153,7 @@ protected:
   Standard_EXPORT BRep_CurveRepresentation(const TopLoc_Location& L);
 
   TopLoc_Location myLocation;
+
 };
 
 #include <BRep_CurveRepresentation.lxx>

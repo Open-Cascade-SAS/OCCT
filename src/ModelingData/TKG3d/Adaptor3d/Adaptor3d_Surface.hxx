@@ -82,13 +82,11 @@ public:
 
   //! Returns the intervals with the requested continuity
   //! in the U direction.
-  Standard_EXPORT virtual void UIntervals(NCollection_Array1<double>& T,
-                                          const GeomAbs_Shape         S) const;
+  Standard_EXPORT virtual void UIntervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const;
 
   //! Returns the intervals with the requested continuity
   //! in the V direction.
-  Standard_EXPORT virtual void VIntervals(NCollection_Array1<double>& T,
-                                          const GeomAbs_Shape         S) const;
+  Standard_EXPORT virtual void VIntervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const;
 
   //! Returns a surface trimmed in the U direction
   //! equivalent of <me> between
@@ -96,16 +94,16 @@ public:
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> UTrim(const double First,
-                                                               const double Last,
-                                                               const double Tol) const;
+                                                          const double Last,
+                                                          const double Tol) const;
 
   //! Returns a surface trimmed in the V direction between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> VTrim(const double First,
-                                                               const double Last,
-                                                               const double Tol) const;
+                                                          const double Last,
+                                                          const double Tol) const;
 
   Standard_EXPORT virtual bool IsUClosed() const;
 
@@ -132,9 +130,9 @@ public:
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
   Standard_EXPORT virtual void D1(const double U,
                                   const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V) const;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V) const;
 
   //! Computes the point, the first and second
   //! derivatives on the surface.
@@ -142,12 +140,12 @@ public:
   //! intervals is not C2.
   Standard_EXPORT virtual void D2(const double U,
                                   const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV) const;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V,
+                                  gp_Vec&             D2U,
+                                  gp_Vec&             D2V,
+                                  gp_Vec&             D2UV) const;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -155,26 +153,26 @@ public:
   //! intervals is not C3.
   Standard_EXPORT virtual void D3(const double U,
                                   const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV,
-                                  gp_Vec&      D3U,
-                                  gp_Vec&      D3V,
-                                  gp_Vec&      D3UUV,
-                                  gp_Vec&      D3UVV) const;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             D1U,
+                                  gp_Vec&             D1V,
+                                  gp_Vec&             D2U,
+                                  gp_Vec&             D2V,
+                                  gp_Vec&             D2UV,
+                                  gp_Vec&             D3U,
+                                  gp_Vec&             D3V,
+                                  gp_Vec&             D3UUV,
+                                  gp_Vec&             D3UVV) const;
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
   //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT virtual gp_Vec DN(const double U,
-                                    const double V,
-                                    const int    Nu,
-                                    const int    Nv) const;
+  Standard_EXPORT virtual gp_Vec DN(const double    U,
+                                    const double    V,
+                                    const int Nu,
+                                    const int Nv) const;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.

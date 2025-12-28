@@ -24,7 +24,16 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //! An algorithm to convert a sequence of adjacent
 //! non-rational Bezier curves into a BSpline curve.
@@ -55,7 +64,8 @@ public:
   //! -   Perform to compute the data needed to build the BSpline curve,
   //! -   and the available consultation functions to access the
   //! computed data. This data may be used to construct the BSpline curve.
-  Standard_EXPORT Convert_CompBezierCurvesToBSplineCurve(const double AngularTolerance = 1.0e-4);
+  Standard_EXPORT Convert_CompBezierCurvesToBSplineCurve(
+    const double AngularTolerance = 1.0e-4);
 
   //! Adds the Bezier curve defined by the table of poles Poles, to
   //! the sequence (still contained in this framework) of adjacent
@@ -165,17 +175,17 @@ public:
   //! computed in this framework.
   //! Particular care must be taken with respect to the above as
   //! these conditions are not checked, and an error may occur.
-  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>& Knots,
-                                     NCollection_Array1<int>&    Mults) const;
+  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>&    Knots,
+                                     NCollection_Array1<int>& Mults) const;
 
 private:
   NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt>>> mySequence;
-  NCollection_Sequence<gp_Pnt>                                   CurvePoles;
-  NCollection_Sequence<double>                                   CurveKnots;
-  NCollection_Sequence<int>                                      KnotsMultiplicities;
-  int                                                            myDegree;
-  double                                                         myAngular;
-  bool                                                           myDone;
+  NCollection_Sequence<gp_Pnt>            CurvePoles;
+  NCollection_Sequence<double>          CurveKnots;
+  NCollection_Sequence<int>       KnotsMultiplicities;
+  int                myDegree;
+  double                   myAngular;
+  bool                myDone;
 };
 
 #endif // _Convert_CompBezierCurvesToBSplineCurve_HeaderFile

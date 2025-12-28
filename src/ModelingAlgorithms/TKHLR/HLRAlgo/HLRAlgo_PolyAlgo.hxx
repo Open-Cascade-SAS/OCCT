@@ -33,10 +33,7 @@ public:
 
   Standard_EXPORT void Init(const int theNbShells);
 
-  const NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& PolyShell() const
-  {
-    return myHShell;
-  }
+  const NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& PolyShell() const { return myHShell; }
 
   NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>>& ChangePolyShell() { return myHShell; }
 
@@ -57,11 +54,11 @@ public:
 
   //! process hiding between <Pt1> and <Pt2>.
   Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide(HLRAlgo_EdgeStatus& status,
-                                                 int&                Index,
-                                                 bool&               reg1,
-                                                 bool&               regn,
-                                                 bool&               outl,
-                                                 bool&               intl);
+                                                 int&   Index,
+                                                 bool&   reg1,
+                                                 bool&   regn,
+                                                 bool&   outl,
+                                                 bool&   intl);
 
   void InitShow()
   {
@@ -74,7 +71,7 @@ public:
   Standard_EXPORT void NextShow();
 
   //! process hiding between <Pt1> and <Pt2>.
-  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show(int&  Index,
+  Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show(int& Index,
                                                  bool& reg1,
                                                  bool& regn,
                                                  bool& outl,
@@ -84,11 +81,11 @@ public:
 
 private:
   NCollection_Array1<occ::handle<HLRAlgo_PolyShellData>> myHShell;
-  HLRAlgo_PolyData::Triangle                             myTriangle;
-  NCollection_List<HLRAlgo_BiPoint>::Iterator            mySegListIt;
-  int                                                    myNbrShell;
-  int                                                    myCurShell;
-  bool                                                   myFound;
+  HLRAlgo_PolyData::Triangle                        myTriangle;
+  NCollection_List<HLRAlgo_BiPoint>::Iterator                mySegListIt;
+  int                                  myNbrShell;
+  int                                  myCurShell;
+  bool                                  myFound;
 };
 
 #endif // _HLRAlgo_PolyAlgo_HeaderFile

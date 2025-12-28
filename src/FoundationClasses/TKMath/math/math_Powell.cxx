@@ -77,7 +77,10 @@ bool DirFunctionBis::Value(const double x, double& fval)
   return F->Value(*P, fval);
 }
 
-static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, DirFunctionBis& F)
+static bool MinimizeDirection(math_Vector&    P,
+                                          math_Vector&    Dir,
+                                          double&  Result,
+                                          DirFunctionBis& F)
 {
 
   double ax;
@@ -95,7 +98,7 @@ static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, 
     if (Sol.IsDone())
     {
       double Scale = Sol.Location();
-      Result       = Sol.Minimum();
+      Result              = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
       return true;
@@ -107,9 +110,9 @@ static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, 
 //=================================================================================================
 
 math_Powell::math_Powell(const math_MultipleVarFunction& theFunction,
-                         const double                    theTolerance,
-                         const int                       theNbIterations,
-                         const double                    theZEPS)
+                         const double             theTolerance,
+                         const int          theNbIterations,
+                         const double             theZEPS)
     : TheLocation(1, theFunction.NbVariables()),
       TheMinimum(RealLast()),
       TheLocationError(RealLast()),
@@ -136,16 +139,16 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
                           const math_Matrix&        StartingDirections)
 {
   Done = false;
-  int            i, ibig, j;
-  double         t, fptt, del;
-  int            n = TheLocation.Length();
-  math_Vector    pt(1, n);
-  math_Vector    ptt(1, n);
-  math_Vector    xit(1, n);
-  math_Vector    Temp1(1, n);
-  math_Vector    Temp2(1, n);
-  math_Vector    Temp3(1, n);
-  DirFunctionBis F_Dir(Temp1, Temp2, Temp3, F);
+  int i, ibig, j;
+  double    t, fptt, del;
+  int n = TheLocation.Length();
+  math_Vector      pt(1, n);
+  math_Vector      ptt(1, n);
+  math_Vector      xit(1, n);
+  math_Vector      Temp1(1, n);
+  math_Vector      Temp2(1, n);
+  math_Vector      Temp3(1, n);
+  DirFunctionBis   F_Dir(Temp1, Temp2, Temp3, F);
 
   TheLocation   = StartingPoint;
   TheDirections = StartingDirections;

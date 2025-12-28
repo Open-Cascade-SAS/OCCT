@@ -102,12 +102,12 @@ private:
 
 private:
   NCollection_Array1<char> myLine;
-  int                      myMax;
-  int                      myInit;
-  int                      myKeep;
-  int                      myGet;
-  int                      myLen;
-  int                      myFriz;
+  int                       myMax;
+  int                       myInit;
+  int                       myKeep;
+  int                       myGet;
+  int                       myLen;
+  int                       myFriz;
   char                     myKept;
 };
 

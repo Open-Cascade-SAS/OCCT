@@ -23,27 +23,29 @@
 #include <Resource_Manager.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard_WarningDisableFunctionCast.hxx>
 
-static char                tc[1000];
+static char  tc[1000];
 static Standard_PCharacter thePluginId = tc;
 
 //=================================================================================================
 
-occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID& aGUID, const bool theVerbose)
+occ::handle<Standard_Transient> Plugin::Load(const Standard_GUID&   aGUID,
+                                        const bool theVerbose)
 {
 
   aGUID.ToCString(thePluginId);
-  TCollection_AsciiString                                           pid(thePluginId);
+  TCollection_AsciiString      pid(thePluginId);
   static NCollection_DataMap<TCollection_AsciiString, OSD_Function> theMapOfFunctions;
-  OSD_Function                                                      f;
+  OSD_Function                 f;
 
   if (!theMapOfFunctions.IsBound(pid))
   {
 
     occ::handle<Resource_Manager> PluginResource = new Resource_Manager("Plugin");
-    TCollection_AsciiString       theResource(thePluginId);
+    TCollection_AsciiString  theResource(thePluginId);
     theResource += ".Location";
 
     if (!PluginResource->Find(theResource.ToCString()))

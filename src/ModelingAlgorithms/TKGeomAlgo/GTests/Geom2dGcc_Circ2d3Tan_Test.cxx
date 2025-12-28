@@ -33,22 +33,22 @@ protected:
   double myTolerance;
 
   //! Verify that a solution is tangent to all three input circles
-  void verifyTangencyConstraints(const gp_Circ2d& theSolution,
-                                 const gp_Circ2d& theCircle1,
-                                 const gp_Circ2d& theCircle2,
-                                 const gp_Circ2d& theCircle3,
-                                 const int        theSolutionIndex,
-                                 const double     theTolerance = 1e-6) const
+  void verifyTangencyConstraints(const gp_Circ2d&       theSolution,
+                                 const gp_Circ2d&       theCircle1,
+                                 const gp_Circ2d&       theCircle2,
+                                 const gp_Circ2d&       theCircle3,
+                                 const int theSolutionIndex,
+                                 const double    theTolerance = 1e-6) const
   {
-    gp_Pnt2d aSolCenter = theSolution.Location();
-    double   aSolRadius = theSolution.Radius();
+    gp_Pnt2d      aSolCenter = theSolution.Location();
+    double aSolRadius = theSolution.Radius();
 
     // Check tangency to each input circle
     for (int i = 1; i <= 3; i++)
     {
       const gp_Circ2d* aCircle     = (i == 1) ? &theCircle1 : (i == 2) ? &theCircle2 : &theCircle3;
       gp_Pnt2d         aCircCenter = aCircle->Location();
-      double           aCircRadius = aCircle->Radius();
+      double    aCircRadius = aCircle->Radius();
 
       double aDistanceCenters = aSolCenter.Distance(aCircCenter);
 
@@ -71,7 +71,7 @@ protected:
                                                  const double theY,
                                                  const double theRadius) const
   {
-    gp_Pnt2d                   aCenter(theX, theY);
+    gp_Pnt2d              aCenter(theX, theY);
     occ::handle<Geom2d_Circle> aCircle =
       new Geom2d_Circle(gp_Circ2d(gp_Ax2d(aCenter, gp_Dir2d(1, 0)), theRadius));
     Geom2dAdaptor_Curve anAdaptor(aCircle);
@@ -79,13 +79,13 @@ protected:
   }
 
   //! Verify solution validity
-  void verifySolutionValidity(const gp_Circ2d& theSolution,
-                              const int        theSolutionIndex,
-                              const double     theMinX      = -10000.0,
-                              const double     theMaxX      = 10000.0,
-                              const double     theMinY      = -10000.0,
-                              const double     theMaxY      = 10000.0,
-                              const double     theMaxRadius = 100000.0) const
+  void verifySolutionValidity(const gp_Circ2d&       theSolution,
+                              const int theSolutionIndex,
+                              const double    theMinX      = -10000.0,
+                              const double    theMaxX      = 10000.0,
+                              const double    theMinY      = -10000.0,
+                              const double    theMaxY      = 10000.0,
+                              const double    theMaxRadius = 100000.0) const
   {
     EXPECT_GT(theSolution.Radius(), 0)
       << "Solution " << theSolutionIndex << " should have positive radius";

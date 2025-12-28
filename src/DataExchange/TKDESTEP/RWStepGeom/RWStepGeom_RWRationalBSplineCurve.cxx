@@ -27,7 +27,7 @@ RWStepGeom_RWRationalBSplineCurve::RWStepGeom_RWRationalBSplineCurve() {}
 
 void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepGeom_RationalBSplineCurve>& ent) const
 {
@@ -52,12 +52,12 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   // --- inherited field : controlPointsList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent3;
-  int                                                                    nsub3;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    int nb3            = data->NbParams(nsub3);
-    aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
+    int nb3 = data->NbParams(nsub3);
+    aControlPointsList   = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -100,12 +100,12 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
   // --- own field : weightsData ---
 
   occ::handle<NCollection_HArray1<double>> aWeightsData;
-  double                                   aWeightsDataItem;
-  int                                      nsub7;
+  double                 aWeightsDataItem;
+  int              nsub7;
   if (data->ReadSubList(num, 7, "weights_data", ach, nsub7))
   {
-    int nb7      = data->NbParams(nsub7);
-    aWeightsData = new NCollection_HArray1<double>(1, nb7);
+    int nb7 = data->NbParams(nsub7);
+    aWeightsData         = new NCollection_HArray1<double>(1, nb7);
     for (int i7 = 1; i7 <= nb7; i7++)
     {
       // szv#4:S4163:12Mar99 `bool stat7 =` not needed
@@ -126,7 +126,7 @@ void RWStepGeom_RWRationalBSplineCurve::ReadStep(
 }
 
 void RWStepGeom_RWRationalBSplineCurve::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepGeom_RationalBSplineCurve>& ent) const
 {
 

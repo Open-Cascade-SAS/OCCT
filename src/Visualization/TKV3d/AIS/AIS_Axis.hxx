@@ -44,7 +44,7 @@ public:
   //! initializes the axis2 position
   //! aComponent. The coordinate system used is right-handed.
   Standard_EXPORT AIS_Axis(const occ::handle<Geom_Axis2Placement>& aComponent,
-                           const AIS_TypeOfAxis                    anAxisType);
+                           const AIS_TypeOfAxis               anAxisType);
 
   //! Initializes the axis1 position anAxis.
   Standard_EXPORT AIS_Axis(const occ::handle<Geom_Axis1Placement>& anAxis);
@@ -70,7 +70,7 @@ public:
   //! position and direction of an axis in 3D space. The
   //! coordinate system used is right-handed.
   Standard_EXPORT void SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
-                                         const AIS_TypeOfAxis                    anAxisType);
+                                         const AIS_TypeOfAxis               anAxisType);
 
   //! Constructs a new line to serve as the axis anAxis in 3D space.
   Standard_EXPORT void SetAxis1Placement(const occ::handle<Geom_Axis1Placement>& anAxis);
@@ -88,11 +88,15 @@ public:
   bool IsXYZAxis() const { return myIsXYZAxis; }
 
   //! Returns true if the interactive object accepts the display mode aMode.
-  Standard_EXPORT bool AcceptDisplayMode(const int aMode) const override;
+  Standard_EXPORT bool
+    AcceptDisplayMode(const int aMode) const override;
 
   virtual int Signature() const override { return 2; }
 
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  virtual AIS_KindOfInteractive Type() const override
+  {
+    return AIS_KindOfInteractive_Datum;
+  }
 
   Standard_EXPORT void SetColor(const Quantity_Color& aColor) override;
 
@@ -118,13 +122,13 @@ private:
 private:
   occ::handle<Geom_Line>           myComponent;
   occ::handle<Geom_Axis2Placement> myAx2;
-  gp_Pnt                           myPfirst;
-  gp_Pnt                           myPlast;
-  AIS_TypeOfAxis                   myTypeOfAxis;
-  bool                             myIsXYZAxis;
-  gp_Dir                           myDir;
-  double                           myVal;
-  const char*                      myText;
+  gp_Pnt                      myPfirst;
+  gp_Pnt                      myPlast;
+  AIS_TypeOfAxis              myTypeOfAxis;
+  bool            myIsXYZAxis;
+  gp_Dir                      myDir;
+  double               myVal;
+  const char*            myText;
   occ::handle<Prs3d_LineAspect>    myLineAspect;
 };
 

@@ -53,18 +53,18 @@ public:
 private:
   Standard_EXPORT void SetHSurfacesPrivate();
 
-  TopoDS_Face                      myFace1;
+  TopoDS_Face                 myFace1;
   occ::handle<BRepAdaptor_Surface> mySurface1;
-  GeomAbs_SurfaceType              mySurfaceType1;
-  bool                             myf1surf1F_sameoriented;
-  TopoDS_Face                      myFace2;
+  GeomAbs_SurfaceType         mySurfaceType1;
+  bool            myf1surf1F_sameoriented;
+  TopoDS_Face                 myFace2;
   occ::handle<BRepAdaptor_Surface> mySurface2;
-  GeomAbs_SurfaceType              mySurfaceType2;
-  bool                             myf2surf1F_sameoriented;
-  bool                             mySurfacesSameOriented;
-  bool                             myFacesSameOriented;
-  double                           myTol1;
-  double                           myTol2;
+  GeomAbs_SurfaceType         mySurfaceType2;
+  bool            myf2surf1F_sameoriented;
+  bool            mySurfacesSameOriented;
+  bool            myFacesSameOriented;
+  double               myTol1;
+  double               myTol2;
 };
 
 #endif // _TopOpeBRep_Hctxff2d_HeaderFile

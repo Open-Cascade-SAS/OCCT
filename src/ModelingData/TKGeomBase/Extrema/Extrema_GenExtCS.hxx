@@ -50,11 +50,11 @@ public:
   //! surface and NbT on the curve to find the zeros.
   Standard_EXPORT Extrema_GenExtCS(const Adaptor3d_Curve&   C,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbT,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             Tol1,
-                                   const double             Tol2);
+                                   const int   NbT,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      Tol1,
+                                   const double      Tol2);
 
   //! It calculates all the distances.
   //! The function F(u,v)=distance(P,S(u,v)) has an
@@ -65,45 +65,47 @@ public:
   //! to find the zeros.
   Standard_EXPORT Extrema_GenExtCS(const Adaptor3d_Curve&   C,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbT,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             tmin,
-                                   const double             tsup,
-                                   const double             Umin,
-                                   const double             Usup,
-                                   const double             Vmin,
-                                   const double             Vsup,
-                                   const double             Tol1,
-                                   const double             Tol2);
+                                   const int   NbT,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      tmin,
+                                   const double      tsup,
+                                   const double      Umin,
+                                   const double      Usup,
+                                   const double      Vmin,
+                                   const double      Vsup,
+                                   const double      Tol1,
+                                   const double      Tol2);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Tol2);
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Tol2);
 
   Standard_EXPORT void Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Umin,
-                                  const double             Usup,
-                                  const double             Vmin,
-                                  const double             Vsup,
-                                  const double             Tol2);
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Umin,
+                                  const double      Usup,
+                                  const double      Vmin,
+                                  const double      Vsup,
+                                  const double      Tol2);
 
   //! the algorithm is done with S
   //! An exception is raised if the fields have not
   //! been initialized.
-  Standard_EXPORT void Perform(const Adaptor3d_Curve& C, const int NbT, const double Tol1);
+  Standard_EXPORT void Perform(const Adaptor3d_Curve& C,
+                               const int NbT,
+                               const double    Tol1);
 
   //! the algorithm is done with C
   //! An exception is raised if the fields have not
   //! been initialized.
   Standard_EXPORT void Perform(const Adaptor3d_Curve& C,
-                               const int              NbT,
-                               const double           tmin,
-                               const double           tsup,
-                               const double           Tol1);
+                               const int NbT,
+                               const double    tmin,
+                               const double    tsup,
+                               const double    Tol1);
 
   //! Returns True if the distances are found.
   Standard_EXPORT bool IsDone() const;
@@ -122,43 +124,43 @@ public:
 
 private:
   Standard_EXPORT void GlobMinGenCS(const Adaptor3d_Curve& theC,
-                                    const int              theNbParticles,
+                                    const int theNbParticles,
                                     const math_Vector&     theTUVinf,
                                     const math_Vector&     theTUVsup,
                                     math_Vector&           theTUV);
 
   Standard_EXPORT void GlobMinConicS(const Adaptor3d_Curve& theC,
-                                     const int              theNbParticles,
+                                     const int theNbParticles,
                                      const math_Vector&     theTUVinf,
                                      const math_Vector&     theTUVsup,
                                      math_Vector&           theTUV);
 
   Standard_EXPORT void GlobMinCQuadric(const Adaptor3d_Curve& theC,
-                                       const int              theNbParticles,
+                                       const int theNbParticles,
                                        const math_Vector&     theTUVinf,
                                        const math_Vector&     theTUVsup,
                                        math_Vector&           theTUV);
 
 private:
   // disallow copies
-  Extrema_GenExtCS(const Extrema_GenExtCS&)            = delete;
+  Extrema_GenExtCS(const Extrema_GenExtCS&) = delete;
   Extrema_GenExtCS& operator=(const Extrema_GenExtCS&) = delete;
 
 private:
-  bool                                     myDone;
-  double                                   mytmin;
-  double                                   mytsup;
-  double                                   myumin;
-  double                                   myusup;
-  double                                   myvmin;
-  double                                   myvsup;
-  int                                      mytsample;
-  int                                      myusample;
-  int                                      myvsample;
-  double                                   mytol1;
-  double                                   mytol2;
-  Extrema_FuncExtCS                        myF;
-  const Adaptor3d_Surface*                 myS;
+  bool            myDone;
+  double               mytmin;
+  double               mytsup;
+  double               myumin;
+  double               myusup;
+  double               myvmin;
+  double               myvsup;
+  int            mytsample;
+  int            myusample;
+  int            myvsample;
+  double               mytol1;
+  double               mytol2;
+  Extrema_FuncExtCS           myF;
+  const Adaptor3d_Surface*    myS;
   occ::handle<NCollection_HArray2<gp_Pnt>> mySurfPnts;
 };
 

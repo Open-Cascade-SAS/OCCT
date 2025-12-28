@@ -140,9 +140,9 @@ inline void HLRBRep_Surface::D0(const double U, const double V, gp_Pnt& P) const
 
 inline void HLRBRep_Surface::D1(const double U,
                                 const double V,
-                                gp_Pnt&      P,
-                                gp_Vec&      D1U,
-                                gp_Vec&      D1V) const
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V) const
 {
   HLRBRep_BSurfaceTool::D1(mySurf, U, V, P, D1U, D1V);
 }
@@ -151,12 +151,12 @@ inline void HLRBRep_Surface::D1(const double U,
 
 inline void HLRBRep_Surface::D2(const double U,
                                 const double V,
-                                gp_Pnt&      P,
-                                gp_Vec&      D1U,
-                                gp_Vec&      D1V,
-                                gp_Vec&      D2U,
-                                gp_Vec&      D2V,
-                                gp_Vec&      D2UV) const
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V,
+                                gp_Vec&             D2U,
+                                gp_Vec&             D2V,
+                                gp_Vec&             D2UV) const
 {
   HLRBRep_BSurfaceTool::D2(mySurf, U, V, P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -165,23 +165,26 @@ inline void HLRBRep_Surface::D2(const double U,
 
 inline void HLRBRep_Surface::D3(const double U,
                                 const double V,
-                                gp_Pnt&      P,
-                                gp_Vec&      D1U,
-                                gp_Vec&      D1V,
-                                gp_Vec&      D2U,
-                                gp_Vec&      D2V,
-                                gp_Vec&      D2UV,
-                                gp_Vec&      D3U,
-                                gp_Vec&      D3V,
-                                gp_Vec&      D3UUV,
-                                gp_Vec&      D3UVV) const
+                                gp_Pnt&             P,
+                                gp_Vec&             D1U,
+                                gp_Vec&             D1V,
+                                gp_Vec&             D2U,
+                                gp_Vec&             D2V,
+                                gp_Vec&             D2UV,
+                                gp_Vec&             D3U,
+                                gp_Vec&             D3V,
+                                gp_Vec&             D3UUV,
+                                gp_Vec&             D3UVV) const
 {
   HLRBRep_BSurfaceTool::D3(mySurf, U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
 }
 
 //=================================================================================================
 
-inline gp_Vec HLRBRep_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
+inline gp_Vec HLRBRep_Surface::DN(const double    U,
+                                  const double    V,
+                                  const int Nu,
+                                  const int Nv) const
 {
   return HLRBRep_BSurfaceTool::DN(mySurf, U, V, Nu, Nv);
 }

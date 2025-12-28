@@ -49,8 +49,17 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Face, BRepCheck_Result)
 
@@ -59,14 +68,14 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Face, BRepCheck_Result)
 typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d> DataMapOfShapeBox2d;
 
 static bool Intersect(const TopoDS_Wire&,
-                      const TopoDS_Wire&,
-                      const TopoDS_Face&,
-                      const DataMapOfShapeBox2d&);
+                                  const TopoDS_Wire&,
+                                  const TopoDS_Face&,
+                                  const DataMapOfShapeBox2d&);
 
 static bool IsInside(const TopoDS_Wire&             wir,
-                     const bool                     Inside,
-                     const BRepTopAdaptor_FClass2d& FClass2d,
-                     const TopoDS_Face&             F);
+                                 const bool         Inside,
+                                 const BRepTopAdaptor_FClass2d& FClass2d,
+                                 const TopoDS_Face&             F);
 
 static bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f);
 
@@ -90,9 +99,8 @@ void BRepCheck_Face::Minimum()
 {
   if (!myMin)
   {
-    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
-      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
-    NCollection_List<BRepCheck_Status>& lst = **myMap.Bound(myShape, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList = new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    NCollection_List<BRepCheck_Status>&         lst      = **myMap.Bound(myShape, aNewList);
 
     occ::handle<BRep_TFace>& TF = *((occ::handle<BRep_TFace>*)&myShape.TShape());
     if (TF->Surface().IsNull())
@@ -124,9 +132,8 @@ void BRepCheck_Face::InContext(const TopoDS_Shape& S)
       return;
     }
 
-    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
-      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
-    aHList = *myMap.Bound(S, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList = new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    aHList                                   = *myMap.Bound(S, aNewList);
   }
   NCollection_List<BRepCheck_Status>& lst = *aHList;
 
@@ -211,7 +218,7 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const bool Update)
   }
 
   Geom2dAdaptor_Curve aC;
-  double              aFirst, aLast;
+  double       aFirst, aLast;
   DataMapOfShapeBox2d aMapShapeBox2d;
   for (exp1.Init(myShape, TopAbs_WIRE); exp1.More(); exp1.Next())
   {
@@ -335,8 +342,8 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
     return myImbres;
   }
 
-  BRep_Builder                   B;
-  TopExp_Explorer                exp1, exp2;
+  BRep_Builder         B;
+  TopExp_Explorer      exp1, exp2;
   NCollection_List<TopoDS_Shape> theListOfShape;
   for (exp1.Init(myShape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp1.More(); exp1.Next())
   {
@@ -350,7 +357,7 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
     B.Add(newFace, wir1);
 
     BRepTopAdaptor_FClass2d FClass2d(newFace, Precision::PConfusion());
-    bool                    WireBienOriente = false;
+    bool        WireBienOriente = false;
     if (FClass2d.PerformInfinitePoint() != TopAbs_OUT)
     {
       WireBienOriente = true;
@@ -377,10 +384,7 @@ BRepCheck_Status BRepCheck_Face::ClassifyWires(const bool Update)
   // the wires do not contain anything : in this case the wires should be
   // holes in an infinite face.
   TopoDS_Wire Wext;
-  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-         Iterator itm(myMapImb);
-       itm.More();
-       itm.Next())
+  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm(myMapImb); itm.More(); itm.Next())
   {
     if (!itm.Value().IsEmpty())
     {
@@ -457,10 +461,9 @@ BRepCheck_Status BRepCheck_Face::OrientationOfWires(const bool Update)
     return myOrires;
   }
 
-  int         Nbwire = myMapImb.Extent();
-  TopoDS_Wire Wext;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itm(myMapImb);
+  int                                    Nbwire = myMapImb.Extent();
+  TopoDS_Wire                                         Wext;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm(myMapImb);
   if (Nbwire == 1)
   {
     if (!Infinite)
@@ -604,17 +607,17 @@ bool BRepCheck_Face::GeometricControls() const
 //=================================================================================================
 
 static bool Intersect(const TopoDS_Wire&         wir1,
-                      const TopoDS_Wire&         wir2,
-                      const TopoDS_Face&         F,
-                      const DataMapOfShapeBox2d& theMapEdgeBox)
+                                  const TopoDS_Wire&         wir2,
+                                  const TopoDS_Face&         F,
+                                  const DataMapOfShapeBox2d& theMapEdgeBox)
 {
-  double          Inter2dTol = 1.e-10;
+  double   Inter2dTol = 1.e-10;
   TopExp_Explorer exp1, exp2;
   //  BRepAdaptor_Curve2d cur1,cur2;
 
   // Find common vertices of two wires - non-manifold case
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapW1;
-  NCollection_Sequence<TopoDS_Shape>                     CommonVertices;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>      MapW1;
+  NCollection_Sequence<TopoDS_Shape> CommonVertices;
   for (exp1.Init(wir1, TopAbs_VERTEX); exp1.More(); exp1.Next())
     MapW1.Add(exp1.Current());
   for (exp2.Init(wir2, TopAbs_VERTEX); exp2.More(); exp2.Next())
@@ -629,7 +632,7 @@ static bool Intersect(const TopoDS_Wire&         wir1,
   BRepAdaptor_Surface Surf(F, false);
 
   NCollection_Sequence<gp_Pnt> PntSeq;
-  int                          i;
+  int     i;
   for (i = 1; i <= CommonVertices.Length(); i++)
   {
     TopoDS_Vertex V   = TopoDS::Vertex(CommonVertices(i));
@@ -640,7 +643,7 @@ static bool Intersect(const TopoDS_Wire&         wir1,
 
   Geom2dAdaptor_Curve C1, C2;
   gp_Pnt2d            pfirst1, plast1, pfirst2, plast2;
-  double              first1, last1, first2, last2;
+  double       first1, last1, first2, last2;
   Geom2dInt_GInter    Inter;
   IntRes2d_Domain     myDomain1, myDomain2;
   Bnd_Box2d           Box1, Box2;
@@ -764,16 +767,16 @@ static bool Intersect(const TopoDS_Wire&         wir1,
 //=================================================================================================
 
 static bool IsInside(const TopoDS_Wire&             theWire,
-                     const bool                     WireBienOriente,
-                     const BRepTopAdaptor_FClass2d& FClass2d,
-                     const TopoDS_Face&             theFace)
+                                 const bool         WireBienOriente,
+                                 const BRepTopAdaptor_FClass2d& FClass2d,
+                                 const TopoDS_Face&             theFace)
 {
   double aParameter, aFirst, aLast;
 
   TopExp_Explorer anExplorer(theWire, TopAbs_EDGE);
   for (; anExplorer.More(); anExplorer.Next())
   {
-    const TopoDS_Edge&        anEdge   = TopoDS::Edge(anExplorer.Current());
+    const TopoDS_Edge&   anEdge   = TopoDS::Edge(anExplorer.Current());
     occ::handle<Geom2d_Curve> aCurve2D = BRep_Tool::CurveOnSurface(anEdge, theFace, aFirst, aLast);
 
     // Selects the parameter of point on the curve
@@ -788,7 +791,7 @@ static bool IsInside(const TopoDS_Wire&             theWire,
       }
 
       // Edge is skipped if its length is too small
-      double                  aFirst3D, aLast3D;
+      double      aFirst3D, aLast3D;
       occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aFirst3D, aLast3D);
       if (aCurve.IsNull())
       {
@@ -843,9 +846,9 @@ bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
   TopoDS_Face aF = TopoDS::Face(f);
   TopoDS_Wire aW = TopoDS::Wire(w);
 
-  int                            nbE = 0;
+  int     nbE = 0;
   NCollection_List<TopoDS_Shape> lE;
-  TopExp_Explorer                exp(aW, TopAbs_EDGE);
+  TopExp_Explorer      exp(aW, TopAbs_EDGE);
   for (; exp.More(); exp.Next())
   {
     const TopoDS_Shape& s = exp.Current();
@@ -880,7 +883,7 @@ bool CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
   TopAbs_Orientation e1or = e1.Orientation();
   TopAbs_Orientation e2or = e2.Orientation();
 
-  double                    f1 = 0., l1 = 0., f2 = 0., l2 = 0.;
+  double        f1 = 0., l1 = 0., f2 = 0., l2 = 0.;
   occ::handle<Geom2d_Curve> pc1 = BRep_Tool::CurveOnSurface(e1, aF, f1, l1);
   occ::handle<Geom2d_Curve> pc2 = BRep_Tool::CurveOnSurface(e2, aF, f2, l2);
 

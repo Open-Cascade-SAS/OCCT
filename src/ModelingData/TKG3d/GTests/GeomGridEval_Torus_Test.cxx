@@ -29,7 +29,7 @@ const double THE_TOLERANCE = 1e-10;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -346,9 +346,9 @@ TEST(GeomGridEval_TorusTest, PointsDerivativeDN)
 TEST(GeomGridEval_TorusTest, PointsTransformedTorus)
 {
   // Torus with offset center and tilted axis
-  gp_Ax3                            anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
+  gp_Ax3                       anAxis(gp_Pnt(5, 3, 2), gp_Dir(1, 1, 1));
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(anAxis, 8.0, 1.5);
-  GeomGridEval_Torus                anEval(aTorus);
+  GeomGridEval_Torus           anEval(aTorus);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 8);
   for (int i = 1; i <= 8; ++i)

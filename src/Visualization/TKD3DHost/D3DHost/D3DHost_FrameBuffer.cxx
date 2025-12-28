@@ -83,10 +83,10 @@ void D3DHost_FrameBuffer::Release(OpenGl_Context* theCtx)
 //=================================================================================================
 
 bool D3DHost_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theCtx,
-                               IDirect3DDevice9*                  theD3DDevice,
-                               const bool                         theIsD3dEx,
-                               const int                          theSizeX,
-                               const int                          theSizeY)
+                                           IDirect3DDevice9*             theD3DDevice,
+                                           const bool        theIsD3dEx,
+                                           const int        theSizeX,
+                                           const int        theSizeY)
 {
   if (InitD3dInterop(theCtx, theD3DDevice, theIsD3dEx, theSizeX, theSizeY, GL_DEPTH24_STENCIL8))
   {
@@ -98,18 +98,18 @@ bool D3DHost_FrameBuffer::Init(const occ::handle<OpenGl_Context>& theCtx,
 //=================================================================================================
 
 bool D3DHost_FrameBuffer::InitD3dFallback(const occ::handle<OpenGl_Context>& theCtx,
-                                          IDirect3DDevice9*                  theD3DDevice,
-                                          const bool                         theIsD3dEx,
-                                          const int                          theSizeX,
-                                          const int                          theSizeY,
-                                          const int                          theDepthFormat)
+                                                      IDirect3DDevice9*             theD3DDevice,
+                                                      const bool        theIsD3dEx,
+                                                      const int        theSizeX,
+                                                      const int        theSizeY,
+                                                      const int        theDepthFormat)
 {
   const bool isGlInit = OpenGl_FrameBuffer::Init(theCtx,
-                                                 NCollection_Vec2<int>(theSizeX, theSizeY),
-                                                 GL_RGBA8,
-                                                 theDepthFormat,
-                                                 0);
-  myD3dFallback       = true;
+                                                             NCollection_Vec2<int>(theSizeX, theSizeY),
+                                                             GL_RGBA8,
+                                                             theDepthFormat,
+                                                             0);
+  myD3dFallback                   = true;
 
   const int aSizeX = theSizeX > 0 ? theSizeX : 2;
   const int aSizeY = theSizeY > 0 ? theSizeY : 2;
@@ -139,19 +139,19 @@ bool D3DHost_FrameBuffer::InitD3dFallback(const occ::handle<OpenGl_Context>& the
 //=================================================================================================
 
 bool D3DHost_FrameBuffer::InitD3dInterop(const occ::handle<OpenGl_Context>& theCtx,
-                                         IDirect3DDevice9*                  theD3DDevice,
-                                         const bool                         theIsD3dEx,
-                                         const int                          theSizeX,
-                                         const int                          theSizeY,
-                                         const int                          theDepthFormat)
+                                                     IDirect3DDevice9*             theD3DDevice,
+                                                     const bool        theIsD3dEx,
+                                                     const int        theSizeX,
+                                                     const int        theSizeY,
+                                                     const int        theDepthFormat)
 {
   Release(theCtx.operator->());
 
-  myDepthFormat    = theDepthFormat;
-  myVPSizeX        = theSizeX;
-  myVPSizeY        = theSizeY;
-  myInitVPSizeX    = theSizeX;
-  myInitVPSizeY    = theSizeY;
+  myDepthFormat                 = theDepthFormat;
+  myVPSizeX                     = theSizeX;
+  myVPSizeY                     = theSizeY;
+  myInitVPSizeX                 = theSizeX;
+  myInitVPSizeY                 = theSizeY;
   const int aSizeX = theSizeX > 0 ? theSizeX : 2;
   const int aSizeY = theSizeY > 0 ? theSizeY : 2;
 

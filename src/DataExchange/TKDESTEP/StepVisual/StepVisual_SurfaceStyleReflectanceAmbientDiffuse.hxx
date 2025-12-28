@@ -25,7 +25,8 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleReflectanceAmbientDiffuse();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const double theAmbientReflectance, const double theDiffuseReflectance);
+  Standard_EXPORT void Init(const double theAmbientReflectance,
+                            const double theDiffuseReflectance);
 
   //! Returns field DiffuseReflectance
   Standard_EXPORT double DiffuseReflectance() const;

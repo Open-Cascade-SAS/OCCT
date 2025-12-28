@@ -20,7 +20,7 @@ RWStepShape_RWTopologicalRepresentationItem::RWStepShape_RWTopologicalRepresenta
 
 void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepShape_RWTopologicalRepresentationItem::ReadStep(
 }
 
 void RWStepShape_RWTopologicalRepresentationItem::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepShape_TopologicalRepresentationItem>& ent) const
 {
 

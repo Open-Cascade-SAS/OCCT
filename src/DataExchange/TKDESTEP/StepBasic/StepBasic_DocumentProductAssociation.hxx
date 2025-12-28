@@ -33,10 +33,10 @@ public:
   Standard_EXPORT StepBasic_DocumentProductAssociation();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aName,
-                            const bool                                      hasDescription,
-                            const occ::handle<TCollection_HAsciiString>&    aDescription,
-                            const occ::handle<StepBasic_Document>&          aRelatingDocument,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const bool                          hasDescription,
+                            const occ::handle<TCollection_HAsciiString>&         aDescription,
+                            const occ::handle<StepBasic_Document>&               aRelatingDocument,
                             const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct);
 
   //! Returns field Name
@@ -70,11 +70,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductAssociation, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>    theName;
-  occ::handle<TCollection_HAsciiString>    theDescription;
-  occ::handle<StepBasic_Document>          theRelatingDocument;
+  occ::handle<TCollection_HAsciiString>         theName;
+  occ::handle<TCollection_HAsciiString>         theDescription;
+  occ::handle<StepBasic_Document>               theRelatingDocument;
   StepBasic_ProductOrFormationOrDefinition theRelatedProduct;
-  bool                                     defDescription;
+  bool                         defDescription;
 };
 
 #endif // _StepBasic_DocumentProductAssociation_HeaderFile

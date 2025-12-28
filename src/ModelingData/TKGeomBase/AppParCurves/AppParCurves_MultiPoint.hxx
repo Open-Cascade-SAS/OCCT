@@ -25,6 +25,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 class Standard_Transient;
@@ -51,7 +52,8 @@ public:
   //! Points will be initialized with SetPoint and SetPoint2d.
   //! NbPoints is the number of 3D Points.
   //! NbPoints2d is the number of 2D Points.
-  Standard_EXPORT AppParCurves_MultiPoint(const int NbPoints, const int NbPoints2d);
+  Standard_EXPORT AppParCurves_MultiPoint(const int NbPoints,
+                                          const int NbPoints2d);
 
   //! creates a MultiPoint only composed of 3D points.
   Standard_EXPORT AppParCurves_MultiPoint(const NCollection_Array1<gp_Pnt>& tabP);
@@ -104,23 +106,23 @@ public:
   //! newx = x + dx*oldx
   //! newy = y + dy*oldy    for all points of the curve.
   //! newz = z + dz*oldz
-  Standard_EXPORT void Transform(const int    CuIndex,
-                                 const double x,
-                                 const double dx,
-                                 const double y,
-                                 const double dy,
-                                 const double z,
-                                 const double dz);
+  Standard_EXPORT void Transform(const int CuIndex,
+                                 const double    x,
+                                 const double    dx,
+                                 const double    y,
+                                 const double    dy,
+                                 const double    z,
+                                 const double    dz);
 
   //! Applies a transformation to the Curve of range
   //! <CuIndex>.
   //! newx = x + dx*oldx
   //! newy = y + dy*oldy    for all points of the curve.
-  Standard_EXPORT void Transform2d(const int    CuIndex,
-                                   const double x,
-                                   const double dx,
-                                   const double y,
-                                   const double dy);
+  Standard_EXPORT void Transform2d(const int CuIndex,
+                                   const double    x,
+                                   const double    dx,
+                                   const double    y,
+                                   const double    dy);
 
   //! Prints on the stream o information on the current
   //! state of the object.
@@ -130,8 +132,9 @@ public:
 protected:
   occ::handle<Standard_Transient> ttabPoint;
   occ::handle<Standard_Transient> ttabPoint2d;
-  int                             nbP;
-  int                             nbP2d;
+  int           nbP;
+  int           nbP2d;
+
 };
 
 #include <AppParCurves_MultiPoint.lxx>

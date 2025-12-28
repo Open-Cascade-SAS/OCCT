@@ -21,6 +21,7 @@
 #include "RWStepAP203_RWCcDesignContract.pxx"
 #include <StepAP203_CcDesignContract.hxx>
 #include <StepAP203_ContractedItem.hxx>
+#include <StepAP203_ContractedItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Contract.hxx>
@@ -33,11 +34,10 @@ RWStepAP203_RWCcDesignContract::RWStepAP203_RWCcDesignContract() {}
 
 //=================================================================================================
 
-void RWStepAP203_RWCcDesignContract::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepAP203_CcDesignContract>& ent) const
+void RWStepAP203_RWCcDesignContract::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepAP203_CcDesignContract>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_contract"))
@@ -56,12 +56,12 @@ void RWStepAP203_RWCcDesignContract::ReadStep(
   // Own fields of CcDesignContract
 
   occ::handle<NCollection_HArray1<StepAP203_ContractedItem>> aItems;
-  int                                                        sub2 = 0;
+  int                          sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems   = new NCollection_HArray1<StepAP203_ContractedItem>(1, nb0);
+    aItems                = new NCollection_HArray1<StepAP203_ContractedItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_ContractedItem anIt0;
@@ -76,9 +76,8 @@ void RWStepAP203_RWCcDesignContract::ReadStep(
 
 //=================================================================================================
 
-void RWStepAP203_RWCcDesignContract::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepAP203_CcDesignContract>& ent) const
+void RWStepAP203_RWCcDesignContract::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepAP203_CcDesignContract>& ent) const
 {
 
   // Inherited fields of ContractAssignment
@@ -99,7 +98,7 @@ void RWStepAP203_RWCcDesignContract::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignContract::Share(const occ::handle<StepAP203_CcDesignContract>& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&                 iter) const
 {
 
   // Inherited fields of ContractAssignment

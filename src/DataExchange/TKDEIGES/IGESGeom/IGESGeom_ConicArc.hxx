@@ -58,8 +58,8 @@ public:
                             const double E,
                             const double F,
                             const double ZT,
-                            const gp_XY& aStart,
-                            const gp_XY& anEnd);
+                            const gp_XY&        aStart,
+                            const gp_XY&        anEnd);
 
   //! sets the Form Number equal to ComputedFormNumber,
   //! returns True if changed
@@ -69,8 +69,12 @@ public:
   //! 1 for Ellipse, 2 for Hyperbola, 3 for Parabola
   Standard_EXPORT int ComputedFormNumber() const;
 
-  Standard_EXPORT void Equation(double& A, double& B, double& C, double& D, double& E, double& F)
-    const;
+  Standard_EXPORT void Equation(double& A,
+                                double& B,
+                                double& C,
+                                double& D,
+                                double& E,
+                                double& F) const;
 
   //! returns the Z displacement of the arc from XT, YT plane
   Standard_EXPORT double ZPlane() const;
@@ -117,15 +121,15 @@ public:
   //! For a Parabola, Rmin = Rmax = the Focal
   //! Warning : the basic definition (by equation) is not very stable,
   //! limit cases may be approximative
-  Standard_EXPORT void Definition(gp_Pnt& Center,
-                                  gp_Dir& MainAxis,
+  Standard_EXPORT void Definition(gp_Pnt&        Center,
+                                  gp_Dir&        MainAxis,
                                   double& rmin,
                                   double& rmax) const;
 
   //! Same as Definition, but the Location is applied on the
   //! Center and the MainAxis
-  Standard_EXPORT void TransformedDefinition(gp_Pnt& Center,
-                                             gp_Dir& MainAxis,
+  Standard_EXPORT void TransformedDefinition(gp_Pnt&        Center,
+                                             gp_Dir&        MainAxis,
                                              double& rmin,
                                              double& rmax) const;
 
@@ -149,8 +153,8 @@ private:
   double theE;
   double theF;
   double theZT;
-  gp_XY  theStart;
-  gp_XY  theEnd;
+  gp_XY         theStart;
+  gp_XY         theEnd;
 };
 
 #endif // _IGESGeom_ConicArc_HeaderFile

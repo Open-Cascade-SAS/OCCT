@@ -107,9 +107,9 @@ void ProjLib_Torus::Project(const gp_Circ& C)
       || C.Position().Direction().IsParallel(myTorus.Position().Direction(), Precision::Angular()))
   {
     // Iso V
-    gp_Pnt2d P1 = EvalPnt2d(Xc, myTorus); // evaluate U1
-    gp_Pnt2d P2 = EvalPnt2d(Yc, myTorus); // evaluate U2
-    double   Z  = OC.Dot(myTorus.Position().Direction());
+    gp_Pnt2d      P1 = EvalPnt2d(Xc, myTorus); // evaluate U1
+    gp_Pnt2d      P2 = EvalPnt2d(Yc, myTorus); // evaluate U2
+    double Z  = OC.Dot(myTorus.Position().Direction());
     Z /= myTorus.MinorRadius();
 
     double V;

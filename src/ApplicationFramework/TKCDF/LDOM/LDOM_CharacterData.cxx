@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-LDOM_CharacterData::LDOM_CharacterData(const LDOM_BasicText&               aText,
+LDOM_CharacterData::LDOM_CharacterData(const LDOM_BasicText&          aText,
                                        const occ::handle<LDOM_MemManager>& aDoc)
     : LDOM_Node(aText, aDoc),
       myLength(-1)

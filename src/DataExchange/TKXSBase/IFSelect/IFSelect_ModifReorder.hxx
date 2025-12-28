@@ -44,10 +44,10 @@ public:
   //! Acts by computing orders (by method All from ShareTool) then
   //! forcing them in the model. Remark that selection is ignored :
   //! ALL the model is processed in once
-  Standard_EXPORT void Perform(IFSelect_ContextModif&                       ctx,
+  Standard_EXPORT void Perform(IFSelect_ContextModif&                  ctx,
                                const occ::handle<Interface_InterfaceModel>& target,
                                const occ::handle<Interface_Protocol>&       protocol,
-                               Interface_CopyTool&                          TC) const override;
+                               Interface_CopyTool&                     TC) const override;
 
   //! Returns Label as "Reorder, Roots (last or first)"
   Standard_EXPORT TCollection_AsciiString Label() const override;

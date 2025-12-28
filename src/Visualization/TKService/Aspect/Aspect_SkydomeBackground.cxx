@@ -31,11 +31,11 @@ Aspect_SkydomeBackground::Aspect_SkydomeBackground()
 
 //=================================================================================================
 
-Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir& theSunDirection,
-                                                   float         theCloudiness,
-                                                   float         theTime,
-                                                   float         theFogginess,
-                                                   int           theSize)
+Aspect_SkydomeBackground::Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
+                                                   float theCloudiness,
+                                                   float theTime,
+                                                   float theFogginess,
+                                                   int   theSize)
     : mySunDirection(theSunDirection),
       myCloudiness(theCloudiness),
       myTime(theTime),
@@ -90,7 +90,8 @@ void Aspect_SkydomeBackground::SetSize(int theSize)
 
 //=================================================================================================
 
-void Aspect_SkydomeBackground::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Aspect_SkydomeBackground::DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, Aspect_GradientBackground)
 

@@ -26,7 +26,8 @@ StepVisual_DraughtingCalloutElement::StepVisual_DraughtingCalloutElement() {}
 
 //=================================================================================================
 
-int StepVisual_DraughtingCalloutElement::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_DraughtingCalloutElement::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

@@ -68,12 +68,12 @@ gp_GTrsf& BRepTools_GTrsfModification::GTrsf()
 
 //=================================================================================================
 
-bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
-                                             occ::handle<Geom_Surface>& S,
-                                             TopLoc_Location&           L,
-                                             double&                    Tol,
-                                             bool&                      RevWires,
-                                             bool&                      RevFace)
+bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&    F,
+                                                         occ::handle<Geom_Surface>& S,
+                                                         TopLoc_Location&      L,
+                                                         double&        Tol,
+                                                         bool&     RevWires,
+                                                         bool&     RevFace)
 {
   gp_GTrsf gtrsf;
   gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
@@ -128,13 +128,13 @@ bool BRepTools_GTrsfModification::NewSurface(const TopoDS_Face&         F,
 
 //=================================================================================================
 
-bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&       E,
-                                           occ::handle<Geom_Curve>& C,
-                                           TopLoc_Location&         L,
-                                           double&                  Tol)
+bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&  E,
+                                                       occ::handle<Geom_Curve>& C,
+                                                       TopLoc_Location&    L,
+                                                       double&      Tol)
 {
-  double   f, l;
-  gp_GTrsf gtrsf;
+  double f, l;
+  gp_GTrsf      gtrsf;
   gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
   gtrsf.SetTranslationPart(myGTrsf.TranslationPart());
   Tol = BRep_Tool::Tolerance(E) * myGScale;
@@ -178,7 +178,9 @@ bool BRepTools_GTrsfModification::NewCurve(const TopoDS_Edge&       E,
 
 //=================================================================================================
 
-bool BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol)
+bool BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V,
+                                                       gp_Pnt&              P,
+                                                       double&       Tol)
 {
   gp_Pnt Pnt = BRep_Tool::Pnt(V);
   Tol        = BRep_Tool::Tolerance(V);
@@ -193,11 +195,11 @@ bool BRepTools_GTrsfModification::NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, do
 //=================================================================================================
 
 bool BRepTools_GTrsfModification::NewCurve2d(const TopoDS_Edge& E,
-                                             const TopoDS_Face& F,
-                                             const TopoDS_Edge&,
-                                             const TopoDS_Face&,
-                                             occ::handle<Geom2d_Curve>& C,
-                                             double&                    Tol)
+                                                         const TopoDS_Face& F,
+                                                         const TopoDS_Edge&,
+                                                         const TopoDS_Face&,
+                                                         occ::handle<Geom2d_Curve>& C,
+                                                         double&        Tol)
 {
   TopLoc_Location loc;
   Tol = BRep_Tool::Tolerance(E);
@@ -216,9 +218,9 @@ bool BRepTools_GTrsfModification::NewCurve2d(const TopoDS_Edge& E,
 //=================================================================================================
 
 bool BRepTools_GTrsfModification::NewParameter(const TopoDS_Vertex& V,
-                                               const TopoDS_Edge&   E,
-                                               double&              P,
-                                               double&              Tol)
+                                                           const TopoDS_Edge&   E,
+                                                           double&       P,
+                                                           double&       Tol)
 {
   Tol = BRep_Tool::Tolerance(V);
   Tol *= myGScale;
@@ -241,7 +243,7 @@ GeomAbs_Shape BRepTools_GTrsfModification::Continuity(const TopoDS_Edge& E,
 //=================================================================================================
 
 bool BRepTools_GTrsfModification::NewTriangulation(
-  const TopoDS_Face&               theFace,
+  const TopoDS_Face&          theFace,
   occ::handle<Poly_Triangulation>& theTriangulation)
 {
   TopLoc_Location aLoc;
@@ -271,8 +273,8 @@ bool BRepTools_GTrsfModification::NewTriangulation(
   {
     for (int anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
     {
-      Poly_Triangle aTria = theTriangulation->Triangle(anInd);
-      int           aN1, aN2, aN3;
+      Poly_Triangle    aTria = theTriangulation->Triangle(anInd);
+      int aN1, aN2, aN3;
       aTria.Get(aN1, aN2, aN3);
       aTria.Set(aN1, aN3, aN2);
       theTriangulation->SetTriangle(anInd, aTria);
@@ -299,8 +301,8 @@ bool BRepTools_GTrsfModification::NewTriangulation(
 
 //=================================================================================================
 
-bool BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&           theEdge,
-                                             occ::handle<Poly_Polygon3D>& thePoly)
+bool BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&      theEdge,
+                                                         occ::handle<Poly_Polygon3D>& thePoly)
 {
   TopLoc_Location aLoc;
   thePoly = BRep_Tool::Polygon3D(theEdge, aLoc);
@@ -329,11 +331,11 @@ bool BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&           theEdg
 //=================================================================================================
 
 bool BRepTools_GTrsfModification::NewPolygonOnTriangulation(
-  const TopoDS_Edge&                        theEdge,
-  const TopoDS_Face&                        theFace,
+  const TopoDS_Edge&                   theEdge,
+  const TopoDS_Face&                   theFace,
   occ::handle<Poly_PolygonOnTriangulation>& thePoly)
 {
-  TopLoc_Location                 aLoc;
+  TopLoc_Location            aLoc;
   occ::handle<Poly_Triangulation> aT = BRep_Tool::Triangulation(theFace, aLoc);
   if (aT.IsNull())
   {

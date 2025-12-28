@@ -53,10 +53,11 @@ public:
   //! (no result produced)
   //! - 4  polynomial equation is not correct (no result produced)
   //! - 5  less than one segment (no result produced)
-  Standard_EXPORT static int SplineCurveFromIGES(const occ::handle<IGESGeom_SplineCurve>& igesent,
-                                                 const double                             epscoef,
-                                                 const double                             epsgeom,
-                                                 occ::handle<Geom_BSplineCurve>&          result);
+  Standard_EXPORT static int SplineCurveFromIGES(
+    const occ::handle<IGESGeom_SplineCurve>& igesent,
+    const double                 epscoef,
+    const double                 epsgeom,
+    occ::handle<Geom_BSplineCurve>&          result);
 
   //! Tries to increase curve continuity with tolerance <epsgeom>
   //! <continuity> is the new desired continuity, can be 1 or 2
@@ -64,13 +65,15 @@ public:
   //! Returns the new maximum continuity obtained on all knots.
   //! Remark that, for instance with <continuity> = 2, even if not
   //! all the knots can be passed to C2, all knots which can be are.
-  Standard_EXPORT static int IncreaseCurveContinuity(const occ::handle<Geom_BSplineCurve>& curve,
-                                                     const double                          epsgeom,
-                                                     const int continuity = 2);
+  Standard_EXPORT static int IncreaseCurveContinuity(
+    const occ::handle<Geom_BSplineCurve>& curve,
+    const double              epsgeom,
+    const int           continuity = 2);
 
-  Standard_EXPORT static int IncreaseCurveContinuity(const occ::handle<Geom2d_BSplineCurve>& curve,
-                                                     const double epsgeom,
-                                                     const int    continuity = 2);
+  Standard_EXPORT static int IncreaseCurveContinuity(
+    const occ::handle<Geom2d_BSplineCurve>& curve,
+    const double                epsgeom,
+    const int             continuity = 2);
 
   //! Converts a SplineSurface from IGES to a BSplineSurface from CasCade
   //! <epscoef> gives tolerance to consider coefficient to be nul
@@ -86,8 +89,8 @@ public:
   //! - 5  less than one segment in U or V (no result produced)
   Standard_EXPORT static int SplineSurfaceFromIGES(
     const occ::handle<IGESGeom_SplineSurface>& igesent,
-    const double                               epscoef,
-    const double                               epsgeom,
+    const double                   epscoef,
+    const double                   epsgeom,
     occ::handle<Geom_BSplineSurface>&          result);
 
   //! Tries to increase Surface continuity with tolerance <epsgeom>
@@ -98,8 +101,8 @@ public:
   //! all the knots can be passed to C2, all knots which can be are.
   Standard_EXPORT static int IncreaseSurfaceContinuity(
     const occ::handle<Geom_BSplineSurface>& surface,
-    const double                            epsgeom,
-    const int                               continuity = 2);
+    const double                epsgeom,
+    const int             continuity = 2);
 };
 
 #endif // _IGESConvGeom_HeaderFile

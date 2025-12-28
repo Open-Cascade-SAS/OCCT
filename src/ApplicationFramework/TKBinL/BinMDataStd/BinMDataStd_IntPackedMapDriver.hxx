@@ -32,23 +32,23 @@ class BinMDataStd_IntPackedMapDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMDataStd_IntPackedMapDriver(
-    const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT BinMDataStd_IntPackedMapDriver(const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! persistent -> transient (retrieve)
-  Standard_EXPORT bool Paste(const BinObjMgt_Persistent&       Source,
-                             const occ::handle<TDF_Attribute>& Target,
-                             BinObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT bool
+    Paste(const BinObjMgt_Persistent&  Source,
+          const occ::handle<TDF_Attribute>& Target,
+          BinObjMgt_RRelocationTable&  RelocTable) const override;
 
   //! transient -> persistent (store)
-  Standard_EXPORT void Paste(
-    const occ::handle<TDF_Attribute>&                        Source,
-    BinObjMgt_Persistent&                                    Target,
-    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
+                             BinObjMgt_Persistent&        Target,
+                             NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver, BinMDF_ADriver)
+
 };
 
 #endif // _BinMDataStd_IntPackedMapDriver_HeaderFile

@@ -25,7 +25,13 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class Geom2d_Point;
 class gp_Circ2d;
@@ -66,9 +72,9 @@ public:
   //! Exceptions
   //! GccEnt_BadQualifier if a qualifier is inconsistent with
   //! the argument it qualifies (for example, enclosing for a line).
-  Standard_EXPORT Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  Qualified1,
-                                         const occ::handle<Geom2d_Point>& Pcenter,
-                                         const double                     Tolerance);
+  Standard_EXPORT Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Qualified1,
+                                         const occ::handle<Geom2d_Point>&     Pcenter,
+                                         const double             Tolerance);
 
   //! Returns true if the construction algorithm does not fail
   //! (even if it finds no solution).
@@ -119,9 +125,9 @@ public:
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns true if the solution of index Index and the first
   //! argument of this algorithm are the same (i.e. there are 2
@@ -138,14 +144,14 @@ public:
   Standard_EXPORT bool IsTheSame1(const int Index) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<int>             TheSame1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    pararg1;
 };
 
 #endif // _Geom2dGcc_Circ2dTanCen_HeaderFile

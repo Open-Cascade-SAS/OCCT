@@ -35,14 +35,13 @@
 
 IGESAppli_ToolPWBArtworkStackup::IGESAppli_ToolPWBArtworkStackup() {}
 
-void IGESAppli_ToolPWBArtworkStackup::ReadOwnParams(
-  const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESAppli_ToolPWBArtworkStackup::ReadOwnParams(const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                    IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                   num;
-  int                                   tempNbPropertyValues;
+  int                 num;
+  int                 tempNbPropertyValues;
   occ::handle<TCollection_HAsciiString> tempArtworkStackupIdent;
   occ::handle<NCollection_HArray1<int>> tempLevelNumbers;
   // szv#4:S4163:12Mar99 `st=` not needed
@@ -61,9 +60,8 @@ void IGESAppli_ToolPWBArtworkStackup::ReadOwnParams(
   ent->Init(tempNbPropertyValues, tempArtworkStackupIdent, tempLevelNumbers);
 }
 
-void IGESAppli_ToolPWBArtworkStackup::WriteOwnParams(
-  const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESAppli_ToolPWBArtworkStackup::WriteOwnParams(const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   int i, num;
   IW.Send(ent->NbPropertyValues());
@@ -79,13 +77,12 @@ void IGESAppli_ToolPWBArtworkStackup::OwnShared(
 {
 }
 
-void IGESAppli_ToolPWBArtworkStackup::OwnCopy(
-  const occ::handle<IGESAppli_PWBArtworkStackup>& another,
-  const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
-  Interface_CopyTool& /* TC */) const
+void IGESAppli_ToolPWBArtworkStackup::OwnCopy(const occ::handle<IGESAppli_PWBArtworkStackup>& another,
+                                              const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
+                                              Interface_CopyTool& /* TC */) const
 {
-  int                                   num                  = another->NbLevelNumbers();
-  int                                   tempNbPropertyValues = another->NbPropertyValues();
+  int                 num                  = another->NbLevelNumbers();
+  int                 tempNbPropertyValues = another->NbPropertyValues();
   occ::handle<TCollection_HAsciiString> tempArtworkStackupIdent =
     new TCollection_HAsciiString(another->Identification());
   occ::handle<NCollection_HArray1<int>> tempLevelNumbers = new NCollection_HArray1<int>(1, num);
@@ -109,17 +106,16 @@ IGESData_DirChecker IGESAppli_ToolPWBArtworkStackup::DirChecker(
   return DC;
 }
 
-void IGESAppli_ToolPWBArtworkStackup::OwnCheck(
-  const occ::handle<IGESAppli_PWBArtworkStackup>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESAppli_ToolPWBArtworkStackup::OwnCheck(const occ::handle<IGESAppli_PWBArtworkStackup>& /* ent */,
+                                               const Interface_ShareTool&,
+                                               occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESAppli_ToolPWBArtworkStackup::OwnDump(const occ::handle<IGESAppli_PWBArtworkStackup>& ent,
                                               const IGESData_IGESDumper& /* dumper */,
-                                              Standard_OStream& S,
-                                              const int         level) const
+                                              Standard_OStream&      S,
+                                              const int level) const
 {
   S << "IGESAppli_PWBArtworkStackup\n";
   S << "Number of property values : " << ent->NbPropertyValues() << "\n";

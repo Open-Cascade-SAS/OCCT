@@ -47,8 +47,8 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
 // ============================================================================
 
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const occ::handle<StepShape_Vertex>& V,
-                                                           StepToTopoDS_Tool&                   T,
-                                                           StepToTopoDS_NMTool&    NMTool,
+                                                           StepToTopoDS_Tool&              T,
+                                                           StepToTopoDS_NMTool&            NMTool,
                                                            const StepData_Factors& theLocalFactors)
 {
   Init(V, T, NMTool, theLocalFactors);
@@ -60,9 +60,9 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const occ::handle<Ste
 // ============================================================================
 
 void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVertex,
-                                        StepToTopoDS_Tool&                   aTool,
-                                        StepToTopoDS_NMTool&                 NMTool,
-                                        const StepData_Factors&              theLocalFactors)
+                                        StepToTopoDS_Tool&              aTool,
+                                        StepToTopoDS_NMTool&            NMTool,
+                                        const StepData_Factors&         theLocalFactors)
 {
   if (aVertex.IsNull())
   {
@@ -105,9 +105,9 @@ void StepToTopoDS_TranslateVertex::Init(const occ::handle<StepShape_Vertex>& aVe
       return;
     }
     const occ::handle<StepGeom_CartesianPoint> P1 = occ::down_cast<StepGeom_CartesianPoint>(P);
-    occ::handle<Geom_CartesianPoint> P2 = StepToGeom::MakeCartesianPoint(P1, theLocalFactors);
-    BRep_Builder                     B;
-    TopoDS_Vertex                    V;
+    occ::handle<Geom_CartesianPoint>           P2 = StepToGeom::MakeCartesianPoint(P1, theLocalFactors);
+    BRep_Builder                          B;
+    TopoDS_Vertex                         V;
     B.MakeVertex(V, P2->Pnt(), Precision::Confusion()); //: S4136: preci
     aTool.Bind(aVertex, V);
 

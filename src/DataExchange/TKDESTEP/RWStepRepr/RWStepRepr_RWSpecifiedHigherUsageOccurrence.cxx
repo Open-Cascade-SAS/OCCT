@@ -30,7 +30,7 @@ RWStepRepr_RWSpecifiedHigherUsageOccurrence::RWStepRepr_RWSpecifiedHigherUsageOc
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
                    aProductDefinitionRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
-  bool                                  hasProductDefinitionRelationship_Description = true;
+  bool                 hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -86,7 +86,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
   // Inherited fields of AssemblyComponentUsage
 
   occ::handle<TCollection_HAsciiString> aAssemblyComponentUsage_ReferenceDesignator;
-  bool                                  hasAssemblyComponentUsage_ReferenceDesignator = true;
+  bool                 hasAssemblyComponentUsage_ReferenceDesignator = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num,
@@ -134,7 +134,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent) const
 {
 
@@ -175,7 +175,7 @@ void RWStepRepr_RWSpecifiedHigherUsageOccurrence::WriteStep(
 
 void RWStepRepr_RWSpecifiedHigherUsageOccurrence::Share(
   const occ::handle<StepRepr_SpecifiedHigherUsageOccurrence>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

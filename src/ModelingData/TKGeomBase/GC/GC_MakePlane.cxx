@@ -24,6 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
 GC_MakePlane::GC_MakePlane(const gp_Pln& Pl)
@@ -38,7 +39,10 @@ GC_MakePlane::GC_MakePlane(const gp_Pnt& P, const gp_Dir& V)
   ThePlane = new Geom_Plane(P, V);
 }
 
-GC_MakePlane::GC_MakePlane(const double A, const double B, const double C, const double D)
+GC_MakePlane::GC_MakePlane(const double A,
+                           const double B,
+                           const double C,
+                           const double D)
 {
   if (std::sqrt(A * A + B * B + C * C) <= gp::Resolution())
   {

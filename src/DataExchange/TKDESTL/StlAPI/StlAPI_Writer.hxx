@@ -40,15 +40,17 @@ public:
 
   //! Converts a given shape to STL format and writes it to file with a given filename.
   //! \return the error state.
-  Standard_EXPORT bool Write(const TopoDS_Shape&          theShape,
-                             const char*                  theFileName,
-                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Write(const TopoDS_Shape&          theShape,
+          const char*       theFileName,
+          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Converts a given shape to STL format and writes it to the specified stream.
   //! \return the error state.
-  Standard_EXPORT bool Write(const TopoDS_Shape&          theShape,
-                             Standard_OStream&            theStream,
-                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Write(const TopoDS_Shape&          theShape,
+          Standard_OStream&            theStream,
+          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 private:
   bool myASCIIMode;

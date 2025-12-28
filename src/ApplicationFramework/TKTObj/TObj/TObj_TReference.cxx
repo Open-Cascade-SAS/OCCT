@@ -47,9 +47,9 @@ const Standard_GUID& TObj_TReference::ID() const
 
 //=================================================================================================
 
-occ::handle<TObj_TReference> TObj_TReference::Set(const TDF_Label&                theLabel,
-                                                  const occ::handle<TObj_Object>& theObject,
-                                                  const occ::handle<TObj_Object>& theMaster)
+occ::handle<TObj_TReference> TObj_TReference::Set(const TDF_Label&           theLabel,
+                                             const occ::handle<TObj_Object>& theObject,
+                                             const occ::handle<TObj_Object>& theMaster)
 {
   occ::handle<TObj_TReference> A;
   if (!theLabel.FindAttribute(TObj_TReference::GetID(), A))
@@ -118,8 +118,8 @@ occ::handle<TDF_Attribute> TObj_TReference::NewEmpty() const
 void TObj_TReference::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   occ::handle<TObj_TReference> aReference = occ::down_cast<TObj_TReference>(theWith);
-  myLabel                                 = aReference->myLabel;
-  myMasterLabel                           = aReference->myMasterLabel;
+  myLabel                            = aReference->myLabel;
+  myMasterLabel                      = aReference->myMasterLabel;
 }
 
 //=================================================================================================
@@ -191,7 +191,7 @@ void TObj_TReference::BeforeForget()
 //=================================================================================================
 
 bool TObj_TReference::BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-                                 const bool /*isForced*/)
+                                             const bool /*isForced*/)
 {
   if (!theDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
     return true;
@@ -218,7 +218,7 @@ bool TObj_TReference::BeforeUndo(const occ::handle<TDF_AttributeDelta>& theDelta
 //=================================================================================================
 
 bool TObj_TReference::AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-                                const bool /*isForced*/)
+                                            const bool /*isForced*/)
 {
   if (!theDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
     return true;
@@ -254,7 +254,7 @@ void TObj_TReference::AfterResume()
   occ::handle<TObj_TObject> aTObject;
   if (!myMasterLabel.FindAttribute(TObj_TObject::GetID(), aTObject))
     return;
-  aMasterObject                     = aTObject->Get();
+  aMasterObject                = aTObject->Get();
   occ::handle<TObj_Object> anObject = Get();
 
   if (!anObject.IsNull())

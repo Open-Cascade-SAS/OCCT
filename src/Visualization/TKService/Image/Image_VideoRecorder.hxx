@@ -20,6 +20,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
+#include <TCollection_AsciiString.hxx>
 
 // forward declarations
 struct AVFormatContext;
@@ -95,7 +96,8 @@ public:
   //! Open output stream - initialize recorder.
   //! @param[in] theFileName  video filename
   //! @param[in] theParams    video parameters
-  Standard_EXPORT bool Open(const char* theFileName, const Image_VideoParams& theParams);
+  Standard_EXPORT bool Open(const char*              theFileName,
+                                        const Image_VideoParams& theParams);
 
   //! Access RGBA frame, should NOT be re-initialized outside.
   //! Note that image is expected to have upper-left origin.
@@ -117,7 +119,8 @@ protected:
   //! Append video stream.
   //! theParams[in]      video parameters
   //! theDefCodecId[in]  identifier of codec managed by FFmpeg library (AVCodecID enum)
-  Standard_EXPORT bool addVideoStream(const Image_VideoParams& theParams, const int theDefCodecId);
+  Standard_EXPORT bool addVideoStream(const Image_VideoParams& theParams,
+                                                  const int   theDefCodecId);
 
   //! Open video codec.
   Standard_EXPORT bool openVideoCodec(const Image_VideoParams& theParams);

@@ -110,10 +110,10 @@ public:
   const occ::handle<OpenGl_Buffer>& GetVBO() const { return myVbo; }
 
 private:
-  occ::handle<OpenGl_Context>  myGlCtx;     //!< handle to current OpenGL context
-  occ::handle<OpenGl_Buffer>   myVbo;       //!< edited VBO
-  int                          myElemFrom;  //!< element in VBO to upload from
-  int                          myElemsNb;   //!< current element in temporary buffer
+  occ::handle<OpenGl_Context>       myGlCtx;     //!< handle to current OpenGL context
+  occ::handle<OpenGl_Buffer>        myVbo;       //!< edited VBO
+  int             myElemFrom;  //!< element in VBO to upload from
+  int             myElemsNb;   //!< current element in temporary buffer
   NCollection_Array1<theVec_t> myTmpBuffer; //!< temporary array
 };
 

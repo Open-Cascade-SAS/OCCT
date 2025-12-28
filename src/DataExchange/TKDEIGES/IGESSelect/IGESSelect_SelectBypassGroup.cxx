@@ -30,9 +30,9 @@ IGESSelect_SelectBypassGroup::IGESSelect_SelectBypassGroup(const int level)
 }
 
 bool IGESSelect_SelectBypassGroup::Explore(const int /*level*/,
-                                           const occ::handle<Standard_Transient>& ent,
-                                           const Interface_Graph& /*G*/,
-                                           Interface_EntityIterator& explored) const
+                                                       const occ::handle<Standard_Transient>& ent,
+                                                       const Interface_Graph& /*G*/,
+                                                       Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESBasic_Group, gr, ent); // Group groups them all
   if (gr.IsNull())

@@ -19,9 +19,9 @@
 
 //=================================================================================================
 
-TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                       theFont,
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform(StdPrs_BRepFont&                  theFont,
                                              const occ::handle<Font_TextFormatter>& theFormatter,
-                                             const gp_Ax3&                          thePenLoc)
+                                             const gp_Ax3&                     thePenLoc)
 {
   gp_Trsf         aTrsf;
   gp_XYZ          aPen;

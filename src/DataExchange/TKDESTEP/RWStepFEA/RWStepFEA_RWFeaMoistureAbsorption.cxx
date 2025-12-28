@@ -29,7 +29,7 @@ RWStepFEA_RWFeaMoistureAbsorption::RWStepFEA_RWFeaMoistureAbsorption() {}
 
 void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepFEA_FeaMoistureAbsorption>& ent) const
 {
@@ -54,7 +54,7 @@ void RWStepFEA_RWFeaMoistureAbsorption::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaMoistureAbsorption::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepFEA_FeaMoistureAbsorption>& ent) const
 {
 

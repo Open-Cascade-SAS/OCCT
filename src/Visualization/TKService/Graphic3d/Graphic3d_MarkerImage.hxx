@@ -26,17 +26,16 @@
 class Image_PixMap;
 
 //! This class is used to store bitmaps and images for markers rendering.
-//! It can convert bitmap texture stored in NCollection_HArray1<uint8_t> to Image_PixMap and vice
-//! versa.
+//! It can convert bitmap texture stored in NCollection_HArray1<uint8_t> to Image_PixMap and vice versa.
 class Graphic3d_MarkerImage : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_MarkerImage, Standard_Transient)
 public:
   //! Returns a marker image for the marker of the specified type, scale and color.
   Standard_EXPORT static occ::handle<Graphic3d_MarkerImage> StandardMarker(
-    const Aspect_TypeOfMarker      theMarkerType,
-    const float                    theScale,
-    const NCollection_Vec4<float>& theColor);
+    const Aspect_TypeOfMarker theMarkerType,
+    const float  theScale,
+    const NCollection_Vec4<float>&     theColor);
 
 public:
   //! Constructor from existing pixmap.
@@ -52,8 +51,8 @@ public:
   //! @param[in] theWidth   number of bits in a row
   //! @param[in] theHeight  number of bits in a column
   Standard_EXPORT Graphic3d_MarkerImage(const occ::handle<NCollection_HArray1<uint8_t>>& theBitMap,
-                                        const int                                        theWidth,
-                                        const int                                        theHeight);
+                                        const int               theWidth,
+                                        const int               theHeight);
 
   //! Return marker image.
   //! If an instance of the class has been initialized with a bitmap, it will be converted to image.
@@ -73,7 +72,8 @@ public:
   Standard_EXPORT const TCollection_AsciiString& GetImageAlphaId() const;
 
   //! Return texture size
-  Standard_EXPORT void GetTextureSize(int& theWidth, int& theHeight) const;
+  Standard_EXPORT void GetTextureSize(int& theWidth,
+                                      int& theHeight) const;
 
   //! Return TRUE if marker image has colors (e.g. RGBA and not grayscale).
   Standard_EXPORT bool IsColoredImage() const;
@@ -87,16 +87,16 @@ public:
   //! @param[in] theIsTopDown  flag indicating expected rows order in returned bitmap, which is
   //! bottom-up by default
   Standard_EXPORT occ::handle<NCollection_HArray1<uint8_t>> GetBitMapArray(
-    const double theAlphaValue = 0.5,
-    const bool   theIsTopDown  = false) const;
+    const double    theAlphaValue = 0.5,
+    const bool theIsTopDown  = false) const;
 
 protected:
   //! Constructor from existing pixmap with predefined ids.
   Standard_EXPORT Graphic3d_MarkerImage(
-    const TCollection_AsciiString&   theId,
-    const TCollection_AsciiString&   theAlphaId,
-    const occ::handle<Image_PixMap>& theImage,
-    const occ::handle<Image_PixMap>& theImageAlpha = occ::handle<Image_PixMap>());
+    const TCollection_AsciiString& theId,
+    const TCollection_AsciiString& theAlphaId,
+    const occ::handle<Image_PixMap>&    theImage,
+    const occ::handle<Image_PixMap>&    theImageAlpha = occ::handle<Image_PixMap>());
 
 private:
   TCollection_AsciiString myImageId;      //!< resource identifier
@@ -106,9 +106,9 @@ private:
   occ::handle<Image_PixMap>          myImage;        //!< full-color  marker definition
   occ::handle<Image_PixMap>          myImageAlpha;   //!< alpha-color marker definition (for dynamic hi-lighting)
   int              myMargin;       //!< extra margin from boundaries for bitmap -> point sprite conversion, 1 px by default
-               // clang-format on
-  int myWidth;  //!< marker width
-  int myHeight; //!< marker height
+                                          // clang-format on
+  int myWidth;               //!< marker width
+  int myHeight;              //!< marker height
 };
 
 #endif // _Graphic3d_MarkerImage_H__

@@ -23,6 +23,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -37,6 +38,8 @@
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -49,18 +52,18 @@ IGESGeom_ToolBoundary::IGESGeom_ToolBoundary() {}
 
 void IGESGeom_ToolBoundary::ReadOwnParams(const occ::handle<IGESGeom_Boundary>&       ent,
                                           const occ::handle<IGESData_IGESReaderData>& IR,
-                                          IGESData_ParamReader&                       PR) const
+                                          IGESData_ParamReader&                  PR) const
 {
   // MGE 30/07/98
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                              num; // szv#4:S4163:12Mar99 j not needed, i moved down in `for`
-  int                              tempType, tempPreference;
-  occ::handle<IGESData_IGESEntity> tempSurface;
-  occ::handle<NCollection_HArray1<int>>                              tempSenses;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempModelCurves;
-  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                tempParameterCurves;
-  IGESData_Status                                                    aStatus;
+  int                 num; // szv#4:S4163:12Mar99 j not needed, i moved down in `for`
+  int                 tempType, tempPreference;
+  occ::handle<IGESData_IGESEntity>      tempSurface;
+  occ::handle<NCollection_HArray1<int>> tempSenses;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           tempModelCurves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> tempParameterCurves;
+  IGESData_Status                                aStatus;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadInteger(PR.Current(), tempType))
@@ -211,7 +214,7 @@ void IGESGeom_ToolBoundary::ReadOwnParams(const occ::handle<IGESGeom_Boundary>& 
 //=================================================================================================
 
 void IGESGeom_ToolBoundary::WriteOwnParams(const occ::handle<IGESGeom_Boundary>& ent,
-                                           IGESData_IGESWriter&                  IW) const
+                                           IGESData_IGESWriter&             IW) const
 {
   int i, j, num1;
   IW.Send(ent->BoundaryType());
@@ -222,9 +225,8 @@ void IGESGeom_ToolBoundary::WriteOwnParams(const occ::handle<IGESGeom_Boundary>&
   {
     IW.Send(ent->ModelSpaceCurve(i));
     IW.Send(ent->Sense(i));
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves =
-      ent->ParameterCurves(i);
-    int nbc = ent->NbParameterCurves(i);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves = ent->ParameterCurves(i);
+    int                     nbc    = ent->NbParameterCurves(i);
     IW.Send(nbc);
     if (nbc > 0)
     {
@@ -237,15 +239,14 @@ void IGESGeom_ToolBoundary::WriteOwnParams(const occ::handle<IGESGeom_Boundary>&
 //=================================================================================================
 
 void IGESGeom_ToolBoundary::OwnShared(const occ::handle<IGESGeom_Boundary>& ent,
-                                      Interface_EntityIterator&             iter) const
+                                      Interface_EntityIterator&        iter) const
 {
   int i, j, num1;
   iter.GetOneItem(ent->Surface());
   for (num1 = ent->NbModelSpaceCurves(), i = 1; i <= num1; i++)
   {
     iter.GetOneItem(ent->ModelSpaceCurve(i));
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves =
-      ent->ParameterCurves(i);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves = ent->ParameterCurves(i);
     if (!curves.IsNull())
     {
       int nbc = curves->Length();
@@ -259,7 +260,7 @@ void IGESGeom_ToolBoundary::OwnShared(const occ::handle<IGESGeom_Boundary>& ent,
 
 void IGESGeom_ToolBoundary::OwnCopy(const occ::handle<IGESGeom_Boundary>& another,
                                     const occ::handle<IGESGeom_Boundary>& ent,
-                                    Interface_CopyTool&                   TC) const
+                                    Interface_CopyTool&              TC) const
 {
   int i, j;
   int tempType       = another->BoundaryType();
@@ -268,9 +269,8 @@ void IGESGeom_ToolBoundary::OwnCopy(const occ::handle<IGESGeom_Boundary>& anothe
 
   DeclareAndCast(IGESData_IGESEntity, tempSurface, TC.Transferred(another->Surface()));
 
-  occ::handle<NCollection_HArray1<int>> tempSenses = new NCollection_HArray1<int>(1, num1);
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempModelCurves =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num1);
+  occ::handle<NCollection_HArray1<int>>     tempSenses      = new NCollection_HArray1<int>(1, num1);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempModelCurves = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num1);
   occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> tempParameterCurves =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, num1);
 
@@ -279,9 +279,8 @@ void IGESGeom_ToolBoundary::OwnCopy(const occ::handle<IGESGeom_Boundary>& anothe
     DeclareAndCast(IGESData_IGESEntity, tempEnt, TC.Transferred(another->ModelSpaceCurve(i)));
     tempModelCurves->SetValue(i, tempEnt);
     tempSenses->SetValue(i, another->Sense(i));
-    int num2 = another->NbParameterCurves(i);
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ParCurves =
-      another->ParameterCurves(i);
+    int                     num2      = another->NbParameterCurves(i);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ParCurves = another->ParameterCurves(i);
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempParCurves;
     if (num2 > 0)
       tempParCurves = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num2);
@@ -303,8 +302,8 @@ bool IGESGeom_ToolBoundary::OwnCorrect(const occ::handle<IGESGeom_Boundary>& ent
   //  bool t0 = (ent->BoundaryType() == 0);
   bool res = false;
   bool r2d = false;
-  int  nb  = ent->NbModelSpaceCurves();
-  int  i; // svv Jan11 2000 : porting on DEC
+  int nb  = ent->NbModelSpaceCurves();
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i++)
   {
     int nbi = ent->NbParameterCurves(i);
@@ -334,9 +333,8 @@ bool IGESGeom_ToolBoundary::OwnCorrect(const occ::handle<IGESGeom_Boundary>& ent
 
   occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> cv2d =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nb);
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> modcv =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
-  occ::handle<NCollection_HArray1<int>> senses = new NCollection_HArray1<int>(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> modcv  = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  occ::handle<NCollection_HArray1<int>>     senses = new NCollection_HArray1<int>(1, nb);
   for (i = 1; i <= nb; i++)
   {
     senses->SetValue(i, ent->Sense(i));
@@ -422,9 +420,9 @@ void IGESGeom_ToolBoundary::OwnCheck(const occ::handle<IGESGeom_Boundary>& ent,
 //=================================================================================================
 
 void IGESGeom_ToolBoundary::OwnDump(const occ::handle<IGESGeom_Boundary>& ent,
-                                    const IGESData_IGESDumper&            dumper,
-                                    Standard_OStream&                     S,
-                                    const int                             level) const
+                                    const IGESData_IGESDumper&       dumper,
+                                    Standard_OStream&                S,
+                                    const int           level) const
 {
   int i, num, sublevel = (level > 4) ? 1 : 0;
   S << "IGESGeom_Boundary\n"
@@ -446,8 +444,7 @@ void IGESGeom_ToolBoundary::OwnDump(const occ::handle<IGESGeom_Boundary>& ent,
       dumper.Dump(ent->ModelSpaceCurve(i), S, 1);
       S << "  Orientation Flags : " << ent->Sense(i) << "\n"
         << "  Parameter Curves : ";
-      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves =
-        ent->ParameterCurves(i);
+      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curves = ent->ParameterCurves(i);
       if (!curves.IsNull())
       {
         IGESData_DumpEntities(S, dumper, level, 1, curves->Length(), curves->Value);

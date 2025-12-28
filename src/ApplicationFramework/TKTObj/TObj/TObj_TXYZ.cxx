@@ -81,7 +81,7 @@ occ::handle<TDF_Attribute> TObj_TXYZ::NewEmpty() const
 void TObj_TXYZ::Restore(const occ::handle<TDF_Attribute>& theWith)
 {
   occ::handle<TObj_TXYZ> R = occ::down_cast<TObj_TXYZ>(theWith);
-  myXYZ                    = R->Get();
+  myXYZ               = R->Get();
 }
 
 //=================================================================================================

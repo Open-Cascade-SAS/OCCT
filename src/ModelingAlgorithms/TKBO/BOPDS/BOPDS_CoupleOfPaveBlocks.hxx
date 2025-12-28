@@ -102,8 +102,7 @@ public:
    * @param thePB2
    *  secondt pave block
    */
-  void SetPaveBlocks(const occ::handle<BOPDS_PaveBlock>& thePB1,
-                     const occ::handle<BOPDS_PaveBlock>& thePB2)
+  void SetPaveBlocks(const occ::handle<BOPDS_PaveBlock>& thePB1, const occ::handle<BOPDS_PaveBlock>& thePB2)
   {
     myPB[0] = thePB1;
     myPB[1] = thePB2;
@@ -166,10 +165,10 @@ public:
   double Tolerance() const { return myTolerance; }
 
 protected:
-  int                          myIndexInterf;
-  int                          myIndex;
+  int        myIndexInterf;
+  int        myIndex;
   occ::handle<BOPDS_PaveBlock> myPB[2];
-  double                       myTolerance;
+  double           myTolerance;
 };
 
 //

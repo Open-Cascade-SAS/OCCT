@@ -48,7 +48,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromFile(
   const TCollection_AsciiString&     thePath)
 {
   occ::handle<Graphic3d_ShaderObject> aShader = new Graphic3d_ShaderObject(theType);
-  aShader->myPath                             = thePath;
+  aShader->myPath                        = thePath;
 
   OSD_File aFile(thePath);
   if (!aFile.Exists())
@@ -72,7 +72,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
   const TCollection_AsciiString&     theSource)
 {
   occ::handle<Graphic3d_ShaderObject> aShader = new Graphic3d_ShaderObject(theType);
-  aShader->mySource                           = theSource;
+  aShader->mySource                      = theSource;
   return aShader;
 }
 
@@ -103,7 +103,7 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
   const ShaderVariableList&      theStageInOuts,
   const TCollection_AsciiString& theInName,
   const TCollection_AsciiString& theOutName,
-  int                            theNbGeomInputVerts)
+  int               theNbGeomInputVerts)
 {
   if (theSource.IsEmpty())
   {
@@ -124,9 +124,10 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
        aVarListIter.Next())
   {
     const ShaderVariable& aVar        = aVarListIter.Value();
-    int                   aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
-    for (int aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= (int)Graphic3d_TOS_COMPUTE;
-         aStageIter     = aStageIter << 1)
+    int      aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
+    for (int aStageIter = Graphic3d_TOS_VERTEX;
+         aStageIter <= (int)Graphic3d_TOS_COMPUTE;
+         aStageIter = aStageIter << 1)
     {
       if ((aVar.Stages & aStageIter) != 0)
       {
@@ -139,8 +140,9 @@ occ::handle<Graphic3d_ShaderObject> Graphic3d_ShaderObject::CreateFromSource(
       continue;
     }
 
-    const bool hasGeomStage = theNbGeomInputVerts > 0 && aStageLower < Graphic3d_TOS_GEOMETRY
-                              && aStageUpper >= Graphic3d_TOS_GEOMETRY;
+    const bool hasGeomStage = theNbGeomInputVerts > 0
+                                          && aStageLower < Graphic3d_TOS_GEOMETRY
+                                          && aStageUpper >= Graphic3d_TOS_GEOMETRY;
     const bool isAllStagesVar =
       aStageLower == Graphic3d_TOS_VERTEX && aStageUpper == Graphic3d_TOS_FRAGMENT;
     if (hasGeomStage || !theInName.IsEmpty() || !theOutName.IsEmpty())

@@ -22,7 +22,9 @@
 #include <math_FunctionSample.hxx>
 #include <Standard_OutOfRange.hxx>
 
-math_FunctionSample::math_FunctionSample(const double A, const double B, const int N)
+math_FunctionSample::math_FunctionSample(const double    A,
+                                         const double    B,
+                                         const int N)
     : a(A),
       b(B),
       n(N)

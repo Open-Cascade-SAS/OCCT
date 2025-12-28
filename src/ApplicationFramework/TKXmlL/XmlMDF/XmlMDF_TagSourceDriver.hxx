@@ -35,15 +35,17 @@ public:
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       Source,
-                             const occ::handle<TDF_Attribute>& Target,
-                             XmlObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT bool
+    Paste(const XmlObjMgt_Persistent&  Source,
+          const occ::handle<TDF_Attribute>& Target,
+          XmlObjMgt_RRelocationTable&  RelocTable) const override;
 
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
-                             XmlObjMgt_Persistent&             Target,
-                             XmlObjMgt_SRelocationTable&       RelocTable) const override;
+                             XmlObjMgt_Persistent&        Target,
+                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
 
   DEFINE_STANDARD_RTTIEXT(XmlMDF_TagSourceDriver, XmlMDF_ADriver)
+
 };
 
 #endif // _XmlMDF_TagSourceDriver_HeaderFile

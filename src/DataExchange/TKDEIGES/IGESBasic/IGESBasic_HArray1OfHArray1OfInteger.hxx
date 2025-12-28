@@ -22,14 +22,18 @@
 
 #include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 class IGESBasic_HArray1OfHArray1OfInteger : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT IGESBasic_HArray1OfHArray1OfInteger(const int low, const int up);
+  Standard_EXPORT IGESBasic_HArray1OfHArray1OfInteger(const int low,
+                                                      const int up);
 
   Standard_EXPORT int Lower() const;
 
@@ -37,7 +41,8 @@ public:
 
   Standard_EXPORT int Length() const;
 
-  Standard_EXPORT void SetValue(const int num, const occ::handle<NCollection_HArray1<int>>& val);
+  Standard_EXPORT void SetValue(const int                  num,
+                                const occ::handle<NCollection_HArray1<int>>& val);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> Value(const int num) const;
 

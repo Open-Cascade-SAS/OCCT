@@ -26,12 +26,12 @@
 
 Extrema_LocateExtCC2d::Extrema_LocateExtCC2d(const Adaptor2d_Curve2d& C1,
                                              const Adaptor2d_Curve2d& C2,
-                                             const double             U0,
-                                             const double             V0)
+                                             const double      U0,
+                                             const double      V0)
     : mySqDist(RealLast())
 {
-  double            TolU = Extrema_Curve2dTool::Resolution(C1, Precision::Confusion());
-  double            TolV = Extrema_Curve2dTool::Resolution(C2, Precision::Confusion());
+  double     TolU = Extrema_Curve2dTool::Resolution(C1, Precision::Confusion());
+  double     TolV = Extrema_Curve2dTool::Resolution(C2, Precision::Confusion());
   Extrema_POnCurv2d P1, P2;
 
   // Non implemente pour l instant: l appel a Geom2dExtrema_ExtCC.

@@ -38,6 +38,7 @@ public:
 protected:
   //! Initializes a TDF_DeltaOnModification.
   Standard_EXPORT TDF_DeltaOnModification(const occ::handle<TDF_Attribute>& anAttribute);
+
 };
 
 #endif // _TDF_DeltaOnModification_HeaderFile

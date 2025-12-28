@@ -37,31 +37,31 @@ public:
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem();
 
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem(
-    const TopoDS_Face&                         theFace,
-    TopoDSToStep_Tool&                         theTool,
+    const TopoDS_Face&                    theFace,
+    TopoDSToStep_Tool&                    theTool,
     const occ::handle<Transfer_FinderProcess>& theFP,
-    const bool                                 theToPreferSurfaceSet,
-    const StepData_Factors&                    theLocalFactors,
-    const Message_ProgressRange&               theProgress = Message_ProgressRange());
+    const bool                theToPreferSurfaceSet,
+    const StepData_Factors&               theLocalFactors,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem(
-    const TopoDS_Shell&                        theShell,
-    TopoDSToStep_Tool&                         theTool,
+    const TopoDS_Shell&                   theShell,
+    TopoDSToStep_Tool&                    theTool,
     const occ::handle<Transfer_FinderProcess>& theFP,
-    const StepData_Factors&                    theLocalFactors,
-    const Message_ProgressRange&               theProgress = Message_ProgressRange());
+    const StepData_Factors&               theLocalFactors,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void Init(const TopoDS_Face&                         theFace,
-                            TopoDSToStep_Tool&                         theTool,
+  Standard_EXPORT void Init(const TopoDS_Face&                    theFace,
+                            TopoDSToStep_Tool&                    theTool,
                             const occ::handle<Transfer_FinderProcess>& theFP,
-                            const bool                                 theToPreferSurfaceSet,
-                            const StepData_Factors&                    theLocalFactors,
+                            const bool                theToPreferSurfaceSet,
+                            const StepData_Factors&               theLocalFactors,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void Init(const TopoDS_Shell&                        theShell,
-                            TopoDSToStep_Tool&                         theTool,
+  Standard_EXPORT void Init(const TopoDS_Shell&                   theShell,
+                            TopoDSToStep_Tool&                    theTool,
                             const occ::handle<Transfer_FinderProcess>& theFP,
-                            const StepData_Factors&                    theLocalFactors,
+                            const StepData_Factors&               theLocalFactors,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT const occ::handle<StepVisual_TessellatedItem>& Value() const;

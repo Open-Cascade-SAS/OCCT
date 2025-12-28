@@ -61,7 +61,9 @@ public:
   //! Warnings:
   //! It is not forbidden to create a circle with theRadius = 0.0
   //! Raises ConstructionError if theRadius < 0.0.
-  constexpr gp_Circ2d(const gp_Ax2d& theXAxis, const double theRadius, const bool theIsSense = true)
+  constexpr gp_Circ2d(const gp_Ax2d&         theXAxis,
+                      const double    theRadius,
+                      const bool theIsSense = true)
       : pos(theXAxis, theIsSense),
         radius(theRadius)
   {
@@ -125,7 +127,8 @@ public:
   //! Returns True if the distance between theP and any point on
   //! the circumference of the circle is lower of equal to
   //! <theLinearTolerance>.
-  bool Contains(const gp_Pnt2d& theP, const double theLinearTolerance) const noexcept
+  bool Contains(const gp_Pnt2d&     theP,
+                            const double theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -238,7 +241,7 @@ public:
 
   //! Translates a circle from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Circ2d Translated(const gp_Pnt2d& theP1,
-                                               const gp_Pnt2d& theP2) const noexcept
+                                                    const gp_Pnt2d& theP2) const noexcept
   {
     gp_Circ2d aCirc = *this;
     aCirc.pos.Translate(theP1, theP2);
@@ -246,8 +249,8 @@ public:
   }
 
 private:
-  gp_Ax22d pos;
-  double   radius;
+  gp_Ax22d      pos;
+  double radius;
 };
 
 //=================================================================================================
@@ -261,12 +264,12 @@ constexpr inline void gp_Circ2d::Coefficients(double& theA,
 {
   double aXc  = pos.Location().X();
   double anYc = pos.Location().Y();
-  theA        = 1.0;
-  theB        = 1.0;
-  theC        = 0.0;
-  theD        = -aXc;
-  theE        = -anYc;
-  theF        = aXc * aXc + anYc * anYc - radius * radius;
+  theA               = 1.0;
+  theB               = 1.0;
+  theC               = 0.0;
+  theD               = -aXc;
+  theE               = -anYc;
+  theF               = aXc * aXc + anYc * anYc - radius * radius;
 }
 
 //=================================================================================================

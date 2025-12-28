@@ -49,15 +49,14 @@ public:
 
   //! Set if triangulation should be stored or not.
   Standard_EXPORT void SetWithTriangles(const occ::handle<Message_Messenger>& theMessageDriver,
-                                        const bool                            theWithTriangulation);
+                                        const bool           theWithTriangulation);
   //! Set if triangulation should be stored with normals or not.
   Standard_EXPORT void SetWithNormals(const occ::handle<Message_Messenger>& theMessageDriver,
-                                      const bool                            theWithTriangulation);
+                                      const bool           theWithTriangulation);
 
   //! Enables writing in the quick part access mode.
-  Standard_EXPORT void EnableQuickPartWriting(
-    const occ::handle<Message_Messenger>& theMessageDriver,
-    const bool                            theValue) override;
+  Standard_EXPORT void EnableQuickPartWriting(const occ::handle<Message_Messenger>& theMessageDriver,
+                                              const bool theValue) override;
 
   //! Clears the NamedShape driver
   Standard_EXPORT virtual void Clear() override;

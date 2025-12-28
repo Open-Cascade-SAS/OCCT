@@ -28,7 +28,10 @@ void BRepLProp_CurveTool::Value(const BRepAdaptor_Curve& C, const double U, gp_P
 
 //=================================================================================================
 
-void BRepLProp_CurveTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& V1)
+void BRepLProp_CurveTool::D1(const BRepAdaptor_Curve& C,
+                             const double      U,
+                             gp_Pnt&                  P,
+                             gp_Vec&                  V1)
 {
   C.D1(U, P, V1);
 }
@@ -36,7 +39,7 @@ void BRepLProp_CurveTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt&
 //=================================================================================================
 
 void BRepLProp_CurveTool::D2(const BRepAdaptor_Curve& C,
-                             const double             U,
+                             const double      U,
                              gp_Pnt&                  P,
                              gp_Vec&                  V1,
                              gp_Vec&                  V2)
@@ -47,7 +50,7 @@ void BRepLProp_CurveTool::D2(const BRepAdaptor_Curve& C,
 //=================================================================================================
 
 void BRepLProp_CurveTool::D3(const BRepAdaptor_Curve& C,
-                             const double             U,
+                             const double      U,
                              gp_Pnt&                  P,
                              gp_Vec&                  V1,
                              gp_Vec&                  V2,

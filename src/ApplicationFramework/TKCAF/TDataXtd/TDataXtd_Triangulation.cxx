@@ -50,7 +50,7 @@ occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(const TDF_Label&
 //           Initializes the attribute by a Poly_Triangulation object.
 //=======================================================================
 occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(
-  const TDF_Label&                       theLabel,
+  const TDF_Label&                  theLabel,
   const occ::handle<Poly_Triangulation>& theMesh)
 {
   occ::handle<TDataXtd_Triangulation> M = TDataXtd_Triangulation::Set(theLabel);
@@ -215,7 +215,8 @@ Poly_Triangle TDataXtd_Triangulation::Triangle(const int theIndex) const
 //           Raises Standard_OutOfRange exception if theIndex is less than 1 or greater than
 //           NbTriangles.
 //=======================================================================
-void TDataXtd_Triangulation::SetTriangle(const int theIndex, const Poly_Triangle& theTriangle)
+void TDataXtd_Triangulation::SetTriangle(const int theIndex,
+                                         const Poly_Triangle&   theTriangle)
 {
   Backup();
   myTriangulation->SetTriangle(theIndex, theTriangle);

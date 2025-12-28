@@ -22,7 +22,8 @@
 
 StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect() {}
 
-int StepVisual_PresentationStyleSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_PresentationStyleSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -55,8 +56,7 @@ occ::handle<StepVisual_NullStyleMember> StepVisual_PresentationStyleSelect::Null
   return GetCasted(StepVisual_NullStyleMember, Value());
 }
 
-occ::handle<StepVisual_SurfaceStyleUsage> StepVisual_PresentationStyleSelect::SurfaceStyleUsage()
-  const
+occ::handle<StepVisual_SurfaceStyleUsage> StepVisual_PresentationStyleSelect::SurfaceStyleUsage() const
 {
   return GetCasted(StepVisual_SurfaceStyleUsage, Value());
 }

@@ -32,22 +32,21 @@ public:
   //! Returns a ViewVolume
   Standard_EXPORT StepVisual_ViewVolume();
 
-  Standard_EXPORT void Init(const StepVisual_CentralOrParallel          aProjectionType,
+  Standard_EXPORT void Init(const StepVisual_CentralOrParallel     aProjectionType,
                             const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint,
-                            const double                                aViewPlaneDistance,
-                            const double                                aFrontPlaneDistance,
-                            const bool                                  aFrontPlaneClipping,
-                            const double                                aBackPlaneDistance,
-                            const bool                                  aBackPlaneClipping,
-                            const bool                                  aViewVolumeSidesClipping,
+                            const double                    aViewPlaneDistance,
+                            const double                    aFrontPlaneDistance,
+                            const bool                 aFrontPlaneClipping,
+                            const double                    aBackPlaneDistance,
+                            const bool                 aBackPlaneClipping,
+                            const bool                 aViewVolumeSidesClipping,
                             const occ::handle<StepVisual_PlanarBox>&    aViewWindow);
 
   Standard_EXPORT void SetProjectionType(const StepVisual_CentralOrParallel aProjectionType);
 
   Standard_EXPORT StepVisual_CentralOrParallel ProjectionType() const;
 
-  Standard_EXPORT void SetProjectionPoint(
-    const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint);
+  Standard_EXPORT void SetProjectionPoint(const occ::handle<StepGeom_CartesianPoint>& aProjectionPoint);
 
   Standard_EXPORT occ::handle<StepGeom_CartesianPoint> ProjectionPoint() const;
 
@@ -82,14 +81,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_ViewVolume, Standard_Transient)
 
 private:
-  StepVisual_CentralOrParallel         projectionType;
+  StepVisual_CentralOrParallel    projectionType;
   occ::handle<StepGeom_CartesianPoint> projectionPoint;
-  double                               viewPlaneDistance;
-  double                               frontPlaneDistance;
-  bool                                 frontPlaneClipping;
-  double                               backPlaneDistance;
-  bool                                 backPlaneClipping;
-  bool                                 viewVolumeSidesClipping;
+  double                   viewPlaneDistance;
+  double                   frontPlaneDistance;
+  bool                frontPlaneClipping;
+  double                   backPlaneDistance;
+  bool                backPlaneClipping;
+  bool                viewVolumeSidesClipping;
   occ::handle<StepVisual_PlanarBox>    viewWindow;
 };
 

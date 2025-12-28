@@ -24,10 +24,19 @@
 #include <GeomFill_LocationLaw.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <GeomFill_PipeError.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class GeomFill_LocationLaw;
 class TopoDS_Edge;
 class TopoDS_Vertex;
@@ -82,14 +91,16 @@ public:
   //! - -1 : The law before the vertex is used.
   //! -  1 : The law after the vertex is used.
   //! -  0 : Average of the both laws is used.
-  Standard_EXPORT void PerformVertex(const int            Index,
-                                     const TopoDS_Vertex& InputVertex,
-                                     const double         TolMin,
-                                     TopoDS_Vertex&       OutputVertex,
-                                     const int            Location = 0) const;
+  Standard_EXPORT void PerformVertex(const int Index,
+                                     const TopoDS_Vertex&   InputVertex,
+                                     const double    TolMin,
+                                     TopoDS_Vertex&         OutputVertex,
+                                     const int Location = 0) const;
 
   //! Return the Curvilinear Bounds of the <Index> Law
-  Standard_EXPORT void CurvilinearBounds(const int Index, double& First, double& Last) const;
+  Standard_EXPORT void CurvilinearBounds(const int Index,
+                                         double&         First,
+                                         double&         Last) const;
 
   Standard_EXPORT bool IsClosed() const;
 
@@ -98,15 +109,17 @@ public:
   //! -1 : Case Not connex
   //! 0  : It is connex (G0)
   //! 1  : It is tangent (G1)
-  Standard_EXPORT int IsG1(const int    Index,
-                           const double SpatialTolerance = 1.0e-7,
-                           const double AngularTolerance = 1.0e-4) const;
+  Standard_EXPORT int IsG1(const int Index,
+                                        const double    SpatialTolerance = 1.0e-7,
+                                        const double    AngularTolerance = 1.0e-4) const;
 
   //! Apply the Law to a shape, for a given Curvilinear abscissa
   Standard_EXPORT void D0(const double Abscissa, TopoDS_Shape& Section);
 
   //! Find the index Law and the parameter, for a given Curvilinear abscissa
-  Standard_EXPORT void Parameter(const double Abscissa, int& Index, double& Param);
+  Standard_EXPORT void Parameter(const double Abscissa,
+                                 int&   Index,
+                                 double&      Param);
 
   //! Return the curvilinear abscissa corresponding to a point
   //! of the path, defined by <Index> of Edge and a parameter
@@ -130,12 +143,12 @@ protected:
   //! To preserve if possible the BiNormal in transformations
   Standard_EXPORT void BiNormalIsMain();
 
-  TopoDS_Wire                                                         myPath;
-  double                                                              myTol;
+  TopoDS_Wire                           myPath;
+  double                         myTol;
   occ::handle<NCollection_HArray1<occ::handle<GeomFill_LocationLaw>>> myLaws;
-  occ::handle<NCollection_HArray1<double>>                            myLength;
-  occ::handle<NCollection_HArray1<TopoDS_Shape>>                      myEdges;
-  occ::handle<NCollection_HArray1<int>>                               myDisc;
+  occ::handle<NCollection_HArray1<double>>         myLength;
+  occ::handle<NCollection_HArray1<TopoDS_Shape>>       myEdges;
+  occ::handle<NCollection_HArray1<int>>      myDisc;
 
 private:
   int myType;

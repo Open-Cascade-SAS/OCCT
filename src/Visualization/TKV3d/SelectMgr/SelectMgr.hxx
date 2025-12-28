@@ -29,7 +29,7 @@ public:
   Standard_EXPORT static void ComputeSensitivePrs(
     const occ::handle<Graphic3d_Structure>&     theStructure,
     const occ::handle<SelectMgr_Selection>&     theSel,
-    const gp_Trsf&                              theLoc,
+    const gp_Trsf&                         theLoc,
     const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 };
 

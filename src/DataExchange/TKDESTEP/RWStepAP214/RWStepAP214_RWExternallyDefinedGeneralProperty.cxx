@@ -31,7 +31,7 @@ RWStepAP214_RWExternallyDefinedGeneralProperty::RWStepAP214_RWExternallyDefinedG
 
 void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                                      num,
+  const int                                    num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepAP214_ExternallyDefinedGeneralProperty>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
   data->ReadString(num, 2, "general_property.name", ach, aGeneralProperty_Name);
 
   occ::handle<TCollection_HAsciiString> aGeneralProperty_Description;
-  bool                                  hasGeneralProperty_Description = true;
+  bool                 hasGeneralProperty_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num, 3, "general_property.description", ach, aGeneralProperty_Description);
@@ -83,7 +83,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::ReadStep(
 //=================================================================================================
 
 void RWStepAP214_RWExternallyDefinedGeneralProperty::WriteStep(
-  StepData_StepWriter&                                           SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepAP214_ExternallyDefinedGeneralProperty>& ent) const
 {
 
@@ -111,7 +111,7 @@ void RWStepAP214_RWExternallyDefinedGeneralProperty::WriteStep(
 
 void RWStepAP214_RWExternallyDefinedGeneralProperty::Share(
   const occ::handle<StepAP214_ExternallyDefinedGeneralProperty>& ent,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // Inherited fields of GeneralProperty

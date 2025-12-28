@@ -26,8 +26,11 @@
 #include <Adaptor3d_TopolTool.hxx>
 #include <Contap_ArcFunction.hxx>
 #include <Contap_ThePathPointOfTheSearch.hxx>
+#include <Contap_ThePathPointOfTheSearch.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Contap_TheSegmentOfTheSearch.hxx>
+#include <Contap_TheSegmentOfTheSearch.hxx>
+#include <NCollection_Sequence.hxx>
 
 #define TheVertex occ::handle<Adaptor3d_HVertex>
 #define TheVertex_hxx <Adaptor3d_HVertex.hxx>

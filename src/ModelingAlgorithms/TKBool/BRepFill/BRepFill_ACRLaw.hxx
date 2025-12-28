@@ -33,7 +33,7 @@ class BRepFill_ACRLaw : public BRepFill_LocationLaw
 {
 
 public:
-  Standard_EXPORT BRepFill_ACRLaw(const TopoDS_Wire&                         Path,
+  Standard_EXPORT BRepFill_ACRLaw(const TopoDS_Wire&                    Path,
                                   const occ::handle<GeomFill_LocationGuide>& Law);
 
   DEFINE_STANDARD_RTTIEXT(BRepFill_ACRLaw, BRepFill_LocationLaw)

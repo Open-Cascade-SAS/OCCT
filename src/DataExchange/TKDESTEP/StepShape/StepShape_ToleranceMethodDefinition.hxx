@@ -44,6 +44,7 @@ public:
 
   //! Returns Value as LimitsAndFits
   Standard_EXPORT occ::handle<StepShape_LimitsAndFits> LimitsAndFits() const;
+
 };
 
 #endif // _StepShape_ToleranceMethodDefinition_HeaderFile

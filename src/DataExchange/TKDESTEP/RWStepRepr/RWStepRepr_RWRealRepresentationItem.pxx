@@ -33,11 +33,11 @@ public:
   Standard_HIDDEN RWStepRepr_RWRealRepresentationItem();
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&         theData,
-                                const int                                           theNum,
+                                const int                         theNum,
                                 occ::handle<Interface_Check>&                       theAch,
                                 const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                theSW,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                           theSW,
                                  const occ::handle<StepRepr_RealRepresentationItem>& theEnt) const;
 };
 #endif // _RWStepRepr_RWRealRepresentationItem_HeaderFile

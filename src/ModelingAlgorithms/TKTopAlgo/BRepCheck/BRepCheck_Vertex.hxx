@@ -39,6 +39,7 @@ public:
   Standard_EXPORT double Tolerance();
 
   DEFINE_STANDARD_RTTIEXT(BRepCheck_Vertex, BRepCheck_Result)
+
 };
 
 #endif // _BRepCheck_Vertex_HeaderFile

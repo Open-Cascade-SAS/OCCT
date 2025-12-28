@@ -17,8 +17,12 @@
 #include <Extrema_ExtCS.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <NCollection_Sequence.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <Extrema_POnCurv.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Edge;
@@ -52,7 +56,10 @@ public:
   bool IsParallel() const { return myExtCS.IsParallel(); }
 
   //! Returns the parameters on the Edge of the <N>th extremum distance.
-  double ParameterOnEdge(const int N) const { return myPointsOnC.Value(N).Parameter(); }
+  double ParameterOnEdge(const int N) const
+  {
+    return myPointsOnC.Value(N).Parameter();
+  }
 
   //! Returns the parameters on the Face of the <N>th extremum distance.
   void ParameterOnFace(const int N, double& U, double& V) const
@@ -67,11 +74,11 @@ public:
   gp_Pnt PointOnFace(const int N) const { return myPointsOnS.Value(N).Value(); }
 
 private:
-  Extrema_ExtCS                         myExtCS;
-  NCollection_Sequence<double>          mySqDist;
-  NCollection_Sequence<Extrema_POnSurf> myPointsOnS;
-  NCollection_Sequence<Extrema_POnCurv> myPointsOnC;
-  occ::handle<BRepAdaptor_Surface>      myHS;
+  Extrema_ExtCS               myExtCS;
+  NCollection_Sequence<double>      mySqDist;
+  NCollection_Sequence<Extrema_POnSurf>   myPointsOnS;
+  NCollection_Sequence<Extrema_POnCurv>   myPointsOnC;
+  occ::handle<BRepAdaptor_Surface> myHS;
 };
 
 #endif

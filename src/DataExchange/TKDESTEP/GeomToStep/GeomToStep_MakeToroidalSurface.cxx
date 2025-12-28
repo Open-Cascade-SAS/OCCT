@@ -28,19 +28,19 @@
 //=============================================================================
 GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface(
   const occ::handle<Geom_ToroidalSurface>& S,
-  const StepData_Factors&                  theLocalFactors)
+  const StepData_Factors&             theLocalFactors)
 {
   occ::handle<StepGeom_ToroidalSurface>  Surf;
   occ::handle<StepGeom_Axis2Placement3d> aPosition;
-  double                                 aMajorRadius, aMinorRadius;
+  double                     aMajorRadius, aMinorRadius;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(S->Position(), theLocalFactors);
-  aPosition                                  = MkAxis2.Value();
-  aMajorRadius                               = S->MajorRadius();
-  aMinorRadius                               = S->MinorRadius();
-  Surf                                       = new StepGeom_ToroidalSurface;
+  aPosition                             = MkAxis2.Value();
+  aMajorRadius                          = S->MajorRadius();
+  aMinorRadius                          = S->MinorRadius();
+  Surf                                  = new StepGeom_ToroidalSurface;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
-  double                                fact = theLocalFactors.LengthFactor();
+  double                    fact = theLocalFactors.LengthFactor();
   Surf->Init(name, aPosition, aMajorRadius / fact, aMinorRadius / fact);
   theToroidalSurface = Surf;
   done               = true;

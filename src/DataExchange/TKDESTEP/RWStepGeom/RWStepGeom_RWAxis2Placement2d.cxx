@@ -21,11 +21,10 @@
 
 RWStepGeom_RWAxis2Placement2d::RWStepGeom_RWAxis2Placement2d() {}
 
-void RWStepGeom_RWAxis2Placement2d::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepGeom_Axis2Placement2d>& ent) const
+void RWStepGeom_RWAxis2Placement2d::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepGeom_Axis2Placement2d>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -48,7 +47,7 @@ void RWStepGeom_RWAxis2Placement2d::ReadStep(
   // --- own field : refDirection ---
 
   occ::handle<StepGeom_Direction> aRefDirection;
-  bool                            hasArefDirection = true;
+  bool           hasArefDirection = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -66,9 +65,8 @@ void RWStepGeom_RWAxis2Placement2d::ReadStep(
   ent->Init(aName, aLocation, hasArefDirection, aRefDirection);
 }
 
-void RWStepGeom_RWAxis2Placement2d::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepGeom_Axis2Placement2d>& ent) const
+void RWStepGeom_RWAxis2Placement2d::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepGeom_Axis2Placement2d>& ent) const
 {
 
   // --- inherited field name ---
@@ -93,7 +91,7 @@ void RWStepGeom_RWAxis2Placement2d::WriteStep(
 }
 
 void RWStepGeom_RWAxis2Placement2d::Share(const occ::handle<StepGeom_Axis2Placement2d>& ent,
-                                          Interface_EntityIterator&                     iter) const
+                                          Interface_EntityIterator&                iter) const
 {
 
   iter.GetOneItem(ent->Location());

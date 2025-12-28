@@ -91,7 +91,8 @@ public:
 
   //! Returns Value as SecurityClassificationAssignment (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_SecurityClassificationAssignment>
-                  SecurityClassificationAssignment() const;
+    SecurityClassificationAssignment() const;
+
 };
 
 #endif // _StepBasic_RoleSelect_HeaderFile

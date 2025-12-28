@@ -20,6 +20,7 @@
 #include "RWStepAP214_RWAppliedGroupAssignment.pxx"
 #include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepAP214_GroupItem.hxx>
+#include <StepAP214_GroupItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Group.hxx>
@@ -34,7 +35,7 @@ RWStepAP214_RWAppliedGroupAssignment::RWStepAP214_RWAppliedGroupAssignment() {}
 
 void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepAP214_AppliedGroupAssignment>& ent) const
 {
@@ -55,7 +56,7 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
   // Own fields of AppliedGroupAssignment
 
   occ::handle<NCollection_HArray1<StepAP214_GroupItem>> anItems;
-  int                                                   sub2 = 0;
+  int                     sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
@@ -78,7 +79,7 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepAP214_RWAppliedGroupAssignment::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepAP214_AppliedGroupAssignment>& ent) const
 {
 
@@ -104,7 +105,7 @@ void RWStepAP214_RWAppliedGroupAssignment::WriteStep(
 
 void RWStepAP214_RWAppliedGroupAssignment::Share(
   const occ::handle<StepAP214_AppliedGroupAssignment>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
 
   // Inherited fields of GroupAssignment

@@ -42,21 +42,21 @@ public:
   //! and Trans1 (resp. Uc2 and Trans2) refer to the
   //! second curve (resp. the first curve).
   IntRes2d_IntersectionPoint(const gp_Pnt2d&            P,
-                             const double               Uc1,
-                             const double               Uc2,
+                             const double        Uc1,
+                             const double        Uc2,
                              const IntRes2d_Transition& Trans1,
                              const IntRes2d_Transition& Trans2,
-                             const bool                 ReversedFlag);
+                             const bool     ReversedFlag);
 
   //! Sets the values for an existing intersection
   //! point. The meaning of the parameters are the same
   //! as for the Create.
   void SetValues(const gp_Pnt2d&            P,
-                 const double               Uc1,
-                 const double               Uc2,
+                 const double        Uc1,
+                 const double        Uc2,
                  const IntRes2d_Transition& Trans1,
                  const IntRes2d_Transition& Trans2,
-                 const bool                 ReversedFlag);
+                 const bool     ReversedFlag);
 
   //! Returns the value of the coordinates of the
   //! intersection point in the 2D space.
@@ -78,8 +78,8 @@ public:
 
 private:
   gp_Pnt2d            pt;
-  double              p1;
-  double              p2;
+  double       p1;
+  double       p2;
   IntRes2d_Transition trans1;
   IntRes2d_Transition trans2;
 };

@@ -53,9 +53,7 @@ occ::handle<AIS_InteractiveObject> AIS_MultipleConnectedInteractive::connect(
     aNewMultiConnected->SetLocalTransformation(aMultiConnected->LocalTransformationGeom());
 
     // Perform deep copy of instance tree
-    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(
-           aMultiConnected->Children());
-         anIter.More();
+    for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(aMultiConnected->Children()); anIter.More();
          anIter.Next())
     {
       occ::handle<AIS_InteractiveObject> anInteractive =
@@ -96,8 +94,7 @@ bool AIS_MultipleConnectedInteractive::HasConnection() const
 
 //=================================================================================================
 
-void AIS_MultipleConnectedInteractive::Disconnect(
-  const occ::handle<AIS_InteractiveObject>& anotherIObj)
+void AIS_MultipleConnectedInteractive::Disconnect(const occ::handle<AIS_InteractiveObject>& anotherIObj)
 {
   RemoveChild(anotherIObj);
 }
@@ -120,12 +117,9 @@ void AIS_MultipleConnectedInteractive::Compute(const occ::handle<PrsMgr_Presenta
                                                const int)
 {
   occ::handle<AIS_InteractiveContext> aCtx = GetContext();
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children());
-       anIter.More();
-       anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    occ::handle<AIS_InteractiveObject> aChild =
-      occ::down_cast<AIS_InteractiveObject>(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (!aChild.IsNull())
     {
       aChild->SetContext(aCtx);
@@ -137,12 +131,9 @@ void AIS_MultipleConnectedInteractive::Compute(const occ::handle<PrsMgr_Presenta
 
 bool AIS_MultipleConnectedInteractive::AcceptShapeDecomposition() const
 {
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children());
-       anIter.More();
-       anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    occ::handle<AIS_InteractiveObject> aChild =
-      occ::down_cast<AIS_InteractiveObject>(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (aChild.IsNull())
     {
       continue;
@@ -167,12 +158,9 @@ void AIS_MultipleConnectedInteractive::ComputeSelection(
     return;
   }
 
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children());
-       anIter.More();
-       anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    occ::handle<AIS_InteractiveObject> aChild =
-      occ::down_cast<AIS_InteractiveObject>(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (aChild.IsNull())
     {
       continue;
@@ -193,12 +181,9 @@ void AIS_MultipleConnectedInteractive::ComputeSelection(
 void AIS_MultipleConnectedInteractive::SetContext(const occ::handle<AIS_InteractiveContext>& theCtx)
 {
   AIS_InteractiveObject::SetContext(theCtx);
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children());
-       anIter.More();
-       anIter.Next())
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(Children()); anIter.More(); anIter.Next())
   {
-    occ::handle<AIS_InteractiveObject> aChild =
-      occ::down_cast<AIS_InteractiveObject>(anIter.Value());
+    occ::handle<AIS_InteractiveObject> aChild = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (!aChild.IsNull())
     {
       aChild->SetContext(theCtx);

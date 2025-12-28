@@ -27,7 +27,7 @@ RWStepGeom_RWRationalBSplineSurface::RWStepGeom_RWRationalBSplineSurface() {}
 
 void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepGeom_RationalBSplineSurface>& ent) const
 {
@@ -58,14 +58,13 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   // --- inherited field : controlPointsList ---
 
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent4;
-  int                                                                    nsub4;
+  occ::handle<StepGeom_CartesianPoint>          anent4;
+  int                         nsub4;
   if (data->ReadSubList(num, 4, "control_points_list", ach, nsub4))
   {
     int nbi4 = data->NbParams(nsub4);
     int nbj4 = data->NbParams(data->ParamNumber(nsub4, 1));
-    aControlPointsList =
-      new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
+    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
     for (int i4 = 1; i4 <= nbi4; i4++)
     {
       int nsi4;
@@ -121,13 +120,13 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
   // --- own field : weightsData ---
 
   occ::handle<NCollection_HArray2<double>> aWeightsData;
-  double                                   aWeightsDataItem;
-  int                                      nsub9;
+  double                 aWeightsDataItem;
+  int              nsub9;
   if (data->ReadSubList(num, 9, "weights_data", ach, nsub9))
   {
-    int nbi9     = data->NbParams(nsub9);
-    int nbj9     = data->NbParams(data->ParamNumber(nsub9, 1));
-    aWeightsData = new NCollection_HArray2<double>(1, nbi9, 1, nbj9);
+    int nbi9 = data->NbParams(nsub9);
+    int nbj9 = data->NbParams(data->ParamNumber(nsub9, 1));
+    aWeightsData          = new NCollection_HArray2<double>(1, nbi9, 1, nbj9);
     for (int i9 = 1; i9 <= nbi9; i9++)
     {
       int nsi9;
@@ -157,7 +156,7 @@ void RWStepGeom_RWRationalBSplineSurface::ReadStep(
 }
 
 void RWStepGeom_RWRationalBSplineSurface::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepGeom_RationalBSplineSurface>& ent) const
 {
 
@@ -222,9 +221,8 @@ void RWStepGeom_RWRationalBSplineSurface::WriteStep(
   SW.CloseSub();
 }
 
-void RWStepGeom_RWRationalBSplineSurface::Share(
-  const occ::handle<StepGeom_RationalBSplineSurface>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepGeom_RWRationalBSplineSurface::Share(const occ::handle<StepGeom_RationalBSplineSurface>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   int nbiElem1 = ent->NbControlPointsListI();
@@ -238,10 +236,9 @@ void RWStepGeom_RWRationalBSplineSurface::Share(
   }
 }
 
-void RWStepGeom_RWRationalBSplineSurface::Check(
-  const occ::handle<StepGeom_RationalBSplineSurface>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void RWStepGeom_RWRationalBSplineSurface::Check(const occ::handle<StepGeom_RationalBSplineSurface>& ent,
+                                                const Interface_ShareTool&,
+                                                occ::handle<Interface_Check>& ach) const
 {
   int nbWgtU = ent->NbWeightsDataI();
   int nbWgtV = ent->NbWeightsDataJ();

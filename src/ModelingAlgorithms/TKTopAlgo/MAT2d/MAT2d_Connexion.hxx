@@ -34,15 +34,15 @@ class MAT2d_Connexion : public Standard_Transient
 public:
   Standard_EXPORT MAT2d_Connexion();
 
-  Standard_EXPORT MAT2d_Connexion(const int       LineA,
-                                  const int       LineB,
-                                  const int       ItemA,
-                                  const int       ItemB,
+  Standard_EXPORT MAT2d_Connexion(const int LineA,
+                                  const int LineB,
+                                  const int ItemA,
+                                  const int ItemB,
                                   const double    Distance,
                                   const double    ParameterOnA,
                                   const double    ParameterOnB,
-                                  const gp_Pnt2d& PointA,
-                                  const gp_Pnt2d& PointB);
+                                  const gp_Pnt2d&        PointA,
+                                  const gp_Pnt2d&        PointB);
 
   //! Returns the Index on the first line.
   Standard_EXPORT int IndexFirstLine() const;
@@ -100,23 +100,24 @@ public:
   //! <aSense> = 1 if <aConnexion> is on the Left of its
   //! firstline, else <aSense> = -1.
   Standard_EXPORT bool IsAfter(const occ::handle<MAT2d_Connexion>& aConnexion,
-                               const double                        aSense) const;
+                                           const double            aSense) const;
 
   //! Print <me>.
-  Standard_EXPORT void Dump(const int Deep = 0, const int Offset = 0) const;
+  Standard_EXPORT void Dump(const int Deep   = 0,
+                            const int Offset = 0) const;
 
   DEFINE_STANDARD_RTTIEXT(MAT2d_Connexion, Standard_Transient)
 
 private:
-  int      lineA;
-  int      lineB;
-  int      itemA;
-  int      itemB;
-  double   distance;
-  double   parameterOnA;
-  double   parameterOnB;
-  gp_Pnt2d pointA;
-  gp_Pnt2d pointB;
+  int lineA;
+  int lineB;
+  int itemA;
+  int itemB;
+  double    distance;
+  double    parameterOnA;
+  double    parameterOnB;
+  gp_Pnt2d         pointA;
+  gp_Pnt2d         pointB;
 };
 
 #endif // _MAT2d_Connexion_HeaderFile

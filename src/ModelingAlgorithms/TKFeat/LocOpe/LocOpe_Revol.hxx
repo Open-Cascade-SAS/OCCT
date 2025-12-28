@@ -23,9 +23,12 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Ax1.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 class Geom_Curve;
@@ -41,17 +44,21 @@ public:
 
   Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base,
                                const gp_Ax1&       Axis,
-                               const double        Angle,
-                               const double        angledec);
+                               const double Angle,
+                               const double angledec);
 
-  Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base, const gp_Ax1& Axis, const double Angle);
+  Standard_EXPORT LocOpe_Revol(const TopoDS_Shape& Base,
+                               const gp_Ax1&       Axis,
+                               const double Angle);
 
   Standard_EXPORT void Perform(const TopoDS_Shape& Base,
                                const gp_Ax1&       Axis,
-                               const double        Angle,
-                               const double        angledec);
+                               const double Angle,
+                               const double angledec);
 
-  Standard_EXPORT void Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const double Angle);
+  Standard_EXPORT void Perform(const TopoDS_Shape& Base,
+                               const gp_Ax1&       Axis,
+                               const double Angle);
 
   Standard_EXPORT const TopoDS_Shape& FirstShape() const;
 
@@ -68,15 +75,15 @@ public:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape myBase;
-  gp_Ax1       myAxis;
-  double       myAngle;
-  double       myAngTra;
-  bool         myIsTrans;
-  bool         myDone;
-  TopoDS_Shape myRes;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
+  TopoDS_Shape                       myBase;
+  gp_Ax1                             myAxis;
+  double                      myAngle;
+  double                      myAngTra;
+  bool                   myIsTrans;
+  bool                   myDone;
+  TopoDS_Shape                       myRes;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 

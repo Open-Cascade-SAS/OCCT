@@ -124,10 +124,10 @@ TEST_F(Image_VideoRecorderTest, WriteFrames)
       for (int x = 0; x < params.Width; ++x)
       {
         uint8_t* pixel = frame.ChangeData() + (y * frame.SizeRowBytes()) + (x * 4);
-        pixel[0]       = (uint8_t)(255 * x / params.Width);  // Red gradient
-        pixel[1]       = 0;                                  // Green
-        pixel[2]       = (uint8_t)(255 * y / params.Height); // Blue gradient
-        pixel[3]       = 255;                                // Alpha
+        pixel[0]             = (uint8_t)(255 * x / params.Width);  // Red gradient
+        pixel[1]             = 0;                                        // Green
+        pixel[2]             = (uint8_t)(255 * y / params.Height); // Blue gradient
+        pixel[3]             = 255;                                      // Alpha
       }
     }
 

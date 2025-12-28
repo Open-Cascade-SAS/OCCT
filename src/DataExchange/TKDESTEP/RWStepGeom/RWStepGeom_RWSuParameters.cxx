@@ -30,7 +30,7 @@ RWStepGeom_RWSuParameters::RWStepGeom_RWSuParameters() {}
 //=================================================================================================
 
 void RWStepGeom_RWSuParameters::ReadStep(const occ::handle<StepData_StepReaderData>& theData,
-                                         const int                                   theNum,
+                                         const int                 theNum,
                                          occ::handle<Interface_Check>&               theAch,
                                          const occ::handle<StepGeom_SuParameters>&   theEnt) const
 {
@@ -69,7 +69,7 @@ void RWStepGeom_RWSuParameters::ReadStep(const occ::handle<StepData_StepReaderDa
 
 //=================================================================================================
 
-void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                      theSW,
+void RWStepGeom_RWSuParameters::WriteStep(StepData_StepWriter&                 theSW,
                                           const occ::handle<StepGeom_SuParameters>& theEnt) const
 {
 

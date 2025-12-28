@@ -31,7 +31,7 @@ ShapeFix_WireSegment::ShapeFix_WireSegment()
 //=================================================================================================
 
 ShapeFix_WireSegment::ShapeFix_WireSegment(const occ::handle<ShapeExtend_WireData>& wire,
-                                           const TopAbs_Orientation                 ori)
+                                           const TopAbs_Orientation            ori)
 {
   Load(wire);
   myOrient = ori;
@@ -145,12 +145,12 @@ void ShapeFix_WireSegment::AddEdge(const int i, const TopoDS_Edge& edge)
 
 //=================================================================================================
 
-void ShapeFix_WireSegment::AddEdge(const int          i,
-                                   const TopoDS_Edge& edge,
-                                   const int          iumin,
-                                   const int          iumax,
-                                   const int          ivmin,
-                                   const int          ivmax)
+void ShapeFix_WireSegment::AddEdge(const int i,
+                                   const TopoDS_Edge&     edge,
+                                   const int iumin,
+                                   const int iumax,
+                                   const int ivmin,
+                                   const int ivmax)
 {
   myWire->Add(edge, i);
   if (i == 0)
@@ -252,8 +252,8 @@ void ShapeFix_WireSegment::GetPatchIndex(const int i,
 
 bool ShapeFix_WireSegment::CheckPatchIndex(const int i) const
 {
-  int  dU = myIUMax->Value(i) - myIUMin->Value(i);
-  int  dV = myIVMax->Value(i) - myIVMin->Value(i);
+  int dU = myIUMax->Value(i) - myIUMin->Value(i);
+  int dV = myIVMax->Value(i) - myIVMin->Value(i);
   bool ok = (dU == 0 || dU == 1) && (dV == 0 || dV == 1);
 #ifdef OCCT_DEBUG
   if (!ok)

@@ -23,6 +23,8 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 class gp_Mat;
 class gp_Vec;
@@ -50,35 +52,35 @@ public:
   Standard_EXPORT virtual bool D0(const double Param, gp_Mat& M, gp_Vec& V) = 0;
 
   //! compute Location and 2d points
-  Standard_EXPORT virtual bool D0(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d) = 0;
+  Standard_EXPORT virtual bool D0(const double   Param,
+                                              gp_Mat&               M,
+                                              gp_Vec&               V,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d) = 0;
 
   //! compute location 2d points and associated
   //! first derivatives.
   //! Warning: It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  gp_Mat&                       DM,
-                                  gp_Vec&                       DV,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d);
+  Standard_EXPORT virtual bool D1(const double   Param,
+                                              gp_Mat&               M,
+                                              gp_Vec&               V,
+                                              gp_Mat&               DM,
+                                              gp_Vec&               DV,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d);
 
   //! compute location 2d points and associated
   //! first and second derivatives.
   //! Warning: It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double                  Param,
-                                  gp_Mat&                       M,
-                                  gp_Vec&                       V,
-                                  gp_Mat&                       DM,
-                                  gp_Vec&                       DV,
-                                  gp_Mat&                       D2M,
-                                  gp_Vec&                       D2V,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<gp_Vec2d>& D2Poles2d);
+  Standard_EXPORT virtual bool D2(const double   Param,
+                                              gp_Mat&               M,
+                                              gp_Vec&               V,
+                                              gp_Mat&               DM,
+                                              gp_Vec&               DV,
+                                              gp_Mat&               D2M,
+                                              gp_Vec&               D2V,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                              NCollection_Array1<gp_Vec2d>& D2Poles2d);
 
   //! get the number of 2d curves (Restrictions + Traces)
   //! to approximate.
@@ -113,8 +115,7 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the function
@@ -134,10 +135,10 @@ public:
   //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
-  Standard_EXPORT virtual void Resolution(const int    Index,
-                                          const double Tol,
-                                          double&      TolU,
-                                          double&      TolV) const;
+  Standard_EXPORT virtual void Resolution(const int Index,
+                                          const double    Tol,
+                                          double&         TolU,
+                                          double&         TolV) const;
 
   //! Is useful, if (me) have to run numerical
   //! algorithm to perform D0, D1 or D2
@@ -163,6 +164,7 @@ public:
   Standard_EXPORT virtual void Rotation(gp_Pnt& Center) const;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_LocationLaw, Standard_Transient)
+
 };
 
 #endif // _GeomFill_LocationLaw_HeaderFile

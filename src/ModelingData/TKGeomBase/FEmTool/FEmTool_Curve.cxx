@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(FEmTool_Curve, Standard_Transient)
 
 //=================================================================================================
 
-FEmTool_Curve::FEmTool_Curve(const int                Dimension,
-                             const int                NbElements,
+FEmTool_Curve::FEmTool_Curve(const int   Dimension,
+                             const int   NbElements,
                              const PLib_HermitJacobi& TheBase,
                              const double)
     : myNbElements(NbElements),
@@ -60,15 +60,16 @@ NCollection_Array1<double>& FEmTool_Curve::Knots() const
 
 //=================================================================================================
 
-void FEmTool_Curve::SetElement(const int IndexOfElement, const NCollection_Array2<double>& Coeffs)
+void FEmTool_Curve::SetElement(const int      IndexOfElement,
+                               const NCollection_Array2<double>& Coeffs)
 {
   int i, j, degBase, deg;
   if (IndexOfElement > myNbElements || IndexOfElement < 1)
     throw Standard_OutOfRange();
-  degBase   = myBase.WorkDegree();
-  deg       = myDegree(IndexOfElement);
-  int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension, i1 = iBase - myDimension,
-      i2 = Coeffs.LowerRow() - 1, j1 = Coeffs.LowerCol() - 1;
+  degBase                = myBase.WorkDegree();
+  deg                    = myDegree(IndexOfElement);
+  int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension,
+                   i1 = iBase - myDimension, i2 = Coeffs.LowerRow() - 1, j1 = Coeffs.LowerCol() - 1;
   for (i = 1; i <= deg + 1; i++)
   {
     i1 += myDimension;
@@ -77,7 +78,8 @@ void FEmTool_Curve::SetElement(const int IndexOfElement, const NCollection_Array
       myCoeff(i1 + j) = Coeffs(i2, j1 + j);
   }
 
-  double stenor = (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)) / 2., mfact;
+  double stenor = (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)) / 2.,
+                mfact;
 
   i1 = iBase;
   i2 = iBase + (myBase.NivConstr() + 1) * myDimension;
@@ -104,10 +106,10 @@ void FEmTool_Curve::GetElement(const int IndexOfElement, NCollection_Array2<doub
   int i, j, degBase, deg;
   if (IndexOfElement > myNbElements || IndexOfElement < 1)
     throw Standard_OutOfRange();
-  degBase   = myBase.WorkDegree();
-  deg       = myDegree(IndexOfElement);
-  int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension, i1 = iBase - myDimension,
-      i2 = Coeffs.LowerRow() - 1, j1 = Coeffs.LowerCol() - 1;
+  degBase                = myBase.WorkDegree();
+  deg                    = myDegree(IndexOfElement);
+  int iBase = (IndexOfElement - 1) * (degBase + 1) * myDimension,
+                   i1 = iBase - myDimension, i2 = Coeffs.LowerRow() - 1, j1 = Coeffs.LowerCol() - 1;
   for (i = 1; i <= deg + 1; i++)
   {
     i1 += myDimension;
@@ -116,9 +118,10 @@ void FEmTool_Curve::GetElement(const int IndexOfElement, NCollection_Array2<doub
       Coeffs(i2, j1 + j) = myCoeff.Value(i1 + j);
   }
 
-  double stenor = 2. / (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)), mfact;
+  double stenor = 2. / (myKnots->Value(IndexOfElement + 1) - myKnots->Value(IndexOfElement)),
+                mfact;
 
-  i2     = Coeffs.LowerRow();
+  i2                  = Coeffs.LowerRow();
   int i3 = i2 + myBase.NivConstr() + 1;
 
   for (i = 1; i <= myBase.NivConstr(); i++)
@@ -151,8 +154,8 @@ void FEmTool_Curve::GetPolynom(NCollection_Array1<double>& Coeffs)
 
 void FEmTool_Curve::D0(const double U, NCollection_Array1<double>& Pnt)
 {
-  int    deg;
-  double S;
+  int deg;
+  double    S;
 
   if (!myIndex || (U < Uf) || (U > Ul) || (myKnots->Value(myIndex) != Uf)
       || (myKnots->Value(myIndex + 1) != Ul))
@@ -193,8 +196,8 @@ void FEmTool_Curve::D0(const double U, NCollection_Array1<double>& Pnt)
 
 void FEmTool_Curve::D1(const double U, NCollection_Array1<double>& Vec)
 {
-  int    deg, i;
-  double S;
+  int deg, i;
+  double    S;
 
   if (!myIndex || (U < Uf) || (U > Ul) || (myKnots->Value(myIndex) != Uf)
       || (myKnots->Value(myIndex + 1) != Ul))
@@ -239,8 +242,8 @@ void FEmTool_Curve::D1(const double U, NCollection_Array1<double>& Vec)
 
 void FEmTool_Curve::D2(const double U, NCollection_Array1<double>& Vec)
 {
-  int    deg, i;
-  double S;
+  int deg, i;
+  double    S;
 
   if (!myIndex || (U < Uf) || (U > Ul) || (myKnots->Value(myIndex) != Uf)
       || (myKnots->Value(myIndex + 1) != Ul))
@@ -284,7 +287,9 @@ void FEmTool_Curve::D2(const double U, NCollection_Array1<double>& Vec)
 
 //=================================================================================================
 
-void FEmTool_Curve::Length(const double FirstU, const double LastU, double& Length)
+void FEmTool_Curve::Length(const double FirstU,
+                           const double LastU,
+                           double&      Length)
 {
   int Low, High, deg, degBase, i, Ptr;
   if (FirstU > LastU)
@@ -425,10 +430,10 @@ void FEmTool_Curve::SetDegree(const int IndexOfElement, const int Degree)
 
 //=================================================================================================
 
-void FEmTool_Curve::ReduceDegree(const int    IndexOfElement,
-                                 const double Tol,
-                                 int&         NewDegree,
-                                 double&      MaxError)
+void FEmTool_Curve::ReduceDegree(const int IndexOfElement,
+                                 const double    Tol,
+                                 int&      NewDegree,
+                                 double&         MaxError)
 {
   int deg = myDegree(IndexOfElement);
 
@@ -466,7 +471,7 @@ void FEmTool_Curve::Update(const int Index, const int Order)
   if (Order >= 1)
   {
     int i1 = (Index - 1) * (degBase)*myDimension - myDimension,
-        i2 = (Index - 1) * (degBase + 1) * myDimension;
+                     i2 = (Index - 1) * (degBase + 1) * myDimension;
     int i, j;
     if (!HasDeri.Value(Index))
     {

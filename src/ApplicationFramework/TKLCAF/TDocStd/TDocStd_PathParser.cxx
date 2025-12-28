@@ -27,7 +27,7 @@ TDocStd_PathParser::TDocStd_PathParser(const TCollection_ExtendedString& path)
 void TDocStd_PathParser::Parse()
 {
   TCollection_ExtendedString temp          = myPath;
-  int                        PointPosition = myPath.SearchFromEnd(TCollection_ExtendedString("."));
+  int           PointPosition = myPath.SearchFromEnd(TCollection_ExtendedString("."));
   if (PointPosition > 0)
     myExtension = temp.Split(PointPosition);
   else

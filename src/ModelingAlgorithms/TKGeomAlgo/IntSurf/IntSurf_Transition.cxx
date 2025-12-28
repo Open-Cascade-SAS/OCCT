@@ -24,9 +24,9 @@ IntSurf_Transition::IntSurf_Transition(const bool Tangent, const IntSurf_TypeTra
 {
 }
 
-IntSurf_Transition::IntSurf_Transition(const bool              Tangent,
+IntSurf_Transition::IntSurf_Transition(const bool  Tangent,
                                        const IntSurf_Situation Situ,
-                                       const bool              Oppos)
+                                       const bool  Oppos)
     : tangent(Tangent),
       typetra(IntSurf_Touch),
       situat(Situ),

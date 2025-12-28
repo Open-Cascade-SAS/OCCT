@@ -56,7 +56,8 @@ public:
 
   //! Load message file <theFileName> from directory <theDirName>
   //! or its sub-directory
-  Standard_EXPORT static bool Load(const char* theDirName, const char* theFileName);
+  Standard_EXPORT static bool Load(const char* theDirName,
+                                               const char* theFileName);
 
   //! Load the messages from the given file, additive to any previously
   //! loaded messages. Messages with same keywords, if already present,
@@ -72,21 +73,22 @@ public:
   //! @name theLangExt  language file name extension
   //! @return TRUE on success
   Standard_EXPORT static bool LoadFromEnv(const char* theEnvName,
-                                          const char* theFileName,
-                                          const char* theLangExt = "");
+                                                      const char* theFileName,
+                                                      const char* theLangExt = "");
 
   //! Loads the messages from the given text buffer.
   //! @param theContent string containing the messages
   //! @param theLength  length of the buffer;
   //!                   when -1 specified - theContent will be considered as NULL-terminated string
-  Standard_EXPORT static bool LoadFromString(const char* theContent, const int theLength = -1);
+  Standard_EXPORT static bool LoadFromString(const char* theContent,
+                                                         const int theLength = -1);
 
   //! Adds new message to the map. Parameter <key> gives
   //! the key of the message, <text> defines the message itself.
   //! If there already was defined the message identified by the
   //! same keyword, it is replaced with the new one.
   Standard_EXPORT static bool AddMsg(const TCollection_AsciiString&    key,
-                                     const TCollection_ExtendedString& text);
+                                                 const TCollection_ExtendedString& text);
 
   //! Returns True if message with specified keyword is registered
   Standard_EXPORT static bool HasMsg(const TCollection_AsciiString& key);

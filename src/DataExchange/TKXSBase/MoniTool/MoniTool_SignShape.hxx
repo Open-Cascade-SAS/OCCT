@@ -42,6 +42,7 @@ public:
          const occ::handle<Standard_Transient>& context) const override;
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_SignShape, MoniTool_SignText)
+
 };
 
 #endif // _MoniTool_SignShape_HeaderFile

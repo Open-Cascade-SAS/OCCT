@@ -24,6 +24,7 @@
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <V3d_Light.hxx>
@@ -197,8 +198,9 @@ public:
   //! @param[out] theLayerId  id of created layer
   //! @param[in] theSettings  new layer settings
   //! @return FALSE if the layer can not be created
-  bool AddZLayer(Graphic3d_ZLayerId&             theLayerId,
-                 const Graphic3d_ZLayerSettings& theSettings = Graphic3d_ZLayerSettings())
+  bool AddZLayer(
+    Graphic3d_ZLayerId&             theLayerId,
+    const Graphic3d_ZLayerSettings& theSettings = Graphic3d_ZLayerSettings())
   {
     return InsertLayerBefore(theLayerId, theSettings, Graphic3d_ZLayerId_Top);
   }
@@ -214,8 +216,8 @@ public:
   //! @param[in] theLayerAfter   id of layer to append new layer before
   //! @return FALSE if the layer can not be created
   Standard_EXPORT bool InsertLayerBefore(Graphic3d_ZLayerId&             theNewLayerId,
-                                         const Graphic3d_ZLayerSettings& theSettings,
-                                         const Graphic3d_ZLayerId        theLayerAfter);
+                                                     const Graphic3d_ZLayerSettings& theSettings,
+                                                     const Graphic3d_ZLayerId        theLayerAfter);
 
   //! Add a new top-level Z layer to all managed views and get its ID as <theLayerId> value.
   //! The Z layers are controlled entirely by viewer, it is not possible to add a layer to a
@@ -228,8 +230,8 @@ public:
   //! @param[in] theLayerBefore  id of layer to append new layer after
   //! @return FALSE if the layer can not be created
   Standard_EXPORT bool InsertLayerAfter(Graphic3d_ZLayerId&             theNewLayerId,
-                                        const Graphic3d_ZLayerSettings& theSettings,
-                                        const Graphic3d_ZLayerId        theLayerBefore);
+                                                    const Graphic3d_ZLayerSettings& theSettings,
+                                                    const Graphic3d_ZLayerId        theLayerBefore);
 
   //! Remove Z layer with ID <theLayerId>.
   //! Method returns false if the layer can not be removed or doesn't exists.
@@ -299,10 +301,7 @@ public: //! @name lights management
   Standard_EXPORT bool IsGlobalLight(const occ::handle<V3d_Light>& TheLight) const;
 
   //! Return a list of active lights.
-  const NCollection_List<occ::handle<Graphic3d_CLight>>& ActiveLights() const
-  {
-    return myActiveLights;
-  }
+  const NCollection_List<occ::handle<Graphic3d_CLight>>& ActiveLights() const { return myActiveLights; }
 
   //! Return an iterator for defined lights.
   NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator ActiveLightIterator() const
@@ -312,10 +311,7 @@ public: //! @name lights management
 
 public:
   //! Return a list of defined lights.
-  const NCollection_List<occ::handle<Graphic3d_CLight>>& DefinedLights() const
-  {
-    return myDefinedLights;
-  }
+  const NCollection_List<occ::handle<Graphic3d_CLight>>& DefinedLights() const { return myDefinedLights; }
 
   //! Return an iterator for defined lights.
   NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator DefinedLightIterator() const
@@ -348,7 +344,8 @@ public: //! @name privileged plane management
 
   Standard_EXPORT void SetPrivilegedPlane(const gp_Ax3& thePlane);
 
-  Standard_EXPORT void DisplayPrivilegedPlane(const bool theOnOff, const double theSize = 1);
+  Standard_EXPORT void DisplayPrivilegedPlane(const bool theOnOff,
+                                              const double    theSize = 1);
 
 public: //! @name grid management
   //! Activates the grid in all views of <me>.
@@ -380,8 +377,7 @@ public: //! @name grid management
   occ::handle<Aspect_Grid> Grid(bool theToCreate = true) { return Grid(myGridType, theToCreate); }
 
   //! Returns the defined grid in <me>.
-  Standard_EXPORT occ::handle<Aspect_Grid> Grid(Aspect_GridType theGridType,
-                                                bool            theToCreate = true);
+  Standard_EXPORT occ::handle<Aspect_Grid> Grid(Aspect_GridType theGridType, bool theToCreate = true);
 
   //! Returns the current grid type defined in <me>.
   Aspect_GridType GridType() const { return myGridType; }
@@ -408,31 +404,33 @@ public: //! @name grid management
                                                 const double RotationAngle);
 
   //! Returns the definition of the circular grid.
-  Standard_EXPORT void CircularGridValues(double& theXOrigin,
-                                          double& theYOrigin,
-                                          double& theRadiusStep,
-                                          int&    theDivisionNumber,
-                                          double& theRotationAngle);
+  Standard_EXPORT void CircularGridValues(double&    theXOrigin,
+                                          double&    theYOrigin,
+                                          double&    theRadiusStep,
+                                          int& theDivisionNumber,
+                                          double&    theRotationAngle);
 
   //! Sets the definition of the circular grid.
   //! <XOrigin>, <YOrigin> defines the origin of the grid.
   //! <RadiusStep> defines the interval between 2 circles.
   //! <DivisionNumber> defines the section number of one half circle.
   //! <RotationAngle> defines the rotation angle of the grid.
-  Standard_EXPORT void SetCircularGridValues(const double XOrigin,
-                                             const double YOrigin,
-                                             const double RadiusStep,
-                                             const int    DivisionNumber,
-                                             const double RotationAngle);
+  Standard_EXPORT void SetCircularGridValues(const double    XOrigin,
+                                             const double    YOrigin,
+                                             const double    RadiusStep,
+                                             const int DivisionNumber,
+                                             const double    RotationAngle);
 
   //! Returns the location and the size of the grid.
-  Standard_EXPORT void CircularGridGraphicValues(double& theRadius, double& theOffSet);
+  Standard_EXPORT void CircularGridGraphicValues(double& theRadius,
+                                                 double& theOffSet);
 
   //! Sets the location and the size of the grid.
   //! <XSize> defines the width of the grid.
   //! <YSize> defines the height of the grid.
   //! <OffSet> defines the displacement along the plane normal.
-  Standard_EXPORT void SetCircularGridGraphicValues(const double Radius, const double OffSet);
+  Standard_EXPORT void SetCircularGridGraphicValues(const double Radius,
+                                                    const double OffSet);
 
   //! Returns the location and the size of the grid.
   Standard_EXPORT void RectangularGridGraphicValues(double& theXSize,
@@ -449,7 +447,7 @@ public: //! @name grid management
 
   //! Display grid echo at requested point in the view.
   Standard_EXPORT void ShowGridEcho(const occ::handle<V3d_View>& theView,
-                                    const Graphic3d_Vertex&      thePoint);
+                                    const Graphic3d_Vertex& thePoint);
 
   //! Temporarily hide grid echo.
   Standard_EXPORT void HideGridEcho(const occ::handle<V3d_View>& theView);
@@ -457,22 +455,18 @@ public: //! @name grid management
 public: //! @name deprecated methods
   //! Returns true if a grid is activated in <me>.
   Standard_DEPRECATED("Deprecated method - IsGridActive() should be used instead")
-
   bool IsActive() { return IsGridActive(); }
 
   //! Initializes an internal iterator on the active views.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-
   void InitActiveViews() { myActiveViewsIterator.Initialize(myActiveViews); }
 
   //! Returns true if there are more active view(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-
   bool MoreActiveViews() const { return myActiveViewsIterator.More(); }
 
   //! Go to the next active view (if there is not, ActiveView will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-
   void NextActiveViews()
   {
     if (!myActiveViews.IsEmpty())
@@ -480,22 +474,18 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
-
   const occ::handle<V3d_View>& ActiveView() const { return myActiveViewsIterator.Value(); }
 
   //! Initializes an internal iterator on the Defined views.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-
   void InitDefinedViews() { myDefinedViewsIterator.Initialize(myDefinedViews); }
 
   //! returns true if there are more Defined view(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-
   bool MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
 
   //! Go to the next Defined view (if there is not, DefinedView will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-
   void NextDefinedViews()
   {
     if (!myDefinedViews.IsEmpty())
@@ -503,41 +493,33 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
-
   const occ::handle<V3d_View>& DefinedView() const { return myDefinedViewsIterator.Value(); }
 
   //! Initializes an internal iteratator on the active Lights.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-
   void InitActiveLights() { myActiveLightsIterator.Initialize(myActiveLights); }
 
   //! returns true if there are more active Light(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-
   bool MoreActiveLights() const { return myActiveLightsIterator.More(); }
 
   //! Go to the next active Light (if there is not, ActiveLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-
   void NextActiveLights() { myActiveLightsIterator.Next(); }
 
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
-
   const occ::handle<V3d_Light>& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
   //! Initializes an internal iterattor on the Defined Lights.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-
   void InitDefinedLights() { myDefinedLightsIterator.Initialize(myDefinedLights); }
 
   //! Returns true if there are more Defined Light(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-
   bool MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
 
   //! Go to the next Defined Light (if there is not, DefinedLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-
   void NextDefinedLights()
   {
     if (!myDefinedLights.IsEmpty())
@@ -545,7 +527,6 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
-
   const occ::handle<V3d_Light>& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
   //! Dumps the content of me into the stream
@@ -564,43 +545,43 @@ private:
 private:
   occ::handle<Graphic3d_GraphicDriver>    myDriver;
   occ::handle<Graphic3d_StructureManager> myStructureManager;
-  NCollection_Map<int>                    myLayerIds;
-  Aspect_GenId                            myZLayerGenId;
+  NCollection_Map<int>               myLayerIds;
+  Aspect_GenId                       myZLayerGenId;
 
-  NCollection_List<occ::handle<V3d_View>>         myDefinedViews;
-  NCollection_List<occ::handle<V3d_View>>         myActiveViews;
+  NCollection_List<occ::handle<V3d_View>>  myDefinedViews;
+  NCollection_List<occ::handle<V3d_View>>  myActiveViews;
   NCollection_List<occ::handle<Graphic3d_CLight>> myDefinedLights;
   NCollection_List<occ::handle<Graphic3d_CLight>> myActiveLights;
 
   Aspect_Background         myBackground;
   Aspect_GradientBackground myGradientBackground;
-  double                    myViewSize;
+  double             myViewSize;
   V3d_TypeOfOrientation     myViewProj;
   V3d_TypeOfVisualization   myVisualization;
   V3d_TypeOfView            myDefaultTypeOfView;
   Graphic3d_RenderingParams myDefaultRenderingParams;
 
-  NCollection_List<occ::handle<V3d_View>>::Iterator         myActiveViewsIterator;
-  NCollection_List<occ::handle<V3d_View>>::Iterator         myDefinedViewsIterator;
+  NCollection_List<occ::handle<V3d_View>>::Iterator  myActiveViewsIterator;
+  NCollection_List<occ::handle<V3d_View>>::Iterator  myDefinedViewsIterator;
   NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator myActiveLightsIterator;
   NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator myDefinedLightsIterator;
 
   bool myComputedMode;
   bool myDefaultComputedMode;
 
-  gp_Ax3                           myPrivilegedPlane;
+  gp_Ax3                      myPrivilegedPlane;
   occ::handle<Graphic3d_Structure> myPlaneStructure;
-  bool                             myDisplayPlane;
-  double                           myDisplayPlaneLength;
+  bool            myDisplayPlane;
+  double               myDisplayPlaneLength;
 
   occ::handle<V3d_RectangularGrid>      myRGrid;
   occ::handle<V3d_CircularGrid>         myCGrid;
-  Aspect_GridType                       myGridType;
-  bool                                  myGridEcho;
+  Aspect_GridType                  myGridType;
+  bool                 myGridEcho;
   occ::handle<Graphic3d_Structure>      myGridEchoStructure;
   occ::handle<Graphic3d_Group>          myGridEchoGroup;
   occ::handle<Graphic3d_AspectMarker3d> myGridEchoAspect;
-  Graphic3d_Vertex                      myGridEchoLastVert;
+  Graphic3d_Vertex                 myGridEchoLastVert;
 };
 
 #endif // _V3d_Viewer_HeaderFile

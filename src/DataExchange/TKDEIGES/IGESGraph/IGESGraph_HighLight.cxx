@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_HighLight, IGESData_IGESEntity)
 
 IGESGraph_HighLight::IGESGraph_HighLight() {}
 
-void IGESGraph_HighLight::Init(const int nbProps, const int aHighLightStatus)
+void IGESGraph_HighLight::Init(const int nbProps,
+                               const int aHighLightStatus)
 {
   theNbPropertyValues = nbProps;
   theHighLight        = aHighLightStatus;

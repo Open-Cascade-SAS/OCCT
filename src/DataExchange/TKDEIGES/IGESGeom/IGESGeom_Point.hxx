@@ -37,8 +37,7 @@ public:
   //! - aPoint  : Coordinates of point
   //! - aSymbol : SubfigureDefinition entity specifying the
   //! display symbol if there exists one, or zero
-  Standard_EXPORT void Init(const gp_XYZ&                              aPoint,
-                            const occ::handle<IGESBasic_SubfigureDef>& aSymbol);
+  Standard_EXPORT void Init(const gp_XYZ& aPoint, const occ::handle<IGESBasic_SubfigureDef>& aSymbol);
 
   //! returns coordinates of the point
   Standard_EXPORT gp_Pnt Value() const;
@@ -55,7 +54,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Point, IGESData_IGESEntity)
 
 private:
-  gp_XYZ                              thePoint;
+  gp_XYZ                         thePoint;
   occ::handle<IGESBasic_SubfigureDef> theSymbol;
 };
 

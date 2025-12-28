@@ -23,6 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <Interface_SignType.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
@@ -42,13 +43,16 @@ public:
   //! possible min and max values
   //! To be called when creating
   Standard_EXPORT void SetIntCase(const bool hasmin,
-                                  const int  valmin,
+                                  const int valmin,
                                   const bool hasmax,
-                                  const int  valmax);
+                                  const int valmax);
 
   //! Tells if this Signature gives integer values
   //! and returns values from SetIntCase if True
-  Standard_EXPORT bool IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int& valmax) const;
+  Standard_EXPORT bool IsIntCase(bool& hasmin,
+                                             int& valmin,
+                                             bool& hasmax,
+                                             int& valmax) const;
 
   //! Adds a possible case
   //! To be called when creating, IF the list of possible cases for
@@ -80,16 +84,16 @@ public:
   //! The default definition calls MatchValue
   //! Can be redefined
   Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model,
-                                       const TCollection_AsciiString&               text,
-                                       const bool                                   exact) const;
+                                                   const occ::handle<Interface_InterfaceModel>& model,
+                                                   const TCollection_AsciiString&          text,
+                                                   const bool exact) const;
 
   //! Default procedure to tell if a value <val> matches a text
   //! with a criterium <exact>. <exact> = True requires equality,
   //! else only contained (no reg-exp)
-  Standard_EXPORT static bool MatchValue(const char*                    val,
-                                         const TCollection_AsciiString& text,
-                                         const bool                     exact);
+  Standard_EXPORT static bool MatchValue(const char*         val,
+                                                     const TCollection_AsciiString& text,
+                                                     const bool         exact);
 
   //! This procedure converts an Integer to a CString
   //! It is a convenient way when the value of a signature has the
@@ -106,7 +110,7 @@ protected:
   TCollection_AsciiString thename;
 
 private:
-  int                                                         thecasi[3];
+  int                       thecasi[3];
   occ::handle<NCollection_HSequence<TCollection_AsciiString>> thecasl;
 };
 

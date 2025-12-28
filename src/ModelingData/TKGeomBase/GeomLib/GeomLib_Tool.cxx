@@ -40,14 +40,14 @@ static const double PARTOLERANCE = 1.e-9;
 //=======================================================================
 
 bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
-                             const gp_Pnt&                  Point,
-                             const double                   MaxDist,
-                             double&                        U)
+                                         const gp_Pnt&             Point,
+                                         const double       MaxDist,
+                                         double&            U)
 {
   if (Curve.IsNull())
     return false;
   //
-  U           = 0.;
+  U                  = 0.;
   double aTol = MaxDist * MaxDist;
   //
   GeomAdaptor_Curve aGAC(Curve);
@@ -60,8 +60,8 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
   if (n <= 0)
     return false;
   //
-  int    i = 0, iMin = 0;
-  double Dist2Min = RealLast();
+  int i = 0, iMin = 0;
+  double    Dist2Min = RealLast();
   for (i = 1; i <= n; i++)
   {
     if (extrema.SquareDistance(i) < Dist2Min)
@@ -90,20 +90,20 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
 //=======================================================================
 
 bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
-                              const gp_Pnt&                    Point,
-                              const double                     MaxDist,
-                              double&                          U,
-                              double&                          V)
+                                          const gp_Pnt&               Point,
+                                          const double         MaxDist,
+                                          double&              U,
+                                          double&              V)
 {
   if (Surface.IsNull())
     return false;
   //
-  U           = 0.;
-  V           = 0.;
+  U                  = 0.;
+  V                  = 0.;
   double aTol = MaxDist * MaxDist;
   //
   GeomAdaptor_Surface aGAS(Surface);
-  double              aTolU = PARTOLERANCE, aTolV = PARTOLERANCE;
+  double       aTolU = PARTOLERANCE, aTolV = PARTOLERANCE;
   //
   Extrema_ExtPS extrema(Point, aGAS, aTolU, aTolV);
   //
@@ -114,8 +114,8 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
   if (n <= 0)
     return false;
   //
-  double Dist2Min = RealLast();
-  int    i = 0, iMin = 0;
+  double    Dist2Min = RealLast();
+  int i = 0, iMin = 0;
   for (i = 1; i <= n; i++)
   {
     if (extrema.SquareDistance(i) < Dist2Min)
@@ -144,14 +144,14 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
 //=======================================================================
 
 bool GeomLib_Tool::Parameter(const occ::handle<Geom2d_Curve>& Curve,
-                             const gp_Pnt2d&                  Point,
-                             const double                     MaxDist,
-                             double&                          U)
+                                         const gp_Pnt2d&             Point,
+                                         const double         MaxDist,
+                                         double&              U)
 {
   if (Curve.IsNull())
     return false;
   //
-  U           = 0.;
+  U                  = 0.;
   double aTol = MaxDist * MaxDist;
   //
   Geom2dAdaptor_Curve aGAC(Curve);
@@ -161,8 +161,8 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom2d_Curve>& Curve,
   int n = extrema.NbExt();
   if (n <= 0)
     return false;
-  int    i = 0, iMin = 0;
-  double Dist2Min = RealLast();
+  int i = 0, iMin = 0;
+  double    Dist2Min = RealLast();
   for (i = 1; i <= n; i++)
   {
     if (extrema.SquareDistance(i) < Dist2Min)
@@ -213,7 +213,10 @@ public:
   }
 
   //! Returns value of *this (square deviation) and its 1st and 2nd derivative.
-  void ValueAndDerives(const double theParam, double& theVal, double& theD1, double& theD2)
+  void ValueAndDerives(const double theParam,
+                       double&      theVal,
+                       double&      theD1,
+                       double&      theD2)
   {
     gp_Vec2d aD1;
     gp_Vec2d aD2;
@@ -303,14 +306,14 @@ private:
 //            the point U(n). U(0) = theStartParameter.
 //=======================================================================
 double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                      const double               theFPar,
-                                      const double               theLPar,
-                                      const double               theStartParameter,
-                                      const int                  theNbIters,
-                                      double* const              thePrmOnCurve,
-                                      gp_Pnt2d* const            thePtOnCurve,
-                                      gp_Vec2d* const            theVecCurvLine,
-                                      gp_Lin2d* const            theLine)
+                                             const double        theFPar,
+                                             const double        theLPar,
+                                             const double        theStartParameter,
+                                             const int     theNbIters,
+                                             double* const       thePrmOnCurve,
+                                             gp_Pnt2d* const            thePtOnCurve,
+                                             gp_Vec2d* const            theVecCurvLine,
+                                             gp_Lin2d* const            theLine)
 {
   // Computed maximal deflection
   if ((theStartParameter < theFPar) || (theStartParameter > theLPar))
@@ -404,11 +407,11 @@ double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
 //           math_PSO Algorithm is used.
 //=======================================================================
 double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
-                                      const double               theFPar,
-                                      const double               theLPar,
-                                      const int                  theNbSubIntervals,
-                                      const int                  theNbIters,
-                                      double* const              thePrmOnCurve)
+                                             const double        theFPar,
+                                             const double        theLPar,
+                                             const int     theNbSubIntervals,
+                                             const int     theNbIters,
+                                             double* const       thePrmOnCurve)
 {
   // Computed maximal deflection
   const gp_Pnt2d aPf(theCurve.Value(theFPar));

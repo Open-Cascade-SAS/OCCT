@@ -26,10 +26,10 @@
 
 //=================================================================================================
 
-BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape& S,
-                                 const gp_Ax1&       Ax,
-                                 const double        D,
-                                 const bool          C)
+BRepSweep_Revol::BRepSweep_Revol(const TopoDS_Shape&    S,
+                                 const gp_Ax1&          Ax,
+                                 const double    D,
+                                 const bool C)
     : myRotation(S.Oriented(TopAbs_FORWARD), NumShape(D), Location(Ax, D), Axe(Ax, D), Angle(D), C)
 {
   Standard_ConstructionError_Raise_if(Angle(D) <= Precision::Angular(),

@@ -61,14 +61,13 @@ bool Expr_Sign::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Sign::Derivative(
-  const occ::handle<Expr_NamedUnknown>&) const
+occ::handle<Expr_GeneralExpression> Expr_Sign::Derivative(const occ::handle<Expr_NamedUnknown>&) const
 {
   return new Expr_NumericValue(0.0);
 }
 
 double Expr_Sign::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                           const NCollection_Array1<double>&                         vals) const
+                                  const NCollection_Array1<double>&      vals) const
 {
   double res = Operand()->Evaluate(vars, vals);
   return Expr::Sign(res);

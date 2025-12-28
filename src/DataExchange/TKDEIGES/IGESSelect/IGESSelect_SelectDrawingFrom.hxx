@@ -37,7 +37,8 @@ public:
 
   //! Selects the Drawings attached (through Single Views in
   //! Directory Part) to input entities
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns the label, with its "Drawings attached"
   Standard_EXPORT TCollection_AsciiString Label() const override;
@@ -48,6 +49,7 @@ protected:
   //! Returns True, because selection works with a ViewSorter which
   //! gives a unique result
   Standard_EXPORT virtual bool HasUniqueResult() const override;
+
 };
 
 #endif // _IGESSelect_SelectDrawingFrom_HeaderFile

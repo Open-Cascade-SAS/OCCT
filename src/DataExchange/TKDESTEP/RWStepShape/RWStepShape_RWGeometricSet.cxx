@@ -18,13 +18,14 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_GeometricSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 RWStepShape_RWGeometricSet::RWStepShape_RWGeometricSet() {}
 
 void RWStepShape_RWGeometricSet::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_GeometricSet>&  ent) const
 {
@@ -43,12 +44,12 @@ void RWStepShape_RWGeometricSet::ReadStep(const occ::handle<StepData_StepReaderD
   // --- own field : elements ---
 
   occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> aElements;
-  StepShape_GeometricSetSelect                                   aElementsItem;
-  int                                                            nsub2;
+  StepShape_GeometricSetSelect                  aElementsItem;
+  int                              nsub2;
   if (data->ReadSubList(num, 2, "elements", ach, nsub2))
   {
-    int nb2   = data->NbParams(nsub2);
-    aElements = new NCollection_HArray1<StepShape_GeometricSetSelect>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aElements            = new NCollection_HArray1<StepShape_GeometricSetSelect>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -62,7 +63,7 @@ void RWStepShape_RWGeometricSet::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aElements);
 }
 
-void RWStepShape_RWGeometricSet::WriteStep(StepData_StepWriter&                       SW,
+void RWStepShape_RWGeometricSet::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<StepShape_GeometricSet>& ent) const
 {
 
@@ -81,7 +82,7 @@ void RWStepShape_RWGeometricSet::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWGeometricSet::Share(const occ::handle<StepShape_GeometricSet>& ent,
-                                       Interface_EntityIterator&                  iter) const
+                                       Interface_EntityIterator&             iter) const
 {
 
   int nbElem1 = ent->NbElements();

@@ -28,7 +28,10 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
@@ -74,27 +77,28 @@ public:
   //! Basic Shared and Sharing lists are obtained from a General
   //! Services Library, given directly as an argument
   Standard_EXPORT Interface_Graph(const occ::handle<Interface_InterfaceModel>& amodel,
-                                  const Interface_GeneralLib&                  lib,
-                                  const bool                                   theModeStats = true);
+                                  const Interface_GeneralLib&             lib,
+                                  const bool theModeStats = true);
 
   //! Same as above, but the Library is defined through a Protocol
   Standard_EXPORT Interface_Graph(const occ::handle<Interface_InterfaceModel>& amodel,
                                   const occ::handle<Interface_Protocol>&       protocol,
-                                  const bool                                   theModeStats = true);
+                                  const bool theModeStats = true);
 
   //! Same as above, but the Library is defined through a Protocol
   Standard_EXPORT Interface_Graph(const occ::handle<Interface_InterfaceModel>& amodel,
                                   const occ::handle<Interface_GTool>&          gtool,
-                                  const bool                                   theModeStats = true);
+                                  const bool theModeStats = true);
 
   //! Same a above but works with the Protocol recorded in the Model
   Standard_EXPORT Interface_Graph(const occ::handle<Interface_InterfaceModel>& amodel,
-                                  const bool                                   theModeStats = true);
+                                  const bool theModeStats = true);
 
   //! Creates a Graph from another one, getting all its data
   //! Remark that status are copied from <agraph>, but the other
   //! lists (sharing/shared) are copied only if <copied> = True
-  Standard_EXPORT Interface_Graph(const Interface_Graph& agraph, const bool copied = false);
+  Standard_EXPORT Interface_Graph(const Interface_Graph& agraph,
+                                  const bool copied = false);
 
   //! Assignment
   Standard_EXPORT Interface_Graph& operator=(const Interface_Graph& theOther);
@@ -165,8 +169,8 @@ public:
   //! Of course, redefinitions of Shared lists are taken into
   //! account if there are some
   Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                     const bool                             shared,
-                                     const int                              newstat = 0);
+                                     const bool            shared,
+                                     const int            newstat = 0);
 
   //! Gets an Entity, plus its shared ones (at every level) if
   //! "shared" is True. New items are set to status "newstat".
@@ -176,15 +180,16 @@ public:
   //! if cumul is True,  to former status + overlapstat (cumul)
   //! if cumul is False, to overlapstat (enforce)
   Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent,
-                                     const bool                             shared,
-                                     const int                              newstat,
-                                     const int                              overlapstat,
-                                     const bool                             cumul);
+                                     const bool            shared,
+                                     const int            newstat,
+                                     const int            overlapstat,
+                                     const bool            cumul);
 
   //! Gets Entities given by an EntityIterator. Entities which were
   //! not yet present in the graph are mapped with status "newstat"
   //! Entities already present remain unchanged
-  Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter, const int newstat);
+  Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter,
+                                   const int          newstat);
 
   //! Gets Entities given by an EntityIterator and distinguishes
   //! those already present in the Graph :
@@ -197,9 +202,9 @@ public:
   //! if cumul is False, to overlapstat (enforce)
   //! (Note : works as GetEntity, shared = False, for each entity)
   Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter,
-                                   const int                       newstat,
-                                   const int                       overlapstat,
-                                   const bool                      cumul);
+                                   const int          newstat,
+                                   const int          overlapstat,
+                                   const bool          cumul);
 
   //! Gets all present items from another graph
   Standard_EXPORT void GetFromGraph(const Interface_Graph& agraph);
@@ -220,13 +225,11 @@ public:
   //! Returns the list of Entities Shared by an Entity, as recorded
   //! by the Graph. That is, by default Basic Shared List, else it
   //! can be redefined by methods SetShare, SetNoShare ... see below
-  Standard_EXPORT Interface_EntityIterator
-    Shareds(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT Interface_EntityIterator Shareds(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns the list of Entities which Share an Entity, computed
   //! from the Basic or Redefined Shared Lists
-  Standard_EXPORT Interface_EntityIterator
-    Sharings(const occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT Interface_EntityIterator Sharings(const occ::handle<Standard_Transient>& ent) const;
 
   //! Returns the sequence of Entities Sharings by an Entity
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GetSharings(
@@ -235,9 +238,8 @@ public:
   //! Returns the list of sharings entities, AT ANY LEVEL, which are
   //! kind of a given type. A sharing entity kind of this type
   //! ends the exploration of its branch
-  Standard_EXPORT Interface_EntityIterator
-    TypedSharings(const occ::handle<Standard_Transient>& ent,
-                  const occ::handle<Standard_Type>&      type) const;
+  Standard_EXPORT Interface_EntityIterator TypedSharings(const occ::handle<Standard_Transient>& ent,
+                                                         const occ::handle<Standard_Type>& type) const;
 
   //! Returns the Entities which are not Shared (their Sharing List
   //! is empty) in the Model
@@ -252,8 +254,7 @@ public:
 
   //! Returns the Table of Sharing lists. Used to Create
   //! another Graph from <me>
-  Standard_EXPORT const occ::handle<NCollection_HArray1<NCollection_List<int>>>& SharingTable()
-    const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<NCollection_List<int>>>& SharingTable() const;
 
   //! Returns mode responsible for computation of statuses;
   Standard_EXPORT bool ModeStat() const;
@@ -262,9 +263,9 @@ protected:
   //! Initialize statuses and flags
   Standard_EXPORT void InitStats();
 
-  occ::handle<Interface_InterfaceModel>                   themodel;
-  TCollection_AsciiString                                 thepresents;
-  occ::handle<NCollection_HArray1<int>>                   thestats;
+  occ::handle<Interface_InterfaceModel>       themodel;
+  TCollection_AsciiString                thepresents;
+  occ::handle<NCollection_HArray1<int>>       thestats;
   occ::handle<NCollection_HArray1<NCollection_List<int>>> thesharings;
 
 private:

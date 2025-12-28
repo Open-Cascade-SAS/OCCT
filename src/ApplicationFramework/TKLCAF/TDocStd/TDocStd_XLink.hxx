@@ -79,12 +79,14 @@ public:
   Standard_EXPORT void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>.
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+  Standard_EXPORT virtual bool BeforeUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+  Standard_EXPORT virtual bool AfterUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   //! Returns a null handle. Raise always for it is
   //! nonsense to use this method.
@@ -97,9 +99,9 @@ public:
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Does nothing.
-  Standard_EXPORT void Paste(
-    const occ::handle<TDF_Attribute>&       intoAttribute,
-    const occ::handle<TDF_RelocationTable>& aRelocationTable) const override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
+                             const occ::handle<TDF_RelocationTable>& aRelocationTable) const
+    override;
 
   //! Dumps the attribute on <aStream>.
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& anOS) const override;

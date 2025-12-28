@@ -18,11 +18,10 @@
 
 RWStepVisual_RWPreDefinedItem::RWStepVisual_RWPreDefinedItem() {}
 
-void RWStepVisual_RWPreDefinedItem::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepVisual_PreDefinedItem>& ent) const
+void RWStepVisual_RWPreDefinedItem::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepVisual_PreDefinedItem>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -41,9 +40,8 @@ void RWStepVisual_RWPreDefinedItem::ReadStep(
   ent->Init(aName);
 }
 
-void RWStepVisual_RWPreDefinedItem::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepVisual_PreDefinedItem>& ent) const
+void RWStepVisual_RWPreDefinedItem::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepVisual_PreDefinedItem>& ent) const
 {
 
   // --- own field : name ---

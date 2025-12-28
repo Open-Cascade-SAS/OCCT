@@ -62,13 +62,13 @@ public:
   //! variable if already set.
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
-  Standard_EXPORT static void Set(const char*                       Name,
+  Standard_EXPORT static void Set(const char*       Name,
                                   const occ::handle<Geom_Geometry>& G,
-                                  const bool                        isSenseMarker = true);
+                                  const bool       isSenseMarker = true);
 
   template <class T>
-  static void Set(const char*           Name,
-                  const occ::handle<T>& Arg,
+  static void Set(const char* Name,
+                  const occ::handle<T>&       Arg,
                   typename opencascade::std::enable_if<
                     opencascade::std::is_base_of<Geom_Geometry, T>::value>::type* = 0)
   {
@@ -79,13 +79,13 @@ public:
   //! variable if already set.
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
-  Standard_EXPORT static void Set(const char*                      Name,
+  Standard_EXPORT static void Set(const char*      Name,
                                   const occ::handle<Geom2d_Curve>& C,
-                                  const bool                       isSenseMarker = true);
+                                  const bool      isSenseMarker = true);
 
   template <class T>
-  static void Set(const char*           Name,
-                  const occ::handle<T>& Arg,
+  static void Set(const char* Name,
+                  const occ::handle<T>&       Arg,
                   typename opencascade::std::enable_if<
                     opencascade::std::is_base_of<Geom2d_Curve, T>::value>::type* = 0)
   {

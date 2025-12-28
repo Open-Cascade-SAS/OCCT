@@ -86,8 +86,7 @@ void IFSelect_PacketList::Add(const occ::handle<Standard_Transient>& ent)
   thebegin = false;
 }
 
-void IFSelect_PacketList::AddList(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
+void IFSelect_PacketList::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   if (list.IsNull())
     return;
@@ -137,7 +136,8 @@ int IFSelect_PacketList::HighestDuplicationCount() const
   return high;
 }
 
-int IFSelect_PacketList::NbDuplicated(const int newcount, const bool andmore) const
+int IFSelect_PacketList::NbDuplicated(const int newcount,
+                                                   const bool andmore) const
 {
   int i, nb = themodel->NbEntities();
   int nbdu = 0;
@@ -151,10 +151,10 @@ int IFSelect_PacketList::NbDuplicated(const int newcount, const bool andmore) co
   return nbdu;
 }
 
-Interface_EntityIterator IFSelect_PacketList::Duplicated(const int  newcount,
+Interface_EntityIterator IFSelect_PacketList::Duplicated(const int newcount,
                                                          const bool andmore) const
 {
-  int                      nb = themodel->NbEntities();
+  int         nb = themodel->NbEntities();
   Interface_EntityIterator list;
 
   int i;

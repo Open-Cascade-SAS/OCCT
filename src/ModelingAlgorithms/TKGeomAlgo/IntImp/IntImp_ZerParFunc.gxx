@@ -228,12 +228,12 @@ bool IntImp_ZerParFunc::Values(const math_Vector& X, math_Vector& F, math_Matrix
   return true;
 }
 
-void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric   ChoixIso,
-                                          const NCollection_Array1<double>& Param,
-                                          math_Vector&                      UVap,
-                                          math_Vector&                      BornInf,
-                                          math_Vector&                      BornSup,
-                                          math_Vector&                      Tolerance)
+void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric ChoixIso,
+                                          const NCollection_Array1<double>&     Param,
+                                          math_Vector&                    UVap,
+                                          math_Vector&                    BornInf,
+                                          math_Vector&                    BornSup,
+                                          math_Vector&                    Tolerance)
 {
 
   chxIso = ChoixIso;
@@ -327,9 +327,9 @@ void IntImp_ZerParFunc::ComputeParameters(const IntImp_ConstIsoparametric   Choi
   BornSup(3) += Incr3;
 }
 
-bool IntImp_ZerParFunc::IsTangent(const math_Vector&          UVap,
-                                  NCollection_Array1<double>& Param,
-                                  IntImp_ConstIsoparametric&  BestChoix)
+bool IntImp_ZerParFunc::IsTangent(const math_Vector&         UVap,
+                                              NCollection_Array1<double>&      Param,
+                                              IntImp_ConstIsoparametric& BestChoix)
 {
   switch (chxIso)
   {
@@ -364,7 +364,7 @@ bool IntImp_ZerParFunc::IsTangent(const math_Vector&          UVap,
   }
 
   IntImp_ConstIsoparametric TabIso[4];
-  double                    EpsUV[4];
+  double             EpsUV[4];
   EpsUV[0] = ures1;
   EpsUV[1] = vres1;
 

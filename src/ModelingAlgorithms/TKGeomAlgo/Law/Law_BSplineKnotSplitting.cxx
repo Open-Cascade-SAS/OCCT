@@ -23,7 +23,7 @@ typedef NCollection_Array1<int>  Array1OfInteger;
 typedef NCollection_HArray1<int> HArray1OfInteger;
 
 Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline>& BasisCurve,
-                                                   const int                       ContinuityRange)
+                                                   const int     ContinuityRange)
 {
   if (ContinuityRange < 0)
     throw Standard_RangeError();
@@ -41,8 +41,8 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline
   }
   else
   {
-    int             NbKnots = BasisCurve->NbKnots();
-    Array1OfInteger Mults(1, NbKnots);
+    int NbKnots = BasisCurve->NbKnots();
+    Array1OfInteger  Mults(1, NbKnots);
     BasisCurve->Multiplicities(Mults);
     int Mmax = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
     if (Degree - Mmax >= ContinuityRange)
@@ -53,10 +53,10 @@ Law_BSplineKnotSplitting::Law_BSplineKnotSplitting(const occ::handle<Law_BSpline
     }
     else
     {
-      Array1OfInteger Split(1, LastIndex - FirstIndex + 1);
-      int             NbSplit = 1;
-      int             Index   = FirstIndex;
-      Split(NbSplit)          = Index;
+      Array1OfInteger  Split(1, LastIndex - FirstIndex + 1);
+      int NbSplit = 1;
+      int Index   = FirstIndex;
+      Split(NbSplit)           = Index;
       Index++;
       NbSplit++;
       while (Index < LastIndex)

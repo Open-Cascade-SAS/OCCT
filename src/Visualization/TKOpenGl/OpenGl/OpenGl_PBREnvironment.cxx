@@ -113,24 +113,23 @@ private:
 
 private:
   const occ::handle<OpenGl_Context> myContext;
-  GLint                             myFBO;
+  GLint                        myFBO;
   occ::handle<OpenGl_ShaderProgram> myShaderProgram;
-  NCollection_Vec4<bool>            myColorMask;
-  bool                              myDepthTestWasEnabled;
-  bool                              myDepthWrirtingWasEnablig;
-  bool                              myScissorTestWasEnabled;
-  int                               myScissorBox[4];
-  int                               myViewport[4];
-  NCollection_Vec4<float>           myClearColor;
+  NCollection_Vec4<bool>       myColorMask;
+  bool             myDepthTestWasEnabled;
+  bool             myDepthWrirtingWasEnablig;
+  bool             myScissorTestWasEnabled;
+  int             myScissorBox[4];
+  int             myViewport[4];
+  NCollection_Vec4<float>               myClearColor;
 };
 
 //=================================================================================================
 
-occ::handle<OpenGl_PBREnvironment> OpenGl_PBREnvironment::Create(
-  const occ::handle<OpenGl_Context>& theCtx,
-  unsigned int                       thePow2Size,
-  unsigned int                       theLevelsNumber,
-  const TCollection_AsciiString&     theId)
+occ::handle<OpenGl_PBREnvironment> OpenGl_PBREnvironment::Create(const occ::handle<OpenGl_Context>& theCtx,
+                                                            unsigned int thePow2Size,
+                                                            unsigned int theLevelsNumber,
+                                                            const TCollection_AsciiString& theId)
 {
   if (theCtx->arbFBO == NULL)
   {
@@ -156,8 +155,8 @@ occ::handle<OpenGl_PBREnvironment> OpenGl_PBREnvironment::Create(
 
 //=================================================================================================
 
-OpenGl_PBREnvironment::OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>& theCtx,
-                                             unsigned int                       thePowOf2Size,
+OpenGl_PBREnvironment::OpenGl_PBREnvironment(const occ::handle<OpenGl_Context>&  theCtx,
+                                             unsigned int                   thePowOf2Size,
                                              unsigned int                   theSpecMapLevelsNumber,
                                              const TCollection_AsciiString& theId)
     : OpenGl_NamedResource(theId),
@@ -200,7 +199,7 @@ void OpenGl_PBREnvironment::Unbind(const occ::handle<OpenGl_Context>& theCtx)
 //=================================================================================================
 
 void OpenGl_PBREnvironment::Clear(const occ::handle<OpenGl_Context>& theCtx,
-                                  const NCollection_Vec3<float>&     theColor)
+                                  const NCollection_Vec3<float>&         theColor)
 {
   OpenGl_PBREnvironmentSentry aSentry(theCtx);
   clear(theCtx, theColor);
@@ -210,11 +209,11 @@ void OpenGl_PBREnvironment::Clear(const occ::handle<OpenGl_Context>& theCtx,
 
 void OpenGl_PBREnvironment::Bake(const occ::handle<OpenGl_Context>& theCtx,
                                  const occ::handle<OpenGl_Texture>& theEnvMap,
-                                 bool                               theZIsInverted,
-                                 bool                               theIsTopDown,
-                                 size_t                             theDiffMapNbSamples,
-                                 size_t                             theSpecMapNbSamples,
-                                 float                              theProbability)
+                                 bool              theZIsInverted,
+                                 bool              theIsTopDown,
+                                 size_t                 theDiffMapNbSamples,
+                                 size_t                 theSpecMapNbSamples,
+                                 float            theProbability)
 {
   Standard_ProgramError_Raise_if(
     theEnvMap.IsNull(),
@@ -341,7 +340,7 @@ bool OpenGl_PBREnvironment::initFBO(const occ::handle<OpenGl_Context>& theCtx)
 //=================================================================================================
 
 bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>& theCtx,
-                                              const BakingParams*                theDrawParams)
+                                              const BakingParams*           theDrawParams)
 {
   const OpenGl_TypeOfIBLMap aRendMapId =
     myCanRenderFloat ? OpenGl_TypeOfIBLMap_DiffuseSH : OpenGl_TypeOfIBLMap_DiffuseFallback;
@@ -439,8 +438,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>&
       anImageF.ChangeValue<NCollection_Vec4<float>>(0, 0) = NCollection_Vec4<float>(1.0f);
       for (size_t aValIter = 1; aValIter < anImageF.SizeX(); ++aValIter)
       {
-        anImageF.ChangeValue<NCollection_Vec4<float>>(0, aValIter) =
-          NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
+        anImageF.ChangeValue<NCollection_Vec4<float>>(0, aValIter) = NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
       }
     }
   }
@@ -465,7 +463,7 @@ bool OpenGl_PBREnvironment::processDiffIBLMap(const occ::handle<OpenGl_Context>&
 //=================================================================================================
 
 bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>& theCtx,
-                                              const BakingParams*                theDrawParams)
+                                              const BakingParams*           theDrawParams)
 {
   if (theDrawParams != NULL)
   {
@@ -475,7 +473,7 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     }
 
     const occ::handle<OpenGl_ShaderProgram>& aProg = theCtx->ActiveProgram();
-    const float                              aSolidAngleSource =
+    const float                         aSolidAngleSource =
       float(4.0 * M_PI / (6.0 * float(theDrawParams->EnvMapSize * theDrawParams->EnvMapSize)));
     aProg->SetSampler(theCtx, "uEnvMap", theCtx->PBRSpecIBLMapTexUnit());
     aProg->SetUniform(theCtx, "uZCoeff", theDrawParams->IsZInverted ? -1 : 1);
@@ -502,10 +500,11 @@ bool OpenGl_PBREnvironment::processSpecIBLMap(const occ::handle<OpenGl_Context>&
     theCtx->ResizeViewport(aViewport);
     if (theDrawParams != NULL)
     {
-      const int aNbSamples = int(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
-                                   theDrawParams->Probability,
-                                   aLevelIter / float(mySpecMapLevelsNumber - 1))
-                                 * theDrawParams->NbSpecSamples);
+      const int aNbSamples =
+        int(Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(
+                           theDrawParams->Probability,
+                           aLevelIter / float(mySpecMapLevelsNumber - 1))
+                         * theDrawParams->NbSpecSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uSamplesNum", aNbSamples);
       theCtx->ActiveProgram()->SetUniform(theCtx, "uCurrentLevel", aLevelIter);
     }
@@ -627,11 +626,11 @@ bool OpenGl_PBREnvironment::checkFBOComplentess(const occ::handle<OpenGl_Context
 
 void OpenGl_PBREnvironment::bake(const occ::handle<OpenGl_Context>& theCtx,
                                  const occ::handle<OpenGl_Texture>& theEnvMap,
-                                 bool                               theZIsInverted,
-                                 bool                               theIsTopDown,
-                                 size_t                             theDiffNbSamples,
-                                 size_t                             theSpecNbSamples,
-                                 float                              theProbability)
+                                 bool              theZIsInverted,
+                                 bool              theIsTopDown,
+                                 size_t                 theDiffNbSamples,
+                                 size_t                 theSpecNbSamples,
+                                 float            theProbability)
 {
   myIsNeededToBeBound = true;
 
@@ -673,7 +672,7 @@ void OpenGl_PBREnvironment::bake(const occ::handle<OpenGl_Context>& theCtx,
 //=================================================================================================
 
 void OpenGl_PBREnvironment::clear(const occ::handle<OpenGl_Context>& theCtx,
-                                  const NCollection_Vec3<float>&     theColor)
+                                  const NCollection_Vec3<float>&         theColor)
 {
   myIsNeededToBeBound = true;
   theCtx->arbFBO->glBindFramebuffer(GL_FRAMEBUFFER, myFBO);

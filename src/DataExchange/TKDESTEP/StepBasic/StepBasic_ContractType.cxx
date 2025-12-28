@@ -42,8 +42,7 @@ occ::handle<TCollection_HAsciiString> StepBasic_ContractType::Description() cons
 
 //=================================================================================================
 
-void StepBasic_ContractType::SetDescription(
-  const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepBasic_ContractType::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

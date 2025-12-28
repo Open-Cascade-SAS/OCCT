@@ -58,7 +58,7 @@ public:
   Standard_EXPORT void FillModel(const occ::handle<Transfer_TransientProcess>& proc,
                                  const occ::handle<Interface_InterfaceModel>&  amodel,
                                  const occ::handle<Interface_Protocol>&        proto,
-                                 const bool                                    roots = true) const;
+                                 const bool roots = true) const;
 
   //! Fills an InterfaceModel with the Complete Result of a Transfer
   //! stored in a TransientProcess (Starting Objects are Transient)
@@ -74,7 +74,8 @@ public:
   Standard_EXPORT void FillModel(const occ::handle<Transfer_FinderProcess>&   proc,
                                  const occ::handle<Interface_InterfaceModel>& amodel,
                                  const occ::handle<Interface_Protocol>&       proto,
-                                 const bool                                   roots = true) const;
+                                 const bool roots = true) const;
+
 };
 
 #endif // _Transfer_TransferInput_HeaderFile

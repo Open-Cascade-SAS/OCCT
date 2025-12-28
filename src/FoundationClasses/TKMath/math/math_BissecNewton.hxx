@@ -46,9 +46,9 @@ public:
   //! abs(Xi - Xi-1) <= TolX and F(Xi) * F(Xi-1) <= 0
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT void Perform(math_FunctionWithDerivative& F,
-                               const double                 Bound1,
-                               const double                 Bound2,
-                               const int                    NbIterations = 100);
+                               const double          Bound1,
+                               const double          Bound2,
+                               const int       NbIterations = 100);
 
   //! This method is called at the end of each iteration to check if the
   //! solution has been found.
@@ -80,12 +80,12 @@ public:
   Standard_EXPORT virtual ~math_BissecNewton();
 
 protected:
-  math_Status TheStatus;
-  double      XTol;
-  double      x;
-  double      dx;
-  double      f;
-  double      df;
+  math_Status   TheStatus;
+  double XTol;
+  double x;
+  double dx;
+  double f;
+  double df;
 
 private:
   bool Done;

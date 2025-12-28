@@ -134,80 +134,62 @@ public:
 
   int NbSharedVertices() const { return myNbSharedVertices; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& BigSplineSec() const
-  {
-    return myBigSplineSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& BigSplineSec() const { return myBigSplineSec; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& IndirectSec() const
-  {
-    return myIndirectSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& IndirectSec() const { return myIndirectSec; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& OffsetSurfaceSec() const
-  {
-    return myOffsetSurfaceSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& OffsetSurfaceSec() const { return myOffsetSurfaceSec; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& Trimmed3dSec() const
-  {
-    return myTrimmed3dSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& Trimmed3dSec() const { return myTrimmed3dSec; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& OffsetCurveSec() const
-  {
-    return myOffsetCurveSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& OffsetCurveSec() const { return myOffsetCurveSec; }
 
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& Trimmed2dSec() const
-  {
-    return myTrimmed2dSec;
-  }
+  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& Trimmed2dSec() const { return myTrimmed2dSec; }
 
 public:
   Standard_DEPRECATED("ModifyOffsetSurfaceMode() should be used instead")
   bool& ModifyOffestSurfaceMode() { return myOffsetSurfaceMode; }
 
 private:
-  int                                              myNbSolids;
-  int                                              myNbShells;
-  int                                              myNbFaces;
-  int                                              myNbWires;
-  int                                              myNbEdges;
-  int                                              myNbVertices;
-  int                                              myNbSolidsWithVoids;
-  int                                              myNbBigSplines;
-  int                                              myNbC0Surfaces;
-  int                                              myNbC0Curves;
-  int                                              myNbOffsetSurf;
-  int                                              myNbIndirectSurf;
-  int                                              myNbOffsetCurves;
-  int                                              myNbTrimmedCurve2d;
-  int                                              myNbTrimmedCurve3d;
-  int                                              myNbBSplibeSurf;
-  int                                              myNbBezierSurf;
-  int                                              myNbTrimSurf;
-  int                                              myNbWireWitnSeam;
-  int                                              myNbWireWithSevSeams;
-  int                                              myNbFaceWithSevWires;
-  int                                              myNbNoPCurve;
-  int                                              myNbFreeFaces;
-  int                                              myNbFreeWires;
-  int                                              myNbFreeEdges;
-  int                                              myNbSharedSolids;
-  int                                              myNbSharedShells;
-  int                                              myNbSharedFaces;
-  int                                              myNbSharedWires;
-  int                                              myNbSharedFreeWires;
-  int                                              myNbSharedFreeEdges;
-  int                                              myNbSharedEdges;
-  int                                              myNbSharedVertices;
-  bool                                             myBigSplineMode;
-  bool                                             myIndirectMode;
-  bool                                             myOffsetSurfaceMode;
-  bool                                             myTrimmed3dMode;
-  bool                                             myOffsetCurveMode;
-  bool                                             myTrimmed2dMode;
+  int                  myNbSolids;
+  int                  myNbShells;
+  int                  myNbFaces;
+  int                  myNbWires;
+  int                  myNbEdges;
+  int                  myNbVertices;
+  int                  myNbSolidsWithVoids;
+  int                  myNbBigSplines;
+  int                  myNbC0Surfaces;
+  int                  myNbC0Curves;
+  int                  myNbOffsetSurf;
+  int                  myNbIndirectSurf;
+  int                  myNbOffsetCurves;
+  int                  myNbTrimmedCurve2d;
+  int                  myNbTrimmedCurve3d;
+  int                  myNbBSplibeSurf;
+  int                  myNbBezierSurf;
+  int                  myNbTrimSurf;
+  int                  myNbWireWitnSeam;
+  int                  myNbWireWithSevSeams;
+  int                  myNbFaceWithSevWires;
+  int                  myNbNoPCurve;
+  int                  myNbFreeFaces;
+  int                  myNbFreeWires;
+  int                  myNbFreeEdges;
+  int                  myNbSharedSolids;
+  int                  myNbSharedShells;
+  int                  myNbSharedFaces;
+  int                  myNbSharedWires;
+  int                  myNbSharedFreeWires;
+  int                  myNbSharedFreeEdges;
+  int                  myNbSharedEdges;
+  int                  myNbSharedVertices;
+  bool                  myBigSplineMode;
+  bool                  myIndirectMode;
+  bool                  myOffsetSurfaceMode;
+  bool                  myTrimmed3dMode;
+  bool                  myOffsetCurveMode;
+  bool                  myTrimmed2dMode;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> myBigSplineSec;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> myIndirectSec;
   occ::handle<NCollection_HSequence<TopoDS_Shape>> myOffsetSurfaceSec;

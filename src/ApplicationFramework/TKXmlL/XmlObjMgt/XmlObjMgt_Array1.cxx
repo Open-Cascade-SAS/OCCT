@@ -89,8 +89,8 @@ XmlObjMgt_Element XmlObjMgt_Array1::Value(const int theIndex) const
 
   if (theIndex >= myFirst && theIndex <= myLast)
   {
-    int       ind;
-    LDOM_Node aNode = myElement.getFirstChild();
+    int ind;
+    LDOM_Node        aNode = myElement.getFirstChild();
     while (!aNode.isNull())
     {
       if (aNode.getNodeType() == LDOM_Node::ELEMENT_NODE)

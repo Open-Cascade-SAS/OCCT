@@ -24,7 +24,8 @@ StepVisual_TessellatedEdgeOrVertex::StepVisual_TessellatedEdgeOrVertex() {}
 
 //=================================================================================================
 
-int StepVisual_TessellatedEdgeOrVertex::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_TessellatedEdgeOrVertex::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -44,8 +45,7 @@ occ::handle<StepVisual_TessellatedEdge> StepVisual_TessellatedEdgeOrVertex::Tess
 
 //=================================================================================================
 
-occ::handle<StepVisual_TessellatedVertex> StepVisual_TessellatedEdgeOrVertex::TessellatedVertex()
-  const
+occ::handle<StepVisual_TessellatedVertex> StepVisual_TessellatedEdgeOrVertex::TessellatedVertex() const
 {
   return occ::down_cast<StepVisual_TessellatedVertex>(Value());
 }

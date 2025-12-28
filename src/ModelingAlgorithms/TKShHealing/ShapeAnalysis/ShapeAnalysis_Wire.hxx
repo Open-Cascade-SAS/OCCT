@@ -26,11 +26,16 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeExtend_WireData;
@@ -95,27 +100,27 @@ public:
 
   //! Creates object with standard TopoDS_Wire, face
   //! and precision
-  Standard_EXPORT ShapeAnalysis_Wire(const TopoDS_Wire& wire,
-                                     const TopoDS_Face& face,
-                                     const double       precision);
+  Standard_EXPORT ShapeAnalysis_Wire(const TopoDS_Wire&  wire,
+                                     const TopoDS_Face&  face,
+                                     const double precision);
 
   //! Creates the object with WireData object, face
   //! and precision
   Standard_EXPORT ShapeAnalysis_Wire(const occ::handle<ShapeExtend_WireData>& sbwd,
-                                     const TopoDS_Face&                       face,
-                                     const double                             precision);
+                                     const TopoDS_Face&                  face,
+                                     const double                 precision);
 
   //! Initializes the object with standard TopoDS_Wire, face
   //! and precision
-  Standard_EXPORT void Init(const TopoDS_Wire& wire,
-                            const TopoDS_Face& face,
-                            const double       precision);
+  Standard_EXPORT void Init(const TopoDS_Wire&  wire,
+                            const TopoDS_Face&  face,
+                            const double precision);
 
   //! Initializes the object with WireData object, face
   //! and precision
   Standard_EXPORT void Init(const occ::handle<ShapeExtend_WireData>& sbwd,
-                            const TopoDS_Face&                       face,
-                            const double                             precision);
+                            const TopoDS_Face&                  face,
+                            const double                 precision);
 
   //! Loads the object with standard TopoDS_Wire
   Standard_EXPORT void Load(const TopoDS_Wire& wire);
@@ -127,7 +132,7 @@ public:
   Standard_EXPORT void SetFace(const TopoDS_Face& face);
 
   //! Loads the face the wire lies on and surface analysis object
-  Standard_EXPORT void SetFace(const TopoDS_Face&                        theFace,
+  Standard_EXPORT void SetFace(const TopoDS_Face&                   theFace,
                                const occ::handle<ShapeAnalysis_Surface>& theSurfaceAnalysis);
 
   //! Loads the surface analysis object
@@ -138,7 +143,7 @@ public:
 
   //! Loads the surface the wire lies on
   Standard_EXPORT void SetSurface(const occ::handle<Geom_Surface>& surface,
-                                  const TopLoc_Location&           location);
+                                  const TopLoc_Location&      location);
 
   Standard_EXPORT void SetPrecision(const double precision);
 
@@ -179,7 +184,8 @@ public:
   //! ordered (tail-to-head), True otherwise
   //! Flag <isClosed> defines if the wire is closed or not
   //! Flag <mode3d> defines which mode is used (3d or 2d)
-  Standard_EXPORT bool CheckOrder(const bool isClosed = true, const bool mode3d = true);
+  Standard_EXPORT bool CheckOrder(const bool isClosed = true,
+                                              const bool mode3d   = true);
 
   //! Calls to CheckConnected for each edge
   //! Returns: True if at least one pair of disconnected edges (not sharing the
@@ -257,9 +263,9 @@ public:
   //! DONE4: as DONE3 and gaps more than myPrecision
   //! FAIL : algorithm failed (could not detect order)
   Standard_EXPORT bool CheckOrder(ShapeAnalysis_WireOrder& sawo,
-                                  bool                     isClosed    = true,
-                                  bool                     theMode3D   = true,
-                                  bool                     theModeBoth = false);
+                                              bool         isClosed  = true,
+                                              bool         theMode3D = true,
+                                              bool theModeBoth       = false);
 
   //! Checks connected edges (num-th and preceding).
   //! Tests with starting preci from <SBWD> or with <prec> if
@@ -274,7 +280,8 @@ public:
   //! DONE3 : Confused at <prec> but not <preci>
   //! FAIL1 : Not confused
   //! FAIL2 : Not confused but confused with <preci> if reverse num-th edge
-  Standard_EXPORT bool CheckConnected(const int num, const double prec = 0.0);
+  Standard_EXPORT bool CheckConnected(const int num,
+                                                  const double    prec = 0.0);
 
   //! Checks if an edge has a length not greater than myPreci or
   //! precsmall (if it is smaller)
@@ -284,7 +291,8 @@ public:
   //! DONE1: edge is small, vertices are the same
   //! DONE2: edge is small, vertices are not the same
   //! FAIL : no 3d curve and pcurve
-  Standard_EXPORT bool CheckSmall(const int num, const double precsmall = 0.0);
+  Standard_EXPORT bool CheckSmall(const int num,
+                                              const double    precsmall = 0.0);
 
   //! Checks if a seam pcurves are correct oriented
   //! Returns: False (status OK) if given edge is not a seam or if it is OK
@@ -295,11 +303,11 @@ public:
   //! Status:
   //! OK   : Pcurves are correct or edge is not seam
   //! DONE : Seam pcurves should be swapped
-  Standard_EXPORT bool CheckSeam(const int                  num,
-                                 occ::handle<Geom2d_Curve>& C1,
-                                 occ::handle<Geom2d_Curve>& C2,
-                                 double&                    cf,
-                                 double&                    cl);
+  Standard_EXPORT bool CheckSeam(const int num,
+                                             occ::handle<Geom2d_Curve>&  C1,
+                                             occ::handle<Geom2d_Curve>&  C2,
+                                             double&         cf,
+                                             double&         cl);
 
   //! Checks if a seam pcurves are correct oriented
   //! See previous functions for details
@@ -320,7 +328,9 @@ public:
   //! no pcurve
   //! FAIL2: Edge marked as degenerated and has no pcurve
   //! but singularity is not detected
-  Standard_EXPORT bool CheckDegenerated(const int num, gp_Pnt2d& dgnr1, gp_Pnt2d& dgnr2);
+  Standard_EXPORT bool CheckDegenerated(const int num,
+                                                    gp_Pnt2d&              dgnr1,
+                                                    gp_Pnt2d&              dgnr2);
 
   //! Checks for degenerated edge between two adjacent ones.
   //! Remark : Calls previous function
@@ -372,10 +382,10 @@ public:
   //! FAIL1 : No pcurve
   //! FAIL2 : No vertices
   //! DONE1 : Self-intersection found
-  Standard_EXPORT bool CheckSelfIntersectingEdge(
-    const int                                         num,
-    NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
-    NCollection_Sequence<gp_Pnt>&                     points3d);
+  Standard_EXPORT bool
+    CheckSelfIntersectingEdge(const int                num,
+                              NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
+                              NCollection_Sequence<gp_Pnt>&                 points3d);
 
   Standard_EXPORT bool CheckSelfIntersectingEdge(const int num);
 
@@ -390,11 +400,11 @@ public:
   //! FAIL1 : No pcurve
   //! FAIL2 : No vertices
   //! DONE1 : Self-intersection found
-  Standard_EXPORT bool CheckIntersectingEdges(
-    const int                                         num,
-    NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
-    NCollection_Sequence<gp_Pnt>&                     points3d,
-    NCollection_Sequence<double>&                     errors);
+  Standard_EXPORT bool
+    CheckIntersectingEdges(const int                num,
+                           NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
+                           NCollection_Sequence<gp_Pnt>&                 points3d,
+                           NCollection_Sequence<double>&               errors);
 
   //! Checks two adjacent edges for intersecting.
   //! Remark : Calls the previous method
@@ -403,17 +413,18 @@ public:
 
   //! Checks i-th and j-th edges for intersecting.
   //! Remark : See the previous method for details
-  Standard_EXPORT bool CheckIntersectingEdges(
-    const int                                         num1,
-    const int                                         num2,
-    NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
-    NCollection_Sequence<gp_Pnt>&                     points3d,
-    NCollection_Sequence<double>&                     errors);
+  Standard_EXPORT bool
+    CheckIntersectingEdges(const int                num1,
+                           const int                num2,
+                           NCollection_Sequence<IntRes2d_IntersectionPoint>& points2d,
+                           NCollection_Sequence<gp_Pnt>&                 points3d,
+                           NCollection_Sequence<double>&               errors);
 
   //! Checks i-th and j-th edges for intersecting.
   //! Remark : Calls previous method.
   //! Status : See the function above for details
-  Standard_EXPORT bool CheckIntersectingEdges(const int num1, const int num2);
+  Standard_EXPORT bool CheckIntersectingEdges(const int num1,
+                                                          const int num2);
 
   //! Checks if there is a gap in 2d between edges, not comprised by
   //! the tolerance of their common vertex.
@@ -433,10 +444,10 @@ public:
   //! DONE2: is set (together with DONE1) if gap is detected and the
   //! vector (p2d2 - p2d1) goes in direction opposite to the pcurves
   //! of the edges (if angle is more than 0.9*PI).
-  Standard_EXPORT bool CheckLacking(const int    num,
-                                    const double Tolerance,
-                                    gp_Pnt2d&    p2d1,
-                                    gp_Pnt2d&    p2d2);
+  Standard_EXPORT bool CheckLacking(const int num,
+                                                const double    Tolerance,
+                                                gp_Pnt2d&              p2d1,
+                                                gp_Pnt2d&              p2d2);
 
   //! Checks if there is a gap in 2D between edges and not comprised by vertex tolerance
   //! The value of SBWD.thepreci is used.
@@ -446,7 +457,8 @@ public:
   //! DONE1 : The vertex tolerance should be increased only (2d gap is
   //! small)
   //! DONE2 : Edge can be inserted (3d and 2d gaps are large enough)
-  Standard_EXPORT bool CheckLacking(const int num, const double Tolerance = 0.0);
+  Standard_EXPORT bool CheckLacking(const int num,
+                                                const double    Tolerance = 0.0);
 
   //! Checks if wire defines an outer bound on the face
   //! Uses ShapeAnalysis::IsOuterBound for analysis
@@ -456,10 +468,10 @@ public:
   Standard_EXPORT bool CheckOuterBound(const bool APIMake = true);
 
   //! Detects a notch
-  Standard_EXPORT bool CheckNotchedEdges(const int    num,
-                                         int&         shortNum,
-                                         double&      param,
-                                         const double Tolerance = 0.0);
+  Standard_EXPORT bool CheckNotchedEdges(const int num,
+                                                     int&      shortNum,
+                                                     double&         param,
+                                                     const double    Tolerance = 0.0);
 
   //! Checks if wire has parametric area less than precision.
   Standard_EXPORT bool CheckSmallArea(const TopoDS_Wire& theWire);
@@ -493,38 +505,37 @@ public:
   //! otherwise reversed.
   //! For head of <SBWD> if DONE5 is True <shape> should be direct,
   //! otherwise reversed.
-  Standard_EXPORT bool CheckShapeConnect(const TopoDS_Shape& shape, const double prec = 0.0);
+  Standard_EXPORT bool CheckShapeConnect(const TopoDS_Shape& shape,
+                                                     const double prec = 0.0);
 
   //! The same as previous CheckShapeConnect but is more advanced.
   //! It returns the distances between each end of <sbwd> and each
   //! end of <shape>. For example, <tailhead> stores distance
   //! between tail of <sbwd> and head of <shape>
   //! Remark:  First method CheckShapeConnect calls this one
-  Standard_EXPORT bool CheckShapeConnect(double&             tailhead,
-                                         double&             tailtail,
-                                         double&             headtail,
-                                         double&             headhead,
-                                         const TopoDS_Shape& shape,
-                                         const double        prec = 0.0);
+  Standard_EXPORT bool CheckShapeConnect(double&      tailhead,
+                                                     double&      tailtail,
+                                                     double&      headtail,
+                                                     double&      headhead,
+                                                     const TopoDS_Shape& shape,
+                                                     const double prec = 0.0);
 
   //! Checks existence of loop on wire and return vertices which are loop vertices
   //! (vertices belonging to a few pairs of edges)
-  Standard_EXPORT bool CheckLoop(
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapLoopVertices,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                            aMapVertexEdges,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSmallEdges,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSeemEdges);
+  Standard_EXPORT bool CheckLoop(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&         aMapLoopVertices,
+                                             NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& aMapVertexEdges,
+                                             NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                aMapSmallEdges,
+                                             NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                aMapSeemEdges);
 
-  Standard_EXPORT bool CheckTail(const TopoDS_Edge& theEdge1,
-                                 const TopoDS_Edge& theEdge2,
-                                 const double       theMaxSine,
-                                 const double       theMaxWidth,
-                                 const double       theMaxTolerance,
-                                 TopoDS_Edge&       theEdge11,
-                                 TopoDS_Edge&       theEdge12,
-                                 TopoDS_Edge&       theEdge21,
-                                 TopoDS_Edge&       theEdge22);
+  Standard_EXPORT bool CheckTail(const TopoDS_Edge&  theEdge1,
+                                             const TopoDS_Edge&  theEdge2,
+                                             const double theMaxSine,
+                                             const double theMaxWidth,
+                                             const double theMaxTolerance,
+                                             TopoDS_Edge&        theEdge11,
+                                             TopoDS_Edge&        theEdge12,
+                                             TopoDS_Edge&        theEdge21,
+                                             TopoDS_Edge&        theEdge22);
 
   bool StatusOrder(const ShapeExtend_Status Status) const;
 
@@ -575,26 +586,27 @@ public:
 
 protected:
   occ::handle<ShapeExtend_WireData>  myWire;
-  TopoDS_Face                        myFace;
+  TopoDS_Face                   myFace;
   occ::handle<ShapeAnalysis_Surface> mySurf;
-  double                             myPrecision;
-  double                             myMin3d;
-  double                             myMin2d;
-  double                             myMax3d;
-  double                             myMax2d;
-  int                                myStatusOrder;
-  int                                myStatusConnected;
-  int                                myStatusEdgeCurves;
-  int                                myStatusDegenerated;
-  int                                myStatusClosed;
-  int                                myStatusSmall;
-  int                                myStatusSelfIntersection;
-  int                                myStatusLacking;
-  int                                myStatusGaps3d;
-  int                                myStatusGaps2d;
-  int                                myStatusCurveGaps;
-  int                                myStatusLoop;
-  int                                myStatus;
+  double                 myPrecision;
+  double                 myMin3d;
+  double                 myMin2d;
+  double                 myMax3d;
+  double                 myMax2d;
+  int              myStatusOrder;
+  int              myStatusConnected;
+  int              myStatusEdgeCurves;
+  int              myStatusDegenerated;
+  int              myStatusClosed;
+  int              myStatusSmall;
+  int              myStatusSelfIntersection;
+  int              myStatusLacking;
+  int              myStatusGaps3d;
+  int              myStatusGaps2d;
+  int              myStatusCurveGaps;
+  int              myStatusLoop;
+  int              myStatus;
+
 };
 
 #include <ShapeAnalysis_Wire.lxx>

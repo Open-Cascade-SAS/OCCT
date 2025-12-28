@@ -26,8 +26,8 @@ IGESGeom_SurfaceOfRevolution::IGESGeom_SurfaceOfRevolution() {}
 
 void IGESGeom_SurfaceOfRevolution::Init(const occ::handle<IGESGeom_Line>&       anAxis,
                                         const occ::handle<IGESData_IGESEntity>& aGeneratrix,
-                                        const double                            aStartAngle,
-                                        const double                            anEndAngle)
+                                        const double                aStartAngle,
+                                        const double                anEndAngle)
 {
   theLine       = anAxis;
   theGeneratrix = aGeneratrix;

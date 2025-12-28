@@ -21,6 +21,7 @@
 #include <iomanip>
 
 #include <fstream>
+#include <Standard_Macro.hxx>
 
 #include <BRepTest.hxx>
 
@@ -79,7 +80,7 @@ static void ConvertBndToShape(const Bnd_OBB& theBox, const char* const theName)
 
   const gp_Pnt& aBaryCenter = theBox.Center();
   const gp_XYZ &aXDir = theBox.XDirection(), &aYDir = theBox.YDirection(),
-               &aZDir = theBox.ZDirection();
+               &aZDir  = theBox.ZDirection();
   double aHalfX = theBox.XHSize(), aHalfY = theBox.YHSize(), aHalfZ = theBox.ZHSize();
 
   gp_Ax2 anAxes(aBaryCenter, aZDir, aXDir);
@@ -100,8 +101,8 @@ static int addpcurve(Draw_Interpretor&, int n, const char** a)
   if (E.IsNull())
     return 1;
   occ::handle<Geom2d_Curve> PC  = DrawTrSurf::GetCurve2d(a[2]);
-  TopoDS_Shape              F   = DBRep::Get(a[3]);
-  double                    tol = 1.e-7;
+  TopoDS_Shape         F   = DBRep::Get(a[3]);
+  double        tol = 1.e-7;
   if (n > 4)
   {
     tol = Draw::Atof(a[4]);
@@ -121,9 +122,9 @@ static int transform(Draw_Interpretor&, int n, const char** a)
   if (n <= 1)
     return 1;
 
-  gp_Trsf     T;
-  int         last  = n;
-  const char* aName = a[0];
+  gp_Trsf          T;
+  int last  = n;
+  const char*      aName = a[0];
 
   bool isBasic    = false;
   bool isForced   = false;
@@ -311,7 +312,7 @@ static int tcopy(Draw_Interpretor& di, int n, const char** a)
 {
   bool copyGeom = true;
   bool copyMesh = false;
-  int  iFirst   = 1; // index of first shape argument
+  int iFirst   = 1; // index of first shape argument
 
   if (n > 1)
   {
@@ -342,7 +343,7 @@ static int tcopy(Draw_Interpretor& di, int n, const char** a)
   }
 
   BRepBuilderAPI_Copy cop;
-  int                 nbPairs = (n - iFirst) / 2;
+  int    nbPairs = (n - iFirst) / 2;
   for (int i = 0; i < nbPairs; i++)
   {
     cop.Perform(DBRep::Get(a[i + iFirst]), copyGeom, copyMesh);
@@ -422,11 +423,11 @@ static int sameparameter(Draw_Interpretor& di, int n, const char** a)
     di << "toler is tolerance (default is 1.e-7)";
     return 1;
   }
-  double aTol  = 1.e-7;
-  bool   force = !strcmp(a[0], "fsameparameter");
+  double    aTol  = 1.e-7;
+  bool force = !strcmp(a[0], "fsameparameter");
 
-  double aTol1    = Draw::Atof(a[n - 1]);
-  bool   IsUseTol = aTol1 > 0;
+  double    aTol1    = Draw::Atof(a[n - 1]);
+  bool IsUseTol = aTol1 > 0;
   if (IsUseTol)
     aTol = aTol1;
 
@@ -463,8 +464,8 @@ static int updatetol(Draw_Interpretor& di, int n, const char** a)
     di << "if [param] is absent - not verify of face tolerance, else - perform it";
     return 1;
   }
-  TopoDS_Shape aSh1 = DBRep::Get(a[n - 1]);
-  bool         IsF  = aSh1.IsNull();
+  TopoDS_Shape     aSh1 = DBRep::Get(a[n - 1]);
+  bool IsF  = aSh1.IsNull();
 
   TopoDS_Shape anInpS = IsF ? DBRep::Get(a[n - 2]) : aSh1;
   if (anInpS.IsNull())
@@ -553,7 +554,9 @@ static bool parseMinMax(const char** theArgVec, Bnd_Box& theBox)
 
 //=================================================================================================
 
-static int BoundBox(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int BoundBox(Draw_Interpretor& theDI,
+                                 int  theNArg,
+                                 const char**      theArgVal)
 {
   // 1. Parse arguments
 
@@ -809,7 +812,9 @@ static int BoundBox(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
 
 //=================================================================================================
 
-static int IsBoxesInterfered(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int IsBoxesInterfered(Draw_Interpretor& theDI,
+                                          int  theNArg,
+                                          const char**      theArgVal)
 {
   if (theNArg < 2)
   {
@@ -877,11 +882,11 @@ static int gbounding(Draw_Interpretor& di, int n, const char** a)
     if (n == 3 && !strcmp(a[2], "-o"))
       IsOptimal = true;
 
-    double                    axmin, aymin, azmin, axmax, aymax, azmax;
-    Bnd_Box                   B;
-    Bnd_Box2d                 B2d;
+    double        axmin, aymin, azmin, axmax, aymax, azmax;
+    Bnd_Box              B;
+    Bnd_Box2d            B2d;
     occ::handle<Draw_Box>     DB;
-    bool                      Is3d = true;
+    bool     Is3d = true;
     occ::handle<Geom_Curve>   C;
     occ::handle<Geom_Surface> S;
     occ::handle<Geom2d_Curve> C2d;
@@ -969,7 +974,7 @@ static int findplane(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape S = DBRep::Get(a[1]);
   if (S.IsNull())
     return 1;
-  double                   tolerance = 1.0e-5;
+  double            tolerance = 1.0e-5;
   BRepBuilderAPI_FindPlane a_plane_finder(S, tolerance);
   if (a_plane_finder.Found())
   {
@@ -1017,9 +1022,9 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
 
   // std::cout << "Pick positions with button "<<std::endl;
   di << "Pick positions with button \n";
-  int     id, X, Y, b;
-  gp_Trsf T;
-  gp_Pnt  P1, P2;
+  int id, X, Y, b;
+  gp_Trsf          T;
+  gp_Pnt           P1, P2;
   dout.Select(id, X, Y, b);
 
   dout.GetTrsf(id, T);
@@ -1042,8 +1047,8 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
   {
     for (int i = 1; i <= Inter.NbPnt(); i++)
     {
-      int             numface = 1;
-      TopExp_Explorer ExF;
+      int numface = 1;
+      TopExp_Explorer  ExF;
       for (ExF.Init(TheShape1, TopAbs_FACE); ExF.More(); ExF.Next(), numface++)
       {
         TopoDS_Face Face = TopoDS::Face(ExF.Current());
@@ -1055,7 +1060,7 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
         }
       }
       const gp_Pnt& P    = Inter.Pnt(i);
-      double        PMin = Inter.WParameter(i);
+      double PMin = Inter.WParameter(i);
       if (details)
       {
         // std::cout<<" w:"<<PMin<<std::endl;
@@ -1101,7 +1106,9 @@ static int reperageshape(Draw_Interpretor& di, int narg, const char** a)
   return (0);
 }
 
-static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
+static int maxtolerance(Draw_Interpretor& theCommands,
+                                     int  n,
+                                     const char**      a)
 {
   if (n < 2)
     return (1);
@@ -1109,8 +1116,8 @@ static int maxtolerance(Draw_Interpretor& theCommands, int n, const char** a)
   if (TheShape.IsNull())
     return (1);
 
-  double T, TMF, TME, TMV, TmF, TmE, TmV;
-  int    nbF, nbE, nbV;
+  double    T, TMF, TME, TMV, TmF, TmE, TmV;
+  int nbF, nbE, nbV;
   TMF = TME = TMV = -RealLast();
   TmF = TmE = TmV = RealLast();
 
@@ -1182,9 +1189,9 @@ static int vecdc(Draw_Interpretor& di, int, const char**)
   // std::cout << "Pick positions with button "<<std::endl;
   di << "Pick positions with button \n";
 
-  int     id, X, Y, b;
-  gp_Trsf T;
-  gp_Pnt  P1, P2, PP1, PP2;
+  int id, X, Y, b;
+  gp_Trsf          T;
+  gp_Pnt           P1, P2, PP1, PP2;
 
   //-----------------------------------------------------------
   dout.Select(id, X, Y, b);
@@ -1286,16 +1293,16 @@ static int nproject(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
-  TopoDS_Shape                       InpShape;
-  int                                arg = 2, i;
+  TopoDS_Shape             InpShape;
+  int         arg = 2, i;
   NCollection_Sequence<TopoDS_Shape> Args;
 
-  double        Tol = 1.e-4;
-  double        Tol2d;
-  double        MaxDistance = 1.e-3;
-  GeomAbs_Shape Continuity  = GeomAbs_C1;
-  int           MaxDeg      = 14;
-  int           MaxSeg      = 16;
+  double    Tol = 1.e-4;
+  double    Tol2d;
+  double    MaxDistance = 1.e-3;
+  GeomAbs_Shape    Continuity  = GeomAbs_C1;
+  int MaxDeg      = 14;
+  int MaxSeg      = 16;
 
   while ((n > arg) && !(InpShape = DBRep::Get(a[arg])).IsNull())
   {
@@ -1354,7 +1361,7 @@ static int nproject(Draw_Interpretor& di, int n, const char** a)
   OrtProj.SetParams(Tol, Tol2d, Continuity, MaxDeg, MaxSeg);
   OrtProj.Build();
   NCollection_List<TopoDS_Shape> Wire;
-  bool                           IsWire = OrtProj.BuildWire(Wire);
+  bool     IsWire = OrtProj.BuildWire(Wire);
   if (IsWire)
   {
     // std::cout << " BuildWire OK " << std::endl;
@@ -1513,7 +1520,7 @@ static int purgeloc(Draw_Interpretor& di, int /*n*/, const char** a)
     return 1;
 
   BRepTools_PurgeLocations aRemLoc;
-  bool                     isDone = aRemLoc.Perform(aShapeBase);
+  bool         isDone = aRemLoc.Perform(aShapeBase);
   TopoDS_Shape             Result = aRemLoc.GetResult();
 
   DBRep::Set(a[1], Result);
@@ -1545,7 +1552,7 @@ static int checkloc(Draw_Interpretor& di, int /*n*/, const char** a)
     return 0;
   }
   NCollection_List<TopoDS_Shape>::Iterator anIt(aLS);
-  int                                      i;
+  int                   i;
   for (i = 1; anIt.More(); anIt.Next(), ++i)
   {
     TCollection_AsciiString aName(a[1]);

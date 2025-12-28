@@ -39,13 +39,14 @@ public:
 
   //! Finds, or creates, an Integer attribute and sets <value>
   //! the Integer attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_Integer> Set(const TDF_Label& label, const int value);
+  Standard_EXPORT static occ::handle<TDataStd_Integer> Set(const TDF_Label&       label,
+                                                      const int value);
 
   //! Finds, or creates, an Integer attribute with explicit user defined <guid> and sets <value>.
   //! The Integer attribute is returned.
-  Standard_EXPORT static occ::handle<TDataStd_Integer> Set(const TDF_Label&     label,
-                                                           const Standard_GUID& guid,
-                                                           const int            value);
+  Standard_EXPORT static occ::handle<TDataStd_Integer> Set(const TDF_Label&       label,
+                                                      const Standard_GUID&   guid,
+                                                      const int value);
 
   //! Integer methods
   //! ===============
@@ -78,13 +79,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Integer, TDF_Attribute)
 
 private:
-  int           myValue;
-  Standard_GUID myID;
+  int myValue;
+  Standard_GUID    myID;
 };
 
 #endif // _TDataStd_Integer_HeaderFile

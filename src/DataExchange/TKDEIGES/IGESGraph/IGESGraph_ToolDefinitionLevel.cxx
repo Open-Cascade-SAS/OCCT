@@ -35,10 +35,9 @@
 
 IGESGraph_ToolDefinitionLevel::IGESGraph_ToolDefinitionLevel() {}
 
-void IGESGraph_ToolDefinitionLevel::ReadOwnParams(
-  const occ::handle<IGESGraph_DefinitionLevel>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
-  IGESData_ParamReader& PR) const
+void IGESGraph_ToolDefinitionLevel::ReadOwnParams(const occ::handle<IGESGraph_DefinitionLevel>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
+                                                  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   int nbval;
@@ -62,9 +61,8 @@ void IGESGraph_ToolDefinitionLevel::ReadOwnParams(
   ent->Init(levelNumbers);
 }
 
-void IGESGraph_ToolDefinitionLevel::WriteOwnParams(
-  const occ::handle<IGESGraph_DefinitionLevel>& ent,
-  IGESData_IGESWriter&                          IW) const
+void IGESGraph_ToolDefinitionLevel::WriteOwnParams(const occ::handle<IGESGraph_DefinitionLevel>& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   int Up = ent->NbPropertyValues();
   IW.Send(Up);
@@ -81,7 +79,7 @@ void IGESGraph_ToolDefinitionLevel::OwnCopy(const occ::handle<IGESGraph_Definiti
                                             const occ::handle<IGESGraph_DefinitionLevel>& ent,
                                             Interface_CopyTool& /*TC*/) const
 {
-  int                                   nbval;
+  int                 nbval;
   occ::handle<NCollection_HArray1<int>> levelNumbers;
 
   nbval = another->NbPropertyValues();
@@ -115,8 +113,8 @@ void IGESGraph_ToolDefinitionLevel::OwnCheck(const occ::handle<IGESGraph_Definit
 
 void IGESGraph_ToolDefinitionLevel::OwnDump(const occ::handle<IGESGraph_DefinitionLevel>& ent,
                                             const IGESData_IGESDumper& /*dumper*/,
-                                            Standard_OStream& S,
-                                            const int         level) const
+                                            Standard_OStream&      S,
+                                            const int level) const
 {
   S << "IGESGraph_DefinitionLevel\n"
     << "Level Numbers : ";

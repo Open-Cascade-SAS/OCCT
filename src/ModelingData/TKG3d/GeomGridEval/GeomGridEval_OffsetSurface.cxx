@@ -298,8 +298,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
 NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams,
-  int                               theNU,
-  int                               theNV) const
+  int                         theNU,
+  int                         theNV) const
 {
   if (myBasis.IsNull() || theUParams.IsEmpty() || theVParams.IsEmpty() || theNU < 0 || theNV < 0
       || (theNU + theNV) < 1)

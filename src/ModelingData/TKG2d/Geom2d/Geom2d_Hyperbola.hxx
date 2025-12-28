@@ -92,19 +92,19 @@ public:
   //! The major radius of the hyperbola is on this "XAxis" and
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
-  Standard_EXPORT Geom2d_Hyperbola(const gp_Ax2d& MajorAxis,
-                                   const double   MajorRadius,
-                                   const double   MinorRadius,
-                                   const bool     Sense = true);
+  Standard_EXPORT Geom2d_Hyperbola(const gp_Ax2d&         MajorAxis,
+                                   const double    MajorRadius,
+                                   const double    MinorRadius,
+                                   const bool Sense = true);
 
   //! The XDirection of "Axis" is the "XAxis" of the hyperbola and
   //! the YDirection of "Axis" is the "YAxis".
   //! The major radius of the hyperbola is on this "XAxis" and
   //! the minor radius is on the "YAxis" of the hyperbola.
   //! Raised if MajorRadius < 0.0 or if MinorRadius < 0.0
-  Standard_EXPORT Geom2d_Hyperbola(const gp_Ax22d& Axis,
-                                   const double    MajorRadius,
-                                   const double    MinorRadius);
+  Standard_EXPORT Geom2d_Hyperbola(const gp_Ax22d&     Axis,
+                                   const double MajorRadius,
+                                   const double MinorRadius);
 
   //! Converts the gp_Hypr2d hyperbola H into this hyperbola.
   Standard_EXPORT void SetHypr2d(const gp_Hypr2d& H);
@@ -257,20 +257,24 @@ public:
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2) const override;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const override;
 
   //! For the point of parameter U of this hyperbola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Applies the transformation T to this hyperbola.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
@@ -280,7 +284,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Hyperbola, Geom2d_Conic)
 

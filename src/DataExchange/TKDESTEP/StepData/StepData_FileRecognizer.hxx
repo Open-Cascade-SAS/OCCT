@@ -34,8 +34,8 @@ public:
   //! In case of Failure, simply Returns False
   //! Works by calling deferred method Eval, and in case of failure,
   //! looks for Added Recognizers to work
-  Standard_EXPORT bool Evaluate(const TCollection_AsciiString&   akey,
-                                occ::handle<Standard_Transient>& res);
+  Standard_EXPORT bool Evaluate(const TCollection_AsciiString& akey,
+                                            occ::handle<Standard_Transient>&    res);
 
   //! Returns result of last recognition (call of Evaluate)
   Standard_EXPORT occ::handle<Standard_Transient> Result() const;
@@ -69,7 +69,7 @@ protected:
 
 private:
   occ::handle<Standard_Transient>      theres;
-  bool                                 hasnext;
+  bool                hasnext;
   occ::handle<StepData_FileRecognizer> thenext;
 };
 

@@ -47,16 +47,17 @@ inline GeomAbs_Shape HLRBRep_BCurveTool::Continuity(const BRepAdaptor_Curve& C)
 
 //=================================================================================================
 
-inline int HLRBRep_BCurveTool::NbIntervals(const BRepAdaptor_Curve& C, const GeomAbs_Shape Sh)
+inline int HLRBRep_BCurveTool::NbIntervals(const BRepAdaptor_Curve& C,
+                                                        const GeomAbs_Shape      Sh)
 {
   return (C.NbIntervals(Sh));
 }
 
 //=================================================================================================
 
-inline void HLRBRep_BCurveTool::Intervals(const BRepAdaptor_Curve&    C,
-                                          NCollection_Array1<double>& Tab,
-                                          const GeomAbs_Shape         Sh)
+inline void HLRBRep_BCurveTool::Intervals(const BRepAdaptor_Curve& C,
+                                          NCollection_Array1<double>&    Tab,
+                                          const GeomAbs_Shape      Sh)
 {
   C.Intervals(Tab, Sh);
 }
@@ -98,13 +99,16 @@ inline void HLRBRep_BCurveTool::D0(const BRepAdaptor_Curve& C, const double U, g
 
 //=================================================================================================
 
-inline void HLRBRep_BCurveTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& T)
+inline void HLRBRep_BCurveTool::D1(const BRepAdaptor_Curve& C,
+                                   const double      U,
+                                   gp_Pnt&                  P,
+                                   gp_Vec&                  T)
 {
   C.D1(U, P, T);
 }
 
 inline void HLRBRep_BCurveTool::D2(const BRepAdaptor_Curve& C,
-                                   const double             U,
+                                   const double      U,
                                    gp_Pnt&                  P,
                                    gp_Vec&                  T,
                                    gp_Vec&                  N)
@@ -115,7 +119,7 @@ inline void HLRBRep_BCurveTool::D2(const BRepAdaptor_Curve& C,
 //=================================================================================================
 
 inline void HLRBRep_BCurveTool::D3(const BRepAdaptor_Curve& C,
-                                   const double             U,
+                                   const double      U,
                                    gp_Pnt&                  P,
                                    gp_Vec&                  V1,
                                    gp_Vec&                  V2,
@@ -126,14 +130,17 @@ inline void HLRBRep_BCurveTool::D3(const BRepAdaptor_Curve& C,
 
 //=================================================================================================
 
-inline gp_Vec HLRBRep_BCurveTool::DN(const BRepAdaptor_Curve& C, const double U, const int N)
+inline gp_Vec HLRBRep_BCurveTool::DN(const BRepAdaptor_Curve& C,
+                                     const double      U,
+                                     const int   N)
 {
   return (C.DN(U, N));
 }
 
 //=================================================================================================
 
-inline double HLRBRep_BCurveTool::Resolution(const BRepAdaptor_Curve& C, const double R3d)
+inline double HLRBRep_BCurveTool::Resolution(const BRepAdaptor_Curve& C,
+                                                    const double      R3d)
 {
   return (C.Resolution(R3d));
 }

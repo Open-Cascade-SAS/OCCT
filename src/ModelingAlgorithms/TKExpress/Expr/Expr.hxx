@@ -39,9 +39,11 @@ public:
   Standard_EXPORT static occ::handle<Expr_GeneralExpression> CopyShare(
     const occ::handle<Expr_GeneralExpression>& exp);
 
-  Standard_EXPORT static int NbOfFreeVariables(const occ::handle<Expr_GeneralExpression>& exp);
+  Standard_EXPORT static int NbOfFreeVariables(
+    const occ::handle<Expr_GeneralExpression>& exp);
 
-  Standard_EXPORT static int NbOfFreeVariables(const occ::handle<Expr_GeneralRelation>& exp);
+  Standard_EXPORT static int NbOfFreeVariables(
+    const occ::handle<Expr_GeneralRelation>& exp);
 
   Standard_EXPORT static double Sign(const double val);
 };

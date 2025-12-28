@@ -18,18 +18,17 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_Person, Standard_Transient)
 
 StepBasic_Person::StepBasic_Person() {}
 
-void StepBasic_Person::Init(
-  const occ::handle<TCollection_HAsciiString>&                                   aId,
-  const bool                                                                     hasAlastName,
-  const occ::handle<TCollection_HAsciiString>&                                   aLastName,
-  const bool                                                                     hasAfirstName,
-  const occ::handle<TCollection_HAsciiString>&                                   aFirstName,
-  const bool                                                                     hasAmiddleNames,
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames,
-  const bool                                                                     hasAprefixTitles,
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles,
-  const bool                                                                     hasAsuffixTitles,
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles)
+void StepBasic_Person::Init(const occ::handle<TCollection_HAsciiString>&        aId,
+                            const bool                         hasAlastName,
+                            const occ::handle<TCollection_HAsciiString>&        aLastName,
+                            const bool                         hasAfirstName,
+                            const occ::handle<TCollection_HAsciiString>&        aFirstName,
+                            const bool                         hasAmiddleNames,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames,
+                            const bool                         hasAprefixTitles,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles,
+                            const bool                         hasAsuffixTitles,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles)
 {
   // --- classe own fields ---
   id              = aId;
@@ -99,8 +98,7 @@ bool StepBasic_Person::HasFirstName() const
   return hasFirstName;
 }
 
-void StepBasic_Person::SetMiddleNames(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames)
+void StepBasic_Person::SetMiddleNames(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames)
 {
   middleNames    = aMiddleNames;
   hasMiddleNames = true;
@@ -112,8 +110,7 @@ void StepBasic_Person::UnSetMiddleNames()
   middleNames.Nullify();
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::
-  MiddleNames() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::MiddleNames() const
 {
   return middleNames;
 }
@@ -123,7 +120,8 @@ bool StepBasic_Person::HasMiddleNames() const
   return hasMiddleNames;
 }
 
-occ::handle<TCollection_HAsciiString> StepBasic_Person::MiddleNamesValue(const int num) const
+occ::handle<TCollection_HAsciiString> StepBasic_Person::MiddleNamesValue(
+  const int num) const
 {
   return middleNames->Value(num);
 }
@@ -135,8 +133,7 @@ int StepBasic_Person::NbMiddleNames() const
   return middleNames->Length();
 }
 
-void StepBasic_Person::SetPrefixTitles(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles)
+void StepBasic_Person::SetPrefixTitles(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles)
 {
   prefixTitles    = aPrefixTitles;
   hasPrefixTitles = true;
@@ -148,8 +145,7 @@ void StepBasic_Person::UnSetPrefixTitles()
   prefixTitles.Nullify();
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::
-  PrefixTitles() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::PrefixTitles() const
 {
   return prefixTitles;
 }
@@ -159,7 +155,8 @@ bool StepBasic_Person::HasPrefixTitles() const
   return hasPrefixTitles;
 }
 
-occ::handle<TCollection_HAsciiString> StepBasic_Person::PrefixTitlesValue(const int num) const
+occ::handle<TCollection_HAsciiString> StepBasic_Person::PrefixTitlesValue(
+  const int num) const
 {
   return prefixTitles->Value(num);
 }
@@ -171,8 +168,7 @@ int StepBasic_Person::NbPrefixTitles() const
   return prefixTitles->Length();
 }
 
-void StepBasic_Person::SetSuffixTitles(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles)
+void StepBasic_Person::SetSuffixTitles(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles)
 {
   suffixTitles    = aSuffixTitles;
   hasSuffixTitles = true;
@@ -184,8 +180,7 @@ void StepBasic_Person::UnSetSuffixTitles()
   suffixTitles.Nullify();
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::
-  SuffixTitles() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> StepBasic_Person::SuffixTitles() const
 {
   return suffixTitles;
 }
@@ -195,7 +190,8 @@ bool StepBasic_Person::HasSuffixTitles() const
   return hasSuffixTitles;
 }
 
-occ::handle<TCollection_HAsciiString> StepBasic_Person::SuffixTitlesValue(const int num) const
+occ::handle<TCollection_HAsciiString> StepBasic_Person::SuffixTitlesValue(
+  const int num) const
 {
   return suffixTitles->Value(num);
 }

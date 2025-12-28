@@ -27,8 +27,12 @@
 #include <Standard_NotImplemented.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 //=======================================================================
 // function : Arrange
@@ -51,14 +55,14 @@
 //            the point.
 //=======================================================================
 static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
-                    const occ::handle<Geom_BSplineCurve>& C2,
-                    const occ::handle<Geom_BSplineCurve>& C3,
-                    const occ::handle<Geom_BSplineCurve>& C4,
-                    occ::handle<Geom_BSplineCurve>&       CC1,
-                    occ::handle<Geom_BSplineCurve>&       CC2,
-                    occ::handle<Geom_BSplineCurve>&       CC3,
-                    occ::handle<Geom_BSplineCurve>&       CC4,
-                    const double                          Tol)
+                                const occ::handle<Geom_BSplineCurve>& C2,
+                                const occ::handle<Geom_BSplineCurve>& C3,
+                                const occ::handle<Geom_BSplineCurve>& C4,
+                                occ::handle<Geom_BSplineCurve>&       CC1,
+                                occ::handle<Geom_BSplineCurve>&       CC2,
+                                occ::handle<Geom_BSplineCurve>&       CC3,
+                                occ::handle<Geom_BSplineCurve>&       CC4,
+                                const double              Tol)
 {
   occ::handle<Geom_BSplineCurve> GC[4];
   occ::handle<Geom_BSplineCurve> Dummy;
@@ -67,7 +71,7 @@ static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
   GC[2] = occ::down_cast<Geom_BSplineCurve>(C3->Copy());
   GC[3] = occ::down_cast<Geom_BSplineCurve>(C4->Copy());
 
-  int  i, j;
+  int i, j;
   bool Trouve;
 
   for (i = 1; i <= 3; i++)
@@ -131,15 +135,15 @@ static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
 //=================================================================================================
 
 static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
-                               occ::handle<Geom_BSplineCurve>& C2)
+                                            occ::handle<Geom_BSplineCurve>& C2)
 {
-  int                        nbp1 = C1->NbPoles();
-  int                        nbk1 = C1->NbKnots();
-  NCollection_Array1<gp_Pnt> P1(1, nbp1);
+  int     nbp1 = C1->NbPoles();
+  int     nbk1 = C1->NbKnots();
+  NCollection_Array1<gp_Pnt>   P1(1, nbp1);
   NCollection_Array1<double> W1(1, nbp1);
   W1.Init(1.);
-  NCollection_Array1<double> K1(1, nbk1);
-  NCollection_Array1<int>    M1(1, nbk1);
+  NCollection_Array1<double>    K1(1, nbk1);
+  NCollection_Array1<int> M1(1, nbk1);
 
   C1->Poles(P1);
   if (C1->IsRational())
@@ -147,13 +151,13 @@ static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
   C1->Knots(K1);
   C1->Multiplicities(M1);
 
-  int                        nbp2 = C2->NbPoles();
-  int                        nbk2 = C2->NbKnots();
-  NCollection_Array1<gp_Pnt> P2(1, nbp2);
+  int     nbp2 = C2->NbPoles();
+  int     nbk2 = C2->NbKnots();
+  NCollection_Array1<gp_Pnt>   P2(1, nbp2);
   NCollection_Array1<double> W2(1, nbp2);
   W2.Init(1.);
-  NCollection_Array1<double> K2(1, nbk2);
-  NCollection_Array1<int>    M2(1, nbk2);
+  NCollection_Array1<double>    K2(1, nbk2);
+  NCollection_Array1<int> M2(1, nbk2);
 
   C2->Poles(P2);
   if (C2->IsRational())
@@ -194,10 +198,10 @@ static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
                                    Precision::PConfusion(),
                                    false))
   {
-    NCollection_Array1<gp_Pnt> NewP(1, NP);
-    NCollection_Array1<double> NewW(1, NP);
-    NCollection_Array1<double> NewK(1, NK);
-    NCollection_Array1<int>    NewM(1, NK);
+    NCollection_Array1<gp_Pnt>      NewP(1, NP);
+    NCollection_Array1<double>    NewW(1, NP);
+    NCollection_Array1<double>    NewK(1, NK);
+    NCollection_Array1<int> NewM(1, NK);
     BSplCLib::InsertKnots(C1->Degree(),
                           false,
                           P1,
@@ -261,7 +265,7 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCur
                                                const occ::handle<Geom_BSplineCurve>& C2,
                                                const occ::handle<Geom_BSplineCurve>& C3,
                                                const occ::handle<Geom_BSplineCurve>& C4,
-                                               const GeomFill_FillingStyle           Type)
+                                               const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, C3, C4, Type);
 }
@@ -271,7 +275,7 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCur
 GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
                                                const occ::handle<Geom_BSplineCurve>& C2,
                                                const occ::handle<Geom_BSplineCurve>& C3,
-                                               const GeomFill_FillingStyle           Type)
+                                               const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, C3, Type);
 }
@@ -280,7 +284,7 @@ GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCur
 
 GeomFill_BSplineCurves::GeomFill_BSplineCurves(const occ::handle<Geom_BSplineCurve>& C1,
                                                const occ::handle<Geom_BSplineCurve>& C2,
-                                               const GeomFill_FillingStyle           Type)
+                                               const GeomFill_FillingStyle      Type)
 {
   Init(C1, C2, Type);
 }
@@ -291,7 +295,7 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
                                   const occ::handle<Geom_BSplineCurve>& C2,
                                   const occ::handle<Geom_BSplineCurve>& C3,
                                   const occ::handle<Geom_BSplineCurve>& C4,
-                                  const GeomFill_FillingStyle           Type)
+                                  const GeomFill_FillingStyle      Type)
 {
   // On ordonne les courbes
   occ::handle<Geom_BSplineCurve> CC1, CC2, CC3, CC4;
@@ -340,7 +344,8 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   CC4->Poles(P4);
 
   // Traitement des courbes rationelles
-  bool isRat = (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
+  bool isRat =
+    (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
 
   NCollection_Array1<double> W1(1, NbUPoles);
   NCollection_Array1<double> W3(1, NbUPoles);
@@ -407,15 +412,15 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
   // Creation de la surface
-  int                        NbUKnot = CC1->NbKnots();
-  NCollection_Array1<double> UKnots(1, NbUKnot);
-  NCollection_Array1<int>    UMults(1, NbUKnot);
+  int        NbUKnot = CC1->NbKnots();
+  NCollection_Array1<double>    UKnots(1, NbUKnot);
+  NCollection_Array1<int> UMults(1, NbUKnot);
   CC1->Knots(UKnots);
   CC1->Multiplicities(UMults);
 
-  int                        NbVKnot = CC2->NbKnots();
-  NCollection_Array1<double> VKnots(1, NbVKnot);
-  NCollection_Array1<int>    VMults(1, NbVKnot);
+  int        NbVKnot = CC2->NbKnots();
+  NCollection_Array1<double>    VKnots(1, NbVKnot);
+  NCollection_Array1<int> VMults(1, NbVKnot);
   CC2->Knots(VKnots);
   CC2->Multiplicities(VMults);
 
@@ -446,14 +451,14 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
 void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
                                   const occ::handle<Geom_BSplineCurve>& C2,
                                   const occ::handle<Geom_BSplineCurve>& C3,
-                                  const GeomFill_FillingStyle           Type)
+                                  const GeomFill_FillingStyle      Type)
 {
   occ::handle<Geom_BSplineCurve> C4;
-  NCollection_Array1<gp_Pnt>     Poles(1, 2);
-  NCollection_Array1<double>     Knots(1, 2);
-  NCollection_Array1<int>        Mults(1, 2);
-  double                         Tol = Precision::Confusion();
-  Tol                                = Tol * Tol;
+  NCollection_Array1<gp_Pnt>        Poles(1, 2);
+  NCollection_Array1<double>      Knots(1, 2);
+  NCollection_Array1<int>   Mults(1, 2);
+  double             Tol = Precision::Confusion();
+  Tol                           = Tol * Tol;
   if (C1->StartPoint().SquareDistance(C2->StartPoint()) > Tol
       && C1->StartPoint().SquareDistance(C2->EndPoint()) > Tol)
     Poles(1) = C1->StartPoint();
@@ -477,7 +482,7 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
 
 void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
                                   const occ::handle<Geom_BSplineCurve>& C2,
-                                  const GeomFill_FillingStyle           Type)
+                                  const GeomFill_FillingStyle      Type)
 {
   occ::handle<Geom_BSplineCurve> CC1 = occ::down_cast<Geom_BSplineCurve>(C1->Copy());
   occ::handle<Geom_BSplineCurve> CC2 = occ::down_cast<Geom_BSplineCurve>(C2->Copy());
@@ -497,7 +502,7 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
       CC2->IncreaseDegree(DegU);
 
     // Mise en conformite des distributions de noeuds
-    int                        NbPoles = SetSameDistribution(CC1, CC2);
+    int   NbPoles = SetSameDistribution(CC1, CC2);
     NCollection_Array2<gp_Pnt> Poles(1, NbPoles, 1, 2);
     NCollection_Array1<gp_Pnt> P1(1, NbPoles);
     NCollection_Array1<gp_Pnt> P2(1, NbPoles);
@@ -509,14 +514,14 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
       Poles(i, 1) = P1(i);
       Poles(i, 2) = P2(i);
     }
-    int                        NbUKnots = CC1->NbKnots();
-    NCollection_Array1<double> UKnots(1, NbUKnots);
-    NCollection_Array1<int>    UMults(1, NbUKnots);
+    int        NbUKnots = CC1->NbKnots();
+    NCollection_Array1<double>    UKnots(1, NbUKnots);
+    NCollection_Array1<int> UMults(1, NbUKnots);
     CC1->Knots(UKnots);
     CC1->Multiplicities(UMults);
     //    int NbVKnots = 2;
-    NCollection_Array1<double> VKnots(1, 2);
-    NCollection_Array1<int>    VMults(1, 2);
+    NCollection_Array1<double>    VKnots(1, 2);
+    NCollection_Array1<int> VMults(1, 2);
     VKnots(1) = 0;
     VKnots(2) = 1;
     VMults(1) = 2;
@@ -566,7 +571,7 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   else
   {
     constexpr double Eps  = Precision::Confusion();
-    bool             IsOK = false;
+    bool        IsOK = false;
     if (CC1->StartPoint().IsEqual(CC2->StartPoint(), Eps))
     {
       IsOK = true;
@@ -591,19 +596,19 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     if (!IsOK)
       throw Standard_OutOfRange("GeomFill_BSplineCurves: Courbes non jointives");
 
-    int                        NbUPoles = CC1->NbPoles();
-    int                        NbVPoles = CC2->NbPoles();
+    int   NbUPoles = CC1->NbPoles();
+    int   NbVPoles = CC2->NbPoles();
     NCollection_Array1<gp_Pnt> P1(1, NbUPoles);
     NCollection_Array1<gp_Pnt> P2(1, NbVPoles);
     CC1->Poles(P1);
     CC2->Poles(P2);
 
-    int                        NbUKnots = CC1->NbKnots();
-    int                        NbVKnots = CC2->NbKnots();
-    NCollection_Array1<double> UKnots(1, NbUKnots);
-    NCollection_Array1<double> VKnots(1, NbVKnots);
-    NCollection_Array1<int>    UMults(1, NbUKnots);
-    NCollection_Array1<int>    VMults(1, NbVKnots);
+    int        NbUKnots = CC1->NbKnots();
+    int        NbVKnots = CC2->NbKnots();
+    NCollection_Array1<double>    UKnots(1, NbUKnots);
+    NCollection_Array1<double>    VKnots(1, NbVKnots);
+    NCollection_Array1<int> UMults(1, NbUKnots);
+    NCollection_Array1<int> VMults(1, NbVKnots);
     CC1->Knots(UKnots);
     CC1->Multiplicities(UMults);
     CC2->Knots(VKnots);
@@ -655,8 +660,15 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     }
     else
     {
-      mySurface =
-        new Geom_BSplineSurface(Poles, UKnots, VKnots, UMults, VMults, Deg1, Deg2, false, false);
+      mySurface = new Geom_BSplineSurface(Poles,
+                                          UKnots,
+                                          VKnots,
+                                          UMults,
+                                          VMults,
+                                          Deg1,
+                                          Deg2,
+                                          false,
+                                          false);
     }
   }
 }

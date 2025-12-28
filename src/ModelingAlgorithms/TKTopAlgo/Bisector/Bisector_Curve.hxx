@@ -49,6 +49,7 @@ public:
   Standard_EXPORT virtual double IntervalLast(const int Index) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Bisector_Curve, Geom2d_Curve)
+
 };
 
 #endif // _Bisector_Curve_HeaderFile

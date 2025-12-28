@@ -45,7 +45,7 @@ public:
 
   //! Thew Curve and the Direction are loaded.
   Standard_EXPORT GeomAdaptor_SurfaceOfLinearExtrusion(const occ::handle<Adaptor3d_Curve>& C,
-                                                       const gp_Dir&                       V);
+                                                       const gp_Dir&                  V);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> ShallowCopy() const override;
@@ -80,12 +80,12 @@ public:
   //! Returns the intervals with the requested continuity
   //! in the U direction.
   Standard_EXPORT void UIntervals(NCollection_Array1<double>& T,
-                                  const GeomAbs_Shape         S) const override;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns the intervals with the requested continuity
   //! in the V direction.
   Standard_EXPORT void VIntervals(NCollection_Array1<double>& T,
-                                  const GeomAbs_Shape         S) const override;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns a surface trimmed in the U direction
   //! equivalent of <me> between
@@ -93,16 +93,16 @@ public:
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Surface> UTrim(const double First,
-                                                       const double Last,
-                                                       const double Tol) const override;
+                                                  const double Last,
+                                                  const double Tol) const override;
 
   //! Returns a surface trimmed in the V direction between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Surface> VTrim(const double First,
-                                                       const double Last,
-                                                       const double Tol) const override;
+                                                  const double Last,
+                                                  const double Tol) const override;
 
   Standard_EXPORT bool IsUClosed() const override;
 
@@ -160,8 +160,8 @@ public:
 
 private:
   occ::handle<Adaptor3d_Curve> myBasisCurve; ///< extruded curve
-  gp_Dir                       myDirection;  ///< direction of extrusion
-  bool                         myHaveDir;    ///< whether the direction of extrusion is initialized
+  gp_Dir                  myDirection;  ///< direction of extrusion
+  bool        myHaveDir;    ///< whether the direction of extrusion is initialized
 };
 
 #endif // _GeomAdaptor_SurfaceOfLinearExtrusion_HeaderFile

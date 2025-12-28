@@ -36,12 +36,12 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_TextPrsBuilder, MeshVS_PrsBuilder)
 //=================================================================================================
 
 MeshVS_TextPrsBuilder::MeshVS_TextPrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
-                                             const double                          Height,
-                                             const Quantity_Color&                 Color,
-                                             const MeshVS_DisplayModeFlags&        Flags,
+                                             const double              Height,
+                                             const Quantity_Color&            Color,
+                                             const MeshVS_DisplayModeFlags&   Flags,
                                              const occ::handle<MeshVS_DataSource>& DS,
-                                             const int                             Id,
-                                             const MeshVS_BuilderPriority&         Priority)
+                                             const int           Id,
+                                             const MeshVS_BuilderPriority&    Priority)
     : MeshVS_PrsBuilder(Parent, Flags, DS, Id, Priority)
 {
   occ::handle<MeshVS_Drawer> aDrawer = GetDrawer();
@@ -65,7 +65,7 @@ const NCollection_DataMap<int, TCollection_AsciiString>& MeshVS_TextPrsBuilder::
 
 //=================================================================================================
 
-void MeshVS_TextPrsBuilder::SetTexts(const bool IsElements,
+void MeshVS_TextPrsBuilder::SetTexts(const bool                    IsElements,
                                      const NCollection_DataMap<int, TCollection_AsciiString>& Map)
 {
   if (IsElements)
@@ -86,9 +86,9 @@ bool MeshVS_TextPrsBuilder::HasTexts(const bool IsElement) const
 
 //=================================================================================================
 
-bool MeshVS_TextPrsBuilder::GetText(const bool               IsElement,
-                                    const int                theID,
-                                    TCollection_AsciiString& theStr) const
+bool MeshVS_TextPrsBuilder::GetText(const bool   IsElement,
+                                                const int   theID,
+                                                TCollection_AsciiString& theStr) const
 {
   const NCollection_DataMap<int, TCollection_AsciiString>* aMap = &myNodeTextMap;
   if (IsElement)
@@ -103,8 +103,8 @@ bool MeshVS_TextPrsBuilder::GetText(const bool               IsElement,
 
 //=================================================================================================
 
-void MeshVS_TextPrsBuilder::SetText(const bool                     IsElement,
-                                    const int                      ID,
+void MeshVS_TextPrsBuilder::SetText(const bool         IsElement,
+                                    const int         ID,
                                     const TCollection_AsciiString& Text)
 {
   NCollection_DataMap<int, TCollection_AsciiString>* aMap = &myNodeTextMap;
@@ -121,10 +121,10 @@ void MeshVS_TextPrsBuilder::SetText(const bool                     IsElement,
 //=================================================================================================
 
 void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                  const TColStd_PackedMapOfInteger&      IDs,
-                                  TColStd_PackedMapOfInteger&            IDsToExclude,
-                                  const bool                             IsElement,
-                                  const int                              theDisplayMode) const
+                                  const TColStd_PackedMapOfInteger& IDs,
+                                  TColStd_PackedMapOfInteger&       IDsToExclude,
+                                  const bool            IsElement,
+                                  const int            theDisplayMode) const
 {
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
@@ -132,8 +132,8 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
       || (theDisplayMode & GetFlags()) == 0)
     return;
 
-  int    aMaxFaceNodes;
-  double aHeight;
+  int aMaxFaceNodes;
+  double    aHeight;
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0
       || !aDrawer->GetDouble(MeshVS_DA_TextHeight, aHeight))
     return;
@@ -141,9 +141,9 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   occ::handle<Graphic3d_Group> aTextGroup = Prs->NewGroup();
 
   Quantity_Color           AColor           = Quantity_NOC_YELLOW;
-  const char*              AFont            = Font_NOF_ASCII_MONO;
-  double                   AExpansionFactor = 1.0;
-  double                   ASpace           = 0.0;
+  const char*         AFont            = Font_NOF_ASCII_MONO;
+  double            AExpansionFactor = 1.0;
+  double            ASpace           = 0.0;
   Aspect_TypeOfStyleText   ATextStyle       = Aspect_TOST_ANNOTATION;
   Aspect_TypeOfDisplayText ADisplayType     = Aspect_TODT_NORMAL;
   // Bold font is used by default for better text readability
@@ -175,8 +175,8 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   aTextGroup->SetGroupPrimitivesAspect(aTextAspect);
 
   MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
-  NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
-  int                        NbNodes;
+  NCollection_Array1<double>       aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
+  int           NbNodes;
   TCollection_AsciiString    aStr;
   MeshVS_EntityType          aType;
   TColStd_PackedMapOfInteger aCustomElements;
@@ -241,9 +241,8 @@ void MeshVS_TextPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
 
   if (!aPnts.IsEmpty())
   {
-    occ::handle<Graphic3d_Group>         aMarkerGroup = Prs->NewGroup();
-    occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints =
-      new Graphic3d_ArrayOfPoints(aPnts.Size());
+    occ::handle<Graphic3d_Group>         aMarkerGroup    = Prs->NewGroup();
+    occ::handle<Graphic3d_ArrayOfPoints> anArrayOfPoints = new Graphic3d_ArrayOfPoints(aPnts.Size());
     for (NCollection_Sequence<NCollection_Vec3<float>>::Iterator aPntIter(aPnts); aPntIter.More();
          aPntIter.Next())
     {

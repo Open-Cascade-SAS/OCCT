@@ -35,6 +35,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -147,16 +148,13 @@ void LocOpe_Prism::IntPerf()
   else
   {
     // Cas base != FACE
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
     NCollection_List<TopoDS_Shape> lfaces;
-    bool                           toremove = false;
+    bool     toremove = false;
     for (int i = 1; i <= theEFMap.Extent(); i++)
     {
-      const TopoDS_Shape&            edg = theEFMap.FindKey(i);
+      const TopoDS_Shape&  edg = theEFMap.FindKey(i);
       NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = thePrism.Shape(edg);
@@ -265,13 +263,14 @@ void LocOpe_Prism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves
   Scurves.Clear();
   NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
-  double height = std::sqrt(myVec.X() * myVec.X() + myVec.Y() * myVec.Y() + myVec.Z() * myVec.Z());
-  double u1     = -2 * height;
-  double u2     = 2 * height;
+  double height =
+    std::sqrt(myVec.X() * myVec.X() + myVec.Y() * myVec.Y() + myVec.Z() * myVec.Z());
+  double u1 = -2 * height;
+  double u2 = 2 * height;
 
   for (int jj = 1; jj <= spt.Length(); jj++)
   {
-    gp_Ax1                         theAx(spt(jj), myVec);
+    gp_Ax1                    theAx(spt(jj), myVec);
     occ::handle<Geom_Line>         theLin = new Geom_Line(theAx);
     occ::handle<Geom_TrimmedCurve> trlin  = new Geom_TrimmedCurve(theLin, u1, u2, true);
     Scurves.Append(trlin);
@@ -282,7 +281,7 @@ void LocOpe_Prism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves
 
 occ::handle<Geom_Curve> LocOpe_Prism::BarycCurve() const
 {
-  gp_Pnt                       bar(0., 0., 0.);
+  gp_Pnt               bar(0., 0., 0.);
   NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
   for (int jj = 1; jj <= spt.Length(); jj++)
@@ -291,7 +290,7 @@ occ::handle<Geom_Curve> LocOpe_Prism::BarycCurve() const
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
-  gp_Ax1                 newAx(bar, myVec);
+  gp_Ax1            newAx(bar, myVec);
   occ::handle<Geom_Line> theLin = new Geom_Line(newAx);
   return theLin;
 }

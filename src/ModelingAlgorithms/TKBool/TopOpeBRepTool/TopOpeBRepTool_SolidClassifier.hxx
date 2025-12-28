@@ -43,23 +43,27 @@ public:
 
   //! compute the position of point <P> regarding with the
   //! geometric domain of the solid <S>.
-  Standard_EXPORT TopAbs_State Classify(const TopoDS_Solid& S, const gp_Pnt& P, const double Tol);
+  Standard_EXPORT TopAbs_State Classify(const TopoDS_Solid& S,
+                                        const gp_Pnt&       P,
+                                        const double Tol);
 
   Standard_EXPORT void LoadShell(const TopoDS_Shell& S);
 
   //! compute the position of point <P> regarding with the
   //! geometric domain of the shell <S>.
-  Standard_EXPORT TopAbs_State Classify(const TopoDS_Shell& S, const gp_Pnt& P, const double Tol);
+  Standard_EXPORT TopAbs_State Classify(const TopoDS_Shell& S,
+                                        const gp_Pnt&       P,
+                                        const double Tol);
 
   Standard_EXPORT TopAbs_State State() const;
 
 private:
-  TopOpeBRepTool_PSoClassif                                                myPClassifier;
+  TopOpeBRepTool_PSoClassif             myPClassifier;
   NCollection_IndexedDataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> myShapeClassifierMap;
-  TopAbs_State                                                             myState;
-  TopoDS_Shell                                                             myShell;
-  TopoDS_Solid                                                             mySolid;
-  BRep_Builder                                                             myBuilder;
+  TopAbs_State                          myState;
+  TopoDS_Shell                          myShell;
+  TopoDS_Solid                          mySolid;
+  BRep_Builder                          myBuilder;
 };
 
 #endif // _TopOpeBRepTool_SolidClassifier_HeaderFile

@@ -44,7 +44,8 @@ public:
   Standard_EXPORT TopoDS_Shape FixSpotFace();
 
   //! Compute average vertex and replacing vertices by new one.
-  Standard_EXPORT bool ReplaceVerticesInCaseOfSpot(TopoDS_Face& F, const double tol) const;
+  Standard_EXPORT bool ReplaceVerticesInCaseOfSpot(TopoDS_Face&        F,
+                                                               const double tol) const;
 
   //! Remove spot face from compound
   Standard_EXPORT bool RemoveFacesInCaseOfSpot(const TopoDS_Face& F) const;
@@ -53,20 +54,20 @@ public:
   Standard_EXPORT TopoDS_Shape FixStripFace(const bool wasdone = false);
 
   //! Replace veretces and edges.
-  Standard_EXPORT bool ReplaceInCaseOfStrip(TopoDS_Face& F,
-                                            TopoDS_Edge& E1,
-                                            TopoDS_Edge& E2,
-                                            const double tol) const;
+  Standard_EXPORT bool ReplaceInCaseOfStrip(TopoDS_Face&        F,
+                                                        TopoDS_Edge&        E1,
+                                                        TopoDS_Edge&        E2,
+                                                        const double tol) const;
 
   //! Remove strip face from compound.
   Standard_EXPORT bool RemoveFacesInCaseOfStrip(const TopoDS_Face& F) const;
 
   //! Compute average edge for strip face
-  Standard_EXPORT TopoDS_Edge ComputeSharedEdgeForStripFace(const TopoDS_Face& F,
-                                                            const TopoDS_Edge& E1,
-                                                            const TopoDS_Edge& E2,
-                                                            const TopoDS_Face& F1,
-                                                            const double       tol) const;
+  Standard_EXPORT TopoDS_Edge ComputeSharedEdgeForStripFace(const TopoDS_Face&  F,
+                                                            const TopoDS_Edge&  E1,
+                                                            const TopoDS_Edge&  E2,
+                                                            const TopoDS_Face&  F1,
+                                                            const double tol) const;
 
   Standard_EXPORT TopoDS_Shape FixSplitFace(const TopoDS_Shape& S);
 
@@ -86,7 +87,7 @@ public:
 private:
   TopoDS_Shape                 myShape;
   TopoDS_Shape                 myResult;
-  int                          myStatus;
+  int             myStatus;
   ShapeAnalysis_CheckSmallFace myAnalyzer;
 };
 

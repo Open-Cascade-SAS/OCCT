@@ -190,7 +190,10 @@ public:
   }
 
   //! Returns resolution ratio.
-  float ResolutionRatio() const { return Resolution / static_cast<float>(THE_DEFAULT_RESOLUTION); }
+  float ResolutionRatio() const
+  {
+    return Resolution / static_cast<float>(THE_DEFAULT_RESOLUTION);
+  }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;

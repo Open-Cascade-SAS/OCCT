@@ -44,7 +44,7 @@ void CDM_Application::SetDocumentVersion(const occ::handle<CDM_Document>& aDocum
 //=================================================================================================
 
 void CDM_Application::SetReferenceCounter(const occ::handle<CDM_Document>& aDocument,
-                                          const int                        aReferenceCounter)
+                                          const int      aReferenceCounter)
 {
   aDocument->SetReferenceCounter(aReferenceCounter);
 }
@@ -114,8 +114,7 @@ TCollection_AsciiString CDM_Application::Version() const
 // function : MetaDataLookUpTable
 // purpose  : returns the MetaData LookUpTable
 //=======================================================================
-NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& CDM_Application::
-  MetaDataLookUpTable()
+NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& CDM_Application::MetaDataLookUpTable()
 {
   return myMetaDataLookUpTable;
 }

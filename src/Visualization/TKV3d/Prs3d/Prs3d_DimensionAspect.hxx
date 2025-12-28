@@ -66,7 +66,10 @@ public:
 
   //! Specifies whether the units string should be displayed
   //! along with value label or not.
-  void MakeUnitsDisplayed(const bool theIsDisplayed) { myToDisplayUnits = theIsDisplayed; }
+  void MakeUnitsDisplayed(const bool theIsDisplayed)
+  {
+    myToDisplayUnits = theIsDisplayed;
+  }
 
   //! Sets orientation of arrows (external or internal).
   //! By default orientation is chosen automatically according to situation and text label size.
@@ -100,10 +103,7 @@ public:
   const occ::handle<Prs3d_ArrowAspect>& ArrowAspect() const { return myArrowAspect; }
 
   //! Sets the display attributes of arrows used in presentation of dimensions.
-  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect)
-  {
-    myArrowAspect = theAspect;
-  }
+  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect) { myArrowAspect = theAspect; }
 
   //! Sets the same color for all parts of dimension: lines, arrows and text.
   Standard_EXPORT void SetCommonColor(const Quantity_Color& theColor);
@@ -131,22 +131,22 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
-  occ::handle<Prs3d_LineAspect>         myLineAspect;
-  occ::handle<Prs3d_TextAspect>         myTextAspect;
-  occ::handle<Prs3d_ArrowAspect>        myArrowAspect;
+  occ::handle<Prs3d_LineAspect>              myLineAspect;
+  occ::handle<Prs3d_TextAspect>              myTextAspect;
+  occ::handle<Prs3d_ArrowAspect>             myArrowAspect;
   TCollection_AsciiString               myValueStringFormat;
-  double                                myExtensionSize;
-  double                                myArrowTailSize;
+  double                         myExtensionSize;
+  double                         myArrowTailSize;
   Prs3d_DimensionArrowOrientation       myArrowOrientation;
   Prs3d_DimensionTextHorizontalPosition myTextHPosition;
   Prs3d_DimensionTextVerticalPosition   myTextVPosition;
-  bool                                  myToDisplayUnits;
-  bool                                  myIsText3d;
-  bool                                  myIsTextShaded;
-  bool                                  myIsArrows3d;
+  bool                      myToDisplayUnits;
+  bool                      myIsText3d;
+  bool                      myIsTextShaded;
+  bool                      myIsArrows3d;
 };
 
 #endif // _Prs3d_DimensionAspect_HeaderFile

@@ -37,13 +37,16 @@ public:
   Standard_EXPORT void SetBuilder(const occ::handle<SelectMgr_FrustumBuilder>& theBuilder);
 
   //! Saves camera definition and passes it to builder
-  Standard_EXPORT virtual void SetCamera(const occ::handle<Graphic3d_Camera>& theCamera) override;
+  Standard_EXPORT virtual void SetCamera(const occ::handle<Graphic3d_Camera>& theCamera)
+    override;
 
   Standard_EXPORT virtual void SetPixelTolerance(const int theTol) override;
 
-  Standard_EXPORT virtual void SetWindowSize(const int theWidth, const int theHeight) override;
+  Standard_EXPORT virtual void SetWindowSize(const int theWidth,
+                                             const int theHeight) override;
 
-  Standard_EXPORT virtual void WindowSize(int& theWidth, int& theHeight) const override;
+  Standard_EXPORT virtual void WindowSize(int& theWidth,
+                                          int& theHeight) const override;
 
   //! Passes viewport parameters to builder
   Standard_EXPORT virtual void SetViewport(const double theX,
@@ -53,15 +56,16 @@ public:
 
   //! Checks whether the boundary of the current volume selection intersects with a sphere or are
   //! there it's boundaries lying inside the sphere
-  Standard_EXPORT bool IsBoundaryIntersectSphere(const gp_Pnt&                     theCenter,
-                                                 const double                      theRadius,
-                                                 const gp_Dir&                     thePlaneNormal,
-                                                 const NCollection_Array1<gp_Pnt>& theBoundaries,
-                                                 bool& theBoundaryInside) const;
+  Standard_EXPORT bool
+    IsBoundaryIntersectSphere(const gp_Pnt&             theCenter,
+                              const double       theRadius,
+                              const gp_Dir&             thePlaneNormal,
+                              const NCollection_Array1<gp_Pnt>& theBoundaries,
+                              bool&         theBoundaryInside) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseFrustum, SelectMgr_BaseIntersector)
 

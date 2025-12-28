@@ -58,7 +58,7 @@ TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
   {
     TopOpeBRepBuild_Builder* pB = ((TopOpeBRepBuild_Builder*)((void*)A));
     myDEBNumber                 = pB->GdumpSHASETindex();
-    int  iS;
+    int iS;
     bool tSPS = pB->GtraceSPS(S, iS);
     if (tSPS)
     {
@@ -169,7 +169,7 @@ TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopoDS_Shap
 //=================================================================================================
 
 #ifdef DRAW
-TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const NCollection_List<TopoDS_Shape>& L,
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const NCollection_List<TopoDS_Shape>&    L,
                                                             const TCollection_AsciiString& sb,
                                                             const TCollection_AsciiString& sa) const
 {

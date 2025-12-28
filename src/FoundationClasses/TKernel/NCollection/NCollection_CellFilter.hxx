@@ -127,8 +127,8 @@ public:
   //! constructor is used, the tool must be initialized later with
   //! appropriate cell size by call to Reset()
   //! Constructor when dimension count is unknown at compilation time.
-  NCollection_CellFilter(const int                                    theDim,
-                         const double                                 theCellSize = 0,
+  NCollection_CellFilter(const int                  theDim,
+                         const double                     theCellSize = 0,
                          const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
       : myCellSize(0, theDim - 1)
   {
@@ -137,7 +137,7 @@ public:
   }
 
   //! Constructor when dimension count is known at compilation time.
-  NCollection_CellFilter(const double                                 theCellSize = 0,
+  NCollection_CellFilter(const double                     theCellSize = 0,
                          const occ::handle<NCollection_IncAllocator>& theAlloc    = 0)
       : myCellSize(0, Inspector::Dimension - 1)
   {
@@ -154,7 +154,7 @@ public:
   }
 
   //! Clear the data structures and set new cell sizes and allocator
-  void Reset(NCollection_Array1<double>&                  theCellSize,
+  void Reset(NCollection_Array1<double>&      theCellSize,
              const occ::handle<NCollection_IncAllocator>& theAlloc = 0)
   {
     myCellSize = theCellSize;
@@ -263,7 +263,8 @@ protected:
     {
       for (int i = 0; i < theCellSize.Size(); i++)
       {
-        double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+        double aVal =
+          (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -486,10 +487,10 @@ protected:
   }
 
 protected:
-  int                                    myDim;
+  int                  myDim;
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  CellMap                                myCells;
-  NCollection_Array1<double>             myCellSize;
+  CellMap                           myCells;
+  NCollection_Array1<double> myCellSize;
 };
 
 /**

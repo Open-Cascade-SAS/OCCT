@@ -37,8 +37,8 @@ public:
   Standard_EXPORT Law_BSpFunc();
 
   Standard_EXPORT Law_BSpFunc(const occ::handle<Law_BSpline>& C,
-                              const double                    First,
-                              const double                    Last);
+                              const double        First,
+                              const double        Last);
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
@@ -50,13 +50,18 @@ public:
   //! The array must provide enough room to accommodate for the parameters, i.e. T.Length() >
   //! NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
   Standard_EXPORT double Value(const double X) override;
 
-  Standard_EXPORT void D1(const double X, double& F, double& D) override;
+  Standard_EXPORT void D1(const double X,
+                          double&      F,
+                          double&      D) override;
 
-  Standard_EXPORT void D2(const double X, double& F, double& D, double& D2) override;
+  Standard_EXPORT void D2(const double X,
+                          double&      F,
+                          double&      D,
+                          double&      D2) override;
 
   //! Returns a law equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -65,8 +70,8 @@ public:
   //! in these values <First> and <Last> if
   //! the Law is not Cn.
   Standard_EXPORT occ::handle<Law_Function> Trim(const double PFirst,
-                                                 const double PLast,
-                                                 const double Tol) const override;
+                                            const double PLast,
+                                            const double Tol) const override;
 
   Standard_EXPORT void Bounds(double& PFirst, double& PLast) override;
 
@@ -78,8 +83,8 @@ public:
 
 private:
   occ::handle<Law_BSpline> curv;
-  double                   first;
-  double                   last;
+  double       first;
+  double       last;
 };
 
 #endif // _Law_BSpFunc_HeaderFile

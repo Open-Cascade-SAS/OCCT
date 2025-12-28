@@ -33,8 +33,8 @@ IntCurvesFace_ShapeIntersector::IntCurvesFace_ShapeIntersector()
 
 void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const double theTol)
 {
-  TopExp_Explorer Ex;
-  int             i;
+  TopExp_Explorer  Ex;
+  int i;
   for (myNbFaces = 0, i = 0, Ex.Init(theShape, TopAbs_FACE); Ex.More(); ++i, Ex.Next())
   {
     ++myNbFaces;
@@ -43,9 +43,9 @@ void IntCurvesFace_ShapeIntersector::Load(const TopoDS_Shape& theShape, const do
   }
 }
 
-void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& theL,
-                                             const double  theParMin,
-                                             const double  theParMax)
+void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin&       theL,
+                                             const double theParMin,
+                                             const double theParMax)
 {
   myIsDone = false;
   for (int i = 1; i <= myNbFaces; ++i)
@@ -55,9 +55,9 @@ void IntCurvesFace_ShapeIntersector::Perform(const gp_Lin& theL,
   SortResult();
 }
 
-void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
-                                                    const double  theParMin,
-                                                    const double  theParMax)
+void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin&       theL,
+                                                    const double theParMin,
+                                                    const double theParMax)
 {
   int i = 0;
   if (myNbFaces > 2)
@@ -74,9 +74,9 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
     }
   }
 
-  int    anIndexFace = -1;
-  double aParMax     = theParMax;
-  myIsDone           = false;
+  int anIndexFace = -1;
+  double    aParMax     = theParMax;
+  myIsDone                     = false;
   for (int ii = 1; ii <= myNbFaces; ++ii)
   {
     if (!myPtrNums.IsEmpty())
@@ -127,8 +127,8 @@ void IntCurvesFace_ShapeIntersector::PerformNearest(const gp_Lin& theL,
 }
 
 void IntCurvesFace_ShapeIntersector::Perform(const occ::handle<Adaptor3d_Curve>& theHCurve,
-                                             const double                        theParMin,
-                                             const double                        theParMax)
+                                             const double            theParMin,
+                                             const double            theParMax)
 {
   myIsDone = false;
   for (int i = 1; i <= myNbFaces; ++i)
@@ -158,7 +158,7 @@ void IntCurvesFace_ShapeIntersector::Perform(const occ::handle<Adaptor3d_Curve>&
 //-- ================================================================================
 void IntCurvesFace_ShapeIntersector::SortResult()
 {
-  myIsDone   = true;
+  myIsDone                = true;
   int aNbPnt = 0;
   myIndexPt.Clear();
   myIndexFace.Clear();

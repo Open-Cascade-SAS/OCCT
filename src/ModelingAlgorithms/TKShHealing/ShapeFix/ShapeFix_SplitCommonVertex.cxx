@@ -30,8 +30,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_SplitCommonVertex, ShapeFix_Root)
@@ -82,11 +84,11 @@ void ShapeFix_SplitCommonVertex::Perform()
     MapVV.Clear();
     for (int nw1 = 1; nw1 < wires.Length(); nw1++)
     {
-      TopoDS_Wire                       w1    = TopoDS::Wire(wires.Value(nw1));
+      TopoDS_Wire                  w1    = TopoDS::Wire(wires.Value(nw1));
       occ::handle<ShapeExtend_WireData> sewd1 = new ShapeExtend_WireData(w1);
       for (int nw2 = nw1 + 1; nw2 <= wires.Length(); nw2++)
       {
-        TopoDS_Wire                       w2    = TopoDS::Wire(wires.Value(nw2));
+        TopoDS_Wire                  w2    = TopoDS::Wire(wires.Value(nw2));
         occ::handle<ShapeExtend_WireData> sewd2 = new ShapeExtend_WireData(w2);
 
         for (TopExp_Explorer expv1(w1, TopAbs_VERTEX); expv1.More(); expv1.Next())
@@ -105,9 +107,9 @@ void ShapeFix_SplitCommonVertex::Perform()
               }
               else
               {
-                gp_Pnt       P   = BRep_Tool::Pnt(V2);
-                double       tol = BRep_Tool::Tolerance(V2);
-                BRep_Builder B;
+                gp_Pnt        P   = BRep_Tool::Pnt(V2);
+                double tol = BRep_Tool::Tolerance(V2);
+                BRep_Builder  B;
                 B.MakeVertex(Vnew, P, tol);
                 MapVV.Bind(V2, Vnew);
               }
@@ -115,10 +117,10 @@ void ShapeFix_SplitCommonVertex::Perform()
               ShapeAnalysis_Edge sae;
               for (int ne2 = 1; ne2 <= sewd2->NbEdges(); ne2++)
               {
-                TopoDS_Edge   E       = sewd2->Edge(ne2);
-                TopoDS_Vertex FV      = sae.FirstVertex(E);
-                TopoDS_Vertex LV      = sae.LastVertex(E);
-                bool          IsCoinc = false;
+                TopoDS_Edge      E       = sewd2->Edge(ne2);
+                TopoDS_Vertex    FV      = sae.FirstVertex(E);
+                TopoDS_Vertex    LV      = sae.LastVertex(E);
+                bool IsCoinc = false;
                 if (FV == V2)
                 {
                   FV      = Vnew;

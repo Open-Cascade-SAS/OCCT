@@ -15,6 +15,7 @@
 #include <SelectMgr_AndFilter.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
+#include <SelectMgr_Filter.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 

@@ -40,9 +40,9 @@ bool DDF::AddLabel
 //=================================================================================================
 
 bool DDF::FindLabel(const occ::handle<TDF_Data>& DF,
-                    const char*                  Entry,
-                    TDF_Label&                   Label,
-                    const bool                   Complain)
+                                const char*  Entry,
+                                TDF_Label&              Label,
+                                const bool  Complain)
 {
   Label.Nullify();
   TDF_Tool::Label(DF, Entry, Label, false);
@@ -53,7 +53,9 @@ bool DDF::FindLabel(const occ::handle<TDF_Data>& DF,
 
 //=================================================================================================
 
-bool DDF::GetDF(const char*& Name, occ::handle<TDF_Data>& DF, const bool Complain)
+bool DDF::GetDF(const char*&      Name,
+                            occ::handle<TDF_Data>&      DF,
+                            const bool Complain)
 {
   occ::handle<Standard_Transient> t   = Draw::Get(Name);
   occ::handle<DDF_Data>           DDF = occ::down_cast<DDF_Data>(t);
@@ -71,10 +73,10 @@ bool DDF::GetDF(const char*& Name, occ::handle<TDF_Data>& DF, const bool Complai
 //=================================================================================================
 
 bool DDF::Find(const occ::handle<TDF_Data>& DF,
-               const char*                  Entry,
-               const Standard_GUID&         ID,
-               occ::handle<TDF_Attribute>&  A,
-               const bool                   Complain)
+                           const char*  Entry,
+                           const Standard_GUID&    ID,
+                           occ::handle<TDF_Attribute>&  A,
+                           const bool  Complain)
 {
   TDF_Label L;
   if (FindLabel(DF, Entry, L, Complain))

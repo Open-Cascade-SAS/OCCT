@@ -51,13 +51,13 @@ public:
   void Import(const occ::handle<TDataXtd_Constraint>& theAttribute) const;
 
 private:
-  int                                        myType;
+  int                           myType;
   Handle(StdLPersistent_HArray1::Persistent) myGeometries;
-  occ::handle<StdObjMgt_Persistent>          myValue;
-  bool                                       myIsReversed;
-  bool                                       myIsInverted;
-  bool                                       myIsVerified;
-  occ::handle<StdObjMgt_Persistent>          myPlane;
+  occ::handle<StdObjMgt_Persistent>               myValue;
+  bool                           myIsReversed;
+  bool                           myIsInverted;
+  bool                           myIsVerified;
+  occ::handle<StdObjMgt_Persistent>               myPlane;
 };
 
 #endif

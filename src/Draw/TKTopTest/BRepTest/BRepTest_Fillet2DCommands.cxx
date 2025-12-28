@@ -33,6 +33,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -71,9 +72,9 @@ static int chfi2d(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  TopoDS_Shape res;
-  bool         partial_result = false;
-  int          i              = 3;
+  TopoDS_Shape     res;
+  bool partial_result = false;
+  int i              = 3;
   while (i + 1 < n)
   {
 
@@ -211,7 +212,7 @@ static int chfi2d(Draw_Interpretor& di, int n, const char** a)
 
 static occ::handle<Geom_Plane> findPlane(const TopoDS_Shape& S)
 {
-  occ::handle<Geom_Plane>  plane;
+  occ::handle<Geom_Plane>       plane;
   BRepBuilderAPI_FindPlane planeFinder(S);
   if (planeFinder.Found())
     plane = planeFinder.Plane();
@@ -266,7 +267,7 @@ static gp_Pnt findCommonPoint(const TopoDS_Shape& W)
   // The common point for two edges inside a wire
   // is a sharing vertex of two edges.
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
-  TopExp_Explorer                                        aExp(W, TopAbs_VERTEX);
+  TopExp_Explorer     aExp(W, TopAbs_VERTEX);
   for (; aExp.More(); aExp.Next())
   {
     if (!vertices.Add(aExp.Current()))

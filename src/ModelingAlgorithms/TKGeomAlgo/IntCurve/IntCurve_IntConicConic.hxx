@@ -49,16 +49,16 @@ public:
                          const IntRes2d_Domain& D1,
                          const gp_Lin2d&        L2,
                          const IntRes2d_Domain& D2,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between 2 lines from gp.
   Standard_EXPORT void Perform(const gp_Lin2d&        L1,
                                const IntRes2d_Domain& D1,
                                const gp_Lin2d&        L2,
                                const IntRes2d_Domain& D2,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a line and a circle.
   //! The exception ConstructionError is raised if the method
@@ -67,8 +67,8 @@ public:
                          const IntRes2d_Domain& DL,
                          const gp_Circ2d&       C,
                          const IntRes2d_Domain& DC,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a line and a circle.
   //! The exception ConstructionError is raised if the method
@@ -77,8 +77,8 @@ public:
                                const IntRes2d_Domain& DL,
                                const gp_Circ2d&       C,
                                const IntRes2d_Domain& DC,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a line and an ellipse.
   //! The exception ConstructionError is raised if the method
@@ -87,8 +87,8 @@ public:
                          const IntRes2d_Domain& DL,
                          const gp_Elips2d&      E,
                          const IntRes2d_Domain& DE,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a line and an ellipse.
   //! The exception ConstructionError is raised if the method
@@ -97,40 +97,40 @@ public:
                                const IntRes2d_Domain& DL,
                                const gp_Elips2d&      E,
                                const IntRes2d_Domain& DE,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a line and a parabola from gp.
   IntCurve_IntConicConic(const gp_Lin2d&        L,
                          const IntRes2d_Domain& DL,
                          const gp_Parab2d&      P,
                          const IntRes2d_Domain& DP,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a line and a parabola from gp.
   Standard_EXPORT void Perform(const gp_Lin2d&        L,
                                const IntRes2d_Domain& DL,
                                const gp_Parab2d&      P,
                                const IntRes2d_Domain& DP,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a line and an hyperbola.
   IntCurve_IntConicConic(const gp_Lin2d&        L,
                          const IntRes2d_Domain& DL,
                          const gp_Hypr2d&       H,
                          const IntRes2d_Domain& DH,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a line and an hyperbola.
   Standard_EXPORT void Perform(const gp_Lin2d&        L,
                                const IntRes2d_Domain& DL,
                                const gp_Hypr2d&       H,
                                const IntRes2d_Domain& DH,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between 2 circles from gp.
   //! The exception ConstructionError is raised if the method
@@ -139,8 +139,8 @@ public:
                          const IntRes2d_Domain& D1,
                          const gp_Circ2d&       C2,
                          const IntRes2d_Domain& D2,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between 2 circles from gp.
   //! The exception ConstructionError is raised if the method
@@ -149,8 +149,8 @@ public:
                                const IntRes2d_Domain& D1,
                                const gp_Circ2d&       C2,
                                const IntRes2d_Domain& D2,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a circle and an ellipse.
   //! The exception ConstructionError is raised if the method
@@ -159,8 +159,8 @@ public:
                          const IntRes2d_Domain& DC,
                          const gp_Elips2d&      E,
                          const IntRes2d_Domain& DE,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a circle and an ellipse.
   //! The exception ConstructionError is raised if the method
@@ -169,8 +169,8 @@ public:
                                const IntRes2d_Domain& DC,
                                const gp_Elips2d&      E,
                                const IntRes2d_Domain& DE,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a circle and a parabola.
   //! The exception ConstructionError is raised if the method
@@ -179,8 +179,8 @@ public:
                          const IntRes2d_Domain& DC,
                          const gp_Parab2d&      P,
                          const IntRes2d_Domain& DP,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a circle and a parabola.
   //! The exception ConstructionError is raised if the method
@@ -189,8 +189,8 @@ public:
                                const IntRes2d_Domain& DC,
                                const gp_Parab2d&      P,
                                const IntRes2d_Domain& DP,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a circle and an hyperbola.
   //! The exception ConstructionError is raised if the method
@@ -199,8 +199,8 @@ public:
                          const IntRes2d_Domain& DC,
                          const gp_Hypr2d&       H,
                          const IntRes2d_Domain& DH,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a circle and an hyperbola.
   //! The exception ConstructionError is raised if the method
@@ -209,8 +209,8 @@ public:
                                const IntRes2d_Domain& DC,
                                const gp_Hypr2d&       H,
                                const IntRes2d_Domain& DH,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between 2 ellipses.
   //! The exception ConstructionError is raised if the method
@@ -219,8 +219,8 @@ public:
                          const IntRes2d_Domain& D1,
                          const gp_Elips2d&      E2,
                          const IntRes2d_Domain& D2,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between 2 ellipses.
   //! The exception ConstructionError is raised if the method
@@ -229,8 +229,8 @@ public:
                                const IntRes2d_Domain& D1,
                                const gp_Elips2d&      E2,
                                const IntRes2d_Domain& D2,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between an ellipse and a parabola.
   //! The exception ConstructionError is raised if the method
@@ -239,8 +239,8 @@ public:
                          const IntRes2d_Domain& DE,
                          const gp_Parab2d&      P,
                          const IntRes2d_Domain& DP,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between an ellipse and a parabola.
   //! The exception ConstructionError is raised if the method
@@ -249,8 +249,8 @@ public:
                                const IntRes2d_Domain& DE,
                                const gp_Parab2d&      P,
                                const IntRes2d_Domain& DP,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between an ellipse and an hyperbola.
   //! The exception ConstructionError is raised if the method
@@ -259,8 +259,8 @@ public:
                          const IntRes2d_Domain& DE,
                          const gp_Hypr2d&       H,
                          const IntRes2d_Domain& DH,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between an ellipse and an hyperbola.
   //! The exception ConstructionError is raised if the method
@@ -269,56 +269,56 @@ public:
                                const IntRes2d_Domain& DE,
                                const gp_Hypr2d&       H,
                                const IntRes2d_Domain& DH,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between 2 parabolas.
   IntCurve_IntConicConic(const gp_Parab2d&      P1,
                          const IntRes2d_Domain& D1,
                          const gp_Parab2d&      P2,
                          const IntRes2d_Domain& D2,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between 2 parabolas.
   Standard_EXPORT void Perform(const gp_Parab2d&      P1,
                                const IntRes2d_Domain& D1,
                                const gp_Parab2d&      P2,
                                const IntRes2d_Domain& D2,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between a parabola and an hyperbola.
   IntCurve_IntConicConic(const gp_Parab2d&      P,
                          const IntRes2d_Domain& DP,
                          const gp_Hypr2d&       H,
                          const IntRes2d_Domain& DH,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between a parabola and an hyperbola.
   Standard_EXPORT void Perform(const gp_Parab2d&      P,
                                const IntRes2d_Domain& DP,
                                const gp_Hypr2d&       H,
                                const IntRes2d_Domain& DH,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
   //! Intersection between 2 hyperbolas.
   IntCurve_IntConicConic(const gp_Hypr2d&       H1,
                          const IntRes2d_Domain& D1,
                          const gp_Hypr2d&       H2,
                          const IntRes2d_Domain& D2,
-                         const double           TolConf,
-                         const double           Tol);
+                         const double    TolConf,
+                         const double    Tol);
 
   //! Intersection between 2 hyperbolas.
   Standard_EXPORT void Perform(const gp_Hypr2d&       H1,
                                const IntRes2d_Domain& D1,
                                const gp_Hypr2d&       H2,
                                const IntRes2d_Domain& D2,
-                               const double           TolConf,
-                               const double           Tol);
+                               const double    TolConf,
+                               const double    Tol);
 
 private:
   IntCurve_IntImpConicParConic Inter;

@@ -47,30 +47,30 @@ public:
   virtual ~AdvApp2Var_EvaluatorFunc2Var() {}
 
   //! Function evaluation method to be defined by descendant
-  virtual void Evaluate(int*    theDimension,
-                        double* theUStartEnd,  //!< First and last parameters in U
-                        double* theVStartEnd,  //!< First and last parameters in V
-                        int*    theFavorIso,   //!< Choice of constante, 1 for U, 2 for V
-                        double* theConstParam, //!< Value of constant parameter
-                        int*    theNbParams,   //!< Number of parameters N
-                        double* theParameters, //!< Values of parameters,
-                        int*    theUOrder,     //!< Derivative Request in U
-                        int*    theVOrder,     //!< Derivative Request in V
-                        double* theResult,     //!< Result[Dimension,N]
-                        int*    theErrorCode) const = 0;
+  virtual void Evaluate(int* theDimension,
+                        double*    theUStartEnd,  //!< First and last parameters in U
+                        double*    theVStartEnd,  //!< First and last parameters in V
+                        int* theFavorIso,   //!< Choice of constante, 1 for U, 2 for V
+                        double*    theConstParam, //!< Value of constant parameter
+                        int* theNbParams,   //!< Number of parameters N
+                        double*    theParameters, //!< Values of parameters,
+                        int* theUOrder,     //!< Derivative Request in U
+                        int* theVOrder,     //!< Derivative Request in V
+                        double*    theResult,     //!< Result[Dimension,N]
+                        int* theErrorCode) const = 0;
 
   //! Shortcut for function-call style usage
-  void operator()(int*    theDimension,
-                  double* theUStartEnd,
-                  double* theVStartEnd,
-                  int*    theFavorIso,
-                  double* theConstParam,
-                  int*    theNbParams,
-                  double* theParameters,
-                  int*    theUOrder,
-                  int*    theVOrder,
-                  double* theResult,
-                  int*    theErrorCode) const
+  void operator()(int* theDimension,
+                  double*    theUStartEnd,
+                  double*    theVStartEnd,
+                  int* theFavorIso,
+                  double*    theConstParam,
+                  int* theNbParams,
+                  double*    theParameters,
+                  int* theUOrder,
+                  int* theVOrder,
+                  double*    theResult,
+                  int* theErrorCode) const
   {
     Evaluate(theDimension,
              theUStartEnd,

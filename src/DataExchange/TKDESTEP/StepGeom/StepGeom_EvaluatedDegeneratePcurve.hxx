@@ -33,14 +33,12 @@ public:
   //! Returns a EvaluatedDegeneratePcurve
   Standard_EXPORT StepGeom_EvaluatedDegeneratePcurve();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&            aName,
-    const occ::handle<StepGeom_Surface>&                    aBasisSurface,
-    const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve,
-    const occ::handle<StepGeom_CartesianPoint>&             aEquivalentPoint);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
+                            const occ::handle<StepGeom_Surface>&                    aBasisSurface,
+                            const occ::handle<StepRepr_DefinitionalRepresentation>& aReferenceToCurve,
+                            const occ::handle<StepGeom_CartesianPoint>&             aEquivalentPoint);
 
-  Standard_EXPORT void SetEquivalentPoint(
-    const occ::handle<StepGeom_CartesianPoint>& aEquivalentPoint);
+  Standard_EXPORT void SetEquivalentPoint(const occ::handle<StepGeom_CartesianPoint>& aEquivalentPoint);
 
   Standard_EXPORT occ::handle<StepGeom_CartesianPoint> EquivalentPoint() const;
 

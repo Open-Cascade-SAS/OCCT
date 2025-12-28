@@ -40,12 +40,12 @@ occ::handle<TDF_Attribute> XmlMDataStd_UAttributeDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
+                                                     XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
-  const char*         aGuidStr    = (const char*)aGuidDomStr.GetString();
+  const char*    aGuidStr    = (const char*)aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
     myMessageDriver->Send("error retrieving GUID for type TDataStd_UAttribute", Message_Fail);
@@ -59,13 +59,13 @@ bool XmlMDataStd_UAttributeDriver::Paste(const XmlObjMgt_Persistent&       theSo
 //=================================================================================================
 
 void XmlMDataStd_UAttributeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         XmlObjMgt_Persistent&             theTarget,
+                                         XmlObjMgt_Persistent&        theTarget,
                                          XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_UAttribute> aName = occ::down_cast<TDataStd_UAttribute>(theSource);
 
   // convert GUID into attribute value
-  char                aGuidStr[40];
+  char  aGuidStr[40];
   Standard_PCharacter pGuidStr;
   pGuidStr = aGuidStr;
   aName->ID().ToCString(pGuidStr);

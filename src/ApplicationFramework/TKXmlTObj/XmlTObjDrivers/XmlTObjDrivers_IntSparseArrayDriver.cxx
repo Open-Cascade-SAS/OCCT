@@ -51,15 +51,15 @@ occ::handle<TDF_Attribute> XmlTObjDrivers_IntSparseArrayDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                                const occ::handle<TDF_Attribute>& theTarget,
-                                                XmlObjMgt_RRelocationTable&) const
+bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                            const occ::handle<TDF_Attribute>& theTarget,
+                                                            XmlObjMgt_RRelocationTable&) const
 {
-  const XmlObjMgt_Element&          anElement = theSource;
+  const XmlObjMgt_Element&     anElement = theSource;
   occ::handle<TObj_TIntSparseArray> aTarget   = occ::down_cast<TObj_TIntSparseArray>(theTarget);
 
   // get pairs (ID, value) while ID != 0
-  int                     i = 1;
+  int        i = 1;
   TCollection_AsciiString anItemID;
   TCollection_AsciiString anIdStr = TCollection_AsciiString(ITEM_ID) + TCollection_AsciiString(i);
   anItemID                        = anElement.getAttribute(anIdStr.ToCString());
@@ -87,7 +87,7 @@ bool XmlTObjDrivers_IntSparseArrayDriver::Paste(const XmlObjMgt_Persistent&     
 //=======================================================================
 
 void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                                XmlObjMgt_Persistent&             theTarget,
+                                                XmlObjMgt_Persistent&        theTarget,
                                                 XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TObj_TIntSparseArray> aSource = occ::down_cast<TObj_TIntSparseArray>(theSource);
@@ -95,7 +95,7 @@ void XmlTObjDrivers_IntSparseArrayDriver::Paste(const occ::handle<TDF_Attribute>
   // put only non-null values as pairs (ID, value)
   // terminate the list by ID=0
   TObj_TIntSparseArray::Iterator anIt = aSource->GetIterator();
-  int                            i    = 1;
+  int               i    = 1;
   for (; anIt.More(); anIt.Next())
   {
     int aValue = anIt.Value();

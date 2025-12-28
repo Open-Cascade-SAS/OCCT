@@ -26,6 +26,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
 class IntTools_Context;
 
@@ -75,13 +76,14 @@ protected:
 
   virtual void PerformInternalShapes(const Message_ProgressRange& theRange) = 0;
 
-  occ::handle<IntTools_Context>        myContext;
-  NCollection_List<TopoDS_Shape>       myShapes;
-  NCollection_List<TopoDS_Shape>       myLoops;
-  NCollection_List<TopoDS_Shape>       myLoopsInternal;
-  NCollection_List<TopoDS_Shape>       myAreas;
+  occ::handle<IntTools_Context>           myContext;
+  NCollection_List<TopoDS_Shape>               myShapes;
+  NCollection_List<TopoDS_Shape>               myLoops;
+  NCollection_List<TopoDS_Shape>               myLoopsInternal;
+  NCollection_List<TopoDS_Shape>               myAreas;
   NCollection_IndexedMap<TopoDS_Shape> myShapesToAvoid;
-  bool                                 myAvoidInternalShapes;
+  bool                   myAvoidInternalShapes;
+
 };
 
 #endif // _BOPAlgo_BuilderArea_HeaderFile

@@ -27,13 +27,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_SectionedArea, IGESData_IGESEntity)
 
 IGESDimen_SectionedArea::IGESDimen_SectionedArea() {}
 
-void IGESDimen_SectionedArea::Init(
-  const occ::handle<IGESData_IGESEntity>&                                   aCurve,
-  const int                                                                 aPattern,
-  const gp_XYZ&                                                             aPoint,
-  const double                                                              aDistance,
-  const double                                                              anAngle,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands)
+void IGESDimen_SectionedArea::Init(const occ::handle<IGESData_IGESEntity>&          aCurve,
+                                   const int                      aPattern,
+                                   const gp_XYZ&                               aPoint,
+                                   const double                         aDistance,
+                                   const double                         anAngle,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands)
 {
   if (!someIslands.IsNull())
     if (someIslands->Lower() != 1)

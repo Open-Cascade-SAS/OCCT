@@ -49,11 +49,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                             const occ::handle<TDF_Attribute>& theTarget,
-                                             XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                         const occ::handle<TDF_Attribute>& theTarget,
+                                                         XmlObjMgt_RRelocationTable&) const
 {
-  int                      aFirstInd, aLastInd;
+  int         aFirstInd, aLastInd;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -106,7 +106,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
   LDOM_Node           aCurNode    = anElement.getFirstChild();
   LDOM_Element*       aCurElement = (LDOM_Element*)&aCurNode;
   XmlObjMgt_DOMString aValueStr;
-  int                 i = aFirstInd;
+  int    i = aFirstInd;
   while (*aCurElement != anElement.getLastChild())
   {
     aValueStr = XmlObjMgt::GetStringValue(*aCurElement);
@@ -169,7 +169,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                             XmlObjMgt_Persistent&             theTarget,
+                                             XmlObjMgt_Persistent&        theTarget,
                                              XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_ReferenceArray> aReferenceArray =
@@ -181,8 +181,8 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
     return;
   }
 
-  int                aL        = aReferenceArray->Lower();
-  int                anU       = aReferenceArray->Upper();
+  int   aL        = aReferenceArray->Lower();
+  int   anU       = aReferenceArray->Upper();
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::FirstIndexString(), aL);
   anElement.setAttribute(::LastIndexString(), anU);
@@ -208,7 +208,7 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
   if (aReferenceArray->ID() != TDataStd_ReferenceArray::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aReferenceArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

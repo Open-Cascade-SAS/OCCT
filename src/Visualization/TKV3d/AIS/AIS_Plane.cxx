@@ -44,6 +44,7 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_Plane.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Plane, AIS_InteractiveObject)
@@ -65,8 +66,8 @@ AIS_Plane::AIS_Plane(const occ::handle<Geom_Plane>& aComponent, const bool aCurr
 //=================================================================================================
 
 AIS_Plane::AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
-                     const gp_Pnt&                  aCenter,
-                     const bool                     aCurrentMode)
+                     const gp_Pnt&             aCenter,
+                     const bool    aCurrentMode)
     : myComponent(aComponent),
       myCenter(aCenter),
       myCurrentMode(aCurrentMode),
@@ -81,10 +82,10 @@ AIS_Plane::AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
 //=================================================================================================
 
 AIS_Plane::AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
-                     const gp_Pnt&                  aCenter,
-                     const gp_Pnt&                  aPmin,
-                     const gp_Pnt&                  aPmax,
-                     const bool                     aCurrentMode)
+                     const gp_Pnt&             aCenter,
+                     const gp_Pnt&             aPmin,
+                     const gp_Pnt&             aPmax,
+                     const bool    aCurrentMode)
     : myComponent(aComponent),
       myCenter(aCenter),
       myPmin(aPmin),
@@ -103,8 +104,8 @@ AIS_Plane::AIS_Plane(const occ::handle<Geom_Plane>& aComponent,
 // purpose  : XYPlane, XZPlane, YZPlane
 //=======================================================================
 AIS_Plane::AIS_Plane(const occ::handle<Geom_Axis2Placement>& aComponent,
-                     const AIS_TypeOfPlane                   aPlaneType,
-                     const bool                              aCurrentMode)
+                     const AIS_TypeOfPlane              aPlaneType,
+                     const bool             aCurrentMode)
     : myAx2(aComponent),
       myCurrentMode(aCurrentMode),
       myAutomaticPosition(true),
@@ -138,7 +139,7 @@ occ::handle<Geom_Axis2Placement> AIS_Plane::Axis2Placement()
 //=================================================================================================
 
 void AIS_Plane::SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aComponent,
-                                  const AIS_TypeOfPlane                   aPlaneType)
+                                  const AIS_TypeOfPlane              aPlaneType)
 {
   myTypeOfPlane       = aPlaneType;
   myIsXYZPlane        = true;
@@ -150,9 +151,9 @@ void AIS_Plane::SetAxis2Placement(const occ::handle<Geom_Axis2Placement>& aCompo
 //=================================================================================================
 
 bool AIS_Plane::PlaneAttributes(occ::handle<Geom_Plane>& aComponent,
-                                gp_Pnt&                  aCenter,
-                                gp_Pnt&                  aPmin,
-                                gp_Pnt&                  aPmax)
+                                            gp_Pnt&             aCenter,
+                                            gp_Pnt&             aPmin,
+                                            gp_Pnt&             aPmax)
 {
   bool aStatus(false);
   if (!myAutomaticPosition)
@@ -169,9 +170,9 @@ bool AIS_Plane::PlaneAttributes(occ::handle<Geom_Plane>& aComponent,
 //=================================================================================================
 
 void AIS_Plane::SetPlaneAttributes(const occ::handle<Geom_Plane>& aComponent,
-                                   const gp_Pnt&                  aCenter,
-                                   const gp_Pnt&                  aPmin,
-                                   const gp_Pnt&                  aPmax)
+                                   const gp_Pnt&             aCenter,
+                                   const gp_Pnt&             aPmin,
+                                   const gp_Pnt&             aPmax)
 {
   myAutomaticPosition = false;
   myComponent         = aComponent;
@@ -186,7 +187,7 @@ void AIS_Plane::SetPlaneAttributes(const occ::handle<Geom_Plane>& aComponent,
 
 void AIS_Plane::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                         const occ::handle<Prs3d_Presentation>& thePrs,
-                        const int                              theMode)
+                        const int            theMode)
 {
   ComputeFields();
   thePrs->SetInfiniteState(myInfiniteState);
@@ -200,7 +201,7 @@ void AIS_Plane::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         ComputeFrame();
         const occ::handle<Geom_Plane>& pl = myComponent;
         occ::handle<Geom_Plane>        thegoodpl(
-          occ::down_cast<Geom_Plane>(pl->Translated(pl->Location(), myCenter)));
+                 occ::down_cast<Geom_Plane>(pl->Translated(pl->Location(), myCenter)));
         GeomAdaptor_Surface surf(thegoodpl);
         StdPrs_Plane::Add(thePrs, surf, myDrawer);
       }
@@ -217,7 +218,7 @@ void AIS_Plane::Compute(const occ::handle<PrsMgr_PresentationManager>&,
         occ::handle<Prs3d_PlaneAspect> anAspect = myDrawer->PlaneAspect();
         occ::handle<Graphic3d_Group>   aGroup   = thePrs->CurrentGroup();
         aGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
-        gp_Pnt       p1;
+        gp_Pnt              p1;
         const double Xmax = 0.5 * double(anAspect->PlaneXLength());
         const double Ymax = 0.5 * double(anAspect->PlaneYLength());
 
@@ -255,8 +256,8 @@ void AIS_Plane::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSele
   if (!myIsXYZPlane)
   {
     // plane representing rectangle
-    double                  aLengthX = myDrawer->PlaneAspect()->PlaneXLength() / 2.0;
-    double                  aLengthY = myDrawer->PlaneAspect()->PlaneYLength() / 2.0;
+    double      aLengthX = myDrawer->PlaneAspect()->PlaneXLength() / 2.0;
+    double      aLengthY = myDrawer->PlaneAspect()->PlaneYLength() / 2.0;
     occ::handle<Geom_Plane> aPlane =
       occ::down_cast<Geom_Plane>(myComponent->Translated(myComponent->Location(), myCenter));
 
@@ -484,7 +485,7 @@ void AIS_Plane::ComputeFrame()
 {
 
   const occ::handle<Geom_Plane>& pl = myComponent;
-  double                         U, V;
+  double             U, V;
 
   if (myAutomaticPosition)
   {
@@ -584,7 +585,7 @@ void AIS_Plane::InitDrawerAttributes()
   shasp->SetColor(Quantity_NOC_GRAY40);
   myDrawer->SetShadingAspect(shasp);
   occ::handle<Graphic3d_AspectFillArea3d> asf = shasp->Aspect();
-  Graphic3d_MaterialAspect                asp = asf->FrontMaterial();
+  Graphic3d_MaterialAspect           asp = asf->FrontMaterial();
   asp.SetTransparency(0.8f);
   asf->SetFrontMaterial(asp);
   asf->SetBackMaterial(asp);

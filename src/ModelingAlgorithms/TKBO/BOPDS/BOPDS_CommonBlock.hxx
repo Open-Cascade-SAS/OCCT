@@ -22,6 +22,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 class BOPDS_PaveBlock;
 
@@ -138,8 +139,9 @@ public:
 
 protected:
   NCollection_List<occ::handle<BOPDS_PaveBlock>> myPaveBlocks; //!< Pave blocks of the common block
-  NCollection_List<int> myFaces;     //!< Faces on which the pave blocks are lying
-  double                myTolerance; //!< Tolerance of the common block
+  NCollection_List<int> myFaces;      //!< Faces on which the pave blocks are lying
+  double         myTolerance;  //!< Tolerance of the common block
+
 };
 
 #endif // _BOPDS_CommonBlock_HeaderFile

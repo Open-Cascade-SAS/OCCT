@@ -32,7 +32,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
-                            const bool                                    hasDescription,
+                            const bool                   hasDescription,
                             const occ::handle<TCollection_HAsciiString>&  aDescription,
                             const occ::handle<StepBasic_GeneralProperty>& aRelatingGeneralProperty,
                             const occ::handle<StepBasic_GeneralProperty>& aRelatedGeneralProperty);
@@ -69,7 +69,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_GeneralPropertyRelationship, Standard_Transient)
 
 private:
-  bool                                   defDescription;
+  bool                  defDescription;
   occ::handle<TCollection_HAsciiString>  theName;
   occ::handle<TCollection_HAsciiString>  theDescription;
   occ::handle<StepBasic_GeneralProperty> theRelatingGeneralProperty;

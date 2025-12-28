@@ -20,13 +20,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RectangularTrimmedSurface, StepGeom_BoundedS
 StepGeom_RectangularTrimmedSurface::StepGeom_RectangularTrimmedSurface() {}
 
 void StepGeom_RectangularTrimmedSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                              const occ::handle<StepGeom_Surface>& aBasisSurface,
-                                              const double                         aU1,
-                                              const double                         aU2,
-                                              const double                         aV1,
-                                              const double                         aV2,
-                                              const bool                           aUsense,
-                                              const bool                           aVsense)
+                                              const occ::handle<StepGeom_Surface>&         aBasisSurface,
+                                              const double                     aU1,
+                                              const double                     aU2,
+                                              const double                     aV1,
+                                              const double                     aV2,
+                                              const bool                  aUsense,
+                                              const bool                  aVsense)
 {
   // --- classe own fields ---
   basisSurface = aBasisSurface;

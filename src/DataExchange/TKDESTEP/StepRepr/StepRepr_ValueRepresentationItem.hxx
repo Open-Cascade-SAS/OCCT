@@ -30,9 +30,8 @@ public:
   //! Returns a ValueRepresentationItem
   Standard_EXPORT StepRepr_ValueRepresentationItem();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&     theName,
-    const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theName,
+                            const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember);
 
   inline void SetValueComponentMember(
     const occ::handle<StepBasic_MeasureValueMember>& theValueComponentMember)

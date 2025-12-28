@@ -79,7 +79,7 @@ void TDF_RelocationTable::SetRelocation(const TDF_Label& aSourceLabel,
 //=======================================================================
 
 bool TDF_RelocationTable::HasRelocation(const TDF_Label& aSourceLabel,
-                                        TDF_Label&       aTargetLabel) const
+                                                    TDF_Label&       aTargetLabel) const
 {
   aTargetLabel.Nullify();
   if (myLabelTable.IsBound(aSourceLabel))
@@ -115,7 +115,7 @@ void TDF_RelocationTable::SetRelocation(const occ::handle<TDF_Attribute>& aSourc
 //=======================================================================
 
 bool TDF_RelocationTable::HasRelocation(const occ::handle<TDF_Attribute>& aSourceAttribute,
-                                        occ::handle<TDF_Attribute>&       aTargetAttribute) const
+                                                    occ::handle<TDF_Attribute>& aTargetAttribute) const
 {
   aTargetAttribute.Nullify();
   if (myAttributeTable.IsBound(aSourceAttribute))
@@ -137,9 +137,8 @@ bool TDF_RelocationTable::HasRelocation(const occ::handle<TDF_Attribute>& aSourc
 //           to <aTargetTransient>.
 //=======================================================================
 
-void TDF_RelocationTable::SetTransientRelocation(
-  const occ::handle<Standard_Transient>& aSourceTransient,
-  const occ::handle<Standard_Transient>& aTargetTransient)
+void TDF_RelocationTable::SetTransientRelocation(const occ::handle<Standard_Transient>& aSourceTransient,
+                                                 const occ::handle<Standard_Transient>& aTargetTransient)
 {
   if (!myTransientTable.Contains(aSourceTransient))
     myTransientTable.Add(aSourceTransient, aTargetTransient);
@@ -185,20 +184,15 @@ void TDF_RelocationTable::Clear()
 
 void TDF_RelocationTable::TargetLabelMap(NCollection_Map<TDF_Label>& aLabelMap) const
 {
-  for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More();
-       itr.Next())
+  for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More(); itr.Next())
     aLabelMap.Add(itr.Value());
 }
 
 //=================================================================================================
 
-void TDF_RelocationTable::TargetAttributeMap(
-  NCollection_Map<occ::handle<TDF_Attribute>>& anAttributeMap) const
+void TDF_RelocationTable::TargetAttributeMap(NCollection_Map<occ::handle<TDF_Attribute>>& anAttributeMap) const
 {
-  for (NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator itr(
-         myAttributeTable);
-       itr.More();
-       itr.Next())
+  for (NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator itr(myAttributeTable); itr.More(); itr.Next())
     anAttributeMap.Add(itr.Value());
 }
 
@@ -211,26 +205,24 @@ NCollection_DataMap<TDF_Label, TDF_Label>& TDF_RelocationTable::LabelTable()
 
 //=================================================================================================
 
-NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& TDF_RelocationTable::
-  AttributeTable()
+NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>& TDF_RelocationTable::AttributeTable()
 {
   return myAttributeTable;
 }
 
 //=================================================================================================
 
-NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
-  TDF_RelocationTable::TransientTable()
+NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& TDF_RelocationTable::TransientTable()
 {
   return myTransientTable;
 }
 
 //=================================================================================================
 
-Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
-                                            const bool        dumpAttributes,
-                                            const bool        dumpTransients,
-                                            Standard_OStream& anOS) const
+Standard_OStream& TDF_RelocationTable::Dump(const bool dumpLabels,
+                                            const bool dumpAttributes,
+                                            const bool dumpTransients,
+                                            Standard_OStream&      anOS) const
 {
   anOS << "Relocation Table  ";
   if (mySelfRelocate)
@@ -251,8 +243,7 @@ Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
   if (dumpLabels)
   {
     anOS << "Label Table:" << std::endl;
-    for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More();
-         itr.Next())
+    for (NCollection_DataMap<TDF_Label, TDF_Label>::Iterator itr(myLabelTable); itr.More(); itr.Next())
     {
       ++nb;
       anOS << nb << " ";
@@ -268,10 +259,7 @@ Standard_OStream& TDF_RelocationTable::Dump(const bool        dumpLabels,
   if (dumpAttributes)
   {
     anOS << "Attribute Table:" << std::endl;
-    for (NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator itr(
-           myAttributeTable);
-         itr.More();
-         itr.Next())
+    for (NCollection_DataMap<occ::handle<TDF_Attribute>, occ::handle<TDF_Attribute>>::Iterator itr(myAttributeTable); itr.More(); itr.Next())
     {
       ++nb;
       anOS << nb << " ";

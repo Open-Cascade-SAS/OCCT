@@ -44,7 +44,7 @@ inline const char* ConvertToString(const StepGeom_PreferredSurfaceCurveRepresent
 //! @param theRepresentationStr The string to convert
 //! @param theResultEnum The corresponding StepGeom_PreferredSurfaceCurveRepresentation value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char*                                   theRepresentationStr,
+inline bool ConvertToEnum(const char*                        theRepresentationStr,
                           StepGeom_PreferredSurfaceCurveRepresentation& theResultEnum)
 {
   if (IsEqual(theRepresentationStr, pscrPcurveS2))

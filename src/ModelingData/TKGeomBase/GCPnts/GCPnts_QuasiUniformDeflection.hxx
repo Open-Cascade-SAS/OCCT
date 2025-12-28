@@ -20,6 +20,7 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 #include <GeomAbs_Shape.hxx>
 
 class Adaptor3d_Curve;
@@ -48,19 +49,19 @@ public:
 
   //! Computes a QuasiUniform Deflection distribution of points on the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& theC,
-                                                const double           theDeflection,
+                                                const double    theDeflection,
                                                 const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                const double             theDeflection,
+                                                const double      theDeflection,
                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor3d_Curve& theC,
-                                                const double           theDeflection,
-                                                const double           theU1,
-                                                const double           theU2,
+                                                const double    theDeflection,
+                                                const double    theU1,
+                                                const double    theU2,
                                                 const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Computes a QuasiUniform Deflection distribution of points on a part of the Curve.
@@ -104,26 +105,26 @@ public:
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& theC,
-                                                const double             theDeflection,
-                                                const double             theU1,
-                                                const double             theU2,
+                                                const double      theDeflection,
+                                                const double      theU1,
+                                                const double      theU2,
                                                 const GeomAbs_Shape theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 3D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double           theDeflection,
+                                  const double    theDeflection,
                                   const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 2D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double             theDeflection,
+                                  const double      theDeflection,
                                   const GeomAbs_Shape      theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with 3D curve, deflection and parameter range.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double           theDeflection,
-                                  const double           theU1,
-                                  const double           theU2,
+                                  const double    theDeflection,
+                                  const double    theU1,
+                                  const double    theU2,
                                   const GeomAbs_Shape    theContinuity = GeomAbs_C1);
 
   //! Initialize the algorithms with theC, theDeflection, theU1, theU2.
@@ -168,9 +169,9 @@ public:
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //!     and those required on the curve by the computation algorithm.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double             theDeflection,
-                                  const double             theU1,
-                                  const double             theU2,
+                                  const double      theDeflection,
+                                  const double      theU1,
+                                  const double      theU2,
                                   const GeomAbs_Shape      theContinuity = GeomAbs_C1);
 
   //! Returns true if the computation was successful.
@@ -236,17 +237,17 @@ private:
   //! Initializes algorithm.
   template <class TheCurve>
   void initialize(const TheCurve&     theC,
-                  const double        theDeflection,
-                  const double        theU1,
-                  const double        theU2,
+                  const double theDeflection,
+                  const double theU1,
+                  const double theU2,
                   const GeomAbs_Shape theContinuity);
 
 private:
-  bool                         myDone;
-  double                       myDeflection;
+  bool       myDone;
+  double          myDeflection;
   NCollection_Sequence<double> myParams;
-  NCollection_Sequence<gp_Pnt> myPoints;
-  GeomAbs_Shape                myCont;
+  NCollection_Sequence<gp_Pnt>   myPoints;
+  GeomAbs_Shape          myCont;
 };
 
 #endif // _GCPnts_QuasiUniformDeflection_HeaderFile

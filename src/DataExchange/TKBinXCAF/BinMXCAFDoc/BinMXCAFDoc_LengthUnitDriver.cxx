@@ -37,15 +37,16 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_LengthUnitDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_LengthUnitDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMXCAFDoc_LengthUnitDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   (void)theRelocTable;
   occ::handle<XCAFDoc_LengthUnit> anAtt = occ::down_cast<XCAFDoc_LengthUnit>(theTarget);
-  TCollection_AsciiString         aName;
-  double                          aScaleFactor = 1.;
-  bool                            isOk         = theSource >> aName >> aScaleFactor;
+  TCollection_AsciiString    aName;
+  double              aScaleFactor = 1.;
+  bool           isOk         = theSource >> aName >> aScaleFactor;
   if (isOk)
   {
     anAtt->Set(aName, aScaleFactor);
@@ -55,10 +56,9 @@ bool BinMXCAFDoc_LengthUnitDriver::Paste(const BinObjMgt_Persistent&       theSo
 
 //=================================================================================================
 
-void BinMXCAFDoc_LengthUnitDriver::Paste(
-  const occ::handle<TDF_Attribute>&                        theSource,
-  BinObjMgt_Persistent&                                    theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
+void BinMXCAFDoc_LengthUnitDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   (void)theRelocTable;
   occ::handle<XCAFDoc_LengthUnit> anAtt = occ::down_cast<XCAFDoc_LengthUnit>(theSource);

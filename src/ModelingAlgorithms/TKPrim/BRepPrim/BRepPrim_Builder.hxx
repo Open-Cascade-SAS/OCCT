@@ -96,29 +96,31 @@ public:
   //! Adds the Vertex <V> in the Edge <E>. <P> is the
   //! parameter of the vertex on the edge. If direct
   //! is False the Vertex is reversed.
-  Standard_EXPORT void AddEdgeVertex(TopoDS_Edge&         E,
-                                     const TopoDS_Vertex& V,
-                                     const double         P,
-                                     const bool           direct) const;
+  Standard_EXPORT void AddEdgeVertex(TopoDS_Edge&           E,
+                                     const TopoDS_Vertex&   V,
+                                     const double    P,
+                                     const bool direct) const;
 
   //! Adds the Vertex <V> in the Edge <E>. <P1,P2>
   //! are the parameters of the vertex on the closed
   //! edge.
   Standard_EXPORT void AddEdgeVertex(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const double         P1,
-                                     const double         P2) const;
+                                     const double  P1,
+                                     const double  P2) const;
 
   //! <P1,P2> are the parameters of the vertex on the
   //! edge. The edge is a closed curve.
   Standard_EXPORT void SetParameters(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const double         P1,
-                                     const double         P2) const;
+                                     const double  P1,
+                                     const double  P2) const;
 
   //! Adds the Edge <E> in the Wire <W>, if direct is
   //! False the Edge is reversed.
-  Standard_EXPORT void AddWireEdge(TopoDS_Wire& W, const TopoDS_Edge& E, const bool direct) const;
+  Standard_EXPORT void AddWireEdge(TopoDS_Wire&           W,
+                                   const TopoDS_Edge&     E,
+                                   const bool direct) const;
 
   //! Adds the Wire <W> in the Face <F>.
   Standard_EXPORT void AddFaceWire(TopoDS_Face& F, const TopoDS_Wire& W) const;

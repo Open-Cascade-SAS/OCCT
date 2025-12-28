@@ -25,6 +25,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Representation of STEP entity ComplexTriangulatedFace
 class StepVisual_ComplexTriangulatedFace : public StepVisual_TessellatedFace
@@ -36,13 +38,13 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-    const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
-    const int                                       theTessellatedFace_Pnmax,
-    const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
-    const bool                                      theHasTessellatedFace_GeometricLink,
-    const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
-    const occ::handle<NCollection_HArray1<int>>&    thePnindex,
+    const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+    const int                    theTessellatedFace_Pnmax,
+    const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
+    const bool                    theHasTessellatedFace_GeometricLink,
+    const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+    const occ::handle<NCollection_HArray1<int>>&   thePnindex,
     const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips,
     const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans);
 
@@ -59,8 +61,7 @@ public:
   Standard_EXPORT int PnindexValue(const int theNum) const;
 
   //! Returns field TriangleStrips
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> TriangleStrips()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> TriangleStrips() const;
 
   //! Sets field TriangleStrips
   Standard_EXPORT void SetTriangleStrips(
@@ -70,12 +71,10 @@ public:
   Standard_EXPORT int NbTriangleStrips() const;
 
   //! Returns field TriangleFans
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> TriangleFans()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> TriangleFans() const;
 
   //! Sets field TriangleFans
-  Standard_EXPORT void SetTriangleFans(
-    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans);
+  Standard_EXPORT void SetTriangleFans(const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans);
 
   //! Returns number of TriangleFans
   Standard_EXPORT int NbTriangleFans() const;
@@ -83,7 +82,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_ComplexTriangulatedFace, StepVisual_TessellatedFace)
 
 private:
-  occ::handle<NCollection_HArray1<int>>                             myPnindex;
+  occ::handle<NCollection_HArray1<int>>   myPnindex;
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> myTriangleStrips;
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> myTriangleFans;
 };

@@ -24,6 +24,7 @@
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Array1.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
+#include <NCollection_Array1.hxx>
 class Expr_GeneralFunction;
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
@@ -36,9 +37,8 @@ class Expr_PolyFunction : public Expr_PolyExpression
 
 public:
   //! Creates <me> as <func>(<exps_1>,<exps_2>,...,<exps_n>)
-  Standard_EXPORT Expr_PolyFunction(
-    const occ::handle<Expr_GeneralFunction>&                       func,
-    const NCollection_Array1<occ::handle<Expr_GeneralExpression>>& exps);
+  Standard_EXPORT Expr_PolyFunction(const occ::handle<Expr_GeneralFunction>&   func,
+                                    const NCollection_Array1<occ::handle<Expr_GeneralExpression>>& exps);
 
   //! Returns the function defining <me>.
   Standard_EXPORT occ::handle<Expr_GeneralFunction> Function() const;
@@ -53,7 +53,8 @@ public:
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
+  Standard_EXPORT bool
+    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
   Standard_EXPORT bool IsLinear() const override;
 
@@ -66,7 +67,7 @@ public:
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
   Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                  const NCollection_Array1<double>& vals) const override;
+                                         const NCollection_Array1<double>& vals) const override;
 
   //! returns a string representing <me> in a readable way.
   Standard_EXPORT TCollection_AsciiString String() const override;

@@ -34,9 +34,10 @@ struct OpenGl_Vec3Vec4ub
 static TCollection_AsciiString formatTimeMs(double theSeconds)
 {
   const double aFpsVal = theSeconds != 0.0 ? 1.0 / theSeconds : 0.0;
-  char         aFps[50];
+  char                aFps[50];
   Sprintf(aFps, "%.1f", aFpsVal);
-  return TCollection_AsciiString() + int(theSeconds * 1000.0) + " ms (" + aFps + " FPS)";
+  return TCollection_AsciiString() + int(theSeconds * 1000.0) + " ms (" + aFps
+         + " FPS)";
 }
 } // namespace
 
@@ -83,7 +84,7 @@ void OpenGl_FrameStatsPrs::Update(const occ::handle<OpenGl_Workspace>& theWorksp
 {
   const occ::handle<OpenGl_Context>&    aCtx        = theWorkspace->GetGlContext();
   const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
-  const Graphic3d_RenderingParams&      aRendParams = theWorkspace->View()->RenderingParams();
+  const Graphic3d_RenderingParams& aRendParams = theWorkspace->View()->RenderingParams();
   myCountersTrsfPers = theWorkspace->View()->RenderingParams().StatsPosition;
   myChartTrsfPers    = theWorkspace->View()->RenderingParams().ChartPosition;
   myTextAspect.SetAspect(aRendParams.StatsTextAspect);
@@ -139,7 +140,7 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
 {
   const occ::handle<OpenGl_Context>&    aCtx        = theWorkspace->GetGlContext();
   const occ::handle<OpenGl_FrameStats>& aStats      = aCtx->FrameStats();
-  const Graphic3d_RenderingParams&      aRendParams = theWorkspace->View()->RenderingParams();
+  const Graphic3d_RenderingParams& aRendParams = theWorkspace->View()->RenderingParams();
 
   const int aNbBins = aStats->DataFrames().Size();
   if (aNbBins <= 1)
@@ -153,7 +154,8 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
   double aMaxDuration = aRendParams.StatsMaxChartTime;
   if (aMaxDuration <= 0.0f)
   {
-    for (int aFrameIter = aStats->DataFrames().Lower(); aFrameIter <= aStats->DataFrames().Upper();
+    for (int aFrameIter = aStats->DataFrames().Lower();
+         aFrameIter <= aStats->DataFrames().Upper();
          ++aFrameIter)
     {
       const Graphic3d_FrameStatsData& aFrame = aStats->DataFrames().Value(aFrameIter);
@@ -166,7 +168,7 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
                                                                           // clang-format on
   }
 
-  const int                       aNbTimers  = 4;
+  const int          aNbTimers  = 4;
   const Graphic3d_FrameStatsTimer aTimers[4] = {
     Graphic3d_FrameStatsTimer_CpuDynamics,
     Graphic3d_FrameStatsTimer_CpuPicking,
@@ -182,7 +184,7 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
 
   const int aNbVerts    = aNbBins * 4 * aNbTimers;
   const int aNbIndexes  = aNbBins * 2 * 3 * aNbTimers;
-  bool      toFillEdges = false;
+  bool                   toFillEdges = false;
   if (myChartArray.IsNull() || myChartArray->VertexNumber() != aNbVerts
       || myChartArray->EdgeNumber() != aNbIndexes)
   {
@@ -202,8 +204,8 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
   }
 
   const NCollection_Vec2<double> aBinSize(double(aCharSize.x()) / double(aNbBins),
-                                          0.15 * aViewSize.y());
-  NCollection_Vec2<int>          anOffset;
+                                 0.15 * aViewSize.y());
+  NCollection_Vec2<int>       anOffset;
   if (!myChartTrsfPers.IsNull() && myChartTrsfPers->IsTrihedronOr2d())
   {
     if ((myChartTrsfPers->Corner2d() & Aspect_TOTP_LEFT) != 0)
@@ -233,19 +235,20 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
     }
   }
 
-  int        aVertLast = 1;
-  const bool isTopDown = false;
+  int aVertLast = 1;
+  const bool       isTopDown = false;
   for (int aFrameIter = 0; aFrameIter < aNbBins; ++aFrameIter)
   {
-    int aFrameIndex = aStats->DataFrames().Lower() + aStats->LastDataFrameIndex() + 1 + aFrameIter;
+    int aFrameIndex =
+      aStats->DataFrames().Lower() + aStats->LastDataFrameIndex() + 1 + aFrameIter;
     if (aFrameIndex > aStats->DataFrames().Upper())
     {
       aFrameIndex -= aNbBins;
     }
 
     const Graphic3d_FrameStatsData& aFrame       = aStats->DataFrames().Value(aFrameIndex);
-    double                          aTimeElapsed = 0.0;
-    double                          aCurrY       = 0.0;
+    double                   aTimeElapsed = 0.0;
+    double                   aCurrY       = 0.0;
     for (int aTimerIter = 0; aTimerIter < aNbTimers; ++aTimerIter)
     {
       if (aTimers[aTimerIter] == Graphic3d_FrameStatsTimer_ElapsedFrame)
@@ -315,17 +318,15 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
   }
 
   {
-    const NCollection_Vec4<uint8_t> aWhite(255, 255, 255, 255);
-    const OpenGl_Vec3Vec4ub         aLines[4] = {
+    const NCollection_Vec4<uint8_t>  aWhite(255, 255, 255, 255);
+    const OpenGl_Vec3Vec4ub aLines[4] = {
       {NCollection_Vec3<float>((float)anOffset.x(), (float)anOffset.y(), 0.0f), aWhite},
-      {NCollection_Vec3<float>(float(anOffset.x() + aCharSize.x()), (float)anOffset.y(), 0.0f),
-               aWhite},
-      {NCollection_Vec3<float>((float)anOffset.x(), float(anOffset.y() - aBinSize.y()), 0.0f),
-               aWhite},
+      {NCollection_Vec3<float>(float(anOffset.x() + aCharSize.x()), (float)anOffset.y(), 0.0f), aWhite},
+      {NCollection_Vec3<float>((float)anOffset.x(), float(anOffset.y() - aBinSize.y()), 0.0f), aWhite},
       {NCollection_Vec3<float>(float(anOffset.x() + aCharSize.x()),
-                               float(anOffset.y() - aBinSize.y()),
-                               +0.0f),
-               aWhite},
+                      float(anOffset.y() - aBinSize.y()),
+                      +0.0f),
+       aWhite},
     };
     myChartLines->init(aCtx,
                        sizeof(OpenGl_Vec3Vec4ub),
@@ -376,7 +377,7 @@ void OpenGl_FrameStatsPrs::updateChart(const occ::handle<OpenGl_Workspace>& theW
 void OpenGl_FrameStatsPrs::Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
 {
   const occ::handle<OpenGl_Context>& aCtx            = theWorkspace->GetGlContext();
-  const bool                         wasEnabledDepth = theWorkspace->UseDepthWrite();
+  const bool        wasEnabledDepth = theWorkspace->UseDepthWrite();
   if (theWorkspace->UseDepthWrite())
   {
     theWorkspace->UseDepthWrite() = false;

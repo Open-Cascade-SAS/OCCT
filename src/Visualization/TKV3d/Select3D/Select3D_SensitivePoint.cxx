@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoint, Select3D_SensitiveEntity)
 //=================================================================================================
 
 Select3D_SensitivePoint::Select3D_SensitivePoint(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                                 const gp_Pnt&                             thePoint)
+                                                 const gp_Pnt&                        thePoint)
     : Select3D_SensitiveEntity(theOwner)
 {
   SetSensitivityFactor(12);
@@ -31,7 +31,7 @@ Select3D_SensitivePoint::Select3D_SensitivePoint(const occ::handle<SelectMgr_Ent
 //=================================================================================================
 
 bool Select3D_SensitivePoint::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                      SelectBasics_PickResult&             thePickResult)
+                                                  SelectBasics_PickResult& thePickResult)
 {
   if (!theMgr.OverlapsPoint(myPoint, thePickResult))
   {
@@ -82,7 +82,8 @@ int Select3D_SensitivePoint::NbSubElements() const
 
 //=================================================================================================
 
-void Select3D_SensitivePoint::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Select3D_SensitivePoint::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

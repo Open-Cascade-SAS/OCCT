@@ -43,11 +43,11 @@ public:
   //! appearance.
   //! @param[in] theFogginess    fog intensity, 0.0 means no fog and 1.0 - high fogginess
   //! @param[in] theSize         size of cubemap side in pixels.
-  Standard_EXPORT Aspect_SkydomeBackground(const gp_Dir& theSunDirection,
-                                           float         theCloudiness,
-                                           float         theTime,
-                                           float         theFogginess,
-                                           int           theSize);
+  Standard_EXPORT Aspect_SkydomeBackground(const gp_Dir&      theSunDirection,
+                                           float theCloudiness,
+                                           float theTime,
+                                           float theFogginess,
+                                           int   theSize);
 
   //! Destructor.
   Standard_EXPORT ~Aspect_SkydomeBackground();
@@ -94,11 +94,11 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  gp_Dir mySunDirection; //!< Sun (moon) light direction.
-  float  myCloudiness;   //!< Cloud intensity.
-  float  myTime;         //!< Simulation time parameter.
-  float  myFogginess;    //!< Fog intensity
-  int    mySize;         //!< Size of cubemap in pixels
+  gp_Dir             mySunDirection; //!< Sun (moon) light direction.
+  float myCloudiness;   //!< Cloud intensity.
+  float myTime;         //!< Simulation time parameter.
+  float myFogginess;    //!< Fog intensity
+  int   mySize;         //!< Size of cubemap in pixels
 };
 
 #endif // _Aspect_SkydomeBackground_Header

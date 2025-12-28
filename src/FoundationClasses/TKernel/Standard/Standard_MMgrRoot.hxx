@@ -37,7 +37,8 @@ public:
 
   //! Reallocate previously allocated memory to contain at least theSize bytes.
   //! In case of success, new pointer is returned.
-  Standard_EXPORT virtual void* Reallocate(void* thePtr, const size_t theSize) = 0;
+  Standard_EXPORT virtual void* Reallocate(void*    thePtr,
+                                                      const size_t theSize) = 0;
 
   //! Frees previously allocated memory at specified address.
   Standard_EXPORT virtual void Free(void* thePtr) = 0;

@@ -24,6 +24,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESDimen_LeaderArrow.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESDimen_GeneralNote;
 class IGESDimen_LeaderArrow;
@@ -44,10 +47,9 @@ public:
   //! - aNote      : General Note, null for form 0
   //! - allGeoms   : Geometric Entities
   //! - allLeaders : Leader Arrows
-  Standard_EXPORT void Init(
-    const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allGeoms,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders);
+  Standard_EXPORT void Init(const occ::handle<IGESDimen_GeneralNote>&          aNote,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allGeoms,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& allLeaders);
 
   //! Changes FormNumber (indicates the Nature of the Symbol)
   //! Error if not in ranges [0-3] or [> 5000]
@@ -76,7 +78,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralSymbol, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESDimen_GeneralNote>                                   theNote;
+  occ::handle<IGESDimen_GeneralNote>          theNote;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   theGeoms;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>> theLeaders;
 };

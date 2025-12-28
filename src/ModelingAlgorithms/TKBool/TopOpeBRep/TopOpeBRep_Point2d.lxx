@@ -84,7 +84,8 @@ inline void TopOpeBRep_Point2d::SetVertex(const int Index, const TopoDS_Vertex& 
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetTransition(const int Index, const TopOpeBRepDS_Transition& T)
+inline void TopOpeBRep_Point2d::SetTransition(const int         Index,
+                                              const TopOpeBRepDS_Transition& T)
 {
   if (Index == 1)
     mytransition1 = T;
@@ -134,7 +135,8 @@ inline bool TopOpeBRep_Point2d::IsPointOfSegment() const
 
 //=================================================================================================
 
-inline void TopOpeBRep_Point2d::SetSegmentAncestors(const int IP1, const int IP2)
+inline void TopOpeBRep_Point2d::SetSegmentAncestors(const int IP1,
+                                                    const int IP2)
 {
   myips1         = IP1;
   myips2         = IP2;
@@ -145,7 +147,8 @@ inline void TopOpeBRep_Point2d::SetSegmentAncestors(const int IP1, const int IP2
 
 //=================================================================================================
 
-inline bool TopOpeBRep_Point2d::SegmentAncestors(int& IP1, int& IP2) const
+inline bool TopOpeBRep_Point2d::SegmentAncestors(int& IP1,
+                                                             int& IP2) const
 {
   IP1 = myips1;
   IP2 = myips2;

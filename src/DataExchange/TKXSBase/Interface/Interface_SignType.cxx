@@ -19,11 +19,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_SignType, MoniTool_SignText)
 
-TCollection_AsciiString Interface_SignType::Text(
-  const occ::handle<Standard_Transient>& ent,
-  const occ::handle<Standard_Transient>& context) const
+TCollection_AsciiString Interface_SignType::Text(const occ::handle<Standard_Transient>& ent,
+                                                 const occ::handle<Standard_Transient>& context) const
 {
-  TCollection_AsciiString               atext;
+  TCollection_AsciiString          atext;
   occ::handle<Interface_InterfaceModel> model = occ::down_cast<Interface_InterfaceModel>(context);
   if (ent.IsNull() || model.IsNull())
     return atext;

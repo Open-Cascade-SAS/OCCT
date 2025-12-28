@@ -26,11 +26,11 @@ protected:
   void SetUp() override
   {
     // Create a circle as basis curve
-    gp_Circ                  aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), 5.0);
+    gp_Circ             aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)), 5.0);
     occ::handle<Geom_Circle> aBasisCurve = new Geom_Circle(aCircle);
 
     // Create offset curve
-    gp_Dir anOffsetDir(gp_Dir::D::Z);
+    gp_Dir        anOffsetDir(gp_Dir::D::Z);
     double anOffsetValue = 2.0;
 
     myOriginalCurve = new Geom_OffsetCurve(aBasisCurve, anOffsetValue, anOffsetDir);

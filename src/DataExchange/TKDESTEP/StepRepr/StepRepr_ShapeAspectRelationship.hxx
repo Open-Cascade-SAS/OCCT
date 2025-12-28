@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasDescription,
+                            const bool                  hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepRepr_ShapeAspect>&     aRelatingShapeAspect,
                             const occ::handle<StepRepr_ShapeAspect>&     aRelatedShapeAspect);
@@ -74,7 +74,7 @@ private:
   occ::handle<TCollection_HAsciiString> theDescription;
   occ::handle<StepRepr_ShapeAspect>     theRelatingShapeAspect;
   occ::handle<StepRepr_ShapeAspect>     theRelatedShapeAspect;
-  bool                                  defDescription;
+  bool                 defDescription;
 };
 
 #endif // _StepRepr_ShapeAspectRelationship_HeaderFile

@@ -15,11 +15,13 @@
 
 #include <IntTools_CurveRangeLocalizeData.hxx>
 #include <IntTools_CurveRangeSample.hxx>
+#include <IntTools_CurveRangeSample.hxx>
 #include <NCollection_List.hxx>
+#include <IntTools_CurveRangeSample.hxx>
 #include <NCollection_Map.hxx>
 
-IntTools_CurveRangeLocalizeData::IntTools_CurveRangeLocalizeData(const int    theNbSample,
-                                                                 const double theMinRange)
+IntTools_CurveRangeLocalizeData::IntTools_CurveRangeLocalizeData(const int theNbSample,
+                                                                 const double    theMinRange)
 {
   myNbSampleC = theNbSample;
   myMinRangeC = theMinRange;
@@ -38,7 +40,7 @@ void IntTools_CurveRangeLocalizeData::AddBox(const IntTools_CurveRangeSample& th
 }
 
 bool IntTools_CurveRangeLocalizeData::FindBox(const IntTools_CurveRangeSample& theRange,
-                                              Bnd_Box&                         theBox) const
+                                                          Bnd_Box& theBox) const
 {
   if (myMapBox.IsBound(theRange))
   {
@@ -48,13 +50,13 @@ bool IntTools_CurveRangeLocalizeData::FindBox(const IntTools_CurveRangeSample& t
   return false;
 }
 
-bool IntTools_CurveRangeLocalizeData::IsRangeOut(const IntTools_CurveRangeSample& theRange) const
+bool IntTools_CurveRangeLocalizeData::IsRangeOut(
+  const IntTools_CurveRangeSample& theRange) const
 {
   return myMapRangeOut.Contains(theRange);
 }
 
-void IntTools_CurveRangeLocalizeData::ListRangeOut(
-  NCollection_List<IntTools_CurveRangeSample>& theList) const
+void IntTools_CurveRangeLocalizeData::ListRangeOut(NCollection_List<IntTools_CurveRangeSample>& theList) const
 {
   NCollection_Map<IntTools_CurveRangeSample>::Iterator anIt(myMapRangeOut);
 

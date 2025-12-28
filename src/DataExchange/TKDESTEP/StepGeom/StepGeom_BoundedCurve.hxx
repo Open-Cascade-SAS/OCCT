@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_BoundedCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BoundedCurve, StepGeom_Curve)
+
 };
 
 #endif // _StepGeom_BoundedCurve_HeaderFile

@@ -18,6 +18,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -42,92 +43,92 @@ inline NCollection_Array1<int>* BSplCLib::NoMults()
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD0(const double                      U,
-                              const NCollection_Array1<gp_Pnt>& Poles,
+inline void BSplCLib::CoefsD0(const double         U,
+                              const NCollection_Array1<gp_Pnt>&   Poles,
                               const NCollection_Array1<double>* Weights,
-                              gp_Pnt&                           P)
+                              gp_Pnt&                     P)
 {
   BSplCLib::CacheD0(U, Poles.Length() - 1, 0., 1., Poles, Weights, P);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD0(const double                        U,
+inline void BSplCLib::CoefsD0(const double         U,
                               const NCollection_Array1<gp_Pnt2d>& Poles,
-                              const NCollection_Array1<double>*   Weights,
-                              gp_Pnt2d&                           P)
+                              const NCollection_Array1<double>* Weights,
+                              gp_Pnt2d&                   P)
 {
   BSplCLib::CacheD0(U, Poles.Length() - 1, 0., 1., Poles, Weights, P);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD1(const double                      U,
-                              const NCollection_Array1<gp_Pnt>& Poles,
+inline void BSplCLib::CoefsD1(const double         U,
+                              const NCollection_Array1<gp_Pnt>&   Poles,
                               const NCollection_Array1<double>* Weights,
-                              gp_Pnt&                           P,
-                              gp_Vec&                           Vec)
+                              gp_Pnt&                     P,
+                              gp_Vec&                     Vec)
 {
   BSplCLib::CacheD1(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD1(const double                        U,
+inline void BSplCLib::CoefsD1(const double         U,
                               const NCollection_Array1<gp_Pnt2d>& Poles,
-                              const NCollection_Array1<double>*   Weights,
-                              gp_Pnt2d&                           P,
-                              gp_Vec2d&                           Vec)
+                              const NCollection_Array1<double>* Weights,
+                              gp_Pnt2d&                   P,
+                              gp_Vec2d&                   Vec)
 {
   BSplCLib::CacheD1(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD2(const double                      U,
-                              const NCollection_Array1<gp_Pnt>& Poles,
+inline void BSplCLib::CoefsD2(const double         U,
+                              const NCollection_Array1<gp_Pnt>&   Poles,
                               const NCollection_Array1<double>* Weights,
-                              gp_Pnt&                           P,
-                              gp_Vec&                           Vec1,
-                              gp_Vec&                           Vec2)
+                              gp_Pnt&                     P,
+                              gp_Vec&                     Vec1,
+                              gp_Vec&                     Vec2)
 {
   BSplCLib::CacheD2(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec1, Vec2);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD2(const double                        U,
+inline void BSplCLib::CoefsD2(const double         U,
                               const NCollection_Array1<gp_Pnt2d>& Poles,
-                              const NCollection_Array1<double>*   Weights,
-                              gp_Pnt2d&                           P,
-                              gp_Vec2d&                           Vec1,
-                              gp_Vec2d&                           Vec2)
+                              const NCollection_Array1<double>* Weights,
+                              gp_Pnt2d&                   P,
+                              gp_Vec2d&                   Vec1,
+                              gp_Vec2d&                   Vec2)
 {
   BSplCLib::CacheD2(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec1, Vec2);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD3(const double                      U,
-                              const NCollection_Array1<gp_Pnt>& Poles,
+inline void BSplCLib::CoefsD3(const double         U,
+                              const NCollection_Array1<gp_Pnt>&   Poles,
                               const NCollection_Array1<double>* Weights,
-                              gp_Pnt&                           P,
-                              gp_Vec&                           Vec1,
-                              gp_Vec&                           Vec2,
-                              gp_Vec&                           Vec3)
+                              gp_Pnt&                     P,
+                              gp_Vec&                     Vec1,
+                              gp_Vec&                     Vec2,
+                              gp_Vec&                     Vec3)
 {
   BSplCLib::CacheD3(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec1, Vec2, Vec3);
 }
 
 //=================================================================================================
 
-inline void BSplCLib::CoefsD3(const double                        U,
+inline void BSplCLib::CoefsD3(const double         U,
                               const NCollection_Array1<gp_Pnt2d>& Poles,
-                              const NCollection_Array1<double>*   Weights,
-                              gp_Pnt2d&                           P,
-                              gp_Vec2d&                           Vec1,
-                              gp_Vec2d&                           Vec2,
-                              gp_Vec2d&                           Vec3)
+                              const NCollection_Array1<double>* Weights,
+                              gp_Pnt2d&                   P,
+                              gp_Vec2d&                   Vec1,
+                              gp_Vec2d&                   Vec2,
+                              gp_Vec2d&                   Vec3)
 {
   BSplCLib::CacheD3(U, Poles.Length() - 1, 0., 1., Poles, Weights, P, Vec1, Vec2, Vec3);
 }

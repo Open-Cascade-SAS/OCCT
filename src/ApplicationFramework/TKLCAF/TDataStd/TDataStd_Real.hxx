@@ -43,15 +43,16 @@ public:
   //! Use SetDimension to overwrite.
   //! Real methods
   //! ============
-  Standard_EXPORT static occ::handle<TDataStd_Real> Set(const TDF_Label& label, const double value);
+  Standard_EXPORT static occ::handle<TDataStd_Real> Set(const TDF_Label&    label,
+                                                   const double value);
 
   //! Finds, or creates, a Real attribute with explicit GUID and sets <value>.
   //! The Real attribute is returned.
   //! Real methods
   //! ============
   Standard_EXPORT static occ::handle<TDataStd_Real> Set(const TDF_Label&     label,
-                                                        const Standard_GUID& guid,
-                                                        const double         value);
+                                                   const Standard_GUID& guid,
+                                                   const double  value);
 
   Standard_EXPORT TDataStd_Real();
 
@@ -95,7 +96,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_Real, TDF_Attribute)
 

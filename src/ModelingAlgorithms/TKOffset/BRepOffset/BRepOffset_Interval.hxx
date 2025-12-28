@@ -31,8 +31,8 @@ public:
 
   Standard_EXPORT BRepOffset_Interval();
 
-  Standard_EXPORT BRepOffset_Interval(const double                 U1,
-                                      const double                 U2,
+  Standard_EXPORT BRepOffset_Interval(const double          U1,
+                                      const double          U2,
                                       const ChFiDS_TypeOfConcavity Type);
 
   void First(const double U);
@@ -48,8 +48,8 @@ public:
   ChFiDS_TypeOfConcavity Type() const;
 
 private:
-  double                 f;
-  double                 l;
+  double          f;
+  double          l;
   ChFiDS_TypeOfConcavity type;
 };
 

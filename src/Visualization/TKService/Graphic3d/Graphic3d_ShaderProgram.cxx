@@ -36,7 +36,7 @@ static std::atomic<int> THE_PROGRAM_OBJECT_COUNTER(0);
 
 const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
 {
-  static bool                    THE_IS_DEFINED = false;
+  static bool        THE_IS_DEFINED = false;
   static TCollection_AsciiString THE_SHADERS_FOLDER;
   if (!THE_IS_DEFINED)
   {
@@ -111,9 +111,7 @@ bool Graphic3d_ShaderProgram::IsDone() const
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
   {
     if (!anIt.Value()->IsDone())
       return false;
@@ -126,16 +124,15 @@ bool Graphic3d_ShaderProgram::IsDone() const
 // function : AttachShader
 // purpose  : Attaches shader object to the program object
 // =======================================================================
-bool Graphic3d_ShaderProgram::AttachShader(const occ::handle<Graphic3d_ShaderObject>& theShader)
+bool Graphic3d_ShaderProgram::AttachShader(
+  const occ::handle<Graphic3d_ShaderObject>& theShader)
 {
   if (theShader.IsNull())
   {
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
   {
     if (anIt.Value() == theShader)
       return false;
@@ -149,16 +146,15 @@ bool Graphic3d_ShaderProgram::AttachShader(const occ::handle<Graphic3d_ShaderObj
 // function : DetachShader
 // purpose  : Detaches shader object from the program object
 // =======================================================================
-bool Graphic3d_ShaderProgram::DetachShader(const occ::handle<Graphic3d_ShaderObject>& theShader)
+bool Graphic3d_ShaderProgram::DetachShader(
+  const occ::handle<Graphic3d_ShaderObject>& theShader)
 {
   if (theShader.IsNull())
   {
     return false;
   }
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_Sequence<occ::handle<Graphic3d_ShaderObject>>::Iterator anIt(myShaderObjects); anIt.More(); anIt.Next())
   {
     if (anIt.Value() == theShader)
     {

@@ -32,13 +32,14 @@ public:
   //! @param theRelativeDeflection relative deflection.
   //! @param theMaxShapeSize maximum size of the whole shape.
   //! @return absolute deflection for the shape.
-  Standard_EXPORT static double ComputeAbsoluteDeflection(const TopoDS_Shape& theShape,
-                                                          const double        theRelativeDeflection,
-                                                          const double        theMaxShapeSize);
+  Standard_EXPORT static double ComputeAbsoluteDeflection(
+    const TopoDS_Shape& theShape,
+    const double theRelativeDeflection,
+    const double theMaxShapeSize);
 
   //! Computes and updates deflection of the given discrete edge.
   Standard_EXPORT static void ComputeDeflection(const IMeshData::IEdgeHandle& theDEdge,
-                                                const double                  theMaxShapeSize,
+                                                const double           theMaxShapeSize,
                                                 const IMeshTools_Parameters&  theParameters);
 
   //! Computes and updates deflection of the given discrete wire.
@@ -57,10 +58,10 @@ public:
   //! to be consistent the current and required deflections should be approximately the same.
   //! If not allowed, the current deflection should be less than required.
   //! @param[in] theRatio  The ratio for comparison of the deflections (value from 0 to 1).
-  Standard_EXPORT static bool IsConsistent(const double theCurrent,
-                                           const double theRequired,
-                                           const bool   theAllowDecrease,
-                                           const double theRatio = 0.1);
+  Standard_EXPORT static bool IsConsistent(const double    theCurrent,
+                                                       const double    theRequired,
+                                                       const bool theAllowDecrease,
+                                                       const double    theRatio = 0.1);
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_Deflection, Standard_Transient)
 };

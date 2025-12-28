@@ -70,7 +70,7 @@ void AIS_Point::SetComponent(const occ::handle<Geom_Point>& aComponent)
 
 void AIS_Point::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                         const occ::handle<Prs3d_Presentation>& thePrs,
-                        const int                              theMode)
+                        const int            theMode)
 {
   thePrs->SetInfiniteState(myInfiniteState);
   if (theMode == 0)
@@ -180,7 +180,7 @@ void AIS_Point::UpdatePointValues()
 
   Quantity_Color      aCol(Quantity_NOC_YELLOW);
   Aspect_TypeOfMarker aTOM   = Aspect_TOM_PLUS;
-  double              aScale = 1.0;
+  double       aScale = 1.0;
   if (myDrawer->HasLink())
   {
     aCol   = myDrawer->Link()->PointAspect()->Aspect()->Color();

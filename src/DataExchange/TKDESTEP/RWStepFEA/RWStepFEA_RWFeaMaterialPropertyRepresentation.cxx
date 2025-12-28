@@ -32,7 +32,7 @@ RWStepFEA_RWFeaMaterialPropertyRepresentation::RWStepFEA_RWFeaMaterialPropertyRe
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                                     num,
+  const int                                   num,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepFEA_FeaMaterialPropertyRepresentation>& ent) const
 {
@@ -79,7 +79,7 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentation::WriteStep(
-  StepData_StepWriter&                                          SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepFEA_FeaMaterialPropertyRepresentation>& ent) const
 {
 
@@ -98,7 +98,7 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentation::WriteStep(
 
 void RWStepFEA_RWFeaMaterialPropertyRepresentation::Share(
   const occ::handle<StepFEA_FeaMaterialPropertyRepresentation>& ent,
-  Interface_EntityIterator&                                     iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

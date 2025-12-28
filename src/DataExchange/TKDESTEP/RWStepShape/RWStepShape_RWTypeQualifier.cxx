@@ -19,7 +19,7 @@
 RWStepShape_RWTypeQualifier::RWStepShape_RWTypeQualifier() {}
 
 void RWStepShape_RWTypeQualifier::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepShape_TypeQualifier>& ent) const
 {
@@ -38,7 +38,7 @@ void RWStepShape_RWTypeQualifier::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName);
 }
 
-void RWStepShape_RWTypeQualifier::WriteStep(StepData_StepWriter&                        SW,
+void RWStepShape_RWTypeQualifier::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepShape_TypeQualifier>& ent) const
 {
   SW.Send(ent->Name());

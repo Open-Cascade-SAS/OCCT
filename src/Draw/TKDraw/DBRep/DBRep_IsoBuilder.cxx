@@ -44,9 +44,9 @@ static double HatcherConfusion3d   = 1.e-8;
 
 //=================================================================================================
 
-DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
-                                   const double       Infinite,
-                                   const int          NbIsos)
+DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face&     TopologicalFace,
+                                   const double    Infinite,
+                                   const int NbIsos)
     : Geom2dHatch_Hatcher(Geom2dHatch_Intersector(IntersectorConfusion, IntersectorTangency),
                           HatcherConfusion2d,
                           HatcherConfusion3d,
@@ -112,8 +112,8 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
   TopExp_Explorer ExpEdges;
   for (ExpEdges.Init(TopologicalFace, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
   {
-    const TopoDS_Edge&              TopologicalEdge = TopoDS::Edge(ExpEdges.Current());
-    double                          U1, U2;
+    const TopoDS_Edge&         TopologicalEdge = TopoDS::Edge(ExpEdges.Current());
+    double              U1, U2;
     const occ::handle<Geom2d_Curve> PCurve =
       BRep_Tool::CurveOnSurface(TopologicalEdge, TopologicalFace, U1, U2);
 
@@ -216,17 +216,17 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
   // Loading and trimming the hatchings.
   //-----------------------------------------------------------------------
 
-  int    IIso;
-  double DeltaU    = std::abs(myUMax - myUMin);
-  double DeltaV    = std::abs(myVMax - myVMin);
-  double confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
+  int IIso;
+  double    DeltaU    = std::abs(myUMax - myUMin);
+  double    DeltaV    = std::abs(myVMax - myVMin);
+  double    confusion = std::min(DeltaU, DeltaV) * HatcherConfusion3d;
   Confusion3d(confusion);
 
   double StepU = DeltaU / (double)NbIsos;
   if (StepU > confusion)
   {
-    double   UPrm = myUMin + StepU / 2.;
-    gp_Dir2d Dir(gp_Dir2d::D::Y);
+    double UPrm = myUMin + StepU / 2.;
+    gp_Dir2d      Dir(gp_Dir2d::D::Y);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myUPrm(IIso) = UPrm;
@@ -240,8 +240,8 @@ DBRep_IsoBuilder::DBRep_IsoBuilder(const TopoDS_Face& TopologicalFace,
   double StepV = DeltaV / (double)NbIsos;
   if (StepV > confusion)
   {
-    double   VPrm = myVMin + StepV / 2.;
-    gp_Dir2d Dir(gp_Dir2d::D::X);
+    double VPrm = myVMin + StepV / 2.;
+    gp_Dir2d      Dir(gp_Dir2d::D::X);
     for (IIso = 1; IIso <= NbIsos; IIso++)
     {
       myVPrm(IIso) = VPrm;
@@ -331,8 +331,10 @@ void DBRep_IsoBuilder::LoadIsos(const occ::handle<DBRep_Face>& Face) const
         for (int IDom = 1; IDom <= NbDom; IDom++)
         {
           const HatchGen_Domain& Dom = Domain(UInd, IDom);
-          double V1 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
-          double V2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          double          V1 =
+            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          double V2 =
+            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
           NumIso++;
           Face->Iso(NumIso, GeomAbs_IsoU, UPrm, V1, V2);
         }
@@ -374,8 +376,10 @@ void DBRep_IsoBuilder::LoadIsos(const occ::handle<DBRep_Face>& Face) const
         for (int IDom = 1; IDom <= NbDom; IDom++)
         {
           const HatchGen_Domain& Dom = Domain(VInd, IDom);
-          double U1 = Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
-          double U2 = Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
+          double          U1 =
+            Dom.HasFirstPoint() ? Dom.FirstPoint().Parameter() : myVMin - myInfinite;
+          double U2 =
+            Dom.HasSecondPoint() ? Dom.SecondPoint().Parameter() : myVMax + myInfinite;
           NumIso++;
           Face->Iso(NumIso, GeomAbs_IsoV, VPrm, U1, U2);
         }
@@ -424,8 +428,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
     aCurrEdge = aWExp.Current();
 
     // Ensure analysis of the pair of first and last edges
-    TopoDS_Edge aFirstEdge = aCurrEdge;
-    double      bStop      = false;
+    TopoDS_Edge   aFirstEdge = aCurrEdge;
+    double bStop      = false;
 
     // Iterate on all other edges
     while (!bStop)
@@ -497,7 +501,7 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
       // Check if the vertex covers these bounding points by its tolerance
       double aTolV2 = BRep_Tool::Tolerance(aCVOnPrev);
-      gp_Pnt aPV    = BRep_Tool::Pnt(aCVOnPrev);
+      gp_Pnt        aPV    = BRep_Tool::Pnt(aCVOnPrev);
       // There is no need to check the distance if the tolerance
       // of vertex is infinite (like in the test case sewing/tol_1/R2)
       if (aTolV2 < Precision::Infinite())
@@ -520,8 +524,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
       }
 
       // Create the segment
-      gp_Vec2d aV2d(aPrevP2d, aCurrP2d);
-      double   aSegmLen = aV2d.Magnitude();
+      gp_Vec2d      aV2d(aPrevP2d, aCurrP2d);
+      double aSegmLen = aV2d.Magnitude();
       // Do not add too small segments
       bool bAddSegment = (aSegmLen > Precision::PConfusion());
       // Check for periodic surfaces
@@ -560,16 +564,16 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
             aLPInt.Append(anInter.Point(iP));
 
           // Analyze the points and find the one closest to the current vertex
-          bool   bPointFound   = false;
-          double aTPrevClosest = 0., aTCurrClosest = 0.;
-          double aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
+          bool bPointFound   = false;
+          double    aTPrevClosest = 0., aTCurrClosest = 0.;
+          double    aDeltaPrev = ::RealLast(), aDeltaCurr = ::RealLast();
 
           NCollection_List<IntRes2d_IntersectionPoint>::Iterator aItLPInt(aLPInt);
           for (; aItLPInt.More(); aItLPInt.Next())
           {
             const IntRes2d_IntersectionPoint& aPnt      = aItLPInt.Value();
-            const double                      aTIntPrev = aPnt.ParamOnFirst();
-            const double                      aTIntCurr = aPnt.ParamOnSecond();
+            const double               aTIntPrev = aPnt.ParamOnFirst();
+            const double               aTIntCurr = aPnt.ParamOnSecond();
             // Check if the intersection point is in range
             if (aTIntPrev < fp || aTIntPrev > lp || aTIntCurr < fc || aTIntCurr > lc)
             {
@@ -609,8 +613,8 @@ void DBRep_IsoBuilder::FillGaps(const TopoDS_Face& theFace, DataMapOfEdgePCurve&
 
             // Trim PCurves only if the intersection belongs to current parameter
             bool bTrim = (aNbCV == 1
-                          || (std::abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
-                              || std::abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
+                                      || (std::abs(aTPrev - aTPrevClosest) < (lp - fp) / 2.
+                                          || std::abs(aTCurr - aTCurrClosest) < (lc - fc) / 2.));
 
             if (bTrim)
             {

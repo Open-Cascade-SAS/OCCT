@@ -31,9 +31,8 @@ public:
   //! Returns a TextStyle
   Standard_EXPORT StepVisual_TextStyle();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&           aName,
-    const occ::handle<StepVisual_TextStyleForDefinedFont>& aCharacterAppearance);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&           aName,
+                            const occ::handle<StepVisual_TextStyleForDefinedFont>& aCharacterAppearance);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 

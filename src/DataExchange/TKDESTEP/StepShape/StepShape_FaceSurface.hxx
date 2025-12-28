@@ -34,11 +34,10 @@ public:
   //! Returns a FaceSurface
   Standard_EXPORT StepShape_FaceSurface();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                              aName,
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds,
-    const occ::handle<StepGeom_Surface>&                                      aFaceGeometry,
-    const bool                                                                aSameSense);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds,
+                            const occ::handle<StepGeom_Surface>&             aFaceGeometry,
+                            const bool                      aSameSense);
 
   Standard_EXPORT void SetFaceGeometry(const occ::handle<StepGeom_Surface>& aFaceGeometry);
 
@@ -52,7 +51,7 @@ public:
 
 private:
   occ::handle<StepGeom_Surface> faceGeometry;
-  bool                          sameSense;
+  bool         sameSense;
 };
 
 #endif // _StepShape_FaceSurface_HeaderFile

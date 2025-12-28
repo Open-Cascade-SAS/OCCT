@@ -29,7 +29,7 @@ RWStepShape_RWSubedge::RWStepShape_RWSubedge() {}
 //=================================================================================================
 
 void RWStepShape_RWSubedge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                     const int                                   num,
+                                     const int                 num,
                                      occ::handle<Interface_Check>&               ach,
                                      const occ::handle<StepShape_Subedge>&       ent) const
 {
@@ -62,7 +62,7 @@ void RWStepShape_RWSubedge::ReadStep(const occ::handle<StepData_StepReaderData>&
 
 //=================================================================================================
 
-void RWStepShape_RWSubedge::WriteStep(StepData_StepWriter&                  SW,
+void RWStepShape_RWSubedge::WriteStep(StepData_StepWriter&             SW,
                                       const occ::handle<StepShape_Subedge>& ent) const
 {
 
@@ -84,7 +84,7 @@ void RWStepShape_RWSubedge::WriteStep(StepData_StepWriter&                  SW,
 //=================================================================================================
 
 void RWStepShape_RWSubedge::Share(const occ::handle<StepShape_Subedge>& ent,
-                                  Interface_EntityIterator&             iter) const
+                                  Interface_EntityIterator&        iter) const
 {
 
   // Inherited fields of RepresentationItem

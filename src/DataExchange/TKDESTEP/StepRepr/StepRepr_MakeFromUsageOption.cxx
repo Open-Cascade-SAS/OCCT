@@ -31,13 +31,13 @@ StepRepr_MakeFromUsageOption::StepRepr_MakeFromUsageOption() {}
 void StepRepr_MakeFromUsageOption::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                                   hasProductDefinitionRelationship_Description,
+  const bool                  hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const occ::handle<StepBasic_ProductDefinition>&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const occ::handle<StepBasic_ProductDefinition>&
-            aProductDefinitionRelationship_RelatedProductDefinition,
-  const int aRanking,
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const int                  aRanking,
   const occ::handle<TCollection_HAsciiString>& aRankingRationale,
   const occ::handle<Standard_Transient>&       aQuantity)
 {
@@ -60,13 +60,13 @@ void StepRepr_MakeFromUsageOption::Init(
 void StepRepr_MakeFromUsageOption::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                                   hasProductDefinitionRelationship_Description,
+  const bool                  hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
-            aProductDefinitionRelationship_RelatedProductDefinition,
-  const int aRanking,
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const int                  aRanking,
   const occ::handle<TCollection_HAsciiString>& aRankingRationale,
   const occ::handle<Standard_Transient>&       aQuantity)
 {

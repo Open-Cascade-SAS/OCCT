@@ -18,8 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleBoundary, Standard_Transient)
 
 StepVisual_SurfaceStyleBoundary::StepVisual_SurfaceStyleBoundary() {}
 
-void StepVisual_SurfaceStyleBoundary::Init(
-  const occ::handle<StepVisual_CurveStyle>& aStyleOfBoundary)
+void StepVisual_SurfaceStyleBoundary::Init(const occ::handle<StepVisual_CurveStyle>& aStyleOfBoundary)
 {
   // --- classe own fields ---
   styleOfBoundary = aStyleOfBoundary;

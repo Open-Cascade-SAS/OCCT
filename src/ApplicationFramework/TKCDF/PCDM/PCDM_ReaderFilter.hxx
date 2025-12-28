@@ -87,13 +87,16 @@ public:
   Standard_EXPORT void Clear();
 
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual bool IsPassed(const occ::handle<Standard_Type>& theAttributeID) const;
+  Standard_EXPORT virtual bool IsPassed(
+    const occ::handle<Standard_Type>& theAttributeID) const;
   //! Returns true if attribute must be read.
-  Standard_EXPORT virtual bool IsPassedAttr(const TCollection_AsciiString& theAttributeType) const;
+  Standard_EXPORT virtual bool IsPassedAttr(
+    const TCollection_AsciiString& theAttributeType) const;
   //! Returns true if content of the label must be read.
   Standard_EXPORT virtual bool IsPassed(const TCollection_AsciiString& theEntry) const;
   //! Returns true if some sub-label of the given label is passed.
-  Standard_EXPORT virtual bool IsSubPassed(const TCollection_AsciiString& theEntry) const;
+  Standard_EXPORT virtual bool IsSubPassed(
+    const TCollection_AsciiString& theEntry) const;
   //! Returns true if only part of the document tree will be retrieved.
   Standard_EXPORT virtual bool IsPartTree();
 
@@ -101,7 +104,10 @@ public:
   Standard_EXPORT AppendMode& Mode() { return myAppend; }
 
   //! Returns true if appending to the document is performed.
-  Standard_EXPORT bool IsAppendMode() { return myAppend != PCDM_ReaderFilter::AppendMode_Forbid; }
+  Standard_EXPORT bool IsAppendMode()
+  {
+    return myAppend != PCDM_ReaderFilter::AppendMode_Forbid;
+  }
 
   //! Starts the tree iterator. It is used for fast searching of passed labels if the whole tree of
   //! labels is parsed. So, on each iteration step the methods Up and Down must be called after the

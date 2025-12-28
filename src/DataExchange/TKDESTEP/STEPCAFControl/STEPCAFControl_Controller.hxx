@@ -38,6 +38,7 @@ public:
   Standard_EXPORT static bool Init();
 
   DEFINE_STANDARD_RTTIEXT(STEPCAFControl_Controller, STEPControl_Controller)
+
 };
 
 #endif // _STEPCAFControl_Controller_HeaderFile

@@ -61,9 +61,8 @@ size_t OpenGl_DepthPeeling::EstimatedDataSize() const
 
 //=================================================================================================
 
-void OpenGl_DepthPeeling::AttachDepthTexture(
-  const occ::handle<OpenGl_Context>& theCtx,
-  const occ::handle<OpenGl_Texture>& theDepthStencilTexture)
+void OpenGl_DepthPeeling::AttachDepthTexture(const occ::handle<OpenGl_Context>& theCtx,
+                                             const occ::handle<OpenGl_Texture>& theDepthStencilTexture)
 {
   if (!theDepthStencilTexture.IsNull() && theDepthStencilTexture->IsValid())
   {

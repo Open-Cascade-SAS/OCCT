@@ -35,7 +35,7 @@ IMPLEMENT_DOMSTRING(AttributeIDString, "extstrarrattguid")
 // Searches for a symbol within an array of strings.
 // Returns TRUE if the symbol is found.
 static bool Contains(const occ::handle<TDataStd_ExtStringArray>& arr,
-                     const TCollection_ExtendedString&           c)
+                                 const TCollection_ExtendedString&      c)
 {
   for (int i = arr->Lower(); i <= arr->Upper(); i++)
   {
@@ -67,11 +67,12 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                             const occ::handle<TDF_Attribute>& theTarget,
-                                             XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataStd_ExtStringArrayDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  int                        aFirstInd, aLastInd, ind;
+  int           aFirstInd, aLastInd, ind;
   TCollection_ExtendedString aValue;
   const XmlObjMgt_Element&   anElement = theSource;
 
@@ -216,8 +217,8 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                             XmlObjMgt_Persistent&             theTarget,
-                                             XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                             XmlObjMgt_Persistent&        theTarget,
+                                             XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataStd_ExtStringArray> aExtStringArray =
     occ::down_cast<TDataStd_ExtStringArray>(theSource);
@@ -306,7 +307,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
       len++; // for end of line \0 symbol
 
     // Merge all strings of the array into one extended string separated by the "separator".
-    int                        isym(1);
+    int           isym(1);
     TCollection_ExtendedString xstr(len, c);
     for (i = aL; i <= anU; i++)
     {
@@ -330,7 +331,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& t
   if (aExtStringArray->ID() != TDataStd_ExtStringArray::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aExtStringArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

@@ -23,7 +23,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Pnt.hxx>
 
 // Test OCC10006: BRepOffsetAPI_ThruSections loft operation with Boolean fusion
 TEST(BRepOffsetAPI_ThruSections_Test, OCC10006_LoftAndFusion)
@@ -92,14 +95,14 @@ namespace
 //! @param theKnots Knot sequence for cubic B-spline
 //! @return Handle to the created B-spline curve
 occ::handle<Geom_BSplineCurve> createBSplineCurve(const std::vector<double>& thePoles,
-                                                  const std::vector<double>& theKnots)
+                                             const std::vector<double>& theKnots)
 {
   const int aKnotSeqSize = static_cast<int>(theKnots.size());
   const int aDegree      = 3; // cubic spline
   const int aNbPoles     = aKnotSeqSize - aDegree - 1;
 
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
-  int                        anIdx = 0;
+  int                anIdx = 0;
   for (int i = 1; i <= aNbPoles; ++i)
   {
     aPoles(i) = gp_Pnt(thePoles[anIdx], thePoles[anIdx + 1], thePoles[anIdx + 2]);
@@ -112,8 +115,8 @@ occ::handle<Geom_BSplineCurve> createBSplineCurve(const std::vector<double>& the
     aKnotSeq(i) = theKnots[i - 1];
   }
 
-  NCollection_Array1<double> aKnots(1, BSplCLib::KnotsLength(aKnotSeq, false));
-  NCollection_Array1<int>    aMults(1, aKnots.Upper());
+  NCollection_Array1<double>    aKnots(1, BSplCLib::KnotsLength(aKnotSeq, false));
+  NCollection_Array1<int> aMults(1, aKnots.Upper());
   BSplCLib::Knots(aKnotSeq, aKnots, aMults);
 
   return new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree, false);

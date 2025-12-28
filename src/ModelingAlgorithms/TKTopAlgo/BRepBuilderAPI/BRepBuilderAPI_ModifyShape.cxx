@@ -40,7 +40,7 @@ BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape(const occ::handle<BRepToo
 
 //=================================================================================================
 
-BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape(const TopoDS_Shape&                        S,
+BRepBuilderAPI_ModifyShape::BRepBuilderAPI_ModifyShape(const TopoDS_Shape&                   S,
                                                        const occ::handle<BRepTools_Modification>& M)
     : myModifier(S),
       myInitialShape(S)
@@ -91,7 +91,7 @@ void BRepBuilderAPI_ModifyShape::DoModif(const occ::handle<BRepTools_Modificatio
 
 //=================================================================================================
 
-void BRepBuilderAPI_ModifyShape::DoModif(const TopoDS_Shape&                        S,
+void BRepBuilderAPI_ModifyShape::DoModif(const TopoDS_Shape&                   S,
                                          const occ::handle<BRepTools_Modification>& M)
 {
   myInitialShape = S;

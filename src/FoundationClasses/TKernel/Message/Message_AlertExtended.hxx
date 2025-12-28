@@ -38,7 +38,7 @@ public:
   Standard_EXPORT static occ::handle<Message_Alert> AddAlert(
     const occ::handle<Message_Report>&    theReport,
     const occ::handle<Message_Attribute>& theAttribute,
-    const Message_Gravity                 theGravity);
+    const Message_Gravity            theGravity);
 
 public:
   //! Empty constructor
@@ -57,10 +57,7 @@ public:
 
   //! Sets container of the alert attributes
   //! @param theAttributes an attribute values
-  void SetAttribute(const occ::handle<Message_Attribute>& theAttribute)
-  {
-    myAttribute = theAttribute;
-  }
+  void SetAttribute(const occ::handle<Message_Attribute>& theAttribute) { myAttribute = theAttribute; }
 
   //! Returns class provided hierarchy of alerts if created or create if the parameter is true
   //! @param theToCreate if composite alert has not been created for this alert, it should be
@@ -78,11 +75,12 @@ public:
   //! If possible, merge data contained in this alert to theTarget.
   //! Base implementation always returns false.
   //! @return True if merged
-  Standard_EXPORT virtual bool Merge(const occ::handle<Message_Alert>& theTarget) override;
+  Standard_EXPORT virtual bool Merge(const occ::handle<Message_Alert>& theTarget)
+    override;
 
   //! Dumps the content of me into the stream
   virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Message_AlertExtended, Message_Alert)
 

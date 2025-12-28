@@ -38,40 +38,42 @@ public:
 
   //! initialize curve of trihedron law
   //! @return true
-  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C) override;
+  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C)
+    override;
 
   Standard_EXPORT virtual occ::handle<GeomFill_TrihedronLaw> Copy() const override;
 
   Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> Guide() const override;
 
   Standard_EXPORT virtual bool D0(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      BiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             BiNormal) override;
 
   Standard_EXPORT virtual bool D1(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             DTangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             DNormal,
+                                              gp_Vec&             BiNormal,
+                                              gp_Vec&             DBiNormal) override;
 
   Standard_EXPORT virtual bool D2(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      D2Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      D2Normal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal,
-                                  gp_Vec&      D2BiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             DTangent,
+                                              gp_Vec&             D2Tangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             DNormal,
+                                              gp_Vec&             D2Normal,
+                                              gp_Vec&             BiNormal,
+                                              gp_Vec&             DBiNormal,
+                                              gp_Vec&             D2BiNormal) override;
 
   //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -79,13 +81,14 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const double First, const double Last) override;
+  Standard_EXPORT virtual void SetInterval(const double First,
+                                           const double Last) override;
 
   //! Get average value of M(t) and V(t) it is useful to
   //! make fast approximation of rational surfaces.
@@ -101,20 +104,21 @@ public:
   //! Return False by Default.
   Standard_EXPORT virtual bool IsOnlyBy3dCurve() const override;
 
-  Standard_EXPORT virtual void Origine(const double OrACR1, const double OrACR2) override;
+  Standard_EXPORT virtual void Origine(const double OrACR1,
+                                       const double OrACR2) override;
 
   DEFINE_STANDARD_RTTIEXT(GeomFill_GuideTrihedronAC, GeomFill_TrihedronWithGuide)
 
 private:
   occ::handle<Approx_CurvlinFunc> myGuideAC;
-  double                          Lguide;
+  double              Lguide;
   occ::handle<Approx_CurvlinFunc> myCurveAC;
-  double                          L;
+  double              L;
   occ::handle<Adaptor3d_Curve>    myCurve;
-  double                          UTol;
-  double                          STol;
-  double                          Orig1;
-  double                          Orig2;
+  double              UTol;
+  double              STol;
+  double              Orig1;
+  double              Orig2;
 };
 
 #endif // _GeomFill_GuideTrihedronAC_HeaderFile

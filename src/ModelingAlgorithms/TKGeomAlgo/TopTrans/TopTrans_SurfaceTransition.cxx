@@ -50,10 +50,10 @@ static int FUN_OO(const int i)
 
 // static double FUN_Ang(const gp_Dir& Normref,
 static double FUN_Ang(const gp_Dir&,
-                      const gp_Dir&            beafter,
-                      const gp_Dir&            TgC,
-                      const gp_Dir&            Norm,
-                      const TopAbs_Orientation O)
+                             const gp_Dir&            beafter,
+                             const gp_Dir&            TgC,
+                             const gp_Dir&            Norm,
+                             const TopAbs_Orientation O)
 {
   gp_Dir dironF = FUN_nCinsideS(TgC, Norm);
   if (M_REVERSED(O))
@@ -63,12 +63,15 @@ static double FUN_Ang(const gp_Dir&,
   return ang;
 }
 
-static void FUN_getSTA(const double Ang, const double tola, int& i, int& j)
+static void FUN_getSTA(const double Ang,
+                       const double tola,
+                       int&   i,
+                       int&   j)
 {
-  double cos     = std::cos(Ang);
-  double sin     = std::sin(Ang);
-  bool   nullcos = std::abs(cos) < tola;
-  bool   nullsin = std::abs(sin) < tola;
+  double    cos     = std::cos(Ang);
+  double    sin     = std::sin(Ang);
+  bool nullcos = std::abs(cos) < tola;
+  bool nullsin = std::abs(sin) < tola;
   if (nullcos)
     i = 0;
   else
@@ -105,11 +108,11 @@ static void FUN_getSTA(const double Ang, const double tola, int& i, int& j)
 #define M_updateREF (1)
 #define M_Ointernal (10)
 
-static int FUN_refnearest(const double             Angref,
-                          const TopAbs_Orientation Oriref,
-                          const double             Ang,
-                          const TopAbs_Orientation Ori,
-                          const double             tola)
+static int FUN_refnearest(const double      Angref,
+                                       const TopAbs_Orientation Oriref,
+                                       const double      Ang,
+                                       const TopAbs_Orientation Ori,
+                                       const double      tola)
 {
   bool undef = (Angref == 100.);
   if (undef)
@@ -134,26 +137,26 @@ static int FUN_refnearest(const double             Angref,
 
 //=================================================================================================
 
-static int FUN_refnearest(const int                i,
-                          const int                j,
-                          const double             CurvSref,
-                          const double             Angref,
-                          const TopAbs_Orientation Oriref,
-                          const double             Curvref,
-                          const double             Ang,
-                          const TopAbs_Orientation Ori,
-                          const double             Curv,
-                          const double             tola,
-                          bool&                    TouchFlag) // eap Mar 25 2002
+static int FUN_refnearest(const int   i,
+                                       const int   j,
+                                       const double      CurvSref,
+                                       const double      Angref,
+                                       const TopAbs_Orientation Oriref,
+                                       const double      Curvref,
+                                       const double      Ang,
+                                       const TopAbs_Orientation Ori,
+                                       const double      Curv,
+                                       const double      tola,
+                                       bool&        TouchFlag) // eap Mar 25 2002
 {
-  bool   iisj      = (i == j);
-  double abscos    = std::abs(std::cos(Ang));
-  bool   i0        = (std::abs(1. - abscos) < tola);
-  bool   j0        = (abscos < tola);
-  bool   nullcurv  = (Curv == 0.);
-  bool   curvpos   = (Curv > tola);
-  bool   curvneg   = (Curv < -tola);
-  bool   nullcsref = (CurvSref == 0.);
+  bool iisj      = (i == j);
+  double    abscos    = std::abs(std::cos(Ang));
+  bool i0        = (std::abs(1. - abscos) < tola);
+  bool j0        = (abscos < tola);
+  bool nullcurv  = (Curv == 0.);
+  bool curvpos   = (Curv > tola);
+  bool curvneg   = (Curv < -tola);
+  bool nullcsref = (CurvSref == 0.);
 
   bool undef = (Angref == 100.);
   if (undef)
@@ -180,9 +183,9 @@ static int FUN_refnearest(const int                i,
     return M_updateREF;
   } // undef
 
-  double cosref = std::cos(Angref), cos = std::cos(Ang);
-  double dcos    = std::abs(cosref) - std::abs(cos);
-  bool   samecos = std::abs(dcos) < tola;
+  double    cosref = std::cos(Angref), cos = std::cos(Ang);
+  double    dcos    = std::abs(cosref) - std::abs(cos);
+  bool samecos = std::abs(dcos) < tola;
   if (samecos)
   {
     // Analysis for tangent cases : if two boundary faces are same sided
@@ -238,18 +241,18 @@ TopTrans_SurfaceTransition::TopTrans_SurfaceTransition()
   STATIC_DEFINED = false;
 }
 
-void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
-                                       const gp_Dir& Norm,
-                                       const gp_Dir& MaxD,
-                                       const gp_Dir& MinD,
-                                       const double  MaxCurv,
-                                       const double  MinCurv)
+void TopTrans_SurfaceTransition::Reset(const gp_Dir&       Tgt,
+                                       const gp_Dir&       Norm,
+                                       const gp_Dir&       MaxD,
+                                       const gp_Dir&       MinD,
+                                       const double MaxCurv,
+                                       const double MinCurv)
 {
   STATIC_DEFINED = true;
 
   constexpr double tola     = Precision::Angular();
-  bool             curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
-  bool             curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  bool        curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  bool        curismin = (std::abs(MinD.Dot(myTgt)) < tola);
 
   if ((std::abs(MaxCurv) < tola) && (std::abs(MinCurv) < tola))
   {
@@ -315,8 +318,8 @@ void TopTrans_SurfaceTransition::Compare
    const gp_Dir&            Norm,
    const gp_Dir&            MaxD,
    const gp_Dir&            MinD,
-   const double             MaxCurv,
-   const double             MinCurv,
+   const double      MaxCurv,
+   const double      MinCurv,
    const TopAbs_Orientation S,
    const TopAbs_Orientation O)
 {
@@ -326,8 +329,8 @@ void TopTrans_SurfaceTransition::Compare
   double Curv = 0.;
   // ------
   constexpr double tola     = Precision::Angular();
-  bool             curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
-  bool             curismin = (std::abs(MinD.Dot(myTgt)) < tola);
+  bool        curismax = (std::abs(MaxD.Dot(myTgt)) < tola);
+  bool        curismin = (std::abs(MinD.Dot(myTgt)) < tola);
   if (!curismax && !curismin)
   {
     // In the plane normal to <myTgt>, we see the boundary face as
@@ -344,7 +347,7 @@ void TopTrans_SurfaceTransition::Compare
     Curv = std::abs(MinCurv);
   if (myCurvRef < tola)
     Curv = 0.;
-  gp_Dir dironF = FUN_nCinsideS(myTgt, Norm);
+  gp_Dir        dironF = FUN_nCinsideS(myTgt, Norm);
   double prod   = (dironF ^ Norm).Dot(myTgt);
   if (prod < 0.)
     Curv = -Curv;
@@ -371,7 +374,7 @@ void TopTrans_SurfaceTransition::Compare
       j = ::FUN_OO(j);
     }
     bool i0 = (i == 0), j0 = (j == 0);
-    int  nmax = (i0 || j0) ? 2 : 1;
+    int nmax = (i0 || j0) ? 2 : 1;
     for (int n = 1; n <= nmax; n++)
     {
       if (i0)
@@ -392,16 +395,16 @@ void TopTrans_SurfaceTransition::Compare
       //      }
 
       int refn = ::FUN_refnearest(i,
-                                  j,
-                                  myCurvRef,
-                                  myAng(i, j),
-                                  myOri(i, j),
-                                  myCurv(i, j),
-                                  Ang,
-                                  /*O*/ S,
-                                  Curv,
-                                  tola,
-                                  myTouchFlag); // eap Mar 25 2002
+                                               j,
+                                               myCurvRef,
+                                               myAng(i, j),
+                                               myOri(i, j),
+                                               myCurv(i, j),
+                                               Ang,
+                                               /*O*/ S,
+                                               Curv,
+                                               tola,
+                                               myTouchFlag); // eap Mar 25 2002
       if (refn == M_Unknown)
       {
         STATIC_DEFINED = false;
@@ -445,7 +448,7 @@ void TopTrans_SurfaceTransition::Compare
     }
 
     bool i0 = (i == 0), j0 = (j == 0);
-    int  nmax = (i0 || j0) ? 2 : 1;
+    int nmax = (i0 || j0) ? 2 : 1;
     for (int n = 1; n <= nmax; n++)
     {
       if (i0)
@@ -472,23 +475,23 @@ void TopTrans_SurfaceTransition::Compare
 #define BEFORE (2)
 #define AFTER (1)
 
-static TopAbs_State FUN_getstate(const NCollection_Array2<double>&             Ang,
+static TopAbs_State FUN_getstate(const NCollection_Array2<double>&         Ang,
                                  const NCollection_Array2<TopAbs_Orientation>& Ori,
-                                 const int                                     iSTA,
-                                 const int                                     iINDEX)
+                                 const int              iSTA,
+                                 const int              iINDEX)
 {
   if (!STATIC_DEFINED)
     return TopAbs_UNKNOWN;
 
-  double a1 = Ang(iSTA, 1), a2 = Ang(iSTA, 2);
-  bool   undef1 = (a1 == 100.), undef2 = (a2 == 100.);
-  bool   undef = undef1 && undef2;
+  double    a1 = Ang(iSTA, 1), a2 = Ang(iSTA, 2);
+  bool undef1 = (a1 == 100.), undef2 = (a2 == 100.);
+  bool undef = undef1 && undef2;
   if (undef)
     return TopAbs_UNKNOWN;
 
   if (undef1 || undef2)
   {
-    int                jok = undef1 ? 2 : 1;
+    int   jok = undef1 ? 2 : 1;
     TopAbs_Orientation o   = Ori(iSTA, jok);
     TopAbs_State       st  = (iINDEX == BEFORE) ? TopTrans_SurfaceTransition::GetBefore(o)
                                                 : TopTrans_SurfaceTransition::GetAfter(o);

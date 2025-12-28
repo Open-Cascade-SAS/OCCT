@@ -24,7 +24,7 @@ StepAP214_AppliedSecurityClassificationAssignment::
 }
 
 void StepAP214_AppliedSecurityClassificationAssignment::Init(
-  const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
+  const occ::handle<StepBasic_SecurityClassification>&              aAssignedSecurityClassification,
   const occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>& aItems)
 {
   // --- classe own fields ---

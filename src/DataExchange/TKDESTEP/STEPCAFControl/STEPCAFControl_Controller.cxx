@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_Controller, STEPControl_Controller)
 STEPCAFControl_Controller::STEPCAFControl_Controller()
 {
   occ::handle<STEPCAFControl_ActorWrite> ActWrite = new STEPCAFControl_ActorWrite;
-  myAdaptorWrite                                  = ActWrite;
+  myAdaptorWrite                             = ActWrite;
 }
 
 //=================================================================================================

@@ -27,7 +27,7 @@ GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation()
 
 //=================================================================================================
 
-GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation(const double             P,
+GeomInt_ParameterAndOrientation::GeomInt_ParameterAndOrientation(const double      P,
                                                                  const TopAbs_Orientation Or1,
                                                                  const TopAbs_Orientation Or2)
     : prm(P),

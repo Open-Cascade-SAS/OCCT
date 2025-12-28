@@ -70,16 +70,16 @@ public:
   Standard_EXPORT double Tolerance() const;
 
 private:
-  bool                      myNewGeom;
+  bool     myNewGeom;
   occ::handle<Geom_Curve>   myGeom;
-  TopoDS_Face               myFirstF;
-  TopoDS_Face               mySeconF;
+  TopoDS_Face          myFirstF;
+  TopoDS_Face          mySeconF;
   occ::handle<Geom2d_Curve> myFirstPC;
   occ::handle<Geom2d_Curve> mySeconPC;
-  TopoDS_Face               myRootFace;
-  bool                      myTgt;
-  gp_Pnt                    myPt;
-  double                    myTol;
+  TopoDS_Face          myRootFace;
+  bool     myTgt;
+  gp_Pnt               myPt;
+  double        myTol;
 };
 
 #endif // _Draft_EdgeInfo_HeaderFile

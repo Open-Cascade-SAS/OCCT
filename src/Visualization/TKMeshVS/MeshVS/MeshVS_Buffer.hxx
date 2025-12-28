@@ -55,10 +55,16 @@ public:
   operator void*() { return myDynData ? myDynData : (void*)myAutoData; }
 
   //! Interpret the buffer as a reference to double
-  operator double&() { return *(myDynData ? (double*)myDynData : (double*)myAutoData); }
+  operator double&()
+  {
+    return *(myDynData ? (double*)myDynData : (double*)myAutoData);
+  }
 
   //! Interpret the buffer as a reference to int
-  operator int&() { return *(myDynData ? (int*)myDynData : (int*)myAutoData); }
+  operator int&()
+  {
+    return *(myDynData ? (int*)myDynData : (int*)myAutoData);
+  }
 
   //! Interpret the buffer as a reference to gp_Pnt
   operator gp_Pnt&() { return *(myDynData ? (gp_Pnt*)myDynData : (gp_Pnt*)myAutoData); }

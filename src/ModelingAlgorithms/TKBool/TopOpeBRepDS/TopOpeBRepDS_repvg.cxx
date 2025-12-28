@@ -28,23 +28,22 @@
 #include <TopOpeBRepDS_define.hxx>
 
 #include <Standard_Integer.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
-#define MDSdmoiloi                                                                                 \
-  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>
-#define MDSdmiodmoiloi                                                                             \
-  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
+#define MDSdmoiloi NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>
+#define MDSdmiodmoiloi NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
 
 //------------------------------------------------------
-Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&                         BDS,
-                                const int                                                 EIX,
-                                const TopOpeBRepDS_Kind                                   GT,
-                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& RLI)
+Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure& BDS,
+                                const int            EIX,
+                                const TopOpeBRepDS_Kind           GT,
+                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
+                                NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  RLI)
 //------------------------------------------------------
 {
   const TopoDS_Edge& E    = TopoDS::Edge(BDS.Shape(EIX));
-  bool               isEd = BRep_Tool::Degenerated(E);
+  bool   isEd = BRep_Tool::Degenerated(E);
   if (isEd)
     return;
 
@@ -57,10 +56,10 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
   while (it1.More())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I1 = it1.Value();
-    TopOpeBRepDS_Kind                             GT1, ST1;
-    int                                           G1, S1;
-    TopAbs_ShapeEnum                              tsb1, tsa1;
-    int                                           isb1, isa1;
+    TopOpeBRepDS_Kind                        GT1, ST1;
+    int                         G1, S1;
+    TopAbs_ShapeEnum                         tsb1, tsa1;
+    int                         isb1, isa1;
     FDS_Idata(I1, tsb1, isb1, tsa1, isa1, GT1, G1, ST1, S1);
     if (tsb1 != TopAbs_FACE)
     {
@@ -84,8 +83,8 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
     int rkS1 = BDS.AncestorRank(S1);
     if (isvertex && (rkG1 != rkS1))
     {
-      TopoDS_Shape oovG;
-      bool         issd = FUN_ds_getoov(BDS.Shape(G1), BDS, oovG);
+      TopoDS_Shape     oovG;
+      bool issd = FUN_ds_getoov(BDS.Shape(G1), BDS, oovG);
       if (!issd)
       {
         it1.Next();
@@ -121,17 +120,17 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
     }
 
     TopOpeBRepDS_EdgeInterferenceTool EITool;
-    bool                              memeS = false;
+    bool                  memeS = false;
     TopOpeBRepDS_Transition           TrmemeS;
-    bool                              isComplex = false;
+    bool                  isComplex = false;
 
     while (it2.More())
     {
       const occ::handle<TopOpeBRepDS_Interference>& I2 = it2.Value();
-      TopOpeBRepDS_Kind                             GT2, ST2;
-      int                                           G2, S2;
-      TopAbs_ShapeEnum                              tsb2, tsa2;
-      int                                           isb2, isa2;
+      TopOpeBRepDS_Kind                        GT2, ST2;
+      int                         G2, S2;
+      TopAbs_ShapeEnum                         tsb2, tsa2;
+      int                         isb2, isa2;
       FDS_Idata(I2, tsb2, isb2, tsa2, isa2, GT2, G2, ST2, S2);
       if (tsb2 != TopAbs_FACE)
       {
@@ -152,7 +151,7 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
       }
 
       const TopoDS_Edge& E2    = TopoDS::Edge(BDS.Shape(S2));
-      bool               isEd2 = BRep_Tool::Degenerated(E2);
+      bool   isEd2 = BRep_Tool::Degenerated(E2);
       if (isEd2)
       {
         it2.Next();
@@ -164,8 +163,8 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
 
       if (!isComplex && memeS)
       {
-        double pE = FDS_Parameter(I1);
-        bool   ok = FDS_stateEwithF2d(BDS, E, pE, GT1, G1, F1, TrmemeS);
+        double    pE = FDS_Parameter(I1);
+        bool ok = FDS_stateEwithF2d(BDS, E, pE, GT1, G1, F1, TrmemeS);
         if (!ok)
         {
           it2.Next();
@@ -225,24 +224,24 @@ Standard_EXPORT void FDS_repvg2(const TopOpeBRepDS_DataStructure&               
 } // FDS_repvg2
 
 //------------------------------------------------------
-Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure&                         BDS,
-                               const int                                                 EIX,
-                               const TopOpeBRepDS_Kind                                   GT,
-                               NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LOI,
-                               NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& RLOI)
+Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure& BDS,
+                               const int            EIX,
+                               const TopOpeBRepDS_Kind           GT,
+                               NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LOI,
+                               NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  RLOI)
 //------------------------------------------------------
 {
   TopOpeBRepDS_TKI tki;
   tki.FillOnGeometry(LOI);
 
   // xpu211098 : cto904F6 (e10,FTRA1=f14,FTRA2=f17)
-  MDSdmoiloi                                                         mapITRASHA;
+  MDSdmoiloi                                    mapITRASHA;
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LOI);
   while (it.More())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I     = it.Value();
-    int                                           isa   = I->Transition().Index();
-    bool                                          bound = mapITRASHA.IsBound(isa);
+    int                         isa   = I->Transition().Index();
+    bool                         bound = mapITRASHA.IsBound(isa);
     if (!bound)
     {
       NCollection_List<occ::handle<TopOpeBRepDS_Interference>> loi;
@@ -258,9 +257,9 @@ Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure&                
   MDSdmiodmoiloi itm(mapITRASHA);
   for (; itm.More(); itm.Next())
   {
-    int                                                       isa  = itm.Key();
+    int                 isa  = itm.Key();
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi  = mapITRASHA.ChangeFind(isa);
-    int                                                       nloi = loi.Extent();
+    int                 nloi = loi.Extent();
     if (nloi < 2)
       continue;
     NCollection_List<occ::handle<TopOpeBRepDS_Interference>> rloi;
@@ -272,10 +271,9 @@ Standard_EXPORT void FDS_repvg(const TopOpeBRepDS_DataStructure&                
   /*LOI.Clear();
   for (tki.Init(); tki.More(); tki.Next()) {
     TopOpeBRepDS_Kind K; int G; tki.Value(K,G);
-    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K,G);
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>> Rloi; int nloi = loi.Extent(); if (nloi
-  == 0) continue; else if (nloi == 1) LOI.Append(loi); else { FDS_repvg2(BDS,EIX,GT,loi,Rloi);
-  LOI.Append(loi); RLOI.Append(Rloi);
+    NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = tki.ChangeValue(K,G); NCollection_List<occ::handle<TopOpeBRepDS_Interference>>
+  Rloi; int nloi = loi.Extent(); if      (nloi == 0) continue; else if (nloi == 1)
+  LOI.Append(loi); else { FDS_repvg2(BDS,EIX,GT,loi,Rloi); LOI.Append(loi); RLOI.Append(Rloi);
     }
   }*/
 }

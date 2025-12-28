@@ -29,6 +29,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 typedef NCollection_UBTree<int, Bnd_Box> ShapeAnalysis_BoxBndTree;
 
@@ -36,7 +38,7 @@ class ShapeAnalysis_BoxBndTreeSelector : public NCollection_UBTree<int, Bnd_Box>
 {
 public:
   ShapeAnalysis_BoxBndTreeSelector(occ::handle<NCollection_HArray1<TopoDS_Shape>> theSeq,
-                                   bool                                           theShared)
+                                   bool                theShared)
       : mySeq(theSeq),
         myShared(theShared),
         myNb(0),
@@ -95,20 +97,20 @@ public:
   bool Accept(const int&);
 
 private:
-  Bnd_Box                                        myFBox;
-  Bnd_Box                                        myLBox;
+  Bnd_Box                         myFBox;
+  Bnd_Box                         myLBox;
   occ::handle<NCollection_HArray1<TopoDS_Shape>> mySeq;
-  bool                                           myShared;
-  int                                            myNb;
-  TopoDS_Vertex                                  myFVertex;
-  TopoDS_Vertex                                  myLVertex;
-  gp_Pnt                                         myFPnt;
-  gp_Pnt                                         myLPnt;
-  NCollection_Map<int>                           myList;
-  double                                         myTol;
-  double                                         myMin3d;
-  NCollection_Array1<int>                        myArrIndices;
-  int                                            myStatus;
+  bool                myShared;
+  int                myNb;
+  TopoDS_Vertex                   myFVertex;
+  TopoDS_Vertex                   myLVertex;
+  gp_Pnt                          myFPnt;
+  gp_Pnt                          myLPnt;
+  NCollection_Map<int>            myList;
+  double                   myTol;
+  double                   myMin3d;
+  NCollection_Array1<int>         myArrIndices;
+  int                myStatus;
 };
 
 #endif

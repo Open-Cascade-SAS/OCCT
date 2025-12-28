@@ -25,7 +25,8 @@ StepKinematics_SpatialRotation::StepKinematics_SpatialRotation() {}
 
 //=================================================================================================
 
-int StepKinematics_SpatialRotation::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepKinematics_SpatialRotation::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

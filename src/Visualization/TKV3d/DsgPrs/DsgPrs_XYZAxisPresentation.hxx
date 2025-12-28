@@ -46,22 +46,23 @@ public:
   //! Each axis will be identified as X, Y, or Z by the text aText.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_LineAspect>&   anLineAspect,
-                                  const gp_Dir&                          aDir,
-                                  const double                           aVal,
-                                  const char*                            aText,
-                                  const gp_Pnt&                          aPfirst,
-                                  const gp_Pnt&                          aPlast);
+                                  const gp_Dir&                     aDir,
+                                  const double               aVal,
+                                  const char*            aText,
+                                  const gp_Pnt&                     aPfirst,
+                                  const gp_Pnt&                     aPlast);
 
   //! draws the presentation X ,Y ,Z axis
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_LineAspect>&   aLineAspect,
                                   const occ::handle<Prs3d_ArrowAspect>&  anArrowAspect,
                                   const occ::handle<Prs3d_TextAspect>&   aTextAspect,
-                                  const gp_Dir&                          aDir,
-                                  const double                           aVal,
-                                  const char*                            aText,
-                                  const gp_Pnt&                          aPfirst,
-                                  const gp_Pnt&                          aPlast);
+                                  const gp_Dir&                     aDir,
+                                  const double               aVal,
+                                  const char*            aText,
+                                  const gp_Pnt&                     aPfirst,
+                                  const gp_Pnt&                     aPlast);
+
 };
 
 #endif // _DsgPrs_XYZAxisPresentation_HeaderFile

@@ -38,7 +38,8 @@ public:
   //! LineFontPredefined
   //! - nbProps              : Number of property values (NP = 1)
   //! - aLineFontPatternCode : Line Font Pattern Code
-  Standard_EXPORT void Init(const int nbProps, const int aLineFontPatternCode);
+  Standard_EXPORT void Init(const int nbProps,
+                            const int aLineFontPatternCode);
 
   //! returns the number of property values in <me>
   Standard_EXPORT int NbPropertyValues() const;

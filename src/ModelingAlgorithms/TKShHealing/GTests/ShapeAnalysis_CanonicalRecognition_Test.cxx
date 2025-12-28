@@ -60,6 +60,7 @@
 #include <gp_Sphere.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -78,7 +79,7 @@ protected:
   }
 
   std::unique_ptr<ShapeAnalysis_CanonicalRecognition> myRecognizer;
-  double                                              myTolerance;
+  double                                       myTolerance;
 };
 
 // Test cr/approx/A1: polyline to plane recognition
@@ -97,7 +98,7 @@ TEST_F(CanonicalRecognitionApproxTest, PolylineToPlaneRecognition_A1)
 
   // Set shape and test plane recognition
   myRecognizer->SetShape(aWire);
-  gp_Pln     aResultPlane;
+  gp_Pln                 aResultPlane;
   const bool aResult = myRecognizer->IsPlane(myTolerance, aResultPlane);
 
   EXPECT_TRUE(aResult) << "Polyline should be recognized as planar";
@@ -115,9 +116,9 @@ TEST_F(CanonicalRecognitionApproxTest, PolylineToPlaneRecognition_A1)
 TEST_F(CanonicalRecognitionApproxTest, CylinderRecognition_A2)
 {
   // Create cylindrical face
-  gp_Ax2                               aAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
   occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
-  BRepBuilderAPI_MakeFace aFaceMaker(aCylSurf, 0, 2 * M_PI, 0, 1, Precision::Confusion());
+  BRepBuilderAPI_MakeFace         aFaceMaker(aCylSurf, 0, 2 * M_PI, 0, 1, Precision::Confusion());
 
   ASSERT_TRUE(aFaceMaker.IsDone()) << "Failed to create cylindrical face";
   const TopoDS_Face aFace = aFaceMaker.Face();
@@ -130,8 +131,8 @@ TEST_F(CanonicalRecognitionApproxTest, CylinderRecognition_A2)
 
   // Test cylinder recognition on the NURBS face
   myRecognizer->SetShape(aNurbsFace);
-  gp_Cylinder aResultCylinder;
-  const bool  aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
+  gp_Cylinder            aResultCylinder;
+  const bool aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
 
   EXPECT_TRUE(aResult) << "NURBS face should be recognized as cylinder";
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
@@ -141,10 +142,10 @@ TEST_F(CanonicalRecognitionApproxTest, CylinderRecognition_A2)
 TEST_F(CanonicalRecognitionApproxTest, ConicalSurfaceRecognition_A3)
 {
   // Create conical face: cone with half angle 30 degrees
-  const double                     aHalfAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                           aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  const double         aHalfAngle = M_PI / 6.0; // 30 degrees
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_ConicalSurface> aConeSurf = new Geom_ConicalSurface(aAxis, aHalfAngle, 2.0);
-  BRepBuilderAPI_MakeFace          aFaceMaker(aConeSurf, 0, 2 * M_PI, 0, 3, Precision::Confusion());
+  BRepBuilderAPI_MakeFace     aFaceMaker(aConeSurf, 0, 2 * M_PI, 0, 3, Precision::Confusion());
 
   ASSERT_TRUE(aFaceMaker.IsDone()) << "Failed to create conical face";
   const TopoDS_Face aFace = aFaceMaker.Face();
@@ -157,7 +158,7 @@ TEST_F(CanonicalRecognitionApproxTest, ConicalSurfaceRecognition_A3)
 
   // Test cone recognition on the NURBS face
   myRecognizer->SetShape(aNurbsFace);
-  gp_Cone    aResultCone;
+  gp_Cone                aResultCone;
   const bool aResult = myRecognizer->IsCone(myTolerance, aResultCone);
 
   EXPECT_TRUE(aResult) << "NURBS face should be recognized as cone";
@@ -168,7 +169,7 @@ TEST_F(CanonicalRecognitionApproxTest, ConicalSurfaceRecognition_A3)
 TEST_F(CanonicalRecognitionApproxTest, SphericalSurfaceRecognition_A4)
 {
   // Create spherical face
-  gp_Ax2                             aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_SphericalSurface> aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
   BRepBuilderAPI_MakeFace aFaceMaker(aSphereSurf, 0, 2 * M_PI, 0, M_PI / 2, Precision::Confusion());
 
@@ -183,7 +184,7 @@ TEST_F(CanonicalRecognitionApproxTest, SphericalSurfaceRecognition_A4)
 
   // Test sphere recognition on the NURBS face
   myRecognizer->SetShape(aNurbsFace);
-  gp_Sphere  aResultSphere;
+  gp_Sphere              aResultSphere;
   const bool aResult = myRecognizer->IsSphere(myTolerance, aResultSphere);
 
   EXPECT_TRUE(aResult) << "NURBS face should be recognized as sphere";
@@ -204,7 +205,7 @@ protected:
   }
 
   std::unique_ptr<ShapeAnalysis_CanonicalRecognition> myRecognizer;
-  double                                              myTolerance;
+  double                                       myTolerance;
 };
 
 // Test cr/base/A1: Bezier curve to line recognition
@@ -217,14 +218,14 @@ TEST_F(CanonicalRecognitionBaseCurveTest, BezierToLineRecognition_A1)
   aControlPoints(3) = gp_Pnt(1, 0, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aControlPoints);
-  BRepBuilderAPI_MakeEdge       aEdgeMaker(aBezier);
+  BRepBuilderAPI_MakeEdge  aEdgeMaker(aBezier);
 
   ASSERT_TRUE(aEdgeMaker.IsDone()) << "Failed to create Bezier edge";
   const TopoDS_Edge anEdge = aEdgeMaker.Edge();
 
   // Set shape and test line recognition
   myRecognizer->SetShape(anEdge);
-  gp_Lin     aResultLine;
+  gp_Lin                 aResultLine;
   const bool aResult = myRecognizer->IsLine(myTolerance, aResultLine);
 
   EXPECT_TRUE(aResult) << "Nearly linear Bezier should be recognized as line";
@@ -244,14 +245,14 @@ TEST_F(CanonicalRecognitionBaseCurveTest, BezierToCircleRecognition_A2)
   aControlPoints(3) = gp_Pnt(1, 0, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aControlPoints);
-  BRepBuilderAPI_MakeEdge       aEdgeMaker(aBezier);
+  BRepBuilderAPI_MakeEdge  aEdgeMaker(aBezier);
 
   ASSERT_TRUE(aEdgeMaker.IsDone()) << "Failed to create Bezier edge";
   const TopoDS_Edge anEdge = aEdgeMaker.Edge();
 
   // Set shape and test circle recognition
   myRecognizer->SetShape(anEdge);
-  gp_Circ    aResultCircle;
+  gp_Circ                aResultCircle;
   const bool aResult = myRecognizer->IsCircle(myTolerance, aResultCircle);
 
   EXPECT_TRUE(aResult)
@@ -263,19 +264,19 @@ TEST_F(CanonicalRecognitionBaseCurveTest, BezierToCircleRecognition_A2)
 TEST_F(CanonicalRecognitionBaseCurveTest, EllipseToEllipseRecognition_A3)
 {
   // Create ellipse with major radius 1, minor radius 0.5
-  gp_Ax2                    aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
+  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   occ::handle<Geom_Ellipse> aEllipse = new Geom_Ellipse(aAxis, 1.0, 0.5);
 
   // Convert to B-spline curve
   occ::handle<Geom_BSplineCurve> aBSplineCurve = GeomConvert::CurveToBSplineCurve(aEllipse);
-  BRepBuilderAPI_MakeEdge        aEdgeMaker(aBSplineCurve);
+  BRepBuilderAPI_MakeEdge   aEdgeMaker(aBSplineCurve);
 
   ASSERT_TRUE(aEdgeMaker.IsDone()) << "Failed to create ellipse edge";
   const TopoDS_Edge anEdge = aEdgeMaker.Edge();
 
   // Set shape and test ellipse recognition
   myRecognizer->SetShape(anEdge);
-  gp_Elips   aResultEllipse;
+  gp_Elips               aResultEllipse;
   const bool aResult = myRecognizer->IsEllipse(1.0e-7, aResultEllipse);
 
   EXPECT_TRUE(aResult) << "Ellipse should be recognized as ellipse";
@@ -313,7 +314,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentWireToLineRecognition_A4)
 
   // Set shape and test line recognition
   myRecognizer->SetShape(aWire);
-  gp_Lin     aResultLine;
+  gp_Lin                 aResultLine;
   const bool aResult = myRecognizer->IsLine(myTolerance, aResultLine);
 
   EXPECT_TRUE(aResult) << "Multi-segment nearly linear wire should be recognized as line";
@@ -323,7 +324,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentWireToLineRecognition_A4)
 TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentCircleWireRecognition_A5)
 {
   // Create circle and convert to B-spline
-  gp_Ax2                   aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2              aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aAxis, 1.0);
 
   // Convert to B-spline curve
@@ -348,7 +349,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentCircleWireRecognition_A5)
 
   // Set shape and test circle recognition
   myRecognizer->SetShape(aWire);
-  gp_Circ    aResultCircle;
+  gp_Circ                aResultCircle;
   const bool aResult = myRecognizer->IsCircle(1.0e-7, aResultCircle);
 
   EXPECT_TRUE(aResult) << "Multi-segment circle wire should be recognized as circle";
@@ -359,7 +360,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentCircleWireRecognition_A5)
 TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentEllipseWireRecognition_A6)
 {
   // Create ellipse and convert to B-spline
-  gp_Ax2                    aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
+  gp_Ax2               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z), gp_Dir(gp_Dir::D::X));
   occ::handle<Geom_Ellipse> aEllipse = new Geom_Ellipse(aAxis, 1.0, 0.5);
 
   // Convert to B-spline curve
@@ -384,7 +385,7 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentEllipseWireRecognition_A6)
 
   // Set shape and test ellipse recognition
   myRecognizer->SetShape(aWire);
-  gp_Elips   aResultEllipse;
+  gp_Elips               aResultEllipse;
   const bool aResult = myRecognizer->IsEllipse(1.0e-7, aResultEllipse);
 
   EXPECT_TRUE(aResult) << "Multi-segment ellipse wire should be recognized as ellipse";
@@ -406,7 +407,7 @@ protected:
   }
 
   std::unique_ptr<ShapeAnalysis_CanonicalRecognition> myRecognizer;
-  double                                              myTolerance;
+  double                                       myTolerance;
 };
 
 // Test cr/base/B1: Plane recognition from trimmed surface
@@ -427,7 +428,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedPlaneRecognition_B1)
 
   // Set shape and test plane recognition
   myRecognizer->SetShape(aNurbsFace);
-  gp_Pln     aResultPlane;
+  gp_Pln                 aResultPlane;
   const bool aResult = myRecognizer->IsPlane(myTolerance, aResultPlane);
 
   EXPECT_TRUE(aResult) << "Planar face should be recognized as plane";
@@ -441,7 +442,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedPlaneRecognition_B1)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedCylinderRecognition_B2)
 {
   // Create cylindrical surface
-  gp_Ax2                               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create face from cylinder
@@ -456,8 +457,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedCylinderRecognition_B2)
 
   // Set shape and test cylinder recognition
   myRecognizer->SetShape(aNurbsFace);
-  gp_Cylinder aResultCylinder;
-  const bool  aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
+  gp_Cylinder            aResultCylinder;
+  const bool aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
 
   EXPECT_TRUE(aResult) << "Cylindrical surface should be recognized as cylinder";
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
@@ -467,8 +468,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedCylinderRecognition_B2)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedConeRecognition_B3)
 {
   // Create conical surface (30 degree half-angle)
-  const double                     aSemiAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                           aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  const double         aSemiAngle = M_PI / 6.0; // 30 degrees
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_ConicalSurface> aConeSurf = new Geom_ConicalSurface(aAxis, aSemiAngle, 0);
 
   // Create face from cone
@@ -483,7 +484,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedConeRecognition_B3)
 
   // Set shape and test cone recognition
   myRecognizer->SetShape(aNurbsFace);
-  gp_Cone    aResultCone;
+  gp_Cone                aResultCone;
   const bool aResult = myRecognizer->IsCone(myTolerance, aResultCone);
 
   EXPECT_TRUE(aResult) << "Conical surface should be recognized as cone";
@@ -494,19 +495,19 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, TrimmedConeRecognition_B3)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ConvertedSphereRecognition_B4)
 {
   // Create spherical surface and convert to B-spline
-  gp_Ax2                             aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_SphericalSurface> aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
 
   // Convert to B-spline surface
   occ::handle<Geom_BSplineSurface> aBSplineSurf = GeomConvert::SurfaceToBSplineSurface(aSphereSurf);
-  BRepBuilderAPI_MakeFace          aFaceMaker(aBSplineSurf, Precision::Confusion());
+  BRepBuilderAPI_MakeFace     aFaceMaker(aBSplineSurf, Precision::Confusion());
 
   ASSERT_TRUE(aFaceMaker.IsDone()) << "Failed to create spherical face";
   const TopoDS_Face aFace = aFaceMaker.Face();
 
   // Set shape and test sphere recognition
   myRecognizer->SetShape(aFace);
-  gp_Sphere  aResultSphere;
+  gp_Sphere              aResultSphere;
   const bool aResult = myRecognizer->IsSphere(myTolerance, aResultSphere);
 
   EXPECT_TRUE(aResult) << "Spherical surface should be recognized as sphere";
@@ -546,7 +547,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnPlanarSurfaceRecognition_B5)
 
   // Set shape and test plane recognition
   myRecognizer->SetShape(aNurbsShape);
-  gp_Pln     aResultPlane;
+  gp_Pln                 aResultPlane;
   const bool aResult = myRecognizer->IsPlane(myTolerance, aResultPlane);
 
   EXPECT_TRUE(aResult) << "Sewn planar surface should be recognized as plane";
@@ -560,7 +561,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnPlanarSurfaceRecognition_B5)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnCylindricalSurfaceRecognition_B6)
 {
   // Create 4 cylindrical face segments to be sewn together
-  gp_Ax2                               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   BRepBuilderAPI_MakeFace aFaceMaker1(aCylSurf, 0, 3, -1, 0, Precision::Confusion());
@@ -590,8 +591,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnCylindricalSurfaceRecognition_B6
 
   // Set shape and test cylinder recognition
   myRecognizer->SetShape(aNurbsShape);
-  gp_Cylinder aResultCylinder;
-  const bool  aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
+  gp_Cylinder            aResultCylinder;
+  const bool aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
 
   EXPECT_TRUE(aResult) << "Sewn cylindrical surface should be recognized as cylinder";
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
@@ -601,8 +602,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnCylindricalSurfaceRecognition_B6
 TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnConicalSurfaceRecognition_B7)
 {
   // Create 4 conical face segments to be sewn together
-  const double                     aSemiAngle = M_PI / 6.0; // 30 degrees
-  gp_Ax2                           aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  const double         aSemiAngle = M_PI / 6.0; // 30 degrees
+  gp_Ax2                      aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_ConicalSurface> aConeSurf = new Geom_ConicalSurface(aAxis, aSemiAngle, 0);
 
   BRepBuilderAPI_MakeFace aFaceMaker1(aConeSurf, 0, 3, 0, 1, Precision::Confusion());
@@ -632,7 +633,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnConicalSurfaceRecognition_B7)
 
   // Set shape and test cone recognition
   myRecognizer->SetShape(aNurbsShape);
-  gp_Cone    aResultCone;
+  gp_Cone                aResultCone;
   const bool aResult = myRecognizer->IsCone(myTolerance, aResultCone);
 
   EXPECT_TRUE(aResult) << "Sewn conical surface should be recognized as cone";
@@ -643,7 +644,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnConicalSurfaceRecognition_B7)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnSphericalSurfaceRecognition_B8)
 {
   // Create 4 spherical face segments to be sewn together, converted to B-spline
-  gp_Ax2                             aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                        aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_SphericalSurface> aSphereSurf = new Geom_SphericalSurface(aAxis, 1.0);
 
   // Convert to B-spline surface
@@ -671,7 +672,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnSphericalSurfaceRecognition_B8)
 
   // Set shape and test sphere recognition
   myRecognizer->SetShape(aSewnShape);
-  gp_Sphere  aResultSphere;
+  gp_Sphere              aResultSphere;
   const bool aResult = myRecognizer->IsSphere(myTolerance, aResultSphere);
 
   EXPECT_TRUE(aResult) << "Sewn spherical surface should be recognized as sphere";
@@ -682,7 +683,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, SewnSphericalSurfaceRecognition_B8)
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ComplexCylindricalRecognitionWithSection_B9)
 {
   // Create 4 cylindrical face segments and sew them together
-  gp_Ax2                               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create 4 face segments with parameter ranges matching the original test
@@ -716,8 +717,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ComplexCylindricalRecognitionWithSec
   // which is different from pure canonical recognition without a sample surface.
   // Here we test recognition of the sewn cylindrical shape directly.
   myRecognizer->SetShape(aNurbsShape);
-  gp_Cylinder aResultCylinder;
-  const bool  aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
+  gp_Cylinder            aResultCylinder;
+  const bool aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
 
   EXPECT_TRUE(aResult) << "Sewn cylindrical shape should be recognized as cylinder";
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
@@ -727,12 +728,12 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ComplexCylindricalRecognitionWithSec
 TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognition_B10)
 {
   // Create cylindrical surface (radius 1)
-  gp_Ax2                               aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Ax2                          aAxis(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
   occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(aAxis, 1.0);
 
   // Create plane for intersection: plane at origin with normal (1, 0, 1) normalized
-  gp_Dir                  aNormal(1, 0, 1);
-  gp_Pln                  aPlane(gp_Pnt(0, 0, 0), aNormal);
+  gp_Dir             aNormal(1, 0, 1);
+  gp_Pln             aPlane(gp_Pnt(0, 0, 0), aNormal);
   occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(aPlane);
 
   // Perform surface-surface intersection
@@ -746,7 +747,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognitio
   ASSERT_FALSE(anIntCurve.IsNull()) << "Intersection curve is null";
 
   // Create a surface of linear extrusion from the intersection curve
-  gp_Dir                                     anExtrusionDir(gp_Dir::D::Z);
+  gp_Dir                                anExtrusionDir(gp_Dir::D::Z);
   occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
     new Geom_SurfaceOfLinearExtrusion(anIntCurve, anExtrusionDir);
 
@@ -765,8 +766,8 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, ExtrudedCylindricalSurfaceRecognitio
 
   // Test if the face can be recognized as a cylindrical surface
   myRecognizer->SetShape(aNurbsFace);
-  gp_Cylinder aResultCylinder;
-  const bool  aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
+  gp_Cylinder            aResultCylinder;
+  const bool aResult = myRecognizer->IsCylinder(myTolerance, aResultCylinder);
 
   EXPECT_TRUE(aResult) << "Extruded surface should be recognized as cylinder";
   EXPECT_NEAR(aResultCylinder.Radius(), 1.0, myTolerance) << "Cylinder radius should match";
@@ -780,7 +781,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, PlaneDetectionWithGapValidation_Bug3
 
   // Create a slightly non-planar surface that should still be recognized as a plane
   // within tolerance, similar to the bug33170.brep case
-  occ::handle<Geom_Plane> aBasePlane = new Geom_Plane(gp_Pln());
+  occ::handle<Geom_Plane>      aBasePlane = new Geom_Plane(gp_Pln());
   BRepBuilderAPI_MakeFace aFaceMaker(aBasePlane, -1, 1, -1, 1, Precision::Confusion());
 
   ASSERT_TRUE(aFaceMaker.IsDone()) << "Failed to create base planar face";
@@ -788,7 +789,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, PlaneDetectionWithGapValidation_Bug3
 
   // Test with tolerance 0.006 (first case from bug33170)
   myRecognizer->SetShape(aFace);
-  gp_Pln     aResultPlane1;
+  gp_Pln                 aResultPlane1;
   const bool aResult1 = myRecognizer->IsPlane(0.006, aResultPlane1);
 
   EXPECT_TRUE(aResult1) << "Surface should be recognized as plane with tolerance 0.006";
@@ -800,7 +801,7 @@ TEST_F(CanonicalRecognitionBaseSurfaceTest, PlaneDetectionWithGapValidation_Bug3
 
   // Test with larger tolerance 1.0 (second case from bug33170)
   myRecognizer->ClearStatus();
-  gp_Pln     aResultPlane2;
+  gp_Pln                 aResultPlane2;
   const bool aResult2 = myRecognizer->IsPlane(1.0, aResultPlane2);
 
   EXPECT_TRUE(aResult2) << "Surface should be recognized as plane with tolerance 1.0";

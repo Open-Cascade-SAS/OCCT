@@ -22,7 +22,7 @@ RWStepRepr_RWDescriptiveRepresentationItem::RWStepRepr_RWDescriptiveRepresentati
 
 void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                                  num,
+  const int                                num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepRepr_DescriptiveRepresentationItem>& ent) const
 {
@@ -59,7 +59,7 @@ void RWStepRepr_RWDescriptiveRepresentationItem::ReadStep(
 }
 
 void RWStepRepr_RWDescriptiveRepresentationItem::WriteStep(
-  StepData_StepWriter&                                       SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepRepr_DescriptiveRepresentationItem>& ent) const
 {
 

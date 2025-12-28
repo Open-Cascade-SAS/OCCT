@@ -34,8 +34,7 @@ class Expr_Product : public Expr_PolyExpression
 
 public:
   //! Creates the product of all members of sequence <exps>
-  Standard_EXPORT Expr_Product(
-    const NCollection_Sequence<occ::handle<Expr_GeneralExpression>>& exps);
+  Standard_EXPORT Expr_Product(const NCollection_Sequence<occ::handle<Expr_GeneralExpression>>& exps);
 
   //! Creates the product of <exp1> and <exp2>.
   Standard_EXPORT Expr_Product(const occ::handle<Expr_GeneralExpression>& exp1,
@@ -51,7 +50,8 @@ public:
   //! Tests if <me> and <Other> define the same expression.
   //! This method does not include any simplification before
   //! testing.
-  Standard_EXPORT bool IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
+  Standard_EXPORT bool
+    IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) const override;
 
   Standard_EXPORT bool IsLinear() const override;
 
@@ -64,12 +64,13 @@ public:
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
   Standard_EXPORT double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                  const NCollection_Array1<double>& vals) const override;
+                                         const NCollection_Array1<double>& vals) const override;
 
   //! returns a string representing <me> in a readable way.
   Standard_EXPORT TCollection_AsciiString String() const override;
 
   DEFINE_STANDARD_RTTIEXT(Expr_Product, Expr_PolyExpression)
+
 };
 
 #endif // _Expr_Product_HeaderFile

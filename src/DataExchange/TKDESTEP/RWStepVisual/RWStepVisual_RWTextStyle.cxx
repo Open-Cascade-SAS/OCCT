@@ -21,7 +21,7 @@
 RWStepVisual_RWTextStyle::RWStepVisual_RWTextStyle() {}
 
 void RWStepVisual_RWTextStyle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                                   num,
+                                        const int                 num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepVisual_TextStyle>&    ent) const
 {
@@ -53,7 +53,7 @@ void RWStepVisual_RWTextStyle::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aName, aCharacterAppearance);
 }
 
-void RWStepVisual_RWTextStyle::WriteStep(StepData_StepWriter&                     SW,
+void RWStepVisual_RWTextStyle::WriteStep(StepData_StepWriter&                SW,
                                          const occ::handle<StepVisual_TextStyle>& ent) const
 {
 
@@ -67,7 +67,7 @@ void RWStepVisual_RWTextStyle::WriteStep(StepData_StepWriter&                   
 }
 
 void RWStepVisual_RWTextStyle::Share(const occ::handle<StepVisual_TextStyle>& ent,
-                                     Interface_EntityIterator&                iter) const
+                                     Interface_EntityIterator&           iter) const
 {
 
   iter.GetOneItem(ent->CharacterAppearance());

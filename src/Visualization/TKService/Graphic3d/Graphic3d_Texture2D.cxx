@@ -106,8 +106,8 @@ Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>& thePix
 
 //=================================================================================================
 
-Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>& thePixMap,
-                                         const Graphic3d_TypeOfTexture    theType)
+Graphic3d_Texture2D::Graphic3d_Texture2D(const occ::handle<Image_PixMap>&   thePixMap,
+                                         const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureMap(thePixMap, theType),
       myName(Graphic3d_NOT_2D_UNKNOWN)
 {
@@ -138,7 +138,7 @@ TCollection_AsciiString Graphic3d_Texture2D::TextureName(const int theRank)
   }
 
   TCollection_AsciiString aFileName(NameOfTexture2d_to_FileName[theRank - 1]);
-  int                     i = aFileName.SearchFromEnd(".");
+  int        i = aFileName.SearchFromEnd(".");
   return aFileName.SubString(4, i - 1);
 }
 

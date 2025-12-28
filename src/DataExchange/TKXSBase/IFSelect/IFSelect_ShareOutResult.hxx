@@ -50,7 +50,7 @@ public:
   //! already computed, which defines the Input Model and can
   //! specialize some Entities
   Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_ShareOut>& sho,
-                                          const Interface_Graph&                G);
+                                          const Interface_Graph&           G);
 
   //! Creates a ShareOutResult from a unique Dispatch, to work on
   //! a Model. As if it was a ShareOut with only one Dispatch
@@ -63,7 +63,7 @@ public:
   //! a Graph. As if it was a ShareOut with only one Dispatch
   //! Allows to compute the effect of a single Dispatch
   Standard_EXPORT IFSelect_ShareOutResult(const occ::handle<IFSelect_Dispatch>& disp,
-                                          const Interface_Graph&                G);
+                                          const Interface_Graph&           G);
 
   //! Returns the ShareOut used to create the ShareOutResult
   //! if creation from a Dispatch, returns a Null Handle
@@ -91,7 +91,8 @@ public:
   //! this mode allows to evaluate duplications
   //! Remark that to send packets, iteration remains preferable
   //! (file names are managed)
-  Standard_EXPORT occ::handle<IFSelect_PacketList> Packets(const bool complete = true);
+  Standard_EXPORT occ::handle<IFSelect_PacketList> Packets(
+    const bool complete = true);
 
   //! Returns the total count of produced non empty packets
   //! (in out : calls Evaluate as necessary)
@@ -131,7 +132,8 @@ public:
 
   //! Returns Number (rank) of current Packet in current Dispatch,
   //! and total count of Packets in current Dispatch, as arguments
-  Standard_EXPORT void PacketsInDispatch(int& numpack, int& nbpacks) const;
+  Standard_EXPORT void PacketsInDispatch(int& numpack,
+                                         int& nbpacks) const;
 
   //! Returns the list of Roots of the current Packet (never empty)
   //! (i.e. the Entities to be themselves asked for transfer)
@@ -155,12 +157,12 @@ protected:
 private:
   occ::handle<IFSelect_ShareOut> theshareout;
   occ::handle<IFSelect_Dispatch> thedispatch;
-  bool                           theeval;
-  int                            thedispnum;
-  int                            thepacknum;
-  int                            thepackdisp;
-  int                            thenbindisp;
-  NCollection_Sequence<int>      thedisplist;
+  bool          theeval;
+  int          thedispnum;
+  int          thepacknum;
+  int          thepackdisp;
+  int          thenbindisp;
+  NCollection_Sequence<int> thedisplist;
 };
 
 #endif // _IFSelect_ShareOutResult_HeaderFile

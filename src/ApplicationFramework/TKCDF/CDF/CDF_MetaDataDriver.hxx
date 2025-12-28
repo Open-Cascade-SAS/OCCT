@@ -43,12 +43,12 @@ public:
 
   Standard_EXPORT virtual void CreateReference(const occ::handle<CDM_MetaData>& aFrom,
                                                const occ::handle<CDM_MetaData>& aTo,
-                                               const int aReferenceIdentifier,
-                                               const int aToDocumentVersion);
+                                               const int      aReferenceIdentifier,
+                                               const int      aToDocumentVersion);
 
   //! by default return true.
   Standard_EXPORT virtual bool HasVersion(const TCollection_ExtendedString& aFolder,
-                                          const TCollection_ExtendedString& aName);
+                                                      const TCollection_ExtendedString& aName);
 
   Standard_EXPORT virtual TCollection_ExtendedString BuildFileName(
     const occ::handle<CDM_Document>& aDocument) = 0;
@@ -58,19 +58,20 @@ public:
   //! based on the operating system can choose to add
   //! the extension of file to create to the object.
   Standard_EXPORT virtual TCollection_ExtendedString SetName(
-    const occ::handle<CDM_Document>&  aDocument,
+    const occ::handle<CDM_Document>&       aDocument,
     const TCollection_ExtendedString& aName);
 
   //! should indicate whether meta-data exist in the DBMS corresponding
   //! to the Data.
   //! aVersion may be NULL;
   Standard_EXPORT virtual bool Find(const TCollection_ExtendedString& aFolder,
-                                    const TCollection_ExtendedString& aName,
-                                    const TCollection_ExtendedString& aVersion) = 0;
+                                                const TCollection_ExtendedString& aName,
+                                                const TCollection_ExtendedString& aVersion) = 0;
 
-  Standard_EXPORT virtual bool HasReadPermission(const TCollection_ExtendedString& aFolder,
-                                                 const TCollection_ExtendedString& aName,
-                                                 const TCollection_ExtendedString& aVersion) = 0;
+  Standard_EXPORT virtual bool HasReadPermission(
+    const TCollection_ExtendedString& aFolder,
+    const TCollection_ExtendedString& aName,
+    const TCollection_ExtendedString& aVersion) = 0;
 
   //! should return the MetaData stored in the DBMS with the meta-data
   //! corresponding to the Data. If the MetaDataDriver has version management capabilities
@@ -92,8 +93,7 @@ public:
   //! If the version is not included in the path, MetaData should return
   //! the last version of the metadata
   //! is deferred;
-  Standard_EXPORT virtual occ::handle<CDM_MetaData> LastVersion(
-    const occ::handle<CDM_MetaData>& aMetaData);
+  Standard_EXPORT virtual occ::handle<CDM_MetaData> LastVersion(const occ::handle<CDM_MetaData>& aMetaData);
 
   //! should create meta-data corresponding to aData and maintaining a meta-link
   //! between these meta-data and aFileName
@@ -101,10 +101,11 @@ public:
   //! If the metadata-driver
   //! has version capabilities, version must be set in the returned Data.
   Standard_EXPORT virtual occ::handle<CDM_MetaData> CreateMetaData(
-    const occ::handle<CDM_Document>&  aDocument,
+    const occ::handle<CDM_Document>&       aDocument,
     const TCollection_ExtendedString& aFileName) = 0;
 
-  Standard_EXPORT virtual bool FindFolder(const TCollection_ExtendedString& aFolder) = 0;
+  Standard_EXPORT virtual bool FindFolder(
+    const TCollection_ExtendedString& aFolder) = 0;
 
   Standard_EXPORT virtual TCollection_ExtendedString DefaultFolder() = 0;
 
@@ -113,16 +114,17 @@ public:
 
   //! calls Find with an empty version
   Standard_EXPORT bool Find(const TCollection_ExtendedString& aFolder,
-                            const TCollection_ExtendedString& aName);
+                                        const TCollection_ExtendedString& aName);
 
   //! calls MetaData with an empty version
   Standard_EXPORT occ::handle<CDM_MetaData> MetaData(const TCollection_ExtendedString& aFolder,
-                                                     const TCollection_ExtendedString& aName);
+                                                const TCollection_ExtendedString& aName);
 
   DEFINE_STANDARD_RTTIEXT(CDF_MetaDataDriver, Standard_Transient)
 
 protected:
   Standard_EXPORT CDF_MetaDataDriver();
+
 };
 
 #endif // _CDF_MetaDataDriver_HeaderFile

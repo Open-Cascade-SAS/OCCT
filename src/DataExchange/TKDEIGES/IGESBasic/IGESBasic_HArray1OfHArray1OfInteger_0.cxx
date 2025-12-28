@@ -41,7 +41,7 @@ int IGESBasic_HArray1OfHArray1OfInteger::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfInteger::SetValue(const int                                    num,
+void IGESBasic_HArray1OfHArray1OfInteger::SetValue(const int                  num,
                                                    const occ::handle<NCollection_HArray1<int>>& val)
 {
   thelist.SetValue(num, val);

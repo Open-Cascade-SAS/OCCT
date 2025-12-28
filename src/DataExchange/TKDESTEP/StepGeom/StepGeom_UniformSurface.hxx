@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_UniformSurface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_UniformSurface, StepGeom_BSplineSurface)
+
 };
 
 #endif // _StepGeom_UniformSurface_HeaderFile

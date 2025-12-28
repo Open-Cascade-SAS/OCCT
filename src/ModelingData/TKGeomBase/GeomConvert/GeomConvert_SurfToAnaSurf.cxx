@@ -44,9 +44,11 @@
 #include <GeomConvert_SurfToAnaSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Extrema_ExtElC.hxx>
 #include <GeomLProp_SLProps.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
 #include <math_PSO.hxx>
@@ -61,8 +63,8 @@
 //=======================================================================
 void GeomConvert_SurfToAnaSurf::CheckVTrimForRevSurf(
   const occ::handle<Geom_SurfaceOfRevolution>& aRevSurf,
-  double&                                      V1,
-  double&                                      V2)
+  double&                          V1,
+  double&                          V2)
 {
   const occ::handle<Geom_Curve>& aBC   = aRevSurf->BasisCurve();
   occ::handle<Geom_Line>         aLine = occ::down_cast<Geom_Line>(aBC);
@@ -112,22 +114,21 @@ void GeomConvert_SurfToAnaSurf::CheckVTrimForRevSurf(
 // purpose  :
 // static method to try create cylindrical or conical surface
 //=======================================================================
-occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
-  const occ::handle<Geom_Surface>& theSurf,
-  const bool                       theVCase,
-  const occ::handle<Geom_Curve>&   theUmidiso,
-  const occ::handle<Geom_Curve>&   theVmidiso,
-  const double                     theU1,
-  const double                     theU2,
-  const double                     theV1,
-  const double                     theV2,
-  const double                     theToler)
+occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(const occ::handle<Geom_Surface>& theSurf,
+                                                               const bool      theVCase,
+                                                               const occ::handle<Geom_Curve>& theUmidiso,
+                                                               const occ::handle<Geom_Curve>& theVmidiso,
+                                                               const double       theU1,
+                                                               const double       theU2,
+                                                               const double       theV1,
+                                                               const double       theV2,
+                                                               const double       theToler)
 {
   occ::handle<Geom_Surface> aNewSurf;
-  double                    param1, param2, cf1, cf2, cl1, cl2, aGap1, aGap2;
+  double        param1, param2, cf1, cf2, cl1, cl2, aGap1, aGap2;
   occ::handle<Geom_Curve>   firstiso, lastiso;
   occ::handle<Geom_Circle>  firstisocirc, lastisocirc, midisocirc;
-  gp_Dir                    isoline;
+  gp_Dir               isoline;
   if (theVCase)
   {
     param1     = theU1;
@@ -148,28 +149,28 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
   }
   firstisocirc =
     occ::down_cast<Geom_Circle>(GeomConvert_CurveToAnaCurve::ComputeCurve(firstiso,
-                                                                          theToler,
-                                                                          param1,
-                                                                          param2,
-                                                                          cf1,
-                                                                          cl1,
-                                                                          aGap1,
-                                                                          GeomConvert_Target,
-                                                                          GeomAbs_Circle));
+                                                                            theToler,
+                                                                            param1,
+                                                                            param2,
+                                                                            cf1,
+                                                                            cl1,
+                                                                            aGap1,
+                                                                            GeomConvert_Target,
+                                                                            GeomAbs_Circle));
   lastisocirc =
     occ::down_cast<Geom_Circle>(GeomConvert_CurveToAnaCurve::ComputeCurve(lastiso,
-                                                                          theToler,
-                                                                          param1,
-                                                                          param2,
-                                                                          cf2,
-                                                                          cl2,
-                                                                          aGap2,
-                                                                          GeomConvert_Target,
-                                                                          GeomAbs_Circle));
+                                                                            theToler,
+                                                                            param1,
+                                                                            param2,
+                                                                            cf2,
+                                                                            cl2,
+                                                                            aGap2,
+                                                                            GeomConvert_Target,
+                                                                            GeomAbs_Circle));
   if (!firstisocirc.IsNull() || !lastisocirc.IsNull())
   {
     double R1, R2, R3;
-    gp_Pnt P1, P2, P3;
+    gp_Pnt        P1, P2, P3;
     if (!firstisocirc.IsNull())
     {
       R1 = firstisocirc->Circ().Radius();
@@ -204,7 +205,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
              || (((std::abs(R3)) > (std::abs(R2))) && ((std::abs(R2)) > (std::abs(R1)))))
     {
       double radius;
-      gp_Ax3 Axes;
+      gp_Ax3        Axes;
       double semiangle = gp_Vec(isoline).Angle(gp_Vec(P3, P1));
       if (semiangle > M_PI / 2)
         semiangle = M_PI - semiangle;
@@ -230,14 +231,14 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
 // static method to create cylinrical surface using least square method
 //=======================================================================
 static void GetLSGap(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
-                     const gp_Ax3&                                   thePos,
-                     const double                                    theR,
-                     double&                                         theGap)
+                     const gp_Ax3&                      thePos,
+                     const double                theR,
+                     double&                     theGap)
 {
   theGap = 0.;
-  int    i;
-  gp_XYZ aLoc = thePos.Location().XYZ();
-  gp_Dir aDir = thePos.Direction();
+  int i;
+  gp_XYZ           aLoc = thePos.Location().XYZ();
+  gp_Dir           aDir = thePos.Direction();
   for (i = thePoints->Lower(); i <= thePoints->Upper(); ++i)
   {
     gp_Vec aD(thePoints->Value(i) - aLoc);
@@ -246,12 +247,11 @@ static void GetLSGap(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
   }
 }
 
-bool GeomConvert_SurfToAnaSurf::GetCylByLS(
-  const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
-  const double                                    theTol,
-  gp_Ax3&                                         thePos,
-  double&                                         theR,
-  double&                                         theGap)
+bool GeomConvert_SurfToAnaSurf::GetCylByLS(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+                                                       const double                theTol,
+                                                       gp_Ax3&                            thePos,
+                                                       double&                     theR,
+                                                       double&                     theGap)
 {
 
   GetLSGap(thePoints, thePos, theR, theGap);
@@ -267,18 +267,18 @@ bool GeomConvert_SurfToAnaSurf::GetCylByLS(
   math_Vector aFBnd(1, aNbVar), aLBnd(1, aNbVar), aStartPoint(1, aNbVar);
 
   double aRelDev = 0.2; // Customer can set parameters of sample surface
-                        //  with relative precision about aRelDev.
-                        //  For example, if radius of sample surface is R,
-                        //  it means, that "exact" value is in interav
-                        //[R - aRelDev*R, R + aRelDev*R]. This interval is set
-                        //  for R as boundary values for optimization algo.
+                               //  with relative precision about aRelDev.
+                               //  For example, if radius of sample surface is R,
+                               //  it means, that "exact" value is in interav
+                               //[R - aRelDev*R, R + aRelDev*R]. This interval is set
+                               //  for R as boundary values for optimization algo.
 
-  aStartPoint(1) = thePos.Location().X();
-  aStartPoint(2) = thePos.Location().Y();
-  aStartPoint(3) = thePos.Location().Z();
-  aStartPoint(4) = theR;
-  double aDR     = aRelDev * theR;
-  double aDXYZ   = aDR;
+  aStartPoint(1)      = thePos.Location().X();
+  aStartPoint(2)      = thePos.Location().Y();
+  aStartPoint(3)      = thePos.Location().Z();
+  aStartPoint(4)      = theR;
+  double aDR   = aRelDev * theR;
+  double aDXYZ = aDR;
   for (i = 1; i <= 3; ++i)
   {
     aFBnd(i) = aStartPoint(i) - aDXYZ;
@@ -288,19 +288,19 @@ bool GeomConvert_SurfToAnaSurf::GetCylByLS(
   aLBnd(4) = aStartPoint(4) + aDR;
 
   //
-  constexpr double               aTol = Precision::Confusion();
+  constexpr double        aTol = Precision::Confusion();
   math_MultipleVarFunction*      aPFunc;
   GeomConvert_FuncCylinderLSDist aFuncCyl(thePoints, thePos.Direction());
   aPFunc = (math_MultipleVarFunction*)&aFuncCyl;
   //
-  math_Vector aSteps(1, aNbVar);
-  int         aNbInt = 10;
+  math_Vector      aSteps(1, aNbVar);
+  int aNbInt = 10;
   for (i = 1; i <= aNbVar; ++i)
   {
     aSteps(i) = (aLBnd(i) - aFBnd(i)) / aNbInt;
   }
-  math_PSO aGlobSolver(aPFunc, aFBnd, aLBnd, aSteps);
-  double   aLSDist;
+  math_PSO      aGlobSolver(aPFunc, aFBnd, aLBnd, aSteps);
+  double aLSDist;
   aGlobSolver.Perform(aSteps, aLSDist, aStartPoint);
   //
   gp_Pnt aLoc(aStartPoint(1), aStartPoint(2), aStartPoint(3));
@@ -366,20 +366,20 @@ bool GeomConvert_SurfToAnaSurf::GetCylByLS(
 
 occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   const occ::handle<Geom_Surface>& theSurf,
-  const double                     theU1,
-  const double                     theU2,
-  const double                     theV1,
-  const double                     theV2,
-  const double                     theToler,
-  const int                        theNbU,
-  const int                        theNbV,
-  const bool                       theLeastSquare)
+  const double         theU1,
+  const double         theU2,
+  const double         theV1,
+  const double         theV2,
+  const double         theToler,
+  const int      theNbU,
+  const int      theNbV,
+  const bool      theLeastSquare)
 {
-  occ::handle<Geom_Surface>  aNewSurf;
-  double                     du = (theU2 - theU1) / theNbU, dv = (theV2 - theV1) / theNbV;
-  double                     aSigmaR = 0.;
-  double                     aTol    = 1.e3 * theToler;
-  NCollection_Array1<double> anRs(1, theNbU * theNbV);
+  occ::handle<Geom_Surface>        aNewSurf;
+  double               du = (theU2 - theU1) / theNbU, dv = (theV2 - theV1) / theNbV;
+  double               aSigmaR = 0.;
+  double               aTol    = 1.e3 * theToler;
+  NCollection_Array1<double>        anRs(1, theNbU * theNbV);
   occ::handle<NCollection_HArray1<gp_XYZ>> aPoints;
   if (theLeastSquare)
   {
@@ -387,11 +387,11 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   }
   //
   GeomLProp_SLProps aProps(theSurf, 2, Precision::Confusion());
-  double            anAvMaxCurv = 0., anAvMinCurv = 0., anAvR = 0, aSign = 1.;
+  double     anAvMaxCurv = 0., anAvMinCurv = 0., anAvR = 0, aSign = 1.;
   gp_XYZ            anAvDir;
   gp_Dir            aMinD, aMaxD;
-  int               i, j, n = 0;
-  double            anU, aV;
+  int  i, j, n = 0;
+  double     anU, aV;
   for (i = 1, anU = theU1 + du / 2.; i <= theNbU; ++i, anU += du)
   {
     for (j = 1, aV = theV1 + dv / 2.; j <= theNbV; ++j, aV += dv)
@@ -429,7 +429,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
       }
       double anR  = 1. / aMaxCurv;
       double anR2 = anR * anR;
-      anRs(n)     = anR;
+      anRs(n)            = anR;
       //
       if (n > 1)
       {
@@ -491,10 +491,10 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
 
   if (theLeastSquare)
   {
-    gp_Ax3 aPos   = aCyl.Position();
-    double anR    = aCyl.Radius();
-    double aGap   = 0.;
-    bool   IsDone = GetCylByLS(aPoints, theToler, aPos, anR, aGap);
+    gp_Ax3           aPos   = aCyl.Position();
+    double    anR    = aCyl.Radius();
+    double    aGap   = 0.;
+    bool IsDone = GetCylByLS(aPoints, theToler, aPos, anR, aGap);
     if (IsDone)
     {
       aCyl.SetPosition(aPos);
@@ -518,18 +518,18 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
   const occ::handle<Geom_Surface>& theSurf,
   const occ::handle<Geom_Circle>&  circle,
   const occ::handle<Geom_Circle>&  otherCircle,
-  const double                     Param1,
-  const double                     Param2,
-  const double                     aParam1ToCrv,
-  const double                     aParam2ToCrv,
-  const double                     toler,
-  const bool                       isTryUMajor)
+  const double         Param1,
+  const double         Param2,
+  const double         aParam1ToCrv,
+  const double         aParam2ToCrv,
+  const double         toler,
+  const bool      isTryUMajor)
 {
   occ::handle<Geom_Surface> newSurface;
-  double                    cf, cl;
+  double        cf, cl;
   occ::handle<Geom_Curve>   IsoCrv1;
   occ::handle<Geom_Curve>   IsoCrv2;
-  double                    aGap1, aGap2;
+  double        aGap1, aGap2;
   // initial radius
   double R = circle->Circ().Radius();
   // iso lines
@@ -546,31 +546,31 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
   }
 
   occ::handle<Geom_Curve> Crv1 = GeomConvert_CurveToAnaCurve::ComputeCurve(IsoCrv1,
-                                                                           toler,
-                                                                           aParam1ToCrv,
-                                                                           aParam2ToCrv,
-                                                                           cf,
-                                                                           cl,
-                                                                           aGap1,
-                                                                           GeomConvert_Target,
-                                                                           GeomAbs_Circle);
+                                                                      toler,
+                                                                      aParam1ToCrv,
+                                                                      aParam2ToCrv,
+                                                                      cf,
+                                                                      cl,
+                                                                      aGap1,
+                                                                      GeomConvert_Target,
+                                                                      GeomAbs_Circle);
   occ::handle<Geom_Curve> Crv2 = GeomConvert_CurveToAnaCurve::ComputeCurve(IsoCrv2,
-                                                                           toler,
-                                                                           aParam1ToCrv,
-                                                                           aParam2ToCrv,
-                                                                           cf,
-                                                                           cl,
-                                                                           aGap2,
-                                                                           GeomConvert_Target,
-                                                                           GeomAbs_Circle);
+                                                                      toler,
+                                                                      aParam1ToCrv,
+                                                                      aParam2ToCrv,
+                                                                      cf,
+                                                                      cl,
+                                                                      aGap2,
+                                                                      GeomConvert_Target,
+                                                                      GeomAbs_Circle);
   if (Crv1.IsNull() || Crv2.IsNull() || !Crv1->IsKind(STANDARD_TYPE(Geom_Circle))
       || !Crv2->IsKind(STANDARD_TYPE(Geom_Circle)))
     return newSurface;
 
   occ::handle<Geom_Circle> aCircle1 = occ::down_cast<Geom_Circle>(Crv1);
   occ::handle<Geom_Circle> aCircle2 = occ::down_cast<Geom_Circle>(Crv2);
-  double                   R1       = aCircle1->Circ().Radius();
-  double                   R2       = aCircle2->Circ().Radius();
+  double       R1       = aCircle1->Circ().Radius();
+  double       R2       = aCircle2->Circ().Radius();
 
   // check radiuses
   if ((std::abs(R - R1) > toler) || (std::abs(R - R2) > toler))
@@ -583,15 +583,15 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
   aPnt3 = aCircle2->Circ().Location();
 
   // double eps = 1.e-09;  // angular resolution
-  double  d0 = aPnt1.Distance(aPnt2);
-  double  d1 = aPnt1.Distance(aPnt3);
-  gp_Circ circ;
+  double d0 = aPnt1.Distance(aPnt2);
+  double d1 = aPnt1.Distance(aPnt3);
+  gp_Circ       circ;
 
   if (d0 < toler || d1 < toler)
   {
     // compute sphere
-    gp_Dir                             MainDir = otherCircle->Circ().Axis().Direction();
-    gp_Ax3                             Axes(circle->Circ().Location(), MainDir);
+    gp_Dir                        MainDir = otherCircle->Circ().Axis().Direction();
+    gp_Ax3                        Axes(circle->Circ().Location(), MainDir);
     occ::handle<Geom_SphericalSurface> anObject = new Geom_SphericalSurface(Axes, R);
     if (!anObject.IsNull())
       newSurface = anObject;
@@ -603,9 +603,9 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
     return newSurface;
 
   double aMajorR = circ.Radius();
-  gp_Pnt aCenter = circ.Location();
-  gp_Dir aDir((aPnt1.XYZ() - aCenter.XYZ()) ^ (aPnt3.XYZ() - aCenter.XYZ()));
-  gp_Ax3 anAx3(aCenter, aDir);
+  gp_Pnt        aCenter = circ.Location();
+  gp_Dir        aDir((aPnt1.XYZ() - aCenter.XYZ()) ^ (aPnt3.XYZ() - aCenter.XYZ()));
+  gp_Ax3        anAx3(aCenter, aDir);
   newSurface = new Geom_ToroidalSurface(anAx3, aMajorR, R);
   return newSurface;
 }
@@ -613,12 +613,12 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
 //=================================================================================================
 
 double GeomConvert_SurfToAnaSurf::ComputeGap(const occ::handle<Geom_Surface>& theSurf,
-                                             const double                     theU1,
-                                             const double                     theU2,
-                                             const double                     theV1,
-                                             const double                     theV2,
-                                             const occ::handle<Geom_Surface>& theNewSurf,
-                                             const double                     theTol)
+                                                    const double         theU1,
+                                                    const double         theU2,
+                                                    const double         theV1,
+                                                    const double         theV2,
+                                                    const occ::handle<Geom_Surface>& theNewSurf,
+                                                    const double         theTol)
 {
   GeomAdaptor_Surface aGAS(theNewSurf);
   GeomAbs_SurfaceType aSType = aGAS.GetType();
@@ -649,17 +649,17 @@ double GeomConvert_SurfToAnaSurf::ComputeGap(const occ::handle<Geom_Surface>& th
       break;
   }
 
-  double aGap      = 0.;
-  bool   onSurface = true;
+  double    aGap      = 0.;
+  bool onSurface = true;
 
   double S, T;
-  gp_Pnt P3d, P3d2;
+  gp_Pnt        P3d, P3d2;
 
   const int NP = 21;
-  double    DU, DV;
+  double          DU, DV;
   int       j, i;
-  DU         = (theU2 - theU1) / (NP - 1);
-  DV         = (theV2 - theV1) / (NP - 1);
+  DU                = (theU2 - theU1) / (NP - 1);
+  DV                = (theV2 - theV1) / (NP - 1);
   double DU2 = DU / 2., DV2 = DV / 2.;
   for (j = 1; (j < NP) && onSurface; j++)
   {
@@ -746,7 +746,8 @@ void GeomConvert_SurfToAnaSurf::Init(const occ::handle<Geom_Surface>& S)
 
 //=================================================================================================
 
-occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const double InitialToler)
+occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(
+  const double InitialToler)
 {
   double U1, U2, V1, V2;
   mySurf->Bounds(U1, U2, V1, V2);
@@ -757,10 +758,9 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
   }
   if (Precision::IsInfinite(V1) && Precision::IsInfinite(V2))
   {
-    V1 = -1.;
-    V2 = 1.;
-    occ::handle<Geom_SurfaceOfRevolution> aRevSurf =
-      occ::down_cast<Geom_SurfaceOfRevolution>(mySurf);
+    V1                                        = -1.;
+    V2                                        = 1.;
+    occ::handle<Geom_SurfaceOfRevolution> aRevSurf = occ::down_cast<Geom_SurfaceOfRevolution>(mySurf);
     if (!aRevSurf.IsNull())
     {
       CheckVTrimForRevSurf(aRevSurf, V1, V2);
@@ -771,11 +771,12 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
 
 //=================================================================================================
 
-occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const double InitialToler,
-                                                                         const double Umin,
-                                                                         const double Umax,
-                                                                         const double Vmin,
-                                                                         const double Vmax)
+occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(
+  const double InitialToler,
+  const double Umin,
+  const double Umax,
+  const double Vmin,
+  const double Vmax)
 {
   //
   GeomAdaptor_Surface aGAS(mySurf);
@@ -806,21 +807,21 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
       break;
   }
   //
-  double                    toler = InitialToler;
+  double        toler = InitialToler;
   occ::handle<Geom_Surface> newSurf[5];
-  double                    dd[5] = {RealLast(), RealLast(), RealLast(), RealLast(), RealLast()};
-  GeomAbs_SurfaceType       aSTypes[5] = {GeomAbs_Plane,
-                                          GeomAbs_Cylinder,
-                                          GeomAbs_Cone,
-                                          GeomAbs_Sphere,
-                                          GeomAbs_Torus};
+  double        dd[5]      = {RealLast(), RealLast(), RealLast(), RealLast(), RealLast()};
+  GeomAbs_SurfaceType  aSTypes[5] = {GeomAbs_Plane,
+                                     GeomAbs_Cylinder,
+                                     GeomAbs_Cone,
+                                     GeomAbs_Sphere,
+                                     GeomAbs_Torus};
 
   // Check boundaries
   double U1, U2, V1, V2;
   mySurf->Bounds(U1, U2, V1, V2);
-  bool             aDoSegment = false;
+  bool        aDoSegment = false;
   constexpr double aTolBnd    = Precision::PConfusion();
-  int              isurf      = 0;
+  int        isurf      = 0;
   if (Umin < U1 || Umax > U2 || Vmin < V1 || Vmax > V2)
   {
     return newSurf[isurf];
@@ -904,7 +905,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
   if (toler > diagonal / twist)
     toler = diagonal / twist;
 
-  isurf               = 1; // set cylinder
+  isurf                           = 1; // set cylinder
   bool aCylinderConus = false;
   bool aToroidSphere  = false;
 
@@ -916,28 +917,28 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
   occ::handle<Geom_Curve> UIso = aTempS->UIso(UMid);
   occ::handle<Geom_Curve> VIso = aTempS->VIso(VMid);
 
-  double                  cuf, cul, cvf, cvl, aGap1, aGap2;
-  bool                    aLineIso = false;
+  double      cuf, cul, cvf, cvl, aGap1, aGap2;
+  bool   aLineIso = false;
   occ::handle<Geom_Curve> umidiso  = GeomConvert_CurveToAnaCurve::ComputeCurve(UIso,
-                                                                              toler,
-                                                                              V1,
-                                                                              V2,
-                                                                              cuf,
-                                                                              cul,
-                                                                              aGap1,
-                                                                              GeomConvert_Simplest);
+                                                                         toler,
+                                                                         V1,
+                                                                         V2,
+                                                                         cuf,
+                                                                         cul,
+                                                                         aGap1,
+                                                                         GeomConvert_Simplest);
   if (!umidiso.IsNull())
   {
     aLineIso = umidiso->IsKind(STANDARD_TYPE(Geom_Line));
   }
   occ::handle<Geom_Curve> vmidiso = GeomConvert_CurveToAnaCurve::ComputeCurve(VIso,
-                                                                              toler,
-                                                                              U1,
-                                                                              U2,
-                                                                              cvf,
-                                                                              cvl,
-                                                                              aGap2,
-                                                                              GeomConvert_Simplest);
+                                                                         toler,
+                                                                         U1,
+                                                                         U2,
+                                                                         cvf,
+                                                                         cvl,
+                                                                         aGap2,
+                                                                         GeomConvert_Simplest);
   if (!vmidiso.IsNull() && !aLineIso)
   {
     aLineIso = vmidiso->IsKind(STANDARD_TYPE(Geom_Line));
@@ -1050,8 +1051,8 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
   if (!aCylinderConus && !aToroidSphere && aLineIso)
   {
     // Try cylinder using Gauss field
-    int                       aNbU = 7, aNbV = 7;
-    bool                      aLeastSquare = true;
+    int     aNbU = 7, aNbV = 7;
+    bool     aLeastSquare = true;
     occ::handle<Geom_Surface> anObject =
       TryCylinderByGaussField(aTempS, U1, U2, V1, V2, toler, aNbU, aNbV, aLeastSquare);
     if (!anObject.IsNull())
@@ -1065,8 +1066,8 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
   //---------------------------------------------------------------------
   //                 verification
   //---------------------------------------------------------------------
-  int    imin  = -1;
-  double aDmin = RealLast();
+  int imin  = -1;
+  double    aDmin = RealLast();
   for (isurf = 0; isurf < 5; ++isurf)
   {
     if (newSurf[isurf].IsNull())
@@ -1103,8 +1104,8 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const d
 //=================================================================================================
 
 bool GeomConvert_SurfToAnaSurf::IsSame(const occ::handle<Geom_Surface>& S1,
-                                       const occ::handle<Geom_Surface>& S2,
-                                       const double                     tol)
+                                                   const occ::handle<Geom_Surface>& S2,
+                                                   const double         tol)
 {
   // only elementary surfaces are processed
   if (!S1->IsKind(STANDARD_TYPE(Geom_ElementarySurface))

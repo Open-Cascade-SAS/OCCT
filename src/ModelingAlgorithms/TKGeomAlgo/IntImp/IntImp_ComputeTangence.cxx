@@ -32,9 +32,9 @@ IntImp_ConstIsoparametric ChoixRef(int theIndex)
 //=================================================================================================
 
 bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
-                            const double              EpsUV[],
-                            double                    Tgduv[],
-                            IntImp_ConstIsoparametric TabIso[])
+                                        const double       EpsUV[],
+                                        double             Tgduv[],
+                                        IntImp_ConstIsoparametric TabIso[])
 //                 arguments d entree:
 // DPuv [0] =derivee en u sur caro 1
 // DPuv [1] =derivee en v sur caro 1
@@ -65,8 +65,8 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
 // l intersection
 
 {
-  double NormDuv[4], aM2, aTol2;
-  int    i;
+  double    NormDuv[4], aM2, aTol2;
+  int i;
   //
   aTol2 = 1.e-32;
   //
@@ -136,8 +136,8 @@ bool IntImp_ComputeTangence(const gp_Vec              DPuv[],
     NormDuv[3] = std::abs(Tgduv[2]) / NormDuv[3]; // iso v sur caro2
 
     //-- Tri sur NormDuv  ( en para. avec ChoixRef )
-    bool                      triOk = false;
-    double                    t;
+    bool          triOk = false;
+    double             t;
     IntImp_ConstIsoparametric ti;
     for (i = 0; i <= 3; i++)
     {

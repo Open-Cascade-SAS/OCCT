@@ -31,7 +31,9 @@ class GeomFill_Tensor
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomFill_Tensor(const int NbRow, const int NbCol, const int NbMat);
+  Standard_EXPORT GeomFill_Tensor(const int NbRow,
+                                  const int NbCol,
+                                  const int NbMat);
 
   //! Initialize all the elements of a Tensor to InitialValue.
   Standard_EXPORT void Init(const double InitialValue);
@@ -40,9 +42,13 @@ public:
   //! <Col> and <Mat> of a Tensor.
   //! An exception is raised if <Row>, <Col> or <Mat> are not
   //! in the correct range.
-  const double& Value(const int Row, const int Col, const int Mat) const;
+  const double& Value(const int Row,
+                             const int Col,
+                             const int Mat) const;
 
-  const double& operator()(const int Row, const int Col, const int Mat) const
+  const double& operator()(const int Row,
+                                  const int Col,
+                                  const int Mat) const
   {
     return Value(Row, Col, Mat);
   }
@@ -51,9 +57,13 @@ public:
   //! <Col> and <Mat> of a Tensor.
   //! An exception is raised if <Row>, <Col> or <Mat> are not
   //! in the correct range.
-  double& ChangeValue(const int Row, const int Col, const int Mat);
+  double& ChangeValue(const int Row,
+                             const int Col,
+                             const int Mat);
 
-  double& operator()(const int Row, const int Col, const int Mat)
+  double& operator()(const int Row,
+                            const int Col,
+                            const int Mat)
   {
     return ChangeValue(Row, Col, Mat);
   }
@@ -62,10 +72,10 @@ public:
 
 private:
   NCollection_Array1<double> Tab;
-  int                        nbrow;
-  int                        nbcol;
-  int                        nbmat;
-  int                        nbmtcl;
+  int     nbrow;
+  int     nbcol;
+  int     nbmat;
+  int     nbmtcl;
 };
 
 #include <GeomFill_Tensor.lxx>

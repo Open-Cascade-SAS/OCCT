@@ -47,8 +47,8 @@ public:
 
 private:
   TopOpeBRep_PLineInter myLineInter;
-  int                   myWPointIndex;
-  int                   myWPointNb;
+  int      myWPointIndex;
+  int      myWPointNb;
 };
 
 #endif // _TopOpeBRep_WPointInterIterator_HeaderFile

@@ -48,9 +48,9 @@ public:
   //! The option theDoAppend specifies whether file should be
   //! appended or rewritten.
   //! For specific file names (cout, cerr) standard streams are used
-  Standard_EXPORT Message_PrinterOStream(const char*           theFileName,
-                                         const bool            theDoAppend,
-                                         const Message_Gravity theTraceLevel = Message_Info);
+  Standard_EXPORT Message_PrinterOStream(const char* theFileName,
+                                         const bool theDoAppend,
+                                         const Message_Gravity  theTraceLevel = Message_Info);
 
   //! Flushes the output stream and destroys it if it has been
   //! specified externally with option doFree (or if it is internal
@@ -74,12 +74,12 @@ protected:
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+                                    const Message_Gravity theGravity) const override;
 
 private:
   void* myStream;
-  bool  myIsFile;
-  bool  myToColorize;
+  bool myIsFile;
+  bool myToColorize;
 };
 
 #endif // _Message_PrinterOStream_HeaderFile

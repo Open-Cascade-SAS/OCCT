@@ -19,6 +19,7 @@
 #include <ElCLib.hxx>
 #include <Law_Composite.hxx>
 #include <Law_Function.hxx>
+#include <Law_Function.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
@@ -42,7 +43,9 @@ Law_Composite::Law_Composite()
 
 //=================================================================================================
 
-Law_Composite::Law_Composite(const double First, const double Last, const double Tol)
+Law_Composite::Law_Composite(const double First,
+                             const double Last,
+                             const double Tol)
     : first(-1.e100),
       last(1.e100),
       periodic(false),
@@ -67,8 +70,8 @@ GeomAbs_Shape Law_Composite::Continuity() const
 int Law_Composite::NbIntervals(const GeomAbs_Shape S) const
 {
   NCollection_List<occ::handle<Law_Function>>::Iterator It(funclist);
-  occ::handle<Law_Function>                             func;
-  int                                                   nbr_interval = 0;
+  occ::handle<Law_Function>   func;
+  int       nbr_interval = 0;
 
   for (; It.More(); It.Next())
   {
@@ -84,10 +87,10 @@ int Law_Composite::NbIntervals(const GeomAbs_Shape S) const
 //=======================================================================
 void Law_Composite::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  NCollection_List<occ::handle<Law_Function>>::Iterator It(funclist);
-  occ::handle<Law_Function>                             func;
-  occ::handle<NCollection_HArray1<double>>              LocT;
-  int                                                   nb_index, Iloc, IGlob = 2;
+  NCollection_List<occ::handle<Law_Function>>::Iterator        It(funclist);
+  occ::handle<Law_Function>          func;
+  occ::handle<NCollection_HArray1<double>> LocT;
+  int              nb_index, Iloc, IGlob = 2;
 
   func = funclist.First();
   func->Bounds(T(1), T(2));
@@ -138,11 +141,11 @@ void Law_Composite::D2(const double X, double& F, double& D, double& D2)
 //=======================================================================
 
 occ::handle<Law_Function> Law_Composite::Trim(const double PFirst,
-                                              const double PLast,
-                                              const double Tol) const
+                                         const double PLast,
+                                         const double Tol) const
 {
   occ::handle<Law_Composite> l = new (Law_Composite)(PFirst, PLast, Tol);
-  l->ChangeLaws()              = funclist;
+  l->ChangeLaws()         = funclist;
   return l;
 }
 

@@ -273,7 +273,8 @@ public: //! @name Geometry management API
   bool IsYup() const { return myIsYup; }
 
   //! Set if application expects Y-up viewer orientation instead of Z-up.
-  Standard_EXPORT void SetYup(bool theIsYup, bool theToUpdateLabels = true);
+  Standard_EXPORT void SetYup(bool theIsYup,
+                              bool theToUpdateLabels = true);
 
 public: //! @name Style management API
   //! Return shading style of box sides.
@@ -426,7 +427,10 @@ public:
 
   //! Set new value of transparency for the whole object.
   //! @param[in] theValue  input transparency value.
-  virtual void SetTransparency(const double theValue) override { SetBoxTransparency(theValue); }
+  virtual void SetTransparency(const double theValue) override
+  {
+    SetBoxTransparency(theValue);
+  }
 
   //! Reset transparency for the whole object.
   virtual void UnsetTransparency() override { SetBoxTransparency(0.0f); }
@@ -513,7 +517,10 @@ protected: //! @name protected virtual API
 
 public: //! @name Presentation computation
   //! Return TRUE for supported display mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Global selection has no meaning for this class.
   virtual occ::handle<SelectMgr_EntityOwner> GlobalSelOwner() const override
@@ -534,9 +541,8 @@ public: //! @name Presentation computation
   //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
   //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden
   //! methods.
@@ -556,9 +562,9 @@ public: //! @name Presentation computation
     const occ::handle<SelectMgr_EntityOwner>&      theOwner) override;
 
   //! Method which draws selected owners.
-  Standard_EXPORT virtual void HilightSelected(
-    const occ::handle<PrsMgr_PresentationManager>&                  thePM,
-    const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>& theSeq) override;
+  Standard_EXPORT virtual void HilightSelected(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                               const NCollection_Sequence<occ::handle<SelectMgr_EntityOwner>>&          theSeq)
+    override;
 
   //! Set default parameters for visual attributes
   //! @sa Attributes()
@@ -586,9 +592,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxPartTriangles(
     const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
-    int&                                           theNbNodes,
-    int&                                           theNbTris,
-    V3d_TypeOfOrientation                          theDir) const;
+    int&                         theNbNodes,
+    int&                         theNbTris,
+    V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box side.
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
@@ -599,9 +605,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxSideTriangles(
     const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
-    int&                                           theNbNodes,
-    int&                                           theNbTris,
-    V3d_TypeOfOrientation                          theDir) const;
+    int&                         theNbNodes,
+    int&                         theNbTris,
+    V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box edge.
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
@@ -612,9 +618,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxEdgeTriangles(
     const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
-    int&                                           theNbNodes,
-    int&                                           theNbTris,
-    V3d_TypeOfOrientation                          theDir) const;
+    int&                         theNbNodes,
+    int&                         theNbTris,
+    V3d_TypeOfOrientation                     theDir) const;
 
   //! Create triangulation for a box corner (vertex).
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
@@ -625,9 +631,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxCornerTriangles(
     const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
-    int&                                           theNbNodes,
-    int&                                           theNbTris,
-    V3d_TypeOfOrientation                          theDir) const;
+    int&                         theNbNodes,
+    int&                         theNbTris,
+    V3d_TypeOfOrientation                     theDir) const;
 
 protected:
   //! Create triangulation for a rectangle with round corners.
@@ -641,17 +647,17 @@ protected:
   //! @param[in] theTrsf     transformation
   Standard_EXPORT static void createRoundRectangleTriangles(
     const occ::handle<Graphic3d_ArrayOfTriangles>& theTris,
-    int&                                           theNbNodes,
-    int&                                           theNbTris,
-    const gp_XY&                                   theSize,
-    double                                         theRadius,
-    const gp_Trsf&                                 theTrsf);
+    int&                         theNbNodes,
+    int&                         theNbTris,
+    const gp_XY&                              theSize,
+    double                             theRadius,
+    const gp_Trsf&                            theTrsf);
 
 protected:
   NCollection_DataMap<V3d_TypeOfOrientation, TCollection_AsciiString>
     myBoxSideLabels; //!< map with box side labels
   NCollection_DataMap<Prs3d_DatumParts, TCollection_AsciiString>
-                                   myAxesLabels;      //!< map with axes labels
+                              myAxesLabels;      //!< map with axes labels
   occ::handle<Prs3d_ShadingAspect> myBoxEdgeAspect;   //!< style for box edges
   occ::handle<Prs3d_ShadingAspect> myBoxCornerAspect; //!< style for box corner
 
@@ -672,13 +678,13 @@ protected:
   bool              myIsYup;             //!< flag indicating that application expects Y-up viewer orientation instead of Z-up
   // clang-format on
 
-protected:                                             //! @name Animation options
+protected:                                        //! @name Animation options
   occ::handle<AIS_AnimationCamera> myViewAnimation;    //!< Camera animation object
   occ::handle<Graphic3d_Camera>    myStartState;       //!< Start state of view camera
   occ::handle<Graphic3d_Camera>    myEndState;         //!< End state of view camera
-  bool                             myToAutoStartAnim;  //!< start animation automatically on click
-  bool                             myIsFixedAnimation; //!< fixed-loop animation
-  bool                             myToFitSelected;    //!< fit selected or fit entire scene
+  bool            myToAutoStartAnim;  //!< start animation automatically on click
+  bool            myIsFixedAnimation; //!< fixed-loop animation
+  bool            myToFitSelected;    //!< fit selected or fit entire scene
   // clang-format off
   bool              myToResetCameraUp;   //!< always reset camera up direction to default
   // clang-format on
@@ -692,10 +698,9 @@ class AIS_ViewCubeOwner : public SelectMgr_EntityOwner
 public:
   //! Main constructor.
   AIS_ViewCubeOwner(const occ::handle<AIS_ViewCube>& theObject,
-                    V3d_TypeOfOrientation            theOrient,
-                    int                              thePriority = 5)
-      : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject,
-                              thePriority),
+                    V3d_TypeOfOrientation       theOrient,
+                    int            thePriority = 5)
+      : SelectMgr_EntityOwner((const occ::handle<SelectMgr_SelectableObject>&)theObject, thePriority),
         myMainOrient(theOrient)
   {
     myFromDecomposition = true;
@@ -710,9 +715,9 @@ public:
 
   //! Handle mouse button click event.
   virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                Aspect_VKeyMouse             theButton,
-                                Aspect_VKeyFlags             theModifiers,
-                                bool                         theIsDoubleClick) override
+                                            Aspect_VKeyMouse       theButton,
+                                            Aspect_VKeyFlags       theModifiers,
+                                            bool theIsDoubleClick) override
   {
     (void)thePoint;
     (void)theButton;
@@ -738,7 +743,8 @@ public:
 
   //! Checks whether element overlaps current selecting volume.
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
 protected:
   //! Checks if picking ray can be used for detection.

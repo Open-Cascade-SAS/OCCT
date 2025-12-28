@@ -45,8 +45,7 @@ void StepBasic_PersonAndOrganizationAssignment::SetRole(
   role = aRole;
 }
 
-occ::handle<StepBasic_PersonAndOrganizationRole> StepBasic_PersonAndOrganizationAssignment::Role()
-  const
+occ::handle<StepBasic_PersonAndOrganizationRole> StepBasic_PersonAndOrganizationAssignment::Role() const
 {
   return role;
 }

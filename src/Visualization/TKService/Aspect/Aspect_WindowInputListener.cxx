@@ -64,9 +64,9 @@ void Aspect_WindowInputListener::KeyFromAxis(Aspect_VKey theNegative,
 
 //=================================================================================================
 
-void Aspect_WindowInputListener::AddTouchPoint(size_t                          theId,
+void Aspect_WindowInputListener::AddTouchPoint(size_t          theId,
                                                const NCollection_Vec2<double>& thePnt,
-                                               bool                            theClearBefore)
+                                               bool       theClearBefore)
 {
   if (theClearBefore)
   {
@@ -78,7 +78,8 @@ void Aspect_WindowInputListener::AddTouchPoint(size_t                          t
 
 //=================================================================================================
 
-bool Aspect_WindowInputListener::RemoveTouchPoint(size_t theId, bool theClearSelectPnts)
+bool Aspect_WindowInputListener::RemoveTouchPoint(size_t    theId,
+                                                  bool theClearSelectPnts)
 {
   (void)theClearSelectPnts;
   if (theId == (size_t)-1)
@@ -106,7 +107,7 @@ bool Aspect_WindowInputListener::RemoveTouchPoint(size_t theId, bool theClearSel
 
 //=================================================================================================
 
-void Aspect_WindowInputListener::UpdateTouchPoint(size_t                          theId,
+void Aspect_WindowInputListener::UpdateTouchPoint(size_t          theId,
                                                   const NCollection_Vec2<double>& thePnt)
 {
   if (Aspect_Touch* aTouch = myTouchPoints.ChangeSeek(theId))
@@ -128,8 +129,8 @@ bool Aspect_WindowInputListener::update3dMouseTranslation(const WNT_HIDSpaceMous
     return false;
   }
 
-  bool                           isIdle     = true;
-  const double                   aTimeStamp = EventTime();
+  bool                  isIdle     = true;
+  const double          aTimeStamp = EventTime();
   const NCollection_Vec3<double> aTrans =
     theEvent.Translation(isIdle, my3dMouseIsQuadric) * my3dMouseAccelTrans;
   myKeys.KeyFromAxis(Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp, aTrans.x());
@@ -147,8 +148,8 @@ bool Aspect_WindowInputListener::update3dMouseRotation(const WNT_HIDSpaceMouse& 
     return false;
   }
 
-  bool                           isIdle = true, toUpdate = false;
-  const double                   aTimeStamp = EventTime();
+  bool                  isIdle = true, toUpdate = false;
+  const double          aTimeStamp = EventTime();
   const NCollection_Vec3<double> aRot3 =
     theEvent.Rotation(isIdle, my3dMouseIsQuadric) * my3dMouseAccelRotate;
   if (!my3dMouseNoRotate.x())

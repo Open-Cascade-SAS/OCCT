@@ -36,7 +36,7 @@ namespace
 {
 //! Helper function to validate configuration node
 bool validateNode(const occ::handle<DE_ConfigurationNode>& theNode,
-                  const TCollection_AsciiString&           theContext)
+                              const TCollection_AsciiString&      theContext)
 {
   return DE_ValidationUtils::ValidateConfigurationNode(theNode,
                                                        STANDARD_TYPE(DESTEP_ConfigurationNode),
@@ -52,12 +52,12 @@ bool validateNode(const occ::handle<DE_ConfigurationNode>& theNode,
 //! @param[in] theLengthUnit Length unit for document setup (used only if theDocument is provided)
 //! @param[in] theShapeFixParams Shape fix parameters (optional, uses default if not provided)
 //! @note Sets up colors, names, layers, properties, metadata, and shape fix parameters
-void configureSTEPCAFReader(STEPCAFControl_Reader&               theReader,
-                            const DESTEP_Parameters&             theParams,
+void configureSTEPCAFReader(STEPCAFControl_Reader&          theReader,
+                            const DESTEP_Parameters&        theParams,
                             occ::handle<XSControl_WorkSession>&  theWS,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            double                               theLengthUnit,
-                            const DE_ShapeFixParameters&         theShapeFixParams)
+                            double                   theLengthUnit,
+                            const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theReader.Init(theWS);
 
@@ -83,12 +83,12 @@ void configureSTEPCAFReader(STEPCAFControl_Reader&               theReader,
 //! @param[in] theLengthUnit Length unit for document setup
 //! @param[in] theShapeFixParams Shape fix parameters
 //! @note Sets up all write parameters including colors, names, layers, props, materials
-void configureSTEPCAFWriter(STEPCAFControl_Writer&               theWriter,
-                            const DESTEP_Parameters&             theParams,
+void configureSTEPCAFWriter(STEPCAFControl_Writer&          theWriter,
+                            const DESTEP_Parameters&        theParams,
                             occ::handle<XSControl_WorkSession>&  theWS,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            double                               theLengthUnit,
-                            const DE_ShapeFixParameters&         theShapeFixParams)
+                            double                   theLengthUnit,
+                            const DE_ShapeFixParameters&    theShapeFixParams)
 {
   theWriter.Init(theWS);
 
@@ -153,10 +153,10 @@ DESTEP_Provider::DESTEP_Provider(const occ::handle<DE_ConfigurationNode>& theNod
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
@@ -198,10 +198,10 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
                             occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
@@ -260,9 +260,9 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(thePath, theDocument, aWS, theProgress);
@@ -270,9 +270,9 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(thePath, theDocument, aWS, theProgress);
@@ -280,10 +280,10 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(const TCollection_AsciiString&      thePath,
-                           TopoDS_Shape&                       theShape,
+bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
+                           TopoDS_Shape&                  theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+                           const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!validateNode(GetNode(), aContext))
@@ -295,9 +295,9 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&      thePath,
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
   aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
-  IFSelect_ReturnStatus aReadstat        = IFSelect_RetVoid;
-  DESTEP_Parameters     aParams          = aNode->InternalParameters;
-  aReadstat                              = aReader.ReadFile(thePath.ToCString(), aParams);
+  IFSelect_ReturnStatus aReadstat   = IFSelect_RetVoid;
+  DESTEP_Parameters     aParams     = aNode->InternalParameters;
+  aReadstat                         = aReader.ReadFile(thePath.ToCString(), aParams);
   occ::handle<StepData_StepModel> aModel = aReader.StepModel();
   if (aReadstat != IFSelect_RetDone)
   {
@@ -318,10 +318,10 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&      thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(const TCollection_AsciiString&      thePath,
-                            const TopoDS_Shape&                 theShape,
+bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
+                            const TopoDS_Shape&            theShape,
                             occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+                            const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!validateNode(GetNode(), aContext))
@@ -333,7 +333,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&      thePath,
   personizeWS(theWS);
   STEPControl_Writer aWriter;
   aWriter.SetWS(theWS);
-  IFSelect_ReturnStatus           aWritestat = IFSelect_RetVoid;
+  IFSelect_ReturnStatus      aWritestat = IFSelect_RetVoid;
   occ::handle<StepData_StepModel> aModel     = aWriter.Model();
   ;
   DESTEP_Parameters aParams = aNode->InternalParameters;
@@ -400,10 +400,10 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
-                           const occ::handle<TDocStd_Document>& theDocument,
-                           occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+bool DESTEP_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
+                                       occ::handle<XSControl_WorkSession>&  theWS,
+                                       const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
@@ -425,7 +425,7 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
   personizeWS(theWS);
 
   occ::handle<DESTEP_ConfigurationNode> aNode = occ::down_cast<DESTEP_ConfigurationNode>(GetNode());
-  STEPCAFControl_Reader                 aReader(theWS, false);
+  STEPCAFControl_Reader            aReader(theWS, false);
   configureSTEPCAFReader(aReader,
                          aNode->InternalParameters,
                          theWS,
@@ -445,10 +445,10 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(WriteStreamList&                     theStreams,
-                            const occ::handle<TDocStd_Document>& theDocument,
-                            occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+bool DESTEP_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
+                                        occ::handle<XSControl_WorkSession>&  theWS,
+                                        const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
@@ -504,9 +504,9 @@ bool DESTEP_Provider::Write(WriteStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
-                           const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+bool DESTEP_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
+                                       const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theDocument, aWS, theProgress);
@@ -514,9 +514,9 @@ bool DESTEP_Provider::Read(ReadStreamList&                      theStreams,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(WriteStreamList&                     theStreams,
-                            const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+bool DESTEP_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
+                                        const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theDocument, aWS, theProgress);
@@ -524,10 +524,10 @@ bool DESTEP_Provider::Write(WriteStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Read(ReadStreamList&                     theStreams,
-                           TopoDS_Shape&                       theShape,
-                           occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+bool DESTEP_Provider::Read(ReadStreamList&                theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       occ::handle<XSControl_WorkSession>& theWS,
+                                       const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
@@ -576,10 +576,10 @@ bool DESTEP_Provider::Read(ReadStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DESTEP_Provider::Write(WriteStreamList&                    theStreams,
-                            const TopoDS_Shape&                 theShape,
-                            occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+bool DESTEP_Provider::Write(WriteStreamList&               theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        occ::handle<XSControl_WorkSession>& theWS,
+                                        const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = "writing stream";
   if (!DE_ValidationUtils::ValidateWriteStreamList(theStreams, aContext))
@@ -656,8 +656,8 @@ bool DESTEP_Provider::Write(WriteStreamList&                    theStreams,
 //=================================================================================================
 
 bool DESTEP_Provider::Read(ReadStreamList&              theStreams,
-                           TopoDS_Shape&                theShape,
-                           const Message_ProgressRange& theProgress)
+                                       TopoDS_Shape&                theShape,
+                                       const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(theStreams, theShape, aWS, theProgress);
@@ -666,8 +666,8 @@ bool DESTEP_Provider::Read(ReadStreamList&              theStreams,
 //=================================================================================================
 
 bool DESTEP_Provider::Write(WriteStreamList&             theStreams,
-                            const TopoDS_Shape&          theShape,
-                            const Message_ProgressRange& theProgress)
+                                        const TopoDS_Shape&          theShape,
+                                        const Message_ProgressRange& theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(theStreams, theShape, aWS, theProgress);

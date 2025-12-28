@@ -40,7 +40,7 @@ public:
   //! - Parameterisation is used to convert
   Standard_EXPORT Geom2dConvert_CompCurveToBSplineCurve(
     const occ::handle<Geom2d_BoundedCurve>& BasisCurve,
-    const Convert_ParameterisationType      Parameterisation = Convert_TgtThetaOver2);
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! Append a curve in the BSpline
   //! Return False if the curve is not G0 with the BSplineCurve.
@@ -48,8 +48,8 @@ public:
   //! Multiplicity at the common Knot
   //! After is useful if BasisCurve is a closed curve .
   Standard_EXPORT bool Add(const occ::handle<Geom2d_BoundedCurve>& NewCurve,
-                           const double                            Tolerance,
-                           const bool                              After = false);
+                                       const double                Tolerance,
+                                       const bool             After = false);
 
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSplineCurve() const;
 
@@ -60,11 +60,11 @@ private:
   //! Concat two BSplineCurves.
   Standard_EXPORT void Add(occ::handle<Geom2d_BSplineCurve>& FirstCurve,
                            occ::handle<Geom2d_BSplineCurve>& SecondCurve,
-                           const bool                        After);
+                           const bool       After);
 
-  occ::handle<Geom2d_BSplineCurve> myCurve;
-  double                           myTol;
-  Convert_ParameterisationType     myType;
+  occ::handle<Geom2d_BSplineCurve>  myCurve;
+  double                myTol;
+  Convert_ParameterisationType myType;
 };
 
 #endif // _Geom2dConvert_CompCurveToBSplineCurve_HeaderFile

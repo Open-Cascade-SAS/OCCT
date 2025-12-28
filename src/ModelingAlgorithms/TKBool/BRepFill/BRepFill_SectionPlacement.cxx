@@ -41,16 +41,16 @@
 #include <TopoDS_Vertex.hxx>
 
 static double SearchParam(const occ::handle<BRepFill_LocationLaw>& Law,
-                          const int                                Ind,
-                          const TopoDS_Vertex&                     TheV)
+                                 const int              Ind,
+                                 const TopoDS_Vertex&                TheV)
 {
-  double      t;
-  TopoDS_Edge E;
+  double t;
+  TopoDS_Edge   E;
   E = Law->Edge(Ind);
   t = BRep_Tool::Parameter(TheV, E);
   if (E.Orientation() == TopAbs_REVERSED)
   {
-    double                  f, l, Lf, Ll;
+    double      f, l, Lf, Ll;
     occ::handle<Geom_Curve> C;
     C  = BRep_Tool::Curve(E, f, l);
     Lf = Law->Law(Ind)->GetCurve()->FirstParameter();
@@ -61,9 +61,9 @@ static double SearchParam(const occ::handle<BRepFill_LocationLaw>& Law,
 }
 
 BRepFill_SectionPlacement::BRepFill_SectionPlacement(const occ::handle<BRepFill_LocationLaw>& Law,
-                                                     const TopoDS_Shape& Section,
-                                                     const bool          WithContact,
-                                                     const bool          WithCorrection)
+                                                     const TopoDS_Shape&                 Section,
+                                                     const bool WithContact,
+                                                     const bool WithCorrection)
     : myLaw(Law),
       mySection(Section)
 {
@@ -73,22 +73,22 @@ BRepFill_SectionPlacement::BRepFill_SectionPlacement(const occ::handle<BRepFill_
 }
 
 BRepFill_SectionPlacement::BRepFill_SectionPlacement(const occ::handle<BRepFill_LocationLaw>& Law,
-                                                     const TopoDS_Shape& Section,
-                                                     const TopoDS_Shape& Vertex,
-                                                     const bool          WithContact,
-                                                     const bool          WithCorrection)
+                                                     const TopoDS_Shape&                 Section,
+                                                     const TopoDS_Shape&                 Vertex,
+                                                     const bool WithContact,
+                                                     const bool WithCorrection)
     : myLaw(Law),
       mySection(Section)
 {
   Perform(WithContact, WithCorrection, Vertex);
 }
 
-void BRepFill_SectionPlacement::Perform(const bool          WithContact,
-                                        const bool          WithCorrection,
-                                        const TopoDS_Shape& Vertex)
+void BRepFill_SectionPlacement::Perform(const bool WithContact,
+                                        const bool WithCorrection,
+                                        const TopoDS_Shape&    Vertex)
 {
-  double                  anEdgeStartParam = 0.;
-  double                  anEdgeEndParam   = 0.;
+  double      anEdgeStartParam = 0.;
+  double      anEdgeEndParam   = 0.;
   occ::handle<Geom_Curve> aCurve;
 
   // Here we are simply looking for the first valid curve in the section.
@@ -123,7 +123,7 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
 
     if (anEdgeExplorer.More())
     {
-      constexpr double                    aPrecisionTolerance = Precision::Confusion();
+      constexpr double             aPrecisionTolerance = Precision::Confusion();
       GeomConvert_CompCurveToBSplineCurve aBSplineConverter(aTrimmedCurve);
       for (; anEdgeExplorer.More(); anEdgeExplorer.Next())
       {
@@ -158,7 +158,7 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
     aSection = aCurve;
   }
 
-  GeomFill_SectionPlacement          aSectionPlacement(myLaw->Law(1), aSection);
+  GeomFill_SectionPlacement     aSectionPlacement(myLaw->Law(1), aSection);
   occ::handle<BRepAdaptor_CompCurve> aWireAdaptor = new BRepAdaptor_CompCurve(myLaw->Wire());
   aSectionPlacement.Perform(aWireAdaptor, Precision::Confusion());
 
@@ -232,9 +232,9 @@ void BRepFill_SectionPlacement::Perform(const bool          WithContact,
     aSectionPlacement.Perform(SearchParam(myLaw, aLawIndex1, aVertex), Precision::Confusion());
   }
 
-  myTrsf       = aSectionPlacement.Transformation(WithContact, WithCorrection);
-  myIndex      = aLawIndex1;
-  myParam      = aSectionPlacement.ParameterOnPath();
+  myTrsf              = aSectionPlacement.Transformation(WithContact, WithCorrection);
+  myIndex             = aLawIndex1;
+  myParam             = aSectionPlacement.ParameterOnPath();
   double Angle = aSectionPlacement.Angle();
 
   if (aLawIndex2)

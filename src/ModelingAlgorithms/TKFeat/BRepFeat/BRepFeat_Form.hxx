@@ -25,8 +25,14 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepFeat_PerfSelection.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <Geom_Curve.hxx>
@@ -69,13 +75,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! returns the list of generated Faces.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F)
+    override;
 
   //! returns a list of the created faces
   //! from the shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
 
@@ -146,35 +152,35 @@ protected:
 
   Standard_EXPORT void UpdateDescendants(const BRepAlgoAPI_BooleanOperation& aBOP,
                                          const TopoDS_Shape&                 SResult,
-                                         const bool                          SkipFace = false);
+                                         const bool SkipFace = false);
 
   Standard_EXPORT bool TransformShapeFU(const int flag);
 
-  bool myFuse;
-  bool myModify;
+  bool                   myFuse;
+  bool                   myModify;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
-  TopoDS_Shape                                                             myFShape;
-  TopoDS_Shape                                                             myLShape;
-  NCollection_List<TopoDS_Shape>                                           myNewEdges;
-  NCollection_List<TopoDS_Shape>                                           myTgtEdges;
-  BRepFeat_PerfSelection                                                   myPerfSelection;
-  bool                                                                     myJustGluer;
-  bool                                                                     myJustFeat;
-  TopoDS_Shape                                                             mySbase;
-  TopoDS_Face                                                              mySkface;
-  TopoDS_Shape                                                             myGShape;
-  TopoDS_Shape                                                             mySFrom;
-  TopoDS_Shape                                                             mySUntil;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myGluedF;
+  TopoDS_Shape                       myFShape;
+  TopoDS_Shape                       myLShape;
+  NCollection_List<TopoDS_Shape>               myNewEdges;
+  NCollection_List<TopoDS_Shape>               myTgtEdges;
+  BRepFeat_PerfSelection             myPerfSelection;
+  bool                   myJustGluer;
+  bool                   myJustFeat;
+  TopoDS_Shape                       mySbase;
+  TopoDS_Face                        mySkface;
+  TopoDS_Shape                       myGShape;
+  TopoDS_Shape                       mySFrom;
+  TopoDS_Shape                       mySUntil;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myGluedF;
 
 private:
-  bool                 mySbOK;
-  bool                 mySkOK;
-  bool                 myGSOK;
-  bool                 mySFOK;
-  bool                 mySUOK;
-  bool                 myGFOK;
-  bool                 myPSOK;
+  bool     mySbOK;
+  bool     mySkOK;
+  bool     myGSOK;
+  bool     mySFOK;
+  bool     mySUOK;
+  bool     myGFOK;
+  bool     myPSOK;
   BRepFeat_StatusError myStatusError;
 };
 

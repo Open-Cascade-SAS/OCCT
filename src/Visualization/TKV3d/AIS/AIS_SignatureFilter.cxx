@@ -22,7 +22,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_SignatureFilter, AIS_TypeFilter)
 
 AIS_SignatureFilter::AIS_SignatureFilter(const AIS_KindOfInteractive TheKind,
-                                         const int                   TheSignature)
+                                         const int      TheSignature)
     : AIS_TypeFilter(TheKind),
       mySig(TheSignature)
 {
@@ -30,8 +30,7 @@ AIS_SignatureFilter::AIS_SignatureFilter(const AIS_KindOfInteractive TheKind,
 
 bool AIS_SignatureFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const
 {
-  occ::handle<AIS_InteractiveObject> IO =
-    occ::down_cast<AIS_InteractiveObject>(anObj->Selectable());
+  occ::handle<AIS_InteractiveObject> IO = occ::down_cast<AIS_InteractiveObject>(anObj->Selectable());
   if (IO.IsNull())
     return false;
 

@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnClosedSurface, BRep_PolygonOnSurface)
 BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_Polygon2D>& P1,
                                                          const occ::handle<Poly_Polygon2D>& P2,
                                                          const occ::handle<Geom_Surface>&   S,
-                                                         const TopLoc_Location&             L)
+                                                         const TopLoc_Location&        L)
     : BRep_PolygonOnSurface(P1, S, L),
       myPolygon2(P2)
 {
@@ -66,7 +66,8 @@ occ::handle<BRep_CurveRepresentation> BRep_PolygonOnClosedSurface::Copy() const
 
 //=================================================================================================
 
-void BRep_PolygonOnClosedSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void BRep_PolygonOnClosedSurface::DumpJson(Standard_OStream& theOStream,
+                                           int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

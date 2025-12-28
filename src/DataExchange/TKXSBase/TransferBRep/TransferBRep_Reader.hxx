@@ -26,6 +26,8 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Interface_Protocol;
@@ -129,14 +131,14 @@ public:
   //! Returns True if it is recognized as Geom-Topol.
   //! (But it can have failed : see IsDone)
   Standard_EXPORT virtual bool Transfer(
-    const int                    num,
+    const int       num,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a list of Entities (only the ones also in the Model)
   //! Remark : former result is cleared
   Standard_EXPORT virtual void TransferList(
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+    const Message_ProgressRange&                theProgress = Message_ProgressRange());
 
   //! Returns True if the LAST Transfer/TransferRoots was a success
   Standard_EXPORT bool IsDone() const;
@@ -166,8 +168,7 @@ public:
   Standard_EXPORT int NbTransients() const;
 
   //! Returns the complete list of produced Transient Results
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transients()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transients() const;
 
   //! Returns a Transient Root Result, given its rank (by default
   //! the first one)
@@ -190,17 +191,17 @@ public:
   Standard_EXPORT virtual ~TransferBRep_Reader();
 
 protected:
-  bool                                   theDone;
+  bool                  theDone;
   occ::handle<Transfer_TransientProcess> theProc;
 
 private:
-  occ::handle<Interface_Protocol>                                     theProto;
-  occ::handle<Transfer_ActorOfTransientProcess>                       theActor;
-  occ::handle<Interface_InterfaceModel>                               theModel;
-  int                                                                 theFilest;
-  bool                                                                theNewpr;
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>                    theShapes;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theTransi;
+  occ::handle<Interface_Protocol>               theProto;
+  occ::handle<Transfer_ActorOfTransientProcess> theActor;
+  occ::handle<Interface_InterfaceModel>         theModel;
+  int                         theFilest;
+  bool                         theNewpr;
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>        theShapes;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>     theTransi;
 };
 
 #endif // _TransferBRep_Reader_HeaderFile

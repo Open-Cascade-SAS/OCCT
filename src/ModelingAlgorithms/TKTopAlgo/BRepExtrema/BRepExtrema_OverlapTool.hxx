@@ -86,19 +86,24 @@ public:
 public: //! @name Reject/Accept implementations
   //! Defines the rules for node rejection by bounding box
   Standard_EXPORT virtual bool RejectNode(const BVH_Vec3d& theCornerMin1,
-                                          const BVH_Vec3d& theCornerMax1,
-                                          const BVH_Vec3d& theCornerMin2,
-                                          const BVH_Vec3d& theCornerMax2,
-                                          double&) const override;
+                                                      const BVH_Vec3d& theCornerMax1,
+                                                      const BVH_Vec3d& theCornerMin2,
+                                                      const BVH_Vec3d& theCornerMax2,
+                                                      double&) const override;
   //! Defines the rules for leaf acceptance
-  Standard_EXPORT virtual bool Accept(const int theLeaf1, const int theLeaf2) override;
+  Standard_EXPORT virtual bool Accept(const int theLeaf1,
+                                                  const int theLeaf2)
+    override;
 
 protected:
   //! Performs narrow-phase of overlap test (exact intersection).
-  void intersectTrianglesExact(const int theTrgIdx1, const int theTrgIdx2);
+  void intersectTrianglesExact(const int theTrgIdx1,
+                               const int theTrgIdx2);
 
   //! Performs narrow-phase of overlap test (intersection with non-zero tolerance).
-  void intersectTrianglesToler(const int theTrgIdx1, const int theTrgIdx2, const double theToler);
+  void intersectTrianglesToler(const int theTrgIdx1,
+                               const int theTrgIdx2,
+                               const double    theToler);
 
 private:
   //! Set of all mesh elements (triangles) of the 1st shape.

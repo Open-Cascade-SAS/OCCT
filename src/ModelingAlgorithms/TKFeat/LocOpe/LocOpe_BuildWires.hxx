@@ -32,10 +32,10 @@ public:
 
   Standard_EXPORT LocOpe_BuildWires();
 
-  Standard_EXPORT LocOpe_BuildWires(const NCollection_List<TopoDS_Shape>&   Ledges,
+  Standard_EXPORT LocOpe_BuildWires(const NCollection_List<TopoDS_Shape>&        Ledges,
                                     const occ::handle<LocOpe_WiresOnShape>& PW);
 
-  Standard_EXPORT void Perform(const NCollection_List<TopoDS_Shape>&   Ledges,
+  Standard_EXPORT void Perform(const NCollection_List<TopoDS_Shape>&        Ledges,
                                const occ::handle<LocOpe_WiresOnShape>& PW);
 
   Standard_EXPORT bool IsDone() const;
@@ -43,7 +43,7 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& Result() const;
 
 private:
-  bool                           myDone;
+  bool     myDone;
   NCollection_List<TopoDS_Shape> myRes;
 };
 

@@ -44,6 +44,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -66,7 +68,8 @@
 
 //=================================================================================================
 
-BRepTools_ShapeSet::BRepTools_ShapeSet(const bool theWithTriangles, const bool theWithNormals)
+BRepTools_ShapeSet::BRepTools_ShapeSet(const bool theWithTriangles,
+                                       const bool theWithNormals)
     : myWithTriangles(theWithTriangles),
       myWithNormals(theWithNormals)
 {
@@ -74,9 +77,9 @@ BRepTools_ShapeSet::BRepTools_ShapeSet(const bool theWithTriangles, const bool t
 
 //=================================================================================================
 
-BRepTools_ShapeSet::BRepTools_ShapeSet(const BRep_Builder& theBuilder,
-                                       const bool          theWithTriangles,
-                                       const bool          theWithNormals)
+BRepTools_ShapeSet::BRepTools_ShapeSet(const BRep_Builder&    theBuilder,
+                                       const bool theWithTriangles,
+                                       const bool theWithNormals)
     : myBuilder(theBuilder),
       myWithTriangles(theWithTriangles),
       myWithNormals(theWithNormals)
@@ -113,7 +116,7 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
   if (S.ShapeType() == TopAbs_VERTEX)
   {
 
-    occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(S.TShape());
+    occ::handle<BRep_TVertex>                         TV = occ::down_cast<BRep_TVertex>(S.TShape());
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itrp(TV->Points());
 
     while (itrp.More())
@@ -144,7 +147,7 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
   {
 
     // Add the curve geometry
-    occ::handle<BRep_TEdge> TE = occ::down_cast<BRep_TEdge>(S.TShape());
+    occ::handle<BRep_TEdge>                           TE = occ::down_cast<BRep_TEdge>(S.TShape());
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc(TE->Curves());
 
     while (itrc.More())
@@ -214,7 +217,7 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
   {
 
     // Add the surface geometry
-    bool                    needNormals(myWithNormals);
+    bool   needNormals(myWithNormals);
     occ::handle<BRep_TFace> TF = occ::down_cast<BRep_TFace>(S.TShape());
     if (!TF->Surface().IsNull())
     {
@@ -361,7 +364,7 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
     gp_Pnt p = BRep_Tool::Pnt(V);
     OS << "    - Point 3D : " << p.X() << ", " << p.Y() << ", " << p.Z() << "\n";
 
-    occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(S.TShape());
+    occ::handle<BRep_TVertex>                         TV = occ::down_cast<BRep_TVertex>(S.TShape());
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itrp(TV->Points());
 
     while (itrp.More())
@@ -398,7 +401,7 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
   {
 
     occ::handle<BRep_TEdge> TE = occ::down_cast<BRep_TEdge>(S.TShape());
-    gp_Pnt2d                Pf, Pl;
+    gp_Pnt2d           Pf, Pl;
 
     // Dump the curve geometry
     OS << "    Tolerance : " << TE->Tolerance() << "\n";
@@ -409,7 +412,7 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
     if (TE->Degenerated())
       OS << "     degenerated\n";
 
-    double                                                            first, last;
+    double                                first, last;
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc = TE->Curves();
     while (itrc.More())
     {
@@ -449,8 +452,7 @@ void BRepTools_ShapeSet::DumpGeometry(const TopoDS_Shape& S, Standard_OStream& O
         OS << Pl.X() << ", " << Pl.Y() << "\n";
         if (CR->IsCurveOnClosedSurface())
         {
-          occ::handle<BRep_CurveOnClosedSurface> COCS =
-            occ::down_cast<BRep_CurveOnClosedSurface>(CR);
+          occ::handle<BRep_CurveOnClosedSurface> COCS = occ::down_cast<BRep_CurveOnClosedSurface>(CR);
           COCS->UVPoints2(Pf, Pl);
           OS << "  UV Points : " << Pf.X() << ", " << Pf.Y() << " ";
           OS << Pl.X() << ", " << Pl.Y() << "\n";
@@ -539,7 +541,7 @@ void BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S, Standard_OStream& 
     gp_Pnt p = BRep_Tool::Pnt(V);
     OS << p.X() << " " << p.Y() << " " << p.Z() << "\n";
 
-    occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(S.TShape());
+    occ::handle<BRep_TVertex>                         TV = occ::down_cast<BRep_TVertex>(S.TShape());
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itrp(TV->Points());
 
     while (itrp.More())
@@ -585,7 +587,7 @@ void BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S, Standard_OStream& 
     OS << ((TE->SameRange()) ? 1 : 0) << " ";
     OS << ((TE->Degenerated()) ? 1 : 0) << "\n";
 
-    double                                                            first, last;
+    double                                first, last;
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc = TE->Curves();
     while (itrc.More())
     {
@@ -692,7 +694,7 @@ void BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S, Standard_OStream& 
   {
 
     occ::handle<BRep_TFace> TF = occ::down_cast<BRep_TFace>(S.TShape());
-    const TopoDS_Face&      F  = TopoDS::Face(S);
+    const TopoDS_Face& F  = TopoDS::Face(S);
 
     if (!(TF->Surface()).IsNull())
     {
@@ -779,12 +781,12 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 {
   // Read the geometry
 
-  int           val, c, pc, pc2 = 0, s, s2, l, l2, t, pt, pt2 = 0;
-  double        tol, X, Y, Z, first, last, p1, p2;
-  double        PfX, PfY, PlX, PlY;
-  gp_Pnt2d      aPf, aPl;
-  bool          closed;
-  GeomAbs_Shape reg = GeomAbs_C0;
+  int val, c, pc, pc2 = 0, s, s2, l, l2, t, pt, pt2 = 0;
+  double    tol, X, Y, Z, first, last, p1, p2;
+  double    PfX, PfY, PlX, PlY;
+  gp_Pnt2d         aPf, aPl;
+  bool closed;
+  GeomAbs_Shape    reg = GeomAbs_C0;
   switch (T)
   {
 
@@ -804,7 +806,7 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
       occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(V.TShape());
 
       NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr = TV->ChangePoints();
-      TopLoc_Location                                          L;
+      TopLoc_Location                 L;
 
       do
       {
@@ -824,7 +826,7 @@ void BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
             //  Modified by Sergey KHROMOV - Wed Apr 24 13:59:13 2002 End
 
             occ::handle<BRep_PointOnCurve> POC = new BRep_PointOnCurve(p1, myCurves.Curve(c), L);
-            PR                                 = POC;
+            PR                            = POC;
           }
           break;
 
@@ -1175,7 +1177,7 @@ void BRepTools_ShapeSet::Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S)
 //=================================================================================================
 
 void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&            OS,
-                                                     const bool                   Compact,
+                                                     const bool       Compact,
                                                      const Message_ProgressRange& theProgress) const
 {
   int i, j, nbpOntri = myNodes.Extent();
@@ -1191,10 +1193,10 @@ void BRepTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&          
   }
 
   occ::handle<Poly_PolygonOnTriangulation> Poly;
-  occ::handle<NCollection_HArray1<double>> Param;
+  occ::handle<NCollection_HArray1<double>>       Param;
   for (i = 1; i <= nbpOntri && aPS.More(); i++, aPS.Next())
   {
-    Poly                                 = occ::down_cast<Poly_PolygonOnTriangulation>(myNodes(i));
+    Poly = occ::down_cast<Poly_PolygonOnTriangulation>(myNodes(i));
     const NCollection_Array1<int>& Nodes = Poly->Nodes();
     if (!Compact)
     {
@@ -1255,10 +1257,10 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
   IS >> buffer;
   if (strstr(buffer, "PolygonOnTriangulations") == NULL)
     return;
-  int                                      i, j, val, nbpol = 0, nbnodes = 0;
-  int                                      hasparameters;
-  double                                   par;
-  occ::handle<NCollection_HArray1<double>> Param;
+  int                    i, j, val, nbpol = 0, nbnodes = 0;
+  int                    hasparameters;
+  double                       par;
+  occ::handle<NCollection_HArray1<double>>       Param;
   occ::handle<Poly_PolygonOnTriangulation> Poly;
   IS >> nbpol;
   // OCC19559
@@ -1304,7 +1306,7 @@ void BRepTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&           
 //=================================================================================================
 
 void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&            OS,
-                                        const bool                   Compact,
+                                        const bool       Compact,
                                         const Message_ProgressRange& theProgress) const
 {
   int i, j, nbpol = myPolygons3D.Extent();
@@ -1344,7 +1346,7 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&            OS,
     if (!Compact)
       OS << "\nNodes :\n";
 
-    int                               i1, nbNodes = P->NbNodes();
+    int          i1, nbNodes = P->NbNodes();
     const NCollection_Array1<gp_Pnt>& Nodes = P->Nodes();
     for (j = 1; j <= nbNodes; j++)
     {
@@ -1394,8 +1396,8 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
 {
   char buffer[255];
   //  int i, j, p, val, nbpol, nbnodes, hasparameters;
-  int    i, j, p, nbpol = 0, nbnodes = 0, hasparameters = false;
-  double d, x, y, z;
+  int i, j, p, nbpol = 0, nbnodes = 0, hasparameters = false;
+  double    d, x, y, z;
 
   IS >> buffer;
   if (strstr(buffer, "Polygon3D") == NULL)
@@ -1436,7 +1438,7 @@ void BRepTools_ShapeSet::ReadPolygon3D(Standard_IStream&            IS,
 //=================================================================================================
 
 void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
-                                            const bool                   Compact,
+                                            const bool       Compact,
                                             const Message_ProgressRange& theProgress) const
 {
   int i, j, nbNodes, nbtri = myTriangulations.Extent();
@@ -1457,7 +1459,7 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
   for (i = 1; i <= nbtri && aPS.More(); i++, aPS.Next())
   {
 
-    T                         = myTriangulations.FindKey(i);
+    T                                     = myTriangulations.FindKey(i);
     const bool toWriteNormals = myTriangulations(i);
     if (Compact)
     {
@@ -1596,12 +1598,12 @@ void BRepTools_ShapeSet::DumpTriangulation(Standard_OStream& OS) const
 void BRepTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
                                            const Message_ProgressRange& theProgress)
 {
-  char   buffer[255];
-  int    i, j, nbtri = 0;
-  double d, x, y, z;
-  int    nbNodes = 0, nbTriangles = 0;
-  bool   hasUV      = false;
-  bool   hasNormals = false;
+  char             buffer[255];
+  int i, j, nbtri = 0;
+  double    d, x, y, z;
+  int nbNodes = 0, nbTriangles = 0;
+  bool hasUV      = false;
+  bool hasNormals = false;
 
   occ::handle<Poly_Triangulation> T;
 

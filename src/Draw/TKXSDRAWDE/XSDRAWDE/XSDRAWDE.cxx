@@ -45,13 +45,15 @@ void DECascadeSingleton()
 
 //=================================================================================================
 
-static int DumpConfiguration(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int DumpConfiguration(Draw_Interpretor& theDI,
+                                          int  theNbArgs,
+                                          const char**      theArgVec)
 {
-  occ::handle<DE_Wrapper>                   aConf = DE_Wrapper::GlobalWrapper();
-  TCollection_AsciiString                   aPath;
-  bool                                      aIsRecursive    = true;
-  bool                                      isHandleFormat  = false;
-  bool                                      isHandleVendors = false;
+  occ::handle<DE_Wrapper>        aConf = DE_Wrapper::GlobalWrapper();
+  TCollection_AsciiString   aPath;
+  bool          aIsRecursive    = true;
+  bool          isHandleFormat  = false;
+  bool          isHandleVendors = false;
   NCollection_List<TCollection_AsciiString> aFormats;
   NCollection_List<TCollection_AsciiString> aVendors;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
@@ -110,7 +112,9 @@ static int DumpConfiguration(Draw_Interpretor& theDI, int theNbArgs, const char*
 
 //=================================================================================================
 
-static int CompareConfiguration(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int CompareConfiguration(Draw_Interpretor& theDI,
+                                             int  theNbArgs,
+                                             const char**      theArgVec)
 {
   if (theNbArgs > 5)
   {
@@ -129,15 +133,10 @@ static int CompareConfiguration(Draw_Interpretor& theDI, int theNbArgs, const ch
     theDI << "Error: Can't load second configuration\n";
     return 1;
   }
-  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapFirst =
-    aResourceFirst->GetInternalMap();
-  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapSecond =
-    aResourceSecond->GetInternalMap();
-  int anDiffers = 0;
-  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anOrigIt(
-         aResourceMapFirst);
-       anOrigIt.More();
-       anOrigIt.Next())
+  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapFirst  = aResourceFirst->GetInternalMap();
+  const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& aResourceMapSecond = aResourceSecond->GetInternalMap();
+  int      anDiffers          = 0;
+  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anOrigIt(aResourceMapFirst); anOrigIt.More(); anOrigIt.Next())
   {
     const TCollection_AsciiString& anOrigValue = anOrigIt.Value();
     const TCollection_AsciiString& anOrigKey   = anOrigIt.Key();
@@ -168,16 +167,18 @@ static int CompareConfiguration(Draw_Interpretor& theDI, int theNbArgs, const ch
 
 //=================================================================================================
 
-static int LoadConfiguration(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int LoadConfiguration(Draw_Interpretor& theDI,
+                                          int  theNbArgs,
+                                          const char**      theArgVec)
 {
   if (theNbArgs > 4)
   {
     theDI.PrintHelp(theArgVec[0]);
     return 1;
   }
-  occ::handle<DE_Wrapper> aConf        = DE_Wrapper::GlobalWrapper();
+  occ::handle<DE_Wrapper>      aConf        = DE_Wrapper::GlobalWrapper();
   TCollection_AsciiString aString      = theArgVec[1];
-  bool                    aIsRecursive = true;
+  bool        aIsRecursive = true;
   if (theNbArgs == 4)
   {
     TCollection_AsciiString anArg = theArgVec[2];
@@ -198,19 +199,21 @@ static int LoadConfiguration(Draw_Interpretor& theDI, int theNbArgs, const char*
 
 //=================================================================================================
 
-static int ReadFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int ReadFile(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs > 6)
   {
     theDI.PrintHelp(theArgVec[0]);
     return 1;
   }
-  TCollection_AsciiString          aDocShapeName;
-  TCollection_AsciiString          aFilePath;
+  TCollection_AsciiString     aDocShapeName;
+  TCollection_AsciiString     aFilePath;
   occ::handle<TDocStd_Document>    aDoc;
   occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
-  TCollection_AsciiString          aConfString;
-  bool                             isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readfile");
+  TCollection_AsciiString     aConfString;
+  bool            isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readfile");
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -222,7 +225,7 @@ static int ReadFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
     }
     else if (aDocShapeName.IsEmpty())
     {
-      aDocShapeName        = theArgVec[anArgIter];
+      aDocShapeName             = theArgVec[anArgIter];
       const char* aNameVar = aDocShapeName.ToCString();
       if (!isNoDoc)
       {
@@ -254,7 +257,7 @@ static int ReadFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
   occ::handle<DE_Wrapper>            aConf = DE_Wrapper::GlobalWrapper()->Copy();
   occ::handle<XSControl_WorkSession> aWS   = XSDRAW::Session();
-  bool                               aStat = true;
+  bool              aStat = true;
   if (!aConfString.IsEmpty())
   {
     aStat = aConf->Load(aConfString);
@@ -278,18 +281,20 @@ static int ReadFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int WriteFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int WriteFile(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   if (theNbArgs > 6)
   {
     theDI.PrintHelp(theArgVec[0]);
     return 1;
   }
-  TCollection_AsciiString       aDocShapeName;
-  TCollection_AsciiString       aFilePath;
+  TCollection_AsciiString  aDocShapeName;
+  TCollection_AsciiString  aFilePath;
   occ::handle<TDocStd_Document> aDoc;
-  TCollection_AsciiString       aConfString;
-  bool                          isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "writefile");
+  TCollection_AsciiString  aConfString;
+  bool         isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "writefile");
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -301,7 +306,7 @@ static int WriteFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
     }
     else if (aDocShapeName.IsEmpty())
     {
-      aDocShapeName        = theArgVec[anArgIter];
+      aDocShapeName             = theArgVec[anArgIter];
       const char* aNameVar = aDocShapeName.ToCString();
       if (!isNoDoc)
       {
@@ -330,7 +335,7 @@ static int WriteFile(Draw_Interpretor& theDI, int theNbArgs, const char** theArg
   }
   occ::handle<DE_Wrapper>            aConf = DE_Wrapper::GlobalWrapper()->Copy();
   occ::handle<XSControl_WorkSession> aWS   = XSDRAW::Session();
-  bool                               aStat = true;
+  bool              aStat = true;
   if (!aConfString.IsEmpty())
   {
     aStat = aConf->Load(aConfString);

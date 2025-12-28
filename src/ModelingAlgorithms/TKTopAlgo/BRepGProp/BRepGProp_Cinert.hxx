@@ -42,6 +42,7 @@ public:
   Standard_EXPORT void SetLocation(const gp_Pnt& CLocation);
 
   Standard_EXPORT void Perform(const BRepAdaptor_Curve& C);
+
 };
 
 #endif // _BRepGProp_Cinert_HeaderFile

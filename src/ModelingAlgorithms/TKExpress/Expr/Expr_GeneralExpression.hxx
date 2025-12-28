@@ -59,7 +59,8 @@ public:
   Standard_EXPORT virtual bool ContainsUnknowns() const = 0;
 
   //! Tests if <exp> is contained in <me>.
-  Standard_EXPORT virtual bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const = 0;
+  Standard_EXPORT virtual bool Contains(
+    const occ::handle<Expr_GeneralExpression>& exp) const = 0;
 
   //! Tests if <me> is linear on every NamedUnknown it
   //! contains.
@@ -86,7 +87,7 @@ public:
   //! Raise OutOfRange if N <= 0
   Standard_EXPORT virtual occ::handle<Expr_GeneralExpression> NDerivative(
     const occ::handle<Expr_NamedUnknown>& X,
-    const int                             N) const;
+    const int           N) const;
 
   //! Replaces all occurrences of <var> with copies of <with>
   //! in <me>. Copies of <with> are made with the Copy() method.
@@ -98,9 +99,8 @@ public:
   //! replacement of <vars> by <vals>.
   //! Raises NotEvaluable if <me> contains NamedUnknown not
   //! in <vars> or NumericError if result cannot be computed.
-  Standard_EXPORT virtual double Evaluate(
-    const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-    const NCollection_Array1<double>&                         vals) const = 0;
+  Standard_EXPORT virtual double Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
+                                                 const NCollection_Array1<double>&      vals) const = 0;
 
   //! Returns the value of <me> (as a Real) by
   //! replacement of <vars> by <vals>.
@@ -112,6 +112,7 @@ public:
   Standard_EXPORT virtual TCollection_AsciiString String() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Expr_GeneralExpression, Standard_Transient)
+
 };
 
 #endif // _Expr_GeneralExpression_HeaderFile

@@ -24,7 +24,7 @@ void StepShape_EdgeCurve::Init(const occ::handle<TCollection_HAsciiString>& aNam
                                const occ::handle<StepShape_Vertex>&         aEdgeStart,
                                const occ::handle<StepShape_Vertex>&         aEdgeEnd,
                                const occ::handle<StepGeom_Curve>&           aEdgeGeometry,
-                               const bool                                   aSameSense)
+                               const bool                  aSameSense)
 {
   // --- classe own fields ---
   edgeGeometry = aEdgeGeometry;

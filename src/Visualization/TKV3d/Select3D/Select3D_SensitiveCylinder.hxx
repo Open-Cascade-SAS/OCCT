@@ -29,15 +29,16 @@ public:
   //! @param[in] theTopRad    cylinder top radius
   //! @param[in] theHeight    cylinder height
   Standard_EXPORT Select3D_SensitiveCylinder(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                             const double                              theBottomRad,
-                                             const double                              theTopRad,
-                                             const double                              theHeight,
-                                             const gp_Trsf&                            theTrsf,
+                                             const double                  theBottomRad,
+                                             const double                  theTopRad,
+                                             const double                  theHeight,
+                                             const gp_Trsf&                       theTrsf,
                                              const bool theIsHollow = false);
 
   //! Checks whether the cylinder overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns the copy of this
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
@@ -71,11 +72,11 @@ public:
   bool IsHollow() const { return myIsHollow; }
 
 protected:
-  gp_Trsf myTrsf;         //!< cylinder transformation to apply
-  double  myBottomRadius; //!< cylinder bottom radius
-  double  myTopRadius;    //!< cylinder top radius
-  double  myHeight;       //!< cylinder height
-  bool    myIsHollow;     //!< true if the cylinder is empty inside
+  gp_Trsf          myTrsf;         //!< cylinder transformation to apply
+  double    myBottomRadius; //!< cylinder bottom radius
+  double    myTopRadius;    //!< cylinder top radius
+  double    myHeight;       //!< cylinder height
+  bool myIsHollow;     //!< true if the cylinder is empty inside
 };
 
 #endif // _Select3D_SensitiveSphere_HeaderFile

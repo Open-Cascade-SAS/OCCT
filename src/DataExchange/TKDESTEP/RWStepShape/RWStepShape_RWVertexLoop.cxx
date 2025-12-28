@@ -21,7 +21,7 @@
 RWStepShape_RWVertexLoop::RWStepShape_RWVertexLoop() {}
 
 void RWStepShape_RWVertexLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                                   num,
+                                        const int                 num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepShape_VertexLoop>&    ent) const
 {
@@ -48,7 +48,7 @@ void RWStepShape_RWVertexLoop::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aName, aLoopVertex);
 }
 
-void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                     SW,
+void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                SW,
                                          const occ::handle<StepShape_VertexLoop>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepShape_RWVertexLoop::WriteStep(StepData_StepWriter&                   
 }
 
 void RWStepShape_RWVertexLoop::Share(const occ::handle<StepShape_VertexLoop>& ent,
-                                     Interface_EntityIterator&                iter) const
+                                     Interface_EntityIterator&           iter) const
 {
 
   iter.GetOneItem(ent->LoopVertex());

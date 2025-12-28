@@ -30,7 +30,7 @@ RWStepRepr_RWPropertyDefinitionRelationship::RWStepRepr_RWPropertyDefinitionRela
 
 void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
 {
@@ -69,7 +69,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent) const
 {
 
@@ -88,7 +88,7 @@ void RWStepRepr_RWPropertyDefinitionRelationship::WriteStep(
 
 void RWStepRepr_RWPropertyDefinitionRelationship::Share(
   const occ::handle<StepRepr_PropertyDefinitionRelationship>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Own fields of PropertyDefinitionRelationship

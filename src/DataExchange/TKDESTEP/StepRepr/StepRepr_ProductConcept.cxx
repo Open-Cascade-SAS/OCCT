@@ -31,12 +31,11 @@ StepRepr_ProductConcept::StepRepr_ProductConcept()
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::Init(
-  const occ::handle<TCollection_HAsciiString>&        aId,
-  const occ::handle<TCollection_HAsciiString>&        aName,
-  const bool                                          hasDescription,
-  const occ::handle<TCollection_HAsciiString>&        aDescription,
-  const occ::handle<StepBasic_ProductConceptContext>& aMarketContext)
+void StepRepr_ProductConcept::Init(const occ::handle<TCollection_HAsciiString>&        aId,
+                                   const occ::handle<TCollection_HAsciiString>&        aName,
+                                   const bool                         hasDescription,
+                                   const occ::handle<TCollection_HAsciiString>&        aDescription,
+                                   const occ::handle<StepBasic_ProductConceptContext>& aMarketContext)
 {
 
   theId = aId;
@@ -91,8 +90,7 @@ occ::handle<TCollection_HAsciiString> StepRepr_ProductConcept::Description() con
 
 //=================================================================================================
 
-void StepRepr_ProductConcept::SetDescription(
-  const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepRepr_ProductConcept::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }

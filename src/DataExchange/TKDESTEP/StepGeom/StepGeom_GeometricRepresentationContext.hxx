@@ -33,9 +33,10 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
                             const occ::handle<TCollection_HAsciiString>& aContextType,
-                            const int                                    aCoordinateSpaceDimension);
+                            const int                  aCoordinateSpaceDimension);
 
-  Standard_EXPORT void SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension);
+  Standard_EXPORT void SetCoordinateSpaceDimension(
+    const int aCoordinateSpaceDimension);
 
   Standard_EXPORT int CoordinateSpaceDimension() const;
 

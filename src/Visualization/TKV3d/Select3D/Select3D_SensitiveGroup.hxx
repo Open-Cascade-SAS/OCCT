@@ -42,16 +42,12 @@ public:
 
   //! Constructs a sensitive group object defined by the list
   //! TheList and the entity owner OwnerId. If MatchAll is false, nothing is done.
-  Standard_EXPORT Select3D_SensitiveGroup(
-    const occ::handle<SelectMgr_EntityOwner>&                    theOwnerId,
-    NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities,
-    const bool                                                   theIsMustMatchAll = true);
+  Standard_EXPORT Select3D_SensitiveGroup(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                          NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>&             theEntities,
+                                          const bool theIsMustMatchAll = true);
 
   //! Gets group content
-  const NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>& Entities() const
-  {
-    return myEntities;
-  }
+  const NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>& Entities() const { return myEntities; }
 
   //! Access entity by index [1, NbSubElements()].
   const occ::handle<Select3D_SensitiveEntity>& SubEntity(const int theIndex) const
@@ -74,8 +70,7 @@ public:
 
   //! Adds the list of sensitive entities LL to the empty
   //! sensitive group object created at construction time.
-  Standard_EXPORT void Add(
-    NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities);
+  Standard_EXPORT void Add(NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities);
 
   //! Adds the sensitive entity aSensitive to the non-empty
   //! sensitive group object created at construction time.
@@ -94,7 +89,10 @@ public:
   //! Sets the requirement that all sensitive entities in the
   //! list used at the time of construction, or added using
   //! the function Add must be matched.
-  void SetMatchType(const bool theIsMustMatchAll) { myMustMatchAll = theIsMustMatchAll; }
+  void SetMatchType(const bool theIsMustMatchAll)
+  {
+    myMustMatchAll = theIsMustMatchAll;
+  }
 
   //! Returns true if all sensitive entities in the list used
   //! at the time of construction, or added using the function Add must be matched.
@@ -112,7 +110,8 @@ public:
 
   //! Checks whether the group overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns the amount of sub-entities
   Standard_EXPORT virtual int NbSubElements() const override;
@@ -131,42 +130,47 @@ public:
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;
 
   //! Returns bounding box of sensitive entity with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const
+    override;
 
   //! Returns geometry center of sensitive entity index theIdx in
   //! the vector along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
+  Standard_EXPORT virtual double Center(const int theIdx,
+                                               const int theAxis) const
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in the vector
-  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
+  Standard_EXPORT virtual void Swap(const int theIdx1,
+                                    const int theIdx2) override;
 
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual int Size() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   //! Checks whether the entity with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                               SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT virtual bool overlapsElement(
+    SelectBasics_PickResult&             thePickResult,
+    SelectBasics_SelectingVolumeManager& theMgr,
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT virtual bool elementIsInside(
+    SelectBasics_SelectingVolumeManager& theMgr,
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT virtual double distanceToCOG(
-    SelectBasics_SelectingVolumeManager& theMgr) override;
+  Standard_EXPORT virtual double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
+    override;
 
 private:
-  NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>
-    myEntities; //!< Grouped sensitive entities
+  NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>> myEntities; //!< Grouped sensitive entities
   // clang-format off
   bool                     myMustMatchAll;       //!< Determines whether all entities in the group should be overlapped or not
   bool                     myToCheckOverlapAll;  //!< flag to check overlapping with all entities within rectangular/polygonal selection

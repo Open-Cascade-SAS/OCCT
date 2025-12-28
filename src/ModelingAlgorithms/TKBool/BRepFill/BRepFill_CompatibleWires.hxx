@@ -23,9 +23,12 @@
 #include <BRepFill_ThruSectionErrorStatus.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 
 //! Constructs a sequence of Wires (with good orientation
@@ -57,13 +60,9 @@ public:
 
   //! Returns the shapes created from a subshape
   //! <SubSection> of a section.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(
-    const TopoDS_Edge& SubSection) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& GeneratedShapes(const TopoDS_Edge& SubSection) const;
 
-  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape,
-                                            NCollection_List<TopoDS_Shape>,
-                                            TopTools_ShapeMapHasher>&
-                        Generated() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Generated() const;
 
   Standard_EXPORT bool IsDegeneratedFirstSection() const;
 
@@ -91,11 +90,11 @@ private:
   //! be a sequence of wires.
   Standard_EXPORT void SearchOrigin();
 
-  NCollection_Sequence<TopoDS_Shape> myInit;
-  NCollection_Sequence<TopoDS_Shape> myWork;
-  double                             myPercent;
-  bool                               myDegen1;
-  bool                               myDegen2;
+  NCollection_Sequence<TopoDS_Shape>           myInit;
+  NCollection_Sequence<TopoDS_Shape>           myWork;
+  double                      myPercent;
+  bool                   myDegen1;
+  bool                   myDegen2;
   BRepFill_ThruSectionErrorStatus    myStatus;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };

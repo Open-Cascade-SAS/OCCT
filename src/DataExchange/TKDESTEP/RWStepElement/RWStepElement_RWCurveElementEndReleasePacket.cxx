@@ -29,7 +29,7 @@ RWStepElement_RWCurveElementEndReleasePacket::RWStepElement_RWCurveElementEndRel
 
 void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num,
+  const int                                  num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepElement_CurveElementEndReleasePacket>& ent) const
 {
@@ -52,7 +52,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepElement_CurveElementEndReleasePacket>& ent) const
 {
 
@@ -67,7 +67,7 @@ void RWStepElement_RWCurveElementEndReleasePacket::WriteStep(
 
 void RWStepElement_RWCurveElementEndReleasePacket::Share(
   const occ::handle<StepElement_CurveElementEndReleasePacket>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                               iter) const
 {
 
   // Own fields of CurveElementEndReleasePacket

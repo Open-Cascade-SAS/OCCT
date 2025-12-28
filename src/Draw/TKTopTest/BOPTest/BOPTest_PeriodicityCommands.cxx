@@ -95,7 +95,9 @@ void BOPTest::PeriodicityCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-int MakePeriodic(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+int MakePeriodic(Draw_Interpretor& theDI,
+                              int  theArgc,
+                              const char**      theArgv)
 {
   if (theArgc < 5)
   {
@@ -226,7 +228,9 @@ int GetTwins(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
 //=================================================================================================
 
-int RepeatShape(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+int RepeatShape(Draw_Interpretor& theDI,
+                             int  theArgc,
+                             const char**      theArgv)
 {
   if (theArgc < 4)
   {

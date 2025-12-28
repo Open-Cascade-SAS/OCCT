@@ -134,9 +134,9 @@ public:
 TEST(MathIntegrationTest, GaussConstantFunction)
 {
   ConstantFunction aFunc(5.0);
-  double           aLower  = 0.0;
-  double           anUpper = 2.0;
-  int              anOrder = 4;
+  double    aLower  = 0.0;
+  double    anUpper = 2.0;
+  int anOrder = 4;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -150,10 +150,10 @@ TEST(MathIntegrationTest, GaussConstantFunction)
 
 TEST(MathIntegrationTest, GaussLinearFunction)
 {
-  LinearFunction aFunc(2.0, 3.0); // f(x) = 2x + 3
-  double         aLower  = 1.0;
-  double         anUpper = 4.0;
-  int            anOrder = 2; // Should be exact for linear functions
+  LinearFunction   aFunc(2.0, 3.0); // f(x) = 2x + 3
+  double    aLower  = 1.0;
+  double    anUpper = 4.0;
+  int anOrder = 2; // Should be exact for linear functions
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -168,9 +168,9 @@ TEST(MathIntegrationTest, GaussLinearFunction)
 TEST(MathIntegrationTest, GaussQuadraticFunction)
 {
   QuadraticFunction aFunc(1.0, -2.0, 1.0); // f(x) = x^2 - 2x + 1 = (x-1)^2
-  double            aLower  = 0.0;
-  double            anUpper = 2.0;
-  int               anOrder = 3; // Should be exact for quadratic functions
+  double     aLower  = 0.0;
+  double     anUpper = 2.0;
+  int  anOrder = 3; // Should be exact for quadratic functions
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -185,10 +185,10 @@ TEST(MathIntegrationTest, GaussQuadraticFunction)
 
 TEST(MathIntegrationTest, GaussSineFunction)
 {
-  SineFunction aFunc;
-  double       aLower  = 0.0;
-  double       anUpper = M_PI;
-  int          anOrder = 10;
+  SineFunction     aFunc;
+  double    aLower  = 0.0;
+  double    anUpper = M_PI;
+  int anOrder = 10;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -203,9 +203,9 @@ TEST(MathIntegrationTest, GaussSineFunction)
 TEST(MathIntegrationTest, GaussExponentialFunction)
 {
   ExponentialFunction aFunc;
-  double              aLower  = 0.0;
-  double              anUpper = 1.0;
-  int                 anOrder = 15;
+  double       aLower  = 0.0;
+  double       anUpper = 1.0;
+  int    anOrder = 15;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -220,8 +220,8 @@ TEST(MathIntegrationTest, GaussExponentialFunction)
 TEST(MathIntegrationTest, GaussDifferentOrders)
 {
   QuadraticFunction aFunc(1.0, 0.0, 0.0); // f(x) = x^2
-  double            aLower  = 0.0;
-  double            anUpper = 1.0;
+  double     aLower  = 0.0;
+  double     anUpper = 1.0;
 
   // Expected result: integral of x^2 from 0 to 1 = [x^3/3] = 1/3
   double anExpected = 1.0 / 3.0;
@@ -253,10 +253,10 @@ TEST(MathIntegrationTest, GaussDifferentOrders)
 TEST(MathIntegrationTest, GaussWithTolerance)
 {
   QuadraticFunction aFunc(1.0, 0.0, 0.0); // f(x) = x^2
-  double            aLower     = 0.0;
-  double            anUpper    = 1.0;
-  int               anOrder    = 5;
-  double            aTolerance = 1.0e-10;
+  double     aLower     = 0.0;
+  double     anUpper    = 1.0;
+  int  anOrder    = 5;
+  double     aTolerance = 1.0e-10;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder, aTolerance);
 
@@ -269,10 +269,10 @@ TEST(MathIntegrationTest, GaussWithTolerance)
 
 TEST(MathIntegrationTest, GaussNegativeInterval)
 {
-  LinearFunction aFunc(1.0, 0.0); // f(x) = x
-  double         aLower  = -2.0;
-  double         anUpper = 2.0;
-  int            anOrder = 3;
+  LinearFunction   aFunc(1.0, 0.0); // f(x) = x
+  double    aLower  = -2.0;
+  double    anUpper = 2.0;
+  int anOrder = 3;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -287,9 +287,9 @@ TEST(MathIntegrationTest, GaussNegativeInterval)
 TEST(MathIntegrationTest, KronrodConstantFunction)
 {
   ConstantFunction aFunc(3.0);
-  double           aLower  = 1.0;
-  double           anUpper = 5.0;
-  int              anOrder = 15; // Kronrod typically uses 15, 21, 31, etc.
+  double    aLower  = 1.0;
+  double    anUpper = 5.0;
+  int anOrder = 15; // Kronrod typically uses 15, 21, 31, etc.
 
   math_KronrodSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -304,9 +304,9 @@ TEST(MathIntegrationTest, KronrodConstantFunction)
 TEST(MathIntegrationTest, KronrodQuadraticFunction)
 {
   QuadraticFunction aFunc(2.0, -1.0, 3.0); // f(x) = 2x^2 - x + 3
-  double            aLower  = 0.0;
-  double            anUpper = 1.0;
-  int               anOrder = 15;
+  double     aLower  = 0.0;
+  double     anUpper = 1.0;
+  int  anOrder = 15;
 
   math_KronrodSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -321,10 +321,10 @@ TEST(MathIntegrationTest, KronrodQuadraticFunction)
 
 TEST(MathIntegrationTest, KronrodSineFunction)
 {
-  SineFunction aFunc;
-  double       aLower  = 0.0;
-  double       anUpper = M_PI / 2.0;
-  int          anOrder = 21;
+  SineFunction     aFunc;
+  double    aLower  = 0.0;
+  double    anUpper = M_PI / 2.0;
+  int anOrder = 21;
 
   math_KronrodSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -339,8 +339,8 @@ TEST(MathIntegrationTest, KronrodSineFunction)
 TEST(MathIntegrationTest, GaussVsKronrodComparison)
 {
   PowerFunction aFunc(4); // f(x) = x^4
-  double        aLower  = 0.0;
-  double        anUpper = 2.0;
+  double aLower  = 0.0;
+  double anUpper = 2.0;
 
   // Expected: integral of x^4 from 0 to 2 = [x^5/5] from 0 to 2 = 32/5 = 6.4
   double anExpected = 32.0 / 5.0;
@@ -369,10 +369,10 @@ TEST(MathIntegrationTest, DefaultConstructorAndPerform)
   // Test default constructor followed by separate computation
   math_GaussSingleIntegration anIntegrator1;
 
-  LinearFunction aFunc(1.0, 2.0); // f(x) = x + 2
-  double         aLower  = 0.0;
-  double         anUpper = 3.0;
-  int            anOrder = 5;
+  LinearFunction   aFunc(1.0, 2.0); // f(x) = x + 2
+  double    aLower  = 0.0;
+  double    anUpper = 3.0;
+  int anOrder = 5;
 
   // Note: We can't call Perform directly in the public interface,
   // so we test by creating with parameters after default construction
@@ -389,9 +389,9 @@ TEST(MathIntegrationTest, DefaultConstructorAndPerform)
 TEST(MathIntegrationTest, ZeroLengthInterval)
 {
   ConstantFunction aFunc(1.0);
-  double           aLower  = 5.0;
-  double           anUpper = 5.0; // Same as lower
-  int              anOrder = 5;
+  double    aLower  = 5.0;
+  double    anUpper = 5.0; // Same as lower
+  int anOrder = 5;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -405,10 +405,10 @@ TEST(MathIntegrationTest, ZeroLengthInterval)
 
 TEST(MathIntegrationTest, ReverseInterval)
 {
-  LinearFunction aFunc(1.0, 0.0); // f(x) = x
-  double         aLower  = 2.0;
-  double         anUpper = 0.0; // Upper < Lower
-  int            anOrder = 5;
+  LinearFunction   aFunc(1.0, 0.0); // f(x) = x
+  double    aLower  = 2.0;
+  double    anUpper = 0.0; // Upper < Lower
+  int anOrder = 5;
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 
@@ -423,10 +423,10 @@ TEST(MathIntegrationTest, ReverseInterval)
 
 TEST(MathIntegrationTest, HighOrderIntegration)
 {
-  PowerFunction aFunc(10); // f(x) = x^10
-  double        aLower  = 0.0;
-  double        anUpper = 1.0;
-  int           anOrder = 30; // High order
+  PowerFunction    aFunc(10); // f(x) = x^10
+  double    aLower  = 0.0;
+  double    anUpper = 1.0;
+  int anOrder = 30; // High order
 
   math_GaussSingleIntegration anIntegrator(aFunc, aLower, anUpper, anOrder);
 

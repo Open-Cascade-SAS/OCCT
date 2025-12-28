@@ -35,7 +35,7 @@ RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,
-  const int                                                           num0,
+  const int                                         num0,
   occ::handle<Interface_Check>&                                       ach,
   const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>& ent) const
 {
@@ -57,11 +57,11 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep(
     return;
   // --- own field : qualifiers ---
   occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> quals;
-  int                                                        nsub;
+  int                          nsub;
   if (data->ReadSubList(num, 1, "qualifiers", ach, nsub))
   {
     int nb = data->NbParams(nsub);
-    quals  = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb);
+    quals               = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       StepShape_ValueQualifier aVQ;
@@ -70,8 +70,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep(
     }
   }
 
-  occ::handle<StepShape_QualifiedRepresentationItem> aQRI =
-    new StepShape_QualifiedRepresentationItem();
+  occ::handle<StepShape_QualifiedRepresentationItem> aQRI = new StepShape_QualifiedRepresentationItem();
   aQRI->SetQualifiers(quals);
 
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
@@ -90,7 +89,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::WriteStep(
-  StepData_StepWriter&                                                SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI>& ent) const
 {
   SW.StartEntity("LENGTH_MEASURE_WITH_UNIT");
@@ -100,7 +99,7 @@ void RWStepRepr_RWReprItemAndLengthMeasureWithUnitAndQRI::WriteStep(
   SW.Send(ent->GetMeasureWithUnit()->UnitComponent().Value());
   SW.StartEntity("QUALIFIED_REPRESENTATION_ITEM");
   occ::handle<StepShape_QualifiedRepresentationItem> aQRI = ent->GetQualifiedRepresentationItem();
-  int                                                i, nbq = aQRI->NbQualifiers();
+  int                              i, nbq = aQRI->NbQualifiers();
   SW.OpenSub();
   for (i = 1; i <= nbq; i++)
     SW.Send(aQRI->QualifiersValue(i).Value());

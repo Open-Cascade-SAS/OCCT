@@ -38,21 +38,17 @@ public:
   Standard_EXPORT bool Add(const TopoDS_Face& aFirst, const TopoDS_Face& aSecond);
 
   Standard_EXPORT TopoDS_Shell Build(const TopoDS_Shell& shell,
-                                     const double        sewtoler,
-                                     const double        fixtoler);
+                                     const double sewtoler,
+                                     const double fixtoler);
 
   //! Clears internal data structure
   Standard_EXPORT void Clear();
 
 private:
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myConnected;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myOriFreeEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myResFreeEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myResSharEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myConnected;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myOriFreeEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myResFreeEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myResSharEdges;
 };
 
 #endif // _ShapeFix_FaceConnect_HeaderFile

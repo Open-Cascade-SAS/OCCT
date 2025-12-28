@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepBasic_AreaUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_AreaUnit, StepBasic_NamedUnit)
+
 };
 
 #endif // _StepBasic_AreaUnit_HeaderFile

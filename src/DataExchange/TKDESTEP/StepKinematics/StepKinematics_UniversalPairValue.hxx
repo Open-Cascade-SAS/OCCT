@@ -31,11 +31,10 @@ public:
   Standard_EXPORT StepKinematics_UniversalPairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-    const double                                     theFirstRotationAngle,
-    const double                                     theSecondRotationAngle);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const double                         theFirstRotationAngle,
+                            const double                         theSecondRotationAngle);
 
   //! Returns field FirstRotationAngle
   Standard_EXPORT double FirstRotationAngle() const;

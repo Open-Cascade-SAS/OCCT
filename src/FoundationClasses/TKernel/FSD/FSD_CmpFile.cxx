@@ -42,7 +42,7 @@ Storage_Error FSD_CmpFile::IsGoodFileType(const TCollection_AsciiString& aName)
   if (s == Storage_VSOk)
   {
     TCollection_AsciiString l;
-    size_t                  len = strlen(FSD_CmpFile::MagicNumber());
+    size_t           len = strlen(FSD_CmpFile::MagicNumber());
 
     f.ReadChar(l, len);
 
@@ -140,7 +140,8 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadLine(aBuf);
-  for (int lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
+  for (int lv = aBuf.Length();
+       lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
        lv--)
   {
     aBuf.Trunc(lv - 1);
@@ -171,7 +172,7 @@ void FSD_CmpFile::WriteExtendedLine(const TCollection_ExtendedString& buffer)
   myStream << (char)0 << "\n";
 #endif
   const char16_t* extBuffer;
-  int             i;
+  int   i;
 
   extBuffer = buffer.ToExtString();
   PutInteger(buffer.Length());
@@ -211,7 +212,8 @@ void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
   buffer.Clear();
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadString(aBuf);
-  for (int lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
+  for (int lv = aBuf.Length();
+       lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n'));
        lv--)
   {
     aBuf.Trunc(lv - 1);
@@ -250,7 +252,7 @@ Storage_Error FSD_CmpFile::BeginReadInfoSection()
 {
   Storage_Error           s;
   TCollection_AsciiString l;
-  size_t                  len = strlen(FSD_CmpFile::MagicNumber());
+  size_t           len = strlen(FSD_CmpFile::MagicNumber());
 
   ReadChar(l, len);
 
@@ -268,7 +270,8 @@ Storage_Error FSD_CmpFile::BeginReadInfoSection()
 
 //=================================================================================================
 
-void FSD_CmpFile::WritePersistentObjectHeader(const int aRef, const int aType)
+void FSD_CmpFile::WritePersistentObjectHeader(const int aRef,
+                                              const int aType)
 {
   myStream << "\n#" << aRef << "%" << aType << " ";
   if (myStream.bad())

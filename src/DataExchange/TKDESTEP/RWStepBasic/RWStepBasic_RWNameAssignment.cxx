@@ -28,7 +28,7 @@ RWStepBasic_RWNameAssignment::RWStepBasic_RWNameAssignment() {}
 //=================================================================================================
 
 void RWStepBasic_RWNameAssignment::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepBasic_NameAssignment>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepBasic_RWNameAssignment::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepBasic_RWNameAssignment::WriteStep(StepData_StepWriter&                         SW,
+void RWStepBasic_RWNameAssignment::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepBasic_NameAssignment>& ent) const
 {
 

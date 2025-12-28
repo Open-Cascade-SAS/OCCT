@@ -23,9 +23,9 @@ PCDM_Reference::PCDM_Reference()
 {
 }
 
-PCDM_Reference::PCDM_Reference(const int                         aReferenceIdentifier,
+PCDM_Reference::PCDM_Reference(const int            aReferenceIdentifier,
                                const TCollection_ExtendedString& aFileName,
-                               const int                         aDocumentVersion)
+                               const int            aDocumentVersion)
     : myReferenceIdentifier(aReferenceIdentifier),
       myFileName(aFileName),
       myDocumentVersion(aDocumentVersion)

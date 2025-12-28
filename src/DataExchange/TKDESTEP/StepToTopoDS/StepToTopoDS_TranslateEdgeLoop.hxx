@@ -40,21 +40,21 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(
     const occ::handle<StepShape_FaceBound>& FB,
-    const TopoDS_Face&                      F,
+    const TopoDS_Face&                 F,
     const occ::handle<Geom_Surface>&        S,
     const occ::handle<StepGeom_Surface>&    SS,
-    const bool                              ss,
-    StepToTopoDS_Tool&                      T,
-    StepToTopoDS_NMTool&                    NMTool,
-    const StepData_Factors&                 theLocalFactors = StepData_Factors());
+    const bool             ss,
+    StepToTopoDS_Tool&                 T,
+    StepToTopoDS_NMTool&               NMTool,
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
   Standard_EXPORT void Init(const occ::handle<StepShape_FaceBound>& FB,
-                            const TopoDS_Face&                      F,
+                            const TopoDS_Face&                 F,
                             const occ::handle<Geom_Surface>&        S,
                             const occ::handle<StepGeom_Surface>&    SS,
-                            const bool                              ss,
-                            StepToTopoDS_Tool&                      T,
-                            StepToTopoDS_NMTool&                    NMTool,
+                            const bool             ss,
+                            StepToTopoDS_Tool&                 T,
+                            StepToTopoDS_NMTool&               NMTool,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const TopoDS_Shape& Value() const;

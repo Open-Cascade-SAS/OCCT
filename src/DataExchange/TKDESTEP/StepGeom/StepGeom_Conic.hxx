@@ -31,7 +31,7 @@ public:
   Standard_EXPORT StepGeom_Conic();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&               aPosition);
+                            const StepGeom_Axis2Placement&          aPosition);
 
   Standard_EXPORT void SetPosition(const StepGeom_Axis2Placement& aPosition);
 

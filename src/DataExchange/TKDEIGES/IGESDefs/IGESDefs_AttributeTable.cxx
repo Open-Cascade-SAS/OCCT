@@ -19,14 +19,22 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESDefs_AttributeDef.hxx>
 #include <IGESDefs_AttributeTable.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Standard_DimensionMismatch.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 
@@ -35,8 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 //  in row), the Column number second (therefore, as a Row number)
 IGESDefs_AttributeTable::IGESDefs_AttributeTable() {}
 
-void IGESDefs_AttributeTable::Init(
-  const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)
+void IGESDefs_AttributeTable::Init(const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes)
 {
   if (attributes->LowerCol() != 1 || attributes->LowerRow() != 1)
     throw Standard_DimensionMismatch("IGESDefs_AttributeTable : Init");
@@ -81,25 +88,25 @@ int IGESDefs_AttributeTable::ValueCount(const int Atnum) const
   return Definition()->AttributeValueCount(Atnum);
 }
 
-occ::handle<Standard_Transient> IGESDefs_AttributeTable::AttributeList(const int Atnum,
-                                                                       const int Rownum) const
+occ::handle<Standard_Transient> IGESDefs_AttributeTable::AttributeList(
+  const int Atnum,
+  const int Rownum) const
 {
   return theAttributes->Value(Atnum, Rownum);
 }
 
 int IGESDefs_AttributeTable::AttributeAsInteger(const int Atnum,
-                                                const int Rownum,
-                                                const int Valuenum) const
+                                                             const int Rownum,
+                                                             const int Valuenum) const
 {
   return GetCasted(NCollection_HArray1<int>, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
 }
 
 double IGESDefs_AttributeTable::AttributeAsReal(const int Atnum,
-                                                const int Rownum,
-                                                const int Valuenum) const
+                                                       const int Rownum,
+                                                       const int Valuenum) const
 {
-  return GetCasted(NCollection_HArray1<double>, theAttributes->Value(Atnum, Rownum))
-    ->Value(Valuenum);
+  return GetCasted(NCollection_HArray1<double>, theAttributes->Value(Atnum, Rownum))->Value(Valuenum);
 }
 
 occ::handle<TCollection_HAsciiString> IGESDefs_AttributeTable::AttributeAsString(
@@ -107,8 +114,7 @@ occ::handle<TCollection_HAsciiString> IGESDefs_AttributeTable::AttributeAsString
   const int Rownum,
   const int Valuenum) const
 {
-  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,
-                   theAttributes->Value(Atnum, Rownum))
+  return GetCasted(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, theAttributes->Value(Atnum, Rownum))
     ->Value(Valuenum);
 }
 
@@ -117,14 +123,13 @@ occ::handle<IGESData_IGESEntity> IGESDefs_AttributeTable::AttributeAsEntity(
   const int Rownum,
   const int Valuenum) const
 {
-  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>,
-                   theAttributes->Value(Atnum, Rownum))
+  return GetCasted(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>, theAttributes->Value(Atnum, Rownum))
     ->Value(Valuenum);
 }
 
 bool IGESDefs_AttributeTable::AttributeAsLogical(const int Atnum,
-                                                 const int Rownum,
-                                                 const int Valuenum) const
+                                                             const int Rownum,
+                                                             const int Valuenum) const
 {
   return (AttributeAsInteger(Atnum, Rownum, Valuenum) != 0); // shortcut
 }

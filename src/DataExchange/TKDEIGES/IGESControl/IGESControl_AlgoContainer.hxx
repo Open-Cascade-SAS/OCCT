@@ -29,6 +29,7 @@ public:
   Standard_EXPORT IGESControl_AlgoContainer();
 
   DEFINE_STANDARD_RTTIEXT(IGESControl_AlgoContainer, IGESToBRep_AlgoContainer)
+
 };
 
 #endif // _IGESControl_AlgoContainer_HeaderFile

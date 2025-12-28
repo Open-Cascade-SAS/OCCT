@@ -40,11 +40,12 @@ public:
   //! Recognizes a kind of RenderingPropertiesSelect select type
   //! -- 1 -> SurfaceStyleReflectanceAmbient
   //! -- 2 -> SurfaceStyleTransparent
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as SurfaceStyleReflectanceAmbient (or Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleReflectanceAmbient>
-                  SurfaceStyleReflectanceAmbient() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleReflectanceAmbient> SurfaceStyleReflectanceAmbient()
+    const;
 
   //! Returns Value as SurfaceStyleTransparent (or Null if another type)
   Standard_EXPORT occ::handle<StepVisual_SurfaceStyleTransparent> SurfaceStyleTransparent() const;

@@ -30,7 +30,8 @@ class StepBasic_DerivedUnitElement : public Standard_Transient
 public:
   Standard_EXPORT StepBasic_DerivedUnitElement();
 
-  Standard_EXPORT void Init(const occ::handle<StepBasic_NamedUnit>& aUnit, const double aExponent);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_NamedUnit>& aUnit,
+                            const double                aExponent);
 
   Standard_EXPORT void SetUnit(const occ::handle<StepBasic_NamedUnit>& aUnit);
 
@@ -44,7 +45,7 @@ public:
 
 private:
   occ::handle<StepBasic_NamedUnit> theUnit;
-  double                           theExponent;
+  double               theExponent;
 };
 
 #endif // _StepBasic_DerivedUnitElement_HeaderFile

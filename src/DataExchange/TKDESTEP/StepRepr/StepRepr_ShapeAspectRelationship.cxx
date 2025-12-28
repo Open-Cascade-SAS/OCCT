@@ -32,7 +32,7 @@ StepRepr_ShapeAspectRelationship::StepRepr_ShapeAspectRelationship()
 
 void StepRepr_ShapeAspectRelationship::Init(
   const occ::handle<TCollection_HAsciiString>& aName,
-  const bool                                   hasDescription,
+  const bool                  hasDescription,
   const occ::handle<TCollection_HAsciiString>& aDescription,
   const occ::handle<StepRepr_ShapeAspect>&     aRelatingShapeAspect,
   const occ::handle<StepRepr_ShapeAspect>&     aRelatedShapeAspect)

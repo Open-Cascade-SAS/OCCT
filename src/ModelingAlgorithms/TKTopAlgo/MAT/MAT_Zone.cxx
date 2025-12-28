@@ -16,6 +16,7 @@
 
 #include <MAT_Arc.hxx>
 #include <MAT_Node.hxx>
+#include <MAT_Arc.hxx>
 #include <NCollection_Sequence.hxx>
 #include <MAT_Zone.hxx>
 #include <Standard_Type.hxx>
@@ -145,8 +146,8 @@ bool MAT_Zone::Limited() const
 //=================================================================================================
 
 occ::handle<MAT_Node> MAT_Zone::NodeForTurn(const occ::handle<MAT_Arc>&      anArc,
-                                            const occ::handle<MAT_BasicElt>& aBE,
-                                            const MAT_Side                   aSide) const
+                                       const occ::handle<MAT_BasicElt>& aBE,
+                                       const MAT_Side              aSide) const
 {
   occ::handle<MAT_Arc>  NeighbourArc;
   occ::handle<MAT_Node> NodeSol;

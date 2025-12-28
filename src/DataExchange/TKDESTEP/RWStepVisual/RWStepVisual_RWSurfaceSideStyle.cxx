@@ -21,11 +21,10 @@
 
 RWStepVisual_RWSurfaceSideStyle::RWStepVisual_RWSurfaceSideStyle() {}
 
-void RWStepVisual_RWSurfaceSideStyle::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepVisual_SurfaceSideStyle>& ent) const
+void RWStepVisual_RWSurfaceSideStyle::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_SurfaceSideStyle>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -42,12 +41,12 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(
   // --- own field : styles ---
 
   occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>> aStyles;
-  StepVisual_SurfaceStyleElementSelect                                   aStylesItem;
-  int                                                                    nsub2;
+  StepVisual_SurfaceStyleElementSelect                  aStylesItem;
+  int                                      nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aStyles = new NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>(1, nb2);
+    aStyles              = new NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -62,7 +61,7 @@ void RWStepVisual_RWSurfaceSideStyle::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceSideStyle::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepVisual_SurfaceSideStyle>& ent) const
 {
 
@@ -81,7 +80,7 @@ void RWStepVisual_RWSurfaceSideStyle::WriteStep(
 }
 
 void RWStepVisual_RWSurfaceSideStyle::Share(const occ::handle<StepVisual_SurfaceSideStyle>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   int nbElem1 = ent->NbStyles();

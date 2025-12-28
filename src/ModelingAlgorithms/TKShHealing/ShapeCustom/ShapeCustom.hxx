@@ -55,12 +55,12 @@ public:
 
   //! Applies modifier to shape and checks sharing in the case assemblies.
   Standard_EXPORT static TopoDS_Shape ApplyModifier(
-    const TopoDS_Shape&                                                       S,
-    const occ::handle<BRepTools_Modification>&                                M,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& context,
-    BRepTools_Modifier&                                                       MD,
-    const Message_ProgressRange&           theProgress = Message_ProgressRange(),
-    const occ::handle<ShapeBuild_ReShape>& aReShape    = NULL);
+    const TopoDS_Shape&                   S,
+    const occ::handle<BRepTools_Modification>& M,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&         context,
+    BRepTools_Modifier&                   MD,
+    const Message_ProgressRange&          theProgress = Message_ProgressRange(),
+    const occ::handle<ShapeBuild_ReShape>&     aReShape    = NULL);
 
   //! Returns a new shape without indirect surfaces.
   Standard_EXPORT static TopoDS_Shape DirectFaces(const TopoDS_Shape& S);
@@ -85,15 +85,15 @@ public:
   //! that Offset surfaces , Offset curves 3d and Offset curves 2d are converted to BSPline
   //! correspondingly.
   Standard_EXPORT static TopoDS_Shape BSplineRestriction(
-    const TopoDS_Shape&                                   S,
-    const double                                          Tol3d,
-    const double                                          Tol2d,
-    const int                                             MaxDegree,
-    const int                                             MaxNbSegment,
-    const GeomAbs_Shape                                   Continuity3d,
-    const GeomAbs_Shape                                   Continuity2d,
-    const bool                                            Degree,
-    const bool                                            Rational,
+    const TopoDS_Shape&                              S,
+    const double                              Tol3d,
+    const double                              Tol2d,
+    const int                           MaxDegree,
+    const int                           MaxNbSegment,
+    const GeomAbs_Shape                              Continuity3d,
+    const GeomAbs_Shape                              Continuity2d,
+    const bool                           Degree,
+    const bool                           Rational,
     const occ::handle<ShapeCustom_RestrictionParameters>& aParameters);
 
   //! Returns a new shape with all elementary periodic surfaces converted
@@ -107,11 +107,12 @@ public:
   //! Returns a new shape with all surfaces of linear extrusion, revolution,
   //! offset, and planar surfaces converted according to flags to
   //! Geom_BSplineSurface (with same parameterisation).
-  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(const TopoDS_Shape& S,
-                                                       const bool          extrMode,
-                                                       const bool          revolMode,
-                                                       const bool          offsetMode,
-                                                       const bool          planeMode = false);
+  Standard_EXPORT static TopoDS_Shape ConvertToBSpline(
+    const TopoDS_Shape&    S,
+    const bool extrMode,
+    const bool revolMode,
+    const bool offsetMode,
+    const bool planeMode = false);
 };
 
 #endif // _ShapeCustom_HeaderFile

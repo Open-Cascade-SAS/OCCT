@@ -46,9 +46,10 @@ public:
 protected:
   Standard_EXPORT DrawDim_Dimension();
 
-  bool       is_valued;
-  double     myValue;
-  Draw_Color myTextColor;
+  bool is_valued;
+  double    myValue;
+  Draw_Color       myTextColor;
+
 };
 
 #endif // _DrawDim_Dimension_HeaderFile

@@ -30,7 +30,7 @@ void StepShape_RevolvedFaceSolid::Init(const occ::handle<TCollection_HAsciiStrin
 void StepShape_RevolvedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepShape_FaceSurface>&    aSweptArea,
                                        const occ::handle<StepGeom_Axis1Placement>&  aAxis,
-                                       const double                                 aAngle)
+                                       const double                     aAngle)
 {
   // --- classe own fields ---
   axis  = aAxis;

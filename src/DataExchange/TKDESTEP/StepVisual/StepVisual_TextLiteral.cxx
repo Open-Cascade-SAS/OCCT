@@ -20,10 +20,10 @@ StepVisual_TextLiteral::StepVisual_TextLiteral() {}
 
 void StepVisual_TextLiteral::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<TCollection_HAsciiString>& aLiteral,
-                                  const StepGeom_Axis2Placement&               aPlacement,
+                                  const StepGeom_Axis2Placement&          aPlacement,
                                   const occ::handle<TCollection_HAsciiString>& aAlignment,
-                                  const StepVisual_TextPath                    aPath,
-                                  const StepVisual_FontSelect&                 aFont)
+                                  const StepVisual_TextPath               aPath,
+                                  const StepVisual_FontSelect&            aFont)
 {
   // --- classe own fields ---
   literal   = aLiteral;

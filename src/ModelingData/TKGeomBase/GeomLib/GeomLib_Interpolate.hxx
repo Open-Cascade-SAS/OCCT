@@ -25,6 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_BSplineCurve;
 
 //! This class is used to construct a BSpline curve by
@@ -40,9 +41,9 @@ class GeomLib_Interpolate
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GeomLib_Interpolate(const int                         Degree,
-                                      const int                         NumPoints,
-                                      const NCollection_Array1<gp_Pnt>& Points,
+  Standard_EXPORT GeomLib_Interpolate(const int      Degree,
+                                      const int      NumPoints,
+                                      const NCollection_Array1<gp_Pnt>&   Points,
                                       const NCollection_Array1<double>& Parameters);
 
   //! returns if everything went OK
@@ -55,9 +56,9 @@ public:
   Standard_EXPORT occ::handle<Geom_BSplineCurve> Curve() const;
 
 private:
-  occ::handle<Geom_BSplineCurve> myCurve;
-  bool                           myIsDone;
-  GeomLib_InterpolationErrors    myError;
+  occ::handle<Geom_BSplineCurve>   myCurve;
+  bool            myIsDone;
+  GeomLib_InterpolationErrors myError;
 };
 
 #include <GeomLib_Interpolate.lxx>

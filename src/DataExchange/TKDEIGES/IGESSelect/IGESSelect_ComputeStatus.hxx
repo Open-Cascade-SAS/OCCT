@@ -44,15 +44,16 @@ public:
   //! Subordinate Status and Use Flag (in Directory Part of each
   //! IGES Entity). Then it corrects them, for the whole target.
   //! Works with a Protocol. Implementation uses BasicEditor
-  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&                    TC) const override;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Compute Subordinate Status and Use Flag"
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ComputeStatus, IGESSelect_ModelModifier)
+
 };
 
 #endif // _IGESSelect_ComputeStatus_HeaderFile

@@ -70,8 +70,8 @@ public:
   //! myBoundary = GeomFill_BoundWithSurf (
   //! CurveOnSurf, Tol, TolAng );
   Standard_EXPORT GeomFill_BoundWithSurf(const Adaptor3d_CurveOnSurface& CurveOnSurf,
-                                         const double                    Tol3d,
-                                         const double                    Tolang);
+                                         const double             Tol3d,
+                                         const double             Tolang);
 
   Standard_EXPORT gp_Pnt Value(const double U) const override;
 
@@ -81,15 +81,17 @@ public:
 
   Standard_EXPORT virtual gp_Vec Norm(const double U) const override;
 
-  Standard_EXPORT virtual void D1Norm(const double U, gp_Vec& N, gp_Vec& DN) const override;
+  Standard_EXPORT virtual void D1Norm(const double U,
+                                      gp_Vec&             N,
+                                      gp_Vec&             DN) const override;
 
-  Standard_EXPORT void Reparametrize(const double First,
-                                     const double Last,
-                                     const bool   HasDF,
-                                     const bool   HasDL,
-                                     const double DF,
-                                     const double DL,
-                                     const bool   Rev) override;
+  Standard_EXPORT void Reparametrize(const double    First,
+                                     const double    Last,
+                                     const bool HasDF,
+                                     const bool HasDL,
+                                     const double    DF,
+                                     const double    DL,
+                                     const bool Rev) override;
 
   Standard_EXPORT void Bounds(double& First, double& Last) const override;
 
@@ -98,8 +100,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomFill_BoundWithSurf, GeomFill_Boundary)
 
 private:
-  Adaptor3d_CurveOnSurface  myConS;
-  occ::handle<Law_Function> myPar;
+  Adaptor3d_CurveOnSurface myConS;
+  occ::handle<Law_Function>     myPar;
 };
 
 #endif // _GeomFill_BoundWithSurf_HeaderFile

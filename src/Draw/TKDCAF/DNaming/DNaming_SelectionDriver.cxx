@@ -30,6 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DNaming_SelectionDriver, TFunction_Driver)
 // #define SEL_DEB 1
 #ifdef OCCT_DEBUG
   #include <TDF_Tool.hxx>
+  #include <TDF_Label.hxx>
   #include <NCollection_Map.hxx>
 #endif
 //=================================================================================================
@@ -88,8 +89,8 @@ int DNaming_SelectionDriver::Execute(occ::handle<TFunction_Logbook>& theLog) con
   if (aRLabel.IsNull())
     return -1;
 
-  bool                            aIsWire        = false;
-  TopAbs_ShapeEnum                aPrevShapeType = TopAbs_SHAPE;
+  bool           aIsWire        = false;
+  TopAbs_ShapeEnum           aPrevShapeType = TopAbs_SHAPE;
   occ::handle<TNaming_NamedShape> aNShape;
   if (aRLabel.FindAttribute(TNaming_NamedShape::GetID(), aNShape))
   {

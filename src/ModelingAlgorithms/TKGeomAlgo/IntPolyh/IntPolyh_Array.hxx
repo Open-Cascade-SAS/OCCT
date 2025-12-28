@@ -212,9 +212,9 @@ public:
   }
 
 protected:
-  int                   myNbAllocated;
-  int                   myNbItems;
-  int                   myIncrement;
+  int      myNbAllocated;
+  int      myNbItems;
+  int      myIncrement;
   IntPolyh_VectorOfType myVectorOfType;
 };
 

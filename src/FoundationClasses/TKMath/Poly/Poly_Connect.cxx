@@ -22,10 +22,10 @@
 // this structure records one of the edges starting from a node
 struct polyedge
 {
-  polyedge* next;  // the next edge in the list
-  int       nt[2]; // the two adjacent triangles
-  int       nn[2]; // the two adjacent nodes
-  int       nd;    // the second node of the edge
+  polyedge*        next;  // the next edge in the list
+  int nt[2]; // the two adjacent triangles
+  int nn[2]; // the two adjacent nodes
+  int nd;    // the second node of the edge
   DEFINE_STANDARD_ALLOC
 };
 

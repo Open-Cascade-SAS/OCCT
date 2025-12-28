@@ -112,8 +112,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 {
 
   occ::handle<TDF_Attribute>           TDFAttribute = Attribute();
-  occ::handle<TDataStd_ExtStringArray> BackAtt =
-    occ::down_cast<TDataStd_ExtStringArray>(TDFAttribute);
+  occ::handle<TDataStd_ExtStringArray> BackAtt = occ::down_cast<TDataStd_ExtStringArray>(TDFAttribute);
   if (BackAtt.IsNull())
   {
 #ifdef OCCT_DEBUG
@@ -150,7 +149,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  int                                                          i;
+  int                        i;
   occ::handle<NCollection_HArray1<TCollection_ExtendedString>> aStrArr = aCurAtt->Array();
   if (aStrArr.IsNull())
     return;
@@ -171,7 +170,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   }
   else
   { // == 3
-    int                                                          low = aStrArr->Lower();
+    int                        low = aStrArr->Lower();
     occ::handle<NCollection_HArray1<TCollection_ExtendedString>> strArr =
       new NCollection_HArray1<TCollection_ExtendedString>(low, myUp1);
     for (i = aStrArr->Lower(); i <= myUp2 && i <= aStrArr->Upper(); i++)

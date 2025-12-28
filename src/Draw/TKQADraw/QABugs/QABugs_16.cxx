@@ -63,11 +63,9 @@
 #include <Standard_ErrorHandler.hxx>
 
 #if !defined(_WIN32)
-extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-  GetMapOfAIS();
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
 #else
-Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-                GetMapOfAIS();
+Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
 #endif
 
 static int BUC60848(Draw_Interpretor& di, int argc, const char** argv)
@@ -118,7 +116,7 @@ static int BUC60814(Draw_Interpretor& di, int argc, const char** argv)
   // TRIHEDRON
   occ::handle<AIS_InteractiveObject> aTrihedron;
   occ::handle<Geom_Axis2Placement>   aTrihedronAxis = new Geom_Axis2Placement(gp::XOY());
-  aTrihedron                                        = new AIS_Trihedron(aTrihedronAxis);
+  aTrihedron                                   = new AIS_Trihedron(aTrihedronAxis);
   myAISContext->Display(aTrihedron, false);
 
   // Circle
@@ -141,7 +139,9 @@ static int BUC60814(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-static int BUC60774(Draw_Interpretor& theDi, int theArgNb, const char** theArgv)
+static int BUC60774(Draw_Interpretor& theDi,
+                                 int  theArgNb,
+                                 const char**      theArgv)
 {
   if (theArgNb != 1)
   {
@@ -167,10 +167,9 @@ static int BUC60774(Draw_Interpretor& theDi, int theArgNb, const char** theArgv)
   int aXPixMax = aWinWidth;
   int aYPixMax = aWinHeight;
 
-  AIS_StatusOfPick aPickStatus =
-    anAISContext->SelectRectangle(NCollection_Vec2<int>(aXPixMin, aYPixMin),
-                                  NCollection_Vec2<int>(aXPixMax, aYPixMax),
-                                  aV3dView);
+  AIS_StatusOfPick aPickStatus = anAISContext->SelectRectangle(NCollection_Vec2<int>(aXPixMin, aYPixMin),
+                                                               NCollection_Vec2<int>(aXPixMax, aYPixMax),
+                                                               aV3dView);
   theDi << (aPickStatus == AIS_SOP_NothingSelected
               ? "status = AIS_SOP_NothingSelected : OK"
               : "status = AIS_SOP_NothingSelected : bugged - Faulty ");
@@ -216,8 +215,8 @@ static int BUC60972(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  TopoDS_Edge             aFirst  = TopoDS::Edge(DBRep::Get(argv[1], TopAbs_EDGE));
-  TopoDS_Edge             aSecond = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
+  TopoDS_Edge        aFirst  = TopoDS::Edge(DBRep::Get(argv[1], TopAbs_EDGE));
+  TopoDS_Edge        aSecond = TopoDS::Edge(DBRep::Get(argv[2], TopAbs_EDGE));
   occ::handle<Geom_Plane> aPlane  = occ::down_cast<Geom_Plane>(DrawTrSurf::GetSurface(argv[3]));
   if (aPlane.IsNull())
     return 1;
@@ -316,7 +315,7 @@ static int OCC218bug(Draw_Interpretor& di, int argc, const char** argv)
       C = theCurveB.Value(0.5);
     }
     // Construction du Geom_Plane
-    GC_MakePlane                   MkPlane(A, B, C);
+    GC_MakePlane              MkPlane(A, B, C);
     const occ::handle<Geom_Plane>& theGeomPlane = MkPlane.Value();
 
     // on le display & bind
@@ -345,10 +344,10 @@ static int OCC295(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
     return 1;
-  TopoDS_Edge                    e1 = TopoDS::Edge(Sh1);
-  TopoDS_Edge                    e2 = TopoDS::Edge(Sh2);
-  double                         f1, l1, f2, l2;
-  bool                           After  = true;
+  TopoDS_Edge               e1 = TopoDS::Edge(Sh1);
+  TopoDS_Edge               e2 = TopoDS::Edge(Sh2);
+  double             f1, l1, f2, l2;
+  bool          After  = true;
   occ::handle<Geom_Curve>        ac1    = BRep_Tool::Curve(e1, f1, l1);
   occ::handle<Geom_Curve>        ac2    = BRep_Tool::Curve(e2, f2, l2);
   occ::handle<Geom_BSplineCurve> bsplc1 = occ::down_cast<Geom_BSplineCurve>(ac1);
@@ -388,7 +387,7 @@ static int OCC49(Draw_Interpretor& di, int argc, const char** argv)
   GProp_GProps G;
   BRepGProp::VolumeProperties(S, G);
   GProp_PrincipalProps Pr     = G.PrincipalProperties();
-  bool                 Result = Pr.HasSymmetryAxis();
+  bool     Result = Pr.HasSymmetryAxis();
   if (Result)
   {
     di << "1\n";
@@ -414,25 +413,25 @@ static int OCC405(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
     return 1;
-  TopoDS_Edge             e1 = TopoDS::Edge(Sh1);
-  TopoDS_Edge             e2 = TopoDS::Edge(Sh2);
-  double                  f1, l1, f2, l2;
-  bool                    After = true;
+  TopoDS_Edge        e1 = TopoDS::Edge(Sh1);
+  TopoDS_Edge        e2 = TopoDS::Edge(Sh2);
+  double      f1, l1, f2, l2;
+  bool   After = true;
   occ::handle<Geom_Curve> ac1   = BRep_Tool::Curve(e1, f1, l1);
   occ::handle<Geom_Curve> ac2   = BRep_Tool::Curve(e2, f2, l2);
   if (e1.Orientation() == TopAbs_REVERSED)
   {
     double cf = f1;
-    f1        = ac1->ReversedParameter(l1);
-    l1        = ac1->ReversedParameter(cf);
-    ac1       = ac1->Reversed();
+    f1               = ac1->ReversedParameter(l1);
+    l1               = ac1->ReversedParameter(cf);
+    ac1              = ac1->Reversed();
   }
   if (e2.Orientation() == TopAbs_REVERSED)
   {
     double cf = f2;
-    f2        = ac2->ReversedParameter(l2);
-    l2        = ac2->ReversedParameter(cf);
-    ac2       = ac2->Reversed();
+    f2               = ac2->ReversedParameter(l2);
+    l2               = ac2->ReversedParameter(cf);
+    ac2              = ac2->Reversed();
   }
   occ::handle<Geom_BSplineCurve> bsplc1 = occ::down_cast<Geom_BSplineCurve>(ac1);
   occ::handle<Geom_BSplineCurve> bsplc2 = occ::down_cast<Geom_BSplineCurve>(ac2);
@@ -484,10 +483,10 @@ static int OCC395(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   if (Sh1.ShapeType() != TopAbs_EDGE || Sh2.ShapeType() != TopAbs_EDGE)
     return 1;
-  TopoDS_Edge             e1 = TopoDS::Edge(Sh1);
-  TopoDS_Edge             e2 = TopoDS::Edge(Sh2);
-  double                  f1, l1, f2, l2;
-  bool                    After = true;
+  TopoDS_Edge        e1 = TopoDS::Edge(Sh1);
+  TopoDS_Edge        e2 = TopoDS::Edge(Sh2);
+  double      f1, l1, f2, l2;
+  bool   After = true;
   occ::handle<Geom_Curve> ac1   = BRep_Tool::Curve(e1, f1, l1);
   occ::handle<Geom_Curve> ac2   = BRep_Tool::Curve(e2, f2, l2);
   if (e1.Orientation() == TopAbs_REVERSED)
@@ -534,10 +533,10 @@ static int OCC394(Draw_Interpretor& di, int argc, const char** argv)
   }
   TopoDS_Shape Sh = DBRep::Get(argv[2]);
 
-  int    k      = 3;
-  double tol    = 100000;
-  int    mode   = 2;
-  double tolang = M_PI / 2;
+  int k      = 3;
+  double    tol    = 100000;
+  int mode   = 2;
+  double    tolang = M_PI / 2;
   if (argc > k)
     tol = Draw::Atof(argv[k++]);
 
@@ -556,9 +555,8 @@ static int OCC394(Draw_Interpretor& di, int argc, const char** argv)
   if (mode == 2)
     aModeDrop = false;
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theSmallEdges, theMultyEdges;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    theEdgeToFaces, theFaceWithSmall;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                theSmallEdges, theMultyEdges;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEdgeToFaces, theFaceWithSmall;
   aSfwr->CheckSmallEdges(theSmallEdges, theEdgeToFaces, theFaceWithSmall, theMultyEdges);
   aSfwr->MergeSmallEdges(theSmallEdges,
                          theEdgeToFaces,
@@ -599,8 +597,8 @@ static int OCC301(Draw_Interpretor& di, int argc, const char** argv)
   context->Display(new AIS_Shape(E1), false);
   context->Display(new AIS_Shape(E2), true);
 
-  gp_Pnt                  plnpt(0, 0, 0);
-  gp_Dir                  plndir(gp_Dir::D::Z);
+  gp_Pnt             plnpt(0, 0, 0);
+  gp_Dir             plndir(gp_Dir::D::Z);
   occ::handle<Geom_Plane> pln = new Geom_Plane(plnpt, plndir);
 
   occ::handle<PrsDim_AngleDimension> anAngleDimension =
@@ -647,7 +645,7 @@ static int OCC710(Draw_Interpretor& di, int argc, const char** argv)
 
   TCollection_AsciiString in(argv[1]);
   OSD_File*               aFile    = new OSD_File(in);
-  bool                    anExists = aFile->Exists();
+  bool        anExists = aFile->Exists();
   if (anExists == true)
     di << "1\n";
   else
@@ -670,7 +668,7 @@ static int OCC904(Draw_Interpretor& di, int argc, const char** argv)
     di << " Shape is null\n";
     return 1;
   }
-  bool                        nonmanifmode = (Draw::Atoi(argv[3]) != 0);
+  bool       nonmanifmode = (Draw::Atoi(argv[3]) != 0);
   occ::handle<ShapeFix_Shell> SFSh         = new ShapeFix_Shell;
   SFSh->FixFaceOrientation(TopoDS::Shell(S), true, nonmanifmode);
   DBRep::Set(argv[1], SFSh->Shape());

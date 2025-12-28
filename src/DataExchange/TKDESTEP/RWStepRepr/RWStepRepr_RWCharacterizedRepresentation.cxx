@@ -30,7 +30,7 @@ RWStepRepr_RWCharacterizedRepresentation::RWStepRepr_RWCharacterizedRepresentati
 
 void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepRepr_CharacterizedRepresentation>& ent) const
 {
@@ -48,12 +48,12 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
 
   // items
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems;
-  occ::handle<StepRepr_RepresentationItem>                                   anItem;
-  int                                                                        nsub;
+  occ::handle<StepRepr_RepresentationItem>          anItem;
+  int                             nsub;
   if (data->ReadSubList(num, 3, "items", ach, nsub))
   {
-    int nb  = data->NbParams(nsub);
-    anItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
+    int nb = data->NbParams(nsub);
+    anItems             = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub,
@@ -82,7 +82,7 @@ void RWStepRepr_RWCharacterizedRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWCharacterizedRepresentation::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepRepr_CharacterizedRepresentation>& ent) const
 {
   // name
@@ -110,7 +110,7 @@ void RWStepRepr_RWCharacterizedRepresentation::WriteStep(
 
 void RWStepRepr_RWCharacterizedRepresentation::Share(
   const occ::handle<StepRepr_CharacterizedRepresentation>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
   int nbElem = ent->NbItems();
   for (int i = 1; i <= nbElem; i++)

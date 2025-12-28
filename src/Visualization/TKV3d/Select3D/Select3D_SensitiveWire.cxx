@@ -78,11 +78,12 @@ Select3D_BndBox3d Select3D_SensitiveWire::Box(const int theIdx) const
 // purpose  : Returns geometry center of sensitive entity with index
 //            theIdx in the vector along the given axis theAxis
 //=======================================================================
-double Select3D_SensitiveWire::Center(const int theIdx, const int theAxis) const
+double Select3D_SensitiveWire::Center(const int theIdx,
+                                             const int theAxis) const
 {
-  const int     aSensitiveIdx = myEntityIndexes.Value(theIdx);
-  const gp_Pnt& aCenter       = myEntities.Value(aSensitiveIdx)->CenterOfGeometry();
-  double        aCenterCoord  = 0.0;
+  const int aSensitiveIdx = myEntityIndexes.Value(theIdx);
+  const gp_Pnt&          aCenter       = myEntities.Value(aSensitiveIdx)->CenterOfGeometry();
+  double          aCenterCoord  = 0.0;
   aCenterCoord = theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 
   return aCenterCoord;
@@ -94,10 +95,10 @@ double Select3D_SensitiveWire::Center(const int theIdx, const int theAxis) const
 //=======================================================================
 void Select3D_SensitiveWire::Swap(const int theIdx1, const int theIdx2)
 {
-  const int aSensitiveIdx1             = myEntityIndexes.Value(theIdx1);
-  const int aSensitiveIdx2             = myEntityIndexes.Value(theIdx2);
-  myEntityIndexes.ChangeValue(theIdx1) = aSensitiveIdx2;
-  myEntityIndexes.ChangeValue(theIdx2) = aSensitiveIdx1;
+  const int aSensitiveIdx1 = myEntityIndexes.Value(theIdx1);
+  const int aSensitiveIdx2 = myEntityIndexes.Value(theIdx2);
+  myEntityIndexes.ChangeValue(theIdx1)  = aSensitiveIdx2;
+  myEntityIndexes.ChangeValue(theIdx2)  = aSensitiveIdx1;
 }
 
 // =======================================================================
@@ -105,21 +106,23 @@ void Select3D_SensitiveWire::Swap(const int theIdx1, const int theIdx2)
 // purpose  : Checks whether the entity with index theIdx overlaps the
 //            current selecting volume
 // =======================================================================
-bool Select3D_SensitiveWire::overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                             SelectBasics_SelectingVolumeManager& theMgr,
-                                             int                                  theElemIdx,
-                                             bool)
+bool Select3D_SensitiveWire::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool)
 {
-  const int                                    aSensitiveIdx = myEntityIndexes.Value(theElemIdx);
+  const int                  aSensitiveIdx = myEntityIndexes.Value(theElemIdx);
   const occ::handle<Select3D_SensitiveEntity>& aSeg          = myEntities.Value(aSensitiveIdx);
   return aSeg->Matches(theMgr, thePickResult);
 }
 
 //=================================================================================================
 
-bool Select3D_SensitiveWire::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                             int                                  theElemIdx,
-                                             bool)
+bool Select3D_SensitiveWire::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool)
 {
   SelectBasics_PickResult aMatchResult;
   return myEntities.Value(myEntityIndexes.Value(theElemIdx))->Matches(theMgr, aMatchResult);
@@ -164,7 +167,7 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveWire::GetLastDetected() 
   if (myDetectedIdx >= 0 && myDetectedIdx < myEntities.Length())
   {
     const int aSensitiveIdx = myEntityIndexes.Value(myDetectedIdx);
-    aRes                    = myEntities.Value(aSensitiveIdx);
+    aRes                                 = myEntities.Value(aSensitiveIdx);
   }
 
   return aRes;

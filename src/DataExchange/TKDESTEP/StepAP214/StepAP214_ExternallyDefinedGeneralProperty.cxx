@@ -32,9 +32,9 @@ StepAP214_ExternallyDefinedGeneralProperty::StepAP214_ExternallyDefinedGeneralPr
 void StepAP214_ExternallyDefinedGeneralProperty::Init(
   const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Id,
   const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Name,
-  const bool                                   hasGeneralProperty_Description,
+  const bool                  hasGeneralProperty_Description,
   const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Description,
-  const StepBasic_SourceItem&                  aExternallyDefinedItem_ItemId,
+  const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
   const occ::handle<StepBasic_ExternalSource>& aExternallyDefinedItem_Source)
 {
   StepBasic_GeneralProperty::Init(aGeneralProperty_Id,

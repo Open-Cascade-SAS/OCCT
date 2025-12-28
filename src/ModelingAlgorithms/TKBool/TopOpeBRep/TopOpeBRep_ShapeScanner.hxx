@@ -65,7 +65,7 @@ public:
   Standard_EXPORT Standard_OStream& DumpCurrent(Standard_OStream& OS) const;
 
 private:
-  TopOpeBRepTool_BoxSort          myBoxSort;
+  TopOpeBRepTool_BoxSort              myBoxSort;
   NCollection_List<int>::Iterator myListIterator;
 };
 

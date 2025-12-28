@@ -26,6 +26,8 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepFeat_RibSlot.hxx>
 #include <Standard_Integer.hxx>
 class Geom_Curve;
@@ -66,13 +68,13 @@ public:
   //! setting 0 in case of the groove
   //! -   adding matter with Boolean fusion using the
   //! setting 1 in case of the rib.
-  BRepFeat_MakeLinearForm(const TopoDS_Shape&            Sbase,
-                          const TopoDS_Wire&             W,
+  BRepFeat_MakeLinearForm(const TopoDS_Shape&       Sbase,
+                          const TopoDS_Wire&        W,
                           const occ::handle<Geom_Plane>& P,
-                          const gp_Vec&                  Direction,
-                          const gp_Vec&                  Direction1,
-                          const int                      Fuse,
-                          const bool                     Modify);
+                          const gp_Vec&             Direction,
+                          const gp_Vec&             Direction1,
+                          const int    Fuse,
+                          const bool    Modify);
 
   //! Initializes this construction algorithm.
   //! A contour W, a shape Sbase and a plane P are
@@ -85,13 +87,13 @@ public:
   //! 0 in case of the groove
   //! -   adding matter with Boolean fusion using the setting 1
   //! in case of the rib.
-  Standard_EXPORT void Init(const TopoDS_Shape&            Sbase,
-                            const TopoDS_Wire&             W,
+  Standard_EXPORT void Init(const TopoDS_Shape&       Sbase,
+                            const TopoDS_Wire&        W,
                             const occ::handle<Geom_Plane>& P,
-                            const gp_Vec&                  Direction,
-                            const gp_Vec&                  Direction1,
-                            const int                      Fuse,
-                            const bool                     Modify);
+                            const gp_Vec&             Direction,
+                            const gp_Vec&             Direction1,
+                            const int    Fuse,
+                            const bool    Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
@@ -114,21 +116,20 @@ public:
   Standard_EXPORT void TransformShapeFU(const int flag);
 
   Standard_EXPORT bool Propagate(NCollection_List<TopoDS_Shape>& L,
-                                 const TopoDS_Face&              F,
-                                 const gp_Pnt&                   FPoint,
-                                 const gp_Pnt&                   LPoint,
-                                 bool&                           falseside);
+                                             const TopoDS_Face&    F,
+                                             const gp_Pnt&         FPoint,
+                                             const gp_Pnt&         LPoint,
+                                             bool&     falseside);
 
 private:
-  occ::handle<Geom_Curve> myCrv;
-  gp_Vec                  myDir;
-  gp_Vec                  myDir1;
-  occ::handle<Geom_Plane> myPln;
-  double                  myBnd;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                 mySlface;
-  NCollection_List<TopoDS_Shape> myListOfEdges;
-  double                         myTol;
+  occ::handle<Geom_Curve>                 myCrv;
+  gp_Vec                             myDir;
+  gp_Vec                             myDir1;
+  occ::handle<Geom_Plane>                 myPln;
+  double                      myBnd;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
+  NCollection_List<TopoDS_Shape>               myListOfEdges;
+  double                      myTol;
 };
 
 #include <BRepFeat_MakeLinearForm.lxx>

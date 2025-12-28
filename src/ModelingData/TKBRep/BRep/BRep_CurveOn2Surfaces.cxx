@@ -28,9 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces, BRep_CurveRepresentation)
 
 BRep_CurveOn2Surfaces::BRep_CurveOn2Surfaces(const occ::handle<Geom_Surface>& S1,
                                              const occ::handle<Geom_Surface>& S2,
-                                             const TopLoc_Location&           L1,
-                                             const TopLoc_Location&           L2,
-                                             const GeomAbs_Shape              C)
+                                             const TopLoc_Location&      L1,
+                                             const TopLoc_Location&      L2,
+                                             const GeomAbs_Shape         C)
     : BRep_CurveRepresentation(L1),
       mySurface(S1),
       mySurface2(S2),
@@ -56,9 +56,9 @@ bool BRep_CurveOn2Surfaces::IsRegularity() const
 //=================================================================================================
 
 bool BRep_CurveOn2Surfaces::IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                         const occ::handle<Geom_Surface>& S2,
-                                         const TopLoc_Location&           L1,
-                                         const TopLoc_Location&           L2) const
+                                                     const occ::handle<Geom_Surface>& S2,
+                                                     const TopLoc_Location&      L1,
+                                                     const TopLoc_Location&      L2) const
 {
   return ((mySurface == S1 && mySurface2 == S2 && myLocation == L1 && myLocation2 == L2)
           || (mySurface == S2 && mySurface2 == S1 && myLocation == L2 && myLocation2 == L1));

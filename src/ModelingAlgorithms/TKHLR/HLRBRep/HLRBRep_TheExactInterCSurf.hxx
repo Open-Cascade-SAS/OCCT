@@ -40,16 +40,16 @@ public:
   //! compute the solution point with the close point
   //! MarginCoef is the coefficient for extension of UV bounds.
   //! Ex., UFirst -= MarginCoef*(ULast-UFirst)
-  Standard_EXPORT HLRBRep_TheExactInterCSurf(const double                             U,
-                                             const double                             V,
-                                             const double                             W,
+  Standard_EXPORT HLRBRep_TheExactInterCSurf(const double                      U,
+                                             const double                      V,
+                                             const double                      W,
                                              const HLRBRep_TheCSFunctionOfInterCSurf& F,
-                                             const double                             TolTangency,
+                                             const double                      TolTangency,
                                              const double MarginCoef = 0.0);
 
   //! initialize the parameters to compute the solution
   Standard_EXPORT HLRBRep_TheExactInterCSurf(const HLRBRep_TheCSFunctionOfInterCSurf& F,
-                                             const double                             TolTangency);
+                                             const double                      TolTangency);
 
   //! compute the solution
   //! it's possible to write to optimize:
@@ -73,16 +73,16 @@ public:
   //! w=...
   //! inter.Perform(u,v,w,rsnld)
   //! }
-  Standard_EXPORT void Perform(const double          U,
-                               const double          V,
-                               const double          W,
+  Standard_EXPORT void Perform(const double   U,
+                               const double   V,
+                               const double   W,
                                math_FunctionSetRoot& Rsnld,
-                               const double          u0,
-                               const double          v0,
-                               const double          u1,
-                               const double          v1,
-                               const double          w0,
-                               const double          w1);
+                               const double   u0,
+                               const double   v0,
+                               const double   u1,
+                               const double   v1,
+                               const double   w0,
+                               const double   w1);
 
   //! Returns TRUE if the creation completed without failure.
   Standard_EXPORT bool IsDone() const;
@@ -103,13 +103,13 @@ public:
   Standard_EXPORT HLRBRep_TheCSFunctionOfInterCSurf& Function();
 
 private:
-  bool                              done;
-  bool                              empty;
+  bool                  done;
+  bool                  empty;
   HLRBRep_TheCSFunctionOfInterCSurf myFunction;
-  double                            w;
-  double                            u;
-  double                            v;
-  double                            tol;
+  double                     w;
+  double                     u;
+  double                     v;
+  double                     tol;
 };
 
 #endif // _HLRBRep_TheExactInterCSurf_HeaderFile

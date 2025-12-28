@@ -24,10 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_BoundedSurface, IGESData_IGESEntity)
 
 IGESGeom_BoundedSurface::IGESGeom_BoundedSurface() {}
 
-void IGESGeom_BoundedSurface::Init(
-  const int                                                               aType,
-  const occ::handle<IGESData_IGESEntity>&                                 aSurface,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& aBoundary)
+void IGESGeom_BoundedSurface::Init(const int                    aType,
+                                   const occ::handle<IGESData_IGESEntity>&        aSurface,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_Boundary>>>& aBoundary)
 {
   if (aBoundary->Lower() != 1)
     throw Standard_DimensionMismatch("IGESGeom_BoundedSurface : Init");

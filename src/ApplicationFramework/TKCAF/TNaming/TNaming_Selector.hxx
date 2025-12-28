@@ -22,8 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_Label.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_Handle.hxx>
 #include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 class TopoDS_Shape;
 class TNaming_NamedShape;
 
@@ -76,10 +79,11 @@ public:
   //! containing the first appearance of selection and
   //! not any other shape. In other words, selection
   //! must be the only shape stored in NS.
-  Standard_EXPORT static bool IsIdentified(const TDF_Label&                 access,
-                                           const TopoDS_Shape&              selection,
-                                           occ::handle<TNaming_NamedShape>& NS,
-                                           const bool                       Geometry = false);
+  Standard_EXPORT static bool IsIdentified(
+    const TDF_Label&            access,
+    const TopoDS_Shape&         selection,
+    occ::handle<TNaming_NamedShape>& NS,
+    const bool      Geometry = false);
 
   //! Create a selector on this label
   //! to select a shape.
@@ -95,10 +99,11 @@ public:
   //! first appearance of Selection.
   //! This syntax is more robust than the previous
   //! syntax for this method.
-  Standard_EXPORT bool Select(const TopoDS_Shape& Selection,
-                              const TopoDS_Shape& Context,
-                              const bool          Geometry          = false,
-                              const bool          KeepOrientatation = false) const;
+  Standard_EXPORT bool
+    Select(const TopoDS_Shape&    Selection,
+           const TopoDS_Shape&    Context,
+           const bool Geometry          = false,
+           const bool KeepOrientatation = false) const;
 
   //! Creates a topological naming on the label
   //! aLabel given as an argument at construction time.
@@ -106,9 +111,10 @@ public:
   //! identified in the named shape returned in NamedShape.
   //! If Geometry is true, NamedShape contains the
   //! first appearance of Selection.
-  Standard_EXPORT bool Select(const TopoDS_Shape& Selection,
-                              const bool          Geometry          = false,
-                              const bool          KeepOrientatation = false) const;
+  Standard_EXPORT bool
+    Select(const TopoDS_Shape&    Selection,
+           const bool Geometry          = false,
+           const bool KeepOrientatation = false) const;
 
   //! Updates the topological naming on the label
   //! aLabel given as an argument at construction time.

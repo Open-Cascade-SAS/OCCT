@@ -46,12 +46,12 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   XmlObjMgt_RRelocationTable&) const
 {
   const occ::handle<TDataStd_RealList> aRealList = occ::down_cast<TDataStd_RealList>(theTarget);
-  const XmlObjMgt_Element&             anElement = theSource;
+  const XmlObjMgt_Element&        anElement = theSource;
 
   // attribute id
   Standard_GUID       aGUID;
@@ -63,7 +63,7 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
   aRealList->SetID(aGUID);
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
-  int                 aFirstInd, aLastInd, ind;
+  int    aFirstInd, aLastInd, ind;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == NULL)
     aFirstInd = 1;
@@ -142,7 +142,7 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&             theTarget,
+                                       XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   const occ::handle<TDataStd_RealList> aRealList = occ::down_cast<TDataStd_RealList>(theSource);
@@ -156,7 +156,7 @@ void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSour
     str[0] = 0;
   else if (anU >= 1)
   {
-    int                                iChar = 0;
+    int                 iChar = 0;
     NCollection_List<double>::Iterator itr(aRealList->List());
     for (; itr.More(); itr.Next())
     {
@@ -169,7 +169,7 @@ void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSour
   if (aRealList->ID() != TDataStd_RealList::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aRealList->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

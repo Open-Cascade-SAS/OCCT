@@ -57,7 +57,7 @@ void IFGraph_Cumulate::Evaluate()
 Interface_EntityIterator IFGraph_Cumulate::Overlapped() const
 {
   Interface_EntityIterator iter;
-  int                      nb = thegraph.Size();
+  int         nb = thegraph.Size();
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) > 2)
@@ -69,7 +69,7 @@ Interface_EntityIterator IFGraph_Cumulate::Overlapped() const
 Interface_EntityIterator IFGraph_Cumulate::Forgotten() const
 {
   Interface_EntityIterator iter;
-  int                      nb = thegraph.Size();
+  int         nb = thegraph.Size();
   for (int i = 1; i <= nb; i++)
   {
     if (!thegraph.IsPresent(i))
@@ -81,7 +81,7 @@ Interface_EntityIterator IFGraph_Cumulate::Forgotten() const
 Interface_EntityIterator IFGraph_Cumulate::PerCount(const int count) const
 {
   Interface_EntityIterator iter;
-  int                      nb = thegraph.Size();
+  int         nb = thegraph.Size();
   for (int i = 1; i <= nb; i++)
   {
     if (thegraph.IsPresent(i) && thegraph.Status(i) == (count + 1))

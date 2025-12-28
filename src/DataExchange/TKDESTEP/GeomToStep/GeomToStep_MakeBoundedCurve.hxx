@@ -39,11 +39,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeBoundedCurve(
     const occ::handle<Geom_BoundedCurve>& C,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeBoundedCurve(
     const occ::handle<Geom2d_BoundedCurve>& C,
-    const StepData_Factors&                 theLocalFactors = StepData_Factors());
+    const StepData_Factors&            theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_BoundedCurve>& Value() const;
 

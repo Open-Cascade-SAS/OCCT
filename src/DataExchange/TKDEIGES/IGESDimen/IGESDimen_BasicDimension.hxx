@@ -35,11 +35,11 @@ class IGESDimen_BasicDimension : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESDimen_BasicDimension();
 
-  Standard_EXPORT void Init(const int    nbPropVal,
-                            const gp_XY& lowerLeft,
-                            const gp_XY& lowerRight,
-                            const gp_XY& upperRight,
-                            const gp_XY& upperLeft);
+  Standard_EXPORT void Init(const int nbPropVal,
+                            const gp_XY&           lowerLeft,
+                            const gp_XY&           lowerRight,
+                            const gp_XY&           upperRight,
+                            const gp_XY&           upperLeft);
 
   //! returns the number of properties = 8
   Standard_EXPORT int NbPropertyValues() const;
@@ -59,11 +59,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_BasicDimension, IGESData_IGESEntity)
 
 private:
-  int   theNbPropertyValues;
-  gp_XY theLowerLeft;
-  gp_XY theLowerRight;
-  gp_XY theUpperRight;
-  gp_XY theUpperLeft;
+  int theNbPropertyValues;
+  gp_XY            theLowerLeft;
+  gp_XY            theLowerRight;
+  gp_XY            theUpperRight;
+  gp_XY            theUpperLeft;
 };
 
 #endif // _IGESDimen_BasicDimension_HeaderFile

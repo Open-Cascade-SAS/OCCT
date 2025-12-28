@@ -23,6 +23,8 @@
 #include <Quantity_Color.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 
@@ -36,33 +38,28 @@ class Vrml_Material : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_Material(
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor,
-    const occ::handle<NCollection_HArray1<double>>&         aShininess,
-    const occ::handle<NCollection_HArray1<double>>&         aTransparency);
+  Standard_EXPORT Vrml_Material(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor,
+                                const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor,
+                                const occ::handle<NCollection_HArray1<double>>&   aShininess,
+                                const occ::handle<NCollection_HArray1<double>>&   aTransparency);
 
   Standard_EXPORT Vrml_Material();
 
-  Standard_EXPORT void SetAmbientColor(
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor);
+  Standard_EXPORT void SetAmbientColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> AmbientColor() const;
 
-  Standard_EXPORT void SetDiffuseColor(
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor);
+  Standard_EXPORT void SetDiffuseColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> DiffuseColor() const;
 
-  Standard_EXPORT void SetSpecularColor(
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor);
+  Standard_EXPORT void SetSpecularColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> SpecularColor() const;
 
-  Standard_EXPORT void SetEmissiveColor(
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor);
+  Standard_EXPORT void SetEmissiveColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<Quantity_Color>> EmissiveColor() const;
 
@@ -70,8 +67,7 @@ public:
 
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> Shininess() const;
 
-  Standard_EXPORT void SetTransparency(
-    const occ::handle<NCollection_HArray1<double>>& aTransparency);
+  Standard_EXPORT void SetTransparency(const occ::handle<NCollection_HArray1<double>>& aTransparency);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> Transparency() const;
 
@@ -84,8 +80,8 @@ private:
   occ::handle<NCollection_HArray1<Quantity_Color>> myDiffuseColor;
   occ::handle<NCollection_HArray1<Quantity_Color>> mySpecularColor;
   occ::handle<NCollection_HArray1<Quantity_Color>> myEmissiveColor;
-  occ::handle<NCollection_HArray1<double>>         myShininess;
-  occ::handle<NCollection_HArray1<double>>         myTransparency;
+  occ::handle<NCollection_HArray1<double>>   myShininess;
+  occ::handle<NCollection_HArray1<double>>   myTransparency;
 };
 
 #endif // _Vrml_Material_HeaderFile

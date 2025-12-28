@@ -37,7 +37,7 @@ public:
   //! @theOrder - array containing six different indexes of cubemap sides which maps tile grid to
   //! cubemap sides
   Standard_EXPORT Graphic3d_CubeMapPacked(
-    const occ::handle<Image_PixMap>&       theImage,
+    const occ::handle<Image_PixMap>&            theImage,
     const Graphic3d_ValidatedCubeMapOrder& theOrder = Graphic3d_CubeMapOrder::Default());
 
   //! Returns current cubemap side as compressed PixMap.
@@ -59,12 +59,13 @@ private:
   static bool checkOrder(const NCollection_Array1<unsigned int>& theOrder);
 
   //! Checks whether given pixmap is valid to contain six tiles.
-  static bool checkImage(const occ::handle<Image_PixMap>& theImage, unsigned int& theTileNumberX);
+  static bool checkImage(const occ::handle<Image_PixMap>& theImage,
+                                     unsigned int&               theTileNumberX);
 
   //! Tries to load image from file and checks it after that.
   //! Does nothing in case of fail.
   void tryLoadImage(const occ::handle<Image_SupportedFormats>& theSupported,
-                    const TCollection_AsciiString&             theFilePath);
+                    const TCollection_AsciiString&        theFilePath);
 
 protected:
   Graphic3d_CubeMapOrder myOrder;       //!< order mapping tile grit to cubemap sides

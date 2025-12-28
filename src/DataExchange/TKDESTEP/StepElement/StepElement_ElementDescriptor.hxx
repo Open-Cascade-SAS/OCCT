@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepElement_ElementDescriptor();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepElement_ElementOrder               aTopologyOrder,
+  Standard_EXPORT void Init(const StepElement_ElementOrder          aTopologyOrder,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
 
   //! Returns field TopologyOrder
@@ -50,7 +50,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepElement_ElementDescriptor, Standard_Transient)
 
 private:
-  StepElement_ElementOrder              theTopologyOrder;
+  StepElement_ElementOrder         theTopologyOrder;
   occ::handle<TCollection_HAsciiString> theDescription;
 };
 

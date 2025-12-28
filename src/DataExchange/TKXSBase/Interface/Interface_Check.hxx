@@ -81,12 +81,14 @@ public:
 
   //! Returns Fail Message as a String
   //! Final form by default, Original form if <final> is False
-  Standard_EXPORT const occ::handle<TCollection_HAsciiString>& Fail(const int  num,
-                                                                    const bool final = true) const;
+  Standard_EXPORT const occ::handle<TCollection_HAsciiString>& Fail(
+    const int num,
+    const bool final = true) const;
 
   //! Same as above, but returns a CString (to be printed ...)
   //! Final form by default, Original form if <final> is False
-  Standard_EXPORT const char* CFail(const int num, const bool final = true) const;
+  Standard_EXPORT const char* CFail(const int num,
+                                         const bool final = true) const;
 
   //! Returns the list of Fails, for a frontal-engine logic
   //! Final forms by default, Original forms if <final> is False
@@ -121,18 +123,19 @@ public:
   //! Returns Warning message as a String
   //! Final form by default, Original form if <final> is False
   Standard_EXPORT const occ::handle<TCollection_HAsciiString>& Warning(
-    const int  num,
+    const int num,
     const bool final = true) const;
 
   //! Same as above, but returns a CString (to be printed ...)
   //! Final form by default, Original form if <final> is False
-  Standard_EXPORT const char* CWarning(const int num, const bool final = true) const;
+  Standard_EXPORT const char* CWarning(const int num,
+                                            const bool final = true) const;
 
   //! Returns the list of Warnings, for a frontal-engine logic
   //! Final forms by default, Original forms if <final> is False
   //! Can be empty
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-                  Warnings(const bool final = true) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Warnings(
+    const bool final = true) const;
 
   //! Records an information message
   //! This does not change the status of the Check
@@ -143,18 +146,19 @@ public:
 
   //! Returns information message as a String
   Standard_EXPORT const occ::handle<TCollection_HAsciiString>& InfoMsg(
-    const int  num,
+    const int num,
     const bool final = true) const;
 
   //! Same as above, but returns a CString (to be printed ...)
   //! Final form by default, Original form if <final> is False
-  Standard_EXPORT const char* CInfoMsg(const int num, const bool final = true) const;
+  Standard_EXPORT const char* CInfoMsg(const int num,
+                                            const bool final = true) const;
 
   //! Returns the list of Info Msg, for a frontal-engine logic
   //! Final forms by default, Original forms if <final> is False
   //! Can be empty
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-                  InfoMsgs(const bool final = true) const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> InfoMsgs(
+    const bool final = true) const;
 
   //! Returns the Check Status : OK, Warning or Fail
   Standard_EXPORT Interface_CheckStatus Status() const;
@@ -171,8 +175,8 @@ public:
   //! resp. Warning or Check messages. for CheckAny, considers all
   //! other values are ignored (answer will be false)
   Standard_EXPORT bool Complies(const occ::handle<TCollection_HAsciiString>& mess,
-                                const int                                    incl,
-                                const Interface_CheckStatus                  status) const;
+                                            const int                  incl,
+                                            const Interface_CheckStatus             status) const;
 
   //! Returns True if a Check is devoted to an entity; else, it is
   //! global (for InterfaceModel's storing of global error messages)
@@ -203,8 +207,8 @@ public:
   //! other values are ignored (nothing is done)
   //! Returns True if at least one message has been removed, False else
   Standard_EXPORT bool Remove(const occ::handle<TCollection_HAsciiString>& mess,
-                              const int                                    incl,
-                              const Interface_CheckStatus                  status);
+                                          const int                  incl,
+                                          const Interface_CheckStatus             status);
 
   //! Mends messages, according <pref> and <num>
   //! According to <num>, works on the whole list of Fails if = 0(D)
@@ -217,7 +221,8 @@ public:
   //! "CF" : clears Fail(s)
   //! "CW" : clears Warning(s) : here, <num> refers to Warning list
   //! "CA" : clears all messages : here, <num> is ignored
-  Standard_EXPORT bool Mend(const char* pref, const int num = 0);
+  Standard_EXPORT bool Mend(const char* pref,
+                                        const int num = 0);
 
   //! Receives an entity result of a Transfer
   Standard_EXPORT void SetEntity(const occ::handle<Standard_Transient>& anentity);
@@ -235,7 +240,7 @@ public:
   //! else, Warnings are taken too. Does not regard Entity
   //! Used to keep Fail messages as Warning, after a recovery
   Standard_EXPORT void GetAsWarning(const occ::handle<Interface_Check>& other,
-                                    const bool                          failsonly);
+                                    const bool         failsonly);
 
   //! Prints the messages of the check to an Messenger
   //! <level> = 1 : only fails
@@ -244,12 +249,15 @@ public:
   //! <final> : if positive (D) prints final values of messages
   //! if negative, prints originals
   //! if null, prints both forms
-  Standard_EXPORT void Print(Standard_OStream& S, const int level, const int final = 1) const;
+  Standard_EXPORT void Print(Standard_OStream&      S,
+                             const int level,
+                             const int final = 1) const;
 
   //! Prints the messages of the check to the default trace file
   //! By default, according to the default standard level
   //! Else, according level (see method Print)
-  Standard_EXPORT void Trace(const int level = -1, const int final = 1) const;
+  Standard_EXPORT void Trace(const int level = -1,
+                             const int final = 1) const;
 
   DEFINE_STANDARD_RTTIEXT(Interface_Check, Standard_Transient)
 
@@ -260,7 +268,7 @@ private:
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thewarno;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> theinfos;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> theinfoo;
-  occ::handle<Standard_Transient>                                           theent;
+  occ::handle<Standard_Transient>              theent;
 };
 
 #endif // _Interface_Check_HeaderFile

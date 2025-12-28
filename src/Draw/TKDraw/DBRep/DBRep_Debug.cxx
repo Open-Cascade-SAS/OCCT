@@ -20,8 +20,12 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Vector.hxx>
 #include <BRep_Builder.hxx>
@@ -85,8 +89,7 @@ Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListP
 
   if (fromContainer<NCollection_List<TopoDS_Shape>>(theListPtr, aC)
       || fromContainer<NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>>(theListPtr, aC)
-      || fromContainer<NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>>(theListPtr,
-                                                                                      aC)
+      || fromContainer<NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>>(theListPtr, aC)
       || fromContainer<NCollection_Sequence<TopoDS_Shape>>(theListPtr, aC)
       || fromContainer<NCollection_Array1<TopoDS_Shape>>(theListPtr, aC)
       || fromContainer<NCollection_Vector<TopoDS_Shape>>(theListPtr, aC))

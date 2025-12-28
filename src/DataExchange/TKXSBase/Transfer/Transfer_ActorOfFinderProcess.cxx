@@ -42,7 +42,7 @@ int& Transfer_ActorOfFinderProcess::ModeTrans()
 occ::handle<Transfer_Binder> Transfer_ActorOfFinderProcess::Transfer(
   const occ::handle<Transfer_Finder>&        fnd,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const Message_ProgressRange&               theProgress)
+  const Message_ProgressRange&          theProgress)
 {
   occ::handle<Transfer_TransientMapper> tm = occ::down_cast<Transfer_TransientMapper>(fnd);
   if (tm.IsNull())
@@ -58,7 +58,7 @@ occ::handle<Transfer_Binder> Transfer_ActorOfFinderProcess::Transfer(
 occ::handle<Transfer_Binder> Transfer_ActorOfFinderProcess::Transferring(
   const occ::handle<Transfer_Finder>&           ent,
   const occ::handle<Transfer_ProcessForFinder>& TP,
-  const Message_ProgressRange&                  theProgress)
+  const Message_ProgressRange&             theProgress)
 {
   return Transfer(ent, occ::down_cast<Transfer_FinderProcess>(TP), theProgress);
 }

@@ -47,7 +47,7 @@ void IGESGeom_ToolTransformationMatrix::ReadOwnParams(
   // MGE 03/08/98
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  double                                   temp;
+  double                 temp;
   occ::handle<NCollection_HArray2<double>> aMatrix = new NCollection_HArray2<double>(1, 3, 1, 4);
 
   for (int I = 1; I <= 3; I++)
@@ -74,7 +74,7 @@ void IGESGeom_ToolTransformationMatrix::ReadOwnParams(
 
 void IGESGeom_ToolTransformationMatrix::WriteOwnParams(
   const occ::handle<IGESGeom_TransformationMatrix>& ent,
-  IGESData_IGESWriter&                              IW) const
+  IGESData_IGESWriter&                         IW) const
 {
   for (int I = 1; I <= 3; I++)
   {
@@ -147,10 +147,9 @@ IGESData_DirChecker IGESGeom_ToolTransformationMatrix::DirChecker(
 
 //=================================================================================================
 
-void IGESGeom_ToolTransformationMatrix::OwnCheck(
-  const occ::handle<IGESGeom_TransformationMatrix>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void IGESGeom_ToolTransformationMatrix::OwnCheck(const occ::handle<IGESGeom_TransformationMatrix>& ent,
+                                                 const Interface_ShareTool&,
+                                                 occ::handle<Interface_Check>& ach) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -186,11 +185,10 @@ void IGESGeom_ToolTransformationMatrix::OwnCheck(
 
 //=================================================================================================
 
-void IGESGeom_ToolTransformationMatrix::OwnDump(
-  const occ::handle<IGESGeom_TransformationMatrix>& ent,
-  const IGESData_IGESDumper& /*dumper*/,
-  Standard_OStream& S,
-  const int /*level*/) const
+void IGESGeom_ToolTransformationMatrix::OwnDump(const occ::handle<IGESGeom_TransformationMatrix>& ent,
+                                                const IGESData_IGESDumper& /*dumper*/,
+                                                Standard_OStream& S,
+                                                const int /*level*/) const
 {
   S << "IGESGeom_TransformationMatrix\n"
     << "| R11, R12, R13, T1 |       " << ent->Data(1, 1) << ", " << ent->Data(1, 2) << ", "

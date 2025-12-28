@@ -33,14 +33,14 @@
 #define M_EXTERNAL(st) (st == TopAbs_EXTERNAL)
 
 Standard_EXPORT void FUN_scanloi(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lI,
-                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFOR,
-                                 int&                                                      FOR,
-                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lREV,
-                                 int&                                                      REV,
-                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lINT,
-                                 int&                                                      INT,
-                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lEXT,
-                                 int&                                                      EXT)
+                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lFOR,
+                                 int&                      FOR,
+                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lREV,
+                                 int&                      REV,
+                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lINT,
+                                 int&                      INT,
+                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&       lEXT,
+                                 int&                      EXT)
 {
   lFOR.Clear();
   lREV.Clear();
@@ -53,12 +53,11 @@ Standard_EXPORT void FUN_scanloi(const NCollection_List<occ::handle<TopOpeBRepDS
   EXT = lEXT.Extent();
 }
 
-Standard_EXPORT bool FUN_ds_redu2d1d(
-  const TopOpeBRepDS_DataStructure&                               BDS,
-  const int                                                       ISE,
-  const occ::handle<TopOpeBRepDS_Interference>&                   I2d,
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& l1d,
-  TopOpeBRepDS_Transition&                                        newT2d)
+Standard_EXPORT bool FUN_ds_redu2d1d(const TopOpeBRepDS_DataStructure&        BDS,
+                                                 const int                   ISE,
+                                                 const occ::handle<TopOpeBRepDS_Interference>& I2d,
+                                                 const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   l1d,
+                                                 TopOpeBRepDS_Transition&                 newT2d)
 // attached to edge(ISE) : l1d = {I1d=(Tr1d(Esd),vG,Esd)}, I2d=(Tr2d(F),vG,E)
 //                         - vG is not vertex of SE -
 // purpose : I2d -> (newT2d(F),vG,E), with Esd is edge of F
@@ -66,9 +65,9 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
 // NYIxpu251198 treating interferences IB1 !=IA1, IB2 != IA2
 {
   TopAbs_ShapeEnum  SB2, SA2;
-  int               IB2, IA2;
+  int  IB2, IA2;
   TopOpeBRepDS_Kind GT2, ST2;
-  int               G2, S2;
+  int  G2, S2;
   FDS_Idata(I2d, SB2, IB2, SA2, IA2, GT2, G2, ST2, S2);
   const TopOpeBRepDS_Transition T2d = I2d->Transition();
   TopAbs_Orientation            O2  = T2d.Orientation(TopAbs_IN);
@@ -89,10 +88,10 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
     TopAbs_State stb = T2d.Before(), sta = T2d.After();
     if (stb != sta)
     { // costs 1 projPonE
-      double pbef = 0, paft = 0, factor = 1.e-4;
-      double parSE = FDS_Parameter(I2d);
-      double parE;
-      bool   ok = FUN_tool_parE(SE, parSE, E, parE, tolE);
+      double    pbef = 0, paft = 0, factor = 1.e-4;
+      double    parSE = FDS_Parameter(I2d);
+      double    parE;
+      bool ok = FUN_tool_parE(SE, parSE, E, parE, tolE);
       if (!ok)
         return false;
       gp_Pnt2d uv;
@@ -123,17 +122,17 @@ Standard_EXPORT bool FUN_ds_redu2d1d(
   for (; it1.More(); it1.Next())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I1d = it1.Value();
-    TopAbs_ShapeEnum                              SB1, SA1;
-    int                                           IB1, IA1;
-    TopOpeBRepDS_Kind                             GT1, ST1;
-    int                                           G1, S1;
+    TopAbs_ShapeEnum                         SB1, SA1;
+    int                         IB1, IA1;
+    TopOpeBRepDS_Kind                        GT1, ST1;
+    int                         G1, S1;
     FDS_Idata(I1d, SB1, IB1, SA1, IA1, GT1, G1, ST1, S1);
     if (IB1 != IA1)
       continue;
     TopAbs_Orientation O1 = I1d->Transition().Orientation(TopAbs_IN);
 
     const TopoDS_Edge& Esd     = TopoDS::Edge(BDS.Shape(IB1));
-    bool               isedgeF = FUN_tool_inS(Esd, F);
+    bool   isedgeF = FUN_tool_inS(Esd, F);
     if (!isedgeF)
       continue;
 
@@ -161,12 +160,12 @@ Standard_EXPORT bool FUN_ds_GetTr(
   //				 const int G,
   const int,
   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LIG,
-  TopAbs_State&                                                   stb,
-  int&                                                            isb,
-  int&                                                            bdim,
-  TopAbs_State&                                                   sta,
-  int&                                                            isa,
-  int&                                                            adim)
+  TopAbs_State&                          stb,
+  int&                      isb,
+  int&                      bdim,
+  TopAbs_State&                          sta,
+  int&                      isa,
+  int&                      adim)
 // LIG = {I=(Tr,G,S)} attached to edge<ISE>
 // purpose : returns newT(stb(isb,seb),sta(isa,sea)),
 // we assume IN1d > I2d > I3d
@@ -185,7 +184,7 @@ Standard_EXPORT bool FUN_ds_GetTr(
   FUN_selectTRASHAinterference(LIGcopy, TopAbs_EDGE, l1d);
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l1dFOR, l1dREV, l1dINT, l1dEXT;
-  int                                                      FOR1d, REV1d, INT1d, EXT1d;
+  int                FOR1d, REV1d, INT1d, EXT1d;
   ::FUN_scanloi(l1d, l1dFOR, FOR1d, l1dREV, REV1d, l1dINT, INT1d, l1dEXT, EXT1d);
   bool beforeIN1d = (REV1d + INT1d > 0);
   bool beforeOU1d = (FOR1d + EXT1d) != 0;
@@ -193,7 +192,7 @@ Standard_EXPORT bool FUN_ds_GetTr(
   bool afterOU1d  = (REV1d + EXT1d) != 0;
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l2dFOR, l2dREV, l2dINT, l2dEXT;
-  int                                                      FOR2d, REV2d, INT2d, EXT2d;
+  int                FOR2d, REV2d, INT2d, EXT2d;
   ::FUN_scanloi(l2d, l2dFOR, FOR2d, l2dREV, REV2d, l2dINT, INT2d, l2dEXT, EXT2d);
   bool beforeIN2d = (REV2d + INT2d > 0);
   bool beforeOU2d = (FOR2d + EXT2d) != 0;
@@ -201,7 +200,7 @@ Standard_EXPORT bool FUN_ds_GetTr(
   bool afterOU2d  = (REV2d + EXT2d) != 0;
 
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> l3dFOR, l3dREV, l3dINT, l3dEXT;
-  int                                                      FOR3d, REV3d, INT3d, EXT3d;
+  int                FOR3d, REV3d, INT3d, EXT3d;
   ::FUN_scanloi(l3d, l3dFOR, FOR3d, l3dREV, REV3d, l3dINT, INT3d, l3dEXT, EXT3d);
   bool beforeIN3d = (REV3d + INT3d > 0);
   bool beforeOU3d = (FOR3d + EXT3d) != 0;

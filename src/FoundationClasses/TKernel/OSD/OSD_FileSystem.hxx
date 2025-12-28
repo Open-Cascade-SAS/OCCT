@@ -39,8 +39,7 @@ public:
 
   //! Unregisters file system within the global file system selector returned by
   //! OSD_FileSystem::DefaultFileSystem().
-  Standard_EXPORT static void RemoveDefaultProtocol(
-    const occ::handle<OSD_FileSystem>& theFileSystem);
+  Standard_EXPORT static void RemoveDefaultProtocol(const occ::handle<OSD_FileSystem>& theFileSystem);
 
 public:
   //! Returns TRUE if URL defines a supported protocol.

@@ -103,7 +103,8 @@ ChFiDS_FaceInterference& ChFiDS_SurfData::ChangeInterference(const int OnS)
 
 //=================================================================================================
 
-const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First, const int OnS) const
+const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First,
+                                                  const int OnS) const
 {
   if (First && OnS == 1)
     return pfirstOnS1;
@@ -117,7 +118,8 @@ const ChFiDS_CommonPoint& ChFiDS_SurfData::Vertex(const bool First, const int On
 
 //=================================================================================================
 
-ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const bool First, const int OnS)
+ChFiDS_CommonPoint& ChFiDS_SurfData::ChangeVertex(const bool First,
+                                                  const int OnS)
 {
   if (First && OnS == 1)
     return pfirstOnS1;
@@ -221,7 +223,8 @@ void ChFiDS_SurfData::Get2dPoints(gp_Pnt2d& P2df1,
 
 //=================================================================================================
 
-gp_Pnt2d ChFiDS_SurfData::Get2dPoints(const bool First, const int OnS) const
+gp_Pnt2d ChFiDS_SurfData::Get2dPoints(const bool First,
+                                      const int OnS) const
 
 {
   if (First && OnS == 1)

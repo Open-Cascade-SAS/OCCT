@@ -22,7 +22,7 @@
 RWStepGeom_RWAxis1Placement::RWStepGeom_RWAxis1Placement() {}
 
 void RWStepGeom_RWAxis1Placement::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepGeom_Axis1Placement>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepGeom_RWAxis1Placement::ReadStep(const occ::handle<StepData_StepReader
   // --- own field : axis ---
 
   occ::handle<StepGeom_Direction> aAxis;
-  bool                            hasAaxis = true;
+  bool           hasAaxis = true;
   if (data->IsParamDefined(num, 3))
   {
     // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -64,7 +64,7 @@ void RWStepGeom_RWAxis1Placement::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aLocation, hasAaxis, aAxis);
 }
 
-void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                        SW,
+void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepGeom_Axis1Placement>& ent) const
 {
 
@@ -90,7 +90,7 @@ void RWStepGeom_RWAxis1Placement::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepGeom_RWAxis1Placement::Share(const occ::handle<StepGeom_Axis1Placement>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->Location());

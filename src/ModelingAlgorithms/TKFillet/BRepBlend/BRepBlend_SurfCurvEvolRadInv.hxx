@@ -91,10 +91,10 @@ private:
   occ::handle<Adaptor3d_Curve>   curv;
   occ::handle<Adaptor3d_Curve>   guide;
   occ::handle<Adaptor2d_Curve2d> rst;
-  double                         ray;
-  int                            choix;
+  double             ray;
+  int          choix;
   occ::handle<Law_Function>      tevol;
-  double                         sg1;
+  double             sg1;
 };
 
 #endif // _BRepBlend_SurfCurvEvolRadInv_HeaderFile

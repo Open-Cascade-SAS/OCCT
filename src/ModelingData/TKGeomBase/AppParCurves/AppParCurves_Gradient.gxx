@@ -35,6 +35,13 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <BSplCLib.hxx>
 #include <PLib.hxx>
@@ -42,15 +49,15 @@
 // #define AppParCurves_Gradient_BFGS BFGS_/**/AppParCurves_Gradient
 
 AppParCurves_Gradient::AppParCurves_Gradient(
-  const MultiLine&                                                       SSP,
-  const int                                                              FirstPoint,
-  const int                                                              LastPoint,
+  const MultiLine&                                      SSP,
+  const int                                FirstPoint,
+  const int                                LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  math_Vector&                                                           Parameters,
-  const int                                                              Deg,
-  const double                                                           Tol3d,
-  const double                                                           Tol2d,
-  const int                                                              NbIterations)
+  math_Vector&                                          Parameters,
+  const int                                Deg,
+  const double                                   Tol3d,
+  const double                                   Tol2d,
+  const int                                NbIterations)
     : ParError(FirstPoint, LastPoint, 0.0),
       AvError(0.0),
       MError3d(0.0),
@@ -58,12 +65,12 @@ AppParCurves_Gradient::AppParCurves_Gradient(
 {
 
   //  bool grad = true;
-  int    j, k, i2, l;
-  double UF, DU, Fval = 0.0, FU, DFU;
-  int    nbP3d   = ToolLine::NbP3d(SSP);
-  int    nbP2d   = ToolLine::NbP2d(SSP);
-  int    mynbP3d = nbP3d, mynbP2d = nbP2d;
-  int    nbP = nbP3d + nbP2d;
+  int j, k, i2, l;
+  double    UF, DU, Fval = 0.0, FU, DFU;
+  int nbP3d   = ToolLine::NbP3d(SSP);
+  int nbP2d   = ToolLine::NbP2d(SSP);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int nbP = nbP3d + nbP2d;
   //  gp_Pnt Pt, P1, P2;
   gp_Pnt Pt;
   //  gp_Pnt2d Pt2d, P12d, P22d;
@@ -96,8 +103,8 @@ AppParCurves_Gradient::AppParCurves_Gradient(
     return;
   }
 
-  SCU                              = MyF.CurveValue();
-  int                          deg = SCU.NbPoles() - 1;
+  SCU                      = MyF.CurveValue();
+  int     deg = SCU.NbPoles() - 1;
   NCollection_Array1<gp_Pnt>   TabPole(1, deg + 1), TabCoef(1, deg + 1);
   NCollection_Array1<gp_Pnt2d> TabPole2d(1, deg + 1), TabCoef2d(1, deg + 1);
   NCollection_Array1<gp_Pnt>   TheCoef(1, (deg + 1) * mynbP3d);
@@ -192,7 +199,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   {
     // NbIterations de gradient conjugue:
     // =================================
-    double                     Eps = 1.e-07;
+    double              Eps = 1.e-07;
     AppParCurves_Gradient_BFGS FResol(MyF, Parameters, Tol3d, Tol2d, Eps, NbIterations);
     Parameters = MyF.NewParameters();
     SCU        = MyF.CurveValue();

@@ -41,9 +41,9 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
       aGeomPlane.Coefficients(aPlaneABCD[0], aPlaneABCD[1], aPlaneABCD[2], aPlaneABCD[3]);
 
       const gp_XYZ& aPlaneDirXYZ = aGeomPlane.Axis().Direction().XYZ();
-      double        aDotProduct  = aViewRayDir.XYZ().Dot(aPlaneDirXYZ);
-      double        aDistance    = -aNearPnt.XYZ().Dot(aPlaneDirXYZ) - aPlaneABCD[3];
-      double        aDistToPln   = 0.0;
+      double aDotProduct  = aViewRayDir.XYZ().Dot(aPlaneDirXYZ);
+      double aDistance    = -aNearPnt.XYZ().Dot(aPlaneDirXYZ) - aPlaneABCD[3];
+      double aDistToPln   = 0.0;
 
       // check whether the pick line is parallel to clip plane
       if (std::abs(aDotProduct) < Precision::Angular())
@@ -103,7 +103,8 @@ void SelectMgr_ViewClipRange::AddClippingPlanes(const Graphic3d_SequenceOfHClipP
 
 //=================================================================================================
 
-void SelectMgr_ViewClipRange::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void SelectMgr_ViewClipRange::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_CLASS_BEGIN(theOStream, SelectMgr_ViewClipRange)
 

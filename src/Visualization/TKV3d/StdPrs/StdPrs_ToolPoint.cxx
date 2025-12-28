@@ -17,7 +17,10 @@
 #include <Geom_Point.hxx>
 #include <StdPrs_ToolPoint.hxx>
 
-void StdPrs_ToolPoint::Coord(const occ::handle<Geom_Point>& aPoint, double& X, double& Y, double& Z)
+void StdPrs_ToolPoint::Coord(const occ::handle<Geom_Point>& aPoint,
+                             double&            X,
+                             double&            Y,
+                             double&            Z)
 {
   aPoint->Coord(X, Y, Z);
 }

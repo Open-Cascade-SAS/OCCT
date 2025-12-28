@@ -48,23 +48,23 @@
 // #include <BRepAdaptor_Curve2d.hxx>
 //=================================================================================================
 
-bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&           DStr,
-                                    occ::handle<ChFiDS_SurfData>&         Data,
-                                    const occ::handle<Adaptor3d_Surface>& S1,
-                                    const occ::handle<Adaptor3d_Surface>& S2,
-                                    const TopAbs_Orientation              Or1,
-                                    const TopAbs_Orientation              Or2,
-                                    const occ::handle<ChFiDS_Spine>&      Sp,
-                                    const int                             Iedge)
+bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&      DStr,
+                                                occ::handle<ChFiDS_SurfData>&         Data,
+                                                const occ::handle<Adaptor3d_Surface>& S1,
+                                                const occ::handle<Adaptor3d_Surface>& S2,
+                                                const TopAbs_Orientation         Or1,
+                                                const TopAbs_Orientation         Or2,
+                                                const occ::handle<ChFiDS_Spine>&      Sp,
+                                                const int           Iedge)
 {
   double Wref = 0.;
 
   occ::handle<ChFiDS_FilSpine>   Spine  = occ::down_cast<ChFiDS_FilSpine>(Sp);
   occ::handle<ChFiDS_ChamfSpine> CSpine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
-  bool                           surfok = false;
-  GeomAbs_SurfaceType            typ1   = S1->GetType();
-  GeomAbs_SurfaceType            typ2   = S2->GetType();
-  GeomAbs_CurveType              ctyp;
+  bool          surfok = false;
+  GeomAbs_SurfaceType       typ1   = S1->GetType();
+  GeomAbs_SurfaceType       typ2   = S2->GetType();
+  GeomAbs_CurveType         ctyp;
 
   if (!Spine.IsNull())
     ctyp = Spine->CurrentElementarySpine(Iedge).GetType();
@@ -72,7 +72,7 @@ bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&           DStr,
     ctyp = CSpine->CurrentElementarySpine(Iedge).GetType();
 
   // Return orientations.
-  TopAbs_Orientation               OrFace1 = TopAbs_FORWARD, OrFace2 = TopAbs_FORWARD;
+  TopAbs_Orientation          OrFace1 = TopAbs_FORWARD, OrFace2 = TopAbs_FORWARD;
   occ::handle<BRepAdaptor_Surface> HS = occ::down_cast<BRepAdaptor_Surface>(S1);
   if (!HS.IsNull())
     OrFace1 = HS->Face().Orientation();
@@ -463,8 +463,8 @@ bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&           DStr,
     }
     else
     {
-      double dis, Angle;
-      bool   DisOnP = true;
+      double    dis, Angle;
+      bool DisOnP = true;
       CSpine->GetDistAngle(dis, Angle);
       if (typ1 == GeomAbs_Plane && typ2 == GeomAbs_Plane)
       {
@@ -598,22 +598,22 @@ bool ChFiKPart_ComputeData::Compute(TopOpeBRepDS_DataStructure&           DStr,
 
 //=================================================================================================
 
-bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&           DStr,
-                                          const occ::handle<ChFiDS_SurfData>&   Data,
-                                          const occ::handle<Adaptor3d_Surface>& S1,
-                                          const occ::handle<Adaptor3d_Surface>& S2,
-                                          const TopAbs_Orientation              OrFace1,
-                                          const TopAbs_Orientation,
-                                          const TopAbs_Orientation Or1,
-                                          const TopAbs_Orientation Or2,
-                                          const double             minRad,
-                                          const double             majRad,
-                                          const gp_Pnt2d&          P1S1,
-                                          const gp_Pnt2d&          P2S1,
-                                          const gp_Pnt2d&          P1S2,
-                                          const gp_Pnt2d&          P2S2)
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
+                                                      const TopAbs_Orientation         OrFace1,
+                                                      const TopAbs_Orientation,
+                                                      const TopAbs_Orientation Or1,
+                                                      const TopAbs_Orientation Or2,
+                                                      const double      minRad,
+                                                      const double      majRad,
+                                                      const gp_Pnt2d&          P1S1,
+                                                      const gp_Pnt2d&          P2S1,
+                                                      const gp_Pnt2d&          P1S2,
+                                                      const gp_Pnt2d&          P2S2)
 {
-  bool                surfok;
+  bool    surfok;
   GeomAbs_SurfaceType typ1 = S1->GetType();
   GeomAbs_SurfaceType typ2 = S2->GetType();
   if (typ1 != GeomAbs_Plane)
@@ -623,9 +623,9 @@ bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&           
   // The guideline is the circle corresponding
   // to the section of S2, and other construction elements.
 
-  gp_Cylinder cyl;
-  gp_Circ     circ;
-  double      First, Last, fu, lu;
+  gp_Cylinder   cyl;
+  gp_Circ       circ;
+  double First, Last, fu, lu;
   ChFiKPart_CornerSpine(S1, S2, P1S1, P2S1, P1S2, P2S2, majRad, cyl, circ, First, Last);
   if (typ2 == GeomAbs_Cylinder)
   {
@@ -673,34 +673,34 @@ bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&           
 
 //=================================================================================================
 
-bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&           DStr,
-                                          const occ::handle<ChFiDS_SurfData>&   Data,
-                                          const occ::handle<Adaptor3d_Surface>& S1,
-                                          const occ::handle<Adaptor3d_Surface>& S2,
-                                          const TopAbs_Orientation              OrFace1,
-                                          const TopAbs_Orientation              OrFace2,
-                                          const TopAbs_Orientation              Or1,
-                                          const TopAbs_Orientation              Or2,
-                                          const double                          Rad,
-                                          const gp_Pnt2d&                       PS1,
-                                          const gp_Pnt2d&                       P1S2,
-                                          const gp_Pnt2d&                       P2S2)
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
+                                                      const TopAbs_Orientation         OrFace1,
+                                                      const TopAbs_Orientation         OrFace2,
+                                                      const TopAbs_Orientation         Or1,
+                                                      const TopAbs_Orientation         Or2,
+                                                      const double              Rad,
+                                                      const gp_Pnt2d&                  PS1,
+                                                      const gp_Pnt2d&                  P1S2,
+                                                      const gp_Pnt2d&                  P2S2)
 {
   return ChFiKPart_Sphere(DStr, Data, S1, S2, OrFace1, OrFace2, Or1, Or2, Rad, PS1, P1S2, P2S2);
 }
 
 //=================================================================================================
 
-bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&           DStr,
-                                          const occ::handle<ChFiDS_SurfData>&   Data,
-                                          const occ::handle<Adaptor3d_Surface>& S,
-                                          const occ::handle<Adaptor3d_Surface>& S1,
-                                          const occ::handle<Adaptor3d_Surface>& S2,
-                                          const TopAbs_Orientation              OfS,
-                                          const TopAbs_Orientation              OS,
-                                          const TopAbs_Orientation              OS1,
-                                          const TopAbs_Orientation              OS2,
-                                          const double                          Radius)
+bool ChFiKPart_ComputeData::ComputeCorner(TopOpeBRepDS_DataStructure&      DStr,
+                                                      const occ::handle<ChFiDS_SurfData>&   Data,
+                                                      const occ::handle<Adaptor3d_Surface>& S,
+                                                      const occ::handle<Adaptor3d_Surface>& S1,
+                                                      const occ::handle<Adaptor3d_Surface>& S2,
+                                                      const TopAbs_Orientation         OfS,
+                                                      const TopAbs_Orientation         OS,
+                                                      const TopAbs_Orientation         OS1,
+                                                      const TopAbs_Orientation         OS2,
+                                                      const double              Radius)
 {
   GeomAbs_SurfaceType typ  = S->GetType();
   GeomAbs_SurfaceType typ1 = S1->GetType();

@@ -24,6 +24,7 @@
 #include <AdvApp2Var_Node.hxx>
 #include <NCollection_Sequence.hxx>
 #include <AdvApp2Var_Iso.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_IsoType.hxx>
@@ -40,25 +41,25 @@ public:
 
   Standard_EXPORT AdvApp2Var_Framework();
 
-  Standard_EXPORT AdvApp2Var_Framework(
-    const NCollection_Sequence<occ::handle<AdvApp2Var_Node>>&                      Frame,
-    const NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>& UFrontier,
-    const NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>& VFrontier);
+  Standard_EXPORT AdvApp2Var_Framework(const NCollection_Sequence<occ::handle<AdvApp2Var_Node>>&  Frame,
+                                       const NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>& UFrontier,
+                                       const NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>& VFrontier);
 
   //! search the Index of the first Iso not approximated,
   //! if all Isos are approximated NULL is returned.
-  Standard_EXPORT occ::handle<AdvApp2Var_Iso> FirstNotApprox(int& IndexIso, int& IndexStrip) const;
+  Standard_EXPORT occ::handle<AdvApp2Var_Iso> FirstNotApprox(int& IndexIso,
+                                                        int& IndexStrip) const;
 
-  Standard_EXPORT int FirstNode(const GeomAbs_IsoType Type,
-                                const int             IndexIso,
-                                const int             IndexStrip) const;
+  Standard_EXPORT int FirstNode(const GeomAbs_IsoType  Type,
+                                             const int IndexIso,
+                                             const int IndexStrip) const;
 
-  Standard_EXPORT int LastNode(const GeomAbs_IsoType Type,
-                               const int             IndexIso,
-                               const int             IndexStrip) const;
+  Standard_EXPORT int LastNode(const GeomAbs_IsoType  Type,
+                                            const int IndexIso,
+                                            const int IndexStrip) const;
 
-  Standard_EXPORT void ChangeIso(const int                          IndexIso,
-                                 const int                          IndexStrip,
+  Standard_EXPORT void ChangeIso(const int        IndexIso,
+                                 const int        IndexStrip,
                                  const occ::handle<AdvApp2Var_Iso>& anIso);
 
   const occ::handle<AdvApp2Var_Node>& Node(const int IndexNode) const
@@ -66,7 +67,8 @@ public:
     return myNodeConstraints.Value(IndexNode);
   }
 
-  Standard_EXPORT const occ::handle<AdvApp2Var_Node>& Node(const double U, const double V) const;
+  Standard_EXPORT const occ::handle<AdvApp2Var_Node>& Node(const double U,
+                                                      const double V) const;
 
   Standard_EXPORT const AdvApp2Var_Iso& IsoU(const double U,
                                              const double V0,
@@ -89,7 +91,7 @@ public:
     const int IndexStrip) const;
 
 private:
-  NCollection_Sequence<occ::handle<AdvApp2Var_Node>>                      myNodeConstraints;
+  NCollection_Sequence<occ::handle<AdvApp2Var_Node>>  myNodeConstraints;
   NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>> myUConstraints;
   NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>> myVConstraints;
 };

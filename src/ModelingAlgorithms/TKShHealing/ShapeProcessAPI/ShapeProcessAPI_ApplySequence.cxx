@@ -78,8 +78,7 @@ void ShapeProcessAPI_ApplySequence::ClearMap()
 
 //=================================================================================================
 
-const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-  ShapeProcessAPI_ApplySequence::Map() const
+const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapeProcessAPI_ApplySequence::Map() const
 {
   return myContext->Map();
 }
@@ -89,10 +88,7 @@ const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
 void ShapeProcessAPI_ApplySequence::PrintPreparationResult() const
 {
   int SS = 0, SN = 0, FF = 0, FS = 0, FN = 0;
-  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(
-         myContext->Map());
-       It.More();
-       It.Next())
+  for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator It(myContext->Map()); It.More(); It.Next())
   {
     TopoDS_Shape keyshape = It.Key(), valueshape = It.Value();
     if (keyshape.ShapeType() == TopAbs_SHELL)
@@ -142,9 +138,9 @@ void ShapeProcessAPI_ApplySequence::PrintPreparationResult() const
   aMessenger->Send(EPMSG150, Message_Info);
 
   // preparation ratio
-  double SPR = 1, FPR = 1;
-  int    STotalR = SS, FTotalR = FF + FS;
-  int    NbS = STotalR + SN, NbF = FTotalR + FN;
+  double    SPR = 1, FPR = 1;
+  int STotalR = SS, FTotalR = FF + FS;
+  int NbS = STotalR + SN, NbF = FTotalR + FN;
   if (NbS > 0)
     SPR = 1. * (NbS - SN) / NbS;
   if (NbF > 0)

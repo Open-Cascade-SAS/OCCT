@@ -31,13 +31,13 @@ IGESSelect_UpdateLastChange::IGESSelect_UpdateLastChange()
 {
 }
 
-void IGESSelect_UpdateLastChange::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_UpdateLastChange::Performing(IFSelect_ContextModif&            ctx,
                                              const occ::handle<IGESData_IGESModel>& target,
                                              Interface_CopyTool&) const
 {
-  int           jour, mois, annee, heure, minute, seconde, millisec, microsec;
-  OSD_Process   system;
-  Quantity_Date ladate = system.SystemDate();
+  int jour, mois, annee, heure, minute, seconde, millisec, microsec;
+  OSD_Process      system;
+  Quantity_Date    ladate = system.SystemDate();
   ladate.Values(mois, jour, annee, heure, minute, seconde, millisec, microsec);
 
   IGESData_GlobalSection GS = target->GlobalSection();

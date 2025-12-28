@@ -44,18 +44,18 @@
 // purpose  : Construction of a spherical fillet the contours which of
 //           are not all isos, from three tops.
 //=======================================================================
-bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
-                      const occ::handle<ChFiDS_SurfData>&   Data,
-                      const occ::handle<Adaptor3d_Surface>& S1,
-                      const occ::handle<Adaptor3d_Surface>& S2,
-                      const TopAbs_Orientation              OrFace1,
-                      const TopAbs_Orientation /*OrFace2*/,
-                      const TopAbs_Orientation Or1,
-                      const TopAbs_Orientation,
-                      const double    Rad,
-                      const gp_Pnt2d& PS1,
-                      const gp_Pnt2d& P1S2,
-                      const gp_Pnt2d& P2S2)
+bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&      DStr,
+                                  const occ::handle<ChFiDS_SurfData>&   Data,
+                                  const occ::handle<Adaptor3d_Surface>& S1,
+                                  const occ::handle<Adaptor3d_Surface>& S2,
+                                  const TopAbs_Orientation         OrFace1,
+                                  const TopAbs_Orientation /*OrFace2*/,
+                                  const TopAbs_Orientation Or1,
+                                  const TopAbs_Orientation,
+                                  const double Rad,
+                                  const gp_Pnt2d&     PS1,
+                                  const gp_Pnt2d&     P1S2,
+                                  const gp_Pnt2d&     P2S2)
 {
   // Construction of the sphere :
   // - pole south on PS1
@@ -63,8 +63,8 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
   // - u+ to P2S2
 
   double ptol = Precision::Confusion();
-  gp_Pnt p1, p2, p3;
-  gp_Vec v1, v2;
+  gp_Pnt        p1, p2, p3;
+  gp_Vec        v1, v2;
   S1->D1(PS1.X(), PS1.Y(), p1, v1, v2);
   gp_Dir ds1(v1.Crossed(v2));
   gp_Dir df1   = ds1;
@@ -75,13 +75,13 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
     df1.Reverse();
   S2->D0(P1S2.X(), P1S2.Y(), p2);
   S2->D0(P2S2.X(), P2S2.Y(), p3);
-  gp_Circ ci    = gce_MakeCirc(p1, p2, p3);
-  gp_Dir  di    = ci.Axis().Direction();
-  gp_Pnt  pp    = ci.Location();
-  double  rr    = ci.Radius();
-  double  delta = sqrt(Rad * Rad - rr * rr);
-  gp_Pnt  cen(pp.X() + delta * di.X(), pp.Y() + delta * di.Y(), pp.Z() + delta * di.Z());
-  gp_Dir  dz(gp_Vec(p1, cen));
+  gp_Circ       ci    = gce_MakeCirc(p1, p2, p3);
+  gp_Dir        di    = ci.Axis().Direction();
+  gp_Pnt        pp    = ci.Location();
+  double rr    = ci.Radius();
+  double delta = sqrt(Rad * Rad - rr * rr);
+  gp_Pnt        cen(pp.X() + delta * di.X(), pp.Y() + delta * di.Y(), pp.Z() + delta * di.Z());
+  gp_Dir        dz(gp_Vec(p1, cen));
   if (std::abs(ds1.Dot(dz) - 1.) > ptol)
   {
     cen.SetCoord(pp.X() - delta * di.X(), pp.Y() - delta * di.Y(), pp.Z() - delta * di.Z());
@@ -134,11 +134,11 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
 
   occ::handle<Geom_Curve>   C;
   occ::handle<Geom2d_Curve> C2d;
-  gp_Pnt2d                  p2dFil(0., -M_PI / 2.);
-  gp_Lin2d                  lin2dFil(p2dFil, gp::DX2d());
+  gp_Pnt2d             p2dFil(0., -M_PI / 2.);
+  gp_Lin2d             lin2dFil(p2dFil, gp::DX2d());
   occ::handle<Geom2d_Curve> C2dFil = new Geom2d_Line(lin2dFil);
-  toreverse                        = (ddz.Dot(dnat1) <= 0.);
-  TopAbs_Orientation trans         = TopAbs_REVERSED;
+  toreverse                   = (ddz.Dot(dnat1) <= 0.);
+  TopAbs_Orientation trans    = TopAbs_REVERSED;
   if (toreverse)
     trans = TopAbs_FORWARD;
   Data->ChangeInterferenceOnS1().SetInterference(ChFiKPart_IndexCurveInDS(C, DStr),
@@ -148,10 +148,10 @@ bool ChFiKPart_Sphere(TopOpeBRepDS_DataStructure&           DStr,
 
   // The other side.
 
-  double  ang = ddx.Angle(ddy);
-  gp_Dir  dci = ddx.Crossed(ddy);
-  gp_Ax2  axci(cen, dci, ddx);
-  gp_Circ ci2(axci, Rad);
+  double ang = ddx.Angle(ddy);
+  gp_Dir        dci = ddx.Crossed(ddy);
+  gp_Ax2        axci(cen, dci, ddx);
+  gp_Circ       ci2(axci, Rad);
   C = new Geom_Circle(ci2);
   GeomAdaptor_Surface AS(gsph);
   GeomAdaptor_Curve   AC(C, 0., ang);

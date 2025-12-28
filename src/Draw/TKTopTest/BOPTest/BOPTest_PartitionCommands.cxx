@@ -130,14 +130,14 @@ int bfillds(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  char                                     buf[32];
-  bool                                     bRunParallel, bNonDestructive, bShowTime;
-  int                                      aNbS;
-  double                                   aTol;
+  char                               buf[32];
+  bool                   bRunParallel, bNonDestructive, bShowTime;
+  int                   aNbS;
+  double                      aTol;
   NCollection_List<TopoDS_Shape>::Iterator aIt;
-  NCollection_List<TopoDS_Shape>           aLC;
-  NCollection_List<TopoDS_Shape>&          aLS = BOPTest_Objects::Shapes();
-  aNbS                                         = aLS.Extent();
+  NCollection_List<TopoDS_Shape>               aLC;
+  NCollection_List<TopoDS_Shape>&              aLS = BOPTest_Objects::Shapes();
+  aNbS                                   = aLS.Extent();
   if (!aNbS)
   {
     di << "No objects to process\n";
@@ -227,7 +227,7 @@ int bbuild(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  char buf[128];
+  char             buf[128];
   bool bRunParallel, bShowTime;
 
   NCollection_List<TopoDS_Shape>::Iterator aIt;
@@ -360,7 +360,7 @@ int bbop(Draw_Interpretor& di, int n, const char** a)
   //
   pBuilder->Clear();
   //
-  NCollection_List<TopoDS_Shape>&          aLSObj = BOPTest_Objects::Shapes();
+  NCollection_List<TopoDS_Shape>&              aLSObj = BOPTest_Objects::Shapes();
   NCollection_List<TopoDS_Shape>::Iterator aIt(aLSObj);
   for (; aIt.More(); aIt.Next())
   {
@@ -554,7 +554,7 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
 
   // Get arguments and operation
   NCollection_List<TopoDS_Shape> aLObjects, aLTools;
-  BOPAlgo_Operation              anOp = BOPAlgo_UNKNOWN;
+  BOPAlgo_Operation    anOp = BOPAlgo_UNKNOWN;
 
   for (int i = 2; i < n; ++i)
   {
@@ -567,7 +567,7 @@ int buildbop(Draw_Interpretor& di, int n, const char** a)
       }
 
       NCollection_List<TopoDS_Shape>& aList = !strcmp(a[i], "-o") ? aLObjects : aLTools;
-      int                             j     = i + 1;
+      int      j     = i + 1;
       for (; j < n; ++j)
       {
         if (a[j][0] == '-')

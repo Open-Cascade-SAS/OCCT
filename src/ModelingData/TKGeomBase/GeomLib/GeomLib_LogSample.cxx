@@ -17,7 +17,9 @@
 #include <GeomLib_LogSample.hxx>
 #include <Standard_OutOfRange.hxx>
 
-GeomLib_LogSample::GeomLib_LogSample(const double A, const double B, const int N)
+GeomLib_LogSample::GeomLib_LogSample(const double    A,
+                                     const double    B,
+                                     const int N)
     : math_FunctionSample(A, B, N)
 {
   myF   = A - 1;

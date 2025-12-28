@@ -22,7 +22,7 @@ RWStepBasic_RWDerivedUnitElement::RWStepBasic_RWDerivedUnitElement() {}
 
 void RWStepBasic_RWDerivedUnitElement::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                                        num,
+  const int                      num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepBasic_DerivedUnitElement>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepBasic_RWDerivedUnitElement::ReadStep(
 }
 
 void RWStepBasic_RWDerivedUnitElement::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                        SW,
   const occ::handle<StepBasic_DerivedUnitElement>& ent) const
 {
 
@@ -58,7 +58,7 @@ void RWStepBasic_RWDerivedUnitElement::WriteStep(
 }
 
 void RWStepBasic_RWDerivedUnitElement::Share(const occ::handle<StepBasic_DerivedUnitElement>& ent,
-                                             Interface_EntityIterator& iter) const
+                                             Interface_EntityIterator&                   iter) const
 {
 
   iter.GetOneItem(ent->Unit());

@@ -39,12 +39,14 @@ public:
   //! Application might call this method explicitly to manipulate styles afterwards.
   //! @param theToSyncStyles flag indicating if method ::Compute() should call this method again
   //!                        on first compute or re-compute
-  Standard_EXPORT virtual void DispatchStyles(const bool theToSyncStyles = false);
+  Standard_EXPORT virtual void DispatchStyles(
+    const bool theToSyncStyles = false);
 
   //! Sets the material aspect.
   //! This method assigns the new default material without overriding XDE styles.
   //! Re-computation of existing presentation is not required after calling this method.
-  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMaterial) override;
+  Standard_EXPORT virtual void SetMaterial(const Graphic3d_MaterialAspect& theMaterial)
+    override;
 
 protected:
   //! Redefined method to compute presentation.
@@ -59,10 +61,10 @@ protected:
 
 protected:
   //! Assign style to drawer.
-  static void setStyleToDrawer(const occ::handle<Prs3d_Drawer>& theDrawer,
-                               const XCAFPrs_Style&             theStyle,
-                               const XCAFPrs_Style&             theDefStyle,
-                               const Graphic3d_MaterialAspect&  theDefMaterial);
+  static void setStyleToDrawer(const occ::handle<Prs3d_Drawer>&     theDrawer,
+                               const XCAFPrs_Style&            theStyle,
+                               const XCAFPrs_Style&            theDefStyle,
+                               const Graphic3d_MaterialAspect& theDefMaterial);
 
 protected:
   TDF_Label myLabel; //!< label pointing onto the shape

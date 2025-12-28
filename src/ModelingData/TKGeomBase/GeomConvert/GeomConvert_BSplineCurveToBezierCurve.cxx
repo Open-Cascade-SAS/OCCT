@@ -21,13 +21,14 @@
 #include <Standard_OutOfRange.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
   const occ::handle<Geom_BSplineCurve>& BasisCurve)
 {
-  myCurve   = occ::down_cast<Geom_BSplineCurve>(BasisCurve->Copy());
+  myCurve          = occ::down_cast<Geom_BSplineCurve>(BasisCurve->Copy());
   double Uf = myCurve->FirstParameter();
   double Ul = myCurve->LastParameter();
   myCurve->Segment(Uf, Ul);
@@ -44,9 +45,9 @@ GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
 
 GeomConvert_BSplineCurveToBezierCurve::GeomConvert_BSplineCurveToBezierCurve(
   const occ::handle<Geom_BSplineCurve>& BasisCurve,
-  const double                          U1,
-  const double                          U2,
-  const double                          ParametricTolerance)
+  const double              U1,
+  const double              U2,
+  const double              ParametricTolerance)
 {
   if (U2 - U1 < ParametricTolerance)
     throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
@@ -113,8 +114,7 @@ occ::handle<Geom_BezierCurve> GeomConvert_BSplineCurveToBezierCurve::Arc(const i
 
 //=================================================================================================
 
-void GeomConvert_BSplineCurveToBezierCurve::Arcs(
-  NCollection_Array1<occ::handle<Geom_BezierCurve>>& Curves)
+void GeomConvert_BSplineCurveToBezierCurve::Arcs(NCollection_Array1<occ::handle<Geom_BezierCurve>>& Curves)
 {
   int n = NbArcs();
   for (int i = 1; i <= n; i++)

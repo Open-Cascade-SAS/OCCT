@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -33,7 +34,7 @@ RWStepVisual_RWTessellatedPointSet::RWStepVisual_RWTessellatedPointSet() {}
 
 void RWStepVisual_RWTessellatedPointSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&        theData,
-  const int                                          theNum,
+  const int                        theNum,
   occ::handle<Interface_Check>&                      theCheck,
   const occ::handle<StepVisual_TessellatedPointSet>& theEnt) const
 {
@@ -59,12 +60,12 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep(
                       aCoordinates);
 
   occ::handle<NCollection_HArray1<int>> aPointList;
-  int                                   sub3 = 0;
+  int                 sub3 = 0;
   if (theData->ReadSubList(theNum, 3, "point_list", theCheck, sub3))
   {
-    int nb0    = theData->NbParams(sub3);
-    aPointList = new NCollection_HArray1<int>(1, nb0);
-    int num2   = sub3;
+    int nb0  = theData->NbParams(sub3);
+    aPointList            = new NCollection_HArray1<int>(1, nb0);
+    int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -80,7 +81,7 @@ void RWStepVisual_RWTessellatedPointSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedPointSet::WriteStep(
-  StepData_StepWriter&                               theSW,
+  StepData_StepWriter&                          theSW,
   const occ::handle<StepVisual_TessellatedPointSet>& theEnt) const
 {
 
@@ -103,9 +104,8 @@ void RWStepVisual_RWTessellatedPointSet::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWTessellatedPointSet::Share(
-  const occ::handle<StepVisual_TessellatedPointSet>& theEnt,
-  Interface_EntityIterator&                          theIter) const
+void RWStepVisual_RWTessellatedPointSet::Share(const occ::handle<StepVisual_TessellatedPointSet>& theEnt,
+                                               Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of RepresentationItem

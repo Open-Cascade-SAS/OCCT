@@ -29,7 +29,7 @@ RWStepVisual_RWTessellatedGeometricSet::RWStepVisual_RWTessellatedGeometricSet()
 
 void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                                              num,
+  const int                            num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepVisual_TessellatedGeometricSet>& ent) const
 {
@@ -42,11 +42,11 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
   data->ReadString(num, 1, "name", ach, aName);
 
   NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> anItems;
-  int                                                                             nsub2;
+  int                                       nsub2;
   if (data->ReadSubList(num, 2, "items", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    anItems = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, nb2);
+    anItems              = new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       occ::handle<StepVisual_TessellatedItem> anItem; // = new StepVisual_TesselatedItem;
@@ -64,7 +64,7 @@ void RWStepVisual_RWTessellatedGeometricSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedGeometricSet::WriteStep(
-  StepData_StepWriter&                                   SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepVisual_TessellatedGeometricSet>& ent) const
 {
   // Inherited field : name
@@ -81,7 +81,7 @@ void RWStepVisual_RWTessellatedGeometricSet::WriteStep(
 
 void RWStepVisual_RWTessellatedGeometricSet::Share(
   const occ::handle<StepVisual_TessellatedGeometricSet>& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                         iter) const
 {
   // Own field : children
   for (int i = 1; i <= ent->Items()->Length(); i++)

@@ -46,10 +46,9 @@ static PrsDim_Dimension::ComputeMode HighlightMode(const int theSelMode)
 
 //=================================================================================================
 
-PrsDim_DimensionOwner::PrsDim_DimensionOwner(
-  const occ::handle<SelectMgr_SelectableObject>& theSelObject,
-  const PrsDim_DimensionSelectionMode            theMode,
-  const int                                      thePriority)
+PrsDim_DimensionOwner::PrsDim_DimensionOwner(const occ::handle<SelectMgr_SelectableObject>& theSelObject,
+                                             const PrsDim_DimensionSelectionMode       theMode,
+                                             const int                    thePriority)
     : SelectMgr_EntityOwner(theSelObject, thePriority),
       mySelectionMode(theMode)
 {
@@ -58,7 +57,7 @@ PrsDim_DimensionOwner::PrsDim_DimensionOwner(
 //=================================================================================================
 
 bool PrsDim_DimensionOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                        const int /*theMode*/) const
+                                                    const int /*theMode*/) const
 {
   if (!HasSelectable())
   {
@@ -84,7 +83,7 @@ void PrsDim_DimensionOwner::Unhilight(const occ::handle<PrsMgr_PresentationManag
 //=================================================================================================
 
 void PrsDim_DimensionOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                             const occ::handle<Prs3d_Drawer>& theStyle,
+                                             const occ::handle<Prs3d_Drawer>&               theStyle,
                                              const int /*theMode*/)
 {
   thePM->Color(Selectable(), theStyle, HighlightMode(mySelectionMode));

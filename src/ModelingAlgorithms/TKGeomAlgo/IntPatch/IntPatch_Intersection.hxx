@@ -21,6 +21,7 @@
 #include <IntPatch_Point.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <NCollection_List.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -41,13 +42,13 @@ public:
                                         const occ::handle<Adaptor3d_TopolTool>& D1,
                                         const occ::handle<Adaptor3d_Surface>&   S2,
                                         const occ::handle<Adaptor3d_TopolTool>& D2,
-                                        const double                            TolArc,
-                                        const double                            TolTang);
+                                        const double                TolArc,
+                                        const double                TolTang);
 
   Standard_EXPORT IntPatch_Intersection(const occ::handle<Adaptor3d_Surface>&   S1,
                                         const occ::handle<Adaptor3d_TopolTool>& D1,
-                                        const double                            TolArc,
-                                        const double                            TolTang);
+                                        const double                TolArc,
+                                        const double                TolTang);
 
   //! Set the tolerances used by the algorithms:
   //! --- Implicit   - Parametric
@@ -87,11 +88,11 @@ public:
                                const occ::handle<Adaptor3d_TopolTool>& D1,
                                const occ::handle<Adaptor3d_Surface>&   S2,
                                const occ::handle<Adaptor3d_TopolTool>& D2,
-                               const double                            TolArc,
-                               const double                            TolTang,
-                               const bool                              isGeomInt            = true,
-                               const bool                              theIsReqToKeepRLine  = false,
-                               const bool                              theIsReqToPostWLProc = true);
+                               const double                TolArc,
+                               const double                TolTang,
+                               const bool             isGeomInt = true,
+                               const bool theIsReqToKeepRLine   = false,
+                               const bool theIsReqToPostWLProc  = true);
 
   //! If isGeomInt == false, then method
   //! Param-Param intersection will be used.
@@ -110,30 +111,30 @@ public:
                                const occ::handle<Adaptor3d_TopolTool>& D1,
                                const occ::handle<Adaptor3d_Surface>&   S2,
                                const occ::handle<Adaptor3d_TopolTool>& D2,
-                               const double                            TolArc,
-                               const double                            TolTang,
-                               NCollection_List<IntSurf_PntOn2S>&      LOfPnts,
-                               const bool                              isGeomInt            = true,
-                               const bool                              theIsReqToKeepRLine  = false,
-                               const bool                              theIsReqToPostWLProc = true);
+                               const double                TolArc,
+                               const double                TolTang,
+                               NCollection_List<IntSurf_PntOn2S>&             LOfPnts,
+                               const bool             isGeomInt = true,
+                               const bool theIsReqToKeepRLine   = false,
+                               const bool theIsReqToPostWLProc  = true);
 
   //! Perform with start point
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   S1,
                                const occ::handle<Adaptor3d_TopolTool>& D1,
                                const occ::handle<Adaptor3d_Surface>&   S2,
                                const occ::handle<Adaptor3d_TopolTool>& D2,
-                               const double                            U1,
-                               const double                            V1,
-                               const double                            U2,
-                               const double                            V2,
-                               const double                            TolArc,
-                               const double                            TolTang);
+                               const double                U1,
+                               const double                V1,
+                               const double                U2,
+                               const double                V2,
+                               const double                TolArc,
+                               const double                TolTang);
 
   //! Uses for finding self-intersected surfaces.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   S1,
                                const occ::handle<Adaptor3d_TopolTool>& D1,
-                               const double                            TolArc,
-                               const double                            TolTang);
+                               const double                TolArc,
+                               const double                TolTang);
 
   //! Returns True if the calculus was successful.
   bool IsDone() const;
@@ -171,7 +172,7 @@ public:
 
   //! Dump of each result line.
   //! Mode for more accurate dumps.
-  Standard_EXPORT void Dump(const int                               Mode,
+  Standard_EXPORT void Dump(const int             Mode,
                             const occ::handle<Adaptor3d_Surface>&   S1,
                             const occ::handle<Adaptor3d_TopolTool>& D1,
                             const occ::handle<Adaptor3d_Surface>&   S2,
@@ -180,16 +181,17 @@ public:
   //! Checks if surface theS1 has degenerated boundary (dS/du or dS/dv = 0) and
   //! calculates minimal distance between corresponding singular points and surface theS2
   //! If singular point exists the method returns "true" and stores minimal distance in theDist.
-  Standard_EXPORT static bool CheckSingularPoints(const occ::handle<Adaptor3d_Surface>&   theS1,
-                                                  const occ::handle<Adaptor3d_TopolTool>& theD1,
-                                                  const occ::handle<Adaptor3d_Surface>&   theS2,
-                                                  double&                                 theDist);
+  Standard_EXPORT static bool CheckSingularPoints(
+    const occ::handle<Adaptor3d_Surface>&   theS1,
+    const occ::handle<Adaptor3d_TopolTool>& theD1,
+    const occ::handle<Adaptor3d_Surface>&   theS2,
+    double&                     theDist);
 
   //! Calculates recommended value for myUVMaxStep depending on surfaces and their domains
   Standard_EXPORT static double DefineUVMaxStep(const occ::handle<Adaptor3d_Surface>&   theS1,
-                                                const occ::handle<Adaptor3d_TopolTool>& theD1,
-                                                const occ::handle<Adaptor3d_Surface>&   theS2,
-                                                const occ::handle<Adaptor3d_TopolTool>& theD2);
+                                                       const occ::handle<Adaptor3d_TopolTool>& theD1,
+                                                       const occ::handle<Adaptor3d_Surface>&   theS2,
+                                                       const occ::handle<Adaptor3d_TopolTool>& theD2);
 
   //! Prepares surfaces for intersection
   Standard_EXPORT static void PrepareSurfaces(
@@ -197,7 +199,7 @@ public:
     const occ::handle<Adaptor3d_TopolTool>&             theD1,
     const occ::handle<Adaptor3d_Surface>&               theS2,
     const occ::handle<Adaptor3d_TopolTool>&             theD2,
-    const double                                        Tol,
+    const double                            Tol,
     NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theSeqHS1,
     NCollection_Vector<occ::handle<Adaptor3d_Surface>>& theSeqHS2);
 
@@ -206,11 +208,11 @@ private:
                                         const occ::handle<Adaptor3d_TopolTool>& D1,
                                         const occ::handle<Adaptor3d_Surface>&   S2,
                                         const occ::handle<Adaptor3d_TopolTool>& D2,
-                                        const double                            TolArc,
-                                        const double                            TolTang,
-                                        NCollection_List<IntSurf_PntOn2S>&      LOfPnts,
-                                        const GeomAbs_SurfaceType               typs1,
-                                        const GeomAbs_SurfaceType               typs2);
+                                        const double                TolArc,
+                                        const double                TolTang,
+                                        NCollection_List<IntSurf_PntOn2S>&             LOfPnts,
+                                        const GeomAbs_SurfaceType          typs1,
+                                        const GeomAbs_SurfaceType          typs2);
 
   //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
@@ -222,36 +224,36 @@ private:
                                       const occ::handle<Adaptor3d_TopolTool>& D1,
                                       const occ::handle<Adaptor3d_Surface>&   S2,
                                       const occ::handle<Adaptor3d_TopolTool>& D2,
-                                      const double                            TolArc,
-                                      const double                            TolTang,
-                                      NCollection_List<IntSurf_PntOn2S>&      LOfPnts,
-                                      const GeomAbs_SurfaceType               typs1,
-                                      const GeomAbs_SurfaceType               typs2,
-                                      const bool                              theIsReqToKeepRLine);
+                                      const double                TolArc,
+                                      const double                TolTang,
+                                      NCollection_List<IntSurf_PntOn2S>&             LOfPnts,
+                                      const GeomAbs_SurfaceType          typs1,
+                                      const GeomAbs_SurfaceType          typs2,
+                                      const bool             theIsReqToKeepRLine);
 
   Standard_EXPORT void GeomParamPerfom(const occ::handle<Adaptor3d_Surface>&   S1,
                                        const occ::handle<Adaptor3d_TopolTool>& D1,
                                        const occ::handle<Adaptor3d_Surface>&   S2,
                                        const occ::handle<Adaptor3d_TopolTool>& D2,
-                                       const bool                              isNotAnalitical,
-                                       const GeomAbs_SurfaceType               typs1,
-                                       const GeomAbs_SurfaceType               typs2);
+                                       const bool             isNotAnalitical,
+                                       const GeomAbs_SurfaceType          typs1,
+                                       const GeomAbs_SurfaceType          typs2);
 
-  bool                                             done;
-  bool                                             empt;
-  bool                                             tgte;
-  bool                                             oppo;
-  NCollection_Sequence<IntPatch_Point>             spnt;
-  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
-  double                                           myTolArc;
-  double                                           myTolTang;
-  double                                           myUVMaxStep;
-  double                                           myFleche;
-  bool                                             myIsStartPnt;
-  double                                           myU1Start;
-  double                                           myV1Start;
-  double                                           myU2Start;
-  double                                           myV2Start;
+  bool         done;
+  bool         empt;
+  bool         tgte;
+  bool         oppo;
+  NCollection_Sequence<IntPatch_Point> spnt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>>  slin;
+  double            myTolArc;
+  double            myTolTang;
+  double            myUVMaxStep;
+  double            myFleche;
+  bool         myIsStartPnt;
+  double            myU1Start;
+  double            myV1Start;
+  double            myU2Start;
+  double            myV2Start;
 };
 
 #include <IntPatch_Intersection.lxx>

@@ -76,6 +76,7 @@
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 #include <stdio.h>
@@ -98,9 +99,9 @@ static int IndexOfConge = 0;
 extern bool ChFi3d_GettraceDRAWFIL();
 extern bool ChFi3d_GettraceDRAWWALK();
 extern bool ChFi3d_GetcontextNOOPT();
-extern void ChFi3d_SettraceDRAWFIL(const bool b);
-extern void ChFi3d_SettraceDRAWWALK(const bool b);
-extern void ChFi3d_SetcontextNOOPT(const bool b);
+extern void             ChFi3d_SettraceDRAWFIL(const bool b);
+extern void             ChFi3d_SettraceDRAWWALK(const bool b);
+extern void             ChFi3d_SetcontextNOOPT(const bool b);
 #endif
 
 #ifdef DRAW
@@ -161,12 +162,12 @@ static int SearchIndex(const double Value, occ::handle<BRepBlend_Line>& Lin)
 
 static int nbedconnex(const NCollection_List<TopoDS_Shape>& L)
 {
-  int                                      nb = 0, i = 0;
+  int                   nb = 0, i = 0;
   NCollection_List<TopoDS_Shape>::Iterator It1(L);
   for (; It1.More(); It1.Next(), i++)
   {
-    const TopoDS_Shape&                      curs   = It1.Value();
-    bool                                     dejavu = 0;
+    const TopoDS_Shape&                curs   = It1.Value();
+    bool                   dejavu = 0;
     NCollection_List<TopoDS_Shape>::Iterator It2(L);
     for (int j = 0; j < i && It2.More(); j++, It2.Next())
     {
@@ -182,12 +183,12 @@ static int nbedconnex(const NCollection_List<TopoDS_Shape>& L)
   return nb;
 }
 
-static bool IsVois(const TopoDS_Edge&                                      E,
-                   const TopoDS_Vertex&                                    Vref,
-                   const ChFiDS_Map&                                       VEMap,
-                   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& DONE,
-                   const int                                               prof,
-                   const int                                               profmax)
+static bool IsVois(const TopoDS_Edge&     E,
+                               const TopoDS_Vertex&   Vref,
+                               const ChFiDS_Map&      VEMap,
+                               NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&   DONE,
+                               const int prof,
+                               const int profmax)
 {
   if (prof > profmax)
     return false;
@@ -198,8 +199,8 @@ static bool IsVois(const TopoDS_Edge&                                      E,
   if (Vref.IsSame(V1) || Vref.IsSame(V2))
     return true;
   DONE.Add(E);
-  const NCollection_List<TopoDS_Shape>&    L1 = VEMap(V1);
-  int                                      i1 = nbedconnex(L1);
+  const NCollection_List<TopoDS_Shape>&        L1 = VEMap(V1);
+  int                   i1 = nbedconnex(L1);
   NCollection_List<TopoDS_Shape>::Iterator It1(L1);
   for (; It1.More(); It1.Next())
   {
@@ -231,30 +232,32 @@ static bool IsVois(const TopoDS_Edge&                                      E,
   return false;
 }
 
-static bool IsObst(const ChFiDS_CommonPoint& CP, const TopoDS_Vertex& Vref, const ChFiDS_Map& VEMap)
+static bool IsObst(const ChFiDS_CommonPoint& CP,
+                               const TopoDS_Vertex&      Vref,
+                               const ChFiDS_Map&         VEMap)
 {
   if (!CP.IsOnArc())
     return false;
-  const TopoDS_Edge&                                     E = CP.Arc();
+  const TopoDS_Edge&  E = CP.Arc();
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> DONE;
-  int                                                    prof = 4;
+  int    prof = 4;
   return !IsVois(E, Vref, VEMap, DONE, 0, prof);
 }
 
 //=================================================================================================
 
 static void CompParam(const Geom2dAdaptor_Curve& Carc,
-                      occ::handle<Geom2d_Curve>  Ctg,
-                      double&                    parc,
-                      double&                    ptg,
-                      const double               prefarc,
-                      const double               preftg)
+                      occ::handle<Geom2d_Curve>       Ctg,
+                      double&             parc,
+                      double&             ptg,
+                      const double        prefarc,
+                      const double        preftg)
 {
   bool found = 0;
   //(1) It is checked if the provided parameters are good
   //    if pcurves have the same parameters as the spine.
-  gp_Pnt2d point   = Carc.Value(prefarc);
-  double   distini = point.Distance(Ctg->Value(preftg));
+  gp_Pnt2d      point   = Carc.Value(prefarc);
+  double distini = point.Distance(Ctg->Value(preftg));
   if (distini <= Precision::PConfusion())
   {
     parc  = prefarc;
@@ -269,7 +272,7 @@ static void CompParam(const Geom2dAdaptor_Curve& Carc,
 #endif
     IntRes2d_IntersectionPoint int2d;
     Geom2dInt_GInter           Intersection;
-    int                        nbpt, nbseg;
+    int           nbpt, nbseg;
     Intersection.Perform(Geom2dAdaptor_Curve(Ctg),
                          Carc,
                          Precision::PIntersection(),
@@ -341,15 +344,15 @@ static void CompParam(const Geom2dAdaptor_Curve& Carc,
 //=======================================================================
 
 static bool CompBlendPoint(const TopoDS_Vertex& V,
-                           const TopoDS_Edge&   E,
-                           const double         W,
-                           const TopoDS_Face&   F1,
-                           const TopoDS_Face&   F2,
-                           Blend_Point&         BP)
+                                       const TopoDS_Edge&   E,
+                                       const double  W,
+                                       const TopoDS_Face&   F1,
+                                       const TopoDS_Face&   F2,
+                                       Blend_Point&         BP)
 {
-  gp_Pnt2d                  P1, P2;
-  gp_Pnt                    P3d;
-  double                    param, f, l;
+  gp_Pnt2d             P1, P2;
+  gp_Pnt               P3d;
+  double        param, f, l;
   occ::handle<Geom2d_Curve> pc;
 
   P3d   = BRep_Tool::Pnt(V);
@@ -422,17 +425,17 @@ static void UpdateLine(occ::handle<BRepBlend_Line>& Line, const bool isfirst)
 //=======================================================================
 
 bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
-                                  const occ::handle<Geom_Surface>&      Surfcoin,
-                                  const occ::handle<Adaptor3d_Surface>& S1,
-                                  const occ::handle<Geom2d_Curve>&      PC1,
-                                  const occ::handle<Adaptor3d_Surface>& S2,
-                                  const occ::handle<Geom2d_Curve>&      PC2,
-                                  const TopAbs_Orientation              Or,
-                                  const bool                            On1,
-                                  const bool                            Gd1,
-                                  const bool                            Gd2,
-                                  const bool                            Gf1,
-                                  const bool                            Gf2)
+                                              const occ::handle<Geom_Surface>&      Surfcoin,
+                                              const occ::handle<Adaptor3d_Surface>& S1,
+                                              const occ::handle<Geom2d_Curve>&      PC1,
+                                              const occ::handle<Adaptor3d_Surface>& S2,
+                                              const occ::handle<Geom2d_Curve>&      PC2,
+                                              const TopAbs_Orientation         Or,
+                                              const bool           On1,
+                                              const bool           Gd1,
+                                              const bool           Gd2,
+                                              const bool           Gf1,
+                                              const bool           Gf2)
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
   Data->ChangeSurf(DStr.AddSurface(TopOpeBRepDS_Surface(Surfcoin, tolapp3d)));
@@ -463,19 +466,19 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   occ::handle<Geom_Curve> Crv3d1;
   if (!PC1.IsNull())
     Crv3d1 = Surfcoin->VIso(VFirst);
-  gp_Pnt2d                  pd1(UFirst, VFirst), pf1(ULast, VFirst);
-  gp_Lin2d                  lfil1(pd1, gp_Dir2d(gp_Vec2d(pd1, pf1)));
+  gp_Pnt2d             pd1(UFirst, VFirst), pf1(ULast, VFirst);
+  gp_Lin2d             lfil1(pd1, gp_Dir2d(gp_Vec2d(pd1, pf1)));
   occ::handle<Geom2d_Curve> PCurveOnSurf = new Geom2d_Line(lfil1);
-  TopAbs_Orientation        tra1 = TopAbs_FORWARD, orsurf = Or;
-  double                    x, y, w = 0.5 * (UFirst + ULast);
-  gp_Pnt                    p;
-  gp_Vec                    du, dv;
+  TopAbs_Orientation   tra1 = TopAbs_FORWARD, orsurf = Or;
+  double        x, y, w = 0.5 * (UFirst + ULast);
+  gp_Pnt               p;
+  gp_Vec               du, dv;
   occ::handle<Geom2d_Curve> c2dtrim;
-  double                    tolreached = 1.e-5;
+  double        tolreached = 1.e-5;
   if (!PC1.IsNull())
   {
     occ::handle<GeomAdaptor_Curve> hcS1 = new GeomAdaptor_Curve(Crv3d1);
-    c2dtrim                             = new Geom2d_TrimmedCurve(PC1, UFirst, ULast);
+    c2dtrim                        = new Geom2d_TrimmedCurve(PC1, UFirst, ULast);
     ChFi3d_SameParameter(hcS1, c2dtrim, S1, tolapp3d, tolreached);
     c2dtrim->Value(w).Coord(x, y);
     S1->D1(x, y, p, du, dv);
@@ -487,7 +490,7 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
     else if (On1)
       orsurf = TopAbs::Reverse(orsurf);
   }
-  int                      Index1OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1, tolreached));
+  int         Index1OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d1, tolreached));
   ChFiDS_FaceInterference& Fint1         = Data->ChangeInterferenceOnS1();
   Fint1.SetFirstParameter(UFirst);
   Fint1.SetLastParameter(ULast);
@@ -503,7 +506,7 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
   if (!PC2.IsNull())
   {
     occ::handle<GeomAdaptor_Curve> hcS2 = new GeomAdaptor_Curve(Crv3d2);
-    c2dtrim                             = new Geom2d_TrimmedCurve(PC2, UFirst, ULast);
+    c2dtrim                        = new Geom2d_TrimmedCurve(PC2, UFirst, ULast);
     ChFi3d_SameParameter(hcS2, c2dtrim, S2, tolapp3d, tolreached);
     c2dtrim->Value(w).Coord(x, y);
     S2->D1(x, y, p, du, dv);
@@ -517,7 +520,7 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
         orsurf = TopAbs::Reverse(orsurf);
     }
   }
-  int                      Index2OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2, tolreached));
+  int         Index2OfCurve = DStr.AddCurve(TopOpeBRepDS_Curve(Crv3d2, tolreached));
   ChFiDS_FaceInterference& Fint2         = Data->ChangeInterferenceOnS2();
   Fint2.SetFirstParameter(UFirst);
   Fint2.SetLastParameter(ULast);
@@ -536,20 +539,20 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
 //=======================================================================
 
 bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
-                                  Blend_Function&                       Func,
-                                  occ::handle<BRepBlend_Line>&          lin,
-                                  const occ::handle<Adaptor3d_Surface>& S1,
-                                  const occ::handle<Adaptor3d_Surface>& S2,
-                                  const TopAbs_Orientation              Or1,
-                                  const bool                            Gd1,
-                                  const bool                            Gd2,
-                                  const bool                            Gf1,
-                                  const bool                            Gf2,
-                                  const bool                            Reversed)
+                                              Blend_Function&                  Func,
+                                              occ::handle<BRepBlend_Line>&          lin,
+                                              const occ::handle<Adaptor3d_Surface>& S1,
+                                              const occ::handle<Adaptor3d_Surface>& S2,
+                                              const TopAbs_Orientation         Or1,
+                                              const bool           Gd1,
+                                              const bool           Gd2,
+                                              const bool           Gf1,
+                                              const bool           Gf2,
+                                              const bool           Reversed)
 {
   occ::handle<BRepBlend_AppFunc> TheFunc = new (BRepBlend_AppFunc)(lin, Func, tolapp3d, 1.e-5);
 
-  int                  Degmax = 20, Segmax = 5000;
+  int     Degmax = 20, Segmax = 5000;
   BRepBlend_AppSurface approx(TheFunc,
                               lin->Point(1).Parameter(),
                               lin->Point(lin->NbPoints()).Parameter(),
@@ -579,16 +582,15 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
 //=======================================================================
 
 bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
-                                  Blend_SurfRstFunction&                Func,
-                                  occ::handle<BRepBlend_Line>&          lin,
-                                  const occ::handle<Adaptor3d_Surface>& S1,
-                                  const occ::handle<Adaptor3d_Surface>& S2,
-                                  const TopAbs_Orientation              Or,
-                                  const bool                            Reversed)
+                                              Blend_SurfRstFunction&           Func,
+                                              occ::handle<BRepBlend_Line>&          lin,
+                                              const occ::handle<Adaptor3d_Surface>& S1,
+                                              const occ::handle<Adaptor3d_Surface>& S2,
+                                              const TopAbs_Orientation         Or,
+                                              const bool           Reversed)
 {
-  occ::handle<BRepBlend_AppFuncRst> TheFunc =
-    new (BRepBlend_AppFuncRst)(lin, Func, tolapp3d, 1.e-5);
-  BRepBlend_AppSurface approx(TheFunc,
+  occ::handle<BRepBlend_AppFuncRst> TheFunc = new (BRepBlend_AppFuncRst)(lin, Func, tolapp3d, 1.e-5);
+  BRepBlend_AppSurface         approx(TheFunc,
                               lin->Point(1).Parameter(),
                               lin->Point(lin->NbPoints()).Parameter(),
                               tolapp3d,
@@ -616,11 +618,11 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
 //=======================================================================
 
 bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
-                                  Blend_RstRstFunction&                 Func,
-                                  occ::handle<BRepBlend_Line>&          lin,
-                                  const occ::handle<Adaptor3d_Surface>& S1,
-                                  const occ::handle<Adaptor3d_Surface>& S2,
-                                  const TopAbs_Orientation              Or)
+                                              Blend_RstRstFunction&            Func,
+                                              occ::handle<BRepBlend_Line>&          lin,
+                                              const occ::handle<Adaptor3d_Surface>& S1,
+                                              const occ::handle<Adaptor3d_Surface>& S2,
+                                              const TopAbs_Orientation         Or)
 {
   occ::handle<BRepBlend_AppFuncRstRst> TheFunc =
     new (BRepBlend_AppFuncRstRst)(lin, Func, tolapp3d, 1.e-5);
@@ -651,24 +653,24 @@ bool ChFi3d_Builder::CompleteData(occ::handle<ChFiDS_SurfData>&         Data,
 //=======================================================================
 
 bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
-                               const AppBlend_Approx&                approx,
-                               const occ::handle<BRepBlend_Line>&    lin,
-                               const occ::handle<Adaptor3d_Surface>& S1,
-                               const occ::handle<Adaptor3d_Surface>& S2,
-                               const TopAbs_Orientation              Or1,
-                               const bool                            Gd1,
-                               const bool                            Gd2,
-                               const bool                            Gf1,
-                               const bool                            Gf2,
-                               const bool                            Reversed)
+                                           const AppBlend_Approx&           approx,
+                                           const occ::handle<BRepBlend_Line>&    lin,
+                                           const occ::handle<Adaptor3d_Surface>& S1,
+                                           const occ::handle<Adaptor3d_Surface>& S2,
+                                           const TopAbs_Orientation         Or1,
+                                           const bool           Gd1,
+                                           const bool           Gd2,
+                                           const bool           Gf1,
+                                           const bool           Gf2,
+                                           const bool           Reversed)
 {
   // Small control tools.
   static occ::handle<GeomAdaptor_Curve> checkcurve;
   if (checkcurve.IsNull())
     checkcurve = new GeomAdaptor_Curve();
   GeomAdaptor_Curve& chc = *checkcurve;
-  double             tolget3d, tolget2d, tolaux, tolC1, tolcheck;
-  double             tolC2 = 0.;
+  double      tolget3d, tolget2d, tolaux, tolC1, tolcheck;
+  double      tolC2 = 0.;
   approx.TolReached(tolget3d, tolget2d);
   tolaux = approx.TolCurveOnSurf(1);
   tolC1  = tolget3d + tolaux;
@@ -683,17 +685,17 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   // to be able to parameterize in U by # R*teta // a revoir lbo 29/08/97
   const NCollection_Array1<double>& ku   = approx.SurfUKnots();
   const NCollection_Array1<double>& kv   = approx.SurfVKnots();
-  double                            larg = (kv(kv.Upper()) - kv(kv.Lower()));
+  double               larg = (kv(kv.Upper()) - kv(kv.Lower()));
   NCollection_Array1<double>&       kku  = *((NCollection_Array1<double>*)((void*)&ku));
   BSplCLib::Reparametrize(0., larg, kku);
   occ::handle<Geom_BSplineSurface> Surf = new Geom_BSplineSurface(approx.SurfPoles(),
-                                                                  approx.SurfWeights(),
-                                                                  kku,
-                                                                  kv,
-                                                                  approx.SurfUMults(),
-                                                                  approx.SurfVMults(),
-                                                                  approx.UDegree(),
-                                                                  approx.VDegree());
+                                                             approx.SurfWeights(),
+                                                             kku,
+                                                             kv,
+                                                             approx.SurfUMults(),
+                                                             approx.SurfVMults(),
+                                                             approx.UDegree(),
+                                                             approx.VDegree());
   // extension of the surface
 
   double length1, length2;
@@ -701,8 +703,8 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   length2 = Data->LastExtensionValue();
 
   occ::handle<Geom_BoundedSurface> aBndSurf = Surf;
-  bool                             ext1 = false, ext2 = false;
-  double                           eps = std::max(tolget3d, 2. * Precision::Confusion());
+  bool            ext1 = false, ext2 = false;
+  double               eps = std::max(tolget3d, 2. * Precision::Confusion());
   if (length1 > eps)
   {
     gp_Pnt P11, P21;
@@ -762,14 +764,14 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 #endif
   double UFirst, ULast, VFirst, VLast, pppdeb, pppfin;
   Surf->Bounds(UFirst, ULast, VFirst, VLast);
-  BRepAdaptor_Curve2d              brc;
-  BRepAdaptor_Curve                CArc;
-  occ::handle<BRepAdaptor_Surface> BS1 = occ::down_cast<BRepAdaptor_Surface>(S1);
-  occ::handle<BRepAdaptor_Surface> BS2 = occ::down_cast<BRepAdaptor_Surface>(S2);
-  Geom2dAPI_ProjectPointOnCurve    projector;
+  BRepAdaptor_Curve2d           brc;
+  BRepAdaptor_Curve             CArc;
+  occ::handle<BRepAdaptor_Surface>   BS1 = occ::down_cast<BRepAdaptor_Surface>(S1);
+  occ::handle<BRepAdaptor_Surface>   BS2 = occ::down_cast<BRepAdaptor_Surface>(S2);
+  Geom2dAPI_ProjectPointOnCurve projector;
 
-  double Uon1 = UFirst, Uon2 = ULast;
-  int    ion1 = 1, ion2 = 2;
+  double    Uon1 = UFirst, Uon2 = ULast;
+  int ion1 = 1, ion2 = 2;
   if (Reversed)
   {
     Uon1 = ULast;
@@ -780,8 +782,8 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 
   // The SurfData is filled in what concerns S1,
   occ::handle<Geom_Curve>   Crv3d1 = Surf->UIso(Uon1);
-  gp_Pnt2d                  pori1(Uon1, 0.);
-  gp_Lin2d                  lfil1(pori1, gp::DY2d());
+  gp_Pnt2d             pori1(Uon1, 0.);
+  gp_Lin2d             lfil1(pori1, gp::DY2d());
   occ::handle<Geom2d_Curve> PCurveOnSurf = new Geom2d_Line(lfil1);
   occ::handle<Geom2d_Curve> PCurveOnFace;
   PCurveOnFace = new Geom2d_BSplineCurve(approx.Curve2dPoles(ion1),
@@ -844,8 +846,8 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 
   // SurfData is filled in what concerns S2,
   occ::handle<Geom_Curve> Crv3d2 = Surf->UIso(Uon2);
-  gp_Pnt2d                pori2(Uon2, 0.);
-  gp_Lin2d                lfil2(pori2, gp::DY2d());
+  gp_Pnt2d           pori2(Uon2, 0.);
+  gp_Lin2d           lfil2(pori2, gp::DY2d());
   PCurveOnSurf = new Geom2d_Line(lfil2);
   if (!S2.IsNull())
   {
@@ -913,7 +915,7 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   // the orientation of the fillet in relation to the faces is evaluated,
 
   occ::handle<Adaptor3d_Surface> Sref = S1;
-  PCurveOnFace                        = Fint1.PCurveOnFace();
+  PCurveOnFace                   = Fint1.PCurveOnFace();
   if (Reversed)
   {
     Sref         = S2;
@@ -932,16 +934,16 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
   //   if (Du1.Dot(Du2)>0) Data->ChangeOrientation() = TopAbs_FORWARD;
   //   else Data->ChangeOrientation() = TopAbs_REVERSED;
 
-  double aDelta = VLast - VFirst;
-  int    aDenom = 2;
+  double    aDelta = VLast - VFirst;
+  int aDenom = 2;
 
   for (;;)
   {
-    double   aDeltav = aDelta / aDenom;
-    double   aParam  = VFirst + aDeltav;
-    gp_Pnt2d PUV     = PCurveOnFace->Value(aParam);
-    gp_Pnt   P;
-    gp_Vec   Du1, Du2, Dv1, Dv2;
+    double aDeltav = aDelta / aDenom;
+    double aParam  = VFirst + aDeltav;
+    gp_Pnt2d      PUV     = PCurveOnFace->Value(aParam);
+    gp_Pnt        P;
+    gp_Vec        Du1, Du2, Dv1, Dv2;
 
     Sref->D1(PUV.X(), PUV.Y(), P, Du1, Dv1);
     Du1.Cross(Dv1);
@@ -1008,52 +1010,52 @@ bool ChFi3d_Builder::StoreData(occ::handle<ChFiDS_SurfData>&         Data,
 //=======================================================================
 
 bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
-                                 const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                 occ::handle<BRepBlend_Line>&            Lin,
-                                 const occ::handle<Adaptor3d_Surface>&   S1,
-                                 const occ::handle<Adaptor3d_TopolTool>& I1,
-                                 const occ::handle<Adaptor3d_Surface>&   S2,
-                                 const occ::handle<Adaptor2d_Curve2d>&   PC2,
-                                 const occ::handle<Adaptor3d_TopolTool>& I2,
-                                 bool&                                   Decroch,
-                                 Blend_SurfRstFunction&                  Func,
-                                 Blend_FuncInv&                          FInv,
-                                 Blend_SurfPointFuncInv&                 FInvP,
-                                 Blend_SurfCurvFuncInv&                  FInvC,
-                                 const double                            PFirst,
-                                 const double                            MaxStep,
-                                 const double                            Fleche,
-                                 const double                            TolGuide,
-                                 double&                                 First,
-                                 double&                                 Last,
-                                 const math_Vector&                      Soldep,
-                                 const bool                              Inside,
-                                 const bool                              Appro,
-                                 const bool                              Forward,
-                                 const bool                              RecP,
-                                 const bool                              RecS,
-                                 const bool                              RecRst)
+                                             const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                             occ::handle<BRepBlend_Line>&            Lin,
+                                             const occ::handle<Adaptor3d_Surface>&   S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& I1,
+                                             const occ::handle<Adaptor3d_Surface>&   S2,
+                                             const occ::handle<Adaptor2d_Curve2d>&   PC2,
+                                             const occ::handle<Adaptor3d_TopolTool>& I2,
+                                             bool&                  Decroch,
+                                             Blend_SurfRstFunction&             Func,
+                                             Blend_FuncInv&                     FInv,
+                                             Blend_SurfPointFuncInv&            FInvP,
+                                             Blend_SurfCurvFuncInv&             FInvC,
+                                             const double                PFirst,
+                                             const double                MaxStep,
+                                             const double                Fleche,
+                                             const double                TolGuide,
+                                             double&                     First,
+                                             double&                     Last,
+                                             const math_Vector&                 Soldep,
+                                             const bool             Inside,
+                                             const bool             Appro,
+                                             const bool             Forward,
+                                             const bool             RecP,
+                                             const bool             RecS,
+                                             const bool             RecRst)
 {
   BRepBlend_SurfRstLineBuilder TheWalk(S1, I1, S2, PC2, I2);
 
   Data->FirstExtensionValue(0);
   Data->LastExtensionValue(0);
 
-  bool   reverse = (!Forward || Inside);
-  double SpFirst = HGuide->FirstParameter();
-  double SpLast  = HGuide->LastParameter();
-  double Target  = SpLast;
+  bool reverse = (!Forward || Inside);
+  double    SpFirst = HGuide->FirstParameter();
+  double    SpLast  = HGuide->LastParameter();
+  double    Target  = SpLast;
   if (reverse)
     Target = SpFirst;
   double Targetsov = Target;
 
-  double MS      = MaxStep;
-  int    again   = 0;
-  int    nbptmin = 3; // jlr
-  int    Nbpnt   = 1;
+  double    MS      = MaxStep;
+  int again   = 0;
+  int nbptmin = 3; // jlr
+  int Nbpnt   = 1;
   // the initial solution is reframed if necessary.
-  math_Vector ParSol(1, 3);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 3);
+  double NewFirst = PFirst;
   if (RecP || RecS || RecRst)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -1136,7 +1138,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 #endif
       double u1 = Lin->Point(1).Parameter();
       double u2 = Lin->Point(Nbpnt).Parameter();
-      MS        = (u2 - u1) / (nbptmin + 1.0);
+      MS               = (u2 - u1) / (nbptmin + 1.0);
       //      std::cout << " MS : " << MS << " u1 : " << u1 << " u2 : " << u2 << " nbptmin : " <<
       //      nbptmin << std::endl;
       Target = Targetsov;
@@ -1173,56 +1175,56 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 //=======================================================================
 
 bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
-                                 const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                 occ::handle<BRepBlend_Line>&            Lin,
-                                 const occ::handle<Adaptor3d_Surface>&   S1,
-                                 const occ::handle<Adaptor2d_Curve2d>&   PC1,
-                                 const occ::handle<Adaptor3d_TopolTool>& I1,
-                                 bool&                                   Decroch1,
-                                 const occ::handle<Adaptor3d_Surface>&   S2,
-                                 const occ::handle<Adaptor2d_Curve2d>&   PC2,
-                                 const occ::handle<Adaptor3d_TopolTool>& I2,
-                                 bool&                                   Decroch2,
-                                 Blend_RstRstFunction&                   Func,
-                                 Blend_SurfCurvFuncInv&                  FInv1,
-                                 Blend_CurvPointFuncInv&                 FInvP1,
-                                 Blend_SurfCurvFuncInv&                  FInv2,
-                                 Blend_CurvPointFuncInv&                 FInvP2,
-                                 const double                            PFirst,
-                                 const double                            MaxStep,
-                                 const double                            Fleche,
-                                 const double                            TolGuide,
-                                 double&                                 First,
-                                 double&                                 Last,
-                                 const math_Vector&                      Soldep,
-                                 const bool                              Inside,
-                                 const bool                              Appro,
-                                 const bool                              Forward,
-                                 const bool                              RecP1,
-                                 const bool                              RecRst1,
-                                 const bool                              RecP2,
-                                 const bool                              RecRst2)
+                                             const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                             occ::handle<BRepBlend_Line>&            Lin,
+                                             const occ::handle<Adaptor3d_Surface>&   S1,
+                                             const occ::handle<Adaptor2d_Curve2d>&   PC1,
+                                             const occ::handle<Adaptor3d_TopolTool>& I1,
+                                             bool&                  Decroch1,
+                                             const occ::handle<Adaptor3d_Surface>&   S2,
+                                             const occ::handle<Adaptor2d_Curve2d>&   PC2,
+                                             const occ::handle<Adaptor3d_TopolTool>& I2,
+                                             bool&                  Decroch2,
+                                             Blend_RstRstFunction&              Func,
+                                             Blend_SurfCurvFuncInv&             FInv1,
+                                             Blend_CurvPointFuncInv&            FInvP1,
+                                             Blend_SurfCurvFuncInv&             FInv2,
+                                             Blend_CurvPointFuncInv&            FInvP2,
+                                             const double                PFirst,
+                                             const double                MaxStep,
+                                             const double                Fleche,
+                                             const double                TolGuide,
+                                             double&                     First,
+                                             double&                     Last,
+                                             const math_Vector&                 Soldep,
+                                             const bool             Inside,
+                                             const bool             Appro,
+                                             const bool             Forward,
+                                             const bool             RecP1,
+                                             const bool             RecRst1,
+                                             const bool             RecP2,
+                                             const bool             RecRst2)
 {
   BRepBlend_RstRstLineBuilder TheWalk(S1, PC1, I1, S2, PC2, I2);
 
   Data->FirstExtensionValue(0);
   Data->LastExtensionValue(0);
 
-  bool   reverse = (!Forward || Inside);
-  double SpFirst = HGuide->FirstParameter();
-  double SpLast  = HGuide->LastParameter();
-  double Target  = SpLast;
+  bool reverse = (!Forward || Inside);
+  double    SpFirst = HGuide->FirstParameter();
+  double    SpLast  = HGuide->LastParameter();
+  double    Target  = SpLast;
   if (reverse)
     Target = SpFirst;
   double Targetsov = Target;
 
-  double MS      = MaxStep;
-  int    again   = 0;
-  int    nbptmin = 3; // jlr
-  int    Nbpnt   = 0;
+  double    MS      = MaxStep;
+  int again   = 0;
+  int nbptmin = 3; // jlr
+  int Nbpnt   = 0;
   // the initial solution is reframed if necessary.
-  math_Vector ParSol(1, 2);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 2);
+  double NewFirst = PFirst;
   if (RecP1 || RecRst1 || RecP2 || RecRst2)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -1306,8 +1308,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 #endif
       double u1 = Lin->Point(1).Parameter();
       double u2 = Lin->Point(Nbpnt).Parameter();
-      MS        = (u2 - u1) / (nbptmin + 1);
-      Target    = Targetsov;
+      MS               = (u2 - u1) / (nbptmin + 1);
+      Target           = Targetsov;
     }
     else if (Nbpnt <= nbptmin)
     {
@@ -1347,49 +1349,49 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 //=======================================================================
 
 bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
-                               const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                               occ::handle<BRepBlend_Line>&            Lin,
-                               const occ::handle<Adaptor3d_Surface>&   S1,
-                               const occ::handle<Adaptor3d_TopolTool>& I1,
-                               const occ::handle<Adaptor3d_Surface>&   S2,
-                               const occ::handle<Adaptor2d_Curve2d>&   PC2,
-                               const occ::handle<Adaptor3d_TopolTool>& I2,
-                               bool&                                   Decroch,
-                               Blend_SurfRstFunction&                  Func,
-                               Blend_FuncInv&                          FInv,
-                               Blend_SurfPointFuncInv&                 FInvP,
-                               Blend_SurfCurvFuncInv&                  FInvC,
-                               const double                            PFirst,
-                               const double                            MaxStep,
-                               const double                            Fleche,
-                               const double                            TolGuide,
-                               double&                                 First,
-                               double&                                 Last,
-                               const math_Vector&                      Soldep,
-                               const int                               NbSecMin,
-                               const bool                              Inside,
-                               const bool                              Appro,
-                               const bool                              Forward,
-                               const bool                              RecP,
-                               const bool                              RecS,
-                               const bool                              RecRst)
+                                           const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                           occ::handle<BRepBlend_Line>&            Lin,
+                                           const occ::handle<Adaptor3d_Surface>&   S1,
+                                           const occ::handle<Adaptor3d_TopolTool>& I1,
+                                           const occ::handle<Adaptor3d_Surface>&   S2,
+                                           const occ::handle<Adaptor2d_Curve2d>&   PC2,
+                                           const occ::handle<Adaptor3d_TopolTool>& I2,
+                                           bool&                  Decroch,
+                                           Blend_SurfRstFunction&             Func,
+                                           Blend_FuncInv&                     FInv,
+                                           Blend_SurfPointFuncInv&            FInvP,
+                                           Blend_SurfCurvFuncInv&             FInvC,
+                                           const double                PFirst,
+                                           const double                MaxStep,
+                                           const double                Fleche,
+                                           const double                TolGuide,
+                                           double&                     First,
+                                           double&                     Last,
+                                           const math_Vector&                 Soldep,
+                                           const int             NbSecMin,
+                                           const bool             Inside,
+                                           const bool             Appro,
+                                           const bool             Forward,
+                                           const bool             RecP,
+                                           const bool             RecS,
+                                           const bool             RecRst)
 {
   BRepBlend_SurfRstLineBuilder TheWalk(S1, I1, S2, PC2, I2);
 
-  bool   reverse = (!Forward || Inside);
-  double SpFirst = HGuide->FirstParameter();
-  double SpLast  = HGuide->LastParameter();
-  double Target  = SpLast;
+  bool reverse = (!Forward || Inside);
+  double    SpFirst = HGuide->FirstParameter();
+  double    SpLast  = HGuide->LastParameter();
+  double    Target  = SpLast;
   if (reverse)
     Target = SpFirst;
   double Targetsov = Target;
 
-  double MS    = MaxStep;
-  int    again = 0;
-  int    Nbpnt = 0;
+  double    MS    = MaxStep;
+  int again = 0;
+  int Nbpnt = 0;
   // the starting solution is reframed if needed.
-  math_Vector ParSol(1, 3);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 3);
+  double NewFirst = PFirst;
   if (RecP || RecS || RecRst)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -1470,8 +1472,8 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
 #endif
       double u1 = Lin->Point(1).Parameter();
       double u2 = Lin->Point(Nbpnt).Parameter();
-      MS        = (u2 - u1) / (NbSecMin + 1);
-      Target    = Targetsov;
+      MS               = (u2 - u1) / (NbSecMin + 1);
+      Target           = Targetsov;
     }
     else if (Nbpnt <= NbSecMin)
     {
@@ -1506,53 +1508,53 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
 //=======================================================================
 
 bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
-                               const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                               occ::handle<BRepBlend_Line>&            Lin,
-                               const occ::handle<Adaptor3d_Surface>&   S1,
-                               const occ::handle<Adaptor2d_Curve2d>&   PC1,
-                               const occ::handle<Adaptor3d_TopolTool>& I1,
-                               bool&                                   Decroch1,
-                               const occ::handle<Adaptor3d_Surface>&   S2,
-                               const occ::handle<Adaptor2d_Curve2d>&   PC2,
-                               const occ::handle<Adaptor3d_TopolTool>& I2,
-                               bool&                                   Decroch2,
-                               Blend_RstRstFunction&                   Func,
-                               Blend_SurfCurvFuncInv&                  FInv1,
-                               Blend_CurvPointFuncInv&                 FInvP1,
-                               Blend_SurfCurvFuncInv&                  FInv2,
-                               Blend_CurvPointFuncInv&                 FInvP2,
-                               const double                            PFirst,
-                               const double                            MaxStep,
-                               const double                            Fleche,
-                               const double                            TolGuide,
-                               double&                                 First,
-                               double&                                 Last,
-                               const math_Vector&                      Soldep,
-                               const int                               NbSecMin,
-                               const bool                              Inside,
-                               const bool                              Appro,
-                               const bool                              Forward,
-                               const bool                              RecP1,
-                               const bool                              RecRst1,
-                               const bool                              RecP2,
-                               const bool                              RecRst2)
+                                           const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                           occ::handle<BRepBlend_Line>&            Lin,
+                                           const occ::handle<Adaptor3d_Surface>&   S1,
+                                           const occ::handle<Adaptor2d_Curve2d>&   PC1,
+                                           const occ::handle<Adaptor3d_TopolTool>& I1,
+                                           bool&                  Decroch1,
+                                           const occ::handle<Adaptor3d_Surface>&   S2,
+                                           const occ::handle<Adaptor2d_Curve2d>&   PC2,
+                                           const occ::handle<Adaptor3d_TopolTool>& I2,
+                                           bool&                  Decroch2,
+                                           Blend_RstRstFunction&              Func,
+                                           Blend_SurfCurvFuncInv&             FInv1,
+                                           Blend_CurvPointFuncInv&            FInvP1,
+                                           Blend_SurfCurvFuncInv&             FInv2,
+                                           Blend_CurvPointFuncInv&            FInvP2,
+                                           const double                PFirst,
+                                           const double                MaxStep,
+                                           const double                Fleche,
+                                           const double                TolGuide,
+                                           double&                     First,
+                                           double&                     Last,
+                                           const math_Vector&                 Soldep,
+                                           const int             NbSecMin,
+                                           const bool             Inside,
+                                           const bool             Appro,
+                                           const bool             Forward,
+                                           const bool             RecP1,
+                                           const bool             RecRst1,
+                                           const bool             RecP2,
+                                           const bool             RecRst2)
 {
   BRepBlend_RstRstLineBuilder TheWalk(S1, PC1, I1, S2, PC2, I2);
 
-  bool   reverse = (!Forward || Inside);
-  double SpFirst = HGuide->FirstParameter();
-  double SpLast  = HGuide->LastParameter();
-  double Target  = SpLast;
+  bool reverse = (!Forward || Inside);
+  double    SpFirst = HGuide->FirstParameter();
+  double    SpLast  = HGuide->LastParameter();
+  double    Target  = SpLast;
   if (reverse)
     Target = SpFirst;
   double Targetsov = Target;
 
-  double MS    = MaxStep;
-  int    again = 0;
-  int    Nbpnt = 0;
+  double    MS    = MaxStep;
+  int again = 0;
+  int Nbpnt = 0;
   // The initial solution is reframed if necessary.
-  math_Vector ParSol(1, 2);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 2);
+  double NewFirst = PFirst;
   if (RecP1 || RecRst1 || RecP2 || RecRst2)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -1634,8 +1636,8 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
 #endif
       double u1 = Lin->Point(1).Parameter();
       double u2 = Lin->Point(Nbpnt).Parameter();
-      MS        = (u2 - u1) / (NbSecMin + 1);
-      Target    = Targetsov;
+      MS               = (u2 - u1) / (NbSecMin + 1);
+      Target           = Targetsov;
     }
     else if (Nbpnt <= NbSecMin)
     {
@@ -1676,40 +1678,40 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
 //=======================================================================
 
 bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
-                                 const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                 const occ::handle<ChFiDS_Spine>&        Spine,
-                                 occ::handle<BRepBlend_Line>&            Lin,
-                                 const occ::handle<Adaptor3d_Surface>&   S1,
-                                 const occ::handle<Adaptor3d_TopolTool>& I1,
-                                 const occ::handle<Adaptor3d_Surface>&   S2,
-                                 const occ::handle<Adaptor3d_TopolTool>& I2,
-                                 Blend_Function&                         Func,
-                                 Blend_FuncInv&                          FInv,
-                                 const double                            PFirst,
-                                 const double                            MaxStep,
-                                 const double                            Fleche,
-                                 const double                            tolguide,
-                                 double&                                 First,
-                                 double&                                 Last,
-                                 const bool                              Inside,
-                                 const bool                              Appro,
-                                 const bool                              Forward,
-                                 const math_Vector&                      Soldep,
-                                 int&                                    intf,
-                                 int&                                    intl,
-                                 bool&                                   Gd1,
-                                 bool&                                   Gd2,
-                                 bool&                                   Gf1,
-                                 bool&                                   Gf2,
-                                 const bool                              RecOnS1,
-                                 const bool                              RecOnS2)
+                                             const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                             const occ::handle<ChFiDS_Spine>&        Spine,
+                                             occ::handle<BRepBlend_Line>&            Lin,
+                                             const occ::handle<Adaptor3d_Surface>&   S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& I1,
+                                             const occ::handle<Adaptor3d_Surface>&   S2,
+                                             const occ::handle<Adaptor3d_TopolTool>& I2,
+                                             Blend_Function&                    Func,
+                                             Blend_FuncInv&                     FInv,
+                                             const double                PFirst,
+                                             const double                MaxStep,
+                                             const double                Fleche,
+                                             const double                tolguide,
+                                             double&                     First,
+                                             double&                     Last,
+                                             const bool             Inside,
+                                             const bool             Appro,
+                                             const bool             Forward,
+                                             const math_Vector&                 Soldep,
+                                             int&                  intf,
+                                             int&                  intl,
+                                             bool&                  Gd1,
+                                             bool&                  Gd2,
+                                             bool&                  Gf1,
+                                             bool&                  Gf2,
+                                             const bool             RecOnS1,
+                                             const bool             RecOnS2)
 {
   // Get offset guide if exists
   occ::handle<ChFiDS_ElSpine> OffsetHGuide;
   if (!Spine.IsNull() && Spine->Mode() == ChFiDS_ConstThroatWithPenetrationChamfer)
   {
-    NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll        = Spine->ChangeElSpines();
-    NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll_offset = Spine->ChangeOffsetElSpines();
+    NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+    NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
     NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
     for (; ILES.More(); ILES.Next(), ILES_offset.Next())
     {
@@ -1725,7 +1727,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   Data->LastExtensionValue(0);
 
   // The eventual faces are restored to test the jump of edge.
-  TopoDS_Face                      F1, F2;
+  TopoDS_Face                 F1, F2;
   occ::handle<BRepAdaptor_Surface> HS = occ::down_cast<BRepAdaptor_Surface>(S1);
   if (!HS.IsNull())
     F1 = HS->Face();
@@ -1734,8 +1736,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     F2 = HS->Face();
 
   // Path framing variables
-  double TolGuide = tolguide;
-  int    nbptmin  = 4;
+  double    TolGuide = tolguide;
+  int nbptmin  = 4;
 
   BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
 
@@ -1744,15 +1746,15 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
   // en u et en v are extinguished.
   TheWalk.Check2d(0);
 
-  double MS = MaxStep;
-  int    Nbpnt;
-  double SpFirst = HGuide->FirstParameter();
-  double SpLast  = HGuide->LastParameter();
+  double    MS = MaxStep;
+  int Nbpnt;
+  double    SpFirst = HGuide->FirstParameter();
+  double    SpLast  = HGuide->LastParameter();
 
   // When the start point is inside, the path goes first to the left
   // to determine the Last for the periodicals.
-  bool   reverse = (!Forward || Inside);
-  double Target;
+  bool reverse = (!Forward || Inside);
+  double    Target;
   if (reverse)
   {
     Target = SpFirst;
@@ -1774,7 +1776,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     {
       TopoDS_Vertex V     = Spine->FirstVertex();
       TopoDS_Edge   E     = Spine->Edges(1);
-      double        param = Spine->FirstParameter();
+      double param = Spine->FirstParameter();
       Blend_Point   BP;
       if (CompBlendPoint(V, E, param, F1, F2, BP))
       {
@@ -1792,7 +1794,7 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     {
       TopoDS_Vertex V     = Spine->LastVertex();
       TopoDS_Edge   E     = Spine->Edges(Spine->NbEdges());
-      double        param = Spine->LastParameter();
+      double param = Spine->LastParameter();
       Blend_Point   BP;
       if (CompBlendPoint(V, E, param, F1, F2, BP))
       {
@@ -1810,8 +1812,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 
   // The starting solution is reframed if necessary.
   //**********************************************//
-  math_Vector ParSol(1, 4);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 4);
+  double NewFirst = PFirst;
   if (RecOnS1 || RecOnS2)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -1839,10 +1841,10 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 
   // First the valid part is calculate, without caring for the extensions.
   //******************************************************************//
-  int         again      = 0;
-  bool        tchernobyl = 0;
-  double      u1sov = 0., u2sov = 0.;
-  TopoDS_Face bif;
+  int again      = 0;
+  bool tchernobyl = 0;
+  double    u1sov = 0., u2sov = 0.;
+  TopoDS_Face      bif;
   // Max step is relevant, but too great, the vector is required to detect
   // the twists.
   if ((std::abs(Last - First) <= MS * 5.)
@@ -1909,20 +1911,20 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     double fpointpar = Lin->Point(1).Parameter();
     double lpointpar = Lin->Point(Nbpnt).Parameter();
 
-    double factor = 1. / (nbptmin + 1);
-    bool   okdeb  = (Forward && !Inside);
-    bool   okfin  = (!Forward && !Inside);
+    double    factor = 1. / (nbptmin + 1);
+    bool okdeb  = (Forward && !Inside);
+    bool okfin  = (!Forward && !Inside);
     if (!okdeb)
     {
       int narc1 = Lin->StartPointOnFirst().NbPointOnRst();
       int narc2 = Lin->StartPointOnSecond().NbPointOnRst();
-      okdeb     = (narc1 > 0 || narc2 > 0 || (fpointpar - First) < 10 * TolGuide);
+      okdeb                  = (narc1 > 0 || narc2 > 0 || (fpointpar - First) < 10 * TolGuide);
     }
     if (!okfin)
     {
       int narc1 = Lin->EndPointOnFirst().NbPointOnRst();
       int narc2 = Lin->EndPointOnSecond().NbPointOnRst();
-      okfin     = (narc1 > 0 || narc2 > 0 || (Last - lpointpar) < 10 * TolGuide);
+      okfin                  = (narc1 > 0 || narc2 > 0 || (Last - lpointpar) < 10 * TolGuide);
     }
     if (!okdeb || !okfin || Nbpnt == 1)
     {
@@ -2309,8 +2311,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     {
       // Case of incomplete path, of course this ends badly :
       // the result is truncated instead of exit.
-      double sortie;
-      int    ind;
+      double    sortie;
+      int ind;
       if (debarc1)
         sortie = Data->VertexFirstOnS1().Parameter();
       else
@@ -2331,8 +2333,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     }
     else if ((intf >= 5) && !debarc1 && !debarc2 && (First != SpFirst))
     {
-      double sortie = (2 * First + Last) / 3;
-      int    ind;
+      double    sortie = (2 * First + Last) / 3;
+      int ind;
       if (sortie - First > tolesp)
       {
         ind = SearchIndex(sortie, Lin);
@@ -2377,8 +2379,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     {
       // Case of incomplete path, of course, this ends badly :
       // the result is truncated instead of exit.
-      double sortie;
-      int    ind;
+      double    sortie;
+      int ind;
       if (finarc1)
         sortie = Data->VertexLastOnS1().Parameter();
       else
@@ -2400,8 +2402,8 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
     else if ((intl >= 5) && !finarc1 && !finarc2 && (Last != SpLast))
     {
       // The same in case when the entire "Lin" is an extension
-      double sortie = (First + 2 * Last) / 3;
-      int    ind;
+      double    sortie = (First + 2 * Last) / 3;
+      int ind;
       if (Last - sortie > tolesp)
       {
         ind = SearchIndex(sortie, Lin);
@@ -2443,39 +2445,39 @@ bool ChFi3d_Builder::ComputeData(occ::handle<ChFiDS_SurfData>&           Data,
 //=================================================================================================
 
 bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
-                               const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                               const occ::handle<ChFiDS_ElSpine>&      AdditionalHGuide,
-                               occ::handle<BRepBlend_Line>&            Lin,
-                               const occ::handle<Adaptor3d_Surface>&   S1,
-                               const occ::handle<Adaptor3d_TopolTool>& I1,
-                               const occ::handle<Adaptor3d_Surface>&   S2,
-                               const occ::handle<Adaptor3d_TopolTool>& I2,
-                               Blend_Function&                         Func,
-                               Blend_FuncInv&                          FInv,
-                               const double                            PFirst,
-                               const double                            MaxStep,
-                               const double                            Fleche,
-                               const double                            tolguide,
-                               double&                                 First,
-                               double&                                 Last,
-                               const bool                              Inside,
-                               const bool                              Appro,
-                               const bool                              Forward,
-                               const math_Vector&                      Soldep,
-                               const int                               NbSecMin,
-                               const bool                              RecOnS1,
-                               const bool                              RecOnS2)
+                                           const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                           const occ::handle<ChFiDS_ElSpine>&      AdditionalHGuide,
+                                           occ::handle<BRepBlend_Line>&            Lin,
+                                           const occ::handle<Adaptor3d_Surface>&   S1,
+                                           const occ::handle<Adaptor3d_TopolTool>& I1,
+                                           const occ::handle<Adaptor3d_Surface>&   S2,
+                                           const occ::handle<Adaptor3d_TopolTool>& I2,
+                                           Blend_Function&                    Func,
+                                           Blend_FuncInv&                     FInv,
+                                           const double                PFirst,
+                                           const double                MaxStep,
+                                           const double                Fleche,
+                                           const double                tolguide,
+                                           double&                     First,
+                                           double&                     Last,
+                                           const bool             Inside,
+                                           const bool             Appro,
+                                           const bool             Forward,
+                                           const math_Vector&                 Soldep,
+                                           const int             NbSecMin,
+                                           const bool             RecOnS1,
+                                           const bool             RecOnS2)
 {
   BRepBlend_Walking TheWalk(S1, S2, I1, I2, HGuide);
   TheWalk.Check2d(false);
 
-  double MS       = MaxStep;
-  double TolGuide = tolguide;
-  int    Nbpnt    = 0;
-  double SpFirst  = HGuide->FirstParameter();
-  double SpLast   = HGuide->LastParameter();
-  bool   reverse  = (!Forward || Inside);
-  double Target;
+  double    MS       = MaxStep;
+  double    TolGuide = tolguide;
+  int Nbpnt    = 0;
+  double    SpFirst  = HGuide->FirstParameter();
+  double    SpLast   = HGuide->LastParameter();
+  bool reverse  = (!Forward || Inside);
+  double    Target;
   if (reverse)
   {
     Target = SpFirst;
@@ -2488,8 +2490,8 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
   double Targetsov = Target;
   double u1sov = 0., u2sov = 0.;
   // on recadre la solution de depart a la demande.
-  math_Vector ParSol(1, 4);
-  double      NewFirst = PFirst;
+  math_Vector   ParSol(1, 4);
+  double NewFirst = PFirst;
   if (RecOnS1 || RecOnS2)
   {
     if (!TheWalk.PerformFirstSection(Func,
@@ -2562,7 +2564,7 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
         return false;
       }
     }
-    Nbpnt         = Lin->NbPoints();
+    Nbpnt                = Lin->NbPoints();
     double factor = 1. / (NbSecMin + 1);
     if (Nbpnt == 0)
     {
@@ -2589,8 +2591,8 @@ bool ChFi3d_Builder::SimulData(occ::handle<ChFiDS_SurfData>& /*Data*/,
 #endif
       double u1 = u1sov = Lin->Point(1).Parameter();
       double u2 = u2sov = Lin->Point(Nbpnt).Parameter();
-      MS                = (u2 - u1) * factor;
-      Target            = Targetsov;
+      MS                       = (u2 - u1) * factor;
+      Target                   = Targetsov;
     }
     else if (Nbpnt < NbSecMin && again == 1)
     {

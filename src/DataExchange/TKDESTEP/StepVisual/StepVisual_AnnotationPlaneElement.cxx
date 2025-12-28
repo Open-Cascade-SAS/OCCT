@@ -24,7 +24,8 @@ StepVisual_AnnotationPlaneElement::StepVisual_AnnotationPlaneElement() {}
 
 //=================================================================================================
 
-int StepVisual_AnnotationPlaneElement::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_AnnotationPlaneElement::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -35,8 +36,7 @@ int StepVisual_AnnotationPlaneElement::CaseNum(const occ::handle<Standard_Transi
   return 0;
 }
 
-occ::handle<StepVisual_DraughtingCallout> StepVisual_AnnotationPlaneElement::DraughtingCallout()
-  const
+occ::handle<StepVisual_DraughtingCallout> StepVisual_AnnotationPlaneElement::DraughtingCallout() const
 {
   return GetCasted(StepVisual_DraughtingCallout, Value());
 }

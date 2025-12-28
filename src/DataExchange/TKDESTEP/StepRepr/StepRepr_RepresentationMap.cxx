@@ -20,9 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_RepresentationMap, Standard_Transient)
 
 StepRepr_RepresentationMap::StepRepr_RepresentationMap() {}
 
-void StepRepr_RepresentationMap::Init(
-  const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin,
-  const occ::handle<StepRepr_Representation>&     aMappedRepresentation)
+void StepRepr_RepresentationMap::Init(const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin,
+                                      const occ::handle<StepRepr_Representation>& aMappedRepresentation)
 {
   // --- classe own fields ---
   mappingOrigin        = aMappingOrigin;

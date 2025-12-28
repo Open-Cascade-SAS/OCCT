@@ -43,25 +43,25 @@ public:
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! a circle between two angles Alpha1 and Alpha2
   //! given in radiians.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const double   Alpha1,
-                                     const double   Alpha2,
-                                     const bool     Sense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                     const double    Alpha1,
+                                     const double    Alpha2,
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! a circle between point <P> and the angle Alpha
   //! given in radians.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const gp_Pnt&  P,
-                                     const double   Alpha,
-                                     const bool     Sense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                     const gp_Pnt&          P,
+                                     const double    Alpha,
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! a circle between two points P1 and P2.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const gp_Pnt&  P1,
-                                     const gp_Pnt&  P2,
-                                     const bool     Sense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                     const gp_Pnt&          P1,
+                                     const gp_Pnt&          P2,
+                                     const bool Sense);
 
   //! Make an arc of circle (TrimmedCurve from Geom) from
   //! three points P1,P2,P3 between two points P1 and P2.

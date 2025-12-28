@@ -22,7 +22,7 @@ inline GeomAPI_IntSS::GeomAPI_IntSS() {}
 
 inline GeomAPI_IntSS::GeomAPI_IntSS(const occ::handle<Geom_Surface>& S1,
                                     const occ::handle<Geom_Surface>& S2,
-                                    const double                     Tol)
+                                    const double         Tol)
     : myIntersec(S1, S2, Tol, true)
 {
 }
@@ -31,7 +31,7 @@ inline GeomAPI_IntSS::GeomAPI_IntSS(const occ::handle<Geom_Surface>& S1,
 
 inline void GeomAPI_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
                                    const occ::handle<Geom_Surface>& S2,
-                                   const double                     Tol)
+                                   const double         Tol)
 {
   myIntersec.Perform(S1, S2, Tol, true);
 }

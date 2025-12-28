@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepBasic_MassUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MassUnit, StepBasic_NamedUnit)
+
 };
 
 #endif // _StepBasic_MassUnit_HeaderFile

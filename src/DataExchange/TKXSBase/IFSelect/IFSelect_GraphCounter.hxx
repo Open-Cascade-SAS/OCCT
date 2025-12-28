@@ -37,7 +37,8 @@ class IFSelect_GraphCounter : public IFSelect_SignCounter
 
 public:
   //! Creates a GraphCounter, without applied selection
-  Standard_EXPORT IFSelect_GraphCounter(const bool withmap = true, const bool withlist = false);
+  Standard_EXPORT IFSelect_GraphCounter(const bool withmap  = true,
+                                        const bool withlist = false);
 
   //! Returns the applied selection
   Standard_EXPORT occ::handle<IFSelect_SelectDeduct> Applied() const;
@@ -49,9 +50,8 @@ public:
   //! Default takes the count of entities selected by the applied
   //! selection, when it is given each entity of the list
   //! Can be redefined
-  Standard_EXPORT virtual void AddWithGraph(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-    const Interface_Graph&                                                     graph) override;
+  Standard_EXPORT virtual void AddWithGraph(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+                                            const Interface_Graph& graph) override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 

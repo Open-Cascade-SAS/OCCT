@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_CompositeCurveOnSurface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveOnSurface, StepGeom_CompositeCurve)
+
 };
 
 #endif // _StepGeom_CompositeCurveOnSurface_HeaderFile

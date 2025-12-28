@@ -35,18 +35,20 @@ public:
   Standard_EXPORT IGESGeom_SpecificModule();
 
   //! Specific Dump (own parameters) for IGESGeom
-  Standard_EXPORT void OwnDump(const int                               CN,
+  Standard_EXPORT void OwnDump(const int             CN,
                                const occ::handle<IGESData_IGESEntity>& ent,
-                               const IGESData_IGESDumper&              dumper,
-                               Standard_OStream&                       S,
-                               const int                               own) const override;
+                               const IGESData_IGESDumper&         dumper,
+                               Standard_OStream&                  S,
+                               const int             own) const override;
 
   //! Performs non-ambiguous Correction on Entities which support
   //! them (Boundary,ConicArc,Flash,OffsetCurve,TransformationMatrix)
-  Standard_EXPORT virtual bool OwnCorrect(const int CN, const occ::handle<IGESData_IGESEntity>& ent)
-    const override;
+  Standard_EXPORT virtual bool OwnCorrect(const int             CN,
+                                                      const occ::handle<IGESData_IGESEntity>& ent) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SpecificModule, IGESData_SpecificModule)
+
 };
 
 #endif // _IGESGeom_SpecificModule_HeaderFile

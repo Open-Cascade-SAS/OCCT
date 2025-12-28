@@ -60,10 +60,10 @@ public:
   //! If <OnlyClosed> is true, then S should be a wire
   //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape& S,
-                                      const double        Tol        = -1,
-                                      const bool          OnlyPlane  = false,
-                                      const bool          OnlyClosed = false);
+  Standard_EXPORT BRepLib_FindSurface(const TopoDS_Shape&    S,
+                                      const double    Tol        = -1,
+                                      const bool OnlyPlane  = false,
+                                      const bool OnlyClosed = false);
 
   //! Computes the Surface from the edges of <S> with the
   //! given tolerance.
@@ -73,10 +73,10 @@ public:
   //! If <OnlyClosed> is true, then S should be a wire
   //! and the existing surface, on which wire S is not
   //! closed in 2D, will be ignored.
-  Standard_EXPORT void Init(const TopoDS_Shape& S,
-                            const double        Tol        = -1,
-                            const bool          OnlyPlane  = false,
-                            const bool          OnlyClosed = false);
+  Standard_EXPORT void Init(const TopoDS_Shape&    S,
+                            const double    Tol        = -1,
+                            const bool OnlyPlane  = false,
+                            const bool OnlyClosed = false);
 
   Standard_EXPORT bool Found() const;
 
@@ -92,10 +92,10 @@ public:
 
 private:
   occ::handle<Geom_Surface> mySurface;
-  double                    myTolerance;
-  double                    myTolReached;
-  bool                      isExisted;
-  TopLoc_Location           myLocation;
+  double        myTolerance;
+  double        myTolReached;
+  bool     isExisted;
+  TopLoc_Location      myLocation;
 };
 
 #endif // _BRepLib_FindSurface_HeaderFile

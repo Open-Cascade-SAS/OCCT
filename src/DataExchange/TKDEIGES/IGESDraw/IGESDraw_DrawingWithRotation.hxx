@@ -24,6 +24,13 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_XY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESData_ViewKindEntity;
@@ -50,11 +57,10 @@ public:
   //! - allAnnotations       : Pointers to Annotation entities
   //! raises exception if Lengths of allViews, allViewOrigins and
   //! allOrientationAngles are not same.
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-    const occ::handle<NCollection_HArray1<gp_XY>>&                                allViewOrigins,
-    const occ::handle<NCollection_HArray1<double>>&                           allOrientationAngles,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allAnnotations);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+                            const occ::handle<NCollection_HArray1<gp_XY>>&               allViewOrigins,
+                            const occ::handle<NCollection_HArray1<double>>&            allOrientationAngles,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allAnnotations);
 
   //! returns the number of view pointers in <me>
   Standard_EXPORT int NbViews() const;
@@ -80,7 +86,8 @@ public:
   //! raises an exception if Index <= 0 or Index > NbAnnotations().
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Annotation(const int Index) const;
 
-  Standard_EXPORT gp_XY ViewToDrawing(const int NumView, const gp_XYZ& ViewCoords) const;
+  Standard_EXPORT gp_XY ViewToDrawing(const int NumView,
+                                      const gp_XYZ&          ViewCoords) const;
 
   //! Returns the Drawing Unit Value if it is specified (by a
   //! specific property entity)
@@ -98,8 +105,8 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViews;
-  occ::handle<NCollection_HArray1<gp_XY>>                                theViewOrigins;
-  occ::handle<NCollection_HArray1<double>>                               theOrientationAngles;
+  occ::handle<NCollection_HArray1<gp_XY>>               theViewOrigins;
+  occ::handle<NCollection_HArray1<double>>            theOrientationAngles;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     theAnnotations;
 };
 

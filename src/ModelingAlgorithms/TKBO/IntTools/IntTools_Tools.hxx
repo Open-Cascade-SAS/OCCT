@@ -53,7 +53,8 @@ public:
   //! if the distance is less than sum of vertex tolerances
   //! returns zero,
   //! otherwise returns negative value
-  Standard_EXPORT static int ComputeVV(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2);
+  Standard_EXPORT static int ComputeVV(const TopoDS_Vertex& V1,
+                                                    const TopoDS_Vertex& V2);
 
   //! Returns True if wire aW contains edges
   //! with INTERNAL orientation
@@ -77,8 +78,8 @@ public:
   //! and a point on the edge E corresponded to parameter t
   //! is less than square tolerance of V
   Standard_EXPORT static bool IsVertex(const TopoDS_Edge&   E,
-                                       const TopoDS_Vertex& V,
-                                       const double         t);
+                                                   const TopoDS_Vertex& V,
+                                                   const double  t);
 
   //! Returns True if IsVertx for middle parameter of fist range
   //! and first edge returns True
@@ -91,23 +92,25 @@ public:
   //! Computes 3d points on each corresponded to average parameters.
   //! Returns True if distance between computed points is less than
   //! sum of edge tolerance, otherwise returns False.
-  Standard_EXPORT static bool IsMiddlePointsEqual(const TopoDS_Edge& E1, const TopoDS_Edge& E2);
+  Standard_EXPORT static bool IsMiddlePointsEqual(const TopoDS_Edge& E1,
+                                                              const TopoDS_Edge& E2);
 
   //! Returns True if the distance between point aP and
   //! vertex aV is less or equal to sum of aTolPV and
   //! vertex tolerance, otherwise returns False
   Standard_EXPORT static bool IsVertex(const gp_Pnt&        aP,
-                                       const double         aTolPV,
-                                       const TopoDS_Vertex& aV);
+                                                   const double  aTolPV,
+                                                   const TopoDS_Vertex& aV);
 
   //! Returns some value between aFirst and aLast
-  Standard_EXPORT static double IntermediatePoint(const double aFirst, const double aLast);
+  Standard_EXPORT static double IntermediatePoint(const double aFirst,
+                                                         const double aLast);
 
   //! Split aC by average parameter if aC is closed in 3D.
   //! Returns positive value if splitting has been done,
   //! otherwise returns zero.
-  Standard_EXPORT static int SplitCurve(const IntTools_Curve&                 aC,
-                                        NCollection_Sequence<IntTools_Curve>& aS);
+  Standard_EXPORT static int SplitCurve(const IntTools_Curve&      aC,
+                                                     NCollection_Sequence<IntTools_Curve>& aS);
 
   //! Puts curves from aSIn to aSOut except those curves that
   //! are coincide with first curve from aSIn.
@@ -118,7 +121,9 @@ public:
   Standard_EXPORT static bool IsDirsCoinside(const gp_Dir& D1, const gp_Dir& D2);
 
   //! Returns True if D1 and D2 coincide with given tolerance
-  Standard_EXPORT static bool IsDirsCoinside(const gp_Dir& D1, const gp_Dir& D2, const double aTol);
+  Standard_EXPORT static bool IsDirsCoinside(const gp_Dir&       D1,
+                                                         const gp_Dir&       D2,
+                                                         const double aTol);
 
   //! Returns True if aC is BoundedCurve from Geom and
   //! the distance between first point
@@ -130,60 +135,63 @@ public:
   //! if aC is trimmed curve and basis curve is parabola,
   //! otherwise returns value of aTolBase
   Standard_EXPORT static double CurveTolerance(const occ::handle<Geom_Curve>& aC,
-                                               const double                   aTolBase);
+                                                      const double       aTolBase);
 
   //! Checks if the curve is not covered by the default tolerance (confusion).
   //! Builds bounding box for the curve and stores it into <theBox>.
-  Standard_EXPORT static bool CheckCurve(const IntTools_Curve& theCurve, Bnd_Box& theBox);
+  Standard_EXPORT static bool CheckCurve(const IntTools_Curve& theCurve,
+                                                     Bnd_Box&              theBox);
 
-  Standard_EXPORT static bool IsOnPave(const double          theT,
-                                       const IntTools_Range& theRange,
-                                       const double          theTol);
+  Standard_EXPORT static bool IsOnPave(const double   theT,
+                                                   const IntTools_Range& theRange,
+                                                   const double   theTol);
 
   Standard_EXPORT static void VertexParameters(const IntTools_CommonPrt& theCP,
-                                               double&                   theT1,
-                                               double&                   theT2);
+                                               double&            theT1,
+                                               double&            theT2);
 
   Standard_EXPORT static void VertexParameter(const IntTools_CommonPrt& theCP, double& theT);
 
-  Standard_EXPORT static bool IsOnPave1(const double          theT,
-                                        const IntTools_Range& theRange,
-                                        const double          theTol);
+  Standard_EXPORT static bool IsOnPave1(const double   theT,
+                                                    const IntTools_Range& theRange,
+                                                    const double   theTol);
 
   //! Checks if the range <theR> interfere with the range <theRRef>
   Standard_EXPORT static bool IsInRange(const IntTools_Range& theRRef,
-                                        const IntTools_Range& theR,
-                                        const double          theTol);
+                                                    const IntTools_Range& theR,
+                                                    const double   theTol);
 
-  Standard_EXPORT static int SegPln(const gp_Lin& theLin,
-                                    const double  theTLin1,
-                                    const double  theTLin2,
-                                    const double  theTolLin,
-                                    const gp_Pln& thePln,
-                                    const double  theTolPln,
-                                    gp_Pnt&       theP,
-                                    double&       theT,
-                                    double&       theTolP,
-                                    double&       theTmin,
-                                    double&       theTmax);
+  Standard_EXPORT static int SegPln(const gp_Lin&       theLin,
+                                                 const double theTLin1,
+                                                 const double theTLin2,
+                                                 const double theTolLin,
+                                                 const gp_Pln&       thePln,
+                                                 const double theTolPln,
+                                                 gp_Pnt&             theP,
+                                                 double&      theT,
+                                                 double&      theTolP,
+                                                 double&      theTmin,
+                                                 double&      theTmax);
 
   //! Computes the max distance between points
   //! taken from 3D and 2D curves by the same parameter
-  Standard_EXPORT static bool ComputeTolerance(const occ::handle<Geom_Curve>&   theCurve3D,
-                                               const occ::handle<Geom2d_Curve>& theCurve2D,
-                                               const occ::handle<Geom_Surface>& theSurf,
-                                               const double                     theFirst,
-                                               const double                     theLast,
-                                               double&                          theMaxDist,
-                                               double&                          theMaxPar,
-                                               const double theTolRange = Precision::PConfusion(),
-                                               const bool   theToRunParallel = false);
+  Standard_EXPORT static bool ComputeTolerance(
+    const occ::handle<Geom_Curve>&   theCurve3D,
+    const occ::handle<Geom2d_Curve>& theCurve2D,
+    const occ::handle<Geom_Surface>& theSurf,
+    const double         theFirst,
+    const double         theLast,
+    double&              theMaxDist,
+    double&              theMaxPar,
+    const double         theTolRange      = Precision::PConfusion(),
+    const bool      theToRunParallel = false);
 
   //! Computes the correct Intersection range for
   //! Line/Line, Line/Plane and Plane/Plane intersections
   Standard_EXPORT static double ComputeIntRange(const double theTol1,
-                                                const double theTol2,
-                                                const double theAngle);
+                                                       const double theTol2,
+                                                       const double theAngle);
+
 };
 
 #endif // _IntTools_Tools_HeaderFile

@@ -52,7 +52,7 @@ public:
   Standard_EXPORT occ::handle<GccInt_Bisec> ThisSolution() const;
 
 private:
-  bool                      WellDone;
+  bool     WellDone;
   occ::handle<GccInt_Bisec> bissol;
 };
 

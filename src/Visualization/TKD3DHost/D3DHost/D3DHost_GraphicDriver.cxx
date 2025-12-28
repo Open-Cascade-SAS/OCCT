@@ -46,8 +46,7 @@ occ::handle<Graphic3d_CView> D3DHost_GraphicDriver::CreateView(
 {
   occ::handle<D3DHost_View> aView = new D3DHost_View(theMgr, this, myCaps, &myStateCounter);
   myMapOfView.Add(aView);
-  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers);
-       aLayerIter.More();
+  for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myLayers); aLayerIter.More();
        aLayerIter.Next())
   {
     const occ::handle<Graphic3d_Layer>& aLayer = aLayerIter.Value();

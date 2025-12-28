@@ -28,13 +28,13 @@ IGESDraw_ViewsVisibleWithAttr::IGESDraw_ViewsVisibleWithAttr() {}
 // This class inherits from IGESData_ViewKindEntity
 
 void IGESDraw_ViewsVisibleWithAttr::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
-  const occ::handle<NCollection_HArray1<int>>&                                  allLineFonts,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>&  allViewEntities,
+  const occ::handle<NCollection_HArray1<int>>&          allLineFonts,
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>& allLineDefinitions,
-  const occ::handle<NCollection_HArray1<int>>&                                  allColorValues,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&         allColorDefinitions,
-  const occ::handle<NCollection_HArray1<int>>&                                  allLineWeights,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntities)
+  const occ::handle<NCollection_HArray1<int>>&          allColorValues,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&          allColorDefinitions,
+  const occ::handle<NCollection_HArray1<int>>&          allLineWeights,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      allDisplayEntities)
 {
   if (!allViewEntities.IsNull())
   {
@@ -87,7 +87,8 @@ int IGESDraw_ViewsVisibleWithAttr::NbDisplayedEntities() const
   // Return 0 if HArray1 theDisplyEntities id NULL Handle
 }
 
-occ::handle<IGESData_ViewKindEntity> IGESDraw_ViewsVisibleWithAttr::ViewItem(const int Index) const
+occ::handle<IGESData_ViewKindEntity> IGESDraw_ViewsVisibleWithAttr::ViewItem(
+  const int Index) const
 {
   return theViewEntities->Value(Index);
   // if Index is out of bound HArray1 will raise OutOfRange exception
@@ -118,13 +119,15 @@ int IGESDraw_ViewsVisibleWithAttr::ColorValue(const int Index) const
   // if Index is out of bound HArray1 will raise OutOfRange exception
 }
 
-bool IGESDraw_ViewsVisibleWithAttr::IsColorDefinition(const int Index) const
+bool IGESDraw_ViewsVisibleWithAttr::IsColorDefinition(
+  const int Index) const
 {
   return (!(theColorDefinitions->Value(Index)).IsNull());
   // if Index is out of bound HArray1 will raise OutOfRange exception
 }
 
-occ::handle<IGESGraph_Color> IGESDraw_ViewsVisibleWithAttr::ColorDefinition(const int Index) const
+occ::handle<IGESGraph_Color> IGESDraw_ViewsVisibleWithAttr::ColorDefinition(
+  const int Index) const
 {
   return theColorDefinitions->Value(Index);
   // if Index is out of bound HArray1 will raise OutOfRange exception

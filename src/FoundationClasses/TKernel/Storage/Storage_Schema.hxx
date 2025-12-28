@@ -22,6 +22,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <Storage_TypedCallBack.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
@@ -103,11 +105,12 @@ public:
   //! application's schema a callback used when
   //! the schema doesn't know how to handle this
   //! type.
-  Standard_EXPORT static bool CheckTypeMigration(const TCollection_AsciiString& theTypeName,
-                                                 TCollection_AsciiString&       theNewName);
+  Standard_EXPORT static bool CheckTypeMigration(
+    const TCollection_AsciiString& theTypeName,
+    TCollection_AsciiString&       theNewName);
 
   //! add two functions to the callback list
-  Standard_EXPORT void AddReadUnknownTypeCallBack(const TCollection_AsciiString&       aTypeName,
+  Standard_EXPORT void AddReadUnknownTypeCallBack(const TCollection_AsciiString&  aTypeName,
                                                   const occ::handle<Storage_CallBack>& aCallBack);
 
   //! remove a callback for a type
@@ -115,8 +118,7 @@ public:
 
   //! returns a list of type name with installed
   //! callback.
-  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>>
-                  InstalledCallBackList() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> InstalledCallBackList() const;
 
   //! clear all callback from schema instance.
   Standard_EXPORT void ClearCallBackList();
@@ -158,7 +160,7 @@ public:
   }
 
   Standard_EXPORT bool AddPersistent(const occ::handle<Standard_Persistent>& sp,
-                                     const char*                             tName) const;
+                                                 const char*             tName) const;
 
   Standard_EXPORT bool PersistentToAdd(const occ::handle<Standard_Persistent>& sp) const;
 
@@ -170,7 +172,7 @@ protected:
     return Storage_Schema::ICurrentData()->InternalData()->myTypeBinding.IsBound(aTypeName);
   }
 
-  Standard_EXPORT void BindType(const TCollection_AsciiString&       aTypeName,
+  Standard_EXPORT void BindType(const TCollection_AsciiString&  aTypeName,
                                 const occ::handle<Storage_CallBack>& aCallBack) const;
 
   Standard_EXPORT occ::handle<Storage_CallBack> TypeBinding(
@@ -183,11 +185,11 @@ private:
 
   Standard_EXPORT static occ::handle<Storage_Data>& ICurrentData();
 
-  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>> myCallBack;
-  bool                                                                             myCallBackState;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_TypedCallBack>>    myCallBack;
+  bool         myCallBackState;
   occ::handle<Storage_CallBack> myDefaultCallBack;
-  TCollection_AsciiString       myName;
-  TCollection_AsciiString       myVersion;
+  TCollection_AsciiString  myName;
+  TCollection_AsciiString  myVersion;
 };
 
 #endif // _Storage_Schema_HeaderFile

@@ -22,9 +22,12 @@
 #include <TCollection_AsciiString.hxx>
 #include <TNaming_Translator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //=======================================================================
@@ -33,7 +36,9 @@
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static int QADNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg)
+static int QADNaming_CheckHasSame(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
   if (nb < 4)
     return 1;
@@ -98,14 +103,15 @@ static int QADNaming_CheckHasSame(Draw_Interpretor& di, int nb, const char** arg
 //           - for test ShapeCopy mechanism
 //=======================================================================
 
-static int QADNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
+static int QADNaming_TCopyShape(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   TNaming_Translator TR;
   if (nb < 2)
     return (1);
 
-  NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>
-    aDMapOfShapeOfName;
+  NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher> aDMapOfShapeOfName;
   for (int i = 1; i < nb; i++)
   {
     TopoDS_Shape            S = DBRep::Get(arg[i]);
@@ -134,8 +140,7 @@ static int QADNaming_TCopyShape(Draw_Interpretor& di, int nb, const char** arg)
   {
     //    std::cout << "QADNaming_CopyShape:: Copy is Done " << std::endl;
 
-    NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::Iterator
-      itrn(aDMapOfShapeOfName);
+    NCollection_DataMap<TopoDS_Shape, TCollection_AsciiString, TopTools_ShapeMapHasher>::Iterator itrn(aDMapOfShapeOfName);
     for (; itrn.More(); itrn.Next())
     {
       const TCollection_AsciiString& name   = itrn.Value();

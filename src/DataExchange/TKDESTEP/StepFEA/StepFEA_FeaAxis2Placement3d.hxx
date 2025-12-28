@@ -37,11 +37,11 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
                             const occ::handle<StepGeom_CartesianPoint>&  aPlacement_Location,
-                            const bool                                   hasAxis2Placement3d_Axis,
+                            const bool                  hasAxis2Placement3d_Axis,
                             const occ::handle<StepGeom_Direction>&       aAxis2Placement3d_Axis,
-                            const bool                             hasAxis2Placement3d_RefDirection,
-                            const occ::handle<StepGeom_Direction>& aAxis2Placement3d_RefDirection,
-                            const StepFEA_CoordinateSystemType     aSystemType,
+                            const bool             hasAxis2Placement3d_RefDirection,
+                            const occ::handle<StepGeom_Direction>&  aAxis2Placement3d_RefDirection,
+                            const StepFEA_CoordinateSystemType aSystemType,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
 
   //! Returns field SystemType
@@ -59,7 +59,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaAxis2Placement3d, StepGeom_Axis2Placement3d)
 
 private:
-  StepFEA_CoordinateSystemType          theSystemType;
+  StepFEA_CoordinateSystemType     theSystemType;
   occ::handle<TCollection_HAsciiString> theDescription;
 };
 

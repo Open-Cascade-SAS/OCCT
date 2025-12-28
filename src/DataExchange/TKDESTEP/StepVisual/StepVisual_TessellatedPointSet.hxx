@@ -35,7 +35,7 @@ public:
   Standard_EXPORT StepVisual_TessellatedPointSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
                             const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
                             const occ::handle<NCollection_HArray1<int>>&   thePointList);
 
@@ -43,8 +43,7 @@ public:
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> Coordinates() const;
 
   //! Sets field Coordinates
-  Standard_EXPORT void SetCoordinates(
-    const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
+  Standard_EXPORT void SetCoordinates(const occ::handle<StepVisual_CoordinatesList>& theCoordinates);
 
   //! Returns field PointList
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> PointList() const;

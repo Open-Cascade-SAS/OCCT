@@ -27,15 +27,15 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextDisplayTemplate, IGESData_IGESEntity)
 
 IGESGraph_TextDisplayTemplate::IGESGraph_TextDisplayTemplate() {}
 
-void IGESGraph_TextDisplayTemplate::Init(const double                              aWidth,
-                                         const double                              aHeight,
-                                         const int                                 aFontCode,
+void IGESGraph_TextDisplayTemplate::Init(const double                  aWidth,
+                                         const double                  aHeight,
+                                         const int               aFontCode,
                                          const occ::handle<IGESGraph_TextFontDef>& aFontEntity,
-                                         const double                              aSlantAngle,
-                                         const double                              aRotationAngle,
-                                         const int                                 aMirrorFlag,
-                                         const int                                 aRotationFlag,
-                                         const gp_XYZ&                             aCorner)
+                                         const double                  aSlantAngle,
+                                         const double                  aRotationAngle,
+                                         const int               aMirrorFlag,
+                                         const int               aRotationFlag,
+                                         const gp_XYZ&                        aCorner)
 {
   theBoxWidth      = aWidth;
   theBoxHeight     = aHeight;

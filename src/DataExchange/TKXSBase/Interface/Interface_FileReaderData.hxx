@@ -20,6 +20,9 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
@@ -73,18 +76,18 @@ public:
   //! Warning : <aval> is assumed to be memory-managed elsewhere : it is NOT
   //! copied. This gives a best speed : strings remain stored in
   //! pages of characters
-  Standard_EXPORT void AddParam(const int                 num,
-                                const char*               aval,
+  Standard_EXPORT void AddParam(const int    num,
+                                const char*    aval,
                                 const Interface_ParamType atype,
-                                const int                 nument = 0);
+                                const int    nument = 0);
 
   //! Same as above, but gets a AsciiString from TCollection
   //! Remark that the content of the AsciiString is locally copied
   //! (because its content is most often lost after using)
-  Standard_EXPORT void AddParam(const int                      num,
+  Standard_EXPORT void AddParam(const int         num,
                                 const TCollection_AsciiString& aval,
                                 const Interface_ParamType      atype,
-                                const int                      nument = 0);
+                                const int         nument = 0);
 
   //! Same as above, but gets a complete FileParameter
   //! Warning : Content of <FP> is NOT copied : its original address and space
@@ -93,7 +96,9 @@ public:
 
   //! Sets a new value for a parameter of a record, given by :
   //! num : record number; nump : parameter number in the record
-  Standard_EXPORT void SetParam(const int num, const int nump, const Interface_FileParameter& FP);
+  Standard_EXPORT void SetParam(const int         num,
+                                const int         nump,
+                                const Interface_FileParameter& FP);
 
   //! Returns count of parameters attached to record "num"
   //! If <num> = 0, returns the total recorded count of parameters
@@ -105,34 +110,40 @@ public:
 
   //! Returns parameter "nump" of record "num", as a complete
   //! FileParameter
-  Standard_EXPORT const Interface_FileParameter& Param(const int num, const int nump) const;
+  Standard_EXPORT const Interface_FileParameter& Param(const int num,
+                                                       const int nump) const;
 
   //! Same as above, but in order to be modified on place
-  Standard_EXPORT Interface_FileParameter& ChangeParam(const int num, const int nump);
+  Standard_EXPORT Interface_FileParameter& ChangeParam(const int num,
+                                                       const int nump);
 
   //! Returns type of parameter "nump" of record "num"
   //! Returns literal value of parameter "nump" of record "num"
   //! was C++ : return const &
-  Standard_EXPORT Interface_ParamType ParamType(const int num, const int nump) const;
+  Standard_EXPORT Interface_ParamType ParamType(const int num,
+                                                const int nump) const;
 
   //! Same as above, but as a CString
   //! was C++ : return const
-  Standard_EXPORT const char* ParamCValue(const int num, const int nump) const;
+  Standard_EXPORT const char* ParamCValue(const int num,
+                                               const int nump) const;
 
   //! Returns True if parameter "nump" of record "num" is defined
   //! (it is not if its type is ParamVoid)
-  Standard_EXPORT bool IsParamDefined(const int num, const int nump) const;
+  Standard_EXPORT bool IsParamDefined(const int num,
+                                                  const int nump) const;
 
   //! Returns record number of an entity referenced by a parameter
   //! of type Ident; 0 if no EntityNumber has been determined
   //! Note that it is used to reference Entities but also Sublists
   //! (sublists are not objects, but internal descriptions)
-  Standard_EXPORT int ParamNumber(const int num, const int nump) const;
+  Standard_EXPORT int ParamNumber(const int num,
+                                               const int nump) const;
 
   //! Returns the StepEntity referenced by a parameter
   //! Error if none
   Standard_EXPORT const occ::handle<Standard_Transient>& ParamEntity(const int num,
-                                                                     const int nump) const;
+                                                                const int nump) const;
 
   //! Returns the absolute rank of the beginning of a record
   //! (its list is from ParamFirstRank+1 to ParamFirstRank+NbParams)
@@ -142,7 +153,8 @@ public:
   Standard_EXPORT const occ::handle<Standard_Transient>& BoundEntity(const int num) const;
 
   //! Binds an entity to a record
-  Standard_EXPORT void BindEntity(const int num, const occ::handle<Standard_Transient>& ent);
+  Standard_EXPORT void BindEntity(const int            num,
+                                  const occ::handle<Standard_Transient>& ent);
 
   //! Sets the status "Error Load" on, to overside check fails
   //! <val> True  : declares unloaded
@@ -193,14 +205,16 @@ protected:
 
   //! For a given absolute rank of parameter, determines the
   //! record to which its belongs, and the parameter number for it
-  Standard_EXPORT void ParamPosition(const int numpar, int& num, int& nump) const;
+  Standard_EXPORT void ParamPosition(const int numpar,
+                                     int&      num,
+                                     int&      nump) const;
 
 private:
-  int                                                 thenum0;
-  int                                                 therrload;
-  occ::handle<Interface_ParamSet>                     theparams;
-  NCollection_Array1<int>                             thenumpar;
-  NCollection_Array1<occ::handle<Standard_Transient>> theents;
+  int           thenum0;
+  int           therrload;
+  occ::handle<Interface_ParamSet> theparams;
+  NCollection_Array1<int>    thenumpar;
+  NCollection_Array1<occ::handle<Standard_Transient>>  theents;
 };
 
 #endif // _Interface_FileReaderData_HeaderFile

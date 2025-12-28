@@ -40,9 +40,10 @@ public:
   //! Reads a IGES File and returns a IGES Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int ReadFile(const char*                            name,
-                               occ::handle<Interface_InterfaceModel>& model,
-                               const occ::handle<Interface_Protocol>& protocol) const override;
+  Standard_EXPORT int
+    ReadFile(const char*            name,
+             occ::handle<Interface_InterfaceModel>& model,
+             const occ::handle<Interface_Protocol>& protocol) const override;
 
   //! Writes a File from a IGES Model (brought by <ctx>)
   //! Returns False (and writes no file) if <ctx> is not for IGES
@@ -57,7 +58,7 @@ public:
   Standard_EXPORT virtual void DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                           const occ::handle<Interface_Protocol>&       protocol,
                                           const occ::handle<Standard_Transient>&       entity,
-                                          Standard_OStream&                            S,
+                                          Standard_OStream&                       S,
                                           const int level) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_WorkLibrary, IFSelect_WorkLibrary)

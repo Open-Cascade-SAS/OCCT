@@ -29,8 +29,8 @@ public:
   //! Constructs the sensitive segment object defined by
   //! the owner theOwnerId, the points theFirstPnt, theLastPnt
   Standard_EXPORT Select3D_SensitiveSegment(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                            const gp_Pnt&                             theFirstPnt,
-                                            const gp_Pnt&                             theLastPnt);
+                                            const gp_Pnt&                        theFirstPnt,
+                                            const gp_Pnt&                        theLastPnt);
 
   //! changes the start Point of the Segment;
   void SetStartPoint(const gp_Pnt& thePnt) { myStart = thePnt; }
@@ -51,7 +51,8 @@ public:
 
   //! Checks whether the segment overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns center of the segment. If location transformation
   //! is set, it will be applied
@@ -73,7 +74,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
   gp_Pnt myStart; //!< Start point

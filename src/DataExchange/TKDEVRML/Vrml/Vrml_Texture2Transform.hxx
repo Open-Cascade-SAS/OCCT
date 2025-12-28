@@ -45,10 +45,10 @@ public:
 
   Standard_EXPORT Vrml_Texture2Transform();
 
-  Standard_EXPORT Vrml_Texture2Transform(const gp_Vec2d& aTranslation,
-                                         const double    aRotation,
-                                         const gp_Vec2d& aScaleFactor,
-                                         const gp_Vec2d& aCenter);
+  Standard_EXPORT Vrml_Texture2Transform(const gp_Vec2d&     aTranslation,
+                                         const double aRotation,
+                                         const gp_Vec2d&     aScaleFactor,
+                                         const gp_Vec2d&     aCenter);
 
   Standard_EXPORT void SetTranslation(const gp_Vec2d& aTranslation);
 
@@ -69,10 +69,10 @@ public:
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 private:
-  gp_Vec2d myTranslation;
-  double   myRotation;
-  gp_Vec2d myScaleFactor;
-  gp_Vec2d myCenter;
+  gp_Vec2d      myTranslation;
+  double myRotation;
+  gp_Vec2d      myScaleFactor;
+  gp_Vec2d      myCenter;
 };
 
 #endif // _Vrml_Texture2Transform_HeaderFile

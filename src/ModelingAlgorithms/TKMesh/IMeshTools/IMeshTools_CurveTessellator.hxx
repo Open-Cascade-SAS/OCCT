@@ -37,8 +37,8 @@ public:
   //! @param theParameter parameters on PCurve corresponded to the solution.
   //! @return True in case of valid result, false elewhere.
   Standard_EXPORT virtual bool Value(const int theIndex,
-                                     gp_Pnt&   thePoint,
-                                     double&   theParameter) const = 0;
+                                                 gp_Pnt&                thePoint,
+                                                 double&         theParameter) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IMeshTools_CurveTessellator, Standard_Transient)
 

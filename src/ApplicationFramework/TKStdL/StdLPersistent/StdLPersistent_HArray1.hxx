@@ -24,6 +24,11 @@
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class StdLPersistent_HArray1
 {
@@ -36,12 +41,14 @@ class StdLPersistent_HArray1
     Standard_EXPORT virtual void Write(StdObjMgt_WriteData& theWriteData) const;
 
   protected:
-    virtual int  lowerBound() const                                            = 0;
-    virtual int  upperBound() const                                            = 0;
-    virtual void createArray(const int theLowerBound, const int theUpperBound) = 0;
+    virtual int lowerBound() const                                = 0;
+    virtual int upperBound() const                                = 0;
+    virtual void             createArray(const int theLowerBound,
+                                         const int theUpperBound) = 0;
 
-    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theIndex)          = 0;
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData, const int theIndex) const = 0;
+    virtual void readValue(StdObjMgt_ReadData& theReadData, const int theIndex) = 0;
+    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
+                            const int theIndex) const                           = 0;
   };
 
 protected:
@@ -51,7 +58,7 @@ protected:
     friend class StdLPersistent_HArray1;
 
   public:
-    typedef occ::handle<ArrayClass>         ArrayHandle;
+    typedef occ::handle<ArrayClass>              ArrayHandle;
     typedef typename ArrayClass::value_type ValueType;
     typedef typename ArrayClass::Iterator   Iterator;
 
@@ -64,7 +71,8 @@ protected:
 
     virtual int upperBound() const { return myArray->Upper(); }
 
-    virtual void createArray(const int theLowerBound, const int theUpperBound)
+    virtual void createArray(const int theLowerBound,
+                             const int theUpperBound)
     {
       myArray = new ArrayClass(theLowerBound, theUpperBound);
     }
@@ -74,7 +82,8 @@ protected:
       theReadData >> myArray->ChangeValue(theIndex);
     }
 
-    virtual void writeValue(StdObjMgt_WriteData& theWriteData, const int theIndex) const
+    virtual void writeValue(StdObjMgt_WriteData&   theWriteData,
+                            const int theIndex) const
     {
       theWriteData << myArray->Value(theIndex);
     }
@@ -121,9 +130,9 @@ protected:
   };
 
 public:
-  typedef instance<NCollection_HArray1<int>>                               Integer;
-  typedef instance<NCollection_HArray1<double>>                            Real;
-  typedef instance<NCollection_HArray1<uint8_t>>                           Byte;
+  typedef instance<NCollection_HArray1<int>>           Integer;
+  typedef instance<NCollection_HArray1<double>>              Real;
+  typedef instance<NCollection_HArray1<uint8_t>>              Byte;
   typedef instance<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>> Persistent;
 
 public:
@@ -138,7 +147,8 @@ public:
   }
 
   template <class ArrayClass>
-  static Handle(instance<ArrayClass>) Translate(const char* thePName, const ArrayClass& theArray)
+  static Handle(instance<ArrayClass>) Translate(const char*  thePName,
+                                                const ArrayClass& theArray)
   {
     Handle(named_instance<ArrayClass>) aPArray = new named_instance<ArrayClass>(thePName);
     aPArray->myArray                           = new ArrayClass(theArray.Lower(), theArray.Upper());
@@ -171,15 +181,15 @@ inline StdObjMgt_ReadData& operator>>(StdObjMgt_ReadData& theReadData, uint8_t& 
   return theReadData >> reinterpret_cast<char&>(theByte);
 }
 
-inline StdObjMgt_WriteData& operator>>(StdObjMgt_WriteData& theWriteData, const uint8_t& theByte)
+inline StdObjMgt_WriteData& operator>>(StdObjMgt_WriteData& theWriteData,
+                                       const uint8_t& theByte)
 {
   return theWriteData << reinterpret_cast<const char&>(theByte);
 }
 
 template <>
-inline void StdLPersistent_HArray1::
-  instance<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>>::PChildrenT(
-    StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
+inline void StdLPersistent_HArray1::instance<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>>::PChildrenT(
+  StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   for (int i = myArray->Lower(); i <= myArray->Upper(); ++i)
     theChildren.Append(myArray->Value(i));

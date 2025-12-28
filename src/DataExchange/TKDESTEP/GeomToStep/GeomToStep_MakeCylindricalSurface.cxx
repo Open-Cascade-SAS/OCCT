@@ -29,16 +29,16 @@
 //=============================================================================
 GeomToStep_MakeCylindricalSurface::GeomToStep_MakeCylindricalSurface(
   const occ::handle<Geom_CylindricalSurface>& CS,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   occ::handle<StepGeom_CylindricalSurface> CSstep;
   occ::handle<StepGeom_Axis2Placement3d>   aPosition;
-  double                                   aRadius;
+  double                       aRadius;
 
   GeomToStep_MakeAxis2Placement3d MkAxis2(CS->Position(), theLocalFactors);
-  aPosition                                  = MkAxis2.Value();
-  aRadius                                    = CS->Radius();
-  CSstep                                     = new StepGeom_CylindricalSurface;
+  aPosition                             = MkAxis2.Value();
+  aRadius                               = CS->Radius();
+  CSstep                                = new StepGeom_CylindricalSurface;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   CSstep->Init(name, aPosition, aRadius / theLocalFactors.LengthFactor());
   theCylindricalSurface = CSstep;

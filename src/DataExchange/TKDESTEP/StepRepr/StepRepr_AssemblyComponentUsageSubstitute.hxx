@@ -49,8 +49,7 @@ public:
 
   Standard_EXPORT occ::handle<StepRepr_AssemblyComponentUsage> Substitute() const;
 
-  Standard_EXPORT void SetSubstitute(
-    const occ::handle<StepRepr_AssemblyComponentUsage>& aSubstitute);
+  Standard_EXPORT void SetSubstitute(const occ::handle<StepRepr_AssemblyComponentUsage>& aSubstitute);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_AssemblyComponentUsageSubstitute, Standard_Transient)
 

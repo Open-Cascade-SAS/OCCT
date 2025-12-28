@@ -20,14 +20,14 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineSurface, StepGeom_BoundedSurface)
 StepGeom_BSplineSurface::StepGeom_BSplineSurface() {}
 
 void StepGeom_BSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const int                                                                     aUDegree,
-  const int                                                                     aVDegree,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
-  const StepData_Logical                                                        aUClosed,
-  const StepData_Logical                                                        aVClosed,
-  const StepData_Logical                                                        aSelfIntersect)
+  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+  const StepData_Logical                          aUClosed,
+  const StepData_Logical                          aVClosed,
+  const StepData_Logical                          aSelfIntersect)
 {
   // --- classe own fields ---
   uDegree           = aUDegree;
@@ -67,8 +67,7 @@ void StepGeom_BSplineSurface::SetControlPointsList(
   controlPointsList = aControlPointsList;
 }
 
-occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineSurface::
-  ControlPointsList() const
+occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineSurface::ControlPointsList() const
 {
   return controlPointsList;
 }

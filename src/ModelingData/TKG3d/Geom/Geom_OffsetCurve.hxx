@@ -93,9 +93,9 @@ public:
   //! Warnings :
   //! No check is done to know if ||V^T|| != 0.0 at any point.
   Standard_EXPORT Geom_OffsetCurve(const occ::handle<Geom_Curve>& C,
-                                   const double                   Offset,
-                                   const gp_Dir&                  V,
-                                   const bool                     isNotCheckC0 = false);
+                                   const double       Offset,
+                                   const gp_Dir&             V,
+                                   const bool    isNotCheckC0 = false);
 
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the offset curve to copy from
@@ -122,7 +122,7 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if the curve C is not at least "C1" continuous.
   Standard_EXPORT void SetBasisCurve(const occ::handle<Geom_Curve>& C,
-                                     const bool                     isNotCheckC0 = false);
+                                     const bool    isNotCheckC0 = false);
 
   //! Changes this offset curve by assigning V as the
   //! reference vector used to compute the offset direction.
@@ -181,13 +181,16 @@ public:
   //! if the continuity of the basis curve is not C3.
   //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C3
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2) const override;
 
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const override;
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2,
+                          gp_Vec&             V3) const override;
 
   //! The returned vector gives the value of the derivative
   //! for the order of derivation N.
@@ -203,7 +206,8 @@ public:
   //! raised if it is not possible to compute a unique offset
   //! direction.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override;
 
   //! Returns the value of the first parameter of this
   //! offset curve. The first parameter corresponds to the
@@ -256,8 +260,9 @@ public:
   //! is the same point as
   //! me->Value(U).Transformed(T)
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double TransformedParameter(const double   U,
-                                                      const gp_Trsf& T) const override;
+  Standard_EXPORT virtual double TransformedParameter(const double U,
+                                                             const gp_Trsf&      T) const
+    override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -267,7 +272,8 @@ public:
   //! is the same point as
   //! Value(U).Transformed(T)
   //! This methods calls the basis curve method.
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const
+    override;
 
   //! Creates a new object which is a copy of this offset curve.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
@@ -277,15 +283,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetCurve, Geom_Curve)
 
 private:
   occ::handle<Geom_Curve> basisCurve;
-  gp_Dir                  direction;
-  double                  offsetValue;
-  GeomAbs_Shape           myBasisCurveContinuity;
+  gp_Dir             direction;
+  double             offsetValue;
+  GeomAbs_Shape      myBasisCurveContinuity;
 };
 
 #endif // _Geom_OffsetCurve_HeaderFile

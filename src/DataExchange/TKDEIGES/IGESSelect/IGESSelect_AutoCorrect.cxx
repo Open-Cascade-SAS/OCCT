@@ -30,7 +30,7 @@ IGESSelect_AutoCorrect::IGESSelect_AutoCorrect()
 {
 }
 
-void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_AutoCorrect::Performing(IFSelect_ContextModif&            ctx,
                                         const occ::handle<IGESData_IGESModel>& target,
                                         Interface_CopyTool&) const
 {

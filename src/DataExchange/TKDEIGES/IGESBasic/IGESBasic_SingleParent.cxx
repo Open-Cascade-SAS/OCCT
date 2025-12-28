@@ -25,10 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
 IGESBasic_SingleParent::IGESBasic_SingleParent() {}
 
-void IGESBasic_SingleParent::Init(
-  const int                                                                 nbParentEntities,
-  const occ::handle<IGESData_IGESEntity>&                                   aParentEntity,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren)
+void IGESBasic_SingleParent::Init(const int                      nbParentEntities,
+                                  const occ::handle<IGESData_IGESEntity>&          aParentEntity,
+                                  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren)
 {
   if (!allChildren.IsNull() && allChildren->Lower() != 1)
     throw Standard_DimensionMismatch("IGESBasic_SingleParent : Init");

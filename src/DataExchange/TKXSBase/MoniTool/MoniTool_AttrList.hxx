@@ -45,7 +45,8 @@ public:
 
   //! Adds an attribute with a given name (replaces the former one
   //! with the same name if already exists)
-  Standard_EXPORT void SetAttribute(const char* name, const occ::handle<Standard_Transient>& val);
+  Standard_EXPORT void SetAttribute(const char*            name,
+                                    const occ::handle<Standard_Transient>& val);
 
   //! Removes an attribute
   //! Returns True when done, False if this attribute did not exist
@@ -55,9 +56,9 @@ public:
   //! If no attribute has this name, or if it is not kind of this
   //! type, <val> is Null and returned value is False
   //! Else, it is True
-  Standard_EXPORT bool GetAttribute(const char*                       name,
-                                    const occ::handle<Standard_Type>& type,
-                                    occ::handle<Standard_Transient>&  val) const;
+  Standard_EXPORT bool GetAttribute(const char*       name,
+                                                const occ::handle<Standard_Type>& type,
+                                                occ::handle<Standard_Transient>&  val) const;
 
   //! Returns an attribute from its name. Null Handle if not
   //! recorded (whatever Transient, Integer, Real ...)
@@ -78,7 +79,8 @@ public:
   //! If no attribute has this name, or not an integer,
   //! <val> is 0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT bool GetIntegerAttribute(const char* name, int& val) const;
+  Standard_EXPORT bool GetIntegerAttribute(const char* name,
+                                                       int&      val) const;
 
   //! Returns an integer attribute from its name. 0 if not recorded
   Standard_EXPORT int IntegerAttribute(const char* name) const;
@@ -90,7 +92,8 @@ public:
   //! If no attribute has this name, or not a real
   //! <val> is 0.0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT bool GetRealAttribute(const char* name, double& val) const;
+  Standard_EXPORT bool GetRealAttribute(const char* name,
+                                                    double&         val) const;
 
   //! Returns a real attribute from its name. 0.0 if not recorded
   Standard_EXPORT double RealAttribute(const char* name) const;
@@ -102,14 +105,14 @@ public:
   //! If no attribute has this name, or not a String
   //! <val> is 0.0 and returned value is False
   //! Else, it is True
-  Standard_EXPORT bool GetStringAttribute(const char* name, const char*& val) const;
+  Standard_EXPORT bool GetStringAttribute(const char* name,
+                                                      const char*&      val) const;
 
   //! Returns a String attribute from its name. "" if not recorded
   Standard_EXPORT const char* StringAttribute(const char* name) const;
 
   //! Returns the exhaustive list of attributes
-  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString,
-                                            occ::handle<Standard_Transient>>&
+  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
                         AttrList() const;
 
   //! Gets the list of attributes from <other>, as such, i.e.
@@ -130,8 +133,8 @@ public:
   //! These new attributes are added to the existing ones in <me>,
   //! in case of same name, they replace the existing ones
   Standard_EXPORT void GetAttributes(const MoniTool_AttrList& other,
-                                     const char*              fromname = "",
-                                     const bool               copied   = true);
+                                     const char*   fromname = "",
+                                     const bool   copied   = true);
 
 private:
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> theattrib;

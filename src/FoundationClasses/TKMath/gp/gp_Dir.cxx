@@ -49,7 +49,7 @@ double gp_Dir::Angle(const gp_Dir& Other) const
 double gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) const
 {
   double Ang;
-  gp_XYZ XYZ     = coord.Crossed(Other.coord);
+  gp_XYZ        XYZ     = coord.Crossed(Other.coord);
   double Cosinus = coord.Dot(Other.coord);
   double Sinus   = XYZ.Modulus();
   if (Cosinus > -0.70710678118655 && Cosinus < 0.70710678118655)
@@ -70,36 +70,36 @@ double gp_Dir::AngleWithRef(const gp_Dir& Other, const gp_Dir& Vref) const
 void gp_Dir::Mirror(const gp_Dir& V) noexcept
 {
   const gp_XYZ& XYZ = V.coord;
-  double        A   = XYZ.X();
-  double        B   = XYZ.Y();
-  double        C   = XYZ.Z();
-  double        X   = coord.X();
-  double        Y   = coord.Y();
-  double        Z   = coord.Z();
-  double        M1  = 2.0 * A * B;
-  double        M2  = 2.0 * A * C;
-  double        M3  = 2.0 * B * C;
-  double        XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
-  double        YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
-  double        ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
+  double A   = XYZ.X();
+  double B   = XYZ.Y();
+  double C   = XYZ.Z();
+  double X   = coord.X();
+  double Y   = coord.Y();
+  double Z   = coord.Z();
+  double M1  = 2.0 * A * B;
+  double M2  = 2.0 * A * C;
+  double M3  = 2.0 * B * C;
+  double XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
+  double YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
+  double ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
   coord.SetCoord(XX, YY, ZZ);
 }
 
 void gp_Dir::Mirror(const gp_Ax1& A1) noexcept
 {
   const gp_XYZ& XYZ = A1.Direction().coord;
-  double        A   = XYZ.X();
-  double        B   = XYZ.Y();
-  double        C   = XYZ.Y();
-  double        X   = coord.X();
-  double        Y   = coord.Y();
-  double        Z   = coord.Z();
-  double        M1  = 2.0 * A * B;
-  double        M2  = 2.0 * A * C;
-  double        M3  = 2.0 * B * C;
-  double        XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
-  double        YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
-  double        ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
+  double A   = XYZ.X();
+  double B   = XYZ.Y();
+  double C   = XYZ.Y();
+  double X   = coord.X();
+  double Y   = coord.Y();
+  double Z   = coord.Z();
+  double M1  = 2.0 * A * B;
+  double M2  = 2.0 * A * C;
+  double M3  = 2.0 * B * C;
+  double XX  = ((2.0 * A * A) - 1.0) * X + M1 * Y + M2 * Z;
+  double YY  = M1 * X + ((2.0 * B * B) - 1.0) * Y + M3 * Z;
+  double ZZ  = M2 * X + M3 * Y + ((2.0 * C * C) - 1.0) * Z;
   coord.SetCoord(XX, YY, ZZ);
 }
 
@@ -159,12 +159,11 @@ gp_Dir gp_Dir::Mirrored(const gp_Ax2& A2) const noexcept
   return V;
 }
 
-void gp_Dir::DumpJson(Standard_OStream& theOStream, int) const
-{
-  OCCT_DUMP_VECTOR_CLASS(theOStream, "gp_Dir", 3, coord.X(), coord.Y(), coord.Z())
-}
+void gp_Dir::DumpJson(Standard_OStream& theOStream, int) const {
+  OCCT_DUMP_VECTOR_CLASS(theOStream, "gp_Dir", 3, coord.X(), coord.Y(), coord.Z())}
 
-bool gp_Dir::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
+bool gp_Dir::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
   int aPos = theStreamPos;
 

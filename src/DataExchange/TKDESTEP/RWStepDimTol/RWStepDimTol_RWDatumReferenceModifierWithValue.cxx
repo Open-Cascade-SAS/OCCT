@@ -28,7 +28,7 @@ RWStepDimTol_RWDatumReferenceModifierWithValue::RWStepDimTol_RWDatumReferenceMod
 
 void RWStepDimTol_RWDatumReferenceModifierWithValue::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                                      num,
+  const int                                    num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepDimTol_DatumReferenceModifierWithValue>& ent) const
 {
@@ -71,7 +71,7 @@ void RWStepDimTol_RWDatumReferenceModifierWithValue::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWDatumReferenceModifierWithValue::WriteStep(
-  StepData_StepWriter&                                           SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepDimTol_DatumReferenceModifierWithValue>& ent) const
 {
   // own fields of DatumReferenceModifierWithValue

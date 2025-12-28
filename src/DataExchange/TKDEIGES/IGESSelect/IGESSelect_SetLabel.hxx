@@ -42,9 +42,9 @@ public:
   Standard_EXPORT IGESSelect_SetLabel(const int mode, const bool enforce);
 
   //! Specific action : Sets or Clears the Label
-  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&                    TC) const override;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Clear Short Label" or "Set Label to DE"
@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SetLabel, IGESSelect_ModelModifier)
 
 private:
-  int  themode;
+  int themode;
   bool theforce;
 };
 

@@ -42,7 +42,8 @@ public:
   Standard_EXPORT virtual int NbResources() const override;
 
   //! Returns a Resource, given a rank (rank of call to Add)
-  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const override;
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_FileProtocol, IGESData_Protocol)
 

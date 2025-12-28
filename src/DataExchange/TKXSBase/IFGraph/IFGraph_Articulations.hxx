@@ -23,6 +23,7 @@
 
 #include <Interface_Graph.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Interface_GraphContent.hxx>
@@ -44,7 +45,8 @@ public:
   //! creates Articulations to evaluate a Graph
   //! whole True : works on the whole Model
   //! whole False : remains empty, ready to work on a sub-part
-  Standard_EXPORT IFGraph_Articulations(const Interface_Graph& agraph, const bool whole);
+  Standard_EXPORT IFGraph_Articulations(const Interface_Graph& agraph,
+                                        const bool whole);
 
   //! adds an entity and its shared ones to the list
   Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent);
@@ -64,8 +66,8 @@ private:
   Standard_EXPORT int Visit(const int num);
 
 private:
-  Interface_Graph                         thegraph;
-  int                                     thenow;
+  Interface_Graph                    thegraph;
+  int                   thenow;
   occ::handle<NCollection_HSequence<int>> thelist;
 };
 

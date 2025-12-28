@@ -26,11 +26,11 @@ class Aspect_CircularGrid : public Aspect_Grid
 public:
   //! creates a new grid. By default this grid is not
   //! active.
-  Standard_EXPORT Aspect_CircularGrid(const double aRadiusStep,
-                                      const int    aDivisionNumber,
-                                      const double XOrigin        = 0,
-                                      const double anYOrigin      = 0,
-                                      const double aRotationAngle = 0);
+  Standard_EXPORT Aspect_CircularGrid(const double    aRadiusStep,
+                                      const int aDivisionNumber,
+                                      const double    XOrigin        = 0,
+                                      const double    anYOrigin      = 0,
+                                      const double    aRotationAngle = 0);
 
   //! defines the x step of the grid.
   Standard_EXPORT void SetRadiusStep(const double aStep);
@@ -38,11 +38,11 @@ public:
   //! defines the step of the grid.
   Standard_EXPORT void SetDivisionNumber(const int aNumber);
 
-  Standard_EXPORT void SetGridValues(const double XOrigin,
-                                     const double YOrigin,
-                                     const double RadiusStep,
-                                     const int    DivisionNumber,
-                                     const double RotationAngle);
+  Standard_EXPORT void SetGridValues(const double    XOrigin,
+                                     const double    YOrigin,
+                                     const double    RadiusStep,
+                                     const int DivisionNumber,
+                                     const double    RotationAngle);
 
   //! returns the point of the grid the closest to the point X,Y
   Standard_EXPORT virtual void Compute(const double X,
@@ -60,14 +60,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
-  double myRadiusStep;
-  int    myDivisionNumber;
-  double myAlpha;
-  double myA1;
-  double myB1;
+  double    myRadiusStep;
+  int myDivisionNumber;
+  double    myAlpha;
+  double    myA1;
+  double    myB1;
 };
 
 #endif // _Aspect_CircularGrid_HeaderFile

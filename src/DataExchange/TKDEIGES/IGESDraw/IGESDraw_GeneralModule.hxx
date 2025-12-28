@@ -41,60 +41,65 @@ public:
 
   //! Lists the Entities shared by a given IGESEntity <ent>, from
   //! its specific parameters : specific for each type
-  Standard_EXPORT void OwnSharedCase(const int                               CN,
+  Standard_EXPORT void OwnSharedCase(const int             CN,
                                      const occ::handle<IGESData_IGESEntity>& ent,
-                                     Interface_EntityIterator&               iter) const override;
+                                     Interface_EntityIterator& iter) const override;
 
   //! Specific list of Entities implied by an IGESEntity <ent> (in
   //! addition to Associativities). Redefined for ViewsVisible ...
-  Standard_EXPORT virtual void OwnImpliedCase(const int                               CN,
+  Standard_EXPORT virtual void OwnImpliedCase(const int             CN,
                                               const occ::handle<IGESData_IGESEntity>& ent,
-                                              Interface_EntityIterator& iter) const override;
+                                              Interface_EntityIterator&          iter) const
+    override;
 
   //! Returns a DirChecker, specific for each type of Entity
   //! (identified by its Case Number) : this DirChecker defines
   //! constraints which must be respected by the DirectoryPart
   Standard_EXPORT IGESData_DirChecker
-    DirChecker(const int CN, const occ::handle<IGESData_IGESEntity>& ent) const override;
+    DirChecker(const int             CN,
+               const occ::handle<IGESData_IGESEntity>& ent) const override;
 
   //! Performs Specific Semantic Check for each type of Entity
-  Standard_EXPORT void OwnCheckCase(const int                               CN,
+  Standard_EXPORT void OwnCheckCase(const int             CN,
                                     const occ::handle<IGESData_IGESEntity>& ent,
-                                    const Interface_ShareTool&              shares,
+                                    const Interface_ShareTool&         shares,
                                     occ::handle<Interface_Check>&           ach) const override;
 
   //! Specific creation of a new void entity
-  Standard_EXPORT bool NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const override;
+  Standard_EXPORT bool
+    NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const override;
 
   //! Copies parameters which are specific of each Type of Entity
-  Standard_EXPORT void OwnCopyCase(const int                               CN,
+  Standard_EXPORT void OwnCopyCase(const int             CN,
                                    const occ::handle<IGESData_IGESEntity>& entfrom,
                                    const occ::handle<IGESData_IGESEntity>& entto,
-                                   Interface_CopyTool&                     TC) const override;
+                                   Interface_CopyTool&                TC) const override;
 
   //! Renews parameters which are specific of each Type of Entity :
   //! redefined for ViewsVisible ... (takes only the implied ref.s
   //! which have also been copied)
-  Standard_EXPORT virtual void OwnRenewCase(const int                               CN,
+  Standard_EXPORT virtual void OwnRenewCase(const int             CN,
                                             const occ::handle<IGESData_IGESEntity>& entfrom,
                                             const occ::handle<IGESData_IGESEntity>& entto,
                                             const Interface_CopyTool& TC) const override;
 
   //! Clears parameters with can cause looping structures :
   //! redefined for ViewsVisible ... (clears the implied ref.s)
-  Standard_EXPORT virtual void OwnDeleteCase(
-    const int                               CN,
-    const occ::handle<IGESData_IGESEntity>& ent) const override;
+  Standard_EXPORT virtual void OwnDeleteCase(const int             CN,
+                                             const occ::handle<IGESData_IGESEntity>& ent) const
+    override;
 
   //! Returns a category number which characterizes an entity
   //! Planar : Auxiliary
   //! Subfigures and ConnectPoint : Structure
   //! others : Drawing
-  Standard_EXPORT virtual int CategoryNumber(const int                              CN,
-                                             const occ::handle<Standard_Transient>& ent,
-                                             const Interface_ShareTool& shares) const override;
+  Standard_EXPORT virtual int CategoryNumber(const int            CN,
+                                                          const occ::handle<Standard_Transient>& ent,
+                                                          const Interface_ShareTool& shares) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESDraw_GeneralModule, IGESData_GeneralModule)
+
 };
 
 #endif // _IGESDraw_GeneralModule_HeaderFile

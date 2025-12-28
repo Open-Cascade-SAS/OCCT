@@ -35,8 +35,8 @@ public:
   Standard_EXPORT VrmlConverter_IsoAspect();
 
   Standard_EXPORT VrmlConverter_IsoAspect(const occ::handle<Vrml_Material>& aMaterial,
-                                          const bool                        OnOff,
-                                          const int                         aNumber);
+                                          const bool       OnOff,
+                                          const int       aNumber);
 
   Standard_EXPORT void SetNumber(const int aNumber);
 

@@ -24,7 +24,7 @@
 RWStepVisual_RWTextLiteral::RWStepVisual_RWTextLiteral() {}
 
 void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepVisual_TextLiteral>&  ent) const
 {
@@ -83,7 +83,7 @@ void RWStepVisual_RWTextLiteral::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aLiteral, aPlacement, aAlignment, aPath, aFont);
 }
 
-void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                       SW,
+void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<StepVisual_TextLiteral>& ent) const
 {
 
@@ -113,7 +113,7 @@ void RWStepVisual_RWTextLiteral::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepVisual_RWTextLiteral::Share(const occ::handle<StepVisual_TextLiteral>& ent,
-                                       Interface_EntityIterator&                  iter) const
+                                       Interface_EntityIterator&             iter) const
 {
 
   iter.GetOneItem(ent->Placement().Value());

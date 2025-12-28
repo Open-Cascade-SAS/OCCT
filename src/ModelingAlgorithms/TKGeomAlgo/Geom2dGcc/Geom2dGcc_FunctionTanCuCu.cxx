@@ -134,12 +134,12 @@ bool Geom2dGcc_FunctionTanCuCu::Value(const math_Vector& X, math_Vector& Fval)
   gp_Vec2d Vect12;
   gp_Vec2d Vect22;
   InitDerivative(X, Point1, Point2, Vect11, Vect21, Vect12, Vect22);
-  double   NormeD11 = Vect11.Magnitude();
-  double   NormeD21 = Vect21.Magnitude();
-  gp_Vec2d TheDirection(Point1, Point2);
-  double   squaredir = TheDirection.Dot(TheDirection);
-  Fval(1)            = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
-  Fval(2)            = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
+  double NormeD11 = Vect11.Magnitude();
+  double NormeD21 = Vect21.Magnitude();
+  gp_Vec2d      TheDirection(Point1, Point2);
+  double squaredir = TheDirection.Dot(TheDirection);
+  Fval(1)                 = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
+  Fval(2)                 = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
   return true;
 }
 
@@ -160,9 +160,9 @@ bool Geom2dGcc_FunctionTanCuCu::Derivatives(const math_Vector& X, math_Matrix& D
   Vect11.XY();
   Vect21.XY();
 #endif
-  gp_Vec2d TheDirection(Point1, Point2);
-  double   squaredir = TheDirection.Dot(TheDirection);
-  Deriv(1, 1)        = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
+  gp_Vec2d      TheDirection(Point1, Point2);
+  double squaredir = TheDirection.Dot(TheDirection);
+  Deriv(1, 1)             = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
                 + (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect11.Dot(TheDirection))
                     / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
   Deriv(1, 2) = Vect21.Crossed(Vect11) / (NormeD11 * squaredir)
@@ -177,7 +177,9 @@ bool Geom2dGcc_FunctionTanCuCu::Derivatives(const math_Vector& X, math_Matrix& D
   return true;
 }
 
-bool Geom2dGcc_FunctionTanCuCu::Values(const math_Vector& X, math_Vector& Fval, math_Matrix& Deriv)
+bool Geom2dGcc_FunctionTanCuCu::Values(const math_Vector& X,
+                                                   math_Vector&       Fval,
+                                                   math_Matrix&       Deriv)
 {
   gp_Pnt2d Point1;
   gp_Pnt2d Point2;
@@ -194,11 +196,11 @@ bool Geom2dGcc_FunctionTanCuCu::Values(const math_Vector& X, math_Vector& Fval, 
   Vect11.XY();
   Vect21.XY();
 #endif
-  gp_Vec2d TheDirection(Point1, Point2);
-  double   squaredir = TheDirection.Dot(TheDirection);
-  Fval(1)            = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
-  Fval(2)            = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
-  Deriv(1, 1)        = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
+  gp_Vec2d      TheDirection(Point1, Point2);
+  double squaredir = TheDirection.Dot(TheDirection);
+  Fval(1)                 = TheDirection.Crossed(Vect11) / (NormeD11 * squaredir);
+  Fval(2)                 = Vect11.Crossed(Vect21) / (NormeD11 * NormeD21);
+  Deriv(1, 1)             = TheDirection.Crossed(Vect12) / (NormeD11 * squaredir)
                 + (TheDirection.Crossed(Vect11) * NormeD11 * NormeD11 * Vect11.Dot(TheDirection))
                     / (NormeD11 * NormeD11 * NormeD11 * squaredir * squaredir * squaredir);
   Deriv(1, 2) = Vect21.Crossed(Vect11) / (NormeD11 * squaredir)

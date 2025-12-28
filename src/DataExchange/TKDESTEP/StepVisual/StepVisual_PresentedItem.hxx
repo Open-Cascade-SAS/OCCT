@@ -27,6 +27,7 @@ class StepVisual_PresentedItem : public Standard_Transient
 
 public:
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentedItem, Standard_Transient)
+
 };
 
 #endif // _StepVisual_PresentedItem_HeaderFile

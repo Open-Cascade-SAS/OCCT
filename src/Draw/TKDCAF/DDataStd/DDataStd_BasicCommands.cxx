@@ -58,7 +58,24 @@
 #include <TDataStd_NamedData.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
@@ -66,9 +83,12 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ReferenceList.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_List.hxx>
 
 #include <algorithm>
 #include <vector>
@@ -82,7 +102,9 @@
 // purpose  : SetInteger (DF, entry, value, [,guid])
 //=======================================================================
 
-static int DDataStd_SetInteger(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetInteger(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb >= 4)
   {
@@ -114,7 +136,9 @@ static int DDataStd_SetInteger(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : SetReal (DF, entry, value [,guid])
 //=======================================================================
 
-static int DDataStd_SetReal(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetReal(Draw_Interpretor& di,
+                                         int  nb,
+                                         const char**      arg)
 {
   if (nb >= 4)
   {
@@ -146,7 +170,9 @@ static int DDataStd_SetReal(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : SetReference (DF, entry, reference)
 //=======================================================================
 
-static int DDataStd_SetReference(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetReference(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb == 4)
   {
@@ -170,7 +196,9 @@ static int DDataStd_SetReference(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : SetComment (DF, entry, Comment)
 //=======================================================================
 
-static int DDataStd_SetComment(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetComment(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb == 4)
   {
@@ -191,7 +219,9 @@ static int DDataStd_SetComment(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : GetReal (DF, entry, [drawname][, guid])
 //=======================================================================
 
-static int DDataStd_GetInteger(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetInteger(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb == 3 || nb == 4 || nb == 5)
   {
@@ -199,9 +229,9 @@ static int DDataStd_GetInteger(Draw_Interpretor& di, int nb, const char** arg)
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     occ::handle<TDataStd_Integer> A;
-    Standard_GUID                 aGuid;
-    Standard_GUID                 aNullGuid("00000000-0000-0000-0000-000000000000");
-    bool                          isdrawname(false);
+    Standard_GUID            aGuid;
+    Standard_GUID            aNullGuid("00000000-0000-0000-0000-000000000000");
+    bool         isdrawname(false);
     if (nb < 5)
     {
       if (nb == 4)
@@ -245,7 +275,9 @@ static int DDataStd_GetInteger(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : GetReal (DF, entry, [drawname][, guid])
 //=======================================================================
 
-static int DDataStd_GetReal(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetReal(Draw_Interpretor& di,
+                                         int  nb,
+                                         const char**      arg)
 {
   if (nb == 3 || nb == 4 || nb == 5)
   {
@@ -253,9 +285,9 @@ static int DDataStd_GetReal(Draw_Interpretor& di, int nb, const char** arg)
     if (!DDF::GetDF(arg[1], DF))
       return 1;
     occ::handle<TDataStd_Real> A;
-    Standard_GUID              aGuid;
-    Standard_GUID              aNullGuid("00000000-0000-0000-0000-000000000000");
-    bool                       isdrawname(false);
+    Standard_GUID         aGuid;
+    Standard_GUID         aNullGuid("00000000-0000-0000-0000-000000000000");
+    bool      isdrawname(false);
     if (nb < 5)
     {
       if (nb == 4)
@@ -298,7 +330,9 @@ static int DDataStd_GetReal(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : GetShape (DF, entry)
 //=======================================================================
 
-static int DDataStd_GetReference(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetReference(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb == 3)
   {
@@ -322,7 +356,9 @@ static int DDataStd_GetReference(Draw_Interpretor& di, int nb, const char** arg)
 // purpose  : GetShape (DF, entry)
 //=======================================================================
 
-static int DDataStd_GetComment(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetComment(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
   if (nb == 3)
   {
@@ -357,8 +393,7 @@ static int DDataStd_Self(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
     //    TDataStd::MakeSelfContained(L,removed);
     //    if (removed.IsEmpty()) std::cout << "no attribute removed" << std::endl;
-    //    for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator
-    //    it(removed);it.More();it.Next()) {
+    //    for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator it(removed);it.More();it.Next()) {
     //      TDF_Tool::Entry(it.Value()->Label(),s); std::cout  << s << " ";
     //      std::cout << std::endl;
     //    }
@@ -393,7 +428,9 @@ static int DDataStd_Self(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetUAttribute (DF, entry, LocalID)
 //=======================================================================
-static int DDataStd_SetUAttribute(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetUAttribute(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
   if (nb == 4)
   {
@@ -415,7 +452,9 @@ static int DDataStd_SetUAttribute(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function : GetUAttribute (DF, entry, LoaclID)
 //=======================================================================
-static int DDataStd_GetUAttribute(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetUAttribute(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
   if (nb == 4)
   {
@@ -486,7 +525,9 @@ static int DDataStd_GetUAttribute(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function : SetIntArray (DF, entry , isDelta, [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static int DDataStd_SetIntArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetIntArray(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb >= 6)
   {
@@ -495,10 +536,10 @@ static int DDataStd_SetIntArray(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    bool          isDelta = Draw::Atoi(arg[3]) != 0;
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[4][0]), c2(arg[4][1]);
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -545,7 +586,9 @@ static int DDataStd_SetIntArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetIntArrayValue (DF, entry, index, value)
 //=======================================================================
-static int DDataStd_SetIntArrayValue(Draw_Interpretor&, int, const char** arg)
+static int DDataStd_SetIntArrayValue(Draw_Interpretor&,
+                                                  int,
+                                                  const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -575,7 +618,9 @@ static int DDataStd_SetIntArrayValue(Draw_Interpretor&, int, const char** arg)
 //=======================================================================
 // function : GetIntArray (DF, entry [, guid] )
 //=======================================================================
-static int DDataStd_GetIntArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetIntArray(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
 
   if (nb >= 3)
@@ -625,7 +670,9 @@ static int DDataStd_GetIntArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetIntArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetIntArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_GetIntArrayValue(Draw_Interpretor& di,
+                                                  int,
+                                                  const char** arg)
 {
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
@@ -662,7 +709,9 @@ static int DDataStd_GetIntArrayValue(Draw_Interpretor& di, int, const char** arg
 //=======================================================================
 // function : ChangeIntArray (DF, entry, indx, val )
 //=======================================================================
-static int DDataStd_ChangeIntArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeIntArray(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb == 5)
@@ -692,7 +741,7 @@ static int DDataStd_ChangeIntArray(Draw_Interpretor& di, int nb, const char** ar
     {
       occ::handle<NCollection_HArray1<int>> Arr = A->Array();
       occ::handle<NCollection_HArray1<int>> arr;
-      int                                   i;
+      int                 i;
       if (indx > up)
       {
         up  = indx;
@@ -727,7 +776,9 @@ static int DDataStd_ChangeIntArray(Draw_Interpretor& di, int nb, const char** ar
 // function : SetIntArrayT (DF, entry , isDelta, From, To) - for testing
 //         : huge arrays
 //=======================================================================
-static int DDataStd_SetIntArrayTest(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_SetIntArrayTest(Draw_Interpretor& di,
+                                                 int,
+                                                 const char** arg)
 {
 
   occ::handle<TDF_Data> DF;
@@ -736,7 +787,7 @@ static int DDataStd_SetIntArrayTest(Draw_Interpretor& di, int, const char** arg)
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
   bool isDelta = Draw::Atoi(arg[3]) != 0;
-  int  From = Draw::Atoi(arg[4]), To = Draw::Atoi(arg[5]);
+  int From = Draw::Atoi(arg[4]), To = Draw::Atoi(arg[5]);
   di << "Array of int with bounds from = " << From << " to = " << To << "\n";
   occ::handle<TDataStd_IntegerArray> A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
 
@@ -752,7 +803,9 @@ static int DDataStd_SetIntArrayTest(Draw_Interpretor& di, int, const char** arg)
 //=======================================================================
 // function : SetRealArray (DF, entry , isDelta, [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static int DDataStd_SetRealArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetRealArray(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb >= 6)
   {
@@ -761,10 +814,10 @@ static int DDataStd_SetRealArray(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    bool          isDelta = Draw::Atoi(arg[3]) != 0;
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[4][0]), c2(arg[4][1]);
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -810,7 +863,9 @@ static int DDataStd_SetRealArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetRealArrayValue (DF, entry, index value)
 //=======================================================================
-static int DDataStd_SetRealArrayValue(Draw_Interpretor&, int, const char** arg)
+static int DDataStd_SetRealArrayValue(Draw_Interpretor&,
+                                                   int,
+                                                   const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -823,8 +878,8 @@ static int DDataStd_SetRealArrayValue(Draw_Interpretor&, int, const char** arg)
     return 1;
 
   // Get index and value.
-  int    index = Draw::Atoi(arg[3]);
-  double value = Draw::Atof(arg[4]);
+  int index = Draw::Atoi(arg[3]);
+  double    value = Draw::Atof(arg[4]);
 
   // Set new value.
   occ::handle<TDataStd_RealArray> realArray;
@@ -840,7 +895,9 @@ static int DDataStd_SetRealArrayValue(Draw_Interpretor&, int, const char** arg)
 //=======================================================================
 // function : GetRealArray (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetRealArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetRealArray(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb >= 3)
   {
@@ -896,7 +953,9 @@ static int DDataStd_GetRealArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetRealArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetRealArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_GetRealArrayValue(Draw_Interpretor& di,
+                                                   int,
+                                                   const char** arg)
 {
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
@@ -933,7 +992,9 @@ static int DDataStd_GetRealArrayValue(Draw_Interpretor& di, int, const char** ar
 //=======================================================================
 // function : ChangeRealArray (DF, entry, indx, val )
 //=======================================================================
-static int DDataStd_ChangeRealArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeRealArray(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb == 5)
@@ -954,16 +1015,16 @@ static int DDataStd_ChangeRealArray(Draw_Interpretor& di, int nb, const char** a
       di << "There is no TDataStd_RealArray at label" << "\n";
       return 1;
     }
-    int    indx = Draw::Atoi(arg[3]);
-    double val  = Draw::Atof(arg[4]);
-    int    low = A->Lower(), up = A->Upper();
+    int indx = Draw::Atoi(arg[3]);
+    double    val  = Draw::Atof(arg[4]);
+    int low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
       A->SetValue(indx, val);
     else
     {
       occ::handle<NCollection_HArray1<double>> Arr = A->Array();
       occ::handle<NCollection_HArray1<double>> arr;
-      int                                      i;
+      int              i;
       if (indx > up)
       {
         up  = indx;
@@ -997,7 +1058,9 @@ static int DDataStd_ChangeRealArray(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function : SetVariable (DF, entry, isConstant[0/1], units)
 //=======================================================================
-static int DDataStd_SetVariable(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetVariable(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 5)
   {
@@ -1023,7 +1086,9 @@ static int DDataStd_SetVariable(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetVariable (DF, entry, [isConstant], [units])
 //=======================================================================
-static int DDataStd_GetVariable(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetVariable(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 5)
   {
@@ -1053,7 +1118,9 @@ static int DDataStd_GetVariable(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetRelation (DF, entry, expression, var1[, var2, ...])
 //=======================================================================
-static int DDataStd_SetRelation(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetRelation(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb >= 5)
   {
@@ -1063,7 +1130,7 @@ static int DDataStd_SetRelation(Draw_Interpretor& di, int nb, const char** arg)
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    const char*                    expr(arg[3]);
+    const char*          expr(arg[3]);
     occ::handle<TDataStd_Relation> aR = TDataStd_Relation::Set(label);
     aR->SetRelation(TCollection_ExtendedString(expr, true));
     occ::handle<TDataStd_Variable> aV;
@@ -1091,7 +1158,9 @@ static int DDataStd_SetRelation(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : DumpRelation (DF, entry)
 //=======================================================================
-static int DDataStd_DumpRelation(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DumpRelation(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb == 3)
   {
@@ -1114,8 +1183,8 @@ static int DDataStd_DumpRelation(Draw_Interpretor& di, int nb, const char** arg)
 
     di << "Relation: expression = \"" << aR->GetRelation() << "\" variables list = (";
 
-    occ::handle<TDF_Attribute> aV;
-    TCollection_AsciiString    anEntry;
+    occ::handle<TDF_Attribute>   aV;
+    TCollection_AsciiString anEntry;
 
     NCollection_List<occ::handle<TDF_Attribute>>::Iterator it;
     for (it.Initialize(aR->GetVariables()); it.More(); it.Next())
@@ -1140,7 +1209,9 @@ static int DDataStd_DumpRelation(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetFunction (DF, entry, guid, failure)
 //=======================================================================
-static int DDataStd_SetFunction(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetFunction(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 5)
   {
@@ -1150,7 +1221,7 @@ static int DDataStd_SetFunction(Draw_Interpretor& di, int nb, const char** arg)
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
 
-    Standard_GUID                   guid(arg[3]);
+    Standard_GUID              guid(arg[3]);
     occ::handle<TFunction_Function> aF = TFunction_Function::Set(label, guid);
 
     int fail = Draw::Atoi(arg[4]);
@@ -1166,7 +1237,9 @@ static int DDataStd_SetFunction(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetFunction (DF, entry, guid(out), failure(out))
 //=======================================================================
-static int DDataStd_GetFunction(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetFunction(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 5)
   {
@@ -1203,7 +1276,9 @@ static int DDataStd_GetFunction(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetExtStringArray (DF, entry , isDelta, [-g Guid, ]From, To,  elmt1, elmt2, ...
 //=======================================================================
-static int DDataStd_SetExtStringArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetExtStringArray(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
   if (nb >= 6)
   {
@@ -1214,9 +1289,9 @@ static int DDataStd_SetExtStringArray(Draw_Interpretor& di, int nb, const char**
     DDF::AddLabel(DF, arg[2], label);
     bool isDelta = Draw::Atoi(arg[3]) != 0;
 
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[4][0]), c2(arg[4][1]);
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -1264,7 +1339,9 @@ static int DDataStd_SetExtStringArray(Draw_Interpretor& di, int nb, const char**
 //=======================================================================
 // function : SetExtStringArrayValue (DF, entry, index, value)
 //=======================================================================
-static int DDataStd_SetExtStringArrayValue(Draw_Interpretor&, int, const char** arg)
+static int DDataStd_SetExtStringArrayValue(Draw_Interpretor&,
+                                                        int,
+                                                        const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -1294,7 +1371,9 @@ static int DDataStd_SetExtStringArrayValue(Draw_Interpretor&, int, const char** 
 //=======================================================================
 // function : GetExtStringArray (DF, entry )
 //=======================================================================
-static int DDataStd_GetExtStringArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetExtStringArray(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
   if (nb >= 3)
   {
@@ -1344,7 +1423,9 @@ static int DDataStd_GetExtStringArray(Draw_Interpretor& di, int nb, const char**
 //=======================================================================
 // function : GetExtStringArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetExtStringArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_GetExtStringArrayValue(Draw_Interpretor& di,
+                                                        int,
+                                                        const char** arg)
 {
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
@@ -1382,7 +1463,9 @@ static int DDataStd_GetExtStringArrayValue(Draw_Interpretor& di, int, const char
 //=======================================================================
 // function : ChangeExtStrArray (DF, entry, indx, val )
 //=======================================================================
-static int DDataStd_ChangeExtStrArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeExtStrArray(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
 
   if (nb == 5)
@@ -1403,16 +1486,16 @@ static int DDataStd_ChangeExtStrArray(Draw_Interpretor& di, int nb, const char**
       di << "There is no TDataStd_ExtStringArray at label" << "\n";
       return 1;
     }
-    int                        indx = Draw::Atoi(arg[3]);
+    int           indx = Draw::Atoi(arg[3]);
     TCollection_ExtendedString val(arg[4]);
-    int                        low = A->Lower(), up = A->Upper();
+    int           low = A->Lower(), up = A->Upper();
     if (low <= indx && indx <= up)
       A->SetValue(indx, val); // NCollection_HArray1<TCollection_ExtendedString>
     else
     {
       occ::handle<NCollection_HArray1<TCollection_ExtendedString>> Arr = A->Array();
       occ::handle<NCollection_HArray1<TCollection_ExtendedString>> arr;
-      int                                                          i;
+      int                        i;
       if (indx > up)
       {
         up  = indx;
@@ -1447,7 +1530,9 @@ static int DDataStd_ChangeExtStrArray(Draw_Interpretor& di, int nb, const char**
 // function : DDataStd_KeepUTF
 // purpose  : SetUTFName (DF, fatherEntry, fileName)
 //=======================================================================
-static int DDataStd_KeepUTF(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_KeepUTF(Draw_Interpretor& di,
+                                         int  nb,
+                                         const char**      arg)
 {
   if (nb == 4)
   {
@@ -1496,7 +1581,9 @@ static int DDataStd_KeepUTF(Draw_Interpretor& di, int nb, const char** arg)
 //         : all strings from sub-labels of the <fatherEntry> concatenated
 //         : in one, converted to UTF8 and kept in the file
 //=======================================================================
-static int DDataStd_GetUTFtoFile(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetUTFtoFile(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb == 4)
   {
@@ -1508,7 +1595,7 @@ static int DDataStd_GetUTFtoFile(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
 
     TCollection_ExtendedString aES;
-    bool                       aF = false;
+    bool           aF = false;
     TDF_ChildIterator          anIt(L);
     for (; anIt.More(); anIt.Next())
     {
@@ -1551,7 +1638,7 @@ static int DDataStd_GetUTFtoFile(Draw_Interpretor& di, int nb, const char** arg)
     }
     unsigned char prefix[4] = {0xEF, 0xBB, 0xBF, 0x00};
     anOS.write((char*)&prefix[0], 3);
-    int                 n     = aES.LengthOfCString();
+    int    n     = aES.LengthOfCString();
     Standard_PCharacter aCstr = (Standard_PCharacter)Standard::Allocate(n + 1);
     n                         = aES.ToUTF8CString(aCstr);
     anOS.write((char*)&aCstr[0], n);
@@ -1566,7 +1653,9 @@ static int DDataStd_GetUTFtoFile(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetByteArray (DF, entry, isDelta, [-g Guid,] From, To, elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetByteArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetByteArray(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb >= 6)
   {
@@ -1575,10 +1664,10 @@ static int DDataStd_SetByteArray(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    bool          isDelta = Draw::Atoi(arg[3]) != 0;
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[4][0]), c2(arg[4][1]);
+    bool   isDelta = Draw::Atoi(arg[3]) != 0;
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[4][0]), c2(arg[4][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[5]))
@@ -1631,7 +1720,9 @@ static int DDataStd_SetByteArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetByteArrayValue (DF, entry, index, value)
 //=======================================================================
-static int DDataStd_SetByteArrayValue(Draw_Interpretor&, int, const char** arg)
+static int DDataStd_SetByteArrayValue(Draw_Interpretor&,
+                                                   int,
+                                                   const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -1668,7 +1759,9 @@ static int DDataStd_SetByteArrayValue(Draw_Interpretor&, int, const char** arg)
 //=======================================================================
 // function : SetBooleanArray (DF, entry, [-g Guid,] From, To, elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetBooleanArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetBooleanArray(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
   if (nb >= 5)
   {
@@ -1678,9 +1771,9 @@ static int DDataStd_SetBooleanArray(Draw_Interpretor& di, int nb, const char** a
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[3][0]), c2(arg[3][1]);
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[3][0]), c2(arg[3][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -1733,7 +1826,9 @@ static int DDataStd_SetBooleanArray(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function : SetBooleanArrayValue (DF, entry, index, value)
 //=======================================================================
-static int DDataStd_SetBooleanArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_SetBooleanArrayValue(Draw_Interpretor& di,
+                                                      int,
+                                                      const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -1770,7 +1865,9 @@ static int DDataStd_SetBooleanArrayValue(Draw_Interpretor& di, int, const char**
 //=======================================================================
 // function : DDataStd_SetExtStringList (DF, entry, [-g guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetExtStringList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetExtStringList(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb > 2)
   {
@@ -1780,8 +1877,8 @@ static int DDataStd_SetExtStringList(Draw_Interpretor& di, int nb, const char** 
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
+    Standard_GUID    guid;
+    bool isGuid(false);
     if (nb > 4)
     {
       char c1(arg[3][0]), c2(arg[3][1]);
@@ -1796,7 +1893,7 @@ static int DDataStd_SetExtStringList(Draw_Interpretor& di, int nb, const char** 
         isGuid = true;
       }
     }
-    int                                 j(0);
+    int               j(0);
     occ::handle<TDataStd_ExtStringList> A;
     if (!isGuid)
     {
@@ -1823,7 +1920,9 @@ static int DDataStd_SetExtStringList(Draw_Interpretor& di, int nb, const char** 
 //=======================================================================
 // function : DDataStd_SetReferenceList (DF, entry, [-g guid] elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetReferenceList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetReferenceList(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb > 2)
   {
@@ -1833,8 +1932,8 @@ static int DDataStd_SetReferenceList(Draw_Interpretor& di, int nb, const char** 
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
+    Standard_GUID    guid;
+    bool isGuid(false);
     if (nb > 4)
     {
       char c1(arg[3][0]), c2(arg[3][1]);
@@ -1849,7 +1948,7 @@ static int DDataStd_SetReferenceList(Draw_Interpretor& di, int nb, const char** 
         isGuid = true;
       }
     }
-    int                                 j(0);
+    int               j(0);
     occ::handle<TDataStd_ReferenceList> A;
     if (!isGuid)
     {
@@ -1878,7 +1977,9 @@ static int DDataStd_SetReferenceList(Draw_Interpretor& di, int nb, const char** 
 //=======================================================================
 // function : SetBooleanList (DF, entry, [-g Guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetBooleanList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetBooleanList(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb > 2)
   {
@@ -1888,8 +1989,8 @@ static int DDataStd_SetBooleanList(Draw_Interpretor& di, int nb, const char** ar
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
+    Standard_GUID    guid;
+    bool isGuid(false);
     if (nb > 4)
     {
       char c1(arg[3][0]), c2(arg[3][1]);
@@ -1904,7 +2005,7 @@ static int DDataStd_SetBooleanList(Draw_Interpretor& di, int nb, const char** ar
         isGuid = true;
       }
     }
-    int                               j(0);
+    int             j(0);
     occ::handle<TDataStd_BooleanList> A;
     if (!isGuid)
     {
@@ -1935,7 +2036,9 @@ static int DDataStd_SetBooleanList(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : SetIntegerList (DF, entry, [-g guid] elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetIntegerList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetIntegerList(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb > 2)
   {
@@ -1945,8 +2048,8 @@ static int DDataStd_SetIntegerList(Draw_Interpretor& di, int nb, const char** ar
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
+    Standard_GUID    guid;
+    bool isGuid(false);
     if (nb > 4)
     {
       char c1(arg[3][0]), c2(arg[3][1]);
@@ -1961,7 +2064,7 @@ static int DDataStd_SetIntegerList(Draw_Interpretor& di, int nb, const char** ar
         isGuid = true;
       }
     }
-    int                               j(0);
+    int             j(0);
     occ::handle<TDataStd_IntegerList> A;
     if (!isGuid)
     {
@@ -1987,7 +2090,9 @@ static int DDataStd_SetIntegerList(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : SetRealList (DF, entry, [-g guid,] elmt1, elmt2, ...  )
 //=======================================================================
-static int DDataStd_SetRealList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetRealList(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb > 2)
   {
@@ -1997,8 +2102,8 @@ static int DDataStd_SetRealList(Draw_Interpretor& di, int nb, const char** arg)
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
+    Standard_GUID    guid;
+    bool isGuid(false);
     if (nb > 4)
     {
       char c1(arg[3][0]), c2(arg[3][1]);
@@ -2013,7 +2118,7 @@ static int DDataStd_SetRealList(Draw_Interpretor& di, int nb, const char** arg)
         isGuid = true;
       }
     }
-    int                            j(0);
+    int          j(0);
     occ::handle<TDataStd_RealList> A;
     if (!isGuid)
     {
@@ -2039,7 +2144,9 @@ static int DDataStd_SetRealList(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : DDataStd_InsertBeforeExtStringList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di,
+                                                           int  nb,
+                                                           const char**      arg)
 {
   if (nb == 5)
   {
@@ -2054,7 +2161,7 @@ static int DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di, int nb, cons
     if (!label.FindAttribute(TDataStd_ExtStringList::GetID(), A))
       return 1;
 
-    int                        index = Draw::Atoi(arg[3]);
+    int           index = Draw::Atoi(arg[3]);
     TCollection_ExtendedString value = arg[4];
 
     if (A->InsertBefore(index, value))
@@ -2069,7 +2176,9 @@ static int DDataStd_InsertBeforeExtStringList(Draw_Interpretor& di, int nb, cons
 //=======================================================================
 // function : DDataStd_InsertAfterExtStringList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertAfterExtStringList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertAfterExtStringList(Draw_Interpretor& di,
+                                                          int  nb,
+                                                          const char**      arg)
 {
   if (nb == 5)
   {
@@ -2084,7 +2193,7 @@ static int DDataStd_InsertAfterExtStringList(Draw_Interpretor& di, int nb, const
     if (!label.FindAttribute(TDataStd_ExtStringList::GetID(), A))
       return 1;
 
-    int                        index = Draw::Atoi(arg[3]);
+    int           index = Draw::Atoi(arg[3]);
     TCollection_ExtendedString value = arg[4];
 
     if (A->InsertAfter(index, value))
@@ -2099,7 +2208,9 @@ static int DDataStd_InsertAfterExtStringList(Draw_Interpretor& di, int nb, const
 //=======================================================================
 // function : DDataStd_RemoveExtStringList (DF, entry, index )
 //=======================================================================
-static int DDataStd_RemoveExtStringList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_RemoveExtStringList(Draw_Interpretor& di,
+                                                     int  nb,
+                                                     const char**      arg)
 {
   if (nb == 4)
   {
@@ -2128,7 +2239,9 @@ static int DDataStd_RemoveExtStringList(Draw_Interpretor& di, int nb, const char
 //=======================================================================
 // function : DDataStd_InsertBeforeBooleanList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di,
+                                                         int  nb,
+                                                         const char**      arg)
 {
   if (nb == 5)
   {
@@ -2143,7 +2256,7 @@ static int DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di, int nb, const 
     if (!label.FindAttribute(TDataStd_BooleanList::GetID(), A))
       return 1;
 
-    int  index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
     bool value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertBefore(index, value))
@@ -2158,7 +2271,9 @@ static int DDataStd_InsertBeforeBooleanList(Draw_Interpretor& di, int nb, const 
 //=======================================================================
 // function : DDataStd_InsertAfterBooleanList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertAfterBooleanList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertAfterBooleanList(Draw_Interpretor& di,
+                                                        int  nb,
+                                                        const char**      arg)
 {
   if (nb == 5)
   {
@@ -2173,7 +2288,7 @@ static int DDataStd_InsertAfterBooleanList(Draw_Interpretor& di, int nb, const c
     if (!label.FindAttribute(TDataStd_BooleanList::GetID(), A))
       return 1;
 
-    int  index = Draw::Atoi(arg[3]);
+    int index = Draw::Atoi(arg[3]);
     bool value = Draw::Atoi(arg[4]) != 0;
 
     if (A->InsertAfter(index, value))
@@ -2188,7 +2303,9 @@ static int DDataStd_InsertAfterBooleanList(Draw_Interpretor& di, int nb, const c
 //=======================================================================
 // function : DDataStd_RemoveBooleanList (DF, entry, index )
 //=======================================================================
-static int DDataStd_RemoveBooleanList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_RemoveBooleanList(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
   if (nb == 4)
   {
@@ -2217,7 +2334,9 @@ static int DDataStd_RemoveBooleanList(Draw_Interpretor& di, int nb, const char**
 //=======================================================================
 // function : DDataStd_InsertBeforeIntegerList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di,
+                                                         int  nb,
+                                                         const char**      arg)
 {
   if (nb == 5)
   {
@@ -2247,7 +2366,9 @@ static int DDataStd_InsertBeforeIntegerList(Draw_Interpretor& di, int nb, const 
 //=======================================================================
 // function : DDataStd_InsertAfterIntegerList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertAfterIntegerList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertAfterIntegerList(Draw_Interpretor& di,
+                                                        int  nb,
+                                                        const char**      arg)
 {
   if (nb == 5)
   {
@@ -2277,7 +2398,9 @@ static int DDataStd_InsertAfterIntegerList(Draw_Interpretor& di, int nb, const c
 //=======================================================================
 // function : DDataStd_RemoveIntegerList (DF, entry, index )
 //=======================================================================
-static int DDataStd_RemoveIntegerList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_RemoveIntegerList(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
   if (nb == 4)
   {
@@ -2306,7 +2429,9 @@ static int DDataStd_RemoveIntegerList(Draw_Interpretor& di, int nb, const char**
 //=======================================================================
 // function : DDataStd_InsertBeforeRealList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertBeforeRealList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertBeforeRealList(Draw_Interpretor& di,
+                                                      int  nb,
+                                                      const char**      arg)
 {
   if (nb == 5)
   {
@@ -2321,8 +2446,8 @@ static int DDataStd_InsertBeforeRealList(Draw_Interpretor& di, int nb, const cha
     if (!label.FindAttribute(TDataStd_RealList::GetID(), A))
       return 1;
 
-    int    index = Draw::Atoi(arg[3]);
-    double value = (double)Draw::Atof(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    double    value = (double)Draw::Atof(arg[4]);
 
     if (A->InsertBeforeByIndex(index, value))
       return 0;
@@ -2336,7 +2461,9 @@ static int DDataStd_InsertBeforeRealList(Draw_Interpretor& di, int nb, const cha
 //=======================================================================
 // function : DDataStd_InsertAfterRealList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertAfterRealList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertAfterRealList(Draw_Interpretor& di,
+                                                     int  nb,
+                                                     const char**      arg)
 {
   if (nb == 5)
   {
@@ -2351,8 +2478,8 @@ static int DDataStd_InsertAfterRealList(Draw_Interpretor& di, int nb, const char
     if (!label.FindAttribute(TDataStd_RealList::GetID(), A))
       return 1;
 
-    int    index = Draw::Atoi(arg[3]);
-    double value = (double)Draw::Atof(arg[4]);
+    int index = Draw::Atoi(arg[3]);
+    double    value = (double)Draw::Atof(arg[4]);
 
     if (A->InsertAfterByIndex(index, value))
       return 0;
@@ -2366,7 +2493,9 @@ static int DDataStd_InsertAfterRealList(Draw_Interpretor& di, int nb, const char
 //=======================================================================
 // function : DDataStd_RemoveRealList (DF, entry, index )
 //=======================================================================
-static int DDataStd_RemoveRealList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_RemoveRealList(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb == 4)
   {
@@ -2395,7 +2524,9 @@ static int DDataStd_RemoveRealList(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : DDataStd_InsertBeforeReferenceList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di,
+                                                           int  nb,
+                                                           const char**      arg)
 {
   if (nb == 5)
   {
@@ -2428,7 +2559,9 @@ static int DDataStd_InsertBeforeReferenceList(Draw_Interpretor& di, int nb, cons
 //=======================================================================
 // function : DDataStd_InsertAfterReferenceList (DF, entry, index, value  )
 //=======================================================================
-static int DDataStd_InsertAfterReferenceList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_InsertAfterReferenceList(Draw_Interpretor& di,
+                                                          int  nb,
+                                                          const char**      arg)
 {
   if (nb == 5)
   {
@@ -2461,7 +2594,9 @@ static int DDataStd_InsertAfterReferenceList(Draw_Interpretor& di, int nb, const
 //=======================================================================
 // function : DDataStd_RemoveReferenceList (DF, entry, index )
 //=======================================================================
-static int DDataStd_RemoveReferenceList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_RemoveReferenceList(Draw_Interpretor& di,
+                                                     int  nb,
+                                                     const char**      arg)
 {
   if (nb == 4)
   {
@@ -2490,7 +2625,9 @@ static int DDataStd_RemoveReferenceList(Draw_Interpretor& di, int nb, const char
 //=======================================================================
 // function : GetByteArray (DF, entry [, guid] )
 //=======================================================================
-static int DDataStd_GetByteArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetByteArray(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2539,7 +2676,9 @@ static int DDataStd_GetByteArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetByteArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetByteArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_GetByteArrayValue(Draw_Interpretor& di,
+                                                   int,
+                                                   const char** arg)
 {
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
@@ -2576,7 +2715,9 @@ static int DDataStd_GetByteArrayValue(Draw_Interpretor& di, int, const char** ar
 //=======================================================================
 // function : GetBooleanArray (DF, entry [, guid] )
 //=======================================================================
-static int DDataStd_GetBooleanArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetBooleanArray(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2627,7 +2768,9 @@ static int DDataStd_GetBooleanArray(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function : GetBooleanArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetBooleanArrayValue(Draw_Interpretor& di, int, const char** arg)
+static int DDataStd_GetBooleanArrayValue(Draw_Interpretor& di,
+                                                      int,
+                                                      const char** arg)
 {
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
@@ -2664,7 +2807,9 @@ static int DDataStd_GetBooleanArrayValue(Draw_Interpretor& di, int, const char**
 //=======================================================================
 // function : ChangeByteArray (DF, entry, indx, val )
 //=======================================================================
-static int DDataStd_ChangeByteArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeByteArray(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb == 5)
@@ -2699,7 +2844,7 @@ static int DDataStd_ChangeByteArray(Draw_Interpretor& di, int nb, const char** a
     {
       occ::handle<NCollection_HArray1<uint8_t>> Arr = A->InternalArray();
       occ::handle<NCollection_HArray1<uint8_t>> arr;
-      int                                       i;
+      int              i;
       if (indx > up)
       {
         up  = indx;
@@ -2733,7 +2878,9 @@ static int DDataStd_ChangeByteArray(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function : GetBooleanList (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetBooleanList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetBooleanList(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2769,7 +2916,7 @@ static int DDataStd_GetBooleanList(Draw_Interpretor& di, int nb, const char** ar
     }
 
     const NCollection_List<uint8_t>& bList   = A->List();
-    bool                             isEmpty = (bList.Extent() > 0) ? false : true;
+    bool           isEmpty = (bList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
       NCollection_List<uint8_t>::Iterator itr(bList);
@@ -2790,7 +2937,9 @@ static int DDataStd_GetBooleanList(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : GetIntegerList (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetIntegerList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetIntegerList(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2826,7 +2975,7 @@ static int DDataStd_GetIntegerList(Draw_Interpretor& di, int nb, const char** ar
     }
 
     const NCollection_List<int>& iList   = A->List();
-    bool                         isEmpty = (iList.Extent() > 0) ? false : true;
+    bool             isEmpty = (iList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
       NCollection_List<int>::Iterator itr(iList);
@@ -2848,7 +2997,9 @@ static int DDataStd_GetIntegerList(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : GetRealList (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetRealList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetRealList(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2884,7 +3035,7 @@ static int DDataStd_GetRealList(Draw_Interpretor& di, int nb, const char** arg)
     }
 
     const NCollection_List<double>& rList   = A->List();
-    bool                            isEmpty = (rList.Extent() > 0) ? false : true;
+    bool          isEmpty = (rList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
       NCollection_List<double>::Iterator itr(rList);
@@ -2905,7 +3056,9 @@ static int DDataStd_GetRealList(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : DDataStd_GetExtStringList (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetExtStringList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetExtStringList(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb >= 3)
   {
@@ -2941,7 +3094,7 @@ static int DDataStd_GetExtStringList(Draw_Interpretor& di, int nb, const char** 
     }
 
     const NCollection_List<TCollection_ExtendedString>& aList = A->List();
-    bool isEmpty                                              = (aList.Extent() > 0) ? false : true;
+    bool isEmpty = (aList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
       NCollection_List<TCollection_ExtendedString>::Iterator itr(aList);
@@ -2965,7 +3118,9 @@ static int DDataStd_GetExtStringList(Draw_Interpretor& di, int nb, const char** 
 //=======================================================================
 // function : DDataStd_GetReferenceList (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetReferenceList(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetReferenceList(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb >= 3)
   {
@@ -3001,7 +3156,7 @@ static int DDataStd_GetReferenceList(Draw_Interpretor& di, int nb, const char** 
     }
 
     const NCollection_List<TDF_Label>& aList   = A->List();
-    bool                               isEmpty = (aList.Extent() > 0) ? false : true;
+    bool     isEmpty = (aList.Extent() > 0) ? false : true;
     if (!isEmpty)
     {
       NCollection_List<TDF_Label>::Iterator itr(aList);
@@ -3030,7 +3185,9 @@ static int DDataStd_GetReferenceList(Draw_Interpretor& di, int nb, const char** 
 // function : SetIntPackedMap (DF, entry, isDelta, key1, key2, ...
 //=======================================================================
 
-static int DDataStd_SetIntPackedMap(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetIntPackedMap(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb > 4)
@@ -3040,8 +3197,8 @@ static int DDataStd_SetIntPackedMap(Draw_Interpretor& di, int nb, const char** a
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    bool                               isDelta = Draw::Atoi(arg[3]) != 0;
-    int                                aNum    = nb - 4;
+    bool              isDelta = Draw::Atoi(arg[3]) != 0;
+    int              aNum    = nb - 4;
     occ::handle<TDataStd_IntPackedMap> anAtt;
     if (!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
       anAtt = TDataStd_IntPackedMap::Set(aLabel, isDelta);
@@ -3051,7 +3208,7 @@ static int DDataStd_SetIntPackedMap(Draw_Interpretor& di, int nb, const char** a
       return 1;
     }
 
-    int                        j = 4;
+    int           j = 4;
     TColStd_PackedMapOfInteger aMap;
     for (int i = 1; i <= aNum; i++)
     {
@@ -3071,7 +3228,9 @@ static int DDataStd_SetIntPackedMap(Draw_Interpretor& di, int nb, const char** a
 // function : GetIntPackedMap (DF, entry )
 //=======================================================================
 
-static int DDataStd_GetIntPackedMap(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetIntPackedMap(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb == 3)
@@ -3104,7 +3263,9 @@ static int DDataStd_GetIntPackedMap(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function : ChangeIntPackedMap_Add (DF, entry, Key1, Key2,... )
 //=======================================================================
-static int DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di,
+                                                        int  nb,
+                                                        const char**      arg)
 {
 
   if (nb >= 4)
@@ -3126,7 +3287,7 @@ static int DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di, int nb, const c
       return 1;
     }
 
-    int                                      i, aNum = nb - 3;
+    int                    i, aNum = nb - 3;
     occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
     occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
@@ -3150,7 +3311,9 @@ static int DDataStd_ChangeIntPackedMap_Add(Draw_Interpretor& di, int nb, const c
 //=======================================================================
 // function : ChangeIntPackedMap_Rem (DF, entry, Key1, Key2,... )
 //=======================================================================
-static int DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di,
+                                                        int  nb,
+                                                        const char**      arg)
 {
 
   if (nb >= 4)
@@ -3172,7 +3335,7 @@ static int DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di, int nb, const c
       return 1;
     }
 
-    int                                      i, aNum = nb - 3;
+    int                    i, aNum = nb - 3;
     occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
     occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
@@ -3197,7 +3360,9 @@ static int DDataStd_ChangeIntPackedMap_Rem(Draw_Interpretor& di, int nb, const c
 // function : ChangeIntPackedMap_AddRem (DF, entry, Key1, Key2,... )
 //         : if Keyi exist in map - remove it, if no - add
 //=======================================================================
-static int DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di,
+                                                           int  nb,
+                                                           const char**      arg)
 {
 
   if (nb >= 4)
@@ -3219,7 +3384,7 @@ static int DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di, int nb, cons
       return 1;
     }
 
-    int                                      i, aNum = nb - 3;
+    int                    i, aNum = nb - 3;
     occ::handle<TColStd_HPackedMapOfInteger> aHMap = A->GetHMap();
     occ::handle<TColStd_HPackedMapOfInteger> ahMap = new TColStd_HPackedMapOfInteger();
     if (!aHMap.IsNull())
@@ -3246,7 +3411,9 @@ static int DDataStd_ChangeIntPackedMap_AddRem(Draw_Interpretor& di, int nb, cons
 // function : SetIntPHugeMap (DF, entry, isDelta Num)
 //=======================================================================
 
-static int DDataStd_SetIntPHugeMap(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetIntPHugeMap(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb > 4)
@@ -3256,8 +3423,8 @@ static int DDataStd_SetIntPHugeMap(Draw_Interpretor& di, int nb, const char** ar
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    bool                               isDelta = Draw::Atoi(arg[3]) != 0;
-    int                                aNum    = Draw::Atoi(arg[4]);
+    bool              isDelta = Draw::Atoi(arg[3]) != 0;
+    int              aNum    = Draw::Atoi(arg[4]);
     occ::handle<TDataStd_IntPackedMap> anAtt;
     if (!aLabel.FindAttribute(TDataStd_IntPackedMap::GetID(), anAtt))
       anAtt = TDataStd_IntPackedMap::Set(aLabel, isDelta);
@@ -3285,7 +3452,9 @@ static int DDataStd_SetIntPHugeMap(Draw_Interpretor& di, int nb, const char** ar
 // function : SetNDataIntegers (DF, entry , Num
 //=======================================================================
 
-static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di,
+                                                   int  nb,
+                                                   const char**      arg)
 {
 
   if (nb == 4)
@@ -3295,7 +3464,7 @@ static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di, int nb, const char**
       return 1;
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
-    int                             aNumP = Draw::Atoi(arg[3]), j;
+    int           aNumP = Draw::Atoi(arg[3]), j;
     occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
@@ -3311,7 +3480,7 @@ static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di, int nb, const char**
     for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString key  = aKey + i;
-      int                        aVal = j + i;
+      int           aVal = j + i;
       anAtt->SetInteger(key, aVal);
       j += 1;
     }
@@ -3326,7 +3495,9 @@ static int DDataStd_SetNDataIntegers2(Draw_Interpretor& di, int nb, const char**
 // function : SetNDataIntArrays2 (DF, entry , key, NumOfArElem )
 //=======================================================================
 
-static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb == 5)
@@ -3337,9 +3508,9 @@ static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di, int nb, const char** ar
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                        j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    int                        aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
     occ::handle<TDataStd_NamedData> anAtt;
@@ -3351,7 +3522,7 @@ static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di, int nb, const char** ar
       return 1;
     }
 
-    j                                           = 15;
+    j                                      = 15;
     occ::handle<NCollection_HArray1<int>> anArr = new NCollection_HArray1<int>(1, aNum);
     for (int i = 1; i <= aNum; i++)
     {
@@ -3371,7 +3542,9 @@ static int DDataStd_SetNDataIntAr2(Draw_Interpretor& di, int nb, const char** ar
 // function :  SetAsciiString(DF, entry, String[, guid])
 //=======================================================================
 
-static int DDataStd_SetAsciiString(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetAsciiString(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb == 4 || nb == 5)
@@ -3412,7 +3585,9 @@ static int DDataStd_SetAsciiString(Draw_Interpretor& di, int nb, const char** ar
 // function :  GetAsciiString(DF, entry[, guid] )
 //=======================================================================
 
-static int DDataStd_GetAsciiString(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetAsciiString(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb == 3 || nb == 4)
   {
@@ -3454,7 +3629,9 @@ static int DDataStd_GetAsciiString(Draw_Interpretor& di, int nb, const char** ar
 // function : SetNDataIntegers (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static int DDataStd_SetNDataIntegers(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataIntegers(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
 
   if (nb >= 6)
@@ -3474,7 +3651,7 @@ static int DDataStd_SetNDataIntegers(Draw_Interpretor& di, int nb, const char** 
     //     std::cout << "Value = |"<<aValue<<std::endl;
     //     std::cout << "aKey = " << aString << "|"<<std::endl;
     //
-    int                             aNumP = Draw::Atoi(arg[3]), j;
+    int           aNumP = Draw::Atoi(arg[3]), j;
     occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
@@ -3489,7 +3666,7 @@ static int DDataStd_SetNDataIntegers(Draw_Interpretor& di, int nb, const char** 
     for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      int                        aVal = Draw::Atoi(arg[j + 1]);
+      int           aVal = Draw::Atoi(arg[j + 1]);
       anAtt->SetInteger(aKey, aVal);
       j += 2;
     }
@@ -3502,7 +3679,9 @@ static int DDataStd_SetNDataIntegers(Draw_Interpretor& di, int nb, const char** 
 //=======================================================================
 // function :  GetNDIntegers(DF, entry )
 //=======================================================================
-static int DDataStd_GetNDIntegers(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDIntegers(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
 
   if (nb == 3)
@@ -3524,13 +3703,12 @@ static int DDataStd_GetNDIntegers(Draw_Interpretor& di, int nb, const char** arg
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, int>& aMap =
-      anAtt->GetIntegersContainer();
+    const NCollection_DataMap<TCollection_ExtendedString, int>&           aMap = anAtt->GetIntegersContainer();
     NCollection_DataMap<TCollection_ExtendedString, int>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      int                               aValue = itr.Value();
+      int                  aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
     }
 
@@ -3543,7 +3721,9 @@ static int DDataStd_GetNDIntegers(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function :  GetNDInteger(DF, entry, key [drawname])
 //=======================================================================
-static int DDataStd_GetNDInteger(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDInteger(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
 
   if (nb >= 4)
@@ -3588,7 +3768,9 @@ static int DDataStd_GetNDInteger(Draw_Interpretor& di, int nb, const char** arg)
 // function : SetNDataReals (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static int DDataStd_SetNDataReals(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataReals(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
 
   if (nb >= 6)
@@ -3599,7 +3781,7 @@ static int DDataStd_SetNDataReals(Draw_Interpretor& di, int nb, const char** arg
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                             aNumP = Draw::Atoi(arg[3]), j;
+    int           aNumP = Draw::Atoi(arg[3]), j;
     occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
@@ -3614,7 +3796,7 @@ static int DDataStd_SetNDataReals(Draw_Interpretor& di, int nb, const char** arg
     for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      double                     aVal = Draw::Atof(arg[j + 1]);
+      double              aVal = Draw::Atof(arg[j + 1]);
       anAtt->SetReal(aKey, aVal);
       j += 2;
     }
@@ -3627,7 +3809,9 @@ static int DDataStd_SetNDataReals(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function :  GetNDReals(DF, entry )
 //=======================================================================
-static int DDataStd_GetNDReals(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDReals(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
 
   if (nb == 3)
@@ -3649,13 +3833,12 @@ static int DDataStd_GetNDReals(Draw_Interpretor& di, int nb, const char** arg)
     }
 
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, double>& aMap =
-      anAtt->GetRealsContainer();
+    const NCollection_DataMap<TCollection_ExtendedString, double>&           aMap = anAtt->GetRealsContainer();
     NCollection_DataMap<TCollection_ExtendedString, double>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      double                            aValue = itr.Value();
+      double                     aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
     }
     return 0;
@@ -3667,7 +3850,9 @@ static int DDataStd_GetNDReals(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function :  GetNDReal(DF, entry, key [drawname])
 //=======================================================================
-static int DDataStd_GetNDReal(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDReal(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
 
   if (nb >= 4)
@@ -3712,7 +3897,9 @@ static int DDataStd_GetNDReal(Draw_Interpretor& di, int nb, const char** arg)
 // function : SetNDataStrings (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static int DDataStd_SetNDataStrings(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataStrings(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb >= 6)
@@ -3723,7 +3910,7 @@ static int DDataStd_SetNDataStrings(Draw_Interpretor& di, int nb, const char** a
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                             aNumP = Draw::Atoi(arg[3]), j;
+    int           aNumP = Draw::Atoi(arg[3]), j;
     occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
@@ -3763,7 +3950,9 @@ bool isLess(const DDataStd_GetNDStrings_Property& theProperty1,
 }
 } // namespace
 
-static int DDataStd_GetNDStrings(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDStrings(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
 
   if (nb == 3)
@@ -3785,14 +3974,10 @@ static int DDataStd_GetNDStrings(Draw_Interpretor& di, int nb, const char** arg)
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aMap =
-      anAtt->GetStringsContainer();
+    const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& aMap = anAtt->GetStringsContainer();
 
     std::vector<DDataStd_GetNDStrings_Property> aProperties;
-    for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator aIt(
-           aMap);
-         aIt.More();
-         aIt.Next())
+    for (NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator aIt(aMap); aIt.More(); aIt.Next())
     {
       aProperties.push_back(DDataStd_GetNDStrings_Property(aIt.Key(), aIt.Value()));
     }
@@ -3813,7 +3998,9 @@ static int DDataStd_GetNDStrings(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function :  GetNDString(DF, entry, key [drawname])
 //=======================================================================
-static int DDataStd_GetNDString(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDString(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
 
   if (nb >= 4)
@@ -3859,7 +4046,9 @@ static int DDataStd_GetNDString(Draw_Interpretor& di, int nb, const char** arg)
 // function : SetNDataBytes (DF, entry , Num,  key1, val1, ...
 //=======================================================================
 
-static int DDataStd_SetNDataBytes(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataBytes(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
 
   if (nb >= 6)
@@ -3870,7 +4059,7 @@ static int DDataStd_SetNDataBytes(Draw_Interpretor& di, int nb, const char** arg
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                             aNumP = Draw::Atoi(arg[3]), j;
+    int           aNumP = Draw::Atoi(arg[3]), j;
     occ::handle<TDataStd_NamedData> anAtt;
     if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
@@ -3885,7 +4074,7 @@ static int DDataStd_SetNDataBytes(Draw_Interpretor& di, int nb, const char** arg
     for (int i = 1; i <= aNumP; i++)
     {
       TCollection_ExtendedString aKey(arg[j]);
-      uint8_t                    aVal = (uint8_t)Draw::Atoi(arg[j + 1]);
+      uint8_t              aVal = (uint8_t)Draw::Atoi(arg[j + 1]);
       anAtt->SetByte(aKey, aVal);
       j += 2;
     }
@@ -3898,7 +4087,9 @@ static int DDataStd_SetNDataBytes(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function :  GetNDBytes(DF, entry )
 //=======================================================================
-static int DDataStd_GetNDBytes(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDBytes(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      arg)
 {
 
   if (nb == 3)
@@ -3920,13 +4111,12 @@ static int DDataStd_GetNDBytes(Draw_Interpretor& di, int nb, const char** arg)
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& aMap =
-      anAtt->GetBytesContainer();
+    const NCollection_DataMap<TCollection_ExtendedString, uint8_t>&           aMap = anAtt->GetBytesContainer();
     NCollection_DataMap<TCollection_ExtendedString, uint8_t>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
-      uint8_t                           aValue = itr.Value();
+      uint8_t                     aValue = itr.Value();
       std::cout << "Key = " << aKey << " Value = " << aValue << std::endl;
     }
     return 0;
@@ -3938,7 +4128,9 @@ static int DDataStd_GetNDBytes(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function :  GetNDByte(DF, entry, key [drawname])
 //=======================================================================
-static int DDataStd_GetNDByte(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDByte(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
 
   if (nb >= 4)
@@ -3983,7 +4175,9 @@ static int DDataStd_GetNDByte(Draw_Interpretor& di, int nb, const char** arg)
 // function : SetNDataIntArrays (DF, entry , key, NumOfArElem, val1, val2,...  )
 //=======================================================================
 
-static int DDataStd_SetNDataIntAr(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataIntAr(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
 
   if (nb >= 6)
@@ -3994,9 +4188,9 @@ static int DDataStd_SetNDataIntAr(Draw_Interpretor& di, int nb, const char** arg
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                        j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    int                        aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
     occ::handle<TDataStd_NamedData> anAtt;
@@ -4008,7 +4202,7 @@ static int DDataStd_SetNDataIntAr(Draw_Interpretor& di, int nb, const char** arg
       return 1;
     }
 
-    j                                           = 5;
+    j                                      = 5;
     occ::handle<NCollection_HArray1<int>> anArr = new NCollection_HArray1<int>(1, aNum);
     for (int i = 1; i <= aNum; i++)
     {
@@ -4027,7 +4221,9 @@ static int DDataStd_SetNDataIntAr(Draw_Interpretor& di, int nb, const char** arg
 //=======================================================================
 // function :  GetNDIntArrays(DF, entry )
 //=======================================================================
-static int DDataStd_GetNDIntArrays(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDIntArrays(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb == 3)
@@ -4049,10 +4245,8 @@ static int DDataStd_GetNDIntArrays(Draw_Interpretor& di, int nb, const char** ar
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
-      aMap = anAtt->GetArraysOfIntegersContainer();
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator
-      itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& aMap = anAtt->GetArraysOfIntegersContainer();
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
@@ -4080,7 +4274,9 @@ static int DDataStd_GetNDIntArrays(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function :  GetNDIntArray(DF, entry, key )
 //=======================================================================
-static int DDataStd_GetNDIntArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDIntArray(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
 
   if (nb >= 4)
@@ -4137,7 +4333,9 @@ static int DDataStd_GetNDIntArray(Draw_Interpretor& di, int nb, const char** arg
 // function : SetNDataRealArrays (DF entry key NumOfArElem val1 val2...  )
 //=======================================================================
 
-static int DDataStd_SetNDataRealAr(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetNDataRealAr(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb >= 6)
@@ -4148,9 +4346,9 @@ static int DDataStd_SetNDataRealAr(Draw_Interpretor& di, int nb, const char** ar
     TDF_Label aLabel;
     DDF::AddLabel(DF, arg[2], aLabel);
 
-    int                        j;
+    int           j;
     TCollection_ExtendedString aKey(arg[3]);
-    int                        aNum = Draw::Atoi(arg[4]);
+    int           aNum = Draw::Atoi(arg[4]);
     if (aNum <= 0)
       return 1;
     occ::handle<TDataStd_NamedData> anAtt;
@@ -4162,7 +4360,7 @@ static int DDataStd_SetNDataRealAr(Draw_Interpretor& di, int nb, const char** ar
       return 1;
     }
 
-    j                                              = 5;
+    j                                   = 5;
     occ::handle<NCollection_HArray1<double>> anArr = new NCollection_HArray1<double>(1, aNum);
     for (int i = 1; i <= aNum; i++)
     {
@@ -4181,7 +4379,9 @@ static int DDataStd_SetNDataRealAr(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function :  GetNDRealArrays(DF, entry )
 //=======================================================================
-static int DDataStd_GetNDRealArrays(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDRealArrays(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
 
   if (nb == 3)
@@ -4203,10 +4403,8 @@ static int DDataStd_GetNDRealArrays(Draw_Interpretor& di, int nb, const char** a
     std::cout << std::endl;
     std::cout << "NamedData attribute at Label = " << arg[2] << std::endl;
     anAtt->LoadDeferredData();
-    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
-      aMap = anAtt->GetArraysOfRealsContainer();
-    NCollection_DataMap<TCollection_ExtendedString,
-                        occ::handle<NCollection_HArray1<double>>>::Iterator itr(aMap);
+    const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& aMap = anAtt->GetArraysOfRealsContainer();
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(aMap);
     for (; itr.More(); itr.Next())
     {
       const TCollection_ExtendedString& aKey(itr.Key());
@@ -4234,7 +4432,9 @@ static int DDataStd_GetNDRealArrays(Draw_Interpretor& di, int nb, const char** a
 //=======================================================================
 // function :  GetNDRealArray(DF, entry, key )
 //=======================================================================
-static int DDataStd_GetNDRealArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetNDRealArray(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
 
   if (nb >= 4)
@@ -4289,7 +4489,9 @@ static int DDataStd_GetNDRealArray(Draw_Interpretor& di, int nb, const char** ar
 //=======================================================================
 // function : SetRefArray (DF, entry , [-g Guid,] From, To,  elmt1, elmt2, ...
 //=======================================================================
-static int DDataStd_SetRefArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetRefArray(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb >= 5)
   {
@@ -4298,9 +4500,9 @@ static int DDataStd_SetRefArray(Draw_Interpretor& di, int nb, const char** arg)
       return 1;
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_GUID guid;
-    bool          isGuid(false);
-    char          c1(arg[3][0]), c2(arg[3][1]);
+    Standard_GUID      guid;
+    bool   isGuid(false);
+    char c1(arg[3][0]), c2(arg[3][1]);
     if (c1 == '-' && c2 == 'g')
     { // guid
       if (!Standard_GUID::CheckGUIDFormat(arg[4]))
@@ -4351,7 +4553,9 @@ static int DDataStd_SetRefArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : SetRefArrayValue (DF, entry, index, value)
 //=======================================================================
-static int DDataStd_SetRefArrayValue(Draw_Interpretor&, int, const char** arg)
+static int DDataStd_SetRefArrayValue(Draw_Interpretor&,
+                                                  int,
+                                                  const char** arg)
 {
   // Get document.
   occ::handle<TDF_Data> DF;
@@ -4382,7 +4586,9 @@ static int DDataStd_SetRefArrayValue(Draw_Interpretor&, int, const char** arg)
 //=======================================================================
 // function : GetRefArray (DF, entry [, guid])
 //=======================================================================
-static int DDataStd_GetRefArray(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetRefArray(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb >= 3)
   {
@@ -4435,7 +4641,9 @@ static int DDataStd_GetRefArray(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetRefArrayValue (DF, entry, index)
 //=======================================================================
-static int DDataStd_GetRefArrayValue(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetRefArrayValue(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb >= 3)
   {
@@ -4494,7 +4702,9 @@ static int DDataStd_GetRefArrayValue(Draw_Interpretor& di, int nb, const char** 
 // purpose  : SetTriangulation (DF, entry, face)
 //=======================================================================
 
-static int DDataStd_SetTriangulation(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetTriangulation(Draw_Interpretor& di,
+                                                  int  nb,
+                                                  const char**      arg)
 {
   if (nb == 4)
   {
@@ -4515,7 +4725,7 @@ static int DDataStd_SetTriangulation(Draw_Interpretor& di, int nb, const char** 
     }
 
     // Get triangulation of the face.
-    TopLoc_Location                 loc;
+    TopLoc_Location            loc;
     occ::handle<Poly_Triangulation> tris = BRep_Tool::Triangulation(TopoDS::Face(face), loc);
     if (tris.IsNull())
     {
@@ -4536,7 +4746,9 @@ static int DDataStd_SetTriangulation(Draw_Interpretor& di, int nb, const char** 
 // purpose  : DumpTriangulation (DF, entry)
 //=======================================================================
 
-static int DDataStd_DumpMesh(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_DumpMesh(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   if (nb == 3)
   {

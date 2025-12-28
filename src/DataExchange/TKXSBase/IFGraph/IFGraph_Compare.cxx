@@ -26,13 +26,15 @@ IFGraph_Compare::IFGraph_Compare(const Interface_Graph& agraph)
 {
 }
 
-void IFGraph_Compare::GetFromEntity(const occ::handle<Standard_Transient>& ent, const bool first)
+void IFGraph_Compare::GetFromEntity(const occ::handle<Standard_Transient>& ent,
+                                    const bool            first)
 {
   IFGraph_AllShared iter(thegraph.Model(), ent);
   GetFromIter(iter, first);
 }
 
-void IFGraph_Compare::GetFromIter(const Interface_EntityIterator& iter, const bool first)
+void IFGraph_Compare::GetFromIter(const Interface_EntityIterator& iter,
+                                  const bool          first)
 {
   int stat = 2;
   if (first)

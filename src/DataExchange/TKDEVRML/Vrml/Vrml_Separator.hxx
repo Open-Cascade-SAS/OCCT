@@ -52,7 +52,7 @@ public:
 
 private:
   Vrml_SeparatorRenderCulling myRenderCulling;
-  bool                        myFlagPrint;
+  bool            myFlagPrint;
 };
 
 #endif // _Vrml_Separator_HeaderFile

@@ -22,10 +22,17 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 AppDef_MultiPointConstraint::AppDef_MultiPointConstraint() {}
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const int NbPoles, const int NbPoles2d)
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const int NbPoles,
+                                                         const int NbPoles2d)
     : AppParCurves_MultiPoint(NbPoles, NbPoles2d)
 {
 }
@@ -46,13 +53,12 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array
 {
 }
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
-  const NCollection_Array1<gp_Pnt>&   tabP,
-  const NCollection_Array1<gp_Pnt2d>& tabP2d,
-  const NCollection_Array1<gp_Vec>&   tabVec,
-  const NCollection_Array1<gp_Vec2d>& tabVec2d,
-  const NCollection_Array1<gp_Vec>&   tabCur,
-  const NCollection_Array1<gp_Vec2d>& tabCur2d)
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array1<gp_Pnt>&   tabP,
+                                                         const NCollection_Array1<gp_Pnt2d>& tabP2d,
+                                                         const NCollection_Array1<gp_Vec>&   tabVec,
+                                                         const NCollection_Array1<gp_Vec2d>& tabVec2d,
+                                                         const NCollection_Array1<gp_Vec>&   tabCur,
+                                                         const NCollection_Array1<gp_Vec2d>& tabCur2d)
     : AppParCurves_MultiPoint(tabP, tabP2d)
 {
 
@@ -91,11 +97,10 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
   }
 }
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
-  const NCollection_Array1<gp_Pnt>&   tabP,
-  const NCollection_Array1<gp_Pnt2d>& tabP2d,
-  const NCollection_Array1<gp_Vec>&   tabVec,
-  const NCollection_Array1<gp_Vec2d>& tabVec2d)
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array1<gp_Pnt>&   tabP,
+                                                         const NCollection_Array1<gp_Pnt2d>& tabP2d,
+                                                         const NCollection_Array1<gp_Vec>&   tabVec,
+                                                         const NCollection_Array1<gp_Vec2d>& tabVec2d)
     : AppParCurves_MultiPoint(tabP, tabP2d)
 {
 
@@ -164,9 +169,8 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array
   }
 }
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
-  const NCollection_Array1<gp_Pnt2d>& tabP2d,
-  const NCollection_Array1<gp_Vec2d>& tabVec2d)
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array1<gp_Pnt2d>& tabP2d,
+                                                         const NCollection_Array1<gp_Vec2d>& tabVec2d)
     :
 
       AppParCurves_MultiPoint(tabP2d)
@@ -185,10 +189,9 @@ AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
   }
 }
 
-AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(
-  const NCollection_Array1<gp_Pnt2d>& tabP2d,
-  const NCollection_Array1<gp_Vec2d>& tabVec2d,
-  const NCollection_Array1<gp_Vec2d>& tabCur2d)
+AppDef_MultiPointConstraint::AppDef_MultiPointConstraint(const NCollection_Array1<gp_Pnt2d>& tabP2d,
+                                                         const NCollection_Array1<gp_Vec2d>& tabVec2d,
+                                                         const NCollection_Array1<gp_Vec2d>& tabCur2d)
     : AppParCurves_MultiPoint(tabP2d)
 {
 

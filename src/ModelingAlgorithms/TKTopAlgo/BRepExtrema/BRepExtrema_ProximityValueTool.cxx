@@ -48,8 +48,8 @@ BRepExtrema_ProximityValueTool::BRepExtrema_ProximityValueTool()
 BRepExtrema_ProximityValueTool::BRepExtrema_ProximityValueTool(
   const occ::handle<BRepExtrema_TriangleSet>& theSet1,
   const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList2)
+  const NCollection_Vector<TopoDS_Shape>&           theShapeList1,
+  const NCollection_Vector<TopoDS_Shape>&           theShapeList2)
     : myIsRefinementRequired1(false),
       myIsRefinementRequired2(false),
       myDistance(std::numeric_limits<double>::max()),
@@ -79,13 +79,14 @@ void BRepExtrema_ProximityValueTool::LoadTriangleSets(
 // function : calcEdgeRefinementStep
 // purpose  : Calculates the edge refinement step
 //=======================================================================
-static double calcEdgeRefinementStep(const TopoDS_Edge& theEdge, const int theNbNodes)
+static double calcEdgeRefinementStep(const TopoDS_Edge&     theEdge,
+                                            const int theNbNodes)
 {
   if (theNbNodes < 2)
     return 0;
 
   BRepAdaptor_Curve aBAC(theEdge);
-  double            aLen = GCPnts_AbscissaPoint::Length(aBAC);
+  double     aLen = GCPnts_AbscissaPoint::Length(aBAC);
   return aLen / (double)(theNbNodes - 1);
 }
 
@@ -94,7 +95,8 @@ static double calcEdgeRefinementStep(const TopoDS_Edge& theEdge, const int theNb
 // purpose  : Calculates the face refinement step as an approximate square
 // (Shape area / number triangles) * 2
 //=======================================================================
-static double calcFaceRefinementStep(const TopoDS_Face& theFace, const int theNbTrg)
+static double calcFaceRefinementStep(const TopoDS_Face&     theFace,
+                                            const int theNbTrg)
 {
   if (theNbTrg < 1)
     return 0;
@@ -109,17 +111,18 @@ static double calcFaceRefinementStep(const TopoDS_Face& theFace, const int theNb
 // function : getInfoForRefinement
 // purpose  : Gets shape data for further refinement
 //=======================================================================
-bool BRepExtrema_ProximityValueTool::getInfoForRefinement(const TopoDS_Shape& theShape,
-                                                          TopAbs_ShapeEnum&   theShapeType,
-                                                          int&                theNbNodes,
-                                                          double&             theStep)
+bool BRepExtrema_ProximityValueTool::getInfoForRefinement(
+  const TopoDS_Shape& theShape,
+  TopAbs_ShapeEnum&   theShapeType,
+  int&   theNbNodes,
+  double&      theStep)
 {
   if (theShape.ShapeType() == TopAbs_FACE)
   {
     theShapeType   = TopAbs_FACE;
     TopoDS_Face aF = TopoDS::Face(theShape);
 
-    TopLoc_Location                 aLocation;
+    TopLoc_Location            aLocation;
     occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aF, aLocation);
 
     if (aTriangulation.IsNull())
@@ -127,16 +130,16 @@ bool BRepExtrema_ProximityValueTool::getInfoForRefinement(const TopoDS_Shape& th
       return false;
     }
 
-    theNbNodes = aTriangulation->NbNodes();
+    theNbNodes              = aTriangulation->NbNodes();
     int aNbTrg = aTriangulation->NbTriangles();
-    theStep    = calcFaceRefinementStep(aF, aNbTrg);
+    theStep                 = calcFaceRefinementStep(aF, aNbTrg);
   }
   else if (theShape.ShapeType() == TopAbs_EDGE)
   {
     theShapeType   = TopAbs_EDGE;
     TopoDS_Edge aE = TopoDS::Edge(theShape);
 
-    TopLoc_Location             aLocation;
+    TopLoc_Location        aLocation;
     occ::handle<Poly_Polygon3D> aPolygon = BRep_Tool::Polygon3D(aE, aLocation);
 
     if (aPolygon.IsNull())
@@ -164,9 +167,8 @@ bool BRepExtrema_ProximityValueTool::getInfoForRefinement(const TopoDS_Shape& th
 // function : LoadTriangleSets
 // purpose  : Loads the given list of subshapes into the proximity tool
 //=======================================================================
-void BRepExtrema_ProximityValueTool::LoadShapeLists(
-  const NCollection_Vector<TopoDS_Shape>& theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>& theShapeList2)
+void BRepExtrema_ProximityValueTool::LoadShapeLists(const NCollection_Vector<TopoDS_Shape>& theShapeList1,
+                                                    const NCollection_Vector<TopoDS_Shape>& theShapeList2)
 {
   myShapeList1 = theShapeList1;
   myShapeList2 = theShapeList2;
@@ -184,7 +186,8 @@ void BRepExtrema_ProximityValueTool::LoadShapeLists(
 // function : SetNbSamplePoints
 // purpose  : Sets number of sample points used for proximity calculation for each shape
 //=======================================================================
-void BRepExtrema_ProximityValueTool::SetNbSamplePoints(const int theSamples1, const int theSamples2)
+void BRepExtrema_ProximityValueTool::SetNbSamplePoints(const int theSamples1,
+                                                       const int theSamples2)
 {
   myNbSamples1 = theSamples1;
   myNbSamples2 = theSamples2;
@@ -197,17 +200,17 @@ void BRepExtrema_ProximityValueTool::SetNbSamplePoints(const int theSamples1, co
 // purpose  : Returns the computed proximity value from first BVH to another one
 //=======================================================================
 double BRepExtrema_ProximityValueTool::computeProximityDist(
-  const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-  const int                                   theNbSamples1,
-  const BVH_Array3d&                          theAddVertices1,
-  const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-  const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-  const NCollection_Vector<TopoDS_Shape>&     theShapeList2,
-  BVH_Vec3d&                                  thePoint1,
-  BVH_Vec3d&                                  thePoint2,
-  ProxPnt_Status&                             thePointStatus1,
-  ProxPnt_Status&                             thePointStatus2) const
+  const occ::handle<BRepExtrema_TriangleSet>&    theSet1,
+  const int                    theNbSamples1,
+  const BVH_Array3d&                        theAddVertices1,
+  const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
+  const occ::handle<BRepExtrema_TriangleSet>&    theSet2,
+  const NCollection_Vector<TopoDS_Shape>&              theShapeList1,
+  const NCollection_Vector<TopoDS_Shape>&              theShapeList2,
+  BVH_Vec3d&                                thePoint1,
+  BVH_Vec3d&                                thePoint2,
+  ProxPnt_Status&                           thePointStatus1,
+  ProxPnt_Status&                           thePointStatus2) const
 {
   BRepExtrema_ProximityDistTool aProxDistTool(theSet1,
                                               theNbSamples1,
@@ -233,7 +236,7 @@ double BRepExtrema_ProximityValueTool::computeProximityDist(
 //=======================================================================
 bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
   const TopoDS_Edge&                  theEdge,
-  const double                        theStep,
+  const double                 theStep,
   BVH_Array3d&                        theAddVertices,
   NCollection_Vector<ProxPnt_Status>& theAddStatuses)
 {
@@ -244,8 +247,8 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
     return false;
   }
 
-  double aLen            = GCPnts_AbscissaPoint::Length(aBAC);
-  int    aNbSamplePoints = (int)(aLen / theStep) + 1;
+  double    aLen            = GCPnts_AbscissaPoint::Length(aBAC);
+  int aNbSamplePoints = (int)(aLen / theStep) + 1;
 
   GCPnts_QuasiUniformAbscissa aGCPnts(aBAC, std::max(3, aNbSamplePoints));
 
@@ -256,7 +259,7 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
   for (int aVertIdx = 2; aVertIdx < aNbNodes; ++aVertIdx) // don't add extreme points
   {
     double aPar = aGCPnts.Parameter(aVertIdx);
-    gp_Pnt aP   = aBAC.Value(aPar);
+    gp_Pnt        aP   = aBAC.Value(aPar);
 
     theAddVertices.push_back(BVH_Vec3d(aP.X(), aP.Y(), aP.Z()));
     theAddStatuses.Append(ProxPnt_Status::ProxPnt_Status_MIDDLE);
@@ -280,22 +283,23 @@ bool BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices(
 void BRepExtrema_ProximityValueTool::doRecurTrgSplit(
   const gp_Pnt (&theTrg)[3],
   const ProxPnt_Status (&theEdgesStatus)[3],
-  const double                        theTol,
-  const double                        theStep,
+  const double                 theTol,
+  const double                 theStep,
   BVH_Array3d&                        theAddVertices,
   NCollection_Vector<ProxPnt_Status>& theAddStatuses)
 {
-  gp_XYZ aTrgSide1 = theTrg[1].Coord() - theTrg[0].Coord();
-  gp_XYZ aTrgSide2 = theTrg[2].Coord() - theTrg[0].Coord();
+  gp_XYZ        aTrgSide1 = theTrg[1].Coord() - theTrg[0].Coord();
+  gp_XYZ        aTrgSide2 = theTrg[2].Coord() - theTrg[0].Coord();
   double aTrgArea  = 0.5 * aTrgSide1.CrossMagnitude(aTrgSide2);
 
   if (aTrgArea - theStep < Precision::SquareConfusion())
     return;
 
-  double aD[3]{theTrg[0].Distance(theTrg[1]),
-               theTrg[1].Distance(theTrg[2]),
-               theTrg[2].Distance(theTrg[0])};
-  int    aBisectedEdgeIdx = aD[0] > aD[1] ? (aD[0] > aD[2] ? 0 : 2) : (aD[1] > aD[2] ? 1 : 2);
+  double    aD[3]{theTrg[0].Distance(theTrg[1]),
+                         theTrg[1].Distance(theTrg[2]),
+                         theTrg[2].Distance(theTrg[0])};
+  int aBisectedEdgeIdx =
+    aD[0] > aD[1] ? (aD[0] > aD[2] ? 0 : 2) : (aD[1] > aD[2] ? 1 : 2);
   gp_Pnt aCenterOfMaxSide(theTrg[aBisectedEdgeIdx].Coord());
   aCenterOfMaxSide.BaryCenter(0.5, theTrg[(aBisectedEdgeIdx + 1) % 3], 0.5);
 
@@ -340,22 +344,22 @@ void BRepExtrema_ProximityValueTool::doRecurTrgSplit(
   doRecurTrgSplit(aTrg2, aEdgesStatus2, theTol, theStep, theAddVertices, theAddStatuses);
 }
 
-static double getModelRange(const TopLoc_Location&                 theLocation,
-                            const occ::handle<Poly_Triangulation>& theTr)
+static double getModelRange(const TopLoc_Location&            theLocation,
+                                   const occ::handle<Poly_Triangulation>& theTr)
 {
   Bnd_Box aBox;
   theTr->MinMax(aBox, theLocation.Transformation());
   double aXm = 0.0, aYm = 0.0, aZm = 0.0, aXM = 0.0, aYM = 0.0, aZM = 0.0;
   aBox.Get(aXm, aYm, aZm, aXM, aYM, aZM);
   double aRange = aXM - aXm;
-  aRange        = std::max(aRange, aYM - aYm);
-  aRange        = std::max(aRange, aZM - aZm);
+  aRange               = std::max(aRange, aYM - aYm);
+  aRange               = std::max(aRange, aZM - aZm);
 
   return aRange;
 }
 
-static void getNodesOfTrg(const int                              theTriIdx,
-                          const TopLoc_Location&                 theLocation,
+static void getNodesOfTrg(const int            theTriIdx,
+                          const TopLoc_Location&            theLocation,
                           const occ::handle<Poly_Triangulation>& theTr,
                           gp_Pnt (&theTrg)[3])
 {
@@ -379,7 +383,7 @@ static void getNodesOfTrg(const int                              theTriIdx,
 }
 
 // Gets status of triangle edges - on the border or middle of the face
-static void getEdgesStatus(const int                              theTriIdx,
+static void getEdgesStatus(const int            theTriIdx,
                            const occ::handle<Poly_Triangulation>& theTr,
                            ProxPnt_Status (&theEdgesStatus1)[3])
 {
@@ -405,13 +409,13 @@ static void getEdgesStatus(const int                              theTriIdx,
 //=======================================================================
 bool BRepExtrema_ProximityValueTool::getFaceAdditionalVertices(
   const TopoDS_Face&                  theFace,
-  const double                        theStep,
+  const double                 theStep,
   BVH_Array3d&                        theAddVertices,
   NCollection_Vector<ProxPnt_Status>& theAddStatuses)
 {
   constexpr double aTol = Precision::Confusion();
 
-  TopLoc_Location                 aLocation;
+  TopLoc_Location            aLocation;
   occ::handle<Poly_Triangulation> aTr = BRep_Tool::Triangulation(theFace, aLocation);
 
   if (aTr.IsNull())
@@ -537,16 +541,16 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
   ProxPnt_Status aPointStatus1_2 = ProxPnt_Status::ProxPnt_Status_UNKNOWN;
 
   double aProximityDist1 = computeProximityDist(mySet1,
-                                                myNbSamples1,
-                                                myAddVertices1,
-                                                myAddStatus1,
-                                                mySet2,
-                                                myShapeList1,
-                                                myShapeList2,
-                                                aP1_1,
-                                                aP1_2,
-                                                aPointStatus1_1,
-                                                aPointStatus1_2);
+                                                       myNbSamples1,
+                                                       myAddVertices1,
+                                                       myAddStatus1,
+                                                       mySet2,
+                                                       myShapeList1,
+                                                       myShapeList2,
+                                                       aP1_1,
+                                                       aP1_2,
+                                                       aPointStatus1_1,
+                                                       aPointStatus1_2);
 
   if (aProximityDist1 < 0.)
     return;
@@ -557,16 +561,16 @@ void BRepExtrema_ProximityValueTool::Perform(double& theTolerance)
   ProxPnt_Status aPointStatus2_2 = ProxPnt_Status::ProxPnt_Status_UNKNOWN;
 
   double aProximityDist2 = computeProximityDist(mySet2,
-                                                myNbSamples2,
-                                                myAddVertices2,
-                                                myAddStatus2,
-                                                mySet1,
-                                                myShapeList2,
-                                                myShapeList1,
-                                                aP2_2,
-                                                aP2_1,
-                                                aPointStatus2_2,
-                                                aPointStatus2_1);
+                                                       myNbSamples2,
+                                                       myAddVertices2,
+                                                       myAddStatus2,
+                                                       mySet1,
+                                                       myShapeList2,
+                                                       myShapeList1,
+                                                       aP2_2,
+                                                       aP2_1,
+                                                       aPointStatus2_2,
+                                                       aPointStatus2_1);
 
   if (aProximityDist2 < 0.)
     return;
@@ -602,7 +606,7 @@ NCollection_CellFilter_Action BRepExtrema_VertexInspector::Inspect(const int the
   myIsNeedAdd = true;
 
   const gp_XYZ& aPnt = myPoints.Value(theTarget - 1);
-  double        aDx, aDy, aDz;
+  double aDx, aDy, aDz;
   aDx = myCurrent.X() - aPnt.X();
   aDy = myCurrent.Y() - aPnt.Y();
   aDz = myCurrent.Z() - aPnt.Z();

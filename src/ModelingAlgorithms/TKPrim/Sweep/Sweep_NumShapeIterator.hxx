@@ -52,8 +52,8 @@ public:
 private:
   Sweep_NumShape     myNumShape;
   Sweep_NumShape     myCurrentNumShape;
-  int                myCurrentRange;
-  bool               myMore;
+  int   myCurrentRange;
+  bool   myMore;
   TopAbs_Orientation myCurrentOrientation;
 };
 

@@ -46,9 +46,9 @@ public:
   //! be done.
   //! Exception DimensionError is raised if the row number of B
   //! is different from the A row number.
-  Standard_EXPORT math_Householder(const math_Matrix& A,
-                                   const math_Matrix& B,
-                                   const double       EPS = 1.0e-20);
+  Standard_EXPORT math_Householder(const math_Matrix&  A,
+                                   const math_Matrix&  B,
+                                   const double EPS = 1.0e-20);
 
   //! Given an input matrix A with n>= m, given an input matrix B
   //! this constructor performs the least square resolution of
@@ -57,13 +57,13 @@ public:
   //! be done.
   //! Exception DimensionError is raised if the row number of B
   //! is different from the A row number.
-  Standard_EXPORT math_Householder(const math_Matrix& A,
-                                   const math_Matrix& B,
-                                   const int          lowerArow,
-                                   const int          upperArow,
-                                   const int          lowerAcol,
-                                   const int          upperAcol,
-                                   const double       EPS = 1.0e-20);
+  Standard_EXPORT math_Householder(const math_Matrix&     A,
+                                   const math_Matrix&     B,
+                                   const int lowerArow,
+                                   const int upperArow,
+                                   const int lowerAcol,
+                                   const int upperAcol,
+                                   const double    EPS = 1.0e-20);
 
   //! Given an input matrix A with n>= m, given an input vector B
   //! this constructor performs the least square resolution of
@@ -72,9 +72,9 @@ public:
   //! be done.
   //! Exception DimensionError is raised if the length of B
   //! is different from the A row number.
-  Standard_EXPORT math_Householder(const math_Matrix& A,
-                                   const math_Vector& B,
-                                   const double       EPS = 1.0e-20);
+  Standard_EXPORT math_Householder(const math_Matrix&  A,
+                                   const math_Vector&  B,
+                                   const double EPS = 1.0e-20);
 
   //! Returns true if the computations are successful, otherwise returns false.
   bool IsDone() const;
@@ -102,13 +102,13 @@ protected:
   Standard_EXPORT void Perform(const math_Matrix& A, const math_Matrix& B, const double EPS);
 
 private:
-  math_Matrix Sol;
-  math_Matrix Q;
-  bool        Done;
-  int         mylowerArow;
-  int         myupperArow;
-  int         mylowerAcol;
-  int         myupperAcol;
+  math_Matrix      Sol;
+  math_Matrix      Q;
+  bool Done;
+  int mylowerArow;
+  int myupperArow;
+  int mylowerAcol;
+  int myupperAcol;
 };
 
 #include <math_Householder.lxx>

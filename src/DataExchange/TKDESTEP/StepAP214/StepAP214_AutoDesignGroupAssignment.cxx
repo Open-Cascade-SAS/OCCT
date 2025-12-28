@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignGroupAssignment, StepBasic_GroupA
 StepAP214_AutoDesignGroupAssignment::StepAP214_AutoDesignGroupAssignment() {}
 
 void StepAP214_AutoDesignGroupAssignment::Init(
-  const occ::handle<StepBasic_Group>&                                      aAssignedGroup,
+  const occ::handle<StepBasic_Group>&                          aAssignedGroup,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>& aItems)
 {
   // --- classe own fields ---
@@ -35,13 +35,13 @@ void StepAP214_AutoDesignGroupAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>>
-  StepAP214_AutoDesignGroupAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignGroupedItem>> StepAP214_AutoDesignGroupAssignment::Items() const
 {
   return items;
 }
 
-StepAP214_AutoDesignGroupedItem StepAP214_AutoDesignGroupAssignment::ItemsValue(const int num) const
+StepAP214_AutoDesignGroupedItem StepAP214_AutoDesignGroupAssignment::ItemsValue(
+  const int num) const
 {
   return items->Value(num);
 }

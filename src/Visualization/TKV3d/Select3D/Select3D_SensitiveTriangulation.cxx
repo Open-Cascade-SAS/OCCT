@@ -31,9 +31,9 @@ namespace
 {
 static int NbOfFreeEdges(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
-  int          aNbFree = 0;
-  Poly_Connect aPoly(theTriangulation);
-  int          aTriangleNodes[3];
+  int aNbFree = 0;
+  Poly_Connect     aPoly(theTriangulation);
+  int aTriangleNodes[3];
   for (int aTrgIdx = 1; aTrgIdx <= theTriangulation->NbTriangles(); aTrgIdx++)
   {
     aPoly.Triangles(aTrgIdx, aTriangleNodes[0], aTriangleNodes[1], aTriangleNodes[2]);
@@ -54,17 +54,17 @@ static int NbOfFreeEdges(const occ::handle<Poly_Triangulation>& theTriangulation
 Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
   const occ::handle<Poly_Triangulation>&    theTrg,
-  const TopLoc_Location&                    theInitLoc,
-  const bool                                theIsInterior)
+  const TopLoc_Location&               theInitLoc,
+  const bool               theIsInterior)
     : Select3D_SensitiveSet(theOwnerId),
       myTriangul(theTrg),
       myInitLocation(theInitLoc),
       myPrimitivesNb(0)
 {
-  myInvInitLocation   = myInitLocation.Transformation().Inverted();
-  mySensType          = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-  int    aNbTriangles = 0;
-  gp_XYZ aCenter(0.0, 0.0, 0.0);
+  myInvInitLocation             = myInitLocation.Transformation().Inverted();
+  mySensType                    = theIsInterior ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
+  int aNbTriangles = 0;
+  gp_XYZ           aCenter(0.0, 0.0, 0.0);
   if (!theTrg->HasGeometry())
   {
     if (myTriangul->HasCachedMinMax())
@@ -83,12 +83,12 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
 
     if (!theIsInterior)
     {
-      int anEdgeIdx                       = 1;
+      int anEdgeIdx          = 1;
       myFreeEdges                         = new NCollection_HArray1<int>(1, 2 * myPrimitivesNb);
       NCollection_Array1<int>& aFreeEdges = myFreeEdges->ChangeArray1();
       Poly_Connect             aPoly(myTriangul);
-      int                      aTriangle[3];
-      int                      aTrNodeIdx[3];
+      int         aTriangle[3];
+      int         aTrNodeIdx[3];
       for (int aTriangleIdx = 1; aTriangleIdx <= aNbTriangles; aTriangleIdx++)
       {
         aPoly.Triangles(aTriangleIdx, aTriangle[0], aTriangle[1], aTriangle[2]);
@@ -133,7 +133,8 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
     {
       int aStartIdx = myFreeEdges->Lower();
       int anEndIdx  = myFreeEdges->Upper();
-      for (int aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
+      for (int aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx;
+           aFreeEdgesIdx += 2)
       {
         aBVHPrimIdxs((aFreeEdgesIdx - aStartIdx) / 2) = (aFreeEdgesIdx - aStartIdx) / 2;
       }
@@ -152,10 +153,10 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
 Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
   const occ::handle<SelectMgr_EntityOwner>&    theOwnerId,
   const occ::handle<Poly_Triangulation>&       theTrg,
-  const TopLoc_Location&                       theInitLoc,
+  const TopLoc_Location&                  theInitLoc,
   const occ::handle<NCollection_HArray1<int>>& theFreeEdges,
-  const gp_Pnt&                                theCOG,
-  const bool                                   theIsInterior)
+  const gp_Pnt&                           theCOG,
+  const bool                  theIsInterior)
     : Select3D_SensitiveSet(theOwnerId),
       myTriangul(theTrg),
       myInitLocation(theInitLoc),
@@ -180,7 +181,8 @@ Select3D_SensitiveTriangulation::Select3D_SensitiveTriangulation(
     {
       int aStartIdx = myFreeEdges->Lower();
       int anEndIdx  = myFreeEdges->Upper();
-      for (int aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx; aFreeEdgesIdx += 2)
+      for (int aFreeEdgesIdx = aStartIdx; aFreeEdgesIdx <= anEndIdx;
+           aFreeEdgesIdx += 2)
       {
         myBVHPrimIndexes->SetValue((aFreeEdgesIdx - aStartIdx) / 2,
                                    (aFreeEdgesIdx - aStartIdx) / 2);
@@ -204,9 +206,9 @@ int Select3D_SensitiveTriangulation::Size() const
 //=======================================================================
 Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const int theIdx) const
 {
-  int                      aPrimIdx = myBVHPrimIndexes->Value(theIdx);
-  NCollection_Vec3<double> aMinPnt(RealLast());
-  NCollection_Vec3<double> aMaxPnt(RealFirst());
+  int aPrimIdx = myBVHPrimIndexes->Value(theIdx);
+  NCollection_Vec3<double>   aMinPnt(RealLast());
+  NCollection_Vec3<double>   aMaxPnt(RealFirst());
 
   if (mySensType == Select3D_TOS_INTERIOR)
   {
@@ -218,25 +220,25 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const int theIdx) const
     const gp_Pnt aPnt3 = myTriangul->Node(aNode3);
 
     aMinPnt = NCollection_Vec3<double>(std::min(aPnt1.X(), std::min(aPnt2.X(), aPnt3.X())),
-                                       std::min(aPnt1.Y(), std::min(aPnt2.Y(), aPnt3.Y())),
-                                       std::min(aPnt1.Z(), std::min(aPnt2.Z(), aPnt3.Z())));
+                             std::min(aPnt1.Y(), std::min(aPnt2.Y(), aPnt3.Y())),
+                             std::min(aPnt1.Z(), std::min(aPnt2.Z(), aPnt3.Z())));
     aMaxPnt = NCollection_Vec3<double>(std::max(aPnt1.X(), std::max(aPnt2.X(), aPnt3.X())),
-                                       std::max(aPnt1.Y(), std::max(aPnt2.Y(), aPnt3.Y())),
-                                       std::max(aPnt1.Z(), std::max(aPnt2.Z(), aPnt3.Z())));
+                             std::max(aPnt1.Y(), std::max(aPnt2.Y(), aPnt3.Y())),
+                             std::max(aPnt1.Z(), std::max(aPnt2.Z(), aPnt3.Z())));
   }
   else
   {
-    int          aNodeIdx1 = myFreeEdges->Value(myFreeEdges->Lower() + aPrimIdx);
-    int          aNodeIdx2 = myFreeEdges->Value(myFreeEdges->Lower() + aPrimIdx + 1);
-    const gp_Pnt aNode1    = myTriangul->Node(aNodeIdx1);
-    const gp_Pnt aNode2    = myTriangul->Node(aNodeIdx2);
+    int aNodeIdx1 = myFreeEdges->Value(myFreeEdges->Lower() + aPrimIdx);
+    int aNodeIdx2 = myFreeEdges->Value(myFreeEdges->Lower() + aPrimIdx + 1);
+    const gp_Pnt     aNode1    = myTriangul->Node(aNodeIdx1);
+    const gp_Pnt     aNode2    = myTriangul->Node(aNodeIdx2);
 
     aMinPnt = NCollection_Vec3<double>(std::min(aNode1.X(), aNode2.X()),
-                                       std::min(aNode1.Y(), aNode2.Y()),
-                                       std::min(aNode1.Z(), aNode2.Z()));
+                             std::min(aNode1.Y(), aNode2.Y()),
+                             std::min(aNode1.Z(), aNode2.Z()));
     aMaxPnt = NCollection_Vec3<double>(std::max(aNode1.X(), aNode2.X()),
-                                       std::max(aNode1.Y(), aNode2.Y()),
-                                       std::max(aNode1.Z(), aNode2.Z()));
+                             std::max(aNode1.Y(), aNode2.Y()),
+                             std::max(aNode1.Z(), aNode2.Z()));
   }
 
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
@@ -244,8 +246,9 @@ Select3D_BndBox3d Select3D_SensitiveTriangulation::Box(const int theIdx) const
 
 //=================================================================================================
 
-bool Select3D_SensitiveTriangulation::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                              SelectBasics_PickResult&             thePickResult)
+bool Select3D_SensitiveTriangulation::Matches(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  SelectBasics_PickResult&             thePickResult)
 {
   if (myTriangul->HasGeometry())
   {
@@ -278,10 +281,11 @@ bool Select3D_SensitiveTriangulation::Matches(SelectBasics_SelectingVolumeManage
 // purpose  : Returns geometry center of triangle/edge with index theIdx
 //            in array along the given axis theAxis
 //=======================================================================
-double Select3D_SensitiveTriangulation::Center(const int theIdx, const int theAxis) const
+double Select3D_SensitiveTriangulation::Center(const int theIdx,
+                                                      const int theAxis) const
 {
-  const Select3D_BndBox3d&       aBox    = Box(theIdx);
-  const NCollection_Vec3<double> aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
+  const Select3D_BndBox3d& aBox    = Box(theIdx);
+  const NCollection_Vec3<double>     aCenter = (aBox.CornerMin() + aBox.CornerMax()) * 0.5;
   return aCenter[theAxis];
 }
 
@@ -289,7 +293,8 @@ double Select3D_SensitiveTriangulation::Center(const int theIdx, const int theAx
 // function : Swap
 // purpose  : Swaps items with indexes theIdx1 and theIdx2 in array
 //=======================================================================
-void Select3D_SensitiveTriangulation::Swap(const int theIdx1, const int theIdx2)
+void Select3D_SensitiveTriangulation::Swap(const int theIdx1,
+                                           const int theIdx2)
 {
   int anElemIdx1 = myBVHPrimIndexes->Value(theIdx1);
   int anElemIdx2 = myBVHPrimIndexes->Value(theIdx2);
@@ -338,10 +343,11 @@ bool Select3D_SensitiveTriangulation::LastDetectedTriangle(Poly_Triangle& theTri
 // purpose  : Checks whether the element with index theIdx overlaps the
 //            current selecting volume
 //=======================================================================
-bool Select3D_SensitiveTriangulation::overlapsElement(SelectBasics_PickResult& thePickResult,
-                                                      SelectBasics_SelectingVolumeManager& theMgr,
-                                                      int  theElemIdx,
-                                                      bool theIsFullInside)
+bool Select3D_SensitiveTriangulation::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool                     theIsFullInside)
 {
   if (theIsFullInside)
   {
@@ -356,7 +362,8 @@ bool Select3D_SensitiveTriangulation::overlapsElement(SelectBasics_PickResult& t
 
     const gp_Pnt anEdgePnts[2] = {myTriangul->Node(aSegmStartIdx), myTriangul->Node(aSegmEndIdx)};
     NCollection_Array1<gp_Pnt> anEdgePntsArr(anEdgePnts[0], 1, 2);
-    bool isMatched = theMgr.OverlapsPolygon(anEdgePntsArr, Select3D_TOS_BOUNDARY, thePickResult);
+    bool   isMatched =
+      theMgr.OverlapsPolygon(anEdgePntsArr, Select3D_TOS_BOUNDARY, thePickResult);
     return isMatched;
   }
   else
@@ -372,9 +379,10 @@ bool Select3D_SensitiveTriangulation::overlapsElement(SelectBasics_PickResult& t
 
 //=================================================================================================
 
-bool Select3D_SensitiveTriangulation::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                                      int  theElemIdx,
-                                                      bool theIsFullInside)
+bool Select3D_SensitiveTriangulation::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool                     theIsFullInside)
 {
   if (theIsFullInside)
   {
@@ -416,7 +424,8 @@ bool Select3D_SensitiveTriangulation::elementIsInside(SelectBasics_SelectingVolu
 // purpose  : Calculates distance from the 3d projection of used-picked
 //            screen point to center of the geometry
 //=======================================================================
-double Select3D_SensitiveTriangulation::distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
+double Select3D_SensitiveTriangulation::distanceToCOG(
+  SelectBasics_SelectingVolumeManager& theMgr)
 {
   return theMgr.DistToGeometryCenter(myCDG3D);
 }
@@ -425,7 +434,7 @@ double Select3D_SensitiveTriangulation::distanceToCOG(SelectBasics_SelectingVolu
 
 occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveTriangulation::GetConnected()
 {
-  bool                                         isInterior = mySensType == Select3D_TOS_INTERIOR;
+  bool                        isInterior = mySensType == Select3D_TOS_INTERIOR;
   occ::handle<Select3D_SensitiveTriangulation> aNewEntity =
     new Select3D_SensitiveTriangulation(myOwnerId,
                                         myTriangul,
@@ -491,11 +500,11 @@ void Select3D_SensitiveTriangulation::computeBoundingBox()
     // Use cached MeshData_Data bounding box if it exists
     Bnd_Box aCachedBox = myTriangul->CachedMinMax();
     myBndBox.Add(NCollection_Vec3<double>(aCachedBox.CornerMin().X(),
-                                          aCachedBox.CornerMin().Y(),
-                                          aCachedBox.CornerMin().Z()));
+                                aCachedBox.CornerMin().Y(),
+                                aCachedBox.CornerMin().Z()));
     myBndBox.Add(NCollection_Vec3<double>(aCachedBox.CornerMax().X(),
-                                          aCachedBox.CornerMax().Y(),
-                                          aCachedBox.CornerMax().Z()));
+                                aCachedBox.CornerMax().Y(),
+                                aCachedBox.CornerMax().Z()));
     return;
   }
   else if (myTriangul->HasGeometry())
@@ -543,7 +552,8 @@ gp_GTrsf Select3D_SensitiveTriangulation::InvInitLocation() const
 
 //=================================================================================================
 
-void Select3D_SensitiveTriangulation::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Select3D_SensitiveTriangulation::DumpJson(Standard_OStream& theOStream,
+                                               int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)

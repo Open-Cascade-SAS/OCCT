@@ -129,7 +129,7 @@ public:
    * @param theA
    *   Allocator where the new pointer instance is created.
    */
-  Standard_EXPORT void Append(const Poly_CoherentTriangle*                  pTri,
+  Standard_EXPORT void Append(const Poly_CoherentTriangle*             pTri,
                               const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
@@ -139,7 +139,7 @@ public:
    * @param theA
    *   Allocator where the new pointer instance is created.
    */
-  Standard_EXPORT void Prepend(const Poly_CoherentTriangle*                  pTri,
+  Standard_EXPORT void Prepend(const Poly_CoherentTriangle*             pTri,
                                const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**
@@ -149,7 +149,7 @@ public:
    * @param theA
    *   Allocator where the current pointer instance was created.
    */
-  Standard_EXPORT static void Remove(Poly_CoherentTriPtr*                          thePtr,
+  Standard_EXPORT static void Remove(Poly_CoherentTriPtr*                     thePtr,
                                      const occ::handle<NCollection_BaseAllocator>& theA);
 
   /**

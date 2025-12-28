@@ -27,9 +27,9 @@ class BRepLib_ValidateEdge
 {
 public:
   //! Initialization constructor
-  Standard_EXPORT BRepLib_ValidateEdge(const occ::handle<Adaptor3d_Curve> theReferenceCurve,
+  Standard_EXPORT BRepLib_ValidateEdge(const occ::handle<Adaptor3d_Curve>          theReferenceCurve,
                                        const occ::handle<Adaptor3d_CurveOnSurface> theOtherCurve,
-                                       bool theSameParameter);
+                                       bool                       theSameParameter);
 
   //! Sets method to calculate distance: Calculating in finite number of points (if theIsExact
   //! is false, faster, but possible not correct result) or exact calculating by using
@@ -90,14 +90,14 @@ private:
 private:
   occ::handle<Adaptor3d_Curve>          myReferenceCurve;
   occ::handle<Adaptor3d_CurveOnSurface> myOtherCurve;
-  bool                                  mySameParameter;
-  int                                   myControlPointsNumber;
-  double                                myToleranceForChecking;
-  double                                myCalculatedDistance;
-  bool                                  myExitIfToleranceExceeded;
-  bool                                  myIsDone;
-  bool                                  myIsExactMethod;
-  bool                                  myIsMultiThread;
+  bool                 mySameParameter;
+  int                 myControlPointsNumber;
+  double                    myToleranceForChecking;
+  double                    myCalculatedDistance;
+  bool                 myExitIfToleranceExceeded;
+  bool                 myIsDone;
+  bool                 myIsExactMethod;
+  bool                 myIsMultiThread;
 };
 
 #endif // _BRepLib_ValidateEdge_HeaderFile

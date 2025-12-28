@@ -33,7 +33,7 @@ RWStepDimTol_RWGeometricToleranceWithModifiers::RWStepDimTol_RWGeometricToleranc
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                                      num,
+  const int                                    num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent) const
 {
@@ -66,12 +66,12 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
 
   // own fields of GeometricToleranceWithModifiers
   occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>> aModifiers;
-  int                                                                     sub5 = 0;
+  int                                       sub5 = 0;
   if (data->ReadSubList(num, 5, "modifiers", ach, sub5))
   {
-    int nb0    = data->NbParams(sub5);
-    aModifiers = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
-    int num2   = sub5;
+    int nb0  = data->NbParams(sub5);
+    aModifiers            = new NCollection_HArray1<StepDimTol_GeometricToleranceModifier>(1, nb0);
+    int num2 = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_GeometricToleranceModifier anIt0 = StepDimTol_GTMMaximumMaterialRequirement;
@@ -124,7 +124,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
-  StepData_StepWriter&                                           SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent) const
 {
 
@@ -199,7 +199,7 @@ void RWStepDimTol_RWGeometricToleranceWithModifiers::WriteStep(
 
 void RWStepDimTol_RWGeometricToleranceWithModifiers::Share(
   const occ::handle<StepDimTol_GeometricToleranceWithModifiers>& ent,
-  Interface_EntityIterator&                                      iter) const
+  Interface_EntityIterator&                                 iter) const
 {
 
   // inherited fields from GeometricTolerance

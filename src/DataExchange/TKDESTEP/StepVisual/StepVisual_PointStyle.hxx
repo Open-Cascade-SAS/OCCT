@@ -34,8 +34,8 @@ public:
   Standard_EXPORT StepVisual_PointStyle();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepVisual_MarkerSelect&               aMarker,
-                            const StepBasic_SizeSelect&                  aMarkerSize,
+                            const StepVisual_MarkerSelect&          aMarker,
+                            const StepBasic_SizeSelect&             aMarkerSize,
                             const occ::handle<StepVisual_Colour>&        aMarkerColour);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
@@ -58,8 +58,8 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> name;
-  StepVisual_MarkerSelect               marker;
-  StepBasic_SizeSelect                  markerSize;
+  StepVisual_MarkerSelect          marker;
+  StepBasic_SizeSelect             markerSize;
   occ::handle<StepVisual_Colour>        markerColour;
 };
 

@@ -67,20 +67,20 @@ public:
   //! myBoundary = GeomFill_SimpleBound
   //! (Curve,Tol,dummy);
   Standard_EXPORT GeomFill_SimpleBound(const occ::handle<Adaptor3d_Curve>& Curve,
-                                       const double                        Tol3d,
-                                       const double                        Tolang);
+                                       const double            Tol3d,
+                                       const double            Tolang);
 
   Standard_EXPORT gp_Pnt Value(const double U) const override;
 
   Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override;
 
-  Standard_EXPORT void Reparametrize(const double First,
-                                     const double Last,
-                                     const bool   HasDF,
-                                     const bool   HasDL,
-                                     const double DF,
-                                     const double DL,
-                                     const bool   Rev) override;
+  Standard_EXPORT void Reparametrize(const double    First,
+                                     const double    Last,
+                                     const bool HasDF,
+                                     const bool HasDL,
+                                     const double    DF,
+                                     const double    DL,
+                                     const bool Rev) override;
 
   Standard_EXPORT void Bounds(double& First, double& Last) const override;
 

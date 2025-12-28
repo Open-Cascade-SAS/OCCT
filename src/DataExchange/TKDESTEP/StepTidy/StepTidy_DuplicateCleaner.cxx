@@ -79,8 +79,7 @@ void StepTidy_DuplicateCleaner::Perform()
 
 //==================================================================================================
 
-void StepTidy_DuplicateCleaner::removeEntities(
-  const NCollection_Map<occ::handle<Standard_Transient>>& theToRemove)
+void StepTidy_DuplicateCleaner::removeEntities(const NCollection_Map<occ::handle<Standard_Transient>>& theToRemove)
 {
   if (theToRemove.IsEmpty())
   {

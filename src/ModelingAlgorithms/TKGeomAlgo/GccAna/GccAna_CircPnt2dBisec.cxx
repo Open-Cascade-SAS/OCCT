@@ -40,9 +40,9 @@ GccAna_CircPnt2dBisec::GccAna_CircPnt2dBisec(const gp_Circ2d& Circle, const gp_P
   DefineSolutions();
 }
 
-GccAna_CircPnt2dBisec::GccAna_CircPnt2dBisec(const gp_Circ2d& Circle,
-                                             const gp_Pnt2d&  Point,
-                                             const double     Tolerance)
+GccAna_CircPnt2dBisec::GccAna_CircPnt2dBisec(const gp_Circ2d&    Circle,
+                                             const gp_Pnt2d&     Point,
+                                             const double Tolerance)
 {
   circle      = Circle;
   point       = Point;
@@ -98,12 +98,12 @@ occ::handle<GccInt_Bisec> GccAna_CircPnt2dBisec::ThisSolution(const int Index) c
     throw Standard_OutOfRange();
 
   occ::handle<GccInt_Bisec> bissol;
-  double                    xpoint  = point.X();
-  double                    ypoint  = point.Y();
-  double                    xcencir = circle.Location().X();
-  double                    ycencir = circle.Location().Y();
-  double                    R1      = circle.Radius();
-  double                    dist    = point.Distance(circle.Location());
+  double        xpoint  = point.X();
+  double        ypoint  = point.Y();
+  double        xcencir = circle.Location().X();
+  double        ycencir = circle.Location().Y();
+  double        R1      = circle.Radius();
+  double        dist    = point.Distance(circle.Location());
 
   if (dist < myTolerance)
   {

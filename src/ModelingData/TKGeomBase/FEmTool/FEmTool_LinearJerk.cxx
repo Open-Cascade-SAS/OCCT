@@ -30,14 +30,17 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_LinearJerk, FEmTool_ElementaryCriterion)
 
-FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree, const GeomAbs_Shape ConstraintOrder)
+FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree,
+                                       const GeomAbs_Shape    ConstraintOrder)
     : RefMatrix(0, WorkDegree, 0, WorkDegree)
 {
-  static int         Order = -333, WDeg = 14;
-  static math_Vector MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
+  static int Order = -333, WDeg = 14;
+  static math_Vector      MatrixElemts(0, ((WDeg + 2) * (WDeg + 1)) / 2 - 1);
 
   myOrder = PLib::NivConstr(ConstraintOrder);
 
@@ -46,7 +49,7 @@ FEmTool_LinearJerk::FEmTool_LinearJerk(const int WorkDegree, const GeomAbs_Shape
   {
     if (WorkDegree > WDeg)
       throw Standard_ConstructionError("Degree too high");
-    Order        = myOrder;
+    Order                     = myOrder;
     int DerOrder = 3;
 
     PLib_HermitJacobi           theBase(WDeg, ConstraintOrder);
@@ -81,11 +84,11 @@ occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() cons
     throw Standard_DomainError("FEmTool_LinearJerk::DependenceTable");
 
   occ::handle<NCollection_HArray2<int>> DepTab = new NCollection_HArray2<int>(myCoeff->LowerCol(),
-                                                                              myCoeff->UpperCol(),
-                                                                              myCoeff->LowerCol(),
-                                                                              myCoeff->UpperCol(),
-                                                                              0);
-  int                                   i;
+                                                                         myCoeff->UpperCol(),
+                                                                         myCoeff->LowerCol(),
+                                                                         myCoeff->UpperCol(),
+                                                                         0);
+  int                 i;
   for (i = myCoeff->LowerCol(); i <= myCoeff->UpperCol(); i++)
     DepTab->SetValue(i, i, 1);
 
@@ -95,8 +98,8 @@ occ::handle<NCollection_HArray2<int>> FEmTool_LinearJerk::DependenceTable() cons
 double FEmTool_LinearJerk::Value()
 {
   int deg = std::min(myCoeff->ColLength() - 1, RefMatrix.UpperRow()), i, j,
-      j0 = myCoeff->LowerRow(), degH = std::min(2 * myOrder + 1, deg), NbDim = myCoeff->RowLength(),
-      dim;
+                   j0 = myCoeff->LowerRow(), degH = std::min(2 * myOrder + 1, deg),
+                   NbDim = myCoeff->RowLength(), dim;
 
   NCollection_Array2<double> NewCoeff(1, NbDim, 0, deg);
 
@@ -140,7 +143,9 @@ double FEmTool_LinearJerk::Value()
   return cteh3 * J;
 }
 
-void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, math_Matrix& H)
+void FEmTool_LinearJerk::Hessian(const int Dimension1,
+                                 const int Dimension2,
+                                 math_Matrix&           H)
 {
 
   occ::handle<NCollection_HArray2<int>> DepTab = DependenceTable();
@@ -153,10 +158,10 @@ void FEmTool_LinearJerk::Hessian(const int Dimension1, const int Dimension2, mat
     throw Standard_DomainError("FEmTool_LinearJerk::Hessian");
 
   int deg  = std::min(RefMatrix.UpperRow(), H.RowNumber() - 1),
-      degH = std::min(2 * myOrder + 1, deg);
+                   degH = std::min(2 * myOrder + 1, deg);
 
-  double coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact;
-  int    k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1;
+  double    coeff = (myLast - myFirst) / 2., cteh3 = 2. / std::pow(coeff, 5), mfact;
+  int k1, k2, i, j, i0 = H.LowerRow(), j0 = H.LowerCol(), i1, j1;
 
   H.Init(0.);
 
@@ -209,8 +214,8 @@ void FEmTool_LinearJerk::Gradient(const int Dimension, math_Vector& G)
 
   int deg = std::min(G.Length() - 1, myCoeff->ColLength() - 1);
 
-  math_Vector X(0, deg);
-  int         i, i1 = myCoeff->LowerRow();
+  math_Vector      X(0, deg);
+  int i, i1 = myCoeff->LowerRow();
   for (i = 0; i <= deg; i++)
     X(i) = myCoeff->Value(i1 + i, Dimension);
 

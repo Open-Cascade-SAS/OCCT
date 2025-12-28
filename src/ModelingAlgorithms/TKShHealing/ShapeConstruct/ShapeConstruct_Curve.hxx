@@ -23,6 +23,7 @@
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_Curve;
 class gp_Pnt;
 class Geom2d_Curve;
@@ -46,10 +47,10 @@ public:
   //!
   //! Warning : Does not check if curve should be reversed
   Standard_EXPORT bool AdjustCurve(const occ::handle<Geom_Curve>& C3D,
-                                   const gp_Pnt&                  P1,
-                                   const gp_Pnt&                  P2,
-                                   const bool                     take1 = true,
-                                   const bool                     take2 = true) const;
+                                               const gp_Pnt&             P1,
+                                               const gp_Pnt&             P2,
+                                               const bool    take1 = true,
+                                               const bool take2 = true) const;
 
   //! Modifies a curve in order to make its bounds confused with
   //! given points.
@@ -58,10 +59,10 @@ public:
   //! For lines works as previous method, B-Splines are segmented
   //! at the given values and then are adjusted to the points.
   Standard_EXPORT bool AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D,
-                                          const gp_Pnt&                  P1,
-                                          const gp_Pnt&                  P2,
-                                          const double                   U1,
-                                          const double                   U2) const;
+                                                      const gp_Pnt&             P1,
+                                                      const gp_Pnt&             P2,
+                                                      const double       U1,
+                                                      const double       U2) const;
 
   //! Modifies a curve in order to make its bounds confused with
   //! given points.
@@ -72,11 +73,12 @@ public:
   //! specified.
   //!
   //! Warning : Does not check if curve should be reversed
-  Standard_EXPORT bool AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
-                                     const gp_Pnt2d&                  P1,
-                                     const gp_Pnt2d&                  P2,
-                                     const bool                       take1 = true,
-                                     const bool                       take2 = true) const;
+  Standard_EXPORT bool
+    AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
+                  const gp_Pnt2d&             P1,
+                  const gp_Pnt2d&             P2,
+                  const bool      take1 = true,
+                  const bool      take2 = true) const;
 
   //! Converts a curve of any type (only part from first to last)
   //! to bspline. The method of conversion depends on the type
@@ -85,9 +87,9 @@ public:
   //! Bezier and Line -> GeomConvert::CurveToBSplineCurve(C).Segment(first,last)
   //! Conic and Other -> Approx_Curve3d(C[first,last],prec,C1,9,1000)
   Standard_EXPORT occ::handle<Geom_BSplineCurve> ConvertToBSpline(const occ::handle<Geom_Curve>& C,
-                                                                  const double first,
-                                                                  const double last,
-                                                                  const double prec) const;
+                                                             const double       first,
+                                                             const double       last,
+                                                             const double       prec) const;
 
   //! Converts a curve of any type (only part from first to last)
   //! to bspline. The method of conversion depends on the type
@@ -95,11 +97,10 @@ public:
   //! BSpline -> C.Segment(first,last)
   //! Bezier and Line -> GeomConvert::CurveToBSplineCurve(C).Segment(first,last)
   //! Conic and Other -> Approx_Curve2d(C[first,last],prec,C1,9,1000)
-  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> ConvertToBSpline(
-    const occ::handle<Geom2d_Curve>& C,
-    const double                     first,
-    const double                     last,
-    const double                     prec) const;
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> ConvertToBSpline(const occ::handle<Geom2d_Curve>& C,
+                                                               const double         first,
+                                                               const double         last,
+                                                               const double prec) const;
 
   Standard_EXPORT static bool FixKnots(occ::handle<NCollection_HArray1<double>>& knots);
 
@@ -107,6 +108,7 @@ public:
   //! gap between neighbouring values
   //! Returns True if something fixed (by shifting knot)
   Standard_EXPORT static bool FixKnots(NCollection_Array1<double>& knots);
+
 };
 
 #endif // _ShapeConstruct_Curve_HeaderFile

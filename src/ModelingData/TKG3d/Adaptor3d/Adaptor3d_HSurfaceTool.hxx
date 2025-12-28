@@ -62,44 +62,46 @@ public:
     return theSurf->LastVParameter();
   }
 
-  static int NbUIntervals(const occ::handle<Adaptor3d_Surface>& theSurf, const GeomAbs_Shape theSh)
+  static int NbUIntervals(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                       const GeomAbs_Shape              theSh)
   {
     return theSurf->NbUIntervals(theSh);
   }
 
-  static int NbVIntervals(const occ::handle<Adaptor3d_Surface>& theSurf, const GeomAbs_Shape theSh)
+  static int NbVIntervals(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                       const GeomAbs_Shape              theSh)
   {
     return theSurf->NbVIntervals(theSh);
   }
 
   static void UIntervals(const occ::handle<Adaptor3d_Surface>& theSurf,
-                         NCollection_Array1<double>&           theTab,
-                         const GeomAbs_Shape                   theSh)
+                         NCollection_Array1<double>&            theTab,
+                         const GeomAbs_Shape              theSh)
   {
     theSurf->UIntervals(theTab, theSh);
   }
 
   static void VIntervals(const occ::handle<Adaptor3d_Surface>& theSurf,
-                         NCollection_Array1<double>&           theTab,
-                         const GeomAbs_Shape                   theSh)
+                         NCollection_Array1<double>&            theTab,
+                         const GeomAbs_Shape              theSh)
   {
     theSurf->VIntervals(theTab, theSh);
   }
 
   //! If <First> >= <Last>
   static occ::handle<Adaptor3d_Surface> UTrim(const occ::handle<Adaptor3d_Surface>& theSurf,
-                                              const double                          theFirst,
-                                              const double                          theLast,
-                                              const double                          theTol)
+                                         const double              theFirst,
+                                         const double              theLast,
+                                         const double              theTol)
   {
     return theSurf->UTrim(theFirst, theLast, theTol);
   }
 
   //! If <First> >= <Last>
   static occ::handle<Adaptor3d_Surface> VTrim(const occ::handle<Adaptor3d_Surface>& theSurf,
-                                              const double                          theFirst,
-                                              const double                          theLast,
-                                              const double                          theTol)
+                                         const double              theFirst,
+                                         const double              theLast,
+                                         const double              theTol)
   {
     return theSurf->VTrim(theFirst, theLast, theTol);
   }
@@ -135,56 +137,56 @@ public:
   }
 
   static gp_Pnt Value(const occ::handle<Adaptor3d_Surface>& theSurf,
-                      const double                          theU,
-                      const double                          theV)
+                      const double              theU,
+                      const double              theV)
   {
     return theSurf->Value(theU, theV);
   }
 
   static void D0(const occ::handle<Adaptor3d_Surface>& theSurf,
-                 const double                          theU,
-                 const double                          theV,
-                 gp_Pnt&                               thePnt)
+                 const double              theU,
+                 const double              theV,
+                 gp_Pnt&                          thePnt)
   {
     theSurf->D0(theU, theV, thePnt);
   }
 
   static void D1(const occ::handle<Adaptor3d_Surface>& theSurf,
-                 const double                          theU,
-                 const double                          theV,
-                 gp_Pnt&                               thePnt,
-                 gp_Vec&                               theD1U,
-                 gp_Vec&                               theD1V)
+                 const double              theU,
+                 const double              theV,
+                 gp_Pnt&                          thePnt,
+                 gp_Vec&                          theD1U,
+                 gp_Vec&                          theD1V)
   {
     theSurf->D1(theU, theV, thePnt, theD1U, theD1V);
   }
 
   static void D2(const occ::handle<Adaptor3d_Surface>& theSurf,
-                 const double                          theU,
-                 const double                          theV,
-                 gp_Pnt&                               thePnt,
-                 gp_Vec&                               theD1U,
-                 gp_Vec&                               theD1V,
-                 gp_Vec&                               theD2U,
-                 gp_Vec&                               theD2V,
-                 gp_Vec&                               theD2UV)
+                 const double              theU,
+                 const double              theV,
+                 gp_Pnt&                          thePnt,
+                 gp_Vec&                          theD1U,
+                 gp_Vec&                          theD1V,
+                 gp_Vec&                          theD2U,
+                 gp_Vec&                          theD2V,
+                 gp_Vec&                          theD2UV)
   {
     theSurf->D2(theU, theV, thePnt, theD1U, theD1V, theD2U, theD2V, theD2UV);
   }
 
   static void D3(const occ::handle<Adaptor3d_Surface>& theSurf,
-                 const double                          theU,
-                 const double                          theV,
-                 gp_Pnt&                               thePnt,
-                 gp_Vec&                               theD1U,
-                 gp_Vec&                               theD1V,
-                 gp_Vec&                               theD2U,
-                 gp_Vec&                               theD2V,
-                 gp_Vec&                               theD2UV,
-                 gp_Vec&                               theD3U,
-                 gp_Vec&                               theD3V,
-                 gp_Vec&                               theD3UUV,
-                 gp_Vec&                               theD3UVV)
+                 const double              theU,
+                 const double              theV,
+                 gp_Pnt&                          thePnt,
+                 gp_Vec&                          theD1U,
+                 gp_Vec&                          theD1V,
+                 gp_Vec&                          theD2U,
+                 gp_Vec&                          theD2V,
+                 gp_Vec&                          theD2UV,
+                 gp_Vec&                          theD3U,
+                 gp_Vec&                          theD3V,
+                 gp_Vec&                          theD3UUV,
+                 gp_Vec&                          theD3UVV)
   {
     theSurf->D3(theU,
                 theV,
@@ -201,20 +203,22 @@ public:
   }
 
   static gp_Vec DN(const occ::handle<Adaptor3d_Surface>& theSurf,
-                   const double                          theU,
-                   const double                          theV,
-                   const int                             theNU,
-                   const int                             theNV)
+                   const double              theU,
+                   const double              theV,
+                   const int           theNU,
+                   const int           theNV)
   {
     return theSurf->DN(theU, theV, theNU, theNV);
   }
 
-  static double UResolution(const occ::handle<Adaptor3d_Surface>& theSurf, const double theR3d)
+  static double UResolution(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                   const double              theR3d)
   {
     return theSurf->UResolution(theR3d);
   }
 
-  static double VResolution(const occ::handle<Adaptor3d_Surface>& theSurf, const double theR3d)
+  static double VResolution(const occ::handle<Adaptor3d_Surface>& theSurf,
+                                   const double              theR3d)
   {
     return theSurf->VResolution(theR3d);
   }
@@ -235,10 +239,7 @@ public:
 
   static gp_Torus Torus(const occ::handle<Adaptor3d_Surface>& theSurf) { return theSurf->Torus(); }
 
-  static gp_Sphere Sphere(const occ::handle<Adaptor3d_Surface>& theSurf)
-  {
-    return theSurf->Sphere();
-  }
+  static gp_Sphere Sphere(const occ::handle<Adaptor3d_Surface>& theSurf) { return theSurf->Sphere(); }
 
   static occ::handle<Geom_BezierSurface> Bezier(const occ::handle<Adaptor3d_Surface>& theSurf)
   {
@@ -255,10 +256,7 @@ public:
     return theSurf->AxeOfRevolution();
   }
 
-  static gp_Dir Direction(const occ::handle<Adaptor3d_Surface>& theSurf)
-  {
-    return theSurf->Direction();
-  }
+  static gp_Dir Direction(const occ::handle<Adaptor3d_Surface>& theSurf) { return theSurf->Direction(); }
 
   static occ::handle<Adaptor3d_Curve> BasisCurve(const occ::handle<Adaptor3d_Surface>& theSurf)
   {
@@ -275,21 +273,22 @@ public:
     return theSurf->OffsetValue();
   }
 
-  Standard_EXPORT static bool IsSurfG1(const occ::handle<Adaptor3d_Surface>& theSurf,
-                                       const bool                            theAlongU,
-                                       const double theAngTol = Precision::Angular());
+  Standard_EXPORT static bool IsSurfG1(
+    const occ::handle<Adaptor3d_Surface>& theSurf,
+    const bool           theAlongU,
+    const double              theAngTol = Precision::Angular());
 
   Standard_EXPORT static int NbSamplesU(const occ::handle<Adaptor3d_Surface>& S);
 
   Standard_EXPORT static int NbSamplesV(const occ::handle<Adaptor3d_Surface>& S);
 
   Standard_EXPORT static int NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
-                                        const double                          u1,
-                                        const double                          u2);
+                                                     const double              u1,
+                                                     const double              u2);
 
   Standard_EXPORT static int NbSamplesV(const occ::handle<Adaptor3d_Surface>&,
-                                        const double v1,
-                                        const double v2);
+                                                     const double v1,
+                                                     const double v2);
 };
 
 #endif // _Adaptor3d_HSurfaceTool_HeaderFile

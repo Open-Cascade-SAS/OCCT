@@ -86,7 +86,9 @@ void BRepTest::HistoryCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-int SetFillHistory(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+int SetFillHistory(Draw_Interpretor& theDI,
+                                int  theArgc,
+                                const char**      theArgv)
 {
   if (theArgc > 2)
   {
@@ -109,7 +111,9 @@ int SetFillHistory(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
 //=================================================================================================
 
-int SaveHistory(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+int SaveHistory(Draw_Interpretor& theDI,
+                             int  theArgc,
+                             const char**      theArgv)
 {
   if (theArgc != 2)
   {

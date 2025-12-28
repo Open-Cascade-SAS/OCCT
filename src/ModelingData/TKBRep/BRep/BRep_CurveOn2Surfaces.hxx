@@ -31,18 +31,19 @@ class BRep_CurveOn2Surfaces : public BRep_CurveRepresentation
 public:
   Standard_EXPORT BRep_CurveOn2Surfaces(const occ::handle<Geom_Surface>& S1,
                                         const occ::handle<Geom_Surface>& S2,
-                                        const TopLoc_Location&           L1,
-                                        const TopLoc_Location&           L2,
-                                        const GeomAbs_Shape              C);
+                                        const TopLoc_Location&      L1,
+                                        const TopLoc_Location&      L2,
+                                        const GeomAbs_Shape         C);
 
   //! Returns True.
   Standard_EXPORT virtual bool IsRegularity() const override;
 
   //! A curve on two surfaces (continuity).
   Standard_EXPORT virtual bool IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                            const occ::handle<Geom_Surface>& S2,
-                                            const TopLoc_Location&           L1,
-                                            const TopLoc_Location&           L2) const override;
+                                                        const occ::handle<Geom_Surface>& S2,
+                                                        const TopLoc_Location&      L1,
+                                                        const TopLoc_Location&      L2) const
+    override;
 
   //! Raises an error.
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const;
@@ -62,15 +63,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_CurveOn2Surfaces, BRep_CurveRepresentation)
 
 private:
   occ::handle<Geom_Surface> mySurface;
   occ::handle<Geom_Surface> mySurface2;
-  TopLoc_Location           myLocation2;
-  GeomAbs_Shape             myContinuity;
+  TopLoc_Location      myLocation2;
+  GeomAbs_Shape        myContinuity;
 };
 
 #endif // _BRep_CurveOn2Surfaces_HeaderFile

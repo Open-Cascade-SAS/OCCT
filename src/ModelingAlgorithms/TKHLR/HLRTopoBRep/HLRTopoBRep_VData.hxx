@@ -37,8 +37,8 @@ public:
   const TopoDS_Shape& Vertex() const;
 
 private:
-  double       myParameter;
-  TopoDS_Shape myVertex;
+  double myParameter;
+  TopoDS_Shape  myVertex;
 };
 
 #include <HLRTopoBRep_VData.lxx>

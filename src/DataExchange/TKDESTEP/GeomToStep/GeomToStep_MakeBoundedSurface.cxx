@@ -36,7 +36,7 @@
 //=============================================================================
 GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface(
   const occ::handle<Geom_BoundedSurface>& S,
-  const StepData_Factors&                 theLocalFactors)
+  const StepData_Factors&            theLocalFactors)
 {
   done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))

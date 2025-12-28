@@ -53,10 +53,11 @@ public:
   //! add the shape <S>.
   Standard_EXPORT void Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
                             const occ::handle<Standard_Transient>&   SData,
-                            const int                                nbIso = 0);
+                            const int              nbIso = 0);
 
   //! add the shape <S>.
-  Standard_EXPORT void Load(const occ::handle<HLRTopoBRep_OutLiner>& S, const int nbIso = 0);
+  Standard_EXPORT void Load(const occ::handle<HLRTopoBRep_OutLiner>& S,
+                            const int              nbIso = 0);
 
   //! return the index of the Shape <S> and return 0 if
   //! the Shape <S> is not found.
@@ -129,11 +130,11 @@ private:
   //! DataStructure.
   Standard_EXPORT void HideSelected(const int I, const bool SideFace);
 
-  occ::handle<HLRBRep_Data>                                                       myDS;
-  HLRAlgo_Projector                                                               myProj;
-  NCollection_Sequence<HLRBRep_ShapeBounds>                                       myShapes;
+  occ::handle<HLRBRep_Data>          myDS;
+  HLRAlgo_Projector             myProj;
+  NCollection_Sequence<HLRBRep_ShapeBounds>      myShapes;
   NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher> myMapOfShapeTool;
-  bool                                                                            myDebug;
+  bool              myDebug;
 };
 
 #endif // _HLRBRep_InternalAlgo_HeaderFile

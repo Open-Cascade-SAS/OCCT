@@ -73,9 +73,9 @@ public:
   Standard_EXPORT double FindParameter(const gp_Pnt2d& P) const;
 
 private:
-  double            prm1;
-  double            prm2;
-  double            prm3;
+  double     prm1;
+  double     prm2;
+  double     prm3;
   gp_Ax22d          Axis;
   GeomAbs_CurveType type;
   gp_Trsf2d         Abs_To_Object;

@@ -173,9 +173,9 @@ double IntSurf_Quadric::Distance(const gp_Pnt& P) const
       double dist = lin.Distance(P);
       double U, V;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
-      gp_Pnt Pp    = ElSLib::ConeValue(U, V, ax3, prm1, prm2);
+      gp_Pnt        Pp    = ElSLib::ConeValue(U, V, ax3, prm1, prm2);
       double distp = lin.Distance(Pp);
-      dist         = (dist - distp) / prm3;
+      dist                = (dist - distp) / prm3;
       return (dist);
     }
     case GeomAbs_Torus: // torus
@@ -329,14 +329,14 @@ void IntSurf_Quadric::ValAndGrad(const gp_Pnt& P, double& Dist, gp_Vec& Grad) co
     case GeomAbs_Cone: {
       double dist = lin.Distance(P);
       double U, V;
-      gp_Vec D1u, D1v;
-      gp_Pnt Pp;
+      gp_Vec        D1u, D1v;
+      gp_Pnt        Pp;
       ElSLib::ConeParameters(ax3, prm1, prm2, P, U, V);
       ElSLib::ConeD1(U, V, ax3, prm1, prm2, Pp, D1u, D1v);
       double distp = lin.Distance(Pp);
-      dist         = (dist - distp) / prm3;
-      Dist         = dist;
-      Grad         = D1u.Crossed(D1v);
+      dist                = (dist - distp) / prm3;
+      Dist                = dist;
+      Grad                = D1u.Crossed(D1v);
       if (ax3direc == false)
       {
         Grad.Reverse();
@@ -408,7 +408,11 @@ gp_Pnt IntSurf_Quadric::Value(const double U, const double V) const
 }
 
 // ============================================================
-void IntSurf_Quadric::D1(const double U, const double V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const
+void IntSurf_Quadric::D1(const double U,
+                         const double V,
+                         gp_Pnt&             P,
+                         gp_Vec&             D1U,
+                         gp_Vec&             D1V) const
 {
   switch (typ)
   {
@@ -434,7 +438,10 @@ void IntSurf_Quadric::D1(const double U, const double V, gp_Pnt& P, gp_Vec& D1U,
 }
 
 // ============================================================
-gp_Vec IntSurf_Quadric::DN(const double U, const double V, const int Nu, const int Nv) const
+gp_Vec IntSurf_Quadric::DN(const double    U,
+                           const double    V,
+                           const int Nu,
+                           const int Nv) const
 {
   switch (typ)
   {

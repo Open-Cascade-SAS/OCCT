@@ -35,18 +35,15 @@ public:
   //! Returns a RectangularCompositeSurface
   Standard_EXPORT StepGeom_RectangularCompositeSurface();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                                aName,
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&       aName,
+                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
 
-  Standard_EXPORT void SetSegments(
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
+  Standard_EXPORT void SetSegments(const occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>>& aSegments);
 
-  Standard_EXPORT occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> Segments()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray2<occ::handle<StepGeom_SurfacePatch>>> Segments() const;
 
   Standard_EXPORT occ::handle<StepGeom_SurfacePatch> SegmentsValue(const int num1,
-                                                                   const int num2) const;
+                                                              const int num2) const;
 
   Standard_EXPORT int NbSegmentsI() const;
 

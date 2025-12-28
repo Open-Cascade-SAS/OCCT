@@ -25,6 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -34,7 +35,7 @@ RWStepVisual_RWCubicBezierTessellatedEdge::RWStepVisual_RWCubicBezierTessellated
 
 void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
   const occ::handle<StepData_StepReaderData>&               theData,
-  const int                                                 theNum,
+  const int                               theNum,
   occ::handle<Interface_Check>&                             theCheck,
   const occ::handle<StepVisual_CubicBezierTessellatedEdge>& theEnt) const
 {
@@ -60,7 +61,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
                       aTessellatedEdge_Coordinates);
 
   StepVisual_EdgeOrCurve aTessellatedEdge_GeometricLink;
-  bool                   hasTessellatedEdge_GeometricLink = true;
+  bool       hasTessellatedEdge_GeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -76,12 +77,12 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<int>> aTessellatedEdge_LineStrip;
-  int                                   sub4 = 0;
+  int                 sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_edge.line_strip", theCheck, sub4))
   {
-    int nb0                    = theData->NbParams(sub4);
+    int nb0       = theData->NbParams(sub4);
     aTessellatedEdge_LineStrip = new NCollection_HArray1<int>(1, nb0);
-    int num2                   = sub4;
+    int num2      = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -101,7 +102,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWCubicBezierTessellatedEdge::WriteStep(
-  StepData_StepWriter&                                      theSW,
+  StepData_StepWriter&                                 theSW,
   const occ::handle<StepVisual_CubicBezierTessellatedEdge>& theEnt) const
 {
 
@@ -135,7 +136,7 @@ void RWStepVisual_RWCubicBezierTessellatedEdge::WriteStep(
 
 void RWStepVisual_RWCubicBezierTessellatedEdge::Share(
   const occ::handle<StepVisual_CubicBezierTessellatedEdge>& theEnt,
-  Interface_EntityIterator&                                 theIter) const
+  Interface_EntityIterator&                            theIter) const
 {
 
   // Inherited fields of RepresentationItem

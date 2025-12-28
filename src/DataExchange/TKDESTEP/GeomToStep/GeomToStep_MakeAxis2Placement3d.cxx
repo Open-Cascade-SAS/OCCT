@@ -27,11 +27,11 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static occ::handle<StepGeom_Axis2Placement3d> MakeAxis2Placement3d(const gp_Pnt& O,
-                                                                   const gp_Dir& D,
-                                                                   const gp_Dir& X,
-                                                                   const char*   nom,
-                                                                   double        aFactor)
+static occ::handle<StepGeom_Axis2Placement3d> MakeAxis2Placement3d(const gp_Pnt&          O,
+                                                              const gp_Dir&          D,
+                                                              const gp_Dir&          X,
+                                                              const char* nom,
+                                                              double          aFactor)
 {
   occ::handle<StepGeom_Axis2Placement3d> Axe;
   occ::handle<StepGeom_CartesianPoint>   P;
@@ -65,12 +65,12 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   //   le reste inchange
 
   occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
-                                                                    A.Direction(),
-                                                                    A.XDirection(),
-                                                                    "",
-                                                                    theLocalFactors.LengthFactor());
-  theAxis2Placement3d                        = Axe;
-  done                                       = true;
+                                                               A.Direction(),
+                                                               A.XDirection(),
+                                                               "",
+                                                               theLocalFactors.LengthFactor());
+  theAxis2Placement3d                   = Axe;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -82,12 +82,12 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   const StepData_Factors& theLocalFactors)
 {
   occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
-                                                                    A.Direction(),
-                                                                    A.XDirection(),
-                                                                    "",
-                                                                    theLocalFactors.LengthFactor());
-  theAxis2Placement3d                        = Axe;
-  done                                       = true;
+                                                               A.Direction(),
+                                                               A.XDirection(),
+                                                               "",
+                                                               theLocalFactors.LengthFactor());
+  theAxis2Placement3d                   = Axe;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -99,12 +99,12 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   const StepData_Factors& theLocalFactors)
 {
   occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
-                                                                    A.Direction(),
-                                                                    A.XDirection(),
-                                                                    "",
-                                                                    theLocalFactors.LengthFactor());
-  theAxis2Placement3d                        = Axe;
-  done                                       = true;
+                                                               A.Direction(),
+                                                               A.XDirection(),
+                                                               "",
+                                                               theLocalFactors.LengthFactor());
+  theAxis2Placement3d                   = Axe;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -120,12 +120,12 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   //   le reste inchange
 
   occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
-                                                                    A.Direction(),
-                                                                    A.XDirection(),
-                                                                    "",
-                                                                    theLocalFactors.LengthFactor());
-  theAxis2Placement3d                        = Axe;
-  done                                       = true;
+                                                               A.Direction(),
+                                                               A.XDirection(),
+                                                               "",
+                                                               theLocalFactors.LengthFactor());
+  theAxis2Placement3d                   = Axe;
+  done                                  = true;
 }
 
 //=============================================================================
@@ -135,18 +135,18 @@ GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
 
 GeomToStep_MakeAxis2Placement3d::GeomToStep_MakeAxis2Placement3d(
   const occ::handle<Geom_Axis2Placement>& Axis2,
-  const StepData_Factors&                 theLocalFactors)
+  const StepData_Factors&            theLocalFactors)
 {
   gp_Ax2 A;
   A = Axis2->Ax2();
 
   occ::handle<StepGeom_Axis2Placement3d> Axe = MakeAxis2Placement3d(A.Location(),
-                                                                    A.Direction(),
-                                                                    A.XDirection(),
-                                                                    "",
-                                                                    theLocalFactors.LengthFactor());
-  theAxis2Placement3d                        = Axe;
-  done                                       = true;
+                                                               A.Direction(),
+                                                               A.XDirection(),
+                                                               "",
+                                                               theLocalFactors.LengthFactor());
+  theAxis2Placement3d                   = Axe;
+  done                                  = true;
 }
 
 //=============================================================================

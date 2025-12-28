@@ -57,7 +57,9 @@ public:
   //! Returns a DirChecker, with no criterium except Required values
   //! for Type number (atype), and Required Range for Form number
   //! (which must be between aform1 and aform2 included)
-  Standard_EXPORT IGESData_DirChecker(const int atype, const int aform1, const int aform2);
+  Standard_EXPORT IGESData_DirChecker(const int atype,
+                                      const int aform1,
+                                      const int aform2);
 
   //! Returns True if at least one criterium has already been set
   //! Allows user to store a DirChecker (static variable) then ask
@@ -155,19 +157,19 @@ public:
   Standard_EXPORT bool Correct(const occ::handle<IGESData_IGESEntity>& ent) const;
 
 private:
-  bool             isitset;
-  int              thetype;
-  int              theform1;
-  int              theform2;
+  bool isitset;
+  int thetype;
+  int theform1;
+  int theform2;
   IGESData_DefType thestructure;
   IGESData_DefType thelinefont;
   IGESData_DefType thelineweig;
   IGESData_DefType thecolor;
-  int              thegraphier;
-  int              theblankst;
-  int              thesubordst;
-  int              theuseflag;
-  int              thehierst;
+  int thegraphier;
+  int theblankst;
+  int thesubordst;
+  int theuseflag;
+  int thehierst;
 };
 
 #endif // _IGESData_DirChecker_HeaderFile

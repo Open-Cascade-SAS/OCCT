@@ -47,8 +47,9 @@ public:
   //! attribute returned.
   //! Attribute methods
   //! ===================
-  Standard_EXPORT static occ::handle<TDataStd_IntPackedMap> Set(const TDF_Label& label,
-                                                                const bool       isDelta = false);
+  Standard_EXPORT static occ::handle<TDataStd_IntPackedMap> Set(
+    const TDF_Label&       label,
+    const bool isDelta = false);
 
   Standard_EXPORT TDataStd_IntPackedMap();
 
@@ -95,14 +96,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
   void RemoveMap() { myMap.Nullify(); }
 
 private:
   occ::handle<TColStd_HPackedMapOfInteger> myMap;
-  bool                                     myIsDelta;
+  bool                    myIsDelta;
 };
 
 #endif // _TDataStd_IntPackedMap_HeaderFile

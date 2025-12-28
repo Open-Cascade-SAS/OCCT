@@ -44,25 +44,25 @@ public:
   //! a circle between two parameters Alpha1 and Alpha2.
   //! The two parameters are angles. The parameters are
   //! in radians.
-  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                        const double     Alpha1,
-                                        const double     Alpha2,
-                                        const bool       Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
+                                        const double    Alpha1,
+                                        const double    Alpha2,
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! a circle between point <P> and the parameter
   //! Alpha. Alpha is given in radians.
-  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                        const gp_Pnt2d&  P,
-                                        const double     Alpha,
-                                        const bool       Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
+                                        const gp_Pnt2d&        P,
+                                        const double    Alpha,
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! a circle between two points P1 and P2.
-  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                        const gp_Pnt2d&  P1,
-                                        const gp_Pnt2d&  P2,
-                                        const bool       Sense = true);
+  Standard_EXPORT GCE2d_MakeArcOfCircle(const gp_Circ2d&       Circ,
+                                        const gp_Pnt2d&        P1,
+                                        const gp_Pnt2d&        P2,
+                                        const bool Sense = true);
 
   //! Makes an arc of circle (TrimmedCurve from Geom2d) from
   //! three points P1,P2,P3 between two points P1 and P3,

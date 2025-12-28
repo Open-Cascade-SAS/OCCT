@@ -38,14 +38,14 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_ColorDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                    const occ::handle<TDF_Attribute>& theTarget,
-                                    BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Color> anAtt = occ::down_cast<XCAFDoc_Color>(theTarget);
-  double                     R, G, B;
-  float                      alpha;
-  bool                       isOk = theSource >> R >> G >> B;
+  double         R, G, B;
+  float    alpha;
+  bool      isOk = theSource >> R >> G >> B;
   if (isOk)
   {
     bool isRGBA = theSource >> alpha;
@@ -58,14 +58,13 @@ bool BinMXCAFDoc_ColorDriver::Paste(const BinObjMgt_Persistent&       theSource,
 
 //=================================================================================================
 
-void BinMXCAFDoc_ColorDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
+void BinMXCAFDoc_ColorDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                    BinObjMgt_Persistent&        theTarget,
+                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Color> anAtt = occ::down_cast<XCAFDoc_Color>(theSource);
-  double                     R, G, B;
-  float                      alpha;
+  double         R, G, B;
+  float    alpha;
   anAtt->GetRGB(R, G, B);
   alpha = anAtt->GetAlpha();
   theTarget << R << G << B << alpha;

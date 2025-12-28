@@ -38,9 +38,8 @@ public:
   //! the Comment attribute is returned.
   //! Comment methods
   //! ============
-  Standard_EXPORT static occ::handle<TDataStd_Comment> Set(
-    const TDF_Label&                  label,
-    const TCollection_ExtendedString& string);
+  Standard_EXPORT static occ::handle<TDataStd_Comment> Set(const TDF_Label&                  label,
+                                                      const TCollection_ExtendedString& string);
 
   Standard_EXPORT TDataStd_Comment();
 

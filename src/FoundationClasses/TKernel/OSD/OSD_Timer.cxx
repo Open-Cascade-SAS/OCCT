@@ -29,23 +29,23 @@ namespace
 //! @param theHours   [out] clamped elapsed hours
 //! @param theMinutes [out] clamped elapsed minutes within range [0, 59]
 //! @param theSeconds [out] clamped elapsed seconds within range [0, 60)
-static void timeToHoursMinutesSeconds(double  theTimeSec,
-                                      int&    theHours,
-                                      int&    theMinutes,
-                                      double& theSeconds)
+static void timeToHoursMinutesSeconds(double     theTimeSec,
+                                      int& theHours,
+                                      int& theMinutes,
+                                      double&    theSeconds)
 {
-  int aSec   = (int)theTimeSec;
-  theHours   = aSec / 3600;
-  theMinutes = (aSec - theHours * 3600) / 60;
-  theSeconds = theTimeSec - theHours * 3600 - theMinutes * 60;
+  int aSec = (int)theTimeSec;
+  theHours              = aSec / 3600;
+  theMinutes            = (aSec - theHours * 3600) / 60;
+  theSeconds            = theTimeSec - theHours * 3600 - theMinutes * 60;
 }
 
 #ifdef _WIN32
 //! Define a structure for initializing global constant of pair values.
 struct PerfCounterFreq
 {
-  LARGE_INTEGER Freq;
-  bool          IsOk;
+  LARGE_INTEGER    Freq;
+  bool IsOk;
 
   PerfCounterFreq() { IsOk = QueryPerformanceFrequency(&Freq) != FALSE; }
 };
@@ -135,7 +135,10 @@ double OSD_Timer::ElapsedTime() const
 
 //=================================================================================================
 
-void OSD_Timer::Show(double& theSeconds, int& theMinutes, int& theHours, double& theCPUtime) const
+void OSD_Timer::Show(double&    theSeconds,
+                     int& theMinutes,
+                     int& theHours,
+                     double&    theCPUtime) const
 {
   const double aTimeCumul =
     myIsStopped ? myTimeCumul : myTimeCumul + GetWallClockTime() - myTimeStart;
@@ -149,8 +152,8 @@ void OSD_Timer::Show(Standard_OStream& theOStream) const
 {
   const double aTimeCumul = ElapsedTime();
 
-  int    anHours, aMinutes;
-  double aSeconds;
+  int anHours, aMinutes;
+  double    aSeconds;
   timeToHoursMinutesSeconds(aTimeCumul, anHours, aMinutes, aSeconds);
 
   std::streamsize prec = theOStream.precision(12);

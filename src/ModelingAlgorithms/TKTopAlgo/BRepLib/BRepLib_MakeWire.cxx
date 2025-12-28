@@ -211,7 +211,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
         {
           const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
           gp_Pnt               PW = BRep_Tool::Pnt(VW);
-          double               l  = PE.Distance(PW);
+          double        l  = PE.Distance(PW);
 
           if ((l < BRep_Tool::Tolerance(VE)) || (l < BRep_Tool::Tolerance(VW)))
           {
@@ -286,7 +286,7 @@ void BRepLib_MakeWire::Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity)
           {
             const TopoDS_Vertex& VW = TopoDS::Vertex(myVertices.FindKey(i));
             gp_Pnt               PW = BRep_Tool::Pnt(VW);
-            double               l  = PE.Distance(PW), tolE, tolW;
+            double        l  = PE.Distance(PW), tolE, tolW;
             tolW                    = BRep_Tool::Tolerance(VW);
             tolE                    = BRep_Tool::Tolerance(VE);
 

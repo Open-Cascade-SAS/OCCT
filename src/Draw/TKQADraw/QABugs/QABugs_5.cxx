@@ -39,7 +39,7 @@ static int OCC6001(Draw_Interpretor& di, int argc, const char** argv)
     di << "missing parameters\n";
     return 1;
   }
-  const char*                  name = argv[1];
+  const char*             name = argv[1];
   occ::handle<Adaptor3d_Curve> hcurve;
   occ::handle<Geom_Curve>      curve = DrawTrSurf::GetCurve(argv[2]);
   if (!curve.IsNull())
@@ -57,7 +57,7 @@ static int OCC6001(Draw_Interpretor& di, int argc, const char** argv)
   }
   occ::handle<Geom_Surface>        surf  = DrawTrSurf::GetSurface(argv[3]);
   occ::handle<GeomAdaptor_Surface> hsurf = new GeomAdaptor_Surface(surf);
-  IntCurveSurface_HInter           inter;
+  IntCurveSurface_HInter      inter;
   inter.Perform(hcurve, hsurf);
   int nb = inter.NbPoints();
   if (!inter.IsDone() || nb == 0)

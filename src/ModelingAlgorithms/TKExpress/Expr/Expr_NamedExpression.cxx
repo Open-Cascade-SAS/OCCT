@@ -43,7 +43,8 @@ bool Expr_NamedExpression::IsShareable() const
 
 //=================================================================================================
 
-bool Expr_NamedExpression::IsIdentical(const occ::handle<Expr_GeneralExpression>& theOther) const
+bool Expr_NamedExpression::IsIdentical(
+  const occ::handle<Expr_GeneralExpression>& theOther) const
 {
   bool aResult(false);
   if (theOther->IsKind(STANDARD_TYPE(Expr_NamedExpression)))

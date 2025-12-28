@@ -32,9 +32,9 @@ Contap_ArcFunction::Contap_ArcFunction()
 void Contap_ArcFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
-  int    i;
-  int    nbs = Contap_HContTool::NbSamplePoints(S);
-  double U, V;
+  int i;
+  int nbs = Contap_HContTool::NbSamplePoints(S);
+  double    U, V;
   //  gp_Vec d1u,d1v;
   gp_Vec norm;
   if (nbs > 0)
@@ -84,9 +84,9 @@ bool Contap_ArcFunction::Value(const double U, double& F)
 
 bool Contap_ArcFunction::Derivative(const double U, double& D)
 {
-  gp_Pnt2d pt2d;
-  gp_Vec2d d2d;
-  double   dfu = 0., dfv = 0.;
+  gp_Pnt2d      pt2d;
+  gp_Vec2d      d2d;
+  double dfu = 0., dfv = 0.;
   //  gp_Vec d1u,d1v,d2u,d2v,d2uv;
   Contap_HCurve2dTool::D1(myArc, U, pt2d, d2d);
   //  Adaptor3d_HSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);
@@ -131,11 +131,13 @@ bool Contap_ArcFunction::Derivative(const double U, double& D)
   return true;
 }
 
-bool Contap_ArcFunction::Values(const double U, double& F, double& D)
+bool Contap_ArcFunction::Values(const double U,
+                                            double&      F,
+                                            double&      D)
 {
-  gp_Pnt2d pt2d;
-  gp_Vec2d d2d;
-  double   dfu = 0., dfv = 0.;
+  gp_Pnt2d      pt2d;
+  gp_Vec2d      d2d;
+  double dfu = 0., dfv = 0.;
   // gp_Vec d1u,d1v,d2u,d2v,d2uv;
   Contap_HCurve2dTool::D1(myArc, U, pt2d, d2d);
   //  Adaptor3d_HSurfaceTool::D2(mySurf,pt2d.X(),pt2d.Y(),solpt,d1u,d1v,d2u,d2v,d2uv);

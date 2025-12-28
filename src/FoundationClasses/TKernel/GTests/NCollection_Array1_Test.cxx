@@ -350,12 +350,12 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_MinMax)
   NCollection_Array1<int> anArray(1, size);
   std::vector<int>        aVector;
 
-  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 1; anIdx <= size; ++anIdx)
   {
-    int aVal       = aDistribution(aGenerator);
-    anArray(anIdx) = aVal;
+    int aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 
@@ -375,12 +375,12 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Replace)
   NCollection_Array1<int> anArray(1, size);
   std::vector<int>        aVector;
 
-  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 1; anIdx <= size; ++anIdx)
   {
-    int aVal       = aDistribution(aGenerator);
-    anArray(anIdx) = aVal;
+    int aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 
@@ -399,12 +399,12 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
   NCollection_Array1<int> anArray(1, size);
   std::vector<int>        aVector;
 
-  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 1; anIdx <= size; ++anIdx)
   {
-    int aVal       = aDistribution(aGenerator);
-    anArray(anIdx) = aVal;
+    int aVal = aDistribution(aGenerator);
+    anArray(anIdx)        = aVal;
     aVector.push_back(aVal);
   }
 

@@ -46,9 +46,10 @@ occ::handle<TDF_Attribute> BinMDataXtd_ConstraintDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMDataXtd_ConstraintDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataXtd_Constraint> aC = occ::down_cast<TDataXtd_Constraint>(theTarget);
 
@@ -130,10 +131,9 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataXtd_ConstraintDriver::Paste(
-  const occ::handle<TDF_Attribute>&                        theSource,
-  BinObjMgt_Persistent&                                    theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
+void BinMDataXtd_ConstraintDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   occ::handle<TDataXtd_Constraint> aC = occ::down_cast<TDataXtd_Constraint>(theSource);
 

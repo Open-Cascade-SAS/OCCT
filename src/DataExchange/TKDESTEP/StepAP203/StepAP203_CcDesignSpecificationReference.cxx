@@ -29,8 +29,8 @@ StepAP203_CcDesignSpecificationReference::StepAP203_CcDesignSpecificationReferen
 //=================================================================================================
 
 void StepAP203_CcDesignSpecificationReference::Init(
-  const occ::handle<StepBasic_Document>&       aDocumentReference_AssignedDocument,
-  const occ::handle<TCollection_HAsciiString>& aDocumentReference_Source,
+  const occ::handle<StepBasic_Document>&               aDocumentReference_AssignedDocument,
+  const occ::handle<TCollection_HAsciiString>&         aDocumentReference_Source,
   const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& aItems)
 {
   StepBasic_DocumentReference::Init0(aDocumentReference_AssignedDocument,
@@ -41,8 +41,7 @@ void StepAP203_CcDesignSpecificationReference::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>> StepAP203_CcDesignSpecificationReference::
-  Items() const
+occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>> StepAP203_CcDesignSpecificationReference::Items() const
 {
   return theItems;
 }

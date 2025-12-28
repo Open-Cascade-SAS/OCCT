@@ -28,8 +28,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_Section, IGESData_IGESEntity)
 
 IGESDimen_Section::IGESDimen_Section() {}
 
-void IGESDimen_Section::Init(const int                                      dataType,
-                             const double                                   aDisp,
+void IGESDimen_Section::Init(const int            dataType,
+                             const double               aDisp,
                              const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints)
 {
   if (dataPoints->Lower() != 1)

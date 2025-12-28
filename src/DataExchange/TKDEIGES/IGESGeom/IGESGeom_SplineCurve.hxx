@@ -70,9 +70,9 @@ public:
   //! raises exception if allXPolynomials, allYPolynomials
   //! & allZPolynomials are not of same size OR allXValues, allYValues
   //! & allZValues are not of size 4
-  Standard_EXPORT void Init(const int                                       aType,
-                            const int                                       aDegree,
-                            const int                                       nbDimensions,
+  Standard_EXPORT void Init(const int               aType,
+                            const int               aDegree,
+                            const int               nbDimensions,
                             const occ::handle<NCollection_HArray1<double>>& allBreakPoints,
                             const occ::handle<NCollection_HArray2<double>>& allXPolynomials,
                             const occ::handle<NCollection_HArray2<double>>& allYPolynomials,
@@ -102,45 +102,54 @@ public:
   //! returns X coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
   Standard_EXPORT void XCoordPolynomial(const int Index,
-                                        double&   AX,
-                                        double&   BX,
-                                        double&   CX,
-                                        double&   DX) const;
+                                        double&         AX,
+                                        double&         BX,
+                                        double&         CX,
+                                        double&         DX) const;
 
   //! returns Y coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
   Standard_EXPORT void YCoordPolynomial(const int Index,
-                                        double&   AY,
-                                        double&   BY,
-                                        double&   CY,
-                                        double&   DY) const;
+                                        double&         AY,
+                                        double&         BY,
+                                        double&         CY,
+                                        double&         DY) const;
 
   //! returns Z coordinate polynomial for segment referred to by Index
   //! raises exception if Index <= 0 or Index > NbSegments()
   Standard_EXPORT void ZCoordPolynomial(const int Index,
-                                        double&   AZ,
-                                        double&   BZ,
-                                        double&   CZ,
-                                        double&   DZ) const;
+                                        double&         AZ,
+                                        double&         BZ,
+                                        double&         CZ,
+                                        double&         DZ) const;
 
   //! returns the value of X polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the X polynomial at the terminate point
-  Standard_EXPORT void XValues(double& TPX0, double& TPX1, double& TPX2, double& TPX3) const;
+  Standard_EXPORT void XValues(double& TPX0,
+                               double& TPX1,
+                               double& TPX2,
+                               double& TPX3) const;
 
   //! returns the value of Y polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the Y polynomial at the termminate point
-  Standard_EXPORT void YValues(double& TPY0, double& TPY1, double& TPY2, double& TPY3) const;
+  Standard_EXPORT void YValues(double& TPY0,
+                               double& TPY1,
+                               double& TPY2,
+                               double& TPY3) const;
 
   //! returns the value of Z polynomial, the values of 1st, 2nd and
   //! 3rd derivatives of the Z polynomial at the termminate point
-  Standard_EXPORT void ZValues(double& TPZ0, double& TPZ1, double& TPZ2, double& TPZ3) const;
+  Standard_EXPORT void ZValues(double& TPZ0,
+                               double& TPZ1,
+                               double& TPZ2,
+                               double& TPZ3) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineCurve, IGESData_IGESEntity)
 
 private:
-  int                                      theType;
-  int                                      theDegree;
-  int                                      theNbDimensions;
+  int              theType;
+  int              theDegree;
+  int              theNbDimensions;
   occ::handle<NCollection_HArray1<double>> theBreakPoints;
   occ::handle<NCollection_HArray2<double>> theXCoordsPolynomial;
   occ::handle<NCollection_HArray2<double>> theYCoordsPolynomial;

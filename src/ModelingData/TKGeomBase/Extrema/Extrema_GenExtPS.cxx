@@ -24,10 +24,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GeomAbs_IsoType.hxx>
+#include <Bnd_Sphere.hxx>
 #include <GeomGridEval_Surface.hxx>
 #include <Extrema_ExtFlag.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 #include <NCollection_Handle.hxx>
+#include <Bnd_Sphere.hxx>
 #include <Extrema_POnSurf.hxx>
 #include <Extrema_POnSurfParams.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -49,8 +51,7 @@
 class Bnd_SphereUBTreeSelector : public NCollection_UBTree<int, Bnd_Sphere>::Selector
 {
 public:
-  Bnd_SphereUBTreeSelector(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray,
-                           Bnd_Sphere&                                         theSol)
+  Bnd_SphereUBTreeSelector(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray, Bnd_Sphere& theSol)
       : myXYZ(0, 0, 0),
         mySphereArray(theSphereArray),
         mySol(theSol)
@@ -66,9 +67,9 @@ public:
   virtual bool Accept(const int& theObj) = 0;
 
 protected:
-  gp_Pnt                                              myXYZ;
+  gp_Pnt                             myXYZ;
   const occ::handle<NCollection_HArray1<Bnd_Sphere>>& mySphereArray;
-  Bnd_Sphere&                                         mySol;
+  Bnd_Sphere&                        mySol;
 
 private:
   void operator=(const Bnd_SphereUBTreeSelector&);
@@ -77,8 +78,7 @@ private:
 class Bnd_SphereUBTreeSelectorMin : public Bnd_SphereUBTreeSelector
 {
 public:
-  Bnd_SphereUBTreeSelectorMin(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray,
-                              Bnd_Sphere&                                         theSol)
+  Bnd_SphereUBTreeSelectorMin(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray, Bnd_Sphere& theSol)
       : Bnd_SphereUBTreeSelector(theSphereArray, theSol),
         myMinDist(RealLast())
   {
@@ -104,7 +104,7 @@ private:
 bool Bnd_SphereUBTreeSelectorMin::Accept(const int& theInd)
 {
   const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
-  double            aCurDist;
+  double     aCurDist;
 
   //    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) < mySol.SquareDistance(myXYZ.XYZ()) )
   if ((aCurDist = aSph.Distance(myXYZ.XYZ())) < mySol.Distance(myXYZ.XYZ()))
@@ -122,8 +122,7 @@ bool Bnd_SphereUBTreeSelectorMin::Accept(const int& theInd)
 class Bnd_SphereUBTreeSelectorMax : public Bnd_SphereUBTreeSelector
 {
 public:
-  Bnd_SphereUBTreeSelectorMax(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray,
-                              Bnd_Sphere&                                         theSol)
+  Bnd_SphereUBTreeSelectorMax(const occ::handle<NCollection_HArray1<Bnd_Sphere>>& theSphereArray, Bnd_Sphere& theSol)
       : Bnd_SphereUBTreeSelector(theSphereArray, theSol),
         myMaxDist(0)
   {
@@ -149,7 +148,7 @@ private:
 bool Bnd_SphereUBTreeSelectorMax::Accept(const int& theInd)
 {
   const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
-  double            aCurDist;
+  double     aCurDist;
 
   //    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) > mySol.SquareDistance(myXYZ.XYZ()) )
   if ((aCurDist = aSph.Distance(myXYZ.XYZ())) > mySol.Distance(myXYZ.XYZ()))
@@ -237,10 +236,10 @@ Extrema_GenExtPS::~Extrema_GenExtPS()
 
 Extrema_GenExtPS::Extrema_GenExtPS(const gp_Pnt&            P,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             TolU,
-                                   const double             TolV,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      TolU,
+                                   const double      TolV,
                                    const Extrema_ExtFlag    F,
                                    const Extrema_ExtAlgo    A)
     : myF(P, S),
@@ -253,14 +252,14 @@ Extrema_GenExtPS::Extrema_GenExtPS(const gp_Pnt&            P,
 
 Extrema_GenExtPS::Extrema_GenExtPS(const gp_Pnt&            P,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             Umin,
-                                   const double             Usup,
-                                   const double             Vmin,
-                                   const double             Vsup,
-                                   const double             TolU,
-                                   const double             TolV,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      Umin,
+                                   const double      Usup,
+                                   const double      Vmin,
+                                   const double      Vsup,
+                                   const double      TolU,
+                                   const double      TolV,
                                    const Extrema_ExtFlag    F,
                                    const Extrema_ExtAlgo    A)
     : myF(P, S),
@@ -272,10 +271,10 @@ Extrema_GenExtPS::Extrema_GenExtPS(const gp_Pnt&            P,
 }
 
 void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             TolU,
-                                  const double             TolV)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      TolU,
+                                  const double      TolV)
 {
   myumin = S.FirstUParameter();
   myusup = S.LastUParameter();
@@ -285,14 +284,14 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
 }
 
 void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Umin,
-                                  const double             Usup,
-                                  const double             Vmin,
-                                  const double             Vsup,
-                                  const double             TolU,
-                                  const double             TolV)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Umin,
+                                  const double      Usup,
+                                  const double      Vmin,
+                                  const double      Vsup,
+                                  const double      TolU,
+                                  const double      TolV)
 {
   myS       = &S;
   myusample = NbU;
@@ -317,15 +316,15 @@ void Extrema_GenExtPS::Initialize(const Adaptor3d_Surface& S,
   myInit = false;
 }
 
-inline static void fillParams(const NCollection_Array1<double>&         theKnots,
-                              int                                       theDegree,
-                              double                                    theParMin,
-                              double                                    theParMax,
+inline static void fillParams(const NCollection_Array1<double>&    theKnots,
+                              int               theDegree,
+                              double                  theParMin,
+                              double                  theParMax,
                               occ::handle<NCollection_HArray1<double>>& theParams,
-                              int                                       theSample)
+                              int               theSample)
 {
   NCollection_Vector<double> aParams;
-  int                        i        = 1;
+  int                  i        = 1;
   double                     aPrevPar = theParMin;
   aParams.Append(aPrevPar);
   // calculation the array of parametric points depending on the knots array variation and degree of
@@ -335,8 +334,8 @@ inline static void fillParams(const NCollection_Array1<double>&         theKnots
     if (theKnots(i + 1) < theParMin + Precision::PConfusion())
       continue;
 
-    double aStep = (theKnots(i + 1) - theKnots(i)) / std::max(theDegree, 2);
-    int    k     = 1;
+    double    aStep = (theKnots(i + 1) - theKnots(i)) / std::max(theDegree, 2);
+    int k     = 1;
     for (; k <= theDegree; k++)
     {
       double aPar = theKnots(i) + k * aStep;
@@ -399,7 +398,7 @@ void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
            || theSurf.GetType() == GeomAbs_SurfaceOfExtrusion)
   {
     occ::handle<NCollection_HArray1<double>> anArrKnots;
-    int                                      aDegree = 0;
+    int              aDegree = 0;
     if (theSurf.BasisCurve()->GetType() == GeomAbs_BSplineCurve)
     {
       occ::handle<Geom_BSplineCurve> aBspl = theSurf.BasisCurve()->BSpline();
@@ -440,11 +439,11 @@ void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
  * if it coincides with theParam0 or theParam1, it is returned.
  */
 const Extrema_POnSurfParams& Extrema_GenExtPS::ComputeEdgeParameters(
-  const bool                   IsUEdge,
+  const bool       IsUEdge,
   const Extrema_POnSurfParams& theParam0,
   const Extrema_POnSurfParams& theParam1,
   const gp_Pnt&                thePoint,
-  const double                 theDiffTol)
+  const double          theDiffTol)
 {
   const double aSqrDist01 = theParam0.Value().SquareDistance(theParam1.Value());
 
@@ -455,7 +454,8 @@ const Extrema_POnSurfParams& Extrema_GenExtPS::ComputeEdgeParameters(
   }
   else
   {
-    const double aDiffDist = std::abs(theParam0.GetSqrDistance() - theParam1.GetSqrDistance());
+    const double aDiffDist =
+      std::abs(theParam0.GetSqrDistance() - theParam1.GetSqrDistance());
 
     if (aDiffDist >= aSqrDist01 - theDiffTol)
     {
@@ -474,8 +474,8 @@ const Extrema_POnSurfParams& Extrema_GenExtPS::ComputeEdgeParameters(
     else
     {
       // The shortest distance is inside the edge.
-      gp_XYZ aPoP(thePoint.XYZ().Subtracted(theParam0.Value().XYZ()));
-      gp_XYZ aPoP1(theParam1.Value().XYZ().Subtracted(theParam0.Value().XYZ()));
+      gp_XYZ        aPoP(thePoint.XYZ().Subtracted(theParam0.Value().XYZ()));
+      gp_XYZ        aPoP1(theParam1.Value().XYZ().Subtracted(theParam0.Value().XYZ()));
       double aRatio = aPoP.Dot(aPoP1) / aSqrDist01;
       double aU[2];
       double aV[2];
@@ -520,9 +520,9 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     {
       double PasU = myusup - myumin;
       double U0   = PasU / myusample / 100.;
-      PasU        = (PasU - U0) / (myusample - 1);
-      U0          = U0 / 2. + myumin;
-      myUParams   = new NCollection_HArray1<double>(1, myusample);
+      PasU               = (PasU - U0) / (myusample - 1);
+      U0                 = U0 / 2. + myumin;
+      myUParams          = new NCollection_HArray1<double>(1, myusample);
       double U    = U0;
       for (int NoU = 1; NoU <= myusample; NoU++, U += PasU)
         myUParams->SetValue(NoU, U);
@@ -532,11 +532,11 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     {
       double PasV = myvsup - myvmin;
       double V0   = PasV / myvsample / 100.;
-      PasV        = (PasV - V0) / (myvsample - 1);
-      V0          = V0 / 2. + myvmin;
+      PasV               = (PasV - V0) / (myvsample - 1);
+      V0                 = V0 / 2. + myvmin;
 
-      myVParams = new NCollection_HArray1<double>(1, myvsample);
-      double V  = V0;
+      myVParams       = new NCollection_HArray1<double>(1, myvsample);
+      double V = V0;
       for (int NoV = 1; NoV <= myvsample; NoV++, V += PasV)
         myVParams->SetValue(NoV, V);
     }
@@ -643,9 +643,9 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     // { Point(i, j); Point(i + 1, j); Point(i + 1, j + 1); Point(i, j + 1) }
     //   Or
     // { UEdge(i, j); VEdge(i + 1, j); UEdge(i, j + 1); VEdge(i, j) }
-    double aSqrDist01;
-    double aDiffDist;
-    bool   isOut;
+    double    aSqrDist01;
+    double    aDiffDist;
+    bool isOut;
 
     for (int NoU = 1; NoU < myusample; NoU++)
     {
@@ -732,17 +732,17 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
 }
 
 static double LengthOfIso(const Adaptor3d_Surface& theS,
-                          const GeomAbs_IsoType    theIso,
-                          const double             thePar1,
-                          const double             thePar2,
-                          const int                theNbPnts,
-                          const double             thePar)
+                                 const GeomAbs_IsoType    theIso,
+                                 const double      thePar1,
+                                 const double      thePar2,
+                                 const int   theNbPnts,
+                                 const double      thePar)
 {
-  double aLen = 0.;
-  int    i;
-  double dPar = (thePar2 - thePar1) / (theNbPnts - 1);
-  gp_Pnt aP1, aP2;
-  double aPar = thePar1 + dPar;
+  double    aLen = 0.;
+  int i;
+  double    dPar = (thePar2 - thePar1) / (theNbPnts - 1);
+  gp_Pnt           aP1, aP2;
+  double    aPar = thePar1 + dPar;
   if (theIso == GeomAbs_IsoU)
   {
     aP1 = theS.Value(thePar, thePar1);
@@ -770,39 +770,39 @@ static double LengthOfIso(const Adaptor3d_Surface& theS,
 }
 
 static void CorrectNbSamples(const Adaptor3d_Surface& theS,
-                             const double             theU1,
-                             const double             theU2,
-                             int&                     theNbU,
-                             const double             theV1,
-                             const double             theV2,
-                             int&                     theNbV)
+                             const double      theU1,
+                             const double      theU2,
+                             int&        theNbU,
+                             const double      theV1,
+                             const double      theV2,
+                             int&        theNbV)
 {
-  double aMinLen = 1.e-3;
-  int    nbp     = std::min(23, theNbV);
-  double aLenU1  = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU1);
+  double    aMinLen = 1.e-3;
+  int nbp     = std::min(23, theNbV);
+  double    aLenU1  = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU1);
   if (aLenU1 <= aMinLen)
   {
     double aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .7 * theU1 + 0.3 * theU2);
-    aLenU1    = std::max(aL, aLenU1);
+    aLenU1           = std::max(aL, aLenU1);
   }
   double aLenU2 = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU2);
   if (aLenU2 <= aMinLen)
   {
     double aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .3 * theU1 + 0.7 * theU2);
-    aLenU2    = std::max(aL, aLenU2);
+    aLenU2           = std::max(aL, aLenU2);
   }
-  nbp           = std::min(23, theNbV);
+  nbp                  = std::min(23, theNbV);
   double aLenV1 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV1);
   if (aLenV1 <= aMinLen)
   {
     double aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .7 * theV1 + 0.3 * theV2);
-    aLenV1    = std::max(aL, aLenV1);
+    aLenV1           = std::max(aL, aLenV1);
   }
   double aLenV2 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV2);
   if (aLenV2 <= aMinLen)
   {
     double aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .3 * theV1 + 0.7 * theV2);
-    aLenV2    = std::max(aL, aLenV2);
+    aLenV2           = std::max(aL, aLenV2);
   }
   //
   double aStepV1 = aLenU1 / theNbV;
@@ -837,8 +837,8 @@ void Extrema_GenExtPS::BuildTree()
   if (myS->GetType() == GeomAbs_BSplineSurface)
   {
     occ::handle<Geom_BSplineSurface> aBspl   = myS->BSpline();
-    int                              aUValue = aBspl->UDegree() * aBspl->NbUKnots();
-    int                              aVValue = aBspl->VDegree() * aBspl->NbVKnots();
+    int            aUValue = aBspl->UDegree() * aBspl->NbUKnots();
+    int            aVValue = aBspl->VDegree() * aBspl->NbVKnots();
     // 300 is value, which is used for singular points (see Extrema_ExtPS.cxx::Initialize(...))
     if (aUValue > myusample)
       myusample = std::min(aUValue, 300);
@@ -852,16 +852,16 @@ void Extrema_GenExtPS::BuildTree()
   double PasV = myvsup - myvmin;
   double U0   = PasU / myusample / 100.;
   double V0   = PasV / myvsample / 100.;
-  PasU        = (PasU - U0) / (myusample - 1);
-  PasV        = (PasV - V0) / (myvsample - 1);
-  U0          = U0 / 2. + myumin;
-  V0          = V0 / 2. + myvmin;
+  PasU               = (PasU - U0) / (myusample - 1);
+  PasV               = (PasV - V0) / (myvsample - 1);
+  U0                 = U0 / 2. + myumin;
+  V0                 = V0 / 2. + myvmin;
 
   // build grid of parametric points
   myUParams = new NCollection_HArray1<double>(1, myusample);
   myVParams = new NCollection_HArray1<double>(1, myvsample);
-  int    NoU, NoV;
-  double U = U0, V = V0;
+  int NoU, NoV;
+  double    U = U0, V = V0;
   for (NoU = 1; NoU <= myusample; NoU++, U += PasU)
     myUParams->SetValue(NoU, U);
   for (NoV = 1; NoV <= myvsample; NoV++, V += PasV)
@@ -871,7 +871,7 @@ void Extrema_GenExtPS::BuildTree()
   // Use optimized grid evaluator with span-based caching for B-spline surfaces.
   mySphereUBTree = new NCollection_UBTree<int, Bnd_Sphere>;
   NCollection_UBTreeFiller<int, Bnd_Sphere> aFiller(*mySphereUBTree);
-  int                                       i = 0;
+  int             i = 0;
 
   mySphereArray = new NCollection_HArray1<Bnd_Sphere>(0, myusample * myvsample);
 
@@ -942,12 +942,12 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
     if (myFlag == Extrema_ExtFlag_MIN || myFlag == Extrema_ExtFlag_MINMAX)
     {
       Extrema_ElementType anElemType;
-      int                 iU;
-      int                 iV;
-      int                 iU2;
-      int                 iV2;
-      bool                isMin;
-      int                 i;
+      int    iU;
+      int    iV;
+      int    iU2;
+      int    iV2;
+      bool    isMin;
+      int    i;
 
       for (NoU = 1; NoU < myusample; NoU++)
       {
@@ -1086,8 +1086,8 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       mySphereUBTree->Select(aSelector);
       // TODO: check if no solution in binary tree
       Bnd_Sphere&           aSph = aSelector.Sphere();
-      double                aU   = myUParams->Value(aSph.U());
-      double                aV   = myVParams->Value(aSph.V());
+      double         aU   = myUParams->Value(aSph.U());
+      double         aV   = myVParams->Value(aSph.V());
       Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
 
       aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
@@ -1103,8 +1103,8 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       mySphereUBTree->Select(aSelector);
       // TODO: check if no solution in binary tree
       Bnd_Sphere&           aSph = aSelector.Sphere();
-      double                aU   = myUParams->Value(aSph.U());
-      double                aV   = myVParams->Value(aSph.V());
+      double         aU   = myUParams->Value(aSph.U());
+      double         aV   = myVParams->Value(aSph.V());
       Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
       aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
       aParams.SetIndices(aSph.U(), aSph.V());

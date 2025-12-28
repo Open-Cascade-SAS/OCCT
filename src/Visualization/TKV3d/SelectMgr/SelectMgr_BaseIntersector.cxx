@@ -56,7 +56,10 @@ void SelectMgr_BaseIntersector::SetWindowSize(const int, const int) {}
 
 //=================================================================================================
 
-void SelectMgr_BaseIntersector::SetViewport(const double, const double, const double, const double)
+void SelectMgr_BaseIntersector::SetViewport(const double,
+                                            const double,
+                                            const double,
+                                            const double)
 {
 }
 
@@ -94,12 +97,12 @@ const gp_Pnt2d& SelectMgr_BaseIntersector::GetMousePosition() const
 
 //=================================================================================================
 
-bool SelectMgr_BaseIntersector::RaySphereIntersection(const gp_Pnt& theCenter,
-                                                      const double  theRadius,
-                                                      const gp_Pnt& theLoc,
-                                                      const gp_Dir& theRayDir,
-                                                      double&       theTimeEnter,
-                                                      double&       theTimeLeave) const
+bool SelectMgr_BaseIntersector::RaySphereIntersection(const gp_Pnt&       theCenter,
+                                                                  const double theRadius,
+                                                                  const gp_Pnt&       theLoc,
+                                                                  const gp_Dir&       theRayDir,
+                                                                  double&      theTimeEnter,
+                                                                  double& theTimeLeave) const
 {
   // to find the intersection of the ray (theLoc, theRayDir) and sphere with theCenter(x0, y0, z0)
   // and theRadius(R), you need to solve the equation (x' - x0)^2 + (y' - y0)^2 + (z' - z0)^2 = R^2,
@@ -109,9 +112,10 @@ bool SelectMgr_BaseIntersector::RaySphereIntersection(const gp_Pnt& theCenter,
   // by discriminant D = K^2 - A*C
   const double anA = theRayDir.Dot(theRayDir);
   const double aK  = theRayDir.X() * (theLoc.X() - theCenter.X())
-                    + theRayDir.Y() * (theLoc.Y() - theCenter.Y())
-                    + theRayDir.Z() * (theLoc.Z() - theCenter.Z());
-  const double aC = theLoc.Distance(theCenter) * theLoc.Distance(theCenter) - theRadius * theRadius;
+                           + theRayDir.Y() * (theLoc.Y() - theCenter.Y())
+                           + theRayDir.Z() * (theLoc.Z() - theCenter.Z());
+  const double aC =
+    theLoc.Distance(theCenter) * theLoc.Distance(theCenter) - theRadius * theRadius;
   const double aDiscr = aK * aK - anA * aC;
   if (aDiscr < 0)
   {
@@ -135,17 +139,18 @@ bool SelectMgr_BaseIntersector::RaySphereIntersection(const gp_Pnt& theCenter,
 
 //=================================================================================================
 
-bool SelectMgr_BaseIntersector::RayCylinderIntersection(const double  theBottomRadius,
-                                                        const double  theTopRadius,
-                                                        const double  theHeight,
-                                                        const gp_Pnt& theLoc,
-                                                        const gp_Dir& theRayDir,
-                                                        const bool    theIsHollow,
-                                                        double&       theTimeEnter,
-                                                        double&       theTimeLeave) const
+bool SelectMgr_BaseIntersector::RayCylinderIntersection(
+  const double    theBottomRadius,
+  const double    theTopRadius,
+  const double    theHeight,
+  const gp_Pnt&          theLoc,
+  const gp_Dir&          theRayDir,
+  const bool theIsHollow,
+  double&         theTimeEnter,
+  double&         theTimeLeave) const
 {
-  int    aNbIntersections   = 0;
-  double anIntersections[4] = {RealLast(), RealLast(), RealLast(), RealLast()};
+  int aNbIntersections   = 0;
+  double    anIntersections[4] = {RealLast(), RealLast(), RealLast(), RealLast()};
   // Check intersections with end faces
   // point of intersection theRayDir and z = 0
   if (!theIsHollow && theRayDir.Z() != 0)
@@ -170,7 +175,7 @@ bool SelectMgr_BaseIntersector::RayCylinderIntersection(const double  theBottomR
   if (theTopRadius != theBottomRadius)
   {
     const double aTriangleHeight = std::min(theBottomRadius, theTopRadius) * theHeight
-                                   / (std::abs(theBottomRadius - theTopRadius));
+                                          / (std::abs(theBottomRadius - theTopRadius));
     gp_Ax3 aSystem;
     if (theBottomRadius > theTopRadius)
     {
@@ -184,21 +189,21 @@ bool SelectMgr_BaseIntersector::RayCylinderIntersection(const double  theBottomR
     }
     gp_Trsf aTrsfCone;
     aTrsfCone.SetTransformation(gp_Ax3(), aSystem);
-    const gp_Pnt aPnt(theLoc.Transformed(aTrsfCone));
-    const gp_Dir aDir(theRayDir.Transformed(aTrsfCone));
+    const gp_Pnt        aPnt(theLoc.Transformed(aTrsfCone));
+    const gp_Dir        aDir(theRayDir.Transformed(aTrsfCone));
     const double aMaxRad     = std::max(theBottomRadius, theTopRadius);
     const double aConeHeight = theHeight + aTriangleHeight;
 
     // solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
     const double anA = aDir.X() * aDir.X() / (aMaxRad * aMaxRad)
-                       + aDir.Y() * aDir.Y() / (aMaxRad * aMaxRad)
-                       - aDir.Z() * aDir.Z() / (aConeHeight * aConeHeight);
+                              + aDir.Y() * aDir.Y() / (aMaxRad * aMaxRad)
+                              - aDir.Z() * aDir.Z() / (aConeHeight * aConeHeight);
     const double aK = aDir.X() * aPnt.X() / (aMaxRad * aMaxRad)
-                      + aDir.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
-                      - aDir.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
+                             + aDir.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
+                             - aDir.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
     const double aC = aPnt.X() * aPnt.X() / (aMaxRad * aMaxRad)
-                      + aPnt.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
-                      - aPnt.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
+                             + aPnt.Y() * aPnt.Y() / (aMaxRad * aMaxRad)
+                             - aPnt.Z() * aPnt.Z() / (aConeHeight * aConeHeight);
     double aDiscr = aK * aK - anA * aC;
     if (aDiscr > 0)
     {
@@ -259,11 +264,12 @@ bool SelectMgr_BaseIntersector::RayCylinderIntersection(const double  theBottomR
 
 //=================================================================================================
 
-bool SelectMgr_BaseIntersector::RayCircleIntersection(const double  theRadius,
-                                                      const gp_Pnt& theLoc,
-                                                      const gp_Dir& theRayDir,
-                                                      const bool    theIsFilled,
-                                                      double&       theTime) const
+bool SelectMgr_BaseIntersector::RayCircleIntersection(
+  const double    theRadius,
+  const gp_Pnt&          theLoc,
+  const gp_Dir&          theRayDir,
+  const bool theIsFilled,
+  double&         theTime) const
 {
   if (theRayDir.Z() != 0)
   {

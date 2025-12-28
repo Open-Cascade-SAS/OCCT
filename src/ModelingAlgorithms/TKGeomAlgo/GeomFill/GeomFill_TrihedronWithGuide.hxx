@@ -40,7 +40,8 @@ public:
 protected:
   occ::handle<Adaptor3d_Curve> myGuide;
   occ::handle<Adaptor3d_Curve> myTrimG;
-  gp_Pnt                       myCurPointOnGuide;
+  gp_Pnt                  myCurPointOnGuide;
+
 };
 
 #endif // _GeomFill_TrihedronWithGuide_HeaderFile

@@ -43,10 +43,11 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse(const gp_Elips&         E,
 //=============================================================================
 
 GeomToStep_MakeEllipse::GeomToStep_MakeEllipse(const occ::handle<Geom_Ellipse>& Cer,
-                                               const StepData_Factors&          theLocalFactors)
+                                               const StepData_Factors&     theLocalFactors)
 {
   gp_Elips E;
   E = Cer->Elips();
+#include "GeomToStep_MakeEllipse_gen.pxx"
 }
 
 //=============================================================================
@@ -55,15 +56,15 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse(const occ::handle<Geom_Ellipse>& 
 //=============================================================================
 
 GeomToStep_MakeEllipse::GeomToStep_MakeEllipse(const occ::handle<Geom2d_Ellipse>& Cer,
-                                               const StepData_Factors&            theLocalFactors)
+                                               const StepData_Factors&       theLocalFactors)
 {
   gp_Elips2d E2d;
   E2d = Cer->Elips2d();
 
   occ::handle<StepGeom_Ellipse>          EStep = new StepGeom_Ellipse;
-  StepGeom_Axis2Placement                Ax2;
+  StepGeom_Axis2Placement           Ax2;
   occ::handle<StepGeom_Axis2Placement2d> Ax2Step;
-  double                                 majorR, minorR;
+  double                     majorR, minorR;
 
   GeomToStep_MakeAxis2Placement2d MkAxis2(E2d.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();

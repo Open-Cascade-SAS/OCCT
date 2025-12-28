@@ -36,14 +36,14 @@ IGESDraw_ToolPlanar::IGESDraw_ToolPlanar() {}
 
 void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&         ent,
                                         const occ::handle<IGESData_IGESReaderData>& IR,
-                                        IGESData_ParamReader&                       PR) const
+                                        IGESData_ParamReader&                  PR) const
 {
   bool st;
-  int  nbval;
+  int nbval;
 
-  int                                                                nbMatrices;
-  occ::handle<IGESGeom_TransformationMatrix>                         transformationMatrix;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> entities;
+  int                      nbMatrices;
+  occ::handle<IGESGeom_TransformationMatrix> transformationMatrix;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  entities;
 
   // Reading nbMatrices(Integer)
   st = PR.ReadInteger(PR.Current(), "No. of Transformation matrices", nbMatrices);
@@ -85,7 +85,7 @@ void IGESDraw_ToolPlanar::ReadOwnParams(const occ::handle<IGESDraw_Planar>&     
 }
 
 void IGESDraw_ToolPlanar::WriteOwnParams(const occ::handle<IGESDraw_Planar>& ent,
-                                         IGESData_IGESWriter&                IW) const
+                                         IGESData_IGESWriter&           IW) const
 {
   int Up = ent->NbEntities();
   IW.Send(ent->NbMatrices());
@@ -98,7 +98,7 @@ void IGESDraw_ToolPlanar::WriteOwnParams(const occ::handle<IGESDraw_Planar>& ent
 }
 
 void IGESDraw_ToolPlanar::OwnShared(const occ::handle<IGESDraw_Planar>& ent,
-                                    Interface_EntityIterator&           iter) const
+                                    Interface_EntityIterator&      iter) const
 {
   int Up = ent->NbEntities();
   iter.GetOneItem(ent->TransformMatrix());
@@ -108,10 +108,10 @@ void IGESDraw_ToolPlanar::OwnShared(const occ::handle<IGESDraw_Planar>& ent,
 
 void IGESDraw_ToolPlanar::OwnCopy(const occ::handle<IGESDraw_Planar>& another,
                                   const occ::handle<IGESDraw_Planar>& ent,
-                                  Interface_CopyTool&                 TC) const
+                                  Interface_CopyTool&            TC) const
 {
-  int                                                                nbval;
-  int                                                                nbMatrices;
+  int                     nbval;
+  int                     nbMatrices;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> entities;
 
   nbval      = another->NbEntities();
@@ -135,17 +135,15 @@ bool IGESDraw_ToolPlanar::OwnCorrect(const occ::handle<IGESDraw_Planar>& ent) co
   if (ent->NbMatrices() == 1)
     return false;
   //  Forcer NbMNatrices a 1 -> Reconstruire
-  int                                                                nb = ent->NbEntities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ents =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  int                     nb   = ent->NbEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> ents = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (int i = 1; i <= nb; i++)
     ents->SetValue(i, ent->Entity(i));
   ent->Init(1, ent->TransformMatrix(), ents);
   return true;
 }
 
-IGESData_DirChecker IGESDraw_ToolPlanar::DirChecker(
-  const occ::handle<IGESDraw_Planar>& /*ent*/) const
+IGESData_DirChecker IGESDraw_ToolPlanar::DirChecker(const occ::handle<IGESDraw_Planar>& /*ent*/) const
 {
   IGESData_DirChecker DC(402, 16);
   DC.Structure(IGESData_DefVoid);
@@ -167,9 +165,9 @@ void IGESDraw_ToolPlanar::OwnCheck(const occ::handle<IGESDraw_Planar>& ent,
 }
 
 void IGESDraw_ToolPlanar::OwnDump(const occ::handle<IGESDraw_Planar>& ent,
-                                  const IGESData_IGESDumper&          dumper,
-                                  Standard_OStream&                   S,
-                                  const int                           level) const
+                                  const IGESData_IGESDumper&     dumper,
+                                  Standard_OStream&              S,
+                                  const int         level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

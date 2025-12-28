@@ -34,8 +34,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin,
                             const occ::handle<StepRepr_Representation>&     aMappedRepresentation);
 
-  Standard_EXPORT void SetMappingOrigin(
-    const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin);
+  Standard_EXPORT void SetMappingOrigin(const occ::handle<StepRepr_RepresentationItem>& aMappingOrigin);
 
   Standard_EXPORT occ::handle<StepRepr_RepresentationItem> MappingOrigin() const;
 

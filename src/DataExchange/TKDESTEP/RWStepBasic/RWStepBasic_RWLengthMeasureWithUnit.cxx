@@ -27,7 +27,7 @@ RWStepBasic_RWLengthMeasureWithUnit::RWStepBasic_RWLengthMeasureWithUnit() {}
 
 void RWStepBasic_RWLengthMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_LengthMeasureWithUnit>& ent) const
 {
@@ -51,7 +51,7 @@ void RWStepBasic_RWLengthMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWLengthMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepBasic_LengthMeasureWithUnit>& ent) const
 {
 
@@ -64,9 +64,8 @@ void RWStepBasic_RWLengthMeasureWithUnit::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWLengthMeasureWithUnit::Share(
-  const occ::handle<StepBasic_LengthMeasureWithUnit>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepBasic_RWLengthMeasureWithUnit::Share(const occ::handle<StepBasic_LengthMeasureWithUnit>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->UnitComponent().Value());

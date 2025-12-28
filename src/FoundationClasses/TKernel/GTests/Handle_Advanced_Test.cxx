@@ -40,7 +40,6 @@ public:
   virtual Standard_Transient* Clone() const { return new TransientRoot; }
   DEFINE_STANDARD_RTTI_INLINE(TransientRoot, Standard_Transient)
 };
-
 // Auxiliary macros to create hierarchy of classes
 #define QA_DEFINECLASS(theClass, theParent)                                                        \
   class theClass : public theParent                                                                \
@@ -379,7 +378,7 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
 
   {
     occ::handle<QaClass20_50> aHandle = new QaClass20_50();
-    aRawPtr                           = aHandle.get();
+    aRawPtr                      = aHandle.get();
 
     EXPECT_NE(nullptr, aRawPtr);
 
@@ -395,7 +394,7 @@ TEST_F(HandleAdvancedTest, WeakReferenceSimulation)
   // Create multiple new handles to ensure we get different objects
   // (Memory allocator might reuse the same location, so we create several)
   std::vector<occ::handle<QaClass20_50>> aHandles;
-  bool                                   aFoundDifferent = false;
+  bool                              aFoundDifferent = false;
 
   for (int i = 0; i < 10 && !aFoundDifferent; ++i)
   {

@@ -17,7 +17,9 @@
 #include <Extrema_ExtSS.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <Extrema_POnSurf.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 class TopoDS_Face;
@@ -68,11 +70,11 @@ public:
   gp_Pnt PointOnFace2(const int N) const { return myPointsOnS2.Value(N).Value(); }
 
 private:
-  Extrema_ExtSS                         myExtSS;
-  NCollection_Sequence<double>          mySqDist;
-  NCollection_Sequence<Extrema_POnSurf> myPointsOnS1;
-  NCollection_Sequence<Extrema_POnSurf> myPointsOnS2;
-  occ::handle<BRepAdaptor_Surface>      myHS;
+  Extrema_ExtSS               myExtSS;
+  NCollection_Sequence<double>      mySqDist;
+  NCollection_Sequence<Extrema_POnSurf>   myPointsOnS1;
+  NCollection_Sequence<Extrema_POnSurf>   myPointsOnS2;
+  occ::handle<BRepAdaptor_Surface> myHS;
 };
 
 #endif

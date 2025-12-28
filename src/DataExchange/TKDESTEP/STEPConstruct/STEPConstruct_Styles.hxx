@@ -25,11 +25,16 @@
 #include <NCollection_Sequence.hxx>
 #include <STEPConstruct_Tool.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <STEPConstruct_RenderingProperties.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 #include <gp_Pnt.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_DataMap.hxx>
 
 class XSControl_WorkSession;
 class StepVisual_StyledItem;
@@ -98,25 +103,25 @@ public:
   //! The Sape is used to find corresponding STEP entity by call to
   //! STEPConstruct::FindEntity(), then previous method is called.
   Standard_EXPORT occ::handle<StepVisual_StyledItem> AddStyle(
-    const TopoDS_Shape&                                        Shape,
+    const TopoDS_Shape&                                   Shape,
     const occ::handle<StepVisual_PresentationStyleAssignment>& PSA,
     const occ::handle<StepVisual_StyledItem>&                  Override);
 
   //! Create MDGPR, fill it with all the styles previously defined,
   //! and add it to the model
-  Standard_EXPORT bool CreateMDGPR(
-    const occ::handle<StepRepr_RepresentationContext>&                           Context,
-    occ::handle<StepVisual_MechanicalDesignGeometricPresentationRepresentation>& MDGPR,
-    occ::handle<StepData_StepModel>&                                             theStepModel);
+  Standard_EXPORT bool
+    CreateMDGPR(const occ::handle<StepRepr_RepresentationContext>&                           Context,
+                occ::handle<StepVisual_MechanicalDesignGeometricPresentationRepresentation>& MDGPR,
+                occ::handle<StepData_StepModel>& theStepModel);
 
   //! Create MDGPR, fill it with all the styles previously defined,
   //! and add it to the model
   //! IMPORTANT: <initPDS> must be null when use for NAUO colors
   //! <initPDS> initialised only for SHUO case.
-  Standard_EXPORT bool CreateNAUOSRD(
-    const occ::handle<StepRepr_RepresentationContext>&                Context,
-    const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR,
-    const occ::handle<StepRepr_ProductDefinitionShape>&               initPDS);
+  Standard_EXPORT bool
+    CreateNAUOSRD(const occ::handle<StepRepr_RepresentationContext>&                Context,
+                  const occ::handle<StepShape_ContextDependentShapeRepresentation>& CDSR,
+                  const occ::handle<StepRepr_ProductDefinitionShape>&               initPDS);
 
   //! Searches the STEP model for the RepresentationContext in which
   //! given shape is defined. This context (if found) can be used
@@ -130,8 +135,8 @@ public:
 
   //! Searches the STEP model for the INISIBILITY entities
   //! (which bring styles) and fills out sequence of styles
-  Standard_EXPORT bool LoadInvisStyles(
-    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& InvSyles) const;
+  Standard_EXPORT bool
+    LoadInvisStyles(occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& InvSyles) const;
 
   //! Create a PresentationStyleAssignment entity which defines
   //! two colors (for filling surfaces and curves)
@@ -140,8 +145,8 @@ public:
     const occ::handle<StepRepr_RepresentationItem>& item,
     const occ::handle<StepVisual_Colour>&           SurfCol,
     const occ::handle<StepVisual_Colour>&           CurveCol,
-    const STEPConstruct_RenderingProperties&        theRenderingProps,
-    const bool                                      isForNAUO = false) const;
+    const STEPConstruct_RenderingProperties&   theRenderingProps,
+    const bool                     isForNAUO = false) const;
 
   //! Returns a PresentationStyleAssignment entity which defines
   //! surface and curve colors as Col. This PSA is either created
@@ -156,11 +161,11 @@ public:
   //! NULL if it is not defined by that style, or last
   //! definition (if they are 1 or more)
   Standard_EXPORT bool GetColors(const occ::handle<StepVisual_StyledItem>& theStyle,
-                                 occ::handle<StepVisual_Colour>&           theSurfaceColour,
-                                 occ::handle<StepVisual_Colour>&           theBoundaryColour,
-                                 occ::handle<StepVisual_Colour>&           theCurveColour,
-                                 STEPConstruct_RenderingProperties&        theRenderingProps,
-                                 bool&                                     theIsComponent) const;
+                                             occ::handle<StepVisual_Colour>&           theSurfaceColour,
+                                             occ::handle<StepVisual_Colour>&           theBoundaryColour,
+                                             occ::handle<StepVisual_Colour>&           theCurveColour,
+                                             STEPConstruct_RenderingProperties&   theRenderingProps,
+                                             bool& theIsComponent) const;
 
   //! Create STEP color entity by given Quantity_Color
   //! The analysis is performed for whether the color corresponds to
@@ -173,21 +178,20 @@ public:
   //! one of standard colors predefined in STEP. In that case,
   //! PredefinedColour entity is created instead of RGBColour
   Standard_EXPORT static occ::handle<StepVisual_Colour> EncodeColor(
-    const Quantity_Color&                                                          Col,
+    const Quantity_Color&                        Col,
     NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& DPDCs,
-    NCollection_DataMap<gp_Pnt, occ::handle<Standard_Transient>>&                  ColRGBs);
+    NCollection_DataMap<gp_Pnt, occ::handle<Standard_Transient>>&       ColRGBs);
 
   //! Decodes STEP color and fills the Quantity_Color.
   //! Returns True if OK or False if color is not recognized
   Standard_EXPORT static bool DecodeColor(const occ::handle<StepVisual_Colour>& Colour,
-                                          Quantity_Color&                       Col);
+                                                      Quantity_Color&                  Col);
 
 private:
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
-                                                          myMapOfStyles;
-  NCollection_IndexedMap<occ::handle<Standard_Transient>> myStyles;
-  NCollection_IndexedMap<occ::handle<Standard_Transient>> myRootStyles;
-  NCollection_Sequence<occ::handle<Standard_Transient>>   myPSA;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMapOfStyles;
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>              myStyles;
+  NCollection_IndexedMap<occ::handle<Standard_Transient>>              myRootStyles;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                myPSA;
 };
 
 #endif // _STEPConstruct_Styles_HeaderFile

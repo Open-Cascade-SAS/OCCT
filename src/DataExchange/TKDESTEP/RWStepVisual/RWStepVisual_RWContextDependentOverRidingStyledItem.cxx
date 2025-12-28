@@ -21,6 +21,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_StyleContextSelect.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <StepVisual_PresentationStyleAssignment.hxx>
+#include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_StyledItem.hxx>
 
 RWStepVisual_RWContextDependentOverRidingStyledItem::
@@ -30,7 +34,7 @@ RWStepVisual_RWContextDependentOverRidingStyledItem::
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,
-  const int                                                           num,
+  const int                                         num,
   occ::handle<Interface_Check>&                                       ach,
   const occ::handle<StepVisual_ContextDependentOverRidingStyledItem>& ent) const
 {
@@ -49,12 +53,12 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   // --- inherited field : styles ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
-  occ::handle<StepVisual_PresentationStyleAssignment>                                   anent2;
-  int                                                                                   nsub2;
+  occ::handle<StepVisual_PresentationStyleAssignment>          anent2;
+  int                                        nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aStyles = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
+    aStyles              = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -87,12 +91,12 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
   // --- own field : styleContext ---
 
   occ::handle<NCollection_HArray1<StepVisual_StyleContextSelect>> aStyleContext;
-  StepVisual_StyleContextSelect                                   aStyleContextItem;
-  int                                                             nsub5;
+  StepVisual_StyleContextSelect                  aStyleContextItem;
+  int                               nsub5;
   if (data->ReadSubList(num, 5, "style_context", ach, nsub5))
   {
-    int nb5       = data->NbParams(nsub5);
-    aStyleContext = new NCollection_HArray1<StepVisual_StyleContextSelect>(1, nb5);
+    int nb5 = data->NbParams(nsub5);
+    aStyleContext        = new NCollection_HArray1<StepVisual_StyleContextSelect>(1, nb5);
     for (int i5 = 1; i5 <= nb5; i5++)
     {
       // szv#4:S4163:12Mar99 `bool stat5 =` not needed
@@ -111,7 +115,7 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep(
 }
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::WriteStep(
-  StepData_StepWriter&                                                SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepVisual_ContextDependentOverRidingStyledItem>& ent) const
 {
 
@@ -148,7 +152,7 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::WriteStep(
 
 void RWStepVisual_RWContextDependentOverRidingStyledItem::Share(
   const occ::handle<StepVisual_ContextDependentOverRidingStyledItem>& ent,
-  Interface_EntityIterator&                                           iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   int nbElem1 = ent->NbStyles();

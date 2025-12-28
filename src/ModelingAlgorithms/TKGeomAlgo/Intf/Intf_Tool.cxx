@@ -64,12 +64,12 @@ void Intf_Tool::Lin2dBox(const gp_Lin2d& L2d, const Bnd_Box2d& domain, Bnd_Box2d
   else if (domain.IsVoid())
     return;
 
-  double xmin, xmax, ymin, ymax;
-  double Xmin = 0, Xmax = 0, Ymin = 0, Ymax = 0;
-  double parmin = -Precision::Infinite();
-  double parmax = Precision::Infinite();
-  double parcur, par1, par2;
-  bool   xToSet, yToSet;
+  double    xmin, xmax, ymin, ymax;
+  double    Xmin = 0, Xmax = 0, Ymin = 0, Ymax = 0;
+  double    parmin = -Precision::Infinite();
+  double    parmax = Precision::Infinite();
+  double    parcur, par1, par2;
+  bool xToSet, yToSet;
 
   domain.Get(xmin, ymin, xmax, ymax);
 
@@ -201,8 +201,8 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
     }
     boxHypr2d.Update(Xmin, Ymin, Xmax, Ymax);
 
-    int    npj, npk;
-    double parmin;
+    int npj, npk;
+    double    parmin;
     for (npi = 0; npi < nbPi; npi++)
     {
       npk = npi;
@@ -220,10 +220,10 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
       }
     }
 
-    gp_Pnt2d Pn;
-    gp_Vec2d Tan;
-    double   sinan = 0;
-    bool     out   = true;
+    gp_Pnt2d         Pn;
+    gp_Vec2d         Tan;
+    double    sinan = 0;
+    bool out   = true;
 
     for (npi = 0; npi < nbPi; npi++)
     {
@@ -305,9 +305,9 @@ void Intf_Tool::Hypr2dBox(const gp_Hypr2d& theHypr2d, const Bnd_Box2d& domain, B
 
 int Intf_Tool::Inters2d(const gp_Hypr2d& theCurv, const Bnd_Box2d& Domain)
 {
-  int    nbpi = 0;
-  int    npi;
-  double xmin, xmax, ymin, ymax;
+  int nbpi = 0;
+  int npi;
+  double    xmin, xmax, ymin, ymax;
 
   Domain.Get(xmin, ymin, xmax, ymax);
 
@@ -442,8 +442,8 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
     }
     boxParab2d.Update(Xmin, Ymin, Xmax, Ymax);
 
-    int    npj, npk;
-    double parmin;
+    int npj, npk;
+    double    parmin;
     for (npi = 0; npi < nbPi; npi++)
     {
       npk = npi;
@@ -461,10 +461,10 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
       }
     }
 
-    gp_Pnt2d Pn;
-    gp_Vec2d Tan;
-    double   sinan = 0;
-    bool     out   = true;
+    gp_Pnt2d         Pn;
+    gp_Vec2d         Tan;
+    double    sinan = 0;
+    bool out   = true;
 
     for (npi = 0; npi < nbPi; npi++)
     {
@@ -546,9 +546,9 @@ void Intf_Tool::Parab2dBox(const gp_Parab2d& theParab2d,
 
 int Intf_Tool::Inters2d(const gp_Parab2d& theCurv, const Bnd_Box2d& Domain)
 {
-  int    nbpi = 0;
-  int    npi;
-  double xmin, xmax, ymin, ymax;
+  int nbpi = 0;
+  int npi;
+  double    xmin, xmax, ymin, ymax;
 
   Domain.Get(xmin, ymin, xmax, ymax);
 
@@ -664,12 +664,12 @@ void Intf_Tool::LinBox(const gp_Lin& L, const Bnd_Box& domain, Bnd_Box& boxLin)
   else if (domain.IsVoid())
     return;
 
-  double xmin, xmax, ymin, ymax, zmin, zmax;
-  double Xmin = 0, Xmax = 0, Ymin = 0, Ymax = 0, Zmin = 0, Zmax = 0;
-  double parmin = -Precision::Infinite();
-  double parmax = Precision::Infinite();
-  double parcur, par1, par2;
-  bool   xToSet, yToSet, zToSet;
+  double    xmin, xmax, ymin, ymax, zmin, zmax;
+  double    Xmin = 0, Xmax = 0, Ymin = 0, Ymax = 0, Zmin = 0, Zmax = 0;
+  double    parmin = -Precision::Infinite();
+  double    parmax = Precision::Infinite();
+  double    parcur, par1, par2;
+  bool xToSet, yToSet, zToSet;
 
   domain.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
@@ -838,8 +838,8 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
   nbPi = Inters3d(theHypr, domain);
   if (nbPi > 0)
   {
-    int    npi;
-    double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+    int npi;
+    double    Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
     //
     domain.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     //
@@ -854,10 +854,10 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
     }
     boxHypr.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
     //
-    gp_Pnt Pn;
-    gp_Vec Tan;
-    double sinan = 0;
-    bool   out   = true;
+    gp_Pnt           Pn;
+    gp_Vec           Tan;
+    double    sinan = 0;
+    bool out   = true;
 
     for (npi = 0; npi < nbPi; npi++)
     {
@@ -971,9 +971,9 @@ void Intf_Tool::HyprBox(const gp_Hypr& theHypr, const Bnd_Box& domain, Bnd_Box& 
 
 int Intf_Tool::Inters3d(const gp_Hypr& theCurv, const Bnd_Box& Domain)
 {
-  int    nbpi = 0;
-  int    npi;
-  double xmin, ymin, zmin, xmax, ymax, zmax;
+  int nbpi = 0;
+  int npi;
+  double    xmin, ymin, zmin, xmax, ymax, zmax;
 
   Domain.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
@@ -1154,9 +1154,9 @@ int Intf_Tool::Inters3d(const gp_Hypr& theCurv, const Bnd_Box& Domain)
 
 int Intf_Tool::Inters3d(const gp_Parab& theCurv, const Bnd_Box& Domain)
 {
-  int    nbpi = 0;
-  int    npi;
-  double xmin, ymin, zmin, xmax, ymax, zmax;
+  int nbpi = 0;
+  int npi;
+  double    xmin, ymin, zmin, xmax, ymax, zmax;
 
   Domain.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
@@ -1354,8 +1354,8 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
 
   if (nbPi > 0)
   {
-    int    npi;
-    double Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
+    int npi;
+    double    Xmin, Ymin, Zmin, Xmax, Ymax, Zmax;
 
     domain.Get(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
 
@@ -1371,10 +1371,10 @@ void Intf_Tool::ParabBox(const gp_Parab& theParab, const Bnd_Box& domain, Bnd_Bo
 
     boxParab.Update(Xmin, Ymin, Zmin, Xmax, Ymax, Zmax);
 
-    gp_Pnt Pn;
-    gp_Vec Tan;
-    double sinan = 0;
-    bool   out   = true;
+    gp_Pnt           Pn;
+    gp_Vec           Tan;
+    double    sinan = 0;
+    bool out   = true;
 
     for (npi = 0; npi < nbPi; npi++)
     {

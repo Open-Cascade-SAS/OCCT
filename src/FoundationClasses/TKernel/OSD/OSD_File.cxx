@@ -490,8 +490,8 @@ void OSD_File::Build(const OSD_OpenMode theMode, const OSD_Protection& theProtec
     throw Standard_ProgramError("OSD_File::Build(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = O_CREAT | O_TRUNC;
+  const char*      anFDOpenMode;
+  int anOpenMode = O_CREAT | O_TRUNC;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -572,8 +572,8 @@ void OSD_File::Append(const OSD_OpenMode theMode, const OSD_Protection& theProte
     throw Standard_ProgramError("OSD_File::Append(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = O_APPEND;
+  const char*      anFDOpenMode;
+  int anOpenMode = O_APPEND;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -647,8 +647,8 @@ void OSD_File::Open(const OSD_OpenMode theMode, const OSD_Protection& theProtect
     throw Standard_ProgramError("OSD_File::Open(): no name was given");
   }
 
-  const char* anFDOpenMode;
-  int         anOpenMode = 0;
+  const char*      anFDOpenMode;
+  int anOpenMode = 0;
   switch (theMode)
   {
     case OSD_ReadOnly:
@@ -803,7 +803,7 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const int theNbBytes)
   }
 
   NCollection_Array1<char> aBuffer(0, theNbBytes);
-  int                      aNbBytesRead = 0;
+  int         aNbBytesRead = 0;
 #ifdef _WIN32
   Read(&aBuffer.ChangeFirst(), theNbBytes, aNbBytesRead);
 #else
@@ -832,8 +832,8 @@ void OSD_File::Read(TCollection_AsciiString& theBuffer, const int theNbBytes)
 //=================================================================================================
 
 void OSD_File::ReadLine(TCollection_AsciiString& theBuffer,
-                        const int                theNbBytes,
-                        int&                     theNbBytesRead)
+                        const int   theNbBytes,
+                        int&        theNbBytesRead)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
   {
@@ -1068,7 +1068,9 @@ OSD_KindFile OSD_File::KindOfFile() const
 
 //=================================================================================================
 
-void OSD_File::Read(void* const theBuffer, const int theNbBytes, int& theNbReadBytes)
+void OSD_File::Read(void* const theBuffer,
+                    const int theNbBytes,
+                    int&      theNbReadBytes)
 {
   if (OSD_File::KindOfFile() == OSD_DIRECTORY)
   {
@@ -1656,8 +1658,8 @@ void OSD_File::Rewind()
 //=================================================================================================
 
 bool OSD_File::ReadLastLine(TCollection_AsciiString& theLine,
-                            const int                theDelay,
-                            const int                theNbTries)
+                                        const int   theDelay,
+                                        const int   theNbTries)
 {
   if (theNbTries <= 0)
   {

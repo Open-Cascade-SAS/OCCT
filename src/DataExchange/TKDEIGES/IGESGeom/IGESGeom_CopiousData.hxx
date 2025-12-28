@@ -44,8 +44,8 @@ public:
   //! or a sextuple.
   //! - aZPlane   : Common Z value for all points if datatype = 1
   //! - allData   : Data to be read in groups of 2, 3 or 6
-  Standard_EXPORT void Init(const int                                       aDataType,
-                            const double                                    aZPlane,
+  Standard_EXPORT void Init(const int               aDataType,
+                            const double                  aZPlane,
                             const occ::handle<NCollection_HArray1<double>>& allData);
 
   //! Sets Copious Data to be a Polyline if <mode> is True
@@ -76,7 +76,8 @@ public:
 
   //! Returns an individual Data, given the N0 of the Point
   //! and the B0 of the Coordinate (according DataType)
-  Standard_EXPORT double Data(const int NumPoint, const int NumData) const;
+  Standard_EXPORT double Data(const int NumPoint,
+                                     const int NumData) const;
 
   //! If datatype = 1, then returns common z value for all data
   //! else returns 0
@@ -102,8 +103,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_CopiousData, IGESData_IGESEntity)
 
 private:
-  int                                      theDataType;
-  double                                   theZPlane;
+  int              theDataType;
+  double                 theZPlane;
   occ::handle<NCollection_HArray1<double>> theData;
 };
 

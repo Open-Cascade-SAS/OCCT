@@ -22,7 +22,9 @@
 #include <Geom_Plane.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 class FilletPoint;
 
@@ -91,10 +93,10 @@ public:
   //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt& thePoint,
-                                     TopoDS_Edge&  theEdge1,
-                                     TopoDS_Edge&  theEdge2,
-                                     const int     iSolution = -1);
+  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt&          thePoint,
+                                     TopoDS_Edge&           theEdge1,
+                                     TopoDS_Edge&           theEdge2,
+                                     const int iSolution = -1);
 
 private:
   //! Computes the value the function in the current point.
@@ -195,8 +197,8 @@ public:
   //! For debug only
   double LowerValue()
   {
-    int    a, aResultIndex = 0;
-    double aValue;
+    int a, aResultIndex = 0;
+    double    aValue;
     for (a = myV.Length(); a > 0; a--)
     {
       if (aResultIndex == 0 || std::abs(aValue) > std::abs(myV.Value(a)))
@@ -224,7 +226,7 @@ private:
   //! Flags for storage the validity of solutions. Indexes corresponds to indexes
   //! in sequences myV, myD.
   NCollection_Sequence<bool> myValid;
-  NCollection_Sequence<int>  myNear;
+  NCollection_Sequence<int> myNear;
 };
 
 #endif // _FILLETALGO_H_

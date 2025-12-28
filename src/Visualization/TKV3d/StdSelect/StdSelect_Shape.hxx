@@ -25,9 +25,8 @@ class StdSelect_Shape : public PrsMgr_PresentableObject
 {
   DEFINE_STANDARD_RTTIEXT(StdSelect_Shape, PrsMgr_PresentableObject)
 public:
-  Standard_EXPORT StdSelect_Shape(
-    const TopoDS_Shape&              theShape,
-    const occ::handle<Prs3d_Drawer>& theDrawer = occ::handle<Prs3d_Drawer>());
+  Standard_EXPORT StdSelect_Shape(const TopoDS_Shape&         theShape,
+                                  const occ::handle<Prs3d_Drawer>& theDrawer = occ::handle<Prs3d_Drawer>());
 
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                                        const occ::handle<Prs3d_Presentation>&         thePrs,
@@ -39,7 +38,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
   TopoDS_Shape mysh;

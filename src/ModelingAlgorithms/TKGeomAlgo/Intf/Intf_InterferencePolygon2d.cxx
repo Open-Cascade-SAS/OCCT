@@ -18,6 +18,7 @@
 #include <Intf_InterferencePolygon2d.hxx>
 #include <Intf_Polygon2d.hxx>
 #include <Intf_SectionPoint.hxx>
+#include <Intf_SectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Intf_TangentZone.hxx>
 #include <Precision.hxx>
@@ -136,8 +137,8 @@ void Intf_InterferencePolygon2d::Interference(const Intf_Polygon2d& Obje1,
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  int    iObje1, iObje2, n1 = nbso, n2 = Obje2.NbSegments();
-  double d1 = Obje1.DeflectionOverEstimation(), d2 = Obje2.DeflectionOverEstimation();
+  int iObje1, iObje2, n1 = nbso, n2 = Obje2.NbSegments();
+  double    d1 = Obje1.DeflectionOverEstimation(), d2 = Obje2.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
   for (iObje1 = 1; iObje1 <= n1; iObje1++)
@@ -170,8 +171,8 @@ void Intf_InterferencePolygon2d::Interference(const Intf_Polygon2d& Obje)
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  int    iObje1, iObje2, n = Obje.NbSegments();
-  double d = Obje.DeflectionOverEstimation();
+  int iObje1, iObje2, n = Obje.NbSegments();
+  double    d = Obje.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
   for (iObje1 = 1; iObje1 <= n; iObje1++)
@@ -205,14 +206,14 @@ void Intf_InterferencePolygon2d::Clean()
   // The zones of tangency that concerns only one couple of segments are
   // conserved if the angle between the segments is less than <PRCANG> and
   // if there is no real point of intersection EDGE/EDGE:
-  int         nbIt  = myTZones.Length();
-  int         decal = 0;
-  int         addr1, addr2;
-  Intf_PIType dim1, dim2;
-  double      par;
-  int         tsp, tsps;
-  int         lpi, ltz;
-  bool        Only1Seg = false;
+  int nbIt  = myTZones.Length();
+  int decal = 0;
+  int addr1, addr2;
+  Intf_PIType      dim1, dim2;
+  double    par;
+  int tsp, tsps;
+  int lpi, ltz;
+  bool Only1Seg = false;
 
 #define PI1 (myTZones(ltz - decal).GetPoint(lpi))
 #define PI2 (myTZones(ltz - decal).GetPoint(tsp))
@@ -290,12 +291,12 @@ void Intf_InterferencePolygon2d::Clean()
 
 //=================================================================================================
 
-void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
-                                           const int       iObje2,
-                                           const gp_Pnt2d& BegO,
-                                           const gp_Pnt2d& EndO,
-                                           const gp_Pnt2d& BegT,
-                                           const gp_Pnt2d& EndT)
+void Intf_InterferencePolygon2d::Intersect(const int iObje1,
+                                           const int iObje2,
+                                           const gp_Pnt2d&        BegO,
+                                           const gp_Pnt2d&        EndO,
+                                           const gp_Pnt2d&        BegT,
+                                           const gp_Pnt2d&        EndT)
 {
   if (SelfIntf)
   {
@@ -303,12 +304,12 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
       return; //-- Ajout du 15 jan 98
   }
 
-  int                                     nbpi = 0;
-  double                                  parO[8];
-  double                                  parT[8];
+  int       nbpi = 0;
+  double          parO[8];
+  double          parT[8];
   NCollection_Sequence<Intf_SectionPoint> thePi;
-  gp_XY                                   segT = EndT.XY() - BegT.XY();
-  gp_XY                                   segO = EndO.XY() - BegO.XY();
+  gp_XY                  segT = EndT.XY() - BegT.XY();
+  gp_XY                  segO = EndO.XY() - BegO.XY();
 
   // If the length of segment is zero, nothing is done
   double lgT = std::sqrt(segT * segT);
@@ -434,8 +435,8 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
     }
   }
 
-  bool   edgeSP = false;
-  double parOSP = 0, parTSP = 0;
+  bool edgeSP = false;
+  double    parOSP = 0, parTSP = 0;
 
   if (std::abs(dbOT - deOT) > floatgap && std::abs(dbTO - deTO) > floatgap)
   {
@@ -643,7 +644,7 @@ void Intf_InterferencePolygon2d::Intersect(const int       iObje1,
     {
       const gp_Pnt& Pim1 = thePi(i - 1).Pnt();
       const gp_Pnt& Pi   = thePi(i).Pnt();
-      double        d    = Pi.Distance(Pim1);
+      double d    = Pi.Distance(Pim1);
       d *= 50.0;
       if (d < lgT && d < lgO)
       {

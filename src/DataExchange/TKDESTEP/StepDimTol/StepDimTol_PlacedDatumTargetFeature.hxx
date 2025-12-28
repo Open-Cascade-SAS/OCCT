@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepDimTol_PlacedDatumTargetFeature();
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_PlacedDatumTargetFeature, StepDimTol_DatumTarget)
+
 };
 
 #endif // _StepDimTol_PlacedDatumTargetFeature_HeaderFile

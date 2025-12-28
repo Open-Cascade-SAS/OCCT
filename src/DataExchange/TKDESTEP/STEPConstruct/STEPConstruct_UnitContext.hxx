@@ -44,29 +44,30 @@ public:
 
   //! Creates new context (units are MM and radians,
   //! uncertainty equal to Tol3d)
-  Standard_EXPORT void Init(const double                           Tol3d,
+  Standard_EXPORT void Init(const double               Tol3d,
                             const occ::handle<StepData_StepModel>& theModel,
-                            const StepData_Factors& theLocalFactors = StepData_Factors());
+                            const StepData_Factors&           theLocalFactors = StepData_Factors());
 
   //! Returns True if Init was called successfully
   Standard_EXPORT bool IsDone() const;
 
   //! Returns context (or Null if not done)
-  Standard_EXPORT occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx>
-                  Value() const;
+  Standard_EXPORT occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx> Value()
+    const;
 
   //! Computes the length, plane angle and solid angle conversion factor.
   //! Returns a status, 0 if OK
-  Standard_EXPORT int ComputeFactors(
-    const occ::handle<StepRepr_GlobalUnitAssignedContext>& aContext,
-    const StepData_Factors&                                theLocalFactors = StepData_Factors());
+  Standard_EXPORT int
+    ComputeFactors(const occ::handle<StepRepr_GlobalUnitAssignedContext>& aContext,
+                   const StepData_Factors& theLocalFactors = StepData_Factors());
 
-  Standard_EXPORT int ComputeFactors(const occ::handle<StepBasic_NamedUnit>& aUnit,
-                                     const StepData_Factors& theLocalFactors = StepData_Factors());
+  Standard_EXPORT int
+    ComputeFactors(const occ::handle<StepBasic_NamedUnit>& aUnit,
+                   const StepData_Factors&            theLocalFactors = StepData_Factors());
 
   //! Computes the uncertainty value (for length)
-  Standard_EXPORT int ComputeTolerance(
-    const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aContext);
+  Standard_EXPORT int
+    ComputeTolerance(const occ::handle<StepRepr_GlobalUncertaintyAssignedContext>& aContext);
 
   //! Returns the lengthFactor
   Standard_EXPORT double LengthFactor() const;
@@ -120,22 +121,22 @@ private:
   //! Fills numerical equivalent of SiUnitName (in SI value)
   //! Returns False if name SiUnit Name not recognized
   Standard_EXPORT bool SiUnitNameFactor(const occ::handle<StepBasic_SiUnit>& aSiUnit,
-                                        double&                              val) const;
+                                                    double&                  val) const;
 
-  bool                                                                          done;
+  bool                                                         done;
   occ::handle<StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx> GRC;
-  double                                                                        lengthFactor;
-  double                                                                        planeAngleFactor;
-  double                                                                        solidAngleFactor;
-  double                                                                        theUncertainty;
-  double                                                                        areaFactor;
-  double                                                                        volumeFactor;
-  bool                                                                          areaDone;
-  bool                                                                          volumeDone;
-  bool                                                                          lengthDone;
-  bool                                                                          planeAngleDone;
-  bool                                                                          solidAngleDone;
-  bool                                                                          hasUncertainty;
+  double                                                            lengthFactor;
+  double                                                            planeAngleFactor;
+  double                                                            solidAngleFactor;
+  double                                                            theUncertainty;
+  double                                                            areaFactor;
+  double                                                            volumeFactor;
+  bool                                                         areaDone;
+  bool                                                         volumeDone;
+  bool                                                         lengthDone;
+  bool                                                         planeAngleDone;
+  bool                                                         solidAngleDone;
+  bool                                                         hasUncertainty;
 };
 
 #endif // _STEPConstruct_UnitContext_HeaderFile

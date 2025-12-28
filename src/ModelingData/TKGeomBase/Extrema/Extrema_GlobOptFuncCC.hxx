@@ -40,7 +40,7 @@ private:
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;
-  int                      myType;
+  int         myType;
 };
 
 //! This class implements function which calculate Eucluidean distance
@@ -58,14 +58,16 @@ public:
 
   Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G);
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G);
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
+                                                  double&     F,
+                                                  math_Vector&       G);
 
 private:
   Extrema_GlobOptFuncCCC1& operator=(const Extrema_GlobOptFuncCCC1& theOther);
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;
-  int                      myType;
+  int         myType;
 };
 
 //! This class implements function which calculate Eucluidean distance
@@ -83,19 +85,21 @@ public:
 
   Standard_EXPORT virtual bool Gradient(const math_Vector& X, math_Vector& G);
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G);
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
+                                                  double&     F,
+                                                  math_Vector&       G);
 
   Standard_EXPORT virtual bool Values(const math_Vector& X,
-                                      double&            F,
-                                      math_Vector&       G,
-                                      math_Matrix&       H);
+                                                  double&     F,
+                                                  math_Vector&       G,
+                                                  math_Matrix&       H);
 
 private:
   Extrema_GlobOptFuncCCC2& operator=(const Extrema_GlobOptFuncCCC2& theOther);
 
   const Adaptor3d_Curve *  myC1_3d, *myC2_3d;
   const Adaptor2d_Curve2d *myC1_2d, *myC2_2d;
-  int                      myType;
+  int         myType;
 };
 
 #endif

@@ -64,9 +64,9 @@ Standard_EXPORT gp_Dir2d FUN_tool_nC2dINSIDES(const gp_Dir2d& tgC2d)
 // ----------------------------------------------------------------------
 // Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face& Fi,
 Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face&,
-                                          const TopoDS_Edge& Ei,
-                                          const double       parEi,
-                                          const gp_Dir&      ngFi)
+                                          const TopoDS_Edge&  Ei,
+                                          const double parEi,
+                                          const gp_Dir&       ngFi)
 {
   // <Ei> is an edge of <Fi>,
   // computing XX a vector normal to <ngFi>,
@@ -75,8 +75,8 @@ Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face&,
   // <parEi> on edge <Ei>)
   // <XX> is oriented inside 2d <F> if <E> is FORWARD in <F>
 
-  gp_Vec tgEi;
-  bool   ok = TopOpeBRepTool_TOOL::TggeomE(parEi, Ei, tgEi);
+  gp_Vec           tgEi;
+  bool ok = TopOpeBRepTool_TOOL::TggeomE(parEi, Ei, tgEi);
   if (!ok)
     return gp_Vec(0., 0., 0.); // NYIRAISE
   gp_Dir XX = FUN_tool_nCinsideS(tgEi, ngFi);
@@ -84,13 +84,13 @@ Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face&,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face& Fi,
-                                          const TopoDS_Edge& Ei,
-                                          const double       parOnEi)
+Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face&  Fi,
+                                          const TopoDS_Edge&  Ei,
+                                          const double parOnEi)
 {
-  gp_Vec   xx(1., 0., 0.);
-  gp_Pnt2d uvi;
-  bool     ok = FUN_tool_paronEF(Ei, parOnEi, Fi, uvi);
+  gp_Vec           xx(1., 0., 0.);
+  gp_Pnt2d         uvi;
+  bool ok = FUN_tool_paronEF(Ei, parOnEi, Fi, uvi);
   if (!ok)
     return xx; // nyiRaise
   gp_Vec ngFi = FUN_tool_nggeomF(uvi, Fi);
@@ -99,18 +99,18 @@ Standard_EXPORT gp_Vec FUN_tool_getgeomxx(const TopoDS_Face& Fi,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face& Fi,
-                                    const TopoDS_Edge& Ei,
-                                    const double       parEi,
-                                    const gp_Dir&      ngFi,
-                                    gp_Dir&            XX)
+Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face&  Fi,
+                                                const TopoDS_Edge&  Ei,
+                                                const double parEi,
+                                                const gp_Dir&       ngFi,
+                                                gp_Dir&             XX)
 {
   gp_Vec xx = FUN_tool_getgeomxx(Fi, Ei, parEi, ngFi);
   if (xx.Magnitude() < gp::Resolution())
     return false;
   XX = gp_Dir(xx);
   TopAbs_Orientation oriEinF;
-  bool               ok = FUN_tool_orientEinFFORWARD(Ei, Fi, oriEinF);
+  bool   ok = FUN_tool_orientEinFFORWARD(Ei, Fi, oriEinF);
   if (!ok)
     return false;
   if (M_REVERSED(oriEinF))
@@ -119,14 +119,14 @@ Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face& Fi,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face& Fi,
-                                    const TopoDS_Edge& Ei,
-                                    const double       parEi,
-                                    gp_Dir&            XX)
+Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face&  Fi,
+                                                const TopoDS_Edge&  Ei,
+                                                const double parEi,
+                                                gp_Dir&             XX)
 {
-  double   tolFi = BRep_Tool::Tolerance(Fi) * 1.e2; // nyitol
-  gp_Pnt2d uv;
-  bool     ok = FUN_tool_parF(Ei, parEi, Fi, uv, tolFi);
+  double    tolFi = BRep_Tool::Tolerance(Fi) * 1.e2; // nyitol
+  gp_Pnt2d         uv;
+  bool ok = FUN_tool_parF(Ei, parEi, Fi, uv, tolFi);
   if (!ok)
     return false;
   gp_Vec ng = FUN_tool_nggeomF(uv, Fi);
@@ -135,27 +135,27 @@ Standard_EXPORT bool FUN_tool_getxx(const TopoDS_Face& Fi,
 }
 
 // ----------------------------------------------------------------------
-Standard_EXPORT bool FUN_tool_getdxx(
-  const TopoDS_Face& F,
-  const TopoDS_Edge& E,
-  //                                                 const double parE,
-  const double,
-  gp_Vec2d& dxx)
+Standard_EXPORT bool
+  FUN_tool_getdxx(const TopoDS_Face& F,
+                  const TopoDS_Edge& E,
+                  //                                                 const double parE,
+                  const double,
+                  gp_Vec2d& dxx)
 // E xiso (x=u,v)
 // points between uvparE and uvparE+dxx are IN F2d
 {
   dxx = gp_Vec2d(0., 0.);
   TopAbs_Orientation oEinFF;
-  bool               ok = FUN_tool_orientEinFFORWARD(E, F, oEinFF);
+  bool   ok = FUN_tool_orientEinFFORWARD(E, F, oEinFF);
   if (!ok)
     return false;
   if (M_INTERNAL(oEinFF) || M_EXTERNAL(oEinFF))
     return false;
 
-  bool     isoU, isoV;
-  gp_Dir2d d2d;
-  gp_Pnt2d o2d;
-  bool     iso = TopOpeBRepTool_TOOL::UVISO(E, F, isoU, isoV, d2d, o2d);
+  bool isoU, isoV;
+  gp_Dir2d         d2d;
+  gp_Pnt2d         o2d;
+  bool iso = TopOpeBRepTool_TOOL::UVISO(E, F, isoU, isoV, d2d, o2d);
   if (!iso)
     return false;
   double u1, u2, v1, v2;
@@ -171,8 +171,8 @@ Standard_EXPORT bool FUN_tool_getdxx(
   if (!ok)
     return false;
 
-  double ypar            = isoU ? d2d.Y() : d2d.X();
-  bool   matterAFTERxpar = false;
+  double    ypar            = isoU ? d2d.Y() : d2d.X();
+  bool matterAFTERxpar = false;
   if (isoU)
     matterAFTERxpar = (ypar < 0.);
   if (isoV)

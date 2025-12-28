@@ -41,15 +41,15 @@
 
 // #include <BRepAdaptor_Curve2d.hxx>
 Standard_EXPORT bool FUN_projPonL(const gp_Pnt&                 P,
-                                  const TopOpeBRep_LineInter&   L,
-                                  const TopOpeBRep_FacesFiller& FF,
-                                  double&                       paramL)
+                                              const TopOpeBRep_LineInter&   L,
+                                              const TopOpeBRep_FacesFiller& FF,
+                                              double&                paramL)
 {
-  bool               paramLdef = false;
-  int                Esi       = (L.ArcIsEdge(1)) ? 1 : 2;
+  bool   paramLdef = false;
+  int   Esi       = (L.ArcIsEdge(1)) ? 1 : 2;
   const TopoDS_Edge& E         = TopoDS::Edge(L.Arc());
-  bool               hasC3D    = FC2D_HasC3D(E);
-  double             dist;
+  bool   hasC3D    = FC2D_HasC3D(E);
+  double      dist;
   if (hasC3D)
   {
     BRepAdaptor_Curve BAC(E);
@@ -109,9 +109,9 @@ void TopOpeBRep_FacesFiller::SetPShapeClassifier(const TopOpeBRepTool_PShapeClas
 
 //=================================================================================================
 
-void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                             S1,
-                                    const TopoDS_Shape&                             S2,
-                                    TopOpeBRep_FacesIntersector&                    FACINT,
+void TopOpeBRep_FacesFiller::Insert(const TopoDS_Shape&                        S1,
+                                    const TopoDS_Shape&                        S2,
+                                    TopOpeBRep_FacesIntersector&               FACINT,
                                     const occ::handle<TopOpeBRepDS_HDataStructure>& HDS)
 {
   myF1               = TopoDS::Face(S1);
@@ -183,10 +183,10 @@ TopOpeBRep_PointClassifier& TopOpeBRep_FacesFiller::ChangePointClassifier()
 
 void TopOpeBRep_FacesFiller::LoadLine(TopOpeBRep_LineInter& L)
 {
-  myLine    = &L;
+  myLine                = &L;
   bool bchk = CheckLine(L);
   bool binl = L.INL();
-  myLineINL = binl;
+  myLineINL             = binl;
   {
     TopOpeBRep_TypeLineCurve t = L.TypeLineCurve();
     if (!bchk && binl && t == TopOpeBRep_LINE)
@@ -213,9 +213,9 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
   double tol1, tol2;
   myFacesIntersector->GetTolerances(tol1, tol2);
 
-  bool                     check = true;
+  bool         check = true;
   TopOpeBRep_TypeLineCurve t     = L.TypeLineCurve();
-  int                      nbvp  = L.NbVPoint();
+  int         nbvp  = L.NbVPoint();
 
   if (t == TopOpeBRep_WALKING)
   {
@@ -229,7 +229,7 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
   }
   else if (t == TopOpeBRep_LINE)
   {
-    int                            np = 0;
+    int               np = 0;
     TopOpeBRep_VPointInterIterator VPI;
 
     for (VPI.Init(L); VPI.More(); VPI.Next())
@@ -257,16 +257,16 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
         B = VP;
     }
 
-    bool         isAV1 = A.IsVertexOnS1();
-    bool         isAV2 = A.IsVertexOnS2();
-    TopoDS_Shape V1;
+    bool isAV1 = A.IsVertexOnS1();
+    bool isAV2 = A.IsVertexOnS2();
+    TopoDS_Shape     V1;
     if (isAV1)
       V1 = A.VertexOnS1();
     if (isAV2)
       V1 = A.VertexOnS2();
-    bool         isBV1 = B.IsVertexOnS1();
-    bool         isBV2 = B.IsVertexOnS2();
-    TopoDS_Shape V2;
+    bool isBV1 = B.IsVertexOnS1();
+    bool isBV2 = B.IsVertexOnS2();
+    TopoDS_Shape     V2;
     if (isBV1)
       V2 = B.VertexOnS1();
     if (isBV2)
@@ -293,9 +293,9 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
 
           const TopOpeBRep_VPointInter& A    = myLine->VPoint(iINON1);
           const TopOpeBRep_VPointInter& B    = myLine->VPoint(iINONn);
-          double                        parA = A.ParameterOnLine();
-          double                        parB = B.ParameterOnLine();
-          bool                          conf = (fabs(parA - parB) < tol1);
+          double                 parA = A.ParameterOnLine();
+          double                 parB = B.ParameterOnLine();
+          bool              conf = (fabs(parA - parB) < tol1);
           if (conf)
           {
             check = false;
@@ -323,9 +323,9 @@ bool TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) const
         {
           const TopOpeBRep_VPointInter& A    = myLine->VPoint(iINON1);
           const TopOpeBRep_VPointInter& B    = myLine->VPoint(iINONn);
-          double                        parA = A.ParameterOnLine();
-          double                        parB = B.ParameterOnLine();
-          bool                          conf = (fabs(parA - parB) < tol1);
+          double                 parA = A.ParameterOnLine();
+          double                 parB = B.ParameterOnLine();
+          bool              conf = (fabs(parA - parB) < tol1);
           if (conf)
           {
             check = false;
@@ -357,7 +357,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
   {
     TopOpeBRep_LineInter&          L  = myFacesIntersector->CurrentLine();
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
-    bool                           ok = (tl == TopOpeBRep_RESTRICTION);
+    bool               ok = (tl == TopOpeBRep_RESTRICTION);
     if (ok)
       VP_Position(L);
   }
@@ -367,7 +367,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
   {
     TopOpeBRep_LineInter&          L  = myFacesIntersector->CurrentLine();
     const TopOpeBRep_TypeLineCurve tl = L.TypeLineCurve();
-    bool                           ok = (tl != TopOpeBRep_RESTRICTION);
+    bool               ok = (tl != TopOpeBRep_RESTRICTION);
     if (ok)
       VP_Position(L);
   }
@@ -377,7 +377,7 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_FacesIntersector&)
 
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 {
-  myLine      = &L;
+  myLine                  = &L;
   bool isrest = (L.TypeLineCurve() == TopOpeBRep_RESTRICTION);
 
   if (!isrest)
@@ -393,18 +393,18 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_LineInter& L)
 void TopOpeBRep_FacesFiller::VP_PositionOnL(TopOpeBRep_LineInter& L)
 {
   TopOpeBRep_VPointInterIterator   VPI(L);
-  int                              Lindex = L.Index();
+  int                 Lindex = L.Index();
   TopOpeBRep_VPointInterClassifier VPC;
 
   for (; VPI.More(); VPI.Next())
   {
     TopOpeBRep_VPointInter& VP   = VPI.ChangeCurrentVP();
-    int                     VPsi = VP.ShapeIndex();
+    int        VPsi = VP.ShapeIndex();
     const gp_Pnt&           P3D  = VP.Value();
 
-    bool                         VPequalVPONRESTRICTION = false;
+    bool             VPequalVPONRESTRICTION = false;
     TopOpeBRep_FacesIntersector& FI  = *((TopOpeBRep_FacesIntersector*)((void*)myFacesIntersector));
-    int                          iOL = 1, n = FI.NbLines();
+    int             iOL = 1, n = FI.NbLines();
     for (iOL = 1; iOL <= n; iOL++)
     {
       if (iOL == Lindex)
@@ -429,12 +429,12 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
   TopOpeBRep_VPointInterClassifier VPC;
 
   TopOpeBRep_VPointInterIterator VPI(L);
-  int                            Esi   = (L.ArcIsEdge(1)) ? 1 : 2;
-  int                            OOEsi = (L.ArcIsEdge(1)) ? 2 : 1;
+  int               Esi   = (L.ArcIsEdge(1)) ? 1 : 2;
+  int               OOEsi = (L.ArcIsEdge(1)) ? 2 : 1;
 
-  bool               isline = false;
+  bool   isline = false;
   const TopoDS_Edge& earc   = TopoDS::Edge(L.Arc());
-  bool               hasc3d = FC2D_HasC3D(earc);
+  bool   hasc3d = FC2D_HasC3D(earc);
   if (hasc3d)
     isline = FUN_tool_line(earc);
   else
@@ -467,14 +467,14 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
       continue;
     }
 
-    const gp_Pnt& P        = VP.Value();
-    bool          arcisE   = L.ArcIsEdge(Esi);
-    bool          arcisOOE = L.ArcIsEdge(OOEsi);
+    const gp_Pnt&    P        = VP.Value();
+    bool arcisE   = L.ArcIsEdge(Esi);
+    bool arcisOOE = L.ArcIsEdge(OOEsi);
 
     if (arcisE)
     {
-      double paramC;
-      bool   paramCdef = FUN_projPonL(P, L, (*this), paramC);
+      double    paramC;
+      bool paramCdef = FUN_projPonL(P, L, (*this), paramC);
       if (paramCdef)
       {
         const TopoDS_Edge& E = TopoDS::Edge(L.Arc());
@@ -490,8 +490,8 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 
     if (arcisOOE)
     {
-      double paramC;
-      bool   paramCdef = FUN_projPonL(P, L, (*this), paramC);
+      double    paramC;
+      bool paramCdef = FUN_projPonL(P, L, (*this), paramC);
       if (paramCdef)
       {
         const TopoDS_Edge& OOE = TopoDS::Edge(L.Arc());
@@ -512,7 +512,7 @@ void TopOpeBRep_FacesFiller::VP_PositionOnR(TopOpeBRep_LineInter& L)
 void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
                                          TopOpeBRep_VPointInterClassifier& VPC)
 {
-  int  si = VP.ShapeIndex();
+  int si = VP.ShapeIndex();
   bool c1 = false, c2 = false;
 
   if (si == 0)
@@ -557,27 +557,27 @@ void TopOpeBRep_FacesFiller::VP_Position(TopOpeBRep_VPointInter&           VP,
 //=================================================================================================
 
 bool TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
-                                         const int               VPsi,
-                                         TopOpeBRep_VPointInter& VP,
-                                         TopOpeBRep_LineInter&   Lrest) const
+                                                     const int  VPsi,
+                                                     TopOpeBRep_VPointInter& VP,
+                                                     TopOpeBRep_LineInter&   Lrest) const
 {
   const TopOpeBRep_TypeLineCurve tOL  = Lrest.TypeLineCurve();
-  bool                           OLok = (tOL == TopOpeBRep_RESTRICTION);
+  bool               OLok = (tOL == TopOpeBRep_RESTRICTION);
   if (!OLok)
     return false;
 
-  bool               VPequalVPONRESTRICTION = false;
+  bool   VPequalVPONRESTRICTION = false;
   const TopoDS_Edge& EOL                    = TopoDS::Edge(Lrest.Arc());
-  int                EOLsi                  = (Lrest.ArcIsEdge(1)) ? 1 : 2;
+  int   EOLsi                  = (Lrest.ArcIsEdge(1)) ? 1 : 2;
 
   TopOpeBRep_VPointInterIterator VPIOL(Lrest);
   for (; VPIOL.More(); VPIOL.Next())
   {
     TopOpeBRep_VPointInter& VPOL   = VPIOL.ChangeCurrentVP();
-    int                     VPOLsi = VPOL.ShapeIndex();
+    int        VPOLsi = VPOL.ShapeIndex();
 
     bool VPOLisvertex = false;
-    VPOLisvertex      = VPOL.IsVertex(1);
+    VPOLisvertex                  = VPOL.IsVertex(1);
     if (VPOLisvertex)
       continue;
 
@@ -590,7 +590,7 @@ bool TopOpeBRep_FacesFiller::PequalVPonR(const gp_Pnt&           P3D,
       continue;
 
     const gp_Pnt& P3DOL    = VPOL.Value();
-    double        tolE     = BRep_Tool::Tolerance(EOL);
+    double tolE     = BRep_Tool::Tolerance(EOL);
     VPequalVPONRESTRICTION = P3DOL.IsEqual(P3D, tolE);
 
     if (VPequalVPONRESTRICTION)
@@ -640,7 +640,7 @@ const TopoDS_Face& TopOpeBRep_FacesFiller::Face(const int I) const
 
 const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
   const TopOpeBRep_LineInter& L,
-  const int                   I) const
+  const int      I) const
 {
   const TopOpeBRepDS_Transition& T = L.FaceFaceTransition(I);
   return T;
@@ -648,7 +648,8 @@ const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
 
 //=================================================================================================
 
-const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(const int I) const
+const TopOpeBRepDS_Transition& TopOpeBRep_FacesFiller::FaceFaceTransition(
+  const int I) const
 {
   const TopOpeBRepDS_Transition& T = myLine->FaceFaceTransition(I);
   return T;

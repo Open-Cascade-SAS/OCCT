@@ -39,12 +39,12 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& theName,
-    const occ::handle<TCollection_HAsciiString>& theDescription,
-    const occ::handle<Standard_Transient>&       theMagnitude,
-    const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
+    const occ::handle<TCollection_HAsciiString>&                       theName,
+    const occ::handle<TCollection_HAsciiString>&                       theDescription,
+    const occ::handle<Standard_Transient>&                             theMagnitude,
+    const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
     const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers,
-    const occ::handle<StepBasic_LengthMeasureWithUnit>&                            theUnitSize);
+    const occ::handle<StepBasic_LengthMeasureWithUnit>&                theUnitSize);
 
   //! Returns field MaximumUpperTolerance
   inline occ::handle<StepBasic_LengthMeasureWithUnit> MaximumUpperTolerance() const

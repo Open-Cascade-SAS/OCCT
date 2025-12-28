@@ -19,36 +19,31 @@
 #include <NCollection_List.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-Standard_EXPORT int FUN_unkeepEinterferences(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  const TopOpeBRepDS_DataStructure&                         BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_unkeepEsymetrictransitions(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  const TopOpeBRepDS_DataStructure&                         BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_orderFFsamedomain(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  const occ::handle<TopOpeBRepDS_HDataStructure>&           BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_orderSTATETRANS(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  const occ::handle<TopOpeBRepDS_HDataStructure>&           BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_resolveEUNKNOWN(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  TopOpeBRepDS_DataStructure&                               BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructure>&           HDS,
-                                     const int                                                 EIX,
-                                     NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+Standard_EXPORT int FUN_unkeepEinterferences(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
+                                                          const TopOpeBRepDS_DataStructure& BDS,
+                                                          const int            SIX);
+Standard_EXPORT void             FUN_unkeepEsymetrictransitions(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
+                                                                const TopOpeBRepDS_DataStructure& BDS,
+                                                                const int            SIX);
+Standard_EXPORT void             FUN_orderFFsamedomain(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+                                                       const occ::handle<TopOpeBRepDS_HDataStructure>& BDS,
+                                                       const int                     SIX);
+Standard_EXPORT void             FUN_orderSTATETRANS(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+                                                     const occ::handle<TopOpeBRepDS_HDataStructure>& BDS,
+                                                     const int                     SIX);
+Standard_EXPORT void             FUN_resolveEUNKNOWN(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
+                                                     TopOpeBRepDS_DataStructure&      BDS,
+                                                     const int           SIX);
+Standard_EXPORT void             FUN_purgeDSonSE(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+                                                 const int                     EIX,
+                                                 NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI);
 
 //------------------------------------------------------
 static void FUN_FilterEdge
   //------------------------------------------------------
-  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-   const occ::handle<TopOpeBRepDS_HDataStructure>&           HDS,
-   const int                                                 SIX)
+  (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&           LI,
+   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
+   const int                     SIX)
 {
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 

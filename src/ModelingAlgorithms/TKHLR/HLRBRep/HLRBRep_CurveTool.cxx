@@ -20,9 +20,9 @@
 
 int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C)
 {
-  GeomAbs_CurveType typC     = ((HLRBRep_Curve*)C)->GetType();
-  static double     nbsOther = 10.0;
-  double            nbs      = nbsOther;
+  GeomAbs_CurveType    typC     = ((HLRBRep_Curve*)C)->GetType();
+  static double nbsOther = 10.0;
+  double        nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -42,11 +42,13 @@ int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C)
 
 //=================================================================================================
 
-int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C, const double u1, const double u2)
+int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C,
+                                              const double    u1,
+                                              const double    u2)
 {
-  GeomAbs_CurveType typC     = ((HLRBRep_Curve*)C)->GetType();
-  static double     nbsOther = 10.0;
-  double            nbs      = nbsOther;
+  GeomAbs_CurveType    typC     = ((HLRBRep_Curve*)C)->GetType();
+  static double nbsOther = 10.0;
+  double        nbs      = nbsOther;
 
   if (typC == GeomAbs_Line)
     nbs = 2;
@@ -55,7 +57,7 @@ int HLRBRep_CurveTool::NbSamples(const HLRBRep_CurvePtr C, const double u1, cons
   else if (typC == GeomAbs_BSplineCurve)
   {
     occ::handle<Geom_Curve> aCurve = ((HLRBRep_Curve*)C)->Curve().Curve().Curve();
-    GeomAdaptor_Curve       GAcurve(aCurve, u1, u2);
+    GeomAdaptor_Curve  GAcurve(aCurve, u1, u2);
     nbs = GAcurve.NbIntervals(GeomAbs_CN) + 1;
     nbs *= ((HLRBRep_Curve*)C)->Degree();
     if (nbs < 2.0)

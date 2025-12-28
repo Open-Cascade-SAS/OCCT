@@ -55,12 +55,12 @@ inline void ElCLib::D2(const double U, const gp_Circ& C, gp_Pnt& P, gp_Vec& V1, 
   ElCLib::CircleD2(U, C.Position(), C.Radius(), P, V1, V2);
 }
 
-inline void ElCLib::D3(const double   U,
-                       const gp_Circ& C,
-                       gp_Pnt&        P,
-                       gp_Vec&        V1,
-                       gp_Vec&        V2,
-                       gp_Vec&        V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Circ&      C,
+                       gp_Pnt&             P,
+                       gp_Vec&             V1,
+                       gp_Vec&             V2,
+                       gp_Vec&             V3)
 {
 
   ElCLib::CircleD3(U, C.Position(), C.Radius(), P, V1, V2, V3);
@@ -83,12 +83,12 @@ inline void ElCLib::D2(const double U, const gp_Elips& E, gp_Pnt& P, gp_Vec& V1,
   ElCLib::EllipseD2(U, E.Position(), E.MajorRadius(), E.MinorRadius(), P, V1, V2);
 }
 
-inline void ElCLib::D3(const double    U,
-                       const gp_Elips& E,
-                       gp_Pnt&         P,
-                       gp_Vec&         V1,
-                       gp_Vec&         V2,
-                       gp_Vec&         V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Elips&     E,
+                       gp_Pnt&             P,
+                       gp_Vec&             V1,
+                       gp_Vec&             V2,
+                       gp_Vec&             V3)
 {
 
   ElCLib::EllipseD3(U, E.Position(), E.MajorRadius(), E.MinorRadius(), P, V1, V2, V3);
@@ -112,12 +112,12 @@ inline void ElCLib::D2(const double U, const gp_Hypr& H, gp_Pnt& P, gp_Vec& V1, 
   ElCLib::HyperbolaD2(U, H.Position(), H.MajorRadius(), H.MinorRadius(), P, V1, V2);
 }
 
-inline void ElCLib::D3(const double   U,
-                       const gp_Hypr& H,
-                       gp_Pnt&        P,
-                       gp_Vec&        V1,
-                       gp_Vec&        V2,
-                       gp_Vec&        V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Hypr&      H,
+                       gp_Pnt&             P,
+                       gp_Vec&             V1,
+                       gp_Vec&             V2,
+                       gp_Vec&             V3)
 {
 
   ElCLib::HyperbolaD3(U, H.Position(), H.MajorRadius(), H.MinorRadius(), P, V1, V2, V3);
@@ -135,7 +135,11 @@ inline void ElCLib::D1(const double U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V
   ElCLib::ParabolaD1(U, Prb.Position(), Prb.Focal(), P, V1);
 }
 
-inline void ElCLib::D2(const double U, const gp_Parab& Prb, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
+inline void ElCLib::D2(const double U,
+                       const gp_Parab&     Prb,
+                       gp_Pnt&             P,
+                       gp_Vec&             V1,
+                       gp_Vec&             V2)
 {
 
   ElCLib::ParabolaD2(U, Prb.Position(), Prb.Focal(), P, V1, V2);
@@ -200,62 +204,74 @@ inline void ElCLib::D1(const double U, const gp_Parab2d& Prb, gp_Pnt2d& P, gp_Ve
   ElCLib::ParabolaD1(U, Prb.Axis(), Prb.Focal(), P, V1);
 }
 
-inline void ElCLib::D2(const double U, const gp_Circ2d& C, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2)
+inline void ElCLib::D2(const double U,
+                       const gp_Circ2d&    C,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2)
 {
 
   ElCLib::CircleD2(U, C.Axis(), C.Radius(), P, V1, V2);
 }
 
-inline void ElCLib::D2(const double U, const gp_Elips2d& E, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2)
+inline void ElCLib::D2(const double U,
+                       const gp_Elips2d&   E,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2)
 {
 
   ElCLib::EllipseD2(U, E.Axis(), E.MajorRadius(), E.MinorRadius(), P, V1, V2);
 }
 
-inline void ElCLib::D2(const double U, const gp_Hypr2d& H, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2)
+inline void ElCLib::D2(const double U,
+                       const gp_Hypr2d&    H,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2)
 {
 
   ElCLib::HyperbolaD2(U, H.Axis(), H.MajorRadius(), H.MinorRadius(), P, V1, V2);
 }
 
-inline void ElCLib::D2(const double      U,
-                       const gp_Parab2d& Prb,
-                       gp_Pnt2d&         P,
-                       gp_Vec2d&         V1,
-                       gp_Vec2d&         V2)
+inline void ElCLib::D2(const double U,
+                       const gp_Parab2d&   Prb,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2)
 {
 
   ElCLib::ParabolaD2(U, Prb.Axis(), Prb.Focal(), P, V1, V2);
 }
 
-inline void ElCLib::D3(const double     U,
-                       const gp_Circ2d& C,
-                       gp_Pnt2d&        P,
-                       gp_Vec2d&        V1,
-                       gp_Vec2d&        V2,
-                       gp_Vec2d&        V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Circ2d&    C,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2,
+                       gp_Vec2d&           V3)
 {
 
   ElCLib::CircleD3(U, C.Axis(), C.Radius(), P, V1, V2, V3);
 }
 
-inline void ElCLib::D3(const double      U,
-                       const gp_Elips2d& E,
-                       gp_Pnt2d&         P,
-                       gp_Vec2d&         V1,
-                       gp_Vec2d&         V2,
-                       gp_Vec2d&         V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Elips2d&   E,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2,
+                       gp_Vec2d&           V3)
 {
 
   ElCLib::EllipseD3(U, E.Axis(), E.MajorRadius(), E.MinorRadius(), P, V1, V2, V3);
 }
 
-inline void ElCLib::D3(const double     U,
-                       const gp_Hypr2d& H,
-                       gp_Pnt2d&        P,
-                       gp_Vec2d&        V1,
-                       gp_Vec2d&        V2,
-                       gp_Vec2d&        V3)
+inline void ElCLib::D3(const double U,
+                       const gp_Hypr2d&    H,
+                       gp_Pnt2d&           P,
+                       gp_Vec2d&           V1,
+                       gp_Vec2d&           V2,
+                       gp_Vec2d&           V3)
 {
 
   ElCLib::HyperbolaD3(U, H.Axis(), H.MajorRadius(), H.MinorRadius(), P, V1, V2, V3);

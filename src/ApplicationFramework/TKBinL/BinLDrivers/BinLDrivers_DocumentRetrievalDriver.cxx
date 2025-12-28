@@ -63,19 +63,19 @@ BinLDrivers_DocumentRetrievalDriver::BinLDrivers_DocumentRetrievalDriver()
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&     theFileName,
-                                               const occ::handle<CDM_Document>&      theNewDocument,
-                                               const occ::handle<CDM_Application>&   theApplication,
-                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                               const Message_ProgressRange&          theRange)
+void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
+                                               const occ::handle<CDM_Document>&       theNewDocument,
+                                               const occ::handle<CDM_Application>&    theApplication,
+                                               const occ::handle<PCDM_ReaderFilter>&  theFilter,
+                                               const Message_ProgressRange&      theRange)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream>      aFileStream =
+  std::shared_ptr<std::istream> aFileStream =
     aFileSystem->OpenIStream(theFileName, std::ios::in | std::ios::binary);
 
   if (aFileStream.get() != NULL && aFileStream->good())
   {
-    occ::handle<Storage_Data>  dData;
+    occ::handle<Storage_Data>       dData;
     TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat(*aFileStream, dData);
 
     Read(*aFileStream, dData, theNewDocument, theApplication, theFilter, theRange);
@@ -99,12 +99,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                     theIStream,
+void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                theIStream,
                                                const occ::handle<Storage_Data>&      theStorageData,
                                                const occ::handle<CDM_Document>&      theDoc,
                                                const occ::handle<CDM_Application>&   theApplication,
                                                const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                               const Message_ProgressRange&          theRange)
+                                               const Message_ProgressRange&     theRange)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myMsgDriver    = theApplication->MessageDriver();
@@ -171,8 +171,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // 1.b Retrieve the Types table
   NCollection_Sequence<TCollection_AsciiString>        aTypeNames; // Sequence of types in file
   const NCollection_Sequence<TCollection_AsciiString>& aUserInfo = aHeaderData->UserInfo();
-  bool                                                 begin     = false;
-  int                                                  i;
+  bool                     begin     = false;
+  int                     i;
   for (i = 1; i <= aUserInfo.Length(); i++)
   {
     TCollection_AsciiString aStr = aUserInfo(i);
@@ -231,7 +231,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
     (!theFilter.IsNull() && theFilter->IsAppendMode()) ? aDoc->GetData() : new TDF_Data();
 
   Message_ProgressScope aPS(theRange, "Reading data", 3);
-  bool                  aQuickPart = IsQuickPart(aFileVer);
+  bool      aQuickPart = IsQuickPart(aFileVer);
 
   // 2b. Read the TOC of Sections
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3)
@@ -343,15 +343,17 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
   // read sub-tree of the root label
   if (!theFilter.IsNull())
     theFilter->StartIteration();
-  const auto aStreamStartPosition = theIStream.tellg();
-  int nbRead = ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, false, aPS.Next());
+  const auto       aStreamStartPosition = theIStream.tellg();
+  int nbRead =
+    ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, false, aPS.Next());
   if (!myUnresolvedLinks.IsEmpty())
   {
     // In case we have skipped some linked TreeNodes before getting to
     // their children.
     theFilter->StartIteration();
     theIStream.seekg(aStreamStartPosition, std::ios_base::beg);
-    nbRead += ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, true, aPS.Next());
+    nbRead +=
+      ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, true, aPS.Next());
   }
   if (!aPS.More())
   {
@@ -398,14 +400,14 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
 //=================================================================================================
 
 int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
-  Standard_IStream&                     theIS,
-  const TDF_Label&                      theLabel,
+  Standard_IStream&                theIS,
+  const TDF_Label&                 theLabel,
   const occ::handle<PCDM_ReaderFilter>& theFilter,
-  const bool&                           theQuickPart,
-  const bool                            theReadMissing,
-  const Message_ProgressRange&          theRange)
+  const bool&          theQuickPart,
+  const bool           theReadMissing,
+  const Message_ProgressRange&     theRange)
 {
-  int                        nbRead = 0;
+  int           nbRead = 0;
   TCollection_ExtendedString aMethStr("BinLDrivers_DocumentRetrievalDriver: ");
 
   Message_ProgressScope aPS(theRange, "Reading sub tree", 2, true);
@@ -471,9 +473,9 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     if (!aDriver.IsNull())
     {
       // create transient attribute
-      int                        anID = myPAtt.Id();
+      int      anID = myPAtt.Id();
       occ::handle<TDF_Attribute> tAtt;
-      bool                       isBound = myRelocTable.IsBound(anID);
+      bool      isBound = myRelocTable.IsBound(anID);
       if (isBound)
         tAtt = occ::down_cast<TDF_Attribute>(myRelocTable.Find(anID));
       else
@@ -576,7 +578,8 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     // read sub-tree
     if (!theFilter.IsNull())
       theFilter->Down(aTag);
-    int nbSubRead = ReadSubTree(theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
+    int nbSubRead =
+      ReadSubTree(theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
     // check for error
     if (nbSubRead == -1)
       return -1;
@@ -612,10 +615,9 @@ occ::handle<BinMDF_ADriverTable> BinLDrivers_DocumentRetrievalDriver::AttributeD
 
 //=================================================================================================
 
-void BinLDrivers_DocumentRetrievalDriver::ReadSection(
-  BinLDrivers_DocumentSection& /*theSection*/,
-  const occ::handle<CDM_Document>& /*theDocument*/,
-  Standard_IStream& /*theIS*/)
+void BinLDrivers_DocumentRetrievalDriver::ReadSection(BinLDrivers_DocumentSection& /*theSection*/,
+                                                      const occ::handle<CDM_Document>& /*theDocument*/,
+                                                      Standard_IStream& /*theIS*/)
 {
   // empty; should be redefined in subclasses
 }
@@ -668,8 +670,9 @@ void BinLDrivers_DocumentRetrievalDriver::Clear()
 
 //=================================================================================================
 
-bool BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(const int theFileVersion,
-                                                               const int theCurVersion)
+bool BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
+  const int theFileVersion,
+  const int theCurVersion)
 {
   if (theFileVersion < TDocStd_FormatVersion_LOWER || theFileVersion > theCurVersion)
   {

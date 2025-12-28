@@ -44,12 +44,14 @@ public:
   //! Creates a new tool and initialises by name of
   //! resource file and (if specified) starting scope
   //! Calls method Init()
-  Standard_EXPORT ShapeProcess_Context(const char* file, const char* scope = "");
+  Standard_EXPORT ShapeProcess_Context(const char* file,
+                                       const char* scope = "");
 
   //! Initialises a tool by loading resource file and
   //! (if specified) sets starting scope
   //! Returns False if resource file not found
-  Standard_EXPORT bool Init(const char* file, const char* scope = "");
+  Standard_EXPORT bool Init(const char* file,
+                                        const char* scope = "");
 
   //! Loading Resource_Manager object if this object not
   //! equal internal static Resource_Manager object or
@@ -70,24 +72,31 @@ public:
 
   Standard_EXPORT bool GetReal(const char* param, double& val) const;
 
-  Standard_EXPORT bool GetInteger(const char* param, int& val) const;
+  Standard_EXPORT bool GetInteger(const char* param,
+                                              int&      val) const;
 
-  Standard_EXPORT bool GetBoolean(const char* param, bool& val) const;
+  Standard_EXPORT bool GetBoolean(const char* param,
+                                              bool&      val) const;
 
   //! Get value of parameter as being of specific type
   //! Returns False if parameter is not defined or has a wrong type
-  Standard_EXPORT bool GetString(const char* param, TCollection_AsciiString& val) const;
+  Standard_EXPORT bool GetString(const char*   param,
+                                             TCollection_AsciiString& val) const;
 
-  Standard_EXPORT double RealVal(const char* param, const double def) const;
+  Standard_EXPORT double RealVal(const char* param,
+                                        const double    def) const;
 
-  Standard_EXPORT int IntegerVal(const char* param, const int def) const;
+  Standard_EXPORT int IntegerVal(const char* param,
+                                              const int def) const;
 
-  Standard_EXPORT bool BooleanVal(const char* param, const bool def) const;
+  Standard_EXPORT bool BooleanVal(const char* param,
+                                              const bool def) const;
 
   //! Get value of parameter as being of specific type
   //! If parameter is not defined or does not have expected
   //! type, returns default value as specified
-  Standard_EXPORT const char* StringVal(const char* param, const char* def) const;
+  Standard_EXPORT const char* StringVal(const char* param,
+                                             const char* def) const;
 
   //! Sets Messenger used for outputting messages.
   Standard_EXPORT void SetMessenger(const occ::handle<Message_Messenger>& messenger);
@@ -109,10 +118,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeProcess_Context, Standard_Transient)
 
 private:
-  occ::handle<Resource_Manager>                                             myRC;
+  occ::handle<Resource_Manager>                myRC;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> myScope;
-  occ::handle<Message_Messenger>                                            myMessenger;
-  int                                                                       myTraceLev;
+  occ::handle<Message_Messenger>               myMessenger;
+  int                        myTraceLev;
 };
 
 #endif // _ShapeProcess_Context_HeaderFile

@@ -61,20 +61,20 @@ public:
 
   //! Finds or creates the constraint attribute defined
   //! by the topological attribute G1 and the constraint type type.
-  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum          type,
+  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum     type,
                            const occ::handle<TNaming_NamedShape>& G1);
 
   //! Finds or creates the constraint attribute defined
   //! by the topological attributes G1 and G2, and by
   //! the constraint type type.
-  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum          type,
+  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum     type,
                            const occ::handle<TNaming_NamedShape>& G1,
                            const occ::handle<TNaming_NamedShape>& G2);
 
   //! Finds or creates the constraint attribute defined
   //! by the topological attributes G1, G2 and G3, and
   //! by the constraint type type.
-  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum          type,
+  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum     type,
                            const occ::handle<TNaming_NamedShape>& G1,
                            const occ::handle<TNaming_NamedShape>& G2,
                            const occ::handle<TNaming_NamedShape>& G3);
@@ -84,7 +84,7 @@ public:
   //! and by the constraint type type.
   //! methods to read constraint fields
   //! =================================
-  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum          type,
+  Standard_EXPORT void Set(const TDataXtd_ConstraintEnum     type,
                            const occ::handle<TNaming_NamedShape>& G1,
                            const occ::handle<TNaming_NamedShape>& G2,
                            const occ::handle<TNaming_NamedShape>& G3,
@@ -152,7 +152,8 @@ public:
   //! Finds or creates the underlying geometry of the
   //! constraint defined by the topological attribute G
   //! and the integer index Index.
-  Standard_EXPORT void SetGeometry(const int Index, const occ::handle<TNaming_NamedShape>& G);
+  Standard_EXPORT void SetGeometry(const int            Index,
+                                   const occ::handle<TNaming_NamedShape>& G);
 
   //! Returns true if this constraint attribute defined by status is valid.
   //! By default, true is returned.
@@ -171,8 +172,8 @@ public:
   Standard_EXPORT bool Reversed() const;
 
   //! collects constraints on Childs for label <aLabel>
-  Standard_EXPORT static void CollectChildConstraints(const TDF_Label&             aLabel,
-                                                      NCollection_List<TDF_Label>& TheList);
+  Standard_EXPORT static void CollectChildConstraints(const TDF_Label& aLabel,
+                                                      NCollection_List<TDF_Label>&   TheList);
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
@@ -190,13 +191,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDataXtd_Constraint, TDF_Attribute)
 
 private:
-  TDataXtd_ConstraintEnum         myType;
+  TDataXtd_ConstraintEnum    myType;
   occ::handle<TDataStd_Real>      myValue;
   occ::handle<TDF_Attribute>      myGeometries[4];
   occ::handle<TNaming_NamedShape> myPlane;
-  bool                            myIsReversed;
-  bool                            myIsInverted;
-  bool                            myIsVerified;
+  bool           myIsReversed;
+  bool           myIsInverted;
+  bool           myIsVerified;
 };
 
 #endif // _TDataXtd_Constraint_HeaderFile

@@ -24,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESBasic_Name, IGESData_NameEntity)
 
 IGESBasic_Name::IGESBasic_Name() {}
 
-void IGESBasic_Name::Init(const int nbPropVal, const occ::handle<TCollection_HAsciiString>& aName)
+void IGESBasic_Name::Init(const int                  nbPropVal,
+                          const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName             = aName;
   theNbPropertyValues = nbPropVal;

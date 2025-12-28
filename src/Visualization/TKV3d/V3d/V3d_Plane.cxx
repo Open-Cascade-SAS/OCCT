@@ -25,7 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, Standard_Transient)
 
 //=================================================================================================
 
-V3d_Plane::V3d_Plane(const double theA, const double theB, const double theC, const double theD)
+V3d_Plane::V3d_Plane(const double theA,
+                     const double theB,
+                     const double theC,
+                     const double theD)
     : myGraphicStructure(),
       myPlane(new Graphic3d_ClipPlane(gp_Pln(theA, theB, theC, theD)))
 {
@@ -33,7 +36,10 @@ V3d_Plane::V3d_Plane(const double theA, const double theB, const double theC, co
 
 //=================================================================================================
 
-void V3d_Plane::SetPlane(const double theA, const double theB, const double theC, const double theD)
+void V3d_Plane::SetPlane(const double theA,
+                         const double theB,
+                         const double theC,
+                         const double theD)
 {
   myPlane->SetEquation(gp_Pln(theA, theB, theC, theD));
   if (IsDisplayed())
@@ -52,10 +58,10 @@ void V3d_Plane::Display(const occ::handle<V3d_View>& theView, const Quantity_Col
     myGraphicStructure->Clear();
   }
 
-  myGraphicStructure = new Graphic3d_Structure(aViewer->StructureManager());
+  myGraphicStructure                        = new Graphic3d_Structure(aViewer->StructureManager());
   occ::handle<Graphic3d_Group>            aGroup = myGraphicStructure->NewGroup();
   occ::handle<Graphic3d_AspectFillArea3d> anAsp  = new Graphic3d_AspectFillArea3d();
-  Graphic3d_MaterialAspect                aPlastic(Graphic3d_NameOfMaterial_Plastified);
+  Graphic3d_MaterialAspect           aPlastic(Graphic3d_NameOfMaterial_Plastified);
   aPlastic.SetColor(theColor);
   aPlastic.SetTransparency(0.5);
   anAsp->SetFrontMaterial(aPlastic);
@@ -90,7 +96,10 @@ void V3d_Plane::Erase()
 
 //=================================================================================================
 
-void V3d_Plane::Plane(double& theA, double& theB, double& theC, double& theD) const
+void V3d_Plane::Plane(double& theA,
+                      double& theB,
+                      double& theC,
+                      double& theD) const
 {
   const Graphic3d_ClipPlane::Equation& anEquation = myPlane->GetEquation();
   theA                                            = anEquation[0];

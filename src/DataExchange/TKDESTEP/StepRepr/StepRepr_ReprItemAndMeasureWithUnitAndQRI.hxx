@@ -38,8 +38,8 @@ public:
   Standard_EXPORT void SetQualifiedRepresentationItem(
     const occ::handle<StepShape_QualifiedRepresentationItem>& aQRI);
 
-  Standard_EXPORT occ::handle<StepShape_QualifiedRepresentationItem>
-                  GetQualifiedRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepShape_QualifiedRepresentationItem> GetQualifiedRepresentationItem()
+    const;
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,
                           StepRepr_ReprItemAndMeasureWithUnit)

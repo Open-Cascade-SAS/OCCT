@@ -32,7 +32,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                            const StepFEA_SymmetricTensor43d&            aFeaConstants);
+                            const StepFEA_SymmetricTensor43d&       aFeaConstants);
 
   //! Returns field FeaConstants
   Standard_EXPORT StepFEA_SymmetricTensor43d FeaConstants() const;

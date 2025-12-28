@@ -34,8 +34,8 @@ bool Expr_GreaterThan::IsSatisfied() const
 {
   occ::handle<Expr_GeneralExpression> fm = FirstMember();
   occ::handle<Expr_GeneralExpression> sm = SecondMember();
-  fm                                     = fm->Simplified();
-  sm                                     = sm->Simplified();
+  fm                                = fm->Simplified();
+  sm                                = sm->Simplified();
   if (fm->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     if (sm->IsKind(STANDARD_TYPE(Expr_NumericValue)))

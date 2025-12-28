@@ -32,10 +32,7 @@ public:
   {
   public:
     //! Changes transient object
-    inline void Transient(const occ::handle<TransientT>& theTransient)
-    {
-      myTransient = theTransient;
-    }
+    inline void Transient(const occ::handle<TransientT>& theTransient) { myTransient = theTransient; }
 
     //! Import transient object from the persistent data.
     inline const occ::handle<TransientT>& Import() { return myTransient; }
@@ -113,10 +110,7 @@ public:
     template <class T1, class T2>
     struct DownCast
     {
-      static occ::handle<T1> make(const occ::handle<T2>& theT2)
-      {
-        return occ::down_cast<T1>(theT2);
-      }
+      static occ::handle<T1> make(const occ::handle<T2>& theT2) { return occ::down_cast<T1>(theT2); }
     };
 
     template <class T>

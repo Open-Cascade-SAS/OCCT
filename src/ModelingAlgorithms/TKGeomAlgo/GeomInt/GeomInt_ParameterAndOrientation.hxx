@@ -31,7 +31,7 @@ public:
 
   Standard_EXPORT GeomInt_ParameterAndOrientation();
 
-  Standard_EXPORT GeomInt_ParameterAndOrientation(const double             P,
+  Standard_EXPORT GeomInt_ParameterAndOrientation(const double      P,
                                                   const TopAbs_Orientation Or1,
                                                   const TopAbs_Orientation Or2);
 
@@ -46,7 +46,7 @@ public:
   Standard_EXPORT TopAbs_Orientation Orientation2() const;
 
 private:
-  double             prm;
+  double      prm;
   TopAbs_Orientation or1;
   TopAbs_Orientation or2;
 };

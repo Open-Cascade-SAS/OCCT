@@ -26,6 +26,8 @@
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 class Geom_Curve;
 class gp_Pnt;
 class Adaptor3d_Curve;
@@ -51,11 +53,11 @@ public:
   //! Returned value is the distance between the given point and
   //! computed one.
   Standard_EXPORT double Project(const occ::handle<Geom_Curve>& C3D,
-                                 const gp_Pnt&                  P3D,
-                                 const double                   preci,
-                                 gp_Pnt&                        proj,
-                                 double&                        param,
-                                 const bool                     AdjustToEnds = true) const;
+                                        const gp_Pnt&             P3D,
+                                        const double       preci,
+                                        gp_Pnt&                   proj,
+                                        double&            param,
+                                        const bool AdjustToEnds = true) const;
 
   //! Projects a Point on a Curve.
   //! Computes the projected point and its parameter on the curve.
@@ -66,11 +68,11 @@ public:
   //! Returned value is the distance between the given point and
   //! computed one.
   Standard_EXPORT double Project(const Adaptor3d_Curve& C3D,
-                                 const gp_Pnt&          P3D,
-                                 const double           preci,
-                                 gp_Pnt&                proj,
-                                 double&                param,
-                                 const bool             AdjustToEnds = true) const;
+                                        const gp_Pnt&          P3D,
+                                        const double    preci,
+                                        gp_Pnt&                proj,
+                                        double&         param,
+                                        const bool AdjustToEnds = true) const;
 
   //! Projects a Point on a Curve, but parameters are limited
   //! between <cf> and <cl>.
@@ -79,44 +81,45 @@ public:
   //! If AdjustToEnds is True, point will be adjusted to the end
   //! of the curve if distance is less than <preci>
   Standard_EXPORT double Project(const occ::handle<Geom_Curve>& C3D,
-                                 const gp_Pnt&                  P3D,
-                                 const double                   preci,
-                                 gp_Pnt&                        proj,
-                                 double&                        param,
-                                 const double                   cf,
-                                 const double                   cl,
-                                 const bool                     AdjustToEnds = true) const;
+                                        const gp_Pnt&             P3D,
+                                        const double       preci,
+                                        gp_Pnt&                   proj,
+                                        double&            param,
+                                        const double       cf,
+                                        const double       cl,
+                                        const bool AdjustToEnds = true) const;
 
   Standard_EXPORT double ProjectAct(const Adaptor3d_Curve& C3D,
-                                    const gp_Pnt&          P3D,
-                                    const double           preci,
-                                    gp_Pnt&                proj,
-                                    double&                param) const;
+                                           const gp_Pnt&          P3D,
+                                           const double    preci,
+                                           gp_Pnt&                proj,
+                                           double&         param) const;
 
   //! Projects a Point on a Curve using Newton method.
   //! <paramPrev> is taken as the first approximation of solution.
   //! If Newton algorithm fails the method Project() is used.
   //! If AdjustToEnds is True, point will be adjusted to the end
   //! of the curve if distance is less than <preci>
-  Standard_EXPORT double NextProject(const double                   paramPrev,
-                                     const occ::handle<Geom_Curve>& C3D,
-                                     const gp_Pnt&                  P3D,
-                                     const double                   preci,
-                                     gp_Pnt&                        proj,
-                                     double&                        param,
-                                     const double                   cf,
-                                     const double                   cl,
-                                     const bool                     AdjustToEnds = true) const;
+  Standard_EXPORT double
+    NextProject(const double       paramPrev,
+                const occ::handle<Geom_Curve>& C3D,
+                const gp_Pnt&             P3D,
+                const double       preci,
+                gp_Pnt&                   proj,
+                double&            param,
+                const double       cf,
+                const double       cl,
+                const bool    AdjustToEnds = true) const;
 
   //! Projects a Point on a Curve using Newton method.
   //! <paramPrev> is taken as the first approximation of solution.
   //! If Newton algorithm fails the method Project() is used.
-  Standard_EXPORT double NextProject(const double           paramPrev,
-                                     const Adaptor3d_Curve& C3D,
-                                     const gp_Pnt&          P3D,
-                                     const double           preci,
-                                     gp_Pnt&                proj,
-                                     double&                param) const;
+  Standard_EXPORT double NextProject(const double    paramPrev,
+                                            const Adaptor3d_Curve& C3D,
+                                            const gp_Pnt&          P3D,
+                                            const double    preci,
+                                            gp_Pnt&                proj,
+                                            double&         param) const;
 
   //! Validate parameters First and Last for the given curve
   //! in order to make them valid for creation of edge.
@@ -128,58 +131,58 @@ public:
   //! corrected, or False if parameters cannot be corrected.
   //! In the latter case, parameters are reset to range of curve.
   Standard_EXPORT bool ValidateRange(const occ::handle<Geom_Curve>& Crv,
-                                     double&                        First,
-                                     double&                        Last,
-                                     const double                   prec) const;
+                                                 double&            First,
+                                                 double&            Last,
+                                                 const double       prec) const;
 
   //! Computes a boundary box on segment of curve C2d from First
   //! to Last. This is done by taking NPoints points from the
   //! curve and, if Exact is True, by searching for exact
   //! extrema. All these points are added to Box.
   Standard_EXPORT void FillBndBox(const occ::handle<Geom2d_Curve>& C2d,
-                                  const double                     First,
-                                  const double                     Last,
-                                  const int                        NPoints,
-                                  const bool                       Exact,
-                                  Bnd_Box2d&                       Box) const;
+                                  const double         First,
+                                  const double         Last,
+                                  const int      NPoints,
+                                  const bool      Exact,
+                                  Bnd_Box2d&                  Box) const;
 
   //! Defines which pcurve (C1 or C2) should be chosen for FORWARD
   //! seam edge.
   Standard_EXPORT int SelectForwardSeam(const occ::handle<Geom2d_Curve>& C1,
-                                        const occ::handle<Geom2d_Curve>& C2) const;
+                                                     const occ::handle<Geom2d_Curve>& C2) const;
 
   //! Checks if points are planar with given preci. If Normal has not zero
   //! modulus, checks with given normal
   Standard_EXPORT static bool IsPlanar(const NCollection_Array1<gp_Pnt>& pnts,
-                                       gp_XYZ&                           Normal,
-                                       const double                      preci = 0);
+                                                   gp_XYZ&                   Normal,
+                                                   const double       preci = 0);
 
   //! Checks if curve is planar with given preci. If Normal has not zero
   //! modulus, checks with given normal
   Standard_EXPORT static bool IsPlanar(const occ::handle<Geom_Curve>& curve,
-                                       gp_XYZ&                        Normal,
-                                       const double                   preci = 0);
+                                                   gp_XYZ&                   Normal,
+                                                   const double       preci = 0);
 
   //! Returns sample points which will serve as linearisation
   //! of the2d curve in range (first, last)
   //! The distribution of sample points is consystent with
   //! what is used by BRepTopAdaptor_FClass2d
   Standard_EXPORT static bool GetSamplePoints(const occ::handle<Geom2d_Curve>& curve,
-                                              const double                     first,
-                                              const double                     last,
-                                              NCollection_Sequence<gp_Pnt2d>&  seq);
+                                                          const double         first,
+                                                          const double         last,
+                                                          NCollection_Sequence<gp_Pnt2d>&     seq);
 
   //! Returns sample points which will serve as linearisation
   //! of the curve in range (first, last)
   Standard_EXPORT static bool GetSamplePoints(const occ::handle<Geom_Curve>& curve,
-                                              const double                   first,
-                                              const double                   last,
-                                              NCollection_Sequence<gp_Pnt>&  seq);
+                                                          const double       first,
+                                                          const double       last,
+                                                          NCollection_Sequence<gp_Pnt>&     seq);
 
   //! Tells if the Curve is closed with given precision.
   //! If <preci> < 0 then Precision::Confusion is used.
   Standard_EXPORT static bool IsClosed(const occ::handle<Geom_Curve>& curve,
-                                       const double                   preci = -1);
+                                                   const double       preci = -1);
 
   //! This method was implemented as fix for changes in trimmed curve
   //! behaviour. For the moment trimmed curve returns false anyway.
@@ -189,6 +192,7 @@ public:
 
   //! The same as for Curve3d.
   Standard_EXPORT static bool IsPeriodic(const occ::handle<Geom2d_Curve>& curve);
+
 };
 
 #endif // _ShapeAnalysis_Curve_HeaderFile

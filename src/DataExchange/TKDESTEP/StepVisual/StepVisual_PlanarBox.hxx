@@ -32,9 +32,9 @@ public:
   Standard_EXPORT StepVisual_PlanarBox();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const double                                 aSizeInX,
-                            const double                                 aSizeInY,
-                            const StepGeom_Axis2Placement&               aPlacement);
+                            const double                     aSizeInX,
+                            const double                     aSizeInY,
+                            const StepGeom_Axis2Placement&          aPlacement);
 
   Standard_EXPORT void SetPlacement(const StepGeom_Axis2Placement& aPlacement);
 

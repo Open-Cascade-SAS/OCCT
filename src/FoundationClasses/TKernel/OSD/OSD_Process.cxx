@@ -68,12 +68,12 @@ void OSD_Process::TerminalType(TCollection_AsciiString& Name)
 
 Quantity_Date OSD_Process::SystemDate()
 {
-  Quantity_Date   result;
-  int             month = 0, day = 0, year = 0, hh = 0, mn = 0, ss = 0;
-  struct tm       transfert;
-  struct timeval  tval;
-  struct timezone tzone;
-  int             status;
+  Quantity_Date    result;
+  int month = 0, day = 0, year = 0, hh = 0, mn = 0, ss = 0;
+  struct tm        transfert;
+  struct timeval   tval;
+  struct timezone  tzone;
+  int              status;
 
   status = gettimeofday(&tval, &tzone);
   if (status == -1)
@@ -253,10 +253,10 @@ TCollection_AsciiString OSD_Process::UserName()
 bool OSD_Process ::IsSuperUser()
 {
   #ifndef OCCT_UWP
-  bool          retVal = FALSE;
-  PSID          pSIDadmin;
-  HANDLE        hProcessToken = INVALID_HANDLE_VALUE;
-  PTOKEN_GROUPS pTKgroups     = NULL;
+  bool retVal = FALSE;
+  PSID             pSIDadmin;
+  HANDLE           hProcessToken = INVALID_HANDLE_VALUE;
+  PTOKEN_GROUPS    pTKgroups     = NULL;
 
   if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hProcessToken)
       || (pTKgroups = (PTOKEN_GROUPS)GetTokenInformationEx(hProcessToken, TokenGroups)) == NULL)
@@ -452,7 +452,7 @@ TCollection_AsciiString OSD_Process::ExecutablePath()
 TCollection_AsciiString OSD_Process::ExecutableFolder()
 {
   TCollection_AsciiString aFullPath  = ExecutablePath();
-  int                     aLastSplit = -1;
+  int        aLastSplit = -1;
 #ifdef _WIN32
   const char THE_FILE_SEPARATOR = '\\';
 #else

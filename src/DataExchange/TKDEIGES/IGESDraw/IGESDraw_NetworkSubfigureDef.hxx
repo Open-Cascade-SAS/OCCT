@@ -24,6 +24,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESDraw_ConnectPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 class TCollection_HAsciiString;
 class IGESGraph_TextDisplayTemplate;
 class IGESDraw_ConnectPoint;
@@ -59,14 +62,13 @@ public:
   //! (Logical design or Physical design)
   //! - aDesignator      : Designator HAsciiString and its Template
   //! - allPointEntities : Associated Connect Point Entities
-  Standard_EXPORT void Init(
-    const int                                                                   aDepth,
-    const occ::handle<TCollection_HAsciiString>&                                aName,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allEntities,
-    const int                                                                   aTypeFlag,
-    const occ::handle<TCollection_HAsciiString>&                                aDesignator,
-    const occ::handle<IGESGraph_TextDisplayTemplate>&                           aTemplate,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allPointEntities);
+  Standard_EXPORT void Init(const int                        aDepth,
+                            const occ::handle<TCollection_HAsciiString>&       aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&   allEntities,
+                            const int                        aTypeFlag,
+                            const occ::handle<TCollection_HAsciiString>&       aDesignator,
+                            const occ::handle<IGESGraph_TextDisplayTemplate>&  aTemplate,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allPointEntities);
 
   //! returns Depth of Subfigure(indication the amount of nesting)
   //! Note : The Depth is inclusive of both Network Subfigure Definition
@@ -117,12 +119,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigureDef, IGESData_IGESEntity)
 
 private:
-  int                                                                  theDepth;
-  occ::handle<TCollection_HAsciiString>                                theName;
+  int                       theDepth;
+  occ::handle<TCollection_HAsciiString>       theName;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>   theEntities;
-  int                                                                  theTypeFlag;
-  occ::handle<TCollection_HAsciiString>                                theDesignator;
-  occ::handle<IGESGraph_TextDisplayTemplate>                           theDesignatorTemplate;
+  int                       theTypeFlag;
+  occ::handle<TCollection_HAsciiString>       theDesignator;
+  occ::handle<IGESGraph_TextDisplayTemplate>  theDesignatorTemplate;
   occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>> thePointEntities;
 };
 

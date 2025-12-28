@@ -44,7 +44,7 @@ public:
 
   //! Finds or creates a list of string values attribute.
   Standard_EXPORT static occ::handle<TDataStd_ExtStringList> Set(const TDF_Label&     label,
-                                                                 const Standard_GUID& theGuid);
+                                                            const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_ExtStringList();
 
@@ -64,20 +64,21 @@ public:
 
   //! Inserts the <value> before the first meet of <before_value>.
   Standard_EXPORT bool InsertBefore(const TCollection_ExtendedString& value,
-                                    const TCollection_ExtendedString& before_value);
+                                                const TCollection_ExtendedString& before_value);
 
   //! Inserts the <value> before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertBefore(const int                         index,
-                                    const TCollection_ExtendedString& before_value);
+  Standard_EXPORT bool InsertBefore(const int            index,
+                                                const TCollection_ExtendedString& before_value);
 
   //! Inserts the <value> after the first meet of <after_value>.
   Standard_EXPORT bool InsertAfter(const TCollection_ExtendedString& value,
-                                   const TCollection_ExtendedString& after_value);
+                                               const TCollection_ExtendedString& after_value);
 
   //! Inserts the <value> after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertAfter(const int index, const TCollection_ExtendedString& after_value);
+  Standard_EXPORT bool InsertAfter(const int            index,
+                                               const TCollection_ExtendedString& after_value);
 
   //! Removes the first meet of the <value>.
   Standard_EXPORT bool Remove(const TCollection_ExtendedString& value);
@@ -106,13 +107,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_ExtStringList, TDF_Attribute)
 
 private:
   NCollection_List<TCollection_ExtendedString> myList;
-  Standard_GUID                                myID;
+  Standard_GUID                 myID;
 };
 
 #endif // _TDataStd_ExtStringList_HeaderFile

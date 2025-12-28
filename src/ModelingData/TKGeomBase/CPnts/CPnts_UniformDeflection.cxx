@@ -59,12 +59,20 @@ static void D02d(void* const C, const double U, gp_Pnt& PP)
   PP.SetCoord(P.X(), P.Y(), 0.);
 }
 
-static inline void D23d(void* const C, const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
+static inline void D23d(void* const C,
+                        const double    U,
+                        gp_Pnt&                P,
+                        gp_Vec&                V1,
+                        gp_Vec&                V2)
 {
   ((Adaptor3d_Curve*)C)->D2(U, P, V1, V2);
 }
 
-static void D22d(void* const C, const double U, gp_Pnt& PP, gp_Vec& VV1, gp_Vec& VV2)
+static void D22d(void* const C,
+                 const double    U,
+                 gp_Pnt&                PP,
+                 gp_Vec&                VV1,
+                 gp_Vec&                VV2)
 {
   gp_Pnt2d P;
   gp_Vec2d V1, V2;
@@ -78,8 +86,8 @@ static void D22d(void* const C, const double U, gp_Pnt& PP, gp_Vec& VV1, gp_Vec&
 
 void CPnts_UniformDeflection::Perform()
 {
-  gp_Pnt P, P1, P2;
-  gp_Vec V1, V2, VV;
+  gp_Pnt        P, P1, P2;
+  gp_Vec        V1, V2, VV;
   double Un1;
   double NormD1, NormD2;
 
@@ -271,9 +279,9 @@ CPnts_UniformDeflection::CPnts_UniformDeflection()
 //=================================================================================================
 
 CPnts_UniformDeflection::CPnts_UniformDeflection(const Adaptor3d_Curve& C,
-                                                 const double           Deflection,
-                                                 const double           Resolution,
-                                                 const bool             WithControl)
+                                                 const double    Deflection,
+                                                 const double    Resolution,
+                                                 const bool WithControl)
 {
   Initialize(C, Deflection, Resolution, WithControl);
 }
@@ -281,9 +289,9 @@ CPnts_UniformDeflection::CPnts_UniformDeflection(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_UniformDeflection::CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
-                                                 const double             Deflection,
-                                                 const double             Resolution,
-                                                 const bool               WithControl)
+                                                 const double      Deflection,
+                                                 const double      Resolution,
+                                                 const bool   WithControl)
 {
   Initialize(C, Deflection, Resolution, WithControl);
 }
@@ -291,9 +299,9 @@ CPnts_UniformDeflection::CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 void CPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& C,
-                                         const double           Deflection,
-                                         const double           Resolution,
-                                         const bool             WithControl)
+                                         const double    Deflection,
+                                         const double    Resolution,
+                                         const bool WithControl)
 {
   Initialize(C, Deflection, C.FirstParameter(), C.LastParameter(), Resolution, WithControl);
 }
@@ -301,9 +309,9 @@ void CPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void CPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& C,
-                                         const double             Deflection,
-                                         const double             Resolution,
-                                         const bool               WithControl)
+                                         const double      Deflection,
+                                         const double      Resolution,
+                                         const bool   WithControl)
 {
   Initialize(C, Deflection, C.FirstParameter(), C.LastParameter(), Resolution, WithControl);
 }
@@ -311,11 +319,11 @@ void CPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 CPnts_UniformDeflection ::CPnts_UniformDeflection(const Adaptor3d_Curve& C,
-                                                  const double           Deflection,
-                                                  const double           U1,
-                                                  const double           U2,
-                                                  const double           Resolution,
-                                                  const bool             WithControl)
+                                                  const double    Deflection,
+                                                  const double    U1,
+                                                  const double    U2,
+                                                  const double    Resolution,
+                                                  const bool WithControl)
 {
   Initialize(C, Deflection, U1, U2, Resolution, WithControl);
 }
@@ -323,11 +331,11 @@ CPnts_UniformDeflection ::CPnts_UniformDeflection(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_UniformDeflection ::CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
-                                                  const double             Deflection,
-                                                  const double             U1,
-                                                  const double             U2,
-                                                  const double             Resolution,
-                                                  const bool               WithControl)
+                                                  const double      Deflection,
+                                                  const double      U1,
+                                                  const double      U2,
+                                                  const double      Resolution,
+                                                  const bool   WithControl)
 {
   Initialize(C, Deflection, U1, U2, Resolution, WithControl);
 }
@@ -335,11 +343,11 @@ CPnts_UniformDeflection ::CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 void CPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& C,
-                                         const double           Deflection,
-                                         const double           U1,
-                                         const double           U2,
-                                         const double           Resolution,
-                                         const bool             WithControl)
+                                         const double    Deflection,
+                                         const double    U1,
+                                         const double    U2,
+                                         const double    Resolution,
+                                         const bool WithControl)
 {
   if (U1 > U2)
   {
@@ -366,11 +374,11 @@ void CPnts_UniformDeflection::Initialize(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void CPnts_UniformDeflection::Initialize(const Adaptor2d_Curve2d& C,
-                                         const double             Deflection,
-                                         const double             U1,
-                                         const double             U2,
-                                         const double             Resolution,
-                                         const bool               WithControl)
+                                         const double      Deflection,
+                                         const double      U1,
+                                         const double      U2,
+                                         const double      Resolution,
+                                         const bool   WithControl)
 {
   if (U1 > U2)
   {

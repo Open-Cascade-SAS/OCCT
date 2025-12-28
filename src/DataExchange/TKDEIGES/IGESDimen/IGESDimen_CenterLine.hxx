@@ -42,8 +42,8 @@ public:
   //! - aDataType      : Interpretation Flag, always = 1
   //! - aZDisplacement : Common z displacement
   //! - dataPnts       : Data points (x and y)
-  Standard_EXPORT void Init(const int                                      aDataType,
-                            const double                                   aZdisp,
+  Standard_EXPORT void Init(const int            aDataType,
+                            const double               aZdisp,
                             const occ::handle<NCollection_HArray1<gp_XY>>& dataPnts);
 
   //! Sets FormNumber to 20 if <mode> is True, 21 else
@@ -72,8 +72,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_CenterLine, IGESData_IGESEntity)
 
 private:
-  int                                     theDatatype;
-  double                                  theZDisplacement;
+  int           theDatatype;
+  double              theZDisplacement;
   occ::handle<NCollection_HArray1<gp_XY>> theDataPoints;
 };
 

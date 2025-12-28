@@ -98,14 +98,14 @@ public:
   }
 
 protected:
-  NCollection_Array1<int>         myMipMaps;    //!< Array of mipmap sizes, including base level
-  occ::handle<NCollection_Buffer> myFaceData;   //!< raw compressed data
-  size_t                          myFaceBytes;  //!< surface length in bytes
-  int                             myNbFaces;    //!< number of faces in the file
-  int                             mySizeX;      //!< surface width
-  int                             mySizeY;      //!< surface height
-  Image_Format                    myBaseFormat; //!< base (uncompressed) pixel format
-  Image_CompressedFormat          myFormat;     //!< compressed format
+  NCollection_Array1<int> myMipMaps;   //!< Array of mipmap sizes, including base level
+  occ::handle<NCollection_Buffer>           myFaceData;  //!< raw compressed data
+  size_t                        myFaceBytes; //!< surface length in bytes
+  int                     myNbFaces;   //!< number of faces in the file
+  int                     mySizeX;     //!< surface width
+  int                     mySizeY;     //!< surface height
+  Image_Format                         myBaseFormat; //!< base (uncompressed) pixel format
+  Image_CompressedFormat               myFormat;     //!< compressed format
   // clang-format off
   bool           myIsCompleteMips;    //!< flag indicating complete mip map level set (up to 1x1 resolution)
   // clang-format on

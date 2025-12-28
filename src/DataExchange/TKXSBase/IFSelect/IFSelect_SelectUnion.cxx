@@ -25,7 +25,7 @@ IFSelect_SelectUnion::IFSelect_SelectUnion() {}
 Interface_EntityIterator IFSelect_SelectUnion::RootResult(const Interface_Graph& G) const
 {
   IFGraph_Cumulate GC(G);
-  int              nb = NbInputs();
+  int nb = NbInputs();
   for (int i = 1; i <= nb; i++)
     GC.GetFromIter(Input(i)->RootResult(G));
   return GC.Result();

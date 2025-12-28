@@ -36,7 +36,7 @@ public:
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepRepr_Representation>&  aRep1,
                             const occ::handle<StepRepr_Representation>&  aRep2,
-                            const StepRepr_Transformation&               aTransf);
+                            const StepRepr_Transformation&          aTransf);
 
   Standard_EXPORT StepRepr_Transformation TransformationOperator() const;
 

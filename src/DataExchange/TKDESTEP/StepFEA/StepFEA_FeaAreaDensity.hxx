@@ -33,7 +33,7 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                            const double                                 aFeaConstant);
+                            const double                     aFeaConstant);
 
   //! Returns field FeaConstant
   Standard_EXPORT double FeaConstant() const;

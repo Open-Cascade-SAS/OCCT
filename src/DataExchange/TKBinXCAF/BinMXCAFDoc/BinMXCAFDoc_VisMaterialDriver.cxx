@@ -136,8 +136,7 @@ static void readColor(const BinObjMgt_Persistent& theSource, Quantity_ColorRGBA&
 }
 
 //! Encode texture path.
-static void writeTexture(BinObjMgt_Persistent&             theTarget,
-                         const occ::handle<Image_Texture>& theImage)
+static void writeTexture(BinObjMgt_Persistent& theTarget, const occ::handle<Image_Texture>& theImage)
 {
   if (theImage.IsNull())
   {
@@ -166,8 +165,7 @@ static void writeTexture(BinObjMgt_Persistent&             theTarget,
 }
 
 //! Decode texture path.
-static void readTexture(const BinObjMgt_Persistent& theSource,
-                        occ::handle<Image_Texture>& theTexture)
+static void readTexture(const BinObjMgt_Persistent& theSource, occ::handle<Image_Texture>& theTexture)
 {
   TCollection_AsciiString aStr;
   theSource.GetAsciiString(aStr);
@@ -220,25 +218,27 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_VisMaterialDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_VisMaterialDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                          const occ::handle<TDF_Attribute>& theTarget,
-                                          BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_VisMaterialDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_VisMaterial> aMat    = occ::down_cast<XCAFDoc_VisMaterial>(theTarget);
-  uint8_t                          aVerMaj = 0, aVerMin = 0;
+  uint8_t               aVerMaj = 0, aVerMin = 0;
   theSource.GetByte(aVerMaj);
   theSource.GetByte(aVerMin);
   if (aVerMaj < 1 || aVerMaj > MaterialVersionMajor)
   {
     myMessageDriver->Send(
-      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ") + int(aVerMaj)
-      + "." + int(aVerMin) + " (supported version: " + int(MaterialVersionMajor) + "."
+      TCollection_AsciiString("Skipping XCAFDoc_VisMaterial of unknown version ")
+      + int(aVerMaj) + "." + int(aVerMin)
+      + " (supported version: " + int(MaterialVersionMajor) + "."
       + int(MaterialVersionMinor) + ")");
     return false;
   }
 
-  uint8_t isDoubleSided = 0, anAlphaMode = 0;
-  float   anAlphaCutOff = 0.5f;
+  uint8_t      isDoubleSided = 0, anAlphaMode = 0;
+  float anAlphaCutOff = 0.5f;
   theSource.GetByte(isDoubleSided);
   theSource.GetByte(anAlphaMode);
   theSource.GetShortReal(anAlphaCutOff);
@@ -296,10 +296,9 @@ bool BinMXCAFDoc_VisMaterialDriver::Paste(const BinObjMgt_Persistent&       theS
 
 //=================================================================================================
 
-void BinMXCAFDoc_VisMaterialDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMXCAFDoc_VisMaterialDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                          BinObjMgt_Persistent&        theTarget,
+                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<XCAFDoc_VisMaterial> aMat = occ::down_cast<XCAFDoc_VisMaterial>(theSource);
   theTarget.PutByte(MaterialVersionMajor);

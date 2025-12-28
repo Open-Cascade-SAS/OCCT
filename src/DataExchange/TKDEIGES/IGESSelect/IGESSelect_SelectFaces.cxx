@@ -33,9 +33,9 @@ IGESSelect_SelectFaces::IGESSelect_SelectFaces()
 }
 
 bool IGESSelect_SelectFaces::Explore(const int /*level*/,
-                                     const occ::handle<Standard_Transient>& ent,
-                                     const Interface_Graph& /*G*/,
-                                     Interface_EntityIterator& explored) const
+                                                 const occ::handle<Standard_Transient>& ent,
+                                                 const Interface_Graph& /*G*/,
+                                                 Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())

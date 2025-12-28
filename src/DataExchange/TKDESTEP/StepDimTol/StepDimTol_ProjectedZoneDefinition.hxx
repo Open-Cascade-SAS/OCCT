@@ -32,11 +32,10 @@ public:
   Standard_EXPORT StepDimTol_ProjectedZoneDefinition();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<StepDimTol_ToleranceZone>&                               theZone,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>& theBoundaries,
-    const occ::handle<StepRepr_ShapeAspect>&                                   theProjectionEnd,
-    const occ::handle<StepBasic_LengthMeasureWithUnit>&                        theProjectionLength);
+  Standard_EXPORT void Init(const occ::handle<StepDimTol_ToleranceZone>&        theZone,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepRepr_ShapeAspect>>>&   theBoundaries,
+                            const occ::handle<StepRepr_ShapeAspect>&            theProjectionEnd,
+                            const occ::handle<StepBasic_LengthMeasureWithUnit>& theProjectionLength);
 
   //! Returns field ProjectionEnd
   inline occ::handle<StepRepr_ShapeAspect> ProjectionEnd() const { return myProjectionEnd; }
@@ -48,10 +47,7 @@ public:
   }
 
   //! Returns field ProjectionLength
-  inline occ::handle<StepBasic_LengthMeasureWithUnit> ProjectionLength()
-  {
-    return myProjectionLength;
-  }
+  inline occ::handle<StepBasic_LengthMeasureWithUnit> ProjectionLength() { return myProjectionLength; }
 
   //! Set field ProjectionLength
   inline void SetProjectionLength(

@@ -38,7 +38,9 @@ BlendFunc_ConstThroat::BlendFunc_ConstThroat(const occ::handle<Adaptor3d_Surface
 
 //=================================================================================================
 
-void BlendFunc_ConstThroat::Set(const double aThroat, const double, const int Choix)
+void BlendFunc_ConstThroat::Set(const double aThroat,
+                                const double,
+                                const int Choix)
 {
   Throat = aThroat;
   choix  = Choix;
@@ -221,15 +223,15 @@ void BlendFunc_ConstThroat::Tangent(const double U1,
                                     const double V1,
                                     const double U2,
                                     const double V2,
-                                    gp_Vec&      TgF,
-                                    gp_Vec&      TgL,
-                                    gp_Vec&      NmF,
-                                    gp_Vec&      NmL) const
+                                    gp_Vec&             TgF,
+                                    gp_Vec&             TgL,
+                                    gp_Vec&             NmF,
+                                    gp_Vec&             NmL) const
 {
-  gp_Pnt pt;
-  gp_Vec d1u, d1v;
-  bool   revF = false;
-  bool   revL = false;
+  gp_Pnt           pt;
+  gp_Vec           d1u, d1v;
+  bool revF = false;
+  bool revL = false;
 
   surf1->D1(U1, V1, pt, d1u, d1v);
   NmF = d1u.Crossed(d1v);

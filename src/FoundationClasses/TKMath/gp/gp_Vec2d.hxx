@@ -83,10 +83,16 @@ public:
   //! theIndex = 1 => X is returned
   //! theIndex = 2 => Y is returned
   //! Raised if theIndex != {1, 2}.
-  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
+  constexpr double Coord(const int theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this vector, returns its two coordinates theXv and theYv
-  constexpr void Coord(double& theXv, double& theYv) const noexcept { coord.Coord(theXv, theYv); }
+  constexpr void Coord(double& theXv, double& theYv) const noexcept
+  {
+    coord.Coord(theXv, theYv);
+  }
 
   //! For this vector, returns its X coordinate.
   constexpr double X() const noexcept { return coord.X(); }
@@ -100,9 +106,9 @@ public:
   //! Returns True if the two vectors have the same magnitude value
   //! and the same direction. The precision values are theLinearTolerance
   //! for the magnitude and theAngularTolerance for the direction.
-  Standard_EXPORT bool IsEqual(const gp_Vec2d& theOther,
-                               const double    theLinearTolerance,
-                               const double    theAngularTolerance) const;
+  Standard_EXPORT bool IsEqual(const gp_Vec2d&     theOther,
+                                           const double theLinearTolerance,
+                                           const double theAngularTolerance) const;
 
   //! Returns True if abs(std::abs(<me>.Angle(theOther)) - PI/2.)
   //! <= theAngularTolerance
@@ -117,14 +123,16 @@ public:
   //! Returns True if PI - std::abs(<me>.Angle(theOther)) <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp.
-  bool IsOpposite(const gp_Vec2d& theOther, const double theAngularTolerance) const;
+  bool IsOpposite(const gp_Vec2d&     theOther,
+                              const double theAngularTolerance) const;
 
   //! Returns true if std::abs(Angle(<me>, theOther)) <= theAngularTolerance or
   //! PI - std::abs(Angle(<me>, theOther)) <= theAngularTolerance
   //! Two vectors with opposite directions are considered as parallel.
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
   //! theOther.Magnitude() <= Resolution from gp
-  bool IsParallel(const gp_Vec2d& theOther, const double theAngularTolerance) const;
+  bool IsParallel(const gp_Vec2d&     theOther,
+                              const double theAngularTolerance) const;
 
   //! Computes the angular value between <me> and <theOther>
   //! returns the angle value between -PI and PI in radian.
@@ -161,7 +169,10 @@ public:
     return coord.Crossed(theRight.coord);
   }
 
-  [[nodiscard]] double operator^(const gp_Vec2d& theRight) const { return Crossed(theRight); }
+  [[nodiscard]] double operator^(const gp_Vec2d& theRight) const
+  {
+    return Crossed(theRight);
+  }
 
   //! Computes the magnitude of the cross product between <me> and
   //! theRight. Returns || <me> ^ theRight ||
@@ -189,7 +200,10 @@ public:
     return aV;
   }
 
-  [[nodiscard]] gp_Vec2d operator/(const double theScalar) const { return Divided(theScalar); }
+  [[nodiscard]] gp_Vec2d operator/(const double theScalar) const
+  {
+    return Divided(theScalar);
+  }
 
   //! Computes the scalar product
   double Dot(const gp_Vec2d& theOther) const { return coord.Dot(theOther.coord); }
@@ -212,7 +226,10 @@ public:
     return aV;
   }
 
-  [[nodiscard]] gp_Vec2d operator*(const double theScalar) const { return Multiplied(theScalar); }
+  [[nodiscard]] gp_Vec2d operator*(const double theScalar) const
+  {
+    return Multiplied(theScalar);
+  }
 
   void Normalize()
   {
@@ -253,24 +270,27 @@ public:
     return aV;
   }
 
-  [[nodiscard]] gp_Vec2d operator-(const gp_Vec2d& theRight) const { return Subtracted(theRight); }
+  [[nodiscard]] gp_Vec2d operator-(const gp_Vec2d& theRight) const
+  {
+    return Subtracted(theRight);
+  }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theV3
-  void SetLinearForm(const double    theA1,
-                     const gp_Vec2d& theV1,
-                     const double    theA2,
-                     const gp_Vec2d& theV2,
-                     const gp_Vec2d& theV3)
+  void SetLinearForm(const double theA1,
+                     const gp_Vec2d&     theV1,
+                     const double theA2,
+                     const gp_Vec2d&     theV2,
+                     const gp_Vec2d&     theV3)
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theV3.coord);
   }
 
   //! <me> is set to the following linear form : theA1 * theV1 + theA2 * theV2
-  void SetLinearForm(const double    theA1,
-                     const gp_Vec2d& theV1,
-                     const double    theA2,
-                     const gp_Vec2d& theV2)
+  void SetLinearForm(const double theA1,
+                     const gp_Vec2d&     theV1,
+                     const double theA2,
+                     const gp_Vec2d&     theV2)
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord);
   }
@@ -362,7 +382,8 @@ inline constexpr gp_Vec2d::gp_Vec2d(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2
 
 //=================================================================================================
 
-inline bool gp_Vec2d::IsOpposite(const gp_Vec2d& theOther, const double theAngularTolerance) const
+inline bool gp_Vec2d::IsOpposite(const gp_Vec2d&     theOther,
+                                             const double theAngularTolerance) const
 {
   const double anAng = std::abs(Angle(theOther));
   return M_PI - anAng <= theAngularTolerance;
@@ -370,7 +391,8 @@ inline bool gp_Vec2d::IsOpposite(const gp_Vec2d& theOther, const double theAngul
 
 //=================================================================================================
 
-inline bool gp_Vec2d::IsParallel(const gp_Vec2d& theOther, const double theAngularTolerance) const
+inline bool gp_Vec2d::IsParallel(const gp_Vec2d&     theOther,
+                                             const double theAngularTolerance) const
 {
   const double anAng = std::abs(Angle(theOther));
   return anAng <= theAngularTolerance || M_PI - anAng <= theAngularTolerance;

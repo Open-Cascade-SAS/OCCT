@@ -80,10 +80,10 @@ int Draw_Main(int /*argc*/, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
 //=================================================================================================
 
 int Draw_WinMain(HINSTANCE hInstance,
-                 HINSTANCE hPrevinstance,
-                 LPSTR /*lpCmdLine*/,
-                 int                   nCmdShow,
-                 const FDraw_InitAppli fDraw_InitAppli)
+                              HINSTANCE hPrevinstance,
+                              LPSTR /*lpCmdLine*/,
+                              int                   nCmdShow,
+                              const FDraw_InitAppli fDraw_InitAppli)
 {
   theDraw_InitAppli  = fDraw_InitAppli;
   int       aNbArgs  = 0;
@@ -97,7 +97,9 @@ int Draw_WinMain(HINSTANCE hInstance,
 
 //=================================================================================================
 
-int Draw_Main(int argc, char* argv[], const FDraw_InitAppli fDraw_InitAppli)
+int Draw_Main(int      argc,
+                           char*                 argv[],
+                           const FDraw_InitAppli fDraw_InitAppli)
 {
   // MKV 01.02.05
   #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4)))

@@ -43,12 +43,12 @@ TPrsStd_GeometryDriver::TPrsStd_GeometryDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_GeometryDriver::Update(const TDF_Label&                    aLabel,
-                                    occ::handle<AIS_InteractiveObject>& anAISObject)
+bool TPrsStd_GeometryDriver::Update(const TDF_Label&               aLabel,
+                                                occ::handle<AIS_InteractiveObject>& anAISObject)
 {
   occ::handle<TDataXtd_Geometry>  aGeom;
   occ::handle<TNaming_NamedShape> NS;
-  TDataXtd_GeometryEnum           GeomType;
+  TDataXtd_GeometryEnum      GeomType;
 
   if (!aLabel.FindAttribute(TDataXtd_Geometry::GetID(), aGeom))
   {
@@ -121,7 +121,7 @@ bool TPrsStd_GeometryDriver::Update(const TDF_Label&                    aLabel,
     }
     case TDataXtd_CIRCLE: {
       occ::handle<AIS_Line> ais2;
-      gp_Circ               cir;
+      gp_Circ          cir;
       if (!TDataXtd_Geometry::Circle(aLabel, cir))
         return false;
       occ::handle<Geom_Circle> acir = new Geom_Circle(cir);

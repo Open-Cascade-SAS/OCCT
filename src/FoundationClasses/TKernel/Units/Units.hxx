@@ -63,7 +63,8 @@ public:
   //! If <amode> is True, it forces the recomputation of
   //! the dictionary of units, and by consequence the
   //! completion of the Units_Lexicon.
-  Standard_EXPORT static occ::handle<Units_Lexicon> LexiconUnits(const bool amode = true);
+  Standard_EXPORT static occ::handle<Units_Lexicon> LexiconUnits(
+    const bool amode = true);
 
   //! Return a unique instance of LexiconFormula.
   Standard_EXPORT static occ::handle<Units_Lexicon> LexiconFormula();
@@ -72,21 +73,23 @@ public:
   Standard_EXPORT static occ::handle<Units_Dimensions> NullDimensions();
 
   //! Converts <avalue> expressed in <afirstunit> into the <asecondunit>.
-  Standard_EXPORT static double Convert(const double avalue,
-                                        const char*  afirstunit,
-                                        const char*  asecondunit);
+  Standard_EXPORT static double Convert(const double    avalue,
+                                               const char* afirstunit,
+                                               const char* asecondunit);
 
-  Standard_EXPORT static double ToSI(const double aData, const char* aUnit);
+  Standard_EXPORT static double ToSI(const double    aData,
+                                            const char* aUnit);
 
-  Standard_EXPORT static double ToSI(const double                   aData,
-                                     const char*                    aUnit,
-                                     occ::handle<Units_Dimensions>& aDim);
+  Standard_EXPORT static double ToSI(const double       aData,
+                                            const char*    aUnit,
+                                            occ::handle<Units_Dimensions>& aDim);
 
-  Standard_EXPORT static double FromSI(const double aData, const char* aUnit);
+  Standard_EXPORT static double FromSI(const double    aData,
+                                              const char* aUnit);
 
-  Standard_EXPORT static double FromSI(const double                   aData,
-                                       const char*                    aUnit,
-                                       occ::handle<Units_Dimensions>& aDim);
+  Standard_EXPORT static double FromSI(const double       aData,
+                                              const char*    aUnit,
+                                              occ::handle<Units_Dimensions>& aDim);
 
   //! return the dimension associated to the Type
   Standard_EXPORT static occ::handle<Units_Dimensions> Dimensions(const char* aType);

@@ -36,18 +36,19 @@ public:
 
   //! Intersect the line segment and the edge.
   Standard_EXPORT void Perform(const gp_Lin2d&       L,
-                               const double          P,
-                               const double          Tol,
+                               const double   P,
+                               const double   Tol,
                                const BRepClass_Edge& E);
 
   //! Returns in <T>, <N> and <C> the tangent, normal
   //! and curvature of the edge <E> at parameter value
   //! <U>.
   Standard_EXPORT void LocalGeometry(const BRepClass_Edge& E,
-                                     const double          U,
+                                     const double   U,
                                      gp_Dir2d&             T,
                                      gp_Dir2d&             N,
-                                     double&               C) const;
+                                     double&        C) const;
+
 };
 
 #endif // _BRepClass_Intersector_HeaderFile

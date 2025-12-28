@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
@@ -102,7 +103,7 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> thetit;
-  int                                   thelev;
+  int                 thelev;
   occ::handle<NCollection_HArray1<int>> thetot;
   occ::handle<NCollection_HArray1<int>> thedone;
   occ::handle<NCollection_HArray1<int>> thecurr;

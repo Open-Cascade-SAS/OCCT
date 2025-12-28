@@ -169,7 +169,9 @@ public:
   bool GetArgDescription(Interface_ParamType* theType, char** theValue);
 
   //! Returns a value of all file counters
-  void GetFileNbR(int* theNbHead, int* theNbRec, int* theNbPage);
+  void GetFileNbR(int* theNbHead,
+                  int* theNbRec,
+                  int* theNbPage);
 
   //! Returns a value of fields of current record
   bool GetRecordDescription(char** theIdent, char** theType, int* theNbArg);
@@ -234,12 +236,12 @@ private:
 private:
   NCollection_IncAllocator myTextAlloc;  //!< Allocator for store text
   NCollection_IncAllocator myOtherAlloc; //!< Allocator for internal tools
-  int                      myModePrint;  //!< Control print output (for call from yacc)
-  int                      myNbRec;      //!< Total number of data records read
-  int                      myNbHead;     //!< Number of records taken by the Header
-  int                      myNbPar;      //!< Total number of parameters read
-  int                      myYaRec;      //!< Presence record already created (after 1 Ident)
-  int                      myNumSub;     //!< Number of current sublist
+  int         myModePrint;  //!< Control print output (for call from yacc)
+  int         myNbRec;      //!< Total number of data records read
+  int         myNbHead;     //!< Number of records taken by the Header
+  int         myNbPar;      //!< Total number of parameters read
+  int         myYaRec;      //!< Presence record already created (after 1 Ident)
+  int         myNumSub;     //!< Number of current sublist
                                          // clang-format off
   bool myErrorArg;   //!< Control of error argument (true - error argument was created)
   char* myResText;               //!< Text value written by Flex and passed to Bison to create record

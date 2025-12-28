@@ -55,7 +55,7 @@ occ::handle<TObj_TNameContainer> TObj_TNameContainer::Set(const TDF_Label& theLa
 //=================================================================================================
 
 void TObj_TNameContainer::RecordName(const occ::handle<TCollection_HExtendedString>& theName,
-                                     const TDF_Label&                                theLabel)
+                                     const TDF_Label&                           theLabel)
 {
   if (!IsRegistered(theName))
   {
@@ -116,16 +116,14 @@ void TObj_TNameContainer::Paste(const occ::handle<TDF_Attribute>& theInto,
 
 //=================================================================================================
 
-const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>&
-  TObj_TNameContainer::Get() const
+const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& TObj_TNameContainer::Get() const
 {
   return myMap;
 }
 
 //=================================================================================================
 
-void TObj_TNameContainer::Set(
-  const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& theMap)
+void TObj_TNameContainer::Set(const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& theMap)
 {
   Backup();
   myMap.Assign(theMap);

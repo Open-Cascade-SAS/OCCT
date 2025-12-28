@@ -38,6 +38,7 @@ public:
   Standard_EXPORT virtual occ::handle<ShapeFix_EdgeProjAux> EdgeProjAux() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeAlgo_ToolContainer, Standard_Transient)
+
 };
 
 #endif // _ShapeAlgo_ToolContainer_HeaderFile

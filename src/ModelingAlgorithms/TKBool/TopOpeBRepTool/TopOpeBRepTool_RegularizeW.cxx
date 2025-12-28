@@ -40,14 +40,14 @@
 #define M_EXTERNAL(sta) (sta == TopAbs_EXTERNAL)
 
 #ifdef OCCT_DEBUG
-extern bool TopOpeBRepTool_GettraceREGUFA();
+extern bool           TopOpeBRepTool_GettraceREGUFA();
 static NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> STATIC_mapw, STATIC_mapf;
 
 static int FUN_adds(const TopoDS_Shape& s)
 {
   TopAbs_ShapeEnum        typ = s.ShapeType();
   TCollection_AsciiString aa;
-  int                     is = 0;
+  int        is = 0;
   if (typ == TopAbs_WIRE)
   {
     aa = TCollection_AsciiString("wi");
@@ -64,7 +64,9 @@ static int FUN_adds(const TopoDS_Shape& s)
   return is;
 }
 
-Standard_EXPORT void FUN_tool_coutsta(const int& sta, const int& i1, const int& i2)
+Standard_EXPORT void FUN_tool_coutsta(const int& sta,
+                                      const int& i1,
+                                      const int& i2)
 {
   switch (sta)
   {
@@ -84,18 +86,16 @@ Standard_EXPORT void FUN_tool_coutsta(const int& sta, const int& i1, const int& 
 }
 #endif
 
-Standard_EXPORT void FUN_addOwlw(const TopoDS_Shape&                   Ow,
+Standard_EXPORT void FUN_addOwlw(const TopoDS_Shape&         Ow,
                                  const NCollection_List<TopoDS_Shape>& lw,
                                  NCollection_List<TopoDS_Shape>&       lresu);
 
 //=================================================================================================
 
 bool TopOpeBRepTool::RegularizeWires(
-  const TopoDS_Face& theFace,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    mapoldWnewW,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    ESplits) // (e,esp); esp = splits of e
+  const TopoDS_Face&                  theFace,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapoldWnewW,
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& ESplits) // (e,esp); esp = splits of e
 {
   if (theFace.IsNull())
     return false;
@@ -131,16 +131,13 @@ bool TopOpeBRepTool::RegularizeWires(
 
 //=================================================================================================
 
-bool TopOpeBRepTool::Regularize(
-  const TopoDS_Face&              theFace,
-  NCollection_List<TopoDS_Shape>& aListOfFaces,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    ESplits)
+bool TopOpeBRepTool::Regularize(const TopoDS_Face&                  theFace,
+                                            NCollection_List<TopoDS_Shape>&               aListOfFaces,
+                                            NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& ESplits)
 {
   TopOpeBRepTool_REGUW REGUW(theFace);
   aListOfFaces.Clear();
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-       mapoldWnewW;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapoldWnewW;
   bool regu = TopOpeBRepTool::RegularizeWires(theFace, mapoldWnewW, ESplits);
   if (regu)
   {
@@ -356,9 +353,8 @@ static int FUN_tool_classiwithp2d(const NCollection_Array1<TopoDS_Shape>& wi)
 }
 
 Standard_EXPORT bool FUN_tool_ClassifW(const TopoDS_Face& F,
-                      const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-TopTools_ShapeMapHasher>& mapoldWnewW, NCollection_DataMap<TopoDS_Shape,
-NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapWlow)
+                      const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapoldWnewW,
+                      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapWlow)
 {
   // NYI : create maps to store Bnd_Box2d, and faces.
 
@@ -384,8 +380,8 @@ NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapWlow)
   NCollection_List<TopoDS_Shape> oldW;
   int noldW = mapoldWnewW.Extent();
   bool oneoldW = (noldW == 1);
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-TopTools_ShapeMapHasher>::Iterator ite(mapoldWnewW); NCollection_List<TopoDS_Shape> emptylos;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator ite(mapoldWnewW);
+  NCollection_List<TopoDS_Shape> emptylos;
 
   // --------------
   // * noldW == 1 :
@@ -398,9 +394,9 @@ TopTools_ShapeMapHasher>::Iterator ite(mapoldWnewW); NCollection_List<TopoDS_Sha
     if (nw == 1) {mapWlow.Bind(low.First(),emptylos); return true;}
 
     // <complWoldw> = {(newwire, emptylos)}
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-complWoldw; NCollection_List<TopoDS_Shape>::Iterator itlw(low); for (; itlw.More(); itlw.Next())
-complWoldw.Bind(itlw.Value(), emptylos);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> complWoldw;
+    NCollection_List<TopoDS_Shape>::Iterator itlw(low);
+    for (; itlw.More(); itlw.Next()) complWoldw.Bind(itlw.Value(), emptylos);
 
     // iteration on <complWoldw> :
     int ncompl = complWoldw.Extent();
@@ -410,8 +406,9 @@ complWoldw.Bind(itlw.Value(), emptylos);
       NCollection_Array1<Bnd_Box2d> Bnd2d(1,2);
       NCollection_Array1<TopoDS_Shape> wi(1,2);
 
-      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-TopTools_ShapeMapHasher>::Iterator itmap(complWoldw); wi(1) = itmap.Key(); if (ncompl == 1) {
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itmap(complWoldw);
+      wi(1) = itmap.Key();
+      if (ncompl == 1) {
     mapWlow.Bind(wi(1),itmap.Value());
     break;
       }
@@ -597,8 +594,8 @@ TopTools_ShapeMapHasher>::Iterator itmap(complWoldw); wi(1) = itmap.Key(); if (n
 // ------------------------------------------------------------
 
 Standard_EXPORT bool FUN_tool_MakeFaces(const TopoDS_Face& theFace,
-                       NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-TopTools_ShapeMapHasher>& mapWlow, NCollection_List<TopoDS_Shape>& aListOfFaces)
+                       NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapWlow,
+                       NCollection_List<TopoDS_Shape>& aListOfFaces)
 {
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
@@ -608,9 +605,10 @@ TopTools_ShapeMapHasher>& mapWlow, NCollection_List<TopoDS_Shape>& aListOfFaces)
   TopoDS_Face F = TopoDS::Face(theFace.Oriented(TopAbs_FORWARD));
   BRep_Builder BB;
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-TopTools_ShapeMapHasher>::Iterator itm(mapWlow); for (; itm.More(); itm.Next()) { const TopoDS_Wire&
-wi = TopoDS::Wire(itm.Key()); TopoDS_Shape FF = F.EmptyCopied(); BB.Add(FF,wi);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm(mapWlow);
+  for (; itm.More(); itm.Next()) {
+    const TopoDS_Wire& wi = TopoDS::Wire(itm.Key());
+    TopoDS_Shape FF = F.EmptyCopied(); BB.Add(FF,wi);
 //    BB.MakeFace(FF); // put a TShape
 
     NCollection_List<TopoDS_Shape>::Iterator itlow(itm.Value());
@@ -635,38 +633,35 @@ wi = TopoDS::Wire(itm.Key()); TopoDS_Shape FF = F.EmptyCopied(); BB.Add(FF,wi);
   return true;
 }*/
 
-Standard_EXPORT bool FUN_tool_ClassifW(
-  const TopoDS_Face& F,
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    mapOwNw,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    mapWlow)
+Standard_EXPORT bool
+  FUN_tool_ClassifW(const TopoDS_Face&                        F,
+                    const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapOwNw,
+                    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&       mapWlow)
 {
 #ifdef OCCT_DEBUG
   bool trc = TopOpeBRepTool_GettraceREGUFA();
   if (trc)
     std::cout << "** ClassifW :" << std::endl;
 #endif
-  double       tolF        = BRep_Tool::Tolerance(F);
-  double       toluv       = TopOpeBRepTool_TOOL::TolUV(F, tolF);
-  TopoDS_Shape aLocalShape = F.Oriented(TopAbs_FORWARD);
-  TopoDS_Face  FFOR        = TopoDS::Face(aLocalShape);
+  double tolF        = BRep_Tool::Tolerance(F);
+  double toluv       = TopOpeBRepTool_TOOL::TolUV(F, tolF);
+  TopoDS_Shape  aLocalShape = F.Oriented(TopAbs_FORWARD);
+  TopoDS_Face   FFOR        = TopoDS::Face(aLocalShape);
   //  TopoDS_Face FFOR = TopoDS::Face(F.Oriented(TopAbs_FORWARD));
   TopOpeBRepTool_CLASSI CLASSI;
   CLASSI.Init2d(FFOR);
 
-  NCollection_List<TopoDS_Shape> null;
-  NCollection_List<TopoDS_Shape> oldW;
-  int                            noldW = mapOwNw.Extent();
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itm(mapOwNw);
+  NCollection_List<TopoDS_Shape>                                null;
+  NCollection_List<TopoDS_Shape>                                oldW;
+  int                                    noldW = mapOwNw.Extent();
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm(mapOwNw);
 
   // noldW = 1
   // ---------
   if (noldW == 1)
   {
     const NCollection_List<TopoDS_Shape>& low = itm.Value();
-    bool                                  ok  = CLASSI.Classilist(low, mapWlow);
+    bool            ok  = CLASSI.Classilist(low, mapWlow);
     if (!ok)
       return false;
     return true;
@@ -688,8 +683,8 @@ Standard_EXPORT bool FUN_tool_ClassifW(
   } // itm(mapOwNw)
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapdone;
-  int                                                    nOw = noldW;
-  int nite = 0, nitemax = int(nOw * (nOw - 1) / 2);
+  int    nOw  = noldW;
+  int    nite = 0, nitemax = int(nOw * (nOw - 1) / 2);
   while (nite <= nitemax)
   {
     nOw = lOws.Extent();
@@ -697,9 +692,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
       break;
 
     NCollection_List<TopoDS_Shape>::Iterator itOw(lOws);
-    const TopoDS_Shape&                      Ow1  = itOw.Value();
-    bool                                     isb1 = mapWlow.IsBound(Ow1);
-    isb1                                          = isb1 || !mapdone.Contains(Ow1);
+    const TopoDS_Shape&                Ow1  = itOw.Value();
+    bool                   isb1 = mapWlow.IsBound(Ow1);
+    isb1                                    = isb1 || !mapdone.Contains(Ow1);
     if (!isb1)
       continue;
 
@@ -714,18 +709,18 @@ Standard_EXPORT bool FUN_tool_ClassifW(
     } // nOw == 1
 
     itOw.Next();
-    bool         OUTall = false;
-    TopoDS_Shape Ow2;
-    int          sta12 = UNKNOWN;
+    bool OUTall = false;
+    TopoDS_Shape     Ow2;
+    int sta12 = UNKNOWN;
     for (; itOw.More(); itOw.Next())
     {
-      Ow2       = itOw.Value();
+      Ow2                   = itOw.Value();
       bool isb2 = mapWlow.IsBound(Ow2);
-      isb2      = isb2 || !mapdone.Contains(Ow2);
+      isb2                  = isb2 || !mapdone.Contains(Ow2);
       if (!isb2)
         continue;
       int stabnd2d12 = CLASSI.ClassiBnd2d(Ow1, Ow2, toluv, true);
-      sta12          = CLASSI.Classip2d(Ow1, Ow2, stabnd2d12);
+      sta12                       = CLASSI.Classip2d(Ow1, Ow2, stabnd2d12);
       if (sta12 == DIFF)
       {
         OUTall = true;
@@ -782,7 +777,7 @@ Standard_EXPORT bool FUN_tool_ClassifW(
       for (; itsma.More(); itsma.Next())
       {
         const TopoDS_Shape& wsma   = itsma.Value();
-        bool                isbsma = mapWlow.IsBound(wsma);
+        bool    isbsma = mapWlow.IsBound(wsma);
         isbsma                     = isbsma || !mapdone.Contains(wsma);
         if (!isbsma)
           continue;
@@ -791,7 +786,7 @@ Standard_EXPORT bool FUN_tool_ClassifW(
         for (; itgre.More(); itgre.Next())
         {
           const TopoDS_Shape& wgre   = itgre.Value();
-          bool                isbgre = mapWlow.IsBound(wgre);
+          bool    isbgre = mapWlow.IsBound(wgre);
           isbgre                     = isbgre || !mapdone.Contains(wgre);
           if (!isbgre)
             continue;
@@ -832,10 +827,9 @@ Standard_EXPORT bool FUN_tool_ClassifW(
 //=================================================================================================
 
 bool TopOpeBRepTool::RegularizeFace(
-  const TopoDS_Face& theFace,
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                  mapoldWnewW,
-  NCollection_List<TopoDS_Shape>& newFaces)
+  const TopoDS_Face&                        theFace,
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapoldWnewW,
+  NCollection_List<TopoDS_Shape>&                     newFaces)
 {
   // <mapWlow>
   // ---------
@@ -845,8 +839,7 @@ bool TopOpeBRepTool::RegularizeFace(
   //        on <aFace>,
   //        else : the item is an empty list, <w> describes the
   //        whole new face.
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    mapWlow;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapWlow;
 
   // Classifying  wires :
   // -------------------

@@ -44,6 +44,7 @@ public:
 
 protected:
   gp_Ax2 myPosition;
+
 };
 
 #endif // _HelixGeom_BuilderHelix_HeaderFile

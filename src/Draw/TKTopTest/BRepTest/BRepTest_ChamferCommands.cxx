@@ -35,7 +35,9 @@
 //            required edge
 //===============================================================================
 
-static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const char** a)
+static int chamf_throat_with_penetration(Draw_Interpretor& di,
+                                                      int  narg,
+                                                      const char**      a)
 {
   if (narg < 7)
     return 1;
@@ -44,11 +46,11 @@ static int chamf_throat_with_penetration(Draw_Interpretor& di, int narg, const c
   if (S.IsNull())
     return 1;
 
-  TopoDS_Edge E;
-  TopoDS_Face F;
-  double      offset, throat;
-  int         i     = 3;
-  int         NbArg = 4;
+  TopoDS_Edge      E;
+  TopoDS_Face      F;
+  double    offset, throat;
+  int i     = 3;
+  int NbArg = 4;
 
   BRepFilletAPI_MakeChamfer aMCh(S);
   aMCh.SetMode(ChFiDS_ConstThroatWithPenetrationChamfer);
@@ -111,9 +113,9 @@ static int chamf_throat(Draw_Interpretor& di, int narg, const char** a)
   if (S.IsNull())
     return 1;
 
-  TopoDS_Edge E;
-  double      throat;
-  int         i = 3;
+  TopoDS_Edge      E;
+  double    throat;
+  int i = 3;
 
   BRepFilletAPI_MakeChamfer aMCh(S);
   aMCh.SetMode(ChFiDS_ConstThroatChamfer);
@@ -184,10 +186,10 @@ static int chamfer(Draw_Interpretor& di, int narg, const char** a)
     if (S.IsNull())
       return 1;
 
-    TopoDS_Edge E;
-    TopoDS_Face F;
-    double      d1, d2, angle;
-    int         i = 3;
+    TopoDS_Edge      E;
+    TopoDS_Face      F;
+    double    d1, d2, angle;
+    int i = 3;
 
     BRepFilletAPI_MakeChamfer aMCh(S);
 

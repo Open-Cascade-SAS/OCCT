@@ -36,16 +36,19 @@ public:
   Standard_EXPORT virtual int NbResources() const override;
 
   //! Returns a Resource, given a rank.
-  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const override;
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const
+    override;
 
   //! Returns a Case Number, specific of each recognized Type
   //! This Case Number is then used in Libraries : the various
   //! Modules attached to this class of Protocol must use them
   //! in accordance (for a given value of TypeNumber, they must
   //! consider the same Type as the Protocol defines)
-  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
+  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_Protocol, IGESData_Protocol)
+
 };
 
 #endif // _IGESGeom_Protocol_HeaderFile

@@ -33,7 +33,7 @@ RWStepShape_RWDimensionalCharacteristicRepresentation::
 
 void RWStepShape_RWDimensionalCharacteristicRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                           data,
-  const int                                                             num,
+  const int                                           num,
   occ::handle<Interface_Check>&                                         ach,
   const occ::handle<StepShape_DimensionalCharacteristicRepresentation>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalCharacteristicRepresentation::WriteStep(
-  StepData_StepWriter&                                                  SW,
+  StepData_StepWriter&                                             SW,
   const occ::handle<StepShape_DimensionalCharacteristicRepresentation>& ent) const
 {
 
@@ -76,7 +76,7 @@ void RWStepShape_RWDimensionalCharacteristicRepresentation::WriteStep(
 
 void RWStepShape_RWDimensionalCharacteristicRepresentation::Share(
   const occ::handle<StepShape_DimensionalCharacteristicRepresentation>& ent,
-  Interface_EntityIterator&                                             iter) const
+  Interface_EntityIterator&                                        iter) const
 {
 
   // Own fields of DimensionalCharacteristicRepresentation

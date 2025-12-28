@@ -40,8 +40,7 @@ public:
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
 
-  Standard_EXPORT void SetConversionFactor(
-    const occ::handle<Standard_Transient>& aConversionFactor);
+  Standard_EXPORT void SetConversionFactor(const occ::handle<Standard_Transient>& aConversionFactor);
 
   Standard_EXPORT occ::handle<Standard_Transient> ConversionFactor() const;
 

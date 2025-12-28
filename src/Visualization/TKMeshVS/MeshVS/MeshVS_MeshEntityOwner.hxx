@@ -30,11 +30,11 @@ class MeshVS_MeshEntityOwner : public SelectMgr_EntityOwner
 
 public:
   Standard_EXPORT MeshVS_MeshEntityOwner(const SelectMgr_SelectableObject* SelObj,
-                                         const int                         ID,
-                                         void* const                       MeshEntity,
+                                         const int            ID,
+                                         void* const            MeshEntity,
                                          const MeshVS_EntityType&          Type,
-                                         const int                         Priority = 0,
-                                         const bool                        IsGroup  = false);
+                                         const int            Priority = 0,
+                                         const bool IsGroup = false);
 
   //! Returns an address of element or node data structure
   Standard_EXPORT void* Owner() const;
@@ -50,13 +50,13 @@ public:
 
   //! Returns true if owner is hilighted
   Standard_EXPORT virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& PM,
-                                           const int Mode = 0) const override;
+                                                       const int Mode = 0) const
+    override;
 
   //! Hilights owner with the certain color
-  Standard_EXPORT virtual void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                                const occ::handle<Prs3d_Drawer>&               theStyle,
+                                                const int theMode) override;
 
   //! Strip hilight of owner
   Standard_EXPORT virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& PM,
@@ -68,10 +68,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner, SelectMgr_EntityOwner)
 
 private:
-  void*             myAddr;
+  void*  myAddr;
   MeshVS_EntityType myType;
-  int               myID;
-  bool              myIsGroup;
+  int  myID;
+  bool  myIsGroup;
 };
 
 #endif // _MeshVS_MeshEntityOwner_HeaderFile

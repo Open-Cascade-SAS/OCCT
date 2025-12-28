@@ -23,8 +23,8 @@
 
 void gp_GTrsf2d::SetAffinity(const gp_Ax2d& A, const double Ratio)
 {
-  shape    = gp_Other;
-  scale    = 0.0;
+  shape           = gp_Other;
+  scale           = 0.0;
   double a = A.Direction().X();
   double b = A.Direction().Y();
   matrix.SetValue(1, 1, (1.0 - Ratio) * a * a + Ratio);
@@ -113,8 +113,8 @@ void gp_GTrsf2d::Power(const int N)
     }
     if (shape == gp_Other)
     {
-      int   Npower  = std::abs(N) - 1;
-      gp_XY Temploc = loc;
+      int Npower  = std::abs(N) - 1;
+      gp_XY            Temploc = loc;
       //      double Tempscale = scale;
       gp_Mat2d Tempmatrix(matrix);
       for (;;)

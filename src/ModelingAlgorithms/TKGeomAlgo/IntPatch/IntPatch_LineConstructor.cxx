@@ -37,18 +37,20 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
 static void Recadre(const occ::handle<Adaptor3d_Surface>& myHS1,
                     const occ::handle<Adaptor3d_Surface>& myHS2,
-                    double&                               u1,
-                    double&                               v1,
-                    double&                               u2,
-                    double&                               v2)
+                    double&                   u1,
+                    double&                   v1,
+                    double&                   u2,
+                    double&                   v2)
 {
-  double              f, l, lmf;
+  double       f, l, lmf;
   GeomAbs_SurfaceType typs1 = myHS1->GetType();
   GeomAbs_SurfaceType typs2 = myHS2->GetType();
 
@@ -155,11 +157,11 @@ static void Recadre(const occ::handle<Adaptor3d_Surface>& myHS1,
 
 static void Parameters(const occ::handle<Adaptor3d_Surface>& myHS1,
                        const occ::handle<Adaptor3d_Surface>& myHS2,
-                       const gp_Pnt&                         Ptref,
-                       double&                               U1,
-                       double&                               V1,
-                       double&                               U2,
-                       double&                               V2)
+                       const gp_Pnt&                    Ptref,
+                       double&                   U1,
+                       double&                   V1,
+                       double&                   U2,
+                       double&                   V2)
 {
   IntSurf_Quadric     quad1, quad2;
   GeomAbs_SurfaceType typs = myHS1->GetType();
@@ -213,7 +215,7 @@ static void Parameters(const occ::handle<Adaptor3d_Surface>& myHS1,
 
 static double LocalFirstParameter(const occ::handle<IntPatch_Line>& L)
 {
-  double         firstp = 0.;
+  double  firstp = 0.;
   IntPatch_IType typl   = L->ArcType();
   switch (typl)
   {
@@ -295,7 +297,7 @@ static double LocalFirstParameter(const occ::handle<IntPatch_Line>& L)
 
 static double LocalLastParameter(const occ::handle<IntPatch_Line>& L)
 {
-  double         lastp = 0.;
+  double  lastp = 0.;
   IntPatch_IType typl  = L->ArcType();
   switch (typl)
   {
@@ -378,9 +380,9 @@ static double LocalLastParameter(const occ::handle<IntPatch_Line>& L)
 // modified by NIZHNY-MKK  Tue Apr  3 15:03:06 2001.BEGIN
 //=================================================================================================
 
-static double ComputeParametricTolerance(const double  theTol3d,
-                                         const gp_Vec& theD1u,
-                                         const gp_Vec& theD1v)
+static double ComputeParametricTolerance(const double theTol3d,
+                                                const gp_Vec&       theD1u,
+                                                const gp_Vec&       theD1v)
 {
   double nad1u = theD1u.Magnitude();
   double nad1v = theD1v.Magnitude();
@@ -406,21 +408,21 @@ IntPatch_LineConstructor::IntPatch_LineConstructor(const int) {}
 //=================================================================================================
 
 static int AppendSameVertexA(occ::handle<IntPatch_ALine>&       alig,
-                             const occ::handle<IntPatch_ALine>& L,
-                             const int                          index,
-                             int*                               TabIndex)
+                                          const occ::handle<IntPatch_ALine>& L,
+                                          const int        index,
+                                          int*             TabIndex)
 {
   int i, a, n;
   a                              = 0;
   n                              = L->NbVertex();
   const IntPatch_Point& Vtxindex = L->Vertex(index);
-  double                thetol1  = Vtxindex.Tolerance();
+  double         thetol1  = Vtxindex.Tolerance();
   for (i = 1; i <= n; i++)
   {
     if (i != index)
     {
       const IntPatch_Point& Vtxi    = L->Vertex(i);
-      double                thetol2 = Vtxi.Tolerance();
+      double         thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
         thetol2 = thetol1;
       double d_4 = Vtxindex.Value().Distance(Vtxi.Value());
@@ -438,25 +440,25 @@ static int AppendSameVertexA(occ::handle<IntPatch_ALine>&       alig,
 //=================================================================================================
 
 static int AppendSameVertexG(occ::handle<IntPatch_GLine>&       glig,
-                             const occ::handle<IntPatch_GLine>& L,
-                             const int                          index,
-                             const double                       decal,
-                             int*                               TabIndex)
+                                          const occ::handle<IntPatch_GLine>& L,
+                                          const int        index,
+                                          const double           decal,
+                                          int*             TabIndex)
 {
-  int    i, a, n;
-  double p1, p2, d; //,tol
-  bool   aajouter;
+  int i, a, n;
+  double    p1, p2, d; //,tol
+  bool aajouter;
   a                              = 0;
   n                              = L->NbVertex();
   const IntPatch_Point& Vtxindex = L->Vertex(index);
-  double                thetol1  = Vtxindex.Tolerance();
+  double         thetol1  = Vtxindex.Tolerance();
   for (i = 1; i <= n; i++)
   {
     if (i != index)
     {
       const IntPatch_Point& Vtxi = L->Vertex(i);
       aajouter                   = false;
-      double thetol2             = Vtxi.Tolerance();
+      double thetol2      = Vtxi.Tolerance();
       if (thetol2 < thetol1)
         thetol2 = thetol1;
       d = Vtxindex.Value().Distance(Vtxi.Value());
@@ -492,24 +494,24 @@ static int AppendSameVertexG(occ::handle<IntPatch_GLine>&       glig,
 //=================================================================================================
 
 static int AppendSameVertexW(occ::handle<IntPatch_WLine>&       wlig,
-                             const occ::handle<IntPatch_WLine>& L,
-                             const int                          index,
-                             const double                       par,
-                             int*                               TabIndex)
+                                          const occ::handle<IntPatch_WLine>& L,
+                                          const int        index,
+                                          const double           par,
+                                          int*             TabIndex)
 {
   int i, a, n;
   a                              = 0;
   n                              = L->NbVertex();
   const IntPatch_Point& Vtxindex = L->Vertex(index);
   const gp_Pnt&         Pntindex = Vtxindex.Value();
-  double                thetol1  = Vtxindex.Tolerance();
+  double         thetol1  = Vtxindex.Tolerance();
   for (i = 1; i <= n; i++)
   {
     if (i != index)
     {
       IntPatch_Point Vtxi    = L->Vertex(i);
-      double         d_2     = Pntindex.Distance(Vtxi.Value());
-      double         thetol2 = Vtxi.Tolerance();
+      double  d_2     = Pntindex.Distance(Vtxi.Value());
+      double  thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
         thetol2 = thetol1;
       //-- le debugger voit 2 fois la variable d ici. ???? -> d_2
@@ -533,22 +535,22 @@ static int AppendSameVertexW(occ::handle<IntPatch_WLine>&       wlig,
 //=================================================================================================
 
 static int AppendSameVertexR(occ::handle<IntPatch_RLine>&       rlig,
-                             const occ::handle<IntPatch_RLine>& L,
-                             const int                          index,
-                             int*                               TabIndex)
+                                          const occ::handle<IntPatch_RLine>& L,
+                                          const int        index,
+                                          int*             TabIndex)
 {
   int i, a, n;
   a                              = 0;
   n                              = L->NbVertex();
   const IntPatch_Point& Vtxindex = L->Vertex(index);
-  double                thetol1  = Vtxindex.Tolerance();
+  double         thetol1  = Vtxindex.Tolerance();
   for (i = 1; i <= n; i++)
   {
     if (i != index)
     {
       const IntPatch_Point& Vtxi    = L->Vertex(i);
-      double                d_3     = Vtxindex.Value().Distance(Vtxi.Value());
-      double                thetol2 = Vtxi.Tolerance();
+      double         d_3     = Vtxindex.Value().Distance(Vtxi.Value());
+      double         thetol2 = Vtxi.Tolerance();
       if (thetol2 < thetol1)
         thetol2 = thetol1;
       if (d_3 < thetol2)
@@ -574,13 +576,13 @@ static int AppendSameVertexR(occ::handle<IntPatch_RLine>&       rlig,
 //=================================================================================================
 
 static void AddLine(const occ::handle<IntPatch_Line>& L,
-                    const int                         i,
-                    const int                         j,
+                    const int       i,
+                    const int       j,
                     //	     const GeomAbs_SurfaceType TypeS1,
                     const GeomAbs_SurfaceType,
                     //	     const GeomAbs_SurfaceType TypeS2,
                     const GeomAbs_SurfaceType,
-                    int*                                              TabIndex,
+                    int*        TabIndex,
                     NCollection_Sequence<occ::handle<IntPatch_Line>>& slin)
 {
   int IndexFirstVertex = 1;
@@ -619,10 +621,10 @@ static void AddLine(const occ::handle<IntPatch_Line>& L,
     }
     case IntPatch_Walking: { //-- ****************************************
       occ::handle<IntPatch_WLine>          WLine(occ::down_cast<IntPatch_WLine>(L));
-      const occ::handle<IntSurf_LineOn2S>& Lori           = WLine->Curve();
-      occ::handle<IntSurf_LineOn2S>        LineOn2S       = new IntSurf_LineOn2S();
-      int                                  ParamMinOnLine = (int)WLine->Vertex(i).ParameterOnLine();
-      int                                  ParamMaxOnLine = (int)WLine->Vertex(j).ParameterOnLine();
+      const occ::handle<IntSurf_LineOn2S>& Lori     = WLine->Curve();
+      occ::handle<IntSurf_LineOn2S>        LineOn2S = new IntSurf_LineOn2S();
+      int ParamMinOnLine = (int)WLine->Vertex(i).ParameterOnLine();
+      int ParamMaxOnLine = (int)WLine->Vertex(j).ParameterOnLine();
       for (int k = ParamMinOnLine; k <= ParamMaxOnLine; k++)
       {
         LineOn2S->Add(Lori->Value(k));
@@ -854,8 +856,8 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
 {
   const IntPatch_Point& vtxF = WLine->Vertex(ivFirst);
   const IntPatch_Point& vtxL = WLine->Vertex(ivLast);
-  int                   ipF  = (int)vtxF.ParameterOnLine();
-  int                   ipL  = (int)vtxL.ParameterOnLine();
+  int      ipF  = (int)vtxF.ParameterOnLine();
+  int      ipL  = (int)vtxL.ParameterOnLine();
   if (ipF >= ipL)
     return true;
 
@@ -864,7 +866,7 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
   double tol  = std::max(tolF, tolL);
 
   double len = 0.;
-  gp_Pnt p1  = WLine->Point(ipF).Value();
+  gp_Pnt        p1  = WLine->Point(ipF).Value();
   for (int i = ipF + 1; i <= ipL; i++)
   {
     const gp_Pnt& p2 = WLine->Point(i).Value();
@@ -879,8 +881,8 @@ static bool IsSegmentSmall(const occ::handle<IntPatch_WLine>& WLine,
 //=================================================================================================
 
 static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Line>>& slinref,
-                              const occ::handle<IntPatch_WLine>&                      wlin,
-                              const double                                            tol2d)
+                                          const occ::handle<IntPatch_WLine>&  wlin,
+                                          const double            tol2d)
 {
   int nbpnt     = wlin->NbPnts();
   int indicepnt = nbpnt / 2;
@@ -888,7 +890,7 @@ static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Li
     return (false);
   const IntSurf_PntOn2S& POn2S  = wlin->Point(indicepnt);
   const IntSurf_PntOn2S& POn2S1 = wlin->Point(indicepnt + 1);
-  int                    lastl  = slinref.Length();
+  int       lastl  = slinref.Length();
   for (int i = 1; i <= lastl; i++)
   {
     if (slinref.Value(i)->ArcType() == IntPatch_Restriction)
@@ -900,7 +902,7 @@ static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Li
         if ((onFirst && rlin->IsArcOnS1()) || (!onFirst && rlin->IsArcOnS2()))
         {
           occ::handle<Adaptor2d_Curve2d> arc;
-          double                         u, v, u1, v1;
+          double             u, v, u1, v1;
           if (onFirst)
           {
             arc = rlin->ArcOnS1();
@@ -921,7 +923,7 @@ static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Li
           const Adaptor2d_Curve2d& C2d = *arc;
           gp_Pnt2d                 PObt, P2d(u, v);
           double par = Geom2dInt_TheProjPCurOfGInter::FindParameter(C2d, P2d, 1e-7);
-          PObt       = C2d.Value(par);
+          PObt              = C2d.Value(par);
           if (PObt.Distance(P2d) < tol2d)
           {
             return true;
@@ -935,27 +937,26 @@ static bool TestWLineIsARLine(const NCollection_Sequence<occ::handle<IntPatch_Li
 
 //=================================================================================================
 
-static bool TestIfWLineIsRestriction(
-  const NCollection_Sequence<occ::handle<IntPatch_Line>>& slinref,
-  const occ::handle<IntPatch_WLine>&                      wlin,
-  const occ::handle<Adaptor3d_Surface>&                   S1,
-  const occ::handle<Adaptor3d_TopolTool>&                 D1,
-  const occ::handle<Adaptor3d_Surface>&                   S2,
-  const occ::handle<Adaptor3d_TopolTool>&                 D2,
-  double                                                  TolArc)
+static bool TestIfWLineIsRestriction(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     slinref,
+                                                 const occ::handle<IntPatch_WLine>&      wlin,
+                                                 const occ::handle<Adaptor3d_Surface>&   S1,
+                                                 const occ::handle<Adaptor3d_TopolTool>& D1,
+                                                 const occ::handle<Adaptor3d_Surface>&   S2,
+                                                 const occ::handle<Adaptor3d_TopolTool>& D2,
+                                                 double                      TolArc)
 {
 
-  int    NbPnts = wlin->NbPnts();
-  int    allon1 = 0, allon2 = 0, i;
-  double tol2d1 = 0., tol2d2 = 0.;
+  int NbPnts = wlin->NbPnts();
+  int allon1 = 0, allon2 = 0, i;
+  double    tol2d1 = 0., tol2d2 = 0.;
   for (i = 1; i <= NbPnts; i++)
   {
     const IntSurf_PntOn2S& Pmid = wlin->Point(i);
-    double                 u1, v1, u2, v2;
+    double          u1, v1, u2, v2;
     Pmid.Parameters(u1, v1, u2, v2);
     //-- Estimation d un majorant de Toluv a partir de Tol
-    gp_Pnt ap;
-    gp_Vec ad1u, ad1v;
+    gp_Pnt        ap;
+    gp_Vec        ad1u, ad1v;
     double tol;
     //------------------------------------------
     S1->D1(u1, v1, ap, ad1u, ad1v);
@@ -994,18 +995,18 @@ static bool TestIfWLineIsRestriction(
 
 //=================================================================================================
 
-static bool ProjectOnArc(const double                          u,
-                         const double                          v,
-                         const occ::handle<Adaptor2d_Curve2d>& arc,
-                         const occ::handle<Adaptor3d_Surface>& surf,
-                         const double                          TolArc,
-                         double&                               par,
-                         double&                               dist)
+static bool ProjectOnArc(const double              u,
+                                     const double              v,
+                                     const occ::handle<Adaptor2d_Curve2d>& arc,
+                                     const occ::handle<Adaptor3d_Surface>& surf,
+                                     const double              TolArc,
+                                     double&                   par,
+                                     double&                   dist)
 {
   gp_Pnt aPbid;
   gp_Vec ad1u, ad1v;
   surf->D1(u, v, aPbid, ad1u, ad1v);
-  double                   tol2d = ComputeParametricTolerance(TolArc, ad1u, ad1v);
+  double            tol2d = ComputeParametricTolerance(TolArc, ad1u, ad1v);
   const Adaptor2d_Curve2d& C2d   = *arc;
   gp_Pnt2d                 aP(u, v), aPprj;
   par   = Geom2dInt_TheProjPCurOfGInter::FindParameter(C2d, aP, 1e-7);
@@ -1016,17 +1017,17 @@ static bool ProjectOnArc(const double                          u,
 
 //=================================================================================================
 
-static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Line>>& slinref,
-                             NCollection_Sequence<occ::handle<IntPatch_Line>>&       slin,
-                             const occ::handle<Adaptor3d_Surface>&                   mySurf1,
-                             const occ::handle<Adaptor3d_TopolTool>&                 myDom1,
-                             const occ::handle<Adaptor3d_Surface>&                   mySurf2,
-                             const occ::handle<Adaptor3d_TopolTool>&                 myDom2,
-                             const double                                            TolArc)
+static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     slinref,
+                             NCollection_Sequence<occ::handle<IntPatch_Line>>&           slin,
+                             const occ::handle<Adaptor3d_Surface>&   mySurf1,
+                             const occ::handle<Adaptor3d_TopolTool>& myDom1,
+                             const occ::handle<Adaptor3d_Surface>&   mySurf2,
+                             const occ::handle<Adaptor3d_TopolTool>& myDom2,
+                             const double                TolArc)
 {
 
-  int                          lastwline = slin.Length();
-  occ::handle<IntPatch_WLine>& WLine = *((occ::handle<IntPatch_WLine>*)&(slin.Value(lastwline)));
+  int        lastwline = slin.Length();
+  occ::handle<IntPatch_WLine>& WLine     = *((occ::handle<IntPatch_WLine>*)&(slin.Value(lastwline)));
 
   int nbvtx = WLine->NbVertex();
   if (nbvtx < 2)
@@ -1038,7 +1039,7 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
   int midInd = (ParamMaxOnLine + ParamMinOnLine) / 2;
 
   NCollection_Sequence<int> indicesV1, indicesV2;
-  int                       iv;
+  int          iv;
   for (iv = 1; iv <= nbvtx; iv++)
   {
     int plin = (int)WLine->Vertex(iv).ParameterOnLine();
@@ -1062,10 +1063,10 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
     bool onFirst = is == 0;
     if ((onFirst && WLine->HasArcOnS1()) || (!onFirst && WLine->HasArcOnS2()))
     {
-      PiParOnS                         piParOnS;
-      PQuery                           pIsOnDomS;
-      PArcOnS                          pArcOnS;
-      PParOnArc                        pParOnArc;
+      PiParOnS                    piParOnS;
+      PQuery                      pIsOnDomS;
+      PArcOnS                     pArcOnS;
+      PParOnArc                   pParOnArc;
       occ::handle<Adaptor3d_Surface>   surf;
       occ::handle<Adaptor3d_TopolTool> aDomain;
       if (onFirst)
@@ -1088,8 +1089,8 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
       }
 
       // resolve arcs for vertices not having a link to an arc
-      double                                              utst, vtst;
-      NCollection_Array1<double>                          paramsResolved(1, nbvtx);
+      double             utst, vtst;
+      NCollection_Array1<double>      paramsResolved(1, nbvtx);
       NCollection_Array1<occ::handle<Standard_Transient>> arcsResolved(1, nbvtx);
       arcsResolved.Init(occ::handle<Adaptor2d_Curve2d>());
       for (iv = 1; iv <= nbvtx; iv++)
@@ -1102,7 +1103,7 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
           for (aDomain->Init(); aDomain->More(); aDomain->Next())
           {
             const occ::handle<Adaptor2d_Curve2d>& arc = aDomain->Value();
-            double                                par, dist;
+            double                    par, dist;
             if (ProjectOnArc(utst, vtst, arc, surf, TolArc, par, dist) && dist < distmin)
             {
               arcsResolved(iv)   = arc;
@@ -1115,7 +1116,7 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
 
       // prepare list of common arcs for both ends of wline
       NCollection_IndexedMap<occ::handle<Standard_Transient>> mapArcsV1, mapArcs;
-      int                                                     i;
+      int              i;
       for (i = 1; i <= indicesV1.Length(); i++)
       {
         iv = indicesV1(i);
@@ -1211,10 +1212,10 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
 
         occ::handle<IntSurf_LineOn2S>        LineOn2S = new IntSurf_LineOn2S();
         const occ::handle<IntSurf_LineOn2S>& Lori     = WLine->Curve();
-        int                                  ivmin, ivmax;
-        double                               parmin, parmax;
-        bool                                 reverse = false;
-        NCollection_Sequence<int>*           pIndVmin, *pIndVmax;
+        int                ivmin, ivmax;
+        double                   parmin, parmax;
+        bool                reverse = false;
+        NCollection_Sequence<int> *     pIndVmin, *pIndVmax;
         if (par1 < par2)
         {
           for (i = ParamMinOnLine; i <= ParamMaxOnLine; i++)
@@ -1302,18 +1303,17 @@ static void TestWLineToRLine(const NCollection_Sequence<occ::handle<IntPatch_Lin
 
 //=================================================================================================
 
-void IntPatch_LineConstructor::Perform(
-  const NCollection_Sequence<occ::handle<IntPatch_Line>>& slinref,
-  const occ::handle<IntPatch_Line>&                       L,
-  const occ::handle<Adaptor3d_Surface>&                   mySurf1,
-  const occ::handle<Adaptor3d_TopolTool>&                 myDom1,
-  const occ::handle<Adaptor3d_Surface>&                   mySurf2,
-  const occ::handle<Adaptor3d_TopolTool>&                 myDom2,
-  const double                                            TolArc)
+void IntPatch_LineConstructor::Perform(const NCollection_Sequence<occ::handle<IntPatch_Line>>&     slinref,
+                                       const occ::handle<IntPatch_Line>&       L,
+                                       const occ::handle<Adaptor3d_Surface>&   mySurf1,
+                                       const occ::handle<Adaptor3d_TopolTool>& myDom1,
+                                       const occ::handle<Adaptor3d_Surface>&   mySurf2,
+                                       const occ::handle<Adaptor3d_TopolTool>& myDom2,
+                                       const double                TolArc)
 {
 
-  int    i = 1, nbvtx;
-  double firstp, lastp;
+  int i = 1, nbvtx;
+  double    firstp, lastp;
   // clang-format off
   double Tol = Precision::PConfusion()*100.; // JMB le 13 Jan 2000. Report de la correction du PRO19653
   // clang-format on
@@ -1323,7 +1323,7 @@ void IntPatch_LineConstructor::Perform(
   IntPatch_IType typl = L->ArcType();
   if (typl == IntPatch_Analytic)
   {
-    double                      u1, v1, u2, v2;
+    double          u1, v1, u2, v2;
     occ::handle<IntPatch_ALine> ALine(occ::down_cast<IntPatch_ALine>(L));
     slin.Clear();
     nbvtx = ALine->NbVertex();
@@ -1345,12 +1345,13 @@ void IntPatch_LineConstructor::Perform(
       if (firstp != lastp)
       {
         double pmid = (firstp + lastp) * 0.5;
-        gp_Pnt Pmid = ALine->Value(pmid);
+        gp_Pnt        Pmid = ALine->Value(pmid);
         Parameters(mySurf1, mySurf2, Pmid, u1, v1, u2, v2);
         Recadre(mySurf1, mySurf2, u1, v1, u2, v2);
         TopAbs_State in1, in2;
         in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol, false);
-        in2 = (in1 != TopAbs_OUT) ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false) : TopAbs_OUT;
+        in2 = (in1 != TopAbs_OUT) ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false)
+                                  : TopAbs_OUT;
         if (in1 == TopAbs_OUT || in2 == TopAbs_OUT)
         {
         }
@@ -1385,7 +1386,7 @@ void IntPatch_LineConstructor::Perform(
   }
   else if (typl == IntPatch_Walking)
   {
-    double                      u1, v1, u2, v2;
+    double          u1, v1, u2, v2;
     occ::handle<IntPatch_WLine> WLine(occ::down_cast<IntPatch_WLine>(L));
     slin.Clear();
     nbvtx = WLine->NbVertex();
@@ -1407,7 +1408,7 @@ void IntPatch_LineConstructor::Perform(
       if (firstp != lastp && !IsSegmentSmall(WLine, i, i + 1 /*,TolArc*/))
       {
         int pmid;
-        pmid           = (int)((firstp + lastp) / 2);
+        pmid                        = (int)((firstp + lastp) / 2);
         int int_lastp  = (int)lastp;
         int int_firstp = (int)firstp;
         if (pmid == int_lastp)
@@ -1447,7 +1448,7 @@ void IntPatch_LineConstructor::Perform(
         //            situation when (lastp-firstp) != 1.
         if (std::abs(int_lastp - int_firstp) == 1)
         {
-          double                 vFu1, vFv1, vFu2, vFv2, vLu1, vLv1, vLu2, vLv2;
+          double          vFu1, vFv1, vFu2, vFv2, vLu1, vLv1, vLu2, vLv2;
           const IntSurf_PntOn2S& vF = WLineVertex_i.PntOn2S();
           const IntSurf_PntOn2S& vL = WLineVertex_ip1.PntOn2S();
           vF.Parameters(vFu1, vFv1, vFu2, vFv2);
@@ -1456,12 +1457,12 @@ void IntPatch_LineConstructor::Perform(
           Recadre(mySurf1, mySurf2, vLu1, vLv1, vLu2, vLv2);
           if (in1 != TopAbs_IN)
           {
-            double   du, dv;
-            gp_Pnt2d pvF(vFu1, vFv1);
-            gp_Pnt2d pvL(vLu1, vLv1);
-            gp_Pnt2d pPm(u1, v1);
-            double   dpvFpPm = pvF.Distance(pPm);
-            double   dpvLpPm = pvL.Distance(pPm);
+            double du, dv;
+            gp_Pnt2d      pvF(vFu1, vFv1);
+            gp_Pnt2d      pvL(vLu1, vLv1);
+            gp_Pnt2d      pPm(u1, v1);
+            double dpvFpPm = pvF.Distance(pPm);
+            double dpvLpPm = pvL.Distance(pPm);
             if (dpvFpPm > dpvLpPm)
             {
               du = (vFu1 + u1) * 0.5;
@@ -1478,12 +1479,12 @@ void IntPatch_LineConstructor::Perform(
           }
           if (in2 != TopAbs_IN)
           {
-            double   du, dv;
-            gp_Pnt2d pvF(vFu2, vFv2);
-            gp_Pnt2d pvL(vLu2, vLv2);
-            gp_Pnt2d pPm(u2, v2);
-            double   dpvFpPm = pvF.Distance(pPm);
-            double   dpvLpPm = pvL.Distance(pPm);
+            double du, dv;
+            gp_Pnt2d      pvF(vFu2, vFv2);
+            gp_Pnt2d      pvL(vLu2, vLv2);
+            gp_Pnt2d      pPm(u2, v2);
+            double dpvFpPm = pvF.Distance(pPm);
+            double dpvLpPm = pvL.Distance(pPm);
             if (dpvFpPm > dpvLpPm)
             {
               du = (vFu2 + u2) * 0.5;
@@ -1502,14 +1503,14 @@ void IntPatch_LineConstructor::Perform(
 
         if (in1 != TopAbs_OUT && in2 != TopAbs_OUT)
         {
-          bool                   LignetropPetite = false;
-          double                 u1a, v1a, u2a, v2a;
+          bool       LignetropPetite = false;
+          double          u1a, v1a, u2a, v2a;
           const IntSurf_PntOn2S& Pmid1 = WLine->Point((int)firstp);
           Pmid1.Parameters(u1a, v1a, u2a, v2a);
           Recadre(mySurf1, mySurf2, u1a, v1a, u2a, v2a);
 
           const IntSurf_PntOn2S& Pmid2 = WLine->Point((int)lastp);
-          double                 u1b, v1b, u2b, v2b;
+          double          u1b, v1b, u2b, v2b;
           Pmid2.Parameters(u1b, v1b, u2b, v2b);
           Recadre(mySurf1, mySurf2, u1b, v1b, u2b, v2b);
 
@@ -1560,7 +1561,7 @@ void IntPatch_LineConstructor::Perform(
   }
   else if (typl != IntPatch_Restriction)
   { // JAG 01.07.96
-    double                      u1, v1, u2, v2;
+    double          u1, v1, u2, v2;
     occ::handle<IntPatch_GLine> GLine(occ::down_cast<IntPatch_GLine>(L));
     slin.Clear();
     nbvtx = GLine->NbVertex();
@@ -1580,9 +1581,9 @@ void IntPatch_LineConstructor::Perform(
       lastp  = GLine->Vertex(i + 1).ParameterOnLine();
       if (std::abs(firstp - lastp) > Precision::PConfusion())
       {
-        intrvtested = true;
+        intrvtested        = true;
         double pmid = (firstp + lastp) * 0.5;
-        gp_Pnt Pmid;
+        gp_Pnt        Pmid;
         if (typl == IntPatch_Lin)
         {
           Pmid = ElCLib::Value(pmid, GLine->Line());
@@ -1622,8 +1623,9 @@ void IntPatch_LineConstructor::Perform(
           mySurf2->D1(u2, v2, P, Du, Dv);
           Tol = ComputeParametricTolerance(myDom2->Tol3d(myDom2->Value()), Du, Dv);
         }
-        TopAbs_State in2 =
-          (in1 != TopAbs_OUT) ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false) : TopAbs_OUT;
+        TopAbs_State in2 = (in1 != TopAbs_OUT)
+                             ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false)
+                             : TopAbs_OUT;
         // modified by NIZHNY-OFV  Wed May 30 17:04:08 2001.BEGIN
         // --purpose: section algo with infinite prism works now!!!
         if (in1 == TopAbs_UNKNOWN)
@@ -1645,8 +1647,8 @@ void IntPatch_LineConstructor::Perform(
     }
     if (typl == IntPatch_Circle || typl == IntPatch_Ellipse)
     {
-      firstp         = GLine->Vertex(nbvtx).ParameterOnLine();
-      lastp          = M_PI + M_PI + GLine->Vertex(1).ParameterOnLine();
+      firstp                = GLine->Vertex(nbvtx).ParameterOnLine();
+      lastp                 = M_PI + M_PI + GLine->Vertex(1).ParameterOnLine();
       double cadrinf = LocalFirstParameter(L);
       double cadrsup = LocalLastParameter(L);
       double acadr   = (firstp + lastp) * 0.5;
@@ -1662,9 +1664,9 @@ void IntPatch_LineConstructor::Perform(
       {
         if (std::abs(firstp - lastp) > Precision::PConfusion())
         {
-          intrvtested = true;
+          intrvtested        = true;
           double pmid = (firstp + lastp) * 0.5;
-          gp_Pnt Pmid;
+          gp_Pnt        Pmid;
           if (typl == IntPatch_Circle)
           {
             Pmid = ElCLib::Value(pmid, GLine->Circle());
@@ -1676,8 +1678,9 @@ void IntPatch_LineConstructor::Perform(
           Parameters(mySurf1, mySurf2, Pmid, u1, v1, u2, v2);
           Recadre(mySurf1, mySurf2, u1, v1, u2, v2);
           TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1, v1), Tol, false);
-          TopAbs_State in2 =
-            (in1 != TopAbs_OUT) ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false) : TopAbs_OUT;
+          TopAbs_State in2 = (in1 != TopAbs_OUT)
+                               ? myDom2->Classify(gp_Pnt2d(u2, v2), Tol, false)
+                               : TopAbs_OUT;
           // modified by NIZHNY-OFV  Wed May 30 17:04:08 2001.BEGIN
           // --purpose: section algo with infinite prism works now!!!
           if (in1 == TopAbs_UNKNOWN)
@@ -1732,7 +1735,7 @@ void IntPatch_LineConstructor::Perform(
   { //-- Restriction
     occ::handle<IntPatch_RLine> RLine(occ::down_cast<IntPatch_RLine>(L));
     slin.Clear();
-    int  NbVtx    = RLine->NbVertex();
+    int NbVtx    = RLine->NbVertex();
     bool RestOnS1 = RLine->IsArcOnS1();
     bool RestOnS2 = RLine->IsArcOnS2();
     //-- -------------------------------------------------------------------

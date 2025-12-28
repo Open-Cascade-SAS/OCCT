@@ -36,9 +36,9 @@ void IGESGraph_ToolDrawingSize::ReadOwnParams(const occ::handle<IGESGraph_Drawin
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int    nbPropertyValues;
-  double xSize;
-  double ySize;
+  int nbPropertyValues;
+  double    xSize;
+  double    ySize;
 
   // Reading nbPropertyValues(Integer)
   // clang-format off
@@ -58,7 +58,7 @@ void IGESGraph_ToolDrawingSize::ReadOwnParams(const occ::handle<IGESGraph_Drawin
 }
 
 void IGESGraph_ToolDrawingSize::WriteOwnParams(const occ::handle<IGESGraph_DrawingSize>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->XSize());
@@ -77,7 +77,8 @@ void IGESGraph_ToolDrawingSize::OwnCopy(const occ::handle<IGESGraph_DrawingSize>
   ent->Init(2, another->XSize(), another->YSize());
 }
 
-bool IGESGraph_ToolDrawingSize::OwnCorrect(const occ::handle<IGESGraph_DrawingSize>& ent) const
+bool IGESGraph_ToolDrawingSize::OwnCorrect(
+  const occ::handle<IGESGraph_DrawingSize>& ent) const
 {
   bool res = (ent->NbPropertyValues() != 2);
   if (res)

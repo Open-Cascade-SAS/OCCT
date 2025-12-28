@@ -21,6 +21,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
@@ -48,7 +49,10 @@ public:
     return C->FirstParameter();
   }
 
-  static double LastParameter(const occ::handle<Adaptor3d_Curve>& C) { return C->LastParameter(); }
+  static double LastParameter(const occ::handle<Adaptor3d_Curve>& C)
+  {
+    return C->LastParameter();
+  }
 
   static GeomAbs_Shape Continuity(const occ::handle<Adaptor3d_Curve>& C) { return C->Continuity(); }
 
@@ -65,8 +69,8 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   static void Intervals(const occ::handle<Adaptor3d_Curve>& C,
-                        NCollection_Array1<double>&         T,
-                        const GeomAbs_Shape                 S)
+                        NCollection_Array1<double>&          T,
+                        const GeomAbs_Shape            S)
   {
     C->Intervals(T, S);
   }
@@ -78,10 +82,16 @@ public:
   static double Period(const occ::handle<Adaptor3d_Curve>& C) { return C->Period(); }
 
   //! Computes the point of parameter U on the curve.
-  static gp_Pnt Value(const occ::handle<Adaptor3d_Curve>& C, const double U) { return C->Value(U); }
+  static gp_Pnt Value(const occ::handle<Adaptor3d_Curve>& C, const double U)
+  {
+    return C->Value(U);
+  }
 
   //! Computes the point of parameter U on the curve.
-  static void D0(const occ::handle<Adaptor3d_Curve>& C, const double U, gp_Pnt& P) { C->D0(U, P); }
+  static void D0(const occ::handle<Adaptor3d_Curve>& C, const double U, gp_Pnt& P)
+  {
+    C->D0(U, P);
+  }
 
   //! Computes the point of parameter U on the curve with its
   //! first derivative.
@@ -97,10 +107,10 @@ public:
   //! Raised if the continuity of the current interval
   //! is not C2.
   static void D2(const occ::handle<Adaptor3d_Curve>& C,
-                 const double                        U,
-                 gp_Pnt&                             P,
-                 gp_Vec&                             V1,
-                 gp_Vec&                             V2)
+                 const double            U,
+                 gp_Pnt&                        P,
+                 gp_Vec&                        V1,
+                 gp_Vec&                        V2)
   {
     C->D2(U, P, V1, V2);
   }
@@ -110,11 +120,11 @@ public:
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const occ::handle<Adaptor3d_Curve>& C,
-                 const double                        U,
-                 gp_Pnt&                             P,
-                 gp_Vec&                             V1,
-                 gp_Vec&                             V2,
-                 gp_Vec&                             V3)
+                 const double            U,
+                 gp_Pnt&                        P,
+                 gp_Vec&                        V1,
+                 gp_Vec&                        V2,
+                 gp_Vec&                        V3)
   {
     C->D3(U, P, V1, V2, V3);
   }
@@ -124,7 +134,9 @@ public:
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  static gp_Vec DN(const occ::handle<Adaptor3d_Curve>& C, const double U, const int N)
+  static gp_Vec DN(const occ::handle<Adaptor3d_Curve>& C,
+                   const double            U,
+                   const int         N)
   {
     return C->DN(U, N);
   }
@@ -151,10 +163,7 @@ public:
 
   static gp_Parab Parabola(const occ::handle<Adaptor3d_Curve>& C) { return C->Parabola(); }
 
-  static occ::handle<Geom_BezierCurve> Bezier(const occ::handle<Adaptor3d_Curve>& C)
-  {
-    return C->Bezier();
-  }
+  static occ::handle<Geom_BezierCurve> Bezier(const occ::handle<Adaptor3d_Curve>& C) { return C->Bezier(); }
 
   static occ::handle<Geom_BSplineCurve> BSpline(const occ::handle<Adaptor3d_Curve>& C)
   {
@@ -162,14 +171,14 @@ public:
   }
 
   Standard_EXPORT static int NbSamples(const occ::handle<Adaptor3d_Curve>& C,
-                                       const double                        U0,
-                                       const double                        U1);
+                                                    const double            U0,
+                                                    const double            U1);
 
-  Standard_EXPORT static void SamplePars(const occ::handle<Adaptor3d_Curve>&       C,
-                                         const double                              U0,
-                                         const double                              U1,
-                                         const double                              Defl,
-                                         const int                                 NbMin,
+  Standard_EXPORT static void SamplePars(const occ::handle<Adaptor3d_Curve>& C,
+                                         const double            U0,
+                                         const double            U1,
+                                         const double            Defl,
+                                         const int         NbMin,
                                          occ::handle<NCollection_HArray1<double>>& Pars);
 };
 

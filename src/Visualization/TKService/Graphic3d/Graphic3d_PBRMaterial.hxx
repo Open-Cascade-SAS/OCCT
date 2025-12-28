@@ -20,6 +20,7 @@
 #include <NCollection_Vec2.hxx>
 #include <Standard_TypeDef.hxx>
 #include <NCollection_Vec3.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Quantity_Color.hxx>
 
 //! Class implementing Metallic-Roughness physically based material definition
@@ -116,7 +117,7 @@ public:
   //! @param[in] theShiness   normalized shininess coefficient within [0..1] range
   //! @return roughness within [0..1] range
   Standard_EXPORT static float RoughnessFromSpecular(const Quantity_Color& theSpecular,
-                                                     const double          theShiness);
+                                                                  const double   theShiness);
 
   //! Compute material metallicity from common material (specular color).
   //! @param[in] theSpecular  specular color
@@ -148,14 +149,18 @@ public:
   //! Be aware! It has no obligation to return 1 in case of roughness of 1.
   //! Be aware! It produces poor quality with small number of origin samples. In that case it is
   //! recommended to be disabled.
-  Standard_EXPORT static float SpecIBLMapSamplesFactor(float theProbability, float theRoughness);
+  Standard_EXPORT static float SpecIBLMapSamplesFactor(
+    float theProbability,
+    float theRoughness);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
   //! Calculates geometry factor of Cook-Torrance BRDF using Smith formula.
-  static float lutGenGeometryFactor(float theCosL, float theCosV, float theRoughness);
+  static float lutGenGeometryFactor(float theCosL,
+                                                 float theCosV,
+                                                 float theRoughness);
 
   //! Generates quasi-random point from Hammersley set.
   //! @param theNumber number of point
@@ -164,14 +169,14 @@ private:
 
   //! Generates only cosine theta of direction in spherical coordinates system
   //! according to micro facet distribution function from Cook-Torrance BRDF.
-  static float lutGenImportanceSampleCosTheta(float theHammerslayPointComponent,
-                                              float theRoughness);
+  static float lutGenImportanceSampleCosTheta(
+    float theHammerslayPointComponent,
+    float theRoughness);
 
   //! Generates direction using point from Hammersley set
   //! according to micro facet distribution function from Cook-Torrance BRDF.
-  static NCollection_Vec3<float> lutGenImportanceSample(
-    const NCollection_Vec2<float>& theHammerslayPoint,
-    float                          theRoughness);
+  static NCollection_Vec3<float> lutGenImportanceSample(const NCollection_Vec2<float>& theHammerslayPoint,
+                                               float    theRoughness);
 
   //! Generates vector using cosine of angle between up vector (normal in hemisphere)
   //! and desired vector.
@@ -182,14 +187,14 @@ private:
   //! @param theVector vector is needed to be reflected.
   //! @param theAxis axis of reflection.
   static NCollection_Vec3<float> lutGenReflect(const NCollection_Vec3<float>& theVector,
-                                               const NCollection_Vec3<float>& theAxis);
+                                      const NCollection_Vec3<float>& theAxis);
 
 private:
-  Quantity_ColorRGBA      myColor;     //!< albedo color with alpha component [0, 1]
-  float                   myMetallic;  //!< metallic coefficient of material [0, 1]
-  float                   myRoughness; //!< roughness coefficient of material [0, 1]
-  NCollection_Vec3<float> myEmission;  //!< light intensity emitted by material [>= 0]
-  float                   myIOR;       //!< index of refraction [1, 3]
+  Quantity_ColorRGBA myColor;     //!< albedo color with alpha component [0, 1]
+  float myMetallic;  //!< metallic coefficient of material [0, 1]
+  float myRoughness; //!< roughness coefficient of material [0, 1]
+  NCollection_Vec3<float>     myEmission;  //!< light intensity emitted by material [>= 0]
+  float myIOR;       //!< index of refraction [1, 3]
 };
 
 #endif // _Graphic3d_PBRMaterial_HeaderFile

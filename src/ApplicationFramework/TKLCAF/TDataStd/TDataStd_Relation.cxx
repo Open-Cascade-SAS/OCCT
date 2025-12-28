@@ -24,6 +24,7 @@
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_Attribute.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_RelocationTable.hxx>
 
@@ -93,9 +94,7 @@ void TDataStd_Relation::DumpJson(Standard_OStream& theOStream, int theDepth) con
 
   OCCT_DUMP_FIELD_VALUE_STRING(theOStream, GetRelation())
 
-  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aVariableIt(myVariables);
-       aVariableIt.More();
-       aVariableIt.Next())
+  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aVariableIt(myVariables); aVariableIt.More(); aVariableIt.Next())
   {
     const occ::handle<TDF_Attribute>& aVariable = aVariableIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aVariable.get())

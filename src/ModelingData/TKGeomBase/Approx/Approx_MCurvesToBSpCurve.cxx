@@ -19,15 +19,18 @@
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 #ifdef OCCT_DEBUG
 static void DEBUG(const AppParCurves_MultiCurve& MC)
 {
-  int                          i, j;
-  int                          nbcu    = MC.NbCurves();
-  int                          nbpoles = MC.NbPoles();
+  int     i, j;
+  int     nbcu    = MC.NbCurves();
+  int     nbpoles = MC.NbPoles();
   NCollection_Array1<gp_Pnt>   Poles(1, nbpoles);
   NCollection_Array1<gp_Pnt2d> Poles2d(1, nbpoles);
 
@@ -79,10 +82,10 @@ void Approx_MCurvesToBSpCurve::Perform()
 void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_MultiCurve>& TheSeq)
 {
 
-  int                     i, j, deg = 0;
-  int                     nbcu = TheSeq.Length();
+  int        i, j, deg = 0;
+  int        nbcu = TheSeq.Length();
   AppParCurves_MultiCurve CU;
-  int                     nbpolesspl = 0, nbknots = 0;
+  int        nbpolesspl = 0, nbknots = 0;
 #ifdef OCCT_DEBUG
   bool debug = false;
 #endif
@@ -91,8 +94,8 @@ void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_M
   {
     CU  = TheSeq.Value(1);
     deg = CU.Degree();
-    NCollection_Array1<double> Knots(1, 2);
-    NCollection_Array1<int>    Mults(1, 2);
+    NCollection_Array1<double>    Knots(1, 2);
+    NCollection_Array1<int> Mults(1, 2);
     Knots(1) = 0.0;
     Knots(2) = 1.0;
     Mults(1) = Mults(2) = deg + 1;
@@ -102,8 +105,8 @@ void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_M
   {
 
     AppParCurves_MultiPoint P    = TheSeq.Value(nbcu).Value(1);
-    int                     nb3d = P.NbPoints();
-    int                     nb2d = P.NbPoints2d();
+    int        nb3d = P.NbPoints();
+    int        nb2d = P.NbPoints2d();
 
     Convert_CompBezierCurvesToBSplineCurve     conv;
     Convert_CompBezierCurves2dToBSplineCurve2d conv2d;
@@ -145,10 +148,10 @@ void Approx_MCurvesToBSpCurve::Perform(const NCollection_Sequence<AppParCurves_M
     }
 
     NCollection_Array1<AppParCurves_MultiPoint> tabMU(1, nbpolesspl);
-    NCollection_Array1<gp_Pnt>                  PolesSpl(1, nbpolesspl);
-    NCollection_Array1<gp_Pnt2d>                PolesSpl2d(1, nbpolesspl);
-    NCollection_Array1<int>                     TheMults(1, nbknots);
-    NCollection_Array1<double>                  TheKnots(1, nbknots);
+    NCollection_Array1<gp_Pnt>              PolesSpl(1, nbpolesspl);
+    NCollection_Array1<gp_Pnt2d>            PolesSpl2d(1, nbpolesspl);
+    NCollection_Array1<int>         TheMults(1, nbknots);
+    NCollection_Array1<double>            TheKnots(1, nbknots);
 
     if (nb3d != 0)
     {

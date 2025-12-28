@@ -38,7 +38,7 @@ public:
 
   //! Constructor
   Standard_EXPORT BinLDrivers_DocumentSection(const TCollection_AsciiString& theName,
-                                              const bool                     isPostRead);
+                                              const bool         isPostRead);
 
   //! Query the name of the section.
   Standard_EXPORT const TCollection_AsciiString& Name() const;
@@ -73,13 +73,13 @@ public:
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC. Returns false in case of the stream reading problem.
   Standard_EXPORT static bool ReadTOC(BinLDrivers_DocumentSection& theSection,
-                                      Standard_IStream&            theIS,
-                                      const TDocStd_FormatVersion  theDocFormatVersion);
+                                                  Standard_IStream&            theIS,
+                                                  const TDocStd_FormatVersion  theDocFormatVersion);
 
 private:
   TCollection_AsciiString myName;
   uint64_t                myValue[2];
-  bool                    myIsPostRead;
+  bool        myIsPostRead;
 };
 
 #endif // _BinLDrivers_DocumentSection_HeaderFile

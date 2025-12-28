@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepVisual_AnnotationText();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_AnnotationText, StepRepr_MappedItem)
+
 };
 
 #endif // _StepVisual_AnnotationText_HeaderFile

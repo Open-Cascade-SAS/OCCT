@@ -32,13 +32,12 @@
 
 IGESAppli_ToolLevelFunction::IGESAppli_ToolLevelFunction() {}
 
-void IGESAppli_ToolLevelFunction::ReadOwnParams(
-  const occ::handle<IGESAppli_LevelFunction>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESAppli_ToolLevelFunction::ReadOwnParams(const occ::handle<IGESAppli_LevelFunction>& ent,
+                                                const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                IGESData_ParamReader& PR) const
 {
-  int                                   tempNbPropertyValues;
-  int                                   tempFuncDescripCode;
+  int                 tempNbPropertyValues;
+  int                 tempFuncDescripCode;
   occ::handle<TCollection_HAsciiString> tempFuncDescrip;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -58,7 +57,7 @@ void IGESAppli_ToolLevelFunction::ReadOwnParams(
 }
 
 void IGESAppli_ToolLevelFunction::WriteOwnParams(const occ::handle<IGESAppli_LevelFunction>& ent,
-                                                 IGESData_IGESWriter& IW) const
+                                                 IGESData_IGESWriter&                   IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->FuncDescriptionCode());
@@ -77,7 +76,7 @@ void IGESAppli_ToolLevelFunction::OwnCopy(const occ::handle<IGESAppli_LevelFunct
                                           const occ::handle<IGESAppli_LevelFunction>& ent,
                                           Interface_CopyTool& /* TC */) const
 {
-  int                                   aNbPropertyValues, code;
+  int                 aNbPropertyValues, code;
   occ::handle<TCollection_HAsciiString> descrip;
   if (!another->FuncDescription().IsNull())
     descrip = new TCollection_HAsciiString(another->FuncDescription());
@@ -87,7 +86,8 @@ void IGESAppli_ToolLevelFunction::OwnCopy(const occ::handle<IGESAppli_LevelFunct
   ent->Init(aNbPropertyValues, code, descrip);
 }
 
-bool IGESAppli_ToolLevelFunction::OwnCorrect(const occ::handle<IGESAppli_LevelFunction>& ent) const
+bool IGESAppli_ToolLevelFunction::OwnCorrect(
+  const occ::handle<IGESAppli_LevelFunction>& ent) const
 {
   bool res = (ent->NbPropertyValues() != 2);
   if (res)

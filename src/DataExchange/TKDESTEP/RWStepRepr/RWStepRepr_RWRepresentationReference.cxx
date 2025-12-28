@@ -31,7 +31,7 @@ RWStepRepr_RWRepresentationReference::RWStepRepr_RWRepresentationReference() {}
 
 void RWStepRepr_RWRepresentationReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&          theData,
-  const int                                            theNum,
+  const int                          theNum,
   occ::handle<Interface_Check>&                        theAch,
   const occ::handle<StepRepr_RepresentationReference>& theEnt) const
 {
@@ -59,7 +59,7 @@ void RWStepRepr_RWRepresentationReference::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationReference::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepRepr_RepresentationReference>& theEnt) const
 {
 
@@ -74,7 +74,7 @@ void RWStepRepr_RWRepresentationReference::WriteStep(
 
 void RWStepRepr_RWRepresentationReference::Share(
   const occ::handle<StepRepr_RepresentationReference>& theEnt,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
 
   // Own fields of RepresentationReference

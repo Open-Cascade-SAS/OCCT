@@ -150,10 +150,11 @@ inline bool BinObjMgt_Persistent::IsOK() const
 //           toClear==true means to fill unused space by 0
 //=======================================================================
 
-inline void BinObjMgt_Persistent::alignOffset(const int theSize, const bool toClear) const
+inline void BinObjMgt_Persistent::alignOffset(const int theSize,
+                                              const bool toClear) const
 {
-  unsigned alignMask = theSize - 1;
-  int      anOffset  = (myOffset + alignMask) & ~alignMask;
+  unsigned         alignMask = theSize - 1;
+  int anOffset  = (myOffset + alignMask) & ~alignMask;
 
   if (anOffset > myOffset)
   {
@@ -211,7 +212,8 @@ inline BinObjMgt_Persistent& BinObjMgt_Persistent::PutBoolean(const bool theValu
 
 //=================================================================================================
 
-inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean(bool& theValue) const
+inline const BinObjMgt_Persistent& BinObjMgt_Persistent::GetBoolean(
+  bool& theValue) const
 {
   //  int anIntVal = (int) theValue;
   int anIntVal;

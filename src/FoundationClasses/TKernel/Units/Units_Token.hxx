@@ -51,16 +51,18 @@ public:
   //! containing the available word, <amean> gives the
   //! signification of the token and <avalue> is the numeric
   //! value of the dimension.
-  Standard_EXPORT Units_Token(const char* aword, const char* amean, const double avalue);
+  Standard_EXPORT Units_Token(const char* aword,
+                              const char* amean,
+                              const double    avalue);
 
   //! Creates and returns a token. <aword> is a string
   //! containing the available word, <amean> gives the
   //! signification of the token, <avalue> is the numeric
   //! value of the dimension, and <adimensions> is the
   //! dimension of the given word <aword>.
-  Standard_EXPORT Units_Token(const char*                          aword,
-                              const char*                          amean,
-                              const double                         avalue,
+  Standard_EXPORT Units_Token(const char*          aword,
+                              const char*          amean,
+                              const double             avalue,
                               const occ::handle<Units_Dimensions>& adimension);
 
   //! Creates and returns a token, which is a ShiftedToken.
@@ -120,7 +122,8 @@ public:
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  [[nodiscard]] Standard_EXPORT virtual double Multiplied(const double avalue) const;
+  [[nodiscard]] Standard_EXPORT virtual double Multiplied(
+    const double avalue) const;
 
   //! Returns a token which is the division of <me> by another
   //! token <atoken>.
@@ -129,7 +132,8 @@ public:
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  [[nodiscard]] Standard_EXPORT virtual double Divided(const double avalue) const;
+  [[nodiscard]] Standard_EXPORT virtual double Divided(
+    const double avalue) const;
 
   //! Returns a token which is <me> to the power of another
   //! token <atoken>. The computation is possible only if
@@ -178,14 +182,15 @@ public:
   bool IsGreaterOrEqual(const occ::handle<Units_Token>& atoken) const;
 
   //! Useful for debugging
-  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const;
+  Standard_EXPORT virtual void Dump(const int ashift,
+                                    const int alevel) const;
 
   DEFINE_STANDARD_RTTIEXT(Units_Token, Standard_Transient)
 
 private:
-  TCollection_AsciiString       theword;
-  TCollection_AsciiString       themean;
-  double                        thevalue;
+  TCollection_AsciiString  theword;
+  TCollection_AsciiString  themean;
+  double            thevalue;
   occ::handle<Units_Dimensions> thedimensions;
 };
 

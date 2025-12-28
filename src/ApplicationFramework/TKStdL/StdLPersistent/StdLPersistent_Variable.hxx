@@ -55,7 +55,7 @@ public:
   }
 
 private:
-  bool                                  myIsConstant;
+  bool                      myIsConstant;
   Handle(StdLPersistent_HString::Ascii) myUnit;
 };
 

@@ -38,19 +38,19 @@ public:
 
   Standard_EXPORT void Init(const TopoDS_Shape& E, const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Add(const TopoDS_Shape&                           E,
-                           const TopoDS_Shape&                           V,
+  Standard_EXPORT void Add(const TopoDS_Shape&                      E,
+                           const TopoDS_Shape&                      V,
                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Add(const TopoDS_Shape&                           E,
-                           const TopOpeBRepDS_Point&                     P,
+  Standard_EXPORT void Add(const TopoDS_Shape&                      E,
+                           const TopOpeBRepDS_Point&                P,
                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT void Transition(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
 private:
   TopAbs_Orientation       myEdgeOrientation;
-  int                      myEdgeOriented;
+  int         myEdgeOriented;
   TopTrans_CurveTransition myTool;
 };
 

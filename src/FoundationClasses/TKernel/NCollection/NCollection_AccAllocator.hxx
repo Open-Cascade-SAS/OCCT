@@ -143,12 +143,14 @@ protected:
   //! Descriptor of a block
   struct Block
   {
-    void*      address;
-    AlignedPtr allocStart;
-    Block*     prevBlock;
-    int        allocCount;
+    void* address;
+    AlignedPtr       allocStart;
+    Block*           prevBlock;
+    int allocCount;
 
-    Block(void* const theAddress, const size_t theSize, Block* thePrevBlock = 0L) noexcept
+    Block(void* const theAddress,
+          const size_t    theSize,
+          Block*                 thePrevBlock = 0L) noexcept
         : address(theAddress),
           prevBlock(thePrevBlock),
           allocCount(0)
@@ -156,9 +158,15 @@ protected:
       SetFreeSize(theSize);
     }
 
-    void SetFreeSize(const size_t theSize) noexcept { allocStart = (uint8_t*)address + theSize; }
+    void SetFreeSize(const size_t theSize) noexcept
+    {
+      allocStart = (uint8_t*)address + theSize;
+    }
 
-    size_t FreeSize() const noexcept { return (uint8_t*)allocStart - (uint8_t*)address; }
+    size_t FreeSize() const noexcept
+    {
+      return (uint8_t*)allocStart - (uint8_t*)address;
+    }
 
     AlignedPtr Allocate(const AlignedSize theSize) noexcept
     {

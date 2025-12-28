@@ -36,9 +36,9 @@ Standard_EXPORT void debfctwesmess(const int i, const TCollection_AsciiString& s
   debfctwes(i);
 }
 
-extern void debaddpwes(const int                           iFOR,
+extern void debaddpwes(const int              iFOR,
                        const TopAbs_State                  TB1,
-                       const int                           iEG,
+                       const int              iEG,
                        const TopAbs_Orientation            neworiE,
                        const TopOpeBRepBuild_PBuilder&     PB,
                        const TopOpeBRepBuild_PWireEdgeSet& PWES,
@@ -68,7 +68,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopoDS_Shape&         
   ShapeInterf = t1;
 
 #ifdef OCCT_DEBUG
-  int  iF;
+  int iF;
   bool tSPS = GtraceSPS(F1, iF);
   if (tSPS)
     GdumpSHASTA(iF, TB1, WES, "--- GFillCurveTopologyWES");
@@ -93,7 +93,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopoDS_Shape&         
   // have intersection lines other than by its original edges
   // so we skip it if we find that two SameDomain faces have
   // new intersection edge
-  bool hsd = myDataStructure->HasSameDomain(F1);
+  bool           hsd = myDataStructure->HasSameDomain(F1);
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aSDMap;
   if (hsd)
   {
@@ -111,14 +111,14 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopoDS_Shape&         
     if (ShapeInterf != TopAbs_SHAPE)
     {
       const occ::handle<TopOpeBRepDS_Interference>& I    = FCit.Value();
-      const TopOpeBRepDS_Transition&                T    = I->Transition();
-      TopAbs_ShapeEnum                              shab = T.ShapeBefore(), shaa = T.ShapeAfter();
+      const TopOpeBRepDS_Transition&           T    = I->Transition();
+      TopAbs_ShapeEnum                         shab = T.ShapeBefore(), shaa = T.ShapeAfter();
       if ((shaa != ShapeInterf) || (shab != ShapeInterf))
         continue;
       // modified by NIZHNY-MZV  Thu Feb 24 09:14:31 2000
 
-      int          si = I->Support();
-      TopoDS_Shape SS = myDataStructure->Shape(si);
+      int si = I->Support();
+      TopoDS_Shape     SS = myDataStructure->Shape(si);
       // see comment above
       if (aSDMap.Contains(SS))
         continue;
@@ -167,7 +167,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
 
   const TopOpeBRepDS_Transition& T        = FCit.Value()->Transition();
   TopAbs_Orientation             neworiE  = T.Orientation(TB);
-  bool                           samegeom = TopOpeBRepBuild_FUN_aresamegeom(FTF, WESF);
+  bool               samegeom = TopOpeBRepBuild_FUN_aresamegeom(FTF, WESF);
   if (!samegeom)
   {
     neworiE = TopAbs::Complement(neworiE);
@@ -189,8 +189,8 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
   if (ComOfCut)
     return;
 
-  int                                      iG    = FCit.Current();
-  const NCollection_List<TopoDS_Shape>&    LnewE = NewEdges(iG);
+  int                   iG    = FCit.Current();
+  const NCollection_List<TopoDS_Shape>&        LnewE = NewEdges(iG);
   NCollection_List<TopoDS_Shape>::Iterator Iti(LnewE);
   for (; Iti.More(); Iti.Next())
   {
@@ -218,7 +218,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
     if (!EhasPConWESF)
     {
       //      double tolE = BRep_Tool::Tolerance(E);
-      double                    f2, l2, tolpc;
+      double        f2, l2, tolpc;
       occ::handle<Geom2d_Curve> C2D;
       C2D = FC2D_CurveOnSurface(E, WESF, f2, l2, tolpc);
       if (C2D.IsNull())

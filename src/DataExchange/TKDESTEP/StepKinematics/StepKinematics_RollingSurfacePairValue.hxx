@@ -32,11 +32,10 @@ public:
   Standard_EXPORT StepKinematics_RollingSurfacePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-    const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
-    const double                                     theActualRotation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const occ::handle<StepGeom_PointOnSurface>&      theActualPointOnSurface,
+                            const double                         theActualRotation);
 
   //! Returns field ActualPointOnSurface
   Standard_EXPORT occ::handle<StepGeom_PointOnSurface> ActualPointOnSurface() const;
@@ -53,6 +52,6 @@ public:
 
 private:
   occ::handle<StepGeom_PointOnSurface> myActualPointOnSurface;
-  double                               myActualRotation;
+  double                   myActualRotation;
 };
 #endif // _StepKinematics_RollingSurfacePairValue_HeaderFile_

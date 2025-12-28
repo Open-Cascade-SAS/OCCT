@@ -25,7 +25,7 @@ Prs3d_DatumAspect::Prs3d_DatumAspect()
       myToDrawLabels(true),
       myToDrawArrows(true)
 {
-  const double         aDefaultLength = 100.0; // default axis length, the same as in context
+  const double  aDefaultLength = 100.0; // default axis length, the same as in context
   const Quantity_Color aDefaultColor(Quantity_NOC_LIGHTSTEELBLUE4); // default axis color
 
   myAttributes[Prs3d_DatumAttribute_XAxisLength]                = aDefaultLength;

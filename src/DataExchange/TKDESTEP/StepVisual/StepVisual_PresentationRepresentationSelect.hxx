@@ -42,11 +42,11 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a PresentationRepresentation (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation()
-    const;
+  Standard_EXPORT occ::handle<StepVisual_PresentationRepresentation> PresentationRepresentation() const;
 
   //! returns Value as a PresentationSet (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_PresentationSet> PresentationSet() const;
+
 };
 
 #endif // _StepVisual_PresentationRepresentationSelect_HeaderFile

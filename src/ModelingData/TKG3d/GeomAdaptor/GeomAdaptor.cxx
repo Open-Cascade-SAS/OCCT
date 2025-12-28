@@ -94,7 +94,7 @@ occ::handle<Geom_Curve> GeomAdaptor::MakeCurve(const Adaptor3d_Curve& HC)
 //=================================================================================================
 
 occ::handle<Geom_Surface> GeomAdaptor::MakeSurface(const Adaptor3d_Surface& HS,
-                                                   const bool               theTrimFlag)
+                                              const bool   theTrimFlag)
 {
   occ::handle<Geom_Surface> S;
 

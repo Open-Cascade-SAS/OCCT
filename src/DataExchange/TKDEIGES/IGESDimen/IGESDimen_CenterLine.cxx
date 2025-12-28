@@ -27,8 +27,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_CenterLine, IGESData_IGESEntity)
 
 IGESDimen_CenterLine::IGESDimen_CenterLine() {}
 
-void IGESDimen_CenterLine::Init(const int                                      aDataType,
-                                const double                                   aZdisp,
+void IGESDimen_CenterLine::Init(const int            aDataType,
+                                const double               aZdisp,
                                 const occ::handle<NCollection_HArray1<gp_XY>>& dataPnts)
 {
   if (dataPnts->Lower() != 1)

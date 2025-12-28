@@ -19,8 +19,8 @@ class BRepMesh_DiscretRoot;
 
 //! Type definition for plugin exported function
 typedef int (*BRepMesh_PluginEntryType)(const TopoDS_Shape&    theShape,
-                                        const double           theLinDeflection,
-                                        const double           theAngDeflection,
-                                        BRepMesh_DiscretRoot*& theMeshAlgoInstance);
+                                                     const double    theLinDeflection,
+                                                     const double    theAngDeflection,
+                                                     BRepMesh_DiscretRoot*& theMeshAlgoInstance);
 
 #endif

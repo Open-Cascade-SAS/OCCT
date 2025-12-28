@@ -40,7 +40,7 @@ public:
   //! NewF(u,v) = ----------------
   //! a(u,v) * D(u,v)
   Standard_EXPORT GeomLib_DenominatorMultiplier(const occ::handle<Geom_BSplineSurface>& Surface,
-                                                const NCollection_Array1<double>&       KnotVector);
+                                                const NCollection_Array1<double>&        KnotVector);
 
   //! Returns the value of
   //! a(UParameter,VParameter)=
@@ -56,11 +56,12 @@ public:
   //! D Denominator(Umax,Vparameter)
   //! - ------------------------------[H2(u)]/(Denominator(Umax,Vparameter)^2)
   //! D U
-  Standard_EXPORT double Value(const double UParameter, const double VParameter) const;
+  Standard_EXPORT double Value(const double UParameter,
+                                      const double VParameter) const;
 
 private:
   occ::handle<Geom_BSplineSurface> mySurface;
-  NCollection_Array1<double>       myKnotFlatVector;
+  NCollection_Array1<double>        myKnotFlatVector;
 };
 
 #endif // _GeomLib_DenominatorMultiplier_HeaderFile

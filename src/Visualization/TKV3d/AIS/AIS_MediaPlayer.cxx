@@ -25,13 +25,11 @@
 IMPLEMENT_STANDARD_RTTIEXT(AIS_MediaPlayer, AIS_InteractiveObject)
 
 //! Create an array of triangles defining a rectangle.
-static occ::handle<Graphic3d_ArrayOfTriangles> createRectangleArray(
-  const NCollection_Vec2<int>& theLower,
-  const NCollection_Vec2<int>& theUpper,
-  Graphic3d_ArrayFlags         theFlags)
+static occ::handle<Graphic3d_ArrayOfTriangles> createRectangleArray(const NCollection_Vec2<int>& theLower,
+                                                               const NCollection_Vec2<int>& theUpper,
+                                                               Graphic3d_ArrayFlags   theFlags)
 {
-  occ::handle<Graphic3d_ArrayOfTriangles> aRectTris =
-    new Graphic3d_ArrayOfTriangles(4, 6, theFlags);
+  occ::handle<Graphic3d_ArrayOfTriangles> aRectTris = new Graphic3d_ArrayOfTriangles(4, 6, theFlags);
   aRectTris->AddVertex(gp_Pnt(theLower.x(), theLower.y(), 0.0), gp_Pnt2d(0.0, 1.0));
   aRectTris->AddVertex(gp_Pnt(theLower.x(), theUpper.y(), 0.0), gp_Pnt2d(0.0, 0.0));
   aRectTris->AddVertex(gp_Pnt(theUpper.x(), theUpper.y(), 0.0), gp_Pnt2d(1.0, 0.0));
@@ -191,7 +189,7 @@ void AIS_MediaPlayer::PlayPause()
   }
 
   double aProgress = 0.0, aDuration = 0.0;
-  bool   isPaused = false;
+  bool          isPaused = false;
   myFramePair->PlayerContext()->PlayPause(isPaused, aProgress, aDuration);
 }
 
@@ -199,7 +197,7 @@ void AIS_MediaPlayer::PlayPause()
 
 void AIS_MediaPlayer::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                               const occ::handle<Prs3d_Presentation>& thePrs,
-                              const int                              theMode)
+                              const int            theMode)
 {
   thePrs->SetInfiniteState(IsInfinite());
   if (theMode != 0)
@@ -222,21 +220,19 @@ void AIS_MediaPlayer::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_MediaPlayer::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                       const int                               theMode)
+                                       const int             theMode)
 {
   if (theMode != 0)
   {
     return;
   }
 
-  occ::handle<Graphic3d_ArrayOfTriangles> aTris =
-    createRectangleArray(myFrameBottomLeft,
-                         myFrameBottomLeft + myFrameSize,
-                         Graphic3d_ArrayFlags_None);
+  occ::handle<Graphic3d_ArrayOfTriangles> aTris = createRectangleArray(myFrameBottomLeft,
+                                                                  myFrameBottomLeft + myFrameSize,
+                                                                  Graphic3d_ArrayFlags_None);
 
   occ::handle<SelectMgr_EntityOwner>            anOwner = new SelectMgr_EntityOwner(this, 5);
-  occ::handle<Select3D_SensitivePrimitiveArray> aSens =
-    new Select3D_SensitivePrimitiveArray(anOwner);
+  occ::handle<Select3D_SensitivePrimitiveArray> aSens   = new Select3D_SensitivePrimitiveArray(anOwner);
   aSens->InitTriangulation(aTris->Attributes(), aTris->Indices(), TopLoc_Location());
   theSel->Add(aSens);
 }

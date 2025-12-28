@@ -33,10 +33,7 @@ class BRepTest_DrawableHistory : public Draw_Drawable3D
 
 public:
   //! Creation of the Drawable history.
-  BRepTest_DrawableHistory(const occ::handle<BRepTools_History>& theHistory)
-  {
-    myHistory = theHistory;
-  }
+  BRepTest_DrawableHistory(const occ::handle<BRepTools_History>& theHistory) { myHistory = theHistory; }
 
   //! Returns the history.
   const occ::handle<BRepTools_History>& History() const { return myHistory; }

@@ -128,7 +128,9 @@ double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double Tol)
 
 //=================================================================================================
 
-double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double U1, const double U2)
+double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
+                                          const double    U1,
+                                          const double    U2)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
@@ -145,7 +147,9 @@ double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C, const double U1, co
 
 //=================================================================================================
 
-double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double U1, const double U2)
+double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
+                                          const double      U1,
+                                          const double      U2)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
@@ -166,9 +170,9 @@ double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C, const double U1, 
 //=======================================================================
 
 double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
-                                   const double           U1,
-                                   const double           U2,
-                                   const double           Tol)
+                                          const double    U1,
+                                          const double    U2,
+                                          const double    Tol)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
@@ -189,9 +193,9 @@ double CPnts_AbscissaPoint::Length(const Adaptor3d_Curve& C,
 //=======================================================================
 
 double CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
-                                   const double             U1,
-                                   const double             U2,
-                                   const double             Tol)
+                                          const double      U1,
+                                          const double      U2,
+                                          const double      Tol)
 {
   CPnts_MyGaussFunction FG;
   // POP pout WNT
@@ -220,9 +224,9 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint()
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                         const double           Abscissa,
-                                         const double           U0,
-                                         const double           Resolution)
+                                         const double    Abscissa,
+                                         const double    U0,
+                                         const double    Resolution)
 {
   //  Init(C);
   Init(C, Resolution); // rbv's modification
@@ -233,9 +237,9 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                         const double             Abscissa,
-                                         const double             U0,
-                                         const double             Resolution)
+                                         const double      Abscissa,
+                                         const double      U0,
+                                         const double      Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Resolution);
@@ -244,10 +248,10 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
-                                         const double           Abscissa,
-                                         const double           U0,
-                                         const double           Ui,
-                                         const double           Resolution)
+                                         const double    Abscissa,
+                                         const double    U0,
+                                         const double    Ui,
+                                         const double    Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Ui, Resolution);
@@ -256,10 +260,10 @@ CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 CPnts_AbscissaPoint::CPnts_AbscissaPoint(const Adaptor2d_Curve2d& C,
-                                         const double             Abscissa,
-                                         const double             U0,
-                                         const double             Ui,
-                                         const double             Resolution)
+                                         const double      Abscissa,
+                                         const double      U0,
+                                         const double      Ui,
+                                         const double      Resolution)
 {
   Init(C);
   Perform(Abscissa, U0, Ui, Resolution);
@@ -298,34 +302,38 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double Tol)
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C, const double U1, const double U2)
+void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
+                               const double    U1,
+                               const double    U2)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
   myF.Init(rf, (void*)&C, order(C));
   //  myF.Init(f3d,(void*)&C,order(C));
-  myL       = CPnts_AbscissaPoint::Length(C, U1, U2);
-  myUMin    = std::min(U1, U2);
-  myUMax    = std::max(U1, U2);
+  myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   double DU = myUMax - myUMin;
-  myUMin    = myUMin - DU;
-  myUMax    = myUMax + DU;
+  myUMin           = myUMin - DU;
+  myUMax           = myUMax + DU;
 }
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double U1, const double U2)
+void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
+                               const double      U1,
+                               const double      U2)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
   myF.Init(rf, (void*)&C, order(C));
   //  myF.Init(f2d,(void*)&C,order(C));
-  myL       = CPnts_AbscissaPoint::Length(C, U1, U2);
-  myUMin    = std::min(U1, U2);
-  myUMax    = std::max(U1, U2);
+  myL              = CPnts_AbscissaPoint::Length(C, U1, U2);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   double DU = myUMax - myUMin;
-  myUMin    = myUMin - DU;
-  myUMax    = myUMax + DU;
+  myUMin           = myUMin - DU;
+  myUMax           = myUMax + DU;
 }
 
 //=======================================================================
@@ -334,44 +342,46 @@ void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C, const double U1, cons
 //=======================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor3d_Curve& C,
-                               const double           U1,
-                               const double           U2,
-                               const double           Tol)
+                               const double    U1,
+                               const double    U2,
+                               const double    Tol)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f3d;
   myF.Init(rf, (void*)&C, order(C));
   //  myF.Init(f3d,(void*)&C,order(C));
-  myL       = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
-  myUMin    = std::min(U1, U2);
-  myUMax    = std::max(U1, U2);
+  myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   double DU = myUMax - myUMin;
-  myUMin    = myUMin - DU;
-  myUMax    = myUMax + DU;
+  myUMin           = myUMin - DU;
+  myUMax           = myUMax + DU;
 }
 
 //=================================================================================================
 
 void CPnts_AbscissaPoint::Init(const Adaptor2d_Curve2d& C,
-                               const double             U1,
-                               const double             U2,
-                               const double             Tol)
+                               const double      U1,
+                               const double      U2,
+                               const double      Tol)
 {
   // POP pout WNT
   CPnts_RealFunction rf = f2d;
   myF.Init(rf, (void*)&C, order(C));
   //  myF.Init(f2d,(void*)&C,order(C));
-  myL       = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
-  myUMin    = std::min(U1, U2);
-  myUMax    = std::max(U1, U2);
+  myL              = CPnts_AbscissaPoint::Length(C, U1, U2, Tol);
+  myUMin           = std::min(U1, U2);
+  myUMax           = std::max(U1, U2);
   double DU = myUMax - myUMin;
-  myUMin    = myUMin - DU;
-  myUMax    = myUMax + DU;
+  myUMin           = myUMin - DU;
+  myUMax           = myUMax + DU;
 }
 
 //=================================================================================================
 
-void CPnts_AbscissaPoint::Perform(const double Abscissa, const double U0, const double Resolution)
+void CPnts_AbscissaPoint::Perform(const double Abscissa,
+                                  const double U0,
+                                  const double Resolution)
 {
   if (myL < Precision::Confusion())
   {

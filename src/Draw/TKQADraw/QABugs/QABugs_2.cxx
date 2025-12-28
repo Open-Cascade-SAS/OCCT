@@ -58,7 +58,7 @@ static int OCC527(Draw_Interpretor& di, int argc, const char** argv)
 
     // 3. Explode entry shape on faces and build sections from Zmin to Zmax with step aStep
     const double Zmin = -40.228173882121, Zmax = 96.408126285268, aStep = 1.0;
-    char         str[100];
+    char                str[100];
     str[0] = 0;
     Sprintf(str, "Test range: [%f, %f] with step %f\n", Zmin, Zmax, aStep);
     di << str;
@@ -107,7 +107,7 @@ static int OCC527(Draw_Interpretor& di, int argc, const char** argv)
             for (aExp2.Init(aResult, TopAbs_VERTEX); aExp2.More(); aExp2.Next())
             {
               TopoDS_Vertex aV    = TopoDS::Vertex(aExp2.Current());
-              double        toler = BRep_Tool::Tolerance(aV);
+              double toler = BRep_Tool::Tolerance(aV);
               double        dist  = pl.Distance(BRep_Tool::Pnt(aV));
               if (dist > lmaxdist)
                 lmaxdist = dist;

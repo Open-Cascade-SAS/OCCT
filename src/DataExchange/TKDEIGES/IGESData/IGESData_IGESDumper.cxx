@@ -36,7 +36,7 @@ IGESData_IGESDumper::IGESData_IGESDumper(const occ::handle<IGESData_IGESModel>& 
 }
 
 void IGESData_IGESDumper::PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
-                                    Standard_OStream&                       S) const
+                                    Standard_OStream&                  S) const
 {
   //   Display guaranteed on 12 characters 12345/D24689
   int num = 0;
@@ -58,7 +58,7 @@ void IGESData_IGESDumper::PrintDNum(const occ::handle<IGESData_IGESEntity>& ent,
 }
 
 void IGESData_IGESDumper::PrintShort(const occ::handle<IGESData_IGESEntity>& ent,
-                                     Standard_OStream&                       S) const
+                                     Standard_OStream&                  S) const
 {
   //  PrintDNum(ent,S);
   if (!ent.IsNull())
@@ -75,9 +75,9 @@ void IGESData_IGESDumper::PrintShort(const occ::handle<IGESData_IGESEntity>& ent
 }
 
 void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
-                               Standard_OStream&                       S,
-                               const int                               own,
-                               const int                               attached) const
+                               Standard_OStream&                  S,
+                               const int             own,
+                               const int             attached) const
 {
   int att    = attached;
   int diratt = 1;
@@ -243,8 +243,8 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
   if (att < 0)
     return;
   Interface_EntityIterator iter   = ent->Properties();
-  int                      nb     = iter.NbEntities();
-  bool                     iasuit = (nb > 0);
+  int         nb     = iter.NbEntities();
+  bool         iasuit = (nb > 0);
   if (nb > 0)
   {
     S << "\n****     Properties (nb:" << nb << ")          ****\n";
@@ -276,11 +276,11 @@ void IGESData_IGESDumper::Dump(const occ::handle<IGESData_IGESEntity>& ent,
 }
 
 void IGESData_IGESDumper::OwnDump(const occ::handle<IGESData_IGESEntity>& ent,
-                                  Standard_OStream&                       S,
-                                  const int                               own) const
+                                  Standard_OStream&                  S,
+                                  const int             own) const
 {
   occ::handle<IGESData_SpecificModule> module;
-  int                                  CN;
+  int                CN;
   if (thelib.Select(ent, module, CN))
     module->OwnDump(CN, ent, *this, S, own);
   else if (themodel.IsNull())

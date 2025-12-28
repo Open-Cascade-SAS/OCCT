@@ -60,10 +60,10 @@ public:
     {
     }
 
-    PrjState(const int          theTrgIdx,
-             const BVH_PrjState thePrjState,
-             const int          theNumberOfFirstNode,
-             const int          theNumberOfLastNode)
+    PrjState(const int theTrgIdx,
+             const BVH_PrjState     thePrjState,
+             const int theNumberOfFirstNode,
+             const int theNumberOfLastNode)
         : myTrgIdx(theTrgIdx),
           myPrjState(thePrjState),
           myNumberOfFirstNode(theNumberOfFirstNode),
@@ -80,12 +80,12 @@ public:
     int GetNumberOfLastNode() const { return myNumberOfLastNode; }
 
   private:
-    int          myTrgIdx;   //!< Index of triangle on which the projection is located
-    BVH_PrjState myPrjState; //!< Position of a projection on the triangle (vertex, edge, inner)
-                             // clang-format off
+    int myTrgIdx;   //!< Index of triangle on which the projection is located
+    BVH_PrjState     myPrjState; //!< Position of a projection on the triangle (vertex, edge, inner)
+                                 // clang-format off
     int myNumberOfFirstNode; //!< The 1st vtx of the triangle edge on which the projection is located
     int myNumberOfLastNode; //!< The 2nd vtx of the triangle edge on which the projection is located
-                             // clang-format on
+                                 // clang-format on
   };
 
 public:
@@ -94,13 +94,13 @@ public:
 
   //! Creates new tool for the given element sets.
   Standard_EXPORT BRepExtrema_ProximityDistTool(
-    const occ::handle<BRepExtrema_TriangleSet>& theSet1,
-    const int                                   theNbSamples1,
-    const BVH_Array3d&                          theAddVertices1,
-    const NCollection_Vector<ProxPnt_Status>&   theAddStatus1,
-    const occ::handle<BRepExtrema_TriangleSet>& theSet2,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList1,
-    const NCollection_Vector<TopoDS_Shape>&     theShapeList2);
+    const occ::handle<BRepExtrema_TriangleSet>&    theSet1,
+    const int                    theNbSamples1,
+    const BVH_Array3d&                        theAddVertices1,
+    const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
+    const occ::handle<BRepExtrema_TriangleSet>&    theSet2,
+    const NCollection_Vector<TopoDS_Shape>&              theShapeList1,
+    const NCollection_Vector<TopoDS_Shape>&              theShapeList2);
 
 public:
   //! Loads the given element sets into the tool.
@@ -121,22 +121,25 @@ public:
 public: //! @name Reject/Accept implementations
   //! Defines the rules for node rejection by bounding box.
   Standard_EXPORT virtual bool RejectNode(const BVH_Vec3d& theCornerMin,
-                                          const BVH_Vec3d& theCornerMax,
-                                          double&          theMetric) const override;
+                                                      const BVH_Vec3d& theCornerMax,
+                                                      double&   theMetric) const
+    override;
 
   //! Defines the rules for leaf acceptance.
-  Standard_EXPORT virtual bool Accept(const int theSgmIdx, const double&) override;
+  Standard_EXPORT virtual bool Accept(const int theSgmIdx,
+                                                  const double&) override;
 
 public:
   //! Returns true if the node is on the boarder.
-  Standard_EXPORT static bool IsNodeOnBorder(const int                              theNodeIdx,
-                                             const occ::handle<Poly_Triangulation>& theTr);
+  Standard_EXPORT static bool IsNodeOnBorder(const int theNodeIdx,
+                                                         const occ::handle<Poly_Triangulation>& theTr);
 
   //! Returns true if the edge is on the boarder.
-  Standard_EXPORT static bool IsEdgeOnBorder(const int theTrgIdx,
-                                             const int theFirstEdgeNodeIdx,
-                                             const int theSecondEdgeNodeIdx,
-                                             const occ::handle<Poly_Triangulation>& theTr);
+  Standard_EXPORT static bool IsEdgeOnBorder(
+    const int            theTrgIdx,
+    const int            theFirstEdgeNodeIdx,
+    const int            theSecondEdgeNodeIdx,
+    const occ::handle<Poly_Triangulation>& theTr);
 
 public:
   //! Returns points on triangles sets, which provide the proximity distance.
@@ -203,11 +206,11 @@ private:
   int myNbSamples1; //!< Number of samples points on the first shape
 
   //! Is vertex corresponding to proximity point of 1st shape from additional set
-  int         myIsProxVtx1FromAddSet;
-  BVH_Array3d myAddVertices1; //!< Additional vertices on the 1st shape
-                              // clang-format off
+  int myIsProxVtx1FromAddSet;
+  BVH_Array3d      myAddVertices1; //!< Additional vertices on the 1st shape
+                                   // clang-format off
   NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape
-                              // clang-format on
+                                   // clang-format on
 
   //! Vertex index from 1st BVH corresponding to proximity point of 1st shape
   int myProxVtxIdx1;

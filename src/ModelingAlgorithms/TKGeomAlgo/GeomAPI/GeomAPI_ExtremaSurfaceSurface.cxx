@@ -43,14 +43,14 @@ GeomAPI_ExtremaSurfaceSurface::GeomAPI_ExtremaSurfaceSurface(const occ::handle<G
 
 GeomAPI_ExtremaSurfaceSurface::GeomAPI_ExtremaSurfaceSurface(const occ::handle<Geom_Surface>& S1,
                                                              const occ::handle<Geom_Surface>& S2,
-                                                             const double                     U1min,
-                                                             const double                     U1max,
-                                                             const double                     V1min,
-                                                             const double                     V1max,
-                                                             const double                     U2min,
-                                                             const double                     U2max,
-                                                             const double                     V2min,
-                                                             const double                     V2max)
+                                                             const double         U1min,
+                                                             const double         U1max,
+                                                             const double         V1min,
+                                                             const double         V1max,
+                                                             const double         U2min,
+                                                             const double         U2max,
+                                                             const double         V2min,
+                                                             const double         V2max)
 {
   Init(S1, S2, U1min, U1max, V1min, V1max, U2min, U2max, V2min, V2max);
 }
@@ -94,20 +94,20 @@ void GeomAPI_ExtremaSurfaceSurface::Init(const occ::handle<Geom_Surface>& S1,
 
 void GeomAPI_ExtremaSurfaceSurface::Init(const occ::handle<Geom_Surface>& S1,
                                          const occ::handle<Geom_Surface>& S2,
-                                         const double                     U1min,
-                                         const double                     U1max,
-                                         const double                     V1min,
-                                         const double                     V1max,
-                                         const double                     U2min,
-                                         const double                     U2max,
-                                         const double                     V2min,
-                                         const double                     V2max)
+                                         const double         U1min,
+                                         const double         U1max,
+                                         const double         V1min,
+                                         const double         V1max,
+                                         const double         U2min,
+                                         const double         U2max,
+                                         const double         V2min,
+                                         const double         V2max)
 {
   GeomAdaptor_Surface TheSurface1(S1, U1min, U1max, V1min, V1max);
   GeomAdaptor_Surface TheSurface2(S2, U2min, U2max, V2min, V2max);
 
   constexpr double Tol = Precision::PConfusion();
-  Extrema_ExtSS    theExtSS(TheSurface1,
+  Extrema_ExtSS           theExtSS(TheSurface1,
                          TheSurface2,
                          U1min,
                          U1max,
@@ -155,7 +155,9 @@ int GeomAPI_ExtremaSurfaceSurface::NbExtrema() const
 
 //=================================================================================================
 
-void GeomAPI_ExtremaSurfaceSurface::Points(const int Index, gp_Pnt& P1, gp_Pnt& P2) const
+void GeomAPI_ExtremaSurfaceSurface::Points(const int Index,
+                                           gp_Pnt&                P1,
+                                           gp_Pnt&                P2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Points");
@@ -170,10 +172,10 @@ void GeomAPI_ExtremaSurfaceSurface::Points(const int Index, gp_Pnt& P1, gp_Pnt& 
 //=================================================================================================
 
 void GeomAPI_ExtremaSurfaceSurface::Parameters(const int Index,
-                                               double&   U1,
-                                               double&   V1,
-                                               double&   U2,
-                                               double&   V2) const
+                                               double&         U1,
+                                               double&         V1,
+                                               double&         U2,
+                                               double&         V2) const
 {
   Standard_OutOfRange_Raise_if(Index < 1 || Index > NbExtrema(),
                                "GeomAPI_ExtremaCurveCurve::Parameters");

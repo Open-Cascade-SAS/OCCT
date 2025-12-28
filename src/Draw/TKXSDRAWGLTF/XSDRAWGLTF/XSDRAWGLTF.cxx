@@ -115,20 +115,22 @@ static bool parseCoordinateSystem(const char* theArg, RWMesh_CoordinateSystem& t
 
 //=================================================================================================
 
-static int ReadGltf(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int ReadGltf(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   TCollection_AsciiString aDestName, aFilePath;
-  bool                    toUseExistingDoc      = false;
-  bool                    toListExternalFiles   = false;
-  bool                    isParallel            = false;
-  bool                    isDoublePrec          = false;
-  bool                    toSkipLateDataLoading = false;
-  bool                    toKeepLateData        = true;
-  bool                    toPrintDebugInfo      = false;
-  bool                    toLoadAllScenes       = false;
-  bool                    toPrintAssetInfo      = false;
-  bool                    toApplyScale          = true;
-  bool                    isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
+  bool        toUseExistingDoc      = false;
+  bool        toListExternalFiles   = false;
+  bool        isParallel            = false;
+  bool        isDoublePrec          = false;
+  bool        toSkipLateDataLoading = false;
+  bool        toKeepLateData        = true;
+  bool        toPrintDebugInfo      = false;
+  bool        toLoadAllScenes       = false;
+  bool        toPrintAssetInfo      = false;
+  bool        toApplyScale          = true;
+  bool        isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
@@ -212,7 +214,7 @@ static int ReadGltf(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   if (!aDestName.IsEmpty() && !isNoDoc)
   {
     occ::handle<TDocStd_Application> anApp    = DDocStd::GetApplication();
-    const char*                      aNameVar = aDestName.ToCString();
+    const char*            aNameVar = aDestName.ToCString();
     DDocStd::GetDocument(aNameVar, aDoc, false);
     if (aDoc.IsNull())
     {
@@ -265,8 +267,7 @@ static int ReadGltf(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
   bool isFirstLine = true;
   if (toPrintAssetInfo)
   {
-    for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
-           aKeyIter(aReader.Metadata());
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aKeyIter(aReader.Metadata());
          aKeyIter.More();
          aKeyIter.Next())
     {
@@ -297,20 +298,22 @@ static int ReadGltf(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int WriteGltf(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int WriteGltf(Draw_Interpretor& theDI,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
-  TCollection_AsciiString          aGltfFilePath;
-  occ::handle<TDocStd_Document>    aDoc;
-  occ::handle<TDocStd_Application> anApp = DDocStd::GetApplication();
+  TCollection_AsciiString              aGltfFilePath;
+  occ::handle<TDocStd_Document>             aDoc;
+  occ::handle<TDocStd_Application>          anApp = DDocStd::GetApplication();
   NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aFileInfo;
-  RWGltf_WriterTrsfFormat aTrsfFormat     = RWGltf_WriterTrsfFormat_Compact;
-  RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
-  bool                    toForceUVExport = false, toEmbedTexturesInGlb = true;
-  bool                    toMergeFaces = false, toSplitIndices16 = false;
-  bool                    isParallel      = false;
-  RWMesh_NameFormat       aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
-  RWMesh_NameFormat       aMeshNameFormat = RWMesh_NameFormat_Product;
-  RWGltf_DracoParameters  aDracoParameters;
+  RWGltf_WriterTrsfFormat              aTrsfFormat     = RWGltf_WriterTrsfFormat_Compact;
+  RWMesh_CoordinateSystem              aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
+  bool                                 toForceUVExport = false, toEmbedTexturesInGlb = true;
+  bool                                 toMergeFaces = false, toSplitIndices16 = false;
+  bool                                 isParallel      = false;
+  RWMesh_NameFormat                    aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
+  RWMesh_NameFormat                    aMeshNameFormat = RWMesh_NameFormat_Product;
+  RWGltf_DracoParameters               aDracoParameters;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);

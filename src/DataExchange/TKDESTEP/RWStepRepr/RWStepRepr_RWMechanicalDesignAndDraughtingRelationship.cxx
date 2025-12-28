@@ -26,7 +26,7 @@ RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                            theData,
-  const int                                                              theNum,
+  const int                                            theNum,
   occ::handle<Interface_Check>&                                          theAch,
   const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::ReadStep(
 }
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
-  StepData_StepWriter&                                                   theSW,
+  StepData_StepWriter&                                              theSW,
   const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt) const
 {
   // Inherited field : name
@@ -75,7 +75,7 @@ void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::WriteStep(
 
 void RWStepRepr_RWMechanicalDesignAndDraughtingRelationship::Share(
   const occ::handle<StepRepr_MechanicalDesignAndDraughtingRelationship>& theEnt,
-  Interface_EntityIterator&                                              theIter) const
+  Interface_EntityIterator&                                         theIter) const
 {
   theIter.GetOneItem(theEnt->Rep1());
   theIter.GetOneItem(theEnt->Rep2());

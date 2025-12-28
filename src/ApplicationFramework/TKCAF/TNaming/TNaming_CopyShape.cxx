@@ -23,10 +23,9 @@
 // function : CopyTool
 // purpose  : Tool to copy a set of shape(s), using the aMap
 //=======================================================================
-void TNaming_CopyShape::CopyTool(const TopoDS_Shape& aShape,
-                                 NCollection_IndexedDataMap<occ::handle<Standard_Transient>,
-                                                            occ::handle<Standard_Transient>>& aMap,
-                                 TopoDS_Shape& aResult)
+void TNaming_CopyShape::CopyTool(const TopoDS_Shape&                         aShape,
+                                 NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap,
+                                 TopoDS_Shape&                               aResult)
 {
 
   occ::handle<TNaming_TranslateTool> TrTool = new TNaming_TranslateTool();
@@ -35,11 +34,10 @@ void TNaming_CopyShape::CopyTool(const TopoDS_Shape& aShape,
 
 //=================================================================================================
 
-void TNaming_CopyShape::Translate(const TopoDS_Shape& aShape,
-                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>,
-                                                             occ::handle<Standard_Transient>>& aMap,
-                                  TopoDS_Shape&                             aResult,
-                                  const occ::handle<TNaming_TranslateTool>& TrTool)
+void TNaming_CopyShape::Translate(const TopoDS_Shape&                         aShape,
+                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap,
+                                  TopoDS_Shape&                               aResult,
+                                  const occ::handle<TNaming_TranslateTool>&        TrTool)
 {
   aResult.Nullify();
 
@@ -49,8 +47,7 @@ void TNaming_CopyShape::Translate(const TopoDS_Shape& aShape,
   if (aMap.Contains(aShape.TShape()))
   {
     // get the translated TShape
-    occ::handle<TopoDS_TShape> TS =
-      *((occ::handle<TopoDS_TShape>*)&aMap.FindFromKey(aShape.TShape()));
+    occ::handle<TopoDS_TShape> TS = *((occ::handle<TopoDS_TShape>*)&aMap.FindFromKey(aShape.TShape()));
     aResult.TShape(TS);
   }
   else
@@ -111,8 +108,8 @@ void TNaming_CopyShape::Translate(const TopoDS_Shape& aShape,
     S.Orientation(TopAbs_FORWARD);
     S.Location(TopLoc_Location()); // Identity
     // copy current Shape
-    TopoDS_Iterator itr(S, false);
-    bool            wasFree = aResult.Free();
+    TopoDS_Iterator  itr(S, false);
+    bool wasFree = aResult.Free();
     aResult.Free(true);
     // translate <sub-shapes>
     for (; itr.More(); itr.Next())
@@ -146,10 +143,8 @@ void TNaming_CopyShape::Translate(const TopoDS_Shape& aShape,
 //=======================================================================
 // static TranslateDatum3D
 //=======================================================================
-static occ::handle<TopLoc_Datum3D> TranslateDatum3D(
-  const occ::handle<TopLoc_Datum3D>& D,
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
-    aMap)
+static occ::handle<TopLoc_Datum3D> TranslateDatum3D(const occ::handle<TopLoc_Datum3D>&               D,
+                                               NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap)
 {
   occ::handle<TopLoc_Datum3D> TD;
   if (aMap.Contains(D))
@@ -164,10 +159,8 @@ static occ::handle<TopLoc_Datum3D> TranslateDatum3D(
 
 //=================================================================================================
 
-TopLoc_Location TNaming_CopyShape::Translate(
-  const TopLoc_Location& L,
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>&
-    aMap)
+TopLoc_Location TNaming_CopyShape::Translate(const TopLoc_Location&                      L,
+                                             NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>& aMap)
 {
   TopLoc_Location result;
 

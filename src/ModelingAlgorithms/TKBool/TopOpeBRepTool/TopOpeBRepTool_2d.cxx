@@ -28,6 +28,9 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopOpeBRepTool_C2DF.hxx>
+#include <TopOpeBRepTool_C2DF.hxx>
+#include <NCollection_List.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
@@ -46,18 +49,14 @@ Standard_EXPORT bool TopOpeBRepTool_GettraceC2D();
 #endif
 
 // structure e -> C2D/F
-static NCollection_DataMap<TopoDS_Shape,
-                           NCollection_List<TopOpeBRepTool_C2DF>,
-                           TopTools_ShapeMapHasher>* GLOBAL_pmosloc2df = NULL;
-static int                                           GLOBAL_C2D_i      = 0; // DEB
+static NCollection_DataMap<TopoDS_Shape, NCollection_List<TopOpeBRepTool_C2DF>, TopTools_ShapeMapHasher>* GLOBAL_pmosloc2df = NULL;
+static int                         GLOBAL_C2D_i      = 0; // DEB
 
 // structure ancetre
-static NCollection_IndexedDataMap<TopoDS_Shape,
-                                  NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>* GLOBAL_pidmoslosc2df = NULL;
-static TopoDS_Face*                                         GLOBAL_pFc2df        = NULL;
-static TopoDS_Shape*                                        GLOBAL_pS1c2df       = NULL;
-static TopoDS_Shape*                                        GLOBAL_pS2c2df       = NULL;
+static NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>* GLOBAL_pidmoslosc2df = NULL;
+static TopoDS_Face*                               GLOBAL_pFc2df        = NULL;
+static TopoDS_Shape*                              GLOBAL_pS1c2df       = NULL;
+static TopoDS_Shape*                              GLOBAL_pS2c2df       = NULL;
 
 Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurve& PC);
 
@@ -65,9 +64,7 @@ Standard_EXPORT occ::handle<Geom2d_Curve> MakePCurve(const ProjLib_ProjectedCurv
 static const TopoDS_Face& FC2D_FancestorE(const TopoDS_Edge& E)
 {
   if (GLOBAL_pmosloc2df == NULL)
-    GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape,
-                                                NCollection_List<TopOpeBRepTool_C2DF>,
-                                                TopTools_ShapeMapHasher>();
+    GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape, NCollection_List<TopOpeBRepTool_C2DF>, TopTools_ShapeMapHasher>();
   int ancemp = (*GLOBAL_pidmoslosc2df).Extent();
   if (ancemp == 0)
   {
@@ -94,16 +91,12 @@ static const TopoDS_Face& FC2D_FancestorE(const TopoDS_Edge& E)
 Standard_EXPORT int FC2D_Prepare(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 {
   if (GLOBAL_pmosloc2df == NULL)
-    GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape,
-                                                NCollection_List<TopOpeBRepTool_C2DF>,
-                                                TopTools_ShapeMapHasher>();
+    GLOBAL_pmosloc2df = new NCollection_DataMap<TopoDS_Shape, NCollection_List<TopOpeBRepTool_C2DF>, TopTools_ShapeMapHasher>();
   GLOBAL_pmosloc2df->Clear();
   GLOBAL_C2D_i = 0;
 
   if (GLOBAL_pidmoslosc2df == NULL)
-    GLOBAL_pidmoslosc2df = new NCollection_IndexedDataMap<TopoDS_Shape,
-                                                          NCollection_List<TopoDS_Shape>,
-                                                          TopTools_ShapeMapHasher>();
+    GLOBAL_pidmoslosc2df = new NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>();
   GLOBAL_pidmoslosc2df->Clear();
 
   if (GLOBAL_pFc2df == NULL)
@@ -124,10 +117,10 @@ Standard_EXPORT int FC2D_Prepare(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 // ------------------------------------------------------------------------------------
 Standard_EXPORT bool FC2D_HasC3D(const TopoDS_Edge& E)
 {
-  TopLoc_Location         loc;
-  double                  f3d, l3d;
+  TopLoc_Location    loc;
+  double      f3d, l3d;
   occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(E, loc, f3d, l3d);
-  bool                    b   = (!C3D.IsNull());
+  bool   b   = (!C3D.IsNull());
   return b;
 }
 
@@ -135,33 +128,33 @@ Standard_EXPORT bool FC2D_HasC3D(const TopoDS_Edge& E)
 Standard_EXPORT bool FC2D_HasCurveOnSurface(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   occ::handle<Geom2d_Curve> C2D;
-  bool                      hasold = FC2D_HasOldCurveOnSurface(E, F, C2D);
-  bool                      hasnew = FC2D_HasNewCurveOnSurface(E, F, C2D);
-  bool                      b      = hasold || hasnew;
+  bool     hasold = FC2D_HasOldCurveOnSurface(E, F, C2D);
+  bool     hasnew = FC2D_HasNewCurveOnSurface(E, F, C2D);
+  bool     b      = hasold || hasnew;
   return b;
 }
 
 // ------------------------------------------------------------------------------------
-Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D,
-                                               double&                    f2d,
-                                               double&                    l2d,
-                                               double&                    tol)
+Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&    E,
+                                                           const TopoDS_Face&    F,
+                                                           occ::handle<Geom2d_Curve>& C2D,
+                                                           double&        f2d,
+                                                           double&        l2d,
+                                                           double&        tol)
 {
   bool hasold = false;
-  tol         = BRep_Tool::Tolerance(E);
-  C2D         = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
-  hasold      = (!C2D.IsNull());
+  tol                     = BRep_Tool::Tolerance(E);
+  C2D                     = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
+  hasold                  = (!C2D.IsNull());
   return hasold;
 }
 
-Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D)
+Standard_EXPORT bool FC2D_HasOldCurveOnSurface(const TopoDS_Edge&    E,
+                                                           const TopoDS_Face&    F,
+                                                           occ::handle<Geom2d_Curve>& C2D)
 {
-  double f2d, l2d, tol;
-  bool   hasold = FC2D_HasOldCurveOnSurface(E, F, C2D, f2d, l2d, tol);
+  double    f2d, l2d, tol;
+  bool hasold = FC2D_HasOldCurveOnSurface(E, F, C2D, f2d, l2d, tol);
   return hasold;
 }
 
@@ -178,7 +171,7 @@ static TopOpeBRepTool_C2DF* FC2D_PNewCurveOnSurface(const TopoDS_Edge& E, const 
   for (; it.More(); it.Next())
   {
     const TopOpeBRepTool_C2DF& c2df = it.Value();
-    bool                       isf  = c2df.IsFace(F);
+    bool           isf  = c2df.IsFace(F);
     if (isf)
     {
       pc2df = (TopOpeBRepTool_C2DF*)&c2df;
@@ -188,36 +181,36 @@ static TopOpeBRepTool_C2DF* FC2D_PNewCurveOnSurface(const TopoDS_Edge& E, const 
   return pc2df;
 }
 
-Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D,
-                                               double&                    f2d,
-                                               double&                    l2d,
-                                               double&                    tol)
+Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&    E,
+                                                           const TopoDS_Face&    F,
+                                                           occ::handle<Geom2d_Curve>& C2D,
+                                                           double&        f2d,
+                                                           double&        l2d,
+                                                           double&        tol)
 {
   const TopOpeBRepTool_C2DF* pc2df  = FC2D_PNewCurveOnSurface(E, F);
-  bool                       hasnew = (pc2df != NULL);
+  bool           hasnew = (pc2df != NULL);
   if (hasnew)
     C2D = pc2df->PC(f2d, l2d, tol);
   return hasnew;
 }
 
-Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&         E,
-                                               const TopoDS_Face&         F,
-                                               occ::handle<Geom2d_Curve>& C2D)
+Standard_EXPORT bool FC2D_HasNewCurveOnSurface(const TopoDS_Edge&    E,
+                                                           const TopoDS_Face&    F,
+                                                           occ::handle<Geom2d_Curve>& C2D)
 {
-  double f2d, l2d, tol;
-  bool   b = FC2D_HasNewCurveOnSurface(E, F, C2D, f2d, l2d, tol);
+  double    f2d, l2d, tol;
+  bool b = FC2D_HasNewCurveOnSurface(E, F, C2D, f2d, l2d, tol);
   return b;
 }
 
 // ------------------------------------------------------------------------------------
 int FC2D_AddNewCurveOnSurface(occ::handle<Geom2d_Curve> C2D,
-                              const TopoDS_Edge&        E,
-                              const TopoDS_Face&        F,
-                              const double&             f2d,
-                              const double&             l2d,
-                              const double&             tol)
+                                           const TopoDS_Edge&   E,
+                                           const TopoDS_Face&   F,
+                                           const double& f2d,
+                                           const double& l2d,
+                                           const double& tol)
 {
   if (C2D.IsNull())
     return 1;
@@ -232,33 +225,33 @@ int FC2D_AddNewCurveOnSurface(occ::handle<Geom2d_Curve> C2D,
 }
 
 // ------------------------------------------------------------------------------------
-static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
-                                             const TopoDS_Face& F,
-                                             double&            f2d,
-                                             double&            l2d,
-                                             double&            tol,
-                                             const bool         trim3d = false);
+static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge&     E,
+                                        const TopoDS_Face&     F,
+                                        double&         f2d,
+                                        double&         l2d,
+                                        double&         tol,
+                                        const bool trim3d = false);
 
-static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
-                                             const TopoDS_Face& F,
-                                             double&            f2d,
-                                             double&            l2d,
-                                             double&            tol,
-                                             const bool         trim3d)
+static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge&     E,
+                                        const TopoDS_Face&     F,
+                                        double&         f2d,
+                                        double&         l2d,
+                                        double&         tol,
+                                        const bool trim3d)
 {
   occ::handle<Geom2d_Curve> C2D = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
   if (!C2D.IsNull())
     return C2D;
 
   // pas de 2D
-  double                  f3d, l3d;
-  TopLoc_Location         eloc;
+  double      f3d, l3d;
+  TopLoc_Location    eloc;
   occ::handle<Geom_Curve> C1     = BRep_Tool::Curve(E, eloc, f3d, l3d);
-  bool                    hasC3D = (!C1.IsNull());
+  bool   hasC3D = (!C1.IsNull());
 
   if (hasC3D)
   {
-    bool                    elocid = eloc.IsIdentity();
+    bool   elocid = eloc.IsIdentity();
     occ::handle<Geom_Curve> C2;
     if (elocid)
       C2 = C1;
@@ -282,12 +275,12 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     const TopoDS_Face& FE = FC2D_FancestorE(E);
     if (FE.IsNull())
       return C2D;
-    bool                             compminmaxUV = false;
-    BRepAdaptor_Surface              BAS(F, compminmaxUV);
+    bool            compminmaxUV = false;
+    BRepAdaptor_Surface         BAS(F, compminmaxUV);
     occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
-    BRepAdaptor_Curve                AC(E, FE);
+    BRepAdaptor_Curve           AC(E, FE);
     occ::handle<BRepAdaptor_Curve>   AHC = new BRepAdaptor_Curve(AC);
-    double                           tolin;
+    double               tolin;
     FTOL_FaceTolerances3d(F, FE, tolin);
     ProjLib_ProjectedCurve projcurv(BAHS, AHC, tolin);
     C2D = MakePCurve(projcurv);
@@ -309,12 +302,12 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
 
 // ------------------------------------------------------------------------------------
 // modified by NIZHNY-MZV  Mon Oct  4 10:37:36 1999
-Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_MakeCurveOnSurface(const TopoDS_Edge& E,
-                                                                  const TopoDS_Face& F,
-                                                                  double&            f,
-                                                                  double&            l,
-                                                                  double&            tol,
-                                                                  const bool         trim3d)
+Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_MakeCurveOnSurface(const TopoDS_Edge&     E,
+                                                             const TopoDS_Face&     F,
+                                                             double&         f,
+                                                             double&         l,
+                                                             double&         tol,
+                                                             const bool trim3d)
 {
 #ifdef DRAW
   if (TopOpeBRepTool_GettraceC2D())
@@ -339,15 +332,15 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_MakeCurveOnSurface(const TopoDS_E
 }
 
 // ------------------------------------------------------------------------------------
-Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge& E,
-                                                              const TopoDS_Face& F,
-                                                              double&            f,
-                                                              double&            l,
-                                                              double&            tol,
-                                                              const bool         trim3d)
+Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&     E,
+                                                         const TopoDS_Face&     F,
+                                                         double&         f,
+                                                         double&         l,
+                                                         double&         tol,
+                                                         const bool trim3d)
 {
   occ::handle<Geom2d_Curve> C2D;
-  bool                      hasold = FC2D_HasOldCurveOnSurface(E, F, C2D, f, l, tol);
+  bool     hasold = FC2D_HasOldCurveOnSurface(E, F, C2D, f, l, tol);
   if (hasold)
   {
     return C2D;
@@ -362,12 +355,12 @@ Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&
 }
 
 // ------------------------------------------------------------------------------------
-Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_EditableCurveOnSurface(const TopoDS_Edge& E,
-                                                                      const TopoDS_Face& F,
-                                                                      double&            f,
-                                                                      double&            l,
-                                                                      double&            tol,
-                                                                      const bool         trim3d)
+Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_EditableCurveOnSurface(const TopoDS_Edge&     E,
+                                                                 const TopoDS_Face&     F,
+                                                                 double&         f,
+                                                                 double&         l,
+                                                                 double&         tol,
+                                                                 const bool trim3d)
 {
   bool hasold = false;
   {
@@ -399,14 +392,14 @@ static void FC2D_translate(occ::handle<Geom2d_Curve> C2D,
                            const TopoDS_Face& F,
                            const TopoDS_Edge& EF)
 {
-  TopLoc_Location                  sloc;
+  TopLoc_Location             sloc;
   const occ::handle<Geom_Surface>& S1      = BRep_Tool::Surface(F, sloc);
-  bool                             isperio = S1->IsUPeriodic() || S1->IsVPeriodic();
-  gp_Dir2d                         d2d;
-  gp_Pnt2d                         O2d;
-  bool                             isuiso, isviso;
-  bool uviso  = TopOpeBRepTool_TOOL::UVISO(C2D, isuiso, isviso, d2d, O2d);
-  bool EFnull = EF.IsNull();
+  bool            isperio = S1->IsUPeriodic() || S1->IsVPeriodic();
+  gp_Dir2d                    d2d;
+  gp_Pnt2d                    O2d;
+  bool            isuiso, isviso;
+  bool            uviso  = TopOpeBRepTool_TOOL::UVISO(C2D, isuiso, isviso, d2d, O2d);
+  bool            EFnull = EF.IsNull();
 
   if (isperio && uviso && !EFnull)
   {
@@ -415,10 +408,10 @@ static void FC2D_translate(occ::handle<Geom2d_Curve> C2D,
     FFOR.Orientation(TopAbs_FORWARD);
     gp_Pnt2d p1, p2;
     BRep_Tool::UVPoints(EF, FFOR, p1, p2);
-    double pEF    = isuiso ? p1.X() : p1.Y();
-    double pC2D   = isuiso ? O2d.X() : O2d.Y();
-    double factor = pEF - pC2D;
-    bool   b      = (std::abs(factor) > 1.e-6);
+    double    pEF    = isuiso ? p1.X() : p1.Y();
+    double    pC2D   = isuiso ? O2d.X() : O2d.Y();
+    double    factor = pEF - pC2D;
+    bool b      = (std::abs(factor) > 1.e-6);
     if (b)
     {
       gp_Vec2d transl(1., 0.);
@@ -431,35 +424,35 @@ static void FC2D_translate(occ::handle<Geom2d_Curve> C2D,
 }
 
 // ------------------------------------------------------------------------------------
-static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
-                                             const TopoDS_Face& F,
-                                             const TopoDS_Edge& EF,
-                                             double&            f2d,
-                                             double&            l2d,
-                                             double&            tol,
-                                             const bool         trim3d = false);
+static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge&     E,
+                                        const TopoDS_Face&     F,
+                                        const TopoDS_Edge&     EF,
+                                        double&         f2d,
+                                        double&         l2d,
+                                        double&         tol,
+                                        const bool trim3d = false);
 
-static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
-                                             const TopoDS_Face& F,
-                                             const TopoDS_Edge& EF,
-                                             double&            f2d,
-                                             double&            l2d,
-                                             double&            tol,
-                                             const bool         trim3d)
+static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge&     E,
+                                        const TopoDS_Face&     F,
+                                        const TopoDS_Edge&     EF,
+                                        double&         f2d,
+                                        double&         l2d,
+                                        double&         tol,
+                                        const bool trim3d)
 {
   occ::handle<Geom2d_Curve> C2D = BRep_Tool::CurveOnSurface(E, F, f2d, l2d);
   if (!C2D.IsNull())
     return C2D;
 
   // pas de 2D
-  double                  f3d, l3d;
-  TopLoc_Location         eloc;
+  double      f3d, l3d;
+  TopLoc_Location    eloc;
   occ::handle<Geom_Curve> C1     = BRep_Tool::Curve(E, eloc, f3d, l3d);
-  bool                    hasC3D = (!C1.IsNull());
+  bool   hasC3D = (!C1.IsNull());
 
   if (hasC3D)
   {
-    bool                    elocid = eloc.IsIdentity();
+    bool   elocid = eloc.IsIdentity();
     occ::handle<Geom_Curve> C2;
     if (elocid)
       C2 = C1;
@@ -484,12 +477,12 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
     const TopoDS_Face& FE = FC2D_FancestorE(E);
     if (FE.IsNull())
       return C2D;
-    bool                             compminmaxUV = false;
-    BRepAdaptor_Surface              BAS(F, compminmaxUV);
+    bool            compminmaxUV = false;
+    BRepAdaptor_Surface         BAS(F, compminmaxUV);
     occ::handle<BRepAdaptor_Surface> BAHS = new BRepAdaptor_Surface(BAS);
-    BRepAdaptor_Curve                AC(E, FE);
+    BRepAdaptor_Curve           AC(E, FE);
     occ::handle<BRepAdaptor_Curve>   AHC = new BRepAdaptor_Curve(AC);
-    double                           tolin;
+    double               tolin;
     FTOL_FaceTolerances3d(F, FE, tolin);
     ProjLib_ProjectedCurve projcurv(BAHS, AHC, tolin);
     C2D = MakePCurve(projcurv);
@@ -511,13 +504,13 @@ static occ::handle<Geom2d_Curve> FC2D_make2d(const TopoDS_Edge& E,
 } // make2d2
 
 // ------------------------------------------------------------------------------------
-Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge& E,
-                                                              const TopoDS_Face& F,
-                                                              const TopoDS_Edge& EF,
-                                                              double&            f2d,
-                                                              double&            l2d,
-                                                              double&            tol,
-                                                              const bool         trim3d)
+Standard_EXPORT occ::handle<Geom2d_Curve> FC2D_CurveOnSurface(const TopoDS_Edge&     E,
+                                                         const TopoDS_Face&     F,
+                                                         const TopoDS_Edge&     EF,
+                                                         double&         f2d,
+                                                         double&         l2d,
+                                                         double&         tol,
+                                                         const bool trim3d)
 {
   occ::handle<Geom2d_Curve> C2D;
 

@@ -17,6 +17,7 @@
 #include <AppDef_MultiPointConstraint.hxx>
 #include <NCollection_Array1.hxx>
 #include <AppDef_MultiLine.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
 
@@ -74,7 +75,8 @@ int AppDef_MultiLine::NbPoints() const
   return tabMult->Value(1).NbPoints() + tabMult->Value(1).NbPoints2d();
 }
 
-void AppDef_MultiLine::SetValue(const int Index, const AppDef_MultiPointConstraint& MPoint)
+void AppDef_MultiLine::SetValue(const int             Index,
+                                const AppDef_MultiPointConstraint& MPoint)
 {
   if ((Index <= 0) || (Index > tabMult->Length()))
   {

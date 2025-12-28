@@ -44,13 +44,13 @@ occ::handle<TDF_Attribute> BinMDataXtd_PositionDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       BinObjMgt_RRelocationTable&) const
+bool BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataXtd_Position> anAtt = occ::down_cast<TDataXtd_Position>(theTarget);
-  double                         aValue;
-  bool                           ok = theSource >> aValue;
+  double             aValue;
+  bool          ok = theSource >> aValue;
   if (!ok)
     return ok;
   gp_Pnt aPosition(0., 0., 0.);
@@ -76,10 +76,9 @@ bool BinMDataXtd_PositionDriver::Paste(const BinObjMgt_Persistent&       theSour
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataXtd_PositionDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataXtd_PositionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataXtd_Position> anAtt = occ::down_cast<TDataXtd_Position>(theSource);
 

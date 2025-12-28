@@ -68,8 +68,7 @@ bool Expr_Absolute::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Absolute::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Absolute::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   occ::handle<Expr_GeneralExpression> op    = Operand();
   occ::handle<Expr_GeneralExpression> derop = op->Derivative(X);
@@ -79,7 +78,7 @@ occ::handle<Expr_GeneralExpression> Expr_Absolute::Derivative(
 }
 
 double Expr_Absolute::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                               const NCollection_Array1<double>&                         vals) const
+                                      const NCollection_Array1<double>&      vals) const
 {
   return std::abs(Operand()->Evaluate(vars, vals));
 }

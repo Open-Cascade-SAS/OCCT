@@ -91,10 +91,10 @@ int ChFi2d_FilletAPI::NbResults(const gp_Pnt& thePoint)
 
 // Returns result (fillet edge, modified edge1, modified edge2),
 // nearest to the given point <thePoint> if iSolution == -1
-TopoDS_Edge ChFi2d_FilletAPI::Result(const gp_Pnt& thePoint,
-                                     TopoDS_Edge&  theEdge1,
-                                     TopoDS_Edge&  theEdge2,
-                                     const int     iSolution)
+TopoDS_Edge ChFi2d_FilletAPI::Result(const gp_Pnt&          thePoint,
+                                     TopoDS_Edge&           theEdge1,
+                                     TopoDS_Edge&           theEdge2,
+                                     const int iSolution)
 {
   return myIsAnalytical ? myAnaFilletAlgo.Result(theEdge1, theEdge2)
                         : myFilletAlgo.Result(thePoint, theEdge1, theEdge2, iSolution);
@@ -103,9 +103,10 @@ TopoDS_Edge ChFi2d_FilletAPI::Result(const gp_Pnt& thePoint,
 // Decides whether the input parameters may use an analytical algorithm
 // for calculation of the fillets, or an iteration-recursive method is needed.
 // The analytical solution is applicable for linear and circular edges having a common point.
-bool ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1, const TopoDS_Edge& theEdge2)
+bool ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1,
+                                                const TopoDS_Edge& theEdge2)
 {
-  bool              ret(false);
+  bool  ret(false);
   BRepAdaptor_Curve AC1(theEdge1), AC2(theEdge2);
   if ((AC1.GetType() == GeomAbs_Line || AC1.GetType() == GeomAbs_Circle)
       && (AC2.GetType() == GeomAbs_Line || AC2.GetType() == GeomAbs_Circle))

@@ -16,7 +16,9 @@
 #include <math_GaussSingleIntegration.hxx>
 #include <Standard_DomainError.hxx>
 
-void CPnts_MyRootFunction::Init(const CPnts_RealFunction& F, void* const D, const int Order)
+void CPnts_MyRootFunction::Init(const CPnts_RealFunction& F,
+                                void* const    D,
+                                const int    Order)
 {
   myFunction.Init(F, D);
   myOrder = Order;
@@ -29,7 +31,9 @@ void CPnts_MyRootFunction::Init(const double X0, const double L)
   myTol = -1; // to suppress the tolerance
 }
 
-void CPnts_MyRootFunction::Init(const double X0, const double L, const double Tol)
+void CPnts_MyRootFunction::Init(const double X0,
+                                const double L,
+                                const double Tol)
 {
   myX0  = X0;
   myL   = L;
@@ -61,7 +65,9 @@ bool CPnts_MyRootFunction::Derivative(const double X, double& Df)
   return myFunction.Value(X, Df);
 }
 
-bool CPnts_MyRootFunction::Values(const double X, double& F, double& Df)
+bool CPnts_MyRootFunction::Values(const double X,
+                                              double&      F,
+                                              double&      Df)
 {
   math_GaussSingleIntegration Length;
 

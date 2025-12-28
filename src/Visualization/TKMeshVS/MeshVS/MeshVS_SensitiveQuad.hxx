@@ -28,14 +28,14 @@ class MeshVS_SensitiveQuad : public Select3D_SensitiveEntity
 public:
   //! Creates a new instance and initializes quadrangle vertices with the given points
   Standard_EXPORT MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                       const NCollection_Array1<gp_Pnt>&         theQuadVerts);
+                                       const NCollection_Array1<gp_Pnt>&            theQuadVerts);
 
   //! Creates a new instance and initializes quadrangle vertices with the given points
   Standard_EXPORT MeshVS_SensitiveQuad(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                       const gp_Pnt&                             thePnt1,
-                                       const gp_Pnt&                             thePnt2,
-                                       const gp_Pnt&                             thePnt3,
-                                       const gp_Pnt&                             thePnt4);
+                                       const gp_Pnt&                        thePnt1,
+                                       const gp_Pnt&                        thePnt2,
+                                       const gp_Pnt&                        thePnt3,
+                                       const gp_Pnt&                        thePnt4);
 
   //! Returns the amount of sub-entities in sensitive
   virtual int NbSubElements() const override { return 1; };
@@ -45,7 +45,8 @@ public:
 
   //! Checks whether the box overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns center of the box
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const override;

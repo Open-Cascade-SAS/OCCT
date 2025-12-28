@@ -19,6 +19,9 @@
 #include <StepGeom_BezierCurveAndRationalBSplineCurve.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -30,7 +33,7 @@ RWStepGeom_RWBezierCurveAndRationalBSplineCurve::RWStepGeom_RWBezierCurveAndRati
 
 void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,
-  const int                                                       num0,
+  const int                                     num0,
   occ::handle<Interface_Check>&                                   ach,
   const occ::handle<StepGeom_BezierCurveAndRationalBSplineCurve>& ent) const
 {
@@ -63,12 +66,12 @@ void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep(
   // --- field : controlPointsList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent2;
-  int                                                                    nsub2;
+  occ::handle<StepGeom_CartesianPoint>          anent2;
+  int                         nsub2;
   if (data->ReadSubList(num, 2, "control_points_list", ach, nsub2))
   {
-    int nb2            = data->NbParams(nsub2);
-    aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aControlPointsList   = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -130,12 +133,12 @@ void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep(
   // --- field : weightsData ---
 
   occ::handle<NCollection_HArray1<double>> aWeightsData;
-  double                                   aWeightsDataItem;
-  int                                      nsub6;
+  double                 aWeightsDataItem;
+  int              nsub6;
   if (data->ReadSubList(num, 1, "weights_data", ach, nsub6))
   {
-    int nb6      = data->NbParams(nsub6);
-    aWeightsData = new NCollection_HArray1<double>(1, nb6);
+    int nb6 = data->NbParams(nsub6);
+    aWeightsData         = new NCollection_HArray1<double>(1, nb6);
     for (int i6 = 1; i6 <= nb6; i6++)
     {
       // szv#4:S4163:12Mar99 `bool stat6 =` not needed
@@ -169,7 +172,7 @@ void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::ReadStep(
 }
 
 void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::WriteStep(
-  StepData_StepWriter&                                            SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepGeom_BezierCurveAndRationalBSplineCurve>& ent) const
 {
 
@@ -234,7 +237,7 @@ void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::WriteStep(
 
 void RWStepGeom_RWBezierCurveAndRationalBSplineCurve::Share(
   const occ::handle<StepGeom_BezierCurveAndRationalBSplineCurve>& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                  iter) const
 {
 
   int nbElem1 = ent->NbControlPointsList();

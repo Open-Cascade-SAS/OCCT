@@ -33,7 +33,9 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_PointData(const TopOpeBRepDS_Point& P);
 
-  Standard_EXPORT TopOpeBRepDS_PointData(const TopOpeBRepDS_Point& P, const int I1, const int I2);
+  Standard_EXPORT TopOpeBRepDS_PointData(const TopOpeBRepDS_Point& P,
+                                         const int    I1,
+                                         const int    I2);
 
   Standard_EXPORT void SetShapes(const int I1, const int I2);
 
@@ -43,8 +45,8 @@ public:
 
 private:
   TopOpeBRepDS_Point myPoint;
-  int                myS1;
-  int                myS2;
+  int   myS1;
+  int   myS2;
 };
 
 #endif // _TopOpeBRepDS_PointData_HeaderFile

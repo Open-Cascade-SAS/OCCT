@@ -29,9 +29,9 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Elips2d& E)
   TheEllipse = new Geom2d_Ellipse(E);
 }
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
-                                     const double    MajorRadius,
-                                     const double    MinorRadius)
+GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d&     Axis,
+                                     const double MajorRadius,
+                                     const double MinorRadius)
 {
   gce_MakeElips2d E = gce_MakeElips2d(Axis, MajorRadius, MinorRadius);
   TheError          = E.Status();
@@ -41,10 +41,10 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
   }
 }
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
-                                     const double   MajorRadius,
-                                     const double   MinorRadius,
-                                     const bool     Sense)
+GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d&         MajorAxis,
+                                     const double    MajorRadius,
+                                     const double    MinorRadius,
+                                     const bool Sense)
 {
   gce_MakeElips2d E = gce_MakeElips2d(MajorAxis, MajorRadius, MinorRadius, Sense);
   TheError          = E.Status();

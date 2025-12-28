@@ -39,16 +39,16 @@ IMPLEMENT_STANDARD_RTTIEXT(BOPTest_DrawableShape, DBRep_DrawableShape)
 
 //=================================================================================================
 
-BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
-                                             const Draw_Color&   FreeCol,
-                                             const Draw_Color&   ConnCol,
-                                             const Draw_Color&   EdgeCol,
-                                             const Draw_Color&   IsosCol,
-                                             const double        size,
-                                             const int           nbisos,
-                                             const int           discret,
-                                             const char*         Text,
-                                             const Draw_Color&   TextColor)
+BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
+                                             const Draw_Color&      FreeCol,
+                                             const Draw_Color&      ConnCol,
+                                             const Draw_Color&      EdgeCol,
+                                             const Draw_Color&      IsosCol,
+                                             const double    size,
+                                             const int nbisos,
+                                             const int discret,
+                                             const char* Text,
+                                             const Draw_Color&      TextColor)
     : DBRep_DrawableShape(aShape, FreeCol, ConnCol, EdgeCol, IsosCol, size, nbisos, discret)
 {
   myText      = new Draw_Text3D(Pnt(), Text, TextColor);
@@ -57,9 +57,9 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
 
 //=================================================================================================
 
-BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
-                                             const char*         Text,
-                                             const Draw_Color&   TextColor)
+BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape&    aShape,
+                                             const char* Text,
+                                             const Draw_Color&      TextColor)
     : DBRep_DrawableShape(aShape,
                           Draw_vert,
                           Draw_jaune,
@@ -78,12 +78,12 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
 gp_Pnt BOPTest_DrawableShape::Pnt() const
 {
   gp_Pnt          P(0, 0, 0);
-  double          u, v, u1, u2, v1, v2, p;
+  double   u, v, u1, u2, v1, v2, p;
   TopExp_Explorer ex;
 
   TopoDS_Shape     S      = Shape();
   TopAbs_ShapeEnum T      = S.ShapeType();
-  double           facpar = 0.;
+  double    facpar = 0.;
 
   while (T == TopAbs_COMPOUND)
   {

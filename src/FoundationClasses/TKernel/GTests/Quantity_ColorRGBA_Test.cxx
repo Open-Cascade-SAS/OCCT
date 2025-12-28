@@ -26,7 +26,9 @@ protected:
   void TearDown() override {}
 
   // Helper to compare floating point values
-  bool IsNear(double theValue1, double theValue2, double theTolerance = 0.001) const
+  bool IsNear(double theValue1,
+              double theValue2,
+              double theTolerance = 0.001) const
   {
     return std::abs(theValue1 - theValue2) < theTolerance;
   }

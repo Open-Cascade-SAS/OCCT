@@ -20,8 +20,8 @@ Vrml_Material::Vrml_Material(const occ::handle<NCollection_HArray1<Quantity_Colo
                              const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor,
                              const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor,
                              const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor,
-                             const occ::handle<NCollection_HArray1<double>>&         aShininess,
-                             const occ::handle<NCollection_HArray1<double>>&         aTransparency)
+                             const occ::handle<NCollection_HArray1<double>>&   aShininess,
+                             const occ::handle<NCollection_HArray1<double>>&   aTransparency)
 {
   myAmbientColor  = aAmbientColor;
   myDiffuseColor  = aDiffuseColor;
@@ -61,8 +61,7 @@ Vrml_Material::Vrml_Material()
   myTransparency = new NCollection_HArray1<double>(1, 1, 0);
 }
 
-void Vrml_Material::SetAmbientColor(
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor)
+void Vrml_Material::SetAmbientColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aAmbientColor)
 {
   myAmbientColor = aAmbientColor;
 }
@@ -72,8 +71,7 @@ occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::AmbientColor() c
   return myAmbientColor;
 }
 
-void Vrml_Material::SetDiffuseColor(
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor)
+void Vrml_Material::SetDiffuseColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aDiffuseColor)
 {
   myDiffuseColor = aDiffuseColor;
 }
@@ -83,8 +81,7 @@ occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::DiffuseColor() c
   return myDiffuseColor;
 }
 
-void Vrml_Material::SetSpecularColor(
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor)
+void Vrml_Material::SetSpecularColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aSpecularColor)
 {
   mySpecularColor = aSpecularColor;
 }
@@ -94,8 +91,7 @@ occ::handle<NCollection_HArray1<Quantity_Color>> Vrml_Material::SpecularColor() 
   return mySpecularColor;
 }
 
-void Vrml_Material::SetEmissiveColor(
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor)
+void Vrml_Material::SetEmissiveColor(const occ::handle<NCollection_HArray1<Quantity_Color>>& aEmissiveColor)
 {
   myEmissiveColor = aEmissiveColor;
 }
@@ -144,7 +140,7 @@ occ::handle<NCollection_HArray1<double>> Vrml_Material::Transparency() const
 Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
 {
   NCollection_Vec3<double> aColor_sRGB;
-  int                      i;
+  int                i;
   anOStream << "Material {\n";
 
   if (myAmbientColor->Length() != 1

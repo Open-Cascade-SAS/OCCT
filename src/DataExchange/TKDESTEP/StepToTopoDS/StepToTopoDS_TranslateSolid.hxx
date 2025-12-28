@@ -38,10 +38,10 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
                             const occ::handle<Transfer_TransientProcess>&   theTP,
-                            StepToTopoDS_Tool&                              theTool,
-                            StepToTopoDS_NMTool&                            theNMTool,
-                            const bool                   theReadTessellatedWhenNoBRepOnly,
-                            bool&                        theHasGeom,
+                            StepToTopoDS_Tool&                         theTool,
+                            StepToTopoDS_NMTool&                       theNMTool,
+                            const bool       theReadTessellatedWhenNoBRepOnly,
+                            bool&            theHasGeom,
                             const StepData_Factors&      theLocalFactors = StepData_Factors(),
                             const Message_ProgressRange& theProgress     = Message_ProgressRange());
 

@@ -65,19 +65,13 @@ public:
   const occ::handle<Prs3d_PointAspect>& PointAspect() const { return myPointAspect; }
 
   //! Returns the point aspect of origin wireframe presentation
-  void SetPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect)
-  {
-    myPointAspect = theAspect;
-  }
+  void SetPointAspect(const occ::handle<Prs3d_PointAspect>& theAspect) { myPointAspect = theAspect; }
 
   //! Returns the arrow aspect of presentation.
   const occ::handle<Prs3d_ArrowAspect>& ArrowAspect() const { return myArrowAspect; }
 
   //! Sets the arrow aspect of presentation
-  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect)
-  {
-    myArrowAspect = theAspect;
-  }
+  void SetArrowAspect(const occ::handle<Prs3d_ArrowAspect>& theAspect) { myArrowAspect = theAspect; }
 
   //! Returns true if the given part is used in axes of aspect
   Standard_EXPORT bool DrawDatumPart(Prs3d_DatumParts thePart) const;
@@ -127,7 +121,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 public:
   //! Returns type of arrow for a type of axis
@@ -148,10 +142,10 @@ protected:
   occ::handle<Prs3d_TextAspect>    myTextAspects[Prs3d_DatumParts_NB];
   occ::handle<Prs3d_PointAspect>   myPointAspect;
   occ::handle<Prs3d_ArrowAspect>   myArrowAspect;
-  double                           myAttributes[Prs3d_DatumAttribute_NB];
-  Prs3d_DatumAxes                  myAxes;
-  bool                             myToDrawLabels;
-  bool                             myToDrawArrows;
+  double               myAttributes[Prs3d_DatumAttribute_NB];
+  Prs3d_DatumAxes             myAxes;
+  bool            myToDrawLabels;
+  bool            myToDrawArrows;
 };
 
 #endif // _Prs3d_DatumAspect_HeaderFile

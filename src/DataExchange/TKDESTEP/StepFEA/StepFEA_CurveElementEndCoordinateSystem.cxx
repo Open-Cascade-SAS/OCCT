@@ -43,8 +43,8 @@ int StepFEA_CurveElementEndCoordinateSystem::CaseNum(
 
 //=================================================================================================
 
-occ::handle<StepFEA_FeaAxis2Placement3d> StepFEA_CurveElementEndCoordinateSystem::
-  FeaAxis2Placement3d() const
+occ::handle<StepFEA_FeaAxis2Placement3d> StepFEA_CurveElementEndCoordinateSystem::FeaAxis2Placement3d()
+  const
 {
   return occ::down_cast<StepFEA_FeaAxis2Placement3d>(Value());
 }
@@ -59,8 +59,8 @@ occ::handle<StepFEA_AlignedCurve3dElementCoordinateSystem> StepFEA_CurveElementE
 
 //=================================================================================================
 
-occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem>
-  StepFEA_CurveElementEndCoordinateSystem::ParametricCurve3dElementCoordinateSystem() const
+occ::handle<StepFEA_ParametricCurve3dElementCoordinateSystem> StepFEA_CurveElementEndCoordinateSystem::
+  ParametricCurve3dElementCoordinateSystem() const
 {
   return occ::down_cast<StepFEA_ParametricCurve3dElementCoordinateSystem>(Value());
 }

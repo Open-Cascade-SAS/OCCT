@@ -21,7 +21,7 @@
 RWStepBasic_RWSolidAngleUnit::RWStepBasic_RWSolidAngleUnit() {}
 
 void RWStepBasic_RWSolidAngleUnit::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepBasic_SolidAngleUnit>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepBasic_RWSolidAngleUnit::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aDimensions);
 }
 
-void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&                         SW,
+void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepBasic_SolidAngleUnit>& ent) const
 {
 
@@ -57,7 +57,7 @@ void RWStepBasic_RWSolidAngleUnit::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepBasic_RWSolidAngleUnit::Share(const occ::handle<StepBasic_SolidAngleUnit>& ent,
-                                         Interface_EntityIterator&                    iter) const
+                                         Interface_EntityIterator&               iter) const
 {
 
   iter.GetOneItem(ent->Dimensions());

@@ -19,11 +19,10 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_FaceSurface, StepShape_Face)
 
 StepShape_FaceSurface::StepShape_FaceSurface() {}
 
-void StepShape_FaceSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&                              aName,
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds,
-  const occ::handle<StepGeom_Surface>&                                      aFaceGeometry,
-  const bool                                                                aSameSense)
+void StepShape_FaceSurface::Init(const occ::handle<TCollection_HAsciiString>&     aName,
+                                 const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds,
+                                 const occ::handle<StepGeom_Surface>&             aFaceGeometry,
+                                 const bool                      aSameSense)
 {
   // --- classe own fields ---
   faceGeometry = aFaceGeometry;

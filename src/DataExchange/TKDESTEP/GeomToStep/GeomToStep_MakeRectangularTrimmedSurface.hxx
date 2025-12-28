@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeRectangularTrimmedSurface(
     const occ::handle<Geom_RectangularTrimmedSurface>& RTSurf,
-    const StepData_Factors&                            theLocalFactors = StepData_Factors());
+    const StepData_Factors&                       theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_RectangularTrimmedSurface>& Value() const;
 

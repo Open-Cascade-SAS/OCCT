@@ -23,13 +23,13 @@ StepGeom_CartesianTransformationOperator::StepGeom_CartesianTransformationOperat
 
 void StepGeom_CartesianTransformationOperator::Init(
   const occ::handle<TCollection_HAsciiString>& aName,
-  const bool                                   hasAaxis1,
+  const bool                  hasAaxis1,
   const occ::handle<StepGeom_Direction>&       aAxis1,
-  const bool                                   hasAaxis2,
+  const bool                  hasAaxis2,
   const occ::handle<StepGeom_Direction>&       aAxis2,
   const occ::handle<StepGeom_CartesianPoint>&  aLocalOrigin,
-  const bool                                   hasAscale,
-  const double                                 aScale)
+  const bool                  hasAscale,
+  const double                     aScale)
 {
   // --- classe own fields ---
   hasAxis1    = hasAaxis1;
@@ -43,8 +43,7 @@ void StepGeom_CartesianTransformationOperator::Init(
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepGeom_CartesianTransformationOperator::SetAxis1(
-  const occ::handle<StepGeom_Direction>& aAxis1)
+void StepGeom_CartesianTransformationOperator::SetAxis1(const occ::handle<StepGeom_Direction>& aAxis1)
 {
   axis1    = aAxis1;
   hasAxis1 = true;
@@ -66,8 +65,7 @@ bool StepGeom_CartesianTransformationOperator::HasAxis1() const
   return hasAxis1;
 }
 
-void StepGeom_CartesianTransformationOperator::SetAxis2(
-  const occ::handle<StepGeom_Direction>& aAxis2)
+void StepGeom_CartesianTransformationOperator::SetAxis2(const occ::handle<StepGeom_Direction>& aAxis2)
 {
   axis2    = aAxis2;
   hasAxis2 = true;

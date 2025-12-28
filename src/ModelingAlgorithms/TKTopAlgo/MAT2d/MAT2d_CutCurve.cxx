@@ -21,6 +21,7 @@
 #include <MAT2d_CutCurve.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Geom2d_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -40,13 +41,13 @@ void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   theCurves.Clear();
 
-  Geom2dLProp_CurAndInf2d          Sommets;
+  Geom2dLProp_CurAndInf2d     Sommets;
   occ::handle<Geom2d_TrimmedCurve> TrimC;
-  double                           UF, UL, UC;
-  gp_Pnt2d                         PF, PL, PC;
-  constexpr double                 PTol  = Precision::PConfusion() * 10;
-  constexpr double                 Tol   = Precision::Confusion() * 10;
-  bool                             YaCut = false;
+  double               UF, UL, UC;
+  gp_Pnt2d                    PF, PL, PC;
+  constexpr double     PTol  = Precision::PConfusion() * 10;
+  constexpr double     Tol   = Precision::Confusion() * 10;
+  bool            YaCut = false;
   Sommets.Perform(C);
 
   if (Sommets.IsDone() && !Sommets.IsEmpty())

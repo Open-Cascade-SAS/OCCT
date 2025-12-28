@@ -26,7 +26,7 @@ IGESSelect_SetVersion5::IGESSelect_SetVersion5()
 {
 }
 
-void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_SetVersion5::Performing(IFSelect_ContextModif&            ctx,
                                         const occ::handle<IGESData_IGESModel>& target,
                                         Interface_CopyTool&) const
 {

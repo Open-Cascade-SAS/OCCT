@@ -33,7 +33,7 @@ RWStepFEA_RWFeaCurveSectionGeometricRelationship::RWStepFEA_RWFeaCurveSectionGeo
 
 void RWStepFEA_RWFeaCurveSectionGeometricRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                      data,
-  const int                                                        num,
+  const int                                      num,
   occ::handle<Interface_Check>&                                    ach,
   const occ::handle<StepFEA_FeaCurveSectionGeometricRelationship>& ent) const
 {
@@ -66,7 +66,7 @@ void RWStepFEA_RWFeaCurveSectionGeometricRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaCurveSectionGeometricRelationship::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                        SW,
   const occ::handle<StepFEA_FeaCurveSectionGeometricRelationship>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepFEA_RWFeaCurveSectionGeometricRelationship::WriteStep(
 
 void RWStepFEA_RWFeaCurveSectionGeometricRelationship::Share(
   const occ::handle<StepFEA_FeaCurveSectionGeometricRelationship>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Own fields of FeaCurveSectionGeometricRelationship

@@ -40,7 +40,7 @@ void IGESSolid_ToolSphere::ReadOwnParams(const occ::handle<IGESSolid_Sphere>& en
                                          IGESData_ParamReader& PR) const
 {
   double tempRadius, tempreal;
-  gp_XYZ tempCenter;
+  gp_XYZ        tempCenter;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Radius", tempRadius); // szv#4:S4163:12Mar99 `st=` not needed
@@ -77,7 +77,7 @@ void IGESSolid_ToolSphere::ReadOwnParams(const occ::handle<IGESSolid_Sphere>& en
 }
 
 void IGESSolid_ToolSphere::WriteOwnParams(const occ::handle<IGESSolid_Sphere>& ent,
-                                          IGESData_IGESWriter&                 IW) const
+                                          IGESData_IGESWriter&            IW) const
 {
   IW.Send(ent->Radius());
   IW.Send(ent->Center().X());
@@ -121,8 +121,8 @@ void IGESSolid_ToolSphere::OwnCheck(const occ::handle<IGESSolid_Sphere>& ent,
 
 void IGESSolid_ToolSphere::OwnDump(const occ::handle<IGESSolid_Sphere>& ent,
                                    const IGESData_IGESDumper& /* dumper */,
-                                   Standard_OStream& S,
-                                   const int         level) const
+                                   Standard_OStream&      S,
+                                   const int level) const
 {
   S << "IGESSolid_Sphere\n"
     << "Radius : " << ent->Radius() << "\n"

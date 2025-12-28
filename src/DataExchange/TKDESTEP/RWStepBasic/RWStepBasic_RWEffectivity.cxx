@@ -21,7 +21,7 @@
 RWStepBasic_RWEffectivity::RWStepBasic_RWEffectivity() {}
 
 void RWStepBasic_RWEffectivity::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepBasic_Effectivity>&   ent) const
 {
@@ -42,7 +42,7 @@ void RWStepBasic_RWEffectivity::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aId);
 }
 
-void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                      SW,
+void RWStepBasic_RWEffectivity::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepBasic_Effectivity>& ent) const
 {
 

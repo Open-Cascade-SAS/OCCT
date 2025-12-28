@@ -65,11 +65,11 @@ public:
   //! Precision::Confusion()). The function
   //! gp_Pnt2d::IsEqual tests to see if this is the case.
   //! Definition of the geometricals constraints
-  Standard_EXPORT FairCurve_MinimalVariation(const gp_Pnt2d& P1,
-                                             const gp_Pnt2d& P2,
-                                             const double    Heigth,
-                                             const double    Slope         = 0,
-                                             const double    PhysicalRatio = 0);
+  Standard_EXPORT FairCurve_MinimalVariation(const gp_Pnt2d&     P1,
+                                             const gp_Pnt2d&     P2,
+                                             const double Heigth,
+                                             const double Slope         = 0,
+                                             const double PhysicalRatio = 0);
 
   //! Allows you to set a new constraint on curvature at the first point.
   void SetCurvature1(const double Curvature);
@@ -90,8 +90,9 @@ public:
   //! allows you to control the precision of computation, and
   //! the maximum number of iterations allows you to set a limit on computation time.
   Standard_EXPORT virtual bool Compute(FairCurve_AnalysisCode& ACode,
-                                       const int               NbIterations = 50,
-                                       const double            Tolerance    = 1.0e-3) override;
+                                                   const int  NbIterations = 50,
+                                                   const double     Tolerance    = 1.0e-3)
+    override;
 
   //! Returns the first established curvature.
   double GetCurvature1() const;
@@ -110,14 +111,14 @@ public:
 private:
   //! compute the curve with respect of the delta-constraints.
   Standard_EXPORT bool Compute(const gp_Vec2d&         DeltaP1,
-                               const gp_Vec2d&         DeltaP2,
-                               const double            DeltaAngle1,
-                               const double            DeltaAngle2,
-                               const double            DeltaCurvature1,
-                               const double            DeltaCurvature2,
-                               FairCurve_AnalysisCode& ACode,
-                               const int               NbIterations,
-                               const double            Tolerance);
+                                           const gp_Vec2d&         DeltaP2,
+                                           const double     DeltaAngle1,
+                                           const double     DeltaAngle2,
+                                           const double     DeltaCurvature1,
+                                           const double     DeltaCurvature2,
+                                           FairCurve_AnalysisCode& ACode,
+                                           const int  NbIterations,
+                                           const double     Tolerance);
 
   double OldCurvature1;
   double OldCurvature2;

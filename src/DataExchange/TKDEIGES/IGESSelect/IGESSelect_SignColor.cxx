@@ -52,7 +52,7 @@ IGESSelect_SignColor::IGESSelect_SignColor(const int mode)
 }
 
 const char* IGESSelect_SignColor::Value(const occ::handle<Standard_Transient>&       ent,
-                                        const occ::handle<Interface_InterfaceModel>& model) const
+                                             const occ::handle<Interface_InterfaceModel>& model) const
 {
   double red = -1, green = -1, blue = -1;
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);

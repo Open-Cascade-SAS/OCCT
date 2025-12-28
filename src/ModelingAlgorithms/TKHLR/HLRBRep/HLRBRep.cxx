@@ -28,15 +28,19 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
 //=================================================================================================
 
-TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const double U2)
+TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec,
+                              const double  U1,
+                              const double  U2)
 {
-  TopoDS_Edge  Edg;
+  TopoDS_Edge         Edg;
   const double sta = ec.Parameter2d(U1);
   const double end = ec.Parameter2d(U2);
 
@@ -63,7 +67,7 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
       break;
 
     case GeomAbs_BezierCurve: {
-      NCollection_Array1<gp_Pnt2d>    Poles(1, ec.NbPoles());
+      NCollection_Array1<gp_Pnt2d>       Poles(1, ec.NbPoles());
       occ::handle<Geom2d_BezierCurve> ec2d;
       if (ec.IsRational())
       {
@@ -84,21 +88,20 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
 
     case GeomAbs_BSplineCurve: {
       occ::handle<Geom2d_BSplineCurve> ec2d;
-      GeomAdaptor_Curve                GAcurve = ec.GetCurve().Curve();
-      TopoDS_Edge                      anEdge  = ec.GetCurve().Edge();
-      double                           fpar, lpar;
+      GeomAdaptor_Curve           GAcurve = ec.GetCurve().Curve();
+      TopoDS_Edge                 anEdge  = ec.GetCurve().Edge();
+      double               fpar, lpar;
       occ::handle<Geom_Curve>          aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
       if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
         aCurve = (occ::down_cast<Geom_TrimmedCurve>(aCurve))->BasisCurve();
       occ::handle<Geom_BSplineCurve> BSplCurve(occ::down_cast<Geom_BSplineCurve>(aCurve));
-      occ::handle<Geom_BSplineCurve> theCurve =
-        occ::down_cast<Geom_BSplineCurve>(BSplCurve->Copy());
+      occ::handle<Geom_BSplineCurve> theCurve = occ::down_cast<Geom_BSplineCurve>(BSplCurve->Copy());
       if (theCurve->IsPeriodic() && !GAcurve.IsClosed())
       {
         theCurve->Segment(sta, end);
-        NCollection_Array1<gp_Pnt2d> Poles(1, theCurve->NbPoles());
-        NCollection_Array1<double>   knots(1, theCurve->NbKnots());
-        NCollection_Array1<int>      mults(1, theCurve->NbKnots());
+        NCollection_Array1<gp_Pnt2d>    Poles(1, theCurve->NbPoles());
+        NCollection_Array1<double>    knots(1, theCurve->NbKnots());
+        NCollection_Array1<int> mults(1, theCurve->NbKnots());
         //-- ec.KnotsAndMultiplicities(knots,mults);
         theCurve->Knots(knots);
         theCurve->Multiplicities(mults);
@@ -125,9 +128,9 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
       }
       else
       {
-        NCollection_Array1<gp_Pnt2d> Poles(1, ec.NbPoles());
-        NCollection_Array1<double>   knots(1, ec.NbKnots());
-        NCollection_Array1<int>      mults(1, ec.NbKnots());
+        NCollection_Array1<gp_Pnt2d>    Poles(1, ec.NbPoles());
+        NCollection_Array1<double>    knots(1, ec.NbKnots());
+        NCollection_Array1<int> mults(1, ec.NbKnots());
         //-- ec.KnotsAndMultiplicities(knots,mults);
         ec.Knots(knots);
         ec.Multiplicities(mults);
@@ -150,13 +153,13 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
       break;
     }
     default: {
-      const int                    nbPnt = 15;
-      NCollection_Array1<gp_Pnt2d> Poles(1, nbPnt);
-      NCollection_Array1<double>   knots(1, nbPnt);
-      NCollection_Array1<int>      mults(1, nbPnt);
+      const int  nbPnt = 15;
+      NCollection_Array1<gp_Pnt2d>    Poles(1, nbPnt);
+      NCollection_Array1<double>    knots(1, nbPnt);
+      NCollection_Array1<int> mults(1, nbPnt);
       mults.Init(1);
-      mults(1)           = 2;
-      mults(nbPnt)       = 2;
+      mults(1)                  = 2;
+      mults(nbPnt)              = 2;
       const double step  = (U2 - U1) / (nbPnt - 1);
       double       par3d = U1;
       for (int i = 1; i < nbPnt; i++)
@@ -169,7 +172,7 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
       knots(nbPnt) = U2;
 
       occ::handle<Geom2d_BSplineCurve> ec2d = new Geom2d_BSplineCurve(Poles, knots, mults, 1);
-      BRepLib_MakeEdge2d               mke2d(ec2d, sta, end);
+      BRepLib_MakeEdge2d          mke2d(ec2d, sta, end);
       if (mke2d.IsDone())
         Edg = mke2d.Edge();
     }
@@ -179,14 +182,16 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
 
 //=================================================================================================
 
-TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec, const double U1, const double U2)
+TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec,
+                                const double  U1,
+                                const double  U2)
 {
   TopoDS_Edge Edg;
   // const double sta = ec.Parameter2d(U1);
   // const double end = ec.Parameter2d(U2);
 
-  TopoDS_Edge anEdge = ec.GetCurve().Edge();
-  double      fpar, lpar;
+  TopoDS_Edge   anEdge = ec.GetCurve().Edge();
+  double fpar, lpar;
   // BRep_Tool::Range(anEdge, fpar, lpar);
   // occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
   BRepAdaptor_Curve BAcurve(anEdge);
@@ -227,7 +232,9 @@ TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec, const double U1, const 
 
 //=================================================================================================
 
-void HLRBRep::PolyHLRAngleAndDeflection(const double InAngl, double& OutAngl, double& OutDefl)
+void HLRBRep::PolyHLRAngleAndDeflection(const double InAngl,
+                                        double&      OutAngl,
+                                        double&      OutDefl)
 {
   static double HAngMin = 1 * M_PI / 180;
   static double HAngLim = 5 * M_PI / 180;

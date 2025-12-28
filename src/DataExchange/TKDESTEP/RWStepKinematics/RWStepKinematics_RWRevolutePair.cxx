@@ -33,7 +33,7 @@ RWStepKinematics_RWRevolutePair::RWStepKinematics_RWRevolutePair() {}
 
 void RWStepKinematics_RWRevolutePair::ReadStep(
   const occ::handle<StepData_StepReaderData>&     theData,
-  const int                                       theNum,
+  const int                     theNum,
   occ::handle<Interface_Check>&                   theArch,
   const occ::handle<StepKinematics_RevolutePair>& theEnt) const
 {
@@ -56,7 +56,7 @@ void RWStepKinematics_RWRevolutePair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                                  hasItemDefinedTransformation_Description = true;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -160,7 +160,7 @@ void RWStepKinematics_RWRevolutePair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePair::WriteStep(
-  StepData_StepWriter&                            theSW,
+  StepData_StepWriter&                       theSW,
   const occ::handle<StepKinematics_RevolutePair>& theEnt) const
 {
 
@@ -205,7 +205,7 @@ void RWStepKinematics_RWRevolutePair::WriteStep(
 //=================================================================================================
 
 void RWStepKinematics_RWRevolutePair::Share(const occ::handle<StepKinematics_RevolutePair>& theEnt,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   // Inherited fields of RepresentationItem

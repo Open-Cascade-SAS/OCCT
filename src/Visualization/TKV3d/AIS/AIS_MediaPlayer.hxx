@@ -39,17 +39,15 @@ public:
   }
 
   //! Open specified file.
-  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath, bool theToWait);
+  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath,
+                                 bool               theToWait);
 
   //! Display new frame.
   Standard_EXPORT bool PresentFrame(const NCollection_Vec2<int>& theLeftCorner,
                                     const NCollection_Vec2<int>& theMaxSize);
 
   //! Return player context.
-  const occ::handle<Media_PlayerContext>& PlayerContext() const
-  {
-    return myFramePair->PlayerContext();
-  }
+  const occ::handle<Media_PlayerContext>& PlayerContext() const { return myFramePair->PlayerContext(); }
 
   //! Switch playback state.
   Standard_EXPORT void PlayPause();
@@ -67,7 +65,10 @@ public:
   //! @name AIS_InteractiveObject interface
 protected:
   //! Accept only display mode 0.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Compute presentation.
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
@@ -86,9 +87,9 @@ protected:
 protected:
   occ::handle<Graphic3d_MediaTextureSet>  myFramePair;
   occ::handle<Graphic3d_AspectFillArea3d> myFrameAspect;
-  NCollection_Vec2<int>                   myFrameBottomLeft;
-  NCollection_Vec2<int>                   myFrameSize;
-  bool                                    myToClosePlayer;
+  NCollection_Vec2<int>                    myFrameBottomLeft;
+  NCollection_Vec2<int>                    myFrameSize;
+  bool                               myToClosePlayer;
 };
 
 #endif // _AIS_MediaPlayer_HeaderFile

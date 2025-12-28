@@ -20,6 +20,7 @@
 
 #include <Standard_Transient.hxx>
 #include <BinObjMgt_RRelocationTable.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 class Message_Messenger;
 class TDF_Attribute;
@@ -43,17 +44,16 @@ public:
   //! Translate the contents of <aSource> and put it
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       aSource,
-                                     const occ::handle<TDF_Attribute>& aTarget,
-                                     BinObjMgt_RRelocationTable&       aRelocTable) const = 0;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  aSource,
+                                                 const occ::handle<TDF_Attribute>& aTarget,
+                                                 BinObjMgt_RRelocationTable& aRelocTable) const = 0;
 
   //! Translate the contents of <aSource> and put it
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
-  Standard_EXPORT virtual void Paste(
-    const occ::handle<TDF_Attribute>&                        aSource,
-    BinObjMgt_Persistent&                                    aTarget,
-    NCollection_IndexedMap<occ::handle<Standard_Transient>>& aRelocTable) const = 0;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& aSource,
+                                     BinObjMgt_Persistent&        aTarget,
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  aRelocTable) const = 0;
 
   //! Returns the current message driver of this driver
   const occ::handle<Message_Messenger>& MessageDriver() const { return myMessageDriver; }
@@ -62,7 +62,7 @@ public:
 
 protected:
   Standard_EXPORT BinMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDriver,
-                                 const char*                           theName = NULL);
+                                 const char*           theName = NULL);
 
   TCollection_AsciiString myTypeName;
 

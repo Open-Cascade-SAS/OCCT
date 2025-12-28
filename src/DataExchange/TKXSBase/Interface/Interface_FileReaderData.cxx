@@ -39,7 +39,8 @@ static int thefic = 0;
 static int thenm0 = -1;
 static int thenp0 = -1;
 
-Interface_FileReaderData::Interface_FileReaderData(const int nbr, const int npar)
+Interface_FileReaderData::Interface_FileReaderData(const int nbr,
+                                                   const int npar)
     : therrload(0),
       thenumpar(0, nbr),
       theents(0, nbr)
@@ -72,9 +73,9 @@ void Interface_FileReaderData::InitParams(const int num)
 }
 
 void Interface_FileReaderData::AddParam(const int /*num*/,
-                                        const char*               aval,
+                                        const char*    aval,
                                         const Interface_ParamType atype,
-                                        const int                 nument)
+                                        const int    nument)
 {
   theparams->Append(aval, -1, atype, nument);
 }
@@ -82,18 +83,19 @@ void Interface_FileReaderData::AddParam(const int /*num*/,
 void Interface_FileReaderData::AddParam(const int /*num*/,
                                         const TCollection_AsciiString& aval,
                                         const Interface_ParamType      atype,
-                                        const int                      nument)
+                                        const int         nument)
 {
   theparams->Append(aval.ToCString(), aval.Length(), atype, nument);
 }
 
-void Interface_FileReaderData::AddParam(const int /*num*/, const Interface_FileParameter& FP)
+void Interface_FileReaderData::AddParam(const int /*num*/,
+                                        const Interface_FileParameter& FP)
 {
   theparams->Append(FP);
 }
 
-void Interface_FileReaderData::SetParam(const int                      num,
-                                        const int                      nump,
+void Interface_FileReaderData::SetParam(const int         num,
+                                        const int         nump,
                                         const Interface_FileParameter& FP)
 {
   theparams->SetParam(thenumpar(num - 1) + nump, FP);
@@ -119,7 +121,8 @@ occ::handle<Interface_ParamList> Interface_FileReaderData::Params(const int num)
     return theparams->Params(thenumpar(num - 1) + 1, (thenumpar(num) - thenumpar(num - 1)));
 }
 
-const Interface_FileParameter& Interface_FileReaderData::Param(const int num, const int nump) const
+const Interface_FileParameter& Interface_FileReaderData::Param(const int num,
+                                                               const int nump) const
 {
   if (thefic != thenum0)
     return theparams->Param(thenumpar(num - 1) + nump);
@@ -131,7 +134,8 @@ const Interface_FileParameter& Interface_FileReaderData::Param(const int num, co
   return theparams->Param(thenp0 + nump);
 }
 
-Interface_FileParameter& Interface_FileReaderData::ChangeParam(const int num, const int nump)
+Interface_FileParameter& Interface_FileReaderData::ChangeParam(const int num,
+                                                               const int nump)
 {
   if (thefic != thenum0)
     return theparams->ChangeParam(thenumpar(num - 1) + nump);
@@ -143,28 +147,33 @@ Interface_FileParameter& Interface_FileReaderData::ChangeParam(const int num, co
   return theparams->ChangeParam(thenp0 + nump);
 }
 
-Interface_ParamType Interface_FileReaderData::ParamType(const int num, const int nump) const
+Interface_ParamType Interface_FileReaderData::ParamType(const int num,
+                                                        const int nump) const
 {
   return Param(num, nump).ParamType();
 }
 
-const char* Interface_FileReaderData::ParamCValue(const int num, const int nump) const
+const char* Interface_FileReaderData::ParamCValue(const int num,
+                                                       const int nump) const
 {
   return Param(num, nump).CValue();
 }
 
-bool Interface_FileReaderData::IsParamDefined(const int num, const int nump) const
+bool Interface_FileReaderData::IsParamDefined(const int num,
+                                                          const int nump) const
 {
   return (Param(num, nump).ParamType() != Interface_ParamVoid);
 }
 
-int Interface_FileReaderData::ParamNumber(const int num, const int nump) const
+int Interface_FileReaderData::ParamNumber(const int num,
+                                                       const int nump) const
 {
   return Param(num, nump).EntityNumber();
 }
 
-const occ::handle<Standard_Transient>& Interface_FileReaderData::ParamEntity(const int num,
-                                                                             const int nump) const
+const occ::handle<Standard_Transient>& Interface_FileReaderData::ParamEntity(
+  const int num,
+  const int nump) const
 {
   return BoundEntity(Param(num, nump).EntityNumber());
 }
@@ -174,7 +183,9 @@ Interface_FileParameter& Interface_FileReaderData::ChangeParameter(const int num
   return theparams->ChangeParam(numpar);
 }
 
-void Interface_FileReaderData::ParamPosition(const int numpar, int& num, int& nump) const
+void Interface_FileReaderData::ParamPosition(const int numpar,
+                                             int&      num,
+                                             int&      nump) const
 {
   int nbe = thenumpar.Upper();
   if (numpar <= 0)
@@ -212,14 +223,15 @@ bool Interface_FileReaderData::IsErrorLoad() const
 
 bool Interface_FileReaderData::ResetErrorLoad()
 {
-  bool res  = (therrload > 0);
-  therrload = 0;
+  bool res = (therrload > 0);
+  therrload            = 0;
   return res;
 }
 
 //  ....        Management of Entities Associated with File Data       ....
 
-const occ::handle<Standard_Transient>& Interface_FileReaderData::BoundEntity(const int num) const
+const occ::handle<Standard_Transient>& Interface_FileReaderData::BoundEntity(
+  const int num) const
 //      {  return theents(num);  }
 {
   if (num >= theents.Lower() && num <= theents.Upper())
@@ -260,7 +272,8 @@ const occ::handle<Standard_Transient>& Interface_FileReaderData::BoundEntity(con
 }
 */
 
-void Interface_FileReaderData::BindEntity(const int num, const occ::handle<Standard_Transient>& ent)
+void Interface_FileReaderData::BindEntity(const int            num,
+                                          const occ::handle<Standard_Transient>& ent)
 //      {  theents.SetValue(num,ent);  }
 {
   //  #ifdef OCCT_DEBUG

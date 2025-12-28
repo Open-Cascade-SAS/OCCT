@@ -50,8 +50,7 @@ public:
   const NCollection_Map<IVtk_IdType>& MeshTypesForMode(IVtk_DisplayMode theMode) const;
 
   //! Set a list of displaying mesh element types for the given display mode
-  void SetMeshTypesForMode(IVtk_DisplayMode                    theMode,
-                           const NCollection_Map<IVtk_IdType>& theMeshTypes);
+  void SetMeshTypesForMode(IVtk_DisplayMode theMode, const NCollection_Map<IVtk_IdType>& theMeshTypes);
 
   //! Draw Boundary of faces for shading mode
   void SetFaceBoundaryDraw(bool theToDraw);
@@ -68,7 +67,9 @@ public:
 
 protected:
   //! Filter cells according to the given set of ids.
-  virtual int RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector*) override;
+  virtual int RequestData(vtkInformation*,
+                          vtkInformationVector**,
+                          vtkInformationVector*) override;
 
   IVtkTools_DisplayModeFilter();
   virtual ~IVtkTools_DisplayModeFilter();

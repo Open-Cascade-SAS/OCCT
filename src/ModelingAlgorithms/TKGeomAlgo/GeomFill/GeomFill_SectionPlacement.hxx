@@ -60,8 +60,9 @@ public:
 
   Standard_EXPORT double Angle() const;
 
-  Standard_EXPORT gp_Trsf Transformation(const bool WithTranslation,
-                                         const bool WithCorrection = false) const;
+  Standard_EXPORT gp_Trsf
+    Transformation(const bool WithTranslation,
+                   const bool WithCorrection = false) const;
 
   //! Compute the Section, in the coordinate system given by
   //! the Location Law.
@@ -81,20 +82,20 @@ private:
 
   Standard_EXPORT bool Choix(const double Dist, const double Angle) const;
 
-  bool                              done;
-  bool                              isplan;
-  gp_Ax1                            TheAxe;
-  double                            Gabarit;
+  bool             done;
+  bool             isplan;
+  gp_Ax1                       TheAxe;
+  double                Gabarit;
   occ::handle<GeomFill_LocationLaw> myLaw;
-  GeomAdaptor_Curve                 myAdpSection;
+  GeomAdaptor_Curve            myAdpSection;
   occ::handle<Geom_Curve>           mySection;
-  double                            SecParam;
-  double                            PathParam;
-  double                            Dist;
-  double                            AngleMax;
-  Extrema_ExtPC                     myExt;
-  bool                              myIsPoint;
-  gp_Pnt                            myPoint;
+  double                SecParam;
+  double                PathParam;
+  double                Dist;
+  double                AngleMax;
+  Extrema_ExtPC                myExt;
+  bool             myIsPoint;
+  gp_Pnt                       myPoint;
 };
 
 #endif // _GeomFill_SectionPlacement_HeaderFile

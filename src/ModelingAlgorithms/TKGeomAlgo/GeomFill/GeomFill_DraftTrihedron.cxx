@@ -64,16 +64,16 @@ void GeomFill_DraftTrihedron::SetAngle(const double Angle)
 // purpose  : calculation of trihedron
 //=======================================================================
 bool GeomFill_DraftTrihedron::D0(const double Param,
-                                 gp_Vec&      Tangent,
-                                 gp_Vec&      Normal,
-                                 gp_Vec&      BiNormal)
+                                             gp_Vec&             Tangent,
+                                             gp_Vec&             Normal,
+                                             gp_Vec&             BiNormal)
 {
   gp_Pnt P;
   gp_Vec T;
   myTrimmed->D1(Param, P, T);
   T.Normalize();
 
-  gp_Vec b     = T.Crossed(B);
+  gp_Vec        b     = T.Crossed(B);
   double normb = b.Magnitude();
 
   b /= normb;
@@ -83,7 +83,7 @@ bool GeomFill_DraftTrihedron::D0(const double Param,
   gp_Vec v = b.Crossed(T);
 
   double mu = myCos;
-  mu        = myCos;
+  mu               = myCos;
 
   // La Normal est portee par la regle
   Normal.SetLinearForm(std::sqrt(1 - mu * mu), b, mu, v);
@@ -104,12 +104,12 @@ bool GeomFill_DraftTrihedron::D0(const double Param,
 // purpose  :  calculation of trihedron and first derivative
 //=======================================================================
 bool GeomFill_DraftTrihedron::D1(const double Param,
-                                 gp_Vec&      Tangent,
-                                 gp_Vec&      DTangent,
-                                 gp_Vec&      Normal,
-                                 gp_Vec&      DNormal,
-                                 gp_Vec&      BiNormal,
-                                 gp_Vec&      DBiNormal)
+                                             gp_Vec&             Tangent,
+                                             gp_Vec&             DTangent,
+                                             gp_Vec&             Normal,
+                                             gp_Vec&             DNormal,
+                                             gp_Vec&             BiNormal,
+                                             gp_Vec&             DBiNormal)
 {
   gp_Pnt P;
   gp_Vec T, DT, aux;
@@ -158,18 +158,18 @@ bool GeomFill_DraftTrihedron::D1(const double Param,
 // purpose  : calculation of trihedron and derivatives 1 et 2
 //=======================================================================
 bool GeomFill_DraftTrihedron::D2(const double Param,
-                                 gp_Vec&      Tangent,
-                                 gp_Vec&      DTangent,
-                                 gp_Vec&      D2Tangent,
-                                 gp_Vec&      Normal,
-                                 gp_Vec&      DNormal,
-                                 gp_Vec&      D2Normal,
-                                 gp_Vec&      BiNormal,
-                                 gp_Vec&      DBiNormal,
-                                 gp_Vec&      D2BiNormal)
+                                             gp_Vec&             Tangent,
+                                             gp_Vec&             DTangent,
+                                             gp_Vec&             D2Tangent,
+                                             gp_Vec&             Normal,
+                                             gp_Vec&             DNormal,
+                                             gp_Vec&             D2Normal,
+                                             gp_Vec&             BiNormal,
+                                             gp_Vec&             DBiNormal,
+                                             gp_Vec&             D2BiNormal)
 {
-  gp_Pnt P;
-  gp_Vec T, DT, D2T, aux, aux2;
+  gp_Pnt        P;
+  gp_Vec        T, DT, D2T, aux, aux2;
   double dot;
 
   myTrimmed->D3(Param, P, T, aux, aux2);
@@ -201,7 +201,7 @@ bool GeomFill_DraftTrihedron::D2(const double Param,
   gp_Vec d2v = d2b.Crossed(T) + 2 * db.Crossed(DT) + b.Crossed(D2T);
 
   double mu = myCos, rac;
-  rac       = std::sqrt(1 - mu * mu);
+  rac              = std::sqrt(1 - mu * mu);
 
   Normal.SetLinearForm(rac, b, mu, v);
   DNormal.SetLinearForm(rac, db, mu, dv);
@@ -293,8 +293,8 @@ void GeomFill_DraftTrihedron::Intervals(NCollection_Array1<double>& TT, const Ge
 
 void GeomFill_DraftTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  int    Num = 20; // order of digitalization
-  gp_Vec T, N, BN;
+  int Num = 20; // order of digitalization
+  gp_Vec           T, N, BN;
   ATangent  = gp_Vec(0, 0, 0);
   ANormal   = gp_Vec(0, 0, 0);
   ABiNormal = gp_Vec(0, 0, 0);

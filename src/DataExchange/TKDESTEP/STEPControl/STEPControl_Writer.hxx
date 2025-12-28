@@ -53,7 +53,7 @@ public:
   //! Creates a Writer from an already existing Session
   //! If <scratch> is True (D), clears already recorded data
   Standard_EXPORT STEPControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
-                                     const bool                                scratch = true);
+                                     const bool               scratch = true);
 
   //! Sets a length-measure value that
   //! will be written to uncertainty-measure-with-unit
@@ -65,7 +65,7 @@ public:
 
   //! Sets a specific session to <me>
   Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
-                             const bool                                scratch = true);
+                             const bool               scratch = true);
 
   //! Returns the session used in <me>
   Standard_EXPORT occ::handle<XSControl_WorkSession> WS() const;
@@ -91,7 +91,7 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus
     Transfer(const TopoDS_Shape&             sh,
              const STEPControl_StepModelType mode,
-             const bool                      compgraph   = true,
+             const bool          compgraph   = true,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Translates shape sh to a STEP entity
@@ -99,7 +99,7 @@ public:
     Transfer(const TopoDS_Shape&             sh,
              const STEPControl_StepModelType mode,
              const DESTEP_Parameters&        theParams,
-             const bool                      compgraph   = true,
+             const bool          compgraph   = true,
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes a STEP model in the file identified by filename.
@@ -128,7 +128,8 @@ public:
   //! - 5 gives the number of pairs (STEP or result type and status),
   //! - 6 gives the number of pairs (STEP or result type and status)
   //! AND the list of entity numbers in the STEP model.
-  Standard_EXPORT void PrintStatsTransfer(const int what, const int mode = 0) const;
+  Standard_EXPORT void PrintStatsTransfer(const int what,
+                                          const int mode = 0) const;
 
   Standard_EXPORT void CleanDuplicateEntities();
 

@@ -41,24 +41,28 @@ public:
    */
 
   //! Saving the OCAF document to a file
-  Standard_EXPORT virtual bool SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
-                                            const TCollection_ExtendedString&    theTargetFile);
+  Standard_EXPORT virtual bool SaveDocument(
+    const occ::handle<TDocStd_Document>&   theSourceDoc,
+    const TCollection_ExtendedString& theTargetFile);
 
   //! Saving the OCAF document to a stream
-  Standard_EXPORT virtual bool SaveDocument(const occ::handle<TDocStd_Document>& theSourceDoc,
-                                            Standard_OStream&                    theOStream);
+  Standard_EXPORT virtual bool SaveDocument(
+    const occ::handle<TDocStd_Document>& theSourceDoc,
+    Standard_OStream&               theOStream);
 
   //! Loading the OCAF document from a file
-  Standard_EXPORT virtual bool LoadDocument(const TCollection_ExtendedString& theSourceFile,
-                                            occ::handle<TDocStd_Document>&    theTargetDoc);
+  Standard_EXPORT virtual bool LoadDocument(
+    const TCollection_ExtendedString& theSourceFile,
+    occ::handle<TDocStd_Document>&         theTargetDoc);
 
   //! Loading the OCAF document from a stream
-  Standard_EXPORT virtual bool LoadDocument(Standard_IStream&              theIStream,
-                                            occ::handle<TDocStd_Document>& theTargetDoc);
+  Standard_EXPORT virtual bool LoadDocument(Standard_IStream&         theIStream,
+                                                        occ::handle<TDocStd_Document>& theTargetDoc);
 
   //! Create the OCAF document from scratch
-  virtual Standard_EXPORT bool CreateNewDocument(occ::handle<TDocStd_Document>&    theDoc,
-                                                 const TCollection_ExtendedString& theFormat);
+  virtual Standard_EXPORT bool
+    CreateNewDocument(occ::handle<TDocStd_Document>&         theDoc,
+                      const TCollection_ExtendedString& theFormat);
 
   //! Signal error during Load or Save
   //! Default imiplementation is empty
@@ -110,8 +114,8 @@ private:
    * Fields
    */
 
-  bool                           myIsError;   //!< error flag
-  bool                           myIsVerbose; //!< verbose flag
+  bool          myIsError;   //!< error flag
+  bool          myIsVerbose; //!< verbose flag
   occ::handle<Message_Messenger> myMessenger; //!< messenger
 
 public:

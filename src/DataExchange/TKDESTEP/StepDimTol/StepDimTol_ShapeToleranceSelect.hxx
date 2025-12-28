@@ -46,6 +46,7 @@ public:
 
   //! Returns Value as PlusMinusTolerance (or Null if another type)
   Standard_EXPORT occ::handle<StepShape_PlusMinusTolerance> PlusMinusTolerance() const;
+
 };
 
 #endif // _StepDimTol_ShapeToleranceSelect_HeaderFile

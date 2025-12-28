@@ -113,7 +113,9 @@ public:
   //! Replaces the coefficient (theRow, theCol) of the matrix representing
   //! this transformation by theValue. Raises OutOfRange
   //! if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
-  void SetValue(const int theRow, const int theCol, const double theValue);
+  void SetValue(const int theRow,
+                const int theCol,
+                const double    theValue);
 
   //! Replaces the vectorial part of this transformation by theMatrix.
   constexpr void SetVectorialPart(const gp_Mat& theMatrix) noexcept
@@ -178,7 +180,10 @@ public:
   //! Raises OutOfRange if theRow < 1 or theRow > 3 or theCol < 1 or theCol > 4
   constexpr double Value(const int theRow, const int theCol) const;
 
-  double operator()(const int theRow, const int theCol) const { return Value(theRow, theCol); }
+  double operator()(const int theRow, const int theCol) const
+  {
+    return Value(theRow, theCol);
+  }
 
   Standard_EXPORT void Invert();
 
@@ -252,7 +257,9 @@ public:
   constexpr void Transforms(gp_XYZ& theCoord) const noexcept;
 
   //! Transforms a triplet XYZ with a GTrsf.
-  constexpr void Transforms(double& theX, double& theY, double& theZ) const noexcept;
+  constexpr void Transforms(double& theX,
+                            double& theY,
+                            double& theZ) const noexcept;
 
   gp_Trsf Trsf() const;
 
@@ -306,10 +313,10 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  gp_Mat      matrix;
-  gp_XYZ      loc;
-  gp_TrsfForm shape;
-  double      scale;
+  gp_Mat        matrix;
+  gp_XYZ        loc;
+  gp_TrsfForm   shape;
+  double scale;
 };
 
 //=================================================================================================
@@ -345,7 +352,9 @@ inline void gp_GTrsf::SetAffinity(const gp_Ax2& theA2, const double theRatio)
 
 //=================================================================================================
 
-inline void gp_GTrsf::SetValue(const int theRow, const int theCol, const double theValue)
+inline void gp_GTrsf::SetValue(const int theRow,
+                               const int theCol,
+                               const double    theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol == 4)
@@ -372,7 +381,8 @@ inline void gp_GTrsf::SetValue(const int theRow, const int theCol, const double 
 
 //=================================================================================================
 
-inline constexpr double gp_GTrsf::Value(const int theRow, const int theCol) const
+inline constexpr double gp_GTrsf::Value(const int theRow,
+                                               const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 3 || theCol < 1 || theCol > 4, " ");
   if (theCol == 4)
@@ -400,7 +410,9 @@ inline constexpr void gp_GTrsf::Transforms(gp_XYZ& theCoord) const noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_GTrsf::Transforms(double& theX, double& theY, double& theZ) const noexcept
+inline constexpr void gp_GTrsf::Transforms(double& theX,
+                                           double& theY,
+                                           double& theZ) const noexcept
 {
   gp_XYZ aTriplet(theX, theY, theZ);
   aTriplet.Multiply(matrix);

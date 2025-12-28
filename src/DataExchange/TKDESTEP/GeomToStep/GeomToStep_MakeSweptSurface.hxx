@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeSweptSurface(
     const occ::handle<Geom_SweptSurface>& S,
-    const StepData_Factors&               theLocalFactors = StepData_Factors());
+    const StepData_Factors&          theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_SweptSurface>& Value() const;
 

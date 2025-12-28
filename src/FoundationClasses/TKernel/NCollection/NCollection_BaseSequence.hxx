@@ -79,7 +79,8 @@ public:
     }
 
     //! Initialisation
-    void Init(const NCollection_BaseSequence& theSeq, const bool isStart = true) noexcept
+    void Init(const NCollection_BaseSequence& theSeq,
+              const bool          isStart = true) noexcept
     {
       myCurrent  = (isStart ? theSeq.myFirstItem : NULL);
       myPrevious = (isStart ? NULL : theSeq.myLastItem);
@@ -137,7 +138,9 @@ protected:
   Standard_EXPORT void PSplit(const int Index, NCollection_BaseSequence& Sub);
   Standard_EXPORT void RemoveSeq(Iterator& thePosition, NCollection_DelSeqNode fDel);
   Standard_EXPORT void RemoveSeq(const int Index, NCollection_DelSeqNode fDel);
-  Standard_EXPORT void RemoveSeq(const int From, const int To, NCollection_DelSeqNode fDel);
+  Standard_EXPORT void RemoveSeq(const int From,
+                                 const int To,
+                                 NCollection_DelSeqNode fDel);
   Standard_EXPORT void PReverse() noexcept;
   Standard_EXPORT void PExchange(const int I, const int J);
   Standard_EXPORT NCollection_SeqNode* Find(const int) const noexcept;
@@ -146,11 +149,11 @@ protected:
   // Fields PROTECTED
   //
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_SeqNode*                   myFirstItem;
-  NCollection_SeqNode*                   myLastItem;
-  NCollection_SeqNode*                   myCurrentItem;
-  int                                    myCurrentIndex;
-  int                                    mySize;
+  NCollection_SeqNode*              myFirstItem;
+  NCollection_SeqNode*              myLastItem;
+  NCollection_SeqNode*              myCurrentItem;
+  int                  myCurrentIndex;
+  int                  mySize;
 
 private:
   // Methods PRIVATE

@@ -27,9 +27,14 @@
 #include <NCollection_HArray2.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepData_Logical.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 class StepGeom_BSplineSurfaceWithKnots;
 class StepGeom_RationalBSplineSurface;
 class TCollection_HAsciiString;
@@ -42,34 +47,31 @@ public:
   Standard_EXPORT StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aUDegree,
-    const int                                    aVDegree,
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
-                                                         aControlPointsList,
-    const StepGeom_BSplineSurfaceForm                    aSurfaceForm,
-    const StepData_Logical                               aUClosed,
-    const StepData_Logical                               aVClosed,
-    const StepData_Logical                               aSelfIntersect,
-    const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots,
-    const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface);
-
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aUDegree,
-    const int                                    aVDegree,
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
-                                                    aControlPointsList,
+    const occ::handle<TCollection_HAsciiString>&         aName,
+    const int                          aUDegree,
+    const int                          aVDegree,
+    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
     const StepGeom_BSplineSurfaceForm               aSurfaceForm,
     const StepData_Logical                          aUClosed,
     const StepData_Logical                          aVClosed,
     const StepData_Logical                          aSelfIntersect,
-    const occ::handle<NCollection_HArray1<int>>&    aUMultiplicities,
-    const occ::handle<NCollection_HArray1<int>>&    aVMultiplicities,
-    const occ::handle<NCollection_HArray1<double>>& aUKnots,
-    const occ::handle<NCollection_HArray1<double>>& aVKnots,
-    const StepGeom_KnotType                         aKnotSpec,
-    const occ::handle<NCollection_HArray2<double>>& aWeightsData);
+    const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots,
+    const occ::handle<StepGeom_RationalBSplineSurface>&  aRationalBSplineSurface);
+
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aUDegree,
+                            const int                          aVDegree,
+                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+                            const StepData_Logical                          aUClosed,
+                            const StepData_Logical                          aVClosed,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<NCollection_HArray1<int>>&         aUMultiplicities,
+                            const occ::handle<NCollection_HArray1<int>>&         aVMultiplicities,
+                            const occ::handle<NCollection_HArray1<double>>&            aUKnots,
+                            const occ::handle<NCollection_HArray1<double>>&            aVKnots,
+                            const StepGeom_KnotType                         aKnotSpec,
+                            const occ::handle<NCollection_HArray2<double>>&            aWeightsData);
 
   Standard_EXPORT void SetBSplineSurfaceWithKnots(
     const occ::handle<StepGeom_BSplineSurfaceWithKnots>& aBSplineSurfaceWithKnots);
@@ -81,8 +83,7 @@ public:
 
   Standard_EXPORT occ::handle<StepGeom_RationalBSplineSurface> RationalBSplineSurface() const;
 
-  Standard_EXPORT void SetUMultiplicities(
-    const occ::handle<NCollection_HArray1<int>>& aUMultiplicities);
+  Standard_EXPORT void SetUMultiplicities(const occ::handle<NCollection_HArray1<int>>& aUMultiplicities);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> UMultiplicities() const;
 
@@ -90,8 +91,7 @@ public:
 
   Standard_EXPORT int NbUMultiplicities() const;
 
-  Standard_EXPORT void SetVMultiplicities(
-    const occ::handle<NCollection_HArray1<int>>& aVMultiplicities);
+  Standard_EXPORT void SetVMultiplicities(const occ::handle<NCollection_HArray1<int>>& aVMultiplicities);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> VMultiplicities() const;
 
@@ -123,7 +123,8 @@ public:
 
   Standard_EXPORT occ::handle<NCollection_HArray2<double>> WeightsData() const;
 
-  Standard_EXPORT double WeightsDataValue(const int num1, const int num2) const;
+  Standard_EXPORT double WeightsDataValue(const int num1,
+                                                 const int num2) const;
 
   Standard_EXPORT int NbWeightsDataI() const;
 

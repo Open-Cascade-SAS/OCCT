@@ -34,11 +34,10 @@ public:
   //! Returns a ShellBasedSurfaceModel
   Standard_EXPORT StepShape_ShellBasedSurfaceModel();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&             aName,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<NCollection_HArray1<StepShape_Shell>>& aSbsmBoundary);
 
-  Standard_EXPORT void SetSbsmBoundary(
-    const occ::handle<NCollection_HArray1<StepShape_Shell>>& aSbsmBoundary);
+  Standard_EXPORT void SetSbsmBoundary(const occ::handle<NCollection_HArray1<StepShape_Shell>>& aSbsmBoundary);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepShape_Shell>> SbsmBoundary() const;
 

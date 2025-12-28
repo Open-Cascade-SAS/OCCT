@@ -45,6 +45,8 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 #define PLANE 1
 #define CYLINDER 2
@@ -154,8 +156,8 @@ static void Print(const occ::handle<Geom_Plane>& S, Standard_OStream& OS, const 
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_CylindricalSurface>& S,
-                  Standard_OStream&                           OS,
-                  const bool                                  compact)
+                  Standard_OStream&                      OS,
+                  const bool                 compact)
 {
   if (compact)
     OS << CYLINDER << " ";
@@ -186,8 +188,8 @@ static void Print(const occ::handle<Geom_CylindricalSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_ConicalSurface>& S,
-                  Standard_OStream&                       OS,
-                  const bool                              compact)
+                  Standard_OStream&                  OS,
+                  const bool             compact)
 {
   if (compact)
     OS << CONE << " ";
@@ -222,8 +224,8 @@ static void Print(const occ::handle<Geom_ConicalSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_SphericalSurface>& S,
-                  Standard_OStream&                         OS,
-                  const bool                                compact)
+                  Standard_OStream&                    OS,
+                  const bool               compact)
 {
   if (compact)
     OS << SPHERE << " ";
@@ -254,8 +256,8 @@ static void Print(const occ::handle<Geom_SphericalSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_ToroidalSurface>& S,
-                  Standard_OStream&                        OS,
-                  const bool                               compact)
+                  Standard_OStream&                   OS,
+                  const bool              compact)
 {
   if (compact)
     OS << TORUS << " ";
@@ -286,8 +288,8 @@ static void Print(const occ::handle<Geom_ToroidalSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_SurfaceOfLinearExtrusion>& S,
-                  Standard_OStream&                                 OS,
-                  const bool                                        compact)
+                  Standard_OStream&                            OS,
+                  const bool                       compact)
 {
   if (compact)
     OS << LINEAREXTRUSION << " ";
@@ -306,8 +308,8 @@ static void Print(const occ::handle<Geom_SurfaceOfLinearExtrusion>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_SurfaceOfRevolution>& S,
-                  Standard_OStream&                            OS,
-                  const bool                                   compact)
+                  Standard_OStream&                       OS,
+                  const bool                  compact)
 {
   if (compact)
     OS << REVOLUTION << " ";
@@ -329,8 +331,8 @@ static void Print(const occ::handle<Geom_SurfaceOfRevolution>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_BezierSurface>& S,
-                  Standard_OStream&                      OS,
-                  const bool                             compact)
+                  Standard_OStream&                 OS,
+                  const bool            compact)
 {
   if (compact)
     OS << BEZIER << " ";
@@ -394,8 +396,8 @@ static void Print(const occ::handle<Geom_BezierSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_BSplineSurface>& S,
-                  Standard_OStream&                       OS,
-                  const bool                              compact)
+                  Standard_OStream&                  OS,
+                  const bool             compact)
 {
   if (compact)
     OS << BSPLINE << " ";
@@ -506,8 +508,8 @@ static void Print(const occ::handle<Geom_BSplineSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_RectangularTrimmedSurface>& S,
-                  Standard_OStream&                                  OS,
-                  const bool                                         compact)
+                  Standard_OStream&                             OS,
+                  const bool                        compact)
 {
   if (compact)
     OS << RECTANGULAR << " ";
@@ -527,8 +529,8 @@ static void Print(const occ::handle<Geom_RectangularTrimmedSurface>& S,
 //=================================================================================================
 
 static void Print(const occ::handle<Geom_OffsetSurface>& S,
-                  Standard_OStream&                      OS,
-                  const bool                             compact)
+                  Standard_OStream&                 OS,
+                  const bool            compact)
 {
   if (compact)
     OS << OFFSET << " ";
@@ -546,8 +548,8 @@ static void Print(const occ::handle<Geom_OffsetSurface>& S,
 //=================================================================================================
 
 void GeomTools_SurfaceSet::PrintSurface(const occ::handle<Geom_Surface>& S,
-                                        Standard_OStream&                OS,
-                                        const bool                       compact)
+                                        Standard_OStream&           OS,
+                                        const bool      compact)
 {
   occ::handle<Standard_Type> TheType = S->DynamicType();
 
@@ -696,7 +698,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Plane
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_CylindricalSurface>& S)
 {
-  gp_Ax3 A;
+  gp_Ax3        A;
   double R = 0.;
   IS >> A;
   GeomTools::GetReal(IS, R);
@@ -711,7 +713,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Cylin
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ConicalSurface>& S)
 {
-  gp_Ax3 A;
+  gp_Ax3        A;
   double R = 0., Ang = 0.;
   IS >> A;
   GeomTools::GetReal(IS, R);
@@ -727,7 +729,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Conic
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SphericalSurface>& S)
 {
-  gp_Ax3 A;
+  gp_Ax3        A;
   double R = 0.;
   IS >> A;
   GeomTools::GetReal(IS, R);
@@ -742,7 +744,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Spher
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ToroidalSurface>& S)
 {
-  gp_Ax3 A;
+  gp_Ax3        A;
   double R1 = 0., R2 = 0.;
   IS >> A;
   GeomTools::GetReal(IS, R1);
@@ -756,13 +758,12 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Toroi
 // purpose  :
 //=======================================================================
 
-static Standard_IStream& operator>>(Standard_IStream&                           IS,
-                                    occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
+static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
 {
   gp_Dir D(gp_Dir::D::X);
   IS >> D;
   occ::handle<Geom_Curve> C = GeomTools_CurveSet::ReadCurve(IS);
-  S                         = new Geom_SurfaceOfLinearExtrusion(C, D);
+  S                    = new Geom_SurfaceOfLinearExtrusion(C, D);
   return IS;
 }
 
@@ -777,7 +778,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Surfa
   gp_Dir D(gp_Dir::D::X);
   IS >> P >> D;
   occ::handle<Geom_Curve> C = GeomTools_CurveSet::ReadCurve(IS);
-  S                         = new Geom_SurfaceOfRevolution(C, gp_Ax1(P, D));
+  S                    = new Geom_SurfaceOfRevolution(C, gp_Ax1(P, D));
   return IS;
 }
 
@@ -792,7 +793,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   IS >> urational >> vrational;
   int udegree = 0, vdegree = 0;
   IS >> udegree >> vdegree;
-  NCollection_Array2<gp_Pnt> poles(1, udegree + 1, 1, vdegree + 1);
+  NCollection_Array2<gp_Pnt>   poles(1, udegree + 1, 1, vdegree + 1);
   NCollection_Array2<double> weights(1, udegree + 1, 1, vdegree + 1);
 
   int i, j;
@@ -820,7 +821,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSplineSurface>& S)
 {
-  bool urational = false, vrational = false, uperiodic = false, vperiodic = false;
+  bool urational = false, vrational = false,
+                   uperiodic = false, vperiodic = false;
   IS >> urational >> vrational;
   IS >> uperiodic >> vperiodic;
   int udegree = 0, vdegree = 0, nbupoles = 0, nbvpoles = 0, nbuknots = 0, nbvknots = 0;
@@ -828,7 +830,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   IS >> nbupoles >> nbvpoles;
   IS >> nbuknots >> nbvknots;
 
-  NCollection_Array2<gp_Pnt> poles(1, nbupoles, 1, nbvpoles);
+  NCollection_Array2<gp_Pnt>   poles(1, nbupoles, 1, nbvpoles);
   NCollection_Array2<double> weights(1, nbupoles, 1, nbvpoles);
 
   int i, j;
@@ -842,16 +844,16 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
     }
   }
 
-  NCollection_Array1<double> uknots(1, nbuknots);
-  NCollection_Array1<int>    umults(1, nbuknots);
+  NCollection_Array1<double>    uknots(1, nbuknots);
+  NCollection_Array1<int> umults(1, nbuknots);
   for (i = 1; i <= nbuknots; i++)
   {
     GeomTools::GetReal(IS, uknots(i));
     IS >> umults(i);
   }
 
-  NCollection_Array1<double> vknots(1, nbvknots);
-  NCollection_Array1<int>    vmults(1, nbvknots);
+  NCollection_Array1<double>    vknots(1, nbvknots);
+  NCollection_Array1<int> vmults(1, nbvknots);
   for (i = 1; i <= nbvknots; i++)
   {
     GeomTools::GetReal(IS, vknots(i));
@@ -887,8 +889,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
 // purpose  :
 //=======================================================================
 
-static Standard_IStream& operator>>(Standard_IStream&                            IS,
-                                    occ::handle<Geom_RectangularTrimmedSurface>& S)
+static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_RectangularTrimmedSurface>& S)
 {
   double U1 = 0., U2 = 0., V1 = 0., V2 = 0.;
   GeomTools::GetReal(IS, U1);
@@ -896,7 +897,7 @@ static Standard_IStream& operator>>(Standard_IStream&                           
   GeomTools::GetReal(IS, V1);
   GeomTools::GetReal(IS, V2);
   occ::handle<Geom_Surface> BS = GeomTools_SurfaceSet::ReadSurface(IS);
-  S                            = new Geom_RectangularTrimmedSurface(BS, U1, U2, V1, V2);
+  S                       = new Geom_RectangularTrimmedSurface(BS, U1, U2, V1, V2);
   return IS;
 }
 
@@ -910,7 +911,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Offse
   double O = 0.;
   GeomTools::GetReal(IS, O);
   occ::handle<Geom_Surface> BS = GeomTools_SurfaceSet::ReadSurface(IS);
-  S                            = new Geom_OffsetSurface(BS, O, true);
+  S                       = new Geom_OffsetSurface(BS, O, true);
   return IS;
 }
 

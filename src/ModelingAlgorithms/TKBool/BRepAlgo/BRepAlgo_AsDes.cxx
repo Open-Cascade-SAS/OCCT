@@ -18,6 +18,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepAlgo_AsDes, Standard_Transient)
@@ -110,11 +111,11 @@ NCollection_List<TopoDS_Shape>& BRepAlgo_AsDes::ChangeDescendant(const TopoDS_Sh
 
 //=================================================================================================
 
-static void ReplaceInList(const TopoDS_Shape&             OldS,
-                          const TopoDS_Shape&             NewS,
+static void ReplaceInList(const TopoDS_Shape&   OldS,
+                          const TopoDS_Shape&   NewS,
                           NCollection_List<TopoDS_Shape>& L)
 {
-  NCollection_Map<TopoDS_Shape>            aMS;
+  NCollection_Map<TopoDS_Shape>        aMS;
   NCollection_List<TopoDS_Shape>::Iterator it(L);
   for (; it.More(); it.Next())
   {
@@ -155,9 +156,9 @@ static void RemoveInList(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& 
 
 //=================================================================================================
 
-bool BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&             S1,
-                                         const TopoDS_Shape&             S2,
-                                         NCollection_List<TopoDS_Shape>& LC) const
+bool BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&   S1,
+                                                     const TopoDS_Shape&   S2,
+                                                     NCollection_List<TopoDS_Shape>& LC) const
 {
   LC.Clear();
   if (HasDescendant(S1) && HasDescendant(S2))
@@ -165,7 +166,7 @@ bool BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&             S1,
     NCollection_List<TopoDS_Shape>::Iterator it1(Descendant(S1));
     for (; it1.More(); it1.Next())
     {
-      const TopoDS_Shape&                      DS1 = it1.Value();
+      const TopoDS_Shape&                DS1 = it1.Value();
       NCollection_List<TopoDS_Shape>::Iterator it2(Ascendant(DS1));
       for (; it2.More(); it2.Next())
       {
@@ -182,10 +183,10 @@ bool BRepAlgo_AsDes::HasCommonDescendant(const TopoDS_Shape&             S1,
 
 //=================================================================================================
 
-void BRepAlgo_AsDes::BackReplace(const TopoDS_Shape&                   OldS,
-                                 const TopoDS_Shape&                   NewS,
+void BRepAlgo_AsDes::BackReplace(const TopoDS_Shape&         OldS,
+                                 const TopoDS_Shape&         NewS,
                                  const NCollection_List<TopoDS_Shape>& L,
-                                 const bool                            InUp)
+                                 const bool      InUp)
 {
   NCollection_List<TopoDS_Shape>::Iterator it(L);
   for (; it.More(); it.Next())
@@ -214,9 +215,8 @@ void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
 {
   for (int i = 0; i < 2; ++i)
   {
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                    aMap   = !i ? up : down;
-    NCollection_List<TopoDS_Shape>* pLSOld = aMap.ChangeSeek(OldS);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& aMap   = !i ? up : down;
+    NCollection_List<TopoDS_Shape>*               pLSOld = aMap.ChangeSeek(OldS);
     if (!pLSOld)
     {
       continue;
@@ -229,7 +229,7 @@ void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
     if (!pLSNew)
     {
       // filter the list
-      NCollection_Map<TopoDS_Shape>            aMS;
+      NCollection_Map<TopoDS_Shape>        aMS;
       NCollection_List<TopoDS_Shape>::Iterator aIt(*pLSOld);
       for (; aIt.More();)
       {
@@ -247,7 +247,7 @@ void BRepAlgo_AsDes::Replace(const TopoDS_Shape& OldS, const TopoDS_Shape& NewS)
     else
     {
       // avoid duplicates
-      NCollection_Map<TopoDS_Shape>            aMS;
+      NCollection_Map<TopoDS_Shape>        aMS;
       NCollection_List<TopoDS_Shape>::Iterator aIt(*pLSNew);
       for (; aIt.More(); aIt.Next())
       {

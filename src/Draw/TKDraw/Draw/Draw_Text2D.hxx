@@ -32,11 +32,11 @@ class Draw_Text2D : public Draw_Drawable2D
 public:
   Standard_EXPORT Draw_Text2D(const gp_Pnt2d& p, const char* T, const Draw_Color& col);
 
-  Standard_EXPORT Draw_Text2D(const gp_Pnt2d&   p,
-                              const char*       T,
-                              const Draw_Color& col,
-                              const int         moveX,
-                              const int         moveY);
+  Standard_EXPORT Draw_Text2D(const gp_Pnt2d&        p,
+                              const char* T,
+                              const Draw_Color&      col,
+                              const int moveX,
+                              const int moveY);
 
   Standard_EXPORT void SetPnt2d(const gp_Pnt2d& p);
 
@@ -48,8 +48,8 @@ private:
   gp_Pnt2d                myPoint;
   Draw_Color              myColor;
   TCollection_AsciiString myText;
-  int                     mymoveX;
-  int                     mymoveY;
+  int        mymoveX;
+  int        mymoveY;
 };
 
 #endif // _Draw_Text2D_HeaderFile

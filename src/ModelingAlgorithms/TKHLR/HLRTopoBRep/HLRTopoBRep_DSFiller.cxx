@@ -45,7 +45,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -59,18 +62,17 @@
 // purpose  : explore the faces and insert them
 //=======================================================================
 
-void HLRTopoBRep_DSFiller::Insert(
-  const TopoDS_Shape&                                                              S,
-  Contap_Contour&                                                                  FO,
-  HLRTopoBRep_Data&                                                                DS,
-  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
-  const int                                                                        nbIso)
+void HLRTopoBRep_DSFiller::Insert(const TopoDS_Shape&            S,
+                                  Contap_Contour&                FO,
+                                  HLRTopoBRep_Data&              DS,
+                                  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+                                  const int         nbIso)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> ShapeMap;
-  TopExp_Explorer                                        ex(S, TopAbs_FACE);
+  TopExp_Explorer     ex(S, TopAbs_FACE);
   DS.Clear();
   bool withPCurve = true; // instead of nbIso != 0;
-  int  f          = 0;
+  int f          = 0;
 
   while (ex.More())
   {
@@ -114,14 +116,14 @@ void HLRTopoBRep_DSFiller::Insert(
 //=======================================================================
 
 void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
-                                      const TopoDS_Face& F,
-                                      Contap_Contour&    FO,
-                                      HLRTopoBRep_Data&  DS,
-                                      const bool         withPCurve)
+                                      const TopoDS_Face&     F,
+                                      Contap_Contour&        FO,
+                                      HLRTopoBRep_Data&      DS,
+                                      const bool withPCurve)
 {
   // Insert the intersections of FO in DS
 
-  const double                    tol  = BRep_Tool::Tolerance(F);
+  const double   tol  = BRep_Tool::Tolerance(F);
   NCollection_List<TopoDS_Shape>& IntL = DS.AddIntL(F);
   NCollection_List<TopoDS_Shape>& OutL = DS.AddOutL(F);
 
@@ -144,9 +146,9 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
   int       CurLine;
   for (CurLine = 1; CurLine <= NbLines; CurLine++)
   {
-    const Contap_Line& Line     = FO.Line(CurLine);
-    const int          NbPoints = Line.NbVertex();
-    int                CurPoint;
+    const Contap_Line&     Line     = FO.Line(CurLine);
+    const int NbPoints = Line.NbVertex();
+    int       CurPoint;
     if (Line.TypeContour() == Contap_Restriction)
     {
       // OutLine on restriction
@@ -184,18 +186,18 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 
         if (CurPoint < NbPoints)
         {
-          const Contap_Point PL = Line.Vertex(CurPoint + 1);
-          VL                    = MakeVertex(PL, tol, DS);
-          const double parL     = PL.ParameterOnLine();
+          const Contap_Point PL    = Line.Vertex(CurPoint + 1);
+          VL                       = MakeVertex(PL, tol, DS);
+          const double parL = PL.ParameterOnLine();
 
           if ((parL - parF) > Precision::PConfusion())
           {
 
             occ::handle<Geom_Curve>   C;
             occ::handle<Geom2d_Curve> C2d;
-            double                    first                     = parF;
-            double                    last                      = parL;
-            bool                      InsuffisantNumberOfPoints = false;
+            double        first                     = parF;
+            double        last                      = parL;
+            bool     InsuffisantNumberOfPoints = false;
 
             switch (Line.TypeContour())
             {
@@ -205,8 +207,8 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                 if (withPCurve)
                 {
                   occ::handle<Geom_Surface> S   = BRep_Tool::Surface(F);
-                  double                    Tol = 1e-7;
-                  C2d                           = GeomProjLib::Curve2d(C, first, last, S, Tol);
+                  double        Tol = 1e-7;
+                  C2d                      = GeomProjLib::Curve2d(C, first, last, S, Tol);
                 }
               }
               break;
@@ -215,14 +217,14 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                 C = new Geom_Circle(Line.Circle());
                 if (withPCurve)
                 {
-                  TopLoc_Location           Loc;
+                  TopLoc_Location      Loc;
                   occ::handle<Geom_Surface> S = BRep_Tool::Surface(F, Loc);
                   if (!Loc.IsIdentity())
                   {
                     S = occ::down_cast<Geom_Surface>(S->Transformed(Loc.Transformation()));
                   }
                   double Tol = 1e-7;
-                  C2d        = GeomProjLib::Curve2d(C, first, last, S, Tol);
+                  C2d               = GeomProjLib::Curve2d(C, first, last, S, Tol);
                 }
               }
               break;
@@ -312,10 +314,10 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                 */
                 else if (ipL - ipF < 5)
                 {
-                  const int                  nbp = ipL - ipF + 1;
-                  NCollection_Array1<double> knots(1, nbp);
-                  NCollection_Array1<int>    mults(1, nbp);
-                  NCollection_Array1<gp_Pnt> Points(1, nbp);
+                  const int  nbp = ipL - ipF + 1;
+                  NCollection_Array1<double>    knots(1, nbp);
+                  NCollection_Array1<int> mults(1, nbp);
+                  NCollection_Array1<gp_Pnt>      Points(1, nbp);
 
                   for (int i = 1; i <= nbp; i++)
                   {
@@ -342,10 +344,10 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                 }
                 else
                 {
-                  const int                  nbp = ipL - ipF + 1;
-                  NCollection_Array1<double> knots(1, nbp);
-                  NCollection_Array1<int>    mults(1, nbp);
-                  NCollection_Array1<gp_Pnt> Points(1, nbp);
+                  const int  nbp = ipL - ipF + 1;
+                  NCollection_Array1<double>    knots(1, nbp);
+                  NCollection_Array1<int> mults(1, nbp);
+                  NCollection_Array1<gp_Pnt>      Points(1, nbp);
 
                   double Maxx, Maxy, Maxz, Maxu, Maxv;
                   double Minx, Miny, Minz, Minu, Minv;
@@ -402,10 +404,10 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                   occ::handle<Geom2d_BSplineCurve>   CNull;
                   AppLine = new BRepApprox_ApproxLine(AppC, AppC2d, CNull);
 
-                  int               dmin = 4, dmax = 8, niter = 0;
-                  bool              tg = false;
+                  int  dmin = 4, dmax = 8, niter = 0;
+                  bool  tg = false;
                   BRepApprox_Approx Approx;
-                  double            TOL3d, TOL2d, TOL = 0.0001;
+                  double     TOL3d, TOL2d, TOL = 0.0001;
 
                   Maxx -= Minx;
                   Maxy -= Miny;
@@ -445,7 +447,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                   else
                   {
                     const AppParCurves_MultiBSpCurve& AppVal = Approx.Value(1);
-                    NCollection_Array1<gp_Pnt>        poles3d(1, AppVal.NbPoles());
+                    NCollection_Array1<gp_Pnt>                poles3d(1, AppVal.NbPoles());
                     AppVal.Curve(1, poles3d);
                     C = new Geom_BSplineCurve(poles3d,
                                               AppVal.Knots(),
@@ -453,7 +455,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
                                               AppVal.Degree());
 
                     const AppParCurves_MultiBSpCurve& AppVal2 = Approx.Value(2);
-                    NCollection_Array1<gp_Pnt2d>      poles2d(1, AppVal2.NbPoles());
+                    NCollection_Array1<gp_Pnt2d>              poles2d(1, AppVal2.NbPoles());
                     AppVal2.Curve(2, poles2d);
                     C2d   = new Geom2d_BSplineCurve(poles2d,
                                                   AppVal2.Knots(),
@@ -501,7 +503,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
   }
 
   // Correction of internal outlines: unite coinciding vertices
-  const double                             SqTol = tol * tol;
+  const double                SqTol = tol * tol;
   NCollection_List<TopoDS_Shape>::Iterator itl1(IntL);
   for (; itl1.More(); itl1.Next())
   {
@@ -547,7 +549,7 @@ void HLRTopoBRep_DSFiller::InsertFace(const int /*FI*/,
 //=======================================================================
 
 TopoDS_Vertex HLRTopoBRep_DSFiller::MakeVertex(const Contap_Point& P,
-                                               const double        tol,
+                                               const double tol,
                                                HLRTopoBRep_Data&   DS)
 {
   BRep_Builder  B;
@@ -563,15 +565,15 @@ TopoDS_Vertex HLRTopoBRep_DSFiller::MakeVertex(const Contap_Point& P,
     if (P.IsOnArc())
     {
       const TopoDS_Edge& E   = (*(BRepAdaptor_Curve2d*)(P.Arc().get())).Edge();
-      double             Par = P.ParameterOnArc();
+      double      Par = P.ParameterOnArc();
       const gp_Pnt&      P3d = P.Value();
 
       for (DS.InitVertex(E); DS.MoreVertex(); DS.NextVertex())
       {
         TopoDS_Vertex curV = DS.Vertex();
-        double        curP = DS.Parameter();
+        double curP = DS.Parameter();
         const gp_Pnt& PPP  = BRep_Tool::Pnt(curV);
-        double        TTT  = BRep_Tool::Tolerance(curV);
+        double TTT  = BRep_Tool::Tolerance(curV);
         if (P3d.IsEqual(PPP, TTT))
         {
           V = curV;
@@ -611,7 +613,7 @@ TopoDS_Vertex HLRTopoBRep_DSFiller::MakeVertex(const Contap_Point& P,
 //=======================================================================
 
 void HLRTopoBRep_DSFiller::InsertVertex(const Contap_Point& P,
-                                        const double        tol,
+                                        const double tol,
                                         const TopoDS_Edge&  E,
                                         HLRTopoBRep_Data&   DS)
 {
@@ -629,7 +631,7 @@ void HLRTopoBRep_DSFiller::InsertVertex(const Contap_Point& P,
     for (DS.InitVertex(E); DS.MoreVertex(); DS.NextVertex())
     {
       TopoDS_Vertex curV = DS.Vertex();
-      double        curP = DS.Parameter();
+      double curP = DS.Parameter();
       if (P.Value().IsEqual(BRep_Tool::Pnt(curV), BRep_Tool::Tolerance(curV)))
       {
         V = curV;
@@ -661,14 +663,14 @@ void HLRTopoBRep_DSFiller::ProcessEdges(HLRTopoBRep_Data& DS)
   BRep_Builder  B;
   TopoDS_Edge   newE;
   TopoDS_Vertex VF, VL, VI;
-  double        PF, PL, PI;
+  double PF, PL, PI;
 
   for (DS.InitEdge(); DS.MoreEdge(); DS.NextEdge())
   {
-    TopoDS_Edge                     E    = DS.Edge();
+    TopoDS_Edge           E    = DS.Edge();
     NCollection_List<TopoDS_Shape>& SplE = DS.AddSplE(E);
-    VF                                   = TopExp::FirstVertex(E);
-    VL                                   = TopExp::LastVertex(E);
+    VF                         = TopExp::FirstVertex(E);
+    VL                         = TopExp::LastVertex(E);
     BRep_Tool::Range(E, PF, PL);
     VF.Orientation(TopAbs_FORWARD);
     VL.Orientation(TopAbs_REVERSED);

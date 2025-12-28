@@ -82,11 +82,11 @@ occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label& L, const Quantity
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label& L,
-                                              const double     R,
-                                              const double     G,
-                                              const double     B,
-                                              const double     alpha)
+occ::handle<XCAFDoc_Color> XCAFDoc_Color::Set(const TDF_Label&    L,
+                                         const double R,
+                                         const double G,
+                                         const double B,
+                                         const double alpha)
 {
   occ::handle<XCAFDoc_Color> A;
   if (!L.FindAttribute(XCAFDoc_Color::GetID(), A))
@@ -124,7 +124,10 @@ void XCAFDoc_Color::Set(const Quantity_NameOfColor C)
 
 //=================================================================================================
 
-void XCAFDoc_Color::Set(const double R, const double G, const double B, const double alpha)
+void XCAFDoc_Color::Set(const double R,
+                        const double G,
+                        const double B,
+                        const double alpha)
 {
   Backup();
   Quantity_Color aColor;

@@ -29,15 +29,16 @@ class BRep_PointOnCurve : public BRep_PointRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_PointOnCurve(const double                   P,
+  Standard_EXPORT BRep_PointOnCurve(const double       P,
                                     const occ::handle<Geom_Curve>& C,
-                                    const TopLoc_Location&         L);
+                                    const TopLoc_Location&    L);
 
   //! Returns True
   Standard_EXPORT virtual bool IsPointOnCurve() const override;
 
   Standard_EXPORT virtual bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
-                                              const TopLoc_Location&         L) const override;
+                                                          const TopLoc_Location&    L) const
+    override;
 
   Standard_EXPORT virtual const occ::handle<Geom_Curve>& Curve() const override;
 
@@ -45,7 +46,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointOnCurve, BRep_PointRepresentation)
 

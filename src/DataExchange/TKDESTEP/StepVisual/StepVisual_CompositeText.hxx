@@ -34,15 +34,13 @@ public:
   //! Returns a CompositeText
   Standard_EXPORT StepVisual_CompositeText();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                        aName,
-    const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&            aName,
+                            const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText);
 
   Standard_EXPORT void SetCollectedText(
     const occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>>& aCollectedText);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> CollectedText()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TextOrCharacter>> CollectedText() const;
 
   Standard_EXPORT StepVisual_TextOrCharacter CollectedTextValue(const int num) const;
 

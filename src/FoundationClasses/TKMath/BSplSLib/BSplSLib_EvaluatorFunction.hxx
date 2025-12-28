@@ -38,18 +38,18 @@ public:
   virtual ~BSplSLib_EvaluatorFunction() {}
 
   //! Function evaluation method to be defined by descendant
-  virtual void Evaluate(const int    theDerivativeRequest,
-                        const double theUParameter,
-                        const double theVParameter,
-                        double&      theResult,
-                        int&         theErrorCode) const = 0;
+  virtual void Evaluate(const int theDerivativeRequest,
+                        const double    theUParameter,
+                        const double    theVParameter,
+                        double&         theResult,
+                        int&      theErrorCode) const = 0;
 
   //! Shortcut for function-call style usage
-  void operator()(const int    theDerivativeRequest,
-                  const double theUParameter,
-                  const double theVParameter,
-                  double&      theResult,
-                  int&         theErrorCode) const
+  void operator()(const int theDerivativeRequest,
+                  const double    theUParameter,
+                  const double    theVParameter,
+                  double&         theResult,
+                  int&      theErrorCode) const
   {
     Evaluate(theDerivativeRequest, theUParameter, theVParameter, theResult, theErrorCode);
   }

@@ -62,77 +62,74 @@ public:
                                const NCollection_Sequence<TDF_Label>& theClippingPlanes,
                                const NCollection_Sequence<TDF_Label>& theNotes,
                                const NCollection_Sequence<TDF_Label>& theAnnotations,
-                               const TDF_Label&                       theViewL) const;
+                               const TDF_Label&         theViewL) const;
 
   //! Sets a link with GUID
   Standard_EXPORT void SetView(const NCollection_Sequence<TDF_Label>& theShapes,
                                const NCollection_Sequence<TDF_Label>& theGDTs,
                                const NCollection_Sequence<TDF_Label>& theClippingPlanes,
-                               const TDF_Label&                       theViewL) const;
+                               const TDF_Label&         theViewL) const;
 
   //! Sets a link with GUID
   Standard_EXPORT void SetView(const NCollection_Sequence<TDF_Label>& theShapes,
                                const NCollection_Sequence<TDF_Label>& theGDTs,
-                               const TDF_Label&                       theViewL) const;
+                               const TDF_Label&         theViewL) const;
 
   //! Set Clipping planes to given View
-  Standard_EXPORT void SetClippingPlanes(
-    const NCollection_Sequence<TDF_Label>& theClippingPlaneLabels,
-    const TDF_Label&                       theViewL) const;
+  Standard_EXPORT void SetClippingPlanes(const NCollection_Sequence<TDF_Label>& theClippingPlaneLabels,
+                                         const TDF_Label&         theViewL) const;
 
   //! Remove View
   Standard_EXPORT void RemoveView(const TDF_Label& theViewL);
 
   //! Returns all View labels defined for label ShapeL
-  Standard_EXPORT bool GetViewLabelsForShape(const TDF_Label&                 theShapeL,
-                                             NCollection_Sequence<TDF_Label>& theViews) const;
+  Standard_EXPORT bool GetViewLabelsForShape(const TDF_Label&   theShapeL,
+                                                         NCollection_Sequence<TDF_Label>& theViews) const;
 
   //! Returns all View labels defined for label GDTL
-  Standard_EXPORT bool GetViewLabelsForGDT(const TDF_Label&                 theGDTL,
-                                           NCollection_Sequence<TDF_Label>& theViews) const;
+  Standard_EXPORT bool GetViewLabelsForGDT(const TDF_Label&   theGDTL,
+                                                       NCollection_Sequence<TDF_Label>& theViews) const;
 
   //! Returns all View labels defined for label ClippingPlaneL
-  Standard_EXPORT bool GetViewLabelsForClippingPlane(
-    const TDF_Label&                 theClippingPlaneL,
-    NCollection_Sequence<TDF_Label>& theViews) const;
+  Standard_EXPORT bool GetViewLabelsForClippingPlane(const TDF_Label& theClippingPlaneL,
+                                                                 NCollection_Sequence<TDF_Label>& theViews) const;
 
   //! Returns all View labels defined for label NoteL
-  Standard_EXPORT bool GetViewLabelsForNote(const TDF_Label&                 theNoteL,
-                                            NCollection_Sequence<TDF_Label>& theViews) const;
+  Standard_EXPORT bool GetViewLabelsForNote(const TDF_Label&   theNoteL,
+                                                        NCollection_Sequence<TDF_Label>& theViews) const;
 
   //! Returns all View labels defined for label AnnotationL
-  Standard_EXPORT bool GetViewLabelsForAnnotation(const TDF_Label&                 theAnnotationL,
-                                                  NCollection_Sequence<TDF_Label>& theViews) const;
+  Standard_EXPORT bool GetViewLabelsForAnnotation(const TDF_Label&   theAnnotationL,
+                                                              NCollection_Sequence<TDF_Label>& theViews) const;
 
   //! Adds a view definition to a View table and returns its label
   Standard_EXPORT TDF_Label AddView();
 
   //! Returns shape labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
-  Standard_EXPORT bool GetRefShapeLabel(const TDF_Label&                 theViewL,
-                                        NCollection_Sequence<TDF_Label>& theShapeLabels) const;
+  Standard_EXPORT bool GetRefShapeLabel(const TDF_Label&   theViewL,
+                                                    NCollection_Sequence<TDF_Label>& theShapeLabels) const;
 
   //! Returns GDT labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
-  Standard_EXPORT bool GetRefGDTLabel(const TDF_Label&                 theViewL,
-                                      NCollection_Sequence<TDF_Label>& theGDTLabels) const;
+  Standard_EXPORT bool GetRefGDTLabel(const TDF_Label&   theViewL,
+                                                  NCollection_Sequence<TDF_Label>& theGDTLabels) const;
 
   //! Returns ClippingPlane labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
-  Standard_EXPORT bool GetRefClippingPlaneLabel(
-    const TDF_Label&                 theViewL,
-    NCollection_Sequence<TDF_Label>& theClippingPlaneLabels) const;
+  Standard_EXPORT bool
+    GetRefClippingPlaneLabel(const TDF_Label&   theViewL,
+                             NCollection_Sequence<TDF_Label>& theClippingPlaneLabels) const;
 
   //! Returns Notes labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
-  Standard_EXPORT bool GetRefNoteLabel(const TDF_Label&                 theViewL,
-                                       NCollection_Sequence<TDF_Label>& theNoteLabels) const;
+  Standard_EXPORT bool GetRefNoteLabel(const TDF_Label&   theViewL,
+                                                   NCollection_Sequence<TDF_Label>& theNoteLabels) const;
 
   //! Returns Annotation labels defined for label theViewL
   //! Returns False if the theViewL is not in View table
-  Standard_EXPORT bool GetRefAnnotationLabel(
-    const TDF_Label&                 theViewL,
-    NCollection_Sequence<TDF_Label>& theAnnotationLabels) const;
+  Standard_EXPORT bool
+    GetRefAnnotationLabel(const TDF_Label& theViewL, NCollection_Sequence<TDF_Label>& theAnnotationLabels) const;
 
   //! Returns true if the given View is marked as locked
   Standard_EXPORT bool IsLocked(const TDF_Label& theViewL) const;

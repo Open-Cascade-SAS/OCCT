@@ -40,7 +40,9 @@ BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const occ::handle<Adaptor3d_Surface>& S
 
 //=================================================================================================
 
-void BlendFunc_ChAsymInv::Set(const double Dist1, const double Angle, const int Choix)
+void BlendFunc_ChAsymInv::Set(const double    Dist1,
+                              const double    Angle,
+                              const int Choix)
 {
   dist1 = std::abs(Dist1);
   angle = Angle;
@@ -158,7 +160,7 @@ bool BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const double Tol)
   Nsurf1 = d1u1.Crossed(d1v1);
   tsurf1 = Nsurf1.Crossed(nplan);
 
-  gp_Vec s1s2(pts1, pts2);
+  gp_Vec        s1s2(pts1, pts2);
   double PScaInv = 1. / tsurf1.Dot(s1s2), temp; // ,F4;
   double Nordu1 = d1u1.Magnitude(), Nordv1 = d1v1.Magnitude();
 
@@ -179,18 +181,20 @@ bool BlendFunc_ChAsymInv::IsSolution(const math_Vector& Sol, const double Tol)
 
 //=================================================================================================
 
-bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, const int DegL)
+bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector&     X,
+                                                    const int DegF,
+                                                    const int DegL)
 {
   if (DegF > DegL)
     return false;
 
-  gp_Vec   nplan, dnplan, d1gui, d2gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2;
-  gp_Vec   Nsurf1, tsurf1;
-  gp_Pnt   pts1, pts2, ptgui;
-  double   PScaInv, F4;
-  double   Normg = 0.;
-  gp_Pnt2d pt2d;
-  gp_Vec2d v2d;
+  gp_Vec        nplan, dnplan, d1gui, d2gui, d1u1, d1v1, d2u1, d2v1, d2uv1, d1u2, d1v2;
+  gp_Vec        Nsurf1, tsurf1;
+  gp_Pnt        pts1, pts2, ptgui;
+  double PScaInv, F4;
+  double Normg = 0.;
+  gp_Pnt2d      pt2d;
+  gp_Vec2d      v2d;
 
   if ((DegF == 0) && (DegL == 0))
   {
@@ -258,9 +262,9 @@ bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, co
 
   if (DegL == 1)
   {
-    gp_Vec dwtsurf1, tempVec;
+    gp_Vec        dwtsurf1, tempVec;
     double temp;
-    gp_Vec nps2(ptgui, pts2);
+    gp_Vec        nps2(ptgui, pts2);
 
     if (first)
     {
@@ -351,7 +355,7 @@ bool BlendFunc_ChAsymInv::ComputeValues(const math_Vector& X, const int DegF, co
 bool BlendFunc_ChAsymInv::Value(const math_Vector& X, math_Vector& F)
 {
   const bool Error = ComputeValues(X, 0, 0);
-  F                = FX;
+  F                            = FX;
   return Error;
 }
 
@@ -360,7 +364,7 @@ bool BlendFunc_ChAsymInv::Value(const math_Vector& X, math_Vector& F)
 bool BlendFunc_ChAsymInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
   const bool Error = ComputeValues(X, 1, 1);
-  D                = DX;
+  D                            = DX;
   return Error;
 }
 
@@ -369,8 +373,8 @@ bool BlendFunc_ChAsymInv::Derivatives(const math_Vector& X, math_Matrix& D)
 bool BlendFunc_ChAsymInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
 {
   const bool Error = ComputeValues(X, 0, 1);
-  F                = FX;
-  D                = DX;
+  F                            = FX;
+  D                            = DX;
   return Error;
   /*  std::cout<<std::endl;
     std::cout<<" test ChAsymInv"<<std::endl;

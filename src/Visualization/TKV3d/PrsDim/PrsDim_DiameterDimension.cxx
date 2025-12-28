@@ -117,8 +117,8 @@ void PrsDim_DiameterDimension::SetMeasuredGeometry(const gp_Circ& theCircle)
 
 void PrsDim_DiameterDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape)
 {
-  gp_Pnt aDummyPnt(gp::Origin());
-  bool   isClosed = false;
+  gp_Pnt           aDummyPnt(gp::Origin());
+  bool isClosed = false;
 
   myGeometryType    = GeometryType_UndefShapes;
   myShape           = theShape;
@@ -171,7 +171,7 @@ void PrsDim_DiameterDimension::ComputeAnchorPoint()
   // Anchor point is an intersection of dimension plane and circle.
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(myCircle);
   occ::handle<Geom_Plane>  aPlane  = new Geom_Plane(myPlane);
-  GeomAPI_IntCS            anIntersector(aCircle, aPlane);
+  GeomAPI_IntCS       anIntersector(aCircle, aPlane);
   if (!anIntersector.IsDone())
   {
     myIsGeometryValid = false;
@@ -242,7 +242,7 @@ double PrsDim_DiameterDimension::ComputeValue() const
 
 void PrsDim_DiameterDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                        const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode)
+                                       const int            theMode)
 {
   mySelectionGeom.Clear(theMode);
 
@@ -298,9 +298,9 @@ bool PrsDim_DiameterDimension::IsValidCircle(const gp_Circ& theCircle) const
 //=================================================================================================
 
 bool PrsDim_DiameterDimension::IsValidAnchor(const gp_Circ& theCircle,
-                                             const gp_Pnt&  theAnchor) const
+                                                         const gp_Pnt&  theAnchor) const
 {
-  gp_Pln aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
+  gp_Pln        aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
   double anAnchorDist = theAnchor.Distance(theCircle.Location());
   double aRadius      = myCircle.Radius();
 

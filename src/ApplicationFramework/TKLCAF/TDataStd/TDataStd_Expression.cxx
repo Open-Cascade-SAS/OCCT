@@ -24,6 +24,7 @@
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_Attribute.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_RelocationTable.hxx>
 
@@ -99,12 +100,11 @@ const Standard_GUID& TDataStd_Expression::ID() const
 void TDataStd_Expression::Restore(const occ::handle<TDF_Attribute>& With)
 {
   occ::handle<TDataStd_Expression> EXPR = occ::down_cast<TDataStd_Expression>(With);
-  myExpression                          = EXPR->GetExpression();
+  myExpression                     = EXPR->GetExpression();
 
   occ::handle<TDataStd_Variable> V;
   myVariables.Clear();
-  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator it(EXPR->GetVariables()); it.More();
-       it.Next())
+  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator it(EXPR->GetVariables()); it.More(); it.Next())
   {
     V = occ::down_cast<TDataStd_Variable>(it.Value());
     myVariables.Append(V);
@@ -153,9 +153,7 @@ void TDataStd_Expression::DumpJson(Standard_OStream& theOStream, int theDepth) c
 
   OCCT_DUMP_FIELD_VALUE_STRING(theOStream, myExpression)
 
-  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aVariableIt(myVariables);
-       aVariableIt.More();
-       aVariableIt.Next())
+  for (NCollection_List<occ::handle<TDF_Attribute>>::Iterator aVariableIt(myVariables); aVariableIt.More(); aVariableIt.Next())
   {
     const occ::handle<TDF_Attribute>& anAttribute = aVariableIt.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anAttribute.get())

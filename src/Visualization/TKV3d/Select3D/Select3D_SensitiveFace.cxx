@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace, Select3D_SensitiveEntity)
 // Purpose : simply avoid interfering with the version update
 //==================================================
 Select3D_SensitiveFace::Select3D_SensitiveFace(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                               const NCollection_Array1<gp_Pnt>&         thePoints,
-                                               const Select3D_TypeOfSensitivity          theType)
+                                               const NCollection_Array1<gp_Pnt>&            thePoints,
+                                               const Select3D_TypeOfSensitivity     theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -42,10 +42,9 @@ Select3D_SensitiveFace::Select3D_SensitiveFace(const occ::handle<SelectMgr_Entit
 
 //=================================================================================================
 
-Select3D_SensitiveFace::Select3D_SensitiveFace(
-  const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints,
-  const Select3D_TypeOfSensitivity                theType)
+Select3D_SensitiveFace::Select3D_SensitiveFace(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                               const occ::handle<NCollection_HArray1<gp_Pnt>>&   thePoints,
+                                               const Select3D_TypeOfSensitivity     theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -90,7 +89,7 @@ void Select3D_SensitiveFace::BVH()
 // purpose  : Checks whether the face overlaps current selecting volume
 //=======================================================================
 bool Select3D_SensitiveFace::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                     SelectBasics_PickResult&             thePickResult)
+                                                 SelectBasics_PickResult&             thePickResult)
 {
   return myFacePoints->Matches(theMgr, thePickResult);
 }

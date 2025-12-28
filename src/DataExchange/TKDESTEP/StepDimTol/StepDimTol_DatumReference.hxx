@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepDimTol_DatumReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const int                            thePrecedence,
+  Standard_EXPORT void Init(const int          thePrecedence,
                             const occ::handle<StepDimTol_Datum>& theReferencedDatum);
 
   //! Returns field Precedence
@@ -50,7 +50,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReference, Standard_Transient)
 
 private:
-  int                           myPrecedence;
+  int         myPrecedence;
   occ::handle<StepDimTol_Datum> myReferencedDatum;
 };
 

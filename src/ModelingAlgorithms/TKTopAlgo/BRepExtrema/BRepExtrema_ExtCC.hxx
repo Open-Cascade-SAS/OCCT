@@ -63,13 +63,13 @@ public:
                                               double& distP12,
                                               double& distP21,
                                               double& distP22,
-                                              gp_Pnt& P11,
-                                              gp_Pnt& P12,
-                                              gp_Pnt& P21,
-                                              gp_Pnt& P22) const;
+                                              gp_Pnt&        P11,
+                                              gp_Pnt&        P12,
+                                              gp_Pnt&        P21,
+                                              gp_Pnt&        P22) const;
 
 private:
-  Extrema_ExtCC                  myExtCC;
+  Extrema_ExtCC             myExtCC;
   occ::handle<BRepAdaptor_Curve> myHC;
 };
 

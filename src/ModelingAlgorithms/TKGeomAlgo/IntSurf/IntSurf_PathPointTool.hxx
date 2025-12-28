@@ -73,7 +73,11 @@ public:
 
   //! Parametric coordinates associated to the multiplicity.
   //! An exception is raised if Mult<=0 or Mult>multiplicity.
-  static void Parameters(const IntSurf_PathPoint& PStart, const int Mult, double& U, double& V);
+  static void Parameters(const IntSurf_PathPoint& PStart,
+                         const int   Mult,
+                         double&           U,
+                         double&           V);
+
 };
 
 #include <IntSurf_PathPointTool.lxx>

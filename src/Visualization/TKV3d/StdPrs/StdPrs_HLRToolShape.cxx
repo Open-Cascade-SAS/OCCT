@@ -21,7 +21,7 @@ StdPrs_HLRToolShape::StdPrs_HLRToolShape(const TopoDS_Shape&      TheShape,
                                          const HLRAlgo_Projector& TheProjector)
 {
   occ::handle<HLRBRep_Algo> Hider = new HLRBRep_Algo();
-  int                       nbIso = 0; // 5;
+  int     nbIso = 0; // 5;
   Hider->Add(TheShape, nbIso);
   Hider->Projector(TheProjector);
   Hider->Update();

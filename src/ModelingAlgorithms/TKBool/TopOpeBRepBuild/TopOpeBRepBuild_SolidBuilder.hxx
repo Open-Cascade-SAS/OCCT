@@ -39,9 +39,10 @@ public:
   //! Create a SolidBuilder to build the areas on
   //! the shapes (shells, blocks of faces) described by <LS>.
   Standard_EXPORT TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
-                                               const bool                    ForceClass = false);
+                                               const bool ForceClass = false);
 
-  Standard_EXPORT void InitSolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS, const bool ForceClass);
+  Standard_EXPORT void InitSolidBuilder(TopOpeBRepBuild_ShellFaceSet& FS,
+                                        const bool        ForceClass);
 
   Standard_EXPORT int InitSolid();
 

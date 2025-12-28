@@ -38,8 +38,8 @@ TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer()
 //=================================================================================================
 
 TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                             const TopAbs_ShapeEnum                          T,
-                                             const bool                                      FK)
+                                             const TopAbs_ShapeEnum                     T,
+                                             const bool                     FK)
 {
   Init(HDS, T, FK);
 }
@@ -47,8 +47,8 @@ TopOpeBRepDS_Explorer::TopOpeBRepDS_Explorer(const occ::handle<TopOpeBRepDS_HDat
 //=================================================================================================
 
 void TopOpeBRepDS_Explorer::Init(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                 const TopAbs_ShapeEnum                          T,
-                                 const bool                                      FK)
+                                 const TopAbs_ShapeEnum                     T,
+                                 const bool                     FK)
 {
   myI   = 1;
   myN   = 0;
@@ -74,7 +74,7 @@ TopAbs_ShapeEnum TopOpeBRepDS_Explorer::Type() const
 
 void TopOpeBRepDS_Explorer::Find()
 {
-  bool                              found = false;
+  bool                  found = false;
   const TopOpeBRepDS_DataStructure& BDS   = myHDS->DS();
   while ((myI <= myN) && (!found))
   {

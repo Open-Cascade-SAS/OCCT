@@ -26,7 +26,7 @@ class RWGltf_GltfMaterialMap : public RWMesh_MaterialMap
 public:
   //! Main constructor.
   Standard_EXPORT RWGltf_GltfMaterialMap(const TCollection_AsciiString& theFile,
-                                         const int                      theDefSamplerId);
+                                         const int         theDefSamplerId);
 
   //! Destructor.
   Standard_EXPORT virtual ~RWGltf_GltfMaterialMap();
@@ -40,8 +40,8 @@ public:
   //! Add bufferView's into RWGltf_GltfRootElement_BufferViews section with images collected by
   //! AddImagesToGlb().
   Standard_EXPORT void FlushGlbBufferViews(RWGltf_GltfOStreamWriter* theWriter,
-                                           const int                 theBinDataBufferId,
-                                           int&                      theBuffViewId);
+                                           const int    theBinDataBufferId,
+                                           int&         theBuffViewId);
 
   //! Write RWGltf_GltfRootElement_Images section with images collected by AddImagesToGlb().
   Standard_EXPORT void FlushGlbImages(RWGltf_GltfOStreamWriter* theWriter);
@@ -51,16 +51,16 @@ public:
   //! (an alternative to AddImagesToGlb() + FlushBufferViews() + FlushImagesGlb()).
   Standard_EXPORT void AddImages(RWGltf_GltfOStreamWriter* theWriter,
                                  const XCAFPrs_Style&      theStyle,
-                                 bool&                     theIsStarted);
+                                 bool&         theIsStarted);
 
   //! Add material.
   Standard_EXPORT void AddMaterial(RWGltf_GltfOStreamWriter* theWriter,
                                    const XCAFPrs_Style&      theStyle,
-                                   bool&                     theIsStarted);
+                                   bool&         theIsStarted);
   //! Add material textures.
   Standard_EXPORT void AddTextures(RWGltf_GltfOStreamWriter* theWriter,
                                    const XCAFPrs_Style&      theStyle,
-                                   bool&                     theIsStarted);
+                                   bool&         theIsStarted);
 
   //! Return extent of images map.
   int NbImages() const { return myImageMap.Extent(); }
@@ -75,32 +75,33 @@ public:
 
 protected:
   //! Add texture image.
-  Standard_EXPORT void addImage(RWGltf_GltfOStreamWriter*         theWriter,
+  Standard_EXPORT void addImage(RWGltf_GltfOStreamWriter*    theWriter,
                                 const occ::handle<Image_Texture>& theTexture,
-                                bool&                             theIsStarted);
+                                bool&            theIsStarted);
 
   //! Add texture image into GLB stream.
   //! @param[in][out] theBinFile   output file stream
   //! @param[in] theTexture  texture image to add
-  Standard_EXPORT void addGlbImage(std::ostream&                     theBinFile,
+  Standard_EXPORT void addGlbImage(std::ostream&                theBinFile,
                                    const occ::handle<Image_Texture>& theTexture);
 
   //! Add texture.
-  Standard_EXPORT void addTexture(RWGltf_GltfOStreamWriter*         theWriter,
+  Standard_EXPORT void addTexture(RWGltf_GltfOStreamWriter*    theWriter,
                                   const occ::handle<Image_Texture>& theTexture,
-                                  bool&                             theIsStarted);
+                                  bool&            theIsStarted);
 
   //! Add material
-  Standard_EXPORT virtual TCollection_AsciiString AddMaterial(
-    const XCAFPrs_Style& theStyle) override;
+  Standard_EXPORT virtual TCollection_AsciiString AddMaterial(const XCAFPrs_Style& theStyle)
+    override;
 
   //! Virtual method actually defining the material (e.g. export to the file).
   Standard_EXPORT virtual void DefineMaterial(const XCAFPrs_Style&           theStyle,
                                               const TCollection_AsciiString& theKey,
-                                              const TCollection_AsciiString& theName) override;
+                                              const TCollection_AsciiString& theName)
+    override;
 
 protected:
-  RWGltf_GltfOStreamWriter*                                                     myWriter;
+  RWGltf_GltfOStreamWriter*                                                myWriter;
   NCollection_IndexedDataMap<occ::handle<Image_Texture>, RWGltf_GltfBufferView> myImageMap;
   NCollection_Map<occ::handle<Image_Texture>>                                   myTextureMap;
 

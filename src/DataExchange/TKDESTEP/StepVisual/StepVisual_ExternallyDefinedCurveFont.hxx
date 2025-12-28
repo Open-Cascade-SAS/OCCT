@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepVisual_ExternallyDefinedCurveFont();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedCurveFont, StepBasic_ExternallyDefinedItem)
+
 };
 
 #endif // _StepVisual_ExternallyDefinedCurveFont_HeaderFile

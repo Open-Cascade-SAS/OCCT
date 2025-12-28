@@ -26,7 +26,7 @@
 
 static const char* MAGICNUMBER                 = "FSDFILE";
 static const char* ENDOFNORMALEXTENDEDSECTION  = "BEGIN_REF_SECTION";
-static const int   SIZEOFNORMALEXTENDEDSECTION = 16;
+static const int SIZEOFNORMALEXTENDEDSECTION = 16;
 
 #define USEOSDREAL 1
 
@@ -52,7 +52,7 @@ Storage_Error FSD_File::IsGoodFileType(const TCollection_AsciiString& aName)
   if (s == Storage_VSOk)
   {
     TCollection_AsciiString l;
-    size_t                  len = strlen(FSD_File::MagicNumber());
+    size_t           len = strlen(FSD_File::MagicNumber());
 
     f.ReadChar(l, len);
 
@@ -171,7 +171,7 @@ void FSD_File::FlushEndOfLine()
 
 void FSD_File::ReadLine(TCollection_AsciiString& buffer)
 {
-  char Buffer[8193];
+  char             Buffer[8193];
   bool IsEnd = false;
 
   buffer.Clear();
@@ -201,7 +201,7 @@ void FSD_File::ReadLine(TCollection_AsciiString& buffer)
 void FSD_File::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 {
   const char16_t* extBuffer;
-  int             i, c, d;
+  int   i, c, d;
 
   extBuffer = buffer.ToExtString();
 
@@ -220,10 +220,10 @@ void FSD_File::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 
 void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 {
-  char        c = '\0';
-  char16_t    i = 0, count = 0;
-  bool        fin = false;
-  const char* tg  = ENDOFNORMALEXTENDEDSECTION;
+  char                  c = '\0';
+  char16_t i = 0, count = 0;
+  bool      fin = false;
+  const char*      tg  = ENDOFNORMALEXTENDEDSECTION;
 
   buffer.Clear();
 
@@ -275,7 +275,7 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 
 void FSD_File::ReadChar(TCollection_AsciiString& buffer, const size_t rsize)
 {
-  char   c      = '\0';
+  char          c      = '\0';
   size_t ccount = 0;
 
   buffer.Clear();
@@ -295,9 +295,9 @@ void FSD_File::ReadChar(TCollection_AsciiString& buffer, const size_t rsize)
 
 void FSD_File::ReadString(TCollection_AsciiString& buffer)
 {
-  char  Buffer[8193];
-  char* bpos;
-  bool  IsEnd = false, isFirstTime = true;
+  char             Buffer[8193];
+  char*            bpos;
+  bool IsEnd = false, isFirstTime = true;
 
   buffer.Clear();
 
@@ -334,10 +334,10 @@ void FSD_File::ReadString(TCollection_AsciiString& buffer)
 
 void FSD_File::ReadWord(TCollection_AsciiString& buffer)
 {
-  char c = '\0';
-  char b[8193], *tmpb;
+  char             c = '\0';
+  char             b[8193], *tmpb;
   bool IsEnd = false;
-  int  i;
+  int i;
 
   tmpb = b;
   memset(b, '\0', 8193);
@@ -569,7 +569,7 @@ Storage_BaseDriver& FSD_File::GetReal(double& aValue)
 Storage_BaseDriver& FSD_File::GetShortReal(float& aValue)
 {
 #ifdef USEOSDREAL
-  char   realbuffer[100];
+  char          realbuffer[100];
   double r = 0.0;
 
   realbuffer[0] = '\0';
@@ -615,14 +615,14 @@ Storage_Error FSD_File::BeginWriteInfoSection()
 
 //=================================================================================================
 
-void FSD_File::WriteInfo(const int                                            nbObj,
-                         const TCollection_AsciiString&                       dbVersion,
-                         const TCollection_AsciiString&                       date,
-                         const TCollection_AsciiString&                       schemaName,
-                         const TCollection_AsciiString&                       schemaVersion,
-                         const TCollection_ExtendedString&                    appName,
-                         const TCollection_AsciiString&                       appVersion,
-                         const TCollection_ExtendedString&                    dataType,
+void FSD_File::WriteInfo(const int               nbObj,
+                         const TCollection_AsciiString&       dbVersion,
+                         const TCollection_AsciiString&       date,
+                         const TCollection_AsciiString&       schemaName,
+                         const TCollection_AsciiString&       schemaVersion,
+                         const TCollection_ExtendedString&    appName,
+                         const TCollection_AsciiString&       appVersion,
+                         const TCollection_ExtendedString&    dataType,
                          const NCollection_Sequence<TCollection_AsciiString>& userInfo)
 {
   int i;
@@ -665,7 +665,7 @@ Storage_Error FSD_File::BeginReadInfoSection()
 {
   Storage_Error           s;
   TCollection_AsciiString l;
-  size_t                  len = strlen(FSD_File::MagicNumber());
+  size_t           len = strlen(FSD_File::MagicNumber());
 
   ReadChar(l, len);
 
@@ -686,14 +686,14 @@ Storage_Error FSD_File::BeginReadInfoSection()
 // purpose  : ------------------- INFO : READ
 //=======================================================================
 
-void FSD_File::ReadInfo(int&                                           nbObj,
-                        TCollection_AsciiString&                       dbVersion,
-                        TCollection_AsciiString&                       date,
-                        TCollection_AsciiString&                       schemaName,
-                        TCollection_AsciiString&                       schemaVersion,
-                        TCollection_ExtendedString&                    appName,
-                        TCollection_AsciiString&                       appVersion,
-                        TCollection_ExtendedString&                    dataType,
+void FSD_File::ReadInfo(int&              nbObj,
+                        TCollection_AsciiString&       dbVersion,
+                        TCollection_AsciiString&       date,
+                        TCollection_AsciiString&       schemaName,
+                        TCollection_AsciiString&       schemaVersion,
+                        TCollection_ExtendedString&    appName,
+                        TCollection_AsciiString&       appVersion,
+                        TCollection_ExtendedString&    dataType,
                         NCollection_Sequence<TCollection_AsciiString>& userInfo)
 {
   if (!(myStream >> nbObj))
@@ -728,8 +728,7 @@ void FSD_File::ReadInfo(int&                                           nbObj,
 
 //=================================================================================================
 
-void FSD_File::ReadCompleteInfo(Standard_IStream& /*theIStream*/,
-                                occ::handle<Storage_Data>& /*theData*/)
+void FSD_File::ReadCompleteInfo(Standard_IStream& /*theIStream*/, occ::handle<Storage_Data>& /*theData*/)
 {
 }
 
@@ -801,7 +800,7 @@ Storage_Error FSD_File::BeginReadCommentSection()
 void FSD_File::ReadComment(NCollection_Sequence<TCollection_ExtendedString>& aCom)
 {
   TCollection_ExtendedString line;
-  int                        len, i;
+  int           len, i;
 
   if (!(myStream >> len))
     throw Storage_StreamTypeMismatchError();
@@ -847,7 +846,8 @@ void FSD_File::SetTypeSectionSize(const int aSize)
 
 //=================================================================================================
 
-void FSD_File::WriteTypeInformations(const int typeNum, const TCollection_AsciiString& typeName)
+void FSD_File::WriteTypeInformations(const int         typeNum,
+                                     const TCollection_AsciiString& typeName)
 {
   myStream << typeNum << " " << typeName.ToCString() << "\n";
   if (myStream.bad())
@@ -935,7 +935,7 @@ void FSD_File::SetRootSectionSize(const int aSize)
 //=================================================================================================
 
 void FSD_File::WriteRoot(const TCollection_AsciiString& rootName,
-                         const int                      aRef,
+                         const int         aRef,
                          const TCollection_AsciiString& rootType)
 {
   myStream << aRef << " " << rootName.ToCString() << " " << rootType.ToCString() << "\n";
@@ -980,7 +980,7 @@ int FSD_File::RootSectionSize()
 //=================================================================================================
 
 void FSD_File::ReadRoot(TCollection_AsciiString& rootName,
-                        int&                     aRef,
+                        int&        aRef,
                         TCollection_AsciiString& rootType)
 {
   if (!(myStream >> aRef))
@@ -1101,7 +1101,8 @@ Storage_Error FSD_File::BeginWriteDataSection()
 
 //=================================================================================================
 
-void FSD_File::WritePersistentObjectHeader(const int aRef, const int aType)
+void FSD_File::WritePersistentObjectHeader(const int aRef,
+                                           const int aType)
 {
   myStream << "\n#" << aRef << "=%" << aType;
   if (myStream.bad())

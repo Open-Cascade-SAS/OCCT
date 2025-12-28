@@ -37,11 +37,10 @@ occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Get(const TDF_Label& theLa
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Set(
-  const TDF_Label&                  theLabel,
-  const TCollection_ExtendedString& theUserName,
-  const TCollection_ExtendedString& theTimeStamp,
-  const TCollection_ExtendedString& theComment)
+occ::handle<XCAFDoc_NoteComment> XCAFDoc_NoteComment::Set(const TDF_Label&                  theLabel,
+                                                     const TCollection_ExtendedString& theUserName,
+                                                     const TCollection_ExtendedString& theTimeStamp,
+                                                     const TCollection_ExtendedString& theComment)
 {
   occ::handle<XCAFDoc_NoteComment> aNoteComment;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteComment::GetID(), aNoteComment))

@@ -50,8 +50,8 @@ protected:
   Standard_EXPORT Graphic3d_Texture1D(const Graphic3d_NameOfTexture1D theName,
                                       const Graphic3d_TypeOfTexture   theType);
 
-  Standard_EXPORT Graphic3d_Texture1D(const occ::handle<Image_PixMap>& thePixMap,
-                                      const Graphic3d_TypeOfTexture    theType);
+  Standard_EXPORT Graphic3d_Texture1D(const occ::handle<Image_PixMap>&   thePixMap,
+                                      const Graphic3d_TypeOfTexture theType);
 
 private:
   Graphic3d_NameOfTexture1D myName;

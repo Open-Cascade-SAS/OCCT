@@ -45,8 +45,8 @@ occ::handle<StepData_StepModel> STEPEdit::NewModel()
 
 occ::handle<IFSelect_Signature> STEPEdit::SignType()
 {
-  static std::mutex                       aMutex;
-  std::lock_guard<std::mutex>             aLock(aMutex);
+  static std::mutex                  aMutex;
+  std::lock_guard<std::mutex>        aLock(aMutex);
   static occ::handle<StepSelect_StepType> sty;
   if (!sty.IsNull())
     return sty;

@@ -27,16 +27,17 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <TopoDS.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepTopAdaptor_TopolTool, Adaptor3d_TopolTool)
 
 static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
-                    const int                         nbup,
-                    const int                         nbvp,
-                    int&                              myNbSamplesU,
-                    int&                              myNbSamplesV);
+                    const int    nbup,
+                    const int    nbvp,
+                    int&         myNbSamplesU,
+                    int&         myNbSamplesV);
 
 //=================================================================================================
 
@@ -140,8 +141,7 @@ occ::handle<Adaptor2d_Curve2d> BRepTopAdaptor_TopolTool::Value()
 
 void* BRepTopAdaptor_TopolTool::Edge() const
 {
-  occ::handle<BRepAdaptor_Curve2d> aHCurve =
-    occ::down_cast<BRepAdaptor_Curve2d>(myCIterator.Value());
+  occ::handle<BRepAdaptor_Curve2d> aHCurve = occ::down_cast<BRepAdaptor_Curve2d>(myCIterator.Value());
   return (void*)(&aHCurve->Edge());
 }
 
@@ -174,9 +174,9 @@ occ::handle<Adaptor3d_HVertex> BRepTopAdaptor_TopolTool::Vertex()
 
 //=================================================================================================
 
-TopAbs_State BRepTopAdaptor_TopolTool::Classify(const gp_Pnt2d& P,
+TopAbs_State BRepTopAdaptor_TopolTool::Classify(const gp_Pnt2d&        P,
                                                 const double    Tol,
-                                                const bool      RecadreOnPeriodic)
+                                                const bool RecadreOnPeriodic)
 {
   if (myFace.IsNull())
     return TopAbs_UNKNOWN;
@@ -189,9 +189,9 @@ TopAbs_State BRepTopAdaptor_TopolTool::Classify(const gp_Pnt2d& P,
 
 //=================================================================================================
 
-bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
-                                            const double    Tol,
-                                            const bool      RecadreOnPeriodic)
+bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d&        P,
+                                                        const double    Tol,
+                                                        const bool RecadreOnPeriodic)
 {
   if (myFClass2d == NULL)
   {
@@ -234,13 +234,13 @@ TopAbs_Orientation BRepTopAdaptor_TopolTool::Orientation(const occ::handle<Adapt
 //=================================================================================================
 
 void Analyse(const NCollection_Array2<gp_Pnt>& array2,
-             const int                         nbup,
-             const int                         nbvp,
-             int&                              myNbSamplesU,
-             int&                              myNbSamplesV)
+             const int    nbup,
+             const int    nbvp,
+             int&         myNbSamplesU,
+             int&         myNbSamplesV)
 {
-  gp_Vec Vi, Vip1;
-  int    sh, nbch, i, j;
+  gp_Vec           Vi, Vip1;
+  int sh, nbch, i, j;
 
   sh   = 1;
   nbch = 0;
@@ -264,7 +264,7 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2,
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
         double pd = Vi.Dot(Vip1);
-        Vi        = Vip1;
+        Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
           if (pd > 0)
@@ -314,7 +314,7 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2,
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
         double pd = Vi.Dot(Vip1);
-        Vi        = Vip1;
+        Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
           if (pd > 0)
@@ -354,14 +354,14 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
   if (usup < uinf)
   {
     double temp = uinf;
-    uinf        = usup;
-    usup        = temp;
+    uinf               = usup;
+    usup               = temp;
   }
   if (vsup < vinf)
   {
     double temp = vinf;
-    vinf        = vsup;
-    vsup        = temp;
+    vinf               = vsup;
+    vsup               = temp;
   }
   if (uinf == RealFirst() && usup == RealLast())
   {
@@ -391,7 +391,7 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
     vsup = vinf + 2.e5;
   }
 
-  int                 nbsu, nbsv;
+  int    nbsu, nbsv;
   GeomAbs_SurfaceType typS = myS->GetType();
   switch (typS)
   {
@@ -466,9 +466,9 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
     if (typS == GeomAbs_BSplineSurface)
     {
       const occ::handle<Geom_BSplineSurface>& Bspl = myS->BSpline();
-      int                                     nbup = Bspl->NbUPoles();
-      int                                     nbvp = Bspl->NbVPoles();
-      NCollection_Array2<gp_Pnt>              array2(1, nbup, 1, nbvp);
+      int                   nbup = Bspl->NbUPoles();
+      int                   nbvp = Bspl->NbVPoles();
+      NCollection_Array2<gp_Pnt>                 array2(1, nbup, 1, nbvp);
       Bspl->Poles(array2);
       Analyse(array2, nbup, nbvp, myNbSamplesU, myNbSamplesV);
       nbsu = myNbSamplesU;
@@ -478,9 +478,9 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
     else if (typS == GeomAbs_BezierSurface)
     {
       const occ::handle<Geom_BezierSurface>& Bez  = myS->Bezier();
-      int                                    nbup = Bez->NbUPoles();
-      int                                    nbvp = Bez->NbVPoles();
-      NCollection_Array2<gp_Pnt>             array2(1, nbup, 1, nbvp);
+      int                  nbup = Bez->NbUPoles();
+      int                  nbvp = Bez->NbVPoles();
+      NCollection_Array2<gp_Pnt>                array2(1, nbup, 1, nbvp);
       Bez->Poles(array2);
       Analyse(array2, nbup, nbvp, myNbSamplesU, myNbSamplesV);
       nbsu = myNbSamplesU;
@@ -541,10 +541,10 @@ int BRepTopAdaptor_TopolTool::NbSamples()
 
 void BRepTopAdaptor_TopolTool::SamplePoint(const int i, gp_Pnt2d& P2d, gp_Pnt& P3d)
 {
-  int    iv = 1 + i / myNbSamplesU;
-  int    iu = 1 + i - (iv - 1) * myNbSamplesU;
-  double u  = myU0 + iu * myDU;
-  double v  = myV0 + iv * myDV;
+  int iv = 1 + i / myNbSamplesU;
+  int iu = 1 + i - (iv - 1) * myNbSamplesU;
+  double    u  = myU0 + iu * myDU;
+  double    v  = myV0 + iv * myDV;
   P2d.SetCoord(u, v);
   P3d = myS->Value(u, v);
 }

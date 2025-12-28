@@ -24,11 +24,17 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom_Plane.hxx>
 #include <Precision.hxx>
@@ -68,9 +74,7 @@ class ShapeUpgrade_UnifySameDomain : public Standard_Transient
 public:
   typedef NCollection_DataMap<TopoDS_Shape, occ::handle<Geom_Plane>, TopTools_ShapeMapHasher>
     DataMapOfFacePlane;
-  typedef NCollection_DataMap<TopoDS_Shape,
-                              NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>,
-                              TopTools_ShapeMapHasher>
+  typedef NCollection_DataMap<TopoDS_Shape, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>, TopTools_ShapeMapHasher>
     DataMapOfShapeMapOfShape;
 
   //! Empty constructor
@@ -78,19 +82,20 @@ public:
 
   //! Constructor defining input shape and necessary flags.
   //! It does not perform unification.
-  Standard_EXPORT ShapeUpgrade_UnifySameDomain(const TopoDS_Shape& aShape,
-                                               const bool          UnifyEdges     = true,
-                                               const bool          UnifyFaces     = true,
-                                               const bool          ConcatBSplines = false);
+  Standard_EXPORT ShapeUpgrade_UnifySameDomain(
+    const TopoDS_Shape&    aShape,
+    const bool UnifyEdges     = true,
+    const bool UnifyFaces     = true,
+    const bool ConcatBSplines = false);
 
   //! Initializes with a shape and necessary flags.
   //! It does not perform unification.
   //! If you intend to nullify the History place holder do it after
   //! initialization.
-  Standard_EXPORT void Initialize(const TopoDS_Shape& aShape,
-                                  const bool          UnifyEdges     = true,
-                                  const bool          UnifyFaces     = true,
-                                  const bool          ConcatBSplines = false);
+  Standard_EXPORT void Initialize(const TopoDS_Shape&    aShape,
+                                  const bool UnifyEdges     = true,
+                                  const bool UnifyFaces     = true,
+                                  const bool ConcatBSplines = false);
 
   //! Sets the flag defining whether it is allowed to create
   //! internal edges inside merged faces in the case of non-manifold
@@ -108,8 +113,7 @@ public:
   //! Sets the map of shapes for avoid merging of the faces/edges.
   //! It allows passing a ready to use map instead of calling many times
   //! the method KeepShape.
-  Standard_EXPORT void KeepShapes(
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapes);
+  Standard_EXPORT void KeepShapes(const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapes);
 
   //! Sets the flag defining the behavior of the algorithm regarding
   //! modification of input shape.
@@ -154,35 +158,27 @@ protected:
   //! group of smothly connected edges, which are common for the same couple of faces
   Standard_EXPORT void UnifyEdges();
 
-  void IntUnifyFaces(const TopoDS_Shape&                                        theInpShape,
-                     const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                      NCollection_List<TopoDS_Shape>,
-                                                      TopTools_ShapeMapHasher>& theGMapEdgeFaces,
-                     const DataMapOfShapeMapOfShape&                            theGMapFaceShells,
-                     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theFreeBoundMap);
+  void IntUnifyFaces(const TopoDS_Shape&                              theInpShape,
+                     const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theGMapEdgeFaces,
+                     const DataMapOfShapeMapOfShape&                  theGMapFaceShells,
+                     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                       theFreeBoundMap);
 
   //! Splits the sequence of edges into the sequence of chains
-  bool MergeEdges(NCollection_Sequence<TopoDS_Shape>&                           SeqEdges,
-                  const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                   NCollection_List<TopoDS_Shape>,
-                                                   TopTools_ShapeMapHasher>&    theVFmap,
-                  NCollection_Sequence<SubSequenceOfEdges>&                     SeqOfSubSeqOfEdges,
-                  const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& NonMergVrt);
+  bool MergeEdges(NCollection_Sequence<TopoDS_Shape>&                        SeqEdges,
+                              const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVFmap,
+                              NCollection_Sequence<SubSequenceOfEdges>&        SeqOfSubSeqOfEdges,
+                              const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                       NonMergVrt);
 
   //! Tries to unify the sequence of edges with the set of
   //! another edges which lies on the same geometry
-  bool MergeSeq(NCollection_Sequence<TopoDS_Shape>&                           SeqEdges,
-                const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                 NCollection_List<TopoDS_Shape>,
-                                                 TopTools_ShapeMapHasher>&    theVFmap,
-                const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& nonMergVert);
+  bool MergeSeq(NCollection_Sequence<TopoDS_Shape>&                        SeqEdges,
+                            const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVFmap,
+                            const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                       nonMergVert);
 
   //! Merges a sequence of edges into one edge if possible
   bool MergeSubSeq(const NCollection_Sequence<TopoDS_Shape>&                  theChain,
-                   const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                    NCollection_List<TopoDS_Shape>,
-                                                    TopTools_ShapeMapHasher>& theVFmap,
-                   TopoDS_Edge&                                               OutEdge);
+                               const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVFmap,
+                               TopoDS_Edge&                                     OutEdge);
 
   //! Unifies the pcurve of the chain into one pcurve of the edge
   void UnionPCurves(const NCollection_Sequence<TopoDS_Shape>& theChain, TopoDS_Edge& theEdge);
@@ -193,33 +189,29 @@ protected:
 private:
   //! Generates sub-sequences of edges from sequence of edges.
   //! Edges from each subsequences can be merged into the one edge.
-  static void generateSubSeq(
-    const NCollection_Sequence<TopoDS_Shape>&                     anInpEdgeSeq,
-    NCollection_Sequence<SubSequenceOfEdges>&                     SeqOfSubSeqOfEdges,
-    bool                                                          IsClosed,
-    double                                                        theAngTol,
-    double                                                        theLinTol,
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& AvoidEdgeVrt,
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>&    theVFmap);
+  static void generateSubSeq(const NCollection_Sequence<TopoDS_Shape>&                  anInpEdgeSeq,
+                             NCollection_Sequence<SubSequenceOfEdges>&        SeqOfSubSeqOfEdges,
+                             bool                                 IsClosed,
+                             double                                           theAngTol,
+                             double                                           theLinTol,
+                             const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                       AvoidEdgeVrt,
+                             const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVFmap);
 
 private:
-  TopoDS_Shape                                           myInitShape;
-  double                                                 myLinTol;
-  double                                                 myAngTol;
-  bool                                                   myUnifyFaces;
-  bool                                                   myUnifyEdges;
-  bool                                                   myConcatBSplines;
-  bool                                                   myAllowInternal;
-  bool                                                   mySafeInputMode;
-  TopoDS_Shape                                           myShape;
-  occ::handle<ShapeBuild_ReShape>                        myContext;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myKeepShapes;
-  DataMapOfFacePlane                                     myFacePlaneMap;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                           myEFmap;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myFaceNewFace;
+  TopoDS_Shape                              myInitShape;
+  double                             myLinTol;
+  double                             myAngTol;
+  bool                          myUnifyFaces;
+  bool                          myUnifyEdges;
+  bool                          myConcatBSplines;
+  bool                          myAllowInternal;
+  bool                          mySafeInputMode;
+  TopoDS_Shape                              myShape;
+  occ::handle<ShapeBuild_ReShape>                myContext;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                       myKeepShapes;
+  DataMapOfFacePlane                        myFacePlaneMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myEFmap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>              myFaceNewFace;
 
   occ::handle<BRepTools_History> myHistory; //!< The history.
 };

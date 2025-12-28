@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
 IGESAppli_PWBArtworkStackup::IGESAppli_PWBArtworkStackup() {}
 
-void IGESAppli_PWBArtworkStackup::Init(const int                                    nbPropVal,
+void IGESAppli_PWBArtworkStackup::Init(const int                  nbPropVal,
                                        const occ::handle<TCollection_HAsciiString>& anArtIdent,
                                        const occ::handle<NCollection_HArray1<int>>& allLevelNums)
 {

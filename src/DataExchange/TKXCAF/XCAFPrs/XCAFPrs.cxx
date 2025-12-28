@@ -18,6 +18,7 @@
 #include <TDF_Label.hxx>
 #include <TopLoc_Location.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <XCAFDoc_ColorTool.hxx>
@@ -31,9 +32,9 @@
 static bool viewnameMode = false;
 
 //! Fill colors of XCAFPrs_Style structure.
-static void fillStyleColors(XCAFPrs_Style&                        theStyle,
+static void fillStyleColors(XCAFPrs_Style&                   theStyle,
                             const occ::handle<XCAFDoc_ColorTool>& theTool,
-                            const TDF_Label&                      theLabel)
+                            const TDF_Label&                 theLabel)
 {
   Quantity_ColorRGBA aColor;
   if (theTool->GetColor(theLabel, XCAFDoc_ColorGen, aColor))
@@ -51,13 +52,13 @@ static void fillStyleColors(XCAFPrs_Style&                        theStyle,
   }
 }
 
-static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& theaPrevLocMap,
-                            const occ::handle<XCAFDoc_ShapeTool>&    theSTool,
-                            const TDF_Label&                         theSHUOlab,
-                            NCollection_Sequence<TopoDS_Shape>&      theSHUOShapeSeq)
+static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>&     theaPrevLocMap,
+                                        const occ::handle<XCAFDoc_ShapeTool>& theSTool,
+                                        const TDF_Label&                 theSHUOlab,
+                                        NCollection_Sequence<TopoDS_Shape>&        theSHUOShapeSeq)
 {
-  occ::handle<XCAFDoc_GraphNode>  SHUO;
-  NCollection_Sequence<TDF_Label> aLabSeq;
+  occ::handle<XCAFDoc_GraphNode> SHUO;
+  NCollection_Sequence<TDF_Label>         aLabSeq;
   theSTool->GetSHUONextUsage(theSHUOlab, aLabSeq);
   if (aLabSeq.Length() >= 1)
     for (int i = 1; i <= aLabSeq.Length(); i++)
@@ -103,27 +104,26 @@ static bool getShapesOfSHUO(NCollection_IndexedMap<TopLoc_Location>& theaPrevLoc
 
 //=================================================================================================
 
-void XCAFPrs::CollectStyleSettings(
-  const TDF_Label&                                                                  theLabel,
-  const TopLoc_Location&                                                            theLoc,
-  NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>& theSettings,
-  const Quantity_ColorRGBA&                                                         theLayerColor)
+void XCAFPrs::CollectStyleSettings(const TDF_Label&                    theLabel,
+                                   const TopLoc_Location&              theLoc,
+                                   NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>& theSettings,
+                                   const Quantity_ColorRGBA&           theLayerColor)
 {
   // for references, first collect colors of referred shape
   {
     TDF_Label aLabelRef;
     if (XCAFDoc_ShapeTool::GetReferredShape(theLabel, aLabelRef))
     {
-      Quantity_ColorRGBA             aLayerColor = theLayerColor;
+      Quantity_ColorRGBA        aLayerColor = theLayerColor;
       occ::handle<XCAFDoc_LayerTool> aLayerTool  = XCAFDoc_DocumentTool::LayerTool(theLabel);
       occ::handle<NCollection_HSequence<TCollection_ExtendedString>> aLayerNames =
         new NCollection_HSequence<TCollection_ExtendedString>();
       aLayerTool->GetLayers(theLabel, aLayerNames);
       if (aLayerNames->Length() == 1)
       {
-        TDF_Label                      aLayer     = aLayerTool->FindLayer(aLayerNames->First());
+        TDF_Label                 aLayer     = aLayerTool->FindLayer(aLayerNames->First());
         occ::handle<XCAFDoc_ColorTool> aColorTool = XCAFDoc_DocumentTool::ColorTool(theLabel);
-        Quantity_ColorRGBA             aColor;
+        Quantity_ColorRGBA        aColor;
         if (aColorTool->GetColor(aLayer, XCAFDoc_ColorGen, aColor))
           aLayerColor = aColor;
       }
@@ -137,8 +137,7 @@ void XCAFPrs::CollectStyleSettings(
     NCollection_Sequence<TDF_Label> aComponentLabSeq;
     if (XCAFDoc_ShapeTool::GetComponents(theLabel, aComponentLabSeq) && !aComponentLabSeq.IsEmpty())
     {
-      for (NCollection_Sequence<TDF_Label>::Iterator aComponentIter(aComponentLabSeq);
-           aComponentIter.More();
+      for (NCollection_Sequence<TDF_Label>::Iterator aComponentIter(aComponentLabSeq); aComponentIter.More();
            aComponentIter.Next())
       {
         const TDF_Label& aComponentLab = aComponentIter.Value();
@@ -155,8 +154,7 @@ void XCAFPrs::CollectStyleSettings(
   XCAFDoc_ShapeTool::GetSubShapes(theLabel, aLabSeq);
   // and add the shape itself
   aLabSeq.Append(theLabel);
-  for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(aLabSeq); aLabIter.More();
-       aLabIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aLabIter(aLabSeq); aLabIter.More(); aLabIter.Next())
   {
     const TDF_Label& aLabel = aLabIter.Value();
     XCAFPrs_Style    aStyle;
@@ -164,14 +162,13 @@ void XCAFPrs::CollectStyleSettings(
     aStyle.SetMaterial(aMatTool->GetShapeMaterial(aLabel));
 
     occ::handle<NCollection_HSequence<TCollection_ExtendedString>> aLayerNames;
-    occ::handle<XCAFDoc_LayerTool> aLayerTool = XCAFDoc_DocumentTool::LayerTool(aLabel);
+    occ::handle<XCAFDoc_LayerTool>                 aLayerTool = XCAFDoc_DocumentTool::LayerTool(aLabel);
     if (aStyle.IsVisible())
     {
       aLayerNames = new NCollection_HSequence<TCollection_ExtendedString>();
       aLayerTool->GetLayers(aLabel, aLayerNames);
       int aNbHidden = 0;
-      for (NCollection_HSequence<TCollection_ExtendedString>::Iterator aLayerIter(*aLayerNames);
-           aLayerIter.More();
+      for (NCollection_HSequence<TCollection_ExtendedString>::Iterator aLayerIter(*aLayerNames); aLayerIter.More();
            aLayerIter.Next())
       {
         const TCollection_ExtendedString& aLayerName = aLayerIter.Value();
@@ -215,9 +212,7 @@ void XCAFPrs::CollectStyleSettings(
     {
       NCollection_Sequence<occ::handle<TDF_Attribute>> aShuoAttribSeq;
       aShapeTool->GetAllComponentSHUO(aLabel, aShuoAttribSeq);
-      for (NCollection_Sequence<occ::handle<TDF_Attribute>>::Iterator aShuoAttribIter(
-             aShuoAttribSeq);
-           aShuoAttribIter.More();
+      for (NCollection_Sequence<occ::handle<TDF_Attribute>>::Iterator aShuoAttribIter(aShuoAttribSeq); aShuoAttribIter.More();
            aShuoAttribIter.Next())
       {
         occ::handle<XCAFDoc_GraphNode> aShuoNode =
@@ -264,7 +259,7 @@ void XCAFPrs::CollectStyleSettings(
         }*/
         // OLD version that was written before ShapeTool API, and it FASTER for presentation
         // get TOP location of SHUO component
-        TopLoc_Location                         compLoc = XCAFDoc_ShapeTool::GetLocation(aLabel);
+        TopLoc_Location             compLoc = XCAFDoc_ShapeTool::GetLocation(aLabel);
         NCollection_IndexedMap<TopLoc_Location> aPrevLocMap;
         // get previous set location
         if (!theLoc.IsIdentity())

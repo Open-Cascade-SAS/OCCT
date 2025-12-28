@@ -82,7 +82,10 @@ public:
    *   0 or 1 making distinction of the two involved triangles: 0 on the left,
    *   1 on the right side of the Link.
    */
-  inline int OppositeNode(const int ind) const { return myOppositeNode[ind & 0x1]; }
+  inline int OppositeNode(const int ind) const
+  {
+    return myOppositeNode[ind & 0x1];
+  }
 
   /**
    * Query the attribute of the Link.
@@ -113,8 +116,8 @@ public:
 
 private:
   // ---------- PRIVATE FIELDS ----------
-  int   myNode[2];
-  int   myOppositeNode[2];
+  int myNode[2];
+  int myOppositeNode[2];
   void* myAttribute;
 
   friend class Poly_CoherentTriangulation;

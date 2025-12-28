@@ -42,7 +42,7 @@ public:
   //! myElement := <theType id="theID"/>
   Standard_EXPORT void CreateElement(XmlObjMgt_Element&         theParent,
                                      const XmlObjMgt_DOMString& theType,
-                                     const int                  theID);
+                                     const int     theID);
 
   Standard_EXPORT void SetId(const int theId);
 
@@ -58,7 +58,7 @@ public:
 
 private:
   XmlObjMgt_Element myElement;
-  int               myID;
+  int  myID;
 };
 
 #include <XmlObjMgt_Persistent.lxx>

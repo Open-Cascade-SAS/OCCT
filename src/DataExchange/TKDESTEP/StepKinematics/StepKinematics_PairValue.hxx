@@ -29,7 +29,7 @@ public:
   Standard_EXPORT StepKinematics_PairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
                             const occ::handle<StepKinematics_KinematicPair>& theAppliesToPair);
 
   //! Returns field AppliesToPair

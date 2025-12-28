@@ -24,7 +24,10 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
 class Interface_Protocol;
 class Interface_SignType;
 class Interface_InterfaceModel;
@@ -46,7 +49,7 @@ public:
   //! Creates a GTool from a Protocol
   //! Optional starting count of entities
   Standard_EXPORT Interface_GTool(const occ::handle<Interface_Protocol>& proto,
-                                  const int                              nbent = 0);
+                                  const int            nbent = 0);
 
   //! Sets a new SignType
   Standard_EXPORT void SetSignType(const occ::handle<Interface_SignType>& sign);
@@ -58,7 +61,7 @@ public:
   //! It calls SignType to do that
   //! If SignType is not defined, return ClassName of <ent>
   Standard_EXPORT const char* SignValue(const occ::handle<Standard_Transient>&       ent,
-                                        const occ::handle<Interface_InterfaceModel>& model) const;
+                                             const occ::handle<Interface_InterfaceModel>& model) const;
 
   //! Returns the Name of the SignType, or "Class Name"
   Standard_EXPORT const char* SignName() const;
@@ -67,7 +70,7 @@ public:
   //! if <enforce> is False and the new Protocol equates the old one
   //! then nothing is done
   Standard_EXPORT void SetProtocol(const occ::handle<Interface_Protocol>& proto,
-                                   const bool                             enforce = false);
+                                   const bool            enforce = false);
 
   //! Returns the Protocol. Warning: it can be Null
   Standard_EXPORT occ::handle<Interface_Protocol> Protocol() const;
@@ -79,7 +82,8 @@ public:
   //! <enforce> False : minimum count
   //! <enforce> True  : clears former reservations
   //! Does not clear the maps
-  Standard_EXPORT void Reservate(const int nb, const bool enforce = false);
+  Standard_EXPORT void Reservate(const int nb,
+                                 const bool enforce = false);
 
   //! Clears the maps which record, for each already recorded entity
   //! its Module and Case Number
@@ -90,19 +94,18 @@ public:
   //! mapped and the GeneralLib is not longer queried
   //! <enforce> True overpasses this optimisation
   Standard_EXPORT bool Select(const occ::handle<Standard_Transient>& ent,
-                              occ::handle<Interface_GeneralModule>&  gmod,
-                              int&                                   CN,
-                              const bool                             enforce = false);
+                                          occ::handle<Interface_GeneralModule>&  gmod,
+                                          int&                 CN,
+                                          const bool enforce = false);
 
   DEFINE_STANDARD_RTTIEXT(Interface_GTool, Standard_Transient)
 
 private:
-  occ::handle<Interface_Protocol>                           theproto;
-  occ::handle<Interface_SignType>                           thesign;
-  Interface_GeneralLib                                      thelib;
-  NCollection_DataMap<occ::handle<Standard_Transient>, int> thentnum;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
-    thentmod;
+  occ::handle<Interface_Protocol>                 theproto;
+  occ::handle<Interface_SignType>                 thesign;
+  Interface_GeneralLib                       thelib;
+  NCollection_DataMap<occ::handle<Standard_Transient>, int>        thentnum;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> thentmod;
 };
 
 #endif // _Interface_GTool_HeaderFile

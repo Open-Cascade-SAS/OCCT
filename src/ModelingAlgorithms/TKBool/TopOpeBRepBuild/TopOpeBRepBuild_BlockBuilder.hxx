@@ -25,6 +25,7 @@
 #include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_ShapeSet;
@@ -63,19 +64,20 @@ public:
 
   Standard_EXPORT int AddElement(const TopoDS_Shape& S);
 
-  Standard_EXPORT void SetValid(const TopOpeBRepBuild_BlockIterator& BI, const bool isvalid);
+  Standard_EXPORT void SetValid(const TopOpeBRepBuild_BlockIterator& BI,
+                                const bool               isvalid);
 
   Standard_EXPORT void SetValid(const int I, const bool isvalid);
 
   Standard_EXPORT bool CurrentBlockIsRegular();
 
 private:
-  NCollection_DataMap<int, int>        myOrientedShapeMapIsValid;
+  NCollection_DataMap<int, int>    myOrientedShapeMapIsValid;
   NCollection_IndexedMap<TopoDS_Shape> myOrientedShapeMap;
-  NCollection_Sequence<int>            myBlocks;
-  int                                  myBlockIndex;
-  bool                                 myIsDone;
-  NCollection_Sequence<int>            myBlocksIsRegular;
+  NCollection_Sequence<int>          myBlocks;
+  int                   myBlockIndex;
+  bool                   myIsDone;
+  NCollection_Sequence<int>          myBlocksIsRegular;
 };
 
 #endif // _TopOpeBRepBuild_BlockBuilder_HeaderFile

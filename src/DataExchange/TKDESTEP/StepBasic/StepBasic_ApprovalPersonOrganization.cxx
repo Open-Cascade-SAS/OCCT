@@ -21,9 +21,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_ApprovalPersonOrganization, Standard_Transi
 StepBasic_ApprovalPersonOrganization::StepBasic_ApprovalPersonOrganization() {}
 
 void StepBasic_ApprovalPersonOrganization::Init(
-  const StepBasic_PersonOrganizationSelect&  aPersonOrganization,
-  const occ::handle<StepBasic_Approval>&     aAuthorizedApproval,
-  const occ::handle<StepBasic_ApprovalRole>& aRole)
+  const StepBasic_PersonOrganizationSelect& aPersonOrganization,
+  const occ::handle<StepBasic_Approval>&         aAuthorizedApproval,
+  const occ::handle<StepBasic_ApprovalRole>&     aRole)
 {
   // --- classe own fields ---
   personOrganization = aPersonOrganization;

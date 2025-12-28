@@ -32,9 +32,9 @@ public:
   Standard_EXPORT StepVisual_ColourRgb();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const double                                 aRed,
-                            const double                                 aGreen,
-                            const double                                 aBlue);
+                            const double                     aRed,
+                            const double                     aGreen,
+                            const double                     aBlue);
 
   Standard_EXPORT void SetRed(const double aRed);
 

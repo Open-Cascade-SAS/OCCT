@@ -35,8 +35,9 @@ TEST(BVH_LinearBuilderTest, CustomParameters)
 
 TEST(BVH_LinearBuilderTest, BuildEmptySet)
 {
-  opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder = new BVH_LinearBuilder<double, 3>();
-  BVH_BoxSet<double, 3>                             aBoxSet(aBuilder);
+  opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder =
+    new BVH_LinearBuilder<double, 3>();
+  BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   aBoxSet.Build();
 
@@ -46,8 +47,9 @@ TEST(BVH_LinearBuilderTest, BuildEmptySet)
 
 TEST(BVH_LinearBuilderTest, BuildSingleElement)
 {
-  opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder = new BVH_LinearBuilder<double, 3>();
-  BVH_BoxSet<double, 3>                             aBoxSet(aBuilder);
+  opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder =
+    new BVH_LinearBuilder<double, 3>();
+  BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   aBoxSet.Add(0, BVH_Box<double, 3>(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0)));
   aBoxSet.Build();
@@ -66,7 +68,8 @@ TEST(BVH_LinearBuilderTest, BuildMultipleElements)
   // Add boxes along X axis
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
+                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -108,14 +111,15 @@ TEST(BVH_LinearBuilderTest, MortonCodeSorting)
 
 TEST(BVH_LinearBuilderTest, LeafNodeSizeRespected)
 {
-  const int                                         aLeafSize = 3;
+  const int                                                aLeafSize = 3;
   opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder =
     new BVH_LinearBuilder<double, 3>(aLeafSize, 32);
   BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
+                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -169,7 +173,7 @@ TEST(BVH_LinearBuilderTest, LargeDataSet)
       for (int z = 0; z < 10; ++z)
       {
         BVH_Box<double, 3> aBox(BVH_Vec3d(x * 2.0, y * 2.0, z * 2.0),
-                                BVH_Vec3d(x * 2.0 + 1.0, y * 2.0 + 1.0, z * 2.0 + 1.0));
+                                       BVH_Vec3d(x * 2.0 + 1.0, y * 2.0 + 1.0, z * 2.0 + 1.0));
         aBoxSet.Add(aCount++, aBox);
       }
     }
@@ -195,14 +199,15 @@ TEST(BVH_LinearBuilderTest, LargeDataSet)
 TEST(BVH_LinearBuilderTest, MaxDepthParameter)
 {
   // Linear builder uses max depth parameter but may exceed it in some cases
-  const int                                         aMaxDepth = 10;
+  const int                                                aMaxDepth = 10;
   opencascade::handle<BVH_LinearBuilder<double, 3>> aBuilder =
     new BVH_LinearBuilder<double, 3>(1, aMaxDepth);
   BVH_BoxSet<double, 3> aBoxSet(aBuilder);
 
   for (int i = 0; i < 100; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
+                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -226,12 +231,12 @@ TEST(BVH_LinearBuilderTest, ClusteredData)
   {
     // Cluster 1 near origin
     BVH_Box<double, 3> aBox1(BVH_Vec3d(i * 0.1, i * 0.1, i * 0.1),
-                             BVH_Vec3d(i * 0.1 + 0.1, i * 0.1 + 0.1, i * 0.1 + 0.1));
+                                    BVH_Vec3d(i * 0.1 + 0.1, i * 0.1 + 0.1, i * 0.1 + 0.1));
     aBoxSet.Add(i, aBox1);
 
     // Cluster 2 far from origin
     BVH_Box<double, 3> aBox2(BVH_Vec3d(100.0 + i * 0.1, 100.0 + i * 0.1, 100.0 + i * 0.1),
-                             BVH_Vec3d(100.1 + i * 0.1, 100.1 + i * 0.1, 100.1 + i * 0.1));
+                                    BVH_Vec3d(100.1 + i * 0.1, 100.1 + i * 0.1, 100.1 + i * 0.1));
     aBoxSet.Add(i + 10, aBox2);
   }
 
@@ -254,7 +259,8 @@ TEST(BVH_LinearBuilderTest, OverlappingBoxes)
   // Add overlapping boxes
   for (int i = 0; i < 10; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.5, 0.0, 0.0), BVH_Vec3d(i * 0.5 + 2.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 0.5, 0.0, 0.0),
+                                   BVH_Vec3d(i * 0.5 + 2.0, 1.0, 1.0));
     aBoxSet.Add(i, aBox);
   }
 
@@ -292,7 +298,8 @@ TEST(BVH_LinearBuilderTest, CompareWithBinnedBuilder)
 
   for (int i = 0; i < 50; ++i)
   {
-    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0), BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
+    BVH_Box<double, 3> aBox(BVH_Vec3d(i * 2.0, 0.0, 0.0),
+                                   BVH_Vec3d(i * 2.0 + 1.0, 1.0, 1.0));
     aLinearSet.Add(i, aBox);
   }
 
@@ -319,7 +326,7 @@ TEST(BVH_LinearBuilderTest, NegativeCoordinates)
   for (int i = 0; i < 10; ++i)
   {
     BVH_Box<double, 3> aBox(BVH_Vec3d(-10.0 + i * 2.0, -5.0, -5.0),
-                            BVH_Vec3d(-9.0 + i * 2.0, -4.0, -4.0));
+                                   BVH_Vec3d(-9.0 + i * 2.0, -4.0, -4.0));
     aBoxSet.Add(i, aBox);
   }
 

@@ -61,12 +61,13 @@ public:
 
   //! instance method
   //! ===============
-  Standard_EXPORT static occ::handle<TNaming_NamedShape> Name(const TDF_Label&    where,
-                                                              const TopoDS_Shape& Selection,
-                                                              const TopoDS_Shape& Context,
-                                                              const bool          Geometry = false,
-                                                              const bool KeepOrientation   = false,
-                                                              const bool BNproblem         = false);
+  Standard_EXPORT static occ::handle<TNaming_NamedShape> Name(
+    const TDF_Label&       where,
+    const TopoDS_Shape&    Selection,
+    const TopoDS_Shape&    Context,
+    const bool Geometry        = false,
+    const bool KeepOrientation = false,
+    const bool BNproblem       = false);
 
   Standard_EXPORT TNaming_Naming();
 
@@ -95,17 +96,18 @@ public:
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       Into,
                              const occ::handle<TDF_RelocationTable>& RT) const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
+    override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
-  Standard_EXPORT virtual void ExtendedDump(
-    Standard_OStream&                                   anOS,
-    const TDF_IDFilter&                                 aFilter,
-    NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const override;
+  Standard_EXPORT virtual void ExtendedDump(Standard_OStream&        anOS,
+                                            const TDF_IDFilter&      aFilter,
+                                            NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const override;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TNaming_Naming, TDF_Attribute)
 

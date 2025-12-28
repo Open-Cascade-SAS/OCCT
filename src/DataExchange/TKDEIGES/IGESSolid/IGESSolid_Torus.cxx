@@ -26,10 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_Torus, IGESData_IGESEntity)
 
 IGESSolid_Torus::IGESSolid_Torus() {}
 
-void IGESSolid_Torus::Init(const double  R1,
-                           const double  R2,
-                           const gp_XYZ& Point,
-                           const gp_XYZ& Axisdir)
+void IGESSolid_Torus::Init(const double R1,
+                           const double R2,
+                           const gp_XYZ&       Point,
+                           const gp_XYZ&       Axisdir)
 {
   theR1    = R1;
   theR2    = R2;

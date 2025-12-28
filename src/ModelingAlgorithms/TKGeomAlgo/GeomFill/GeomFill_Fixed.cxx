@@ -42,7 +42,10 @@ occ::handle<GeomFill_TrihedronLaw> GeomFill_Fixed::Copy() const
   return copy;
 }
 
-bool GeomFill_Fixed::D0(const double, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& BiNormal)
+bool GeomFill_Fixed::D0(const double,
+                                    gp_Vec& Tangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& BiNormal)
 {
   Tangent  = T;
   Normal   = N;
@@ -52,12 +55,12 @@ bool GeomFill_Fixed::D0(const double, gp_Vec& Tangent, gp_Vec& Normal, gp_Vec& B
 }
 
 bool GeomFill_Fixed::D1(const double,
-                        gp_Vec& Tangent,
-                        gp_Vec& DTangent,
-                        gp_Vec& Normal,
-                        gp_Vec& DNormal,
-                        gp_Vec& BiNormal,
-                        gp_Vec& DBiNormal)
+                                    gp_Vec& Tangent,
+                                    gp_Vec& DTangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& DNormal,
+                                    gp_Vec& BiNormal,
+                                    gp_Vec& DBiNormal)
 {
   Tangent  = T;
   Normal   = N;
@@ -70,15 +73,15 @@ bool GeomFill_Fixed::D1(const double,
 }
 
 bool GeomFill_Fixed::D2(const double,
-                        gp_Vec& Tangent,
-                        gp_Vec& DTangent,
-                        gp_Vec& D2Tangent,
-                        gp_Vec& Normal,
-                        gp_Vec& DNormal,
-                        gp_Vec& D2Normal,
-                        gp_Vec& BiNormal,
-                        gp_Vec& DBiNormal,
-                        gp_Vec& D2BiNormal)
+                                    gp_Vec& Tangent,
+                                    gp_Vec& DTangent,
+                                    gp_Vec& D2Tangent,
+                                    gp_Vec& Normal,
+                                    gp_Vec& DNormal,
+                                    gp_Vec& D2Normal,
+                                    gp_Vec& BiNormal,
+                                    gp_Vec& DBiNormal,
+                                    gp_Vec& D2BiNormal)
 {
   Tangent  = T;
   Normal   = N;

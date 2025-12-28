@@ -32,7 +32,7 @@ public:
   Standard_EXPORT BRepTopAdaptor_Tool(const TopoDS_Face& F, const double Tol2d);
 
   Standard_EXPORT BRepTopAdaptor_Tool(const occ::handle<Adaptor3d_Surface>& Surface,
-                                      const double                          Tol2d);
+                                      const double              Tol2d);
 
   Standard_EXPORT void Init(const TopoDS_Face& F, const double Tol2d);
 
@@ -49,7 +49,7 @@ public:
   ~BRepTopAdaptor_Tool() { Destroy(); }
 
 private:
-  bool                                  myloaded;
+  bool                 myloaded;
   occ::handle<BRepTopAdaptor_TopolTool> myTopolTool;
   occ::handle<Adaptor3d_Surface>        myHSurface;
 };

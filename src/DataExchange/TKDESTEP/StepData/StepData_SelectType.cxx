@@ -134,8 +134,8 @@ void StepData_SelectType::SetInt(const int val)
 //  **********   Types Immediats : Differents Cas  ***********
 
 static occ::handle<StepData_SelectMember> SelectVal(const occ::handle<Standard_Transient>& thevalue,
-                                                    const char*                            name,
-                                                    const int                              mode)
+                                               const char*            name,
+                                               const int                         mode)
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
   if (!sm.IsNull())

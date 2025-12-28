@@ -84,10 +84,10 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  constexpr gp_Hypr2d(const gp_Ax2d& theMajorAxis,
-                      const double   theMajorRadius,
-                      const double   theMinorRadius,
-                      const bool     theIsSense = true)
+  constexpr gp_Hypr2d(const gp_Ax2d&         theMajorAxis,
+                      const double    theMajorRadius,
+                      const double    theMinorRadius,
+                      const bool theIsSense = true)
       : pos(theMajorAxis, theIsSense),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -111,9 +111,9 @@ public:
   //! It is yet possible to create an Hyperbola with
   //! theMajorRadius <= theMinorRadius.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  constexpr gp_Hypr2d(const gp_Ax22d& theA,
-                      const double    theMajorRadius,
-                      const double    theMinorRadius)
+  constexpr gp_Hypr2d(const gp_Ax22d&     theA,
+                      const double theMajorRadius,
+                      const double theMinorRadius)
       : pos(theA),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -192,8 +192,8 @@ public:
   //! "YAxis" of <me>.
   gp_Hypr2d ConjugateBranch1() const noexcept
   {
-    gp_Dir2d aV(pos.YDirection());
-    bool     isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+    gp_Dir2d         aV(pos.YDirection());
+    bool isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
     return gp_Hypr2d(gp_Ax2d(pos.Location(), aV), minorRadius, majorRadius, isSign);
   }
 
@@ -201,8 +201,8 @@ public:
   //! "YAxis" of <me>.
   gp_Hypr2d ConjugateBranch2() const noexcept
   {
-    gp_Dir2d aV(pos.YDirection().Reversed());
-    bool     isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
+    gp_Dir2d         aV(pos.YDirection().Reversed());
+    bool isSign = (pos.XDirection().Crossed(pos.YDirection())) >= 0.0;
     return gp_Hypr2d(gp_Ax2d(pos.Location(), aV), minorRadius, majorRadius, isSign);
   }
 
@@ -385,7 +385,7 @@ public:
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Hypr2d Translated(const gp_Pnt2d& theP1,
-                                               const gp_Pnt2d& theP2) const noexcept
+                                                    const gp_Pnt2d& theP2) const noexcept
   {
     gp_Hypr2d aH = *this;
     aH.pos.Translate(theP1, theP2);
@@ -393,9 +393,9 @@ public:
   }
 
 private:
-  gp_Ax22d pos;
-  double   majorRadius;
-  double   minorRadius;
+  gp_Ax22d      pos;
+  double majorRadius;
+  double minorRadius;
 };
 
 //=================================================================================================
@@ -431,7 +431,7 @@ inline gp_Ax2d gp_Hypr2d::Asymptote2() const
 inline gp_Ax2d gp_Hypr2d::Directrix1() const
 {
   double anE    = Eccentricity();
-  gp_XY  anOrig = pos.XDirection().XY();
+  gp_XY         anOrig = pos.XDirection().XY();
   anOrig.Multiply(majorRadius / anE);
   anOrig.Add(pos.Location().XY());
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));
@@ -442,7 +442,7 @@ inline gp_Ax2d gp_Hypr2d::Directrix1() const
 inline gp_Ax2d gp_Hypr2d::Directrix2() const
 {
   double anE    = Eccentricity();
-  gp_XY  anOrig = pos.XDirection().XY();
+  gp_XY         anOrig = pos.XDirection().XY();
   anOrig.Multiply(Parameter() / anE);
   anOrig.Add(Focus1().XY());
   return gp_Ax2d(gp_Pnt2d(anOrig), gp_Dir2d(pos.YDirection()));

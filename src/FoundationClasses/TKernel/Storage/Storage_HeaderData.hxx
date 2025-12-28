@@ -24,6 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Storage_Error.hxx>
 #include <Standard_Transient.hxx>
 class Storage_BaseDriver;
@@ -114,18 +115,18 @@ private:
 
   Standard_EXPORT void SetErrorStatusExtension(const TCollection_AsciiString& anErrorExt);
 
-  int                                              myNBObj;
-  TCollection_AsciiString                          myStorageVersion;
-  TCollection_AsciiString                          mySchemaVersion;
-  TCollection_AsciiString                          mySchemaName;
-  TCollection_AsciiString                          myApplicationVersion;
-  TCollection_ExtendedString                       myApplicationName;
-  TCollection_ExtendedString                       myDataType;
-  TCollection_AsciiString                          myDate;
+  int                 myNBObj;
+  TCollection_AsciiString          myStorageVersion;
+  TCollection_AsciiString          mySchemaVersion;
+  TCollection_AsciiString          mySchemaName;
+  TCollection_AsciiString          myApplicationVersion;
+  TCollection_ExtendedString       myApplicationName;
+  TCollection_ExtendedString       myDataType;
+  TCollection_AsciiString          myDate;
   NCollection_Sequence<TCollection_AsciiString>    myUserInfo;
   NCollection_Sequence<TCollection_ExtendedString> myComments;
-  Storage_Error                                    myErrorStatus;
-  TCollection_AsciiString                          myErrorStatusExt;
+  Storage_Error                    myErrorStatus;
+  TCollection_AsciiString          myErrorStatusExt;
 };
 
 #endif // _Storage_HeaderData_HeaderFile

@@ -309,9 +309,9 @@ void gp_Mat::Power(const int theN)
   }
 
   // Fast binary exponentiation for |theN| > 1
-  int    power = isNegative ? -theN : theN;
-  gp_Mat aBase = *this; // Base for exponentiation
-  SetIdentity();        // Result starts as identity
+  int power = isNegative ? -theN : theN;
+  gp_Mat           aBase = *this; // Base for exponentiation
+  SetIdentity();                  // Result starts as identity
 
   // Binary exponentiation: repeatedly square base and multiply when bit is set
   while (power > 0)

@@ -34,7 +34,10 @@ public:
   Standard_EXPORT AIS_TextLabel();
 
   //! Return TRUE for supported display mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Setup color of entire text.
   Standard_EXPORT virtual void SetColor(const Quantity_Color& theColor) override;
@@ -107,7 +110,10 @@ public:
   bool HasOwnAnchorPoint() const { return myHasOwnAnchorPoint; }
 
   //! Set flag if text uses position as point of attach
-  void SetOwnAnchorPoint(const bool theOwnAnchorPoint) { myHasOwnAnchorPoint = theOwnAnchorPoint; }
+  void SetOwnAnchorPoint(const bool theOwnAnchorPoint)
+  {
+    myHasOwnAnchorPoint = theOwnAnchorPoint;
+  }
 
   //! Define the display type of the text.
   //!
@@ -139,15 +145,14 @@ protected:
                                        const int theMode) override;
 
   //! Compute selection
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Calculate label center, width and height
-  Standard_EXPORT bool calculateLabelParams(const gp_Pnt& thePosition,
-                                            gp_Pnt&       theCenterOfLabel,
-                                            double&       theWidth,
-                                            double&       theHeight) const;
+  Standard_EXPORT bool calculateLabelParams(const gp_Pnt&  thePosition,
+                                                        gp_Pnt&        theCenterOfLabel,
+                                                        double& theWidth,
+                                                        double& theHeight) const;
 
   //! Calculate label transformation
   Standard_EXPORT gp_Trsf calculateLabelTrsf(const gp_Pnt& thePosition,
@@ -158,9 +163,9 @@ protected:
 
   TCollection_ExtendedString myText;
   gp_Ax2                     myOrientation3D;
-  bool                       myHasOrientation3D;
-  bool                       myHasOwnAnchorPoint;
-  bool                       myHasFlipping;
+  bool           myHasOrientation3D;
+  bool           myHasOwnAnchorPoint;
+  bool           myHasFlipping;
 
 public:
   //! CASCADE RTTI

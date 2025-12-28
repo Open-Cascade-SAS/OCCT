@@ -50,14 +50,13 @@ TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFil
 }
 
 Storage_Error UTL::OpenFile(const occ::handle<Storage_BaseDriver>& aDriver,
-                            const TCollection_ExtendedString&      aFileName,
-                            const Storage_OpenMode                 aMode)
+                            const TCollection_ExtendedString& aFileName,
+                            const Storage_OpenMode            aMode)
 {
   return aDriver->Open(TCollection_AsciiString(aFileName), aMode);
 }
 
-void UTL::AddToUserInfo(const occ::handle<Storage_Data>&  aData,
-                        const TCollection_ExtendedString& anInfo)
+void UTL::AddToUserInfo(const occ::handle<Storage_Data>& aData, const TCollection_ExtendedString& anInfo)
 {
   aData->AddToUserInfo(TCollection_AsciiString(anInfo));
 }
@@ -110,17 +109,18 @@ Standard_GUID UTL::GUID(const TCollection_ExtendedString& anXString)
   return Standard_GUID(TCollection_AsciiString(anXString, '?').ToCString());
 }
 
-bool UTL::Find(const occ::handle<Resource_Manager>& aResourceManager,
-               const TCollection_ExtendedString&    aResourceName)
+bool UTL::Find(const occ::handle<Resource_Manager>&   aResourceManager,
+                           const TCollection_ExtendedString& aResourceName)
 {
   return aResourceManager->Find(TCollection_AsciiString(aResourceName).ToCString());
 }
 
-TCollection_ExtendedString UTL::Value(const occ::handle<Resource_Manager>& aResourceManager,
-                                      const TCollection_ExtendedString&    aResourceName)
+TCollection_ExtendedString UTL::Value(const occ::handle<Resource_Manager>&   aResourceManager,
+                                      const TCollection_ExtendedString& aResourceName)
 {
   TCollection_AsciiString aResourceNameU(aResourceName);
-  return TCollection_ExtendedString(aResourceManager->Value(aResourceNameU.ToCString()), true);
+  return TCollection_ExtendedString(aResourceManager->Value(aResourceNameU.ToCString()),
+                                    true);
 }
 
 int UTL::IntegerValue(const TCollection_ExtendedString& anExtendedString)

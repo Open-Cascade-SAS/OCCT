@@ -31,8 +31,8 @@ void StepVisual_SurfaceStyleSegmentationCurve::SetStyleOfSegmentationCurve(
   styleOfSegmentationCurve = aStyleOfSegmentationCurve;
 }
 
-occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleSegmentationCurve::
-  StyleOfSegmentationCurve() const
+occ::handle<StepVisual_CurveStyle> StepVisual_SurfaceStyleSegmentationCurve::StyleOfSegmentationCurve()
+  const
 {
   return styleOfSegmentationCurve;
 }

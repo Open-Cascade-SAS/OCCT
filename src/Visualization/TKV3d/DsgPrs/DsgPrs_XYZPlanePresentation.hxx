@@ -37,9 +37,10 @@ public:
   //! triangular plane is defined by the points aPt1 aPt2 and aPt3.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          aPt1,
-                                  const gp_Pnt&                          aPt2,
-                                  const gp_Pnt&                          aPt3);
+                                  const gp_Pnt&                     aPt1,
+                                  const gp_Pnt&                     aPt2,
+                                  const gp_Pnt&                     aPt3);
+
 };
 
 #endif // _DsgPrs_XYZPlanePresentation_HeaderFile

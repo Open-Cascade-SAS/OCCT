@@ -36,7 +36,8 @@ public:
   virtual Standard_EXPORT bool SupportsMerge() const override;
 
   //! Returns false.
-  virtual Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget) override;
+  virtual Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget)
+    override;
 
   // OCCT RTTI
   DEFINE_STANDARD_RTTIEXT(TopoDS_AlertWithShape, Message_Alert)

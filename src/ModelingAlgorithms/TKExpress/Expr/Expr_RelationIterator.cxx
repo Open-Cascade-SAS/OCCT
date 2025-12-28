@@ -29,7 +29,7 @@ Expr_RelationIterator::Expr_RelationIterator(const occ::handle<Expr_GeneralRelat
   }
   else
   {
-    int                               nbcur = 1;
+    int             nbcur = 1;
     occ::handle<Expr_GeneralRelation> currel;
     for (int i = 1; i <= rel->NbOfSubRelations(); i++)
     {

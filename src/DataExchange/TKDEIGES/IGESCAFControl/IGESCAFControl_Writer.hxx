@@ -27,9 +27,11 @@
 #include <XCAFPrs_Style.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <XCAFPrs_Style.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 class XSControl_WorkSession;
@@ -69,38 +71,43 @@ public:
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
   Standard_EXPORT IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
-                                        const bool                                scratch = true);
+                                        const bool scratch = true);
 
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
   //! Sets target Unit for the writing process.
   Standard_EXPORT IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& theWS,
-                                        const char*                               theUnit);
+                                        const char*               theUnit);
 
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& doc,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Transfer(const occ::handle<TDocStd_Document>& doc,
+             const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Transfers labels to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& labels,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Transfer(const NCollection_Sequence<TDF_Label>&     labels,
+             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers label to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT bool Transfer(const TDF_Label&             label,
-                                const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Transfer(const TDF_Label&             label,
+             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& doc,
-                               const TCollection_AsciiString&       filename,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Perform(const occ::handle<TDocStd_Document>& doc,
+            const TCollection_AsciiString&  filename,
+            const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a IGES file
   //! Returns True if translation is OK
-  Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& doc,
-                               const char*                          filename,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Perform(const occ::handle<TDocStd_Document>& doc,
+            const char*          filename,
+            const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Set ColorMode for indicate write Colors or not.
   Standard_EXPORT void SetColorMode(const bool colormode);
@@ -138,13 +145,11 @@ protected:
 private:
   //! Recursively iterates on subshapes and assigns colors
   //! to faces and edges (if set)
-  Standard_EXPORT void MakeColors(
-    const TopoDS_Shape& S,
-    const NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>&
-                                                                         settings,
-    NCollection_DataMap<XCAFPrs_Style, occ::handle<Standard_Transient>>& colors,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&              Map,
-    const XCAFPrs_Style&                                                 inherit);
+  Standard_EXPORT void MakeColors(const TopoDS_Shape&                       S,
+                                  const NCollection_IndexedDataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>& settings,
+                                  NCollection_DataMap<XCAFPrs_Style, occ::handle<Standard_Transient>>&          colors,
+                                  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                      Map,
+                                  const XCAFPrs_Style&                      inherit);
 
   bool myColorMode;
   bool myNameMode;

@@ -32,14 +32,14 @@ public:
   Standard_EXPORT DrawTrSurf_BSplineCurve2d(const occ::handle<Geom2d_BSplineCurve>& C);
 
   Standard_EXPORT DrawTrSurf_BSplineCurve2d(const occ::handle<Geom2d_BSplineCurve>& C,
-                                            const Draw_Color&                       CurvColor,
-                                            const Draw_Color&                       PolesColor,
-                                            const Draw_Color&                       KnotsColor,
-                                            const Draw_MarkerShape                  KnotsShape,
-                                            const int                               KnotsSize,
-                                            const bool                              ShowPoles,
-                                            const bool                              ShowKnots,
-                                            const int                               Discret);
+                                            const Draw_Color&                  CurvColor,
+                                            const Draw_Color&                  PolesColor,
+                                            const Draw_Color&                  KnotsColor,
+                                            const Draw_MarkerShape             KnotsShape,
+                                            const int             KnotsSize,
+                                            const bool             ShowPoles,
+                                            const bool             ShowKnots,
+                                            const int             Discret);
 
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
@@ -56,17 +56,17 @@ public:
   //! than <Prec> from <X,Y>. If no pole is found index is
   //! set to 0, else index is always greater than the input
   //! value of index.
-  Standard_EXPORT void FindPole(const double        X,
-                                const double        Y,
+  Standard_EXPORT void FindPole(const double X,
+                                const double Y,
                                 const Draw_Display& D,
-                                const double        Prec,
-                                int&                Index) const;
+                                const double Prec,
+                                int&   Index) const;
 
-  Standard_EXPORT void FindKnot(const double        X,
-                                const double        Y,
+  Standard_EXPORT void FindKnot(const double X,
+                                const double Y,
                                 const Draw_Display& D,
-                                const double        Prec,
-                                int&                Index) const;
+                                const double Prec,
+                                int&   Index) const;
 
   void SetPolesColor(const Draw_Color& theColor) { polesLook = theColor; }
 
@@ -84,11 +84,11 @@ public:
   Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
-  bool             drawPoles;
-  bool             drawKnots;
+  bool drawPoles;
+  bool drawKnots;
   Draw_MarkerShape knotsForm;
   Draw_Color       knotsLook;
-  int              knotsDim;
+  int knotsDim;
   Draw_Color       polesLook;
 };
 

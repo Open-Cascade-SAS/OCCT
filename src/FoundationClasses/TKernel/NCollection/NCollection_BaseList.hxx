@@ -72,7 +72,10 @@ public:
     bool More(void) const noexcept { return (myCurrent != NULL); }
 
     // ******** Comparison operator
-    bool operator==(const Iterator& theIt) const noexcept { return myCurrent == theIt.myCurrent; }
+    bool operator==(const Iterator& theIt) const noexcept
+    {
+      return myCurrent == theIt.myCurrent;
+    }
 
     //! Performs comparison of two iterators
     bool IsEqual(const Iterator& theOther) const noexcept { return *this == theOther; }
@@ -190,9 +193,9 @@ protected:
 protected:
   // ------------ PROTECTED FIELDS ------------
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_ListNode*                  myFirst;  // Pointer to the head
-  NCollection_ListNode*                  myLast;   // Pointer to the tail
-  int                                    myLength; // Actual length
+  NCollection_ListNode*             myFirst;  // Pointer to the head
+  NCollection_ListNode*             myLast;   // Pointer to the tail
+  int                  myLength; // Actual length
 
   // ------------ FRIEND CLASSES ------------
   friend class Iterator;

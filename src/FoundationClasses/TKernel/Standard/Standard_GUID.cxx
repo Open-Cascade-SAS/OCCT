@@ -22,10 +22,11 @@
 
 //=================================================================================================
 
-int Standard_GUID_MatchChar(const char* buffer, const char aChar)
+int Standard_GUID_MatchChar(const char*   buffer,
+                                         const char aChar)
 {
   const char* tmpbuffer = buffer;
-  int         result    = -1;
+  int result    = -1;
 
   while (*tmpbuffer != '\0' && *tmpbuffer != aChar)
   {
@@ -47,7 +48,7 @@ int Standard_GUID_MatchChar(const char* buffer, const char aChar)
 Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, int& my32b)
 {
   char strtmp[Standard_GUID_SIZE_ALLOC];
-  int  pos = 0;
+  int   pos = 0;
 
   pos = Standard_GUID_MatchChar(tmpBuffer, '-');
   if (pos >= 0)
@@ -63,10 +64,11 @@ Standard_PCharacter Standard_GUID_GetValue32(Standard_PCharacter tmpBuffer, int&
 
 //=================================================================================================
 
-Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter tmpBuffer, char16_t& my32b)
+Standard_PCharacter Standard_GUID_GetValue16(Standard_PCharacter    tmpBuffer,
+                                             char16_t& my32b)
 {
   char strtmp[Standard_GUID_SIZE_ALLOC];
-  int  pos = 0;
+  int   pos = 0;
 
   pos = Standard_GUID_MatchChar(tmpBuffer, '-');
   if (pos >= 0)
@@ -212,9 +214,9 @@ Standard_GUID::Standard_GUID(const char16_t* aGuid)
       my8b5(0),
       my8b6(0)
 {
-  char  tpb[Standard_GUID_SIZE_ALLOC];
-  char* tmpBuffer = tpb;
-  int   i         = 0;
+  char             tpb[Standard_GUID_SIZE_ALLOC];
+  char*            tmpBuffer = tpb;
+  int i         = 0;
   while (i < Standard_GUID_SIZE)
   {
     tmpBuffer[i] = (char)aGuid[i];

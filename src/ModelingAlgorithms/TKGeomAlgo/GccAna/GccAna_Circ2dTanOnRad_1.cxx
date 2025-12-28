@@ -42,8 +42,8 @@
 //=========================================================================
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualified1,
                                              const gp_Lin2d&            OnLine,
-                                             const double               Radius,
-                                             const double               Tolerance)
+                                             const double        Radius,
+                                             const double        Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -54,8 +54,8 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
       parcen3(1, 2)
 {
 
-  double   Tol = std::abs(Tolerance);
-  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double Tol = std::abs(Tolerance);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   WellDone = false;
   NbrSol   = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
@@ -63,7 +63,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedLin& Qualifie
     throw GccEnt_BadQualifier();
     return;
   }
-  int                     nbsol = 0;
+  int        nbsol = 0;
   NCollection_Array1<int> eps(1, 2);
   gp_Lin2d                L1 = Qualified1.Qualified();
   gp_Pnt2d                origin1(L1.Location());

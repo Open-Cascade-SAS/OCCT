@@ -108,8 +108,7 @@ void Units_Lexicon::Creates()
     const LexiconItem& anItem = THE_LEXICON[anItemIter];
     if (thesequenceoftokens->IsEmpty())
     {
-      occ::handle<Units_Token> aToken =
-        new Units_Token(anItem.Prefix, anItem.Operation, anItem.Value);
+      occ::handle<Units_Token> aToken = new Units_Token(anItem.Prefix, anItem.Operation, anItem.Value);
       thesequenceoftokens->Prepend(aToken);
     }
     else
@@ -121,12 +120,14 @@ void Units_Lexicon::Creates()
 
 //=================================================================================================
 
-void Units_Lexicon::AddToken(const char* aword, const char* amean, const double avalue)
+void Units_Lexicon::AddToken(const char* aword,
+                             const char* amean,
+                             const double    avalue)
 {
   occ::handle<Units_Token> token;
   occ::handle<Units_Token> referencetoken;
-  bool                     found = false;
-  int                      index;
+  bool    found = false;
+  int    index;
 
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
   {

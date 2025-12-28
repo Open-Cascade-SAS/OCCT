@@ -39,8 +39,7 @@ IGESBasic_Group::IGESBasic_Group(const int nb)
   theEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
 }
 
-void IGESBasic_Group::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
+void IGESBasic_Group::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
 {
   // ptv and rln September 14, 2000 BUC60743
   // Protection against empty groups
@@ -114,8 +113,7 @@ void IGESBasic_Group::SetNb(const int nb)
   if (nb == oldnb || nb <= 0)
     return;
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> newents =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> newents = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   if (oldnb > nb)
     oldnb = nb;
   for (i = 1; i <= oldnb; i++)

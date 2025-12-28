@@ -43,18 +43,18 @@ int BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& BAC)
       return 5;
 
     case GeomAbs_BezierCurve: {
-      const GeomAdaptor_Curve&       GAC = BAC.Curve();
+      const GeomAdaptor_Curve&  GAC = BAC.Curve();
       const occ::handle<Geom_Curve>& GC  = GAC.Curve();
       occ::handle<Geom_BezierCurve>  GBZC(occ::down_cast<Geom_BezierCurve>(GC));
-      int                            n = 2 * (GBZC->NbPoles()) - 1;
+      int          n = 2 * (GBZC->NbPoles()) - 1;
       return n;
     }
     break;
     case GeomAbs_BSplineCurve: {
-      const GeomAdaptor_Curve&       GAC = BAC.Curve();
+      const GeomAdaptor_Curve&  GAC = BAC.Curve();
       const occ::handle<Geom_Curve>& GC  = GAC.Curve();
       occ::handle<Geom_BSplineCurve> GBSC(occ::down_cast<Geom_BSplineCurve>(GC));
-      int                            n = 2 * (GBSC->NbPoles()) - 1;
+      int          n = 2 * (GBSC->NbPoles()) - 1;
       return n;
     }
     break;
@@ -69,7 +69,10 @@ gp_Pnt BRepGProp_EdgeTool::Value(const BRepAdaptor_Curve& C, const double U)
   return C.Value(U);
 }
 
-void BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& V1)
+void BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C,
+                            const double      U,
+                            gp_Pnt&                  P,
+                            gp_Vec&                  V1)
 {
   C.D1(U, P, V1);
 }

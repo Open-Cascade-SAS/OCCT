@@ -20,7 +20,7 @@ RWStepBasic_RWWeekOfYearAndDayDate::RWStepBasic_RWWeekOfYearAndDayDate() {}
 
 void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepBasic_WeekOfYearAndDayDate>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
 
   // --- own field : dayComponent ---
 
-  int  aDayComponent;
+  int aDayComponent;
   bool hasAdayComponent = true;
   if (data->IsParamDefined(num, 3))
   {
@@ -63,7 +63,7 @@ void RWStepBasic_RWWeekOfYearAndDayDate::ReadStep(
 }
 
 void RWStepBasic_RWWeekOfYearAndDayDate::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepBasic_WeekOfYearAndDayDate>& ent) const
 {
 

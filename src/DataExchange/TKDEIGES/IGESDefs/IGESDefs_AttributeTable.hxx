@@ -45,8 +45,7 @@ public:
   //! - attributes : Attribute instances, created as
   //! (1,NbAttributes,1,NbRows)
   //! - NbRows = 1 is a particular case (Form 0)
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>>& attributes);
 
   //! Sets a Definition as Structure information
   //! (works by calling InitMisc)
@@ -74,32 +73,38 @@ public:
   Standard_EXPORT int ValueCount(const int Atnum) const;
 
   Standard_EXPORT occ::handle<Standard_Transient> AttributeList(const int Attribnum,
-                                                                const int Rownum) const;
+                                                           const int Rownum) const;
 
   //! Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Integer
   //! Error if Indices out of Range, or no Value defined, or not an Integer
-  Standard_EXPORT int AttributeAsInteger(const int AtNum, const int Rownum, const int ValNum) const;
+  Standard_EXPORT int AttributeAsInteger(const int AtNum,
+                                                      const int Rownum,
+                                                      const int ValNum) const;
 
   //! Returns Attribute Value <AtNum, Rownum, rank ValNum> as a Real
   //! Error if Indices out of Range, or no Value defined, or not a Real
-  Standard_EXPORT double AttributeAsReal(const int AtNum, const int Rownum, const int ValNum) const;
+  Standard_EXPORT double AttributeAsReal(const int AtNum,
+                                                const int Rownum,
+                                                const int ValNum) const;
 
   //! Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Integer
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> AttributeAsString(const int AtNum,
-                                                                          const int Rownum,
-                                                                          const int ValNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> AttributeAsString(
+    const int AtNum,
+    const int Rownum,
+    const int ValNum) const;
 
   //! Returns Attribute Value <AtNum, Rownum, rank ValNum> as an Entity
   //! Error if Indices out of Range, or no Value defined, or not an Entity
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> AttributeAsEntity(const int AtNum,
-                                                                     const int Rownum,
-                                                                     const int ValNum) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> AttributeAsEntity(
+    const int AtNum,
+    const int Rownum,
+    const int ValNum) const;
 
   //! Returns Attribute Value <AtNum, Rownum, rank ValNum> as a Boolean
   //! Error if Indices out of Range, or no Value defined, or not a Logical
   Standard_EXPORT bool AttributeAsLogical(const int AtNum,
-                                          const int Rownum,
-                                          const int ValNum) const;
+                                                      const int Rownum,
+                                                      const int ValNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_AttributeTable, IGESData_IGESEntity)
 

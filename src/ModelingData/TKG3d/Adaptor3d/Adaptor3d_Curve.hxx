@@ -69,16 +69,15 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT virtual occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                                            const double Last,
-                                                            const double Tol) const;
+                                                       const double Last,
+                                                       const double Tol) const;
 
   Standard_EXPORT virtual bool IsClosed() const;
 
@@ -109,10 +108,10 @@ public:
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT virtual void D3(const double U,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1,
+                                  gp_Vec&             V2,
+                                  gp_Vec&             V3) const;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.

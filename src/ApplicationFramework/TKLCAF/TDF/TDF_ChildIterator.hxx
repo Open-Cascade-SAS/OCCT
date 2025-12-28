@@ -41,7 +41,8 @@ public:
   //! the label aLabel. Iterates on the children of the given label. If
   //! <allLevels> option is set to true, it explores not
   //! only the first, but all the sub label levels.
-  Standard_EXPORT TDF_ChildIterator(const TDF_Label& aLabel, const bool allLevels = false);
+  Standard_EXPORT TDF_ChildIterator(const TDF_Label&       aLabel,
+                                    const bool allLevels = false);
 
   //! Initializes the iteration on the children of the
   //! given label.
@@ -66,7 +67,8 @@ public:
   //! std::cout << as.ToCString() << std::endl;
   //! }
   //! }
-  Standard_EXPORT void Initialize(const TDF_Label& aLabel, const bool allLevels = false);
+  Standard_EXPORT void Initialize(const TDF_Label&       aLabel,
+                                  const bool allLevels = false);
 
   //! Returns true if a current label is found in the
   //! iteration process.
@@ -93,7 +95,7 @@ public:
 
 private:
   TDF_LabelNodePtr myNode;
-  int              myFirstLevel;
+  int myFirstLevel;
 };
 
 #include <TDF_ChildIterator.lxx>

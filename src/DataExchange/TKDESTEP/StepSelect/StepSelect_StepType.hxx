@@ -56,9 +56,9 @@ public:
 
   //! Returns the Step Type defined from the Protocol (see above).
   //! If <ent> is not recognised, produces "..NOT FROM SCHEMA <name>.."
-  Standard_EXPORT const char* Value(
-    const occ::handle<Standard_Transient>&       ent,
-    const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char*
+    Value(const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepSelect_StepType, IFSelect_Signature)
 
@@ -66,7 +66,7 @@ protected:
   StepData_WriterLib thelib;
 
 private:
-  occ::handle<StepData_Protocol>  theproto;
+  occ::handle<StepData_Protocol>       theproto;
   mutable TCollection_AsciiString theLastValue;
   mutable std::mutex              myMutex;
 };

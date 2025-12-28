@@ -38,12 +38,12 @@ public:
   //! and an approximation error < Tol3d if possible
   //! the criterion CritPlate is satisfied if possible
   Standard_EXPORT GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
-                                       const AdvApp2Var_Criterion&           PlateCrit,
-                                       const double                          Tol3d,
-                                       const int                             Nbmax,
-                                       const int                             dgmax,
-                                       const GeomAbs_Shape Continuity   = GeomAbs_C1,
-                                       const double        EnlargeCoeff = 1.1);
+                                       const AdvApp2Var_Criterion&      PlateCrit,
+                                       const double              Tol3d,
+                                       const int           Nbmax,
+                                       const int           dgmax,
+                                       const GeomAbs_Shape              Continuity   = GeomAbs_C1,
+                                       const double              EnlargeCoeff = 1.1);
 
   //! Converts SurfPlate into a Geom_BSplineSurface with
   //! n Bezier pieces (n<=Nbmax) of degree <= dgmax
@@ -54,13 +54,13 @@ public:
   //! WARNING : for CritOrder = 0 or 1, only the constraints points of SurfPlate
   //! are used to evaluate the value of the criterion
   Standard_EXPORT GeomPlate_MakeApprox(const occ::handle<GeomPlate_Surface>& SurfPlate,
-                                       const double                          Tol3d,
-                                       const int                             Nbmax,
-                                       const int                             dgmax,
-                                       const double                          dmax,
-                                       const int                             CritOrder = 0,
-                                       const GeomAbs_Shape Continuity                  = GeomAbs_C1,
-                                       const double        EnlargeCoeff                = 1.1);
+                                       const double              Tol3d,
+                                       const int           Nbmax,
+                                       const int           dgmax,
+                                       const double              dmax,
+                                       const int           CritOrder    = 0,
+                                       const GeomAbs_Shape              Continuity   = GeomAbs_C1,
+                                       const double              EnlargeCoeff = 1.1);
 
   //! Returns the BSpline surface extracted from the
   //! GeomPlate_MakeApprox object.
@@ -80,8 +80,8 @@ public:
 private:
   occ::handle<GeomPlate_Surface>   myPlate;
   occ::handle<Geom_BSplineSurface> mySurface;
-  double                           myAppError;
-  double                           myCritError;
+  double               myAppError;
+  double               myCritError;
 };
 
 #endif // _GeomPlate_MakeApprox_HeaderFile

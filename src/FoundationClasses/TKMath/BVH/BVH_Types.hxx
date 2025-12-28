@@ -227,8 +227,8 @@ struct Array
   typedef typename BVH::ArrayType<T, N>::Type BVH_ArrayNt;
 
   //! Returns a const reference to the element with the given index.
-  static inline const typename BVH::VectorType<T, N>::Type& Value(const BVH_ArrayNt& theArray,
-                                                                  const int          theIndex)
+  static inline const typename BVH::VectorType<T, N>::Type& Value(const BVH_ArrayNt&     theArray,
+                                                                  const int theIndex)
   {
 #ifdef _BVH_USE_STD_VECTOR_
     return theArray[theIndex];
@@ -238,8 +238,8 @@ struct Array
   }
 
   //! Returns a reference to the element with the given index.
-  static inline typename BVH::VectorType<T, N>::Type& ChangeValue(BVH_ArrayNt& theArray,
-                                                                  const int    theIndex)
+  static inline typename BVH::VectorType<T, N>::Type& ChangeValue(BVH_ArrayNt&           theArray,
+                                                                  const int theIndex)
   {
 #ifdef _BVH_USE_STD_VECTOR_
     return theArray[theIndex];

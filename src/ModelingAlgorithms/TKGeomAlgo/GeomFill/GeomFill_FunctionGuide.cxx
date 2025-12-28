@@ -44,7 +44,7 @@
 //==============================================
 GeomFill_FunctionGuide::GeomFill_FunctionGuide(const occ::handle<GeomFill_SectionLaw>& S,
                                                const occ::handle<Adaptor3d_Curve>&     C,
-                                               const double                            Param)
+                                               const double                Param)
     : TheGuide(C),
       TheLaw(S),
       isconst(false),
@@ -102,7 +102,7 @@ void GeomFill_FunctionGuide::SetParam(const double,
     TheLaw->Mults(Mult);
     NCollection_Array1<double> Knots(1, NbKnots);
     TheLaw->Knots(Knots);
-    NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
+    NCollection_Array1<gp_Pnt>   Poles(1, NbPoles);
     NCollection_Array1<double> Weights(1, NbPoles);
     TheLaw->D0(TheUonS, Poles, Weights);
     if (TheLaw->IsRational())
@@ -177,7 +177,9 @@ bool GeomFill_FunctionGuide::Derivatives(const math_Vector& X, math_Matrix& D)
 // Function : Values
 // Purpose : calcul of the value and the derivative of the function
 //==============================================
-bool GeomFill_FunctionGuide::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool GeomFill_FunctionGuide::Values(const math_Vector& X,
+                                                math_Vector&       F,
+                                                math_Matrix&       D)
 {
   gp_Pnt P, P1;
   gp_Vec DP, DP1U, DP1V;
@@ -203,9 +205,9 @@ bool GeomFill_FunctionGuide::Values(const math_Vector& X, math_Vector& F, math_M
 // Purpose : calcul of the first derivative from t
 //==============================================
 bool GeomFill_FunctionGuide::DerivT(const math_Vector& X,
-                                    const gp_XYZ&      DCentre,
-                                    const gp_XYZ&      DDir,
-                                    math_Vector&       F)
+                                                const gp_XYZ&      DCentre,
+                                                const gp_XYZ&      DDir,
+                                                math_Vector&       F)
 {
   gp_Pnt P;
   gp_Vec DS;
@@ -224,11 +226,11 @@ bool GeomFill_FunctionGuide::DerivT(const math_Vector& X,
 // Function : DSDT
 // Purpose : calcul de la derive de la surface /t en U, V
 //=========================================================
-void GeomFill_FunctionGuide::DSDT(const double  U,
-                                  const double  V,
-                                  const gp_XYZ& DC,
-                                  const gp_XYZ& DDir,
-                                  gp_Vec&       DS) const
+void GeomFill_FunctionGuide::DSDT(const double U,
+                                  const double V,
+                                  const gp_XYZ&       DC,
+                                  const gp_XYZ&       DDir,
+                                  gp_Vec&             DS) const
 {
   // C origine sur l'axe de revolution
   // Vdir vecteur unitaire definissant la direction de l'axe de revolution
@@ -255,7 +257,7 @@ void GeomFill_FunctionGuide::DSDT(const double  U,
   DVcrossCQ.Multiply(std::sin(U));          //(Vdir^CQ)*Sin(U)
 
   double CosU = std::cos(U);
-  gp_XYZ DVdotCQ;
+  gp_XYZ        DVdotCQ;
   DVdotCQ.SetLinearForm(DDir.Dot(Q) + Dir.Dot(DQ),
                         Dir,
                         Dir.Dot(Q),

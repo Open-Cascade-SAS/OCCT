@@ -19,32 +19,32 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrganizationalAddress, StepBasic_Address)
 StepBasic_OrganizationalAddress::StepBasic_OrganizationalAddress() {}
 
 void StepBasic_OrganizationalAddress::Init(
-  const bool                                   hasAinternalLocation,
-  const occ::handle<TCollection_HAsciiString>& aInternalLocation,
-  const bool                                   hasAstreetNumber,
-  const occ::handle<TCollection_HAsciiString>& aStreetNumber,
-  const bool                                   hasAstreet,
-  const occ::handle<TCollection_HAsciiString>& aStreet,
-  const bool                                   hasApostalBox,
-  const occ::handle<TCollection_HAsciiString>& aPostalBox,
-  const bool                                   hasAtown,
-  const occ::handle<TCollection_HAsciiString>& aTown,
-  const bool                                   hasAregion,
-  const occ::handle<TCollection_HAsciiString>& aRegion,
-  const bool                                   hasApostalCode,
-  const occ::handle<TCollection_HAsciiString>& aPostalCode,
-  const bool                                   hasAcountry,
-  const occ::handle<TCollection_HAsciiString>& aCountry,
-  const bool                                   hasAfacsimileNumber,
-  const occ::handle<TCollection_HAsciiString>& aFacsimileNumber,
-  const bool                                   hasAtelephoneNumber,
-  const occ::handle<TCollection_HAsciiString>& aTelephoneNumber,
-  const bool                                   hasAelectronicMailAddress,
-  const occ::handle<TCollection_HAsciiString>& aElectronicMailAddress,
-  const bool                                   hasAtelexNumber,
-  const occ::handle<TCollection_HAsciiString>& aTelexNumber,
+  const bool                         hasAinternalLocation,
+  const occ::handle<TCollection_HAsciiString>&        aInternalLocation,
+  const bool                         hasAstreetNumber,
+  const occ::handle<TCollection_HAsciiString>&        aStreetNumber,
+  const bool                         hasAstreet,
+  const occ::handle<TCollection_HAsciiString>&        aStreet,
+  const bool                         hasApostalBox,
+  const occ::handle<TCollection_HAsciiString>&        aPostalBox,
+  const bool                         hasAtown,
+  const occ::handle<TCollection_HAsciiString>&        aTown,
+  const bool                         hasAregion,
+  const occ::handle<TCollection_HAsciiString>&        aRegion,
+  const bool                         hasApostalCode,
+  const occ::handle<TCollection_HAsciiString>&        aPostalCode,
+  const bool                         hasAcountry,
+  const occ::handle<TCollection_HAsciiString>&        aCountry,
+  const bool                         hasAfacsimileNumber,
+  const occ::handle<TCollection_HAsciiString>&        aFacsimileNumber,
+  const bool                         hasAtelephoneNumber,
+  const occ::handle<TCollection_HAsciiString>&        aTelephoneNumber,
+  const bool                         hasAelectronicMailAddress,
+  const occ::handle<TCollection_HAsciiString>&        aElectronicMailAddress,
+  const bool                         hasAtelexNumber,
+  const occ::handle<TCollection_HAsciiString>&        aTelexNumber,
   const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Organization>>>& aOrganizations,
-  const occ::handle<TCollection_HAsciiString>&                                 aDescription)
+  const occ::handle<TCollection_HAsciiString>&        aDescription)
 {
   // --- classe own fields ---
   organizations = aOrganizations;
@@ -82,8 +82,7 @@ void StepBasic_OrganizationalAddress::SetOrganizations(
   organizations = aOrganizations;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_Organization>>>
-  StepBasic_OrganizationalAddress::Organizations() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_Organization>>> StepBasic_OrganizationalAddress::Organizations() const
 {
   return organizations;
 }

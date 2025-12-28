@@ -33,7 +33,7 @@ IGESSolid_ToolSolidInstance::IGESSolid_ToolSolidInstance() {}
 
 void IGESSolid_ToolSolidInstance::ReadOwnParams(const occ::handle<IGESSolid_SolidInstance>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader& PR) const
+                                                IGESData_ParamReader&                  PR) const
 {
   occ::handle<IGESData_IGESEntity> tempEntity;
   // bool st; //szv#4:S4163:12Mar99 not needed
@@ -47,20 +47,20 @@ void IGESSolid_ToolSolidInstance::ReadOwnParams(const occ::handle<IGESSolid_Soli
 }
 
 void IGESSolid_ToolSolidInstance::WriteOwnParams(const occ::handle<IGESSolid_SolidInstance>& ent,
-                                                 IGESData_IGESWriter& IW) const
+                                                 IGESData_IGESWriter&                   IW) const
 {
   IW.Send(ent->Entity());
 }
 
 void IGESSolid_ToolSolidInstance::OwnShared(const occ::handle<IGESSolid_SolidInstance>& ent,
-                                            Interface_EntityIterator&                   iter) const
+                                            Interface_EntityIterator&              iter) const
 {
   iter.GetOneItem(ent->Entity());
 }
 
 void IGESSolid_ToolSolidInstance::OwnCopy(const occ::handle<IGESSolid_SolidInstance>& another,
                                           const occ::handle<IGESSolid_SolidInstance>& ent,
-                                          Interface_CopyTool&                         TC) const
+                                          Interface_CopyTool&                    TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempEntity, TC.Transferred(another->Entity()));
   ent->Init(tempEntity);
@@ -86,9 +86,9 @@ void IGESSolid_ToolSolidInstance::OwnCheck(const occ::handle<IGESSolid_SolidInst
 }
 
 void IGESSolid_ToolSolidInstance::OwnDump(const occ::handle<IGESSolid_SolidInstance>& ent,
-                                          const IGESData_IGESDumper&                  dumper,
-                                          Standard_OStream&                           S,
-                                          const int                                   level) const
+                                          const IGESData_IGESDumper&             dumper,
+                                          Standard_OStream&                      S,
+                                          const int                 level) const
 {
   S << "IGESSolid_SolidInstance\n"
     << "Solid entity : ";

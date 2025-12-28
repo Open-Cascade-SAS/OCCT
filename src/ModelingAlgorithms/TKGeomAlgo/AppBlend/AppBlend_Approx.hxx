@@ -24,9 +24,12 @@
 #include <Standard_Boolean.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Bspline approximation of a surface.
 class AppBlend_Approx
@@ -43,12 +46,12 @@ public:
                                          int& NbUKnots,
                                          int& NbVKnots) const = 0;
 
-  Standard_EXPORT virtual void Surface(NCollection_Array2<gp_Pnt>& TPoles,
-                                       NCollection_Array2<double>& TWeights,
-                                       NCollection_Array1<double>& TUKnots,
-                                       NCollection_Array1<double>& TVKnots,
-                                       NCollection_Array1<int>&    TUMults,
-                                       NCollection_Array1<int>&    TVMults) const = 0;
+  Standard_EXPORT virtual void Surface(NCollection_Array2<gp_Pnt>&      TPoles,
+                                       NCollection_Array2<double>&    TWeights,
+                                       NCollection_Array1<double>&    TUKnots,
+                                       NCollection_Array1<double>&    TVKnots,
+                                       NCollection_Array1<int>& TUMults,
+                                       NCollection_Array1<int>& TVMults) const = 0;
 
   Standard_EXPORT virtual int UDegree() const = 0;
 
@@ -68,12 +71,14 @@ public:
 
   Standard_EXPORT virtual int NbCurves2d() const = 0;
 
-  Standard_EXPORT virtual void Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const = 0;
+  Standard_EXPORT virtual void Curves2dShape(int& Degree,
+                                             int& NbPoles,
+                                             int& NbKnots) const = 0;
 
-  Standard_EXPORT virtual void Curve2d(const int                     Index,
-                                       NCollection_Array1<gp_Pnt2d>& TPoles,
-                                       NCollection_Array1<double>&   TKnots,
-                                       NCollection_Array1<int>&      TMults) const = 0;
+  Standard_EXPORT virtual void Curve2d(const int   Index,
+                                       NCollection_Array1<gp_Pnt2d>&    TPoles,
+                                       NCollection_Array1<double>&    TKnots,
+                                       NCollection_Array1<int>& TMults) const = 0;
 
   Standard_EXPORT virtual int Curves2dDegree() const = 0;
 
@@ -88,6 +93,7 @@ public:
 
   Standard_EXPORT virtual double TolCurveOnSurf(const int Index) const = 0;
   Standard_EXPORT virtual ~AppBlend_Approx();
+
 };
 
 #endif // _AppBlend_Approx_HeaderFile

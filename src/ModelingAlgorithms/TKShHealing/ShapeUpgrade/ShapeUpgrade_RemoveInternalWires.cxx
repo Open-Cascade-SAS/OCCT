@@ -25,10 +25,15 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_RemoveInternalWires, ShapeUpgrade_Tool)
@@ -37,9 +42,9 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_RemoveInternalWires, ShapeUpgrade_Tool)
 
 ShapeUpgrade_RemoveInternalWires::ShapeUpgrade_RemoveInternalWires()
 {
-  myMinArea                                = 0.;
-  myRemoveFacesMode                        = true;
-  myStatus                                 = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  myMinArea                           = 0.;
+  myRemoveFacesMode                   = true;
+  myStatus                            = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   occ::handle<ShapeBuild_ReShape> aContext = new ShapeBuild_ReShape;
   SetContext(aContext);
 }
@@ -99,9 +104,8 @@ bool ShapeUpgrade_RemoveInternalWires::Perform(
     return false;
   }
   Clear();
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-      aWireFaces;
-  int i = 1, nb = theSeqShapes.Length();
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aWireFaces;
+  int                          i = 1, nb = theSeqShapes.Length();
   for (; i <= nb; i++)
   {
     const TopoDS_Shape& aS = theSeqShapes.Value(i);
@@ -113,7 +117,7 @@ bool ShapeUpgrade_RemoveInternalWires::Perform(
         TopExp::MapShapesAndAncestors(myShape, TopAbs_WIRE, TopAbs_FACE, aWireFaces);
       if (aWireFaces.Contains(aS))
       {
-        const NCollection_List<TopoDS_Shape>&    alfaces = aWireFaces.FindFromKey(aS);
+        const NCollection_List<TopoDS_Shape>&        alfaces = aWireFaces.FindFromKey(aS);
         NCollection_List<TopoDS_Shape>::Iterator liter(alfaces);
         for (; liter.More(); liter.Next())
           removeSmallWire(liter.Value(), aS);
@@ -176,8 +180,8 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
   int i = 1;
   for (; i <= myRemoveWires.Length(); i++)
   {
-    TopoDS_Shape                                                  aWire = myRemoveWires.Value(i);
-    TopoDS_Iterator                                               aIte(aWire, false);
+    TopoDS_Shape               aWire = myRemoveWires.Value(i);
+    TopoDS_Iterator            aIte(aWire, false);
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aFaceCandidates;
     // collecting all faces containing edges from removed wire
     for (; aIte.More(); aIte.Next())
@@ -189,8 +193,8 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
         myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
         continue;
       }
-      const NCollection_List<TopoDS_Shape>&    aLface1 = myEdgeFaces.FindFromKey(aEdge);
-      const NCollection_List<TopoDS_Shape>&    aLface2 = myRemoveEdges.Find(aEdge);
+      const NCollection_List<TopoDS_Shape>&        aLface1 = myEdgeFaces.FindFromKey(aEdge);
+      const NCollection_List<TopoDS_Shape>&        aLface2 = myRemoveEdges.Find(aEdge);
       NCollection_List<TopoDS_Shape>::Iterator aliter(aLface1);
       NCollection_List<TopoDS_Shape>::Iterator aliter2(aLface2);
       for (; aliter.More(); aliter.Next())
@@ -207,9 +211,9 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
 
         if (!isFind)
         {
-          TopoDS_Wire     aWout   = ShapeAnalysis::OuterWire(TopoDS::Face(aF));
-          bool            isOuter = false;
-          TopoDS_Iterator aIter(aWout, false);
+          TopoDS_Wire      aWout   = ShapeAnalysis::OuterWire(TopoDS::Face(aF));
+          bool isOuter = false;
+          TopoDS_Iterator  aIter(aWout, false);
           for (; aIter.More() && !isOuter; aIter.Next())
             isOuter = aEdge.IsSame(aIter.Value());
           if (isOuter)
@@ -226,11 +230,11 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
     int k = 1;
     for (; k <= aFaceCandidates.Extent(); k++)
     {
-      TopoDS_Shape                      aF     = aFaceCandidates.FindKey(k);
-      TopoDS_Wire                       anOutW = ShapeAnalysis::OuterWire(TopoDS::Face(aF));
+      TopoDS_Shape                 aF     = aFaceCandidates.FindKey(k);
+      TopoDS_Wire                  anOutW = ShapeAnalysis::OuterWire(TopoDS::Face(aF));
       occ::handle<ShapeExtend_WireData> asewd  = new ShapeExtend_WireData(anOutW);
-      int                               n = 1, nbE = asewd->NbEdges();
-      int                               nbNotRemoved = 0;
+      int             n = 1, nbE = asewd->NbEdges();
+      int             nbNotRemoved = 0;
       for (; n <= nbE; n++)
       {
         if (asewd->IsSeam(n))
@@ -238,7 +242,7 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces()
         TopoDS_Edge aE = asewd->Edge(n);
         if (!myRemoveEdges.IsBound(aE))
         {
-          const NCollection_List<TopoDS_Shape>&    aLface3 = myEdgeFaces.FindFromKey(aE);
+          const NCollection_List<TopoDS_Shape>&        aLface3 = myEdgeFaces.FindFromKey(aE);
           NCollection_List<TopoDS_Shape>::Iterator aliter3(aLface3);
           for (; aliter3.More(); aliter3.Next())
           {

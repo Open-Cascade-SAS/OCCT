@@ -19,9 +19,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_DispatchControl, Interface_CopyControl)
 
-Transfer_DispatchControl::Transfer_DispatchControl(
-  const occ::handle<Interface_InterfaceModel>&  model,
-  const occ::handle<Transfer_TransientProcess>& TP)
+Transfer_DispatchControl::Transfer_DispatchControl(const occ::handle<Interface_InterfaceModel>&  model,
+                                                   const occ::handle<Transfer_TransientProcess>& TP)
 {
   themodel = model;
   theTP    = TP;
@@ -49,7 +48,7 @@ void Transfer_DispatchControl::Bind(const occ::handle<Standard_Transient>& ent,
 }
 
 bool Transfer_DispatchControl::Search(const occ::handle<Standard_Transient>& ent,
-                                      occ::handle<Standard_Transient>&       res) const
+                                                  occ::handle<Standard_Transient>&       res) const
 {
   res = theTP->FindTransient(ent);
   return !res.IsNull();

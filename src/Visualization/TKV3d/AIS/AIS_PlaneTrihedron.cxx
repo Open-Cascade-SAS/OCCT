@@ -41,13 +41,14 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_Type.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <UnitsAPI.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_PlaneTrihedron, AIS_InteractiveObject)
 
-void ExtremityPoints(NCollection_Array1<gp_Pnt>&      PP,
+void ExtremityPoints(NCollection_Array1<gp_Pnt>&         PP,
                      const occ::handle<Geom_Plane>&   myPlane,
                      const occ::handle<Prs3d_Drawer>& myDrawer);
 
@@ -111,7 +112,7 @@ occ::handle<AIS_Line> AIS_PlaneTrihedron::YAxis() const
 
 occ::handle<AIS_Point> AIS_PlaneTrihedron::Position() const
 {
-  gp_Pnt                  aPnt   = myPlane->Pln().Location();
+  gp_Pnt             aPnt   = myPlane->Pln().Location();
   occ::handle<Geom_Point> aPoint = new Geom_CartesianPoint(aPnt);
   occ::handle<AIS_Point>  aPt    = new AIS_Point(aPoint);
   return aPt;
@@ -135,11 +136,11 @@ void AIS_PlaneTrihedron::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                  const int)
 {
   // drawing axis in X direction
-  gp_Pnt first, last;
+  gp_Pnt        first, last;
   double value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
-  gp_Dir xDir  = myPlane->Position().Ax2().XDirection();
+  gp_Dir        xDir  = myPlane->Position().Ax2().XDirection();
 
-  gp_Pnt orig = myPlane->Position().Ax2().Location();
+  gp_Pnt        orig = myPlane->Position().Ax2().Location();
   double xo, yo, zo, x, y, z;
   orig.Coord(xo, yo, zo);
   xDir.Coord(x, y, z);
@@ -178,11 +179,11 @@ void AIS_PlaneTrihedron::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_PlaneTrihedron::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                          const int                               aMode)
+                                          const int             aMode)
 {
-  int                                Prior;
+  int              Prior;
   occ::handle<SelectMgr_EntityOwner> eown;
-  NCollection_Array1<gp_Pnt>         PP(1, 4), PO(1, 4);
+  NCollection_Array1<gp_Pnt>            PP(1, 4), PO(1, 4);
   //  ExtremityPoints(PP);
   ExtremityPoints(PP, myPlane, myDrawer);
   switch (aMode)
@@ -199,9 +200,9 @@ void AIS_PlaneTrihedron::ComputeSelection(const occ::handle<SelectMgr_Selection>
       break;
     }
     case 1: { // origine
-      Prior                                                = 8;
+      Prior                                           = 8;
       const occ::handle<SelectMgr_SelectableObject>& anObj = myShapes[0]; // to avoid ambiguity
-      eown = new SelectMgr_EntityOwner(anObj, Prior);
+      eown                                            = new SelectMgr_EntityOwner(anObj, Prior);
       aSelection->Add(new Select3D_SensitivePoint(eown, myPlane->Location()));
 
       break;
@@ -211,7 +212,7 @@ void AIS_PlaneTrihedron::ComputeSelection(const occ::handle<SelectMgr_Selection>
       for (int i = 1; i <= 2; i++)
       {
         const occ::handle<SelectMgr_SelectableObject>& anObj = myShapes[i]; // to avoid ambiguity
-        eown = new SelectMgr_EntityOwner(anObj, Prior);
+        eown                                            = new SelectMgr_EntityOwner(anObj, Prior);
         aSelection->Add(new Select3D_SensitiveSegment(eown, PP(1), PP(i + 1)));
       }
       break;
@@ -236,7 +237,7 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color& aCol)
 //=================================================================================================
 
 // void  AIS_Trihedron::ExtremityPoints(NCollection_Array1<gp_Pnt>& PP) const
-void ExtremityPoints(NCollection_Array1<gp_Pnt>&      PP,
+void ExtremityPoints(NCollection_Array1<gp_Pnt>&         PP,
                      const occ::handle<Geom_Plane>&   myPlane,
                      const occ::handle<Prs3d_Drawer>& myDrawer)
 {
@@ -245,7 +246,7 @@ void ExtremityPoints(NCollection_Array1<gp_Pnt>&      PP,
   PP(1) = theax.Location();
 
   double len = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
-  gp_Vec vec = theax.XDirection();
+  gp_Vec        vec = theax.XDirection();
   vec *= len;
   PP(2) = PP(1).Translated(vec);
 

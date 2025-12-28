@@ -28,7 +28,7 @@ StepElement_CurveElementSectionDefinition::StepElement_CurveElementSectionDefini
 
 void StepElement_CurveElementSectionDefinition::Init(
   const occ::handle<TCollection_HAsciiString>& aDescription,
-  const double                                 aSectionAngle)
+  const double                     aSectionAngle)
 {
 
   theDescription = aDescription;

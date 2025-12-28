@@ -47,9 +47,9 @@ private:
   Standard_EXPORT Graphic3d_MediaTexture(std::mutex& theMutex, int thePlane = -1);
 
 protected:
-  std::mutex&                       myMutex;
+  std::mutex&                  myMutex;
   occ::handle<Media_Frame>          myFrame;
-  int                               myPlane;
+  int             myPlane;
   mutable occ::handle<Image_PixMap> myPixMapWrapper;
 };
 

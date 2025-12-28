@@ -24,7 +24,9 @@ GeomPlate_Aij::GeomPlate_Aij()
 {
 }
 
-GeomPlate_Aij::GeomPlate_Aij(const int anInd1, const int anInd2, const gp_Vec& aVec)
+GeomPlate_Aij::GeomPlate_Aij(const int anInd1,
+                             const int anInd2,
+                             const gp_Vec&          aVec)
 {
   Ind1 = anInd1;
   Ind2 = anInd2;

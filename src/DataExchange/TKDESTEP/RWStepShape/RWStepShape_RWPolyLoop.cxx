@@ -21,7 +21,7 @@
 RWStepShape_RWPolyLoop::RWStepShape_RWPolyLoop() {}
 
 void RWStepShape_RWPolyLoop::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                                   num,
+                                      const int                 num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepShape_PolyLoop>&      ent) const
 {
@@ -40,12 +40,12 @@ void RWStepShape_RWPolyLoop::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- own field : polygon ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aPolygon;
-  occ::handle<StepGeom_CartesianPoint>                                   anent2;
-  int                                                                    nsub2;
+  occ::handle<StepGeom_CartesianPoint>          anent2;
+  int                         nsub2;
   if (data->ReadSubList(num, 2, "polygon", ach, nsub2))
   {
-    int nb2  = data->NbParams(nsub2);
-    aPolygon = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aPolygon             = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -64,7 +64,7 @@ void RWStepShape_RWPolyLoop::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aPolygon);
 }
 
-void RWStepShape_RWPolyLoop::WriteStep(StepData_StepWriter&                   SW,
+void RWStepShape_RWPolyLoop::WriteStep(StepData_StepWriter&              SW,
                                        const occ::handle<StepShape_PolyLoop>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepShape_RWPolyLoop::WriteStep(StepData_StepWriter&                   SW
 }
 
 void RWStepShape_RWPolyLoop::Share(const occ::handle<StepShape_PolyLoop>& ent,
-                                   Interface_EntityIterator&              iter) const
+                                   Interface_EntityIterator&         iter) const
 {
 
   int nbElem1 = ent->NbPolygon();

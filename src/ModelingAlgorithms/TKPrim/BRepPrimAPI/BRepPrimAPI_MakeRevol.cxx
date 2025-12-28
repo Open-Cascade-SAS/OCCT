@@ -24,6 +24,7 @@
 #include <gp_Ax1.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -45,10 +46,10 @@ static const TopoDS_Shape& check(const TopoDS_Shape& S)
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
-                                             const gp_Ax1&       A,
-                                             const double        D,
-                                             const bool          Copy)
+BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                             const gp_Ax1&          A,
+                                             const double    D,
+                                             const bool Copy)
     : myRevol(check(S), A, D, Copy),
       myIsBuild(false)
 
@@ -66,9 +67,9 @@ BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
-                                             const gp_Ax1&       A,
-                                             const bool          Copy)
+BRepPrimAPI_MakeRevol::BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                             const gp_Ax1&          A,
+                                             const bool Copy)
     :
 
       myRevol(check(S), A, 2. * M_PI, Copy),
@@ -110,7 +111,7 @@ void BRepPrimAPI_MakeRevol::Build(const Message_ProgressRange& /*theRange*/)
   myHist.Nullify();
   myDegenerated.Clear();
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aDegE;
-  BRep_Builder                                                                               aBB;
+  BRep_Builder                       aBB;
 
   TopExp_Explorer anExp(myShape, TopAbs_EDGE);
   // Problem is that some degenerated edges can be shared by different faces.
@@ -119,8 +120,8 @@ void BRepPrimAPI_MakeRevol::Build(const Message_ProgressRange& /*theRange*/)
   // and replace shared edge by its copy
   for (; anExp.More(); anExp.Next())
   {
-    const TopoDS_Shape&     anEdge = anExp.Current();
-    occ::handle<BRep_TEdge> aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
+    const TopoDS_Shape& anEdge = anExp.Current();
+    occ::handle<BRep_TEdge>  aTEdge = occ::down_cast<BRep_TEdge>(anEdge.TShape());
 
     if (aTEdge->Degenerated())
     {
@@ -149,10 +150,9 @@ void BRepPrimAPI_MakeRevol::Build(const Message_ProgressRange& /*theRange*/)
   }
   if (!myDegenerated.IsEmpty())
   {
-    BRepTools_ReShape aSubs;
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-         aDegF;
-    bool isReplaced = false;
+    BRepTools_ReShape                  aSubs;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aDegF;
+    bool                   isReplaced = false;
     anExp.Init(myShape, TopAbs_FACE);
     // Replace degenerated edge by its copies for different faces
     // First, for each face list of d.e. is created
@@ -176,22 +176,21 @@ void BRepPrimAPI_MakeRevol::Build(const Message_ProgressRange& /*theRange*/)
     }
     //
     // Second, replace edges by copies using ReShape
-    BRepTools_ReShape aSubsF;
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-      Iterator aFIter(aDegF);
+    BRepTools_ReShape                                   aSubsF;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator aFIter(aDegF);
     for (; aFIter.More(); aFIter.Next())
     {
       aSubs.Clear();
-      isReplaced                                    = false;
-      const TopoDS_Shape&                      aF   = aFIter.Key();
-      const NCollection_List<TopoDS_Shape>&    aDEL = aFIter.ChangeValue();
+      isReplaced                              = false;
+      const TopoDS_Shape&                aF   = aFIter.Key();
+      const NCollection_List<TopoDS_Shape>&        aDEL = aFIter.ChangeValue();
       NCollection_List<TopoDS_Shape>::Iterator anEIter(aDEL);
       for (; anEIter.More(); anEIter.Next())
       {
         const TopoDS_Shape& anE = anEIter.Value();
         if (aDegE.IsBound(anE))
         {
-          NCollection_List<TopoDS_Shape>&          aCEL = aDegE.ChangeFind(anE);
+          NCollection_List<TopoDS_Shape>&              aCEL = aDegE.ChangeFind(anE);
           NCollection_List<TopoDS_Shape>::Iterator anIt(aCEL);
           for (; anIt.More(); anIt.Next())
           {
@@ -251,7 +250,7 @@ static bool IsIntersect(const occ::handle<Adaptor3d_Curve>& theC, const gp_Ax1& 
   {
     gp_Circ       aCirc  = theC->Circle();
     const gp_Pnt& aCentr = aCirc.Location();
-    double        anR2   = aCirc.Radius();
+    double anR2   = aCirc.Radius();
     anR2 -= Precision::Confusion();
     anR2 *= anR2;
     if (anAxis.SquareDistance(aCentr) > anR2)
@@ -260,9 +259,10 @@ static bool IsIntersect(const occ::handle<Adaptor3d_Curve>& theC, const gp_Ax1& 
     }
   }
   const occ::handle<Geom_Line> aL = new Geom_Line(anAxis);
-  const GeomAdaptor_Curve      aLin(aL);
-  const double                 aParTol = theC->Resolution(Precision::Confusion());
-  const double aParF = theC->FirstParameter() + aParTol, aParL = theC->LastParameter() - aParTol;
+  const GeomAdaptor_Curve aLin(aL);
+  const double     aParTol = theC->Resolution(Precision::Confusion());
+  const double     aParF   = theC->FirstParameter() + aParTol,
+                      aParL       = theC->LastParameter() - aParTol;
 
   Extrema_ExtCC anExtr(*theC, aLin);
   anExtr.Perform();
@@ -287,10 +287,11 @@ static bool IsIntersect(const occ::handle<Adaptor3d_Curve>& theC, const gp_Ax1& 
 
 //=================================================================================================
 
-bool BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theShape, const gp_Ax1& theA)
+bool BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theShape,
+                                                      const gp_Ax1&       theA)
 {
-  TopExp_Explorer anExp(theShape, TopAbs_EDGE);
-  bool            IsValid = true;
+  TopExp_Explorer  anExp(theShape, TopAbs_EDGE);
+  bool IsValid = true;
   for (; anExp.More(); anExp.Next())
   {
     const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
@@ -300,21 +301,21 @@ bool BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theShape, const gp
       continue;
     }
 
-    TopLoc_Location         L;
-    double                  First, Last;
+    TopLoc_Location    L;
+    double      First, Last;
     occ::handle<Geom_Curve> C  = BRep_Tool::Curve(anE, L, First, Last);
-    gp_Trsf                 Tr = L.Transformation();
-    C                          = occ::down_cast<Geom_Curve>(C->Copy());
-    C                          = new Geom_TrimmedCurve(C, First, Last);
+    gp_Trsf            Tr = L.Transformation();
+    C                     = occ::down_cast<Geom_Curve>(C->Copy());
+    C                     = new Geom_TrimmedCurve(C, First, Last);
     C->Transform(Tr);
 
     occ::handle<GeomAdaptor_Curve> HC = new GeomAdaptor_Curve();
     HC->Load(C, First, Last);
     // Checking coincidence axe of revolution and basis curve
     // This code is taken directly from GeomAdaptor_SurfaceOfRevolution
-    int    Ratio = 1;
-    double Dist;
-    gp_Pnt PP;
+    int Ratio = 1;
+    double    Dist;
+    gp_Pnt           PP;
     do
     {
       PP   = HC->Value(First + (Last - First) / Ratio);
@@ -325,7 +326,7 @@ bool BRepPrimAPI_MakeRevol::CheckValidity(const TopoDS_Shape& theShape, const gp
     if (Ratio >= 100) // edge coincides with axes
     {
       IsValid = true; // Such edges are allowed by revol algo and treated
-                      // by special way, so they must be considered as valid
+                               // by special way, so they must be considered as valid
     }
     else
     {

@@ -37,8 +37,8 @@ public:
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  Standard_EXPORT virtual void AddVertex(const IntPatch_Point& Pnt,
-                                         const bool            theIsPrepend = false) = 0;
+  Standard_EXPORT virtual void AddVertex(const IntPatch_Point&  Pnt,
+                                         const bool theIsPrepend = false) = 0;
 
   //! Returns the number of intersection points.
   Standard_EXPORT virtual int NbPnts() const = 0;
@@ -81,26 +81,27 @@ public:
   Standard_EXPORT static double CurvatureRadiusOfIntersLine(
     const occ::handle<Adaptor3d_Surface>& theS1,
     const occ::handle<Adaptor3d_Surface>& theS2,
-    const IntSurf_PntOn2S&                theUVPoint);
+    const IntSurf_PntOn2S&           theUVPoint);
 
   DEFINE_STANDARD_RTTIEXT(IntPatch_PointLine, IntPatch_Line)
 
 protected:
   //! To initialize the fields, when the transitions
   //! are In or Out.
-  Standard_EXPORT IntPatch_PointLine(const bool              Tang,
+  Standard_EXPORT IntPatch_PointLine(const bool  Tang,
                                      const IntSurf_TypeTrans Trans1,
                                      const IntSurf_TypeTrans Trans2);
 
   //! To initialize the fields, when the transitions
   //! are Touch.
-  Standard_EXPORT IntPatch_PointLine(const bool              Tang,
+  Standard_EXPORT IntPatch_PointLine(const bool  Tang,
                                      const IntSurf_Situation Situ1,
                                      const IntSurf_Situation Situ2);
 
   //! To initialize the fields, when the transitions
   //! are Undecided.
   Standard_EXPORT IntPatch_PointLine(const bool Tang);
+
 };
 
 #endif // _IntPatch_PointLine_HeaderFile

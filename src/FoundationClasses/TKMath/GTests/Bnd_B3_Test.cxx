@@ -114,8 +114,8 @@ TEST(Bnd_B3dTest, AddBox)
 
 TEST(Bnd_B3dTest, SquareExtent)
 {
-  Bnd_B3d aBox(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(3.0, 4.0, 5.0));
-  double  aSqExtent = aBox.SquareExtent();
+  Bnd_B3d       aBox(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(3.0, 4.0, 5.0));
+  double aSqExtent = aBox.SquareExtent();
 
   // Square diagonal = 4 * (3^2 + 4^2 + 5^2) = 4 * 50 = 200
   EXPECT_NEAR(aSqExtent, 200.0, Precision::Confusion());
@@ -158,9 +158,9 @@ TEST(Bnd_B3dTest, Limit)
   EXPECT_NEAR(aMax.Z(), 5.0, Precision::Confusion());
 
   // Test with non-intersecting boxes
-  Bnd_B3d aBox3(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(1.0, 1.0, 1.0));
-  Bnd_B3d aBox4(gp_XYZ(10.0, 10.0, 10.0), gp_XYZ(1.0, 1.0, 1.0));
-  bool    isLimited2 = aBox3.Limit(aBox4);
+  Bnd_B3d          aBox3(gp_XYZ(0.0, 0.0, 0.0), gp_XYZ(1.0, 1.0, 1.0));
+  Bnd_B3d          aBox4(gp_XYZ(10.0, 10.0, 10.0), gp_XYZ(1.0, 1.0, 1.0));
+  bool isLimited2 = aBox3.Limit(aBox4);
   EXPECT_FALSE(isLimited2);
 }
 

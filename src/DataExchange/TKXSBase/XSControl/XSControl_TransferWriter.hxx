@@ -49,10 +49,7 @@ public:
   const occ::handle<Transfer_FinderProcess>& FinderProcess() const { return myTransferWriter; }
 
   //! Sets a new FinderProcess and forgets the former one
-  void SetFinderProcess(const occ::handle<Transfer_FinderProcess>& theFP)
-  {
-    myTransferWriter = theFP;
-  }
+  void SetFinderProcess(const occ::handle<Transfer_FinderProcess>& theFP) { myTransferWriter = theFP; }
 
   //! Returns the currently used Controller
   const occ::handle<XSControl_Controller>& Controller() const { return myController; }
@@ -80,7 +77,8 @@ public:
 
   //! Prints statistics on current Trace File, according what,mode
   //! See PrintStatsProcess for details
-  Standard_EXPORT void PrintStats(const int theWhat, const int theMode = 0) const;
+  Standard_EXPORT void PrintStats(const int theWhat,
+                                  const int theMode = 0) const;
 
   //! Tells if a transient object (from an application) is a valid
   //! candidate for a transfer to a model
@@ -109,7 +107,7 @@ public:
   //! transfer badly initialised
   Standard_EXPORT IFSelect_ReturnStatus
     TransferWriteShape(const occ::handle<Interface_InterfaceModel>& theModel,
-                       const TopoDS_Shape&                          theShape,
+                       const TopoDS_Shape&                     theShape,
                        const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns the check-list of last transfer (write), i.e. the
@@ -127,7 +125,7 @@ public:
 private:
   occ::handle<XSControl_Controller>   myController;
   occ::handle<Transfer_FinderProcess> myTransferWriter;
-  int                                 myTransferMode;
+  int               myTransferMode;
 };
 
 #endif // _XSControl_TransferWriter_HeaderFile

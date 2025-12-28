@@ -21,6 +21,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -35,7 +36,8 @@ BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert()
 
 //=================================================================================================
 
-BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert(const TopoDS_Shape& S, const bool Copy)
+BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert(const TopoDS_Shape&    S,
+                                                         const bool Copy)
 
 {
   myModification = new BRepTools_NurbsConvertModification();
@@ -57,7 +59,7 @@ void BRepBuilderAPI_NurbsConvert::Perform(const TopoDS_Shape& S, const bool /*Co
 void BRepBuilderAPI_NurbsConvert::CorrectVertexTol()
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anInitVertices;
-  TopExp_Explorer                                        anExp(myInitialShape, TopAbs_VERTEX);
+  TopExp_Explorer     anExp(myInitialShape, TopAbs_VERTEX);
   for (; anExp.More(); anExp.Next())
   {
     anInitVertices.Add(anExp.Current());
@@ -73,7 +75,7 @@ void BRepBuilderAPI_NurbsConvert::CorrectVertexTol()
   {
     const TopoDS_Shape& anE = anEIter.Value();
     //
-    double          anETol = BRep_Tool::Tolerance(TopoDS::Edge(anE));
+    double   anETol = BRep_Tool::Tolerance(TopoDS::Edge(anE));
     TopoDS_Iterator anIter(anE);
     for (; anIter.More(); anIter.Next())
     {
@@ -110,8 +112,7 @@ void BRepBuilderAPI_NurbsConvert::CorrectVertexTol()
   }
   //
   mySubs.Clear();
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIter(
-    myVtxToReplace);
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIter(myVtxToReplace);
   for (; anIter.More(); anIter.Next())
   {
     mySubs.Replace(anIter.Key(), anIter.Value());

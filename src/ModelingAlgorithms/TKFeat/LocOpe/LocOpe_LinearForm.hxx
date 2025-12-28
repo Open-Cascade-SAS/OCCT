@@ -22,10 +22,13 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <gp_Pnt.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //! Defines a linear form (using Prism from BRepSweep)
 //! with modifications provided for the LinearForm feature.
@@ -69,17 +72,17 @@ public:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape myBase;
-  gp_Vec       myVec;
-  gp_Vec       myTra;
-  bool         myDone;
-  bool         myIsTrans;
-  TopoDS_Shape myRes;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
+  TopoDS_Shape                       myBase;
+  gp_Vec                             myVec;
+  gp_Vec                             myTra;
+  bool                   myDone;
+  bool                   myIsTrans;
+  TopoDS_Shape                       myRes;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
-  gp_Pnt                                                                                     myPnt1;
-  gp_Pnt                                                                                     myPnt2;
+  gp_Pnt                             myPnt1;
+  gp_Pnt                             myPnt2;
 };
 
 #include <LocOpe_LinearForm.lxx>

@@ -24,10 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCircle, Select3D_SensitiveEntity)
 // function : Select3D_SensitiveCircle (constructor)
 // purpose  : Definition of a sensitive circle
 //=======================================================================
-Select3D_SensitiveCircle::Select3D_SensitiveCircle(
-  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-  const gp_Circ&                            theCircle,
-  const bool                                theIsFilled)
+Select3D_SensitiveCircle::Select3D_SensitiveCircle(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                                   const gp_Circ&                       theCircle,
+                                                   const bool               theIsFilled)
     : Select3D_SensitiveEntity(theOwnerId)
 {
   myRadius = theCircle.Radius();
@@ -45,7 +44,7 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(
 // purpose  : Checks whether the circle overlaps current selecting volume
 //=======================================================================
 bool Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult)
+                                                   SelectBasics_PickResult& thePickResult)
 {
   const bool aIsFilled = mySensType == Select3D_TOS_INTERIOR;
 
@@ -75,7 +74,7 @@ bool Select3D_SensitiveCircle::Matches(SelectBasics_SelectingVolumeManager& theM
 
 occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveCircle::GetConnected()
 {
-  bool                                  anIsFilled = mySensType == Select3D_TOS_INTERIOR;
+  bool                 anIsFilled = mySensType == Select3D_TOS_INTERIOR;
   occ::handle<Select3D_SensitiveEntity> aNewEntity =
     new Select3D_SensitiveCircle(myOwnerId, Circle(), anIsFilled);
   return aNewEntity;

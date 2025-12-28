@@ -29,7 +29,8 @@ XSControl_Writer::XSControl_Writer(const char* norm)
   SetNorm(norm);
 }
 
-XSControl_Writer::XSControl_Writer(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
+XSControl_Writer::XSControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
+                                   const bool               scratch)
 {
   SetWS(WS, scratch);
 }
@@ -38,12 +39,13 @@ bool XSControl_Writer::SetNorm(const char* norm)
 {
   if (thesession.IsNull())
     SetWS(new XSControl_WorkSession);
-  bool                                  sess  = thesession->SelectNorm(norm);
+  bool                 sess  = thesession->SelectNorm(norm);
   occ::handle<Interface_InterfaceModel> model = Model(); //: i1 gka 03.04.99 BUC60301
   return sess;
 }
 
-void XSControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS, const bool scratch)
+void XSControl_Writer::SetWS(const occ::handle<XSControl_WorkSession>& WS,
+                             const bool               scratch)
 {
   thesession = WS;
   //  A controller must be defined ...
@@ -65,7 +67,7 @@ occ::handle<Interface_InterfaceModel> XSControl_Writer::Model(const bool newone)
 }
 
 IFSelect_ReturnStatus XSControl_Writer::TransferShape(const TopoDS_Shape&          sh,
-                                                      const int                    mode,
+                                                      const int       mode,
                                                       const Message_ProgressRange& theProgress)
 {
   thesession->TransferWriter()->SetTransferMode(mode);
@@ -77,7 +79,8 @@ IFSelect_ReturnStatus XSControl_Writer::WriteFile(const char* filename)
   return thesession->SendAll(filename);
 }
 
-void XSControl_Writer::PrintStatsTransfer(const int what, const int mode) const
+void XSControl_Writer::PrintStatsTransfer(const int what,
+                                          const int mode) const
 {
   thesession->TransferWriter()->PrintStats(what, mode);
 }

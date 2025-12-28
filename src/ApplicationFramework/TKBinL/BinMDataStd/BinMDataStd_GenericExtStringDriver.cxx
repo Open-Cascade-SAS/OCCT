@@ -47,21 +47,21 @@ const occ::handle<Standard_Type>& BinMDataStd_GenericExtStringDriver::SourceType
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_GenericExtStringDriver::Paste(const BinObjMgt_Persistent&       Source,
-                                               const occ::handle<TDF_Attribute>& Target,
-                                               BinObjMgt_RRelocationTable&       RelocTable) const
+bool BinMDataStd_GenericExtStringDriver::Paste(
+  const BinObjMgt_Persistent&  Source,
+  const occ::handle<TDF_Attribute>& Target,
+  BinObjMgt_RRelocationTable&  RelocTable) const
 {
-  occ::handle<TDataStd_GenericExtString> aStrAttr =
-    occ::down_cast<TDataStd_GenericExtString>(Target);
-  TCollection_ExtendedString aStr;
-  bool                       ok = Source >> aStr;
+  occ::handle<TDataStd_GenericExtString> aStrAttr = occ::down_cast<TDataStd_GenericExtString>(Target);
+  TCollection_ExtendedString        aStr;
+  bool                  ok = Source >> aStr;
   if (ok)
     aStrAttr->Set(aStr);
   if (RelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const int&    aPos = Source.Position();
-    Standard_GUID aGuid;
+    const int& aPos = Source.Position();
+    Standard_GUID           aGuid;
     ok = Source >> aGuid;
     if (!ok)
     {
@@ -81,13 +81,11 @@ bool BinMDataStd_GenericExtStringDriver::Paste(const BinObjMgt_Persistent&      
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_GenericExtStringDriver::Paste(
-  const occ::handle<TDF_Attribute>& Source,
-  BinObjMgt_Persistent&             Target,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
+void BinMDataStd_GenericExtStringDriver::Paste(const occ::handle<TDF_Attribute>& Source,
+                                               BinObjMgt_Persistent&        Target,
+                                               NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
-  occ::handle<TDataStd_GenericExtString> aStrAttr =
-    occ::down_cast<TDataStd_GenericExtString>(Source);
+  occ::handle<TDataStd_GenericExtString> aStrAttr = occ::down_cast<TDataStd_GenericExtString>(Source);
   Target << aStrAttr->Get();
   // process user defined guid
   Target << aStrAttr->ID();

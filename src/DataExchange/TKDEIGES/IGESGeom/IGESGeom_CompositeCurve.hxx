@@ -22,6 +22,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 
 //! defines IGESCompositeCurve, Type <102> Form <0>
@@ -38,8 +39,7 @@ public:
   //! This method is used to set the fields of the class
   //! CompositeCurve
   //! - allEntities : Constituent Entities of the composite curve
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities);
 
   //! returns the number of curves contained in the CompositeCurve
   Standard_EXPORT int NbCurves() const;

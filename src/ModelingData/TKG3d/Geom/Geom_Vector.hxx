@@ -62,7 +62,7 @@ public:
   //! this vector, vector Other or vector VRef is less than
   //! or equal to gp::Resolution().
   Standard_EXPORT double AngleWithRef(const occ::handle<Geom_Vector>& Other,
-                                      const occ::handle<Geom_Vector>& VRef) const;
+                                             const occ::handle<Geom_Vector>& VRef) const;
 
   //! Returns the coordinates X, Y and Z of this vector.
   Standard_EXPORT void Coord(double& X, double& Y, double& Z) const;
@@ -95,8 +95,7 @@ public:
   //! Raised if <me> is a "Direction" and if the two vectors
   //! are parallel because it is not possible to create a
   //! "Direction" with null length.
-  Standard_EXPORT virtual occ::handle<Geom_Vector> Crossed(
-    const occ::handle<Geom_Vector>& Other) const = 0;
+  Standard_EXPORT virtual occ::handle<Geom_Vector> Crossed(const occ::handle<Geom_Vector>& Other) const = 0;
 
   //! Computes the triple vector product <me> ^(V1 ^ V2).
   //!
@@ -109,16 +108,15 @@ public:
   //!
   //! Raised if <me> is a direction and if V1 and V2 are
   //! parallel or <me> and (V1 ^ V2) are parallel
-  Standard_EXPORT virtual occ::handle<Geom_Vector> CrossCrossed(
-    const occ::handle<Geom_Vector>& V1,
-    const occ::handle<Geom_Vector>& V2) const = 0;
+  Standard_EXPORT virtual occ::handle<Geom_Vector> CrossCrossed(const occ::handle<Geom_Vector>& V1,
+                                                           const occ::handle<Geom_Vector>& V2) const = 0;
 
   //! Computes the scalar product of this vector and vector Other.
   Standard_EXPORT double Dot(const occ::handle<Geom_Vector>& Other) const;
 
   //! Computes the triple scalar product. Returns me . (V1 ^ V2)
   Standard_EXPORT double DotCross(const occ::handle<Geom_Vector>& V1,
-                                  const occ::handle<Geom_Vector>& V2) const;
+                                         const occ::handle<Geom_Vector>& V2) const;
 
   //! Converts this vector into a gp_Vec vector.
   Standard_EXPORT const gp_Vec& Vec() const;
@@ -127,6 +125,7 @@ public:
 
 protected:
   gp_Vec gpVec;
+
 };
 
 #endif // _Geom_Vector_HeaderFile

@@ -38,8 +38,10 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -113,7 +115,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
 {
   Clear();
   //  On y va
-  TopExp_Explorer                                        exp;
+  TopExp_Explorer     exp;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> mapsh;
   //  On note pour les SOLIDES : ceux qui ont des trous (plus d un SHELL)
 
@@ -158,7 +160,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
   {
     TopoDS_Face face = TopoDS::Face(exp.Current());
     myNbFaces++;
-    TopLoc_Location           loc;
+    TopLoc_Location      loc;
     occ::handle<Geom_Surface> surf = BRep_Tool::Surface(face, loc);
     face.Location(TopLoc_Location());
     mapsh.Add(face);
@@ -211,13 +213,13 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     int maxseam = 0, nbwires = 0;
     for (TopExp_Explorer wires(face, TopAbs_WIRE); wires.More(); wires.Next())
     {
-      TopoDS_Wire wire   = TopoDS::Wire(wires.Current());
-      int         nbseam = 0;
+      TopoDS_Wire      wire   = TopoDS::Wire(wires.Current());
+      int nbseam = 0;
       nbwires++;
       for (TopExp_Explorer edg(wire, TopAbs_EDGE); edg.More(); edg.Next())
       {
-        TopoDS_Edge edge = TopoDS::Edge(edg.Current());
-        double      first, last;
+        TopoDS_Edge   edge = TopoDS::Edge(edg.Current());
+        double first, last;
         if (BRep_Tool::IsClosed(edge, face))
           nbseam++;
         occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, first, last);
@@ -278,7 +280,7 @@ void ShapeAnalysis_ShapeContents::Perform(const TopoDS_Shape& Shape)
     edge.Location(TopLoc_Location());
     mapsh.Add(edge);
     TopLoc_Location loc;
-    double          first, last;
+    double   first, last;
     myNbEdges++;
     occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, loc, first, last);
     if (!c3d.IsNull() && c3d->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))

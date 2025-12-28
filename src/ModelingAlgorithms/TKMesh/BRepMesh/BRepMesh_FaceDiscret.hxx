@@ -28,8 +28,7 @@ class BRepMesh_FaceDiscret : public IMeshTools_ModelAlgo
 {
 public:
   //! Constructor.
-  Standard_EXPORT BRepMesh_FaceDiscret(
-    const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory);
+  Standard_EXPORT BRepMesh_FaceDiscret(const occ::handle<IMeshTools_MeshAlgoFactory>& theAlgoFactory);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_FaceDiscret();
@@ -38,9 +37,10 @@ public:
 
 protected:
   //! Performs processing of faces of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                               const IMeshTools_Parameters&        theParameters,
-                                               const Message_ProgressRange& theRange) override;
+  Standard_EXPORT virtual bool performInternal(
+    const occ::handle<IMeshData_Model>& theModel,
+    const IMeshTools_Parameters&   theParameters,
+    const Message_ProgressRange&   theRange) override;
 
 private:
   //! Checks existing discretization of the face and updates data model.
@@ -52,7 +52,7 @@ private:
 private:
   occ::handle<IMeshTools_MeshAlgoFactory> myAlgoFactory;
   occ::handle<IMeshData_Model>            myModel;
-  IMeshTools_Parameters                   myParameters;
+  IMeshTools_Parameters              myParameters;
 };
 
 #endif

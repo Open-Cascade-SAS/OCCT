@@ -35,7 +35,9 @@
 // purpose  : Parses command: "qcircle name x y radius
 // [-unqualified|-enclosing|-enclosed|-outside|-noqualifier]"
 //=======================================================================
-static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
+static int qcurve(Draw_Interpretor&,
+                               int theArgsNb,
+                               const char**     theArgVec)
 {
   if (theArgsNb < 5)
   {
@@ -43,8 +45,8 @@ static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
     return 1;
   }
 
-  occ::handle<Geom2d_Curve> aResult2d;
-  TCollection_AsciiString   aPositionType;
+  occ::handle<Geom2d_Curve>    aResult2d;
+  TCollection_AsciiString aPositionType;
   if (!strcmp(theArgVec[0], "qcircle"))
   {
     if (theArgsNb == 5 || theArgsNb == 6)
@@ -95,7 +97,9 @@ static int qcurve(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
 
 //=================================================================================================
 
-static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, const char* theName)
+static int solutions(Draw_Interpretor&  theDI,
+                                  GccAna_Circ2d3Tan& theCirTan3,
+                                  const char*        theName)
 {
   if (!theCirTan3.IsDone())
   {
@@ -105,12 +109,12 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
 
   TCollection_AsciiString aName = TCollection_AsciiString(theName) + "_";
   GccEnt_Position         aQualifier1, aQualifier2, aQualifier3;
-  double                  aParSol, aParArg;
+  double           aParSol, aParArg;
   gp_Pnt2d                aPntSol;
   for (int aSolId = 1; aSolId <= theCirTan3.NbSolutions(); aSolId++)
   {
-    occ::handle<Geom2d_Circle> aCircle    = new Geom2d_Circle(theCirTan3.ThisSolution(aSolId));
-    TCollection_AsciiString    aSolIdName = aName;
+    occ::handle<Geom2d_Circle>   aCircle    = new Geom2d_Circle(theCirTan3.ThisSolution(aSolId));
+    TCollection_AsciiString aSolIdName = aName;
     aSolIdName += TCollection_AsciiString(aSolId);
     DrawTrSurf::Set(aSolIdName.ToCString(), aCircle);
     theCirTan3.WhichQualifier(aSolId, aQualifier1, aQualifier2, aQualifier3);
@@ -162,7 +166,9 @@ static int solutions(Draw_Interpretor& theDI, GccAna_Circ2d3Tan& theCirTan3, con
 // qcicrle3/qlin3/point3
 //                            tolerance]
 //=======================================================================
-static int circ2d3Tan(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVec)
+static int circ2d3Tan(Draw_Interpretor& theDI,
+                                   int  theArgsNb,
+                                   const char**      theArgVec)
 {
   if (theArgsNb < 5)
   {
@@ -177,10 +183,10 @@ static int circ2d3Tan(Draw_Interpretor& theDI, int theArgsNb, const char** theAr
   occ::handle<GeometryTest_DrawableQualifiedCurve2d> aQCurve3 =
     occ::down_cast<GeometryTest_DrawableQualifiedCurve2d>(Draw::Get(theArgVec[4]));
 
-  gp_Pnt2d aPoint1, aPoint2, aPoint3;
-  bool     anIsPoint1 = DrawTrSurf::GetPoint2d(theArgVec[2], aPoint1);
-  bool     anIsPoint2 = DrawTrSurf::GetPoint2d(theArgVec[3], aPoint2);
-  bool     anIsPoint3 = DrawTrSurf::GetPoint2d(theArgVec[4], aPoint3);
+  gp_Pnt2d         aPoint1, aPoint2, aPoint3;
+  bool anIsPoint1 = DrawTrSurf::GetPoint2d(theArgVec[2], aPoint1);
+  bool anIsPoint2 = DrawTrSurf::GetPoint2d(theArgVec[3], aPoint2);
+  bool anIsPoint3 = DrawTrSurf::GetPoint2d(theArgVec[4], aPoint3);
 
   double aTolerance = Precision::Confusion();
   if (theArgsNb > 5)

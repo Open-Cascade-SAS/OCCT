@@ -35,13 +35,12 @@ public:
 
   Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(const TopOpeBRepDS_Transition& Transition,
                                                         const TopOpeBRepDS_Kind        SupportType,
-                                                        const int                      Support,
+                                                        const int         Support,
                                                         const TopOpeBRepDS_Kind        GeometryType,
-                                                        const int                      Geometry,
-                                                        const occ::handle<Geom2d_Curve>& PC);
+                                                        const int         Geometry,
+                                                        const occ::handle<Geom2d_Curve>&    PC);
 
-  Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(
-    const occ::handle<TopOpeBRepDS_Interference>& I);
+  Standard_EXPORT TopOpeBRepDS_SurfaceCurveInterference(const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT const occ::handle<Geom2d_Curve>& PCurve() const;
 

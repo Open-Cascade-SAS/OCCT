@@ -30,8 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOnClosedSurface, BRep_CurveOnSurface)
 BRep_CurveOnClosedSurface::BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Curve>& PC1,
                                                      const occ::handle<Geom2d_Curve>& PC2,
                                                      const occ::handle<Geom_Surface>& S,
-                                                     const TopLoc_Location&           L,
-                                                     const GeomAbs_Shape              C)
+                                                     const TopLoc_Location&      L,
+                                                     const GeomAbs_Shape         C)
     : BRep_CurveOnSurface(PC1, S, L),
       myPCurve2(PC2),
       myContinuity(C)
@@ -55,9 +55,9 @@ bool BRep_CurveOnClosedSurface::IsRegularity() const
 //=================================================================================================
 
 bool BRep_CurveOnClosedSurface::IsRegularity(const occ::handle<Geom_Surface>& S1,
-                                             const occ::handle<Geom_Surface>& S2,
-                                             const TopLoc_Location&           L1,
-                                             const TopLoc_Location&           L2) const
+                                                         const occ::handle<Geom_Surface>& S2,
+                                                         const TopLoc_Location&      L1,
+                                                         const TopLoc_Location&      L2) const
 {
   return ((Surface() == S1) && (Surface() == S2) && (Location() == L1) && (Location() == L2));
 }
@@ -131,7 +131,8 @@ void BRep_CurveOnClosedSurface::Update()
 
 //=================================================================================================
 
-void BRep_CurveOnClosedSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void BRep_CurveOnClosedSurface::DumpJson(Standard_OStream& theOStream,
+                                         int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

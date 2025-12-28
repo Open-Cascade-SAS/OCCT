@@ -25,7 +25,11 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class gp_Lin;
 class gp_Pln;
@@ -128,13 +132,15 @@ public:
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the curve, P2 on the surface.
-  Standard_EXPORT void Points(const int N, Extrema_POnCurv& P1, Extrema_POnSurf& P2) const;
+  Standard_EXPORT void Points(const int N,
+                              Extrema_POnCurv&       P1,
+                              Extrema_POnSurf&       P2) const;
 
 private:
-  bool                                              myDone;
-  int                                               myNbExt;
-  bool                                              myIsPar;
-  occ::handle<NCollection_HArray1<double>>          mySqDist;
+  bool                 myDone;
+  int                 myNbExt;
+  bool                 myIsPar;
+  occ::handle<NCollection_HArray1<double>>    mySqDist;
   occ::handle<NCollection_HArray1<Extrema_POnCurv>> myPoint1;
   occ::handle<NCollection_HArray1<Extrema_POnSurf>> myPoint2;
 };

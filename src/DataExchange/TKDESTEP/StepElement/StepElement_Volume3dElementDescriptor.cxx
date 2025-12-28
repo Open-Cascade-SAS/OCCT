@@ -27,11 +27,10 @@ StepElement_Volume3dElementDescriptor::StepElement_Volume3dElementDescriptor() {
 //=================================================================================================
 
 void StepElement_Volume3dElementDescriptor::Init(
-  const StepElement_ElementOrder               aElementDescriptor_TopologyOrder,
-  const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
-  const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>&
-                                         aPurpose,
-  const StepElement_Volume3dElementShape aShape)
+  const StepElement_ElementOrder                                 aElementDescriptor_TopologyOrder,
+  const occ::handle<TCollection_HAsciiString>&                        aElementDescriptor_Description,
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>& aPurpose,
+  const StepElement_Volume3dElementShape                         aShape)
 {
   StepElement_ElementDescriptor::Init(aElementDescriptor_TopologyOrder,
                                       aElementDescriptor_Description);
@@ -43,8 +42,8 @@ void StepElement_Volume3dElementDescriptor::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>
-  StepElement_Volume3dElementDescriptor::Purpose() const
+occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>> StepElement_Volume3dElementDescriptor::
+  Purpose() const
 {
   return thePurpose;
 }
@@ -52,8 +51,7 @@ occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMemb
 //=================================================================================================
 
 void StepElement_Volume3dElementDescriptor::SetPurpose(
-  const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>&
-    aPurpose)
+  const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>& aPurpose)
 {
   thePurpose = aPurpose;
 }

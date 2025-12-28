@@ -41,15 +41,15 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface, Geom_BoundedSurface)
 
 //=================================================================================================
 
-static void CheckSurfaceData(const NCollection_Array2<gp_Pnt>& SPoles,
-                             const NCollection_Array1<double>& SUKnots,
-                             const NCollection_Array1<double>& SVKnots,
-                             const NCollection_Array1<int>&    SUMults,
-                             const NCollection_Array1<int>&    SVMults,
-                             const int                         UDegree,
-                             const int                         VDegree,
-                             const bool                        UPeriodic,
-                             const bool                        VPeriodic)
+static void CheckSurfaceData(const NCollection_Array2<gp_Pnt>&      SPoles,
+                             const NCollection_Array1<double>&    SUKnots,
+                             const NCollection_Array1<double>&    SVKnots,
+                             const NCollection_Array1<int>& SUMults,
+                             const NCollection_Array1<int>& SVMults,
+                             const int         UDegree,
+                             const int         VDegree,
+                             const bool         UPeriodic,
+                             const bool         VPeriodic)
 {
   if (UDegree < 1 || UDegree > Geom_BSplineSurface::MaxDegree() || VDegree < 1
       || VDegree > Geom_BSplineSurface::MaxDegree())
@@ -92,7 +92,9 @@ static void CheckSurfaceData(const NCollection_Array2<gp_Pnt>& SPoles,
 
 //=================================================================================================
 
-static void Rational(const NCollection_Array2<double>& Weights, bool& Urational, bool& Vrational)
+static void Rational(const NCollection_Array2<double>& Weights,
+                     bool&           Urational,
+                     bool&           Vrational)
 {
   int I, J;
   J         = Weights.LowerCol();
@@ -148,9 +150,9 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
 {
   // Deep copy all data arrays without validation
   poles                 = new NCollection_HArray2<gp_Pnt>(theOther.poles->LowerRow(),
-                                          theOther.poles->UpperRow(),
-                                          theOther.poles->LowerCol(),
-                                          theOther.poles->UpperCol());
+                                  theOther.poles->UpperRow(),
+                                  theOther.poles->LowerCol(),
+                                  theOther.poles->UpperCol());
   poles->ChangeArray2() = theOther.poles->Array2();
 
   uknots = new NCollection_HArray1<double>(theOther.uknots->Lower(), theOther.uknots->Upper());
@@ -180,24 +182,24 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
   if (!theOther.weights.IsNull())
   {
     weights                 = new NCollection_HArray2<double>(theOther.weights->LowerRow(),
-                                              theOther.weights->UpperRow(),
-                                              theOther.weights->LowerCol(),
-                                              theOther.weights->UpperCol());
+                                        theOther.weights->UpperRow(),
+                                        theOther.weights->LowerCol(),
+                                        theOther.weights->UpperCol());
     weights->ChangeArray2() = theOther.weights->Array2();
   }
 }
 
 //=================================================================================================
 
-Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles,
-                                         const NCollection_Array1<double>& UKnots,
-                                         const NCollection_Array1<double>& VKnots,
-                                         const NCollection_Array1<int>&    UMults,
-                                         const NCollection_Array1<int>&    VMults,
-                                         const int                         UDegree,
-                                         const int                         VDegree,
-                                         const bool                        UPeriodic,
-                                         const bool                        VPeriodic)
+Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>&      Poles,
+                                         const NCollection_Array1<double>&    UKnots,
+                                         const NCollection_Array1<double>&    VKnots,
+                                         const NCollection_Array1<int>& UMults,
+                                         const NCollection_Array1<int>& VMults,
+                                         const int         UDegree,
+                                         const int         VDegree,
+                                         const bool         UPeriodic,
+                                         const bool         VPeriodic)
     : urational(false),
       vrational(false),
       uperiodic(UPeriodic),
@@ -214,7 +216,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
 
   // copy arrays
 
-  poles = new NCollection_HArray2<gp_Pnt>(1, Poles.ColLength(), 1, Poles.RowLength());
+  poles                 = new NCollection_HArray2<gp_Pnt>(1, Poles.ColLength(), 1, Poles.RowLength());
   poles->ChangeArray2() = Poles;
 
   weights = new NCollection_HArray2<double>(1, Poles.ColLength(), 1, Poles.RowLength(), 1.0);
@@ -237,16 +239,16 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
 
 //=================================================================================================
 
-Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles,
-                                         const NCollection_Array2<double>& Weights,
-                                         const NCollection_Array1<double>& UKnots,
-                                         const NCollection_Array1<double>& VKnots,
-                                         const NCollection_Array1<int>&    UMults,
-                                         const NCollection_Array1<int>&    VMults,
-                                         const int                         UDegree,
-                                         const int                         VDegree,
-                                         const bool                        UPeriodic,
-                                         const bool                        VPeriodic)
+Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>&      Poles,
+                                         const NCollection_Array2<double>&    Weights,
+                                         const NCollection_Array1<double>&    UKnots,
+                                         const NCollection_Array1<double>&    VKnots,
+                                         const NCollection_Array1<int>& UMults,
+                                         const NCollection_Array1<int>& VMults,
+                                         const int         UDegree,
+                                         const int         VDegree,
+                                         const bool         UPeriodic,
+                                         const bool         VPeriodic)
     : urational(false),
       vrational(false),
       uperiodic(UPeriodic),
@@ -285,10 +287,10 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
 
   // copy arrays
 
-  poles = new NCollection_HArray2<gp_Pnt>(1, Poles.ColLength(), 1, Poles.RowLength());
+  poles                 = new NCollection_HArray2<gp_Pnt>(1, Poles.ColLength(), 1, Poles.RowLength());
   poles->ChangeArray2() = Poles;
 
-  weights = new NCollection_HArray2<double>(1, Poles.ColLength(), 1, Poles.RowLength());
+  weights                 = new NCollection_HArray2<double>(1, Poles.ColLength(), 1, Poles.RowLength());
   weights->ChangeArray2() = Weights;
 
   uknots                 = new NCollection_HArray1<double>(1, UKnots.Length());
@@ -316,17 +318,17 @@ void Geom_BSplineSurface::ExchangeUV()
   int LR = poles->LowerRow();
   int UR = poles->UpperRow();
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles = new NCollection_HArray2<gp_Pnt>(LC, UC, LR, UR);
+  occ::handle<NCollection_HArray2<gp_Pnt>>   npoles = new NCollection_HArray2<gp_Pnt>(LC, UC, LR, UR);
   occ::handle<NCollection_HArray2<double>> nweights;
   if (!weights.IsNull())
   {
     nweights = new NCollection_HArray2<double>(LC, UC, LR, UR);
   }
 
-  const NCollection_Array2<gp_Pnt>& spoles   = poles->Array2();
+  const NCollection_Array2<gp_Pnt>&   spoles   = poles->Array2();
   const NCollection_Array2<double>* sweights = !weights.IsNull() ? &weights->Array2() : NULL;
 
-  NCollection_Array2<gp_Pnt>& snpoles   = npoles->ChangeArray2();
+  NCollection_Array2<gp_Pnt>&   snpoles   = npoles->ChangeArray2();
   NCollection_Array2<double>* snweights = !nweights.IsNull() ? &nweights->ChangeArray2() : NULL;
   for (int i = LC; i <= UC; i++)
   {
@@ -354,7 +356,8 @@ void Geom_BSplineSurface::ExchangeUV()
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
+void Geom_BSplineSurface::IncreaseDegree(const int UDegree,
+                                         const int VDegree)
 {
   if (UDegree != udeg)
   {
@@ -368,11 +371,12 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
 
     occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
       new NCollection_HArray2<gp_Pnt>(1,
-                                      poles->ColLength() + Step * (ToK2 - FromK1),
-                                      1,
-                                      poles->RowLength());
+                              poles->ColLength() + Step * (ToK2 - FromK1),
+                              1,
+                              poles->RowLength());
 
-    int nbknots = BSplCLib::IncreaseDegreeCountKnots(udeg, UDegree, uperiodic, umults->Array1());
+    int nbknots =
+      BSplCLib::IncreaseDegreeCountKnots(udeg, UDegree, uperiodic, umults->Array1());
 
     occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, nbknots);
 
@@ -433,11 +437,12 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
 
     occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
       new NCollection_HArray2<gp_Pnt>(1,
-                                      poles->ColLength(),
-                                      1,
-                                      poles->RowLength() + Step * (ToK2 - FromK1));
+                              poles->ColLength(),
+                              1,
+                              poles->RowLength() + Step * (ToK2 - FromK1));
 
-    int nbknots = BSplCLib::IncreaseDegreeCountKnots(vdeg, VDegree, vperiodic, vmults->Array1());
+    int nbknots =
+      BSplCLib::IncreaseDegreeCountKnots(vdeg, VDegree, vperiodic, vmults->Array1());
 
     occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, nbknots);
 
@@ -489,7 +494,8 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncreaseUMultiplicity(const int UIndex, const int M)
+void Geom_BSplineSurface::IncreaseUMultiplicity(const int UIndex,
+                                                const int M)
 {
   NCollection_Array1<double> k(1, 1);
   k(1) = uknots->Value(UIndex);
@@ -500,11 +506,13 @@ void Geom_BSplineSurface::IncreaseUMultiplicity(const int UIndex, const int M)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncreaseUMultiplicity(const int FromI1, const int ToI2, const int M)
+void Geom_BSplineSurface::IncreaseUMultiplicity(const int FromI1,
+                                                const int ToI2,
+                                                const int M)
 {
   occ::handle<NCollection_HArray1<double>> tk = uknots;
-  NCollection_Array1<double>               k((uknots->Array1())(FromI1), FromI1, ToI2);
-  NCollection_Array1<int>                  m(FromI1, ToI2);
+  NCollection_Array1<double>          k((uknots->Array1())(FromI1), FromI1, ToI2);
+  NCollection_Array1<int>       m(FromI1, ToI2);
   for (int i = FromI1; i <= ToI2; i++)
     m(i) = M - umults->Value(i);
   InsertUKnots(k, m, Epsilon(1.), true);
@@ -512,7 +520,8 @@ void Geom_BSplineSurface::IncreaseUMultiplicity(const int FromI1, const int ToI2
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncreaseVMultiplicity(const int VIndex, const int M)
+void Geom_BSplineSurface::IncreaseVMultiplicity(const int VIndex,
+                                                const int M)
 {
   NCollection_Array1<double> k(1, 1);
   k(1) = vknots->Value(VIndex);
@@ -523,11 +532,13 @@ void Geom_BSplineSurface::IncreaseVMultiplicity(const int VIndex, const int M)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncreaseVMultiplicity(const int FromI1, const int ToI2, const int M)
+void Geom_BSplineSurface::IncreaseVMultiplicity(const int FromI1,
+                                                const int ToI2,
+                                                const int M)
 {
   occ::handle<NCollection_HArray1<double>> tk = vknots;
-  NCollection_Array1<double>               k((vknots->Array1())(FromI1), FromI1, ToI2);
-  NCollection_Array1<int>                  m(FromI1, ToI2);
+  NCollection_Array1<double>          k((vknots->Array1())(FromI1), FromI1, ToI2);
+  NCollection_Array1<int>       m(FromI1, ToI2);
   for (int i = FromI1; i <= ToI2; i++)
     m(i) = M - vmults->Value(i);
   InsertVKnots(k, m, Epsilon(1.), true);
@@ -535,14 +546,14 @@ void Geom_BSplineSurface::IncreaseVMultiplicity(const int FromI1, const int ToI2
 
 //=================================================================================================
 
-void Geom_BSplineSurface::segment(const double U1,
-                                  const double U2,
-                                  const double V1,
-                                  const double V2,
-                                  const double EpsU,
-                                  const double EpsV,
-                                  const bool   SegmentInU,
-                                  const bool   SegmentInV)
+void Geom_BSplineSurface::segment(const double    U1,
+                                  const double    U2,
+                                  const double    V1,
+                                  const double    V2,
+                                  const double    EpsU,
+                                  const double    EpsV,
+                                  const bool SegmentInU,
+                                  const bool SegmentInV)
 {
   double deltaU = U2 - U1;
   if (uperiodic)
@@ -564,9 +575,9 @@ void Geom_BSplineSurface::segment(const double U1,
       deltaV = aVPeriod;
   }
 
-  double NewU1, NewU2, NewV1, NewV2;
-  double U, V;
-  int    indexU, indexV;
+  double    NewU1, NewU2, NewV1, NewV2;
+  double    U, V;
+  int indexU, indexV;
 
   indexU = 0;
   BSplCLib::LocateParameter(udeg,
@@ -591,8 +602,8 @@ void Geom_BSplineSurface::segment(const double U1,
   if (SegmentInU)
   {
     // inserting the UKnots
-    NCollection_Array1<double> UKnots(1, 2);
-    NCollection_Array1<int>    UMults(1, 2);
+    NCollection_Array1<double>    UKnots(1, 2);
+    NCollection_Array1<int> UMults(1, 2);
     UKnots(1) = std::min(NewU1, NewU2);
     UKnots(2) = std::max(NewU1, NewU2);
     UMults(1) = UMults(2) = udeg;
@@ -623,8 +634,8 @@ void Geom_BSplineSurface::segment(const double U1,
   if (SegmentInV)
   {
     // Inserting the VKnots
-    NCollection_Array1<double> VKnots(1, 2);
-    NCollection_Array1<int>    VMults(1, 2);
+    NCollection_Array1<double>    VKnots(1, 2);
+    NCollection_Array1<int> VMults(1, 2);
 
     VKnots(1) = std::min(NewV1, NewV2);
     VKnots(2) = std::max(NewV1, NewV2);
@@ -679,8 +690,8 @@ void Geom_BSplineSurface::segment(const double U1,
 
   int nbuknots = index2U - index1U + 1;
 
-  occ::handle<NCollection_HArray1<double>> nuknots = new NCollection_HArray1<double>(1, nbuknots);
-  occ::handle<NCollection_HArray1<int>>    numults = new NCollection_HArray1<int>(1, nbuknots);
+  occ::handle<NCollection_HArray1<double>>    nuknots = new NCollection_HArray1<double>(1, nbuknots);
+  occ::handle<NCollection_HArray1<int>> numults = new NCollection_HArray1<int>(1, nbuknots);
 
   int i, k = 1;
   for (i = index1U; i <= index2U; i++)
@@ -742,8 +753,8 @@ void Geom_BSplineSurface::segment(const double U1,
 
   int nbvknots = index2V - index1V + 1;
 
-  occ::handle<NCollection_HArray1<double>> nvknots = new NCollection_HArray1<double>(1, nbvknots);
-  occ::handle<NCollection_HArray1<int>>    nvmults = new NCollection_HArray1<int>(1, nbvknots);
+  occ::handle<NCollection_HArray1<double>>    nvknots = new NCollection_HArray1<double>(1, nbvknots);
+  occ::handle<NCollection_HArray1<int>> nvmults = new NCollection_HArray1<int>(1, nbvknots);
 
   k = 1;
   for (i = index1V; i <= index2V; i++)
@@ -778,9 +789,8 @@ void Geom_BSplineSurface::segment(const double U1,
 
   occ::handle<NCollection_HArray2<double>> nweights;
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, nbupoles, 1, nbvpoles);
-  k = 1;
+  occ::handle<NCollection_HArray2<gp_Pnt>> npoles = new NCollection_HArray2<gp_Pnt>(1, nbupoles, 1, nbvpoles);
+  k                                  = 1;
   int j, l;
   if (urational || vrational)
   {
@@ -868,7 +878,7 @@ void Geom_BSplineSurface::CheckAndSegment(const double U1,
 
   bool segment_in_U = true;
   bool segment_in_V = true;
-  segment_in_U      = (std::abs(U1 - uknots->Value(uknots->Lower())) > EpsU)
+  segment_in_U                  = (std::abs(U1 - uknots->Value(uknots->Lower())) > EpsU)
                  || (std::abs(U2 - uknots->Value(uknots->Upper())) > EpsU);
   segment_in_V = (std::abs(V1 - vknots->Value(vknots->Lower())) > EpsV)
                  || (std::abs(V2 - vknots->Value(vknots->Upper())) > EpsV);
@@ -883,8 +893,8 @@ void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K)
   if (UIndex < 1 || UIndex > uknots->Length())
     throw Standard_OutOfRange("Geom_BSplineSurface::SetUKnot: Index and #knots mismatch");
 
-  int    NewIndex = UIndex;
-  double DU       = std::abs(Epsilon(K));
+  int NewIndex = UIndex;
+  double    DU       = std::abs(Epsilon(K));
   if (UIndex == 1)
   {
     if (K >= uknots->Value(2) - DU)
@@ -958,7 +968,9 @@ void Geom_BSplineSurface::SetUKnots(const NCollection_Array1<double>& UK)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K, const int M)
+void Geom_BSplineSurface::SetUKnot(const int UIndex,
+                                   const double    K,
+                                   const int M)
 {
   IncreaseUMultiplicity(UIndex, M);
   SetUKnot(UIndex, K);
@@ -970,8 +982,8 @@ void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K)
 {
   if (VIndex < 1 || VIndex > vknots->Length())
     throw Standard_OutOfRange("Geom_BSplineSurface::SetVKnot: Index and #knots mismatch");
-  int    NewIndex = VIndex + vknots->Lower() - 1;
-  double DV       = std::abs(Epsilon(K));
+  int NewIndex = VIndex + vknots->Lower() - 1;
+  double    DV       = std::abs(Epsilon(K));
   if (VIndex == 1)
   {
     if (K >= vknots->Value(2) - DV)
@@ -1047,7 +1059,9 @@ void Geom_BSplineSurface::SetVKnots(const NCollection_Array1<double>& VK)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K, const int M)
+void Geom_BSplineSurface::SetVKnot(const int VIndex,
+                                   const double    K,
+                                   const int M)
 {
   IncreaseVMultiplicity(VIndex, M);
   SetVKnot(VIndex, K);
@@ -1055,10 +1069,10 @@ void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K, const int M
 
 //=================================================================================================
 
-void Geom_BSplineSurface::InsertUKnot(const double U,
-                                      const int    M,
-                                      const double ParametricTolerance,
-                                      const bool   Add)
+void Geom_BSplineSurface::InsertUKnot(const double    U,
+                                      const int M,
+                                      const double    ParametricTolerance,
+                                      const bool Add)
 {
   NCollection_Array1<double> k(1, 1);
   k(1) = U;
@@ -1069,10 +1083,10 @@ void Geom_BSplineSurface::InsertUKnot(const double U,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::InsertVKnot(const double V,
-                                      const int    M,
-                                      const double ParametricTolerance,
-                                      const bool   Add)
+void Geom_BSplineSurface::InsertVKnot(const double    V,
+                                      const int M,
+                                      const double    ParametricTolerance,
+                                      const bool Add)
 {
   NCollection_Array1<double> k(1, 1);
   k(1) = V;
@@ -1083,21 +1097,25 @@ void Geom_BSplineSurface::InsertVKnot(const double V,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncrementUMultiplicity(const int FromI1, const int ToI2, const int Step)
+void Geom_BSplineSurface::IncrementUMultiplicity(const int FromI1,
+                                                 const int ToI2,
+                                                 const int Step)
 {
   occ::handle<NCollection_HArray1<double>> tk = uknots;
-  NCollection_Array1<double>               k((uknots->Array1())(FromI1), FromI1, ToI2);
-  NCollection_Array1<int>                  m(FromI1, ToI2);
+  NCollection_Array1<double>          k((uknots->Array1())(FromI1), FromI1, ToI2);
+  NCollection_Array1<int>       m(FromI1, ToI2);
   m.Init(Step);
   InsertUKnots(k, m, Epsilon(1.));
 }
 
 //=================================================================================================
 
-void Geom_BSplineSurface::IncrementVMultiplicity(const int FromI1, const int ToI2, const int Step)
+void Geom_BSplineSurface::IncrementVMultiplicity(const int FromI1,
+                                                 const int ToI2,
+                                                 const int Step)
 {
   occ::handle<NCollection_HArray1<double>> tk = vknots;
-  NCollection_Array1<double>               k((vknots->Array1())(FromI1), FromI1, ToI2);
+  NCollection_Array1<double>          k((vknots->Array1())(FromI1), FromI1, ToI2);
 
   NCollection_Array1<int> m(FromI1, ToI2);
   m.Init(Step);
@@ -1124,9 +1142,8 @@ void Geom_BSplineSurface::UpdateUKnots()
   }
   else
   {
-    ufknots = new NCollection_HArray1<double>(
-      1,
-      BSplCLib::KnotSequenceLength(umults->Array1(), udeg, uperiodic));
+    ufknots =
+      new NCollection_HArray1<double>(1, BSplCLib::KnotSequenceLength(umults->Array1(), udeg, uperiodic));
 
     BSplCLib::KnotSequence(uknots->Array1(),
                            umults->Array1(),
@@ -1178,9 +1195,8 @@ void Geom_BSplineSurface::UpdateVKnots()
   }
   else
   {
-    vfknots = new NCollection_HArray1<double>(
-      1,
-      BSplCLib::KnotSequenceLength(vmults->Array1(), vdeg, vperiodic));
+    vfknots =
+      new NCollection_HArray1<double>(1, BSplCLib::KnotSequenceLength(vmults->Array1(), vdeg, vperiodic));
 
     BSplCLib::KnotSequence(vknots->Array1(),
                            vmults->Array1(),
@@ -1219,16 +1235,17 @@ void Geom_BSplineSurface::UpdateVKnots()
 // purpose  : that is compute the cache so that it is valid
 //=======================================================================
 
-void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vparameter) const
+void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter,
+                                                double& Vparameter) const
 {
   double Period, aMaxVal, aMinVal;
 
   if (uperiodic)
   {
-    aMaxVal    = ufknots->Value(ufknots->Upper() - udeg);
-    aMinVal    = ufknots->Value(udeg + 1);
+    aMaxVal           = ufknots->Value(ufknots->Upper() - udeg);
+    aMinVal           = ufknots->Value(udeg + 1);
     double eps = std::abs(Epsilon(Uparameter));
-    Period     = aMaxVal - aMinVal;
+    Period            = aMaxVal - aMinVal;
 
     if (Period <= eps)
       throw Standard_OutOfRange(
@@ -1247,10 +1264,10 @@ void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vpar
   }
   if (vperiodic)
   {
-    aMaxVal    = vfknots->Value(vfknots->Upper() - vdeg);
-    aMinVal    = vfknots->Value(vdeg + 1);
+    aMaxVal           = vfknots->Value(vfknots->Upper() - vdeg);
+    aMinVal           = vfknots->Value(vdeg + 1);
     double eps = std::abs(Epsilon(Vparameter));
-    Period     = aMaxVal - aMinVal;
+    Period            = aMaxVal - aMinVal;
 
     if (Period <= eps)
       throw Standard_OutOfRange(
@@ -1271,7 +1288,9 @@ void Geom_BSplineSurface::PeriodicNormalization(double& Uparameter, double& Vpar
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const double Weight)
+void Geom_BSplineSurface::SetWeight(const int UIndex,
+                                    const int VIndex,
+                                    const double    Weight)
 {
   if (Weight <= gp::Resolution())
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeight: Weight too small");
@@ -1286,7 +1305,7 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
+void Geom_BSplineSurface::SetWeightCol(const int      VIndex,
                                        const NCollection_Array1<double>& CPoleWeights)
 {
   NCollection_Array2<double>& Weights = weights->ChangeArray2();
@@ -1315,7 +1334,7 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
+void Geom_BSplineSurface::SetWeightRow(const int      UIndex,
                                        const NCollection_Array1<double>& CPoleWeights)
 {
   NCollection_Array2<double>& Weights = weights->ChangeArray2();

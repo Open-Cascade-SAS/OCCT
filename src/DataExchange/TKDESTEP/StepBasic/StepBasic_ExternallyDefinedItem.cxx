@@ -27,7 +27,7 @@ StepBasic_ExternallyDefinedItem::StepBasic_ExternallyDefinedItem() {}
 
 //=================================================================================================
 
-void StepBasic_ExternallyDefinedItem::Init(const StepBasic_SourceItem&                  aItemId,
+void StepBasic_ExternallyDefinedItem::Init(const StepBasic_SourceItem&             aItemId,
                                            const occ::handle<StepBasic_ExternalSource>& aSource)
 {
 
@@ -59,8 +59,7 @@ occ::handle<StepBasic_ExternalSource> StepBasic_ExternallyDefinedItem::Source() 
 
 //=================================================================================================
 
-void StepBasic_ExternallyDefinedItem::SetSource(
-  const occ::handle<StepBasic_ExternalSource>& aSource)
+void StepBasic_ExternallyDefinedItem::SetSource(const occ::handle<StepBasic_ExternalSource>& aSource)
 {
   theSource = aSource;
 }

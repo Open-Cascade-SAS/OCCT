@@ -32,8 +32,10 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <ChFiDS_CircSection.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <ChFiDS_ErrorStatus.hxx>
 class TopoDS_Shape;
@@ -79,7 +81,7 @@ public:
   //! AngularTolerance is the G1 tolerance between fillet
   //! and support'faces.
   Standard_EXPORT void SetContinuity(const GeomAbs_Shape InternalContinuity,
-                                     const double        AngularTolerance);
+                                     const double AngularTolerance);
 
   //! Adds a fillet contour in the builder (builds a
   //! contour of tangent edges).
@@ -115,21 +117,28 @@ public:
   //! along the contour of index IC generated using the Add function
   //! in the internal data structure of
   //! this algorithm, where Radius is the radius of the fillet.
-  Standard_EXPORT void SetRadius(const double Radius, const int IC, const int IinC);
+  Standard_EXPORT void SetRadius(const double    Radius,
+                                 const int IC,
+                                 const int IinC);
 
   //! Sets the parameters of the fillet
   //! along the contour of index IC generated using the Add function
   //! in the internal data structure of this algorithm, where the radius of the
   //! fillet evolves according to a linear evolution law defined
   //! from R1 to R2, between the first and last vertices of the contour of index IC.
-  Standard_EXPORT void SetRadius(const double R1, const double R2, const int IC, const int IinC);
+  Standard_EXPORT void SetRadius(const double    R1,
+                                 const double    R2,
+                                 const int IC,
+                                 const int IinC);
 
   //! Sets the parameters of the fillet
   //! along the contour of index IC generated using the Add function
   //! in the internal data structure of this algorithm, where the radius of the
   //! fillet evolves according to the evolution law L, between the
   //! first and last vertices of the contour of index IC.
-  Standard_EXPORT void SetRadius(const occ::handle<Law_Function>& L, const int IC, const int IinC);
+  Standard_EXPORT void SetRadius(const occ::handle<Law_Function>& L,
+                                 const int      IC,
+                                 const int      IinC);
 
   //! Sets the parameters of the fillet
   //! along the contour of index IC generated using the Add function
@@ -143,8 +152,8 @@ public:
   //! corresponding value of the radius, and the radius evolves
   //! between the first and last vertices of the contour of index IC.
   Standard_EXPORT void SetRadius(const NCollection_Array1<gp_Pnt2d>& UandR,
-                                 const int                           IC,
-                                 const int                           IinC);
+                                 const int      IC,
+                                 const int      IinC);
 
   //! Erases the radius information on the contour of index
   //! IC in the internal data structure of this algorithm.
@@ -185,16 +194,23 @@ public:
   Standard_EXPORT double Radius(const int IC, const TopoDS_Edge& E);
 
   //! Assigns Radius as the radius of the fillet on the edge E
-  Standard_EXPORT void SetRadius(const double Radius, const int IC, const TopoDS_Edge& E);
+  Standard_EXPORT void SetRadius(const double    Radius,
+                                 const int IC,
+                                 const TopoDS_Edge&     E);
 
-  Standard_EXPORT void SetRadius(const double Radius, const int IC, const TopoDS_Vertex& V);
+  Standard_EXPORT void SetRadius(const double    Radius,
+                                 const int IC,
+                                 const TopoDS_Vertex&   V);
 
-  Standard_EXPORT bool GetBounds(const int IC, const TopoDS_Edge& E, double& F, double& L);
+  Standard_EXPORT bool GetBounds(const int IC,
+                                             const TopoDS_Edge&     E,
+                                             double&         F,
+                                             double&         L);
 
   Standard_EXPORT occ::handle<Law_Function> GetLaw(const int IC, const TopoDS_Edge& E);
 
-  Standard_EXPORT void SetLaw(const int                        IC,
-                              const TopoDS_Edge&               E,
+  Standard_EXPORT void SetLaw(const int      IC,
+                              const TopoDS_Edge&          E,
                               const occ::handle<Law_Function>& L);
 
   //! Assigns FShape as the type of fillet shape built by this algorithm.
@@ -227,7 +243,8 @@ public:
   //! Returns a null shape if:
   //! -   I is outside the bounds of the table of contours, or
   //! -   J is outside the bounds of the table of edges of the index I contour.
-  Standard_EXPORT const TopoDS_Edge& Edge(const int I, const int J) const override;
+  Standard_EXPORT const TopoDS_Edge& Edge(const int I,
+                                          const int J) const override;
 
   //! Removes the contour in the internal data structure of
   //! this algorithm which contains the edge E of the shape.
@@ -260,7 +277,8 @@ public:
   //! Returns -1. if:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
-  Standard_EXPORT double Abscissa(const int IC, const TopoDS_Vertex& V) const override;
+  Standard_EXPORT double Abscissa(const int IC,
+                                         const TopoDS_Vertex&   V) const override;
 
   //! Returns the relative curvilinear abscissa (i.e. between 0
   //! and 1) of the vertex V on the contour of index IC in the
@@ -269,14 +287,16 @@ public:
   //! Returns -1. if:
   //! -   IC is outside the bounds of the table of contours, or
   //! -   V is not on the contour of index IC.
-  Standard_EXPORT double RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const override;
+  Standard_EXPORT double RelativeAbscissa(const int IC,
+                                                 const TopoDS_Vertex&   V) const override;
 
   //! Returns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed and tangential
   //! at the point of closure.
   //! Warning
   //! Returns false if IC is outside the bounds of the table of contours.
-  Standard_EXPORT bool ClosedAndTangent(const int IC) const override;
+  Standard_EXPORT bool
+    ClosedAndTangent(const int IC) const override;
 
   //! Returns true if the contour of index IC in the internal
   //! data structure of this algorithm is closed.
@@ -315,13 +335,13 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <EorV>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& EorV) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& EorV)
+    override;
 
   //! Returns the list of shapes modified from the shape
   //! <F>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& F) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F)
+    override;
 
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& F) override;
 
@@ -336,9 +356,8 @@ public:
 
   Standard_EXPORT int NbSurf(const int IC) const override;
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(
-    const int IC,
-    const int IS) const override;
+  Standard_EXPORT occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(const int IC,
+                                                 const int IS) const override;
 
   //! Returns the number of contours where the computation
   //! of the fillet failed
@@ -355,7 +374,8 @@ public:
   Standard_EXPORT int NbComputedSurfaces(const int IC) const;
 
   //! returns the surface number IS concerning the contour IC
-  Standard_EXPORT occ::handle<Geom_Surface> ComputedSurface(const int IC, const int IS) const;
+  Standard_EXPORT occ::handle<Geom_Surface> ComputedSurface(const int IC,
+                                                       const int IS) const;
 
   //! returns the number of vertices where the computation failed
   Standard_EXPORT int NbFaultyVertices() const;
@@ -381,7 +401,7 @@ public:
   Standard_EXPORT ChFiDS_ErrorStatus StripeStatus(const int IC) const;
 
 private:
-  ChFi3d_FilBuilder                                      myBuilder;
+  ChFi3d_FilBuilder   myBuilder;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMap;
 };
 

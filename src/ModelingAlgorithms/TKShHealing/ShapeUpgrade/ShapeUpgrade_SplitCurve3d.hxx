@@ -39,8 +39,8 @@ public:
 
   //! Initializes with curve with its parameters.
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& C,
-                            const double                   First,
-                            const double                   Last);
+                            const double       First,
+                            const double       Last);
 
   //! If Segment is True, the result is composed with
   //! segments of the curve bounded by the SplitValues. If
@@ -48,14 +48,14 @@ public:
   //! Curves all based on the same complete curve.
   Standard_EXPORT virtual void Build(const bool Segment) override;
 
-  Standard_EXPORT const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& GetCurves()
-    const;
+  Standard_EXPORT const occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>>& GetCurves() const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3d, ShapeUpgrade_SplitCurve)
 
 protected:
-  occ::handle<Geom_Curve>                                   myCurve;
+  occ::handle<Geom_Curve>              myCurve;
   occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> myResultingCurves;
+
 };
 
 #endif // _ShapeUpgrade_SplitCurve3d_HeaderFile

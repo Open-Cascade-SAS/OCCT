@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepVisual_DraughtingModel();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_DraughtingModel, StepRepr_Representation)
+
 };
 
 #endif // _StepVisual_DraughtingModel_HeaderFile

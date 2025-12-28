@@ -35,7 +35,7 @@ static const char* voidline = "";
 // Internal routine used for VerifyCheck
 void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
                          occ::handle<Interface_Check>&                ach,
-                         const char*                                  mess);
+                         const char*                  mess);
 
 //=================================================================================================
 
@@ -163,8 +163,7 @@ void IGESData_IGESModel::DumpHeader(Standard_OStream& S, const int) const
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESData_IGESModel::
-  StartSection() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESData_IGESModel::StartSection() const
 {
   return thestart;
 }
@@ -192,9 +191,8 @@ void IGESData_IGESModel::ClearStartSection()
   thestart->Clear();
 }
 
-void IGESData_IGESModel::SetStartSection(
-  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
-  const bool                                                                       copy)
+void IGESData_IGESModel::SetStartSection(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
+                                         const bool                         copy)
 {
   if (copy)
   {
@@ -411,7 +409,7 @@ void IGESData_IGESModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
   else
   {
     const char* unm  = theheader.UnitName()->ToCString();
-    bool        unok = true;
+    bool unok = true;
     switch (unf)
     {
       case 1:
@@ -501,7 +499,7 @@ void IGESData_IGESModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
 
 void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
                          occ::handle<Interface_Check>&                ach,
-                         const char*                                  mess)
+                         const char*                  mess)
 {
   // MGE 23/07/98
   // =====================================
@@ -555,9 +553,9 @@ void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
 
 void IGESData_IGESModel::SetLineWeights(const double defw)
 {
-  int    nb   = NbEntities();
-  int    lwg  = theheader.LineWeightGrad();
-  double maxw = theheader.MaxLineWeight();
+  int nb   = NbEntities();
+  int lwg  = theheader.LineWeightGrad();
+  double    maxw = theheader.MaxLineWeight();
   if (lwg > 0)
   {
     maxw = maxw / lwg;
@@ -574,7 +572,7 @@ void IGESData_IGESModel::ClearLabels() {}
 //=================================================================================================
 
 void IGESData_IGESModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
-                                    Standard_OStream&                      S) const
+                                    Standard_OStream&                 S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
@@ -592,7 +590,7 @@ void IGESData_IGESModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
 //=================================================================================================
 
 void IGESData_IGESModel::PrintToLog(const occ::handle<Standard_Transient>& ent,
-                                    Standard_OStream&                      S) const
+                                    Standard_OStream&                 S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (!igesent.IsNull())
@@ -610,8 +608,7 @@ void IGESData_IGESModel::PrintToLog(const occ::handle<Standard_Transient>& ent,
 
 //=================================================================================================
 
-void IGESData_IGESModel::PrintInfo(const occ::handle<Standard_Transient>& ent,
-                                   Standard_OStream&                      S) const
+void IGESData_IGESModel::PrintInfo(const occ::handle<Standard_Transient>& ent, Standard_OStream& S) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())
@@ -639,8 +636,8 @@ occ::handle<TCollection_HAsciiString> IGESData_IGESModel::StringLabel(
     return new TCollection_HAsciiString("(NOT IGES)");
   else
   {
-    char text[20];
-    int  num = Number(ent);
+    char             text[20];
+    int num = Number(ent);
     if (num > 0)
       Sprintf(text, "D%d", 2 * num - 1);
     else

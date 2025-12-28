@@ -24,7 +24,7 @@ StepBasic_SiUnitAndMassUnit::StepBasic_SiUnitAndMassUnit() {}
 
 //=================================================================================================
 
-void StepBasic_SiUnitAndMassUnit::Init(const bool                 hasAprefix,
+void StepBasic_SiUnitAndMassUnit::Init(const bool     hasAprefix,
                                        const StepBasic_SiPrefix   aPrefix,
                                        const StepBasic_SiUnitName aName)
 {

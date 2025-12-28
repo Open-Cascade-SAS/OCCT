@@ -64,14 +64,10 @@ public:
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncCylinderLSDist() {};
 
-  Standard_EXPORT GeomConvert_FuncCylinderLSDist(
-    const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
-    const gp_Dir&                                   theDir);
+  Standard_EXPORT GeomConvert_FuncCylinderLSDist(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+                                                 const gp_Dir&                      theDir);
 
-  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
-  {
-    myPoints = thePoints;
-  }
+  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints) { myPoints = thePoints; }
 
   void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
@@ -85,10 +81,12 @@ public:
   Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
-  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
+  Standard_EXPORT bool Values(const math_Vector& X,
+                                          double&     F,
+                                          math_Vector&       G) override;
 
 private:
   occ::handle<NCollection_HArray1<gp_XYZ>> myPoints;
-  gp_Dir                                   myDir;
+  gp_Dir                      myDir;
 };
 #endif // _GeomConvert_FuncCylinderLSDist_HeaderFile

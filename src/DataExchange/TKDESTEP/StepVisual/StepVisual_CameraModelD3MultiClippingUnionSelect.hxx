@@ -45,6 +45,6 @@ public:
 
   //! returns Value as a CameraModelD3MultiClippingIntersection (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_CameraModelD3MultiClippingIntersection>
-                  CameraModelD3MultiClippingIntersection() const;
+    CameraModelD3MultiClippingIntersection() const;
 };
 #endif // StepVisual_CameraModelD3MultiClippingUnionSelect

@@ -81,12 +81,12 @@ occ::handle<TDF_Attribute> XmlMNaming_NamingDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                    const occ::handle<TDF_Attribute>& theTarget,
-                                    XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
-  const XmlObjMgt_Element&    anElem = theSource;
-  occ::handle<TNaming_Naming> aNg    = occ::down_cast<TNaming_Naming>(theTarget);
+  const XmlObjMgt_Element& anElem = theSource;
+  occ::handle<TNaming_Naming>   aNg    = occ::down_cast<TNaming_Naming>(theTarget);
 
   TNaming_Name& aNgName = aNg->ChangeName();
 
@@ -94,9 +94,9 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   aNgName.Type(NameTypeFromString(anElem.getAttribute(::TypeString())));
   aNgName.ShapeType(ShapeEnumFromString(anElem.getAttribute(::ShapeTypeString())));
 
-  int                             aNb;
+  int           aNb;
   occ::handle<TNaming_NamedShape> NS;
-  TCollection_ExtendedString      aMsgString;
+  TCollection_ExtendedString aMsgString;
 
   XmlObjMgt_DOMString aDOMStr = anElem.getAttribute(::ArgumentsString());
   if (aDOMStr != NULL)
@@ -254,12 +254,12 @@ bool XmlMNaming_NamingDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                    XmlObjMgt_Persistent&             theTarget,
-                                    XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                    XmlObjMgt_Persistent&        theTarget,
+                                    XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   occ::handle<TNaming_Naming> aNg     = occ::down_cast<TNaming_Naming>(theSource);
-  XmlObjMgt_Element&          anElem  = theTarget;
-  const TNaming_Name&         aNgName = aNg->GetName();
+  XmlObjMgt_Element&     anElem  = theTarget;
+  const TNaming_Name&    aNgName = aNg->GetName();
 
   // type and shape type
   anElem.setAttribute(::TypeString(), NameTypeToString(aNgName.Type()));
@@ -272,12 +272,10 @@ void XmlMNaming_NamingDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
   if (NbArgs > 0)
   {
     TCollection_AsciiString anArgsStr;
-    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aNgName.Arguments());
-         it.More();
-         it.Next())
+    for (NCollection_List<occ::handle<TNaming_NamedShape>>::Iterator it(aNgName.Arguments()); it.More(); it.Next())
     {
       occ::handle<TNaming_NamedShape> anArg = it.Value();
-      aNb                                   = 0;
+      aNb                              = 0;
       if (!anArg.IsNull())
       {
         aNb = theRelocTable.FindIndex(anArg);

@@ -59,7 +59,8 @@ protected:
   Standard_EXPORT ~TObj_Model();
 
   //! Check whether the document contains the OCAF data.
-  Standard_EXPORT virtual bool checkDocumentEmpty(const TCollection_ExtendedString& theFile);
+  Standard_EXPORT virtual bool checkDocumentEmpty(
+    const TCollection_ExtendedString& theFile);
 
 public:
   /**
@@ -166,15 +167,15 @@ public:
 
   //! Returns True is name is registered in the names map
   //! The input argument may be NULL handle, then model check in own global container
-  Standard_EXPORT bool IsRegisteredName(
-    const occ::handle<TCollection_HExtendedString>& theName,
-    const occ::handle<TObj_TNameContainer>&         theDictionary) const;
+  Standard_EXPORT bool
+    IsRegisteredName(const occ::handle<TCollection_HExtendedString>& theName,
+                     const occ::handle<TObj_TNameContainer>&         theDictionary) const;
 
   //! Register name in the map
   //! The input argument may be NULL handle, then model check in own global container
   Standard_EXPORT void RegisterName(const occ::handle<TCollection_HExtendedString>& theName,
-                                    const TDF_Label&                                theLabel,
-                                    const occ::handle<TObj_TNameContainer>& theDictionary) const;
+                                    const TDF_Label&                           theLabel,
+                                    const occ::handle<TObj_TNameContainer>&         theDictionary) const;
 
   //! Unregisters name from the map
   //! The input argument may be NULL handle, then model check in own global container
@@ -266,23 +267,24 @@ protected:
    */
 
   //! Returns (or creates a new) partition on a given label
-  Standard_EXPORT occ::handle<TObj_Partition> getPartition(const TDF_Label& theLabel,
-                                                           const bool theHidden = false) const;
+  Standard_EXPORT occ::handle<TObj_Partition> getPartition(
+    const TDF_Label&       theLabel,
+    const bool theHidden = false) const;
 
   //! Returns Partition specified by its index number on a given label
   //! If not exists, creates anew with specified name
   Standard_EXPORT occ::handle<TObj_Partition> getPartition(
     const TDF_Label&                  theLabel,
-    const int                         theIndex,
+    const int            theIndex,
     const TCollection_ExtendedString& theName,
-    const bool                        theHidden = false) const;
+    const bool            theHidden = false) const;
 
   //! Returns Partition specified by its index number
   //! If not exists, creates anew with specified name
   Standard_EXPORT occ::handle<TObj_Partition> getPartition(
-    const int                         theIndex,
+    const int            theIndex,
     const TCollection_ExtendedString& theName,
-    const bool                        theHidden = false) const;
+    const bool            theHidden = false) const;
 
 public:
   //! Returns OCAF document of Model
@@ -326,7 +328,7 @@ public:
   //! references will not be copied if theRelocTable is not 0
   //! if theRelocTable is not NULL theRelocTable is filled by objects
   virtual Standard_EXPORT bool Paste(occ::handle<TObj_Model>          theModel,
-                                     occ::handle<TDF_RelocationTable> theRelocTable = 0);
+                                                 occ::handle<TDF_RelocationTable> theRelocTable = 0);
 
   //! This function have to create a new model with type like me
   virtual Standard_EXPORT occ::handle<TObj_Model> NewEmpty() = 0;
@@ -340,7 +342,7 @@ private:
    * Fields
    */
 
-  TDF_Label                      myLabel;     //!< Root label of the model in OCAF document
+  TDF_Label                 myLabel;     //!< Root label of the model in OCAF document
   occ::handle<Message_Messenger> myMessenger; //!< Messenger object
 
 public:

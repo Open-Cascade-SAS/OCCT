@@ -37,10 +37,10 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration()
 //
 //==========================================================================
 
-math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theFunction,
-                                                             const double   theLower,
-                                                             const double   theUpper,
-                                                             const int      theNbPnts)
+math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&         theFunction,
+                                                             const double    theLower,
+                                                             const double    theUpper,
+                                                             const int theNbPnts)
     : myIsDone(false),
       myValue(0.),
       myErrorReached(0.),
@@ -56,12 +56,12 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theF
 //
 //==========================================================================
 
-math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theFunction,
-                                                             const double   theLower,
-                                                             const double   theUpper,
-                                                             const int      theNbPnts,
-                                                             const double   theTolerance,
-                                                             const int      theMaxNbIter)
+math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function&         theFunction,
+                                                             const double    theLower,
+                                                             const double    theUpper,
+                                                             const int theNbPnts,
+                                                             const double    theTolerance,
+                                                             const int theMaxNbIter)
     : myIsDone(false),
       myValue(0.),
       myErrorReached(0.),
@@ -77,14 +77,14 @@ math_KronrodSingleIntegration::math_KronrodSingleIntegration(math_Function& theF
 //           Computation of the integral.
 //==========================================================================
 
-void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
-                                            const double   theLower,
-                                            const double   theUpper,
-                                            const int      theNbPnts)
+void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
+                                            const double    theLower,
+                                            const double    theUpper,
+                                            const int theNbPnts)
 {
   // const double aMinVol = Epsilon(1.);
   const double aPtol = 1.e-9;
-  myNbIterReached    = 0;
+  myNbIterReached           = 0;
 
   if (theNbPnts < 3)
   {
@@ -102,11 +102,11 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
   myNbPntsReached = (theNbPnts % 2 == 0) ? theNbPnts + 1 : theNbPnts;
   myErrorReached  = RealLast();
 
-  int         aNGauss = myNbPntsReached / 2;
-  math_Vector aKronrodP(1, myNbPntsReached);
-  math_Vector aKronrodW(1, myNbPntsReached);
-  math_Vector aGaussP(1, aNGauss);
-  math_Vector aGaussW(1, aNGauss);
+  int aNGauss = myNbPntsReached / 2;
+  math_Vector      aKronrodP(1, myNbPntsReached);
+  math_Vector      aKronrodW(1, myNbPntsReached);
+  math_Vector      aGaussP(1, aNGauss);
+  math_Vector      aGaussW(1, aNGauss);
 
   if (!math::KronrodPointsAndWeights(myNbPntsReached, aKronrodP, aKronrodW)
       || !math::OrderedGaussPointsAndWeights(aNGauss, aGaussP, aGaussW))
@@ -140,15 +140,15 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
 
 //=================================================================================================
 
-void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
-                                            const double   theLower,
-                                            const double   theUpper,
-                                            const int      theNbPnts,
-                                            const double   theTolerance,
-                                            const int      theMaxNbIter)
+void math_KronrodSingleIntegration::Perform(math_Function&         theFunction,
+                                            const double    theLower,
+                                            const double    theUpper,
+                                            const int theNbPnts,
+                                            const double    theTolerance,
+                                            const int theMaxNbIter)
 {
-  double aMinVol  = Epsilon(1.);
-  myNbIterReached = 0;
+  double aMinVol = Epsilon(1.);
+  myNbIterReached       = 0;
 
   // Check prerequisites.
   if (theNbPnts < 3 || theTolerance <= 0.)
@@ -159,11 +159,11 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
   // Get an odd value of number of initial points.
   myNbPntsReached = (theNbPnts % 2 == 0) ? theNbPnts + 1 : theNbPnts;
 
-  int         aNGauss = myNbPntsReached / 2;
-  math_Vector aKronrodP(1, myNbPntsReached);
-  math_Vector aKronrodW(1, myNbPntsReached);
-  math_Vector aGaussP(1, aNGauss);
-  math_Vector aGaussW(1, aNGauss);
+  int aNGauss = myNbPntsReached / 2;
+  math_Vector      aKronrodP(1, myNbPntsReached);
+  math_Vector      aKronrodW(1, myNbPntsReached);
+  math_Vector      aGaussP(1, aNGauss);
+  math_Vector      aGaussW(1, aNGauss);
 
   if (!math::KronrodPointsAndWeights(myNbPntsReached, aKronrodP, aKronrodW)
       || !math::OrderedGaussPointsAndWeights(aNGauss, aGaussP, aGaussW))
@@ -211,8 +211,8 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
 
   int i, nint, nbints;
 
-  double maxerr;
-  int    count = 0;
+  double    maxerr;
+  int count = 0;
 
   while (myErrorReached > theTolerance && myNbIterReached < theMaxNbIter)
   {
@@ -277,27 +277,27 @@ void math_KronrodSingleIntegration::Perform(math_Function& theFunction,
 
 //=================================================================================================
 
-bool math_KronrodSingleIntegration::GKRule(math_Function& theFunction,
-                                           const double   theLower,
-                                           const double   theUpper,
-                                           const math_Vector& /*theGaussP*/,
-                                           const math_Vector& theGaussW,
-                                           const math_Vector& theKronrodP,
-                                           const math_Vector& theKronrodW,
-                                           double&            theValue,
-                                           double&            theError)
+bool math_KronrodSingleIntegration::GKRule(math_Function&      theFunction,
+                                                       const double theLower,
+                                                       const double theUpper,
+                                                       const math_Vector& /*theGaussP*/,
+                                                       const math_Vector& theGaussW,
+                                                       const math_Vector& theKronrodP,
+                                                       const math_Vector& theKronrodW,
+                                                       double&     theValue,
+                                                       double&     theError)
 {
 
   bool IsDone;
 
   int aNKronrod = theKronrodP.Length();
 
-  double aGaussVal;
-  int    aNPnt2 = (aNKronrod + 1) / 2;
-  int    i;
-  double aDx;
-  double aVal1;
-  double aVal2;
+  double    aGaussVal;
+  int aNPnt2 = (aNKronrod + 1) / 2;
+  int i;
+  double    aDx;
+  double    aVal1;
+  double    aVal2;
 
   math_Vector f1(1, aNPnt2 - 1);
   math_Vector f2(1, aNPnt2 - 1);

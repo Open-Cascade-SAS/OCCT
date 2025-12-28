@@ -44,15 +44,15 @@ occ::handle<TDF_Attribute> XmlMFunction_FunctionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        XmlObjMgt_RRelocationTable&) const
+bool XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TFunction_Function> aF = occ::down_cast<TFunction_Function>(theTarget);
 
   // function GUID
   XmlObjMgt_DOMString aGuidDomStr = theSource.Element().getAttribute(::GuidString());
-  const char*         aGuidStr    = (const char*)aGuidDomStr.GetString();
+  const char*    aGuidStr    = (const char*)aGuidDomStr.GetString();
   if (aGuidStr[0] == '\0')
   {
     myMessageDriver->Send("error retrieving GUID for type TFunction_Function", Message_Fail);
@@ -61,7 +61,7 @@ bool XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&       theSou
   aF->SetDriverGUID(aGuidStr);
 
   // failure
-  int                 aValue;
+  int    aValue;
   XmlObjMgt_DOMString aFStr = theSource.Element().getAttribute(::FailureString());
   if (!aFStr.GetInteger(aValue))
   {
@@ -82,14 +82,14 @@ bool XmlMFunction_FunctionDriver::Paste(const XmlObjMgt_Persistent&       theSou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMFunction_FunctionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        XmlObjMgt_Persistent&             theTarget,
+                                        XmlObjMgt_Persistent&        theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TFunction_Function> aF = occ::down_cast<TFunction_Function>(theSource);
   if (!aF.IsNull())
   {
     // convert GUID into attribute value
-    char                aGuidStr[40];
+    char  aGuidStr[40];
     Standard_PCharacter pGuidStr;
     //
     pGuidStr = aGuidStr;

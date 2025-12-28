@@ -41,7 +41,7 @@ IGESGeom_ToolTrimmedSurface::IGESGeom_ToolTrimmedSurface() {}
 
 void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_TrimmedSurface>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader& PR) const
+                                                IGESData_ParamReader&                  PR) const
 {
   // MGE 31/07/98
   // Building of messages
@@ -49,12 +49,12 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_Trimm
   //========================================
 
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                                                    aFlag;
-  int                                                                    count;
-  occ::handle<IGESData_IGESEntity>                                       aSurface;
-  occ::handle<IGESGeom_CurveOnSurface>                                   anOuter;
+  int                         aFlag;
+  int                         count;
+  occ::handle<IGESData_IGESEntity>              aSurface;
+  occ::handle<IGESGeom_CurveOnSurface>          anOuter;
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> anInner;
-  IGESData_Status                                                        aStatus;
+  IGESData_Status                          aStatus;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aSurface))
@@ -191,7 +191,7 @@ void IGESGeom_ToolTrimmedSurface::ReadOwnParams(const occ::handle<IGESGeom_Trimm
 //=================================================================================================
 
 void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const occ::handle<IGESGeom_TrimmedSurface>& ent,
-                                                 IGESData_IGESWriter& IW) const
+                                                 IGESData_IGESWriter&                   IW) const
 {
   int up = ent->NbInnerContours();
   IW.Send(ent->Surface());
@@ -210,7 +210,7 @@ void IGESGeom_ToolTrimmedSurface::WriteOwnParams(const occ::handle<IGESGeom_Trim
 //=================================================================================================
 
 void IGESGeom_ToolTrimmedSurface::OwnShared(const occ::handle<IGESGeom_TrimmedSurface>& ent,
-                                            Interface_EntityIterator&                   iter) const
+                                            Interface_EntityIterator&              iter) const
 {
   int up = ent->NbInnerContours();
   iter.GetOneItem(ent->Surface());
@@ -224,7 +224,7 @@ void IGESGeom_ToolTrimmedSurface::OwnShared(const occ::handle<IGESGeom_TrimmedSu
 
 void IGESGeom_ToolTrimmedSurface::OwnCopy(const occ::handle<IGESGeom_TrimmedSurface>& another,
                                           const occ::handle<IGESGeom_TrimmedSurface>& ent,
-                                          Interface_CopyTool&                         TC) const
+                                          Interface_CopyTool&                    TC) const
 {
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> anInner;
 
@@ -285,9 +285,9 @@ void IGESGeom_ToolTrimmedSurface::OwnCheck(const occ::handle<IGESGeom_TrimmedSur
 //=================================================================================================
 
 void IGESGeom_ToolTrimmedSurface::OwnDump(const occ::handle<IGESGeom_TrimmedSurface>& ent,
-                                          const IGESData_IGESDumper&                  dumper,
-                                          Standard_OStream&                           S,
-                                          const int                                   level) const
+                                          const IGESData_IGESDumper&             dumper,
+                                          Standard_OStream&                      S,
+                                          const int                 level) const
 {
   int tempSubLevel = (level <= 4) ? 0 : 1;
 

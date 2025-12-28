@@ -207,10 +207,10 @@ protected:
   Standard_EXPORT void Orthogonalize();
 
 private:
-  double      scale;
-  gp_TrsfForm shape;
-  gp_Mat2d    matrix;
-  gp_XY       loc;
+  double scale;
+  gp_TrsfForm   shape;
+  gp_Mat2d      matrix;
+  gp_XY         loc;
 };
 
 #include <gp_Trsf.hxx>
@@ -298,7 +298,8 @@ inline void gp_Trsf2d::SetTranslation(const gp_Pnt2d& theP1, const gp_Pnt2d& the
 
 //=================================================================================================
 
-inline constexpr double gp_Trsf2d::Value(const int theRow, const int theCol) const
+inline constexpr double gp_Trsf2d::Value(const int theRow,
+                                                const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol < 3)

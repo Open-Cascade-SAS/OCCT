@@ -36,53 +36,54 @@ public:
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeEdgeInterference(
     const TopOpeBRepDS_Transition& T,
     const TopOpeBRepDS_Kind        SK,
-    const int                      SI,
+    const int         SI,
     const TopOpeBRepDS_Kind        GK,
-    const int                      GI,
-    const double                   P);
+    const int         GI,
+    const double            P);
 
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeCurveInterference(
     const TopOpeBRepDS_Transition& T,
     const TopOpeBRepDS_Kind        SK,
-    const int                      SI,
+    const int         SI,
     const TopOpeBRepDS_Kind        GK,
-    const int                      GI,
-    const double                   P);
+    const int         GI,
+    const double            P);
 
   //! duplicate I in a new interference with Complement() transition.
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> DuplicateCurvePointInterference(
     const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeFaceCurveInterference(
-    const TopOpeBRepDS_Transition&   Transition,
-    const int                        FaceI,
-    const int                        CurveI,
-    const occ::handle<Geom2d_Curve>& PC);
+    const TopOpeBRepDS_Transition& Transition,
+    const int         FaceI,
+    const int         CurveI,
+    const occ::handle<Geom2d_Curve>&    PC);
 
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeSolidSurfaceInterference(
     const TopOpeBRepDS_Transition& Transition,
-    const int                      SolidI,
-    const int                      SurfaceI);
+    const int         SolidI,
+    const int         SurfaceI);
 
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeEdgeVertexInterference(
     const TopOpeBRepDS_Transition& Transition,
-    const int                      EdgeI,
-    const int                      VertexI,
-    const bool                     VertexIsBound,
+    const int         EdgeI,
+    const int         VertexI,
+    const bool         VertexIsBound,
     const TopOpeBRepDS_Config      Config,
-    const double                   param);
+    const double            param);
 
   Standard_EXPORT static occ::handle<TopOpeBRepDS_Interference> MakeFaceEdgeInterference(
     const TopOpeBRepDS_Transition& Transition,
-    const int                      FaceI,
-    const int                      EdgeI,
-    const bool                     EdgeIsBound,
+    const int         FaceI,
+    const int         EdgeI,
+    const bool         EdgeIsBound,
     const TopOpeBRepDS_Config      Config);
 
   Standard_EXPORT static double Parameter(const occ::handle<TopOpeBRepDS_Interference>& CPI);
 
   Standard_EXPORT static void Parameter(const occ::handle<TopOpeBRepDS_Interference>& CPI,
-                                        const double                                  Par);
+                                        const double                      Par);
+
 };
 
 #endif // _TopOpeBRepDS_InterferenceTool_HeaderFile

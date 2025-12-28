@@ -25,8 +25,12 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -73,7 +77,7 @@
 static occ::handle<TDataStd_UAttribute> AddObject(const occ::handle<TDocStd_Document>& aDoc)
 {
   occ::handle<TDataStd_TreeNode> aRootNode = TDataStd_TreeNode::Set(aDoc->Main());
-  const TDF_Label&               aLabel    = TDF_TagSource::NewChild(aDoc->Main());
+  const TDF_Label&          aLabel    = TDF_TagSource::NewChild(aDoc->Main());
 
   occ::handle<TDataStd_UAttribute> anObj = TDataStd_UAttribute::Set(aLabel, GEOMOBJECT_GUID);
   occ::handle<TDataStd_TreeNode>   aNode = TDataStd_TreeNode::Set(aLabel);
@@ -108,7 +112,7 @@ static int DNaming_AddObject(Draw_Interpretor& di, int nb, const char** a)
 
 #include <NCollection_DataMap.hxx>
 typedef NCollection_DataMap<TCollection_AsciiString, Standard_GUID> DataMapOfAStringGUID;
-static bool                                                         isBuilt(false);
+static bool                                             isBuilt(false);
 static DataMapOfAStringGUID                                         aDMap;
 
 //=======================================================================
@@ -202,12 +206,14 @@ static occ::handle<TFunction_Driver> GetDriver(const TCollection_AsciiString& na
 // function : DNaming_AddDriver
 // purpose  : "AddDriver Doc Name1 Name2 ..."
 //=======================================================================
-static int DNaming_AddDriver(Draw_Interpretor& /*theDI*/, int theNb, const char** theArg)
+static int DNaming_AddDriver(Draw_Interpretor& /*theDI*/,
+                                          int theNb,
+                                          const char**     theArg)
 {
   if (theNb >= 3)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     occ::handle<TFunction_DriverTable> aFunctionDrvTable = TFunction_DriverTable::Get();
@@ -231,10 +237,10 @@ static int DNaming_AddDriver(Draw_Interpretor& /*theDI*/, int theNb, const char*
 
 //=======================================================================
 static occ::handle<TFunction_Function> SetFunctionDS(const TDF_Label&     objLabel,
-                                                     const Standard_GUID& funGUID)
+                                                const Standard_GUID& funGUID)
 {
   // set function
-  const TDF_Label&                aLabel = TDF_TagSource::NewChild(objLabel);
+  const TDF_Label&           aLabel = TDF_TagSource::NewChild(objLabel);
   occ::handle<TFunction_Function> aFun   = TFunction_Function::Set(aLabel, funGUID);
 
   occ::handle<TDataStd_TreeNode> aNode = TDataStd_TreeNode::Set(aLabel);
@@ -244,13 +250,13 @@ static occ::handle<TFunction_Function> SetFunctionDS(const TDF_Label&     objLab
     objNode->Append(aNode);
 
   // set function data sub-structure
-  const TDF_Label&               aLab1  = TDF_TagSource::NewChild(aLabel);
+  const TDF_Label&          aLab1  = TDF_TagSource::NewChild(aLabel);
   occ::handle<TDataStd_TreeNode> aNode1 = TDataStd_TreeNode::Set(aLab1);
   TDataStd_Name::Set(aLab1, "Arguments");
   if (!aNode.IsNull())
     aNode->Append(aNode1);
 
-  const TDF_Label&               aLab2  = TDF_TagSource::NewChild(aLabel);
+  const TDF_Label&          aLab2  = TDF_TagSource::NewChild(aLabel);
   occ::handle<TDataStd_TreeNode> aNode2 = TDataStd_TreeNode::Set(aLab2);
   TDataStd_Name::Set(aLab2, "Result");
   if (!aNode.IsNull())
@@ -264,7 +270,9 @@ static occ::handle<TFunction_Function> SetFunctionDS(const TDF_Label&     objLab
 //         :  - adds new function specified by FunName to an object
 //         :  specified by ObjEntry
 //=======================================================================
-static int DNaming_AddFunction(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_AddFunction(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      a)
 {
   if (nb == 4)
   {
@@ -307,13 +315,15 @@ static int DNaming_AddFunction(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_AddBox
 // purpose  : "AddBox Doc dx dy dz"
 //=======================================================================
-static int DNaming_AddBox(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddBox(Draw_Interpretor& theDI,
+                                       int  theNb,
+                                       const char**      theArg)
 {
   if (theNb >= 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
     occ::handle<TDataStd_UAttribute> anObj = AddObject(aDocument);
@@ -349,7 +359,7 @@ static int DNaming_AddBox(Draw_Interpretor& theDI, int theNb, const char** theAr
 
 //=======================================================================
 static occ::handle<TFunction_Function> GetFunction(const TDF_Label&     objLabel,
-                                                   const Standard_GUID& funGUID)
+                                              const Standard_GUID& funGUID)
 {
   occ::handle<TFunction_Function> aFun;
   occ::handle<TDataStd_TreeNode>  aNode;
@@ -380,12 +390,14 @@ static occ::handle<TFunction_Function> GetFunction(const TDF_Label&     objLabel
 // purpose  : "BoxDX Doc BoxLabel NewDX"
 //=======================================================================
 
-static int DNaming_BoxDX(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_BoxDX(Draw_Interpretor& theDI,
+                                      int  theNb,
+                                      const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -417,12 +429,14 @@ static int DNaming_BoxDX(Draw_Interpretor& theDI, int theNb, const char** theArg
 // purpose  : "BoxDY Doc BoxLabel NewDY"
 //=======================================================================
 
-static int DNaming_BoxDY(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_BoxDY(Draw_Interpretor& theDI,
+                                      int  theNb,
+                                      const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -454,12 +468,14 @@ static int DNaming_BoxDY(Draw_Interpretor& theDI, int theNb, const char** theArg
 // purpose  : "BoxDZ Doc BoxLabel NewDZ"
 //=======================================================================
 
-static int DNaming_BoxDZ(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_BoxDZ(Draw_Interpretor& theDI,
+                                      int  theNb,
+                                      const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -491,11 +507,11 @@ static int DNaming_BoxDZ(Draw_Interpretor& theDI, int theNb, const char** theArg
 // purpose  : Performs the calling to a driver with the given Function ID.
 //=======================================================================
 static int ComputeFunction(const occ::handle<TFunction_Function>& theFun,
-                           occ::handle<TFunction_Logbook>&        theLog)
+                                        occ::handle<TFunction_Logbook>&        theLog)
 {
   occ::handle<TFunction_DriverTable> aTable = TFunction_DriverTable::Get();
   occ::handle<TFunction_Driver>      aDriver;
-  int                                aRes(-1);
+  int              aRes(-1);
   if (aTable->FindDriver(theFun->GetDriverGUID(), aDriver))
   {
     aDriver->Init(theFun->Label());
@@ -512,12 +528,14 @@ static int ComputeFunction(const occ::handle<TFunction_Function>& theFun,
 //         : "SolveFlatFrom Doc FistAuxObjLabel"
 //=======================================================================
 
-static int DNaming_SolveFlatFrom(Draw_Interpretor& /*theDI*/, int theNb, const char** theArg)
+static int DNaming_SolveFlatFrom(Draw_Interpretor& /*theDI*/,
+                                              int theNb,
+                                              const char**     theArg)
 {
   if (theNb == 3)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label ObjLabel;
@@ -532,8 +550,8 @@ static int DNaming_SolveFlatFrom(Draw_Interpretor& /*theDI*/, int theNb, const c
     std::cout << "DNaming_SolveFlatFrom: Father label = " << entry << std::endl;
 #endif
     occ::handle<TFunction_Logbook> logbook = TFunction_Logbook::Set(FatherLab);
-    bool                           found(false);
-    TDF_ChildIterator              it(FatherLab, false);
+    bool          found(false);
+    TDF_ChildIterator         it(FatherLab, false);
     for (; it.More(); it.Next())
     {
       const TDF_Label& aLabel = it.Value();
@@ -546,7 +564,7 @@ static int DNaming_SolveFlatFrom(Draw_Interpretor& /*theDI*/, int theNb, const c
         else
           continue;
       }
-      const TDF_Label&                funLabel = aLabel.FindChild(FUNCTION_ARGUMENTS_LABEL, true);
+      const TDF_Label& funLabel = aLabel.FindChild(FUNCTION_ARGUMENTS_LABEL, true);
       occ::handle<TFunction_Function> aFun;
       funLabel.FindAttribute(TFunction_Function::GetID(), aFun);
       if (aFun.IsNull())
@@ -591,12 +609,14 @@ ERR:
 // function : DNaming_InitLogBook
 // purpose  : "InitLogBook Doc "
 //=======================================================================
-static int DNaming_InitLogBook(Draw_Interpretor& /*theDI*/, int theNb, const char** theArg)
+static int DNaming_InitLogBook(Draw_Interpretor& /*theDI*/,
+                                            int theNb,
+                                            const char**     theArg)
 {
   if (theNb == 2)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     occ::handle<TFunction_Logbook> logbook = TFunction_Logbook::Set(aDoc->Main());
@@ -623,12 +643,14 @@ static int DNaming_InitLogBook(Draw_Interpretor& /*theDI*/, int theNb, const cha
 // function : DNaming_CheckLogBook
 // purpose  : "CheckLogBook Doc"
 //=======================================================================
-static int DNaming_CheckLogBook(Draw_Interpretor& /*theDI*/, int theNb, const char** theArg)
+static int DNaming_CheckLogBook(Draw_Interpretor& /*theDI*/,
+                                             int theNb,
+                                             const char**     theArg)
 {
   if (theNb == 2)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     occ::handle<TFunction_Logbook> logbook = TFunction_Logbook::Set(aDoc->Main());
@@ -636,9 +658,9 @@ static int DNaming_CheckLogBook(Draw_Interpretor& /*theDI*/, int theNb, const ch
       std::cout << "DNaming_CheckLogBook : is empty" << std::endl;
     else
     {
-      const NCollection_Map<TDF_Label>&    aMap = logbook->GetValid();
+      const NCollection_Map<TDF_Label>&       aMap = logbook->GetValid();
       NCollection_Map<TDF_Label>::Iterator it(aMap);
-      TCollection_AsciiString              entry;
+      TCollection_AsciiString   entry;
       std::cout << "DNaming_CheckLogBook : LogBook current state:" << std::endl;
       for (; it.More(); it.Next())
       {
@@ -656,12 +678,14 @@ static int DNaming_CheckLogBook(Draw_Interpretor& /*theDI*/, int theNb, const ch
 // function : DNaming_ComputeFun
 // purpose  : "ComputeFun Doc FunctionLabel"
 //=======================================================================
-static int DNaming_ComputeFun(Draw_Interpretor& /*theDI*/, int theNb, const char** theArg)
+static int DNaming_ComputeFun(Draw_Interpretor& /*theDI*/,
+                                           int theNb,
+                                           const char**     theArg)
 {
   if (theNb == 3)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label funLabel;
@@ -675,7 +699,7 @@ static int DNaming_ComputeFun(Draw_Interpretor& /*theDI*/, int theNb, const char
     if (!aFun.IsNull())
     {
       occ::handle<TFunction_Logbook> logbook = TFunction_Logbook::Set(funLabel);
-      int                            aRes    = ComputeFunction(aFun, logbook);
+      int          aRes    = ComputeFunction(aFun, logbook);
       if (aRes != 0)
       {
         Message::SendFail() << "DNaming_ComputeFun : No Driver or Driver failed";
@@ -696,15 +720,17 @@ static int DNaming_ComputeFun(Draw_Interpretor& /*theDI*/, int theNb, const char
 // function : DNaming_AttachShape
 // purpose  : "AttachShape Doc Shape Context [Container [KeepOrientation [Geometry]]]"
 //=======================================================================
-static int DNaming_AttachShape(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_AttachShape(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      a)
 {
   if (nb >= 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
-    const char*         aSS(a[2]);
+    const char*    aSS(a[2]);
     const TopoDS_Shape& aShape = DBRep::Get(aSS); // shape to be attached
     if (aShape.IsNull())
       return 1;
@@ -795,15 +821,17 @@ static int DNaming_AttachShape(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_XAttachShape
 // purpose  : "AttachShape Doc Shape Context [KeepOrientation [Geometry]]"
 //=======================================================================
-static int DNaming_XAttachShape(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_XAttachShape(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      a)
 {
   if (nb >= 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
-    const char*         aSS(a[2]);
+    const char*    aSS(a[2]);
     const TopoDS_Shape& aShape = DBRep::Get(aSS);
     if (aShape.IsNull())
       return 1;
@@ -869,13 +897,15 @@ static int DNaming_XAttachShape(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_AddCyl
 // purpose  : "AddCyl Doc Radius Height Axis
 //=======================================================================
-static int DNaming_AddCylinder(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddCylinder(Draw_Interpretor& theDI,
+                                            int  theNb,
+                                            const char**      theArg)
 {
   if (theNb == 5)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
     occ::handle<TDataStd_UAttribute> anObj = AddObject(aDocument);
@@ -917,12 +947,14 @@ static int DNaming_AddCylinder(Draw_Interpretor& theDI, int theNb, const char** 
 // purpose  : "CylRad Doc CylLabel NewRad"
 //=======================================================================
 
-static int DNaming_CylRad(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_CylRad(Draw_Interpretor& theDI,
+                                       int  theNb,
+                                       const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -954,13 +986,15 @@ static int DNaming_CylRad(Draw_Interpretor& theDI, int theNb, const char** theAr
 // purpose  : "AddFuse Doc Object Tool"
 //=======================================================================
 
-static int DNaming_AddFuse(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddFuse(Draw_Interpretor& theDI,
+                                        int  theNb,
+                                        const char**      theArg)
 {
   if (theNb == 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -993,13 +1027,15 @@ static int DNaming_AddFuse(Draw_Interpretor& theDI, int theNb, const char** theA
 // purpose  : "AddCut Doc Object Tool"
 //=======================================================================
 
-static int DNaming_AddCut(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddCut(Draw_Interpretor& theDI,
+                                       int  theNb,
+                                       const char**      theArg)
 {
   if (theNb == 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1032,13 +1068,15 @@ static int DNaming_AddCut(Draw_Interpretor& theDI, int theNb, const char** theAr
 // purpose  : "AddCommon Doc Object Tool"
 //=======================================================================
 
-static int DNaming_AddCommon(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddCommon(Draw_Interpretor& theDI,
+                                          int  theNb,
+                                          const char**      theArg)
 {
   if (theNb == 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1071,13 +1109,15 @@ static int DNaming_AddCommon(Draw_Interpretor& theDI, int theNb, const char** th
 // purpose  : "AddSection Doc Object Tool"
 //=======================================================================
 
-static int DNaming_AddSection(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddSection(Draw_Interpretor& theDI,
+                                           int  theNb,
+                                           const char**      theArg)
 {
   if (theNb == 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1109,7 +1149,9 @@ static int DNaming_AddSection(Draw_Interpretor& theDI, int theNb, const char** t
 // function : DNaming_AddFillet
 // purpose  : "AddFillet Doc Object Radius Path "
 //=======================================================================
-static int DNaming_AddFillet(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddFillet(Draw_Interpretor& theDI,
+                                          int  theNb,
+                                          const char**      theArg)
 {
   if (theNb < 5)
   {
@@ -1118,7 +1160,7 @@ static int DNaming_AddFillet(Draw_Interpretor& theDI, int theNb, const char** th
   }
 
   occ::handle<TDocStd_Document> aDocument;
-  const char*                   aDocS(theArg[1]);
+  const char*         aDocS(theArg[1]);
   if (!DDocStd::GetDocument(aDocS, aDocument))
     return 1;
 
@@ -1152,7 +1194,9 @@ static int DNaming_AddFillet(Draw_Interpretor& theDI, int theNb, const char** th
 // function : DNaming_TranslatePar
 // purpose  : "TranslatePar Doc ShapeEntry dx dy dz"
 //=======================================================================
-static int DNaming_PTranslateDXYZ(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_PTranslateDXYZ(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      a)
 {
   if (nb > 3)
   {
@@ -1160,7 +1204,7 @@ static int DNaming_PTranslateDXYZ(Draw_Interpretor& di, int nb, const char** a)
     std::cout << "NB = " << nb << std::endl;
 #endif
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1205,7 +1249,9 @@ static int DNaming_PTranslateDXYZ(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_PTranslateLine
 // purpose  : "PTranslateAlongLine Doc ShapeEntry Line off"
 //=======================================================================
-static int DNaming_PTranslateLine(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_PTranslateLine(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      a)
 {
   if (nb > 4)
   {
@@ -1213,7 +1259,7 @@ static int DNaming_PTranslateLine(Draw_Interpretor& di, int nb, const char** a)
     std::cout << "NB = " << nb << std::endl;
 #endif
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1232,7 +1278,7 @@ static int DNaming_PTranslateLine(Draw_Interpretor& di, int nb, const char** a)
     TDataStd_Name::Set(aFun->Label(), "ParTranslationAlongLine");
 
     double anOff = 0.;
-    anOff        = Draw::Atof(a[4]);
+    anOff               = Draw::Atof(a[4]);
     DNaming::GetReal(aFun, PTRANSF_OFF)->Set(anOff);
 
     DNaming::SetObjectArg(aFun, PTRANSF_LINE, aLine);
@@ -1249,12 +1295,14 @@ static int DNaming_PTranslateLine(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_PRotateLine
 // purpose  : "PRotateRoundLine Doc ShapeEntry Line Angle"
 //=======================================================================
-static int DNaming_PRotateLine(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_PRotateLine(Draw_Interpretor& di,
+                                            int  nb,
+                                            const char**      a)
 {
   if (nb > 4)
   {
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1276,9 +1324,9 @@ static int DNaming_PRotateLine(Draw_Interpretor& di, int nb, const char** a)
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL));
 
     double anAngle = 0.;
-    anAngle        = Draw::Atof(a[4]);
+    anAngle               = Draw::Atof(a[4]);
     double aK      = 2 * M_PI / 360;
-    anAngle        = anAngle * aK;
+    anAngle               = anAngle * aK;
     DNaming::GetReal(aFun, PTRANSF_ANG)->Set(anAngle);
 
     DDF::ReturnLabel(di, aFun->Label());
@@ -1292,12 +1340,14 @@ static int DNaming_PRotateLine(Draw_Interpretor& di, int nb, const char** a)
 // function : DNaming_PMirrorObject
 // purpose  : "PMirror Doc ShapeEntry PlaneObj"
 //=======================================================================
-static int DNaming_PMirrorObject(Draw_Interpretor& di, int nb, const char** a)
+static int DNaming_PMirrorObject(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      a)
 {
   if (nb > 3)
   {
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(a[1]);
+    const char*         aDocS(a[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
 
@@ -1329,7 +1379,9 @@ static int DNaming_PMirrorObject(Draw_Interpretor& di, int nb, const char** a)
 // function : DModel_AddPrism
 // purpose  : "AddPrism Doc BasisLabel Height Reverse(0/1)"
 //=======================================================================
-static int DNaming_AddPrism(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddPrism(Draw_Interpretor& theDI,
+                                         int  theNb,
+                                         const char**      theArg)
 {
   if (theNb < 5)
   {
@@ -1338,7 +1390,7 @@ static int DNaming_AddPrism(Draw_Interpretor& theDI, int theNb, const char** the
   }
   //
   occ::handle<TDocStd_Document> aDocument;
-  const char*                   aDocS(theArg[1]);
+  const char*         aDocS(theArg[1]);
   if (!DDocStd::GetDocument(aDocS, aDocument))
     return 1;
 
@@ -1373,12 +1425,14 @@ static int DNaming_AddPrism(Draw_Interpretor& theDI, int theNb, const char** the
 // function : DNaming_PrismHeight
 // purpose  : "PrismHeight Doc PrismLabel NewHeight"
 //=======================================================================
-static int DNaming_PrismHeight(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_PrismHeight(Draw_Interpretor& theDI,
+                                            int  theNb,
+                                            const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -1410,7 +1464,9 @@ static int DNaming_PrismHeight(Draw_Interpretor& theDI, int theNb, const char** 
 // purpose  : "AddRevol Doc BasisLabel  AxisLabel [Angle [Reverse(0/1)]] "
 //         : if Angle is presented - sectioned revolution, else - full
 //=======================================================================
-static int DNaming_AddRevol(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddRevol(Draw_Interpretor& theDI,
+                                         int  theNb,
+                                         const char**      theArg)
 {
   if (theNb < 4)
   {
@@ -1419,7 +1475,7 @@ static int DNaming_AddRevol(Draw_Interpretor& theDI, int theNb, const char** the
   }
 
   occ::handle<TDocStd_Document> aDocument;
-  const char*                   aDocS(theArg[1]);
+  const char*         aDocS(theArg[1]);
   if (!DDocStd::GetDocument(aDocS, aDocument))
     return 1;
 
@@ -1431,7 +1487,7 @@ static int DNaming_AddRevol(Draw_Interpretor& theDI, int theNb, const char** the
   if (!DDocStd::Find(aDocument, theArg[3], GEOMOBJECT_GUID, anAxObj))
     return 1;
 
-  bool                             aFull = true;
+  bool            aFull = true;
   occ::handle<TDataStd_UAttribute> anObj = AddObject(aDocument);
   if (anObj.IsNull())
     return 1;
@@ -1462,7 +1518,7 @@ static int DNaming_AddRevol(Draw_Interpretor& theDI, int theNb, const char** the
   {
     double angle = Draw::Atof(theArg[4]);
     double aK    = 2 * M_PI / 360;
-    angle        = angle * aK;
+    angle               = angle * aK;
     DNaming::GetReal(aFun, REVOL_ANGLE)->Set(angle);
     if (theNb == 6)
     {
@@ -1478,12 +1534,14 @@ static int DNaming_AddRevol(Draw_Interpretor& theDI, int theNb, const char** the
 // function : DNaming_RevolutionAngle
 // purpose  : "RevolutionAngle Doc RevolutionLabel NewAngle"
 //=======================================================================
-static int DNaming_RevolutionAngle(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_RevolutionAngle(Draw_Interpretor& theDI,
+                                                int  theNb,
+                                                const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -1514,7 +1572,9 @@ static int DNaming_RevolutionAngle(Draw_Interpretor& theDI, int theNb, const cha
 // function : DNaming_AddSphere
 // purpose  : "AddSphere Doc CenterLabel Radius "
 //=======================================================================
-static int DNaming_AddSphere(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddSphere(Draw_Interpretor& theDI,
+                                          int  theNb,
+                                          const char**      theArg)
 {
   if (theNb != 4)
   {
@@ -1522,7 +1582,7 @@ static int DNaming_AddSphere(Draw_Interpretor& theDI, int theNb, const char** th
     return 1;
   }
   occ::handle<TDocStd_Document> aDocument;
-  const char*                   aDocS(theArg[1]);
+  const char*         aDocS(theArg[1]);
   if (!DDocStd::GetDocument(aDocS, aDocument))
     return 1;
 
@@ -1556,12 +1616,14 @@ static int DNaming_AddSphere(Draw_Interpretor& theDI, int theNb, const char** th
 // function : DNaming_SphereRadius
 // purpose  : "SphereRadius Doc SphLabel NewRadius"
 //=======================================================================
-static int DNaming_SphereRadius(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_SphereRadius(Draw_Interpretor& theDI,
+                                             int  theNb,
+                                             const char**      theArg)
 {
   if (theNb == 4)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -1593,13 +1655,15 @@ static int DNaming_SphereRadius(Draw_Interpretor& theDI, int theNb, const char**
 // function : DNaming_AddPoint
 // purpose  : "AddPoint Doc x y z"
 //=======================================================================
-static int DNaming_AddPoint(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddPoint(Draw_Interpretor& theDI,
+                                         int  theNb,
+                                         const char**      theArg)
 {
   if (theNb >= 4)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
     occ::handle<TDataStd_UAttribute> anObj = AddObject(aDocument);
@@ -1638,13 +1702,15 @@ static int DNaming_AddPoint(Draw_Interpretor& theDI, int theNb, const char** the
 // function : DNaming_AddPointRlt
 // purpose  : "AddPointRlt Doc RefPnt dx dy dz"
 //=======================================================================
-static int DNaming_AddPointRlt(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_AddPointRlt(Draw_Interpretor& theDI,
+                                            int  theNb,
+                                            const char**      theArg)
 {
   if (theNb >= 5)
   {
 
     occ::handle<TDocStd_Document> aDocument;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDocument))
       return 1;
     occ::handle<TDataStd_UAttribute> anObj = AddObject(aDocument);
@@ -1691,12 +1757,14 @@ static int DNaming_AddPointRlt(Draw_Interpretor& theDI, int theNb, const char** 
 // purpose  : "PntOffset Doc PntLabel newDX newDY newDZ "
 //=======================================================================
 
-static int DNaming_PntOffset(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_PntOffset(Draw_Interpretor& theDI,
+                                          int  theNb,
+                                          const char**      theArg)
 {
   if (theNb == 6)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label objLabel;
@@ -1717,8 +1785,8 @@ static int DNaming_PntOffset(Draw_Interpretor& theDI, int theNb, const char** th
     occ::handle<TFunction_Function> aFun = GetFunction(objLabel, funGUID);
     if (!aFun.IsNull())
     {
-      double value(0.0);
-      bool   isDX = strcmp(theArg[3], "skip") != 0;
+      double    value(0.0);
+      bool isDX = strcmp(theArg[3], "skip") != 0;
       if (isDX)
       {
         value = Draw::Atof(theArg[3]);
@@ -1753,7 +1821,9 @@ static int DNaming_PntOffset(Draw_Interpretor& theDI, int theNb, const char** th
 // purpose  : "AddLine3D Doc CurveType(0|1) Pnt1Lab Pnt2Lab [Pnt3Lab [Pnt4Lab [...]]]"
 //         : Type = 0 - open, Type = 1 - closed
 //=======================================================================
-static int DNaming_Line3D(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_Line3D(Draw_Interpretor& theDI,
+                                       int  theNb,
+                                       const char**      theArg)
 {
   if (theNb < 5)
   {
@@ -1761,7 +1831,7 @@ static int DNaming_Line3D(Draw_Interpretor& theDI, int theNb, const char** theAr
     return 1;
   }
   occ::handle<TDocStd_Document> aDocument;
-  const char*                   aDocS(theArg[1]);
+  const char*         aDocS(theArg[1]);
   if (!DDocStd::GetDocument(aDocS, aDocument))
     return 1;
 
@@ -1814,8 +1884,8 @@ inline static void MapOfOrientedShapes(const TopoDS_Shape& S, NCollection_Map<To
 }
 
 //==========================================================================================
-static void MapOfOrientedShapes(const TopoDS_Shape&            S1,
-                                const TopoDS_Shape&            S2,
+static void MapOfOrientedShapes(const TopoDS_Shape&          S1,
+                                const TopoDS_Shape&          S2,
                                 NCollection_Map<TopoDS_Shape>& M)
 {
 
@@ -1829,9 +1899,7 @@ static void MapOfOrientedShapes(const TopoDS_Shape&            S1,
 }
 
 //==========================================================================================
-static void MapOfShapes(const TopoDS_Shape&                                     S1,
-                        const TopoDS_Shape&                                     S2,
-                        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
+static void MapOfShapes(const TopoDS_Shape& S1, const TopoDS_Shape& S2, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& M)
 {
 
   TopoDS_Iterator it(S2, true, true);
@@ -1859,7 +1927,7 @@ inline static void CollectShapes(const TopoDS_Shape& S, NCollection_List<TopoDS_
 inline static void CollectMultShapes(const TopoDS_Shape& S, NCollection_List<TopoDS_Shape>& List)
 {
   TopAbs_ShapeEnum aType = S.ShapeType();
-  int              aStop(TopAbs_SHAPE);
+  int aStop(TopAbs_SHAPE);
   for (int i = (int)aType + 1; i < aStop; i++)
   {
     BRep_Builder    aBuilder;
@@ -1874,10 +1942,10 @@ inline static void CollectMultShapes(const TopoDS_Shape& S, NCollection_List<Top
 
 //==========================================================================================
 static bool MakeSelection(const occ::handle<TDataStd_UAttribute>& Obj,
-                          const TopoDS_Shape&                     Selection,
-                          const occ::handle<TDataStd_UAttribute>& ContextObj,
-                          const bool                              Geometry,
-                          const bool                              KeepOrientation)
+                                      const TopoDS_Shape&                Selection,
+                                      const occ::handle<TDataStd_UAttribute>& ContextObj,
+                                      const bool             Geometry,
+                                      const bool             KeepOrientation)
 {
   if (!Obj.IsNull())
   {
@@ -1939,10 +2007,10 @@ static bool MakeSelection(const occ::handle<TDataStd_UAttribute>& Obj,
 
 //==========================================================================================
 static bool MakeXSelection(const occ::handle<TDataStd_UAttribute>& Obj,
-                           const TopoDS_Shape&                     Selection,
-                           const occ::handle<TDataStd_UAttribute>& ContextObj,
-                           const bool                              Geometry,
-                           const bool                              KeepOrientation)
+                                       const TopoDS_Shape&                Selection,
+                                       const occ::handle<TDataStd_UAttribute>& ContextObj,
+                                       const bool             Geometry,
+                                       const bool             KeepOrientation)
 {
   if (!Obj.IsNull())
   {
@@ -2005,9 +2073,9 @@ static bool MakeXSelection(const occ::handle<TDataStd_UAttribute>& Obj,
 }
 
 //=======================================================================
-inline static TCollection_ExtendedString compareShapes(const TopoDS_Shape& theShape1,
-                                                       const TopoDS_Shape& theShape2,
-                                                       const bool          keepOrientation)
+inline static TCollection_ExtendedString compareShapes(const TopoDS_Shape&    theShape1,
+                                                       const TopoDS_Shape&    theShape2,
+                                                       const bool keepOrientation)
 {
   TCollection_ExtendedString aResult("");
 
@@ -2115,12 +2183,14 @@ inline static TCollection_ExtendedString compareShapes(const TopoDS_Shape& theSh
 // purpose  : "TestSingleSelection Doc ObjectLabel [Orientation [Xselection [Geometry]]]"
 //         : returns DDF::ReturnLabel of a first Aux object
 //=======================================================================
-static int DNaming_TestSingle(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_TestSingle(Draw_Interpretor& theDI,
+                                           int  theNb,
+                                           const char**      theArg)
 {
   if (theNb >= 3)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label ObjLabel;
@@ -2150,8 +2220,8 @@ static int DNaming_TestSingle(Draw_Interpretor& theDI, int theNb, const char** t
       CollectShapes(aRootShape, aList);
       if (aList.Extent())
         aList.RemoveFirst();
-      bool                                     isFirst(true);
-      occ::handle<TDataStd_UAttribute>         FirstAuxObj;
+      bool                   isFirst(true);
+      occ::handle<TDataStd_UAttribute>        FirstAuxObj;
       NCollection_List<TopoDS_Shape>::Iterator it(aList);
       for (; it.More(); it.Next())
       {
@@ -2270,12 +2340,14 @@ static int DNaming_TestSingle(Draw_Interpretor& theDI, int theNb, const char** t
 // purpose  : "TestMultipleSelection Doc ObjectLabel [Orientation [Xselection [Geometry]]]"
 //         : returns DDF::ReturnLabel of a first Aux object
 //=======================================================================
-static int DNaming_Multiple(Draw_Interpretor& theDI, int theNb, const char** theArg)
+static int DNaming_Multiple(Draw_Interpretor& theDI,
+                                         int  theNb,
+                                         const char**      theArg)
 {
   if (theNb >= 3)
   {
     occ::handle<TDocStd_Document> aDoc;
-    const char*                   aDocS(theArg[1]);
+    const char*         aDocS(theArg[1]);
     if (!DDocStd::GetDocument(aDocS, aDoc))
       return 1;
     TDF_Label ObjLabel;
@@ -2298,14 +2370,14 @@ static int DNaming_Multiple(Draw_Interpretor& theDI, int theNb, const char** the
 
     if (!aNS.IsNull() && !aNS->IsEmpty())
     {
-      const TopoDS_Shape&           aRootShape = aNS->Get();
+      const TopoDS_Shape&         aRootShape = aNS->Get();
       NCollection_Map<TopoDS_Shape> aMap0;
       MapOfOrientedShapes(aRootShape, aMap0);
       NCollection_List<TopoDS_Shape> aList, aFailedList;
       CollectMultShapes(aRootShape, aList);
 
-      bool                                     isFirst(true);
-      occ::handle<TDataStd_UAttribute>         FirstAuxObj;
+      bool                   isFirst(true);
+      occ::handle<TDataStd_UAttribute>        FirstAuxObj;
       NCollection_List<TopoDS_Shape>::Iterator it(aList);
       for (; it.More(); it.Next())
       {

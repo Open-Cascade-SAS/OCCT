@@ -20,11 +20,10 @@
 
 RWStepShape_RWRightAngularWedge::RWStepShape_RWRightAngularWedge() {}
 
-void RWStepShape_RWRightAngularWedge::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepShape_RightAngularWedge>& ent) const
+void RWStepShape_RWRightAngularWedge::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_RightAngularWedge>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -74,7 +73,7 @@ void RWStepShape_RWRightAngularWedge::ReadStep(
 }
 
 void RWStepShape_RWRightAngularWedge::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepShape_RightAngularWedge>& ent) const
 {
 
@@ -104,7 +103,7 @@ void RWStepShape_RWRightAngularWedge::WriteStep(
 }
 
 void RWStepShape_RWRightAngularWedge::Share(const occ::handle<StepShape_RightAngularWedge>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->Position());

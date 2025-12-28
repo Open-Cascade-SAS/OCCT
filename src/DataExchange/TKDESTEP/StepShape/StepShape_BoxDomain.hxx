@@ -31,9 +31,9 @@ public:
   Standard_EXPORT StepShape_BoxDomain();
 
   Standard_EXPORT void Init(const occ::handle<StepGeom_CartesianPoint>& aCorner,
-                            const double                                aXlength,
-                            const double                                aYlength,
-                            const double                                aZlength);
+                            const double                    aXlength,
+                            const double                    aYlength,
+                            const double                    aZlength);
 
   Standard_EXPORT void SetCorner(const occ::handle<StepGeom_CartesianPoint>& aCorner);
 
@@ -55,9 +55,9 @@ public:
 
 private:
   occ::handle<StepGeom_CartesianPoint> corner;
-  double                               xlength;
-  double                               ylength;
-  double                               zlength;
+  double                   xlength;
+  double                   ylength;
+  double                   zlength;
 };
 
 #endif // _StepShape_BoxDomain_HeaderFile

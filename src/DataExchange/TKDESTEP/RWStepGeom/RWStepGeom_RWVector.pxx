@@ -39,19 +39,19 @@ public:
   Standard_HIDDEN RWStepGeom_RWVector();
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                const int                                   num,
+                                const int                 num,
                                 occ::handle<Interface_Check>&               ach,
                                 const occ::handle<StepGeom_Vector>&         ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                SW,
-                                 const occ::handle<StepGeom_Vector>& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter& SW, const occ::handle<StepGeom_Vector>& ent) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepGeom_Vector>& ent,
-                             Interface_EntityIterator&           iter) const;
+                             Interface_EntityIterator&      iter) const;
 
   Standard_HIDDEN void Check(const occ::handle<StepGeom_Vector>& ent,
-                             const Interface_ShareTool&          shares,
+                             const Interface_ShareTool&     shares,
                              occ::handle<Interface_Check>&       ach) const;
+
 };
 
 #endif // _RWStepGeom_RWVector_HeaderFile

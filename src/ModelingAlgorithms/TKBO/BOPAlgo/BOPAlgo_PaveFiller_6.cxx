@@ -31,10 +31,16 @@
 #include <BOPDS_Iterator.hxx>
 #include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
+#include <BOPDS_ListOfPaveBlock.hxx>
 #include <NCollection_Map.hxx>
+#include <BOPDS_PaveBlock.hxx>
+#include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_Point.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 #include <NCollection_Vector.hxx>
+#include <BOPDS_Curve.hxx>
+#include <NCollection_Vector.hxx>
+#include <BOPDS_Point.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_BoxSelector.hxx>
@@ -55,6 +61,8 @@
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Pnt.hxx>
 #include <IntSurf_PntOn2S.hxx>
+#include <NCollection_List.hxx>
+#include <IntSurf_PntOn2S.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <IntTools.hxx>
 #include <IntTools_Context.hxx>
@@ -62,11 +70,18 @@
 #include <IntTools_EdgeFace.hxx>
 #include <IntTools_FaceFace.hxx>
 #include <IntTools_PntOn2Faces.hxx>
+#include <IntTools_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <IntTools_PntOn2Faces.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntTools_Tools.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -74,9 +89,14 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Shape.hxx>
+#include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
-static double ToleranceFF(const BRepAdaptor_Surface& aBAS1, const BRepAdaptor_Surface& aBAS2);
+static double ToleranceFF(const BRepAdaptor_Surface& aBAS1,
+                                 const BRepAdaptor_Surface& aBAS2);
 
 //=================================================================================================
 
@@ -102,11 +122,11 @@ static bool IsPlaneFF(const occ::handle<Geom_Surface>& theSurface)
 
 //=================================================================================================
 
-static bool IsClosedFF(const TopoDS_Edge&                     theEdge,
-                       const occ::handle<Geom_Surface>&       theSurface,
-                       const occ::handle<Poly_Triangulation>& theTriangulation,
-                       const TopLoc_Location&                 theLocation,
-                       bool                                   theIsPlane)
+static bool IsClosedFF(const TopoDS_Edge&                theEdge,
+                                   const occ::handle<Geom_Surface>&       theSurface,
+                                   const occ::handle<Poly_Triangulation>& theTriangulation,
+                                   const TopLoc_Location&            theLocation,
+                                   bool                  theIsPlane)
 {
   if (!theIsPlane)
   {
@@ -115,8 +135,7 @@ static bool IsClosedFF(const TopoDS_Edge&                     theEdge,
 
     // find the representation
     const BRep_TEdge* aTEdge = static_cast<const BRep_TEdge*>(theEdge.TShape().get());
-    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anIter(aTEdge->Curves());
-         anIter.More();
+    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator anIter(aTEdge->Curves()); anIter.More();
          anIter.Next())
     {
       const occ::handle<BRep_CurveRepresentation>& aCurveRepresentation = anIter.Value();
@@ -266,14 +285,14 @@ public:
 
   //
 protected:
-  int         myIF1;
-  int         myIF2;
-  double      myTolFF;
-  TopoDS_Face myF1;
-  TopoDS_Face myF2;
-  Bnd_Box     myBox1;
-  Bnd_Box     myBox2;
-  gp_Trsf     myTrsf;
+  int myIF1;
+  int myIF2;
+  double    myTolFF;
+  TopoDS_Face      myF1;
+  TopoDS_Face      myF2;
+  Bnd_Box          myBox1;
+  Bnd_Box          myBox2;
+  gp_Trsf          myTrsf;
 };
 
 //=================================================================================================
@@ -292,7 +311,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 
   // Collect faces from intersection pairs
   NCollection_Map<int> aMIFence;
-  int                  nF1, nF2;
+  int     nF1, nF2;
   for (; myIterator->More(); myIterator->Next())
   {
     myIterator->Value(nF1, nF2);
@@ -324,16 +343,17 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
   aFFs.SetIncrement(iSize);
   //
   // Options for the intersection algorithm
-  bool bApprox = mySectionAttribute.Approximation(), bCompC2D1 = mySectionAttribute.PCurveOnS1(),
-       bCompC2D2     = mySectionAttribute.PCurveOnS2();
-  double anApproxTol = 1.e-7;
+  bool bApprox   = mySectionAttribute.Approximation(),
+                   bCompC2D1 = mySectionAttribute.PCurveOnS1(),
+                   bCompC2D2 = mySectionAttribute.PCurveOnS2();
+  double anApproxTol  = 1.e-7;
   // Post-processing options
   bool bSplitCurve = false;
   //
   // Collect all pairs of Edge/Edge interferences to check if
   // some faces have to be moved to obtain more precise intersection
   NCollection_DataMap<BOPDS_Pair, NCollection_List<int>> aEEMap;
-  const NCollection_Vector<BOPDS_InterfEE>&              aVEEs = myDS->InterfEE();
+  const NCollection_Vector<BOPDS_InterfEE>&                          aVEEs = myDS->InterfEE();
   for (int iEE = 0; iEE < aVEEs.Size(); ++iEE)
   {
     const BOPDS_Interf& aEE = aVEEs(iEE);
@@ -403,13 +423,13 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 
       if (aBAS1.GetType() != GeomAbs_Plane || aBAS2.GetType() != GeomAbs_Plane)
       {
-        TopLoc_Location                        aLocation1;
+        TopLoc_Location                   aLocation1;
         const occ::handle<Geom_Surface>&       aSurface1 = BRep_Tool::Surface(aF1, aLocation1);
         const occ::handle<Poly_Triangulation>& aTriangulation1 =
           BRep_Tool::Triangulation(aF1, aLocation1);
         const bool anIsPlane1 = IsPlaneFF(aSurface1);
 
-        TopLoc_Location                        aLocation2;
+        TopLoc_Location                   aLocation2;
         const occ::handle<Geom_Surface>&       aSurface2 = BRep_Tool::Surface(aF2, aLocation2);
         const occ::handle<Poly_Triangulation>& aTriangulation2 =
           BRep_Tool::Triangulation(aF2, aLocation2);
@@ -420,15 +440,15 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
         {
           for (TopoDS_Iterator aItE1(aItW1.Value()); !anIsFound && aItE1.More(); aItE1.Next())
           {
-            const TopoDS_Edge& anEdge1      = TopoDS::Edge(aItE1.Value());
-            const int          anEdgeIndex1 = myDS->Index(anEdge1);
+            const TopoDS_Edge&     anEdge1      = TopoDS::Edge(aItE1.Value());
+            const int anEdgeIndex1 = myDS->Index(anEdge1);
 
             for (TopoDS_Iterator aItW2(aF2); !anIsFound && aItW2.More(); aItW2.Next())
             {
               for (TopoDS_Iterator aItE2(aItW2.Value()); !anIsFound && aItE2.More(); aItE2.Next())
               {
-                const TopoDS_Edge& anEdge2      = TopoDS::Edge(aItE2.Value());
-                const int          anEdgeIndex2 = myDS->Index(anEdge2);
+                const TopoDS_Edge&     anEdge2      = TopoDS::Edge(aItE2.Value());
+                const int anEdgeIndex2 = myDS->Index(anEdge2);
 
                 const bool anIsClosed1 =
                   IsClosedFF(anEdge1, aSurface1, aTriangulation1, aLocation1, anIsPlane1);
@@ -449,9 +469,9 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
                 for (NCollection_List<int>::Iterator itEEP(*aVertexIndices); itEEP.More();
                      itEEP.Next())
                 {
-                  const int            aVertexIndex = itEEP.Value();
-                  const TopoDS_Vertex& aVertex      = TopoDS::Vertex(myDS->Shape(aVertexIndex));
-                  const gp_Pnt&        aVertexPoint = BRep_Tool::Pnt(aVertex);
+                  const int aVertexIndex = itEEP.Value();
+                  const TopoDS_Vertex&   aVertex      = TopoDS::Vertex(myDS->Shape(aVertexIndex));
+                  const gp_Pnt&          aVertexPoint = BRep_Tool::Pnt(aVertex);
 
                   // Compute points exactly on the edges
                   GeomAPI_ProjectPointOnCurve& aProjPC1 = myContext->ProjPC(anEdge1);
@@ -552,14 +572,14 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       continue;
     }
     //
-    bool   bTangentFaces = aFaceFace.TangentFaces();
-    double aTolFF        = aFaceFace.TolFF();
+    bool bTangentFaces = aFaceFace.TangentFaces();
+    double    aTolFF        = aFaceFace.TolFF();
     //
     aFaceFace.PrepareLines3D(bSplitCurve);
     //
     aFaceFace.ApplyTrsf();
     //
-    const NCollection_Sequence<IntTools_Curve>&       aCvsX  = aFaceFace.Lines();
+    const NCollection_Sequence<IntTools_Curve>&      aCvsX  = aFaceFace.Lines();
     const NCollection_Sequence<IntTools_PntOn2Faces>& aPntsX = aFaceFace.Points();
     //
     int aNbCurves = aCvsX.Length();
@@ -582,8 +602,9 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
     {
       // Modify geometric expanding coefficient by topology value,
       // since this bounding box used in sharing (vertex or edge).
-      double aMaxVertexTol = std::max(BRep_Tool::MaxTolerance(aFaceFace.Face1(), TopAbs_VERTEX),
-                                      BRep_Tool::MaxTolerance(aFaceFace.Face2(), TopAbs_VERTEX));
+      double aMaxVertexTol =
+        std::max(BRep_Tool::MaxTolerance(aFaceFace.Face1(), TopAbs_VERTEX),
+                 BRep_Tool::MaxTolerance(aFaceFace.Face2(), TopAbs_VERTEX));
       aBoxExpandValue += aMaxVertexTol;
     }
     //
@@ -596,7 +617,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
       }
       Bnd_Box               aBox;
       const IntTools_Curve& aIC      = aCvsX(i);
-      bool                  bIsValid = IntTools_Tools::CheckCurve(aIC, aBox);
+      bool      bIsValid = IntTools_Tools::CheckCurve(aIC, aBox);
       if (bIsValid)
       {
         BOPDS_Curve& aNC = aVNC.Appended();
@@ -626,17 +647,17 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
 // purpose  : Updates the saved tolerance of the vertices of the edge
 //           with new tolerance of edge
 //=======================================================================
-static void UpdateSavedTolerance(const BOPDS_PDS&                  theDS,
-                                 const int                         theNE,
-                                 const double                      theTolNew,
+static void UpdateSavedTolerance(const BOPDS_PDS&              theDS,
+                                 const int        theNE,
+                                 const double           theTolNew,
                                  NCollection_DataMap<int, double>& theMVTol)
 {
-  const NCollection_List<int>&    aSubShapes = theDS->ShapeInfo(theNE).SubShapes();
+  const NCollection_List<int>&        aSubShapes = theDS->ShapeInfo(theNE).SubShapes();
   NCollection_List<int>::Iterator itSS(aSubShapes);
   for (; itSS.More(); itSS.Next())
   {
     const int nV        = itSS.Value();
-    double*   pTolSaved = theMVTol.ChangeSeek(nV);
+    double*         pTolSaved = theMVTol.ChangeSeek(nV);
     if (pTolSaved && *pTolSaved < theTolNew)
       *pTolSaved = theTolNew;
   }
@@ -653,25 +674,25 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   }
   //
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
-  Message_ProgressScope               aPS(aPSOuter.Next(), "Building section edges", aNbFF);
+  int        aNbFF = aFFs.Length();
+  Message_ProgressScope   aPS(aPSOuter.Next(), "Building section edges", aNbFF);
   if (!aNbFF)
   {
     return;
   }
   //
-  bool                                   bExist, bValid2D;
-  int                                    i, nF1, nF2, aNbC, aNbP, j;
-  int                                    nV1, nV2;
-  double                                 aT1, aT2;
+  bool                  bExist, bValid2D;
+  int                  i, nF1, nF2, aNbC, aNbP, j;
+  int                  nV1, nV2;
+  double                     aT1, aT2;
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
   // Temporary allocator for per-iteration collections that are cleared each iteration.
   // Using separate allocator allows to reclaim memory via Reset(false) at the start
   // of each iteration, preventing memory accumulation in the main loop.
-  occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
+  occ::handle<NCollection_IncAllocator>    aTmpAllocator = new NCollection_IncAllocator;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
-  TopoDS_Edge                                              aES;
-  occ::handle<BOPDS_PaveBlock>                             aPBOut;
+  TopoDS_Edge                         aES;
+  occ::handle<BOPDS_PaveBlock>             aPBOut;
   //
   //-----------------------------------------------------scope f
   //
@@ -679,24 +700,22 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   NCollection_List<int> aLSE(aTmpAllocator), aLBV(aTmpAllocator);
   NCollection_Map<int>  aMVOnIn(100, aTmpAllocator), aMVCommon(100, aTmpAllocator),
     aMVStick(100, aTmpAllocator), aMVEF(100, aTmpAllocator), aMVBounds(100, aTmpAllocator);
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBOnIn(100, aTmpAllocator);
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>        aMPBCommon;
-  NCollection_DataMap<int, double>                     aMVTol(100, aTmpAllocator);
-  NCollection_DataMap<int, NCollection_List<int>>      aDMBV(100, aTmpAllocator);
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>           aMPBOnIn(100, aTmpAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>                  aMPBCommon;
+  NCollection_DataMap<int, double>          aMVTol(100, aTmpAllocator);
+  NCollection_DataMap<int, NCollection_List<int>> aDMBV(100, aTmpAllocator);
   // Cross-iteration collections (use main allocator, persist through entire loop)
-  NCollection_Map<int>                           aMI(100, aAllocator);
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>  aMPBAdd(100, aAllocator);
-  NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB(aAllocator);
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
-                                                                  aMSCPB(100, aAllocator);
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMVI(100, aAllocator);
-  NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>
-                                                                aDMExEdges(100, aAllocator);
-  NCollection_DataMap<int, int>                                 aDMNewSD(100, aAllocator);
-  NCollection_DataMap<int, NCollection_List<int>>               aDMVLV;
-  NCollection_DataMap<int, double>::Iterator                    aItMV;
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>          aMicroPB(100, aAllocator);
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertsOnRejectedPB;
+  NCollection_Map<int>                          aMI(100, aAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>                          aMPBAdd(100, aAllocator);
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>                         aLPB(aAllocator);
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> aMSCPB(100, aAllocator);
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>                aMVI(100, aAllocator);
+  NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>       aDMExEdges(100, aAllocator);
+  NCollection_DataMap<int, int>               aDMNewSD(100, aAllocator);
+  NCollection_DataMap<int, NCollection_List<int>>         aDMVLV;
+  NCollection_DataMap<int, double>::Iterator aItMV;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>                   aMicroPB(100, aAllocator);
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                    aVertsOnRejectedPB;
   // Map of PaveBlocks with the faces to which it has to be added
   BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap;
   //
@@ -720,9 +739,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aFF.Indices(nF1, nF2);
     //
     NCollection_Vector<BOPDS_Point>& aVP = aFF.ChangePoints();
-    aNbP                                 = aVP.Length();
+    aNbP                     = aVP.Length();
     NCollection_Vector<BOPDS_Curve>& aVC = aFF.ChangeCurves();
-    aNbC                                 = aVC.Length();
+    aNbC                     = aVC.Length();
     if (!aNbP && !aNbC)
     {
       continue;
@@ -861,10 +880,10 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     {
       BOPDS_Curve&          aNC     = aVC.ChangeValue(j);
       const IntTools_Curve& aIC     = aNC.Curve();
-      double                aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
+      double         aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
       //
-      NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.ChangePaveBlocks();
-      occ::handle<BOPDS_PaveBlock>&                   aPB1  = aNC.ChangePaveBlock1();
+      NCollection_List<occ::handle<BOPDS_PaveBlock>>&   aLPBC = aNC.ChangePaveBlocks();
+      occ::handle<BOPDS_PaveBlock>& aPB1  = aNC.ChangePaveBlock1();
       //
       aLPB.Clear();
       aPB1->Update(aLPB, false);
@@ -895,9 +914,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
           continue;
         }
         //
-        int    nEOut;
-        double aTolNew = -1.;
-        bExist         = IsExistingPaveBlock(aPB, aNC, aLSE, nEOut, aTolNew);
+        int nEOut;
+        double    aTolNew = -1.;
+        bExist                   = IsExistingPaveBlock(aPB, aNC, aLSE, nEOut, aTolNew);
         if (bExist)
         {
           // Update edge with new tolerance
@@ -948,9 +967,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
           if (!bInF1 || !bInF2)
           {
             // Update edge to touch both faces
-            int                nE    = aPBOut->Edge();
+            int   nE    = aPBOut->Edge();
             const TopoDS_Edge& aE    = *(TopoDS_Edge*)&myDS->Shape(nE);
-            double             aTolE = BRep_Tool::Tolerance(aE);
+            double      aTolE = BRep_Tool::Tolerance(aE);
             if (aTolNew < aNC.Tolerance())
               aTolNew = aNC.Tolerance(); // use real tolerance of intersection
             if (aTolNew > aTolE)
@@ -961,7 +980,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
             }
 
             // Face without pave block
-            const int              nF     = bInF1 ? nF2 : nF1;
+            const int nF     = bInF1 ? nF2 : nF1;
             NCollection_List<int>* pFaces = aPBFacesMap.ChangeSeek(aPBOut);
             if (!pFaces)
               pFaces = aPBFacesMap.Bound(aPBOut, NCollection_List<int>());
@@ -1047,10 +1066,10 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aItMV.Initialize(aMVTol);
     for (; aItMV.More(); aItMV.Next())
     {
-      nV1         = aItMV.Key();
+      nV1                = aItMV.Key();
       double aTol = aItMV.Value();
       //
-      const TopoDS_Vertex&             aV = *(TopoDS_Vertex*)&myDS->Shape(nV1);
+      const TopoDS_Vertex&        aV = *(TopoDS_Vertex*)&myDS->Shape(nV1);
       const occ::handle<BRep_TVertex>& TV = *((occ::handle<BRep_TVertex>*)&aV.TShape());
       TV->Tolerance(aTol);
       // reset bnd box
@@ -1117,9 +1136,8 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::MakeSDVerticesFF(
-  const NCollection_DataMap<int, NCollection_List<int>>& theDMVLV,
-  NCollection_DataMap<int, int>&                         theDMNewSD)
+void BOPAlgo_PaveFiller::MakeSDVerticesFF(const NCollection_DataMap<int, NCollection_List<int>>& theDMVLV,
+                                          NCollection_DataMap<int, int>&             theDMNewSD)
 {
   // Create a new SD vertex for each group of coinciding vertices
   // and put new substitutions to theDMNewSD.
@@ -1141,16 +1159,13 @@ void BOPAlgo_PaveFiller::MakeSDVerticesFF(
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PostTreatFF(
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>&
-    theMSCPB,
-  NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
-                                                                       aDMExEdges,
-  NCollection_DataMap<int, int>&                                       aDMNewSD,
-  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>&          theMicroPB,
-  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theVertsOnRejectedPB,
-  const occ::handle<NCollection_BaseAllocator>&                        theAllocator,
-  const Message_ProgressRange&                                         theRange)
+void BOPAlgo_PaveFiller::PostTreatFF(NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>& theMSCPB,
+                                     NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>&       aDMExEdges,
+                                     NCollection_DataMap<int, int>&               aDMNewSD,
+                                     const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>&             theMicroPB,
+                                     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&        theVertsOnRejectedPB,
+                                     const occ::handle<NCollection_BaseAllocator>& theAllocator,
+                                     const Message_ProgressRange&             theRange)
 {
   int aNbS = theMSCPB.Extent();
   if (!aNbS)
@@ -1158,34 +1173,34 @@ void BOPAlgo_PaveFiller::PostTreatFF(
     return;
   }
   //
-  bool                                     bHasPaveBlocks, bOld;
-  int                                      nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
-  int                                      aNbLPBx;
-  TopAbs_ShapeEnum                         aType;
-  TopoDS_Shape                             aV, aE;
-  NCollection_List<TopoDS_Shape>::Iterator aItLS;
+  bool                    bHasPaveBlocks, bOld;
+  int                    nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
+  int                    aNbLPBx;
+  TopAbs_ShapeEnum                    aType;
+  TopoDS_Shape                        aV, aE;
+  NCollection_List<TopoDS_Shape>::Iterator  aItLS;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
-  BOPDS_PDS                                                aPDS;
-  occ::handle<BOPDS_PaveBlock>                             aPB1;
-  BOPDS_Pave                                               aPave[2];
-  BOPDS_ShapeInfo                                          aSI;
+  BOPDS_PDS                           aPDS;
+  occ::handle<BOPDS_PaveBlock>             aPB1;
+  BOPDS_Pave                          aPave[2];
+  BOPDS_ShapeInfo                     aSI;
   //
   NCollection_List<TopoDS_Shape> aLS(theAllocator);
-  BOPAlgo_PaveFiller             aPF(theAllocator);
+  BOPAlgo_PaveFiller   aPF(theAllocator);
   aPF.SetIsPrimary(false);
   aPF.SetNonDestructive(myNonDestructive);
   //
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
+  int        aNbFF = aFFs.Length();
   //
 
   // Find unused vertices
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> VertsUnused;
-  NCollection_Map<int>                                          IndMap;
+  NCollection_Map<int>       IndMap;
   for (int i = 0; i < aNbFF; i++)
   {
-    BOPDS_InterfFF& aFF = aFFs(i);
-    int             nF1, nF2;
+    BOPDS_InterfFF&  aFF = aFFs(i);
+    int nF1, nF2;
     aFF.Indices(nF1, nF2);
 
     NCollection_Map<int> aMV, aMVEF, aMI;
@@ -1196,7 +1211,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
     NCollection_Map<int>::Iterator itmap(aMV);
     for (; itmap.More(); itmap.Next())
     {
-      int                 indV    = itmap.Value();
+      int    indV    = itmap.Value();
       const TopoDS_Shape& aVertex = myDS->Shape(indV);
       if (IndMap.Add(indV))
         VertsUnused.Add(aVertex);
@@ -1221,11 +1236,11 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       aSI.SetShape(aS);
       iV = myDS->Append(aSI);
       //
-      iX                                    = aCPB.IndexInterf();
-      iP                                    = aCPB.Index();
-      BOPDS_InterfFF&                  aFF  = aFFs(iX);
+      iX                        = aCPB.IndexInterf();
+      iP                        = aCPB.Index();
+      BOPDS_InterfFF&      aFF  = aFFs(iX);
       NCollection_Vector<BOPDS_Point>& aVNP = aFF.ChangePoints();
-      BOPDS_Point&                     aNP  = aVNP(iP);
+      BOPDS_Point&         aNP  = aVNP(iP);
       aNP.SetIndex(iV);
     }
     else if (aType == TopAbs_EDGE)
@@ -1257,7 +1272,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anAddedSD;
   for (k = aNbS; k > 0; --k)
   {
-    const TopoDS_Shape&                 aS  = theMSCPB.FindKey(k);
+    const TopoDS_Shape&            aS  = theMSCPB.FindKey(k);
     const occ::handle<BOPDS_PaveBlock>& aPB = theMSCPB(k).PaveBlock1();
     if (!aPB.IsNull() && aPB->HasEdge())
       BRep_Builder().Add(anExistingEdges, aS);
@@ -1268,9 +1283,9 @@ void BOPAlgo_PaveFiller::PostTreatFF(
     TopoDS_Iterator itV(aS);
     for (; itV.More(); itV.Next())
     {
-      const TopoDS_Shape& aVer = itV.Value();
-      int                 iVer = myDS->Index(aVer);
-      const int*          pSD  = aDMNewSD.Seek(iVer);
+      const TopoDS_Shape&     aVer = itV.Value();
+      int        iVer = myDS->Index(aVer);
+      const int* pSD  = aDMNewSD.Seek(iVer);
       if (pSD)
       {
         const TopoDS_Shape& aVSD = myDS->Shape(*pSD);
@@ -1296,7 +1311,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
     for (int i = 0; i < 2; ++i)
     {
       const int* pSD = aDMNewSD.Seek(nVerts[i]);
-      aVerts[i]      = TopoDS::Vertex(myDS->Shape(pSD ? *pSD : nVerts[i]));
+      aVerts[i]                   = TopoDS::Vertex(myDS->Shape(pSD ? *pSD : nVerts[i]));
       if (anAddedSD.Add(aVerts[i]))
         aLS.Append(aVerts[i]);
     }
@@ -1326,17 +1341,15 @@ void BOPAlgo_PaveFiller::PostTreatFF(
   // Add vertices put on the real section curves to unify them with the
   // vertices of the edges, by which these sections curves have been rejected
   // and with unused vertices
-  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* VerMap[2] = {
-    &theVertsOnRejectedPB,
-    &VertsUnused};
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>* VerMap[2] = {&theVertsOnRejectedPB, &VertsUnused};
   for (int imap = 0; imap < 2; imap++)
   {
     int NbVer = VerMap[imap]->Extent();
     for (int i = 1; i <= NbVer; ++i)
     {
-      TopoDS_Shape aVer = VerMap[imap]->FindKey(i);
-      int          iVer = myDS->Index(aVer);
-      const int*   pSD  = aDMNewSD.Seek(iVer);
+      TopoDS_Shape            aVer = VerMap[imap]->FindKey(i);
+      int        iVer = myDS->Index(aVer);
+      const int* pSD  = aDMNewSD.Seek(iVer);
       if (pSD)
         aVer = myDS->Shape(*pSD);
 
@@ -1414,12 +1427,12 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       else
       {
         // update FF interference
-        const BOPDS_CoupleOfPaveBlocks& aCPB  = theMSCPB.FindFromKey(aSx);
-        iX                                    = aCPB.IndexInterf();
-        iP                                    = aCPB.Index();
-        BOPDS_InterfFF&                  aFF  = aFFs(iX);
-        NCollection_Vector<BOPDS_Point>& aVNP = aFF.ChangePoints();
-        BOPDS_Point&                     aNP  = aVNP(iP);
+        const BOPDS_CoupleOfPaveBlocks& aCPB = theMSCPB.FindFromKey(aSx);
+        iX                                   = aCPB.IndexInterf();
+        iP                                   = aCPB.Index();
+        BOPDS_InterfFF&      aFF             = aFFs(iX);
+        NCollection_Vector<BOPDS_Point>& aVNP            = aFF.ChangePoints();
+        BOPDS_Point&         aNP             = aVNP(iP);
         aNP.SetIndex(iV);
       }
     } // if (aType==TopAbs_VERTEX) {
@@ -1456,15 +1469,15 @@ void BOPAlgo_PaveFiller::PostTreatFF(
       }
       else
       {
-        BOPDS_InterfFF&                                 aFF   = aFFs(iX);
-        NCollection_Vector<BOPDS_Curve>&                aVNC  = aFF.ChangeCurves();
-        BOPDS_Curve&                                    aNC   = aVNC(iC);
+        BOPDS_InterfFF&        aFF   = aFFs(iX);
+        NCollection_Vector<BOPDS_Curve>&   aVNC  = aFF.ChangeCurves();
+        BOPDS_Curve&           aNC   = aVNC(iC);
         NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.ChangePaveBlocks();
         //
         // check if edge occurred to be micro edge;
         // note we check not the edge aSx itself, but its image in aPDS
         const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBx = aPDS->PaveBlocks(nSx);
-        aNbLPBx                                                     = aLPBx.Extent();
+        aNbLPBx                            = aLPBx.Extent();
         if (aNbLPBx == 0 || (aNbLPBx == 1 && !aLPBx.First()->HasShrunkData()))
         {
           NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator it(aLPBC);
@@ -1540,7 +1553,7 @@ void BOPAlgo_PaveFiller::PostTreatFF(
                 {
                   // check aPDS to have the SD connection between these vertices
                   const TopoDS_Shape& aVPave = myDS->Shape(aP1.Index());
-                  int                 nVnewSD, nVnew = aPDS->Index(aVPave);
+                  int    nVnewSD, nVnew = aPDS->Index(aVPave);
                   if (aPDS->HasShapeSD(nVnew, nVnewSD))
                   {
                     if (nVnewSD == nV)
@@ -1569,11 +1582,11 @@ void BOPAlgo_PaveFiller::PostTreatFF(
             if (aPDS->IsCommonBlock(aPBRx))
             {
               const occ::handle<BOPDS_CommonBlock>& aCB  = aPDS->CommonBlock(aPBRx);
-              double*                               pTol = aMCBTol.ChangeSeek(aCB);
+              double*                   pTol = aMCBTol.ChangeSeek(aCB);
               if (!pTol)
               {
                 double aTol = BOPAlgo_Tools::ComputeToleranceOfCB(aCB, aPDS, aPF.Context());
-                pTol        = aMCBTol.Bound(aCB, aTol);
+                pTol               = aMCBTol.Bound(aCB, aTol);
               }
               //
               if (aNC.Tolerance() < *pTol)
@@ -1629,20 +1642,19 @@ void BOPAlgo_PaveFiller::PostTreatFF(
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::UpdateFaceInfo(
-  NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>&
-                                                 theDME,
-  const NCollection_DataMap<int, int>&           theDMV,
+  NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>&       theDME,
+  const NCollection_DataMap<int, int>&         theDMV,
   const BOPAlgo_DataMapOfPaveBlockListOfInteger& thePBFacesMap)
 {
-  int                                                      i, j, nV1, nF1, nF2, aNbFF, aNbC, aNbP;
+  int                    i, j, nV1, nF1, nF2, aNbFF, aNbC, aNbP;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
-  NCollection_Map<int>                                     aMF;
+  NCollection_Map<int>                aMF;
 
   // Unify pave blocks of the existing edges united on the post-treat stage
   NCollection_DataMap<int, NCollection_List<occ::handle<BOPDS_PaveBlock>>> anEdgeLPB;
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  aNbFF                                    = aFFs.Length();
+  aNbFF                        = aFFs.Length();
   // 1. Sections (curves, points);
   for (i = 0; i < aNbFF; ++i)
   {
@@ -1654,10 +1666,10 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
     //
     // 1.1. Section edges
     NCollection_Vector<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    aNbC                                  = aVNC.Length();
+    aNbC                      = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
-      BOPDS_Curve&                                    aNC   = aVNC(j);
+      BOPDS_Curve&           aNC   = aVNC(j);
       NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.ChangePaveBlocks();
       //
       // Add section edges to face info
@@ -1675,7 +1687,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
           NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator itLPB(aLPB);
           for (; itLPB.More(); itLPB.Next())
           {
-            const int                                       nE      = itLPB.Value()->Edge();
+            const int nE      = itLPB.Value()->Edge();
             NCollection_List<occ::handle<BOPDS_PaveBlock>>* pLPBOnE = anEdgeLPB.ChangeSeek(nE);
             if (!pLPBOnE)
               pLPBOnE = anEdgeLPB.Bound(nE, NCollection_List<occ::handle<BOPDS_PaveBlock>>());
@@ -1689,7 +1701,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
         aFI1.ChangePaveBlocksSc().Add(aPB);
         aFI2.ChangePaveBlocksSc().Add(aPB);
         // Add edge-PB connection
-        const int                                       nE      = aPB->Edge();
+        const int nE      = aPB->Edge();
         NCollection_List<occ::handle<BOPDS_PaveBlock>>* pLPBOnE = anEdgeLPB.ChangeSeek(nE);
         if (!pLPBOnE)
           pLPBOnE = anEdgeLPB.Bound(nE, NCollection_List<occ::handle<BOPDS_PaveBlock>>());
@@ -1701,7 +1713,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
     //
     // 1.2. Section vertices
     const NCollection_Vector<BOPDS_Point>& aVNP = aFF.Points();
-    aNbP                                        = aVNP.Length();
+    aNbP                            = aVNP.Length();
     for (j = 0; j < aNbP; ++j)
     {
       const BOPDS_Point& aNP = aVNP(j);
@@ -1722,8 +1734,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
   {
     // Unify pave blocks of the existing edges united on the post-treat stage
     // by making new Common blocks from them
-    NCollection_DataMap<int, NCollection_List<occ::handle<BOPDS_PaveBlock>>>::Iterator itDM(
-      anEdgeLPB);
+    NCollection_DataMap<int, NCollection_List<occ::handle<BOPDS_PaveBlock>>>::Iterator itDM(anEdgeLPB);
     for (; itDM.More(); itDM.Next())
     {
       const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = itDM.Value();
@@ -1750,8 +1761,7 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
           occ::handle<BOPDS_CommonBlock> aPBCB = myDS->CommonBlock(aPB);
           // Get pave blocks
           const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBOnCB = aPBCB->PaveBlocks();
-          for (NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator it(aLPBOnCB); it.More();
-               it.Next())
+          for (NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator it(aLPBOnCB); it.More(); it.Next())
             aMPaveBlocks.Add(it.Value());
 
           // Get faces
@@ -1811,8 +1821,8 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
   //
   // 2. Update Face Info information with new vertices and new
   //    pave blocks created in PostTreatFF from existing ones
-  int                                     nV2;
-  NCollection_Map<int>::Iterator          aItMF;
+  int                                 nV2;
+  NCollection_Map<int>::Iterator                aItMF;
   NCollection_DataMap<int, int>::Iterator aItMV;
   //
   aItMF.Initialize(aMF);
@@ -1847,8 +1857,8 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
     {
       NCollection_Map<occ::handle<BOPDS_PaveBlock>>         aMPBFence;
       NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* pMPB[] = {&aFI.ChangePaveBlocksOn(),
-                                                                      &aFI.ChangePaveBlocksIn(),
-                                                                      &aFI.ChangePaveBlocksSc()};
+                                             &aFI.ChangePaveBlocksIn(),
+                                             &aFI.ChangePaveBlocksSc()};
       for (i = 0; i < 3; ++i)
       {
         NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBCopy = *pMPB[i];
@@ -1856,8 +1866,8 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
         const int aNbPB = aMPBCopy.Extent();
         for (j = 1; j <= aNbPB; ++j)
         {
-          const occ::handle<BOPDS_PaveBlock>&                   aPB  = aMPBCopy(j);
-          const NCollection_List<occ::handle<BOPDS_PaveBlock>>* pLPB = theDME.Seek(aPB);
+          const occ::handle<BOPDS_PaveBlock>& aPB  = aMPBCopy(j);
+          const NCollection_List<occ::handle<BOPDS_PaveBlock>>*   pLPB = theDME.Seek(aPB);
           if (pLPB && !pLPB->IsEmpty())
           {
             aItLPB.Initialize(*pLPB);
@@ -1884,13 +1894,13 @@ void BOPAlgo_PaveFiller::UpdateFaceInfo(
 //=================================================================================================
 
 bool BOPAlgo_PaveFiller::IsExistingVertex(const gp_Pnt&               aP,
-                                          const double                theTolR3D,
-                                          const NCollection_Map<int>& aMVOnIn) const
+                                                      const double         theTolR3D,
+                                                      const NCollection_Map<int>& aMVOnIn) const
 {
-  bool                           bRet;
-  int                            nV, iFlag;
-  double                         aTolCheck;
-  Bnd_Box                        aBoxP;
+  bool                  bRet;
+  int                  nV, iFlag;
+  double                     aTolCheck;
+  Bnd_Box                           aBoxP;
   NCollection_Map<int>::Iterator aIt;
   //
   aTolCheck = theTolR3D + myFuzzyValue;
@@ -1922,24 +1932,24 @@ bool BOPAlgo_PaveFiller::IsExistingVertex(const gp_Pnt&               aP,
 //=================================================================================================
 
 bool BOPAlgo_PaveFiller::IsExistingPaveBlock(const occ::handle<BOPDS_PaveBlock>& thePB,
-                                             const BOPDS_Curve&                  theNC,
-                                             const NCollection_List<int>&        theLSE,
-                                             int&                                theNEOut,
-                                             double&                             theTolNew)
+                                                         const BOPDS_Curve&             theNC,
+                                                         const NCollection_List<int>&   theLSE,
+                                                         int&              theNEOut,
+                                                         double&                 theTolNew)
 {
   if (theLSE.IsEmpty())
     return false;
 
-  double                          aT1, aT2, aTm, aTx, aTolE, aTolCheck, aTol, aDist;
-  int                             nE, iFlag, nV1, nV2;
-  gp_Pnt                          aPm;
-  Bnd_Box                         aBoxPm;
+  double                       aT1, aT2, aTm, aTx, aTolE, aTolCheck, aTol, aDist;
+  int                    nE, iFlag, nV1, nV2;
+  gp_Pnt                              aPm;
+  Bnd_Box                             aBoxPm;
   NCollection_List<int>::Iterator aItLI;
   //
   thePB->Range(aT1, aT2);
   thePB->Indices(nV1, nV2);
-  const TopoDS_Vertex &aV1 = TopoDS::Vertex(myDS->Shape(nV1)),
-                      &aV2 = TopoDS::Vertex(myDS->Shape(nV2));
+  const TopoDS_Vertex &aV1   = TopoDS::Vertex(myDS->Shape(nV1)),
+                      &aV2   = TopoDS::Vertex(myDS->Shape(nV2));
   const double aTolV1 = BRep_Tool::Tolerance(aV1), aTolV2 = BRep_Tool::Tolerance(aV2);
 
   aTol = std::max(aTolV1, aTolV2);
@@ -1977,14 +1987,14 @@ bool BOPAlgo_PaveFiller::IsExistingPaveBlock(const occ::handle<BOPDS_PaveBlock>&
 //=================================================================================================
 
 bool BOPAlgo_PaveFiller::IsExistingPaveBlock(
-  const occ::handle<BOPDS_PaveBlock>&                         thePB,
-  const BOPDS_Curve&                                          theNC,
-  const double                                                theTolR3D,
+  const occ::handle<BOPDS_PaveBlock>&     thePB,
+  const BOPDS_Curve&                 theNC,
+  const double                theTolR3D,
   const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMPBOnIn,
-  BOPTools_BoxTree&                                           thePBTree,
+  BOPTools_BoxTree&                  thePBTree,
   const NCollection_Map<occ::handle<BOPDS_PaveBlock>>&        theMPBCommon,
-  occ::handle<BOPDS_PaveBlock>&                               aPBOut,
-  double&                                                     theTolNew)
+  occ::handle<BOPDS_PaveBlock>&           aPBOut,
+  double&                     theTolNew)
 {
   const IntTools_Curve& aIC = theNC.Curve();
 
@@ -2010,10 +2020,10 @@ bool BOPAlgo_PaveFiller::IsExistingPaveBlock(
     return false;
 
   // intermediate point
-  Bnd_Box                        aBoxPm;
-  double                         aTm = IntTools_Tools::IntermediatePoint(aT1, aT2);
-  gp_Pnt                         aPm;
-  gp_Vec                         aVTgt1;
+  Bnd_Box                   aBoxPm;
+  double             aTm = IntTools_Tools::IntermediatePoint(aT1, aT2);
+  gp_Pnt                    aPm;
+  gp_Vec                    aVTgt1;
   const occ::handle<Geom_Curve>& aC3d = aIC.Curve();
   aC3d->D1(aTm, aPm, aVTgt1);
   aBoxPm.Add(aPm);
@@ -2037,11 +2047,11 @@ bool BOPAlgo_PaveFiller::IsExistingPaveBlock(
   // edge has no common block with any face
   double       aMaxTolAdd   = 0.001; // Maximal tolerance of edge allowed
   const double aCoeffTolAdd = 10.;   // Coeff to define max. tolerance with help of aTolCheck
-  aMaxTolAdd                = std::min(aMaxTolAdd, aCoeffTolAdd * aTolCheck);
+  aMaxTolAdd                       = std::min(aMaxTolAdd, aCoeffTolAdd * aTolCheck);
 
   // Look for the existing pave block closest to the section curve
   bool bFound = false;
-  theTolNew   = ::RealLast();
+  theTolNew               = ::RealLast();
 
   for (NCollection_List<int>::Iterator it(aSelector.Indices()); it.More(); it.Next())
   {
@@ -2066,8 +2076,8 @@ bool BOPAlgo_PaveFiller::IsExistingPaveBlock(
     double aDist  = 0.;
     double aCoeff = 1.; // Coeff for taking in account deflections between edge and theNC
     // when aPB is not common block
-    double aDistm1m2 = 0.;
-    int    aPEStatus = 1;
+    double    aDistm1m2 = 0.;
+    int aPEStatus = 1;
 
     double aRealTol = aTolCheck;
     if (myDS->IsCommonBlock(aPB))
@@ -2170,14 +2180,16 @@ bool BOPAlgo_PaveFiller::IsExistingPaveBlock(
 
 //=================================================================================================
 
-static void getBoundPaves(const BOPDS_DS* theDS, const BOPDS_Curve& theNC, int theNV[2])
+static void getBoundPaves(const BOPDS_DS*    theDS,
+                          const BOPDS_Curve& theNC,
+                          int   theNV[2])
 {
   theNV[0] = theNV[1] = -1;
 
   // get extreme paves
   const occ::handle<BOPDS_PaveBlock>& aPB   = theNC.PaveBlocks().First();
-  const NCollection_List<BOPDS_Pave>& aLP   = aPB->ExtPaves();
-  int                                 aNbEP = aLP.Extent();
+  const NCollection_List<BOPDS_Pave>&        aLP   = aPB->ExtPaves();
+  int               aNbEP = aLP.Extent();
   if (aNbEP == 0)
     return;
   double aTmin = RealLast();
@@ -2185,8 +2197,8 @@ static void getBoundPaves(const BOPDS_DS* theDS, const BOPDS_Curve& theNC, int t
   for (NCollection_List<BOPDS_Pave>::Iterator aItLP(aLP); aItLP.More(); aItLP.Next())
   {
     const BOPDS_Pave& aPv = aItLP.Value();
-    int               nV;
-    double            aTV;
+    int  nV;
+    double     aTV;
     aPv.Contents(nV, aTV);
     if (aTV < aTmin)
     {
@@ -2202,7 +2214,7 @@ static void getBoundPaves(const BOPDS_DS* theDS, const BOPDS_Curve& theNC, int t
 
   // compare extreme vertices with ends of the curve
   const IntTools_Curve& aIC = theNC.Curve();
-  double                aT[2];
+  double         aT[2];
   gp_Pnt                aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
   double aTol = std::max(theNC.Tolerance(), theNC.TangentialTolerance());
@@ -2211,7 +2223,7 @@ static void getBoundPaves(const BOPDS_DS* theDS, const BOPDS_Curve& theNC, int t
   {
     const BOPDS_ShapeInfo& aSIV  = theDS->ShapeInfo(theNV[j]);
     const TopoDS_Vertex&   aV    = (*(TopoDS_Vertex*)(&aSIV.Shape()));
-    int                    iFlag = BOPTools_AlgoTools::ComputeVV(aV, aP[j], aTol);
+    int       iFlag = BOPTools_AlgoTools::ComputeVV(aV, aP[j], aTol);
     if (iFlag != 0)
       theNV[j] = -1;
   }
@@ -2225,17 +2237,17 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
                                              NCollection_List<int>& aLVB)
 {
   const IntTools_Curve& aIC = aNC.Curve();
-  double                aT[2];
+  double         aT[2];
   gp_Pnt                aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
-  double                        aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
+  double            aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
   occ::handle<BOPDS_PaveBlock>& aPB     = aNC.ChangePaveBlock1();
   // Get numbers of vertices assigned to the ends of the curve
   int aBndNV[2];
   getBoundPaves(myDS, aNC, aBndNV);
   //
-  double aTolVnew = Precision::Confusion();
-  bool   isClosed = aP[1].IsEqual(aP[0], aTolVnew);
+  double    aTolVnew = Precision::Confusion();
+  bool isClosed = aP[1].IsEqual(aP[0], aTolVnew);
   if (isClosed && (aBndNV[0] > 0 || aBndNV[1] > 0))
     return;
 
@@ -2281,19 +2293,19 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face&     aF1,
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PutPavesOnCurve(const NCollection_Map<int>&       theMVOnIn,
-                                         const NCollection_Map<int>&       theMVCommon,
-                                         BOPDS_Curve&                      theNC,
-                                         const NCollection_Map<int>&       theMI,
-                                         const NCollection_Map<int>&       theMVEF,
-                                         NCollection_DataMap<int, double>& theMVTol,
+void BOPAlgo_PaveFiller::PutPavesOnCurve(const NCollection_Map<int>&            theMVOnIn,
+                                         const NCollection_Map<int>&            theMVCommon,
+                                         BOPDS_Curve&                           theNC,
+                                         const NCollection_Map<int>&            theMI,
+                                         const NCollection_Map<int>&            theMVEF,
+                                         NCollection_DataMap<int, double>&          theMVTol,
                                          NCollection_DataMap<int, NCollection_List<int>>& theDMVLV)
 {
-  int                            nV;
+  int                  nV;
   NCollection_Map<int>::Iterator aIt;
   //
-  const Bnd_Box& aBoxC   = theNC.Box();
-  const double   aTolR3D = std::max(theNC.Tolerance(), theNC.TangentialTolerance());
+  const Bnd_Box&      aBoxC   = theNC.Box();
+  const double aTolR3D = std::max(theNC.Tolerance(), theNC.TangentialTolerance());
   //
   // Put EF vertices first
   aIt.Initialize(theMVEF);
@@ -2339,42 +2351,42 @@ namespace
 struct PaveBlockDist
 {
   occ::handle<BOPDS_PaveBlock> PB;
-  double                       SquareDist; // square distance from vertex to the paveblock
-  double                       SinAngle;   // sinus of angle between projection vector
+  double           SquareDist; // square distance from vertex to the paveblock
+  double           SinAngle;   // sinus of angle between projection vector
   // and tangent at projection point
   double Tolerance; // tolerance of the section curve
 };
 } // namespace
 
-void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curve>& theVNC,
-                                             NCollection_DataMap<int, double>&      theMVTol)
+void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curve>&    theVNC,
+                                             NCollection_DataMap<int, double>& theMVTol)
 {
   // For each vertex found in ExtPaves of pave blocks of section curves
   // collect list of pave blocks with distance to the curve
   NCollection_IndexedDataMap<int, NCollection_List<PaveBlockDist>> aIDMVertPBs;
   int                                                              i;
-  const double                                                     anEps = gp::Resolution();
+  const double anEps = gp::Resolution();
   for (i = 0; i < theVNC.Length(); ++i)
   {
-    const BOPDS_Curve&    aNC     = theVNC(i);
-    const IntTools_Curve& aIC     = aNC.Curve();
-    const double          aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
-    GeomAdaptor_Curve     aGAC(aIC.Curve());
-    const occ::handle<BOPDS_PaveBlock>&    aPB    = aNC.PaveBlocks().First();
-    const NCollection_List<BOPDS_Pave>&    aPaves = aPB->ExtPaves();
-    NCollection_List<BOPDS_Pave>::Iterator itPaves(aPaves);
+    const BOPDS_Curve&             aNC     = theVNC(i);
+    const IntTools_Curve&          aIC     = aNC.Curve();
+    const double            aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
+    GeomAdaptor_Curve              aGAC(aIC.Curve());
+    const occ::handle<BOPDS_PaveBlock>& aPB    = aNC.PaveBlocks().First();
+    const NCollection_List<BOPDS_Pave>&        aPaves = aPB->ExtPaves();
+    NCollection_List<BOPDS_Pave>::Iterator     itPaves(aPaves);
     for (; itPaves.More(); itPaves.Next())
     {
       const BOPDS_Pave&    aPave = itPaves.Value();
-      int                  nV    = aPave.Index();
+      int     nV    = aPave.Index();
       const TopoDS_Vertex& aV    = TopoDS::Vertex(myDS->Shape(nV));
       // compute distance from vertex to the point on curve with vertex parameter
-      gp_Pnt aPV  = BRep_Tool::Pnt(aV);
+      gp_Pnt        aPV  = BRep_Tool::Pnt(aV);
       double aPar = aPave.Parameter();
-      gp_Pnt aPonC;
-      gp_Vec aD1;
+      gp_Pnt        aPonC;
+      gp_Vec        aD1;
       aGAC.D1(aPar, aPonC, aD1);
-      gp_Vec aProjVec(aPV, aPonC);
+      gp_Vec        aProjVec(aPV, aPonC);
       double aSqDist  = aProjVec.SquareMagnitude();
       double aSqD1Mod = aD1.SquareMagnitude();
       double aSin     = aProjVec.CrossSquareMagnitude(aD1);
@@ -2393,11 +2405,11 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curv
   const double aSinAngleMin = 0.5; // angle below which projection is suspicious
   for (i = 1; i <= aIDMVertPBs.Extent(); i++)
   {
-    int                                    nV    = aIDMVertPBs.FindKey(i);
+    int                       nV    = aIDMVertPBs.FindKey(i);
     const NCollection_List<PaveBlockDist>& aList = aIDMVertPBs(i);
     // Find a pave with minimal distance
-    double                                    aMinDist = RealLast();
-    occ::handle<BOPDS_PaveBlock>              aPBMinDist;
+    double                             aMinDist = RealLast();
+    occ::handle<BOPDS_PaveBlock>                   aPBMinDist;
     NCollection_List<PaveBlockDist>::Iterator itL(aList);
     for (; itL.More(); itL.Next())
     {
@@ -2415,12 +2427,12 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curv
 
     // Reduce tolerance for the vertex to the value of maximal distance to
     // to section curve on which it will be kept.
-    double aMaxDistKept = -1;
-    bool   isRemoved    = false;
+    double    aMaxDistKept = -1;
+    bool isRemoved    = false;
     for (itL.Init(aList); itL.More(); itL.Next())
     {
       const PaveBlockDist& aPBD       = itL.Value();
-      double               aCheckDist = 100. * std::max(aPBD.Tolerance * aPBD.Tolerance, aMinDist);
+      double        aCheckDist = 100. * std::max(aPBD.Tolerance * aPBD.Tolerance, aMinDist);
       if (aPBD.SquareDist > aCheckDist && aPBD.SinAngle < aSinAngleMin)
       {
         aPBD.PB->RemoveExtPave(nV);
@@ -2435,8 +2447,8 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curv
       const double* pTol = theMVTol.Seek(nV);
       if (pTol)
       {
-        const TopoDS_Vertex& aV = *(TopoDS_Vertex*)&myDS->Shape(nV);
-        const double aRealTol   = std::max(*pTol, sqrt(aMaxDistKept) + Precision::Confusion());
+        const TopoDS_Vertex& aV      = *(TopoDS_Vertex*)&myDS->Shape(nV);
+        const double aRealTol = std::max(*pTol, sqrt(aMaxDistKept) + Precision::Confusion());
         (*(occ::handle<BRep_TVertex>*)&aV.TShape())->Tolerance(aRealTol);
       }
     }
@@ -2445,10 +2457,10 @@ void BOPAlgo_PaveFiller::FilterPavesOnCurves(const NCollection_Vector<BOPDS_Curv
 
 //=================================================================================================
 
-bool BOPAlgo_PaveFiller::ExtendedTolerance(const int                   nV,
-                                           const NCollection_Map<int>& aMI,
-                                           double&                     aTolVExt,
-                                           const int                   aType)
+bool BOPAlgo_PaveFiller::ExtendedTolerance(const int      nV,
+                                                       const NCollection_Map<int>& aMI,
+                                                       double&              aTolVExt,
+                                                       const int      aType)
 {
   bool bFound = false;
   if (!(myDS->IsNewShape(nV)))
@@ -2456,10 +2468,10 @@ bool BOPAlgo_PaveFiller::ExtendedTolerance(const int                   nV,
     return bFound;
   }
   //
-  int           i, k, aNbLines, aNbInt;
-  double        aT11, aT12, aD1, aD2, aD;
-  TopoDS_Vertex aV;
-  gp_Pnt        aPV, aP11, aP12;
+  int i, k, aNbLines, aNbInt;
+  double    aT11, aT12, aD1, aD2, aD;
+  TopoDS_Vertex    aV;
+  gp_Pnt           aPV, aP11, aP12;
   //
   k      = 0;
   aNbInt = 2;
@@ -2511,12 +2523,12 @@ bool BOPAlgo_PaveFiller::ExtendedTolerance(const int                   nV,
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
-                                   const int                          nF2,
+void BOPAlgo_PaveFiller::GetEFPnts(const int nF1,
+                                   const int nF2,
                                    NCollection_List<IntSurf_PntOn2S>& aListOfPnts)
 {
-  int                  nE, nF, nFOpposite, aNbEFs, i;
-  double               U1, U2, V1, V2, f, l;
+  int     nE, nF, nFOpposite, aNbEFs, i;
+  double        U1, U2, V1, V2, f, l;
   NCollection_Map<int> aMI;
   //
   // collect indexes of all shapes from nF1 and nF2.
@@ -2524,7 +2536,7 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
   GetFullShapeMap(nF2, aMI);
   //
   NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
-  aNbEFs                                   = aEFs.Length();
+  aNbEFs                       = aEFs.Length();
   //
   for (i = 0; i < aNbEFs; ++i)
   {
@@ -2535,14 +2547,14 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
       if (aMI.Contains(nE) && aMI.Contains(nFOpposite))
       {
         const IntTools_CommonPrt& aCP        = aEF.CommonPart();
-        double                    aPar       = aCP.VertexParameter1();
+        double             aPar       = aCP.VertexParameter1();
         const TopoDS_Edge&        aE         = (*(TopoDS_Edge*)(&myDS->Shape(nE)));
         const TopoDS_Face&        aFOpposite = (*(TopoDS_Face*)(&myDS->Shape(nFOpposite)));
         //
         const occ::handle<Geom_Curve>& aCurve = BRep_Tool::Curve(aE, f, l);
         //
-        nF                                = (nFOpposite == nF1) ? nF2 : nF1;
-        const TopoDS_Face&        aF      = (*(TopoDS_Face*)(&myDS->Shape(nF)));
+        nF                           = (nFOpposite == nF1) ? nF2 : nF1;
+        const TopoDS_Face&   aF      = (*(TopoDS_Face*)(&myDS->Shape(nF)));
         occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(aE, aF, f, l);
         //
         GeomAPI_ProjectPointOnSurf& aProj = myContext->ProjPS(aFOpposite);
@@ -2595,11 +2607,11 @@ void BOPAlgo_PaveFiller::GetEFPnts(const int                          nF1,
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>& theVC,
-                                           const int                              theIndex,
+void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>&             theVC,
+                                           const int                 theIndex,
                                            const NCollection_Map<int>&            aMI,
                                            const NCollection_Map<int>&            aMVEF,
-                                           NCollection_DataMap<int, double>&      aMVTol,
+                                           NCollection_DataMap<int, double>&          aMVTol,
                                            NCollection_DataMap<int, NCollection_List<int>>& aDMVLV)
 {
   if (!aMVEF.Extent())
@@ -2616,7 +2628,7 @@ void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>
     return;
   }
   //
-  int                  nV;
+  int     nV;
   NCollection_Map<int> aMV;
   //
   aMV.Assign(aMVEF);
@@ -2626,11 +2638,11 @@ void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>
     return;
   }
   //
-  double     aDist;
-  BOPDS_Pave aPave;
+  double aDist;
+  BOPDS_Pave    aPave;
   //
-  const occ::handle<Geom_Curve>& aC3D    = aIC.Curve();
-  GeomAPI_ProjectPointOnCurve&   aProjPT = myContext->ProjPT(aC3D);
+  const occ::handle<Geom_Curve>&    aC3D    = aIC.Curve();
+  GeomAPI_ProjectPointOnCurve& aProjPT = myContext->ProjPT(aC3D);
   //
   NCollection_Map<int>::Iterator aItMI;
   aItMI.Initialize(aMV);
@@ -2651,15 +2663,14 @@ void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const NCollection_Vector<BOPDS_Curve>
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
-  const TopoDS_Face&                               aF1,
-  const TopoDS_Face&                               aF2,
-  const NCollection_Map<int>&                      aMI,
-  const NCollection_Vector<BOPDS_Curve>&           theVC,
-  const int                                        theIndex,
-  const NCollection_Map<int>&                      aMVStick,
-  NCollection_DataMap<int, double>&                aMVTol,
-  NCollection_DataMap<int, NCollection_List<int>>& aDMVLV)
+void BOPAlgo_PaveFiller::PutStickPavesOnCurve(const TopoDS_Face&                     aF1,
+                                              const TopoDS_Face&                     aF2,
+                                              const NCollection_Map<int>&            aMI,
+                                              const NCollection_Vector<BOPDS_Curve>&             theVC,
+                                              const int                 theIndex,
+                                              const NCollection_Map<int>&            aMVStick,
+                                              NCollection_DataMap<int, double>&          aMVTol,
+                                              NCollection_DataMap<int, NCollection_List<int>>& aDMVLV)
 {
   const BOPDS_Curve& aNC = theVC.Value(theIndex);
   // Get numbers of vertices assigned to the ends of the curve
@@ -2682,18 +2693,18 @@ void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
   occ::handle<Geom_Surface> aS1 = BRep_Tool::Surface(aF1);
   occ::handle<Geom_Surface> aS2 = BRep_Tool::Surface(aF2);
   //
-  const IntTools_Curve&     aIC = aNC.Curve();
-  occ::handle<Geom2d_Curve> aC2D[2];
+  const IntTools_Curve& aIC = aNC.Curve();
+  occ::handle<Geom2d_Curve>  aC2D[2];
   //
   aC2D[0] = aIC.FirstCurve2d();
   aC2D[1] = aIC.SecondCurve2d();
   if (!aC2D[0].IsNull() && !aC2D[1].IsNull())
   {
-    int                            nV, m, n;
-    double                         aTC[2], aD, aD2, u, v, aDT2, aScPr, aDScPr;
-    gp_Pnt                         aPC[2], aPV;
-    gp_Dir                         aDN[2];
-    gp_Pnt2d                       aP2D;
+    int                  nV, m, n;
+    double                     aTC[2], aD, aD2, u, v, aDT2, aScPr, aDScPr;
+    gp_Pnt                            aPC[2], aPV;
+    gp_Dir                            aDN[2];
+    gp_Pnt2d                          aP2D;
     NCollection_Map<int>::Iterator aItMI, aItMI1;
     //
     aDT2   = 2e-7;  // the rich criteria
@@ -2748,11 +2759,11 @@ void BOPAlgo_PaveFiller::PutStickPavesOnCurve(
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::GetStickVertices(const int             nF1,
-                                          const int             nF2,
-                                          NCollection_Map<int>& aMVStick,
-                                          NCollection_Map<int>& aMVEF,
-                                          NCollection_Map<int>& aMI)
+void BOPAlgo_PaveFiller::GetStickVertices(const int nF1,
+                                          const int nF2,
+                                          NCollection_Map<int>&  aMVStick,
+                                          NCollection_Map<int>&  aMVEF,
+                                          NCollection_Map<int>&  aMI)
 {
   int nS1, nS2, nVNew, aTypeInt, i;
   //
@@ -2762,7 +2773,11 @@ void BOPAlgo_PaveFiller::GetStickVertices(const int             nF1,
   NCollection_Vector<BOPDS_InterfVF>& aVFs = myDS->InterfVF();
   NCollection_Vector<BOPDS_InterfEF>& aEFs = myDS->InterfEF();
   //
-  int aNbLines[5] = {aVVs.Length(), aVEs.Length(), aEEs.Length(), aVFs.Length(), aEFs.Length()};
+  int aNbLines[5] = {aVVs.Length(),
+                                  aVEs.Length(),
+                                  aEEs.Length(),
+                                  aVFs.Length(),
+                                  aEFs.Length()};
   // collect indices of all shapes from nF1 and nF2.
   aMI.Clear();
   GetFullShapeMap(nF1, aMI);
@@ -2813,7 +2828,7 @@ void BOPAlgo_PaveFiller::GetStickVertices(const int             nF1,
 void BOPAlgo_PaveFiller::GetFullShapeMap(const int nF, NCollection_Map<int>& aMI)
 {
   NCollection_List<int>::Iterator aIt;
-  int                             nS;
+  int                    nS;
   //
   const BOPDS_ShapeInfo&       aSI = myDS->ShapeInfo(nF);
   const NCollection_List<int>& aLI = aSI.SubShapes();
@@ -2830,20 +2845,20 @@ void BOPAlgo_PaveFiller::GetFullShapeMap(const int nF, NCollection_Map<int>& aMI
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::RemoveUsedVertices(const NCollection_Vector<BOPDS_Curve>& aVC,
-                                            NCollection_Map<int>&                  aMV)
+                                            NCollection_Map<int>&      aMV)
 {
   if (aMV.IsEmpty())
     return;
 
   for (int i = 0; i < aVC.Length(); ++i)
   {
-    const BOPDS_Curve&                                       aNC   = aVC.Value(i);
-    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPBC = aNC.PaveBlocks();
+    const BOPDS_Curve&                  aNC   = aVC.Value(i);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aLPBC = aNC.PaveBlocks();
     NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator itPB(aLPBC);
     for (; itPB.More(); itPB.Next())
     {
-      const occ::handle<BOPDS_PaveBlock>&    aPB = itPB.Value();
-      const NCollection_List<BOPDS_Pave>&    aLP = aPB->ExtPaves();
+      const occ::handle<BOPDS_PaveBlock>& aPB = itPB.Value();
+      const NCollection_List<BOPDS_Pave>&        aLP = aPB->ExtPaves();
       NCollection_List<BOPDS_Pave>::Iterator itLP(aLP);
       for (; itLP.More(); itLP.Next())
         aMV.Remove(itLP.Value().Index());
@@ -2856,20 +2871,20 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(const NCollection_Vector<BOPDS_Curve
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PutPaveOnCurve(const int                                        nV,
-                                        const double                                     aTolR3D,
-                                        const BOPDS_Curve&                               aNC,
-                                        const NCollection_Map<int>&                      aMI,
-                                        NCollection_DataMap<int, double>&                aMVTol,
+void BOPAlgo_PaveFiller::PutPaveOnCurve(const int                 nV,
+                                        const double                    aTolR3D,
+                                        const BOPDS_Curve&                     aNC,
+                                        const NCollection_Map<int>&            aMI,
+                                        NCollection_DataMap<int, double>&          aMVTol,
                                         NCollection_DataMap<int, NCollection_List<int>>& aDMVLV,
-                                        const int iCheckExtend)
+                                        const int                 iCheckExtend)
 {
-  bool   bIsVertexOnLine;
-  double aT;
+  bool bIsVertexOnLine;
+  double    aT;
   //
-  const TopoDS_Vertex&                aV  = (*(TopoDS_Vertex*)(&myDS->Shape(nV)));
+  const TopoDS_Vertex&           aV  = (*(TopoDS_Vertex*)(&myDS->Shape(nV)));
   const occ::handle<BOPDS_PaveBlock>& aPB = aNC.PaveBlocks().First();
-  const IntTools_Curve&               aIC = aNC.Curve();
+  const IntTools_Curve&          aIC = aNC.Curve();
   //
   double aTolV = (aMVTol.IsBound(nV) ? aMVTol(nV) : BRep_Tool::Tolerance(aV));
 
@@ -2892,9 +2907,9 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve(const int                               
   if (bIsVertexOnLine)
   {
     // check if aPB contains the parameter aT
-    bool   bExist;
-    int    nVUsed;
-    double aPTol, aDTol;
+    bool bExist;
+    int nVUsed;
+    double    aPTol, aDTol;
     //
     aDTol = BOPTools_AlgoTools::DTolerance();
     //
@@ -2945,9 +2960,9 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve(const int                               
       aPave.SetParameter(aT);
       aPB->AppendExtPave(aPave);
       //
-      gp_Pnt aP1   = aGAC.Value(aT);
-      aTolV        = BRep_Tool::Tolerance(aV);
-      gp_Pnt aP2   = BRep_Tool::Pnt(aV);
+      gp_Pnt aP1          = aGAC.Value(aT);
+      aTolV               = BRep_Tool::Tolerance(aV);
+      gp_Pnt        aP2   = BRep_Tool::Pnt(aV);
       double aDist = aP1.Distance(aP2);
       if (aTolV < aDist + aDTol)
       {
@@ -2970,19 +2985,18 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve(const int                               
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
-  const int                                                   theInt,
-  const int                                                   theCur,
-  const int                                                   nF1,
-  const int                                                   nF2,
-  const TopoDS_Edge&                                          theES,
-  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMPBOnIn,
-  BOPTools_BoxTree&                                           thePBTree,
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>&
-                                                                   theMSCPB,
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& theMVI,
-  NCollection_List<occ::handle<BOPDS_PaveBlock>>&                  theLPBC,
-  BOPAlgo_DataMapOfPaveBlockListOfInteger&                         thePBFacesMap,
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>&                   theMPB)
+  const int                         theInt,
+  const int                         theCur,
+  const int                         nF1,
+  const int                         nF2,
+  const TopoDS_Edge&                             theES,
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>&             theMPBOnIn,
+  BOPTools_BoxTree&                              thePBTree,
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>& theMSCPB,
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>&                theMVI,
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>&                         theLPBC,
+  BOPAlgo_DataMapOfPaveBlockListOfInteger&       thePBFacesMap,
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>&                          theMPB)
 {
   Bnd_Box aBoxES;
   BRepBndLib::Add(theES, aBoxES, false);
@@ -3004,8 +3018,10 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
     if (theMPB.Contains(aPBF))
       continue;
 
-    bool bInF1 = (aFI1.PaveBlocksOn().Contains(aPBF) || aFI1.PaveBlocksIn().Contains(aPBF));
-    bool bInF2 = (aFI2.PaveBlocksOn().Contains(aPBF) || aFI2.PaveBlocksIn().Contains(aPBF));
+    bool bInF1 =
+      (aFI1.PaveBlocksOn().Contains(aPBF) || aFI1.PaveBlocksIn().Contains(aPBF));
+    bool bInF2 =
+      (aFI2.PaveBlocksOn().Contains(aPBF) || aFI2.PaveBlocksIn().Contains(aPBF));
     if (bInF1 && bInF2)
     {
       // Add all common edges for post treatment
@@ -3014,7 +3030,7 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
       continue;
     }
 
-    const int                                  nF = bInF1 ? nF2 : nF1;
+    const int                     nF = bInF1 ? nF2 : nF1;
     const NCollection_List<EdgeRangeDistance>* pList =
       myDistances.Seek(BOPDS_Pair(aPBF->OriginalEdge(), nF));
     if (!pList)
@@ -3038,8 +3054,8 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
     }
     if (aDist < RealLast())
     {
-      const TopoDS_Edge& aEF     = TopoDS::Edge(myDS->Shape(aPBF->Edge()));
-      const double       aTolSum = aTolES + BRep_Tool::Tolerance(aEF);
+      const TopoDS_Edge&  aEF     = TopoDS::Edge(myDS->Shape(aPBF->Edge()));
+      const double aTolSum = aTolES + BRep_Tool::Tolerance(aEF);
 
       if (aDist <= aTolSum)
       {
@@ -3059,30 +3075,29 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
-  const int                                                   theInt,
-  const int                                                   nF1,
-  const int                                                   nF2,
-  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aMPBOnIn,
-  BOPTools_BoxTree&                                           thePBTree,
-  const NCollection_DataMap<int, NCollection_List<int>>&      aDMBV,
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>&
-                                                                   aMSCPB,
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& aMVI,
-  BOPAlgo_DataMapOfPaveBlockListOfInteger&                         thePBFacesMap,
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>&                   aMPB)
+  const int                         theInt,
+  const int                         nF1,
+  const int                         nF2,
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>&             aMPBOnIn,
+  BOPTools_BoxTree&                              thePBTree,
+  const NCollection_DataMap<int, NCollection_List<int>>&   aDMBV,
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>& aMSCPB,
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>&                aMVI,
+  BOPAlgo_DataMapOfPaveBlockListOfInteger&       thePBFacesMap,
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>&                          aMPB)
 {
   if (aDMBV.IsEmpty())
   {
     return;
   }
   //
-  double                                                    aT, dummy;
-  int                                                       nV, nE, iC, iFlag;
-  NCollection_List<int>::Iterator                           aItLI;
+  double                                          aT, dummy;
+  int                                       nV, nE, iC, iFlag;
+  NCollection_List<int>::Iterator                    aItLI;
   NCollection_DataMap<int, NCollection_List<int>>::Iterator aItBV;
   //
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  BOPDS_InterfFF&                     aFF  = aFFs(theInt);
+  BOPDS_InterfFF&         aFF  = aFFs(theInt);
   NCollection_Vector<BOPDS_Curve>&    aVC  = aFF.ChangeCurves();
   //
   const BOPDS_FaceInfo& aFI1 = myDS->FaceInfo(nF1);
@@ -3094,7 +3109,7 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
     iC                                = aItBV.Key();
     const NCollection_List<int>& aLBV = aItBV.Value();
     //
-    BOPDS_Curve&                                    aNC   = aVC.ChangeValue(iC);
+    BOPDS_Curve&           aNC   = aVC.ChangeValue(iC);
     NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.ChangePaveBlocks();
     //
     aItLI.Initialize(aLBV);
@@ -3138,12 +3153,14 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
           PreparePostTreatFF(theInt, iC, aPB, aMSCPB, aMVI, aLPBC);
 
           // Add faces to PB
-          bool bInF1 = (aFI1.PaveBlocksOn().Contains(aPB) || aFI1.PaveBlocksIn().Contains(aPB));
-          bool bInF2 = (aFI2.PaveBlocksOn().Contains(aPB) || aFI2.PaveBlocksIn().Contains(aPB));
+          bool bInF1 =
+            (aFI1.PaveBlocksOn().Contains(aPB) || aFI1.PaveBlocksIn().Contains(aPB));
+          bool bInF2 =
+            (aFI2.PaveBlocksOn().Contains(aPB) || aFI2.PaveBlocksIn().Contains(aPB));
           if (!bInF1 || !bInF2)
           {
             // Face without pave block
-            const int              nF     = bInF1 ? nF2 : nF1;
+            const int nF     = bInF1 ? nF2 : nF1;
             NCollection_List<int>* pFaces = thePBFacesMap.ChangeSeek(aPB);
             if (!pFaces)
               pFaces = thePBFacesMap.Bound(aPB, NCollection_List<int>());
@@ -3160,24 +3177,24 @@ void BOPAlgo_PaveFiller::ProcessExistingPaveBlocks(
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
-  const occ::handle<BOPDS_PaveBlock>&             aPBf,
-  NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB,
-  const BOPAlgo_DataMapOfPaveBlockListOfInteger&  thePBFacesMap)
+  const occ::handle<BOPDS_PaveBlock>&                 aPBf,
+  NCollection_List<occ::handle<BOPDS_PaveBlock>>&                         aLPB,
+  const BOPAlgo_DataMapOfPaveBlockListOfInteger& thePBFacesMap)
 {
   if (!aLPB.Extent())
   {
     return;
   }
   //
-  int                                                      nE;
-  bool                                                     bCB;
-  occ::handle<BOPDS_PaveBlock>                             aPB, aPB1, aPB2, aPB2n;
-  occ::handle<BOPDS_CommonBlock>                           aCB;
+  int                    nE;
+  bool                    bCB;
+  occ::handle<BOPDS_PaveBlock>             aPB, aPB1, aPB2, aPB2n;
+  occ::handle<BOPDS_CommonBlock>           aCB;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aIt, aIt1, aIt2;
   //
   // 1. Remove old pave blocks
   const occ::handle<BOPDS_CommonBlock>& aCB1 = myDS->CommonBlock(aPBf);
-  bCB                                        = !aCB1.IsNull();
+  bCB                                   = !aCB1.IsNull();
   NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB1;
   //
   if (bCB)
@@ -3211,13 +3228,13 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
   if (bCB)
   {
     // Create new common blocks
-    NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPBNew;
-    const NCollection_List<int>&                   aFaces = aCB1->Faces();
+    NCollection_List<occ::handle<BOPDS_PaveBlock>>        aLPBNew;
+    const NCollection_List<int>& aFaces = aCB1->Faces();
     aIt.Initialize(aLPB);
     for (; aIt.More(); aIt.Next())
     {
       const occ::handle<BOPDS_PaveBlock>& aPBValue         = aIt.Value();
-      BOPDS_Pave                          aPBValuePaves[2] = {aPBValue->Pave1(), aPBValue->Pave2()};
+      BOPDS_Pave                     aPBValuePaves[2] = {aPBValue->Pave1(), aPBValue->Pave2()};
       //
       aCB = new BOPDS_CommonBlock;
       aIt1.Initialize(aLPB1);
@@ -3266,7 +3283,7 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
                 // Compute the parameter by projecting the point
                 const TopoDS_Vertex& aV   = TopoDS::Vertex(myDS->Shape(nV));
                 const TopoDS_Edge&   aEOr = TopoDS::Edge(myDS->Shape(nE));
-                double               aTOut, aDist;
+                double        aTOut, aDist;
                 int iErr = myContext->ComputeVE(aV, aEOr, aTOut, aDist, myFuzzyValue);
                 if (!iErr)
                 {
@@ -3319,7 +3336,7 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
   }
   else
   {
-    nE                                                    = aPBf->OriginalEdge();
+    nE                           = aPBf->OriginalEdge();
     NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBE = myDS->ChangePaveBlocks(nE);
     aIt.Initialize(aLPB);
     for (; aIt.More(); aIt.Next())
@@ -3336,9 +3353,9 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
   NCollection_List<int>::Iterator itLF(*pLFaces);
   for (; itLF.More(); itLF.Next())
   {
-    const int          nF  = itLF.Value();
-    BOPDS_FaceInfo&    aFI = myDS->ChangeFaceInfo(nF);
-    const TopoDS_Face& aF  = TopoDS::Face(myDS->Shape(nF));
+    const int nF  = itLF.Value();
+    BOPDS_FaceInfo&        aFI = myDS->ChangeFaceInfo(nF);
+    const TopoDS_Face&     aF  = TopoDS::Face(myDS->Shape(nF));
 
     aIt.Initialize(aLPB);
     for (; aIt.More(); aIt.Next())
@@ -3379,7 +3396,7 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks(
 
 void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 {
-  const IntTools_Curve&          aIC  = aNC.Curve();
+  const IntTools_Curve&     aIC  = aNC.Curve();
   const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
   // check 3d curve
   if (aC3D.IsNull())
@@ -3391,7 +3408,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 
   // check closeness
   double aT[2];
-  gp_Pnt aP[2];
+  gp_Pnt        aP[2];
   aIC.Bounds(aT[0], aT[1], aP[0], aP[1]);
 
   // Find the pave which has been put at one of the ends
@@ -3403,12 +3420,12 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
   // Keep the opposite bounding point
   gp_Pnt aPOp;
 
-  occ::handle<BOPDS_PaveBlock>&          aPB = aNC.ChangePaveBlock1();
-  NCollection_List<BOPDS_Pave>&          aLP = aPB->ChangeExtPaves();
+  occ::handle<BOPDS_PaveBlock>&       aPB = aNC.ChangePaveBlock1();
+  NCollection_List<BOPDS_Pave>&              aLP = aPB->ChangeExtPaves();
   NCollection_List<BOPDS_Pave>::Iterator aItLP(aLP);
   for (; aItLP.More() && (nV < 0); aItLP.Next())
   {
-    aPave      = aItLP.Value();
+    aPave             = aItLP.Value();
     double aTC = aPave.Parameter();
     for (int j = 0; j < 2; ++j)
     {
@@ -3429,7 +3446,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
   // Check if the curve is closed using the tolerance
   // of found vertex
   const TopoDS_Vertex& aV    = TopoDS::Vertex(myDS->Shape(nV));
-  double               aTolV = BRep_Tool::Tolerance(aV);
+  double        aTolV = BRep_Tool::Tolerance(aV);
   gp_Pnt               aPV   = BRep_Tool::Pnt(aV);
   // Tolerance for the point on the curve
   double aTolP = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
@@ -3480,14 +3497,12 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 
 //=================================================================================================
 
-void BOPAlgo_PaveFiller::PreparePostTreatFF(
-  const int                           aInt,
-  const int                           aCur,
-  const occ::handle<BOPDS_PaveBlock>& aPB,
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>&
-                                                                   aMSCPB,
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& aMVI,
-  NCollection_List<occ::handle<BOPDS_PaveBlock>>&                  aLPBC)
+void BOPAlgo_PaveFiller::PreparePostTreatFF(const int                         aInt,
+                                            const int                         aCur,
+                                            const occ::handle<BOPDS_PaveBlock>&                 aPB,
+                                            NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>& aMSCPB,
+                                            NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>&                aMVI,
+                                            NCollection_List<occ::handle<BOPDS_PaveBlock>>&                         aLPBC)
 {
   int nV1, nV2;
   //
@@ -3510,10 +3525,11 @@ void BOPAlgo_PaveFiller::PreparePostTreatFF(
 
 //=================================================================================================
 
-bool BOPAlgo_PaveFiller::CheckPlanes(const int nF1, const int nF2) const
+bool BOPAlgo_PaveFiller::CheckPlanes(const int nF1,
+                                                 const int nF2) const
 {
-  bool                           bToIntersect;
-  int                            i, nV2, iCnt;
+  bool                  bToIntersect;
+  int                  i, nV2, iCnt;
   NCollection_Map<int>::Iterator aIt;
   //
   bToIntersect = false;
@@ -3557,26 +3573,26 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks(const NCollection_DataMap<int, int>& a
     return;
   }
   //
-  int                                                      nSp, aNbPBP, nV[2], i, j;
-  double                                                   aT[2];
-  bool                                                     bCB, bRebuild;
+  int                    nSp, aNbPBP, nV[2], i, j;
+  double                       aT[2];
+  bool                    bCB, bRebuild;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>            aMPB;
-  NCollection_Map<int>                                     aMicroEdges;
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>                aMPB;
+  NCollection_Map<int>                aMicroEdges;
   //
   NCollection_List<occ::handle<BOPDS_PaveBlock>> anAllPBs;
 
   // Get pave blocks of section edges
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length();
+  int        aNbFF = aFFs.Length();
   for (i = 0; i < aNbFF; ++i)
   {
-    const BOPDS_InterfFF&                  aFF  = aFFs(i);
+    const BOPDS_InterfFF&      aFF  = aFFs(i);
     const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
-    int                                    aNbC = aVNC.Length();
+    int           aNbC = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
-      const BOPDS_Curve&                                    aNC   = aVNC(j);
+      const BOPDS_Curve&           aNC   = aVNC(j);
       const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPBC = aNC.PaveBlocks();
       aItPB.Initialize(aLPBC);
       for (; aItPB.More(); aItPB.Next())
@@ -3585,9 +3601,8 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks(const NCollection_DataMap<int, int>& a
   }
 
   // Get pave blocks from the pool
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
-    myDS->ChangePaveBlocksPool();
-  aNbPBP = aPBP.Length();
+  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP = myDS->ChangePaveBlocksPool();
+  aNbPBP                              = aPBP.Length();
   for (i = 0; i < aNbPBP; ++i)
   {
     NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);
@@ -3602,7 +3617,7 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks(const NCollection_DataMap<int, int>& a
   {
     occ::handle<BOPDS_PaveBlock>          aPB = aItPB.Value();
     const occ::handle<BOPDS_CommonBlock>& aCB = myDS->CommonBlock(aPB);
-    bCB                                       = !aCB.IsNull();
+    bCB                                  = !aCB.IsNull();
     if (bCB)
     {
       aPB = aCB->PaveBlock1();
@@ -3681,9 +3696,8 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
   // Remove all pave blocks referring to input edges:
   //
   // 1. from the Pave Blocks Pool
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
-    myDS->ChangePaveBlocksPool();
-  int aNbPBP = aPBP.Length(), i;
+  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP   = myDS->ChangePaveBlocksPool();
+  int               aNbPBP = aPBP.Length(), i;
   for (i = 0; i < aNbPBP; ++i)
   {
     NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);
@@ -3700,19 +3714,19 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
   }
 
   // 2. from section curves
-  NCollection_Map<int>                aMPassed;
+  NCollection_Map<int>    aMPassed;
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  int                                 aNbFF = aFFs.Length(), j;
+  int        aNbFF = aFFs.Length(), j;
   for (i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFF = aFFs(i);
     // remove from Section pave blocks
     NCollection_Vector<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    int                              aNbC = aVNC.Length();
+    int     aNbC = aVNC.Length();
     for (j = 0; j < aNbC; ++j)
     {
-      BOPDS_Curve&                                             aNC  = aVNC(j);
-      NCollection_List<occ::handle<BOPDS_PaveBlock>>&          aLPB = aNC.ChangePaveBlocks();
+      BOPDS_Curve&                        aNC  = aVNC(j);
+      NCollection_List<occ::handle<BOPDS_PaveBlock>>&              aLPB = aNC.ChangePaveBlocks();
       NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB(aLPB);
       while (aItPB.More())
       {
@@ -3734,10 +3748,10 @@ void BOPAlgo_PaveFiller::RemovePaveBlocks(const NCollection_Map<int>& theEdges)
     if (!aSI.HasReference())
       continue;
 
-    BOPDS_FaceInfo&                                       aFI     = myDS->ChangeFaceInfo(i);
+    BOPDS_FaceInfo&              aFI     = myDS->ChangeFaceInfo(i);
     NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>* aIMPB[] = {&aFI.ChangePaveBlocksIn(),
-                                                                     &aFI.ChangePaveBlocksOn(),
-                                                                     &aFI.ChangePaveBlocksSc()};
+                                            &aFI.ChangePaveBlocksOn(),
+                                            &aFI.ChangePaveBlocksSc()};
     for (int k = 0; k < 3; k++)
     {
       int aNbPB = aIMPB[k]->Extent(), m;
@@ -3801,15 +3815,15 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
   int aNbFF;
   //
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
-  aNbFF                                    = aFFs.Length();
+  aNbFF                        = aFFs.Length();
   if (!aNbFF)
   {
     return;
   }
   //
-  bool                 bOnCurve, bHasShapeSD;
-  int                  i, nF1, nF2, aNbC, j, nV, nVSD;
-  double               aTolV;
+  bool     bOnCurve, bHasShapeSD;
+  int     i, nF1, nF2, aNbC, j, nV, nVSD;
+  double        aTolV;
   NCollection_Map<int> aMF;
   //
   for (i = 0; i < aNbFF; ++i)
@@ -3817,7 +3831,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
     BOPDS_InterfFF& aFF = aFFs(i);
     //
     NCollection_Vector<BOPDS_Curve>& aVC = aFF.ChangeCurves();
-    aNbC                                 = aVC.Length();
+    aNbC                     = aVC.Length();
     if (!aNbC)
     {
       continue;
@@ -3835,7 +3849,7 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
     }
     //
     // Collect old vertices that are shared for nF1, nF2 ->aMI;
-    NCollection_Map<int>           aMI;
+    NCollection_Map<int>              aMI;
     NCollection_Map<int>::Iterator aItMI;
     //
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
@@ -3867,8 +3881,8 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
     // Try to put vertices aMI on curves
     for (j = 0; j < aNbC; ++j)
     {
-      BOPDS_Curve& aNC     = aVC.ChangeValue(j);
-      double       aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
+      BOPDS_Curve&  aNC     = aVC.ChangeValue(j);
+      double aTolR3D = std::max(aNC.Tolerance(), aNC.TangentialTolerance());
       //
       aItMI.Initialize(aMI);
       for (; aItMI.More(); aItMI.Next())
@@ -3901,12 +3915,12 @@ void BOPAlgo_PaveFiller::UpdateBlocksWithSharedVertices()
 
 //=================================================================================================
 
-bool BOPAlgo_PaveFiller::EstimatePaveOnCurve(const int          nV,
-                                             const BOPDS_Curve& aNC,
-                                             const double       aTolR3D)
+bool BOPAlgo_PaveFiller::EstimatePaveOnCurve(const int nV,
+                                                         const BOPDS_Curve&     aNC,
+                                                         const double    aTolR3D)
 {
-  bool   bIsVertexOnLine;
-  double aT;
+  bool bIsVertexOnLine;
+  double    aT;
   //
   const TopoDS_Vertex&  aV  = *((TopoDS_Vertex*)&myDS->Shape(nV));
   const IntTools_Curve& aIC = aNC.Curve();
@@ -3919,9 +3933,9 @@ bool BOPAlgo_PaveFiller::EstimatePaveOnCurve(const int          nV,
 
 void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
 {
-  NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
+  NCollection_Vector<BOPDS_InterfFF>&                                             aFFs = myDS->InterfFF();
   NCollection_IndexedDataMap<int, NCollection_List<occ::handle<BOPDS_PaveBlock>>> aMVIPBs;
-  NCollection_Map<int>                                                            aMVIToReduce;
+  NCollection_Map<int>                                                aMVIToReduce;
   // Fence map to avoid repeated checking of the same edge
   NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPB;
   //
@@ -3932,16 +3946,16 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     BOPDS_InterfFF& aFF = aFFs(i);
     //
     NCollection_Vector<BOPDS_Curve>& aVNC = aFF.ChangeCurves();
-    int                              aNbC = aVNC.Length(), k;
+    int     aNbC = aVNC.Length(), k;
     for (k = 0; k < aNbC; ++k)
     {
-      BOPDS_Curve&                                             aNC  = aVNC(k);
-      NCollection_List<occ::handle<BOPDS_PaveBlock>>&          aLPB = aNC.ChangePaveBlocks();
+      BOPDS_Curve&                        aNC  = aVNC(k);
+      NCollection_List<occ::handle<BOPDS_PaveBlock>>&              aLPB = aNC.ChangePaveBlocks();
       NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPB);
       for (; aItLPB.More();)
       {
         const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
-        int                                 nE;
+        int               nE;
         if (!aPB->HasEdge(nE))
         {
           aLPB.Remove(aItLPB);
@@ -3970,7 +3984,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
           if (aTolC < aTolTang)
           {
             const TopoDS_Edge& aE    = TopoDS::Edge(myDS->Shape(nE));
-            double             aTolE = BRep_Tool::Tolerance(aE);
+            double      aTolE = BRep_Tool::Tolerance(aE);
             if (aTolC < aTolE)
             {
               // reduce edge tolerance
@@ -3988,8 +4002,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
           NCollection_List<occ::handle<BOPDS_PaveBlock>>* pPBList = aMVIPBs.ChangeSeek(nV);
           if (!pPBList)
           {
-            pPBList = &aMVIPBs.ChangeFromIndex(
-              aMVIPBs.Add(nV, NCollection_List<occ::handle<BOPDS_PaveBlock>>()));
+            pPBList = &aMVIPBs.ChangeFromIndex(aMVIPBs.Add(nV, NCollection_List<occ::handle<BOPDS_PaveBlock>>()));
           }
           pPBList->Append(aPB);
           if (bIsReduced)
@@ -4012,24 +4025,23 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
   //     reducing the tolerance to the value less than the tolerances of edges,
   //     i.e. minimal tolerance for the vertex is the max tolerance of the
   //     edges containing this vertex
-  NCollection_DataMap<int, double>                                    aMVITol;
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
-    myDS->ChangePaveBlocksPool();
-  aNb = aPBP.Length();
+  NCollection_DataMap<int, double>   aMVITol;
+  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP = myDS->ChangePaveBlocksPool();
+  aNb                                 = aPBP.Length();
   for (i = 0; i < aNb; ++i)
   {
-    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPB = aPBP(i);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aLPB = aPBP(i);
     NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next())
     {
       const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
-      int                                 nE;
+      int               nE;
       if (!aPB->HasEdge(nE))
       {
         continue;
       }
       const TopoDS_Edge& aE    = TopoDS::Edge(myDS->Shape(nE));
-      double             aTolE = BRep_Tool::Tolerance(aE);
+      double      aTolE = BRep_Tool::Tolerance(aE);
       //
       int nV[2];
       aPB->Indices(nV[0], nV[1]);
@@ -4065,8 +4077,8 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     }
     //
     const TopoDS_Vertex& aV      = TopoDS::Vertex(myDS->Shape(nV));
-    double               aTolV   = BRep_Tool::Tolerance(aV);
-    double               aMaxTol = aMVITol.IsBound(nV) ? aMVITol.Find(nV) : 0.;
+    double        aTolV   = BRep_Tool::Tolerance(aV);
+    double        aMaxTol = aMVITol.IsBound(nV) ? aMVITol.Find(nV) : 0.;
     // it makes no sense to compute the real tolerance if it is
     // impossible to reduce the tolerance at least 0.1% of the current value
     if (aTolV - aMaxTol < 0.001 * aTolV)
@@ -4080,7 +4092,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     // Avoid repeated checks
     NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPBFence;
     //
-    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPB = aMVIPBs.FindFromIndex(i);
+    const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aLPB = aMVIPBs.FindFromIndex(i);
     NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB(aLPB);
     for (; aItLPB.More(); aItLPB.Next())
     {
@@ -4089,20 +4101,20 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
       {
         continue;
       }
-      int                nE = aPB->Edge();
+      int   nE = aPB->Edge();
       const TopoDS_Edge& aE = TopoDS::Edge(myDS->Shape(nE));
       BRepAdaptor_Curve  aC(aE);
       for (int iPave = 0; iPave < 2; ++iPave)
       {
         const BOPDS_Pave& aPave = !iPave ? aPB->Pave1() : aPB->Pave2();
-        int               nVSD  = aPave.Index();
+        int  nVSD  = aPave.Index();
         myDS->HasShapeSD(nVSD, nVSD);
         if (nVSD != nV)
         {
           continue;
         }
         //
-        gp_Pnt aPonE = aC.Value(aPave.Parameter());
+        gp_Pnt        aPonE = aC.Value(aPave.Parameter());
         double aDist = aP.Distance(aPonE);
         aDist += BRep_Tool::Tolerance(aE);
         if (aDist > aMaxTol)
@@ -4130,15 +4142,15 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces(const Message_ProgressRange& theRange
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBScAll;
 
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = myDS->InterfFF();
-  const int                           aNbFF = aFFs.Length();
-  Message_ProgressScope               aPS(theRange, NULL, 1);
+  const int  aNbFF = aFFs.Length();
+  Message_ProgressScope   aPS(theRange, NULL, 1);
   for (int i = 0; i < aNbFF; ++i)
   {
     const NCollection_Vector<BOPDS_Curve>& aVNC = aFFs(i).Curves();
-    const int                              aNbC = aVNC.Length();
+    const int     aNbC = aVNC.Length();
     for (int j = 0; j < aNbC; ++j)
     {
-      const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aLPBC = aVNC(j).PaveBlocks();
+      const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aLPBC = aVNC(j).PaveBlocks();
       NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB(aLPBC);
       for (; aItPB.More(); aItPB.Next())
         aMPBScAll.Add(aItPB.Value());
@@ -4151,9 +4163,8 @@ void BOPAlgo_PaveFiller::PutSEInOtherFaces(const Message_ProgressRange& theRange
 //=================================================================================================
 
 void BOPAlgo_PaveFiller::RemoveMicroSectionEdges(
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>&
-                                                        theMSCPB,
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMicroPB)
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>& theMSCPB,
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>&                   theMicroPB)
 {
   if (theMSCPB.IsEmpty())
     // no section edges
@@ -4163,8 +4174,7 @@ void BOPAlgo_PaveFiller::RemoveMicroSectionEdges(
   NCollection_Vector<BOPDS_InterfFF>& aFFs = myDS->InterfFF();
 
   // Build the new map of section edges avoiding the micro edges
-  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
-    aSEPBMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> aSEPBMap;
   // Analyze all section edges
   int aNbCPB = theMSCPB.Extent();
   for (int i = 1; i <= aNbCPB; ++i)
@@ -4233,9 +4243,8 @@ void BOPAlgo_PaveFiller::RemoveMicroEdges()
   // Resulting map of micro edges
   NCollection_Map<int> aMicroEdges;
   // Check all pave blocks from the pool to find the micro edges
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
-    myDS->ChangePaveBlocksPool();
-  int aNbPBP = aPBP.Length();
+  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP   = myDS->ChangePaveBlocksPool();
+  int               aNbPBP = aPBP.Length();
   for (int i = 0; i < aNbPBP; ++i)
   {
     NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aPBP(i);

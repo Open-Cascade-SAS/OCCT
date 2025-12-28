@@ -32,18 +32,18 @@ IGESDraw_PerspectiveView::IGESDraw_PerspectiveView() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_PerspectiveView::Init(const int     aViewNumber,
-                                    const double  aScaleFactor,
-                                    const gp_XYZ& aViewNormalVector,
-                                    const gp_XYZ& aViewReferencePoint,
-                                    const gp_XYZ& aCenterOfProjection,
-                                    const gp_XYZ& aViewUpVector,
-                                    const double  aViewPlaneDistance,
-                                    const gp_XY&  aTopLeft,
-                                    const gp_XY&  aBottomRight,
-                                    const int     aDepthClip,
-                                    const double  aBackPlaneDistance,
-                                    const double  aFrontPlaneDistance)
+void IGESDraw_PerspectiveView::Init(const int aViewNumber,
+                                    const double    aScaleFactor,
+                                    const gp_XYZ&          aViewNormalVector,
+                                    const gp_XYZ&          aViewReferencePoint,
+                                    const gp_XYZ&          aCenterOfProjection,
+                                    const gp_XYZ&          aViewUpVector,
+                                    const double    aViewPlaneDistance,
+                                    const gp_XY&           aTopLeft,
+                                    const gp_XY&           aBottomRight,
+                                    const int aDepthClip,
+                                    const double    aBackPlaneDistance,
+                                    const double    aFrontPlaneDistance)
 {
   theViewNumber         = aViewNumber;
   theScaleFactor        = aScaleFactor;

@@ -44,10 +44,10 @@ public:
   //! @param theSizeY       texture height
   //! @return true on success
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theCtx,
-                            IDirect3DDevice9*                  theD3DDevice,
-                            const bool                         theIsD3dEx,
-                            const int                          theSizeX,
-                            const int                          theSizeY);
+                                        IDirect3DDevice9*             theD3DDevice,
+                                        const bool        theIsD3dEx,
+                                        const int        theSizeX,
+                                        const int        theSizeY);
 
   //! Initializes OpenGL FBO for Direct3D interoperability.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
@@ -60,11 +60,11 @@ public:
   //! GL_DEPTH24_STENCIL8
   //! @return true on success
   Standard_EXPORT bool InitD3dInterop(const occ::handle<OpenGl_Context>& theCtx,
-                                      IDirect3DDevice9*                  theD3DDevice,
-                                      const bool                         theIsD3dEx,
-                                      const int                          theSizeX,
-                                      const int                          theSizeY,
-                                      const int                          theDepthFormat);
+                                                  IDirect3DDevice9*             theD3DDevice,
+                                                  const bool        theIsD3dEx,
+                                                  const int        theSizeX,
+                                                  const int        theSizeY,
+                                                  const int        theDepthFormat);
 
   //! Initializes OpenGL FBO + Direct3D surface for copying memory using fallback.
   //! Color pixel format is always GL_RGBA8/D3DFMT_X8R8G8B8, no MSAA.
@@ -77,11 +77,11 @@ public:
   //! GL_DEPTH24_STENCIL8
   //! @return true on success
   Standard_EXPORT bool InitD3dFallback(const occ::handle<OpenGl_Context>& theCtx,
-                                       IDirect3DDevice9*                  theD3DDevice,
-                                       const bool                         theIsD3dEx,
-                                       const int                          theSizeX,
-                                       const int                          theSizeY,
-                                       const int                          theDepthFormat);
+                                                   IDirect3DDevice9*             theD3DDevice,
+                                                   const bool        theIsD3dEx,
+                                                   const int        theSizeX,
+                                                   const int        theSizeY,
+                                                   const int        theDepthFormat);
 
   //! Binds Direct3D color buffer to OpenGL texture.
   Standard_EXPORT bool registerD3dBuffer(const occ::handle<OpenGl_Context>& theCtx);
@@ -121,11 +121,11 @@ protected:
   void*              myD3dSurfShare; //!< D3D surface share handle in WDDM
   void*              myGlD3dDevice;  //!< WGL/D3D device  handle
   void*              myGlD3dSurf;    //!< WGL/D3D surface handle
-  int                myLockCount;    //!< locking counter
+  int   myLockCount;    //!< locking counter
                                      // clang-format off
   bool   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
                                      // clang-format on
-  bool myIsSRGBReady;                //!< indicates that color buffer is sRGB ready
+  bool myIsSRGBReady;    //!< indicates that color buffer is sRGB ready
 
 public:
   DEFINE_STANDARD_RTTIEXT(D3DHost_FrameBuffer, OpenGl_FrameBuffer)

@@ -24,6 +24,7 @@
 #include <BRepTools_History.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -155,16 +156,16 @@ public: //! @name Definition of the structure to keep all periodicity parameters
       myPeriodFirst[0] = myPeriodFirst[1] = myPeriodFirst[2] = 0.0;
     }
 
-    bool myPeriodic[3];     //!< Array of flags defining whether the shape should be
-                            //! periodic in XYZ directions
-    double myPeriod[3];     //!< Array of XYZ period values. Defining the period for any
-                            //! direction the corresponding flag for that direction in
-                            //! myPeriodic should be set to true
-                            // clang-format off
+    bool myPeriodic[3]; //!< Array of flags defining whether the shape should be
+                                    //! periodic in XYZ directions
+    double myPeriod[3];      //!< Array of XYZ period values. Defining the period for any
+                                    //! direction the corresponding flag for that direction in
+                                    //! myPeriodic should be set to true
+                                    // clang-format off
     bool myIsTrimmed[3]; //!< Array of flags defining whether the input shape has to be
                                      //! trimmed to fit the required period in the required direction
     double myPeriodFirst[3];  //!< Array of start parameters of the XYZ periods: required for trimming
-                            // clang-format on
+                                    // clang-format on
   };
 
 public: //! @name Setters/Getters for periodicity parameters structure
@@ -186,11 +187,11 @@ public: //! @name Methods for setting/getting periodicity info using ID as a dir
   //! @param[in] theDirectionID  The direction's ID;
   //! @param[in] theIsPeriodic  Flag defining periodicity in given direction;
   //! @param[in] thePeriod  Required period in given direction.
-  void MakePeriodic(const int    theDirectionID,
-                    const bool   theIsPeriodic,
-                    const double thePeriod = 0.0)
+  void MakePeriodic(const int theDirectionID,
+                    const bool theIsPeriodic,
+                    const double    thePeriod = 0.0)
   {
-    int id                             = ToDirectionID(theDirectionID);
+    int id                = ToDirectionID(theDirectionID);
     myPeriodicityParams.myPeriodic[id] = theIsPeriodic;
     myPeriodicityParams.myPeriod[id]   = theIsPeriodic ? thePeriod : 0.0;
   }
@@ -270,7 +271,9 @@ public: //! @name Methods for setting/getting trimming info taking Direction ID 
   //! @param[in] theDirectionID  The direction's ID;
   //! @param[in] theIsTrimmed  The flag defining trimming of the shape in given direction;
   //! @param[in] theFirst  The first periodic parameter in the given direction.
-  void SetTrimmed(const int theDirectionID, const bool theIsTrimmed, const double theFirst = 0.0)
+  void SetTrimmed(const int theDirectionID,
+                  const bool theIsTrimmed,
+                  const double    theFirst = 0.0)
   {
     int id = ToDirectionID(theDirectionID);
     if (IsPeriodic(id))
@@ -372,7 +375,8 @@ public: //! @name Using the algorithm to repeat the shape
   //!
   //! @param[in] theDirectionID  The direction's ID;
   //! @param[in] theTimes  Requested number of repetitions.
-  Standard_EXPORT const TopoDS_Shape& RepeatShape(const int theDirectionID, const int theTimes);
+  Standard_EXPORT const TopoDS_Shape& RepeatShape(const int theDirectionID,
+                                                  const int theTimes);
 
   //! Repeats the shape in X direction specified number of times.
   //! Negative value of times means that the repetition should be
@@ -456,7 +460,10 @@ public: //! @name Clearing the algorithm from previous runs
 
 public: //! @name Conversion of the integer to ID of periodic direction
   //! Converts the integer to ID of periodic direction
-  static int ToDirectionID(const int theDirectionID) { return std::abs(theDirectionID % 3); }
+  static int ToDirectionID(const int theDirectionID)
+  {
+    return std::abs(theDirectionID % 3);
+  }
 
 protected: //! @name Protected methods performing the operation
   //! Checks the validity of input data
@@ -487,8 +494,8 @@ protected: //! @name Protected methods performing the operation
   //! @param[out] theSplitShapeHistory  The history of shape split
   //! @param[out] theSplitToolsHistory  The history of tools modifications during the split
   Standard_EXPORT void SplitShape(const NCollection_List<TopoDS_Shape>& theTools,
-                                  occ::handle<BRepTools_History>        theSplitShapeHistory = NULL,
-                                  occ::handle<BRepTools_History> theSplitToolsHistory = NULL);
+                                  occ::handle<BRepTools_History>   theSplitShapeHistory = NULL,
+                                  occ::handle<BRepTools_History>   theSplitToolsHistory = NULL);
 
   //! Updates the map of twins after periodic shape repetition.
   //! @param[in] theTranslationHistory  The history of translation of the periodic shape.
@@ -503,24 +510,23 @@ protected: //! @name Fields
   PeriodicityParams myPeriodicityParams; //!< Periodicity parameters
 
   // Results
-  TopoDS_Shape myShape;           //!< Resulting periodic shape (base for repetitions)
-  TopoDS_Shape myRepeatedShape;   //!< Resulting shape after making repetitions of the base
-  double       myRepeatPeriod[3]; //!< XYZ repeat period
-                                  // clang-format off
+  TopoDS_Shape  myShape;           //!< Resulting periodic shape (base for repetitions)
+  TopoDS_Shape  myRepeatedShape;   //!< Resulting shape after making repetitions of the base
+  double myRepeatPeriod[3]; //!< XYZ repeat period
+                                   // clang-format off
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myRepeatedTwins; //!< Map of associations of the identical sub-shapes
                                                       //! after repetition of the periodic shape
-                                  // clang-format on
+                                   // clang-format on
 
   // Twins
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myTwins; //!< Map of associations of the identical sub-shapes
-             //! located on the opposite sides of the shape
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myTwins; //!< Map of associations of the identical sub-shapes
+                                              //! located on the opposite sides of the shape
 
   // History
   occ::handle<BRepTools_History> mySplitHistory; //!< Split history - history of shapes modification
-                                                 //! after the split for making the shape periodic
+                                            //! after the split for making the shape periodic
   occ::handle<BRepTools_History> myHistory;      //!< Final history of shapes modifications
-                                                 //! (to include the history of shape repetition)
+                                            //! (to include the history of shape repetition)
 };
 
 #endif // _BOPAlgo_MakePeriodic_HeaderFile

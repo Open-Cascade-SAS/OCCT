@@ -30,11 +30,11 @@
 
 //=================================================================================================
 
-static gp_Lin2d GetLine(const gp_Pnt2d& P1,
-                        const gp_Pnt2d& P2,
-                        const double    c1,
-                        double&         cf,
-                        double&         cl)
+static gp_Lin2d GetLine(const gp_Pnt2d&     P1,
+                        const gp_Pnt2d&     P2,
+                        const double c1,
+                        double&      cf,
+                        double&      cl)
 {
   gp_Vec2d avec(P1, P2);
   gp_Dir2d adir(avec);
@@ -48,15 +48,15 @@ static gp_Lin2d GetLine(const gp_Pnt2d& P1,
 //=================================================================================================
 
 bool ShapeCustom_Curve2d::IsLinear(const NCollection_Array1<gp_Pnt2d>& thePoles,
-                                   const double                        tolerance,
-                                   double&                             Deviation)
+                                               const double         tolerance,
+                                               double&              Deviation)
 {
   int nbPoles = thePoles.Length();
   if (nbPoles < 2)
     return false;
 
-  double dMax  = 0;
-  int    iMax1 = 0, iMax2 = 0;
+  double    dMax  = 0;
+  int iMax1 = 0, iMax2 = 0;
 
   int i;
   for (i = 1; i < nbPoles; i++)
@@ -75,10 +75,10 @@ bool ShapeCustom_Curve2d::IsLinear(const NCollection_Array1<gp_Pnt2d>& thePoles,
   if (dMax < dPreci)
     return false;
 
-  double   tol2 = tolerance * tolerance;
-  gp_Vec2d avec(thePoles(iMax1), thePoles(iMax2));
-  gp_Dir2d adir(avec);
-  gp_Lin2d alin(thePoles(iMax1), adir);
+  double tol2 = tolerance * tolerance;
+  gp_Vec2d      avec(thePoles(iMax1), thePoles(iMax2));
+  gp_Dir2d      adir(avec);
+  gp_Lin2d      alin(thePoles(iMax1), adir);
 
   double aMax = 0.;
   for (i = 1; i <= nbPoles; i++)
@@ -96,26 +96,25 @@ bool ShapeCustom_Curve2d::IsLinear(const NCollection_Array1<gp_Pnt2d>& thePoles,
 
 //=================================================================================================
 
-occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(
-  const occ::handle<Geom2d_Curve>& theCurve,
-  const double                     c1,
-  const double                     c2,
-  const double                     theTolerance,
-  double&                          cf,
-  double&                          cl,
-  double&                          theDeviation)
+occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(const occ::handle<Geom2d_Curve>& theCurve,
+                                                         const double         c1,
+                                                         const double         c2,
+                                                         const double         theTolerance,
+                                                         double&              cf,
+                                                         double&              cl,
+                                                         double&              theDeviation)
 {
   occ::handle<Geom2d_Line> aLine2d;
-  gp_Pnt2d                 P1     = theCurve->Value(c1);
-  gp_Pnt2d                 P2     = theCurve->Value(c2);
-  double                   dPreci = theTolerance * theTolerance;
+  gp_Pnt2d            P1     = theCurve->Value(c1);
+  gp_Pnt2d            P2     = theCurve->Value(c2);
+  double       dPreci = theTolerance * theTolerance;
   if (P1.SquareDistance(P2) < dPreci)
     return aLine2d; // it is not a line
 
   occ::handle<Geom2d_BSplineCurve> bsc = occ::down_cast<Geom2d_BSplineCurve>(theCurve);
   if (!bsc.IsNull())
   {
-    int                          nbPoles = bsc->NbPoles();
+    int     nbPoles = bsc->NbPoles();
     NCollection_Array1<gp_Pnt2d> Poles(1, nbPoles);
     bsc->Poles(Poles);
     if (!ShapeCustom_Curve2d::IsLinear(Poles, theTolerance, theDeviation))
@@ -128,7 +127,7 @@ occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(
   occ::handle<Geom2d_BezierCurve> bzc = occ::down_cast<Geom2d_BezierCurve>(theCurve);
   if (!bzc.IsNull())
   {
-    int                          nbPoles = bzc->NbPoles();
+    int     nbPoles = bzc->NbPoles();
     NCollection_Array1<gp_Pnt2d> Poles(1, nbPoles);
     bzc->Poles(Poles);
     if (!ShapeCustom_Curve2d::IsLinear(Poles, theTolerance, theDeviation))
@@ -144,22 +143,22 @@ occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(
 //=================================================================================================
 
 bool ShapeCustom_Curve2d::SimplifyBSpline2d(occ::handle<Geom2d_BSplineCurve>& theBSpline2d,
-                                            const double                      theTolerance)
+                                                        const double          theTolerance)
 {
   int aInitNbK;
   int NbK = aInitNbK = theBSpline2d->NbKnots();
   // search knot to remove
   bool IsToRemove = true;
-  int  aKnotIndx  = NbK - 1;
+  int aKnotIndx  = NbK - 1;
   while (IsToRemove && NbK > 2)
   {
     int aMult   = theBSpline2d->Multiplicity(aKnotIndx);
     int DegMult = theBSpline2d->Degree() - aMult;
     if ((DegMult > 1) && theBSpline2d->IsCN(DegMult))
     {
-      double   U     = theBSpline2d->Knot(aKnotIndx);
-      gp_Vec2d aVec1 = theBSpline2d->LocalDN(U, aKnotIndx - 1, aKnotIndx, DegMult);
-      gp_Vec2d aVec2 = theBSpline2d->LocalDN(U, aKnotIndx, aKnotIndx + 1, DegMult);
+      double U     = theBSpline2d->Knot(aKnotIndx);
+      gp_Vec2d      aVec1 = theBSpline2d->LocalDN(U, aKnotIndx - 1, aKnotIndx, DegMult);
+      gp_Vec2d      aVec2 = theBSpline2d->LocalDN(U, aKnotIndx, aKnotIndx + 1, DegMult);
       // check the derivations are have the "same" angle
       if (aVec1.IsParallel(aVec2, Precision::Angular()))
       {

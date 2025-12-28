@@ -19,7 +19,7 @@
 RWStepVisual_RWColourRgb::RWStepVisual_RWColourRgb() {}
 
 void RWStepVisual_RWColourRgb::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                                   num,
+                                        const int                 num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepVisual_ColourRgb>&    ent) const
 {
@@ -58,7 +58,7 @@ void RWStepVisual_RWColourRgb::ReadStep(const occ::handle<StepData_StepReaderDat
   ent->Init(aName, aRed, aGreen, aBlue);
 }
 
-void RWStepVisual_RWColourRgb::WriteStep(StepData_StepWriter&                     SW,
+void RWStepVisual_RWColourRgb::WriteStep(StepData_StepWriter&                SW,
                                          const occ::handle<StepVisual_ColourRgb>& ent) const
 {
 

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceSideStyle, Standard_Transient)
 StepVisual_SurfaceSideStyle::StepVisual_SurfaceSideStyle() {}
 
 void StepVisual_SurfaceSideStyle::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
+  const occ::handle<TCollection_HAsciiString>&                      aName,
   const occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>>& aStyles)
 {
   // --- classe own fields ---
@@ -44,13 +44,13 @@ void StepVisual_SurfaceSideStyle::SetStyles(
   styles = aStyles;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>> StepVisual_SurfaceSideStyle::
-  Styles() const
+occ::handle<NCollection_HArray1<StepVisual_SurfaceStyleElementSelect>> StepVisual_SurfaceSideStyle::Styles() const
 {
   return styles;
 }
 
-StepVisual_SurfaceStyleElementSelect StepVisual_SurfaceSideStyle::StylesValue(const int num) const
+StepVisual_SurfaceStyleElementSelect StepVisual_SurfaceSideStyle::StylesValue(
+  const int num) const
 {
   return styles->Value(num);
 }

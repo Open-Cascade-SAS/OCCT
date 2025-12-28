@@ -40,6 +40,7 @@
 #include <Law_Interpol.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 
 static BRepOffsetAPI_MakePipeShell* Sweep     = 0;
@@ -222,20 +223,20 @@ static int geompipe(Draw_Interpretor&, int n, const char** a)
   TopoDS_Shape Profile = DBRep::Get(a[3], TopAbs_EDGE);
   if (Profile.IsNull())
     return 1;
-  double                  aSpFirst, aSpLast, aPrFirst, aPrLast;
+  double      aSpFirst, aSpLast, aPrFirst, aPrLast;
   occ::handle<Geom_Curve> SpineCurve   = BRep_Tool::Curve(TopoDS::Edge(Spine), aSpFirst, aSpLast);
   occ::handle<Geom_Curve> ProfileCurve = BRep_Tool::Curve(TopoDS::Edge(Profile), aPrFirst, aPrLast);
   occ::handle<GeomAdaptor_Curve> aAdaptCurve = new GeomAdaptor_Curve(SpineCurve, aSpFirst, aSpLast);
-  bool                           ByACR       = false;
-  bool                           rotate      = false;
-  double                         Radius      = Draw::Atof(a[4]);
-  gp_Pnt                         ctr;
-  gp_Vec                         norm;
+  bool          ByACR       = false;
+  bool          rotate      = false;
+  double             Radius      = Draw::Atof(a[4]);
+  gp_Pnt                    ctr;
+  gp_Vec                    norm;
   ProfileCurve->D1(aSpFirst, ctr, norm);
-  gp_Vec                   xAxisStart(ctr, SpineCurve->Value(aSpFirst));
-  gp_Ax2                   aAx2Start(ctr, norm, xAxisStart);
+  gp_Vec              xAxisStart(ctr, SpineCurve->Value(aSpFirst));
+  gp_Ax2              aAx2Start(ctr, norm, xAxisStart);
   occ::handle<Geom_Circle> cStart = new Geom_Circle(aAx2Start, Radius);
-  int                      k      = 5;
+  int    k      = 5;
   if (n > k)
     ByACR = (Draw::Atoi(a[k++]) == 1);
   if (n > k)
@@ -252,7 +253,7 @@ static int geompipe(Draw_Interpretor&, int n, const char** a)
   std::cout << "Accuracy of approximation = " << Accuracy << std::endl;
 
   occ::handle<Geom_Surface> Sur = aPipe.Surface();
-  TopoDS_Face               F;
+  TopoDS_Face          F;
   if (!Sur.IsNull())
     F = BRepBuilderAPI_MakeFace(Sur, Precision::Confusion());
   DBRep::Set(a[1], F);
@@ -277,13 +278,13 @@ int evolved(Draw_Interpretor& di, int n, const char** a)
 
   if (n < 4)
     return 1;
-  bool         Solid            = false;
-  bool         isVolume         = false;
-  bool         hasToComputeAxes = false;
-  double       aTolerance       = 0.0;
-  TopoDS_Shape Base;
-  TopoDS_Wire  Prof;
-  bool         isParallel = true;
+  bool Solid            = false;
+  bool isVolume         = false;
+  bool hasToComputeAxes = false;
+  double    aTolerance       = 0.0;
+  TopoDS_Shape     Base;
+  TopoDS_Wire      Prof;
+  bool isParallel = true;
 
   for (int i = 2; i < n; i++)
   {
@@ -370,8 +371,8 @@ static int pruled(Draw_Interpretor&, int n, const char** a)
   if (n != 4)
     return 1;
 
-  bool         YaWIRE = false;
-  TopoDS_Shape S1     = DBRep::Get(a[2], TopAbs_EDGE);
+  bool YaWIRE = false;
+  TopoDS_Shape     S1     = DBRep::Get(a[2], TopAbs_EDGE);
   if (S1.IsNull())
   {
     S1 = DBRep::Get(a[2], TopAbs_WIRE);
@@ -452,7 +453,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
 
   bool check      = true;
   bool samenumber = true;
-  int  index      = 2;
+  int index      = 2;
   // Lecture option
   if (!strcmp(a[1], "-N"))
   {
@@ -472,9 +473,9 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
     delete Generator;
     Generator = 0;
   }
-  Generator           = new BRepOffsetAPI_ThruSections(issolid, isruled);
+  Generator                       = new BRepOffsetAPI_ThruSections(issolid, isruled);
   bool IsMutableInput = true;
-  int  NbEdges        = 0;
+  int NbEdges        = 0;
   bool IsFirstWire    = false;
   for (int i = index + 2; i <= n - 1; i++)
   {
@@ -484,7 +485,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
       continue;
     }
     bool IsWire = true;
-    Shape       = DBRep::Get(a[i], TopAbs_WIRE);
+    Shape                   = DBRep::Get(a[i], TopAbs_WIRE);
     if (!Shape.IsNull())
     {
       Generator->AddWire(TopoDS::Wire(Shape));
@@ -503,8 +504,8 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
         return 1;
     }
 
-    int             cpt = 0;
-    TopExp_Explorer PE;
+    int cpt = 0;
+    TopExp_Explorer  PE;
     for (PE.Init(Shape, TopAbs_EDGE); PE.More(); PE.Next())
     {
       cpt++;
@@ -709,9 +710,9 @@ static int setsweep(Draw_Interpretor& di, int n, const char** a)
     }
     else
     {
-      TopoDS_Shape Guide                  = DBRep::Get(a[2], TopAbs_WIRE);
-      bool         CurvilinearEquivalence = Draw::Atoi(a[3]) != 0;
-      int          KeepContact            = Draw::Atoi(a[4]);
+      TopoDS_Shape     Guide                  = DBRep::Get(a[2], TopAbs_WIRE);
+      bool CurvilinearEquivalence = Draw::Atoi(a[3]) != 0;
+      int KeepContact            = Draw::Atoi(a[4]);
       Sweep->SetMode(TopoDS::Wire(Guide),
                      CurvilinearEquivalence,
                      (BRepFill_TypeOfContact)KeepContact);
@@ -783,8 +784,8 @@ static int addsweep(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  TopoDS_Shape              Section;
-  TopoDS_Vertex             Vertex;
+  TopoDS_Shape         Section;
+  TopoDS_Vertex        Vertex;
   occ::handle<Law_Interpol> thelaw;
 
   Section = DBRep::Get(a[1], TopAbs_SHAPE);
@@ -834,7 +835,7 @@ static int addsweep(Draw_Interpretor& di, int n, const char** a)
       }
       else
       { // law of interpolation
-        int                          ii, L = nbreal / 2;
+        int     ii, L = nbreal / 2;
         NCollection_Array1<gp_Pnt2d> ParAndRad(1, L);
         for (ii = 1; ii <= L; ii++, cur += 2)
         {
@@ -919,8 +920,8 @@ static int buildsweep(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  TopoDS_Shape result;
-  int          cur = 2;
+  TopoDS_Shape     result;
+  int cur = 2;
   if (n > cur)
   {
     BRepBuilderAPI_TransitionMode Transition = BRepBuilderAPI_Transformed;
@@ -1019,10 +1020,10 @@ static int simulsweep(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  char                                     name[100];
-  NCollection_List<TopoDS_Shape>           List;
+  char                               name[100];
+  NCollection_List<TopoDS_Shape>               List;
   NCollection_List<TopoDS_Shape>::Iterator it;
-  int                                      N, ii;
+  int                   N, ii;
   N = Draw::Atoi(a[2]);
 
   if (n > 3)

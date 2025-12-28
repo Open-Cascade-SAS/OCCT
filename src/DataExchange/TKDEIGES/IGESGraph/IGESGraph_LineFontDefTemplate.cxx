@@ -26,10 +26,10 @@ IGESGraph_LineFontDefTemplate::IGESGraph_LineFontDefTemplate() {}
 
 // This class inherits from IGESData_LineFontEntity
 
-void IGESGraph_LineFontDefTemplate::Init(const int                                  anOrientation,
+void IGESGraph_LineFontDefTemplate::Init(const int                anOrientation,
                                          const occ::handle<IGESBasic_SubfigureDef>& aTemplate,
-                                         const double                               aDistance,
-                                         const double                               aScale)
+                                         const double                   aDistance,
+                                         const double                   aScale)
 {
   theOrientation    = anOrientation;
   theTemplateEntity = aTemplate;

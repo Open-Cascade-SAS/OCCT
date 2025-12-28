@@ -35,7 +35,7 @@ inline void ShapeFix_Wire::SetSurface(const occ::handle<Geom_Surface>& surf)
 
 //=================================================================================================
 
-inline void ShapeFix_Wire::SetFace(const TopoDS_Face&                        theFace,
+inline void ShapeFix_Wire::SetFace(const TopoDS_Face&                   theFace,
                                    const occ::handle<ShapeAnalysis_Surface>& theSurfaceAnalysis)
 {
   myAnalyzer->SetFace(theFace, theSurfaceAnalysis);
@@ -50,8 +50,7 @@ inline void ShapeFix_Wire::SetSurface(const occ::handle<ShapeAnalysis_Surface>& 
 
 //=================================================================================================
 
-inline void ShapeFix_Wire::SetSurface(const occ::handle<Geom_Surface>& surf,
-                                      const TopLoc_Location&           loc)
+inline void ShapeFix_Wire::SetSurface(const occ::handle<Geom_Surface>& surf, const TopLoc_Location& loc)
 {
   myAnalyzer->SetSurface(surf, loc);
 }

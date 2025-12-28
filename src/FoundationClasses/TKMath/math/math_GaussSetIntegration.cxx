@@ -33,10 +33,10 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
     : Val(1, F.NbEquations())
 {
 
-  int         NbEqua = F.NbEquations(), NbVar = F.NbVariables();
-  int         i;
-  bool        IsOk;
-  math_Vector FVal1(1, NbEqua), FVal2(1, NbEqua), Tval(1, NbVar);
+  int NbEqua = F.NbEquations(), NbVar = F.NbVariables();
+  int i;
+  bool IsOk;
+  math_Vector      FVal1(1, NbEqua), FVal2(1, NbEqua), Tval(1, NbVar);
 
   // Verification
   Standard_NotImplemented_Raise_if(NbVar != 1
@@ -46,11 +46,11 @@ math_GaussSetIntegration::math_GaussSetIntegration(math_FunctionSet&         F,
   // Initialisations
   Done = false;
 
-  double      Xdeb  = Lower.Value(Lower.Lower());
-  double      Xfin  = Upper.Value(Upper.Lower());
-  int         Ordre = Order.Value(Order.Lower());
-  double      Xm, Xr;
-  math_Vector GaussP(1, Ordre), GaussW(1, Ordre);
+  double    Xdeb  = Lower.Value(Lower.Lower());
+  double    Xfin  = Upper.Value(Upper.Lower());
+  int Ordre = Order.Value(Order.Lower());
+  double    Xm, Xr;
+  math_Vector      GaussP(1, Ordre), GaussW(1, Ordre);
 
   // Recuperation des points de Gauss dans le fichier GaussPoints.
   math::GaussPoints(Ordre, GaussP);

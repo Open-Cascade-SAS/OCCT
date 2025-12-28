@@ -63,8 +63,7 @@ std::size_t GeomHash_SurfaceHasher::operator()(
   {
     return GeomHash_ConicalSurfaceHasher{}(aCone);
   }
-  if (occ::handle<Geom_SphericalSurface> aSphere =
-        occ::down_cast<Geom_SphericalSurface>(theSurface))
+  if (occ::handle<Geom_SphericalSurface> aSphere = occ::down_cast<Geom_SphericalSurface>(theSurface))
   {
     return GeomHash_SphericalSurfaceHasher{}(aSphere);
   }

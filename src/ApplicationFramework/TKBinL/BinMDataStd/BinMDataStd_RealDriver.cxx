@@ -41,20 +41,20 @@ occ::handle<TDF_Attribute> BinMDataStd_RealDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataStd_Real> anAtt = occ::down_cast<TDataStd_Real>(theTarget);
-  double                     aValue;
-  bool                       ok = theSource >> aValue;
+  double         aValue;
+  bool      ok = theSource >> aValue;
   if (ok)
     anAtt->Set(aValue);
   if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()
       >= TDocStd_FormatVersion_VERSION_9)
   { // process user defined guid
-    const int&    aPos = theSource.Position();
-    Standard_GUID aGuid;
+    const int& aPos = theSource.Position();
+    Standard_GUID           aGuid;
     ok = theSource >> aGuid;
     if (!ok)
     {
@@ -78,7 +78,7 @@ bool BinMDataStd_RealDriver::Paste(const BinObjMgt_Persistent&       theSource,
 //=======================================================================
 
 void BinMDataStd_RealDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   BinObjMgt_Persistent&             theTarget,
+                                   BinObjMgt_Persistent&        theTarget,
                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_Real> anAtt = occ::down_cast<TDataStd_Real>(theSource);

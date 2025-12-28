@@ -24,7 +24,7 @@ RWStepVisual_RWPresentationLayerUsage::RWStepVisual_RWPresentationLayerUsage() {
 
 void RWStepVisual_RWPresentationLayerUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                                             num,
+  const int                           num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepVisual_PresentationLayerUsage>& ent) const
 {
@@ -59,7 +59,7 @@ void RWStepVisual_RWPresentationLayerUsage::ReadStep(
 }
 
 void RWStepVisual_RWPresentationLayerUsage::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepVisual_PresentationLayerUsage>& ent) const
 {
 
@@ -71,7 +71,7 @@ void RWStepVisual_RWPresentationLayerUsage::WriteStep(
 
 void RWStepVisual_RWPresentationLayerUsage::Share(
   const occ::handle<StepVisual_PresentationLayerUsage>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                        iter) const
 {
   iter.AddItem(ent->Assignment());
   iter.AddItem(ent->Presentation());

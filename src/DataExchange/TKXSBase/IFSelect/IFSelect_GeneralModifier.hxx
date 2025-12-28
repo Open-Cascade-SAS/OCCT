@@ -108,7 +108,7 @@ protected:
 private:
   occ::handle<IFSelect_Selection> thesel;
   occ::handle<IFSelect_Dispatch>  thedisp;
-  bool                            thechgr;
+  bool           thechgr;
 };
 
 #endif // _IFSelect_GeneralModifier_HeaderFile

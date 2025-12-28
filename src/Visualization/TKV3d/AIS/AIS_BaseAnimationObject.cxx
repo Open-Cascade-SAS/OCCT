@@ -19,10 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_BaseAnimationObject, AIS_Animation)
 
 //=================================================================================================
 
-AIS_BaseAnimationObject::AIS_BaseAnimationObject(
-  const TCollection_AsciiString&             theAnimationName,
-  const occ::handle<AIS_InteractiveContext>& theContext,
-  const occ::handle<AIS_InteractiveObject>&  theObject)
+AIS_BaseAnimationObject::AIS_BaseAnimationObject(const TCollection_AsciiString& theAnimationName,
+                                                 const occ::handle<AIS_InteractiveContext>& theContext,
+                                                 const occ::handle<AIS_InteractiveObject>&  theObject)
     : AIS_Animation(theAnimationName),
       myContext(theContext),
       myObject(theObject)
@@ -65,16 +64,15 @@ void AIS_BaseAnimationObject::invalidateViewer()
   // Invalidate immediate view only if it is going out of z-fit range.
   // This might be sub-optimal performing this for each animated objects in case of many animated
   // objects.
-  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter =
-         myContext->CurrentViewer()->DefinedViewIterator();
+  for (NCollection_List<occ::handle<V3d_View>>::Iterator aDefViewIter = myContext->CurrentViewer()->DefinedViewIterator();
        aDefViewIter.More();
        aDefViewIter.Next())
   {
     const occ::handle<V3d_View>& aView       = aDefViewIter.Value();
-    const Bnd_Box                aMinMaxBox  = aView->View()->MinMaxValues(false);
-    const Bnd_Box                aGraphicBox = aView->View()->MinMaxValues(true);
-    double                       aZNear      = 0.0;
-    double                       aZFar       = 0.0;
+    const Bnd_Box           aMinMaxBox  = aView->View()->MinMaxValues(false);
+    const Bnd_Box           aGraphicBox = aView->View()->MinMaxValues(true);
+    double           aZNear      = 0.0;
+    double           aZFar       = 0.0;
     if (aView->Camera()->ZFitAll(aDefViewIter.Value()->AutoZFitScaleFactor(),
                                  aMinMaxBox,
                                  aGraphicBox,

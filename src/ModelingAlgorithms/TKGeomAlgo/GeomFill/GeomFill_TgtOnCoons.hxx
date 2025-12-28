@@ -31,7 +31,8 @@ class GeomFill_TgtOnCoons : public GeomFill_TgtField
 {
 
 public:
-  Standard_EXPORT GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K, const int I);
+  Standard_EXPORT GeomFill_TgtOnCoons(const occ::handle<GeomFill_CoonsAlgPatch>& K,
+                                      const int                I);
 
   //! Computes the value of the field of tangency at
   //! parameter W.
@@ -49,7 +50,7 @@ public:
 
 private:
   occ::handle<GeomFill_CoonsAlgPatch> myK;
-  int                                 ibound;
+  int               ibound;
 };
 
 #endif // _GeomFill_TgtOnCoons_HeaderFile

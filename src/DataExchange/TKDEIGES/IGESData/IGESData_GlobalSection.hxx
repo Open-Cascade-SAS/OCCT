@@ -48,8 +48,7 @@ public:
   //! Fills GlobalSection from a ParamSet (i.e. taken from file)
   //! undefined parameters do not change default values when defined
   //! Fills Check about Corrections or Fails
-  Standard_EXPORT void Init(const occ::handle<Interface_ParamSet>& params,
-                            occ::handle<Interface_Check>&          ach);
+  Standard_EXPORT void Init(const occ::handle<Interface_ParamSet>& params, occ::handle<Interface_Check>& ach);
 
   //! Copies data referenced by Handle (that is, Strings)
   //! useful to "isolate" a GlobalSection after copy by "="
@@ -171,20 +170,21 @@ public:
   //! - NN is minute (00-59)
   //! - DD is day (01-31),
   //! - SS is second (00-59).
-  Standard_EXPORT static occ::handle<TCollection_HAsciiString> NewDateString(const int year,
-                                                                             const int month,
-                                                                             const int day,
-                                                                             const int hour,
-                                                                             const int minut,
-                                                                             const int second,
-                                                                             const int mode = -1);
+  Standard_EXPORT static occ::handle<TCollection_HAsciiString> NewDateString(
+    const int year,
+    const int month,
+    const int day,
+    const int hour,
+    const int minut,
+    const int second,
+    const int mode = -1);
 
   //! Converts the string given in the
   //! form YYMMDD.HHNNSS or YYYYMMDD.HHNNSS to either
   //! YYMMDD.HHNNSS, YYYYMMDD.HHNNSS or YYYY-MM-DD:HH-NN-SS.
   Standard_EXPORT static occ::handle<TCollection_HAsciiString> NewDateString(
     const occ::handle<TCollection_HAsciiString>& date,
-    const int                                    mode = 1);
+    const int                  mode = 1);
 
   //! Returns the unit value (in
   //! meters) that the IGES file was written in.
@@ -249,32 +249,32 @@ public:
   Standard_EXPORT void SetApplicationProtocol(const occ::handle<TCollection_HAsciiString>& val);
 
 private:
-  char                                  theSeparator;
-  char                                  theEndMark;
+  char               theSeparator;
+  char               theEndMark;
   occ::handle<TCollection_HAsciiString> theSendName;
   occ::handle<TCollection_HAsciiString> theFileName;
   occ::handle<TCollection_HAsciiString> theSystemId;
   occ::handle<TCollection_HAsciiString> theInterfaceVersion;
-  int                                   theIntegerBits;
-  int                                   theMaxPower10Single;
-  int                                   theMaxDigitsSingle;
-  int                                   theMaxPower10Double;
-  int                                   theMaxDigitsDouble;
+  int                 theIntegerBits;
+  int                 theMaxPower10Single;
+  int                 theMaxDigitsSingle;
+  int                 theMaxPower10Double;
+  int                 theMaxDigitsDouble;
   occ::handle<TCollection_HAsciiString> theReceiveName;
-  double                                theScale;
-  double                                theCascadeUnit;
-  int                                   theUnitFlag;
+  double                    theScale;
+  double                    theCascadeUnit;
+  int                 theUnitFlag;
   occ::handle<TCollection_HAsciiString> theUnitName;
-  int                                   theLineWeightGrad;
-  double                                theMaxLineWeight;
+  int                 theLineWeightGrad;
+  double                    theMaxLineWeight;
   occ::handle<TCollection_HAsciiString> theDate;
-  double                                theResolution;
-  double                                theMaxCoord;
-  bool                                  hasMaxCoord;
+  double                    theResolution;
+  double                    theMaxCoord;
+  bool                 hasMaxCoord;
   occ::handle<TCollection_HAsciiString> theAuthorName;
   occ::handle<TCollection_HAsciiString> theCompanyName;
-  int                                   theIGESVersion;
-  int                                   theDraftingStandard;
+  int                 theIGESVersion;
+  int                 theDraftingStandard;
   occ::handle<TCollection_HAsciiString> theLastChangeDate;
   occ::handle<TCollection_HAsciiString> theAppliProtocol;
 };

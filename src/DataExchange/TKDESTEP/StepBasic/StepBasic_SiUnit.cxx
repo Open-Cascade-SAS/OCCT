@@ -19,7 +19,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnit, StepBasic_NamedUnit)
 
 StepBasic_SiUnit::StepBasic_SiUnit() {}
 
-void StepBasic_SiUnit::Init(const bool                 hasAprefix,
+void StepBasic_SiUnit::Init(const bool     hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName)
 {
@@ -64,8 +64,7 @@ StepBasic_SiUnitName StepBasic_SiUnit::Name() const
   return name;
 }
 
-void StepBasic_SiUnit::SetDimensions(
-  const occ::handle<StepBasic_DimensionalExponents>& /*aDimensions*/)
+void StepBasic_SiUnit::SetDimensions(const occ::handle<StepBasic_DimensionalExponents>& /*aDimensions*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.

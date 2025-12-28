@@ -74,7 +74,7 @@ void gp_Quaternion::SetRotation(const gp_Vec& theVecFrom,
 
 void gp_Quaternion::SetVectorAndAngle(const gp_Vec& theAxis, const double theAngle)
 {
-  gp_Vec anAxis      = theAxis.Normalized();
+  gp_Vec        anAxis      = theAxis.Normalized();
   double anAngleHalf = 0.5 * theAngle;
   double sin_a       = std::sin(anAngleHalf);
   Set(anAxis.X() * sin_a, anAxis.Y() * sin_a, anAxis.Z() * sin_a, std::cos(anAngleHalf));
@@ -150,18 +150,18 @@ gp_Mat gp_Quaternion::GetMatrix() const
 {
   double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
   double s = 2.0 / SquareNorm();
-  x2       = x * s;
-  y2       = y * s;
-  z2       = z * s;
-  xx       = x * x2;
-  xy       = x * y2;
-  xz       = x * z2;
-  yy       = y * y2;
-  yz       = y * z2;
-  zz       = z * z2;
-  wx       = w * x2;
-  wy       = w * y2;
-  wz       = w * z2;
+  x2              = x * s;
+  y2              = y * s;
+  z2              = z * s;
+  xx              = x * x2;
+  xy              = x * y2;
+  xz              = x * z2;
+  yy              = y * y2;
+  yz              = y * z2;
+  zz              = z * z2;
+  wx              = w * x2;
+  wy              = w * y2;
+  wz              = w * z2;
 
   gp_Mat aMat;
 
@@ -195,16 +195,19 @@ namespace
 
 struct gp_EulerSequence_Parameters
 {
-  int i;            // first rotation axis
-  int j;            // next axis of rotation
-  int k;            // third axis
-                    // clang-format off
+  int i;           // first rotation axis
+  int j;           // next axis of rotation
+  int k;           // third axis
+                                // clang-format off
   bool isOdd;       // true if order of two first rotation axes is odd permutation, e.g. XZ
-                    // clang-format on
+                                // clang-format on
   bool isTwoAxes;   // true if third rotation is about the same axis as first
   bool isExtrinsic; // true if rotations are made around fixed axes
 
-  gp_EulerSequence_Parameters(int theAx1, bool theisOdd, bool theisTwoAxes, bool theisExtrinsic)
+  gp_EulerSequence_Parameters(int theAx1,
+                              bool theisOdd,
+                              bool theisTwoAxes,
+                              bool theisExtrinsic)
       : i(theAx1),
         j(1 + (theAx1 + (theisOdd ? 1 : 0)) % 3),
         k(1 + (theAx1 + (theisOdd ? 0 : 1)) % 3),
@@ -218,8 +221,8 @@ struct gp_EulerSequence_Parameters
 gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq)
 {
   typedef gp_EulerSequence_Parameters Params;
-  const bool                          F = false;
-  const bool                          T = true;
+  const bool              F = false;
+  const bool              T = true;
 
   switch (theSeq)
   {
@@ -294,9 +297,9 @@ gp_EulerSequence_Parameters translateEulerSequence(const gp_EulerSequence theSeq
 //=================================================================================================
 
 void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
-                                   const double           theAlpha,
-                                   const double           theBeta,
-                                   const double           theGamma)
+                                   const double    theAlpha,
+                                   const double    theBeta,
+                                   const double    theGamma)
 {
   gp_EulerSequence_Parameters o = translateEulerSequence(theOrder);
 
@@ -350,9 +353,9 @@ void gp_Quaternion::SetEulerAngles(const gp_EulerSequence theOrder,
 //=================================================================================================
 
 void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
-                                   double&                theAlpha,
-                                   double&                theBeta,
-                                   double&                theGamma) const
+                                   double&         theAlpha,
+                                   double&         theBeta,
+                                   double&         theGamma) const
 {
   gp_Mat M = GetMatrix();
 
@@ -396,8 +399,8 @@ void gp_Quaternion::GetEulerAngles(const gp_EulerSequence theOrder,
   if (!o.isExtrinsic)
   {
     double aFirst = theAlpha;
-    theAlpha      = theGamma;
-    theGamma      = aFirst;
+    theAlpha             = theGamma;
+    theGamma             = aFirst;
   }
 }
 

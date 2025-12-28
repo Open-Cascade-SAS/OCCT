@@ -88,9 +88,9 @@ public:
   //! or equal to <LinearTolerance> and
   //! . the distance between <Other>.Location() and <me> is lower
   //! or equal to LinearTolerance.
-  Standard_EXPORT bool IsCoaxial(const gp_Ax1& Other,
-                                 const double  AngularTolerance,
-                                 const double  LinearTolerance) const;
+  Standard_EXPORT bool IsCoaxial(const gp_Ax1&       Other,
+                                             const double AngularTolerance,
+                                             const double LinearTolerance) const;
 
   //! Returns True if the direction of this and another axis are normal to each other.
   //! That is, if the angle between the two axes is equal to Pi/2.
@@ -124,7 +124,10 @@ public:
   constexpr void Reverse() noexcept { vdir.Reverse(); }
 
   //! Reverses the unit vector of this axis and creates a new one.
-  [[nodiscard]] constexpr gp_Ax1 Reversed() const noexcept { return gp_Ax1(loc, vdir.Reversed()); }
+  [[nodiscard]] constexpr gp_Ax1 Reversed() const noexcept
+  {
+    return gp_Ax1(loc, vdir.Reversed());
+  }
 
   //! Performs the symmetrical transformation of an axis
   //! placement with respect to the point P which is the
@@ -190,7 +193,8 @@ public:
   //! Applies a scaling transformation to this axis with:
   //! - scale factor theS, and
   //! - center theP and creates a new axis.
-  [[nodiscard]] constexpr gp_Ax1 Scaled(const gp_Pnt& theP, const double theS) const noexcept
+  [[nodiscard]] constexpr gp_Ax1 Scaled(const gp_Pnt&       theP,
+                                             const double theS) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.Scale(theP, theS);
@@ -238,7 +242,8 @@ public:
   //! Translates this axis by:
   //! the vector (theP1, theP2) defined from point theP1 to point theP2.
   //! and creates a new one.
-  [[nodiscard]] constexpr gp_Ax1 Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Ax1 Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Ax1 A1 = *this;
     A1.loc.Translate(theP1, theP2);
@@ -249,7 +254,8 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   gp_Pnt loc;

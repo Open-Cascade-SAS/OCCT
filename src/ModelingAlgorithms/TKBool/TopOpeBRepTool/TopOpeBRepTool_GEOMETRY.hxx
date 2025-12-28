@@ -58,8 +58,9 @@ Standard_EXPORT occ::handle<Geom2d_Curve> BASISCURVE2D(const occ::handle<Geom2d_
 // Standard_EXPORT bool FUN_tool_IsUViso(const occ::handle<Geom2d_Curve>&
 // PC,bool& isoU,bool& isoV,gp_Dir2d& d2d,gp_Pnt2d& O2d);
 Standard_EXPORT gp_Dir FUN_tool_dirC(const double par, const occ::handle<Geom_Curve>& C);
-Standard_EXPORT bool   FUN_tool_onapex(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S);
-Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S);
+Standard_EXPORT bool FUN_tool_onapex(const gp_Pnt2d&             p2d,
+                                                 const occ::handle<Geom_Surface>& S);
+Standard_EXPORT gp_Dir           FUN_tool_ngS(const gp_Pnt2d& p2d, const occ::handle<Geom_Surface>& S);
 
 // ----------------------------------------------------------------------
 // curve type,surface type :
@@ -71,11 +72,11 @@ Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Curve>& C3d);
 Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom2d_Curve>& pc);
 Standard_EXPORT bool FUN_tool_quad(const occ::handle<Geom_Surface>& S);
 Standard_EXPORT bool FUN_tool_closed(const occ::handle<Geom_Surface>& S,
-                                     bool&                            uclosed,
-                                     double&                          uperiod,
-                                     bool&                            vclosed,
-                                     double&                          vperiod);
-Standard_EXPORT void FUN_tool_UpdateBnd2d(Bnd_Box2d& B2d, const Bnd_Box2d& newB2d);
+                                                 bool&           uclosed,
+                                                 double&              uperiod,
+                                                 bool&           vclosed,
+                                                 double&              vperiod);
+Standard_EXPORT void             FUN_tool_UpdateBnd2d(Bnd_Box2d& B2d, const Bnd_Box2d& newB2d);
 
 // ----------------------------------------------------------------------
 // oriented vectors :

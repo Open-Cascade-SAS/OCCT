@@ -30,7 +30,7 @@ RWStepBasic_RWDocumentProductEquivalence::RWStepBasic_RWDocumentProductEquivalen
 
 void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_DocumentProductEquivalence>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
                    aDocumentProductAssociation_Name);
 
   occ::handle<TCollection_HAsciiString> aDocumentProductAssociation_Description;
-  bool                                  hasDocumentProductAssociation_Description = true;
+  bool                 hasDocumentProductAssociation_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -88,7 +88,7 @@ void RWStepBasic_RWDocumentProductEquivalence::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_DocumentProductEquivalence>& ent) const
 {
 
@@ -112,7 +112,7 @@ void RWStepBasic_RWDocumentProductEquivalence::WriteStep(
 
 void RWStepBasic_RWDocumentProductEquivalence::Share(
   const occ::handle<StepBasic_DocumentProductEquivalence>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of DocumentProductAssociation

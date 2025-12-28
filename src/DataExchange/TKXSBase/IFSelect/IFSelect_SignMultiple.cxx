@@ -27,8 +27,8 @@ IFSelect_SignMultiple::IFSelect_SignMultiple(const char* name)
 }
 
 void IFSelect_SignMultiple::Add(const occ::handle<IFSelect_Signature>& subsign,
-                                const int                              tabul,
-                                const bool                             maxi)
+                                const int            tabul,
+                                const bool            maxi)
 {
   if (subsign.IsNull())
     return;
@@ -37,20 +37,20 @@ void IFSelect_SignMultiple::Add(const occ::handle<IFSelect_Signature>& subsign,
 }
 
 const char* IFSelect_SignMultiple::Value(const occ::handle<Standard_Transient>&       ent,
-                                         const occ::handle<Interface_InterfaceModel>& model) const
+                                              const occ::handle<Interface_InterfaceModel>& model) const
 {
   theval.Clear();
   int i, nb = thesubs.Length();
   for (i = 1; i <= nb; i++)
   {
-    int  tabul = thetabs.Value(i);
+    int tabul = thetabs.Value(i);
     bool maxi  = (tabul < 0);
     if (maxi)
       tabul = -tabul;
     occ::handle<IFSelect_Signature> sign = occ::down_cast<IFSelect_Signature>(thesubs.Value(i));
-    const char*                     val  = sign->Value(ent, model);
-    TCollection_AsciiString         str(val);
-    int                             sl = str.Length();
+    const char*           val  = sign->Value(ent, model);
+    TCollection_AsciiString    str(val);
+    int           sl = str.Length();
     str.LeftJustify(tabul, ' ');
     if (sl > tabul && maxi)
     {
@@ -64,9 +64,9 @@ const char* IFSelect_SignMultiple::Value(const occ::handle<Standard_Transient>& 
 }
 
 bool IFSelect_SignMultiple::Matches(const occ::handle<Standard_Transient>&       ent,
-                                    const occ::handle<Interface_InterfaceModel>& model,
-                                    const TCollection_AsciiString&               text,
-                                    const bool                                   exact) const
+                                                const occ::handle<Interface_InterfaceModel>& model,
+                                                const TCollection_AsciiString&          text,
+                                                const bool                  exact) const
 {
   if (exact)
     return IFSelect_Signature::Matches(ent, model, text, exact);

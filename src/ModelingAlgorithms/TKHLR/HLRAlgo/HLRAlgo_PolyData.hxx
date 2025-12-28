@@ -23,12 +23,16 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <HLRAlgo_TriangleData.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 class HLRAlgo_EdgeStatus;
 
@@ -52,7 +56,7 @@ public:
 
   struct Triangle
   {
-    gp_XY  V1, V2, V3;
+    gp_XY         V1, V2, V3;
     double Param, TolParam, TolAng, Tolerance;
   };
 
@@ -62,8 +66,7 @@ public:
 
   Standard_EXPORT void HTData(const occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>>& HTData);
 
-  Standard_EXPORT void HPHDat(
-    const occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>>& HPHDat);
+  Standard_EXPORT void HPHDat(const occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>>& HPHDat);
 
   void FaceIndex(const int I);
 
@@ -83,7 +86,7 @@ public:
   Standard_EXPORT void HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
                                       Triangle&                       theTriangle,
                                       HLRAlgo_BiPoint::IndicesT&      theIndices,
-                                      const bool                      HidingShell,
+                                      const bool          HidingShell,
                                       HLRAlgo_EdgeStatus&             status);
 
   FaceIndices& Indices() { return myFaceIndices; }
@@ -94,14 +97,14 @@ private:
   //! evident.
   void hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoints,
                          Triangle&                       theTriangle,
-                         const bool                      Crossing,
-                         const bool                      HideBefore,
-                         const int                       TrFlags,
+                         const bool          Crossing,
+                         const bool          HideBefore,
+                         const int          TrFlags,
                          HLRAlgo_EdgeStatus&             status);
 
-  FaceIndices                                              myFaceIndices;
-  occ::handle<NCollection_HArray1<gp_XYZ>>                 myHNodes;
-  occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>>   myHTData;
+  FaceIndices                    myFaceIndices;
+  occ::handle<NCollection_HArray1<gp_XYZ>>    myHNodes;
+  occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>> myHTData;
   occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>> myHPHDat;
 };
 

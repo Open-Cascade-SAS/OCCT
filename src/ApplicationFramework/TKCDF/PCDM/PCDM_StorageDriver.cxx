@@ -28,13 +28,14 @@
 #include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver, PCDM_Writer)
 
 #define STORAGE_VERSION "STORAGE_VERSION:"
 
-void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>&  aDocument,
+void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>&       aDocument,
                                const TCollection_ExtendedString& aFileName,
                                const Message_ProgressRange& /*theRange*/)
 {
@@ -42,7 +43,7 @@ void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>&  aDocument,
 
   occ::handle<Storage_Data> theData = new Storage_Data;
 
-  bool             Failure(false);
+  bool Failure(false);
   Standard_SStream aMsg;
   aMsg << "error during Make:";
   NCollection_Sequence<occ::handle<PCDM_Document>> thePersistentDocuments;
@@ -115,13 +116,13 @@ void PCDM_StorageDriver::Write(const occ::handle<CDM_Document>& /*aDocument*/,
 occ::handle<PCDM_Document> PCDM_StorageDriver::Make(const occ::handle<CDM_Document>&)
 {
   occ::handle<PCDM_Document> voidDocument;
-  Standard_SStream           aMsg;
+  Standard_SStream      aMsg;
   aMsg << "No Make method were implemented in this Driver" << DynamicType()->Name() << (char)0;
   throw Standard_NotImplemented(aMsg.str().c_str());
 }
 
-void PCDM_StorageDriver::Make(const occ::handle<CDM_Document>&                  aDocument,
-                              NCollection_Sequence<occ::handle<PCDM_Document>>& Documents)
+void PCDM_StorageDriver::Make(const occ::handle<CDM_Document>& aDocument,
+                              NCollection_Sequence<occ::handle<PCDM_Document>>&    Documents)
 {
   Documents.Append(Make(aDocument));
 }

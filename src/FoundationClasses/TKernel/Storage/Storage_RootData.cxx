@@ -18,8 +18,10 @@
 #include <Storage_Root.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
+#include <Storage_Root.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Storage_RootData, Standard_Transient)
 
@@ -47,7 +49,7 @@ bool Storage_RootData::Read(const occ::handle<Storage_BaseDriver>& theDriver)
   }
 
   TCollection_AsciiString aRootName, aTypeName;
-  int                     aRef;
+  int        aRef;
 
   int len = theDriver->RootSectionSize();
   for (int i = 1; i <= len; i++)
@@ -90,8 +92,7 @@ void Storage_RootData::AddRoot(const occ::handle<Storage_Root>& aRoot)
 
 occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Storage_RootData::Roots() const
 {
-  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> anObjectsSeq =
-    new NCollection_HSequence<occ::handle<Storage_Root>>;
+  occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>>         anObjectsSeq = new NCollection_HSequence<occ::handle<Storage_Root>>;
   NCollection_DataMap<TCollection_AsciiString, occ::handle<Storage_Root>>::Iterator it(myObjects);
 
   for (; it.More(); it.Next())
@@ -127,7 +128,7 @@ void Storage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
   }
 }
 
-void Storage_RootData::UpdateRoot(const TCollection_AsciiString&          aName,
+void Storage_RootData::UpdateRoot(const TCollection_AsciiString&     aName,
                                   const occ::handle<Standard_Persistent>& aPers)
 {
   if (myObjects.IsBound(aName))

@@ -36,10 +36,10 @@
 // pmn 8/10/98 : On retourne toujours une distance. (BUC60360)
 //=======================================================================
 bool BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
-                                  const occ::handle<Adaptor3d_Surface>&,
-                                  const occ::handle<Adaptor2d_Curve2d>& C,
-                                  double&                               Paramproj,
-                                  double&                               Dist)
+                                              const occ::handle<Adaptor3d_Surface>&,
+                                              const occ::handle<Adaptor2d_Curve2d>& C,
+                                              double&                   Paramproj,
+                                              double&                   Dist)
 {
   Paramproj = BRepBlend_HCurve2dTool::FirstParameter(C);
   gp_Pnt2d P2d;
@@ -54,15 +54,15 @@ bool BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
     Dist      = P2d.Distance(P);
   }
 
-  const double         epsX = 1.e-8;
-  const int            Nbu  = 20;
-  const double         Tol  = 1.e-5;
-  Extrema_EPCOfExtPC2d extrema(P, *C, Nbu, epsX, Tol);
+  const double    epsX = 1.e-8;
+  const int Nbu  = 20;
+  const double    Tol  = 1.e-5;
+  Extrema_EPCOfExtPC2d   extrema(P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone())
     return true;
 
   const int Nbext  = extrema.NbExt();
-  double    aDist2 = Dist * Dist;
+  double          aDist2 = Dist * Dist;
   for (int i = 1; i <= Nbext; i++)
   {
     if (extrema.SquareDistance(i) < aDist2)
@@ -81,21 +81,21 @@ bool BRepBlend_BlendTool::Project(const gp_Pnt2d& P,
 // purpose  : Intersection d'un segment avec une courbe
 //=======================================================================
 bool BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
-                                 const gp_Pnt2d& P2,
-                                 const occ::handle<Adaptor3d_Surface>&,
-                                 const occ::handle<Adaptor2d_Curve2d>& C,
-                                 double&                               Param,
-                                 double&                               Dist)
+                                             const gp_Pnt2d& P2,
+                                             const occ::handle<Adaptor3d_Surface>&,
+                                             const occ::handle<Adaptor2d_Curve2d>& C,
+                                             double&                   Param,
+                                             double&                   Dist)
 {
-  const double   Tol = 1.e-8;
-  const gp_Vec2d v(P1, P2);
-  const double   mag = v.Magnitude();
+  const double Tol = 1.e-8;
+  const gp_Vec2d      v(P1, P2);
+  const double mag = v.Magnitude();
   if (mag < Tol)
     return false;
 
-  gp_Dir2d                 d(v);
+  gp_Dir2d            d(v);
   occ::handle<Geom2d_Line> bid = new Geom2d_Line(P1, d);
-  Geom2dAdaptor_Curve      seg(bid, -0.01 * mag, 1.01 * mag);
+  Geom2dAdaptor_Curve seg(bid, -0.01 * mag, 1.01 * mag);
 
   Geom2dInt_GInter inter(seg, *C, Tol, Tol);
   if (!inter.IsDone())
@@ -112,22 +112,22 @@ bool BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
 }
 
 int BRepBlend_BlendTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>&,
-                                    const double,
-                                    const double)
+                                                 const double,
+                                                 const double)
 {
   return 10;
 }
 
 int BRepBlend_BlendTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>&,
-                                    const double,
-                                    const double)
+                                                 const double,
+                                                 const double)
 {
   return 10;
 }
 
 void BRepBlend_BlendTool::Bounds(const occ::handle<Adaptor2d_Curve2d>& A,
-                                 double&                               Ufirst,
-                                 double&                               Ulast)
+                                 double&                   Ufirst,
+                                 double&                   Ulast)
 {
   Ufirst = BRepBlend_HCurve2dTool::FirstParameter(A);
   Ulast  = BRepBlend_HCurve2dTool::LastParameter(A);

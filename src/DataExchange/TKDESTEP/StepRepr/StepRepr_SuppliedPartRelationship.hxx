@@ -29,6 +29,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_SuppliedPartRelationship,
                           StepBasic_ProductDefinitionRelationship)
+
 };
 
 #endif // _StepRepr_SuppliedPartRelationship_HeaderFile

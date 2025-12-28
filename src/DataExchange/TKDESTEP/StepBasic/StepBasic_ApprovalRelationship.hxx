@@ -44,8 +44,7 @@ public:
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Description() const;
 
-  Standard_EXPORT void SetRelatingApproval(
-    const occ::handle<StepBasic_Approval>& aRelatingApproval);
+  Standard_EXPORT void SetRelatingApproval(const occ::handle<StepBasic_Approval>& aRelatingApproval);
 
   Standard_EXPORT occ::handle<StepBasic_Approval> RelatingApproval() const;
 

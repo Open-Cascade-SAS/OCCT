@@ -42,21 +42,21 @@ public:
 
   Standard_EXPORT BRepPrim_FaceBuilder(const BRep_Builder& B, const occ::handle<Geom_Surface>& S);
 
-  Standard_EXPORT BRepPrim_FaceBuilder(const BRep_Builder&              B,
+  Standard_EXPORT BRepPrim_FaceBuilder(const BRep_Builder&         B,
                                        const occ::handle<Geom_Surface>& S,
-                                       const double                     UMin,
-                                       const double                     UMax,
-                                       const double                     VMin,
-                                       const double                     VMax);
+                                       const double         UMin,
+                                       const double         UMax,
+                                       const double         VMin,
+                                       const double         VMax);
 
   Standard_EXPORT void Init(const BRep_Builder& B, const occ::handle<Geom_Surface>& S);
 
-  Standard_EXPORT void Init(const BRep_Builder&              B,
+  Standard_EXPORT void Init(const BRep_Builder&         B,
                             const occ::handle<Geom_Surface>& S,
-                            const double                     UMin,
-                            const double                     UMax,
-                            const double                     VMin,
-                            const double                     VMax);
+                            const double         UMin,
+                            const double         UMax,
+                            const double         VMin,
+                            const double         VMax);
 
   Standard_EXPORT const TopoDS_Face& Face() const;
   Standard_EXPORT                    operator TopoDS_Face();

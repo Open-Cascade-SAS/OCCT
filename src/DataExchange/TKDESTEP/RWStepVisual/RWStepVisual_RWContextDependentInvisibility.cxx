@@ -21,12 +21,13 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_InvisibilityContext.hxx>
+#include <StepVisual_InvisibleItem.hxx>
 
 RWStepVisual_RWContextDependentInvisibility::RWStepVisual_RWContextDependentInvisibility() {}
 
 void RWStepVisual_RWContextDependentInvisibility::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepVisual_ContextDependentInvisibility>& ent) const
 {
@@ -39,12 +40,12 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
   // --- inherited field : invisibleItems ---
 
   occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>> aInvisibleItems;
-  StepVisual_InvisibleItem                                   aInvisibleItemsItem;
-  int                                                        nsub1;
+  StepVisual_InvisibleItem                  aInvisibleItemsItem;
+  int                          nsub1;
   if (data->ReadSubList(num, 1, "invisible_items", ach, nsub1))
   {
-    int nb1         = data->NbParams(nsub1);
-    aInvisibleItems = new NCollection_HArray1<StepVisual_InvisibleItem>(1, nb1);
+    int nb1 = data->NbParams(nsub1);
+    aInvisibleItems      = new NCollection_HArray1<StepVisual_InvisibleItem>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -65,7 +66,7 @@ void RWStepVisual_RWContextDependentInvisibility::ReadStep(
 }
 
 void RWStepVisual_RWContextDependentInvisibility::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepVisual_ContextDependentInvisibility>& ent) const
 {
 
@@ -85,7 +86,7 @@ void RWStepVisual_RWContextDependentInvisibility::WriteStep(
 
 void RWStepVisual_RWContextDependentInvisibility::Share(
   const occ::handle<StepVisual_ContextDependentInvisibility>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   int nbElem1 = ent->NbInvisibleItems();

@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_Surface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Surface, StepGeom_GeometricRepresentationItem)
+
 };
 
 #endif // _StepGeom_Surface_HeaderFile

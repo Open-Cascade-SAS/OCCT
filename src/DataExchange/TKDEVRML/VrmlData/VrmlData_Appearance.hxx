@@ -54,10 +54,7 @@ public:
   /**
    * Query the TextureTransform
    */
-  inline const occ::handle<VrmlData_TextureTransform>& TextureTransform() const
-  {
-    return myTTransform;
-  }
+  inline const occ::handle<VrmlData_TextureTransform>& TextureTransform() const { return myTTransform; }
 
   /**
    * Set the Material
@@ -67,10 +64,7 @@ public:
   /**
    * Set the Texture
    */
-  inline void SetTexture(const occ::handle<VrmlData_Texture>& theTexture)
-  {
-    myTexture = theTexture;
-  }
+  inline void SetTexture(const occ::handle<VrmlData_Texture>& theTexture) { myTexture = theTexture; }
 
   /**
    * Set the Texture Transform
@@ -85,8 +79,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.<p>
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
-    const occ::handle<VrmlData_Node>&) const override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>&) const
+    override;
   /**
    * Read the node from input stream.
    */

@@ -78,9 +78,9 @@ bool IGESData_BasicEditor::SetUnitFlag(const int flag)
     return false;
   if (flag < 1 || flag > 11)
     return false;
-  IGESData_GlobalSection                GS   = themodel->GlobalSection();
+  IGESData_GlobalSection           GS   = themodel->GlobalSection();
   occ::handle<TCollection_HAsciiString> name = GS.UnitName();
-  const char*                           nam  = IGESData_BasicEditor::UnitFlagName(flag);
+  const char*                 nam  = IGESData_BasicEditor::UnitFlagName(flag);
   if (nam[0] != '\0')
     name = new TCollection_HAsciiString(nam);
   GS.SetUnitFlag(flag);
@@ -135,7 +135,7 @@ bool IGESData_BasicEditor::SetUnitName(const char* name)
 {
   if (themodel.IsNull())
     return false;
-  int                    flag = IGESData_BasicEditor::UnitNameFlag(name);
+  int       flag = IGESData_BasicEditor::UnitNameFlag(name);
   IGESData_GlobalSection GS   = themodel->GlobalSection();
   if (GS.UnitFlag() == 3)
   {
@@ -158,7 +158,7 @@ void IGESData_BasicEditor::ApplyUnit(const bool enforce)
   if (!enforce && !theunit)
     return;
   IGESData_GlobalSection GS   = themodel->GlobalSection();
-  double                 unit = GS.UnitValue();
+  double          unit = GS.UnitValue();
   if (unit <= 0.)
     return;
   if (unit != 1.)
@@ -214,12 +214,12 @@ void IGESData_BasicEditor::ComputeStatus()
   {
     //  Subordinate (on direct descendants only)
     occ::handle<IGESData_IGESEntity>     ent = themodel->Entity(i);
-    int                                  igt = ent->TypeNumber();
+    int                igt = ent->TypeNumber();
     occ::handle<Interface_GeneralModule> gmodule;
     if (theglib.Select(ent, gmodule, CN))
     {
       occ::handle<IGESData_GeneralModule> gmod = occ::down_cast<IGESData_GeneralModule>(gmodule);
-      Interface_EntityIterator            sh;
+      Interface_EntityIterator       sh;
       gmod->OwnSharedCase(CN, ent, sh);
       for (sh.Start(); sh.More(); sh.Next())
       {
@@ -265,8 +265,8 @@ void IGESData_BasicEditor::ComputeStatus()
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> ent = themodel->Entity(i);
-    int                              bl  = ent->BlankStatus();
-    int                              uf  = ent->UseFlag();
+    int            bl  = ent->BlankStatus();
+    int            uf  = ent->UseFlag();
     if (uf == 0)
       uf = G.Status(i);
     int hy = ent->HierarchyStatus();
@@ -345,12 +345,12 @@ bool IGESData_BasicEditor::AutoCorrect(const occ::handle<IGESData_IGESEntity>& e
   }
 
   //    Corrections specifiques
-  int                                  CN;
+  int                CN;
   occ::handle<Interface_GeneralModule> gmodule;
   if (theglib.Select(ent, gmodule, CN))
   {
     occ::handle<IGESData_GeneralModule> gmod = occ::down_cast<IGESData_GeneralModule>(gmodule);
-    IGESData_DirChecker                 DC   = gmod->DirChecker(CN, ent);
+    IGESData_DirChecker            DC   = gmod->DirChecker(CN, ent);
     done |= DC.Correct(ent);
   }
 

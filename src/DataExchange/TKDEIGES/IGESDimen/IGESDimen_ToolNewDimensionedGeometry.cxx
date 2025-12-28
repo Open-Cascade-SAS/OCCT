@@ -34,26 +34,29 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDimen_ToolNewDimensionedGeometry::IGESDimen_ToolNewDimensionedGeometry() {}
 
 void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
   const occ::handle<IGESData_IGESReaderData>&          IR,
-  IGESData_ParamReader&                                PR) const
+  IGESData_ParamReader&                           PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                                                                i, num;
-  int                                                                tempNbDimens;
-  int                                                                tempDimOrientFlag;
-  double                                                             tempAngle;
-  occ::handle<IGESData_IGESEntity>                                   tempDimen;
+  int                     i, num;
+  int                     tempNbDimens;
+  int                     tempDimOrientFlag;
+  double                        tempAngle;
+  occ::handle<IGESData_IGESEntity>          tempDimen;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts;
-  occ::handle<NCollection_HArray1<int>>                              tempDimLocFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>                           tempPoints;
+  occ::handle<NCollection_HArray1<int>>     tempDimLocFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>          tempPoints;
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -108,7 +111,7 @@ void IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams(
 
 void IGESDimen_ToolNewDimensionedGeometry::WriteOwnParams(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
-  IGESData_IGESWriter&                                 IW) const
+  IGESData_IGESWriter&                            IW) const
 {
   int i, num;
   IW.Send(ent->NbDimensions());
@@ -128,7 +131,7 @@ void IGESDimen_ToolNewDimensionedGeometry::WriteOwnParams(
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnShared(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
   int i, num;
   iter.GetOneItem(ent->DimensionEntity());
@@ -139,18 +142,17 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnShared(
 void IGESDimen_ToolNewDimensionedGeometry::OwnCopy(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& another,
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
-  Interface_CopyTool&                                  TC) const
+  Interface_CopyTool&                             TC) const
 {
-  int    num               = another->NbGeometries();
-  int    tempNbDimens      = another->NbDimensions();
-  int    tempDimOrientFlag = another->DimensionOrientationFlag();
-  double tempAngle         = another->AngleValue();
+  int num               = another->NbGeometries();
+  int tempNbDimens      = another->NbDimensions();
+  int tempDimOrientFlag = another->DimensionOrientationFlag();
+  double    tempAngle         = another->AngleValue();
   DeclareAndCast(IGESData_IGESEntity, tempDimen, TC.Transferred(another->DimensionEntity()));
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
-  occ::handle<NCollection_HArray1<int>>    tempDimLocFlags = new NCollection_HArray1<int>(1, num);
-  occ::handle<NCollection_HArray1<gp_XYZ>> tempPoints = new NCollection_HArray1<gp_XYZ>(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts    = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, num);
+  occ::handle<NCollection_HArray1<int>>     tempDimLocFlags = new NCollection_HArray1<int>(1, num);
+  occ::handle<NCollection_HArray1<gp_XYZ>>          tempPoints      = new NCollection_HArray1<gp_XYZ>(1, num);
 
   for (int i = 1; i <= num; i++)
   {
@@ -180,11 +182,10 @@ bool IGESDimen_ToolNewDimensionedGeometry::OwnCorrect(
   if (ent->NbDimensions() == 1)
     return res;
   //   Force NbDimensions = 1 -> reconstruct
-  int                                                                nb = ent->NbGeometries();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
-  occ::handle<NCollection_HArray1<int>>    tempDimLocFlags = new NCollection_HArray1<int>(1, nb);
-  occ::handle<NCollection_HArray1<gp_XYZ>> tempPoints      = new NCollection_HArray1<gp_XYZ>(1, nb);
+  int                     nb              = ent->NbGeometries();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempGeomEnts    = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  occ::handle<NCollection_HArray1<int>>     tempDimLocFlags = new NCollection_HArray1<int>(1, nb);
+  occ::handle<NCollection_HArray1<gp_XYZ>>          tempPoints      = new NCollection_HArray1<gp_XYZ>(1, nb);
 
   for (int i = 1; i <= nb; i++)
   {
@@ -231,9 +232,9 @@ void IGESDimen_ToolNewDimensionedGeometry::OwnCheck(
 
 void IGESDimen_ToolNewDimensionedGeometry::OwnDump(
   const occ::handle<IGESDimen_NewDimensionedGeometry>& ent,
-  const IGESData_IGESDumper&                           dumper,
-  Standard_OStream&                                    S,
-  const int                                            level) const
+  const IGESData_IGESDumper&                      dumper,
+  Standard_OStream&                               S,
+  const int                          level) const
 {
   int i, num, sublevel = (level > 4) ? 1 : 0;
   S << "IGESDimen_NewDimensionedGeometry\n"

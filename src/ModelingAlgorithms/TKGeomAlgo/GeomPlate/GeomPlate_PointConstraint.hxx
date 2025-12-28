@@ -46,9 +46,9 @@ public:
   //! tolerance represents the greatest difference in curvature
   //! allowed between the constraint and the target surface.
   //! Raises ConstructionError if Order is not 0 or -1
-  Standard_EXPORT GeomPlate_PointConstraint(const gp_Pnt& Pt,
-                                            const int     Order,
-                                            const double  TolDist = 0.0001);
+  Standard_EXPORT GeomPlate_PointConstraint(const gp_Pnt&          Pt,
+                                            const int Order,
+                                            const double    TolDist = 0.0001);
 
   //! Constructs a point constraint object defined by
   //! the intersection point of U and V on the surface Surf.
@@ -67,13 +67,13 @@ public:
   //! between the constraint and the target surface. Curvature
   //! tolerance represents the greatest difference in curvature
   //! allowed between the constraint and the target surface.Creates a punctual constraint.
-  Standard_EXPORT GeomPlate_PointConstraint(const double                     U,
-                                            const double                     V,
+  Standard_EXPORT GeomPlate_PointConstraint(const double         U,
+                                            const double         V,
                                             const occ::handle<Geom_Surface>& Surf,
-                                            const int                        Order,
-                                            const double                     TolDist = 0.0001,
-                                            const double                     TolAng  = 0.01,
-                                            const double                     TolCurv = 0.1);
+                                            const int      Order,
+                                            const double         TolDist = 0.0001,
+                                            const double         TolAng  = 0.01,
+                                            const double         TolCurv = 0.1);
 
   Standard_EXPORT void SetOrder(const int Order);
 
@@ -137,21 +137,21 @@ protected:
   int myOrder;
 
 private:
-  GeomLProp_SLProps         myLProp;
-  gp_Pnt                    myPoint;
-  gp_Pnt2d                  myPt2d;
+  GeomLProp_SLProps    myLProp;
+  gp_Pnt               myPoint;
+  gp_Pnt2d             myPt2d;
   occ::handle<Geom_Surface> mySurf;
-  gp_Vec                    myD11;
-  gp_Vec                    myD12;
-  gp_Vec                    myD21;
-  gp_Vec                    myD22;
-  gp_Vec                    myD23;
-  double                    myU;
-  double                    myV;
-  double                    myTolDist;
-  double                    myTolAng;
-  double                    myTolCurv;
-  bool                      hasPnt2dOnSurf;
+  gp_Vec               myD11;
+  gp_Vec               myD12;
+  gp_Vec               myD21;
+  gp_Vec               myD22;
+  gp_Vec               myD23;
+  double        myU;
+  double        myV;
+  double        myTolDist;
+  double        myTolAng;
+  double        myTolCurv;
+  bool     hasPnt2dOnSurf;
 };
 
 #endif // _GeomPlate_PointConstraint_HeaderFile

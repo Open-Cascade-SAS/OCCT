@@ -58,10 +58,10 @@ public:
 
   Standard_EXPORT BRepBuilderAPI_MakePolygon(const gp_Pnt& P1, const gp_Pnt& P2);
 
-  Standard_EXPORT BRepBuilderAPI_MakePolygon(const gp_Pnt& P1,
-                                             const gp_Pnt& P2,
-                                             const gp_Pnt& P3,
-                                             const bool    Close = false);
+  Standard_EXPORT BRepBuilderAPI_MakePolygon(const gp_Pnt&          P1,
+                                             const gp_Pnt&          P2,
+                                             const gp_Pnt&          P3,
+                                             const bool Close = false);
 
   //! Constructs a polygonal wire from 2, 3 or 4 points. Vertices are
   //! automatically created on the given points. The polygonal wire is
@@ -78,18 +78,18 @@ public:
   //! sequence of points p1 - p2 - p1 is found among the arguments of the
   //! constructor, you will create a polygonal wire with two
   //! consecutive coincident edges.
-  Standard_EXPORT BRepBuilderAPI_MakePolygon(const gp_Pnt& P1,
-                                             const gp_Pnt& P2,
-                                             const gp_Pnt& P3,
-                                             const gp_Pnt& P4,
-                                             const bool    Close = false);
+  Standard_EXPORT BRepBuilderAPI_MakePolygon(const gp_Pnt&          P1,
+                                             const gp_Pnt&          P2,
+                                             const gp_Pnt&          P3,
+                                             const gp_Pnt&          P4,
+                                             const bool Close = false);
 
   Standard_EXPORT BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1, const TopoDS_Vertex& V2);
 
-  Standard_EXPORT BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1,
-                                             const TopoDS_Vertex& V2,
-                                             const TopoDS_Vertex& V3,
-                                             const bool           Close = false);
+  Standard_EXPORT BRepBuilderAPI_MakePolygon(const TopoDS_Vertex&   V1,
+                                             const TopoDS_Vertex&   V2,
+                                             const TopoDS_Vertex&   V3,
+                                             const bool Close = false);
 
   //! Constructs a polygonal wire from
   //! 2, 3 or 4 vertices. The polygonal wire is closed if Close is true;
@@ -107,11 +107,11 @@ public:
   //! polygonal wire with two consecutive coincident edges if
   //! the sequence of vertices v1 - v2 - v1 is found among the
   //! constructor's arguments.
-  Standard_EXPORT BRepBuilderAPI_MakePolygon(const TopoDS_Vertex& V1,
-                                             const TopoDS_Vertex& V2,
-                                             const TopoDS_Vertex& V3,
-                                             const TopoDS_Vertex& V4,
-                                             const bool           Close = false);
+  Standard_EXPORT BRepBuilderAPI_MakePolygon(const TopoDS_Vertex&   V1,
+                                             const TopoDS_Vertex&   V2,
+                                             const TopoDS_Vertex&   V3,
+                                             const TopoDS_Vertex&   V4,
+                                             const bool Close = false);
 
   Standard_EXPORT void Add(const gp_Pnt& P);
 

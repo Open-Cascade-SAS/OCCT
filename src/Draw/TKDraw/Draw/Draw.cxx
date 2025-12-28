@@ -38,6 +38,7 @@
 #include <iomanip>
 #include <fstream>
 #include <Standard_Version.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <tcl.h>
 
@@ -47,11 +48,11 @@ extern bool Draw_ParseFailed;
 
 Standard_EXPORT Draw_Viewer      dout;
 Standard_EXPORT Draw_Interpretor theCommands;
-Standard_EXPORT bool             Draw_Batch          = false;
-Standard_EXPORT bool             Draw_Spying         = false;
-Standard_EXPORT bool             Draw_Chrono         = false;
-Standard_EXPORT bool             Draw_VirtualWindows = false;
-Standard_EXPORT bool             ErrorMessages       = true;
+Standard_EXPORT bool Draw_Batch          = false;
+Standard_EXPORT bool Draw_Spying         = false;
+Standard_EXPORT bool Draw_Chrono         = false;
+Standard_EXPORT bool Draw_VirtualWindows = false;
+Standard_EXPORT bool ErrorMessages       = true;
 
 static const char* ColorNames[MAXCOLOR] = {"White",
                                            "Red",
@@ -309,7 +310,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // *****************************************************************
   Draw_Batch = false;
   TCollection_AsciiString aRunFile, aCommand;
-  bool                    isInteractiveForced = false;
+  bool        isInteractiveForced = false;
 
   // parse command line
   for (int anArgIter = 1; anArgIter < argc; ++anArgIter)
@@ -575,14 +576,14 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 // #endif
 
 // User functions called before and after each command
-void (*Draw_BeforeCommand)()   = NULL;
+void (*Draw_BeforeCommand)()                = NULL;
 void (*Draw_AfterCommand)(int) = NULL;
 
 bool Draw_Interprete(const char* com)
 {
 
-  static bool        first = true;
-  static Tcl_DString command;
+  static bool first = true;
+  static Tcl_DString      command;
 
   if (first)
   {
@@ -612,8 +613,8 @@ bool Draw_Interprete(const char* com)
 
   bool wasspying = Draw_Spying;
 
-  OSD_Timer tictac;
-  bool      hadchrono = Draw_Chrono;
+  OSD_Timer        tictac;
+  bool hadchrono = Draw_Chrono;
   if (hadchrono)
     tictac.Start();
 
@@ -689,17 +690,17 @@ void Draw::Load(Draw_Interpretor&              theDI,
                 const TCollection_AsciiString& theResourceFileName,
                 const TCollection_AsciiString& theDefaultsDirectory,
                 const TCollection_AsciiString& theUserDefaultsDirectory,
-                const bool                     theIsVerbose)
+                const bool         theIsVerbose)
 {
   static NCollection_DataMap<TCollection_AsciiString, OSD_Function> theMapOfFunctions;
-  OSD_Function                                                      aFunc = NULL;
+  OSD_Function                 aFunc = NULL;
   if (!theMapOfFunctions.Find(theKey, aFunc))
   {
-    TCollection_AsciiString       aPluginLibrary;
+    TCollection_AsciiString  aPluginLibrary;
     occ::handle<Resource_Manager> aPluginResource = new Resource_Manager(theResourceFileName,
-                                                                         theDefaultsDirectory,
-                                                                         theUserDefaultsDirectory,
-                                                                         theIsVerbose);
+                                                                    theDefaultsDirectory,
+                                                                    theUserDefaultsDirectory,
+                                                                    theIsVerbose);
     if (!aPluginResource->Find(theKey, aPluginLibrary))
     {
       Message::SendFail() << "could not find the resource:" << theKey;
@@ -760,7 +761,7 @@ const float THE_MAX_REAL_COLOR_COMPONENT    = 1.0f;
 //! @param theIntegerColorComponent an integer color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
 static bool parseNumericalColorComponent(const char* theColorComponentString,
-                                         int&        theIntegerColorComponent)
+                                         int&      theIntegerColorComponent)
 {
   int anIntegerColorComponent;
   if (!Draw::ParseInteger(theColorComponentString, anIntegerColorComponent))
@@ -781,14 +782,15 @@ static bool parseNumericalColorComponent(const char* theColorComponentString,
 //! @param theRealColorComponent a real color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
 static bool parseNumericalColorComponent(const char* theColorComponentString,
-                                         float&      theRealColorComponent)
+                                         float&    theRealColorComponent)
 {
   double aRealColorComponent;
   if (!Draw::ParseReal(theColorComponentString, aRealColorComponent))
   {
     return false;
   }
-  const float aShortRealColorComponent = static_cast<float>(aRealColorComponent);
+  const float aShortRealColorComponent =
+    static_cast<float>(aRealColorComponent);
   if ((aShortRealColorComponent < 0.0f)
       || (aShortRealColorComponent > THE_MAX_REAL_COLOR_COMPONENT))
   {
@@ -803,7 +805,8 @@ static bool parseNumericalColorComponent(const char* theColorComponentString,
 //! @param theColorComponentString the string representing the color component
 //! @param theColorComponent a color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseColorComponent(const char* theColorComponentString, float& theColorComponent)
+static bool parseColorComponent(const char* theColorComponentString,
+                                float&    theColorComponent)
 {
   int anIntegerColorComponent;
   if (parseNumericalColorComponent(theColorComponentString, anIntegerColorComponent))
@@ -829,7 +832,7 @@ static bool parseColorComponent(const char* theColorComponentString, float& theC
 //! @param theNumericalColor a 4-component vector that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
 template <typename TheNumber>
-static bool parseNumericalColor(int&                         theNumberOfColorComponents,
+static bool parseNumericalColor(int&            theNumberOfColorComponents,
                                 const char* const* const     theColorComponentStrings,
                                 NCollection_Vec4<TheNumber>& theNumericalColor)
 {
@@ -863,12 +866,12 @@ static bool parseNumericalColor(int&                         theNumberOfColorCom
 //! @param theColorComponentStrings the array of strings representing color components
 //! @param theColor a color that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseIntegerColor(int&                     theNumberOfColorComponents,
+static bool parseIntegerColor(int&        theNumberOfColorComponents,
                               const char* const* const theColorComponentStrings,
                               Quantity_ColorRGBA&      theColor)
 {
-  const int             THE_COLOR_COMPONENT_NOT_PARSED = -1;
-  NCollection_Vec4<int> anIntegerColor(THE_COLOR_COMPONENT_NOT_PARSED);
+  const int THE_COLOR_COMPONENT_NOT_PARSED = -1;
+  NCollection_Vec4<int>  anIntegerColor(THE_COLOR_COMPONENT_NOT_PARSED);
   if (!parseNumericalColor(theNumberOfColorComponents, theColorComponentStrings, anIntegerColor)
       || anIntegerColor.maxComp() <= 1)
   {
@@ -891,7 +894,7 @@ static bool parseIntegerColor(int&                     theNumberOfColorComponent
 //! @param theColorComponentStrings the array of strings representing color components
 //! @param theColor a color that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseRealColor(int&                     theNumberOfColorComponents,
+static bool parseRealColor(int&        theNumberOfColorComponents,
                            const char* const* const theColorComponentStrings,
                            Quantity_ColorRGBA&      theColor)
 {
@@ -907,10 +910,10 @@ static bool parseRealColor(int&                     theNumberOfColorComponents,
 
 //=================================================================================================
 
-int Draw::parseColor(const int                theArgNb,
-                     const char* const* const theArgVec,
-                     Quantity_ColorRGBA&      theColor,
-                     const bool               theToParseAlpha)
+int Draw::parseColor(const int   theArgNb,
+                                  const char* const* const theArgVec,
+                                  Quantity_ColorRGBA&      theColor,
+                                  const bool               theToParseAlpha)
 {
   if ((theArgNb >= 1) && Quantity_ColorRGBA::ColorFromHex(theArgVec[0], theColor, !theToParseAlpha))
   {
@@ -921,7 +924,7 @@ int Draw::parseColor(const int                theArgNb,
     if (theArgNb >= 2 && theToParseAlpha)
     {
       const char* anAlphaStr = theArgVec[1];
-      float       anAlphaComponent;
+      float     anAlphaComponent;
       if (parseColorComponent(anAlphaStr, anAlphaComponent))
       {
         theColor.SetAlpha(anAlphaComponent);
@@ -932,8 +935,9 @@ int Draw::parseColor(const int                theArgNb,
   }
   if (theArgNb >= 3)
   {
-    const int aNumberOfColorComponentsToParse = std::min(theArgNb, theToParseAlpha ? 4 : 3);
-    int       aNumberOfColorComponentsParsed  = aNumberOfColorComponentsToParse;
+    const int aNumberOfColorComponentsToParse =
+      std::min(theArgNb, theToParseAlpha ? 4 : 3);
+    int aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
     if (parseIntegerColor(aNumberOfColorComponentsParsed, theArgVec, theColor))
     {
       return aNumberOfColorComponentsParsed;
@@ -969,7 +973,9 @@ bool Draw::ParseOnOff(const char* theArg, bool& theIsOn)
 
 //=================================================================================================
 
-bool Draw::ParseOnOffIterator(int theArgsNb, const char** theArgVec, int& theArgIter)
+bool Draw::ParseOnOffIterator(int  theArgsNb,
+                                          const char**      theArgVec,
+                                          int& theArgIter)
 {
   bool isOn = true;
   if (theArgIter + 1 < theArgsNb && Draw::ParseOnOff(theArgVec[theArgIter + 1], isOn))
@@ -981,10 +987,12 @@ bool Draw::ParseOnOffIterator(int theArgsNb, const char** theArgVec, int& theArg
 
 //=================================================================================================
 
-bool Draw::ParseOnOffNoIterator(int theArgsNb, const char** theArgVec, int& theArgIter)
+bool Draw::ParseOnOffNoIterator(int  theArgsNb,
+                                            const char**      theArgVec,
+                                            int& theArgIter)
 {
   bool toReverse = strncasecmp(theArgVec[theArgIter], "no", 2) == 0
-                   || strncasecmp(theArgVec[theArgIter], "-no", 3) == 0;
+                               || strncasecmp(theArgVec[theArgIter], "-no", 3) == 0;
   bool isOn = Draw::ParseOnOffIterator(theArgsNb, theArgVec, theArgIter);
   return toReverse ? !isOn : isOn;
 }

@@ -49,8 +49,8 @@ public:
   Standard_EXPORT IntTools_Curve(const occ::handle<Geom_Curve>&   the3dCurve3d,
                                  const occ::handle<Geom2d_Curve>& the2dCurve1,
                                  const occ::handle<Geom2d_Curve>& the2dCurve2,
-                                 const double                     theTolerance           = 0.0,
-                                 const double                     theTangentialTolerance = 0.0);
+                                 const double         theTolerance           = 0.0,
+                                 const double         theTangentialTolerance = 0.0);
 
   //! Sets the curves
   void SetCurves(const occ::handle<Geom_Curve>&   the3dCurve,
@@ -104,9 +104,9 @@ public:
   //! If the curve does not have bounds, the method will return false
   //! and the output parameters will stay untouched.
   Standard_EXPORT bool Bounds(double& theFirst,
-                              double& theLast,
-                              gp_Pnt& theFirstPnt,
-                              gp_Pnt& theLastPnt) const;
+                                          double& theLast,
+                                          gp_Pnt&        theFirstPnt,
+                                          gp_Pnt&        theLastPnt) const;
 
   //! Computes 3d point corresponded to the given parameter if this
   //! parameter is inside the boundaries of the curve.
@@ -121,8 +121,8 @@ private:
   occ::handle<Geom_Curve>   my3dCurve;
   occ::handle<Geom2d_Curve> my2dCurve1;
   occ::handle<Geom2d_Curve> my2dCurve2;
-  double                    myTolerance;
-  double                    myTangentialTolerance;
+  double        myTolerance;
+  double        myTangentialTolerance;
 };
 
 #endif // _IntTools_Curve_HeaderFile

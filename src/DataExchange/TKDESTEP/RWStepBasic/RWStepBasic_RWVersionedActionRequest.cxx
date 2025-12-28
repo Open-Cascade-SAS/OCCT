@@ -30,7 +30,7 @@ RWStepBasic_RWVersionedActionRequest::RWStepBasic_RWVersionedActionRequest() {}
 
 void RWStepBasic_RWVersionedActionRequest::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepBasic_VersionedActionRequest>& ent) const
 {
@@ -50,7 +50,7 @@ void RWStepBasic_RWVersionedActionRequest::ReadStep(
   data->ReadString(num, 3, "purpose", ach, aPurpose);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                                  hasDescription = true;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 4))
   {
     data->ReadString(num, 4, "description", ach, aDescription);
@@ -67,7 +67,7 @@ void RWStepBasic_RWVersionedActionRequest::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWVersionedActionRequest::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepBasic_VersionedActionRequest>& ent) const
 {
 
@@ -89,9 +89,8 @@ void RWStepBasic_RWVersionedActionRequest::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWVersionedActionRequest::Share(
-  const occ::handle<StepBasic_VersionedActionRequest>&,
-  Interface_EntityIterator&) const
+void RWStepBasic_RWVersionedActionRequest::Share(const occ::handle<StepBasic_VersionedActionRequest>&,
+                                                 Interface_EntityIterator&) const
 {
 
   // Own fields of VersionedActionRequest

@@ -26,8 +26,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <BRepLib_MakeShape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Bnd_Box.hxx>
 #include <NCollection_UBTree.hxx>
@@ -132,11 +134,11 @@ public:
   Standard_EXPORT const TopoDS_Vertex& Vertex() const;
 
 private:
-  class BRepLib_BndBoxVertexSelector : public NCollection_UBTree<int, Bnd_Box>::Selector
+  class BRepLib_BndBoxVertexSelector
+      : public NCollection_UBTree<int, Bnd_Box>::Selector
   {
   public:
-    BRepLib_BndBoxVertexSelector(
-      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
+    BRepLib_BndBoxVertexSelector(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfShape)
         : BRepLib_BndBoxVertexSelector::Selector(),
           myMapOfShape(theMapOfShape),
           myTolP(0.0),
@@ -158,36 +160,34 @@ private:
     BRepLib_BndBoxVertexSelector(const BRepLib_BndBoxVertexSelector&);
     BRepLib_BndBoxVertexSelector& operator=(const BRepLib_BndBoxVertexSelector&);
 
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& myMapOfShape; // vertices
-    gp_Pnt                                                               myP;
-    double                                                               myTolP;
-    int                                                                  myVInd;
-    Bnd_Box                                                              myVBox;
-    NCollection_List<int>                                                myResultInd;
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&  myMapOfShape; // vertices
+    gp_Pnt                             myP;
+    double                      myTolP;
+    int                   myVInd;
+    Bnd_Box                            myVBox;
+    NCollection_List<int> myResultInd;
   };
 
-  void CollectCoincidentVertices(const NCollection_List<TopoDS_Shape>&              theL,
+  void CollectCoincidentVertices(const NCollection_List<TopoDS_Shape>&                        theL,
                                  NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL);
 
-  void CreateNewVertices(
-    const NCollection_List<NCollection_List<TopoDS_Vertex>>&                  theGrVL,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theO2NV);
+  void CreateNewVertices(const NCollection_List<NCollection_List<TopoDS_Vertex>>& theGrVL,
+                         NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&                            theO2NV);
 
-  void CreateNewListOfEdges(
-    const NCollection_List<TopoDS_Shape>&                                           theL,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theO2NV,
-    NCollection_List<TopoDS_Shape>&                                                 theNewEList);
+  void CreateNewListOfEdges(const NCollection_List<TopoDS_Shape>&         theL,
+                            const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theO2NV,
+                            NCollection_List<TopoDS_Shape>&               theNewEList);
 
   void Add(const TopoDS_Edge& E, bool IsCheckGeometryProximity);
 
 private:
-  BRepLib_WireError                                             myError;
-  TopoDS_Edge                                                   myEdge;
-  TopoDS_Vertex                                                 myVertex;
+  BRepLib_WireError          myError;
+  TopoDS_Edge                myEdge;
+  TopoDS_Vertex              myVertex;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
-  TopoDS_Vertex                                                 FirstVertex;
-  TopoDS_Vertex                                                 VF;
-  TopoDS_Vertex                                                 VL;
+  TopoDS_Vertex              FirstVertex;
+  TopoDS_Vertex              VF;
+  TopoDS_Vertex              VL;
 };
 
 #endif // _BRepLib_MakeWire_HeaderFile

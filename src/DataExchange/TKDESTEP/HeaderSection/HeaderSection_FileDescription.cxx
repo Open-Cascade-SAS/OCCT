@@ -21,7 +21,7 @@ HeaderSection_FileDescription::HeaderSection_FileDescription() {}
 
 void HeaderSection_FileDescription::Init(
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription,
-  const occ::handle<TCollection_HAsciiString>& aImplementationLevel)
+  const occ::handle<TCollection_HAsciiString>&        aImplementationLevel)
 {
   // --- class own fields ---
   description         = aDescription;
@@ -34,8 +34,7 @@ void HeaderSection_FileDescription::SetDescription(
   description = aDescription;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-  HeaderSection_FileDescription::Description() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> HeaderSection_FileDescription::Description() const
 {
   return description;
 }

@@ -22,19 +22,23 @@ TEST(BVH_ToolsTest, PointBoxSquareDistance)
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Point inside box
-  double aDist1 = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.5, 0.5), aBox);
+  double aDist1 =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.5, 0.5), aBox);
   EXPECT_NEAR(aDist1, 0.0, Precision::Confusion());
 
   // Point on face
-  double aDist2 = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.5, 1.0), aBox);
+  double aDist2 =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.5, 1.0), aBox);
   EXPECT_NEAR(aDist2, 0.0, Precision::Confusion());
 
   // Point outside box (distance = 1)
-  double aDist3 = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(2.0, 0.5, 0.5), aBox);
+  double aDist3 =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(2.0, 0.5, 0.5), aBox);
   EXPECT_NEAR(aDist3, 1.0, Precision::Confusion());
 
   // Point at corner outside (distance^2 = 1 + 1 + 1 = 3)
-  double aDist4 = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(2.0, 2.0, 2.0), aBox);
+  double aDist4 =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(2.0, 2.0, 2.0), aBox);
   EXPECT_NEAR(aDist4, 3.0, Precision::Confusion());
 }
 
@@ -58,13 +62,15 @@ TEST(BVH_ToolsTest, PointBoxProjection)
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Point inside - should return same point
-  BVH_Vec3d aProj1 = BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(0.5, 0.5, 0.5), aBox);
+  BVH_Vec3d aProj1 =
+    BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(0.5, 0.5, 0.5), aBox);
   EXPECT_NEAR(aProj1.x(), 0.5, Precision::Confusion());
   EXPECT_NEAR(aProj1.y(), 0.5, Precision::Confusion());
   EXPECT_NEAR(aProj1.z(), 0.5, Precision::Confusion());
 
   // Point outside - should clamp to box
-  BVH_Vec3d aProj2 = BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(2.0, 0.5, 0.5), aBox);
+  BVH_Vec3d aProj2 =
+    BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(2.0, 0.5, 0.5), aBox);
   EXPECT_NEAR(aProj2.x(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj2.y(), 0.5, Precision::Confusion());
   EXPECT_NEAR(aProj2.z(), 0.5, Precision::Confusion());
@@ -77,29 +83,31 @@ TEST(BVH_ToolsTest, RayBoxIntersection)
   double aTimeEnter, aTimeLeave;
 
   // Ray hitting the box
-  bool aHit1 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 0.5, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit1 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 0.5, 0.5),
+                                                    BVH_Vec3d(1.0, 0.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_TRUE(aHit1);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
 
   // Ray missing the box
-  bool aHit2 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 5.0, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit2 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 5.0, 0.5),
+                                                    BVH_Vec3d(1.0, 0.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_FALSE(aHit2);
 
   // Ray starting inside box
   bool aHit3 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, 0.5, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit3);
   EXPECT_LE(aTimeEnter, 0.0);
   EXPECT_NEAR(aTimeLeave, 0.5, Precision::Confusion());
@@ -112,19 +120,21 @@ TEST(BVH_ToolsTest, RayBoxIntersectionParallelRay)
   double aTimeEnter, aTimeLeave;
 
   // Ray parallel to X-axis, passing through box
-  bool aHit1 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 0.5, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit1 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 0.5, 0.5),
+                                                    BVH_Vec3d(1.0, 0.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_TRUE(aHit1);
 
   // Ray parallel to X-axis, missing box (Y out of range)
-  bool aHit2 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 2.0, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit2 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 2.0, 0.5),
+                                                    BVH_Vec3d(1.0, 0.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_FALSE(aHit2);
 }
 
@@ -135,28 +145,30 @@ TEST(BVH_ToolsTest, PointTriangleProjection)
   BVH_Vec3d aNode2(0.0, 1.0, 0.0);
 
   // Point projects to vertex
-  BVH_Vec3d aProj1 = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(-1.0, -1.0, 0.0),
-                                                                   aNode0,
-                                                                   aNode1,
-                                                                   aNode2);
+  BVH_Vec3d aProj1 =
+    BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(-1.0, -1.0, 0.0),
+                                                         aNode0,
+                                                         aNode1,
+                                                         aNode2);
   EXPECT_NEAR(aProj1.x(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj1.y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj1.z(), 0.0, Precision::Confusion());
 
   // Point projects to edge
   BVH_Vec3d aProj2 = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.5, -1.0, 0.0),
-                                                                   aNode0,
-                                                                   aNode1,
-                                                                   aNode2);
+                                                                          aNode0,
+                                                                          aNode1,
+                                                                          aNode2);
   EXPECT_NEAR(aProj2.x(), 0.5, Precision::Confusion());
   EXPECT_NEAR(aProj2.y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj2.z(), 0.0, Precision::Confusion());
 
   // Point projects inside triangle
-  BVH_Vec3d aProj3 = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.25, 0.25, 1.0),
-                                                                   aNode0,
-                                                                   aNode1,
-                                                                   aNode2);
+  BVH_Vec3d aProj3 =
+    BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.25, 0.25, 1.0),
+                                                         aNode0,
+                                                         aNode1,
+                                                         aNode2);
   EXPECT_NEAR(aProj3.x(), 0.25, Precision::Confusion());
   EXPECT_NEAR(aProj3.y(), 0.25, Precision::Confusion());
   EXPECT_NEAR(aProj3.z(), 0.0, Precision::Confusion());
@@ -167,11 +179,13 @@ TEST(BVH_ToolsTest, PointBoxSquareDistance2D)
   BVH_Box<double, 2> aBox(BVH_Vec2d(0.0, 0.0), BVH_Vec2d(1.0, 1.0));
 
   // Point inside box
-  double aDist1 = BVH_Tools<double, 2>::PointBoxSquareDistance(BVH_Vec2d(0.5, 0.5), aBox);
+  double aDist1 =
+    BVH_Tools<double, 2>::PointBoxSquareDistance(BVH_Vec2d(0.5, 0.5), aBox);
   EXPECT_NEAR(aDist1, 0.0, Precision::Confusion());
 
   // Point outside box
-  double aDist2 = BVH_Tools<double, 2>::PointBoxSquareDistance(BVH_Vec2d(2.0, 0.5), aBox);
+  double aDist2 =
+    BVH_Tools<double, 2>::PointBoxSquareDistance(BVH_Vec2d(2.0, 0.5), aBox);
   EXPECT_NEAR(aDist2, 1.0, Precision::Confusion());
 }
 
@@ -182,15 +196,16 @@ TEST(BVH_ToolsTest, RayBoxIntersectionDiagonalRay)
   double aTimeEnter, aTimeLeave;
 
   // Diagonal ray through box center
-  BVH_Vec3d aDir(1.0, 1.0, 1.0);
-  double    aNorm = std::sqrt(3.0);
-  aDir            = BVH_Vec3d(aDir.x() / aNorm, aDir.y() / aNorm, aDir.z() / aNorm);
+  BVH_Vec3d     aDir(1.0, 1.0, 1.0);
+  double aNorm = std::sqrt(3.0);
+  aDir                = BVH_Vec3d(aDir.x() / aNorm, aDir.y() / aNorm, aDir.z() / aNorm);
 
-  bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, -1.0),
-                                                       aDir,
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+  bool aHit =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, -1.0),
+                                                    aDir,
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_GT(aTimeEnter, 0.0);
   EXPECT_GT(aTimeLeave, aTimeEnter);
@@ -204,10 +219,10 @@ TEST(BVH_ToolsTest, RayBoxIntersectionNegativeDirection)
 
   // Ray going in negative X direction
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(2.0, 0.5, 0.5),
-                                                       BVH_Vec3d(-1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(-1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
@@ -221,10 +236,10 @@ TEST(BVH_ToolsTest, RayBoxIntersectionTouchingEdge)
 
   // Ray touching edge of box
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 0.0, 0.0),
-                                                       BVH_Vec3d(1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_TRUE(aHit);
 }
 
@@ -235,15 +250,16 @@ TEST(BVH_ToolsTest, RayBoxIntersectionTouchingCorner)
   double aTimeEnter, aTimeLeave;
 
   // Ray through corner
-  BVH_Vec3d aDir(1.0, 1.0, 1.0);
-  double    aNorm = std::sqrt(3.0);
-  aDir            = BVH_Vec3d(aDir.x() / aNorm, aDir.y() / aNorm, aDir.z() / aNorm);
+  BVH_Vec3d     aDir(1.0, 1.0, 1.0);
+  double aNorm = std::sqrt(3.0);
+  aDir                = BVH_Vec3d(aDir.x() / aNorm, aDir.y() / aNorm, aDir.z() / aNorm);
 
-  bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, -1.0),
-                                                       aDir,
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+  bool aHit =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, -1.0),
+                                                    aDir,
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_TRUE(aHit);
 }
 
@@ -282,7 +298,8 @@ TEST(BVH_ToolsTest, PointBoxProjectionNegativeCoords)
   BVH_Box<double, 3> aBox(BVH_Vec3d(-1.0, -1.0, -1.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Point far outside in negative direction
-  BVH_Vec3d aProj = BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(-5.0, -5.0, -5.0), aBox);
+  BVH_Vec3d aProj =
+    BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(-5.0, -5.0, -5.0), aBox);
   EXPECT_NEAR(aProj.x(), -1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), -1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), -1.0, Precision::Confusion());
@@ -296,9 +313,9 @@ TEST(BVH_ToolsTest, PointTriangleProjectionOnEdge01)
 
   // Point projects onto edge between Node0 and Node1
   BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(1.0, -1.0, 0.0),
-                                                                  aNode0,
-                                                                  aNode1,
-                                                                  aNode2);
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -311,8 +328,10 @@ TEST(BVH_ToolsTest, PointTriangleProjectionOnEdge12)
   BVH_Vec3d aNode2(0.0, 2.0, 0.0);
 
   // Point projects onto edge between Node1 and Node2
-  BVH_Vec3d aProj =
-    BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(2.0, 2.0, 0.0), aNode0, aNode1, aNode2);
+  BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(2.0, 2.0, 0.0),
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -326,9 +345,9 @@ TEST(BVH_ToolsTest, PointTriangleProjectionOnEdge20)
 
   // Point projects onto edge between Node2 and Node0
   BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(-1.0, 1.0, 0.0),
-                                                                  aNode0,
-                                                                  aNode1,
-                                                                  aNode2);
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -342,9 +361,9 @@ TEST(BVH_ToolsTest, PointTriangleProjectionVertex1)
 
   // Point projects to Node1
   BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(3.0, -1.0, 0.0),
-                                                                  aNode0,
-                                                                  aNode1,
-                                                                  aNode2);
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -358,9 +377,9 @@ TEST(BVH_ToolsTest, PointTriangleProjectionVertex2)
 
   // Point projects to Node2
   BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(-1.0, 3.0, 0.0),
-                                                                  aNode0,
-                                                                  aNode1,
-                                                                  aNode2);
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -374,8 +393,10 @@ TEST(BVH_ToolsTest, PointTriangleProjection3D)
   BVH_Vec3d aNode2(0.0, 1.0, 1.0);
 
   // Point above triangle center
-  BVH_Vec3d aProj =
-    BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.3, 0.3, 0.8), aNode0, aNode1, aNode2);
+  BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(0.3, 0.3, 0.8),
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
 
   // Should project inside triangle
   EXPECT_GE(aProj.x(), 0.0);
@@ -408,7 +429,8 @@ TEST(BVH_ToolsTest, PointBoxSquareDistanceAtVertex)
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Point on vertex
-  double aDist = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.0, 0.0, 0.0), aBox);
+  double aDist =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.0, 0.0, 0.0), aBox);
   EXPECT_NEAR(aDist, 0.0, Precision::Confusion());
 }
 
@@ -417,7 +439,8 @@ TEST(BVH_ToolsTest, PointBoxSquareDistanceAtEdge)
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Point on edge
-  double aDist = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.0, 0.0), aBox);
+  double aDist =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.5, 0.0, 0.0), aBox);
   EXPECT_NEAR(aDist, 0.0, Precision::Confusion());
 }
 
@@ -426,11 +449,13 @@ TEST(BVH_ToolsTest, PointBoxSquareDistanceFloat)
   BVH_Box<float, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
 
   // Point inside box
-  float aDist1 = BVH_Tools<float, 3>::PointBoxSquareDistance(BVH_Vec3f(0.5f, 0.5f, 0.5f), aBox);
+  float aDist1 =
+    BVH_Tools<float, 3>::PointBoxSquareDistance(BVH_Vec3f(0.5f, 0.5f, 0.5f), aBox);
   EXPECT_NEAR(aDist1, 0.0f, 1e-5f);
 
   // Point outside box
-  float aDist2 = BVH_Tools<float, 3>::PointBoxSquareDistance(BVH_Vec3f(2.0f, 0.5f, 0.5f), aBox);
+  float aDist2 =
+    BVH_Tools<float, 3>::PointBoxSquareDistance(BVH_Vec3f(2.0f, 0.5f, 0.5f), aBox);
   EXPECT_NEAR(aDist2, 1.0f, 1e-5f);
 }
 
@@ -441,11 +466,12 @@ TEST(BVH_ToolsTest, RayBoxIntersectionFloat)
   float aTimeEnter, aTimeLeave;
 
   // Ray hitting the box
-  bool aHit = BVH_Tools<float, 3>::RayBoxIntersection(BVH_Vec3f(-1.0f, 0.5f, 0.5f),
-                                                      BVH_Vec3f(1.0f, 0.0f, 0.0f),
-                                                      aBox,
-                                                      aTimeEnter,
-                                                      aTimeLeave);
+  bool aHit =
+    BVH_Tools<float, 3>::RayBoxIntersection(BVH_Vec3f(-1.0f, 0.5f, 0.5f),
+                                                         BVH_Vec3f(1.0f, 0.0f, 0.0f),
+                                                         aBox,
+                                                         aTimeEnter,
+                                                         aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_NEAR(aTimeEnter, 1.0f, 1e-5f);
   EXPECT_NEAR(aTimeLeave, 2.0f, 1e-5f);
@@ -459,10 +485,10 @@ TEST(BVH_ToolsTest, RayBoxIntersectionBehindRay)
 
   // Ray pointing away from box
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(2.0, 0.5, 0.5),
-                                                       BVH_Vec3d(1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   // The box is behind the ray origin
   EXPECT_TRUE(aTimeLeave < 0.0 || !aHit);
 }
@@ -475,10 +501,10 @@ TEST(BVH_ToolsTest, RayBoxIntersectionYAxis)
 
   // Ray along Y axis
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, -1.0, 0.5),
-                                                       BVH_Vec3d(0.0, 1.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(0.0, 1.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
@@ -492,10 +518,10 @@ TEST(BVH_ToolsTest, RayBoxIntersectionZAxis)
 
   // Ray along Z axis
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, 0.5, -1.0),
-                                                       BVH_Vec3d(0.0, 0.0, 1.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(0.0, 0.0, 1.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
@@ -514,7 +540,8 @@ TEST(BVH_ToolsTest, PointBoxProjectionFloat)
 {
   BVH_Box<float, 3> aBox(BVH_Vec3f(0.0f, 0.0f, 0.0f), BVH_Vec3f(1.0f, 1.0f, 1.0f));
 
-  BVH_Vec3f aProj = BVH_Tools<float, 3>::PointBoxProjection(BVH_Vec3f(2.0f, 0.5f, 0.5f), aBox);
+  BVH_Vec3f aProj =
+    BVH_Tools<float, 3>::PointBoxProjection(BVH_Vec3f(2.0f, 0.5f, 0.5f), aBox);
   EXPECT_NEAR(aProj.x(), 1.0f, 1e-5f);
   EXPECT_NEAR(aProj.y(), 0.5f, 1e-5f);
   EXPECT_NEAR(aProj.z(), 0.5f, 1e-5f);
@@ -525,7 +552,8 @@ TEST(BVH_ToolsTest, PointBoxSquareDistanceNegativeBox)
   BVH_Box<double, 3> aBox(BVH_Vec3d(-2.0, -2.0, -2.0), BVH_Vec3d(-1.0, -1.0, -1.0));
 
   // Point at origin
-  double aDist = BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.0, 0.0, 0.0), aBox);
+  double aDist =
+    BVH_Tools<double, 3>::PointBoxSquareDistance(BVH_Vec3d(0.0, 0.0, 0.0), aBox);
   // Distance = sqrt(1^2 + 1^2 + 1^2) = sqrt(3), squared = 3
   EXPECT_NEAR(aDist, 3.0, Precision::Confusion());
 }
@@ -547,10 +575,11 @@ TEST(BVH_ToolsTest, PointTriangleProjectionFloat)
   BVH_Vec3f aNode2(0.0f, 1.0f, 0.0f);
 
   // Point projects inside triangle
-  BVH_Vec3f aProj = BVH_Tools<float, 3>::PointTriangleProjection(BVH_Vec3f(0.25f, 0.25f, 1.0f),
-                                                                 aNode0,
-                                                                 aNode1,
-                                                                 aNode2);
+  BVH_Vec3f aProj =
+    BVH_Tools<float, 3>::PointTriangleProjection(BVH_Vec3f(0.25f, 0.25f, 1.0f),
+                                                              aNode0,
+                                                              aNode1,
+                                                              aNode2);
   EXPECT_NEAR(aProj.x(), 0.25f, 1e-5f);
   EXPECT_NEAR(aProj.y(), 0.25f, 1e-5f);
   EXPECT_NEAR(aProj.z(), 0.0f, 1e-5f);
@@ -577,11 +606,12 @@ TEST(BVH_ToolsTest, RayBoxIntersectionLargeBox)
 
   double aTimeEnter, aTimeLeave;
 
-  bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-100.0, 500.0, 500.0),
-                                                       BVH_Vec3d(1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+  bool aHit =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-100.0, 500.0, 500.0),
+                                                    BVH_Vec3d(1.0, 0.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_TRUE(aHit);
   EXPECT_NEAR(aTimeEnter, 100.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 1100.0, Precision::Confusion());
@@ -594,8 +624,10 @@ TEST(BVH_ToolsTest, PointTriangleProjectionCentroid)
   BVH_Vec3d aNode2(0.0, 3.0, 0.0);
 
   // Point directly above centroid
-  BVH_Vec3d aProj =
-    BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(1.0, 1.0, 5.0), aNode0, aNode1, aNode2);
+  BVH_Vec3d aProj = BVH_Tools<double, 3>::PointTriangleProjection(BVH_Vec3d(1.0, 1.0, 5.0),
+                                                                         aNode0,
+                                                                         aNode1,
+                                                                         aNode2);
   EXPECT_NEAR(aProj.x(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj.z(), 0.0, Precision::Confusion());
@@ -615,12 +647,14 @@ TEST(BVH_ToolsTest, PointBoxProjectionAllCorners)
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, 0.0), BVH_Vec3d(1.0, 1.0, 1.0));
 
   // Test projection from each octant
-  BVH_Vec3d aProj1 = BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(-1.0, -1.0, -1.0), aBox);
+  BVH_Vec3d aProj1 =
+    BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(-1.0, -1.0, -1.0), aBox);
   EXPECT_NEAR(aProj1.x(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj1.y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aProj1.z(), 0.0, Precision::Confusion());
 
-  BVH_Vec3d aProj2 = BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(2.0, 2.0, 2.0), aBox);
+  BVH_Vec3d aProj2 =
+    BVH_Tools<double, 3>::PointBoxProjection(BVH_Vec3d(2.0, 2.0, 2.0), aBox);
   EXPECT_NEAR(aProj2.x(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj2.y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aProj2.z(), 1.0, Precision::Confusion());
@@ -639,36 +673,36 @@ TEST(BVH_ToolsTest, RayBoxIntersection2D)
 
   // Ray hitting the box
   bool aHit1 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 0.5),
-                                                        BVH_Vec2d(1.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit1);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
 
   // Ray missing the box
   bool aHit2 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 2.0),
-                                                        BVH_Vec2d(1.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_FALSE(aHit2);
 
   // Ray parallel to X axis, inside Y bounds
   bool aHit3 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(-1.0, 0.5),
-                                                        BVH_Vec2d(1.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(1.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit3);
 
   // Ray parallel to Y axis, inside X bounds
   bool aHit4 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(0.5, -1.0),
-                                                        BVH_Vec2d(0.0, 1.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(0.0, 1.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit4);
   EXPECT_NEAR(aTimeEnter, 1.0, Precision::Confusion());
   EXPECT_NEAR(aTimeLeave, 2.0, Precision::Confusion());
@@ -682,18 +716,19 @@ TEST(BVH_ToolsTest, RayBoxIntersectionEarlyExit)
 
   // Ray clearly misses in X direction - should exit immediately
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-2.0, 0.5, 0.5),
-                                                       BVH_Vec3d(-1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(-1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_FALSE(aHit);
 
   // Ray with early mismatch in Y direction
-  bool aHit2 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, -2.0, 0.5),
-                                                        BVH_Vec3d(0.0, -1.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit2 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, -2.0, 0.5),
+                                                    BVH_Vec3d(0.0, -1.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_FALSE(aHit2);
 }
 
@@ -705,26 +740,28 @@ TEST(BVH_ToolsTest, RayBoxIntersectionParallelRayEarlyExit)
 
   // Ray parallel to X axis but Y coordinate outside box - should reject immediately
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, 2.0, 0.5),
-                                                       BVH_Vec3d(1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_FALSE(aHit);
 
   // Ray parallel to Y axis but X coordinate outside box
-  bool aHit2 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(2.0, -1.0, 0.5),
-                                                        BVH_Vec3d(0.0, 1.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit2 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(2.0, -1.0, 0.5),
+                                                    BVH_Vec3d(0.0, 1.0, 0.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_FALSE(aHit2);
 
   // Ray parallel to Z axis but X and Y outside
-  bool aHit3 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, 0.5),
-                                                        BVH_Vec3d(0.0, 0.0, 1.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+  bool aHit3 =
+    BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(-1.0, -1.0, 0.5),
+                                                    BVH_Vec3d(0.0, 0.0, 1.0),
+                                                    aBox,
+                                                    aTimeEnter,
+                                                    aTimeLeave);
   EXPECT_FALSE(aHit3);
 }
 
@@ -736,18 +773,18 @@ TEST(BVH_ToolsTest, RayBoxIntersection2DParallelBothAxes)
 
   // Ray origin inside box, direction = 0
   bool aHit1 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(0.5, 0.5),
-                                                        BVH_Vec2d(0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit1); // Should still hit because origin is inside
 
   // Ray origin outside box, direction = 0
   bool aHit2 = BVH_Tools<double, 2>::RayBoxIntersection(BVH_Vec2d(2.0, 2.0),
-                                                        BVH_Vec2d(0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec2d(0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_FALSE(aHit2); // Should miss because origin is outside
 }
 
@@ -759,18 +796,18 @@ TEST(BVH_ToolsTest, RayBoxIntersectionNegativeTime)
 
   // Ray origin is past the box, pointing away
   bool aHit = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(2.0, 0.5, 0.5),
-                                                       BVH_Vec3d(1.0, 0.0, 0.0),
-                                                       aBox,
-                                                       aTimeEnter,
-                                                       aTimeLeave);
+                                                                          BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                          aBox,
+                                                                          aTimeEnter,
+                                                                          aTimeLeave);
   EXPECT_FALSE(aHit);
 
   // Ray origin inside box, pointing away - should still hit (leave point is in front)
   bool aHit2 = BVH_Tools<double, 3>::RayBoxIntersection(BVH_Vec3d(0.5, 0.5, 0.5),
-                                                        BVH_Vec3d(1.0, 0.0, 0.0),
-                                                        aBox,
-                                                        aTimeEnter,
-                                                        aTimeLeave);
+                                                                           BVH_Vec3d(1.0, 0.0, 0.0),
+                                                                           aBox,
+                                                                           aTimeEnter,
+                                                                           aTimeLeave);
   EXPECT_TRUE(aHit2);
   EXPECT_TRUE(aTimeLeave >= 0.0);
 }

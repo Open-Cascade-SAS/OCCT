@@ -74,8 +74,7 @@ int StepAP214_DateItem::CaseNum(const occ::handle<Standard_Transient>& ent) cons
   return 0;
 }
 
-occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_DateItem::ApprovalPersonOrganization()
-  const
+occ::handle<StepBasic_ApprovalPersonOrganization> StepAP214_DateItem::ApprovalPersonOrganization() const
 {
   return GetCasted(StepBasic_ApprovalPersonOrganization, Value());
 }
@@ -86,8 +85,8 @@ occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment> StepAP214_DateItem
   return GetCasted(StepAP214_AppliedPersonAndOrganizationAssignment, Value());
 }
 
-occ::handle<StepAP214_AppliedOrganizationAssignment> StepAP214_DateItem::
-  AppliedOrganizationAssignment() const
+occ::handle<StepAP214_AppliedOrganizationAssignment> StepAP214_DateItem::AppliedOrganizationAssignment()
+  const
 {
   return GetCasted(StepAP214_AppliedOrganizationAssignment, Value());
 }

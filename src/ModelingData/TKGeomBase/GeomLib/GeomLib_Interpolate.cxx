@@ -21,13 +21,15 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-GeomLib_Interpolate::GeomLib_Interpolate(const int                         Degree,
-                                         const int                         NumPoints,
-                                         const NCollection_Array1<gp_Pnt>& PointsArray,
+GeomLib_Interpolate::GeomLib_Interpolate(const int      Degree,
+                                         const int      NumPoints,
+                                         const NCollection_Array1<gp_Pnt>&   PointsArray,
                                          const NCollection_Array1<double>& ParametersArray)
     : myIsDone(false)
 {
@@ -44,8 +46,8 @@ GeomLib_Interpolate::GeomLib_Interpolate(const int                         Degre
   }
   else
   {
-    gp_Pnt null_point(0.0e0, 0.0e0, 0.0e0);
-    int    order = Degree + 1, half_order;
+    gp_Pnt           null_point(0.0e0, 0.0e0, 0.0e0);
+    int order = Degree + 1, half_order;
     if (order % 2)
     {
       order -= 1;
@@ -53,11 +55,11 @@ GeomLib_Interpolate::GeomLib_Interpolate(const int                         Degre
     half_order   = order / 2;
     num_knots    = NumPoints + 2 * order - 2;
     num_controls = num_knots - order;
-    NCollection_Array1<double> flat_knots(1, num_knots);
-    NCollection_Array1<int>    contacts(1, num_controls);
-    NCollection_Array1<int>    multiplicities(1, NumPoints);
-    NCollection_Array1<double> parameters(1, num_controls);
-    NCollection_Array1<gp_Pnt> poles(1, num_controls);
+    NCollection_Array1<double>    flat_knots(1, num_knots);
+    NCollection_Array1<int> contacts(1, num_controls);
+    NCollection_Array1<int> multiplicities(1, NumPoints);
+    NCollection_Array1<double>    parameters(1, num_controls);
+    NCollection_Array1<gp_Pnt>      poles(1, num_controls);
 
     for (ii = 1; ii <= NumPoints; ii++)
     {

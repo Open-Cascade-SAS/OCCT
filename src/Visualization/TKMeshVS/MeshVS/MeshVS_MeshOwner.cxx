@@ -29,9 +29,9 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 
 //=================================================================================================
 
-MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject*     theSelObj,
-                                   const occ::handle<MeshVS_DataSource>& theDS,
-                                   const int                             thePriority)
+MeshVS_MeshOwner::MeshVS_MeshOwner(const SelectMgr_SelectableObject* theSelObj,
+                                   const occ::handle<MeshVS_DataSource>&  theDS,
+                                   const int            thePriority)
     : SelectMgr_EntityOwner(theSelObj, thePriority)
 {
   myLastID = -1;
@@ -146,7 +146,8 @@ void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationMan
   }
 }
 
-void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM, const int)
+void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                 const int)
 {
   SelectMgr_EntityOwner::Unhilight(thePM);
 
@@ -162,7 +163,7 @@ void MeshVS_MeshOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>& 
 bool MeshVS_MeshOwner::IsForcedHilight() const
 {
   bool aHilight = true;
-  int  aKey     = -1;
+  int aKey     = -1;
   if (myLastID > 0)
   {
     // Check the detected entity and

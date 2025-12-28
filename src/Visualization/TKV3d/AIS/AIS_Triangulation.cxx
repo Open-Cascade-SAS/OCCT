@@ -84,11 +84,9 @@ void AIS_Triangulation::updatePresentation()
   else
   {
     // modify shading presentation without re-computation
-    const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>& aPrsList = Presentations();
+    const NCollection_Sequence<occ::handle<PrsMgr_Presentation>>&        aPrsList  = Presentations();
     occ::handle<Graphic3d_AspectFillArea3d> anAreaAsp = myDrawer->ShadingAspect()->Aspect();
-    for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList);
-         aPrsIter.More();
-         aPrsIter.Next())
+    for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(aPrsList); aPrsIter.More(); aPrsIter.Next())
     {
       if (aPrsIter.Value()->Mode() != AIS_WireFrame)
       {
@@ -96,8 +94,7 @@ void AIS_Triangulation::updatePresentation()
       }
 
       const occ::handle<Prs3d_Presentation>& aPrs = aPrsIter.Value();
-      for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIt(aPrs->Groups());
-           aGroupIt.More();
+      for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIt(aPrs->Groups()); aGroupIt.More();
            aGroupIt.Next())
       {
         const occ::handle<Graphic3d_Group>& aGroup = aGroupIt.Value();
@@ -111,7 +108,7 @@ void AIS_Triangulation::updatePresentation()
 
 void AIS_Triangulation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                 const occ::handle<Prs3d_Presentation>& thePrs,
-                                const int                              theMode)
+                                const int            theMode)
 {
   if (theMode != 0)
   {
@@ -121,8 +118,11 @@ void AIS_Triangulation::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   bool hasVNormals = myTriangulation->HasNormals();
   bool hasVColors  = HasVertexColors();
 
-  occ::handle<Graphic3d_ArrayOfTriangles> anArray =
-    new Graphic3d_ArrayOfTriangles(myNbNodes, myNbTriangles * 3, hasVNormals, hasVColors, false);
+  occ::handle<Graphic3d_ArrayOfTriangles> anArray  = new Graphic3d_ArrayOfTriangles(myNbNodes,
+                                                                              myNbTriangles * 3,
+                                                                              hasVNormals,
+                                                                              hasVColors,
+                                                                              false);
   occ::handle<Graphic3d_Group>            aGroup   = thePrs->CurrentGroup();
   occ::handle<Graphic3d_AspectFillArea3d> anAspect = myDrawer->ShadingAspect()->Aspect();
 
@@ -230,8 +230,8 @@ occ::handle<Poly_Triangulation> AIS_Triangulation::GetTriangulation() const
 
 //=================================================================================================
 
-NCollection_Vec4<uint8_t> AIS_Triangulation::attenuateColor(const int    theColor,
-                                                            const double theComposition)
+NCollection_Vec4<uint8_t> AIS_Triangulation::attenuateColor(const int theColor,
+                                                   const double    theComposition)
 {
   const uint8_t* anRgbx = reinterpret_cast<const uint8_t*>(&theColor);
 
@@ -243,7 +243,7 @@ NCollection_Vec4<uint8_t> AIS_Triangulation::attenuateColor(const int    theColo
       : 255;
 
   return NCollection_Vec4<uint8_t>((uint8_t)(theComposition * anRgbx[0]),
-                                   (uint8_t)(theComposition * anRgbx[1]),
-                                   (uint8_t)(theComposition * anRgbx[2]),
-                                   anAlpha);
+                          (uint8_t)(theComposition * anRgbx[1]),
+                          (uint8_t)(theComposition * anRgbx[2]),
+                          anAlpha);
 }

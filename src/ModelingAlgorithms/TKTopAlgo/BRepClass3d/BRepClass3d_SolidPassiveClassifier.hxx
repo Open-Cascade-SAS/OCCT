@@ -62,13 +62,13 @@ public:
   TopAbs_State State() const { return myState; }
 
 private:
-  bool                      isSet;
+  bool          isSet;
   TopoDS_Face               myFace;
   gp_Lin                    myLin;
-  double                    myParam;
-  double                    myTolerance;
+  double             myParam;
+  double             myTolerance;
   TopAbs_State              myState;
-  bool                      hasIntersect;
+  bool          hasIntersect;
   BRepClass3d_Intersector3d myIntersector;
 };
 

@@ -21,7 +21,7 @@ StepShape_OrientedEdge::StepShape_OrientedEdge() {}
 
 void StepShape_OrientedEdge::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepShape_Edge>&           aEdgeElement,
-                                  const bool                                   aOrientation)
+                                  const bool                  aOrientation)
 {
   // --- classe own fields ---
   edgeElement = aEdgeElement;

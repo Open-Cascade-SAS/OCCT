@@ -65,13 +65,13 @@ TopOpeBRepTool_makeTransition::TopOpeBRepTool_makeTransition() {}
 
 //=================================================================================================
 
-bool TopOpeBRepTool_makeTransition::Initialize(const TopoDS_Edge& E,
-                                               const double       pbef,
-                                               const double       paft,
-                                               const double       parE,
-                                               const TopoDS_Face& FS,
-                                               const gp_Pnt2d&    uv,
-                                               const double       factor)
+bool TopOpeBRepTool_makeTransition::Initialize(const TopoDS_Edge&  E,
+                                                           const double pbef,
+                                                           const double paft,
+                                                           const double parE,
+                                                           const TopoDS_Face&  FS,
+                                                           const gp_Pnt2d&     uv,
+                                                           const double factor)
 {
   bool isdge = BRep_Tool::Degenerated(E);
   if (isdge)
@@ -117,7 +117,8 @@ bool TopOpeBRepTool_makeTransition::IsT2d() const
 
 //=================================================================================================
 
-bool TopOpeBRepTool_makeTransition::SetRest(const TopoDS_Edge& ES, const double parES)
+bool TopOpeBRepTool_makeTransition::SetRest(const TopoDS_Edge&  ES,
+                                                        const double parES)
 {
   bool isdge = BRep_Tool::Degenerated(ES);
   if (isdge)
@@ -171,19 +172,19 @@ static int FUN_mkT2dquad(const double curvC1, const double curvC2)
   //  return 0;
 }
 
-static bool FUN_getnearpar(const TopoDS_Edge& e,
-                           const double       par,
-                           const double       f,
-                           const double       l,
-                           const double       factor,
-                           const int          sta,
-                           double&            nearpar)
+static bool FUN_getnearpar(const TopoDS_Edge&     e,
+                                       const double    par,
+                                       const double    f,
+                                       const double    l,
+                                       const double    factor,
+                                       const int sta,
+                                       double&         nearpar)
 {
   // hyp : f < par < l
   BRepAdaptor_Curve bc(e);
-  double            tol1d = bc.Resolution(bc.Tolerance());
-  bool              onf   = (std::abs(par - f) < tol1d);
-  bool              onl   = (std::abs(par - l) < tol1d);
+  double     tol1d = bc.Resolution(bc.Tolerance());
+  bool  onf   = (std::abs(par - f) < tol1d);
+  bool  onl   = (std::abs(par - l) < tol1d);
   if (onf && (sta == BEFORE))
     return false;
   if (onl && (sta == AFTER))
@@ -193,25 +194,25 @@ static bool FUN_getnearpar(const TopoDS_Edge& e,
   return true;
 }
 
-static bool FUN_tg(const TopoDS_Edge& e,
-                   const double       par,
-                   const double       f,
-                   const double       l,
-                   const double       factor,
-                   gp_Dir&            tg,
-                   int&               st)
+static bool FUN_tg(const TopoDS_Edge&  e,
+                               const double par,
+                               const double f,
+                               const double l,
+                               const double factor,
+                               gp_Dir&             tg,
+                               int&   st)
 {
   st = BEFORE;
   for (int nite = 1; nite <= 2; nite++)
   {
     if (nite == 2)
       st = AFTER;
-    double pn  = 0.;
-    bool   mkp = FUN_getnearpar(e, par, f, l, factor, st, pn);
+    double    pn  = 0.;
+    bool mkp = FUN_getnearpar(e, par, f, l, factor, st, pn);
     if (!mkp)
       continue;
-    gp_Vec tmp;
-    bool   ok = TopOpeBRepTool_TOOL::TggeomE(pn, e, tmp);
+    gp_Vec           tmp;
+    bool ok = TopOpeBRepTool_TOOL::TggeomE(pn, e, tmp);
     if (!ok)
       continue;
     tg = gp_Dir(tmp);
@@ -220,18 +221,18 @@ static bool FUN_tg(const TopoDS_Edge& e,
   return false;
 }
 
-static bool FUN_getsta(const int     mkt,
-                       const gp_Dir& tga1,
-                       const gp_Dir& tga2,
-                       const gp_Dir& xx2,
-                       TopAbs_State& sta)
+static bool FUN_getsta(const int mkt,
+                                   const gp_Dir&          tga1,
+                                   const gp_Dir&          tga2,
+                                   const gp_Dir&          xx2,
+                                   TopAbs_State&          sta)
 {
   if (mkt == isINifh1)
   {
     // curv(e1) > 0.
     // is IN if (dot=tg1(pt after).xx2 > 0)
     double dot = tga1.Dot(xx2);
-    sta        = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
+    sta               = (dot > 0) ? TopAbs_IN : TopAbs_OUT;
     return true;
   }
   else if (mkt == isINifh2)
@@ -239,7 +240,7 @@ static bool FUN_getsta(const int     mkt,
     // curv(e2) > 0.
     // is IN if (dot=tg2(pt after).xx2 < 0)
     double dot = tga2.Dot(xx2);
-    sta        = (dot < 0) ? TopAbs_IN : TopAbs_OUT;
+    sta               = (dot < 0) ? TopAbs_IN : TopAbs_OUT;
     return true;
   }
   else if (mkt == isON2ifss)
@@ -247,21 +248,21 @@ static bool FUN_getsta(const int     mkt,
     // curv(e1), curv(e2) > 0.
     // is ON if curves are on same side/tg line
     bool ssided = (tga1.Dot(tga2) > 0);
-    sta         = ssided ? TopAbs_ON : TopAbs_IN;
+    sta                     = ssided ? TopAbs_ON : TopAbs_IN;
     return true;
   }
   else if (mkt == isIN2ifss)
   {
     // stag = IN if curves are on same side/tg line
     double dot = tga1.Dot(xx2);
-    sta        = (dot < 0) ? TopAbs_OUT : TopAbs_IN;
+    sta               = (dot < 0) ? TopAbs_OUT : TopAbs_IN;
     return true;
   }
   else if (mkt == isOU2ifss)
   {
     // stag = OU if curves are on same side/tg line
     double dot = tga2.Dot(xx2);
-    sta        = (dot < 0) ? TopAbs_IN : TopAbs_OUT;
+    sta               = (dot < 0) ? TopAbs_IN : TopAbs_OUT;
     return true;
   }
   else
@@ -271,16 +272,16 @@ static bool FUN_getsta(const int     mkt,
   }
 }
 
-static bool FUN_mkT2dquad(const TopoDS_Edge& e1,
-                          const double       par1,
-                          const double       f1,
-                          const double       l1,
-                          const TopoDS_Edge& e2,
-                          const double       par2,
-                          const int          mkt,
-                          const gp_Dir&      xx2,
-                          const double       factor,
-                          TopAbs_State&      sta)
+static bool FUN_mkT2dquad(const TopoDS_Edge&     e1,
+                                      const double    par1,
+                                      const double    f1,
+                                      const double    l1,
+                                      const TopoDS_Edge&     e2,
+                                      const double    par2,
+                                      const int mkt,
+                                      const gp_Dir&          xx2,
+                                      const double    factor,
+                                      TopAbs_State&          sta)
 {
   sta = TopAbs_UNKNOWN;
 
@@ -288,13 +289,13 @@ static bool FUN_mkT2dquad(const TopoDS_Edge& e1,
   // stb = state of point on e1 before pt / e2
   // = sta = state of point on e1 after pt / e2
 
-  gp_Dir tga1, tga2;
-  bool   mk1 = (mkt == isINifh1) || (mkt == isON2ifss) || (mkt == isIN2ifss);
+  gp_Dir           tga1, tga2;
+  bool mk1 = (mkt == isINifh1) || (mkt == isON2ifss) || (mkt == isIN2ifss);
   if (mk1)
   {
-    int    st1 = 0;
-    gp_Dir tgnear1;
-    bool   ok = FUN_tg(e1, par1, f1, l1, factor, tgnear1, st1);
+    int st1 = 0;
+    gp_Dir           tgnear1;
+    bool ok = FUN_tg(e1, par1, f1, l1, factor, tgnear1, st1);
     if (!ok)
       return false;
     tga1 = (st1 == AFTER) ? tgnear1 : tgnear1.Reversed();
@@ -304,9 +305,9 @@ static bool FUN_mkT2dquad(const TopoDS_Edge& e1,
   {
     double f2, l2;
     FUN_tool_bounds(e2, f2, l2);
-    int    st2 = 0;
-    gp_Dir tgnear2;
-    bool   ok = FUN_tg(e2, par2, f2, l2, factor, tgnear2, st2);
+    int st2 = 0;
+    gp_Dir           tgnear2;
+    bool ok = FUN_tg(e2, par2, f2, l2, factor, tgnear2, st2);
     if (!ok)
       return false;
     tga2 = (st2 == AFTER) ? tgnear2 : tgnear2.Reversed();
@@ -345,8 +346,8 @@ bool TopOpeBRepTool_makeTransition::MkT2donE(TopAbs_State& Stb, TopAbs_State& St
     return true;
   }
 
-  gp_Vec tmp;
-  bool   ok = TopOpeBRepTool_TOOL::TggeomE(mypE, myE, tmp);
+  gp_Vec           tmp;
+  bool ok = TopOpeBRepTool_TOOL::TggeomE(mypE, myE, tmp);
   if (!ok)
     return false;
   gp_Dir tgE(tmp);
@@ -397,9 +398,10 @@ bool TopOpeBRepTool_makeTransition::MkT2donE(TopAbs_State& Stb, TopAbs_State& St
   bool quadES = TopOpeBRepTool_TOOL::IsQuad(myES);
   if (quadE && quadES)
   { // should return INT/EXT
-    TopAbs_State sta  = TopAbs_UNKNOWN;
-    int          mkt  = FUN_mkT2dquad(curvE, curvES);
-    bool         isOK = FUN_mkT2dquad(myE, mypb, mypa, mypE, myES, mypES, mkt, xxES, myfactor, sta);
+    TopAbs_State     sta = TopAbs_UNKNOWN;
+    int mkt = FUN_mkT2dquad(curvE, curvES);
+    bool isOK =
+      FUN_mkT2dquad(myE, mypb, mypa, mypE, myES, mypES, mkt, xxES, myfactor, sta);
     if (isOK)
     {
       Stb = Sta = sta;
@@ -413,12 +415,12 @@ bool TopOpeBRepTool_makeTransition::MkT2donE(TopAbs_State& Stb, TopAbs_State& St
   return false;
 }
 
-static bool FUN_getnearuv(const TopoDS_Face& f,
-                          const gp_Pnt2d&    uv,
-                          const double       factor,
-                          const int          sta,
-                          const gp_Dir2d&    duv,
-                          gp_Pnt2d&          nearuv)
+static bool FUN_getnearuv(const TopoDS_Face&     f,
+                                      const gp_Pnt2d&        uv,
+                                      const double    factor,
+                                      const int sta,
+                                      const gp_Dir2d&        duv,
+                                      gp_Pnt2d&              nearuv)
 {
   BRepAdaptor_Surface bs(f);
 
@@ -463,15 +465,15 @@ static bool FUN_getnearuv(const TopoDS_Face& f,
   return true;
 } // FUN_getnearuv
 
-static bool FUN_tgef(const TopoDS_Face& f,
-                     const gp_Pnt2d&    uv,
-                     const gp_Dir2d&    duv,
-                     const double       factor,
-                     //		                 const gp_Dir& tge,
-                     const gp_Dir&,
-                     const gp_Dir& tg0,
-                     gp_Dir&       tgef,
-                     int&          st)
+static bool FUN_tgef(const TopoDS_Face&  f,
+                                 const gp_Pnt2d&     uv,
+                                 const gp_Dir2d&     duv,
+                                 const double factor,
+                                 //		                 const gp_Dir& tge,
+                                 const gp_Dir&,
+                                 const gp_Dir&     tg0,
+                                 gp_Dir&           tgef,
+                                 int& st)
 {
   st = BEFORE;
   for (int nite = 1; nite <= 2; nite++)
@@ -483,8 +485,8 @@ static bool FUN_tgef(const TopoDS_Face& f,
     bool mkp = FUN_getnearuv(f, uv, factor, st, duv, nearuv);
     if (!mkp)
       continue;
-    gp_Dir nt;
-    bool   ok = TopOpeBRepTool_TOOL::Nt(nearuv, f, nt);
+    gp_Dir           nt;
+    bool ok = TopOpeBRepTool_TOOL::Nt(nearuv, f, nt);
     if (!ok)
       return false;
     // recall : ntf^tge = tg0, (tgef(uv) = tge)
@@ -495,17 +497,17 @@ static bool FUN_tgef(const TopoDS_Face& f,
   return false;
 } // FUN_tgef
 
-static bool FUN_mkT3dquad(const TopoDS_Edge& e,
-                          const double       pf,
-                          const double       pl,
-                          const double       par,
-                          const TopoDS_Face& f,
-                          const gp_Pnt2d&    uv,
-                          const gp_Dir&      tge,
-                          const gp_Dir&      ntf,
-                          const int          mkt,
-                          const double       factor,
-                          TopAbs_State&      sta)
+static bool FUN_mkT3dquad(const TopoDS_Edge&     e,
+                                      const double    pf,
+                                      const double    pl,
+                                      const double    par,
+                                      const TopoDS_Face&     f,
+                                      const gp_Pnt2d&        uv,
+                                      const gp_Dir&          tge,
+                                      const gp_Dir&          ntf,
+                                      const int mkt,
+                                      const double    factor,
+                                      TopAbs_State&          sta)
 
 {
   // stb = state of point on e before pt / ef
@@ -514,13 +516,13 @@ static bool FUN_mkT3dquad(const TopoDS_Edge& e,
   gp_Dir xxef = ntf.Reversed();
   gp_Dir tg0  = ntf.Crossed(tge);
 
-  gp_Dir tgae, tgaef;
-  bool   mke = (mkt == isINifh1) || (mkt == isON2ifss) || (mkt == isIN2ifss);
+  gp_Dir           tgae, tgaef;
+  bool mke = (mkt == isINifh1) || (mkt == isON2ifss) || (mkt == isIN2ifss);
   if (mke)
   {
-    int    st = 0;
-    gp_Dir tgnear;
-    bool   ok = FUN_tg(e, par, pf, pl, factor, tgnear, st);
+    int st = 0;
+    gp_Dir           tgnear;
+    bool ok = FUN_tg(e, par, pf, pl, factor, tgnear, st);
     if (!ok)
       return false;
     tgae = (st == AFTER) ? tgnear : tgnear.Reversed();
@@ -529,14 +531,14 @@ static bool FUN_mkT3dquad(const TopoDS_Edge& e,
   if (mkef)
   {
     // choice : tgdir(ef,uv) = tgdir(e,pare)
-    double   fac3d = 0.01; // 0.12345; not only planar faces
-    gp_Dir2d duv;
-    bool     ok = TopOpeBRepTool_TOOL::Getduv(f, uv, tge, fac3d, duv);
+    double    fac3d = 0.01; // 0.12345; not only planar faces
+    gp_Dir2d         duv;
+    bool ok = TopOpeBRepTool_TOOL::Getduv(f, uv, tge, fac3d, duv);
     if (!ok)
       return false;
-    gp_Dir tgnear;
-    int    st = 0;
-    ok        = FUN_tgef(f, uv, duv, factor, tge, tg0, tgnear, st);
+    gp_Dir           tgnear;
+    int st = 0;
+    ok                  = FUN_tgef(f, uv, duv, factor, tge, tg0, tgnear, st);
     if (!ok)
       return false;
     tgaef = (st == AFTER) ? tgnear : tgnear.Reversed();
@@ -552,9 +554,9 @@ static TopAbs_State FUN_stawithES(const gp_Dir& tgE, const gp_Dir& xxES, const i
   // tgE  : tangent to E at Pt
   // pt(st,E) (st=BEFORE,AFTER) has been found IN 3dFS()
 
-  TopAbs_State sta;
-  double       prod = tgE.Dot(xxES);
-  double       tola = FUN_tolang();
+  TopAbs_State  sta;
+  double prod = tgE.Dot(xxES);
+  double tola = FUN_tolang();
   if (std::abs(prod) < tola)
     return TopAbs_UNKNOWN;
   bool positive = (prod > 0.);
@@ -566,10 +568,10 @@ static TopAbs_State FUN_stawithES(const gp_Dir& tgE, const gp_Dir& xxES, const i
   return sta;
 } // FUN_stawithES
 
-static TopAbs_State FUN_stawithES(const gp_Dir&      tgE,
-                                  const gp_Dir&      xxES,
-                                  const int          st,
-                                  const TopAbs_State stt)
+static TopAbs_State FUN_stawithES(const gp_Dir&          tgE,
+                                  const gp_Dir&          xxES,
+                                  const int st,
+                                  const TopAbs_State     stt)
 {
   TopAbs_State str = TopAbs_UNKNOWN;
   if (M_UNKNOWN(stt))
@@ -582,17 +584,17 @@ static TopAbs_State FUN_stawithES(const gp_Dir&      tgE,
   return str;
 }
 
-static bool FUN_staproj(const TopoDS_Edge& e,
-                        const double       pf,
-                        const double       pl,
-                        const double       pe,
-                        const double       factor,
-                        const int          st,
-                        const TopoDS_Face& f,
-                        TopAbs_State&      sta)
+static bool FUN_staproj(const TopoDS_Edge&     e,
+                                    const double    pf,
+                                    const double    pl,
+                                    const double    pe,
+                                    const double    factor,
+                                    const int st,
+                                    const TopoDS_Face&     f,
+                                    TopAbs_State&          sta)
 {
-  double par = 0.;
-  bool   ok  = FUN_getnearpar(e, pe, pf, pl, factor, st, par);
+  double    par = 0.;
+  bool ok  = FUN_getnearpar(e, pe, pf, pl, factor, st, par);
   if (!ok)
     return false;
   gp_Pnt pt;
@@ -609,10 +611,11 @@ static bool FUN_staproj(const TopoDS_Edge& e,
 // purpose  : can return in,out,on
 //=======================================================================
 
-bool TopOpeBRepTool_makeTransition::MkT3dproj(TopAbs_State& Stb, TopAbs_State& Sta) const
+bool TopOpeBRepTool_makeTransition::MkT3dproj(TopAbs_State& Stb,
+                                                          TopAbs_State& Sta) const
 {
-  Stb = Sta = TopAbs_UNKNOWN;
-  bool okb  = FUN_staproj(myE, mypb, mypa, mypE, myfactor, BEFORE, myFS, Stb);
+  Stb = Sta            = TopAbs_UNKNOWN;
+  bool okb = FUN_staproj(myE, mypb, mypa, mypE, myfactor, BEFORE, myFS, Stb);
   if (!okb)
     return false;
   bool oka = FUN_staproj(myE, mypb, mypa, mypE, myfactor, AFTER, myFS, Sta);
@@ -641,8 +644,8 @@ bool TopOpeBRepTool_makeTransition::MkT3onE(TopAbs_State& Stb, TopAbs_State& Sta
 {
   if (isT2d)
     return false;
-  gp_Vec tmp;
-  bool   ok = TopOpeBRepTool_TOOL::TggeomE(mypE, myE, tmp);
+  gp_Vec           tmp;
+  bool ok = TopOpeBRepTool_TOOL::TggeomE(mypE, myE, tmp);
   if (!ok)
     return false;
   gp_Dir tgE(tmp);
@@ -664,13 +667,13 @@ bool TopOpeBRepTool_makeTransition::MkT3onE(TopAbs_State& Stb, TopAbs_State& Sta
   }
 
   // E is tangent to FS at interference point
-  gp_Dir tg0 = ntFS.Crossed(tgE);
+  gp_Dir        tg0 = ntFS.Crossed(tgE);
   double curE;
   ok = TopOpeBRepTool_TOOL::CurvE(myE, mypE, tg0, curE);
   if (!ok)
     return false;
-  double curFS;
-  bool   direct;
+  double    curFS;
+  bool direct;
   ok = TopOpeBRepTool_TOOL::CurvF(myFS, myuv, tg0, curFS, direct);
   if (!ok)
     return false;
@@ -679,15 +682,15 @@ bool TopOpeBRepTool_makeTransition::MkT3onE(TopAbs_State& Stb, TopAbs_State& Sta
   bool quadFS = TopOpeBRepTool_TOOL::IsQuad(myFS);
   if (quadE && quadFS)
   { // should return INT/EXT
-    int          mkt = FUN_mkT2dquad(curE, curFS);
-    TopAbs_State sta = TopAbs_UNKNOWN;
+    int mkt = FUN_mkT2dquad(curE, curFS);
+    TopAbs_State     sta = TopAbs_UNKNOWN;
     ok = FUN_mkT3dquad(myE, mypb, mypa, mypE, myFS, myuv, tgE, ntFS, mkt, myfactor, sta);
     if (ok)
     {
       if (hasES)
       {
-        gp_Dir xxES;
-        bool   isOK = TopOpeBRepTool_TOOL::XX(myuv, myFS, mypES, myES, xxES);
+        gp_Dir           xxES;
+        bool isOK = TopOpeBRepTool_TOOL::XX(myuv, myFS, mypES, myES, xxES);
         if (!isOK)
           return false;
         Stb = FUN_stawithES(tgE, xxES, BEFORE, sta);
@@ -732,8 +735,8 @@ bool TopOpeBRepTool_makeTransition::MkTonE(TopAbs_State& Stb, TopAbs_State& Sta)
       return false;
   }
 
-  double delta = (1. - myfactor) / 5.;
-  bool   kob = false, koa = false;
+  double    delta = (1. - myfactor) / 5.;
+  bool kob = false, koa = false;
   for (int nite = 1; nite <= 5; nite++)
   {
     kob = (Stb == TopAbs_ON) || (Stb == TopAbs_UNKNOWN);

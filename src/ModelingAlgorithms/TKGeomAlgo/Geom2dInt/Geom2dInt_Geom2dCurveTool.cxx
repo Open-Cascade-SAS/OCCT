@@ -21,11 +21,11 @@
 
 //============================================================
 int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
-                                         const double             U0,
-                                         const double             U1)
+                                                      const double      U0,
+                                                      const double      U1)
 {
   GeomAbs_CurveType typC = C.GetType();
-  int               nbs  = C.NbSamples();
+  int  nbs  = C.NbSamples();
 
   if (typC == GeomAbs_BSplineCurve)
   {
@@ -38,7 +38,7 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
       nbs = C.NbKnots();
       nbs *= C.Degree();
       double anb = t1 / t * nbs;
-      nbs        = (int)anb;
+      nbs               = (int)anb;
 
       int aMinPntNb = std::max(C.Degree() + 1, 4);
       if (nbs < aMinPntNb)
@@ -52,9 +52,9 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
     double       R    = C.Circle().Radius();
     if (R > minR)
     {
-      double angl = 0.283079; // 2.*std::acos(1. - eps);
-      int    n    = RealToInt(std::abs(U1 - U0) / angl);
-      nbs         = std::max(n, nbs);
+      double    angl = 0.283079; // 2.*std::acos(1. - eps);
+      int n    = RealToInt(std::abs(U1 - U0) / angl);
+      nbs                   = std::max(n, nbs);
     }
   }
 
@@ -66,7 +66,7 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C,
 //============================================================
 int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C)
 {
-  int               nbs  = C.NbSamples();
+  int  nbs  = C.NbSamples();
   GeomAbs_CurveType typC = C.GetType();
   if (typC == GeomAbs_Circle)
   {
@@ -75,9 +75,9 @@ int Geom2dInt_Geom2dCurveTool::NbSamples(const Adaptor2d_Curve2d& C)
     double       R    = C.Circle().Radius();
     if (R > minR)
     {
-      double angl = 0.283079; // 2.*std::acos(1. - eps);
-      int    n    = RealToInt((C.LastParameter() - C.FirstParameter()) / angl);
-      nbs         = std::max(n, nbs);
+      double    angl = 0.283079; // 2.*std::acos(1. - eps);
+      int n    = RealToInt((C.LastParameter() - C.FirstParameter()) / angl);
+      nbs                   = std::max(n, nbs);
     }
   }
 

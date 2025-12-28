@@ -73,7 +73,7 @@ bool BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Shape& SpineSupport)
 //=================================================================================================
 
 void BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Wire&           AuxiliarySpine,
-                                          const bool                   CurvilinearEquivalence,
+                                          const bool       CurvilinearEquivalence,
                                           const BRepFill_TypeOfContact KeepContact)
 {
   myPipe->Set(AuxiliarySpine, CurvilinearEquivalence, KeepContact);
@@ -81,40 +81,40 @@ void BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Wire&           Auxiliary
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape& Profile,
-                                      const bool          WithContact,
-                                      const bool          WithCorrection)
+void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape&    Profile,
+                                      const bool WithContact,
+                                      const bool WithCorrection)
 {
   myPipe->Add(Profile, WithContact, WithCorrection);
 }
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape&  Profile,
-                                      const TopoDS_Vertex& Location,
-                                      const bool           WithContact,
-                                      const bool           WithCorrection)
+void BRepOffsetAPI_MakePipeShell::Add(const TopoDS_Shape&    Profile,
+                                      const TopoDS_Vertex&   Location,
+                                      const bool WithContact,
+                                      const bool WithCorrection)
 {
   myPipe->Add(Profile, Location, WithContact, WithCorrection);
 }
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&              Profile,
+void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&         Profile,
                                          const occ::handle<Law_Function>& L,
-                                         const bool                       WithContact,
-                                         const bool                       WithCorrection)
+                                         const bool      WithContact,
+                                         const bool      WithCorrection)
 {
   myPipe->SetLaw(Profile, L, WithContact, WithCorrection);
 }
 
 //=================================================================================================
 
-void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&              Profile,
+void BRepOffsetAPI_MakePipeShell::SetLaw(const TopoDS_Shape&         Profile,
                                          const occ::handle<Law_Function>& L,
-                                         const TopoDS_Vertex&             Location,
-                                         const bool                       WithContact,
-                                         const bool                       WithCorrection)
+                                         const TopoDS_Vertex&        Location,
+                                         const bool      WithContact,
+                                         const bool      WithCorrection)
 {
   myPipe->SetLaw(Profile, L, Location, WithContact, WithCorrection);
 }

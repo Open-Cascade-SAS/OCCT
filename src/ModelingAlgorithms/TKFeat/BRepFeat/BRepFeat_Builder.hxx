@@ -24,7 +24,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 class TopoDS_Shape;
 class TopoDS_Face;
@@ -91,11 +94,10 @@ public:
   Standard_EXPORT void RebuildFaces();
 
   //! Rebuilds edges in accordance with the kept parts of the tool.
-  Standard_EXPORT void RebuildEdge(
-    const TopoDS_Shape&                                           theE,
-    const TopoDS_Face&                                            theF,
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theME,
-    NCollection_List<TopoDS_Shape>&                               aLEIm);
+  Standard_EXPORT void RebuildEdge(const TopoDS_Shape&        theE,
+                                   const TopoDS_Face&         theF,
+                                   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theME,
+                                   NCollection_List<TopoDS_Shape>&      aLEIm);
 
   //! Collects the images of the object, that contains in
   //! the images of the tool.
@@ -105,17 +107,16 @@ public:
   Standard_EXPORT void FillRemoved();
 
   //! Adds the shape S and its sub-shapes into myRemoved map.
-  Standard_EXPORT void FillRemoved(const TopoDS_Shape&                                     theS,
-                                   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theM);
+  Standard_EXPORT void FillRemoved(const TopoDS_Shape& theS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theM);
 
 protected:
   //! Prepares builder of local operation.
   Standard_EXPORT virtual void Prepare() override;
 
   //! Function is redefined to avoid the usage of removed faces.
-  Standard_EXPORT virtual void FillIn3DParts(
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
-    const Message_ProgressRange&                                              theRange) override;
+  Standard_EXPORT virtual void FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+                                             const Message_ProgressRange&  theRange)
+    override;
 
   //! Avoid the check for open solids and always use the splits
   //! of solids for building the result shape.
@@ -123,7 +124,8 @@ protected:
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myShapes;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myRemoved;
-  int                                                    myFuse;
+  int    myFuse;
+
 };
 
 #endif // _BRepFeat_Builder_HeaderFile

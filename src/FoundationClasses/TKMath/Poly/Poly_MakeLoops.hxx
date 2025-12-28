@@ -145,7 +145,10 @@ public:
       return myIter.Key();
     }
 
-    bool Contains(const int theValue) const { return myMap.Contains(theValue); }
+    bool Contains(const int theValue) const
+    {
+      return myMap.Contains(theValue);
+    }
 
     void Remove(const int theValue)
     {
@@ -167,7 +170,7 @@ public:
   private:
     TColStd_PackedMapOfInteger              myMap;
     TColStd_MapIteratorOfPackedMapOfInteger myIter;
-    bool                                    myIterReady;
+    bool                        myIterReady;
   };
 
 public:
@@ -175,11 +178,11 @@ public:
 
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
-  Standard_EXPORT Poly_MakeLoops(const Helper*                                 theHelper,
+  Standard_EXPORT Poly_MakeLoops(const Helper*                            theHelper,
                                  const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
 
   //! It is to reset the algorithm to the initial state.
-  Standard_EXPORT void Reset(const Helper*                                 theHelper,
+  Standard_EXPORT void Reset(const Helper*                            theHelper,
                              const occ::handle<NCollection_BaseAllocator>& theAlloc = 0L);
 
   //! Adds a link to the set. theOrient defines which orientations of the link
@@ -220,9 +223,10 @@ public:
   Standard_EXPORT void GetHangingLinks(ListOfLink& theLinks) const;
 
 protected:
-  virtual int chooseLeftWay(const int                    theNode,
-                            const int                    theSegIndex,
-                            const NCollection_List<int>& theLstIndS) const = 0;
+  virtual int chooseLeftWay(
+    const int                    theNode,
+    const int                    theSegIndex,
+    const NCollection_List<int>& theLstIndS) const = 0;
 
   const Helper* getHelper() const { return myHelper; }
 
@@ -238,23 +242,24 @@ protected:
 #endif
 
 private:
-  int  findContour(int                                           theIndexS,
-                   NCollection_IndexedMap<int>&                  theContour,
-                   const occ::handle<NCollection_BaseAllocator>& theTempAlloc,
-                   const occ::handle<NCollection_IncAllocator>&  theTempAlloc1) const;
-  void acceptContour(const NCollection_IndexedMap<int>& theContour, int theStartNumber);
-  int  getFirstNode(int theIndexS) const;
-  int  getLastNode(int theIndexS) const;
-  void markHangChain(int theNode, int theIndexS);
+  int              findContour(int                          theIndexS,
+                               NCollection_IndexedMap<int>& theContour,
+                               const occ::handle<NCollection_BaseAllocator>&  theTempAlloc,
+                               const occ::handle<NCollection_IncAllocator>&   theTempAlloc1) const;
+  void             acceptContour(const NCollection_IndexedMap<int>& theContour,
+                                 int                                theStartNumber);
+  int getFirstNode(int theIndexS) const;
+  int getLastNode(int theIndexS) const;
+  void             markHangChain(int theNode, int theIndexS);
   bool canLinkBeTaken(int theIndexS) const;
 
   // FIELDS
-  const Helper*                          myHelper;
-  occ::handle<NCollection_BaseAllocator> myAlloc;
-  NCollection_IndexedMap<Link, Hasher>   myMapLink;
-  NCollection_Sequence<Loop>             myLoops;
-  HeapOfInteger                          myStartIndices;
-  TColStd_PackedMapOfInteger             myHangIndices;
+  const Helper*                        myHelper;
+  occ::handle<NCollection_BaseAllocator>    myAlloc;
+  NCollection_IndexedMap<Link, Hasher> myMapLink;
+  NCollection_Sequence<Loop>           myLoops;
+  HeapOfInteger                        myStartIndices;
+  TColStd_PackedMapOfInteger           myHangIndices;
 };
 
 /**
@@ -284,13 +289,14 @@ public:
 
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
-  Standard_EXPORT Poly_MakeLoops3D(const Helper*                                 theHelper,
+  Standard_EXPORT Poly_MakeLoops3D(const Helper*                            theHelper,
                                    const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 protected:
-  Standard_EXPORT virtual int chooseLeftWay(const int                    theNode,
-                                            const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const;
+  Standard_EXPORT virtual int chooseLeftWay(
+    const int                    theNode,
+    const int                    theSegIndex,
+    const NCollection_List<int>& theLstIndS) const;
 
   const Helper* getHelper() const
   {
@@ -322,14 +328,15 @@ public:
 
   //! Constructor. If helper is NULL then the algorithm will
   //! probably return a wrong result
-  Standard_EXPORT Poly_MakeLoops2D(const bool                                    theLeftWay,
-                                   const Helper*                                 theHelper,
+  Standard_EXPORT Poly_MakeLoops2D(const bool                   theLeftWay,
+                                   const Helper*                            theHelper,
                                    const occ::handle<NCollection_BaseAllocator>& theAlloc);
 
 protected:
-  Standard_EXPORT virtual int chooseLeftWay(const int                    theNode,
-                                            const int                    theSegIndex,
-                                            const NCollection_List<int>& theLstIndS) const;
+  Standard_EXPORT virtual int chooseLeftWay(
+    const int                    theNode,
+    const int                    theSegIndex,
+    const NCollection_List<int>& theLstIndS) const;
 
   const Helper* getHelper() const
   {

@@ -40,7 +40,7 @@ public:
 
   //! Create the projection of a point <P> on a curve
   //! <Curve>
-  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&                  P,
+  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
                                                 const occ::handle<Geom2d_Curve>& Curve);
 
   //! Create the projection of a point <P> on a curve
@@ -48,10 +48,10 @@ public:
   //! Warning
   //! Use the function NbPoints to obtain the number of solutions. If
   //! projection fails, NbPoints returns 0.
-  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&                  P,
+  Standard_EXPORT Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
                                                 const occ::handle<Geom2d_Curve>& Curve,
-                                                const double                     Umin,
-                                                const double                     Usup);
+                                                const double         Umin,
+                                                const double         Usup);
 
   //! Initializes this algorithm with the given arguments, and
   //! computes the orthogonal projections of a point <P> on a curve <Curve>
@@ -60,15 +60,15 @@ public:
   //! Initializes this algorithm with the given arguments, and
   //! computes the orthogonal projections of the point P onto the portion
   //! of the curve Curve limited by the two points of parameter Umin and Usup.
-  Standard_EXPORT void Init(const gp_Pnt2d&                  P,
+  Standard_EXPORT void Init(const gp_Pnt2d&             P,
                             const occ::handle<Geom2d_Curve>& Curve,
-                            const double                     Umin,
-                            const double                     Usup);
+                            const double         Umin,
+                            const double         Usup);
 
   //! return the number of of computed
   //! orthogonal projectionn points.
   Standard_EXPORT int NbPoints() const;
-  Standard_EXPORT     operator int() const;
+  Standard_EXPORT                  operator int() const;
 
   //! Returns the orthogonal projection
   //! on the curve. Index is a number of a computed point.
@@ -118,14 +118,14 @@ public:
   //! Exceptions
   //! StdFail_NotDone if this algorithm fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT        operator double() const;
+  Standard_EXPORT               operator double() const;
 
   //! return the algorithmic object from Extrema
   const Extrema_ExtPC2d& Extrema() const;
 
 private:
-  bool                myIsDone;
-  int                 myIndex;
+  bool    myIsDone;
+  int    myIndex;
   Extrema_ExtPC2d     myExtPC;
   Geom2dAdaptor_Curve myC;
 };

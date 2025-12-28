@@ -51,7 +51,8 @@ public:
   //! framework, and the daughter class is to be used in
   //! an AIS local context, you will need to implement the
   //! virtual function ActsOn.
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const = 0;
+  Standard_EXPORT virtual bool IsOk(
+    const occ::handle<SelectMgr_EntityOwner>& anObj) const = 0;
 
   //! Returns true in an AIS local context, if this filter
   //! operates on a type of subshape defined in a filter
@@ -60,6 +61,7 @@ public:
   Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_Filter, Standard_Transient)
+
 };
 
 #endif // _SelectMgr_Filter_HeaderFile

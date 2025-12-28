@@ -27,6 +27,7 @@
 #include <IGESSolid_Loop.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ToolFace.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
@@ -45,7 +46,7 @@ IGESSolid_ToolFace::IGESSolid_ToolFace() {}
 
 void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_ParamReader&                       PR) const
+                                       IGESData_ParamReader&                  PR) const
 {
   // MGE 03/08/98
   // Building of messages
@@ -54,13 +55,13 @@ void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&       
   Message_Msg Msg198("XSTEP_198");
   //========================================
 
-  bool                             outerLoopFlag; // szv#4:S4163:12Mar99 `st` moved down
-  occ::handle<IGESData_IGESEntity> anent;
-  occ::handle<IGESSolid_Loop>      aloop;
-  occ::handle<IGESData_IGESEntity> tempSurface;
-  int                              nbloops;
+  bool                outerLoopFlag; // szv#4:S4163:12Mar99 `st` moved down
+  occ::handle<IGESData_IGESEntity>     anent;
+  occ::handle<IGESSolid_Loop>          aloop;
+  occ::handle<IGESData_IGESEntity>     tempSurface;
+  int                nbloops;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> tempLoops;
-  IGESData_Status                                               aStatus;
+  IGESData_Status                 aStatus;
 
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, tempSurface))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -145,7 +146,7 @@ void IGESSolid_ToolFace::ReadOwnParams(const occ::handle<IGESSolid_Face>&       
 //=================================================================================================
 
 void IGESSolid_ToolFace::WriteOwnParams(const occ::handle<IGESSolid_Face>& ent,
-                                        IGESData_IGESWriter&               IW) const
+                                        IGESData_IGESWriter&          IW) const
 {
   int upper = ent->NbLoops();
   IW.Send(ent->Surface());
@@ -158,7 +159,7 @@ void IGESSolid_ToolFace::WriteOwnParams(const occ::handle<IGESSolid_Face>& ent,
 //=================================================================================================
 
 void IGESSolid_ToolFace::OwnShared(const occ::handle<IGESSolid_Face>& ent,
-                                   Interface_EntityIterator&          iter) const
+                                   Interface_EntityIterator&     iter) const
 {
   int upper = ent->NbLoops();
   iter.GetOneItem(ent->Surface());
@@ -170,14 +171,13 @@ void IGESSolid_ToolFace::OwnShared(const occ::handle<IGESSolid_Face>& ent,
 
 void IGESSolid_ToolFace::OwnCopy(const occ::handle<IGESSolid_Face>& another,
                                  const occ::handle<IGESSolid_Face>& ent,
-                                 Interface_CopyTool&                TC) const
+                                 Interface_CopyTool&           TC) const
 {
   DeclareAndCast(IGESData_IGESEntity, tempSurface, TC.Transferred(another->Surface()));
-  int  nbloops       = another->NbLoops();
+  int nbloops       = another->NbLoops();
   bool outerLoopFlag = another->HasOuterLoop();
 
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> tempLoops =
-    new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbloops);
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> tempLoops = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbloops);
   for (int i = 1; i <= nbloops; i++)
   {
     DeclareAndCast(IGESSolid_Loop, anent, TC.Transferred(another->Loop(i)));
@@ -189,8 +189,7 @@ void IGESSolid_ToolFace::OwnCopy(const occ::handle<IGESSolid_Face>& another,
 
 //=================================================================================================
 
-IGESData_DirChecker IGESSolid_ToolFace::DirChecker(
-  const occ::handle<IGESSolid_Face>& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolFace::DirChecker(const occ::handle<IGESSolid_Face>& /* ent */) const
 {
   IGESData_DirChecker DC(510, 1);
 
@@ -225,9 +224,9 @@ void IGESSolid_ToolFace::OwnCheck(const occ::handle<IGESSolid_Face>& ent,
 //=================================================================================================
 
 void IGESSolid_ToolFace::OwnDump(const occ::handle<IGESSolid_Face>& ent,
-                                 const IGESData_IGESDumper&         dumper,
-                                 Standard_OStream&                  S,
-                                 const int                          level) const
+                                 const IGESData_IGESDumper&    dumper,
+                                 Standard_OStream&             S,
+                                 const int        level) const
 {
   S << "IGESSolid_Face\n";
 

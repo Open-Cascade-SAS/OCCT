@@ -59,7 +59,7 @@ bool BinDrivers_DocumentStorageDriver::IsWithTriangles() const
 
 void BinDrivers_DocumentStorageDriver::SetWithTriangles(
   const occ::handle<Message_Messenger>& theMessageDriver,
-  const bool                            theWithTriangulation)
+  const bool           theWithTriangulation)
 {
   if (myDrivers.IsNull())
   {
@@ -84,7 +84,7 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles(
 
 void BinDrivers_DocumentStorageDriver::EnableQuickPartWriting(
   const occ::handle<Message_Messenger>& theMessageDriver,
-  const bool                            theValue)
+  const bool           theValue)
 {
   if (myDrivers.IsNull())
   {
@@ -142,7 +142,7 @@ bool BinDrivers_DocumentStorageDriver::IsWithNormals() const
 
 void BinDrivers_DocumentStorageDriver::SetWithNormals(
   const occ::handle<Message_Messenger>& theMessageDriver,
-  const bool                            theWithNormals)
+  const bool           theWithNormals)
 {
   if (myDrivers.IsNull())
   {

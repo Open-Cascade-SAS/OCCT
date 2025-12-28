@@ -37,13 +37,12 @@ const Standard_GUID& XCAFDoc_Material::GetID()
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_Material> XCAFDoc_Material::Set(
-  const TDF_Label&                             label,
-  const occ::handle<TCollection_HAsciiString>& aName,
-  const occ::handle<TCollection_HAsciiString>& aDescription,
-  const double                                 aDensity,
-  const occ::handle<TCollection_HAsciiString>& aDensName,
-  const occ::handle<TCollection_HAsciiString>& aDensValType)
+occ::handle<XCAFDoc_Material> XCAFDoc_Material::Set(const TDF_Label&                        label,
+                                               const occ::handle<TCollection_HAsciiString>& aName,
+                                               const occ::handle<TCollection_HAsciiString>& aDescription,
+                                               const double                     aDensity,
+                                               const occ::handle<TCollection_HAsciiString>& aDensName,
+                                               const occ::handle<TCollection_HAsciiString>& aDensValType)
 {
   occ::handle<XCAFDoc_Material> A;
   if (!label.FindAttribute(XCAFDoc_Material::GetID(), A))
@@ -59,7 +58,7 @@ occ::handle<XCAFDoc_Material> XCAFDoc_Material::Set(
 
 void XCAFDoc_Material::Set(const occ::handle<TCollection_HAsciiString>& aName,
                            const occ::handle<TCollection_HAsciiString>& aDescription,
-                           const double                                 aDensity,
+                           const double                     aDensity,
                            const occ::handle<TCollection_HAsciiString>& aDensName,
                            const occ::handle<TCollection_HAsciiString>& aDensValType)
 {
@@ -136,10 +135,10 @@ void XCAFDoc_Material::Paste(const occ::handle<TDF_Attribute>& Into,
                              const occ::handle<TDF_RelocationTable>& /*RT*/) const
 {
   occ::down_cast<XCAFDoc_Material>(Into)->Set(myName,
-                                              myDescription,
-                                              myDensity,
-                                              myDensName,
-                                              myDensValType);
+                                                myDescription,
+                                                myDensity,
+                                                myDensName,
+                                                myDensValType);
 }
 
 //=================================================================================================

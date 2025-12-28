@@ -42,11 +42,11 @@ occ::handle<TDF_Attribute> XmlMDF_TagSourceDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDF_TagSourceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   XmlObjMgt_RRelocationTable&) const
+bool XmlMDF_TagSourceDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               XmlObjMgt_RRelocationTable&) const
 {
-  int                 aTag;
+  int    aTag;
   XmlObjMgt_DOMString aTagStr = XmlObjMgt::GetStringValue(theSource.Element());
 
   if (aTagStr.GetInteger(aTag) == false)
@@ -76,7 +76,7 @@ bool XmlMDF_TagSourceDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDF_TagSourceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   XmlObjMgt_Persistent&             theTarget,
+                                   XmlObjMgt_Persistent&        theTarget,
                                    XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDF_TagSource> aTag = occ::down_cast<TDF_TagSource>(theSource);

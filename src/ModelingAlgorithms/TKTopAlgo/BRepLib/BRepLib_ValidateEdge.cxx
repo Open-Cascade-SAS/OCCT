@@ -22,7 +22,7 @@
 
 BRepLib_ValidateEdge::BRepLib_ValidateEdge(occ::handle<Adaptor3d_Curve>          theReferenceCurve,
                                            occ::handle<Adaptor3d_CurveOnSurface> theOtherCurve,
-                                           bool                                  theSameParameter)
+                                           bool                 theSameParameter)
     : myReferenceCurve(theReferenceCurve),
       myOtherCurve(theOtherCurve),
       mySameParameter(theSameParameter),
@@ -67,9 +67,9 @@ void BRepLib_ValidateEdge::UpdateTolerance(double& theToleranceToUpdate)
 double BRepLib_ValidateEdge::correctTolerance(double theTolerance)
 {
   const occ::handle<Adaptor3d_Surface>& aSurface          = myOtherCurve->GetSurface();
-  double                                aCurvePrecision   = BRepCheck::PrecCurve(*myReferenceCurve);
-  double                                aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
-  double                                aToleranceDelta =
+  double                    aCurvePrecision   = BRepCheck::PrecCurve(*myReferenceCurve);
+  double                    aSurfacePrecision = BRepCheck::PrecSurface(aSurface);
+  double                    aToleranceDelta =
     (aCurvePrecision > aSurfacePrecision) ? aCurvePrecision : aSurfacePrecision;
   double aCorrectedTolerance = theTolerance + aToleranceDelta;
   return aCorrectedTolerance;
@@ -101,7 +101,7 @@ void BRepLib_ValidateEdge::Process()
 
 void BRepLib_ValidateEdge::processApprox()
 {
-  myIsDone                           = true;
+  myIsDone                                  = true;
   double aSquareToleranceForChecking = myToleranceForChecking * myToleranceForChecking;
   double aReferenceFirstParam        = myReferenceCurve->FirstParameter();
   double aReferenceLastParam         = myReferenceCurve->LastParameter();
@@ -109,7 +109,7 @@ void BRepLib_ValidateEdge::processApprox()
   double anOtherLastParam            = myOtherCurve->LastParameter();
   double aMaxSquareDistance          = 0.;
 
-  int  aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
+  int aControlPointsNumber = (myControlPointsNumber < 1) ? 1 : myControlPointsNumber;
   bool anIsProjection =
     (!mySameParameter
      || std::abs(anOtherFirstParam - aReferenceFirstParam) > Precision::PConfusion()
@@ -122,8 +122,8 @@ void BRepLib_ValidateEdge::processApprox()
       double aControlPointParam =
         ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
         / aControlPointsNumber;
-      gp_Pnt aReferencePoint = myReferenceCurve->Value(aControlPointParam);
-      gp_Pnt anOtherPoint    = myOtherCurve->Value(aControlPointParam);
+      gp_Pnt        aReferencePoint = myReferenceCurve->Value(aControlPointParam);
+      gp_Pnt        anOtherPoint    = myOtherCurve->Value(aControlPointParam);
       double aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
       if (aSquareDistance > aMaxSquareDistance)
       {
@@ -139,8 +139,8 @@ void BRepLib_ValidateEdge::processApprox()
   }
   else
   {
-    gp_Pnt aReferencePoint = myReferenceCurve->Value(aReferenceFirstParam);
-    gp_Pnt anOtherPoint    = myOtherCurve->Value(anOtherFirstParam);
+    gp_Pnt        aReferencePoint = myReferenceCurve->Value(aReferenceFirstParam);
+    gp_Pnt        anOtherPoint    = myOtherCurve->Value(anOtherFirstParam);
     double aSquareDistance = aReferencePoint.SquareDistance(anOtherPoint);
     if (aSquareDistance > aMaxSquareDistance)
     {
@@ -179,9 +179,10 @@ void BRepLib_ValidateEdge::processApprox()
       double aReferenceParam =
         ((aControlPointsNumber - i) * aReferenceFirstParam + i * aReferenceLastParam)
         / aControlPointsNumber;
-      gp_Pnt aReferenceExtremaPoint = myReferenceCurve->Value(aReferenceParam);
-      double anOtherParam = ((aControlPointsNumber - i) * anOtherFirstParam + i * anOtherLastParam)
-                            / aControlPointsNumber;
+      gp_Pnt        aReferenceExtremaPoint = myReferenceCurve->Value(aReferenceParam);
+      double anOtherParam =
+        ((aControlPointsNumber - i) * anOtherFirstParam + i * anOtherLastParam)
+        / aControlPointsNumber;
       gp_Pnt anOtherExtremaPoint = myOtherCurve->Value(anOtherParam);
 
       aReferenceExtrema.Perform(anOtherExtremaPoint, aReferenceParam);

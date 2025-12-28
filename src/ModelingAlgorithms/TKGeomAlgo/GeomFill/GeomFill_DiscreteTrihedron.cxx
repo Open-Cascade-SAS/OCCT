@@ -26,6 +26,8 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DiscreteTrihedron, GeomFill_TrihedronLaw)
 
@@ -87,7 +89,7 @@ bool GeomFill_DiscreteTrihedron::SetCurve(const occ::handle<Adaptor3d_Curve>& C)
 
 void GeomFill_DiscreteTrihedron::Init()
 {
-  int                        NbIntervals = myTrimmed->NbIntervals(GeomAbs_CN);
+  int     NbIntervals = myTrimmed->NbIntervals(GeomAbs_CN);
   NCollection_Array1<double> Knots(1, NbIntervals + 1);
   myTrimmed->Intervals(Knots, GeomAbs_CN);
 
@@ -106,9 +108,9 @@ void GeomFill_DiscreteTrihedron::Init()
   }
   myKnots->Append(Knots(NbIntervals + 1));
 
-  gp_Pnt Origin(0., 0., 0.), Pnt, SubPnt;
-  gp_Vec Tangent;
-  gp_Dir TangDir;
+  gp_Pnt        Origin(0., 0., 0.), Pnt, SubPnt;
+  gp_Vec        Tangent;
+  gp_Dir        TangDir;
   double norm;
   for (i = 1; i <= myKnots->Length(); i++)
   {
@@ -154,8 +156,8 @@ void GeomFill_DiscreteTrihedron::Init()
       else // good value of angle
       {
         double theAngle = LastTangent.AngleWithRef(Tangent, AxisOfRotation);
-        gp_Ax1 theAxisOfRotation(Origin, AxisOfRotation);
-        gp_Ax2 NewAxis = LastAxis.Rotated(theAxisOfRotation, theAngle);
+        gp_Ax1        theAxisOfRotation(Origin, AxisOfRotation);
+        gp_Ax2        NewAxis = LastAxis.Rotated(theAxisOfRotation, theAngle);
         NewAxis.SetDirection(TangDir); // to prevent accumulation of floating computations error
         myTrihedrons->Append(NewAxis);
       }
@@ -166,9 +168,9 @@ void GeomFill_DiscreteTrihedron::Init()
 //=================================================================================================
 
 bool GeomFill_DiscreteTrihedron::D0(const double Param,
-                                    gp_Vec&      Tangent,
-                                    gp_Vec&      Normal,
-                                    gp_Vec&      BiNormal)
+                                                gp_Vec&             Tangent,
+                                                gp_Vec&             Normal,
+                                                gp_Vec&             BiNormal)
 {
   if (myUseFrenet)
   {
@@ -177,11 +179,11 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
   else
   {
     // Locate <Param> in the sequence <myKnots>
-    int              Index  = -1;
+    int        Index  = -1;
     constexpr double TolPar = Precision::PConfusion();
     // double TolConf = Precision::Confusion();
-    int    NbSamples = 10;
-    gp_Pnt Origin(0., 0., 0.);
+    int NbSamples = 10;
+    gp_Pnt           Origin(0., 0., 0.);
 
     int i;
     // gp_Ax2 PrevAxis;
@@ -205,8 +207,8 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
       Index = I2;
 
     double PrevParam = myKnots->Value(Index);
-    gp_Ax2 PrevAxis  = myTrihedrons->Value(Index);
-    gp_Ax2 theAxis;
+    gp_Ax2        PrevAxis  = myTrihedrons->Value(Index);
+    gp_Ax2        theAxis;
     if (std::abs(Param - PrevParam) < TolPar)
       theAxis = PrevAxis;
     else //<Param> is between knots
@@ -234,7 +236,7 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
       else // good value of angle
       {
         double theAngle = PrevTangent.AngleWithRef(Tangent, AxisOfRotation);
-        gp_Ax1 theAxisOfRotation(Origin, AxisOfRotation);
+        gp_Ax1        theAxisOfRotation(Origin, AxisOfRotation);
         theAxis = PrevAxis.Rotated(theAxisOfRotation, theAngle);
       }
       theAxis.SetDirection(TangDir); // to prevent accumulation of floating computations error
@@ -250,12 +252,12 @@ bool GeomFill_DiscreteTrihedron::D0(const double Param,
 //=================================================================================================
 
 bool GeomFill_DiscreteTrihedron::D1(const double Param,
-                                    gp_Vec&      Tangent,
-                                    gp_Vec&      DTangent,
-                                    gp_Vec&      Normal,
-                                    gp_Vec&      DNormal,
-                                    gp_Vec&      BiNormal,
-                                    gp_Vec&      DBiNormal)
+                                                gp_Vec&             Tangent,
+                                                gp_Vec&             DTangent,
+                                                gp_Vec&             Normal,
+                                                gp_Vec&             DNormal,
+                                                gp_Vec&             BiNormal,
+                                                gp_Vec&             DBiNormal)
 {
   if (myUseFrenet)
   {
@@ -275,15 +277,15 @@ bool GeomFill_DiscreteTrihedron::D1(const double Param,
 //=================================================================================================
 
 bool GeomFill_DiscreteTrihedron::D2(const double Param,
-                                    gp_Vec&      Tangent,
-                                    gp_Vec&      DTangent,
-                                    gp_Vec&      D2Tangent,
-                                    gp_Vec&      Normal,
-                                    gp_Vec&      DNormal,
-                                    gp_Vec&      D2Normal,
-                                    gp_Vec&      BiNormal,
-                                    gp_Vec&      DBiNormal,
-                                    gp_Vec&      D2BiNormal)
+                                                gp_Vec&             Tangent,
+                                                gp_Vec&             DTangent,
+                                                gp_Vec&             D2Tangent,
+                                                gp_Vec&             Normal,
+                                                gp_Vec&             DNormal,
+                                                gp_Vec&             D2Normal,
+                                                gp_Vec&             BiNormal,
+                                                gp_Vec&             DBiNormal,
+                                                gp_Vec&             D2BiNormal)
 {
   if (myUseFrenet)
   {
@@ -328,11 +330,11 @@ void GeomFill_DiscreteTrihedron::Intervals(NCollection_Array1<double>& T, const 
 
 void GeomFill_DiscreteTrihedron::GetAverageLaw(gp_Vec& ATangent, gp_Vec& ANormal, gp_Vec& ABiNormal)
 {
-  int    Num = 20; // order of digitalization
-  gp_Vec T, N, BN;
-  ATangent    = gp_Vec(0, 0, 0);
-  ANormal     = gp_Vec(0, 0, 0);
-  ABiNormal   = gp_Vec(0, 0, 0);
+  int Num = 20; // order of digitalization
+  gp_Vec           T, N, BN;
+  ATangent           = gp_Vec(0, 0, 0);
+  ANormal            = gp_Vec(0, 0, 0);
+  ABiNormal          = gp_Vec(0, 0, 0);
   double Step = (myTrimmed->LastParameter() - myTrimmed->FirstParameter()) / Num;
   double Param;
   for (int i = 0; i <= Num; i++)

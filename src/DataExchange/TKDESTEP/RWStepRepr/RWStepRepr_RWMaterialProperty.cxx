@@ -27,11 +27,10 @@ RWStepRepr_RWMaterialProperty::RWStepRepr_RWMaterialProperty() {}
 
 //=================================================================================================
 
-void RWStepRepr_RWMaterialProperty::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepRepr_MaterialProperty>& ent) const
+void RWStepRepr_RWMaterialProperty::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepRepr_MaterialProperty>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "material_property"))
@@ -43,7 +42,7 @@ void RWStepRepr_RWMaterialProperty::ReadStep(
   data->ReadString(num, 1, "property_definition.name", ach, aPropertyDefinition_Name);
 
   occ::handle<TCollection_HAsciiString> aPropertyDefinition_Description;
-  bool                                  hasPropertyDefinition_Description = true;
+  bool                 hasPropertyDefinition_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -69,9 +68,8 @@ void RWStepRepr_RWMaterialProperty::ReadStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWMaterialProperty::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepRepr_MaterialProperty>& ent) const
+void RWStepRepr_RWMaterialProperty::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepRepr_MaterialProperty>& ent) const
 {
 
   // Inherited fields of PropertyDefinition
@@ -91,7 +89,7 @@ void RWStepRepr_RWMaterialProperty::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWMaterialProperty::Share(const occ::handle<StepRepr_MaterialProperty>& ent,
-                                          Interface_EntityIterator&                     iter) const
+                                          Interface_EntityIterator&                iter) const
 {
 
   // Inherited fields of PropertyDefinition

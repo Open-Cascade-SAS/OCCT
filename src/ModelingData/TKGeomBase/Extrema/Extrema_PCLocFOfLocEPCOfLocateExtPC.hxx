@@ -21,17 +21,17 @@
 #include <Extrema_CurveTool.hxx>
 #include <Extrema_GFuncExtPC.hxx>
 #include <Extrema_POnCurv.hxx>
+#include <Extrema_POnCurv.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
 //! Type alias for 3D local point-curve extremum function.
-using Extrema_PCLocFOfLocEPCOfLocateExtPC =
-  Extrema_GFuncExtPC<Adaptor3d_Curve,
-                     Extrema_CurveTool,
-                     Extrema_POnCurv,
-                     gp_Pnt,
-                     gp_Vec,
-                     NCollection_Sequence<Extrema_POnCurv>>;
+using Extrema_PCLocFOfLocEPCOfLocateExtPC = Extrema_GFuncExtPC<Adaptor3d_Curve,
+                                                               Extrema_CurveTool,
+                                                               Extrema_POnCurv,
+                                                               gp_Pnt,
+                                                               gp_Vec,
+                                                               NCollection_Sequence<Extrema_POnCurv>>;
 
 #endif // _Extrema_PCLocFOfLocEPCOfLocateExtPC_HeaderFile

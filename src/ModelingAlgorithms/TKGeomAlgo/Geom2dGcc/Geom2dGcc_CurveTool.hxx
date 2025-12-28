@@ -41,22 +41,23 @@ public:
   Standard_EXPORT static gp_Pnt2d Value(const Geom2dAdaptor_Curve& C, const double X);
 
   Standard_EXPORT static void D1(const Geom2dAdaptor_Curve& C,
-                                 const double               U,
+                                 const double        U,
                                  gp_Pnt2d&                  P,
                                  gp_Vec2d&                  T);
 
   Standard_EXPORT static void D2(const Geom2dAdaptor_Curve& C,
-                                 const double               U,
+                                 const double        U,
                                  gp_Pnt2d&                  P,
                                  gp_Vec2d&                  T,
                                  gp_Vec2d&                  N);
 
   Standard_EXPORT static void D3(const Geom2dAdaptor_Curve& C,
-                                 const double               U,
+                                 const double        U,
                                  gp_Pnt2d&                  P,
                                  gp_Vec2d&                  T,
                                  gp_Vec2d&                  N,
                                  gp_Vec2d&                  dN);
+
 };
 
 #endif // _Geom2dGcc_CurveTool_HeaderFile

@@ -54,9 +54,10 @@ public:
 
   //! Returns True if <ent> is an IGES Entity with Subordinate
   //! Status matching the criterium
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns the Selection criterium : "IGES Entity, Independent"
   //! etc...

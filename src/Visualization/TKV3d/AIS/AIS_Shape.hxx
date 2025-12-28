@@ -71,10 +71,16 @@ public:
   virtual int Signature() const override { return 0; }
 
   //! Returns Object as the type of Interactive Object.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Shape; }
+  virtual AIS_KindOfInteractive Type() const override
+  {
+    return AIS_KindOfInteractive_Shape;
+  }
 
   //! Returns true if the Interactive Object accepts shape decomposition.
-  virtual bool AcceptShapeDecomposition() const override { return true; }
+  virtual bool AcceptShapeDecomposition() const override
+  {
+    return true;
+  }
 
   //! Return true if specified display mode is supported.
   virtual bool AcceptDisplayMode(const int theMode) const override
@@ -118,13 +124,14 @@ public:
   //! coefficient aCoefficient and the previous deviation
   //! coefficient aPreviousCoefficient. If these values are
   //! not already set, false is returned.
-  Standard_EXPORT bool OwnDeviationCoefficient(double& aCoefficient,
-                                               double& aPreviousCoefficient) const;
+  Standard_EXPORT bool
+    OwnDeviationCoefficient(double& aCoefficient, double& aPreviousCoefficient) const;
 
   //! Returns true and the values of the deviation angle
   //! anAngle and the previous deviation angle aPreviousAngle.
   //! If these values are not already set, false is returned.
-  Standard_EXPORT bool OwnDeviationAngle(double& anAngle, double& aPreviousAngle) const;
+  Standard_EXPORT bool OwnDeviationAngle(double& anAngle,
+                                                     double& aPreviousAngle) const;
 
   //! Sets the type of HLR algorithm used by the shape
   void SetTypeOfHLR(const Prs3d_TypeOfHLR theTypeOfHLR) { myDrawer->SetTypeOfHLR(theTypeOfHLR); }
@@ -293,51 +300,49 @@ protected:
   }
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
   //! Create own aspects (if they do not exist) and set color to them.
   //! @return TRUE if new aspects have been created
   Standard_EXPORT bool setColor(const occ::handle<Prs3d_Drawer>& theDrawer,
-                                const Quantity_Color&            theColor) const;
+                                const Quantity_Color&       theColor) const;
 
   //! Create own aspects (if they do not exist) and set width to them.
   //! @return TRUE if new aspects have been created
   Standard_EXPORT bool setWidth(const occ::handle<Prs3d_Drawer>& theDrawer,
-                                const double                     theWidth) const;
+                                const double         theWidth) const;
 
   Standard_EXPORT void setTransparency(const occ::handle<Prs3d_Drawer>& theDrawer,
-                                       const double                     theValue) const;
+                                       const double         theValue) const;
 
-  Standard_EXPORT void setMaterial(const occ::handle<Prs3d_Drawer>& theDrawer,
-                                   const Graphic3d_MaterialAspect&  theMaterial,
-                                   const bool                       theToKeepColor,
-                                   const bool                       theToKeepTransp) const;
+  Standard_EXPORT void setMaterial(const occ::handle<Prs3d_Drawer>&     theDrawer,
+                                   const Graphic3d_MaterialAspect& theMaterial,
+                                   const bool          theToKeepColor,
+                                   const bool          theToKeepTransp) const;
 
   //! Replace aspects of already computed groups from drawer link by the new own value.
   Standard_EXPORT void replaceWithNewOwnAspects();
 
 public:
   //! Compute HLR presentation for specified shape.
-  Standard_EXPORT static void computeHlrPresentation(
-    const occ::handle<Graphic3d_Camera>&   theProjector,
-    const occ::handle<Prs3d_Presentation>& thePrs,
-    const TopoDS_Shape&                    theShape,
-    const occ::handle<Prs3d_Drawer>&       theDrawer);
+  Standard_EXPORT static void computeHlrPresentation(const occ::handle<Graphic3d_Camera>&   theProjector,
+                                                     const occ::handle<Prs3d_Presentation>& thePrs,
+                                                     const TopoDS_Shape&               theShape,
+                                                     const occ::handle<Prs3d_Drawer>&       theDrawer);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
-  TopoDS_Shape myshape;    //!< shape to display
-  Bnd_Box      myBB;       //!< cached bounding box of the shape
-  gp_Pnt2d     myUVOrigin; //!< UV origin vector for generating texture coordinates
-  gp_Pnt2d     myUVRepeat; //!< UV repeat vector for generating texture coordinates
-  gp_Pnt2d     myUVScale;  //!< UV scale  vector for generating texture coordinates
-  double       myInitAng;
-  bool         myCompBB; //!< if TRUE, then bounding box should be recomputed
+  TopoDS_Shape     myshape;    //!< shape to display
+  Bnd_Box          myBB;       //!< cached bounding box of the shape
+  gp_Pnt2d         myUVOrigin; //!< UV origin vector for generating texture coordinates
+  gp_Pnt2d         myUVRepeat; //!< UV repeat vector for generating texture coordinates
+  gp_Pnt2d         myUVScale;  //!< UV scale  vector for generating texture coordinates
+  double    myInitAng;
+  bool myCompBB; //!< if TRUE, then bounding box should be recomputed
 };
 
 #endif // _AIS_Shape_HeaderFile

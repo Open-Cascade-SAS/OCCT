@@ -97,11 +97,10 @@ bool RWObj_ObjWriterContext::Close()
 
 //=================================================================================================
 
-bool RWObj_ObjWriterContext::WriteHeader(
-  const int                                                                           theNbNodes,
-  const int                                                                           theNbElems,
-  const TCollection_AsciiString&                                                      theMatLib,
-  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
+bool RWObj_ObjWriterContext::WriteHeader(const int                      theNbNodes,
+                                         const int                      theNbElems,
+                                         const TCollection_AsciiString&              theMatLib,
+                                         const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo)
 {
   bool isOk = ::Fprintf(myFile,
                         "# Exported by Open CASCADE Technology [dev.opencascade.org]\n"
@@ -110,8 +109,7 @@ bool RWObj_ObjWriterContext::WriteHeader(
                         theNbNodes,
                         theNbElems)
               != 0;
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
-         aKeyValueIter(theFileInfo);
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aKeyValueIter(theFileInfo);
        aKeyValueIter.More();
        aKeyValueIter.Next())
   {

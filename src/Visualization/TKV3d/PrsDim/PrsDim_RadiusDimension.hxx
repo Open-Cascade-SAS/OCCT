@@ -81,9 +81,9 @@ public:
   //! @param[in] theCircle  the circle to measure.
   //! @param[in] theAnchorPoint  the point to attach the dimension lines, should be on the circle
   //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
-  Standard_EXPORT void SetMeasuredGeometry(const gp_Circ& theCircle,
-                                           const gp_Pnt&  theAnchorPoint,
-                                           const bool     theHasAnchor = true);
+  Standard_EXPORT void SetMeasuredGeometry(const gp_Circ&         theCircle,
+                                           const gp_Pnt&          theAnchorPoint,
+                                           const bool theHasAnchor = true);
 
   //! Measure radius on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
@@ -100,9 +100,9 @@ public:
   //! @param[in] theShape  the shape to measure.
   //! @param[in] theAnchorPoint  the point to attach the dimension lines, should be on the circle
   //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
-  Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape& theShape,
-                                           const gp_Pnt&       theAnchorPoint,
-                                           const bool          theHasAnchor = true);
+  Standard_EXPORT void SetMeasuredGeometry(const TopoDS_Shape&    theShape,
+                                           const gp_Pnt&          theAnchorPoint,
+                                           const bool theHasAnchor = true);
 
   //! @return the display units string.
   Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const override;
@@ -110,9 +110,11 @@ public:
   //! @return the model units string.
   Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const override;
 
-  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT virtual void SetDisplayUnits(const TCollection_AsciiString& theUnits)
+    override;
 
-  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits) override;
+  Standard_EXPORT virtual void SetModelUnits(const TCollection_AsciiString& theUnits)
+    override;
 
   Standard_EXPORT virtual void SetTextPosition(const gp_Pnt& theTextPos) override;
 
@@ -122,7 +124,8 @@ protected:
   Standard_EXPORT virtual void ComputePlane();
 
   //! Checks if anchor point and the center of the circle are on the plane.
-  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const override;
+  Standard_EXPORT virtual bool CheckPlane(const gp_Pln& thePlane) const
+    override;
 
   Standard_EXPORT virtual double ComputeValue() const override;
 
@@ -133,7 +136,8 @@ protected:
 protected:
   Standard_EXPORT bool IsValidCircle(const gp_Circ& theCircle) const;
 
-  Standard_EXPORT bool IsValidAnchor(const gp_Circ& theCircle, const gp_Pnt& thePnt) const;
+  Standard_EXPORT bool IsValidAnchor(const gp_Circ& theCircle,
+                                                 const gp_Pnt&  thePnt) const;
 
 private:
   gp_Circ      myCircle;

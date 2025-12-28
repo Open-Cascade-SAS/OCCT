@@ -96,8 +96,8 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(NCollection_UtfString&
 //=================================================================================================
 
 template <typename Type>
-inline NCollection_UtfString<Type>::NCollection_UtfString(const char* theCopyUtf8,
-                                                          const int   theLength)
+inline NCollection_UtfString<Type>::NCollection_UtfString(const char*            theCopyUtf8,
+                                                          const int theLength)
     : myString(NULL),
       mySize(0),
       myLength(0)
@@ -109,7 +109,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const char* theCopyUtf
 
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const char16_t* theCopyUtf16,
-                                                          const int       theLength)
+                                                          const int    theLength)
     : myString(NULL),
       mySize(0),
       myLength(0)
@@ -121,7 +121,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const char16_t* theCop
 
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const char32_t* theCopyUtf32,
-                                                          const int       theLength)
+                                                          const int    theLength)
     : myString(NULL),
       mySize(0),
       myLength(0)
@@ -135,7 +135,7 @@ inline NCollection_UtfString<Type>::NCollection_UtfString(const char32_t* theCop
 
 template <typename Type>
 inline NCollection_UtfString<Type>::NCollection_UtfString(const wchar_t* theCopyUtfWide,
-                                                          const int      theLength)
+                                                          const int   theLength)
     : myString(NULL),
       mySize(0),
       myLength(0)
@@ -180,15 +180,15 @@ inline void NCollection_UtfString<Type>::Swap(NCollection_UtfString<Type>& theOt
 {
   // Note: we could use std::swap() here, but prefer to not
   // have dependency on <algorithm> header at that level
-  Type*     aString = myString;
+  Type*                  aString = myString;
   const int aSize   = mySize;
   const int aLength = myLength;
-  myString          = theOther.myString;
-  mySize            = theOther.mySize;
-  myLength          = theOther.myLength;
-  theOther.myString = aString;
-  theOther.mySize   = aSize;
-  theOther.myLength = aLength;
+  myString                       = theOther.myString;
+  mySize                         = theOther.mySize;
+  myLength                       = theOther.myLength;
+  theOther.myString              = aString;
+  theOther.mySize                = aSize;
+  theOther.myLength              = aLength;
 }
 
 #if !defined(__ANDROID__)
@@ -210,9 +210,9 @@ public:
   Standard_EXPORT wchar_t* FromLocale(const char* theString);
 
   //! Convert the UNICODE (wide characters) string into locale using system APIs.
-  Standard_EXPORT static bool ToLocale(const wchar_t* theWideString,
-                                       char*          theBuffer,
-                                       const int      theSizeBytes);
+  Standard_EXPORT static bool ToLocale(const wchar_t*         theWideString,
+                                       char*                  theBuffer,
+                                       const int theSizeBytes);
 
 private:
   wchar_t* myWideBuffer; //!< temporary variable
@@ -222,7 +222,8 @@ private:
 //=================================================================================================
 
 template <typename Type>
-inline void NCollection_UtfString<Type>::FromLocale(const char* theString, const int theLength)
+inline void NCollection_UtfString<Type>::FromLocale(const char*            theString,
+                                                    const int theLength)
 {
 #if defined(__ANDROID__)
   // no locales on Android
@@ -242,7 +243,8 @@ inline void NCollection_UtfString<Type>::FromLocale(const char* theString, const
 //=================================================================================================
 
 template <typename Type>
-inline bool NCollection_UtfString<Type>::ToLocale(char* theBuffer, const int theSizeBytes) const
+inline bool NCollection_UtfString<Type>::ToLocale(char*                  theBuffer,
+                                                  const int theSizeBytes) const
 {
 #if defined(__ANDROID__)
   // no locales on Android
@@ -319,10 +321,12 @@ inline NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator+=(
   }
 
   // create new string
-  int   aSize   = mySize + theAppend.mySize;
-  Type* aString = strAlloc(aSize);
+  int aSize   = mySize + theAppend.mySize;
+  Type*            aString = strAlloc(aSize);
   strCopy((uint8_t*)aString, (const uint8_t*)myString, mySize);
-  strCopy((uint8_t*)aString + mySize, (const uint8_t*)theAppend.myString, theAppend.mySize);
+  strCopy((uint8_t*)aString + mySize,
+          (const uint8_t*)theAppend.myString,
+          theAppend.mySize);
 
   strFree(myString);
   mySize   = aSize;
@@ -334,8 +338,9 @@ inline NCollection_UtfString<Type>& NCollection_UtfString<Type>::operator+=(
 //=================================================================================================
 
 template <typename Type>
-inline NCollection_UtfString<Type> NCollection_UtfString<Type>::SubString(const int theStart,
-                                                                          const int theEnd) const
+inline NCollection_UtfString<Type> NCollection_UtfString<Type>::SubString(
+  const int theStart,
+  const int theEnd) const
 {
   if (theStart >= theEnd)
   {

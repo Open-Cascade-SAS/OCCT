@@ -32,6 +32,7 @@ static occ::handle<HLRBRep_Algo> hider;
 Standard_IMPORT Draw_Viewer dout;
 #endif
 
+#include <TopoDS_Shape.hxx>
 #include <BRepTopAdaptor_Tool.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -132,7 +133,7 @@ static int hfil(Draw_Interpretor& di, int n, const char** a)
     return 1;
   if (n > 3)
     nbIso = Draw::Atoi(a[3]);
-  const char*                       name1 = a[1];
+  const char*                  name1 = a[1];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
   if (HS.IsNull())
   {
@@ -157,8 +158,8 @@ static int sori(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  const char*                       name1 = a[1];
-  const char*                       name2 = a[2];
+  const char*                  name1 = a[1];
+  const char*                  name2 = a[2];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
   if (HS.IsNull())
   {
@@ -175,8 +176,8 @@ static int sout(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  const char*                       name1 = a[1];
-  const char*                       name2 = a[2];
+  const char*                  name1 = a[1];
+  const char*                  name2 = a[2];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name2);
   if (HS.IsNull())
   {
@@ -198,7 +199,7 @@ static int hloa(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 2)
     return 1;
-  const char*                       name1 = a[1];
+  const char*                  name1 = a[1];
   occ::handle<HLRTopoBRep_OutLiner> HS    = HLRTest::GetOutLiner(name1);
   if (HS.IsNull())
   {
@@ -215,8 +216,8 @@ static int hrem(Draw_Interpretor& di, int n, const char** a)
 {
   if (n > 1)
   {
-    const char*                       name = a[1];
-    int                               index;
+    const char*                  name = a[1];
+    int             index;
     occ::handle<HLRTopoBRep_OutLiner> HS = HLRTest::GetOutLiner(name);
     if (HS.IsNull())
     {
@@ -459,13 +460,16 @@ static int hlrin3d(Draw_Interpretor&, int n, const char** a)
   BRep_Builder    BB;
   BB.MakeCompound(Result);
 
-  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, true);
+  TopoDS_Shape SharpEdges =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, true);
   if (!SharpEdges.IsNull())
     BB.Add(Result, SharpEdges);
-  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, true);
+  TopoDS_Shape OutLines =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, true);
   if (!OutLines.IsNull())
     BB.Add(Result, OutLines);
-  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, true);
+  TopoDS_Shape SmoothEdges =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, true);
   if (!SmoothEdges.IsNull())
     BB.Add(Result, SmoothEdges);
 
@@ -515,13 +519,16 @@ static int hlrin2d(Draw_Interpretor&, int n, const char** a)
   BRep_Builder    BB;
   BB.MakeCompound(Result);
 
-  TopoDS_Shape SharpEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, false);
+  TopoDS_Shape SharpEdges =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_Sharp, true, false);
   if (!SharpEdges.IsNull())
     BB.Add(Result, SharpEdges);
-  TopoDS_Shape OutLines = Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, false);
+  TopoDS_Shape OutLines =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_OutLine, true, false);
   if (!OutLines.IsNull())
     BB.Add(Result, OutLines);
-  TopoDS_Shape SmoothEdges = Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, false);
+  TopoDS_Shape SmoothEdges =
+    Reflector.GetCompoundOf3dEdges(HLRBRep_Rg1Line, true, false);
   if (!SmoothEdges.IsNull())
     BB.Add(Result, SmoothEdges);
 

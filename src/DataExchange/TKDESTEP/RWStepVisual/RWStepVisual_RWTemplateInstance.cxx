@@ -20,11 +20,10 @@
 
 RWStepVisual_RWTemplateInstance::RWStepVisual_RWTemplateInstance() {}
 
-void RWStepVisual_RWTemplateInstance::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepVisual_TemplateInstance>& ent) const
+void RWStepVisual_RWTemplateInstance::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_TemplateInstance>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -66,7 +65,7 @@ void RWStepVisual_RWTemplateInstance::ReadStep(
 }
 
 void RWStepVisual_RWTemplateInstance::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepVisual_TemplateInstance>& ent) const
 {
 
@@ -84,7 +83,7 @@ void RWStepVisual_RWTemplateInstance::WriteStep(
 }
 
 void RWStepVisual_RWTemplateInstance::Share(const occ::handle<StepVisual_TemplateInstance>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->MappingSource());

@@ -186,7 +186,7 @@ public:
 
   //! Translates a cylinder from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Cylinder Translated(const gp_Pnt& theP1,
-                                                 const gp_Pnt& theP2) const noexcept
+                                                      const gp_Pnt& theP2) const noexcept
   {
     gp_Cylinder aCyl = *this;
     aCyl.pos.Translate(theP1, theP2);
@@ -194,7 +194,7 @@ public:
   }
 
 private:
-  gp_Ax3 pos;
+  gp_Ax3        pos;
   double radius;
 };
 

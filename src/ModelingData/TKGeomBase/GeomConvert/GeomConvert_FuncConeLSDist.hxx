@@ -36,14 +36,10 @@ public:
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncConeLSDist() {};
 
-  Standard_EXPORT GeomConvert_FuncConeLSDist(
-    const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
-    const gp_Dir&                                   theDir);
+  Standard_EXPORT GeomConvert_FuncConeLSDist(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
+                                             const gp_Dir&                      theDir);
 
-  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
-  {
-    myPoints = thePoints;
-  }
+  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints) { myPoints = thePoints; }
 
   void SetDir(const gp_Dir& theDir) { myDir = theDir; }
 
@@ -55,6 +51,6 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<gp_XYZ>> myPoints;
-  gp_Dir                                   myDir;
+  gp_Dir                      myDir;
 };
 #endif // _GeomConvert_FuncConeLSDist_HeaderFile

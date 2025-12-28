@@ -61,7 +61,9 @@ public:
   Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
-  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
+  Standard_EXPORT bool Values(const math_Vector& X,
+                                          double&     F,
+                                          math_Vector&       G) override;
 
 private:
   //! Check point is inside of the surface parameter space.

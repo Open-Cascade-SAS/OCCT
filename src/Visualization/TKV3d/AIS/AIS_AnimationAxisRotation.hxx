@@ -29,19 +29,19 @@ public:
   //! @param[in] theAxis          rotation axis
   //! @param[in] theAngleStart    rotation angle at the start of animation
   //! @param[in] theAngleEnd      rotation angle at the end   of animation
-  Standard_EXPORT AIS_AnimationAxisRotation(const TCollection_AsciiString& theAnimationName,
+  Standard_EXPORT AIS_AnimationAxisRotation(const TCollection_AsciiString&        theAnimationName,
                                             const occ::handle<AIS_InteractiveContext>& theContext,
                                             const occ::handle<AIS_InteractiveObject>&  theObject,
-                                            const gp_Ax1&                              theAxis,
-                                            const double theAngleStart,
-                                            const double theAngleEnd);
+                                            const gp_Ax1&                         theAxis,
+                                            const double                   theAngleStart,
+                                            const double                   theAngleEnd);
 
 protected:
   //! Update the progress.
   Standard_EXPORT virtual void update(const AIS_AnimationProgress& theProgress) override;
 
 private:
-  gp_Ax1 myRotAxis;    //!< rotation axis
+  gp_Ax1        myRotAxis;    //!< rotation axis
   double myAngleStart; //!< start angle for rotation
   double myAngleEnd;   //!< end angle for rotation
 };

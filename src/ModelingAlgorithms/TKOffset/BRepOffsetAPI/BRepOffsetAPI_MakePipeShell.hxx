@@ -117,7 +117,7 @@ public:
   //! - correspondence between spine, and section on the sweeped shape
   //! defined by a vertex of the spine
   Standard_EXPORT void SetMode(const TopoDS_Wire&           AuxiliarySpine,
-                               const bool                   CurvilinearEquivalence,
+                               const bool       CurvilinearEquivalence,
                                const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
 
   //! Adds the section Profile to this framework. First and last
@@ -130,18 +130,18 @@ public:
   //! orthogonal to the spine?s tangent in the correspondent
   //! point. This option has no sense if the section is punctual
   //! (Profile is of type TopoDS_Vertex).
-  Standard_EXPORT void Add(const TopoDS_Shape& Profile,
-                           const bool          WithContact    = false,
-                           const bool          WithCorrection = false);
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const bool WithContact    = false,
+                           const bool WithCorrection = false);
 
   //! Adds the section Profile to this framework.
   //! Correspondent point on the spine is given by Location.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void Add(const TopoDS_Shape&  Profile,
-                           const TopoDS_Vertex& Location,
-                           const bool           WithContact    = false,
-                           const bool           WithCorrection = false);
+  Standard_EXPORT void Add(const TopoDS_Shape&    Profile,
+                           const TopoDS_Vertex&   Location,
+                           const bool WithContact    = false,
+                           const bool WithCorrection = false);
 
   //! Sets the evolution law defined by the wire Profile with
   //! its position (Location, WithContact, WithCorrection
@@ -149,10 +149,10 @@ public:
   //! homotetic law defined by the function L.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void SetLaw(const TopoDS_Shape&              Profile,
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const occ::handle<Law_Function>& L,
-                              const bool                       WithContact    = false,
-                              const bool                       WithCorrection = false);
+                              const bool      WithContact    = false,
+                              const bool      WithCorrection = false);
 
   //! Sets the evolution law defined by the wire Profile with
   //! its position (Location, WithContact, WithCorrection
@@ -160,11 +160,11 @@ public:
   //! homotetic law defined by the function L.
   //! Warning:
   //! To be effective, it is not recommended to combine methods Add and SetLaw.
-  Standard_EXPORT void SetLaw(const TopoDS_Shape&              Profile,
+  Standard_EXPORT void SetLaw(const TopoDS_Shape&         Profile,
                               const occ::handle<Law_Function>& L,
-                              const TopoDS_Vertex&             Location,
-                              const bool                       WithContact    = false,
-                              const bool                       WithCorrection = false);
+                              const TopoDS_Vertex&        Location,
+                              const bool      WithContact    = false,
+                              const bool      WithCorrection = false);
 
   //! Removes the section Profile from this framework.
   Standard_EXPORT void Delete(const TopoDS_Shape& Profile);
@@ -249,7 +249,8 @@ public:
   //! This gives a rapid preview of the resulting shape,
   //! which will be obtained using the settings you have provided.
   //! Raises NotDone if <me> it is not Ready
-  Standard_EXPORT void Simulate(const int NumberOfSection, NCollection_List<TopoDS_Shape>& Result);
+  Standard_EXPORT void Simulate(const int NumberOfSection,
+                                NCollection_List<TopoDS_Shape>&  Result);
 
   //! Builds the resulting shape (redefined from MakeShape).
   Standard_EXPORT virtual void Build(
@@ -269,8 +270,8 @@ public:
   //! S by the shell-generating algorithm.
   //! This function is redefined from BRepOffsetAPI_MakeShape::Generated.
   //! S can be an edge or a vertex of a given Profile (see methods Add).
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
   Standard_EXPORT double ErrorOnSurface() const;
 

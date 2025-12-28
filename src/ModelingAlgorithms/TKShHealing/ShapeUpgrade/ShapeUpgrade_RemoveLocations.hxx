@@ -21,6 +21,7 @@
 
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
@@ -53,22 +54,18 @@ public:
   TopoDS_Shape ModifiedShape(const TopoDS_Shape& theInitShape) const;
 
   //! Returns map of modified shapes.
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-    GetModifiedShapesMap() const
-  {
-    return myMapNewShapes;
-  }
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& GetModifiedShapesMap() const { return myMapNewShapes; }
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations, Standard_Transient)
 
 private:
-  Standard_EXPORT bool MakeNewShape(const TopoDS_Shape& theShape,
-                                    const TopoDS_Shape& theAncShape,
-                                    TopoDS_Shape&       theNewShape,
-                                    const bool          theRemoveLoc);
+  Standard_EXPORT bool MakeNewShape(const TopoDS_Shape&    theShape,
+                                                const TopoDS_Shape&    theAncShape,
+                                                TopoDS_Shape&          theNewShape,
+                                                const bool theRemoveLoc);
 
-  TopAbs_ShapeEnum                                                         myLevelRemoving;
-  TopoDS_Shape                                                             myShape;
+  TopAbs_ShapeEnum             myLevelRemoving;
+  TopoDS_Shape                 myShape;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myMapNewShapes;
 };
 

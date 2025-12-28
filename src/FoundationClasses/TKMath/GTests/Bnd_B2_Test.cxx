@@ -104,8 +104,8 @@ TEST(Bnd_B2dTest, AddBox)
 
 TEST(Bnd_B2dTest, SquareExtent)
 {
-  Bnd_B2d aBox(gp_XY(0.0, 0.0), gp_XY(3.0, 4.0));
-  double  aSqExtent = aBox.SquareExtent();
+  Bnd_B2d       aBox(gp_XY(0.0, 0.0), gp_XY(3.0, 4.0));
+  double aSqExtent = aBox.SquareExtent();
 
   // Square diagonal = 4 * (3^2 + 4^2) = 4 * 25 = 100
   EXPECT_NEAR(aSqExtent, 100.0, Precision::Confusion());
@@ -144,9 +144,9 @@ TEST(Bnd_B2dTest, Limit)
   EXPECT_NEAR(aMax.Y(), 5.0, Precision::Confusion());
 
   // Test with non-intersecting boxes
-  Bnd_B2d aBox3(gp_XY(0.0, 0.0), gp_XY(1.0, 1.0));
-  Bnd_B2d aBox4(gp_XY(10.0, 10.0), gp_XY(1.0, 1.0));
-  bool    isLimited2 = aBox3.Limit(aBox4);
+  Bnd_B2d          aBox3(gp_XY(0.0, 0.0), gp_XY(1.0, 1.0));
+  Bnd_B2d          aBox4(gp_XY(10.0, 10.0), gp_XY(1.0, 1.0));
+  bool isLimited2 = aBox3.Limit(aBox4);
   EXPECT_FALSE(isLimited2);
 }
 

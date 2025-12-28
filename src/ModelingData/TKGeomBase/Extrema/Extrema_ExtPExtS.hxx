@@ -35,30 +35,30 @@ public:
 
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                            P,
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                       P,
                                    const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& S,
-                                   const double                                             Umin,
-                                   const double                                             Usup,
-                                   const double                                             Vmin,
-                                   const double                                             Vsup,
-                                   const double                                             TolU,
-                                   const double                                             TolV);
+                                   const double                                 Umin,
+                                   const double                                 Usup,
+                                   const double                                 Vmin,
+                                   const double                                 Vsup,
+                                   const double                                 TolU,
+                                   const double                                 TolV);
 
   //! It calculates all the distances between a point
   //! from gp and a Surface.
-  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                            P,
+  Standard_EXPORT Extrema_ExtPExtS(const gp_Pnt&                                       P,
                                    const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& S,
-                                   const double                                             TolU,
-                                   const double                                             TolV);
+                                   const double                                 TolU,
+                                   const double                                 TolV);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT void Initialize(const occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion>& S,
-                                  const double                                             Uinf,
-                                  const double                                             Usup,
-                                  const double                                             Vinf,
-                                  const double                                             Vsup,
-                                  const double                                             TolU,
-                                  const double                                             TolV);
+                                  const double                                 Uinf,
+                                  const double                                 Usup,
+                                  const double                                 Vinf,
+                                  const double                                 Vsup,
+                                  const double                                 TolU,
+                                  const double                                 TolV);
 
   Standard_EXPORT void Perform(const gp_Pnt& P);
 
@@ -77,28 +77,28 @@ public:
   DEFINE_STANDARD_RTTIEXT(Extrema_ExtPExtS, Standard_Transient)
 
 private:
-  Standard_EXPORT void MakePreciser(double&       U,
-                                    const gp_Pnt& P,
-                                    const bool    isMin,
-                                    const gp_Ax2& OrtogSection) const;
+  Standard_EXPORT void MakePreciser(double&         U,
+                                    const gp_Pnt&          P,
+                                    const bool isMin,
+                                    const gp_Ax2&          OrtogSection) const;
 
-  double                                            myuinf;
-  double                                            myusup;
-  double                                            mytolu;
-  double                                            myvinf;
-  double                                            myvsup;
-  double                                            mytolv;
-  Extrema_FuncPSNorm                                myF;
+  double                                myuinf;
+  double                                myusup;
+  double                                mytolu;
+  double                                myvinf;
+  double                                myvsup;
+  double                                mytolv;
+  Extrema_FuncPSNorm                           myF;
   occ::handle<Adaptor3d_Curve>                      myC;
   occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> myS;
-  gp_Vec                                            myDirection;
-  gp_Ax2                                            myPosition;
-  Extrema_GenExtPS                                  myExtPS;
-  bool                                              myIsAnalyticallyComputable;
-  bool                                              myDone;
-  int                                               myNbExt;
-  double                                            mySqDist[4];
-  Extrema_POnSurf                                   myPoint[4];
+  gp_Vec                                       myDirection;
+  gp_Ax2                                       myPosition;
+  Extrema_GenExtPS                             myExtPS;
+  bool                             myIsAnalyticallyComputable;
+  bool                             myDone;
+  int                             myNbExt;
+  double                                mySqDist[4];
+  Extrema_POnSurf                              myPoint[4];
 };
 
 #endif // _Extrema_ExtPExtS_HeaderFile

@@ -35,22 +35,17 @@ public:
   Standard_EXPORT StepElement_Volume3dElementDescriptor();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const StepElement_ElementOrder               aElementDescriptor_TopologyOrder,
-    const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
-    const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>&
-                                           aPurpose,
-    const StepElement_Volume3dElementShape aShape);
+  Standard_EXPORT void Init(const StepElement_ElementOrder aElementDescriptor_TopologyOrder,
+                            const occ::handle<TCollection_HAsciiString>& aElementDescriptor_Description,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>& aPurpose,
+                            const StepElement_Volume3dElementShape                         aShape);
 
   //! Returns field Purpose
-  Standard_EXPORT occ::handle<
-    NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>
-    Purpose() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>> Purpose() const;
 
   //! Set field Purpose
   Standard_EXPORT void SetPurpose(
-    const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>&
-      Purpose);
+    const occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>>& Purpose);
 
   //! Returns field Shape
   Standard_EXPORT StepElement_Volume3dElementShape Shape() const;
@@ -62,7 +57,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<StepElement_VolumeElementPurposeMember>>> thePurpose;
-  StepElement_Volume3dElementShape                                                      theShape;
+  StepElement_Volume3dElementShape                        theShape;
 };
 
 #endif // _StepElement_Volume3dElementDescriptor_HeaderFile

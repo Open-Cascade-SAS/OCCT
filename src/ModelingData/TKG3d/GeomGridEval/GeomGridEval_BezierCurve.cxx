@@ -24,14 +24,14 @@ namespace
 //! @return initialized cache ready for evaluation
 occ::handle<BSplCLib_Cache> CreateBezierCache(const occ::handle<Geom_BezierCurve>& theCurve)
 {
-  const int                  aDegree = theCurve->Degree();
+  const int            aDegree = theCurve->Degree();
   NCollection_Array1<double> aFlatKnots(BSplCLib::FlatBezierKnots(aDegree), 1, 2 * (aDegree + 1));
 
   occ::handle<BSplCLib_Cache> aCache = new BSplCLib_Cache(aDegree,
-                                                          theCurve->IsPeriodic(),
-                                                          aFlatKnots,
-                                                          theCurve->Poles(),
-                                                          theCurve->Weights());
+                                                     theCurve->IsPeriodic(),
+                                                     aFlatKnots,
+                                                     theCurve->Poles(),
+                                                     theCurve->Weights());
   aCache->BuildCache(0.5, aFlatKnots, theCurve->Poles(), theCurve->Weights());
   return aCache;
 }
@@ -140,7 +140,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_BezierCurve::EvaluateGrid
 
 NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,
-  int                               theN) const
+  int                         theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {
@@ -163,7 +163,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   }
 
   // Get poles and weights from geometry
-  const NCollection_Array1<gp_Pnt>& aPoles   = myGeom->Poles();
+  const NCollection_Array1<gp_Pnt>&   aPoles   = myGeom->Poles();
   const NCollection_Array1<double>* aWeights = myGeom->Weights();
 
   // Use pre-defined flat knots from BSplCLib

@@ -22,7 +22,7 @@ RWStepRepr_RWFunctionallyDefinedTransformation::RWStepRepr_RWFunctionallyDefined
 
 void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                    data,
-  const int                                                      num,
+  const int                                    num,
   occ::handle<Interface_Check>&                                  ach,
   const occ::handle<StepRepr_FunctionallyDefinedTransformation>& ent) const
 {
@@ -52,7 +52,7 @@ void RWStepRepr_RWFunctionallyDefinedTransformation::ReadStep(
 }
 
 void RWStepRepr_RWFunctionallyDefinedTransformation::WriteStep(
-  StepData_StepWriter&                                           SW,
+  StepData_StepWriter&                                      SW,
   const occ::handle<StepRepr_FunctionallyDefinedTransformation>& ent) const
 {
 

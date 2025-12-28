@@ -41,15 +41,15 @@ public:
   //! Translates the type of record <num> in <data> to a positive
   //! Case Number. If Recognition fails, must return 0
   Standard_EXPORT virtual int CaseNum(const occ::handle<Interface_FileReaderData>& data,
-                                      const int                                    num) const = 0;
+                                                   const int num) const = 0;
 
   //! Performs the effective loading from <data>, record <num>,
   //! to the Entity <ent> formerly created
   //! In case of Error or Warning, fills <ach> with messages
   //! Remark that the Case Number comes from translating a record
-  Standard_EXPORT virtual void Read(const int                                    casenum,
+  Standard_EXPORT virtual void Read(const int                  casenum,
                                     const occ::handle<Interface_FileReaderData>& data,
-                                    const int                                    num,
+                                    const int                  num,
                                     occ::handle<Interface_Check>&                ach,
                                     const occ::handle<Standard_Transient>&       ent) const = 0;
 
@@ -63,13 +63,14 @@ public:
   //! Returns True if it has produced something, false else.
   //! If nothing was produced, <ach> should be filled : it will be
   //! treated as "Unrecognized case" by reader tool.
-  Standard_EXPORT virtual bool NewRead(const int                                    casenum,
-                                       const occ::handle<Interface_FileReaderData>& data,
-                                       const int                                    num,
-                                       occ::handle<Interface_Check>&                ach,
-                                       occ::handle<Standard_Transient>&             ent) const;
+  Standard_EXPORT virtual bool NewRead(const int                  casenum,
+                                                   const occ::handle<Interface_FileReaderData>& data,
+                                                   const int                  num,
+                                                   occ::handle<Interface_Check>&                ach,
+                                                   occ::handle<Standard_Transient>& ent) const;
 
   DEFINE_STANDARD_RTTIEXT(Interface_ReaderModule, Standard_Transient)
+
 };
 
 #endif // _Interface_ReaderModule_HeaderFile

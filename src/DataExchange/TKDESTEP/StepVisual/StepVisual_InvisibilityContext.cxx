@@ -20,7 +20,8 @@
 
 StepVisual_InvisibilityContext::StepVisual_InvisibilityContext() {}
 
-int StepVisual_InvisibilityContext::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_InvisibilityContext::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;

@@ -71,7 +71,7 @@ public:
 
 private:
   OSD_File                TheIterator;
-  bool                    myFlag;
+  bool        myFlag;
   TCollection_AsciiString myMask;
   TCollection_AsciiString myPlace;
   OSD_Error               myError;
@@ -80,11 +80,11 @@ private:
 #ifdef _WIN32
   void* myHandle;
   void* myData;
-  bool  myFirstCall;
+  bool myFirstCall;
 #else
   void* myDescr;
   void* myEntry;
-  int   myInit;
+  int myInit;
 #endif
 };
 

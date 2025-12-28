@@ -72,10 +72,7 @@ public:
   const occ::handle<RWGltf_MaterialCommon>& MaterialCommon() const { return myMaterialCommon; }
 
   //! Set common (obsolete) material definition.
-  void SetMaterialCommon(const occ::handle<RWGltf_MaterialCommon>& theMat)
-  {
-    myMaterialCommon = theMat;
-  }
+  void SetMaterialCommon(const occ::handle<RWGltf_MaterialCommon>& theMat) { myMaterialCommon = theMat; }
 
   //! Return primitive array data elements.
   const NCollection_Sequence<RWGltf_GltfPrimArrayData>& Data() const { return myData; }
@@ -95,8 +92,8 @@ public:
 
 protected:
   NCollection_Sequence<RWGltf_GltfPrimArrayData> myData;
-  occ::handle<RWGltf_MaterialMetallicRoughness>  myMaterialPbr;    //!< PBR material
-  occ::handle<RWGltf_MaterialCommon>             myMaterialCommon; //!< common (obsolete) material
+  occ::handle<RWGltf_MaterialMetallicRoughness>       myMaterialPbr;    //!< PBR material
+  occ::handle<RWGltf_MaterialCommon>                  myMaterialCommon; //!< common (obsolete) material
   TCollection_AsciiString                        myId;             //!< entity id
   TCollection_AsciiString                        myName;           //!< entity name
   RWGltf_GltfPrimitiveMode                       myPrimMode;       //!< type of primitive array

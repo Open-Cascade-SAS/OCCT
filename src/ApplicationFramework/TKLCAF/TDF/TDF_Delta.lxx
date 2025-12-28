@@ -54,8 +54,7 @@ inline TCollection_ExtendedString TDF_Delta::Name() const
   return myName;
 }
 
-inline void TDF_Delta::ReplaceDeltaList(
-  const NCollection_List<occ::handle<TDF_AttributeDelta>>& theList)
+inline void TDF_Delta::ReplaceDeltaList(const NCollection_List<occ::handle<TDF_AttributeDelta>>& theList)
 {
   myAttDeltaList = theList;
 }

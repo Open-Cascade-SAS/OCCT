@@ -20,6 +20,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
@@ -31,22 +32,18 @@ public:
   Standard_EXPORT StepVisual_TriangulatedSurfaceSet();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&    theRepresentationItemName,
-    const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFaceCoordinates,
-    const int                                       theTessellatedFacePnmax,
-    const occ::handle<NCollection_HArray2<double>>& theTessellatedFaceNormals,
-    const occ::handle<NCollection_HArray1<int>>&    thePnindex,
-    const occ::handle<NCollection_HArray2<int>>&    theTriangles);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   theRepresentationItemName,
+                            const occ::handle<StepVisual_CoordinatesList>& theTessellatedFaceCoordinates,
+                            const int                    theTessellatedFacePnmax,
+                            const occ::handle<NCollection_HArray2<double>>&      theTessellatedFaceNormals,
+                            const occ::handle<NCollection_HArray1<int>>&   thePnindex,
+                            const occ::handle<NCollection_HArray2<int>>&   theTriangles);
 
   //! Returns field Pnindex
   const occ::handle<NCollection_HArray1<int>> Pnindex() const { return myPnindex; }
 
   //! Sets field Pnindex
-  void SetPnindex(const occ::handle<NCollection_HArray1<int>>& thePnindex)
-  {
-    myPnindex = thePnindex;
-  }
+  void SetPnindex(const occ::handle<NCollection_HArray1<int>>& thePnindex) { myPnindex = thePnindex; }
 
   //! Returns number of Pnindex
   Standard_EXPORT int NbPnindex() const;

@@ -28,10 +28,10 @@
 namespace
 {
 // Helper function to check if solution is approximately correct
-void checkSolution(const math_Matrix& theA,
-                   const math_Vector& theX,
-                   const math_Vector& theB,
-                   const double       theTolerance = 1.0e-10)
+void checkSolution(const math_Matrix&  theA,
+                   const math_Vector&  theX,
+                   const math_Vector&  theB,
+                   const double theTolerance = 1.0e-10)
 {
   ASSERT_EQ(theA.ColNumber(), theX.Length()) << "Matrix and solution vector dimensions must match";
   ASSERT_EQ(theA.RowNumber(), theB.Length()) << "Matrix and RHS vector dimensions must match";

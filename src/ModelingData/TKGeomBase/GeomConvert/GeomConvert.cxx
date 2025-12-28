@@ -51,27 +51,38 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-static occ::handle<Geom_BSplineCurve> BSplineCurveBuilder(
-  const occ::handle<Geom_Conic>&     TheConic,
-  const Convert_ConicToBSplineCurve& Convert)
+static occ::handle<Geom_BSplineCurve> BSplineCurveBuilder(const occ::handle<Geom_Conic>&          TheConic,
+                                                     const Convert_ConicToBSplineCurve& Convert)
 
 {
   occ::handle<Geom_BSplineCurve> TheCurve;
-  int                            NbPoles = Convert.NbPoles();
-  int                            NbKnots = Convert.NbKnots();
-  NCollection_Array1<gp_Pnt>     Poles(1, NbPoles);
-  NCollection_Array1<double>     Weights(1, NbPoles);
-  NCollection_Array1<double>     Knots(1, NbKnots);
-  NCollection_Array1<int>        Mults(1, NbKnots);
-  int                            i;
-  gp_Pnt2d                       P2d;
-  gp_Pnt                         P3d;
+  int          NbPoles = Convert.NbPoles();
+  int          NbKnots = Convert.NbKnots();
+  NCollection_Array1<gp_Pnt>        Poles(1, NbPoles);
+  NCollection_Array1<double>      Weights(1, NbPoles);
+  NCollection_Array1<double>      Knots(1, NbKnots);
+  NCollection_Array1<int>   Mults(1, NbKnots);
+  int          i;
+  gp_Pnt2d                  P2d;
+  gp_Pnt                    P3d;
   for (i = 1; i <= NbPoles; i++)
   {
     P2d = Convert.Pole(i);
@@ -95,11 +106,10 @@ static occ::handle<Geom_BSplineCurve> BSplineCurveBuilder(
 
 //=================================================================================================
 
-occ::handle<Geom_BSplineCurve> GeomConvert::SplitBSplineCurve(
-  const occ::handle<Geom_BSplineCurve>& C,
-  const int                             FromK1,
-  const int                             ToK2,
-  const bool                            SameOrientation)
+occ::handle<Geom_BSplineCurve> GeomConvert::SplitBSplineCurve(const occ::handle<Geom_BSplineCurve>& C,
+                                                         const int           FromK1,
+                                                         const int           ToK2,
+                                                         const bool SameOrientation)
 {
   int TheFirst = C->FirstUKnotIndex();
   int TheLast  = C->LastUKnotIndex();
@@ -131,8 +141,8 @@ occ::handle<Geom_BSplineCurve> GeomConvert::SplitBSplineCurve(
 
 occ::handle<Geom_BSplineCurve> GeomConvert::SplitBSplineCurve(
   const occ::handle<Geom_BSplineCurve>& C,
-  const double                          FromU1,
-  const double                          ToU2,
+  const double              FromU1,
+  const double              ToU2,
   const double, // ParametricTolerance,
   const bool SameOrientation)
 {
@@ -160,7 +170,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::SplitBSplineCurve(
 //=================================================================================================
 
 occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
-  const occ::handle<Geom_Curve>&     C,
+  const occ::handle<Geom_Curve>&          C,
   const Convert_ParameterisationType Parameterisation)
 {
   occ::handle<Geom_BSplineCurve> TheCurve;
@@ -169,9 +179,9 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
   {
     occ::handle<Geom_Curve>        Curv;
     occ::handle<Geom_TrimmedCurve> Ctrim = occ::down_cast<Geom_TrimmedCurve>(C);
-    Curv                                 = Ctrim->BasisCurve();
-    double U1                            = Ctrim->FirstParameter();
-    double U2                            = Ctrim->LastParameter();
+    Curv                            = Ctrim->BasisCurve();
+    double U1                = Ctrim->FirstParameter();
+    double U2                = Ctrim->LastParameter();
 
     // Si la courbe n'est pas vraiment restreinte, on ne risque pas
     // le Raise dans le BS->Segment.
@@ -185,8 +195,8 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
 
     if (Curv->IsKind(STANDARD_TYPE(Geom_Line)))
     {
-      gp_Pnt                     Pdeb = Ctrim->StartPoint();
-      gp_Pnt                     Pfin = Ctrim->EndPoint();
+      gp_Pnt             Pdeb = Ctrim->StartPoint();
+      gp_Pnt             Pfin = Ctrim->EndPoint();
       NCollection_Array1<gp_Pnt> Poles(1, 2);
       Poles(1) = Pdeb;
       Poles(2) = Pfin;
@@ -194,16 +204,16 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
       Knots(1) = Ctrim->FirstParameter();
       Knots(2) = Ctrim->LastParameter();
       NCollection_Array1<int> Mults(1, 2);
-      Mults(1)   = 2;
-      Mults(2)   = 2;
+      Mults(1)                = 2;
+      Mults(2)                = 2;
       int Degree = 1;
-      TheCurve   = new Geom_BSplineCurve(Poles, Knots, Mults, Degree);
+      TheCurve                = new Geom_BSplineCurve(Poles, Knots, Mults, Degree);
     }
 
     else if (Curv->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
       occ::handle<Geom_Circle> TheConic = occ::down_cast<Geom_Circle>(Curv);
-      gp_Circ2d                C2d(gp::OX2d(), TheConic->Radius());
+      gp_Circ2d           C2d(gp::OX2d(), TheConic->Radius());
       if (Parameterisation != Convert_RationalC1)
       {
         Convert_CircleToBSplineCurve Convert(C2d, U1, U2, Parameterisation);
@@ -220,7 +230,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
         { // split circle to avoide numerical
           // overflow when U2 - U1 =~ 2*PI
 
-          double                       Umed = (U1 + U2) * .5;
+          double                Umed = (U1 + U2) * .5;
           Convert_CircleToBSplineCurve Convert1(C2d, U1, Umed, Parameterisation);
 
           occ::handle<Geom_BSplineCurve> TheCurve1 = BSplineCurveBuilder(TheConic, Convert1);
@@ -241,7 +251,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     else if (Curv->IsKind(STANDARD_TYPE(Geom_Ellipse)))
     {
       occ::handle<Geom_Ellipse> TheConic = occ::down_cast<Geom_Ellipse>(Curv);
-      gp_Elips2d                E2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
+      gp_Elips2d           E2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
       if (Parameterisation != Convert_RationalC1)
       {
         Convert_EllipseToBSplineCurve Convert(E2d, U1, U2, Parameterisation);
@@ -258,7 +268,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
         { // split ellipse to avoide numerical
           // overflow when U2 - U1 =~ 2*PI
 
-          double                        Umed = (U1 + U2) * .5;
+          double                 Umed = (U1 + U2) * .5;
           Convert_EllipseToBSplineCurve Convert1(E2d, U1, Umed, Parameterisation);
 
           occ::handle<Geom_BSplineCurve> TheCurve1 = BSplineCurveBuilder(TheConic, Convert1);
@@ -279,14 +289,14 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     else if (Curv->IsKind(STANDARD_TYPE(Geom_Hyperbola)))
     {
       occ::handle<Geom_Hyperbola> TheConic = occ::down_cast<Geom_Hyperbola>(Curv);
-      gp_Hypr2d                   H2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
+      gp_Hypr2d              H2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
       Convert_HyperbolaToBSplineCurve Convert(H2d, U1, U2);
       TheCurve = BSplineCurveBuilder(TheConic, Convert);
     }
 
     else if (Curv->IsKind(STANDARD_TYPE(Geom_Parabola)))
     {
-      occ::handle<Geom_Parabola>     TheConic = occ::down_cast<Geom_Parabola>(Curv);
+      occ::handle<Geom_Parabola>          TheConic = occ::down_cast<Geom_Parabola>(Curv);
       gp_Parab2d                     Prb2d(gp::OX2d(), TheConic->Focal());
       Convert_ParabolaToBSplineCurve Convert(Prb2d, U1, U2);
       TheCurve = BSplineCurveBuilder(TheConic, Convert);
@@ -297,11 +307,11 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
 
       occ::handle<Geom_BezierCurve> CBez = occ::down_cast<Geom_BezierCurve>(Curv->Copy());
       CBez->Segment(U1, U2);
-      int                        NbPoles = CBez->NbPoles();
-      int                        Degree  = CBez->Degree();
-      NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
-      NCollection_Array1<double> Knots(1, 2);
-      NCollection_Array1<int>    Mults(1, 2);
+      int        NbPoles = CBez->NbPoles();
+      int        Degree  = CBez->Degree();
+      NCollection_Array1<gp_Pnt>      Poles(1, NbPoles);
+      NCollection_Array1<double>    Knots(1, 2);
+      NCollection_Array1<int> Mults(1, 2);
       Knots(1) = 0.0;
       Knots(2) = 1.0;
       Mults(1) = Degree + 1;
@@ -336,9 +346,9 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     }
     else if (Curv->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
-      double                  Tol3d       = 1.e-4;
+      double           Tol3d       = 1.e-4;
       GeomAbs_Shape           Order       = GeomAbs_C2;
-      int                     MaxSegments = 16, MaxDegree = 14;
+      int        MaxSegments = 16, MaxDegree = 14;
       GeomConvert_ApproxCurve ApprCOffs(C, Tol3d, Order, MaxSegments, MaxDegree);
       if (ApprCOffs.HasResult())
         TheCurve = ApprCOffs.Curve();
@@ -356,7 +366,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     if (C->IsKind(STANDARD_TYPE(Geom_Ellipse)))
     {
       occ::handle<Geom_Ellipse> TheConic = occ::down_cast<Geom_Ellipse>(C);
-      gp_Elips2d                E2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
+      gp_Elips2d           E2d(gp::OX2d(), TheConic->MajorRadius(), TheConic->MinorRadius());
       /*      if (Parameterisation == Convert_TgtThetaOver2_1 ||
             Parameterisation == Convert_TgtThetaOver2_2) {
           throw Standard_DomainError(); }
@@ -380,7 +390,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     else if (C->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
       occ::handle<Geom_Circle> TheConic = occ::down_cast<Geom_Circle>(C);
-      gp_Circ2d                C2d(gp::OX2d(), TheConic->Radius());
+      gp_Circ2d           C2d(gp::OX2d(), TheConic->Radius());
       /*      if (Parameterisation == Convert_TgtThetaOver2_1 ||
             Parameterisation == Convert_TgtThetaOver2_2) {
           throw Standard_DomainError(); }
@@ -403,11 +413,11 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     else if (C->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
     {
       occ::handle<Geom_BezierCurve> CBez    = occ::down_cast<Geom_BezierCurve>(C);
-      int                           NbPoles = CBez->NbPoles();
-      int                           Degree  = CBez->Degree();
-      NCollection_Array1<gp_Pnt>    Poles(1, NbPoles);
-      NCollection_Array1<double>    Knots(1, 2);
-      NCollection_Array1<int>       Mults(1, 2);
+      int         NbPoles = CBez->NbPoles();
+      int         Degree  = CBez->Degree();
+      NCollection_Array1<gp_Pnt>       Poles(1, NbPoles);
+      NCollection_Array1<double>     Knots(1, 2);
+      NCollection_Array1<int>  Mults(1, 2);
       Knots(1) = 0.0;
       Knots(2) = 1.0;
       Mults(1) = Degree + 1;
@@ -432,9 +442,9 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
 
     else if (C->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
-      double                  Tol3d       = 1.e-4;
+      double           Tol3d       = 1.e-4;
       GeomAbs_Shape           Order       = GeomAbs_C2;
-      int                     MaxSegments = 16, MaxDegree = 14;
+      int        MaxSegments = 16, MaxDegree = 14;
       GeomConvert_ApproxCurve ApprCOffs(C, Tol3d, Order, MaxSegments, MaxDegree);
       if (ApprCOffs.HasResult())
         TheCurve = ApprCOffs.Curve();
@@ -464,11 +474,11 @@ public:
   {
   }
 
-  virtual void Evaluate(const int     theDerivativeRequest,
-                        const double* theStartEnd,
-                        const double  theParameter,
-                        double&       theResult,
-                        int&          theErrorCode) const
+  virtual void Evaluate(const int theDerivativeRequest,
+                        const double*   theStartEnd,
+                        const double    theParameter,
+                        double&         theResult,
+                        int&      theErrorCode) const
   {
     theErrorCode = 0;
     if (!myAncore.IsNull() && theParameter >= theStartEnd[0] && theParameter <= theStartEnd[1]
@@ -492,23 +502,23 @@ private:
 //=======================================================================
 
 static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_BSplineCurve>& a,
-                                                      const occ::handle<Geom_BSplineCurve>&   BS)
+                                                 const occ::handle<Geom_BSplineCurve>&   BS)
 
 {
-  NCollection_Array1<double>               aKnots(1, a->NbKnots());
-  NCollection_Array1<double>               BSKnots(1, BS->NbKnots());
-  NCollection_Array1<double>               BSFlatKnots(1, BS->NbPoles() + BS->Degree() + 1);
-  NCollection_Array1<double>               BSWeights(1, BS->NbPoles());
-  NCollection_Array1<int>                  aMults(1, a->NbKnots());
-  NCollection_Array1<int>                  BSMults(1, BS->NbKnots());
+  NCollection_Array1<double>             aKnots(1, a->NbKnots());
+  NCollection_Array1<double>             BSKnots(1, BS->NbKnots());
+  NCollection_Array1<double>             BSFlatKnots(1, BS->NbPoles() + BS->Degree() + 1);
+  NCollection_Array1<double>             BSWeights(1, BS->NbPoles());
+  NCollection_Array1<int>          aMults(1, a->NbKnots());
+  NCollection_Array1<int>          BSMults(1, BS->NbKnots());
   NCollection_Array1<gp_Pnt2d>             aPoles(1, a->NbPoles());
   NCollection_Array1<gp_Pnt>               BSPoles(1, BS->NbPoles());
-  occ::handle<Geom_BSplineCurve>           res;
-  occ::handle<NCollection_HArray1<double>> resKnots;
-  occ::handle<NCollection_HArray1<int>>    resMults;
-  double                                   start_value, end_value;
-  double                                   tolerance = Precision::PConfusion();
-  int                                      resNbPoles, degree, ii, jj, aStatus;
+  occ::handle<Geom_BSplineCurve>        res;
+  occ::handle<NCollection_HArray1<double>>    resKnots;
+  occ::handle<NCollection_HArray1<int>> resMults;
+  double                    start_value, end_value;
+  double                    tolerance = Precision::PConfusion();
+  int                 resNbPoles, degree, ii, jj, aStatus;
 
   BS->Knots(BSKnots);          // storage of the two BSpline
   BS->Multiplicities(BSMults); // features
@@ -540,9 +550,9 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
                               resKnots,
                               resMults);
   degree = BS->Degree() + a->Degree();
-  NCollection_Array1<gp_Pnt> resNumPoles(1, resNbPoles);
+  NCollection_Array1<gp_Pnt>   resNumPoles(1, resNbPoles);
   NCollection_Array1<double> resDenPoles(1, resNbPoles);
-  NCollection_Array1<gp_Pnt> resPoles(1, resNbPoles);
+  NCollection_Array1<gp_Pnt>   resPoles(1, resNbPoles);
   NCollection_Array1<double> resFlatKnots(1, resNbPoles + degree + 1);
   BSplCLib::KnotSequence(resKnots->Array1(), resMults->Array1(), resFlatKnots);
   for (ii = 1; ii <= BS->NbPoles(); ii++)
@@ -585,8 +595,8 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
 static void Pretreatment(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab)
 
 {
-  int    i, j;
-  double a;
+  int i, j;
+  double    a;
 
   for (i = 0; i <= (tab.Length() - 1); i++)
   {
@@ -641,10 +651,10 @@ static bool NeedToBeTreated(const occ::handle<Geom_BSplineCurve>& BS)
 static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab)
 
 {
-  int    i;
-  gp_Vec Vec1, Vec2;
-  gp_Pnt Pint;
-  double Rapport = 1.0e0;
+  int i;
+  gp_Vec           Vec1, Vec2;
+  gp_Pnt           Pint;
+  double    Rapport = 1.0e0;
 
   for (i = 0; i <= tab.Length() - 2; i++)
   {
@@ -683,20 +693,17 @@ static int Indexmin(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& ta
 // purpose  : Sort the array of BSplines to start at the nb_vertex_group0 index
 //=======================================================================
 
-static void ReorderArrayOfG1Curves(
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>& ArrayOfCurves,
-  NCollection_Array1<double>&                         ArrayOfToler,
-  NCollection_Array1<bool>&                           tabG1,
-  const int                                           StartIndex,
-  const double                                        ClosedTolerance)
+static void ReorderArrayOfG1Curves(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& ArrayOfCurves,
+                                   NCollection_Array1<double>&          ArrayOfToler,
+                                   NCollection_Array1<bool>&       tabG1,
+                                   const int         StartIndex,
+                                   const double            ClosedTolerance)
 
 {
-  int                                                i;
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>> ArraybisOfCurves(0,
-                                                                      ArrayOfCurves.Length()
-                                                                        - 1); // temporary
-  NCollection_Array1<double> ArraybisOfToler(0, ArrayOfToler.Length() - 1);   // arrays
-  NCollection_Array1<bool>   tabbisG1(0, tabG1.Length() - 1);
+  int              i;
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> ArraybisOfCurves(0, ArrayOfCurves.Length() - 1); // temporary
+  NCollection_Array1<double>          ArraybisOfToler(0, ArrayOfToler.Length() - 1);   // arrays
+  NCollection_Array1<bool>       tabbisG1(0, tabG1.Length() - 1);
 
   for (i = 0; i <= ArrayOfCurves.Length() - 1; i++)
   {
@@ -751,7 +758,7 @@ public:
                         const double* /*theStartEnd*/,
                         const double theParameter,
                         double&      theResult,
-                        int&         theErrorCode) const
+                        int&   theErrorCode) const
   {
     theErrorCode = 0;
     PLib::EvalPolynomial(
@@ -759,7 +766,8 @@ public:
       theDerivativeRequest,
       2,
       1,
-      *((double*)myPolynomialCoefficient), // function really only read values from this array
+      *((
+        double*)myPolynomialCoefficient), // function really only read values from this array
       theResult);
   }
 
@@ -769,22 +777,21 @@ private:
 
 //=================================================================================================
 
-void GeomConvert::ConcatG1(
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-  const NCollection_Array1<double>&                                 ArrayOfToler,
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-  bool&                                                             ClosedG1Flag,
-  const double                                                      ClosedTolerance)
+void GeomConvert::ConcatG1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                           const NCollection_Array1<double>&             ArrayOfToler,
+                           occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                           bool&                       ClosedG1Flag,
+                           const double                     ClosedTolerance)
 
 {
-  int nb_curve = ArrayOfCurves.Length(), nb_vertexG1 = 0, nb_group = 0, index = 0, i, ii, j, jj,
-      indexmin, nb_vertex_group0 = 0;
+  int nb_curve = ArrayOfCurves.Length(), nb_vertexG1 = 0, nb_group = 0, index = 0, i,
+                   ii, j, jj, indexmin, nb_vertex_group0 = 0;
   double lambda, // G1 coefficient
     First;
-  double                         PreLast = 0.;
-  GeomAbs_Shape                  Cont;
-  gp_Vec                         Vec1, Vec2; // consecutive tangential vectors
-  gp_Pnt                         Pint;
+  double             PreLast = 0.;
+  GeomAbs_Shape             Cont;
+  gp_Vec                    Vec1, Vec2; // consecutive tangential vectors
+  gp_Pnt                    Pint;
   occ::handle<Geom_BSplineCurve> Curve1, Curve2;
   // clang-format off
  NCollection_Array1<bool>      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections
@@ -800,8 +807,12 @@ void GeomConvert::ConcatG1(
     if (i >= 1)
     {
       First = ArrayOfCurves(i)->FirstParameter();
-      Cont =
-        GeomLProp::Continuity(ArrayOfCurves(i - 1), ArrayOfCurves(i), PreLast, First, true, true);
+      Cont  = GeomLProp::Continuity(ArrayOfCurves(i - 1),
+                                   ArrayOfCurves(i),
+                                   PreLast,
+                                   First,
+                                   true,
+                                   true);
       if (Cont < GeomAbs_C0)
         throw Standard_ConstructionError("GeomConvert curves not C0");
       else
@@ -870,16 +881,17 @@ void GeomConvert::ConcatG1(
         Curve1->D1(Curve1->LastParameter(), Pint, Vec2);
         ArrayOfCurves(0)->D1(ArrayOfCurves(0)->FirstParameter(), Pint, Vec1);
         double lambda2 = Vec1.Magnitude() / Vec2.Magnitude();
-        double tmax, a, b, c, umin = Curve1->FirstParameter(), umax = Curve1->LastParameter();
-        tmax                      = 2 * lambda * (umax - umin) / (1 + lambda * lambda2);
-        a                         = (lambda * lambda2 - 1) / (2 * lambda * tmax);
-        aPolynomialCoefficient[2] = a;
-        b                         = (1 / lambda);
-        aPolynomialCoefficient[1] = b;
-        c                         = umin;
-        aPolynomialCoefficient[0] = c;
-        NCollection_Array1<double> Curve1FlatKnots(1, Curve1->NbPoles() + Curve1->Degree() + 1);
-        NCollection_Array1<int>    KnotC1Mults(1, Curve1->NbKnots());
+        double tmax, a, b, c, umin = Curve1->FirstParameter(),
+                                     umax = Curve1->LastParameter();
+        tmax                              = 2 * lambda * (umax - umin) / (1 + lambda * lambda2);
+        a                                 = (lambda * lambda2 - 1) / (2 * lambda * tmax);
+        aPolynomialCoefficient[2]         = a;
+        b                                 = (1 / lambda);
+        aPolynomialCoefficient[1]         = b;
+        c                                 = umin;
+        aPolynomialCoefficient[0]         = c;
+        NCollection_Array1<double>    Curve1FlatKnots(1, Curve1->NbPoles() + Curve1->Degree() + 1);
+        NCollection_Array1<int> KnotC1Mults(1, Curve1->NbKnots());
         Curve1->Multiplicities(KnotC1Mults);
         BSplCLib::KnotSequence(KnotC1, KnotC1Mults, Curve1FlatKnots);
         KnotC1(1) = 0.0;
@@ -895,12 +907,12 @@ void GeomConvert::ConcatG1(
           KnotC1Mults(ii) = (Curve1->Degree() + KnotC1Mults(ii));
 
         NCollection_Array1<double> FlatKnots(1,
-                                             Curve1FlatKnots.Length()
-                                               + (Curve1->Degree() * Curve1->NbKnots()));
+                                       Curve1FlatKnots.Length()
+                                         + (Curve1->Degree() * Curve1->NbKnots()));
 
         BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
-        NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
-        int                        aStatus;
+        NCollection_Array1<gp_Pnt>   NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
+        int     aStatus;
         NCollection_Array1<double> Curve1Weights(1, Curve1->NbPoles());
         Curve1->Weights(Curve1Weights);
         for (ii = 1; ii <= Curve1->NbPoles(); ii++)
@@ -953,7 +965,8 @@ void GeomConvert::ConcatG1(
       // clang-format on
       nb_vertexG1 = 0; // group
 
-      while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1) == true))
+      while (((index + nb_vertexG1) <= nb_curve - 2)
+             && (tabG1(index + nb_vertexG1) == true))
         nb_vertexG1++;
 
       for (j = index; j <= index + nb_vertexG1; j++)
@@ -979,13 +992,12 @@ void GeomConvert::ConcatG1(
 
 //=================================================================================================
 
-void GeomConvert::ConcatC1(
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-  const NCollection_Array1<double>&                                 ArrayOfToler,
-  occ::handle<NCollection_HArray1<int>>&                            ArrayOfIndices,
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-  bool&                                                             ClosedG1Flag,
-  const double                                                      ClosedTolerance)
+void GeomConvert::ConcatC1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                           const NCollection_Array1<double>&             ArrayOfToler,
+                           occ::handle<NCollection_HArray1<int>>&       ArrayOfIndices,
+                           occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                           bool&                       ClosedG1Flag,
+                           const double                     ClosedTolerance)
 {
   ConcatC1(ArrayOfCurves,
            ArrayOfToler,
@@ -998,25 +1010,24 @@ void GeomConvert::ConcatC1(
 
 //=================================================================================================
 
-void GeomConvert::ConcatC1(
-  NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-  const NCollection_Array1<double>&                                 ArrayOfToler,
-  occ::handle<NCollection_HArray1<int>>&                            ArrayOfIndices,
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-  bool&                                                             ClosedG1Flag,
-  const double                                                      ClosedTolerance,
-  const double                                                      AngularTolerance)
+void GeomConvert::ConcatC1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                           const NCollection_Array1<double>&             ArrayOfToler,
+                           occ::handle<NCollection_HArray1<int>>&       ArrayOfIndices,
+                           occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                           bool&                       ClosedG1Flag,
+                           const double                     ClosedTolerance,
+                           const double                     AngularTolerance)
 
 {
-  int nb_curve = ArrayOfCurves.Length(), nb_vertexG1, nb_group = 0, index = 0, i, ii, j, jj,
-      indexmin, nb_vertex_group0 = 0;
+  int nb_curve = ArrayOfCurves.Length(), nb_vertexG1, nb_group = 0, index = 0, i, ii,
+                   j, jj, indexmin, nb_vertex_group0                                   = 0;
   double lambda, // G1 coefficient
     First;
   double PreLast = 0.;
 
-  GeomAbs_Shape                  Cont;
-  gp_Vec                         Vec1, Vec2; // consecutive tangential vectors
-  gp_Pnt                         Pint;
+  GeomAbs_Shape             Cont;
+  gp_Vec                    Vec1, Vec2; // consecutive tangential vectors
+  gp_Pnt                    Pint;
   occ::handle<Geom_BSplineCurve> Curve1, Curve2;
   // clang-format off
  NCollection_Array1<bool>      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections
@@ -1078,8 +1089,8 @@ void GeomConvert::ConcatC1(
   ArrayOfConcatenated = new NCollection_HArray1<occ::handle<Geom_BSplineCurve>>(0, nb_group - 1);
 
   bool fusion;
-  int  k = 0;
-  index  = 0;
+  int k = 0;
+  index              = 0;
   Pretreatment(ArrayOfCurves);
   double aPolynomialCoefficient[3];
 
@@ -1119,16 +1130,17 @@ void GeomConvert::ConcatC1(
           Curve1->D1(Curve1->LastParameter(), Pint, Vec2);
           ArrayOfCurves(0)->D1(ArrayOfCurves(0)->FirstParameter(), Pint, Vec1);
           double lambda2 = Vec1.Magnitude() / Vec2.Magnitude();
-          double tmax, a, b, c, umin = Curve1->FirstParameter(), umax = Curve1->LastParameter();
-          tmax                      = 2 * lambda * (umax - umin) / (1 + lambda * lambda2);
-          a                         = (lambda * lambda2 - 1) / (2 * lambda * tmax);
-          aPolynomialCoefficient[2] = a;
-          b                         = (1 / lambda);
-          aPolynomialCoefficient[1] = b;
-          c                         = umin;
-          aPolynomialCoefficient[0] = c;
-          NCollection_Array1<double> Curve1FlatKnots(1, Curve1->NbPoles() + Curve1->Degree() + 1);
-          NCollection_Array1<int>    KnotC1Mults(1, Curve1->NbKnots());
+          double tmax, a, b, c, umin = Curve1->FirstParameter(),
+                                       umax = Curve1->LastParameter();
+          tmax                              = 2 * lambda * (umax - umin) / (1 + lambda * lambda2);
+          a                                 = (lambda * lambda2 - 1) / (2 * lambda * tmax);
+          aPolynomialCoefficient[2]         = a;
+          b                                 = (1 / lambda);
+          aPolynomialCoefficient[1]         = b;
+          c                                 = umin;
+          aPolynomialCoefficient[0]         = c;
+          NCollection_Array1<double>    Curve1FlatKnots(1, Curve1->NbPoles() + Curve1->Degree() + 1);
+          NCollection_Array1<int> KnotC1Mults(1, Curve1->NbKnots());
           Curve1->Multiplicities(KnotC1Mults);
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, Curve1FlatKnots);
           KnotC1(1) = 0.0;
@@ -1144,12 +1156,12 @@ void GeomConvert::ConcatC1(
             KnotC1Mults(ii) = (Curve1->Degree() + KnotC1Mults(ii));
 
           NCollection_Array1<double> FlatKnots(1,
-                                               Curve1FlatKnots.Length()
-                                                 + (Curve1->Degree() * Curve1->NbKnots()));
+                                         Curve1FlatKnots.Length()
+                                           + (Curve1->Degree() * Curve1->NbKnots()));
 
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
-          NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
-          int                        aStatus;
+          NCollection_Array1<gp_Pnt>   NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
+          int     aStatus;
           NCollection_Array1<double> Curve1Weights(1, Curve1->NbPoles());
           Curve1->Weights(Curve1Weights);
           for (ii = 1; ii <= Curve1->NbPoles(); ii++)
@@ -1203,7 +1215,8 @@ void GeomConvert::ConcatC1(
       // clang-format on
       nb_vertexG1 = 0; // group
 
-      while (((index + nb_vertexG1) <= nb_curve - 2) && (tabG1(index + nb_vertexG1) == true))
+      while (((index + nb_vertexG1) <= nb_curve - 2)
+             && (tabG1(index + nb_vertexG1) == true))
         nb_vertexG1++;
 
       if ((!ClosedG1Flag) || (nb_group == 1))
@@ -1247,11 +1260,11 @@ void GeomConvert::ConcatC1(
 //=================================================================================================
 
 void GeomConvert::C0BSplineToC1BSplineCurve(occ::handle<Geom_BSplineCurve>& BS,
-                                            const double                    tolerance,
-                                            const double                    AngularTol)
+                                            const double        tolerance,
+                                            const double        AngularTol)
 
 {
-  bool                                                             fusion;
+  bool                       fusion;
   occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>> ArrayOfConcatenated;
   // the array with the resulting curves
 
@@ -1273,30 +1286,28 @@ void GeomConvert::C0BSplineToC1BSplineCurve(occ::handle<Geom_BSplineCurve>& BS,
 
 //=================================================================================================
 
-void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
-  const occ::handle<Geom_BSplineCurve>&                             BS,
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
-  const double                                                      tolerance)
+void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(const occ::handle<Geom_BSplineCurve>&        BS,
+                                                   occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
+                                                   const double tolerance)
 {
   C0BSplineToArrayOfC1BSplineCurve(BS, tabBS, Precision::Angular(), tolerance);
 }
 
 //=================================================================================================
 
-void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
-  const occ::handle<Geom_BSplineCurve>&                             BS,
-  occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
-  const double                                                      AngularTolerance,
-  const double                                                      tolerance)
+void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(const occ::handle<Geom_BSplineCurve>&        BS,
+                                                   occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
+                                                   const double AngularTolerance,
+                                                   const double tolerance)
 
 {
-  NCollection_Array1<int>    BSMults(1, BS->NbKnots());
-  NCollection_Array1<double> BSKnots(1, BS->NbKnots());
-  int                        i, j, nbcurveC1 = 1;
-  double                     U1, U2;
-  bool                       closed_flag = false;
-  gp_Pnt                     point;
-  gp_Vec                     V1, V2;
+  NCollection_Array1<int> BSMults(1, BS->NbKnots());
+  NCollection_Array1<double>    BSKnots(1, BS->NbKnots());
+  int        i, j, nbcurveC1 = 1;
+  double           U1, U2;
+  bool        closed_flag = false;
+  gp_Pnt                  point;
+  gp_Vec                  V1, V2;
   // bool                 fusion;
 
   BS->Knots(BSKnots);
@@ -1311,7 +1322,7 @@ void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
   if (nbcurveC1 > 1)
   {
     NCollection_Array1<occ::handle<Geom_BSplineCurve>> ArrayOfCurves(0, nbcurveC1 - 1);
-    NCollection_Array1<double>                         ArrayOfToler(0, nbcurveC1 - 2);
+    NCollection_Array1<double>          ArrayOfToler(0, nbcurveC1 - 2);
 
     for (i = 0; i <= nbcurveC1 - 2; i++)
       // filling of the array of tolerances

@@ -76,7 +76,7 @@ static int CompareNames(const char* name, int& /*numen*/)
 bool StepElement_MeasureOrUnspecifiedValueMember::SetName(const char* name)
 {
   int numit = 0;
-  mycase    = CompareNames(name, numit);
+  mycase                 = CompareNames(name, numit);
   if (numit)
     SetInteger(numit);
   return (mycase > 0);
@@ -84,7 +84,8 @@ bool StepElement_MeasureOrUnspecifiedValueMember::SetName(const char* name)
 
 //=================================================================================================
 
-bool StepElement_MeasureOrUnspecifiedValueMember::Matches(const char* name) const
+bool StepElement_MeasureOrUnspecifiedValueMember::Matches(
+  const char* name) const
 {
   int numit   = 0;
   int thecase = CompareNames(name, numit);

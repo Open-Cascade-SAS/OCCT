@@ -41,7 +41,8 @@ public:
   Standard_EXPORT void Set(const double vol);
 
   //! Find, or create, an Volume attribute and set its value
-  Standard_EXPORT static occ::handle<XCAFDoc_Volume> Set(const TDF_Label& label, const double vol);
+  Standard_EXPORT static occ::handle<XCAFDoc_Volume> Set(const TDF_Label&    label,
+                                                    const double vol);
 
   Standard_EXPORT double Get() const;
 
@@ -53,7 +54,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Volume, TDataStd_Real)
 };

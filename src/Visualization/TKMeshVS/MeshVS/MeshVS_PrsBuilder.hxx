@@ -42,10 +42,10 @@ public:
   //! IsElement indicates, IDs is identificators of nodes or elements.
   //! DisplayMode is numeric constant describing display mode (see MeshVS_DisplayModeFlags.hxx)
   Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
-                                     const int                              DisplayMode) const = 0;
+                                     const TColStd_PackedMapOfInteger& IDs,
+                                     TColStd_PackedMapOfInteger&       IDsToExclude,
+                                     const bool            IsElement,
+                                     const int            DisplayMode) const = 0;
 
   //! This method is called to build presentation of custom elements (they have MeshVS_ET_0D type).
   //! IDs is set of numeric identificators of elements for custom building.
@@ -53,14 +53,14 @@ public:
   //! has been excluded, it is not processed by other builders.
   //! DisplayMode is numeric constant describing display mode (see MeshVS_DisplayModeFlags.hxx)
   Standard_EXPORT virtual void CustomBuild(const occ::handle<Prs3d_Presentation>& Prs,
-                                           const TColStd_PackedMapOfInteger&      IDs,
-                                           TColStd_PackedMapOfInteger&            IDsToExclude,
-                                           const int DisplayMode) const;
+                                           const TColStd_PackedMapOfInteger& IDs,
+                                           TColStd_PackedMapOfInteger&       IDsToExclude,
+                                           const int            DisplayMode) const;
 
   //! This method is called to build sensitive of custom elements ( they have MeshVS_ET_0D type )
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> CustomSensitiveEntity(
     const occ::handle<SelectMgr_EntityOwner>& Owner,
-    const int                                 SelectMode) const;
+    const int               SelectMode) const;
 
   //! Returns flags, assigned with builder during creation
   Standard_EXPORT int GetFlags() const;
@@ -96,8 +96,7 @@ public:
   Standard_EXPORT bool IsExcludingOn() const;
 
   //! Set presentation manager for builder
-  Standard_EXPORT void SetPresentationManager(
-    const occ::handle<PrsMgr_PresentationManager>& thePrsMgr);
+  Standard_EXPORT void SetPresentationManager(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr);
 
   //! Get presentation manager of builder
   Standard_EXPORT occ::handle<PrsMgr_PresentationManager> GetPresentationManager() const;
@@ -114,10 +113,10 @@ protected:
   //! Priority is numerical priority constant. As priority bigger, as sooner builder starts during
   //! presentation construction
   Standard_EXPORT MeshVS_PrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
-                                    const MeshVS_DisplayModeFlags&        Flags,
+                                    const MeshVS_DisplayModeFlags&   Flags,
                                     const occ::handle<MeshVS_DataSource>& DS,
-                                    const int                             Id,
-                                    const MeshVS_BuilderPriority& Priority = MeshVS_BP_Default);
+                                    const int           Id,
+                                    const MeshVS_BuilderPriority&    Priority = MeshVS_BP_Default);
 
   //! Returns only custom data source
   Standard_EXPORT occ::handle<MeshVS_DataSource> DataSource() const;
@@ -129,12 +128,12 @@ protected:
   MeshVS_MeshPtr myParentMesh;
 
 private:
-  bool                                    myIsExcluding;
+  bool                   myIsExcluding;
   occ::handle<MeshVS_DataSource>          myDataSource;
   occ::handle<MeshVS_Drawer>              myDrawer;
-  int                                     myFlags;
-  int                                     myId;
-  int                                     myPriority;
+  int                   myFlags;
+  int                   myId;
+  int                   myPriority;
   occ::handle<PrsMgr_PresentationManager> myPrsMgr;
 };
 

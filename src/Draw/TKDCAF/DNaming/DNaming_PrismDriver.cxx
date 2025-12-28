@@ -43,6 +43,7 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -94,7 +95,7 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 
   // Save location
   occ::handle<TNaming_NamedShape> aPrevPrism = DNaming::GetFunctionResult(aFunction);
-  TopLoc_Location                 aLocation;
+  TopLoc_Location            aLocation;
   if (!aPrevPrism.IsNull() && !aPrevPrism->IsEmpty())
   {
     aLocation = aPrevPrism->Get().Location();
@@ -130,7 +131,7 @@ int DNaming_PrismDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   }
 
   occ::handle<TNaming_NamedShape> aContextOfBasis;
-  bool                            anIsAttachment = false;
+  bool           anIsAttachment = false;
   if (DNaming::IsAttachment(aBasObject))
   {
     aContextOfBasis = DNaming::GetAttachmentsContext(aBasObject); // a Context of Prism basis

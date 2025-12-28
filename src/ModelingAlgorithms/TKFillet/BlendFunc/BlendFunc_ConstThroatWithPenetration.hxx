@@ -20,6 +20,7 @@
 #include <math_Vector.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 class math_Matrix;
 
@@ -49,11 +50,13 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) override;
 
   // Standard_EXPORT void Set (const double Param) override;
 
-  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
+  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
+                                              const double Tol) override;
 
   // Standard_EXPORT const gp_Pnt& PointOnS1() const override;
 
@@ -83,6 +86,7 @@ public:
 
   //! Returns the length of the maximum section
   Standard_EXPORT double GetSectionSize() const override;
+
 };
 
 #endif // _BlendFunc_ConstThroatWithPenetration_HeaderFile

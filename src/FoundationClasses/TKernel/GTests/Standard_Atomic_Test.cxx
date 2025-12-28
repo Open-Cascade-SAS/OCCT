@@ -38,7 +38,7 @@ public:
 
 private:
   std::atomic<int>* myVal;
-  bool              myPositive;
+  bool  myPositive;
 };
 } // namespace
 

@@ -84,14 +84,12 @@ public:
   //! Returns the value of the time_stamp attribute for the file_name entity.
   Standard_EXPORT occ::handle<TCollection_HAsciiString> TimeStamp() const;
 
-  Standard_EXPORT void SetAuthor(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor);
+  Standard_EXPORT void SetAuthor(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor);
 
-  Standard_EXPORT void SetAuthorValue(const int                                    num,
+  Standard_EXPORT void SetAuthorValue(const int                  num,
                                       const occ::handle<TCollection_HAsciiString>& aAuthor);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Author()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Author() const;
 
   //! Returns the value of the name attribute for the file_name entity.
   Standard_EXPORT occ::handle<TCollection_HAsciiString> AuthorValue(const int num) const;
@@ -102,16 +100,15 @@ public:
   Standard_EXPORT void SetOrganization(
     const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aOrganization);
 
-  Standard_EXPORT void SetOrganizationValue(
-    const int                                    num,
-    const occ::handle<TCollection_HAsciiString>& aOrganization);
+  Standard_EXPORT void SetOrganizationValue(const int                  num,
+                                            const occ::handle<TCollection_HAsciiString>& aOrganization);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  Organization() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Organization() const;
 
   //! Returns the value of attribute
   //! organization for the file_name entity.
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> OrganizationValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> OrganizationValue(
+    const int num) const;
 
   //! Returns the number of values for
   //! the organization attribute in the file_name entity.
@@ -128,8 +125,7 @@ public:
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> OriginatingSystem() const;
 
-  Standard_EXPORT void SetAuthorisation(
-    const occ::handle<TCollection_HAsciiString>& aAuthorisation);
+  Standard_EXPORT void SetAuthorisation(const occ::handle<TCollection_HAsciiString>& aAuthorisation);
 
   //! Returns the value of the authorization attribute for the file_name entity.
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Authorisation() const;
@@ -142,18 +138,17 @@ public:
   Standard_EXPORT occ::handle<HeaderSection_FileSchema> FsValue() const;
 
   Standard_EXPORT void SetSchemaIdentifiers(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>&
-      aSchemaIdentifiers);
+    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSchemaIdentifiers);
 
   Standard_EXPORT void SetSchemaIdentifiersValue(
-    const int                                    num,
+    const int                  num,
     const occ::handle<TCollection_HAsciiString>& aSchemaIdentifier);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  SchemaIdentifiers() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> SchemaIdentifiers() const;
 
   //! Returns the value of the schema_identifier attribute for the file_schema entity.
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SchemaIdentifiersValue(
+    const int num) const;
 
   //! Returns the number of values for the schema_identifier attribute in the file_schema entity.
   Standard_EXPORT int NbSchemaIdentifiers() const;
@@ -169,19 +164,17 @@ public:
   //! entity. Returns an empty entity if the file_description entity is not initialized.
   Standard_EXPORT occ::handle<HeaderSection_FileDescription> FdValue() const;
 
-  Standard_EXPORT void SetDescription(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription);
 
-  Standard_EXPORT void SetDescriptionValue(
-    const int                                    num,
-    const occ::handle<TCollection_HAsciiString>& aDescription);
+  Standard_EXPORT void SetDescriptionValue(const int                  num,
+                                           const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  Description() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Description() const;
 
   //! Returns the value of the
   //! description attribute for the file_description entity.
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> DescriptionValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> DescriptionValue(
+    const int num) const;
 
   //! Returns the number of values for
   //! the file_description entity in the STEP file header.
@@ -195,7 +188,7 @@ public:
   Standard_EXPORT occ::handle<TCollection_HAsciiString> ImplementationLevel() const;
 
 private:
-  bool                                       done;
+  bool                      done;
   occ::handle<HeaderSection_FileName>        fn;
   occ::handle<HeaderSection_FileSchema>      fs;
   occ::handle<HeaderSection_FileDescription> fd;

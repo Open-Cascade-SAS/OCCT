@@ -23,7 +23,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <Standard_Integer.hxx>
 class IGESSolid_Shell;
 
 //! defines ManifoldSolid, Type <186> Form Number <0>
@@ -44,11 +47,10 @@ public:
   //! - voidShellFlags : orientation of the void shells
   //! raises exception if length of voidShells and voidShellFlags
   //! do not match
-  Standard_EXPORT void Init(
-    const occ::handle<IGESSolid_Shell>&                                   aShell,
-    const bool                                                            shellflag,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>>& voidShells,
-    const occ::handle<NCollection_HArray1<int>>&                          voidShellFlags);
+  Standard_EXPORT void Init(const occ::handle<IGESSolid_Shell>&          aShell,
+                            const bool                  shellflag,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>>& voidShells,
+                            const occ::handle<NCollection_HArray1<int>>& voidShellFlags);
 
   //! returns the Shell entity which is being referred
   Standard_EXPORT occ::handle<IGESSolid_Shell> Shell() const;
@@ -70,10 +72,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESSolid_Shell>                                   theShell;
-  bool                                                           theOrientationFlag;
+  occ::handle<IGESSolid_Shell>          theShell;
+  bool                 theOrientationFlag;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> theVoidShells;
-  occ::handle<NCollection_HArray1<int>>                          theOrientFlags;
+  occ::handle<NCollection_HArray1<int>> theOrientFlags;
 };
 
 #endif // _IGESSolid_ManifoldSolid_HeaderFile

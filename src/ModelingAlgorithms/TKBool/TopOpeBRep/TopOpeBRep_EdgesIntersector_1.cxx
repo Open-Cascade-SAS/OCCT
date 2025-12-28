@@ -125,7 +125,7 @@ int TopOpeBRep_EdgesIntersector::Index1() const
 TopOpeBRepDS_Config TopOpeBRep_EdgesIntersector::EdgesConfig1() const
 {
   TopOpeBRepDS_Config c  = TopOpeBRepDS_UNSHGEOMETRY;
-  bool                ps = IsPointOfSegment1();
+  bool    ps = IsPointOfSegment1();
   if (ps)
   {
     bool so;
@@ -138,7 +138,7 @@ TopOpeBRepDS_Config TopOpeBRep_EdgesIntersector::EdgesConfig1() const
 //=================================================================================================
 
 TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(
-  const int                Index,
+  const int   Index,
   const TopAbs_Orientation EdgeOrientation) const
 {
   bool pointofsegment = IsPointOfSegment1();
@@ -146,10 +146,10 @@ TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(
 
   TopAbs_State     staB = TopAbs_UNKNOWN, staA = TopAbs_UNKNOWN;
   TopAbs_ShapeEnum shaB = TopAbs_COMPOUND, shaA = TopAbs_COMPOUND;
-  bool             pextremity;
+  bool pextremity;
 
-  TopAbs_State staINON = TopAbs_IN;
-  int          dim     = myDimension;
+  TopAbs_State     staINON = TopAbs_IN;
+  int dim     = myDimension;
   if (dim == 1)
   {
     shaA = shaB = TopAbs_EDGE;
@@ -301,8 +301,8 @@ TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(
   else
   { // +ooOO
     bool composori = false;
-    composori      = composori || ((Index == 1) && (!myf2surf1F_sameoriented));
-    composori      = composori || ((Index == 2) && (!myf1surf1F_sameoriented));
+    composori                  = composori || ((Index == 1) && (!myf2surf1F_sameoriented));
+    composori                  = composori || ((Index == 2) && (!myf1surf1F_sameoriented));
     // Index = 1  <==> on demande la transition sur
     // une arete de la 1ere face par rapport a une arete orientee de
     // la 2eme face.
@@ -361,7 +361,7 @@ bool TopOpeBRep_EdgesIntersector::IsVertex1(const int Index)
   {
     // search for an INTERNAL vertex on edge <Index> with
     // a 2d parameter <parV> equal to current point parameter <par>
-    double             par = Parameter1(Index);
+    double      par = Parameter1(Index);
     const TopoDS_Edge* pE  = NULL;
     pE                     = (Index == 1) ? &myEdge1 : &myEdge2;
     const TopoDS_Edge& E   = *pE;

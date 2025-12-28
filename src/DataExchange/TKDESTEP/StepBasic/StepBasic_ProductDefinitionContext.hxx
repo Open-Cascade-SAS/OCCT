@@ -35,8 +35,7 @@ public:
                             const occ::handle<StepBasic_ApplicationContext>& aFrameOfReference,
                             const occ::handle<TCollection_HAsciiString>&     aLifeCycleStage);
 
-  Standard_EXPORT void SetLifeCycleStage(
-    const occ::handle<TCollection_HAsciiString>& aLifeCycleStage);
+  Standard_EXPORT void SetLifeCycleStage(const occ::handle<TCollection_HAsciiString>& aLifeCycleStage);
 
   Standard_EXPORT occ::handle<TCollection_HAsciiString> LifeCycleStage() const;
 

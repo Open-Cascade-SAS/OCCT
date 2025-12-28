@@ -50,7 +50,9 @@ public:
                                               double& theZ) const override;
 
   //! @return The world coordinates of the view position
-  Standard_EXPORT virtual void GetPosition(double& theX, double& theY, double& theZ) const override;
+  Standard_EXPORT virtual void GetPosition(double& theX,
+                                           double& theY,
+                                           double& theZ) const override;
 
   //! @return The "view up" direction of the view
   Standard_EXPORT virtual void GetViewUp(double& theDx,
@@ -63,7 +65,9 @@ public:
                                                         double& theDz) const override;
 
   //! @return Three doubles containing scale components of the view transformation
-  Standard_EXPORT virtual void GetScale(double& theX, double& theY, double& theZ) const override;
+  Standard_EXPORT virtual void GetScale(double& theX,
+                                        double& theY,
+                                        double& theZ) const override;
 
   //! @return The current view's zoom factor (for parallel projection)
   Standard_EXPORT virtual double GetParallelScale() const override;
@@ -72,7 +76,8 @@ public:
   Standard_EXPORT virtual double GetViewAngle() const override;
 
   //! @return The location of the near and far clipping planes along the direction of projection
-  Standard_EXPORT virtual void GetClippingRange(double& theZNear, double& theZFar) const override;
+  Standard_EXPORT virtual void GetClippingRange(double& theZNear,
+                                                double& theZFar) const override;
 
   //! @return The current view the aspect ratio
   Standard_EXPORT virtual double GetAspectRatio() const override;
@@ -84,9 +89,9 @@ public:
   Standard_EXPORT virtual void GetWindowSize(int& theX, int& theY) const override;
 
   //! Gets camera projection and orientation matrices
-  Standard_EXPORT virtual void GetCamera(NCollection_Mat4<double>& theProj,
-                                         NCollection_Mat4<double>& theOrient,
-                                         bool&                     theIsOrtho) const override;
+  Standard_EXPORT virtual void GetCamera(NCollection_Mat4<double>&  theProj,
+                                         NCollection_Mat4<double>&  theOrient,
+                                         bool& theIsOrtho) const override;
 
   //! Gets viewport coordinates
   Standard_EXPORT virtual void GetViewport(double& theX,

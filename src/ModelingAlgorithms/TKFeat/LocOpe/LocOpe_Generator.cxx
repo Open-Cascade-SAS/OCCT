@@ -47,10 +47,19 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 static bool ToFuse(const TopoDS_Face&, const TopoDS_Face&);
@@ -58,14 +67,14 @@ static bool ToFuse(const TopoDS_Face&, const TopoDS_Face&);
 static bool ToFuse(const TopoDS_Edge&, const TopoDS_Edge&);
 
 static bool ToFuse(const TopoDS_Edge&,
-                   const TopoDS_Face&,
-                   const TopoDS_Vertex&,
-                   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
+                               const TopoDS_Face&,
+                               const TopoDS_Vertex&,
+                               const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 
 static double NewParameter(const TopoDS_Edge&,
-                           const TopoDS_Vertex&,
-                           const TopoDS_Edge&,
-                           const TopoDS_Vertex&);
+                                  const TopoDS_Vertex&,
+                                  const TopoDS_Edge&,
+                                  const TopoDS_Vertex&);
 
 //=================================================================================================
 
@@ -87,7 +96,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
   // Attention : il faudra bien propager pour ne pas oublier des faces
   // a l`interieur
 
-  TopExp_Explorer                                        exp, exp2, exp3;
+  TopExp_Explorer     exp, exp2, exp3;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theLeft; // Faces a gauche
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> GEdg, GVtx; // Edges et vertex generateurs
@@ -130,16 +139,13 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
     }
   }
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    theEFMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, theEFMap);
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    theEEMap;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                   theFFMap;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>           toRemove;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itm;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEEMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theFFMap;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                toRemove;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator   itm;
 
   // search for face fusions
   for (itm.Initialize(GEdg); itm.More(); itm.Next())
@@ -167,10 +173,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
       {
         // On recherche si une face a deja fusionne avec facbis
         bool facbisfound = false;
-        for (NCollection_DataMap<TopoDS_Shape,
-                                 NCollection_List<TopoDS_Shape>,
-                                 TopTools_ShapeMapHasher>::Iterator itf(theFFMap);
-             itf.More();
+        for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itf(theFFMap); itf.More();
              itf.Next())
         {
           if (itf.Key().IsSame(fac))
@@ -226,12 +229,8 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
   // Il faut ici ajouter dans toRemove les edges de connexites entre faces
   // a fusionner avec une meme face de base
 
-  //  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
-  //  TopTools_ShapeMapHasher>::Iterator itf(theFFMap);
-  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-         Iterator itf(theFFMap);
-       itf.More();
-       itf.Next())
+  //  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itf(theFFMap);
+  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itf(theFFMap); itf.More(); itf.Next())
   {
     for (itl.Initialize(itf.Value()); itl.More(); itl.Next())
     {
@@ -264,15 +263,12 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
     }
   }
 
-  NCollection_List<TopoDS_Shape>                                           RebuildFace;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                   mapTreated;
+  NCollection_List<TopoDS_Shape>         RebuildFace;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>          mapTreated;
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> DontFuse;
-  TopAbs_Orientation                                                       orient, orface;
+  TopAbs_Orientation           orient, orface;
 
-  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-         Iterator itf(theFFMap);
-       itf.More();
-       itf.Next())
+  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itf(theFFMap); itf.More(); itf.Next())
   {
     const TopoDS_Face& fac = TopoDS::Face(itf.Key());
     for (exp.Init(fac, TopAbs_EDGE); exp.More(); exp.Next())
@@ -306,8 +302,8 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
               theEEMap.Bind(edg, thelist1);
               theEEMap(edg).Append(edgbis);
               toRemove.Add(edgbis); // toujours vrai pour edge double
-              bool          FuseEdge = true;
-              TopoDS_Vertex Vf, Vl;
+              bool FuseEdge = true;
+              TopoDS_Vertex    Vf, Vl;
               TopExp::Vertices(edg, Vf, Vl);
               bool ConnectLast = (Vl.IsSame(vtx));
               for (exp3.Init(fac.Oriented(TopAbs_FORWARD), TopAbs_EDGE); exp3.More(); exp3.Next())
@@ -367,9 +363,9 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
               theEEMap.Bind(edg, thelist2);
             }
             theEEMap(edg).Append(edgbis);
-            const NCollection_List<TopoDS_Shape>&    L = theEEMap(edg);
+            const NCollection_List<TopoDS_Shape>&        L = theEEMap(edg);
             NCollection_List<TopoDS_Shape>::Iterator Lit(L);
-            bool                                     OK = true;
+            bool                   OK = true;
             for (; Lit.More(); Lit.Next())
             {
               if (Lit.Value().IsSame(edgbis))
@@ -442,7 +438,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
   TopoDS_Edge     newedg;
   TopoDS_Vertex   newvtx;
   TopLoc_Location loc;
-  double          tol, prm, f, l, Uminc = 0., Umaxc = 0.;
+  double   tol, prm, f, l, Uminc = 0., Umaxc = 0.;
   gp_Pnt2d        pf, pl;
 
   occ::handle<Geom_Surface> S;
@@ -450,11 +446,10 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
   occ::handle<Geom_Curve>   C;
 
   // Fusion des edges
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator ite(theEEMap);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator ite(theEEMap);
   for (; ite.More(); ite.Next())
   {
-    bool               KeepNewEdge = false;
+    bool   KeepNewEdge = false;
     const TopoDS_Edge& edg         = TopoDS::Edge(ite.Key());
     BRep_Tool::Range(edg, f, l);
     TopoDS_Shape aLocalEdge = edg.EmptyCopied();
@@ -522,13 +517,10 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> EdgAdded;
 
   // Fusion des faces, ou reconstruction
-  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-         Iterator itf(theFFMap);
-       itf.More();
-       itf.Next())
+  for (NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itf(theFFMap); itf.More(); itf.Next())
   {
-    const TopoDS_Face&             fac     = TopoDS::Face(itf.Key());
-    bool                           ModFace = false;
+    const TopoDS_Face&   fac     = TopoDS::Face(itf.Key());
+    bool     ModFace = false;
     NCollection_List<TopoDS_Shape> listofedg;
 
     EdgAdded.Clear();
@@ -643,7 +635,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
                     if (!loc.IsIdentity())
                     {
                       occ::handle<Geom_Geometry> GG = C->Transformed(loc.Transformation());
-                      C                             = occ::down_cast<Geom_Curve>(GG);
+                      C                        = occ::down_cast<Geom_Curve>(GG);
                     }
                     if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
                     {
@@ -653,8 +645,8 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
                     occ::handle<Geom2d_Curve> C2d = GeomProjLib::Curve2d(C, f, l, S, tol);
 
                     // Tentative de recalage dans la facette
-                    pf                     = C2d->Value(f);
-                    pl                     = C2d->Value(l);
+                    pf                            = C2d->Value(f);
+                    pl                            = C2d->Value(l);
                     constexpr double tttol = Precision::Angular();
                     while (std::min(pf.X(), pl.X()) >= Umaxc - tttol)
                     {
@@ -718,7 +710,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
             if (!loc.IsIdentity())
             {
               occ::handle<Geom_Geometry> GG = C->Transformed(loc.Transformation());
-              C                             = occ::down_cast<Geom_Curve>(GG);
+              C                        = occ::down_cast<Geom_Curve>(GG);
             }
             if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
             {
@@ -826,7 +818,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
 
                 if (it1.More())
                 {
-                  gp_Pnt ptbid;
+                  gp_Pnt        ptbid;
                   double prmvt = BRep_Tool::Parameter(TopoDS::Vertex(it1.Value()), newedg);
                   C->D1(prmvt, ptbid, dir1);
 
@@ -834,7 +826,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
                   if (!loc.IsIdentity())
                   {
                     occ::handle<Geom_Geometry> GG = C->Transformed(loc.Transformation());
-                    C                             = occ::down_cast<Geom_Curve>(GG);
+                    C                        = occ::down_cast<Geom_Curve>(GG);
                   }
                   if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
                   {
@@ -929,8 +921,8 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
         bool includeinw = false;
         for (itl.Initialize(itf.Value()); itl.More(); itl.Next())
         {
-          TopoDS_Face facbis  = TopoDS::Face(itl.Value());
-          bool        genface = true;
+          TopoDS_Face      facbis  = TopoDS::Face(itl.Value());
+          bool genface = true;
           for (itl2.Initialize(G->OrientedFaces()); itl2.More(); itl2.Next())
           {
             if (itl2.Value().IsSame(facbis))
@@ -1026,7 +1018,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
                   if (!loc.IsIdentity())
                   {
                     occ::handle<Geom_Geometry> GG = C->Transformed(loc.Transformation());
-                    C                             = occ::down_cast<Geom_Curve>(GG);
+                    C                        = occ::down_cast<Geom_Curve>(GG);
                   }
                   if (C->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
                   {
@@ -1036,8 +1028,8 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
                   C2d = GeomProjLib::Curve2d(C, f, l, S, tol);
 
                   // Tentative de recalage dans la facette
-                  pf                     = C2d->Value(f);
-                  pl                     = C2d->Value(l);
+                  pf                            = C2d->Value(f);
+                  pl                            = C2d->Value(l);
                   constexpr double tttol = Precision::Angular();
                   while (std::min(pf.X(), pl.X()) >= Umaxc - tttol)
                   {
@@ -1236,11 +1228,11 @@ bool ToFuse(const TopoDS_Face& F1, const TopoDS_Face& F2)
     return false;
   }
 
-  occ::handle<Geom_Surface>  S1, S2;
-  TopLoc_Location            loc1, loc2;
-  occ::handle<Standard_Type> typS1, typS2;
-  constexpr double           tollin = Precision::Confusion();
-  constexpr double           tolang = Precision::Angular();
+  occ::handle<Geom_Surface>    S1, S2;
+  TopLoc_Location         loc1, loc2;
+  occ::handle<Standard_Type>   typS1, typS2;
+  constexpr double tollin = Precision::Confusion();
+  constexpr double tolang = Precision::Angular();
 
   S1 = BRep_Tool::Surface(F1, loc1);
   S2 = BRep_Tool::Surface(F2, loc2);
@@ -1294,25 +1286,25 @@ bool ToFuse(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
     return false;
   }
 
-  occ::handle<Geom_Curve>    C1, C2;
-  TopLoc_Location            loc1, loc2;
-  occ::handle<Standard_Type> typC1, typC2;
-  constexpr double           tollin = Precision::Confusion();
-  constexpr double           tolang = Precision::Angular();
-  double                     f, l;
+  occ::handle<Geom_Curve>      C1, C2;
+  TopLoc_Location         loc1, loc2;
+  occ::handle<Standard_Type>   typC1, typC2;
+  constexpr double tollin = Precision::Confusion();
+  constexpr double tolang = Precision::Angular();
+  double           f, l;
 
   C1 = BRep_Tool::Curve(E1, loc1, f, l);
   if (!loc1.IsIdentity())
   {
     occ::handle<Geom_Geometry> CC1 = C1->Transformed(loc1.Transformation());
-    C1                             = occ::down_cast<Geom_Curve>(CC1);
+    C1                        = occ::down_cast<Geom_Curve>(CC1);
   }
 
   C2 = BRep_Tool::Curve(E2, loc2, f, l);
   if (!loc2.IsIdentity())
   {
     occ::handle<Geom_Geometry> CC2 = C2->Transformed(loc2.Transformation());
-    C2                             = occ::down_cast<Geom_Curve>(CC2);
+    C2                        = occ::down_cast<Geom_Curve>(CC2);
   }
 
   typC1 = C1->DynamicType();
@@ -1351,10 +1343,10 @@ bool ToFuse(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
 //=================================================================================================
 
-bool ToFuse(const TopoDS_Edge&                                            E,
-            const TopoDS_Face&                                            F,
-            const TopoDS_Vertex&                                          V,
-            const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& toRemove)
+bool ToFuse(const TopoDS_Edge&         E,
+                        const TopoDS_Face&         F,
+                        const TopoDS_Vertex&       V,
+                        const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& toRemove)
 {
   TopoDS_Vertex   Vf, Vl;
   TopExp_Explorer exp;
@@ -1377,15 +1369,15 @@ bool ToFuse(const TopoDS_Edge&                                            E,
 //=================================================================================================
 
 double NewParameter(const TopoDS_Edge&   Edg,
-                    const TopoDS_Vertex& Vtx,
-                    const TopoDS_Edge&   NewEdg,
-                    const TopoDS_Vertex& NewVtx)
+                           const TopoDS_Vertex& Vtx,
+                           const TopoDS_Edge&   NewEdg,
+                           const TopoDS_Vertex& NewVtx)
 {
 
   occ::handle<Geom_Curve>    C;
-  TopLoc_Location            loc;
+  TopLoc_Location       loc;
   occ::handle<Standard_Type> typC;
-  double                     f, l;
+  double         f, l;
 
   gp_Pnt P = BRep_Tool::Pnt(NewVtx);
 
@@ -1393,7 +1385,7 @@ double NewParameter(const TopoDS_Edge&   Edg,
   if (!loc.IsIdentity())
   {
     occ::handle<Geom_Geometry> GG = C->Transformed(loc.Transformation());
-    C                             = occ::down_cast<Geom_Curve>(GG);
+    C                        = occ::down_cast<Geom_Curve>(GG);
   }
   typC = C->DynamicType();
   if (typC == STANDARD_TYPE(Geom_TrimmedCurve))

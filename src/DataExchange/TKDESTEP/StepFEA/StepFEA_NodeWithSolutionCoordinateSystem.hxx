@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepFEA_NodeWithSolutionCoordinateSystem();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeWithSolutionCoordinateSystem, StepFEA_Node)
+
 };
 
 #endif // _StepFEA_NodeWithSolutionCoordinateSystem_HeaderFile

@@ -24,7 +24,11 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class Geom2dGcc_QCurve;
 class gp_Pnt2d;
 class gp_Circ2d;
@@ -56,7 +60,7 @@ public:
   //! centered on a point.
   Standard_EXPORT Geom2dGcc_Circ2dTanCenGeo(const Geom2dGcc_QCurve& Qualified1,
                                             const gp_Pnt2d&         Pcenter,
-                                            const double            Tolerance);
+                                            const double     Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
@@ -92,18 +96,18 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    pararg1;
 };
 
 #endif // _Geom2dGcc_Circ2dTanCenGeo_HeaderFile

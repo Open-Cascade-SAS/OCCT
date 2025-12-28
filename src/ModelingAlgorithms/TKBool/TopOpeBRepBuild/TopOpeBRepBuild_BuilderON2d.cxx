@@ -38,7 +38,7 @@
 #ifdef OCCT_DEBUG
 Standard_EXPORT bool TopOpeBRepBuild_GetcontextEINTERNAL();
 Standard_EXPORT bool TopOpeBRepBuild_GetcontextEEXTERNAL();
-Standard_EXPORT void debfillonf(const int iF);
+Standard_EXPORT void             debfillonf(const int iF);
 
 Standard_EXPORT void debON2d(const int iF)
 {
@@ -50,14 +50,14 @@ Standard_EXPORT void debON2d(const int iF)
 Standard_EXPORT TopAbs_State FUN_build_TB(const TopOpeBRepBuild_PBuilder& PB,const int rank); // xpu290698
 // clang-format on
 Standard_EXPORT bool FUN_keepEON(const TopOpeBRepBuild_Builder& B,
-                                 const TopoDS_Shape&            sEG,
-                                 const TopoDS_Shape&            sFOR,
-                                 const TopoDS_Shape&            sFS,
-                                 const bool                     EGBoundFOR,
-                                 const TopOpeBRepDS_Transition& TFE,
-                                 const TopAbs_State             TB1,
-                                 const TopAbs_State             TB2);
-Standard_EXPORT void FUN_coutmess(const TCollection_AsciiString& m);
+                                             const TopoDS_Shape&            sEG,
+                                             const TopoDS_Shape&            sFOR,
+                                             const TopoDS_Shape&            sFS,
+                                             const bool         EGBoundFOR,
+                                             const TopOpeBRepDS_Transition& TFE,
+                                             const TopAbs_State             TB1,
+                                             const TopAbs_State             TB2);
+Standard_EXPORT void             FUN_coutmess(const TCollection_AsciiString& m);
 
 Standard_EXPORTEXTERN TopOpeBRepDS_PDataStructure GLOBAL_DS2d;
 
@@ -78,11 +78,10 @@ void TopOpeBRepBuild_BuilderON::Perform2d(const TopOpeBRepBuild_PBuilder&     PB
   const TopOpeBRepDS_DataStructure& BDS = myPB->DataStructure()->DS();
   if (GLOBAL_DS2d == NULL)
     GLOBAL_DS2d = (TopOpeBRepDS_PDataStructure) new TopOpeBRepDS_DataStructure();
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFEI =
-    GLOBAL_DS2d->ShapeInterferences(FOR);
+  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& lFEI = GLOBAL_DS2d->ShapeInterferences(FOR);
 
 #ifdef OCCT_DEBUG
-  int  iFOR;
+  int iFOR;
   bool tFOR = myPB->GtraceSPS(FOR, iFOR);
   if (tFOR)
     debfillonf(iFOR);
@@ -90,12 +89,11 @@ void TopOpeBRepBuild_BuilderON::Perform2d(const TopOpeBRepBuild_PBuilder&     PB
     std::cout << std::endl << "LI on F" << iFOR << std::endl;
 #endif
 
-  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI(lFEI); itI.More();
-       itI.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator itI(lFEI); itI.More(); itI.Next())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I = itI.Value();
-    TopOpeBRepDS_Kind                             GT, ST;
-    int                                           GI, SI;
+    TopOpeBRepDS_Kind                        GT, ST;
+    int                         GI, SI;
     FDS_data(I, GT, GI, ST, SI);
 
     const TopoDS_Edge& EG = TopoDS::Edge(BDS.Shape(GI));
@@ -117,21 +115,21 @@ void TopOpeBRepBuild_BuilderON::Perform2d(const TopOpeBRepBuild_PBuilder&     PB
 //=================================================================================================
 
 void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                                   const TopoDS_Shape& EspON)
+                                                   const TopoDS_Shape&                      EspON)
 {
   const occ::handle<TopOpeBRepDS_HDataStructure>&  HDS = myPB->DataStructure();
-  const TopOpeBRepDS_DataStructure&                BDS = HDS->DS();
+  const TopOpeBRepDS_DataStructure&           BDS = HDS->DS();
   occ::handle<TopOpeBRepDS_ShapeShapeInterference> SSI(
     occ::down_cast<TopOpeBRepDS_ShapeShapeInterference>(I));
   TopAbs_State TB1, TB2;
   myPG->StatesON(TB1, TB2);
   TopOpeBRepDS_Kind GT, ST;
-  int               GI, SI;
+  int  GI, SI;
   FDS_data(SSI, GT, GI, ST, SI);
   //  const TopOpeBRepDS_Transition& TFE=SSI->Transition();
-  bool               EGBoundFOR = SSI->GBound();
+  bool   EGBoundFOR = SSI->GBound();
   const TopoDS_Face& FOR        = TopoDS::Face(myFace);
-  int                iFOR       = BDS.Shape(FOR);
+  int   iFOR       = BDS.Shape(FOR);
   const TopoDS_Edge& EG         = TopoDS::Edge(BDS.Shape(GI));
 #ifdef OCCT_DEBUG
 //  int iEG=BDS.Shape(EG);
@@ -171,13 +169,13 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
   }
 #endif
 
-  int  iFCX     = SI;
+  int iFCX     = SI;
   bool FFinSDSO = true;
 #ifdef OCCT_DEBUG
 //  bool FFinSDDO = false;
 #endif
-  bool        FFinSD = true;
-  TopoDS_Face FCX    = FS;
+  bool FFinSD = true;
+  TopoDS_Face      FCX    = FS;
 
 #ifdef OCCT_DEBUG
 //  TopAbs_Orientation oFOR = BDS.Shape(iFOR).Orientation();
@@ -190,7 +188,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
 #endif
 
   TopAbs_Orientation oegFCXF;
-  bool               EGBoundFCX = FUN_tool_orientEinFFORWARD(EG, FCX, oegFCXF);
+  bool   EGBoundFCX = FUN_tool_orientEinFFORWARD(EG, FCX, oegFCXF);
   TopAbs_Orientation oegFCX;
 #ifdef OCCT_DEBUG
 //  bool ok2 =
@@ -202,7 +200,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
   bool opeCom = myPB->Opecom();
 
   bool yap6 = true;
-  yap6      = yap6 && FFinSD;
+  yap6                  = yap6 && FFinSD;
   //  yap6 = yap6 && (!EGBoundFOR);
   //  yap6 = yap6 && EGBoundFCX;
   yap6 = yap6 && (EGBoundFOR || EGBoundFCX);
@@ -232,8 +230,8 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const occ::handle<TopOpeBRepD
       return;
 
     TopAbs_Orientation oegFOR;
-    bool               shareG = false;
-    bool               ok     = false;
+    bool   shareG = false;
+    bool   ok     = false;
     if (EGBoundFCX)
       ok = FUN_ds_shareG(myPB->DataStructure(), iFOR, iFCX, GI, TopoDS::Edge(EspON), shareG);
     else if (EGBoundFOR)

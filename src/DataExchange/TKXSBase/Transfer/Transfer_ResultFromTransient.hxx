@@ -23,8 +23,10 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Standard_Transient.hxx>
 #include <Interface_CheckStatus.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 class Transfer_Binder;
 class Interface_Check;
@@ -107,8 +109,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(Transfer_ResultFromTransient, Standard_Transient)
 
 private:
-  occ::handle<Standard_Transient>                                     thestart;
-  occ::handle<Transfer_Binder>                                        thebinder;
+  occ::handle<Standard_Transient>           thestart;
+  occ::handle<Transfer_Binder>              thebinder;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> thesubs;
 };
 

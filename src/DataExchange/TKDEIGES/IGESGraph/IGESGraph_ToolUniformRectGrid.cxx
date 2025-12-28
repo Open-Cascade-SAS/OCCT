@@ -35,19 +35,18 @@
 
 IGESGraph_ToolUniformRectGrid::IGESGraph_ToolUniformRectGrid() {}
 
-void IGESGraph_ToolUniformRectGrid::ReadOwnParams(
-  const occ::handle<IGESGraph_UniformRectGrid>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
-  IGESData_ParamReader& PR) const
+void IGESGraph_ToolUniformRectGrid::ReadOwnParams(const occ::handle<IGESGraph_UniformRectGrid>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
+                                                  IGESData_ParamReader& PR) const
 {
-  int   nbPropertyValues;
-  int   finite;
-  int   line;
-  int   weighted;
-  gp_XY gridPoint;
-  gp_XY gridSpacing;
-  int   nbPointsX = 0;
-  int   nbPointsY = 0;
+  int nbPropertyValues;
+  int finite;
+  int line;
+  int weighted;
+  gp_XY            gridPoint;
+  gp_XY            gridSpacing;
+  int nbPointsX = 0;
+  int nbPointsY = 0;
 
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);
@@ -81,9 +80,8 @@ void IGESGraph_ToolUniformRectGrid::ReadOwnParams(
   ent->Init(nbPropertyValues, finite, line, weighted, gridPoint, gridSpacing, nbPointsX, nbPointsY);
 }
 
-void IGESGraph_ToolUniformRectGrid::WriteOwnParams(
-  const occ::handle<IGESGraph_UniformRectGrid>& ent,
-  IGESData_IGESWriter&                          IW) const
+void IGESGraph_ToolUniformRectGrid::WriteOwnParams(const occ::handle<IGESGraph_UniformRectGrid>& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.SendBoolean(ent->IsFinite());

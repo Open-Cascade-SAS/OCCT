@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_TriangulationReader, RWObj_Reader)
 //=================================================================================================
 
 bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
-                                        const RWObj_SubMeshReason theReason)
+                                                    const RWObj_SubMeshReason theReason)
 {
   if (!myToCreateShapes)
   {
@@ -47,7 +47,10 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
             myLastGroupShape.ShapeType() == TopAbs_FACE && !myLastFaceMaterial.IsEmpty()
               ? myMaterials.Seek(myLastFaceMaterial)
               : NULL;
-          myShapeReceiver->BindNamedShape(myLastGroupShape, myLastGroupName, aMaterial, false);
+          myShapeReceiver->BindNamedShape(myLastGroupShape,
+                                          myLastGroupName,
+                                          aMaterial,
+                                          false);
         }
       }
       myLastGroupShape = TopoDS_Shape();
@@ -77,7 +80,10 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
           myLastGroupShape.ShapeType() == TopAbs_FACE && !myLastFaceMaterial.IsEmpty()
             ? myMaterials.Seek(myLastFaceMaterial)
             : NULL;
-        myShapeReceiver->BindNamedShape(myLastGroupShape, myLastGroupName, aMaterial, false);
+        myShapeReceiver->BindNamedShape(myLastGroupShape,
+                                        myLastGroupName,
+                                        aMaterial,
+                                        false);
       }
     }
     myLastGroupShape = TopoDS_Shape();
@@ -97,9 +103,9 @@ bool RWObj_TriangulationReader::addMesh(const RWObj_SubMesh&      theMesh,
 
 //=================================================================================================
 
-bool RWObj_TriangulationReader::addSubShape(TopoDS_Shape&       theParent,
-                                            const TopoDS_Shape& theSubShape,
-                                            const bool          theToExpandCompound)
+bool RWObj_TriangulationReader::addSubShape(TopoDS_Shape&          theParent,
+                                                        const TopoDS_Shape&    theSubShape,
+                                                        const bool theToExpandCompound)
 {
   if (theSubShape.IsNull())
   {
@@ -165,7 +171,7 @@ occ::handle<Poly_Triangulation> RWObj_TriangulationReader::GetTriangulation()
     for (int aNodeIter = 0; aNodeIter < myNodes.Size(); ++aNodeIter)
     {
       const NCollection_Vec3<float>& aNorm = myNormals.Value(aNodeIter);
-      const float                    aMod2 = aNorm.SquareModulus();
+      const float           aMod2 = aNorm.SquareModulus();
       if (aMod2 > 0.001f)
       {
         aPoly->SetNormal(aNodeIter + 1, aNorm);

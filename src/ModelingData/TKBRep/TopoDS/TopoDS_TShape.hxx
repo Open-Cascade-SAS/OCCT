@@ -86,7 +86,10 @@ public:
   bool Checked() const { return ((myFlags & TopoDS_TShape_Flags_Checked) != 0); }
 
   //! Sets the checked flag.
-  void Checked(bool theIsChecked) { setFlag(TopoDS_TShape_Flags_Checked, theIsChecked); }
+  void Checked(bool theIsChecked)
+  {
+    setFlag(TopoDS_TShape_Flags_Checked, theIsChecked);
+  }
 
   //! Returns the orientability flag.
   bool Orientable() const { return ((myFlags & TopoDS_TShape_Flags_Orientable) != 0); }
@@ -107,7 +110,10 @@ public:
   bool Infinite() const { return ((myFlags & TopoDS_TShape_Flags_Infinite) != 0); }
 
   //! Sets the infinity flag.
-  void Infinite(bool theIsInfinite) { setFlag(TopoDS_TShape_Flags_Infinite, theIsInfinite); }
+  void Infinite(bool theIsInfinite)
+  {
+    setFlag(TopoDS_TShape_Flags_Infinite, theIsInfinite);
+  }
 
   //! Returns the convexness flag.
   bool Convex() const { return ((myFlags & TopoDS_TShape_Flags_Convex) != 0); }
@@ -127,7 +133,8 @@ public:
   int NbChildren() const { return myShapes.Size(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   friend class TopoDS_Iterator;
   friend class TopoDS_Builder;
@@ -174,7 +181,7 @@ private:
 
 private:
   NCollection_List<TopoDS_Shape> myShapes;
-  int                            myFlags;
+  int   myFlags;
 };
 
 #endif // _TopoDS_TShape_HeaderFile

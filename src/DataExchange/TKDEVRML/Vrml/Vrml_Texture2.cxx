@@ -32,10 +32,10 @@ Vrml_Texture2::Vrml_Texture2()
   myWrapT = Vrml_REPEAT;
 }
 
-Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString&   aFilename,
-                             const occ::handle<Vrml_SFImage>& aImage,
-                             const Vrml_Texture2Wrap          aWrapS,
-                             const Vrml_Texture2Wrap          aWrapT)
+Vrml_Texture2::Vrml_Texture2(const TCollection_AsciiString& aFilename,
+                             const occ::handle<Vrml_SFImage>&    aImage,
+                             const Vrml_Texture2Wrap        aWrapS,
+                             const Vrml_Texture2Wrap        aWrapT)
 {
   myFilename = aFilename;
   myImage    = aImage;

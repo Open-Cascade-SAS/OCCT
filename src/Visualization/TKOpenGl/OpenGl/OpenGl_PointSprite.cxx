@@ -64,7 +64,7 @@ void OpenGl_PointSprite::Release(OpenGl_Context* theGlCtx)
 //=================================================================================================
 
 void OpenGl_PointSprite::SetDisplayList(const occ::handle<OpenGl_Context>& theCtx,
-                                        const GLuint                       theBitmapList)
+                                        const GLuint                  theBitmapList)
 {
   Release(theCtx.operator->());
   myBitmapList = theBitmapList;

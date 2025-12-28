@@ -37,15 +37,13 @@ public:
   //! Returns a RationalBSplineCurve
   Standard_EXPORT StepGeom_RationalBSplineCurve();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aDegree,
-    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
-                                                    aControlPointsList,
-    const StepGeom_BSplineCurveForm                 aCurveForm,
-    const StepData_Logical                          aClosedCurve,
-    const StepData_Logical                          aSelfIntersect,
-    const occ::handle<NCollection_HArray1<double>>& aWeightsData);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineCurveForm                 aCurveForm,
+                            const StepData_Logical                          aClosedCurve,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<NCollection_HArray1<double>>&            aWeightsData);
 
   Standard_EXPORT void SetWeightsData(const occ::handle<NCollection_HArray1<double>>& aWeightsData);
 

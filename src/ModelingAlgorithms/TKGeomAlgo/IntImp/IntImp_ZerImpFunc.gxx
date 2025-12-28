@@ -129,8 +129,8 @@ bool IntImp_ZerImpFunc::IsTangent()
       derived = true;
     }
 
-    tgdu                  = gradient.Dot(d1v);
-    tgdv                  = -gradient.Dot(d1u);
+    tgdu                         = gradient.Dot(d1v);
+    tgdv                         = -gradient.Dot(d1u);
     double N2grad         = gradient.SquareMagnitude();
     double N2grad_EpsAng2 = N2grad * EpsAng2;
     double N2d1u          = d1u.SquareMagnitude();

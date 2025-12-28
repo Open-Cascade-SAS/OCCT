@@ -37,7 +37,7 @@ void IGESAppli_ToolPartNumber::ReadOwnParams(const occ::handle<IGESAppli_PartNum
                                              IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                   tempNbPropertyValues;
+  int                 tempNbPropertyValues;
   occ::handle<TCollection_HAsciiString> tempGenericNumber;
   occ::handle<TCollection_HAsciiString> tempMilitaryNumber;
   occ::handle<TCollection_HAsciiString> tempVendorNumber;
@@ -62,7 +62,7 @@ void IGESAppli_ToolPartNumber::ReadOwnParams(const occ::handle<IGESAppli_PartNum
 }
 
 void IGESAppli_ToolPartNumber::WriteOwnParams(const occ::handle<IGESAppli_PartNumber>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->GenericNumber());
@@ -80,7 +80,7 @@ void IGESAppli_ToolPartNumber::OwnCopy(const occ::handle<IGESAppli_PartNumber>& 
                                        const occ::handle<IGESAppli_PartNumber>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  int                                   tempNbPropertyValues = another->NbPropertyValues();
+  int                 tempNbPropertyValues = another->NbPropertyValues();
   occ::handle<TCollection_HAsciiString> tempGenericNumber =
     new TCollection_HAsciiString(another->GenericNumber());
   occ::handle<TCollection_HAsciiString> tempMilitaryNumber =

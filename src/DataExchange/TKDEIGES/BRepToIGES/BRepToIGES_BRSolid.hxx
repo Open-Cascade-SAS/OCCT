@@ -66,6 +66,7 @@ public:
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCompound(
     const TopoDS_Compound&       start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
+
 };
 
 #endif // _BRepToIGES_BRSolid_HeaderFile

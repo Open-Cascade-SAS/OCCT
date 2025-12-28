@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_AdvancedBrepShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedBrepShapeRepresentation, StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_AdvancedBrepShapeRepresentation_HeaderFile

@@ -18,6 +18,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -86,7 +88,8 @@ inline occ::handle<NCollection_HArray1<int>> AdvApprox_ApproxAFunction::Multipli
 
 //=================================================================================================
 
-inline int AdvApprox_ApproxAFunction::NumSubSpaces(const int Dimension) const
+inline int AdvApprox_ApproxAFunction::NumSubSpaces(
+  const int Dimension) const
 {
   if (Dimension < 1 || Dimension > 3)
     throw Standard_ConstructionError();

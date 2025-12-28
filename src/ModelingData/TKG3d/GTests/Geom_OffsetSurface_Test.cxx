@@ -36,7 +36,7 @@ protected:
   void SetUp() override
   {
     // Create a plane as basis surface
-    gp_Pln                  aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
+    gp_Pln             aPlane(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)));
     occ::handle<Geom_Plane> aBasisSurface = new Geom_Plane(aPlane);
 
     // Create offset surface
@@ -128,10 +128,10 @@ TEST_F(Geom_OffsetSurface_Test, CopyIndependence)
 TEST(Geom_OffsetSurface_EquivalentSurface, Plane_ReturnsTranslatedPlane)
 {
   // Create a plane at origin with Z-normal.
-  gp_Ax3                  anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
+  gp_Ax3             anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxis);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aPlane, anOffset);
 
   // Get equivalent surface.
@@ -153,17 +153,16 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Plane_ReturnsTranslatedPlane)
 TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_PositiveOffset_ReturnsLargerCylinder)
 {
   // Create a cylinder with radius 10.
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
 
-  occ::handle<Geom_CylindricalSurface> anEquivCyl =
-    occ::down_cast<Geom_CylindricalSurface>(anEquiv);
+  occ::handle<Geom_CylindricalSurface> anEquivCyl = occ::down_cast<Geom_CylindricalSurface>(anEquiv);
   ASSERT_FALSE(anEquivCyl.IsNull());
 
   // Radius should increase by offset.
@@ -172,17 +171,16 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_PositiveOffset_ReturnsLarger
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_NegativeOffset_ReturnsSmallerCylinder)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = -3.0;
+  const double               anOffset     = -3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
 
-  occ::handle<Geom_CylindricalSurface> anEquivCyl =
-    occ::down_cast<Geom_CylindricalSurface>(anEquiv);
+  occ::handle<Geom_CylindricalSurface> anEquivCyl = occ::down_cast<Geom_CylindricalSurface>(anEquiv);
   ASSERT_FALSE(anEquivCyl.IsNull());
 
   EXPECT_NEAR(anEquivCyl->Radius(), 7.0, Precision::Confusion());
@@ -191,17 +189,16 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_NegativeOffset_ReturnsSmalle
 TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_NegativeRadiusFlip_ReturnsFlippedCylinder)
 {
   // Offset that makes radius negative should flip the surface.
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 5.0);
 
-  const double                    anOffset     = -8.0; // Results in radius = -3
+  const double               anOffset     = -8.0; // Results in radius = -3
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
 
-  occ::handle<Geom_CylindricalSurface> anEquivCyl =
-    occ::down_cast<Geom_CylindricalSurface>(anEquiv);
+  occ::handle<Geom_CylindricalSurface> anEquivCyl = occ::down_cast<Geom_CylindricalSurface>(anEquiv);
   ASSERT_FALSE(anEquivCyl.IsNull());
 
   // Radius should be absolute value.
@@ -210,10 +207,10 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Cylinder_NegativeRadiusFlip_ReturnsFl
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Sphere_PositiveOffset_ReturnsLargerSphere)
 {
-  gp_Ax3                             anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
+  gp_Ax3                        anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aSphere, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -229,10 +226,10 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Sphere_PositiveOffset_ReturnsLargerSp
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Sphere_NegativeRadiusFlip_ReturnsFlippedSphere)
 {
-  gp_Ax3                             anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                        anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 5.0);
 
-  const double                    anOffset     = -8.0; // Results in radius = -3
+  const double               anOffset     = -8.0; // Results in radius = -3
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aSphere, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -246,12 +243,12 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Sphere_NegativeRadiusFlip_ReturnsFlip
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Cone_PositiveOffset_ReturnsOffsetCone)
 {
-  gp_Ax3                           anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                     aSemiAngle = M_PI / 6.0; // 30 degrees
-  const double                     aRefRadius = 10.0;
-  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
+  gp_Ax3                      anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                aSemiAngle = M_PI / 6.0; // 30 degrees
+  const double                aRefRadius = 10.0;
+  occ::handle<Geom_ConicalSurface> aCone      = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCone, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -270,13 +267,13 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Cone_PositiveOffset_ReturnsOffsetCone
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Torus_PositiveOffset_ReturnsLargerTorus)
 {
-  gp_Ax3                            anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                      aMajorRadius = 20.0;
-  const double                      aMinorRadius = 5.0;
+  gp_Ax3                       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                 aMajorRadius = 20.0;
+  const double                 aMinorRadius = 5.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(anAxis, aMajorRadius, aMinorRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTorus, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -293,13 +290,13 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Torus_PositiveOffset_ReturnsLargerTor
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Torus_NegativeOffset_ReturnsSmallerTorus)
 {
-  gp_Ax3                            anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                      aMajorRadius = 20.0;
-  const double                      aMinorRadius = 5.0;
+  gp_Ax3                       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                 aMajorRadius = 20.0;
+  const double                 aMinorRadius = 5.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(anAxis, aMajorRadius, aMinorRadius);
 
-  const double                    anOffset     = -2.0;
+  const double               anOffset     = -2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTorus, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -314,13 +311,13 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Torus_NegativeOffset_ReturnsSmallerTo
 
 TEST(Geom_OffsetSurface_EquivalentSurface, Torus_NegativeMinorRadiusFlip_ReturnsFlippedTorus)
 {
-  gp_Ax3                            anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                      aMajorRadius = 20.0;
-  const double                      aMinorRadius = 3.0;
+  gp_Ax3                       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                 aMajorRadius = 20.0;
+  const double                 aMinorRadius = 3.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(anAxis, aMajorRadius, aMinorRadius);
 
-  const double                    anOffset     = -5.0; // Results in minor radius = -2
+  const double               anOffset     = -5.0; // Results in minor radius = -2
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTorus, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -335,7 +332,7 @@ TEST(Geom_OffsetSurface_EquivalentSurface, Torus_NegativeMinorRadiusFlip_Returns
 
 TEST(Geom_OffsetSurface_EquivalentSurface, ZeroOffset_ReturnsBasisSurface)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, 0.0);
@@ -347,22 +344,21 @@ TEST(Geom_OffsetSurface_EquivalentSurface, ZeroOffset_ReturnsBasisSurface)
   EXPECT_EQ(anEquiv.get(), anOffsetSurf->BasisSurface().get());
 
   // The equivalent should be geometrically identical to the original.
-  occ::handle<Geom_CylindricalSurface> anEquivCyl =
-    occ::down_cast<Geom_CylindricalSurface>(anEquiv);
+  occ::handle<Geom_CylindricalSurface> anEquivCyl = occ::down_cast<Geom_CylindricalSurface>(anEquiv);
   ASSERT_FALSE(anEquivCyl.IsNull());
   EXPECT_NEAR(anEquivCyl->Radius(), 10.0, Precision::Confusion());
 }
 
 TEST(Geom_OffsetSurface_EquivalentSurface, TrimmedPlane_ReturnsTrimmedTranslatedPlane)
 {
-  gp_Ax3                  anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3             anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxis);
 
   // Create trimmed surface.
   occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
     new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 5.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTrimmed, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -385,11 +381,11 @@ TEST(Geom_OffsetSurface_EquivalentSurface, TrimmedPlane_ReturnsTrimmedTranslated
 TEST(Geom_OffsetSurface_EquivalentSurface, DegenerateCylinder_ReturnsNull)
 {
   // Offset that makes radius too small (degenerate case).
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 1.0);
 
   // Offset close to -1 should result in degenerate surface.
-  const double                    anOffset     = -1.0 + 0.5 * Precision::Confusion();
+  const double               anOffset     = -1.0 + 0.5 * Precision::Confusion();
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -400,10 +396,10 @@ TEST(Geom_OffsetSurface_EquivalentSurface, DegenerateCylinder_ReturnsNull)
 TEST(Geom_OffsetSurface_EquivalentSurface, EquivalentSurface_EvaluationConsistency)
 {
   // Verify that evaluation on offset surface matches evaluation on equivalent surface.
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
@@ -435,14 +431,14 @@ bool VectorsEqual(const gp_Vec& theV1, const gp_Vec& theV2, double theTol)
 
 TEST(Geom_OffsetSurface_Derivatives, Plane_D0D1D2D3_Consistency)
 {
-  gp_Ax3                  anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
+  gp_Ax3             anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxis);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aPlane, anOffset);
 
   // Create adaptors for offset surface and equivalent surface.
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -485,13 +481,13 @@ TEST(Geom_OffsetSurface_Derivatives, Plane_D0D1D2D3_Consistency)
 
 TEST(Geom_OffsetSurface_Derivatives, Cylinder_D0D1D2D3_Consistency)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -569,13 +565,13 @@ TEST(Geom_OffsetSurface_Derivatives, Cylinder_D0D1D2D3_Consistency)
 
 TEST(Geom_OffsetSurface_Derivatives, Sphere_D0D1D2D3_Consistency)
 {
-  gp_Ax3                             anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
+  gp_Ax3                        anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aSphere, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -618,15 +614,15 @@ TEST(Geom_OffsetSurface_Derivatives, Sphere_D0D1D2D3_Consistency)
 
 TEST(Geom_OffsetSurface_Derivatives, Cone_D0D1D2_Consistency)
 {
-  gp_Ax3                           anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                     aSemiAngle = M_PI / 6.0;
-  const double                     aRefRadius = 10.0;
-  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
+  gp_Ax3                      anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                aSemiAngle = M_PI / 6.0;
+  const double                aRefRadius = 10.0;
+  occ::handle<Geom_ConicalSurface> aCone      = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCone, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -668,16 +664,16 @@ TEST(Geom_OffsetSurface_Derivatives, Cone_D0D1D2_Consistency)
 
 TEST(Geom_OffsetSurface_Derivatives, Torus_D0D1D2D3_Consistency)
 {
-  gp_Ax3                            anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                      aMajorRadius = 20.0;
-  const double                      aMinorRadius = 5.0;
+  gp_Ax3                       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                 aMajorRadius = 20.0;
+  const double                 aMinorRadius = 5.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(anAxis, aMajorRadius, aMinorRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTorus, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -755,13 +751,13 @@ TEST(Geom_OffsetSurface_Derivatives, Torus_D0D1D2D3_Consistency)
 
 TEST(Geom_OffsetSurface_Derivatives, Cylinder_DN_Consistency)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -788,13 +784,13 @@ TEST(Geom_OffsetSurface_Derivatives, Cylinder_DN_Consistency)
 TEST(Geom_OffsetSurface_Derivatives, NegativeOffset_Cylinder_D0D1D2_Consistency)
 {
   // Test with negative offset (smaller cylinder).
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = -3.0;
+  const double               anOffset     = -3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -819,13 +815,13 @@ TEST(Geom_OffsetSurface_Derivatives, NegativeOffset_Cylinder_D0D1D2_Consistency)
 TEST(Geom_OffsetSurface_Derivatives, FlippedCylinder_D0D1_Consistency)
 {
   // Test with offset that causes cylinder flip (negative radius).
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 5.0);
 
-  const double                    anOffset     = -8.0; // Results in flipped cylinder with radius 3.
+  const double               anOffset     = -8.0; // Results in flipped cylinder with radius 3.
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -853,14 +849,14 @@ TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D0_ThreeWayConsistency)
 {
   // Verify that direct Geom_OffsetSurface, adaptor from offset surface, and adaptor
   // from equivalent surface all return the same values.
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
   // Create adaptors.
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -894,13 +890,13 @@ TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D0_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D1_ThreeWayConsistency)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -949,13 +945,13 @@ TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D1_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D2_ThreeWayConsistency)
 {
-  gp_Ax3                               anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax3                          anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 3.0;
+  const double               anOffset     = 3.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCyl, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -1021,13 +1017,13 @@ TEST(Geom_OffsetSurface_ThreeWay, Cylinder_D2_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Sphere_D0D1D2_ThreeWayConsistency)
 {
-  gp_Ax3                             anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
+  gp_Ax3                        anAxis(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1));
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAxis, 10.0);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aSphere, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -1074,13 +1070,13 @@ TEST(Geom_OffsetSurface_ThreeWay, Sphere_D0D1D2_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Plane_D0D1D2_ThreeWayConsistency)
 {
-  gp_Ax3                  anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
+  gp_Ax3             anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0, 0, 1));
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(anAxis);
 
-  const double                    anOffset     = 5.0;
+  const double               anOffset     = 5.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aPlane, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -1149,16 +1145,16 @@ TEST(Geom_OffsetSurface_ThreeWay, Plane_D0D1D2_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Torus_D0D1D2_ThreeWayConsistency)
 {
-  gp_Ax3                            anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                      aMajorRadius = 20.0;
-  const double                      aMinorRadius = 5.0;
+  gp_Ax3                       anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                 aMajorRadius = 20.0;
+  const double                 aMinorRadius = 5.0;
   occ::handle<Geom_ToroidalSurface> aTorus =
     new Geom_ToroidalSurface(anAxis, aMajorRadius, aMinorRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aTorus, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);
@@ -1204,15 +1200,15 @@ TEST(Geom_OffsetSurface_ThreeWay, Torus_D0D1D2_ThreeWayConsistency)
 
 TEST(Geom_OffsetSurface_ThreeWay, Cone_D0D1_ThreeWayConsistency)
 {
-  gp_Ax3                           anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const double                     aSemiAngle = M_PI / 6.0;
-  const double                     aRefRadius = 10.0;
-  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
+  gp_Ax3                      anAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  const double                aSemiAngle = M_PI / 6.0;
+  const double                aRefRadius = 10.0;
+  occ::handle<Geom_ConicalSurface> aCone      = new Geom_ConicalSurface(anAxis, aSemiAngle, aRefRadius);
 
-  const double                    anOffset     = 2.0;
+  const double               anOffset     = 2.0;
   occ::handle<Geom_OffsetSurface> anOffsetSurf = new Geom_OffsetSurface(aCone, anOffset);
 
-  GeomAdaptor_Surface       anOffsetAdaptor(anOffsetSurf);
+  GeomAdaptor_Surface  anOffsetAdaptor(anOffsetSurf);
   occ::handle<Geom_Surface> anEquiv = anOffsetSurf->Surface();
   ASSERT_FALSE(anEquiv.IsNull());
   GeomAdaptor_Surface anEquivAdaptor(anEquiv);

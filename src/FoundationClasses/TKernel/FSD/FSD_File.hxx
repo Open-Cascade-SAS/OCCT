@@ -43,7 +43,7 @@ public:
   //! is opened correctly, or any other value of the
   //! Storage_Error enumeration which specifies the problem encountered.
   Standard_EXPORT virtual Storage_Error Open(const TCollection_AsciiString& aName,
-                                             const Storage_OpenMode         aMode) override;
+                                             const Storage_OpenMode aMode) override;
 
   Standard_EXPORT virtual bool IsEnd() override;
 
@@ -54,48 +54,47 @@ public:
 
   Standard_EXPORT virtual Storage_Error BeginWriteInfoSection() override;
 
-  Standard_EXPORT virtual void WriteInfo(
-    const int                                            nbObj,
-    const TCollection_AsciiString&                       dbVersion,
-    const TCollection_AsciiString&                       date,
-    const TCollection_AsciiString&                       schemaName,
-    const TCollection_AsciiString&                       schemaVersion,
-    const TCollection_ExtendedString&                    appName,
-    const TCollection_AsciiString&                       appVersion,
-    const TCollection_ExtendedString&                    objectType,
-    const NCollection_Sequence<TCollection_AsciiString>& userInfo) override;
+  Standard_EXPORT virtual void WriteInfo(const int               nbObj,
+                                         const TCollection_AsciiString&       dbVersion,
+                                         const TCollection_AsciiString&       date,
+                                         const TCollection_AsciiString&       schemaName,
+                                         const TCollection_AsciiString&       schemaVersion,
+                                         const TCollection_ExtendedString&    appName,
+                                         const TCollection_AsciiString&       appVersion,
+                                         const TCollection_ExtendedString&    objectType,
+                                         const NCollection_Sequence<TCollection_AsciiString>& userInfo)
+    override;
 
   Standard_EXPORT virtual Storage_Error EndWriteInfoSection() override;
 
   Standard_EXPORT virtual Storage_Error BeginReadInfoSection() override;
 
-  Standard_EXPORT virtual void ReadInfo(
-    int&                                           nbObj,
-    TCollection_AsciiString&                       dbVersion,
-    TCollection_AsciiString&                       date,
-    TCollection_AsciiString&                       schemaName,
-    TCollection_AsciiString&                       schemaVersion,
-    TCollection_ExtendedString&                    appName,
-    TCollection_AsciiString&                       appVersion,
-    TCollection_ExtendedString&                    objectType,
-    NCollection_Sequence<TCollection_AsciiString>& userInfo) override;
+  Standard_EXPORT virtual void ReadInfo(int&              nbObj,
+                                        TCollection_AsciiString&       dbVersion,
+                                        TCollection_AsciiString&       date,
+                                        TCollection_AsciiString&       schemaName,
+                                        TCollection_AsciiString&       schemaVersion,
+                                        TCollection_ExtendedString&    appName,
+                                        TCollection_AsciiString&       appVersion,
+                                        TCollection_ExtendedString&    objectType,
+                                        NCollection_Sequence<TCollection_AsciiString>& userInfo) override;
 
-  Standard_EXPORT virtual void ReadCompleteInfo(Standard_IStream&          theIStream,
+  Standard_EXPORT virtual void ReadCompleteInfo(Standard_IStream&     theIStream,
                                                 occ::handle<Storage_Data>& theData) override;
 
   Standard_EXPORT virtual Storage_Error EndReadInfoSection() override;
 
   Standard_EXPORT virtual Storage_Error BeginWriteCommentSection() override;
 
-  Standard_EXPORT virtual void WriteComment(
-    const NCollection_Sequence<TCollection_ExtendedString>& userComments) override;
+  Standard_EXPORT virtual void WriteComment(const NCollection_Sequence<TCollection_ExtendedString>& userComments)
+    override;
 
   Standard_EXPORT virtual Storage_Error EndWriteCommentSection() override;
 
   Standard_EXPORT virtual Storage_Error BeginReadCommentSection() override;
 
-  Standard_EXPORT virtual void ReadComment(
-    NCollection_Sequence<TCollection_ExtendedString>& userComments) override;
+  Standard_EXPORT virtual void ReadComment(NCollection_Sequence<TCollection_ExtendedString>& userComments)
+    override;
 
   Standard_EXPORT virtual Storage_Error EndReadCommentSection() override;
 
@@ -103,9 +102,9 @@ public:
 
   Standard_EXPORT virtual void SetTypeSectionSize(const int aSize) override;
 
-  Standard_EXPORT virtual void WriteTypeInformations(
-    const int                      typeNum,
-    const TCollection_AsciiString& typeName) override;
+  Standard_EXPORT virtual void WriteTypeInformations(const int         typeNum,
+                                                     const TCollection_AsciiString& typeName)
+    override;
 
   Standard_EXPORT virtual Storage_Error EndWriteTypeSection() override;
 
@@ -113,8 +112,9 @@ public:
 
   Standard_EXPORT virtual int TypeSectionSize() override;
 
-  Standard_EXPORT virtual void ReadTypeInformations(int&                     typeNum,
-                                                    TCollection_AsciiString& typeName) override;
+  Standard_EXPORT virtual void ReadTypeInformations(int&        typeNum,
+                                                    TCollection_AsciiString& typeName)
+    override;
 
   Standard_EXPORT virtual Storage_Error EndReadTypeSection() override;
 
@@ -123,7 +123,7 @@ public:
   Standard_EXPORT virtual void SetRootSectionSize(const int aSize) override;
 
   Standard_EXPORT virtual void WriteRoot(const TCollection_AsciiString& rootName,
-                                         const int                      aRef,
+                                         const int         aRef,
                                          const TCollection_AsciiString& aType) override;
 
   Standard_EXPORT virtual Storage_Error EndWriteRootSection() override;
@@ -133,7 +133,7 @@ public:
   Standard_EXPORT virtual int RootSectionSize() override;
 
   Standard_EXPORT virtual void ReadRoot(TCollection_AsciiString& rootName,
-                                        int&                     aRef,
+                                        int&        aRef,
                                         TCollection_AsciiString& aType) override;
 
   Standard_EXPORT virtual Storage_Error EndReadRootSection() override;
@@ -142,7 +142,8 @@ public:
 
   Standard_EXPORT virtual void SetRefSectionSize(const int aSize) override;
 
-  Standard_EXPORT virtual void WriteReferenceType(const int reference, const int typeNum) override;
+  Standard_EXPORT virtual void WriteReferenceType(const int reference,
+                                                  const int typeNum) override;
 
   Standard_EXPORT virtual Storage_Error EndWriteRefSection() override;
 
@@ -150,14 +151,16 @@ public:
 
   Standard_EXPORT virtual int RefSectionSize() override;
 
-  Standard_EXPORT virtual void ReadReferenceType(int& reference, int& typeNum) override;
+  Standard_EXPORT virtual void ReadReferenceType(int& reference,
+                                                 int& typeNum) override;
 
   Standard_EXPORT virtual Storage_Error EndReadRefSection() override;
 
   Standard_EXPORT virtual Storage_Error BeginWriteDataSection() override;
 
   Standard_EXPORT virtual void WritePersistentObjectHeader(const int aRef,
-                                                           const int aType) override;
+                                                           const int aType)
+    override;
 
   Standard_EXPORT virtual void BeginWritePersistentObjectData() override;
 
@@ -171,7 +174,9 @@ public:
 
   Standard_EXPORT virtual Storage_Error BeginReadDataSection() override;
 
-  Standard_EXPORT virtual void ReadPersistentObjectHeader(int& aRef, int& aType) override;
+  Standard_EXPORT virtual void ReadPersistentObjectHeader(int& aRef,
+                                                          int& aType)
+    override;
 
   Standard_EXPORT virtual void BeginReadPersistentObjectData() override;
 
@@ -185,33 +190,45 @@ public:
 
   Standard_EXPORT virtual void SkipObject() override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutReference(const int aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutReference(const int aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutCharacter(const char aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutCharacter(const char aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter(const char16_t aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter(const char16_t aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutInteger(const int aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutInteger(const int aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutBoolean(const bool aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutBoolean(const bool aValue)
+    override;
 
   Standard_EXPORT virtual Storage_BaseDriver& PutReal(const double aValue) override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& PutShortReal(const float aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& PutShortReal(const float aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetReference(int& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetReference(int& aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetCharacter(char& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetCharacter(char& aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetExtCharacter(char16_t& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetExtCharacter(char16_t& aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetInteger(int& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetInteger(int& aValue)
+    override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetBoolean(bool& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetBoolean(bool& aValue)
+    override;
 
   Standard_EXPORT virtual Storage_BaseDriver& GetReal(double& aValue) override;
 
-  Standard_EXPORT virtual Storage_BaseDriver& GetShortReal(float& aValue) override;
+  Standard_EXPORT virtual Storage_BaseDriver& GetShortReal(float& aValue)
+    override;
 
   //! Closes the file driven by this driver. This file was
   //! opened by the last call to the function Open.

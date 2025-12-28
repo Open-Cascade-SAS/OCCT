@@ -102,7 +102,7 @@ public:
   //! - GeomFill_IsConstant
   Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
                                 const occ::handle<Geom_Curve>& FirstSect,
-                                const GeomFill_Trihedron       Option = GeomFill_IsCorrectedFrenet);
+                                const GeomFill_Trihedron  Option = GeomFill_IsCorrectedFrenet);
 
   //! Create a pipe with a constant section
   //! (<FirstSection>) and a path defined by <Path> and <Support>
@@ -115,7 +115,7 @@ public:
   //! binormal direction <Dir>
   Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
                                 const occ::handle<Geom_Curve>& FirstSect,
-                                const gp_Dir&                  Dir);
+                                const gp_Dir&             Dir);
 
   //! Create a pipe with an evolving section
   //! The section evaluate from First to Last Section
@@ -125,7 +125,7 @@ public:
 
   //! Create a pipe with N sections
   //! The section evaluate from First to Last Section
-  Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>&                       Path,
+  Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>&       Path,
                                 const NCollection_Sequence<occ::handle<Geom_Curve>>& NSections);
 
   //! Create a pipe with a constant radius with 2
@@ -133,14 +133,14 @@ public:
   Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>& Path,
                                 const occ::handle<Geom_Curve>& Curve1,
                                 const occ::handle<Geom_Curve>& Curve2,
-                                const double                   Radius);
+                                const double       Radius);
 
   //! Create a pipe with a constant radius with 2
   //! guide-line.
   Standard_EXPORT GeomFill_Pipe(const occ::handle<Adaptor3d_Curve>& Path,
                                 const occ::handle<Adaptor3d_Curve>& Curve1,
                                 const occ::handle<Adaptor3d_Curve>& Curve2,
-                                const double                        Radius);
+                                const double            Radius);
 
   //! Create a pipe with a constant section and with 1
   //! guide-line.
@@ -183,14 +183,14 @@ public:
   Standard_EXPORT GeomFill_Pipe(const occ::handle<Geom_Curve>&      Path,
                                 const occ::handle<Adaptor3d_Curve>& Guide,
                                 const occ::handle<Geom_Curve>&      FirstSect,
-                                const bool                          ByACR,
-                                const bool                          rotat);
+                                const bool         ByACR,
+                                const bool         rotat);
 
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path, const double Radius);
 
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path,
                             const occ::handle<Geom_Curve>& FirstSect,
-                            const GeomFill_Trihedron       Option = GeomFill_IsCorrectedFrenet);
+                            const GeomFill_Trihedron  Option = GeomFill_IsCorrectedFrenet);
 
   Standard_EXPORT void Init(const occ::handle<Geom2d_Curve>& Path,
                             const occ::handle<Geom_Surface>& Support,
@@ -198,13 +198,13 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path,
                             const occ::handle<Geom_Curve>& FirstSect,
-                            const gp_Dir&                  Dir);
+                            const gp_Dir&             Dir);
 
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>& Path,
                             const occ::handle<Geom_Curve>& FirstSect,
                             const occ::handle<Geom_Curve>& LastSect);
 
-  Standard_EXPORT void Init(const occ::handle<Geom_Curve>&                       Path,
+  Standard_EXPORT void Init(const occ::handle<Geom_Curve>&       Path,
                             const NCollection_Sequence<occ::handle<Geom_Curve>>& NSections);
 
   //! Create a pipe with a constant radius with 2
@@ -212,7 +212,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<Adaptor3d_Curve>& Path,
                             const occ::handle<Adaptor3d_Curve>& Curve1,
                             const occ::handle<Adaptor3d_Curve>& Curve2,
-                            const double                        Radius);
+                            const double            Radius);
 
   //! Initializes this pipe algorithm to build the following surface:
   //! -   a pipe with a constant circular section of radius
@@ -225,8 +225,8 @@ public:
   Standard_EXPORT void Init(const occ::handle<Geom_Curve>&      Path,
                             const occ::handle<Adaptor3d_Curve>& Guide,
                             const occ::handle<Geom_Curve>&      FirstSect,
-                            const bool                          ByACR,
-                            const bool                          rotat);
+                            const bool         ByACR,
+                            const bool         rotat);
 
   //! Builds the pipe defined at the time of initialization of this
   //! algorithm. A description of the resulting surface is given under Constructors.
@@ -237,7 +237,8 @@ public:
   //! Exceptions
   //! Standard_ConstructionError if a surface cannot be constructed from the data.
   //! Warning: It is the old Perform method, the next methode is recommended.
-  Standard_EXPORT void Perform(const bool WithParameters = false, const bool myPolynomial = false);
+  Standard_EXPORT void Perform(const bool WithParameters = false,
+                               const bool myPolynomial   = false);
 
   //! Detects the particular cases, and computes the surface.
   //! if none particular case is detected we make an approximation
@@ -245,11 +246,11 @@ public:
   //! maximum degree <MaxDegree>, the maximum number of span <NbMaxSegment>
   //! and the spine parametrization.
   //! If we can't create a surface with the data
-  Standard_EXPORT void Perform(const double        Tol,
-                               const bool          Polynomial,
-                               const GeomAbs_Shape Conti        = GeomAbs_C1,
-                               const int           MaxDegree    = 11,
-                               const int           NbMaxSegment = 30);
+  Standard_EXPORT void Perform(const double    Tol,
+                               const bool Polynomial,
+                               const GeomAbs_Shape    Conti        = GeomAbs_C1,
+                               const int MaxDegree    = 11,
+                               const int NbMaxSegment = 30);
 
   //! Returns the surface built by this algorithm.
   //! Warning:
@@ -301,19 +302,19 @@ private:
 
   Standard_EXPORT bool KPartT4();
 
-  GeomFill_PipeError                myStatus; //!< Execution status
-  double                            myRadius;
-  double                            myError;
+  GeomFill_PipeError           myStatus; //!< Execution status
+  double                myRadius;
+  double                myError;
   occ::handle<Adaptor3d_Curve>      myAdpPath;
   occ::handle<Adaptor3d_Curve>      myAdpFirstSect;
   occ::handle<Adaptor3d_Curve>      myAdpLastSect;
   occ::handle<Geom_Surface>         mySurface;
   occ::handle<GeomFill_LocationLaw> myLoc;
   occ::handle<GeomFill_SectionLaw>  mySec;
-  int                               myType;
-  bool                              myExchUV;
-  bool                              myKPart;
-  bool                              myPolynomial;
+  int             myType;
+  bool             myExchUV;
+  bool             myKPart;
+  bool             myPolynomial;
 };
 
 #include <GeomFill_Pipe.lxx>

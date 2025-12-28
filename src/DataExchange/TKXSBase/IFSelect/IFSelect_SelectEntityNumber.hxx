@@ -46,7 +46,8 @@ public:
 
   //! Returns the list of selected entities : the Entity having the
   //! specified Number (this result assures naturally uniqueness)
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Entity Number ..."
   Standard_EXPORT TCollection_AsciiString Label() const override;

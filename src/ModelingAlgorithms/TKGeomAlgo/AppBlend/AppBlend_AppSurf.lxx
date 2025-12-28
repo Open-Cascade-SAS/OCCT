@@ -19,7 +19,13 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 inline bool AppBlend_AppSurf::IsDone() const
 {
@@ -120,7 +126,8 @@ inline int AppBlend_AppSurf::Curves2dDegree() const
   return vdeg;
 }
 
-inline const NCollection_Array1<gp_Pnt2d>& AppBlend_AppSurf::Curve2dPoles(const int Index) const
+inline const NCollection_Array1<gp_Pnt2d>& AppBlend_AppSurf::Curve2dPoles(
+  const int Index) const
 {
   if (!done)
   {

@@ -41,6 +41,7 @@ public:
          const occ::handle<Standard_Transient>& context) const override;
 
   DEFINE_STANDARD_RTTIEXT(Interface_SignLabel, MoniTool_SignText)
+
 };
 
 #endif // _Interface_SignLabel_HeaderFile

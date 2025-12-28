@@ -54,8 +54,8 @@ public:
 
 private:
   occ::handle<Geom_Surface> mySurface;
-  double                    myTolerance;
-  bool                      myKeep;
+  double        myTolerance;
+  bool     myKeep;
 };
 
 #endif // _TopOpeBRepDS_Surface_HeaderFile

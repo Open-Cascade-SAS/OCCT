@@ -39,8 +39,7 @@ public:
   //! This method is used to set the fields of the class
   //! FlowLineSpec
   //! - allProperties : primary flow line specification and modifiers
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties);
 
   //! returns the number of property values
   Standard_EXPORT int NbPropertyValues() const;

@@ -33,7 +33,7 @@ StepBasic_ProductCategoryRelationship::StepBasic_ProductCategoryRelationship()
 
 void StepBasic_ProductCategoryRelationship::Init(
   const occ::handle<TCollection_HAsciiString>&  aName,
-  const bool                                    hasDescription,
+  const bool                   hasDescription,
   const occ::handle<TCollection_HAsciiString>&  aDescription,
   const occ::handle<StepBasic_ProductCategory>& aCategory,
   const occ::handle<StepBasic_ProductCategory>& aSubCategory)
@@ -63,8 +63,7 @@ occ::handle<TCollection_HAsciiString> StepBasic_ProductCategoryRelationship::Nam
 
 //=================================================================================================
 
-void StepBasic_ProductCategoryRelationship::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_ProductCategoryRelationship::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }

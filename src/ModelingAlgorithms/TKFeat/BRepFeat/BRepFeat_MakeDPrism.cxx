@@ -38,6 +38,9 @@
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
@@ -47,6 +50,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -56,16 +60,14 @@ extern bool BRepFeat_GettraceFEAT();
 
 static void MajMap(const TopoDS_Shape&,
                    const LocOpe_DPrism&,
-                   NCollection_DataMap<TopoDS_Shape,
-                                       NCollection_List<TopoDS_Shape>,
-                                       TopTools_ShapeMapHasher>&, // myMap
-                   TopoDS_Shape&,                                 // myFShape
-                   TopoDS_Shape&);                                // myLShape
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
+                   TopoDS_Shape&,                       // myFShape
+                   TopoDS_Shape&);                      // myLShape
 
 static double HeightMax(const TopoDS_Shape& theSbase,
-                        const TopoDS_Face&  theSkface,
-                        const TopoDS_Shape& theSFrom,
-                        const TopoDS_Shape& theSUntil);
+                               const TopoDS_Face&  theSkface,
+                               const TopoDS_Shape& theSFrom,
+                               const TopoDS_Shape& theSUntil);
 
 static int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until);
 
@@ -73,12 +75,12 @@ static occ::handle<Geom_Curve> TestCurve(const TopoDS_Face&);
 
 //=================================================================================================
 
-void BRepFeat_MakeDPrism::Init(const TopoDS_Shape& Sbase,
-                               const TopoDS_Face&  Pbase,
-                               const TopoDS_Face&  Skface,
-                               const double        Angle,
-                               const int           Mode,
-                               const bool          Modify)
+void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
+                               const TopoDS_Face&     Pbase,
+                               const TopoDS_Face&     Skface,
+                               const double    Angle,
+                               const int Mode,
+                               const bool Modify)
 
 {
 #ifdef OCCT_DEBUG
@@ -306,14 +308,14 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil             = Until;
   bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
   occ::handle<Geom_Curve> C    = TestCurve(myPbase);
-  int                     sens = SensOfPrism(C, mySUntil);
+  int   sens = SensOfPrism(C, mySUntil);
 
   BRep_Builder        bB;
-  double              Height = sens * HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  double       Height = sens * HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   LocOpe_DPrism       theDPrism(myPbase, Height, myAngle);
   const TopoDS_Shape& VraiDPrism = theDPrism.Shape();
   if (!Trf)
@@ -464,10 +466,10 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
   {
     throw Standard_ConstructionError();
   }
-  mySFrom   = From;
+  mySFrom               = From;
   bool Trff = TransformShapeFU(0);
   ShapeFromValid();
-  mySUntil  = Until;
+  mySUntil              = Until;
   bool Trfu = TransformShapeFU(1);
   ShapeUntilValid();
   if (Trfu != Trff)
@@ -477,7 +479,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
     return;
   }
   occ::handle<Geom_Curve> C = TestCurve(myPbase);
-  int                     sens;
+  int   sens;
   if (From.IsSame(Until))
   {
     sens = 1;
@@ -487,7 +489,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From, const TopoDS_Shape& 
     sens = SensOfPrism(C, mySUntil);
   }
 
-  double              Height = sens * HeightMax(mySbase, myPbase, mySFrom, mySUntil);
+  double       Height = sens * HeightMax(mySbase, myPbase, mySFrom, mySUntil);
   LocOpe_DPrism       theDPrism(myPbase, Height, Height, myAngle);
   const TopoDS_Shape& VraiDPrism = theDPrism.Shape();
 
@@ -678,12 +680,12 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil             = Until;
   bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
   occ::handle<Geom_Curve> C      = TestCurve(myPbase);
-  int                     sens   = SensOfPrism(C, mySUntil);
-  double                  Height = sens * HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  int   sens   = SensOfPrism(C, mySUntil);
+  double      Height = sens * HeightMax(mySbase, mySkface, mySFrom, mySUntil);
 
   LocOpe_DPrism       theDPrism(myPbase, Height, Height, myAngle);
   const TopoDS_Shape& VraiDPrism = theDPrism.Shape();
@@ -728,7 +730,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
     TopoDS_Face        FUntil, FFrom;
     if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
     {
-      OrU        = ASI1.Point(1, 1).Orientation();
+      OrU               = ASI1.Point(1, 1).Orientation();
       double prm = ASI1.Point(1, 1).Parameter();
       if (prm < 0)
         OrU = TopAbs::Reverse(OrU);
@@ -737,11 +739,11 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 
     if (ASI2.IsDone() && ASI2.NbPoints(1) >= 1)
     {
-      int    jj  = ASI2.NbPoints(1);
-      double prm = ASI2.Point(1, 1).Parameter();
-      FFrom      = ASI2.Point(1, 1).Face();
-      OrF        = ASI2.Point(1, 1).Orientation();
-      OrF        = TopAbs::Reverse(OrF);
+      int jj  = ASI2.NbPoints(1);
+      double    prm = ASI2.Point(1, 1).Parameter();
+      FFrom                = ASI2.Point(1, 1).Face();
+      OrF                  = ASI2.Point(1, 1).Orientation();
+      OrF                  = TopAbs::Reverse(OrF);
       for (int iii = 1; iii <= jj; iii++)
       {
         if (ASI2.Point(1, iii).Parameter() < prm)
@@ -839,7 +841,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
   myGluedF.Clear();
   GluedFacesValid();
 
-  double              Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
+  double       Height = HeightMax(mySbase, mySkface, mySFrom, mySUntil);
   LocOpe_DPrism       theDPrism(myPbase, Height, Height, myAngle);
   const TopoDS_Shape& VraiDPrism = theDPrism.Shape();
   MajMap(myPbase, theDPrism, myMap, myFShape, myLShape);
@@ -896,11 +898,11 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until, const do
   PerfSelectionValid();
   mySFrom.Nullify();
   ShapeFromValid();
-  mySUntil = Until;
+  mySUntil             = Until;
   bool Trf = TransformShapeFU(1);
   ShapeUntilValid();
   occ::handle<Geom_Curve> C    = TestCurve(myPbase);
-  int                     sens = SensOfPrism(C, mySUntil);
+  int   sens = SensOfPrism(C, mySUntil);
 
   LocOpe_DPrism       theDPrism(myPbase, sens * Height, myAngle);
   const TopoDS_Shape& VraiDPrism = theDPrism.Shape();
@@ -1027,7 +1029,7 @@ void BRepFeat_MakeDPrism::BossEdges(const int signature)
 
   // Edges Top
   NCollection_List<TopoDS_Shape>::Iterator itLS;
-  TopExp_Explorer                          ExpE;
+  TopExp_Explorer                    ExpE;
   for (itLS.Initialize(theLastShape); itLS.More(); itLS.Next())
   {
     const TopoDS_Face& FF = TopoDS::Face(itLS.Value());
@@ -1049,7 +1051,7 @@ void BRepFeat_MakeDPrism::BossEdges(const int signature)
     if (!myShape.IsNull())
     {
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapE;
-      bool                                                   Found;
+      bool    Found;
 
       TopExp_Explorer ExpF;
       for (ExpF.Init(myShape, TopAbs_FACE); ExpF.More(); ExpF.Next())
@@ -1149,9 +1151,9 @@ occ::handle<Geom_Curve> BRepFeat_MakeDPrism::BarycCurve()
 //=======================================================================
 
 static double HeightMax(const TopoDS_Shape& theSbase,  // shape initial
-                        const TopoDS_Face&  theSkface, // face de sketch
-                        const TopoDS_Shape& theSFrom,  // shape from
-                        const TopoDS_Shape& theSUntil) // shape until
+                               const TopoDS_Face&  theSkface, // face de sketch
+                               const TopoDS_Shape& theSFrom,  // shape from
+                               const TopoDS_Shape& theSUntil) // shape until
 {
   Bnd_Box Box;
   BRepBndLib::Add(theSbase, Box);
@@ -1192,16 +1194,16 @@ static double HeightMax(const TopoDS_Shape& theSbase,  // shape initial
 //=======================================================================
 int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until)
 {
-  LocOpe_CSIntersector                          ASI1(Until);
+  LocOpe_CSIntersector     ASI1(Until);
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   scur.Append(C);
   ASI1.Perform(scur);
   int sens = 1;
   if (ASI1.IsDone() && ASI1.NbPoints(1) >= 1)
   {
-    int    nb   = ASI1.NbPoints(1);
-    double prm1 = ASI1.Point(1, 1).Parameter();
-    double prm2 = ASI1.Point(1, nb).Parameter();
+    int nb   = ASI1.NbPoints(1);
+    double    prm1 = ASI1.Point(1, 1).Parameter();
+    double    prm2 = ASI1.Point(1, nb).Parameter();
     if (prm1 < 0. && prm2 < 0.)
     {
       sens = -1;
@@ -1219,13 +1221,11 @@ int SensOfPrism(const occ::handle<Geom_Curve>& C, const TopoDS_Shape& Until)
 
 //=================================================================================================
 
-static void MajMap(
-  const TopoDS_Shape&  theB,
-  const LocOpe_DPrism& theP,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                theMap,    // myMap
-  TopoDS_Shape& theFShape, // myFShape
-  TopoDS_Shape& theLShape) // myLShape
+static void MajMap(const TopoDS_Shape&                 theB,
+                   const LocOpe_DPrism&                theP,
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
+                   TopoDS_Shape&                       theFShape, // myFShape
+                   TopoDS_Shape&                       theLShape)                       // myLShape
 {
   TopExp_Explorer exp;
   if (!theP.FirstShape().IsNull())
@@ -1262,7 +1262,7 @@ static void MajMap(
   {
     if (!theMap.IsBound(exp.Current()))
     {
-      const TopoDS_Edge&             edg = TopoDS::Edge(exp.Current());
+      const TopoDS_Edge&   edg = TopoDS::Edge(exp.Current());
       NCollection_List<TopoDS_Shape> thelist2;
       theMap.Bind(edg, thelist2);
       theMap(edg) = theP.Shapes(edg);
@@ -1274,7 +1274,7 @@ static void MajMap(
 
 static occ::handle<Geom_Curve> TestCurve(const TopoDS_Face& Base)
 {
-  gp_Pnt                       bar(0., 0., 0.);
+  gp_Pnt               bar(0., 0., 0.);
   NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(Base, spt);
   for (int jj = 1; jj <= spt.Length(); jj++)
@@ -1294,9 +1294,9 @@ static occ::handle<Geom_Curve> TestCurve(const TopoDS_Face& Base)
     occ::handle<Geom_Curve> toto;
     return toto;
   }
-  gp_Pln                 pp = P->Pln();
-  gp_Dir                 Normale(pp.Position().XDirection() ^ pp.Position().YDirection());
-  gp_Ax1                 theAx(bar, Normale);
+  gp_Pln            pp = P->Pln();
+  gp_Dir            Normale(pp.Position().XDirection() ^ pp.Position().YDirection());
+  gp_Ax1            theAx(bar, Normale);
   occ::handle<Geom_Line> theLin = new Geom_Line(theAx);
   return theLin;
 }

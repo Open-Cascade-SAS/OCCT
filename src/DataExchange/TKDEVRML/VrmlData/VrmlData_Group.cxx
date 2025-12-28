@@ -37,9 +37,9 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Group, VrmlData_Node)
 
 //=================================================================================================
 
-VrmlData_Group::VrmlData_Group(const VrmlData_Scene& theScene,
-                               const char*           theName,
-                               const bool            isTransform)
+VrmlData_Group::VrmlData_Group(const VrmlData_Scene&  theScene,
+                               const char*            theName,
+                               const bool isTransform)
     : VrmlData_Node(theScene, theName),
       myIsTransform(isTransform),
       myNodes(theScene.Allocator())
@@ -78,8 +78,7 @@ bool VrmlData_Group::SetTransform(const gp_Trsf& theTrsf)
 
 occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
-  occ::handle<VrmlData_Group> aResult =
-    occ::down_cast<VrmlData_Group>(VrmlData_Node::Clone(theOther));
+  occ::handle<VrmlData_Group> aResult = occ::down_cast<VrmlData_Group>(VrmlData_Node::Clone(theOther));
   if (aResult.IsNull())
     aResult =
       new VrmlData_Group(theOther.IsNull() ? Scene() : theOther->Scene(), Name(), myIsTransform);
@@ -91,7 +90,7 @@ occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node
   {
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
-    Iterator                                anIter(myNodes);
+    Iterator                           anIter(myNodes);
     for (; anIter.More(); anIter.Next())
     {
       const occ::handle<VrmlData_Node>& aNode = anIter.Value();
@@ -111,7 +110,7 @@ occ::handle<VrmlData_Node> VrmlData_Group::Clone(const occ::handle<VrmlData_Node
 occ::handle<VrmlData_Node> VrmlData_Group::FindNode(const char* theName, gp_Trsf& theLocation) const
 {
   occ::handle<VrmlData_Node> aResult;
-  Iterator                   anIter(myNodes);
+  Iterator              anIter(myNodes);
   for (; anIter.More(); anIter.Next())
   {
     const occ::handle<VrmlData_Node>& aNode = anIter.Value();
@@ -151,7 +150,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
   gp_XYZ               aBoxCenter(0., 0., 0.), aBoxSize(-1., -1., -1.);
   gp_XYZ               aCenter(0., 0., 0.), aScale(1., 1., 1.), aTrans(0., 0., 0.);
   gp_XYZ               aRotAxis(0., 0., 1.), aScaleAxis(0., 0., 1.);
-  double               aRotAngle(0.), aScaleAngle(0.);
+  double        aRotAngle(0.), aScaleAngle(0.);
 
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
@@ -237,7 +236,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
              || VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Separator"))
     {
       occ::handle<VrmlData_Group> aGroupNode = new VrmlData_Group(Scene(), "");
-      bool                        isBracketed(false);
+      bool       isBracketed(false);
       // Read the opening bracket for the list of children
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
         break;
@@ -273,8 +272,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
       occ::handle<VrmlData_IndexedFaceSet> anIndFaceSet;
       occ::handle<VrmlData_IndexedLineSet> anIndLineSet;
       occ::handle<VrmlData_Appearance>     anAppearance;
-      for (NCollection_List<occ::handle<VrmlData_Node>>::Iterator anIt = aGroupNode->NodeIterator();
-           anIt.More();
+      for (NCollection_List<occ::handle<VrmlData_Node>>::Iterator anIt = aGroupNode->NodeIterator(); anIt.More();
            anIt.Next())
       {
         occ::handle<VrmlData_Node> aNode = anIt.Value();
@@ -303,9 +301,8 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
         }
         else if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_Material)))
         {
-          occ::handle<VrmlData_Material> aMaterial =
-            occ::down_cast<VrmlData_Material>(anIt.Value());
-          anAppearance = new VrmlData_Appearance();
+          occ::handle<VrmlData_Material> aMaterial = occ::down_cast<VrmlData_Material>(anIt.Value());
+          anAppearance                        = new VrmlData_Appearance();
           anAppearance->SetMaterial(aMaterial);
         }
       }
@@ -514,9 +511,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read(VrmlData_InBuffer& theBuffer)
 
 //=================================================================================================
 
-void VrmlData_Group::Shape(
-  TopoDS_Shape&                                                                      theShape,
-  NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>* pMapApp)
+void VrmlData_Group::Shape(TopoDS_Shape& theShape, NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>>* pMapApp)
 {
   VrmlData_Scene::createShape(theShape, myNodes, pMapApp);
   theShape.Location(myTrsf, false);
@@ -564,7 +559,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
   if (myNodes.IsEmpty() == false)
   {
     const VrmlData_Scene& aScene      = Scene();
-    bool                  isTransform = myIsTransform;
+    bool      isTransform = myIsTransform;
     if (isTransform && myTrsf.Form() == gp_Identity)
       isTransform = false;
     static const char* header[2] = {"Group {", "Transform {"};
@@ -613,7 +608,7 @@ VrmlData_ErrorStatus VrmlData_Group::Write(const char* thePrefix) const
         }
 
         // Output the Rotation
-        gp_XYZ anAxis;
+        gp_XYZ        anAxis;
         double anAngle;
         if (myTrsf.GetRotation(anAxis, anAngle))
         {

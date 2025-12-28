@@ -22,7 +22,7 @@ RWStepShape_RWRightCircularCylinder::RWStepShape_RWRightCircularCylinder() {}
 
 void RWStepShape_RWRightCircularCylinder::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepShape_RightCircularCylinder>& ent) const
 {
@@ -62,7 +62,7 @@ void RWStepShape_RWRightCircularCylinder::ReadStep(
 }
 
 void RWStepShape_RWRightCircularCylinder::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepShape_RightCircularCylinder>& ent) const
 {
 
@@ -83,9 +83,8 @@ void RWStepShape_RWRightCircularCylinder::WriteStep(
   SW.Send(ent->Radius());
 }
 
-void RWStepShape_RWRightCircularCylinder::Share(
-  const occ::handle<StepShape_RightCircularCylinder>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepShape_RWRightCircularCylinder::Share(const occ::handle<StepShape_RightCircularCylinder>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->Position());

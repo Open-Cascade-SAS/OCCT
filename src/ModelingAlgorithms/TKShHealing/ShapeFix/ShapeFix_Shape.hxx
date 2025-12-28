@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Integer.hxx>
@@ -55,7 +56,8 @@ public:
   Standard_EXPORT void Init(const TopoDS_Shape& shape);
 
   //! Iterates on sub- shape and performs fixes
-  Standard_EXPORT bool Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Perform(const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns resulting shape
   Standard_EXPORT TopoDS_Shape Shape() const;
@@ -134,20 +136,21 @@ protected:
   //! entities.
   Standard_EXPORT void SameParameter(
     const TopoDS_Shape&          shape,
-    const bool                   enforce,
+    const bool       enforce,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  TopoDS_Shape                                           myResult;
-  occ::handle<ShapeFix_Solid>                            myFixSolid;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapFixingShape;
-  int                                                    myFixSolidMode;
-  int                                                    myFixShellMode;
-  int                                                    myFixFaceMode;
-  int                                                    myFixWireMode;
-  int                                                    myFixSameParameterMode;
-  int                                                    myFixVertexPositionMode;
-  int                                                    myFixVertexTolMode;
-  int                                                    myStatus;
+  TopoDS_Shape           myResult;
+  occ::handle<ShapeFix_Solid> myFixSolid;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>    myMapFixingShape;
+  int       myFixSolidMode;
+  int       myFixShellMode;
+  int       myFixFaceMode;
+  int       myFixWireMode;
+  int       myFixSameParameterMode;
+  int       myFixVertexPositionMode;
+  int       myFixVertexTolMode;
+  int       myStatus;
+
 };
 
 #include <ShapeFix_Shape.lxx>

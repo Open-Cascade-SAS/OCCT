@@ -44,11 +44,11 @@ public:
                                         const double ltx);
 
   //! Make a STEP right angular wedge. (ltx >= 0)
-  Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2& Axes,
-                                        const double  dx,
-                                        const double  dy,
-                                        const double  dz,
-                                        const double  ltx);
+  Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
+                                        const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double ltx);
 
   //! Make a wedge. The face at dy is xmin,zmin xmax,zmax
   Standard_EXPORT BRepPrimAPI_MakeWedge(const double dx,
@@ -60,14 +60,14 @@ public:
                                         const double zmax);
 
   //! Make a wedge. The face at dy is xmin,zmin xmax,zmax
-  Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2& Axes,
-                                        const double  dx,
-                                        const double  dy,
-                                        const double  dz,
-                                        const double  xmin,
-                                        const double  zmin,
-                                        const double  xmax,
-                                        const double  zmax);
+  Standard_EXPORT BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
+                                        const double dx,
+                                        const double dy,
+                                        const double dz,
+                                        const double xmin,
+                                        const double zmin,
+                                        const double xmax,
+                                        const double zmax);
 
   //! Returns the internal algorithm.
   Standard_EXPORT BRepPrim_Wedge& Wedge();

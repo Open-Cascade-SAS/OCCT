@@ -46,9 +46,11 @@ public:
   //! Returns the type of face to be highlighted in selection.
   Standard_EXPORT StdSelect_TypeOfFace Type() const;
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
+    override;
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(StdSelect_FaceFilter, SelectMgr_Filter)
 

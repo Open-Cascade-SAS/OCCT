@@ -26,7 +26,6 @@
 #include <NCollection_List.hxx>
 
 class IntPatch_Point;
-
 //! Implementation of an intersection line described by a
 //! parametrized curve.
 class IntPatch_ALine : public IntPatch_Line
@@ -36,14 +35,14 @@ public:
   //! Creates an analytic intersection line
   //! when the transitions are In or Out.
   Standard_EXPORT IntPatch_ALine(const IntAna_Curve&     C,
-                                 const bool              Tang,
+                                 const bool  Tang,
                                  const IntSurf_TypeTrans Trans1,
                                  const IntSurf_TypeTrans Trans2);
 
   //! Creates an analytic intersection line
   //! when the transitions are Touch.
   Standard_EXPORT IntPatch_ALine(const IntAna_Curve&     C,
-                                 const bool              Tang,
+                                 const bool  Tang,
                                  const IntSurf_Situation Situ1,
                                  const IntSurf_Situation Situ2);
 
@@ -117,7 +116,10 @@ public:
   const IntPatch_Point& Vertex(const int Index) const;
 
   //! Allows modifying the vertex with index theIndex on the line.
-  IntPatch_Point& ChangeVertex(const int theIndex) { return svtx.ChangeValue(theIndex); }
+  IntPatch_Point& ChangeVertex(const int theIndex)
+  {
+    return svtx.ChangeValue(theIndex);
+  }
 
   //! Set the parameters of all the vertex on the line.
   //! if a vertex is already in the line,
@@ -130,11 +132,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IntPatch_ALine, IntPatch_Line)
 
 private:
-  IntAna_Curve                         curv;
-  bool                                 fipt;
-  bool                                 lapt;
-  int                                  indf;
-  int                                  indl;
+  IntAna_Curve             curv;
+  bool         fipt;
+  bool         lapt;
+  int         indf;
+  int         indl;
   NCollection_Sequence<IntPatch_Point> svtx;
 };
 

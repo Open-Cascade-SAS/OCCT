@@ -33,7 +33,7 @@ protected:
   //! Verify polynomial evaluation at root gives near-zero result
   void verifyRoot(double                     theRoot,
                   const std::vector<double>& theCoeffs,
-                  int                        theSolutionIndex,
+                  int                  theSolutionIndex,
                   double                     theTolerance = 1.0e-10) const
   {
     double aResult = 0.0;
@@ -451,7 +451,7 @@ TEST_F(math_DirectPolynomialRootsTest, CloseToZeroCoefficients)
   // Test robustness when coefficients are close to zero (degree reduction)
   // x^4 + 0*x^3 + 0*x^2 + 0*x - 16 = 0, essentially x^4 = 16
   // Roots should be +/-2, +/-2i (but we only get real roots: +/-2)
-  const double               epsilon = 1.0e-14;
+  const double        epsilon = 1.0e-14;
   math_DirectPolynomialRoots aRoots(1.0, epsilon, epsilon, epsilon, -16.0);
 
   EXPECT_TRUE(aRoots.IsDone()) << "Should handle near-zero coefficients";

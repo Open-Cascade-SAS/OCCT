@@ -33,7 +33,8 @@ public:
 
 protected:
   //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh(const Message_ProgressRange& theRange) override;
+  Standard_EXPORT virtual void generateMesh(const Message_ProgressRange& theRange)
+    override;
 };
 
 #endif

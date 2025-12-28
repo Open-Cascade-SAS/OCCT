@@ -16,8 +16,7 @@
 
 //=================================================================================================
 
-inline const occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& ChFiDS_Stripe::
-  SetOfSurfData() const
+inline const occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& ChFiDS_Stripe::SetOfSurfData() const
 {
   return myHdata;
 }
@@ -52,8 +51,7 @@ inline int ChFiDS_Stripe::Choix() const
 
 //=================================================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& ChFiDS_Stripe::
-  ChangeSetOfSurfData()
+inline occ::handle<NCollection_HSequence<occ::handle<ChFiDS_SurfData>>>& ChFiDS_Stripe::ChangeSetOfSurfData()
 {
   return myHdata;
 }

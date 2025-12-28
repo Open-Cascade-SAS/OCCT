@@ -42,14 +42,14 @@
 IMPLEMENT_STANDARD_RTTIEXT(IntCurvesFace_Intersector, Standard_Transient)
 
 //
-static void ComputeSamplePars(const occ::handle<Adaptor3d_Surface>&     Hsurface,
-                              const int                                 nbsu,
-                              const int                                 nbsv,
-                              occ::handle<NCollection_HArray1<double>>& UPars,
-                              occ::handle<NCollection_HArray1<double>>& VPars)
+static void ComputeSamplePars(const occ::handle<Adaptor3d_Surface>& Hsurface,
+                              const int           nbsu,
+                              const int           nbsv,
+                              occ::handle<NCollection_HArray1<double>>&   UPars,
+                              occ::handle<NCollection_HArray1<double>>&   VPars)
 {
-  int                        NbUInts = Hsurface->NbUIntervals(GeomAbs_C2);
-  int                        NbVInts = Hsurface->NbVIntervals(GeomAbs_C2);
+  int     NbUInts = Hsurface->NbUIntervals(GeomAbs_C2);
+  int     NbVInts = Hsurface->NbVIntervals(GeomAbs_C2);
   NCollection_Array1<double> UInts(1, NbUInts + 1);
   NCollection_Array1<double> VInts(1, NbVInts + 1);
   Hsurface->UIntervals(UInts, GeomAbs_C2);
@@ -58,8 +58,8 @@ static void ComputeSamplePars(const occ::handle<Adaptor3d_Surface>&     Hsurface
   NCollection_Array1<int> NbUSubInts(1, NbUInts);
   NCollection_Array1<int> NbVSubInts(1, NbVInts);
   //
-  int    i, j, ind, NbU, NbV;
-  double t, dt;
+  int i, j, ind, NbU, NbV;
+  double    t, dt;
   t   = UInts(NbUInts + 1) - UInts(1);
   t   = 1. / t;
   NbU = 0;
@@ -120,10 +120,10 @@ GeomAbs_SurfaceType IntCurvesFace_Intersector::SurfaceType() const
 
 //=================================================================================================
 
-IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
-                                                     const double       aTol,
-                                                     const bool         aRestr,
-                                                     const bool         UseBToler)
+IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face&     Face,
+                                                     const double    aTol,
+                                                     const bool aRestr,
+                                                     const bool UseBToler)
 
     : Tol(aTol),
       done(false),
@@ -143,8 +143,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
       && (SurfaceType != GeomAbs_Cone) && (SurfaceType != GeomAbs_Sphere)
       && (SurfaceType != GeomAbs_Torus))
   {
-    int    nbsu, nbsv;
-    double U0, V0, U1, V1;
+    int nbsu, nbsv;
+    double    U0, V0, U1, V1;
     U0 = Hsurface->FirstUParameter();
     U1 = Hsurface->LastUParameter();
     V0 = Hsurface->FirstVParameter();
@@ -157,12 +157,12 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     double aVRes = Hsurface->VResolution(1.0);
 
     // Checking correlation between number of samples and length of the face along each axis
-    const double aTresh       = 100.0;
-    int          aMinSamples  = 20;
-    const int    aMaxSamples  = 40;
-    const int    aMaxSamples2 = aMaxSamples * aMaxSamples;
-    double       dU           = (U1 - U0) / aURes;
-    double       dV           = (V1 - V0) / aVRes;
+    const double    aTresh       = 100.0;
+    int       aMinSamples  = 20;
+    const int aMaxSamples  = 40;
+    const int aMaxSamples2 = aMaxSamples * aMaxSamples;
+    double          dU           = (U1 - U0) / aURes;
+    double          dV           = (V1 - V0) / aVRes;
     if (nbsu < aMinSamples)
       nbsu = aMinSamples;
     if (nbsv < aMinSamples)
@@ -216,26 +216,28 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
 //=================================================================================================
 
 void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
-                                             const double                  parinf,
-                                             const double                  parsup)
+                                             const double           parinf,
+                                             const double           parsup)
 {
   if (HICS.IsDone() && HICS.NbPoints() > 0)
   {
     // Calculate tolerance for 2d classifier
-    double          mintol3d = BRep_Tool::Tolerance(face);
-    double          maxtol3d = mintol3d;
-    double          mintol2d = Tol, maxtol2d = Tol;
+    double   mintol3d = BRep_Tool::Tolerance(face);
+    double   maxtol3d = mintol3d;
+    double   mintol2d = Tol, maxtol2d = Tol;
     TopExp_Explorer anExp(face, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
       double curtol = BRep_Tool::Tolerance(TopoDS::Edge(anExp.Current()));
-      mintol3d      = std::min(mintol3d, curtol);
-      maxtol3d      = std::max(maxtol3d, curtol);
+      mintol3d             = std::min(mintol3d, curtol);
+      maxtol3d             = std::max(maxtol3d, curtol);
     }
-    double minres = std::max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
-    double maxres = std::max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
-    mintol2d      = std::max(minres, Tol);
-    maxtol2d      = std::max(maxres, Tol);
+    double minres =
+      std::max(Hsurface->UResolution(mintol3d), Hsurface->VResolution(mintol3d));
+    double maxres =
+      std::max(Hsurface->UResolution(maxtol3d), Hsurface->VResolution(maxtol3d));
+    mintol2d = std::max(minres, Tol);
+    maxtol2d = std::max(maxres, Tol);
     //
     occ::handle<BRepTopAdaptor_TopolTool> anAdditionalTool;
     for (int index = HICS.NbPoints(); index >= 1; index--)
@@ -260,8 +262,8 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
           for (; anExp.More(); anExp.Next())
           {
             TopoDS_Edge                 anE = TopoDS::Edge(anExp.Current());
-            double                      f, l;
-            occ::handle<Geom_Curve>     aPC = BRep_Tool::Curve(anE, f, l);
+            double               f, l;
+            occ::handle<Geom_Curve>          aPC = BRep_Tool::Curve(anE, f, l);
             GeomAPI_ProjectPointOnCurve aProj(HICSPointindex.Pnt(), aPC, f, l);
             if (aProj.NbPoints() > 0)
             {
@@ -280,9 +282,9 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
         double HICSW = HICSPointindex.W();
         if (HICSW >= parinf && HICSW <= parsup)
         {
-          double                            U          = HICSPointindex.U();
-          double                            V          = HICSPointindex.V();
-          double                            W          = HICSW;
+          double                     U          = HICSPointindex.U();
+          double                     V          = HICSPointindex.V();
+          double                     W          = HICSW;
           IntCurveSurface_TransitionOnCurve transition = HICSPointindex.Transition();
           gp_Pnt                            pnt        = HICSPointindex.Pnt();
           //  Modified by skv - Wed Sep  3 16:14:10 2003 OCC578 Begin
@@ -312,7 +314,7 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
             while (i <= nbpnt)
             {
               const IntCurveSurface_IntersectionPoint& Pnti = SeqPnt.Value(i);
-              double                                   wi   = Pnti.W();
+              double                            wi   = Pnti.W();
               if (wi >= W)
               {
                 b = i;
@@ -350,7 +352,9 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
 
 //=================================================================================================
 
-void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, const double ParMax)
+void IntCurvesFace_Intersector::Perform(const gp_Lin&       L,
+                                        const double ParMin,
+                                        const double ParMax)
 {
   done = false;
   if (!myReady)
@@ -362,12 +366,12 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
   mySeqState.Clear();
   nbpnt = 0;
 
-  IntCurveSurface_HInter         HICS;
+  IntCurveSurface_HInter    HICS;
   occ::handle<Geom_Line>         geomline = new Geom_Line(L);
-  GeomAdaptor_Curve              LL(geomline);
+  GeomAdaptor_Curve         LL(geomline);
   occ::handle<GeomAdaptor_Curve> HLL    = new GeomAdaptor_Curve(LL);
-  double                         parinf = ParMin;
-  double                         parsup = ParMax;
+  double             parinf = ParMin;
+  double             parsup = ParMax;
   //
   if (!myPolyhedron)
   {
@@ -440,8 +444,8 @@ void IntCurvesFace_Intersector::Perform(const gp_Lin& L, const double ParMin, co
 //=================================================================================================
 
 void IntCurvesFace_Intersector::Perform(const occ::handle<Adaptor3d_Curve>& HCu,
-                                        const double                        ParMin,
-                                        const double                        ParMax)
+                                        const double            ParMin,
+                                        const double            ParMax)
 {
   done = false;
   if (!myReady)

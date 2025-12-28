@@ -74,9 +74,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESGeom_GeneralModule::IGESGeom_GeneralModule() {}
 
-void IGESGeom_GeneralModule::OwnSharedCase(const int                               CN,
+void IGESGeom_GeneralModule::OwnSharedCase(const int             CN,
                                            const occ::handle<IGESData_IGESEntity>& ent,
-                                           Interface_EntityIterator&               iter) const
+                                           Interface_EntityIterator&          iter) const
 {
   switch (CN)
   {
@@ -269,9 +269,8 @@ void IGESGeom_GeneralModule::OwnSharedCase(const int                            
   }
 }
 
-IGESData_DirChecker IGESGeom_GeneralModule::DirChecker(
-  const int                               CN,
-  const occ::handle<IGESData_IGESEntity>& ent) const
+IGESData_DirChecker IGESGeom_GeneralModule::DirChecker(const int             CN,
+                                                       const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
   {
@@ -442,9 +441,9 @@ IGESData_DirChecker IGESGeom_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESGeom_GeneralModule::OwnCheckCase(const int                               CN,
+void IGESGeom_GeneralModule::OwnCheckCase(const int             CN,
                                           const occ::handle<IGESData_IGESEntity>& ent,
-                                          const Interface_ShareTool&              shares,
+                                          const Interface_ShareTool&         shares,
                                           occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
@@ -638,7 +637,8 @@ void IGESGeom_GeneralModule::OwnCheckCase(const int                             
   }
 }
 
-bool IGESGeom_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
+bool IGESGeom_GeneralModule::NewVoid(const int      CN,
+                                                 occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -717,10 +717,10 @@ bool IGESGeom_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transien
   return true;
 }
 
-void IGESGeom_GeneralModule::OwnCopyCase(const int                               CN,
+void IGESGeom_GeneralModule::OwnCopyCase(const int             CN,
                                          const occ::handle<IGESData_IGESEntity>& entfrom,
                                          const occ::handle<IGESData_IGESEntity>& entto,
-                                         Interface_CopyTool&                     TC) const
+                                         Interface_CopyTool&                TC) const
 {
   switch (CN)
   {
@@ -890,9 +890,9 @@ void IGESGeom_GeneralModule::OwnCopyCase(const int                              
   }
 }
 
-int IGESGeom_GeneralModule::CategoryNumber(const int                              CN,
-                                           const occ::handle<Standard_Transient>& ent,
-                                           const Interface_ShareTool&) const
+int IGESGeom_GeneralModule::CategoryNumber(const int            CN,
+                                                        const occ::handle<Standard_Transient>& ent,
+                                                        const Interface_ShareTool&) const
 {
   if (CN == 11)
     return Interface_Category::Number("Drawing");

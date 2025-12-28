@@ -59,7 +59,8 @@ bool Graphic3d_SequenceOfHClipPlane::Remove(const occ::handle<Graphic3d_ClipPlan
 
 //=================================================================================================
 
-void Graphic3d_SequenceOfHClipPlane::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Graphic3d_SequenceOfHClipPlane::DumpJson(Standard_OStream& theOStream,
+                                              int  theDepth) const
 {
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myToOverrideGlobal)
 

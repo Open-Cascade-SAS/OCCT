@@ -42,9 +42,9 @@ public:
   Standard_EXPORT IGESSelect_SignLevelNumber(const bool countmode);
 
   //! Returns the value (see above)
-  Standard_EXPORT const char* Value(
-    const occ::handle<Standard_Transient>&       ent,
-    const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char*
+    Value(const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SignLevelNumber, IFSelect_Signature)
 

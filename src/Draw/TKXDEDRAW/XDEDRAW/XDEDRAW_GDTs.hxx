@@ -29,6 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT static void InitCommands(Draw_Interpretor& theCommands);
+
 };
 
 #endif // _XDEDRAW_GDTs_HeaderFile

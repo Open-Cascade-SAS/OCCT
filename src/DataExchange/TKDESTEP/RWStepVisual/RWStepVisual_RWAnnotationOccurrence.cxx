@@ -28,7 +28,7 @@ RWStepVisual_RWAnnotationOccurrence::RWStepVisual_RWAnnotationOccurrence() {}
 
 void RWStepVisual_RWAnnotationOccurrence::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepVisual_AnnotationOccurrence>& ent) const
 {
@@ -42,12 +42,12 @@ void RWStepVisual_RWAnnotationOccurrence::ReadStep(
 
   // Inherited field : styles
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
-  occ::handle<StepVisual_PresentationStyleAssignment>                                   anent2;
-  int                                                                                   nsub2;
+  occ::handle<StepVisual_PresentationStyleAssignment>          anent2;
+  int                                        nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aStyles = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
+    aStyles              = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       if (data->ReadEntity(nsub2,
@@ -71,7 +71,7 @@ void RWStepVisual_RWAnnotationOccurrence::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationOccurrence::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepVisual_AnnotationOccurrence>& ent) const
 {
   // Inherited field : name
@@ -93,9 +93,8 @@ void RWStepVisual_RWAnnotationOccurrence::WriteStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWAnnotationOccurrence::Share(
-  const occ::handle<StepVisual_AnnotationOccurrence>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepVisual_RWAnnotationOccurrence::Share(const occ::handle<StepVisual_AnnotationOccurrence>& ent,
+                                                Interface_EntityIterator& iter) const
 {
   int nbElem1 = ent->NbStyles();
   for (int is1 = 1; is1 <= nbElem1; is1++)

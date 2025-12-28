@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepBasic_PlaneAngleUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PlaneAngleUnit, StepBasic_NamedUnit)
+
 };
 
 #endif // _StepBasic_PlaneAngleUnit_HeaderFile

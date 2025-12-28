@@ -27,8 +27,7 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
     return myPrismTopos.Find(BasePoints);
   else
   {
-    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
-      CreatePrismTopology(BasePoints);
+    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result = CreatePrismTopology(BasePoints);
     if (!result.IsNull())
       ((MeshVS_DataSource3D*)this)->myPrismTopos.Bind(BasePoints, result);
     return result;
@@ -44,8 +43,7 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
     return myPyramidTopos.Find(BasePoints);
   else
   {
-    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result =
-      CreatePyramidTopology(BasePoints);
+    occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result = CreatePyramidTopology(BasePoints);
     if (!result.IsNull())
       ((MeshVS_DataSource3D*)this)->myPyramidTopos.Bind(BasePoints, result);
     return result;
@@ -54,8 +52,8 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::
-  CreatePrismTopology(const int BasePoints)
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::CreatePrismTopology(
+  const int BasePoints)
 {
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result;
 
@@ -82,8 +80,8 @@ occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D:
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::
-  CreatePyramidTopology(const int BasePoints)
+occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> MeshVS_DataSource3D::CreatePyramidTopology(
+  const int BasePoints)
 {
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> result;
 

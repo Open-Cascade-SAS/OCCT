@@ -43,7 +43,7 @@ public:
   Standard_EXPORT GeomToStep_MakeCartesianPoint(const gp_Pnt2d& P, const double aFactor);
 
   Standard_EXPORT GeomToStep_MakeCartesianPoint(const occ::handle<Geom_CartesianPoint>& P,
-                                                const double                            aFactor);
+                                                const double                aFactor);
 
   Standard_EXPORT GeomToStep_MakeCartesianPoint(const occ::handle<Geom2d_CartesianPoint>& P);
 

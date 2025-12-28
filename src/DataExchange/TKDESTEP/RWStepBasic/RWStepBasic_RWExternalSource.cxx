@@ -28,7 +28,7 @@ RWStepBasic_RWExternalSource::RWStepBasic_RWExternalSource() {}
 //=================================================================================================
 
 void RWStepBasic_RWExternalSource::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepBasic_ExternalSource>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepBasic_RWExternalSource::ReadStep(const occ::handle<StepData_StepReade
 
 //=================================================================================================
 
-void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&                         SW,
+void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepBasic_ExternalSource>& ent) const
 {
 
@@ -59,7 +59,7 @@ void RWStepBasic_RWExternalSource::WriteStep(StepData_StepWriter&               
 //=================================================================================================
 
 void RWStepBasic_RWExternalSource::Share(const occ::handle<StepBasic_ExternalSource>& ent,
-                                         Interface_EntityIterator&                    iter) const
+                                         Interface_EntityIterator&               iter) const
 {
 
   // Own fields of ExternalSource

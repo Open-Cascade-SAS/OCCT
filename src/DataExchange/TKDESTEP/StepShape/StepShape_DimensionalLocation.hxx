@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_DimensionalLocation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DimensionalLocation, StepRepr_ShapeAspectRelationship)
+
 };
 
 #endif // _StepShape_DimensionalLocation_HeaderFile

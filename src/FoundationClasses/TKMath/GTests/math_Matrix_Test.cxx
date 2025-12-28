@@ -23,9 +23,9 @@
 namespace
 {
 // Helper function for comparing matrices with tolerance
-void checkMatricesEqual(const math_Matrix& theM1,
-                        const math_Matrix& theM2,
-                        const double       theTolerance = Precision::Confusion())
+void checkMatricesEqual(const math_Matrix&  theM1,
+                        const math_Matrix&  theM2,
+                        const double theTolerance = Precision::Confusion())
 {
   ASSERT_EQ(theM1.RowNumber(), theM2.RowNumber());
   ASSERT_EQ(theM1.ColNumber(), theM2.ColNumber());
@@ -601,9 +601,9 @@ TEST(MathMatrixTest, MoveSemantics)
   // --- Move Constructor ---
 
   // Large matrix (heap allocated)
-  int         aRows = 10;
-  int         aCols = 10;
-  math_Matrix aMat1(1, aRows, 1, aCols);
+  int aRows = 10;
+  int aCols = 10;
+  math_Matrix      aMat1(1, aRows, 1, aCols);
   aMat1.Init(1.0);
   aMat1(1, 1) = 2.0;
 
@@ -618,9 +618,9 @@ TEST(MathMatrixTest, MoveSemantics)
   EXPECT_EQ(aMat1.RowNumber(), 0);
 
   // Small matrix (buffer allocated)
-  int         aSmallRows = 4;
-  int         aSmallCols = 4;
-  math_Matrix aSmallMat1(1, aSmallRows, 1, aSmallCols);
+  int aSmallRows = 4;
+  int aSmallCols = 4;
+  math_Matrix      aSmallMat1(1, aSmallRows, 1, aSmallCols);
   aSmallMat1.Init(1.0);
 
   // Move aSmallMat1 to aSmallMat2 (should copy because of buffer)

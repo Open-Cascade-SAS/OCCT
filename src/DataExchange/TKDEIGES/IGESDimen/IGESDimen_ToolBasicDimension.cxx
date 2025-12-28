@@ -35,17 +35,16 @@
 
 IGESDimen_ToolBasicDimension::IGESDimen_ToolBasicDimension() {}
 
-void IGESDimen_ToolBasicDimension::ReadOwnParams(
-  const occ::handle<IGESDimen_BasicDimension>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESDimen_ToolBasicDimension::ReadOwnParams(const occ::handle<IGESDimen_BasicDimension>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                 IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int   nbPropVal;
-  gp_XY templl;
-  gp_XY templr;
-  gp_XY tempur;
-  gp_XY tempul;
+  int nbPropVal;
+  gp_XY            templl;
+  gp_XY            templr;
+  gp_XY            tempur;
+  gp_XY            tempul;
 
   // clang-format off
   PR.ReadInteger(PR.Current(),"Number of Property Values",nbPropVal); //szv#4:S4163:12Mar99 `st=` not needed
@@ -60,7 +59,7 @@ void IGESDimen_ToolBasicDimension::ReadOwnParams(
 }
 
 void IGESDimen_ToolBasicDimension::WriteOwnParams(const occ::handle<IGESDimen_BasicDimension>& ent,
-                                                  IGESData_IGESWriter& IW) const
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->LowerLeft().X());

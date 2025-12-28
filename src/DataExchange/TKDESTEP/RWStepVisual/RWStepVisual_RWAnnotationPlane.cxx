@@ -26,11 +26,10 @@ RWStepVisual_RWAnnotationPlane::RWStepVisual_RWAnnotationPlane() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWAnnotationPlane::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepVisual_AnnotationPlane>& ent) const
+void RWStepVisual_RWAnnotationPlane::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepVisual_AnnotationPlane>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 4, ach, "annotation_plane"))
@@ -42,12 +41,12 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
 
   // Inherited field : styles
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aStyles;
-  occ::handle<StepVisual_PresentationStyleAssignment>                                   anent2;
-  int                                                                                   nsub2;
+  occ::handle<StepVisual_PresentationStyleAssignment>          anent2;
+  int                                        nsub2;
   if (data->ReadSubList(num, 2, "styles", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aStyles = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
+    aStyles              = new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       if (data->ReadEntity(nsub2,
@@ -66,12 +65,12 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
 
   // Own field: elements
   occ::handle<NCollection_HArray1<StepVisual_AnnotationPlaneElement>> anElements;
-  StepVisual_AnnotationPlaneElement                                   anEnt;
-  int                                                                 nbSub;
+  StepVisual_AnnotationPlaneElement                  anEnt;
+  int                                   nbSub;
   if (data->ReadSubList(num, 4, "elements", ach, nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    anElements     = new NCollection_HArray1<StepVisual_AnnotationPlaneElement>(1, nbElements);
+    anElements                  = new NCollection_HArray1<StepVisual_AnnotationPlaneElement>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub, i, "content", ach, anEnt))
@@ -85,9 +84,8 @@ void RWStepVisual_RWAnnotationPlane::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWAnnotationPlane::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepVisual_AnnotationPlane>& ent) const
+void RWStepVisual_RWAnnotationPlane::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepVisual_AnnotationPlane>& ent) const
 {
   // Inherited field : name
 
@@ -117,7 +115,7 @@ void RWStepVisual_RWAnnotationPlane::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationPlane::Share(const occ::handle<StepVisual_AnnotationPlane>& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&                 iter) const
 {
   int nbElem1 = ent->NbStyles();
   for (int is1 = 1; is1 <= nbElem1; is1++)

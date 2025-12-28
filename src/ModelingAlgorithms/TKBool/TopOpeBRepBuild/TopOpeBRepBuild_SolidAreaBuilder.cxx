@@ -27,7 +27,7 @@ TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder() {}
 TopOpeBRepBuild_SolidAreaBuilder::TopOpeBRepBuild_SolidAreaBuilder(
   TopOpeBRepBuild_LoopSet&        LS,
   TopOpeBRepBuild_LoopClassifier& LC,
-  const bool                      ForceClass)
+  const bool          ForceClass)
 {
   InitSolidAreaBuilder(LS, LC, ForceClass);
 }

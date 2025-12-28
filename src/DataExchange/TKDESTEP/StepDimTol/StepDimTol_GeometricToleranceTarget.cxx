@@ -26,7 +26,8 @@ StepDimTol_GeometricToleranceTarget::StepDimTol_GeometricToleranceTarget() {}
 
 //=================================================================================================
 
-int StepDimTol_GeometricToleranceTarget::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepDimTol_GeometricToleranceTarget::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -41,8 +42,8 @@ int StepDimTol_GeometricToleranceTarget::CaseNum(const occ::handle<Standard_Tran
   return 0;
 }
 
-occ::handle<StepShape_DimensionalLocation> StepDimTol_GeometricToleranceTarget::
-  DimensionalLocation() const
+occ::handle<StepShape_DimensionalLocation> StepDimTol_GeometricToleranceTarget::DimensionalLocation()
+  const
 {
   return GetCasted(StepShape_DimensionalLocation, Value());
 }

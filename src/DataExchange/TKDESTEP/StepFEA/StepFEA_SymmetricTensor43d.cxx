@@ -29,7 +29,8 @@ StepFEA_SymmetricTensor43d::StepFEA_SymmetricTensor43d() {}
 
 //=================================================================================================
 
-int StepFEA_SymmetricTensor43d::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
+int StepFEA_SymmetricTensor43d::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
@@ -67,46 +68,44 @@ occ::handle<StepData_SelectMember> StepFEA_SymmetricTensor43d::NewMember() const
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::AnisotropicSymmetricTensor43d()
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::AnisotropicSymmetricTensor43d() const
+{
+  occ::handle<NCollection_HArray1<double>>            anArr; // = new NCollection_HArray1<double>(1,1);
+  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
+    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
+  if (SelMem.IsNull())
+    return anArr;
+  // occ::handle<NCollection_HSequence<double>> aSeq = SelMem->SeqReal();
+  return anArr;
+  // return occ::down_cast<NCollection_HArray1<double>>(Value());
+}
+
+//=================================================================================================
+
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::FeaIsotropicSymmetricTensor43d() const
+{
+  occ::handle<NCollection_HArray1<double>>            anArr; // = new NCollection_HArray1<double>(1,1);
+  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
+    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
+  if (SelMem.IsNull())
+    return anArr;
+  // occ::handle<NCollection_HSequence<double>> aSeq = SelMem->SeqReal();
+  return anArr;
+  // return occ::down_cast<NCollection_HArray1<double>>(Value());
+}
+
+//=================================================================================================
+
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::FeaIsoOrthotropicSymmetricTensor43d()
   const
-{
-  occ::handle<NCollection_HArray1<double>>      anArr; // = new NCollection_HArray1<double>(1,1);
-  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
-    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
-  if (SelMem.IsNull())
-    return anArr;
-  // occ::handle<NCollection_HSequence<double>> aSeq = SelMem->SeqReal();
-  return anArr;
-  // return occ::down_cast<NCollection_HArray1<double>>(Value());
-}
-
-//=================================================================================================
-
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::
-  FeaIsotropicSymmetricTensor43d() const
-{
-  occ::handle<NCollection_HArray1<double>>      anArr; // = new NCollection_HArray1<double>(1,1);
-  occ::handle<StepFEA_SymmetricTensor43dMember> SelMem =
-    occ::down_cast<StepFEA_SymmetricTensor43dMember>(Value());
-  if (SelMem.IsNull())
-    return anArr;
-  // occ::handle<NCollection_HSequence<double>> aSeq = SelMem->SeqReal();
-  return anArr;
-  // return occ::down_cast<NCollection_HArray1<double>>(Value());
-}
-
-//=================================================================================================
-
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::
-  FeaIsoOrthotropicSymmetricTensor43d() const
 {
   return occ::down_cast<NCollection_HArray1<double>>(Value());
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::
-  FeaTransverseIsotropicSymmetricTensor43d() const
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor43d::FeaTransverseIsotropicSymmetricTensor43d()
+  const
 {
   return occ::down_cast<NCollection_HArray1<double>>(Value());
 }

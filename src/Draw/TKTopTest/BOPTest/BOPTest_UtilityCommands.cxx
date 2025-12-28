@@ -61,7 +61,9 @@ void BOPTest::UtilityCommands(Draw_Interpretor& theCommands)
 // function : BOPCommands
 // purpose  : Attaches p-curve of the given edge to the given face.
 //=======================================================================
-static int attachpcurve(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int attachpcurve(Draw_Interpretor& theDI,
+                                     int  theNArg,
+                                     const char**      theArgVal)
 {
   if (theNArg != 4)
   {
@@ -112,7 +114,8 @@ static int attachpcurve(Draw_Interpretor& theDI, int theNArg, const char** theAr
 
   // Try to copy PCurve from old edge to the new one.
   occ::handle<IntTools_Context> aCtx = new IntTools_Context;
-  const int iRet = BOPTools_AlgoTools2D::AttachExistingPCurve(aEOld, aENew, aFace, aCtx);
+  const int   iRet =
+    BOPTools_AlgoTools2D::AttachExistingPCurve(aEOld, aENew, aFace, aCtx);
 
   if (iRet)
   {
@@ -130,7 +133,9 @@ static int attachpcurve(Draw_Interpretor& theDI, int theNArg, const char** theAr
 // function : edgestowire
 // purpose  : Orients the edges to make wire
 //=======================================================================
-static int edgestowire(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int edgestowire(Draw_Interpretor& theDI,
+                                    int  theNArg,
+                                    const char**      theArgVal)
 {
   if (theNArg != 3)
   {
@@ -154,7 +159,9 @@ static int edgestowire(Draw_Interpretor& theDI, int theNArg, const char** theArg
 // function : edgestofaces
 // purpose  : Creates planar faces from linear edges
 //=======================================================================
-static int edgestofaces(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int edgestofaces(Draw_Interpretor& theDI,
+                                     int  theNArg,
+                                     const char**      theArgVal)
 {
   if (theNArg < 3)
   {
@@ -172,8 +179,8 @@ static int edgestofaces(Draw_Interpretor& theDI, int theNArg, const char** theAr
     return 1;
   }
   //
-  double anAngTol = 1.e-8;
-  bool   bShared  = false;
+  double    anAngTol = 1.e-8;
+  bool bShared  = false;
   //
   for (int i = 3; i < theNArg; ++i)
   {
@@ -187,16 +194,16 @@ static int edgestofaces(Draw_Interpretor& theDI, int theNArg, const char** theAr
     }
   }
   //
-  TopoDS_Shape aWires;
-  int          iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+  TopoDS_Shape     aWires;
+  int iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
   if (iErr)
   {
     theDI << "Unable to build wires from given edges\n";
     return 0;
   }
   //
-  TopoDS_Shape aFaces;
-  bool         bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+  TopoDS_Shape     aFaces;
+  bool bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
   if (!bDone)
   {
     theDI << "Unable to build faces from wires\n";
@@ -211,7 +218,9 @@ static int edgestofaces(Draw_Interpretor& theDI, int theNArg, const char** theAr
 // function : BuildPcurvesOnPlane
 // purpose  : Build and store pcurves of edges on planes
 //=======================================================================
-static int BuildPcurvesOnPlane(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int BuildPcurvesOnPlane(Draw_Interpretor& theDI,
+                                            int  theNArg,
+                                            const char**      theArgVal)
 {
   if (theNArg != 2)
   {
@@ -234,7 +243,7 @@ static int BuildPcurvesOnPlane(Draw_Interpretor& theDI, int theNArg, const char*
     if (aS.GetType() == GeomAbs_Plane)
     {
       NCollection_List<TopoDS_Shape> aLE;
-      TopExp_Explorer                exp1(aF, TopAbs_EDGE);
+      TopExp_Explorer      exp1(aF, TopAbs_EDGE);
       for (; exp1.More(); exp1.Next())
         aLE.Append(exp1.Current());
       BRepLib::BuildPCurveForEdgesOnPlane(aLE, aF);

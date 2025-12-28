@@ -49,8 +49,7 @@ void BRep_TVertex::DumpJson(Standard_OStream& theOStream, int theDepth) const
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myPnt)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myTolerance)
-  for (NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itr(myPoints); itr.More();
-       itr.Next())
+  for (NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itr(myPoints); itr.More(); itr.Next())
   {
     const occ::handle<BRep_PointRepresentation>& aPointRepresentation = itr.Value();
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aPointRepresentation.get())

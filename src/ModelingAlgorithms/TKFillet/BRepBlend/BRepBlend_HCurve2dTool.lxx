@@ -49,15 +49,15 @@ inline GeomAbs_Shape BRepBlend_HCurve2dTool::Continuity(const occ::handle<Adapto
 
 //============================================================
 inline int BRepBlend_HCurve2dTool::NbIntervals(const occ::handle<Adaptor2d_Curve2d>& C,
-                                               const GeomAbs_Shape                   Sh)
+                                                            const GeomAbs_Shape              Sh)
 {
   return (C->NbIntervals(Sh));
 }
 
 //============================================================
 inline void BRepBlend_HCurve2dTool::Intervals(const occ::handle<Adaptor2d_Curve2d>& C,
-                                              NCollection_Array1<double>&           Tab,
-                                              const GeomAbs_Shape                   Sh)
+                                              NCollection_Array1<double>&            Tab,
+                                              const GeomAbs_Shape              Sh)
 {
   C->Intervals(Tab, Sh);
 }
@@ -82,34 +82,34 @@ inline double BRepBlend_HCurve2dTool::Period(const occ::handle<Adaptor2d_Curve2d
 
 //============================================================
 inline gp_Pnt2d BRepBlend_HCurve2dTool::Value(const occ::handle<Adaptor2d_Curve2d>& C,
-                                              const double                          U)
+                                              const double              U)
 {
   return (C->Value(U));
 }
 
 //============================================================
 inline void BRepBlend_HCurve2dTool::D0(const occ::handle<Adaptor2d_Curve2d>& C,
-                                       const double                          U,
-                                       gp_Pnt2d&                             P)
+                                       const double              U,
+                                       gp_Pnt2d&                        P)
 {
   C->D0(U, P);
 }
 
 //============================================================
 inline void BRepBlend_HCurve2dTool::D1(const occ::handle<Adaptor2d_Curve2d>& C,
-                                       const double                          U,
-                                       gp_Pnt2d&                             P,
-                                       gp_Vec2d&                             T)
+                                       const double              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        T)
 {
   C->D1(U, P, T);
 }
 
 //============================================================
 inline void BRepBlend_HCurve2dTool::D2(const occ::handle<Adaptor2d_Curve2d>& C,
-                                       const double                          U,
-                                       gp_Pnt2d&                             P,
-                                       gp_Vec2d&                             T,
-                                       gp_Vec2d&                             N)
+                                       const double              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        T,
+                                       gp_Vec2d&                        N)
 {
 
   C->D2(U, P, T, N);
@@ -117,11 +117,11 @@ inline void BRepBlend_HCurve2dTool::D2(const occ::handle<Adaptor2d_Curve2d>& C,
 
 //============================================================
 inline void BRepBlend_HCurve2dTool::D3(const occ::handle<Adaptor2d_Curve2d>& C,
-                                       const double                          U,
-                                       gp_Pnt2d&                             P,
-                                       gp_Vec2d&                             V1,
-                                       gp_Vec2d&                             V2,
-                                       gp_Vec2d&                             V3)
+                                       const double              U,
+                                       gp_Pnt2d&                        P,
+                                       gp_Vec2d&                        V1,
+                                       gp_Vec2d&                        V2,
+                                       gp_Vec2d&                        V3)
 {
 
   C->D3(U, P, V1, V2, V3);
@@ -129,8 +129,8 @@ inline void BRepBlend_HCurve2dTool::D3(const occ::handle<Adaptor2d_Curve2d>& C,
 
 //============================================================
 inline gp_Vec2d BRepBlend_HCurve2dTool::DN(const occ::handle<Adaptor2d_Curve2d>& C,
-                                           const double                          U,
-                                           const int                             N)
+                                           const double              U,
+                                           const int           N)
 {
 
   return (C->DN(U, N));
@@ -138,7 +138,7 @@ inline gp_Vec2d BRepBlend_HCurve2dTool::DN(const occ::handle<Adaptor2d_Curve2d>&
 
 //============================================================
 inline double BRepBlend_HCurve2dTool::Resolution(const occ::handle<Adaptor2d_Curve2d>& C,
-                                                 const double                          R3d)
+                                                        const double              R3d)
 {
   return (C->Resolution(R3d));
 }
@@ -180,8 +180,7 @@ inline gp_Hypr2d BRepBlend_HCurve2dTool::Hyperbola(const occ::handle<Adaptor2d_C
 }
 
 //============================================================
-inline occ::handle<Geom2d_BezierCurve> BRepBlend_HCurve2dTool::Bezier(
-  const occ::handle<Adaptor2d_Curve2d>& C)
+inline occ::handle<Geom2d_BezierCurve> BRepBlend_HCurve2dTool::Bezier(const occ::handle<Adaptor2d_Curve2d>& C)
 {
   return (C->Bezier());
 }

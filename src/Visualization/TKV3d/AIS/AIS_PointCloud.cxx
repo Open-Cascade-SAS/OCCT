@@ -70,16 +70,14 @@ void AIS_PointCloudOwner::HilightWithColor(const occ::handle<PrsMgr_Presentation
   const occ::handle<TColStd_HPackedMapOfInteger>& aMap =
     thePrsMgr->IsImmediateModeOn() ? myDetPoints : mySelPoints;
   occ::handle<Prs3d_Presentation> aPrs = thePrsMgr->IsImmediateModeOn()
-                                           ? anObj->GetHilightPresentation(thePrsMgr)
-                                           : anObj->GetSelectPresentation(thePrsMgr);
-  const Graphic3d_ZLayerId        aZLayer =
+                                      ? anObj->GetHilightPresentation(thePrsMgr)
+                                      : anObj->GetSelectPresentation(thePrsMgr);
+  const Graphic3d_ZLayerId   aZLayer =
     theStyle->ZLayer() != -1
-             ? theStyle->ZLayer()
-             : (thePrsMgr->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : anObj->ZLayer());
+        ? theStyle->ZLayer()
+        : (thePrsMgr->IsImmediateModeOn() ? Graphic3d_ZLayerId_Top : anObj->ZLayer());
   aMap->ChangeMap().Clear();
-  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(
-         anObj->Selections());
-       aSelIter.More();
+  for (NCollection_Sequence<occ::handle<SelectMgr_Selection>>::Iterator aSelIter(anObj->Selections()); aSelIter.More();
        aSelIter.Next())
   {
     const occ::handle<SelectMgr_Selection>& aSel = aSelIter.Value();
@@ -143,7 +141,8 @@ void AIS_PointCloudOwner::HilightWithColor(const occ::handle<PrsMgr_Presentation
 
 //=================================================================================================
 
-void AIS_PointCloudOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>&, const int)
+void AIS_PointCloudOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>&,
+                                    const int)
 {
   if (occ::handle<Prs3d_Presentation> aPrs =
         Selectable()->GetSelectPresentation(occ::handle<PrsMgr_PresentationManager>()))
@@ -155,7 +154,7 @@ void AIS_PointCloudOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager
 //=================================================================================================
 
 void AIS_PointCloudOwner::Clear(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                const int                                      theMode)
+                                const int                    theMode)
 {
   SelectMgr_EntityOwner::Clear(thePrsMgr, theMode);
 }
@@ -215,9 +214,9 @@ void AIS_PointCloud::SetPoints(const occ::handle<Graphic3d_ArrayOfPoints>& thePo
 
 //=================================================================================================
 
-void AIS_PointCloud::SetPoints(const occ::handle<NCollection_HArray1<gp_Pnt>>&         theCoords,
+void AIS_PointCloud::SetPoints(const occ::handle<NCollection_HArray1<gp_Pnt>>&     theCoords,
                                const occ::handle<NCollection_HArray1<Quantity_Color>>& theColors,
-                               const occ::handle<NCollection_HArray1<gp_Dir>>&         theNormals)
+                               const occ::handle<NCollection_HArray1<gp_Dir>>&     theNormals)
 {
   myPoints.Nullify();
   myBndBox.SetVoid();
@@ -349,7 +348,7 @@ void AIS_PointCloud::UnsetMaterial()
 
 void AIS_PointCloud::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                              const occ::handle<Prs3d_Presentation>& thePrs,
-                             const int                              theMode)
+                             const int            theMode)
 {
   switch (theMode)
   {
@@ -381,7 +380,7 @@ void AIS_PointCloud::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_PointCloud::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                      const int                               theMode)
+                                      const int             theMode)
 {
   occ::handle<SelectMgr_EntityOwner> anOwner = new SelectMgr_EntityOwner(this);
   switch (theMode)

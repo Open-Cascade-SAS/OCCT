@@ -29,8 +29,8 @@
 //=========================================================================
 gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
-  gp_Dir XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
-  gp_Lin L(Center, XAxis);
+  gp_Dir        XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
+  gp_Lin        L(Center, XAxis);
   double D = S1.Distance(Center);
   double d = L.Distance(S2);
   if (d > D)
@@ -45,7 +45,9 @@ gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Cen
   }
 }
 
-gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
+gce_MakeHypr::gce_MakeHypr(const gp_Ax2&       A2,
+                           const double MajorRadius,
+                           const double MinorRadius)
 {
   if (MajorRadius < MinorRadius)
   {

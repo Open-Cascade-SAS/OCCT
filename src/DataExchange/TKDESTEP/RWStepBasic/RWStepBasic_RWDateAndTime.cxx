@@ -22,7 +22,7 @@
 RWStepBasic_RWDateAndTime::RWStepBasic_RWDateAndTime() {}
 
 void RWStepBasic_RWDateAndTime::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepBasic_DateAndTime>&   ent) const
 {
@@ -50,7 +50,7 @@ void RWStepBasic_RWDateAndTime::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aDateComponent, aTimeComponent);
 }
 
-void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                      SW,
+void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepBasic_DateAndTime>& ent) const
 {
 
@@ -64,7 +64,7 @@ void RWStepBasic_RWDateAndTime::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepBasic_RWDateAndTime::Share(const occ::handle<StepBasic_DateAndTime>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->DateComponent());

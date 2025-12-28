@@ -23,14 +23,20 @@
 #include <MeshVS_Tool.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_SensitivePolyhedron, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
 MeshVS_SensitivePolyhedron::MeshVS_SensitivePolyhedron(
-  const occ::handle<SelectMgr_EntityOwner>&                          theOwner,
-  const NCollection_Array1<gp_Pnt>&                                  theNodes,
+  const occ::handle<SelectMgr_EntityOwner>&             theOwner,
+  const NCollection_Array1<gp_Pnt>&                        theNodes,
   const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo)
     : Select3D_SensitiveEntity(theOwner),
       myTopo(theTopo)
@@ -38,18 +44,17 @@ MeshVS_SensitivePolyhedron::MeshVS_SensitivePolyhedron(
   int aPlaneLowIdx   = theTopo->Lower();
   int aPlaneUpIdx    = theTopo->Upper();
   int aNodesLowerIdx = theNodes.Lower();
-  myNodes            = new NCollection_HArray1<gp_Pnt>(aNodesLowerIdx, theNodes.Upper());
-  myCenter           = gp_XYZ(0.0, 0.0, 0.0);
+  myNodes                         = new NCollection_HArray1<gp_Pnt>(aNodesLowerIdx, theNodes.Upper());
+  myCenter                        = gp_XYZ(0.0, 0.0, 0.0);
 
   for (int aPlaneIdx = aPlaneLowIdx; aPlaneIdx <= aPlaneUpIdx; ++aPlaneIdx)
   {
-    int                                      aVertNb = theTopo->Value(aPlaneIdx).Length();
-    occ::handle<NCollection_HArray1<gp_Pnt>> aVertArray =
-      new NCollection_HArray1<gp_Pnt>(0, aVertNb - 1);
+    int            aVertNb    = theTopo->Value(aPlaneIdx).Length();
+    occ::handle<NCollection_HArray1<gp_Pnt>> aVertArray = new NCollection_HArray1<gp_Pnt>(0, aVertNb - 1);
     for (int aVertIdx = 1; aVertIdx <= aVertNb; ++aVertIdx)
     {
-      int           aNodeIdx = theTopo->Value(aPlaneIdx).Value(aVertIdx);
-      const gp_Pnt& aVert    = theNodes.Value(aNodeIdx + aNodesLowerIdx);
+      int aNodeIdx = theTopo->Value(aPlaneIdx).Value(aVertIdx);
+      const gp_Pnt&    aVert    = theNodes.Value(aNodeIdx + aNodesLowerIdx);
       aVertArray->SetValue(aVertIdx - 1, aVert);
       myNodes->SetValue(aNodeIdx + aNodesLowerIdx, aVert);
       myBndBox.Add(NCollection_Vec3<double>(aVert.X(), aVert.Y(), aVert.Z()));
@@ -75,12 +80,10 @@ occ::handle<Select3D_SensitiveEntity> MeshVS_SensitivePolyhedron::GetConnected()
 //=================================================================================================
 
 bool MeshVS_SensitivePolyhedron::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                         SelectBasics_PickResult&             thePickResult)
+                                                     SelectBasics_PickResult& thePickResult)
 {
   SelectBasics_PickResult aPickResult;
-  for (NCollection_List<occ::handle<NCollection_HArray1<gp_Pnt>>>::Iterator aIter(myTopology);
-       aIter.More();
-       aIter.Next())
+  for (NCollection_List<occ::handle<NCollection_HArray1<gp_Pnt>>>::Iterator aIter(myTopology); aIter.More(); aIter.Next())
   {
     if (theMgr.OverlapsPolygon(aIter.Value()->Array1(), Select3D_TOS_INTERIOR, aPickResult))
     {

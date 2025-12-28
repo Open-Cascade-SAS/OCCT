@@ -33,7 +33,7 @@ RWStepFEA_RWCurveElementEndOffset::RWStepFEA_RWCurveElementEndOffset() {}
 
 void RWStepFEA_RWCurveElementEndOffset::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepFEA_CurveElementEndOffset>& ent) const
 {
@@ -47,12 +47,12 @@ void RWStepFEA_RWCurveElementEndOffset::ReadStep(
   data->ReadEntity(num, 1, "coordinate_system", ach, aCoordinateSystem);
 
   occ::handle<NCollection_HArray1<double>> aOffsetVector;
-  int                                      sub2 = 0;
+  int              sub2 = 0;
   if (data->ReadSubList(num, 2, "offset_vector", ach, sub2))
   {
-    int nb0       = data->NbParams(sub2);
-    aOffsetVector = new NCollection_HArray1<double>(1, nb0);
-    int num2      = sub2;
+    int nb0  = data->NbParams(sub2);
+    aOffsetVector         = new NCollection_HArray1<double>(1, nb0);
+    int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       double anIt0;
@@ -68,7 +68,7 @@ void RWStepFEA_RWCurveElementEndOffset::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWCurveElementEndOffset::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepFEA_CurveElementEndOffset>& ent) const
 {
 

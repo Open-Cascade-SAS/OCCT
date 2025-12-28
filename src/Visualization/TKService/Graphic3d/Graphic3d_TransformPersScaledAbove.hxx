@@ -23,7 +23,8 @@ class Graphic3d_TransformPersScaledAbove : public Graphic3d_TransformPers
 {
 public:
   //! Create a Zoom transformation persistence with an anchor 3D point and a scale value
-  Standard_EXPORT Graphic3d_TransformPersScaledAbove(const double theScale, const gp_Pnt& thePnt);
+  Standard_EXPORT Graphic3d_TransformPersScaledAbove(const double theScale,
+                                                     const gp_Pnt&       thePnt);
 
   //! Destructor
   virtual ~Graphic3d_TransformPersScaledAbove() {}
@@ -33,9 +34,10 @@ public:
   //! @param[in] theCamera  camera definition
   //! @param[in] theViewportWidth  the width of viewport.
   //! @param[in] theViewportHeight  the height of viewport.
-  Standard_EXPORT virtual double persistentScale(const occ::handle<Graphic3d_Camera>& theCamera,
-                                                 const int theViewportWidth,
-                                                 const int theViewportHeight) const override;
+  Standard_EXPORT virtual double persistentScale(
+    const occ::handle<Graphic3d_Camera>& theCamera,
+    const int          theViewportWidth,
+    const int          theViewportHeight) const override;
 
 public:
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TransformPersScaledAbove, Graphic3d_TransformPers)

@@ -25,6 +25,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_FunctionSet.hxx>
 
 //! Abstract class to use the Energy of an FairCurve
@@ -42,20 +44,20 @@ public:
   Standard_EXPORT void SetDerivativeOrder(const int DerivativeOrder);
 
 protected:
-  Standard_EXPORT FairCurve_DistributionOfEnergy(
-    const int                                         BSplOrder,
-    const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
-    const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-    const int                                         DerivativeOrder,
-    const int                                         NbValAux = 0);
+  Standard_EXPORT FairCurve_DistributionOfEnergy(const int               BSplOrder,
+                                                 const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+                                                 const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+                                                 const int DerivativeOrder,
+                                                 const int NbValAux = 0);
 
-  int                                        MyBSplOrder;
-  occ::handle<NCollection_HArray1<double>>   MyFlatKnots;
+  int              MyBSplOrder;
+  occ::handle<NCollection_HArray1<double>> MyFlatKnots;
   occ::handle<NCollection_HArray1<gp_Pnt2d>> MyPoles;
-  int                                        MyDerivativeOrder;
-  int                                        MyNbVar;
-  int                                        MyNbEqua;
-  int                                        MyNbValAux;
+  int              MyDerivativeOrder;
+  int              MyNbVar;
+  int              MyNbEqua;
+  int              MyNbValAux;
+
 };
 
 #endif // _FairCurve_DistributionOfEnergy_HeaderFile

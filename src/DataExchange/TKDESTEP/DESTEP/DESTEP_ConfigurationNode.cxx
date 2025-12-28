@@ -40,8 +40,7 @@ DESTEP_ConfigurationNode::DESTEP_ConfigurationNode()
 
 //=================================================================================================
 
-DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(
-  const occ::handle<DESTEP_ConfigurationNode>& theNode)
+DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(const occ::handle<DESTEP_ConfigurationNode>& theNode)
     : DE_ShapeFixConfigurationNode(theNode),
       InternalParameters(theNode->InternalParameters)
 {

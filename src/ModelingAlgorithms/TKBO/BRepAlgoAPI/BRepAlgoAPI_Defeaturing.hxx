@@ -149,12 +149,12 @@ public: //! @name History Methods
   bool HasHistory() const { return myFillHistory; }
 
   //! Returns the list of shapes modified from the shape <theS> during the operation.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& theS) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& theS)
+    override;
 
   //! Returns the list of shapes generated from the shape <theS> during the operation.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& theS) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& theS)
+    override;
 
   //! Returns true if the shape <theS> has been deleted during the operation.
   //! It means that the shape has no any trace in the result.
@@ -180,12 +180,12 @@ protected: //! @name Setting the algorithm into default state
     myFeatureRemovalTool.Clear();
   }
 
-protected:                                        //! @name Fields
-  TopoDS_Shape                   myInputShape;    //!< Input shape to remove the features from
-  NCollection_List<TopoDS_Shape> myFacesToRemove; //!< Features to remove from the shape
-  bool                           myFillHistory;   //!< Defines whether to track the history of
-                                                  //! shapes modifications or not (true by default)
-  BOPAlgo_RemoveFeatures myFeatureRemovalTool;    //!< Tool for the features removal
+protected:                                     //! @name Fields
+  TopoDS_Shape         myInputShape;           //!< Input shape to remove the features from
+  NCollection_List<TopoDS_Shape> myFacesToRemove;        //!< Features to remove from the shape
+  bool     myFillHistory;          //!< Defines whether to track the history of
+                                               //! shapes modifications or not (true by default)
+  BOPAlgo_RemoveFeatures myFeatureRemovalTool; //!< Tool for the features removal
 };
 
 #endif // _BRepAlgoAPI_Defeaturing_HeaderFile

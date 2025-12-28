@@ -242,11 +242,10 @@ NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
 //  Method: GetSelectionModes
 // Purpose: Get activated selection modes for a shape actor.
 //============================================================================
-NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(
-  vtkActor* theShapeActor) const
+NCollection_List<IVtk_SelectionMode> IVtkTools_ShapePicker::GetSelectionModes(vtkActor* theShapeActor) const
 {
   NCollection_List<IVtk_SelectionMode> aRes;
-  IVtk_IShape::Handle                  aShape = IVtkTools_ShapeObject::GetOccShape(theShapeActor);
+  IVtk_IShape::Handle    aShape = IVtkTools_ShapeObject::GetOccShape(theShapeActor);
   if (!aShape.IsNull())
   {
     aRes = myOccPickerAlgo->GetSelectionModes(aShape);
@@ -358,7 +357,7 @@ void IVtkTools_ShapePicker::RemoveSelectableActor(vtkActor* theShapeActor)
 // Purpose: Access to the list of sub-shapes ids picked.
 //============================================================================
 NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedSubShapesIds(const IVtk_IdType theId,
-                                                                           bool theIsAll) const
+                                                              bool              theIsAll) const
 {
   NCollection_List<IVtk_IdType> aRes;
   if (theIsAll)
@@ -384,7 +383,7 @@ NCollection_List<IVtk_IdType> IVtkTools_ShapePicker::GetPickedSubShapesIds(const
 vtkSmartPointer<vtkActorCollection> IVtkTools_ShapePicker::GetPickedActors(bool theIsAll) const
 {
   vtkSmartPointer<vtkActorCollection> aRes  = vtkSmartPointer<vtkActorCollection>::New();
-  NCollection_List<IVtk_IdType>       anIds = GetPickedShapesIds(theIsAll);
+  NCollection_List<IVtk_IdType>                    anIds = GetPickedShapesIds(theIsAll);
   if (myRenderer.GetPointer() != NULL)
   {
     // Obtain all actors whose source shape ids are within selected ids.

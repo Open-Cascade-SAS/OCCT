@@ -48,7 +48,7 @@ public:
 
 private:
   NCollection_Array1<occ::handle<Expr_SingleRelation>> myRelation;
-  int                                                  current;
+  int            current;
 };
 
 #endif // _Expr_RelationIterator_HeaderFile

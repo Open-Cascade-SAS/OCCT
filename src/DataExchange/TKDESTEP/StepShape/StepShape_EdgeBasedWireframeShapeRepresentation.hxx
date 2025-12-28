@@ -31,6 +31,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_EdgeBasedWireframeShapeRepresentation,
                           StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_EdgeBasedWireframeShapeRepresentation_HeaderFile

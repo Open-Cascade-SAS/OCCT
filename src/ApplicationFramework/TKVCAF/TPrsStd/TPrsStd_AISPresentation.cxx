@@ -43,7 +43,7 @@ TPrsStd_AISPresentation::TPrsStd_AISPresentation() {}
 //=================================================================================================
 
 occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(const TDF_Label&     theLabel,
-                                                                  const Standard_GUID& theDriver)
+                                                             const Standard_GUID& theDriver)
 {
   occ::handle<TPrsStd_AISPresentation> aPresentation;
   // create associated data (unless already there)
@@ -61,8 +61,7 @@ occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(const TDF_Labe
 
 //=================================================================================================
 
-occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(
-  const occ::handle<TDF_Attribute>& theMaster)
+occ::handle<TPrsStd_AISPresentation> TPrsStd_AISPresentation::Set(const occ::handle<TDF_Attribute>& theMaster)
 {
   return TPrsStd_AISPresentation::Set(theMaster->Label(), theMaster->ID());
 }
@@ -521,7 +520,7 @@ bool TPrsStd_AISPresentation::HasOwnSelectionMode() const
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::SetSelectionMode(const int  theSelectionMode,
+void TPrsStd_AISPresentation::SetSelectionMode(const int theSelectionMode,
                                                const bool theTransaction)
 {
   if (theTransaction)
@@ -536,7 +535,7 @@ void TPrsStd_AISPresentation::SetSelectionMode(const int  theSelectionMode,
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::AddSelectionMode(const int  theSelectionMode,
+void TPrsStd_AISPresentation::AddSelectionMode(const int theSelectionMode,
                                                const bool theTransaction)
 {
   if (theTransaction)
@@ -650,7 +649,8 @@ void TPrsStd_AISPresentation::AfterResume()
 // function : BeforeUndo
 // purpose  : le NamedShape associe doit etre present
 //=======================================================================
-bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
+bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                     const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
   AD->Label().FindAttribute(TPrsStd_AISPresentation::GetID(), P);
@@ -676,7 +676,8 @@ bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& 
 // function : AfterUndo
 // purpose  : le NamedShape associe doit etre present
 //=======================================================================
-bool TPrsStd_AISPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
+bool TPrsStd_AISPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD,
+                                                    const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
   AD->Label().FindAttribute(TPrsStd_AISPresentation::GetID(), P);
@@ -924,7 +925,7 @@ void TPrsStd_AISPresentation::ActivateSelectionMode()
       if (nbSelModes == 1)
       {
         bool isActivated    = false;
-        int  aSelectionMode = SelectionMode();
+        int aSelectionMode = SelectionMode();
         if (aSelectionMode == -1)
         {
           aContext->Deactivate(myAIS);
@@ -965,7 +966,8 @@ void TPrsStd_AISPresentation::ActivateSelectionMode()
 
 //=================================================================================================
 
-void TPrsStd_AISPresentation::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void TPrsStd_AISPresentation::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

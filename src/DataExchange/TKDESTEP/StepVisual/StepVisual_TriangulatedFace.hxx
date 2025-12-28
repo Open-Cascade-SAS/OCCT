@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
@@ -37,14 +38,14 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-    const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
-    const int                                       theTessellatedFace_Pnmax,
-    const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
-    const bool                                      theHasTessellatedFace_GeometricLink,
-    const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
-    const occ::handle<NCollection_HArray1<int>>&    thePnindex,
-    const occ::handle<NCollection_HArray2<int>>&    theTriangles);
+    const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+    const int                    theTessellatedFace_Pnmax,
+    const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
+    const bool                    theHasTessellatedFace_GeometricLink,
+    const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+    const occ::handle<NCollection_HArray1<int>>&   thePnindex,
+    const occ::handle<NCollection_HArray2<int>>&   theTriangles);
 
   //! Returns field Pnindex
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> Pnindex() const;

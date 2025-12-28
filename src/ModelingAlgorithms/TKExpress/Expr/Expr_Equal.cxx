@@ -34,8 +34,8 @@ bool Expr_Equal::IsSatisfied() const
 {
   occ::handle<Expr_GeneralExpression> fm = FirstMember();
   occ::handle<Expr_GeneralExpression> sm = SecondMember();
-  fm                                     = fm->Simplified();
-  sm                                     = sm->Simplified();
+  fm                                = fm->Simplified();
+  sm                                = sm->Simplified();
   return (fm->IsIdentical(sm));
 }
 

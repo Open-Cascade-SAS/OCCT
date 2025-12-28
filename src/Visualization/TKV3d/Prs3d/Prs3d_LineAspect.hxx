@@ -40,7 +40,7 @@ public:
   //! Type of line refers to whether the line is solid or dotted, for example.
   Standard_EXPORT Prs3d_LineAspect(const Quantity_Color&   theColor,
                                    const Aspect_TypeOfLine theType,
-                                   const double            theWidth);
+                                   const double     theWidth);
 
   Prs3d_LineAspect(const occ::handle<Graphic3d_AspectLine3d>& theAspect)
       : myAspect(theAspect)
@@ -68,7 +68,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   occ::handle<Graphic3d_AspectLine3d> myAspect;

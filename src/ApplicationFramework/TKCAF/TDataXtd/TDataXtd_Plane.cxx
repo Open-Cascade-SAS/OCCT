@@ -64,9 +64,9 @@ occ::handle<TDataXtd_Plane> TDataXtd_Plane::Set(const TDF_Label& L, const gp_Pln
     if (!aNS->Get().IsNull())
       if (aNS->Get().ShapeType() == TopAbs_FACE)
       {
-        TopoDS_Face               aFace    = TopoDS::Face(aNS->Get());
-        occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
-        GeomLib_IsPlanarSurface   aChecker(aSurface);
+        TopoDS_Face             aFace    = TopoDS::Face(aNS->Get());
+        occ::handle<Geom_Surface>    aSurface = BRep_Tool::Surface(aFace);
+        GeomLib_IsPlanarSurface aChecker(aSurface);
         if (aChecker.IsPlanar())
         {
           gp_Pln aPlane = aChecker.Plan();

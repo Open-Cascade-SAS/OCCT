@@ -31,11 +31,10 @@ RWStepFEA_RWFeaParametricPoint::RWStepFEA_RWFeaParametricPoint() {}
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaParametricPoint::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepFEA_FeaParametricPoint>& ent) const
+void RWStepFEA_RWFeaParametricPoint::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepFEA_FeaParametricPoint>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "fea_parametric_point"))
@@ -49,12 +48,12 @@ void RWStepFEA_RWFeaParametricPoint::ReadStep(
   // Own fields of FeaParametricPoint
 
   occ::handle<NCollection_HArray1<double>> aCoordinates;
-  int                                      sub2 = 0;
+  int              sub2 = 0;
   if (data->ReadSubList(num, 2, "coordinates", ach, sub2))
   {
-    int nb0      = data->NbParams(sub2);
-    aCoordinates = new NCollection_HArray1<double>(1, nb0);
-    int num2     = sub2;
+    int nb0  = data->NbParams(sub2);
+    aCoordinates          = new NCollection_HArray1<double>(1, nb0);
+    int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       double anIt0;
@@ -69,9 +68,8 @@ void RWStepFEA_RWFeaParametricPoint::ReadStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaParametricPoint::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepFEA_FeaParametricPoint>& ent) const
+void RWStepFEA_RWFeaParametricPoint::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepFEA_FeaParametricPoint>& ent) const
 {
 
   // Inherited fields of RepresentationItem

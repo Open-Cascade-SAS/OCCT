@@ -24,7 +24,7 @@ namespace
 {
 //=================================================================================================
 
-static void SetReaderParameters(RWGltf_CafReader&                            theReader,
+static void SetReaderParameters(RWGltf_CafReader&                       theReader,
                                 const occ::handle<DEGLTF_ConfigurationNode>& theNode)
 {
   theReader.SetDoublePrecision(!theNode->InternalParameters.ReadSinglePrecision);
@@ -61,10 +61,10 @@ DEGLTF_Provider::DEGLTF_Provider(const occ::handle<DE_ConfigurationNode>& theNod
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEGLTF_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Read(thePath, theDocument, theProgress);
@@ -72,10 +72,10 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEGLTF_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
                             occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -83,9 +83,9 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEGLTF_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
@@ -99,7 +99,7 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString&       thePath,
     return false;
   }
   occ::handle<DEGLTF_ConfigurationNode> aNode = occ::down_cast<DEGLTF_ConfigurationNode>(GetNode());
-  RWGltf_CafReader                      aReader;
+  RWGltf_CafReader                 aReader;
   aReader.SetDocument(theDocument);
   SetReaderParameters(aReader, aNode);
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument,
@@ -116,9 +116,9 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEGLTF_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateConfigurationNode(GetNode(),
@@ -130,7 +130,7 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&       thePath,
   occ::handle<DEGLTF_ConfigurationNode> aNode = occ::down_cast<DEGLTF_ConfigurationNode>(GetNode());
 
   RWMesh_CoordinateSystemConverter aConverter;
-  double                           aScaleFactorM = 1.;
+  double                    aScaleFactorM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorM))
   {
     aConverter.SetInputLengthUnit(aNode->GlobalParameters.SystemUnit / 1000.);
@@ -180,10 +180,10 @@ bool DEGLTF_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Read(const TCollection_AsciiString&      thePath,
-                           TopoDS_Shape&                       theShape,
+bool DEGLTF_Provider::Read(const TCollection_AsciiString& thePath,
+                           TopoDS_Shape&                  theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+                           const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Read(thePath, theShape, theProgress);
@@ -191,10 +191,10 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString&      thePath,
 
 //=================================================================================================
 
-bool DEGLTF_Provider::Write(const TCollection_AsciiString&      thePath,
-                            const TopoDS_Shape&                 theShape,
+bool DEGLTF_Provider::Write(const TCollection_AsciiString& thePath,
+                            const TopoDS_Shape&            theShape,
                             occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+                            const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);
@@ -213,7 +213,7 @@ bool DEGLTF_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   occ::handle<DEGLTF_ConfigurationNode> aNode = occ::down_cast<DEGLTF_ConfigurationNode>(GetNode());
-  RWGltf_CafReader                      aReader;
+  RWGltf_CafReader                 aReader;
   SetReaderParameters(aReader, aNode);
   if (!aReader.Perform(thePath, theProgress))
   {

@@ -45,7 +45,7 @@ public:
 
 private:
   NCollection_List<TopoDS_Shape> myList;
-  int                            mySplits;
+  int     mySplits;
 };
 
 #endif // _TopOpeBRepDS_ListOfShapeOn1State_HeaderFile

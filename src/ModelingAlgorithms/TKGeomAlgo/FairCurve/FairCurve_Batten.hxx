@@ -24,6 +24,12 @@
 #include <FairCurve_AnalysisCode.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Standard_Integer.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_OStream.hxx>
@@ -58,10 +64,10 @@ public:
   //! Precision::Confusion: P1.IsEqual(P2,
   //! Precision::Confusion()). The function
   //! gp_Pnt2d::IsEqual tests to see if this is the case.
-  Standard_EXPORT FairCurve_Batten(const gp_Pnt2d& P1,
-                                   const gp_Pnt2d& P2,
-                                   const double    Height,
-                                   const double    Slope = 0);
+  Standard_EXPORT FairCurve_Batten(const gp_Pnt2d&     P1,
+                                   const gp_Pnt2d&     P2,
+                                   const double Height,
+                                   const double Slope = 0);
 
   Standard_EXPORT virtual ~FairCurve_Batten();
 
@@ -161,8 +167,8 @@ public:
   //! The parameters Tolerance and NbIterations control
   //! how precise the computation is, and how long it will take.
   Standard_EXPORT virtual bool Compute(FairCurve_AnalysisCode& Code,
-                                       const int               NbIterations = 50,
-                                       const double            Tolerance    = 1.0e-3);
+                                                   const int  NbIterations = 50,
+                                                   const double     Tolerance    = 1.0e-3);
 
   //! Computes the real number value for length Sliding of
   //! Reference for new constraints. If you want to give a
@@ -216,9 +222,13 @@ public:
   Standard_EXPORT virtual void Dump(Standard_OStream& o) const;
 
 protected:
-  Standard_EXPORT double SlidingOfReference(const double D, const double A1, const double A2) const;
+  Standard_EXPORT double SlidingOfReference(const double D,
+                                                   const double A1,
+                                                   const double A2) const;
 
-  Standard_EXPORT double Compute(const double D, const double A1, const double A2) const;
+  Standard_EXPORT double Compute(const double D,
+                                        const double A1,
+                                        const double A2) const;
 
   //! Returns the effective geometrical constraints at the
   //! last batten computation. This effectives values may
@@ -228,42 +238,42 @@ protected:
   //! infinite sliding, height of batten will be negative at end points
   Standard_EXPORT double Compute(const double D, const double A) const;
 
-  FairCurve_AnalysisCode                     myCode;
-  gp_Pnt2d                                   OldP1;
-  gp_Pnt2d                                   OldP2;
-  double                                     OldAngle1;
-  double                                     OldAngle2;
-  double                                     OldHeight;
-  double                                     OldSlope;
-  double                                     OldSlidingFactor;
-  bool                                       OldFreeSliding;
-  int                                        OldConstraintOrder1;
-  int                                        OldConstraintOrder2;
-  gp_Pnt2d                                   NewP1;
-  gp_Pnt2d                                   NewP2;
-  double                                     NewAngle1;
-  double                                     NewAngle2;
-  double                                     NewHeight;
-  double                                     NewSlope;
-  double                                     NewSlidingFactor;
-  bool                                       NewFreeSliding;
-  int                                        NewConstraintOrder1;
-  int                                        NewConstraintOrder2;
-  int                                        Degree;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> Poles;
-  occ::handle<NCollection_HArray1<double>>   Flatknots;
-  occ::handle<NCollection_HArray1<double>>   Knots;
-  occ::handle<NCollection_HArray1<int>>      Mults;
+  FairCurve_AnalysisCode           myCode;
+  gp_Pnt2d                         OldP1;
+  gp_Pnt2d                         OldP2;
+  double                    OldAngle1;
+  double                    OldAngle2;
+  double                    OldHeight;
+  double                    OldSlope;
+  double                    OldSlidingFactor;
+  bool                 OldFreeSliding;
+  int                 OldConstraintOrder1;
+  int                 OldConstraintOrder2;
+  gp_Pnt2d                         NewP1;
+  gp_Pnt2d                         NewP2;
+  double                    NewAngle1;
+  double                    NewAngle2;
+  double                    NewHeight;
+  double                    NewSlope;
+  double                    NewSlidingFactor;
+  bool                 NewFreeSliding;
+  int                 NewConstraintOrder1;
+  int                 NewConstraintOrder2;
+  int                 Degree;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    Poles;
+  occ::handle<NCollection_HArray1<double>>    Flatknots;
+  occ::handle<NCollection_HArray1<double>>    Knots;
+  occ::handle<NCollection_HArray1<int>> Mults;
 
 private:
   //! compute the curve with respect of the delta-constraints.
   Standard_EXPORT bool Compute(const gp_Vec2d&         DeltaP1,
-                               const gp_Vec2d&         DeltaP2,
-                               const double            DeltaAngle1,
-                               const double            DeltaAngle2,
-                               FairCurve_AnalysisCode& ACode,
-                               const int               NbIterations,
-                               const double            Tolerance);
+                                           const gp_Vec2d&         DeltaP2,
+                                           const double     DeltaAngle1,
+                                           const double     DeltaAngle2,
+                                           FairCurve_AnalysisCode& ACode,
+                                           const int  NbIterations,
+                                           const double     Tolerance);
 
   Standard_EXPORT void Angles(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 };

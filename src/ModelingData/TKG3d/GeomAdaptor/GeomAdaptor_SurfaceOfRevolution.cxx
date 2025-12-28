@@ -31,8 +31,7 @@ GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution()
 
 //=================================================================================================
 
-GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
-  const occ::handle<Adaptor3d_Curve>& C)
+GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(const occ::handle<Adaptor3d_Curve>& C)
     : myHaveAxis(false)
 {
   Load(C);
@@ -40,9 +39,8 @@ GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
 
 //=================================================================================================
 
-GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(
-  const occ::handle<Adaptor3d_Curve>& C,
-  const gp_Ax1&                       V)
+GeomAdaptor_SurfaceOfRevolution::GeomAdaptor_SurfaceOfRevolution(const occ::handle<Adaptor3d_Curve>& C,
+                                                                 const gp_Ax1&                  V)
     : myHaveAxis(false)
 {
   Load(C);
@@ -109,11 +107,11 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   mySurfaceData       = aRevData;
 
   // Eval myAxeRev : axe of revolution ( Determination de Ox).
-  gp_Pnt P, Q;
-  gp_Pnt O = myAxis.Location();
-  gp_Dir Ox;
-  gp_Dir Oz   = myAxis.Direction();
-  bool   yrev = false;
+  gp_Pnt           P, Q;
+  gp_Pnt           O = myAxis.Location();
+  gp_Dir           Ox;
+  gp_Dir           Oz   = myAxis.Direction();
+  bool yrev = false;
   if (myBasisCurve->GetType() == GeomAbs_Line)
   {
     if ((myBasisCurve->Line().Direction()).Dot(Oz) < 0.)
@@ -130,7 +128,7 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   else
   {
     double First = myBasisCurve->FirstParameter();
-    P            = Value(0., 0.); // ce qui ne veut pas dire grand chose
+    P                   = Value(0., 0.); // ce qui ne veut pas dire grand chose
     if (GetType() == GeomAbs_Cone)
     {
       if (gp_Lin(myAxis).Distance(P) <= Precision::Confusion())
@@ -152,11 +150,11 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   }
   else
   {
-    double First = myBasisCurve->FirstParameter();
-    double Last  = myBasisCurve->LastParameter();
-    int    Ratio = 1;
-    double Dist;
-    gp_Pnt PP;
+    double    First = myBasisCurve->FirstParameter();
+    double    Last  = myBasisCurve->LastParameter();
+    int Ratio = 1;
+    double    Dist;
+    gp_Pnt           PP;
     do
     {
       PP   = myBasisCurve->Value(First + (Last - First) / Ratio);
@@ -251,8 +249,7 @@ int GeomAdaptor_SurfaceOfRevolution::NbVIntervals(const GeomAbs_Shape S) const
 
 //=================================================================================================
 
-void GeomAdaptor_SurfaceOfRevolution::UIntervals(NCollection_Array1<double>& T,
-                                                 const GeomAbs_Shape) const
+void GeomAdaptor_SurfaceOfRevolution::UIntervals(NCollection_Array1<double>& T, const GeomAbs_Shape) const
 {
   T(T.Lower())     = 0.;
   T(T.Lower() + 1) = 2 * M_PI;
@@ -261,7 +258,7 @@ void GeomAdaptor_SurfaceOfRevolution::UIntervals(NCollection_Array1<double>& T,
 //=================================================================================================
 
 void GeomAdaptor_SurfaceOfRevolution::VIntervals(NCollection_Array1<double>& T,
-                                                 const GeomAbs_Shape         S) const
+                                                 const GeomAbs_Shape   S) const
 {
   myBasisCurve->Intervals(T, S);
 }
@@ -269,8 +266,8 @@ void GeomAdaptor_SurfaceOfRevolution::VIntervals(NCollection_Array1<double>& T,
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfRevolution::UTrim(const double First,
-                                                                      const double Last,
-                                                                      const double Tol) const
+                                                                 const double Last,
+                                                                 const double Tol) const
 {
   constexpr double Eps = Precision::PConfusion();
   (void)Eps;
@@ -288,8 +285,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfRevolution::UTrim(const doub
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfRevolution::VTrim(const double First,
-                                                                      const double Last,
-                                                                      const double Tol) const
+                                                                 const double Last,
+                                                                 const double Tol) const
 {
   occ::handle<Adaptor3d_Curve>                 HC = BasisCurve()->Trim(First, Last, Tol);
   occ::handle<GeomAdaptor_SurfaceOfRevolution> HR =
@@ -368,7 +365,7 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
 
       if (myAxis.IsParallel(Axe, TolAng))
       {
-        gp_Pnt P = Value(0., 0.);
+        gp_Pnt        P = Value(0., 0.);
         double R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
         if (R > TolConf)
         {
@@ -379,21 +376,21 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
         return GeomAbs_Plane;
       else
       {
-        double uf     = myBasisCurve->FirstParameter();
-        double ul     = myBasisCurve->LastParameter();
-        bool   istrim = (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul));
+        double    uf     = myBasisCurve->FirstParameter();
+        double    ul     = myBasisCurve->LastParameter();
+        bool istrim = (!Precision::IsInfinite(uf) && !Precision::IsInfinite(ul));
         if (istrim)
         {
-          gp_Pnt pf  = myBasisCurve->Value(uf);
-          gp_Pnt pl  = myBasisCurve->Value(ul);
+          gp_Pnt        pf  = myBasisCurve->Value(uf);
+          gp_Pnt        pl  = myBasisCurve->Value(ul);
           double len = pf.Distance(pl);
           // on calcule la distance projetee sur l axe.
-          gp_Vec vlin(pf, pl);
-          gp_Vec vaxe(myAxis.Direction());
+          gp_Vec        vlin(pf, pl);
+          gp_Vec        vaxe(myAxis.Direction());
           double projlen = std::abs(vaxe.Dot(vlin));
           if ((len - projlen) <= TolConf)
           {
-            gp_Pnt P = Value(0., 0.);
+            gp_Pnt        P = Value(0., 0.);
             double R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
             if (R > TolConf)
             {
@@ -403,9 +400,9 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
           else if (projlen <= TolConf)
             return GeomAbs_Plane;
         }
-        gp_Vec V(myAxis.Location(), myBasisCurve->Line().Location());
-        gp_Vec W(Axe.Direction());
-        gp_Vec AxisDir(myAxis.Direction());
+        gp_Vec        V(myAxis.Location(), myBasisCurve->Line().Location());
+        gp_Vec        W(Axe.Direction());
+        gp_Vec        AxisDir(myAxis.Direction());
         double proj = std::abs(W.Dot(AxisDir));
         if (std::abs(V.DotCross(AxisDir, W)) <= TolConf
             && (proj >= TolConeSemiAng && proj <= 1. - TolConeSemiAng))
@@ -418,7 +415,7 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
     //
     case GeomAbs_Circle: {
       double MajorRadius, aR;
-      gp_Lin aLin(myAxis);
+      gp_Lin        aLin(myAxis);
       //
       gp_Circ       C   = myBasisCurve->Circle();
       const gp_Pnt& aLC = C.Location();
@@ -454,9 +451,9 @@ gp_Pln GeomAdaptor_SurfaceOfRevolution::Plane() const
   Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_Plane,
                                  "GeomAdaptor_SurfaceOfRevolution:Plane");
 
-  gp_Ax3 Axe       = myAxeRev;
-  gp_Pnt aPonCurve = Value(0., 0.);
-  double aDot      = (aPonCurve.XYZ() - myAxis.Location().XYZ()).Dot(myAxis.Direction().XYZ());
+  gp_Ax3        Axe       = myAxeRev;
+  gp_Pnt        aPonCurve = Value(0., 0.);
+  double aDot = (aPonCurve.XYZ() - myAxis.Location().XYZ()).Dot(myAxis.Direction().XYZ());
 
   gp_Pnt P(myAxis.Location().XYZ() + aDot * myAxis.Direction().XYZ());
   Axe.SetLocation(P);
@@ -473,7 +470,7 @@ gp_Cylinder GeomAdaptor_SurfaceOfRevolution::Cylinder() const
   Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_Cylinder,
                                  "GeomAdaptor_SurfaceOfRevolution::Cylinder");
 
-  gp_Pnt P = Value(0., 0.);
+  gp_Pnt        P = Value(0., 0.);
   double R = gp_Vec(myAxeRev.Location(), P) * myAxeRev.XDirection();
   return gp_Cylinder(myAxeRev, R);
 }
@@ -484,15 +481,15 @@ gp_Cone GeomAdaptor_SurfaceOfRevolution::Cone() const
 {
   Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_Cone, "GeomAdaptor_SurfaceOfRevolution:Cone");
 
-  gp_Ax3 Axe   = myAxeRev;
-  gp_Dir ldir  = (myBasisCurve->Line()).Direction();
+  gp_Ax3        Axe   = myAxeRev;
+  gp_Dir        ldir  = (myBasisCurve->Line()).Direction();
   double Angle = (Axe.Direction()).Angle(ldir);
-  gp_Pnt P0    = Value(0., 0.);
+  gp_Pnt        P0    = Value(0., 0.);
   double R     = (Axe.Location()).Distance(P0);
   if (R >= Precision::Confusion())
   {
-    gp_Pnt O = Axe.Location();
-    gp_Vec OP0(O, P0);
+    gp_Pnt        O = Axe.Location();
+    gp_Vec        OP0(O, P0);
     double t = OP0.Dot(Axe.XDirection());
     t /= ldir.Dot(Axe.XDirection());
     OP0.Add(-t * gp_Vec(ldir));
@@ -522,8 +519,8 @@ gp_Torus GeomAdaptor_SurfaceOfRevolution::Torus() const
   Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_Torus,
                                  "GeomAdaptor_SurfaceOfRevolution:Torus");
 
-  gp_Circ C           = myBasisCurve->Circle();
-  double  MajorRadius = gp_Lin(myAxis).Distance(C.Location());
+  gp_Circ       C           = myBasisCurve->Circle();
+  double MajorRadius = gp_Lin(myAxis).Distance(C.Location());
   return gp_Torus(myAxeRev, MajorRadius, C.Radius());
 }
 

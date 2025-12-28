@@ -62,14 +62,16 @@ void SelectMgr_BaseFrustum::SetPixelTolerance(const int theTol)
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::SetWindowSize(const int theWidth, const int theHeight)
+void SelectMgr_BaseFrustum::SetWindowSize(const int theWidth,
+                                          const int theHeight)
 {
   myBuilder->SetWindowSize(theWidth, theHeight);
 }
 
 //=================================================================================================
 
-void SelectMgr_BaseFrustum::WindowSize(int& theWidth, int& theHeight) const
+void SelectMgr_BaseFrustum::WindowSize(int& theWidth,
+                                       int& theHeight) const
 {
   myBuilder->WindowSize(theWidth, theHeight);
 }
@@ -89,11 +91,11 @@ void SelectMgr_BaseFrustum::SetBuilder(const occ::handle<SelectMgr_FrustumBuilde
 //=================================================================================================
 
 bool SelectMgr_BaseFrustum::IsBoundaryIntersectSphere(
-  const gp_Pnt&                     theCenter,
-  const double                      theRadius,
-  const gp_Dir&                     thePlaneNormal,
+  const gp_Pnt&             theCenter,
+  const double       theRadius,
+  const gp_Dir&             thePlaneNormal,
   const NCollection_Array1<gp_Pnt>& theBoundaries,
-  bool&                             theBoundaryInside) const
+  bool&         theBoundaryInside) const
 {
   for (int anIdx = theBoundaries.Lower(); anIdx < theBoundaries.Upper(); ++anIdx)
   {
@@ -118,7 +120,7 @@ bool SelectMgr_BaseFrustum::IsBoundaryIntersectSphere(
       return true;
     }
 
-    gp_Dir aRayDir(gp_Vec(aPntProj1, aPntProj2));
+    gp_Dir        aRayDir(gp_Vec(aPntProj1, aPntProj2));
     double aTimeEnter = 0.0, aTimeLeave = 0.0;
     if (RaySphereIntersection(theCenter, theRadius, aPntProj1, aRayDir, aTimeEnter, aTimeLeave))
     {

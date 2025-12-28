@@ -123,7 +123,7 @@ void OpenGl_TileSampler::dumpMap(std::ostream&                     theStream,
 NCollection_Vec2<int> OpenGl_TileSampler::nextTileToSample()
 {
   NCollection_Vec2<int> aTile(0, 0);
-  const float           aKsiX = mySampler.sample(0, myLastSample) * myMarginalMap.back();
+  const float     aKsiX = mySampler.sample(0, myLastSample) * myMarginalMap.back();
   for (; (size_t)aTile.x() < myMarginalMap.size() - 1; ++aTile.x())
   {
     if (aKsiX <= myMarginalMap[aTile.x()])
@@ -149,7 +149,7 @@ NCollection_Vec2<int> OpenGl_TileSampler::nextTileToSample()
 //=================================================================================================
 
 void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
-                                 const NCollection_Vec2<int>&     theSize)
+                                 const NCollection_Vec2<int>&           theSize)
 {
   if (theSize.x() <= 0 || theSize.y() <= 0)
   {
@@ -168,8 +168,7 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
     myTileSize    = aTileSize;
     myScaleFactor = 1.0e6f * (1024.0f / float(myTileSize * myTileSize));
 
-    occ::handle<NCollection_BaseAllocator> anAlloc =
-      NCollection_BaseAllocator::CommonBaseAllocator();
+    occ::handle<NCollection_BaseAllocator> anAlloc = NCollection_BaseAllocator::CommonBaseAllocator();
     myTiles.SetTopDown(true);
     myTiles.Init(anAlloc, aNbTilesX, aNbTilesY);
     myTiles.Init(1);
@@ -200,7 +199,8 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
   {
     aNbShunkTilesX = 8;
     aNbShunkTilesY = 8;
-    for (int anIdx = 0; aNbShunkTilesX * aNbShunkTilesY < theParams.NbRayTracingTiles; ++anIdx)
+    for (int anIdx = 0; aNbShunkTilesX * aNbShunkTilesY < theParams.NbRayTracingTiles;
+         ++anIdx)
     {
       (anIdx % 2 == 0 ? aNbShunkTilesX : aNbShunkTilesY) <<= 1;
     }
@@ -218,7 +218,7 @@ void OpenGl_TileSampler::SetSize(const Graphic3d_RenderingParams& theParams,
 bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
                                 const occ::handle<OpenGl_Texture>& theSamplesTexture,
                                 const occ::handle<OpenGl_Texture>& theOffsetsTexture,
-                                const bool                         theAdaptive)
+                                const bool                    theAdaptive)
 {
   if (myTiles.IsEmpty())
   {
@@ -236,8 +236,7 @@ bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
   // This map is used within single-pass rendering method requiring atomic float operation support
   // from hardware.
   myTiles.Init(0);
-  Image_PixMapTypedData<NCollection_Vec2<int>>& anOffsets =
-    theAdaptive ? myOffsetsShrunk : myOffsets;
+  Image_PixMapTypedData<NCollection_Vec2<int>>& anOffsets = theAdaptive ? myOffsetsShrunk : myOffsets;
   anOffsets.Init(NCollection_Vec2<int>(-1, -1));
   for (size_t aRowIter = 0; aRowIter < anOffsets.SizeY; ++aRowIter)
   {
@@ -313,11 +312,10 @@ bool OpenGl_TileSampler::upload(const occ::handle<OpenGl_Context>& theContext,
         || theOffsetsTexture->SizeY() != (int)anOffsets.SizeY || !theOffsetsTexture->IsValid())
     {
       theOffsetsTexture->Release(theContext.get());
-      if (!theOffsetsTexture->Init(
-            theContext,
-            OpenGl_TextureFormat::FindSizedFormat(theContext, GL_RG32I),
-            NCollection_Vec2<int>((int)anOffsets.SizeX, (int)anOffsets.SizeY),
-            Graphic3d_TypeOfTexture_2D))
+      if (!theOffsetsTexture->Init(theContext,
+                                   OpenGl_TextureFormat::FindSizedFormat(theContext, GL_RG32I),
+                                   NCollection_Vec2<int>((int)anOffsets.SizeX, (int)anOffsets.SizeY),
+                                   Graphic3d_TypeOfTexture_2D))
       {
         hasErrors = true;
       }

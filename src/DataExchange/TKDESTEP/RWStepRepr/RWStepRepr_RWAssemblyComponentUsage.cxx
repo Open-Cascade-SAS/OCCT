@@ -31,7 +31,7 @@ RWStepRepr_RWAssemblyComponentUsage::RWStepRepr_RWAssemblyComponentUsage() {}
 
 void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepRepr_AssemblyComponentUsage>& ent) const
 {
@@ -56,7 +56,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
                    aProductDefinitionRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aProductDefinitionRelationship_Description;
-  bool                                  hasProductDefinitionRelationship_Description = true;
+  bool                 hasProductDefinitionRelationship_Description = true;
   if (data->IsParamDefined(num, 3))
   {
     data->ReadString(num,
@@ -117,7 +117,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
   // Own fields of AssemblyComponentUsage
 
   occ::handle<TCollection_HAsciiString> aReferenceDesignator;
-  bool                                  hasReferenceDesignator = true;
+  bool                 hasReferenceDesignator = true;
   if (data->IsParamDefined(num, 6))
   {
     data->ReadString(num, 6, "reference_designator", ach, aReferenceDesignator);
@@ -141,7 +141,7 @@ void RWStepRepr_RWAssemblyComponentUsage::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepRepr_AssemblyComponentUsage>& ent) const
 {
 
@@ -174,9 +174,8 @@ void RWStepRepr_RWAssemblyComponentUsage::WriteStep(
 
 //=================================================================================================
 
-void RWStepRepr_RWAssemblyComponentUsage::Share(
-  const occ::handle<StepRepr_AssemblyComponentUsage>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepRepr_RWAssemblyComponentUsage::Share(const occ::handle<StepRepr_AssemblyComponentUsage>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ProductDefinitionRelationship

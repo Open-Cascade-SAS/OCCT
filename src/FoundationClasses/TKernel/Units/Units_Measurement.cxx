@@ -64,7 +64,7 @@ Units_Measurement::Units_Measurement(const double avalue, const char* aunit)
 void Units_Measurement::Convert(const char* aunit)
 {
   occ::handle<Units_Token> oldtoken = thetoken;
-  Units_UnitSentence       newunit(aunit);
+  Units_UnitSentence  newunit(aunit);
   if (!newunit.IsDone())
   {
     std::cout << "Units_Measurement: can not convert - incorrect unit => result is not correct"
@@ -123,13 +123,13 @@ occ::handle<Units_Token> Units_Measurement::Token() const
 
 Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) const
 {
-  double            value;
+  double     value;
   Units_Measurement measurement;
   if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
     return measurement;
-  value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                          = thetoken->Divided(value);
-  value                          = themeasurement + value;
+  value                     = ameasurement.Token()->Multiplied(ameasurement.Measurement());
+  value                     = thetoken->Divided(value);
+  value                     = themeasurement + value;
   occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
@@ -138,13 +138,13 @@ Units_Measurement Units_Measurement::Add(const Units_Measurement& ameasurement) 
 
 Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurement) const
 {
-  double            value;
+  double     value;
   Units_Measurement measurement;
   if (thetoken->Dimensions()->IsNotEqual((ameasurement.Token())->Dimensions()))
     return measurement;
-  value                          = ameasurement.Token()->Multiplied(ameasurement.Measurement());
-  value                          = thetoken->Divided(value);
-  value                          = themeasurement - value;
+  value                     = ameasurement.Token()->Multiplied(ameasurement.Measurement());
+  value                     = thetoken->Divided(value);
+  value                     = themeasurement - value;
   occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
@@ -153,7 +153,7 @@ Units_Measurement Units_Measurement::Subtract(const Units_Measurement& ameasurem
 
 Units_Measurement Units_Measurement::Multiply(const Units_Measurement& ameasurement) const
 {
-  double                   value = themeasurement * ameasurement.Measurement();
+  double       value = themeasurement * ameasurement.Measurement();
   occ::handle<Units_Token> token = thetoken * ameasurement.Token();
   return Units_Measurement(value, token);
 }
@@ -162,7 +162,7 @@ Units_Measurement Units_Measurement::Multiply(const Units_Measurement& ameasurem
 
 Units_Measurement Units_Measurement::Multiply(const double avalue) const
 {
-  double                   value = themeasurement * avalue;
+  double       value = themeasurement * avalue;
   occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
@@ -171,7 +171,7 @@ Units_Measurement Units_Measurement::Multiply(const double avalue) const
 
 Units_Measurement Units_Measurement::Divide(const Units_Measurement& ameasurement) const
 {
-  double                   value = themeasurement / ameasurement.Measurement();
+  double       value = themeasurement / ameasurement.Measurement();
   occ::handle<Units_Token> token = thetoken / ameasurement.Token();
   return Units_Measurement(value, token);
 }
@@ -180,7 +180,7 @@ Units_Measurement Units_Measurement::Divide(const Units_Measurement& ameasuremen
 
 Units_Measurement Units_Measurement::Divide(const double avalue) const
 {
-  double                   value = themeasurement / avalue;
+  double       value = themeasurement / avalue;
   occ::handle<Units_Token> token = thetoken->Creates();
   return Units_Measurement(value, token);
 }
@@ -189,7 +189,7 @@ Units_Measurement Units_Measurement::Divide(const double avalue) const
 
 Units_Measurement Units_Measurement::Power(const double anexponent) const
 {
-  double                   value = pow(themeasurement, anexponent);
+  double       value = pow(themeasurement, anexponent);
   occ::handle<Units_Token> token = pow(thetoken, anexponent);
   return Units_Measurement(value, token);
 }

@@ -53,15 +53,15 @@ occ::handle<TDF_Attribute> XmlMDataXtd_PresentationDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                           const occ::handle<TDF_Attribute>& theTarget,
-                                           XmlObjMgt_RRelocationTable&) const
+bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                       const occ::handle<TDF_Attribute>& theTarget,
+                                                       XmlObjMgt_RRelocationTable&) const
 {
   TCollection_ExtendedString aMessageString;
   XmlObjMgt_DOMString        aDOMStr;
 
   occ::handle<TDataXtd_Presentation> aTPrs  = occ::down_cast<TDataXtd_Presentation>(theTarget);
-  const XmlObjMgt_Element&           anElem = theSource;
+  const XmlObjMgt_Element&      anElem = theSource;
 
   // convert attribute value into GUID
   aDOMStr = anElem.getAttribute(::GuidString());
@@ -182,7 +182,7 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                           XmlObjMgt_Persistent&             theTarget,
+                                           XmlObjMgt_Persistent&        theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataXtd_Presentation> aTPrs = occ::down_cast<TDataXtd_Presentation>(theSource);
@@ -190,7 +190,7 @@ void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& the
     return;
 
   // convert GUID into attribute value
-  char                aGuidStr[40];
+  char  aGuidStr[40];
   Standard_PCharacter pGuidStr;
   pGuidStr = aGuidStr;
   aTPrs->GetDriverGUID().ToCString(pGuidStr);

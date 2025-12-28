@@ -25,6 +25,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Geom_BoundedCurve.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
@@ -99,7 +101,7 @@ public:
   //! the number of poles is greater than MaxDegree + 1 or lower
   //! than 2 or CurvePoles and CurveWeights have not the same length
   //! or one weight value is lower or equal to Resolution from package gp.
-  Standard_EXPORT Geom_BezierCurve(const NCollection_Array1<gp_Pnt>& CurvePoles,
+  Standard_EXPORT Geom_BezierCurve(const NCollection_Array1<gp_Pnt>&   CurvePoles,
                                    const NCollection_Array1<double>& PoleWeights);
 
   //! Copy constructor for optimized copying without validation.
@@ -129,7 +131,9 @@ public:
   //! Raised if the resulting number of poles is greater than
   //! MaxDegree + 1.
   //! Raised if Weight is lower or equal to Resolution from package gp.
-  Standard_EXPORT void InsertPoleAfter(const int Index, const gp_Pnt& P, const double Weight);
+  Standard_EXPORT void InsertPoleAfter(const int Index,
+                                       const gp_Pnt&          P,
+                                       const double    Weight);
 
   //! Inserts a pole P before the pole of range Index.
   //! If the curve <me> is rational the weight value for the new
@@ -149,7 +153,9 @@ public:
   //! MaxDegree + 1.
   //! Raised if Weight is lower or equal to Resolution from
   //! package gp.
-  Standard_EXPORT void InsertPoleBefore(const int Index, const gp_Pnt& P, const double Weight);
+  Standard_EXPORT void InsertPoleBefore(const int Index,
+                                        const gp_Pnt&          P,
+                                        const double    Weight);
 
   //! Removes the pole of range Index.
   //! If the curve was rational it can become non rational.
@@ -193,7 +199,9 @@ public:
   //! all the weights are identical.
   //! Raised if Index is not in the range [1, NbPoles]
   //! Raised if Weight <= Resolution from package gp
-  Standard_EXPORT void SetPole(const int Index, const gp_Pnt& P, const double Weight);
+  Standard_EXPORT void SetPole(const int Index,
+                               const gp_Pnt&          P,
+                               const double    Weight);
 
   //! Changes the weight of the pole of range Index.
   //! If the curve <me> is not rational it can become rational
@@ -234,7 +242,10 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2) const override;
 
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -244,16 +255,17 @@ public:
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const override;
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2,
+                          gp_Vec&             V3) const override;
 
   //! For the point of parameter U of this Bezier curve,
   //! computes the vector corresponding to the Nth derivative.
   //! Note: the parameter U can be outside the bounds of the curve.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override;
 
   //! Returns Value (U=0.), it is the first control point of the curve.
   Standard_EXPORT gp_Pnt StartPoint() const override;
@@ -320,7 +332,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
@@ -333,15 +345,14 @@ private:
   //! Update rational and closed.
   //!
   //! if nbpoles < 2 or nbboles > MaDegree + 1
-  void Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Poles,
-            const occ::handle<NCollection_HArray1<double>>& Weights);
+  void Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Poles, const occ::handle<NCollection_HArray1<double>>& Weights);
 
-  bool                                     rational;
-  bool                                     closed;
-  occ::handle<NCollection_HArray1<gp_Pnt>> poles;
+  bool              rational;
+  bool              closed;
+  occ::handle<NCollection_HArray1<gp_Pnt>>   poles;
   occ::handle<NCollection_HArray1<double>> weights;
-  double                                   maxderivinv;
-  bool                                     maxderivinvok;
+  double                 maxderivinv;
+  bool              maxderivinvok;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

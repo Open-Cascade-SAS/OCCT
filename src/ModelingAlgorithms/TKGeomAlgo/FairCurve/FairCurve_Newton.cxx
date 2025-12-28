@@ -20,11 +20,11 @@
 //=================================================================================================
 
 FairCurve_Newton::FairCurve_Newton(const math_MultipleVarFunctionWithHessian& theFunction,
-                                   const double                               theSpatialTolerance,
-                                   const double                               theCriteriumTolerance,
-                                   const int                                  theNbIterations,
-                                   const double                               theConvexity,
-                                   const bool                                 theWithSingularity)
+                                   const double                        theSpatialTolerance,
+                                   const double                        theCriteriumTolerance,
+                                   const int                     theNbIterations,
+                                   const double                        theConvexity,
+                                   const bool                     theWithSingularity)
     : math_NewtonMinimum(theFunction,
                          theCriteriumTolerance,
                          theNbIterations,

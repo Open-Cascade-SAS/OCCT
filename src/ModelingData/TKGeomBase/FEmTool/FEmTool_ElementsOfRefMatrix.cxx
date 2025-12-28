@@ -20,7 +20,7 @@
 #include <NCollection_Array1.hxx>
 
 FEmTool_ElementsOfRefMatrix::FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase,
-                                                         const int                DerOrder)
+                                                         const int   DerOrder)
     : myBase(TheBase)
 {
   if (DerOrder < 0 || DerOrder > 3)
@@ -45,7 +45,7 @@ bool FEmTool_ElementsOfRefMatrix::Value(const math_Vector& X, math_Vector& F)
   if (F.Length() < myNbEquations)
     throw Standard_OutOfRange("FEmTool_ElementsOfRefMatrix::Value");
 
-  double                     u = X(X.Lower());
+  double        u = X(X.Lower());
   NCollection_Array1<double> Basis(0, myBase.WorkDegree()), Aux(0, myBase.WorkDegree());
 
   switch (myDerOrder)

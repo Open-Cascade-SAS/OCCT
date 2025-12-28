@@ -112,16 +112,20 @@ void capture_end(int theFDStd, int& theFDSave)
 
 } // anonymous namespace
 
-static int CommandCmd(ClientData theClientData, Tcl_Interp* interp, int argc, const char* argv[])
+static int CommandCmd(ClientData       theClientData,
+                                   Tcl_Interp*      interp,
+                                   int argc,
+                                   const char*      argv[])
 {
-  int                             code      = TCL_OK;
+  int                code      = TCL_OK;
   Draw_Interpretor::CallBackData* aCallback = (Draw_Interpretor::CallBackData*)theClientData;
   Draw_Interpretor&               di        = *(aCallback->myDI);
 
   // log command execution, except commands manipulating log itself and echo
-  bool isLogManipulation = (strcmp(argv[0], "dlog") == 0 || strcmp(argv[0], "decho") == 0);
-  bool doLog             = (di.GetDoLog() && !isLogManipulation);
-  bool doEcho            = (di.GetDoEcho() && !isLogManipulation);
+  bool isLogManipulation =
+    (strcmp(argv[0], "dlog") == 0 || strcmp(argv[0], "decho") == 0);
+  bool doLog  = (di.GetDoLog() && !isLogManipulation);
+  bool doEcho = (di.GetDoEcho() && !isLogManipulation);
 
   // flush cerr and cout
   flush_standard_streams();
@@ -287,8 +291,7 @@ void Draw_Interpretor::Init()
 void Draw_Interpretor::SetToColorize(bool theToColorize)
 {
   myToColorize = theToColorize;
-  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(
-         Message::DefaultMessenger()->Printers());
+  for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(Message::DefaultMessenger()->Printers());
        aPrinterIter.More();
        aPrinterIter.Next())
   {
@@ -302,11 +305,11 @@ void Draw_Interpretor::SetToColorize(bool theToColorize)
 
 //=================================================================================================
 
-void Draw_Interpretor::add(const char*                     theCommandName,
-                           const char*                     theHelp,
-                           const char*                     theFileName,
+void Draw_Interpretor::add(const char*          theCommandName,
+                           const char*          theHelp,
+                           const char*          theFileName,
                            Draw_Interpretor::CallBackData* theCallback,
-                           const char*                     theGroup)
+                           const char*          theGroup)
 {
   Standard_ASSERT_RAISE(myInterp != NULL, "Attempt to add command to Null interpreter");
 
@@ -326,8 +329,8 @@ void Draw_Interpretor::add(const char*                     theCommandName,
     return;
   }
 
-  OSD_Path aPath(theFileName);
-  int      nbTrek = aPath.TrekLength();
+  OSD_Path         aPath(theFileName);
+  int nbTrek = aPath.TrekLength();
   for (int i = 4; i < nbTrek; ++i)
   {
     aPath.RemoveATrek(1);
@@ -449,7 +452,8 @@ int Draw_Interpretor::Eval(const char* line)
 
 //=================================================================================================
 
-int Draw_Interpretor::RecordAndEval(const char* line, const int flags)
+int Draw_Interpretor::RecordAndEval(const char* line,
+                                                 const int flags)
 {
   return Tcl_RecordAndEval(myInterp, line, flags);
 }

@@ -66,7 +66,7 @@ static int GetNewShapes(Draw_Interpretor& di, int nb, const char** arg)
     }
     di << EvolutionString(aNS->Evolution());
     TNaming_Iterator anIter(aNS);
-    int              a;
+    int a;
     char             aName[200];
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
@@ -103,7 +103,7 @@ static int GetOldShapes(Draw_Interpretor& di, int nb, const char** arg)
     }
     di << EvolutionString(aNS->Evolution());
     TNaming_Iterator anIter(aNS);
-    int              a;
+    int a;
     char             aName[200];
     for (a = 1; anIter.More(); anIter.Next(), a++)
     {
@@ -128,7 +128,7 @@ static int GetOldShapes(Draw_Interpretor& di, int nb, const char** arg)
 static int GetAllNew(const TopoDS_Shape&            theShape,
                      const TDF_Label&               theAccess,
                      const TCollection_AsciiString& theName,
-                     int                            theIndex)
+                     int               theIndex)
 {
   TNaming_NewShapeIterator anIter(theShape, theAccess);
   TCollection_AsciiString  aName;
@@ -166,7 +166,7 @@ static int GetAllNewShapes(Draw_Interpretor& di, int nb, const char** arg)
         di << "Label has no NamedShape\n";
         return 1;
       }
-      int              a;
+      int a;
       TNaming_Iterator anIter(aNS);
       for (a = 1; anIter.More(); anIter.Next(), a++)
       {
@@ -206,9 +206,9 @@ static int GetAllNewShapes(Draw_Interpretor& di, int nb, const char** arg)
 static int GetAllOld(const TopoDS_Shape&            theShape,
                      const TDF_Label&               theAccess,
                      const TCollection_AsciiString& theName,
-                     int                            theIndex)
+                     int               theIndex)
 {
-  TCollection_AsciiString         aName;
+  TCollection_AsciiString    aName;
   occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(theShape, theAccess);
   if (aNS.IsNull())
     return theIndex;
@@ -248,7 +248,7 @@ static int GetAllOldShapes(Draw_Interpretor& di, int nb, const char** arg)
         di << "Label has no NamedShape\n";
         return 1;
       }
-      int              a;
+      int a;
       TNaming_Iterator anIter(aNS);
       for (a = 1; anIter.More(); anIter.Next(), a++)
       {
@@ -290,7 +290,7 @@ static int GetSameShapes(Draw_Interpretor& di, int nb, const char** arg)
   TCollection_AsciiString aRes;
   if (nb == 3)
   {
-    int                   aResult = 0;
+    int aResult = 0;
     occ::handle<TDF_Data> DF;
     if (!DDF::GetDF(arg[1], DF))
     {

@@ -27,7 +27,7 @@ RWStepBasic_RWMassMeasureWithUnit::RWStepBasic_RWMassMeasureWithUnit() {}
 
 void RWStepBasic_RWMassMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepBasic_MassMeasureWithUnit>& ent) const
 {
@@ -51,7 +51,7 @@ void RWStepBasic_RWMassMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWMassMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepBasic_MassMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---

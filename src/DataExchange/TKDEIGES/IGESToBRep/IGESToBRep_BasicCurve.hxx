@@ -62,18 +62,17 @@ public:
   Standard_EXPORT IGESToBRep_BasicCurve(const IGESToBRep_CurveAndSurface& CS);
 
   //! Creates a tool BasicCurve ready to run.
-  Standard_EXPORT IGESToBRep_BasicCurve(const double eps,
-                                        const double epsGeom,
-                                        const double epsCoeff,
-                                        const bool   mode,
-                                        const bool   modeapprox,
-                                        const bool   optimized);
+  Standard_EXPORT IGESToBRep_BasicCurve(const double    eps,
+                                        const double    epsGeom,
+                                        const double    epsCoeff,
+                                        const bool mode,
+                                        const bool modeapprox,
+                                        const bool optimized);
 
   //! Transfer a IGESEntity which answer True to the
   //! member : IGESToBRep::IsBasicCurve(IGESEntity). If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT occ::handle<Geom_Curve> TransferBasicCurve(
-    const occ::handle<IGESData_IGESEntity>& start);
+  Standard_EXPORT occ::handle<Geom_Curve> TransferBasicCurve(const occ::handle<IGESData_IGESEntity>& start);
 
   //! Transfert a IGESEntity which answer True to the
   //! member : IGESToBRep::IsBasicCurve(IGESEntity).
@@ -89,17 +88,14 @@ public:
   Standard_EXPORT occ::handle<Geom2d_Curve> Transfer2dBSplineCurve(
     const occ::handle<IGESGeom_BSplineCurve>& start);
 
-  Standard_EXPORT occ::handle<Geom_Curve> TransferCircularArc(
-    const occ::handle<IGESGeom_CircularArc>& start);
+  Standard_EXPORT occ::handle<Geom_Curve> TransferCircularArc(const occ::handle<IGESGeom_CircularArc>& start);
 
   Standard_EXPORT occ::handle<Geom2d_Curve> Transfer2dCircularArc(
     const occ::handle<IGESGeom_CircularArc>& start);
 
-  Standard_EXPORT occ::handle<Geom_Curve> TransferConicArc(
-    const occ::handle<IGESGeom_ConicArc>& start);
+  Standard_EXPORT occ::handle<Geom_Curve> TransferConicArc(const occ::handle<IGESGeom_ConicArc>& start);
 
-  Standard_EXPORT occ::handle<Geom2d_Curve> Transfer2dConicArc(
-    const occ::handle<IGESGeom_ConicArc>& start);
+  Standard_EXPORT occ::handle<Geom2d_Curve> Transfer2dConicArc(const occ::handle<IGESGeom_ConicArc>& start);
 
   Standard_EXPORT occ::handle<Geom_BSplineCurve> TransferCopiousData(
     const occ::handle<IGESGeom_CopiousData>& start);
@@ -119,6 +115,7 @@ public:
 
   Standard_EXPORT occ::handle<Geom_Transformation> TransferTransformation(
     const occ::handle<IGESGeom_TransformationMatrix>& start);
+
 };
 
 #endif // _IGESToBRep_BasicCurve_HeaderFile

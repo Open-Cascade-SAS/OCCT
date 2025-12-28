@@ -38,9 +38,9 @@ IGESSelect_SelectBasicGeom::IGESSelect_SelectBasicGeom(const int mode)
 }
 
 bool IGESSelect_SelectBasicGeom::Explore(const int /*level*/,
-                                         const occ::handle<Standard_Transient>& ent,
-                                         const Interface_Graph& /*G*/,
-                                         Interface_EntityIterator& explored) const
+                                                     const occ::handle<Standard_Transient>& ent,
+                                                     const Interface_Graph& /*G*/,
+                                                     Interface_EntityIterator& explored) const
 {
   //  thegeom > 0 : curves3d   < 0 : surfaces   == 0 : curves3d + surfaces libres
 
@@ -231,7 +231,7 @@ TCollection_AsciiString IGESSelect_SelectBasicGeom::ExploreLabel() const
 }
 
 bool IGESSelect_SelectBasicGeom::SubCurves(const occ::handle<IGESData_IGESEntity>& ent,
-                                           Interface_EntityIterator&               explored)
+                                                       Interface_EntityIterator&          explored)
 {
   if (ent.IsNull())
     return false;

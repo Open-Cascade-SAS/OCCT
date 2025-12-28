@@ -43,7 +43,7 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion(
 
 GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion(
   const occ::handle<Adaptor3d_Curve>& C,
-  const gp_Dir&                       V)
+  const gp_Dir&                  V)
     : myHaveDir(false)
 {
   Load(C);
@@ -54,8 +54,7 @@ GeomAdaptor_SurfaceOfLinearExtrusion::GeomAdaptor_SurfaceOfLinearExtrusion(
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfLinearExtrusion::ShallowCopy() const
 {
-  occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> aCopy =
-    new GeomAdaptor_SurfaceOfLinearExtrusion();
+  occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> aCopy = new GeomAdaptor_SurfaceOfLinearExtrusion();
 
   if (!myBasisCurve.IsNull())
   {
@@ -169,7 +168,7 @@ int GeomAdaptor_SurfaceOfLinearExtrusion::NbVIntervals(const GeomAbs_Shape) cons
 //=================================================================================================
 
 void GeomAdaptor_SurfaceOfLinearExtrusion::UIntervals(NCollection_Array1<double>& T,
-                                                      const GeomAbs_Shape         S) const
+                                                      const GeomAbs_Shape   S) const
 {
   myBasisCurve->Intervals(T, S);
 }
@@ -186,8 +185,8 @@ void GeomAdaptor_SurfaceOfLinearExtrusion::VIntervals(NCollection_Array1<double>
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfLinearExtrusion::VTrim(const double First,
-                                                                           const double Last,
-                                                                           const double Tol) const
+                                                                      const double Last,
+                                                                      const double Tol) const
 {
   occ::handle<Adaptor3d_Curve>                      HC = BasisCurve()->Trim(First, Last, Tol);
   occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> HR =
@@ -198,8 +197,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfLinearExtrusion::VTrim(const
 //=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_SurfaceOfLinearExtrusion::UTrim(const double,
-                                                                           const double,
-                                                                           const double) const
+                                                                      const double,
+                                                                      const double) const
 {
   occ::handle<GeomAdaptor_SurfaceOfLinearExtrusion> HR = new GeomAdaptor_SurfaceOfLinearExtrusion(
     GeomAdaptor_SurfaceOfLinearExtrusion(myBasisCurve, myDirection));
@@ -320,8 +319,8 @@ gp_Pln GeomAdaptor_SurfaceOfLinearExtrusion::Plane() const
   Standard_NoSuchObject_Raise_if(GetType() != GeomAbs_Plane,
                                  "GeomAdaptor_SurfaceOfLinearExtrusion::Plane");
 
-  gp_Pnt P;
-  gp_Vec D1u, newZ;
+  gp_Pnt        P;
+  gp_Vec        D1u, newZ;
   double UFirst = myBasisCurve->FirstParameter();
   double ULast  = myBasisCurve->LastParameter();
   if (Precision::IsNegativeInfinite(UFirst) && Precision::IsPositiveInfinite(ULast))

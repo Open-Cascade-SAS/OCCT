@@ -24,7 +24,8 @@
 
 StepAP214_AutoDesignGeneralOrgItem::StepAP214_AutoDesignGeneralOrgItem() {}
 
-int StepAP214_AutoDesignGeneralOrgItem::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepAP214_AutoDesignGeneralOrgItem::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -52,8 +53,7 @@ occ::handle<StepBasic_Product> StepAP214_AutoDesignGeneralOrgItem::Product() con
   return GetCasted(StepBasic_Product, Value());
 }
 
-occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignGeneralOrgItem::ProductDefinition()
-  const
+occ::handle<StepBasic_ProductDefinition> StepAP214_AutoDesignGeneralOrgItem::ProductDefinition() const
 {
   return GetCasted(StepBasic_ProductDefinition, Value());
 }

@@ -46,6 +46,7 @@ public:
 
   //! returns Value as a Axis2Placement3d (Null if another type)
   Standard_EXPORT occ::handle<StepGeom_Axis2Placement3d> Axis2Placement3d() const;
+
 };
 
 #endif // _StepGeom_Axis2Placement_HeaderFile

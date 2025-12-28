@@ -25,9 +25,13 @@
 #include <Standard_Boolean.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 class gp_Pnt;
 class gp_Vec;
 class gp_Vec2d;
@@ -89,33 +93,35 @@ public:
                                        const double V1,
                                        const double U2,
                                        const double V2,
-                                       gp_Vec&      TgFirst,
-                                       gp_Vec&      TgLast,
-                                       gp_Vec&      NormFirst,
-                                       gp_Vec&      NormLast) const = 0;
+                                       gp_Vec&             TgFirst,
+                                       gp_Vec&             TgLast,
+                                       gp_Vec&             NormFirst,
+                                       gp_Vec&             NormLast) const = 0;
 
   Standard_EXPORT virtual bool TwistOnS1() const;
 
   Standard_EXPORT virtual bool TwistOnS2() const;
 
-  Standard_EXPORT virtual void Section(const Blend_Point&            P,
+  Standard_EXPORT virtual void Section(const Blend_Point&    P,
                                        NCollection_Array1<gp_Pnt>&   Poles,
                                        NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<double>&   Weigths) override = 0;
+                                       NCollection_Array1<double>& Weigths) override = 0;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false
-  Standard_EXPORT virtual bool Section(const Blend_Point&            P,
-                                       NCollection_Array1<gp_Pnt>&   Poles,
-                                       NCollection_Array1<gp_Vec>&   DPoles,
-                                       NCollection_Array1<gp_Vec>&   D2Poles,
-                                       NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                       NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                       NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                       NCollection_Array1<double>&   Weigths,
-                                       NCollection_Array1<double>&   DWeigths,
-                                       NCollection_Array1<double>&   D2Weigths) override;
+  Standard_EXPORT virtual bool Section(const Blend_Point&    P,
+                                                   NCollection_Array1<gp_Pnt>&   Poles,
+                                                   NCollection_Array1<gp_Vec>&   DPoles,
+                                                   NCollection_Array1<gp_Vec>&   D2Poles,
+                                                   NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                                   NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                                   NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                                   NCollection_Array1<double>& Weigths,
+                                                   NCollection_Array1<double>& DWeigths,
+                                                   NCollection_Array1<double>& D2Weigths)
+    override;
+
 };
 
 #endif // _Blend_Function_HeaderFile

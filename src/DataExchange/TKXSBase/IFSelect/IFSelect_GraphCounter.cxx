@@ -21,7 +21,8 @@
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_GraphCounter, IFSelect_SignCounter)
 
-IFSelect_GraphCounter::IFSelect_GraphCounter(const bool withmap, const bool withlist)
+IFSelect_GraphCounter::IFSelect_GraphCounter(const bool withmap,
+                                             const bool withlist)
     : IFSelect_SignCounter(withmap, withlist)
 {
 }
@@ -36,9 +37,8 @@ void IFSelect_GraphCounter::SetApplied(const occ::handle<IFSelect_SelectDeduct>&
   theapplied = applied;
 }
 
-void IFSelect_GraphCounter::AddWithGraph(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-  const Interface_Graph&                                                     graph)
+void IFSelect_GraphCounter::AddWithGraph(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+                                         const Interface_Graph&                      graph)
 {
   if (theapplied.IsNull())
   {
@@ -50,11 +50,11 @@ void IFSelect_GraphCounter::AddWithGraph(
   int i, nb = list->Length();
   for (i = 1; i <= nb; i++)
   {
-    char                            val[12];
+    char                       val[12];
     occ::handle<Standard_Transient> ent = list->Value(i);
     theapplied->Alternate()->SetEntity(ent);
     Interface_EntityIterator iter = theapplied->UniqueResult(graph);
-    int                      n    = iter.NbEntities();
+    int         n    = iter.NbEntities();
     switch (n)
     {
       case 0:

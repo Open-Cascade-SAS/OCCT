@@ -74,7 +74,10 @@ bool DirFunctionTer::Value(const double x, double& fval)
   return F->Value(*P, fval);
 }
 
-static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, DirFunctionTer& F)
+static bool MinimizeDirection(math_Vector&    P,
+                                          math_Vector&    Dir,
+                                          double&  Result,
+                                          DirFunctionTer& F)
 {
 
   double ax, xx, bx;
@@ -89,7 +92,7 @@ static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, 
     if (Sol.IsDone())
     {
       double Scale = Sol.Location();
-      Result       = Sol.Minimum();
+      Result              = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
       return true;
@@ -101,9 +104,9 @@ static bool MinimizeDirection(math_Vector& P, math_Vector& Dir, double& Result, 
 //=================================================================================================
 
 math_FRPR::math_FRPR(const math_MultipleVarFunctionWithGradient& theFunction,
-                     const double                                theTolerance,
-                     const int                                   theNbIterations,
-                     const double                                theZEPS)
+                     const double                         theTolerance,
+                     const int                      theNbIterations,
+                     const double                         theZEPS)
 
     : TheLocation(1, theFunction.NbVariables()),
       TheGradient(1, theFunction.NbVariables()),
@@ -127,10 +130,10 @@ math_FRPR::~math_FRPR() {}
 
 void math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint)
 {
-  bool   Good;
-  int    n = TheLocation.Length();
-  int    j, its;
-  double gg, gam, dgg;
+  bool Good;
+  int n = TheLocation.Length();
+  int j, its;
+  double    gg, gam, dgg;
 
   math_Vector g(1, n), h(1, n);
 

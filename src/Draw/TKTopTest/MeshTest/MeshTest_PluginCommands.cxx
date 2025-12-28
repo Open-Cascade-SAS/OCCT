@@ -37,6 +37,9 @@
 #include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Map.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -98,7 +101,7 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
 
 static int mpnames(Draw_Interpretor&, int n, const char**)
 {
-  int                                                aNb;
+  int                      aNb;
   NCollection_Map<TCollection_AsciiString>::Iterator aIt;
   //
   if (n != 1)
@@ -108,7 +111,7 @@ static int mpnames(Draw_Interpretor&, int n, const char**)
   }
   //
   const NCollection_Map<TCollection_AsciiString>& aMN = BRepMesh_DiscretFactory::Get().Names();
-  aNb                                                 = aMN.Extent();
+  aNb                                 = aMN.Extent();
   if (!aNb)
   {
     printf(" *no names found\n");
@@ -224,8 +227,8 @@ static int mperror(Draw_Interpretor&, int n, const char**)
 
 static int mpincmesh(Draw_Interpretor&, int n, const char** a)
 {
-  double       aDeflection, aAngle;
-  TopoDS_Shape aS;
+  double aDeflection, aAngle;
+  TopoDS_Shape  aS;
   //
   if (n < 3)
   {
@@ -290,11 +293,11 @@ static int triarea(Draw_Interpretor& di, int n, const char** a)
 
   // detect if a shape has triangulation
   bool hasPoly = false;
-  int  i;
+  int              i;
   for (i = 1; i <= aMapF.Extent(); i++)
   {
-    const TopoDS_Face&              aFace = TopoDS::Face(aMapF(i));
-    TopLoc_Location                 aLoc;
+    const TopoDS_Face&         aFace = TopoDS::Face(aMapF(i));
+    TopLoc_Location            aLoc;
     occ::handle<Poly_Triangulation> aPoly = BRep_Tool::Triangulation(aFace, aLoc);
     if (!aPoly.IsNull())
     {
@@ -309,8 +312,8 @@ static int triarea(Draw_Interpretor& di, int n, const char** a)
   {
     for (i = 1; i <= aMapF.Extent(); i++)
     {
-      const TopoDS_Face&              aFace = TopoDS::Face(aMapF(i));
-      TopLoc_Location                 aLoc;
+      const TopoDS_Face&         aFace = TopoDS::Face(aMapF(i));
+      TopLoc_Location            aLoc;
       occ::handle<Poly_Triangulation> aPoly = BRep_Tool::Triangulation(aFace, aLoc);
       if (aPoly.IsNull())
       {
@@ -361,7 +364,8 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
   if (shape.IsNull())
     return 1;
 
-  const bool isToFindSmallTriangles = (n >= 3) ? (strcmp(a[2], "-small") == 0) : false;
+  const bool isToFindSmallTriangles =
+    (n >= 3) ? (strcmp(a[2], "-small") == 0) : false;
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapF;
   TopExp::MapShapes(shape, TopAbs_FACE, aMapF);
@@ -383,11 +387,11 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
       nbFree += nbEdge;
       di << "free links of face " << iF << "\n";
 
-      const TopoDS_Shape&             aShape = aMapF.FindKey(iF);
-      const TopoDS_Face&              aFace  = TopoDS::Face(aShape);
-      TopLoc_Location                 aLoc;
+      const TopoDS_Shape&        aShape = aMapF.FindKey(iF);
+      const TopoDS_Face&         aFace  = TopoDS::Face(aShape);
+      TopLoc_Location            aLoc;
       occ::handle<Poly_Triangulation> aT   = BRep_Tool::Triangulation(aFace, aLoc);
-      const gp_Trsf&                  trsf = aLoc.Transformation();
+      const gp_Trsf&             trsf = aLoc.Transformation();
 
       NCollection_Array1<gp_Pnt>   pnts(1, 2);
       NCollection_Array1<gp_Pnt2d> pnts2d(1, 2);
@@ -396,16 +400,16 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
         int n1, n2;
         aCheck.GetFreeLink(k, i, n1, n2);
         di << "{" << n1 << " " << n2 << "} ";
-        pnts(1)                          = aT->Node(n1).Transformed(trsf);
-        pnts(2)                          = aT->Node(n2).Transformed(trsf);
+        pnts(1)                     = aT->Node(n1).Transformed(trsf);
+        pnts(2)                     = aT->Node(n2).Transformed(trsf);
         occ::handle<Poly_Polygon3D> poly = new Poly_Polygon3D(pnts);
         DrawTrSurf::Set(name, poly);
         DrawTrSurf::Set(name, pnts(1));
         DrawTrSurf::Set(name, pnts(2));
         if (aT->HasUVNodes())
         {
-          pnts2d(1)                          = aT->UVNode(n1);
-          pnts2d(2)                          = aT->UVNode(n2);
+          pnts2d(1)                     = aT->UVNode(n1);
+          pnts2d(2)                     = aT->UVNode(n2);
           occ::handle<Poly_Polygon2D> poly2d = new Poly_Polygon2D(pnts2d);
           DrawTrSurf::Set(name, poly2d);
           DrawTrSurf::Set(name, pnts2d(1));
@@ -423,8 +427,8 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
     di << "cross face errors: {face1, node1, face2, node2, distance}\n";
     for (i = 1; i <= nbErr; i++)
     {
-      int    iF1, n1, iF2, n2;
-      double aVal;
+      int iF1, n1, iF2, n2;
+      double    aVal;
       aCheck.GetCrossFaceError(i, iF1, n1, iF2, n2, aVal);
       di << "{" << iF1 << " " << n1 << " " << iF2 << " " << n2 << " " << aVal << "} ";
     }
@@ -454,10 +458,10 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
       int iface, inode;
       aCheck.GetFreeNodeNum(i, iface, inode);
 
-      const TopoDS_Face&              aFace = TopoDS::Face(aMapF.FindKey(iface));
-      TopLoc_Location                 aLoc;
+      const TopoDS_Face&         aFace = TopoDS::Face(aMapF.FindKey(iface));
+      TopLoc_Location            aLoc;
       occ::handle<Poly_Triangulation> aT   = BRep_Tool::Triangulation(aFace, aLoc);
-      const gp_Trsf&                  trsf = aLoc.Transformation();
+      const gp_Trsf&             trsf = aLoc.Transformation();
       DrawTrSurf::Set(name, aT->Node(inode).Transformed(trsf));
       if (aT->HasUVNodes())
       {
@@ -478,12 +482,12 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
       int aFaceId = 0, aTriID = 0;
       aCheck.GetSmallTriangle(i, aFaceId, aTriID);
 
-      const TopoDS_Face&                    aFace = TopoDS::Face(aMapF.FindKey(aFaceId));
-      TopLoc_Location                       aLoc;
-      const gp_Trsf&                        aTrsf = aLoc.Transformation();
+      const TopoDS_Face&               aFace = TopoDS::Face(aMapF.FindKey(aFaceId));
+      TopLoc_Location                  aLoc;
+      const gp_Trsf&                   aTrsf = aLoc.Transformation();
       const occ::handle<Poly_Triangulation> aT    = BRep_Tool::Triangulation(aFace, aLoc);
-      const Poly_Triangle&                  aTri  = aT->Triangle(aTriID);
-      int                                   aN1, aN2, aN3;
+      const Poly_Triangle&             aTri  = aT->Triangle(aTriID);
+      int                 aN1, aN2, aN3;
       aTri.Get(aN1, aN2, aN3);
 
       NCollection_Array1<gp_Pnt> aPoles(1, 4);
@@ -512,8 +516,7 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
         aPoles2d(2)               = aT->UVNode(aN2);
         aPoles2d(3)               = aT->UVNode(aN3);
 
-        occ::handle<Geom2d_BSplineCurve> aBS2d =
-          new Geom2d_BSplineCurve(aPoles2d, aKnots, aMults, 1);
+        occ::handle<Geom2d_BSplineCurve> aBS2d = new Geom2d_BSplineCurve(aPoles2d, aKnots, aMults, 1);
 
         DrawTrSurf::Set(name, aBS2d);
       }
@@ -531,14 +534,14 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
        << " Free_nodes " << nbFreeNodes << " Small triangles " << aNbSmallTriangles << "\n";
   }
 
-  int             aFaceId = 1;
-  TopExp_Explorer aFaceExp(shape, TopAbs_FACE);
+  int aFaceId = 1;
+  TopExp_Explorer  aFaceExp(shape, TopAbs_FACE);
   for (; aFaceExp.More(); aFaceExp.Next(), ++aFaceId)
   {
     const TopoDS_Shape& aShape = aFaceExp.Current();
     const TopoDS_Face&  aFace  = TopoDS::Face(aShape);
 
-    TopLoc_Location                 aLoc;
+    TopLoc_Location            aLoc;
     occ::handle<Poly_Triangulation> aT = BRep_Tool::Triangulation(aFace, aLoc);
 
     // Iterate boundary edges
@@ -546,8 +549,8 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
     TopExp_Explorer                anExp(aShape, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
-      TopLoc_Location                          anEdgeLoc;
-      const TopoDS_Edge&                       anEdge = TopoDS::Edge(anExp.Current());
+      TopLoc_Location                     anEdgeLoc;
+      const TopoDS_Edge&                  anEdge = TopoDS::Edge(anExp.Current());
       occ::handle<Poly_PolygonOnTriangulation> aPoly =
         BRep_Tool::PolygonOnTriangulation(anEdge, aT, aLoc);
       if (aPoly.IsNull())
@@ -556,8 +559,8 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
       }
 
       const NCollection_Array1<int>& anIndices = aPoly->Nodes();
-      int                            aLower    = anIndices.Lower();
-      int                            anUpper   = anIndices.Upper();
+      int               aLower    = anIndices.Lower();
+      int               anUpper   = anIndices.Upper();
 
       int aPrevNode = -1;
       for (int j = aLower; j <= anUpper; ++j)
@@ -578,11 +581,11 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
     }
 
     NCollection_Map<BRepMesh_Edge> aFreeEdgeMap;
-    const int                      aTriNum = aT->NbTriangles();
+    const int         aTriNum = aT->NbTriangles();
     for (int aTriIndx = 1; aTriIndx <= aTriNum; aTriIndx++)
     {
       const Poly_Triangle aTri         = aT->Triangle(aTriIndx);
-      int                 aTriNodes[3] = {aTri.Value(1), aTri.Value(2), aTri.Value(3)};
+      int    aTriNodes[3] = {aTri.Value(1), aTri.Value(2), aTri.Value(3)};
 
       for (int j = 1; j <= 3; ++j)
       {
@@ -606,23 +609,23 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
 
       const gp_Trsf& trsf = aLoc.Transformation();
 
-      NCollection_Array1<gp_Pnt>               pnts(1, 2);
-      NCollection_Array1<gp_Pnt2d>             pnts2d(1, 2);
+      NCollection_Array1<gp_Pnt>                       pnts(1, 2);
+      NCollection_Array1<gp_Pnt2d>                     pnts2d(1, 2);
       NCollection_Map<BRepMesh_Edge>::Iterator aMapIt(aFreeEdgeMap);
       for (; aMapIt.More(); aMapIt.Next())
       {
         const BRepMesh_Edge& aLink = aMapIt.Key();
         di << "{" << aLink.FirstNode() << " " << aLink.LastNode() << "} ";
-        pnts(1)                          = aT->Node(aLink.FirstNode()).Transformed(trsf);
-        pnts(2)                          = aT->Node(aLink.LastNode()).Transformed(trsf);
+        pnts(1)                     = aT->Node(aLink.FirstNode()).Transformed(trsf);
+        pnts(2)                     = aT->Node(aLink.LastNode()).Transformed(trsf);
         occ::handle<Poly_Polygon3D> poly = new Poly_Polygon3D(pnts);
         DrawTrSurf::Set(name, poly);
         DrawTrSurf::Set(name, pnts(1));
         DrawTrSurf::Set(name, pnts(2));
         if (aT->HasUVNodes())
         {
-          pnts2d(1)                          = aT->UVNode(aLink.FirstNode());
-          pnts2d(2)                          = aT->UVNode(aLink.LastNode());
+          pnts2d(1)                     = aT->UVNode(aLink.FirstNode());
+          pnts2d(2)                     = aT->UVNode(aLink.LastNode());
           occ::handle<Poly_Polygon2D> poly2d = new Poly_Polygon2D(pnts2d);
           DrawTrSurf::Set(name, poly2d);
           DrawTrSurf::Set(name, pnts2d(1));

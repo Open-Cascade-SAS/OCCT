@@ -79,8 +79,7 @@ void VrmlData_WorldInfo::AddInfo(const char* theString)
 // purpose  : Create a copy of this node
 //=======================================================================
 
-occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_WorldInfo::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_WorldInfo> aResult =
     occ::down_cast<VrmlData_WorldInfo>(VrmlData_Node::Clone(theOther));

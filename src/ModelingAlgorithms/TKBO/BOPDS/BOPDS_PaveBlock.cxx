@@ -15,6 +15,7 @@
 #include <BOPDS_Pave.hxx>
 #include <BOPDS_PaveBlock.hxx>
 #include <NCollection_Array1.hxx>
+#include <BOPDS_Pave.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
@@ -148,7 +149,7 @@ void BOPDS_PaveBlock::Indices(int& theIndex1, int& theIndex2) const
 bool BOPDS_PaveBlock::HasSameBounds(const occ::handle<BOPDS_PaveBlock>& theOther) const
 {
   bool bFlag1, bFlag2;
-  int  n11, n12, n21, n22;
+  int n11, n12, n21, n22;
   //
   Indices(n11, n12);
   theOther->Indices(n21, n22);
@@ -220,9 +221,11 @@ bool BOPDS_PaveBlock::IsToUpdate() const
 
 //=================================================================================================
 
-bool BOPDS_PaveBlock::ContainsParameter(const double theT, const double theTol, int& theInd) const
+bool BOPDS_PaveBlock::ContainsParameter(const double theT,
+                                                    const double theTol,
+                                                    int&   theInd) const
 {
-  bool                                   bRet;
+  bool               bRet;
   NCollection_List<BOPDS_Pave>::Iterator aIt;
   //
   bRet = false;
@@ -242,12 +245,11 @@ bool BOPDS_PaveBlock::ContainsParameter(const double theT, const double theTol, 
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::Update(NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB,
-                             const bool                                      theFlag)
+void BOPDS_PaveBlock::Update(NCollection_List<occ::handle<BOPDS_PaveBlock>>& theLPB, const bool theFlag)
 {
-  int                                    i, aNb;
-  BOPDS_Pave                             aPave1, aPave2;
-  occ::handle<BOPDS_PaveBlock>           aPB;
+  int               i, aNb;
+  BOPDS_Pave                     aPave1, aPave2;
+  occ::handle<BOPDS_PaveBlock>        aPB;
   NCollection_List<BOPDS_Pave>::Iterator aIt;
   //
   aNb = myExtPaves.Extent();
@@ -317,10 +319,10 @@ bool BOPDS_PaveBlock::HasShrunkData() const
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::SetShrunkData(const double   theT1,
-                                    const double   theT2,
-                                    const Bnd_Box& theBox,
-                                    const bool     theIsSplittable)
+void BOPDS_PaveBlock::SetShrunkData(const double    theT1,
+                                    const double    theT2,
+                                    const Bnd_Box&         theBox,
+                                    const bool theIsSplittable)
 {
   myTS1          = theT1;
   myTS2          = theT2;
@@ -330,10 +332,10 @@ void BOPDS_PaveBlock::SetShrunkData(const double   theT1,
 
 //=================================================================================================
 
-void BOPDS_PaveBlock::ShrunkData(double&  theT1,
-                                 double&  theT2,
-                                 Bnd_Box& theBox,
-                                 bool&    theIsSplittable) const
+void BOPDS_PaveBlock::ShrunkData(double&    theT1,
+                                 double&    theT2,
+                                 Bnd_Box&          theBox,
+                                 bool& theIsSplittable) const
 {
   theT1           = myTS1;
   theT2           = myTS2;

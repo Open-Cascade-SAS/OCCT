@@ -55,7 +55,7 @@ void BRepAdaptor_Curve2d::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   myEdge = E;
   myFace = F;
-  double                          aFirs, aLast;
+  double              aFirs, aLast;
   const occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E, F, aFirs, aLast);
   if (!aPCurve.IsNull())
   {

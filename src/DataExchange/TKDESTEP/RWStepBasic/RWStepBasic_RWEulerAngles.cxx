@@ -32,7 +32,7 @@ RWStepBasic_RWEulerAngles::RWStepBasic_RWEulerAngles() {}
 //=================================================================================================
 
 void RWStepBasic_RWEulerAngles::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepBasic_EulerAngles>&   ent) const
 {
@@ -43,11 +43,11 @@ void RWStepBasic_RWEulerAngles::ReadStep(const occ::handle<StepData_StepReaderDa
   // Own fields of EulerAngles
 
   occ::handle<NCollection_HArray1<double>> aAngles;
-  int                                      sub1 = 0;
+  int              sub1 = 0;
   if (data->ReadSubList(num, 1, "angles", ach, sub1))
   {
     int nb0  = data->NbParams(sub1);
-    aAngles  = new NCollection_HArray1<double>(1, nb0);
+    aAngles               = new NCollection_HArray1<double>(1, nb0);
     int num2 = sub1;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -63,7 +63,7 @@ void RWStepBasic_RWEulerAngles::ReadStep(const occ::handle<StepData_StepReaderDa
 
 //=================================================================================================
 
-void RWStepBasic_RWEulerAngles::WriteStep(StepData_StepWriter&                      SW,
+void RWStepBasic_RWEulerAngles::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepBasic_EulerAngles>& ent) const
 {
 

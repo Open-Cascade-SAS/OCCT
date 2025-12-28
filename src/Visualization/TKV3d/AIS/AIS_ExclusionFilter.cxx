@@ -21,6 +21,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ExclusionFilter, SelectMgr_Filter)
 
@@ -32,7 +34,7 @@ AIS_ExclusionFilter::AIS_ExclusionFilter(const bool ExclusionFlagOn)
 }
 
 AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclude,
-                                         const bool                  ExclusionFlagOn)
+                                         const bool      ExclusionFlagOn)
     : myIsExclusionFlagOn(ExclusionFlagOn)
 {
   NCollection_List<int> L;
@@ -40,8 +42,8 @@ AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclu
 }
 
 AIS_ExclusionFilter::AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclude,
-                                         const int                   SignatureInType,
-                                         const bool                  ExclusionFlagOn)
+                                         const int      SignatureInType,
+                                         const bool      ExclusionFlagOn)
     : myIsExclusionFlagOn(ExclusionFlagOn)
 {
   NCollection_List<int> L;
@@ -60,7 +62,8 @@ bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude)
   return true;
 }
 
-bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude, const int SignatureInType)
+bool AIS_ExclusionFilter::Add(const AIS_KindOfInteractive TypeToExclude,
+                                          const int      SignatureInType)
 {
   if (!IsStored(TypeToExclude))
   {
@@ -86,7 +89,7 @@ bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude)
 }
 
 bool AIS_ExclusionFilter::Remove(const AIS_KindOfInteractive TypeToExclude,
-                                 const int                   SignatureInType)
+                                             const int      SignatureInType)
 {
   if (!IsStored(TypeToExclude))
     return false;
@@ -122,11 +125,12 @@ bool AIS_ExclusionFilter::IsStored(const AIS_KindOfInteractive aType) const
 //=================================================================================================
 
 bool AIS_ExclusionFilter::IsSignatureIn(const AIS_KindOfInteractive aType,
-                                        const int                   SignatureInType) const
+                                                    const int SignatureInType) const
 {
   if (!myStoredTypes.IsBound(aType))
     return false;
-  for (NCollection_List<int>::Iterator Lit(myStoredTypes((int)aType)); Lit.More(); Lit.Next())
+  for (NCollection_List<int>::Iterator Lit(myStoredTypes((int)aType)); Lit.More();
+       Lit.Next())
   {
     if (Lit.Value() == SignatureInType)
       return true;

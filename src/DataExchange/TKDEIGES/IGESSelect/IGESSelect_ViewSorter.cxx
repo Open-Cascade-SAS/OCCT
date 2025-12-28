@@ -105,8 +105,7 @@ bool IGESSelect_ViewSorter::AddEntity(const occ::handle<IGESData_IGESEntity>& ig
   return true;
 }
 
-void IGESSelect_ViewSorter::AddList(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
+void IGESSelect_ViewSorter::AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   int nb = list->Length();
   for (int i = 1; i <= nb; i++)
@@ -221,8 +220,8 @@ int IGESSelect_ViewSorter::NbSets(const bool final) const
     return theitems.Extent();
 }
 
-occ::handle<IGESData_IGESEntity> IGESSelect_ViewSorter::SetItem(const int  num,
-                                                                const bool final) const
+occ::handle<IGESData_IGESEntity> IGESSelect_ViewSorter::SetItem(const int num,
+                                                           const bool final) const
 {
   if (final)
     return GetCasted(IGESData_IGESEntity, thefinals.FindKey(num));
@@ -233,8 +232,8 @@ occ::handle<IGESData_IGESEntity> IGESSelect_ViewSorter::SetItem(const int  num,
 occ::handle<IFSelect_PacketList> IGESSelect_ViewSorter::Sets(const bool final) const
 {
   occ::handle<IFSelect_PacketList> list = new IFSelect_PacketList(themodel);
-  int                              i, nb;
-  nb      = (final ? theindfin.Length() : theinditem.Length());
+  int            i, nb;
+  nb                   = (final ? theindfin.Length() : theinditem.Length());
   int nbs = NbSets(final);
   for (int num = 1; num <= nbs; num++)
   {

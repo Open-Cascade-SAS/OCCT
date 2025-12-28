@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepGeom_IntersectionCurve();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_IntersectionCurve, StepGeom_SurfaceCurve)
+
 };
 
 #endif // _StepGeom_IntersectionCurve_HeaderFile

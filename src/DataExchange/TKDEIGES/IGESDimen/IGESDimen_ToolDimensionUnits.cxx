@@ -33,18 +33,17 @@
 
 IGESDimen_ToolDimensionUnits::IGESDimen_ToolDimensionUnits() {}
 
-void IGESDimen_ToolDimensionUnits::ReadOwnParams(
-  const occ::handle<IGESDimen_DimensionUnits>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESDimen_ToolDimensionUnits::ReadOwnParams(const occ::handle<IGESDimen_DimensionUnits>& ent,
+                                                 const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                 IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                   tempNbProps;
-  int                                   tempSecondDimenPos;
-  int                                   tempUnitsIndic;
-  int                                   tempCharSet;
-  int                                   tempFracFlag;
-  int                                   tempPrecision;
+  int                 tempNbProps;
+  int                 tempSecondDimenPos;
+  int                 tempUnitsIndic;
+  int                 tempCharSet;
+  int                 tempFracFlag;
+  int                 tempPrecision;
   occ::handle<TCollection_HAsciiString> tempFormatString;
 
   if (PR.DefinedElseSkip())
@@ -77,7 +76,7 @@ void IGESDimen_ToolDimensionUnits::ReadOwnParams(
 }
 
 void IGESDimen_ToolDimensionUnits::WriteOwnParams(const occ::handle<IGESDimen_DimensionUnits>& ent,
-                                                  IGESData_IGESWriter& IW) const
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->SecondaryDimenPosition());
@@ -97,10 +96,10 @@ void IGESDimen_ToolDimensionUnits::OwnCopy(const occ::handle<IGESDimen_Dimension
                                            const occ::handle<IGESDimen_DimensionUnits>& ent,
                                            Interface_CopyTool& /* TC */) const
 {
-  int                                   tempNbProps        = another->NbPropertyValues();
-  int                                   tempSecondDimenPos = another->SecondaryDimenPosition();
-  int                                   tempUnitsIndic     = another->UnitsIndicator();
-  int                                   tempCharSet        = another->CharacterSet();
+  int                 tempNbProps        = another->NbPropertyValues();
+  int                 tempSecondDimenPos = another->SecondaryDimenPosition();
+  int                 tempUnitsIndic     = another->UnitsIndicator();
+  int                 tempCharSet        = another->CharacterSet();
   occ::handle<TCollection_HAsciiString> tempFormatString =
     new TCollection_HAsciiString(another->FormatString());
   int tempFracFlag  = another->FractionFlag();

@@ -52,6 +52,7 @@ class Geom_BoundedSurface : public Geom_Surface
 
 public:
   DEFINE_STANDARD_RTTIEXT(Geom_BoundedSurface, Geom_Surface)
+
 };
 
 #endif // _Geom_BoundedSurface_HeaderFile

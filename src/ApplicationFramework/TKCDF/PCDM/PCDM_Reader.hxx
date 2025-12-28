@@ -37,19 +37,19 @@ class PCDM_Reader : public Standard_Transient
 public:
   //! retrieves the content of the file into a new Document.
   Standard_EXPORT virtual void Read(
-    const TCollection_ExtendedString&     aFileName,
-    const occ::handle<CDM_Document>&      aNewDocument,
-    const occ::handle<CDM_Application>&   anApplication,
-    const occ::handle<PCDM_ReaderFilter>& theFilter   = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theProgress = Message_ProgressRange()) = 0;
+    const TCollection_ExtendedString& aFileName,
+    const occ::handle<CDM_Document>&       aNewDocument,
+    const occ::handle<CDM_Application>&    anApplication,
+    const occ::handle<PCDM_ReaderFilter>&  theFilter   = occ::handle<PCDM_ReaderFilter>(),
+    const Message_ProgressRange&      theProgress = Message_ProgressRange()) = 0;
 
   Standard_EXPORT virtual void Read(
-    Standard_IStream&                     theIStream,
+    Standard_IStream&                theIStream,
     const occ::handle<Storage_Data>&      theStorageData,
     const occ::handle<CDM_Document>&      theDoc,
     const occ::handle<CDM_Application>&   theApplication,
     const occ::handle<PCDM_ReaderFilter>& theFilter   = occ::handle<PCDM_ReaderFilter>(),
-    const Message_ProgressRange&          theProgress = Message_ProgressRange()) = 0;
+    const Message_ProgressRange&     theProgress = Message_ProgressRange()) = 0;
 
   PCDM_ReaderStatus GetStatus() const;
 
@@ -57,6 +57,7 @@ public:
 
 protected:
   PCDM_ReaderStatus myReaderStatus;
+
 };
 
 #include <PCDM_Reader.lxx>

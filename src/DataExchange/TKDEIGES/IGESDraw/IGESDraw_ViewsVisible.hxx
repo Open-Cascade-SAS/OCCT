@@ -23,6 +23,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_ViewKindEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESData_IGESEntity;
 
@@ -42,13 +45,11 @@ public:
   //! ViewsVisible
   //! - allViewEntities  : All View kind entities
   //! - allDisplayEntity : All entities whose display is specified
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViewEntities,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allDisplayEntity);
 
   //! Changes only the list of Displayed Entities (Null allowed)
-  Standard_EXPORT void InitImplied(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity);
+  Standard_EXPORT void InitImplied(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allDisplayEntity);
 
   //! Returns False (for a complex view)
   Standard_EXPORT bool IsSingle() const override;
@@ -62,7 +63,8 @@ public:
 
   //! returns the Index'th ViewKindEntity Entity
   //! raises exception if Index <= 0 or Index > NbViewsVisible()
-  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int Index) const override;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int Index) const
+    override;
 
   //! returns the Index'th entity whose display is being specified by
   //! this associativity instance

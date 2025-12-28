@@ -40,11 +40,11 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh()
 
 //=================================================================================================
 
-BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape& theShape,
-                                                   const double        theLinDeflection,
-                                                   const bool          isRelative,
-                                                   const double        theAngDeflection,
-                                                   const bool          isInParallel)
+BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(const TopoDS_Shape&    theShape,
+                                                   const double    theLinDeflection,
+                                                   const bool isRelative,
+                                                   const double    theAngDeflection,
+                                                   const bool isInParallel)
     : myModified(false),
       myStatus(IMeshData_NoError)
 {
@@ -83,7 +83,7 @@ void BRepMesh_IncrementalMesh::Perform(const Message_ProgressRange& theRange)
 //=================================================================================================
 
 void BRepMesh_IncrementalMesh::Perform(const occ::handle<IMeshTools_Context>& theContext,
-                                       const Message_ProgressRange&           theRange)
+                                       const Message_ProgressRange&      theRange)
 {
   initParameters();
 
@@ -99,7 +99,7 @@ void BRepMesh_IncrementalMesh::Perform(const occ::handle<IMeshTools_Context>& th
     myStatus = IMeshData_UserBreak;
     return;
   }
-  myStatus                                   = IMeshData_NoError;
+  myStatus                              = IMeshData_NoError;
   const occ::handle<IMeshData_Model>& aModel = theContext->GetModel();
   if (!aModel.IsNull())
   {
@@ -122,9 +122,9 @@ void BRepMesh_IncrementalMesh::Perform(const occ::handle<IMeshTools_Context>& th
 //=================================================================================================
 
 int BRepMesh_IncrementalMesh::Discret(const TopoDS_Shape&    theShape,
-                                      const double           theDeflection,
-                                      const double           theAngle,
-                                      BRepMesh_DiscretRoot*& theAlgo)
+                                                   const double    theDeflection,
+                                                   const double    theAngle,
+                                                   BRepMesh_DiscretRoot*& theAlgo)
 {
   BRepMesh_IncrementalMesh* anAlgo      = new BRepMesh_IncrementalMesh();
   anAlgo->ChangeParameters().Deflection = theDeflection;

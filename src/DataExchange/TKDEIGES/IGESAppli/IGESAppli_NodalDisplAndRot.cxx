@@ -30,12 +30,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalDisplAndRot, IGESData_IGESEntity)
 
 IGESAppli_NodalDisplAndRot::IGESAppli_NodalDisplAndRot() {}
 
-void IGESAppli_NodalDisplAndRot::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>& allNotes,
-  const occ::handle<NCollection_HArray1<int>>&                                allIdentifiers,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&        allNodes,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allRotParams,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>&                         allTransParams)
+void IGESAppli_NodalDisplAndRot::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_GeneralNote>>>&  allNotes,
+                                      const occ::handle<NCollection_HArray1<int>>&        allIdentifiers,
+                                      const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&         allNodes,
+                                      const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>& allRotParams,
+                                      const occ::handle<IGESBasic_HArray1OfHArray1OfXYZ>& allTransParams)
 {
   if (allNodes->Lower() != 1
       || (allIdentifiers->Lower() != 1 || allIdentifiers->Length() != allNodes->Length())
@@ -87,12 +86,14 @@ occ::handle<IGESAppli_Node> IGESAppli_NodalDisplAndRot::Node(const int Index) co
   return theNodes->Value(Index);
 }
 
-gp_XYZ IGESAppli_NodalDisplAndRot::TranslationParameter(const int NodeNum, const int CaseNum) const
+gp_XYZ IGESAppli_NodalDisplAndRot::TranslationParameter(const int NodeNum,
+                                                        const int CaseNum) const
 {
   return theTransParam->Value(NodeNum)->Value(CaseNum);
 }
 
-gp_XYZ IGESAppli_NodalDisplAndRot::RotationalParameter(const int NodeNum, const int CaseNum) const
+gp_XYZ IGESAppli_NodalDisplAndRot::RotationalParameter(const int NodeNum,
+                                                       const int CaseNum) const
 {
   return theRotParam->Value(NodeNum)->Value(CaseNum);
 }

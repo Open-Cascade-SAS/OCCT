@@ -64,7 +64,7 @@ public:
   //! If projecting uses approximation, 3d tolerance is Tol, default parameters are used,
   Standard_EXPORT ProjLib_ProjectedCurve(const occ::handle<Adaptor3d_Surface>& S,
                                          const occ::handle<Adaptor3d_Curve>&   C,
-                                         const double                          Tol);
+                                         const double              Tol);
 
   //! Shallow copy of adaptor
   Standard_EXPORT virtual occ::handle<Adaptor2d_Curve2d> ShallowCopy() const override;
@@ -85,7 +85,8 @@ public:
   //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
   //! If theDegMin/Max < 0, algorithm uses values that are chosen depending of types curve 3d
   //! and surface.
-  Standard_EXPORT void SetDegree(const int theDegMin, const int theDegMax);
+  Standard_EXPORT void SetDegree(const int theDegMin,
+                                 const int theDegMax);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default
@@ -128,15 +129,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor2d_Curve2d> Trim(const double First,
-                                                      const double Last,
-                                                      const double Tol) const override;
+                                                 const double Last,
+                                                 const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -160,24 +161,28 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2) const override;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Returns the parametric resolution corresponding
   //! to the real space resolution <R3d>.
@@ -217,15 +222,15 @@ public:
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const override;
 
 private:
-  double                         myTolerance;
+  double             myTolerance;
   occ::handle<Adaptor3d_Surface> mySurface;
   occ::handle<Adaptor3d_Curve>   myCurve;
-  ProjLib_Projector              myResult;
-  int                            myDegMin;
-  int                            myDegMax;
-  int                            myMaxSegments;
-  double                         myMaxDist;
-  AppParCurves_Constraint        myBndPnt;
+  ProjLib_Projector         myResult;
+  int          myDegMin;
+  int          myDegMax;
+  int          myMaxSegments;
+  double             myMaxDist;
+  AppParCurves_Constraint   myBndPnt;
 };
 
 #endif // _ProjLib_ProjectedCurve_HeaderFile

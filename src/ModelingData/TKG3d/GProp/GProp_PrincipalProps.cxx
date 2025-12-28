@@ -28,16 +28,16 @@ GProp_PrincipalProps::GProp_PrincipalProps()
   g            = Pnt(RealLast(), RealLast(), RealLast());
 }
 
-GProp_PrincipalProps::GProp_PrincipalProps(const double  Ixx,
-                                           const double  Iyy,
-                                           const double  Izz,
-                                           const double  Rxx,
-                                           const double  Ryy,
-                                           const double  Rzz,
-                                           const gp_Vec& Vxx,
-                                           const gp_Vec& Vyy,
-                                           const gp_Vec& Vzz,
-                                           const gp_Pnt& G)
+GProp_PrincipalProps::GProp_PrincipalProps(const double Ixx,
+                                           const double Iyy,
+                                           const double Izz,
+                                           const double Rxx,
+                                           const double Ryy,
+                                           const double Rzz,
+                                           const gp_Vec&       Vxx,
+                                           const gp_Vec&       Vyy,
+                                           const gp_Vec&       Vzz,
+                                           const gp_Pnt&       G)
     : i1(Ixx),
       i2(Iyy),
       i3(Izz),
@@ -104,7 +104,9 @@ const Vec& GProp_PrincipalProps::ThirdAxisOfInertia() const
   return v3;
 }
 
-void GProp_PrincipalProps::RadiusOfGyration(double& Rxx, double& Ryy, double& Rzz) const
+void GProp_PrincipalProps::RadiusOfGyration(double& Rxx,
+                                            double& Ryy,
+                                            double& Rzz) const
 {
 
   Rxx = r1;

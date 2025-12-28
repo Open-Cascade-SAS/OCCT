@@ -17,12 +17,12 @@
 #include <StdFail_NotDone.hxx>
 
 math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                                 const double                 Guess,
-                                                 const double                 EpsX,
-                                                 const double                 EpsF,
-                                                 const double                 A,
-                                                 const double                 B,
-                                                 const int                    NbIterations)
+                                                 const double          Guess,
+                                                 const double          EpsX,
+                                                 const double          EpsF,
+                                                 const double          A,
+                                                 const double          B,
+                                                 const int       NbIterations)
 {
   EpsilonX = EpsX;
   EpsilonF = EpsF;
@@ -37,11 +37,11 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
   Perform(F, Guess);
 }
 
-math_NewtonFunctionRoot::math_NewtonFunctionRoot(const double A,
-                                                 const double B,
-                                                 const double EpsX,
-                                                 const double EpsF,
-                                                 const int    NbIterations)
+math_NewtonFunctionRoot::math_NewtonFunctionRoot(const double    A,
+                                                 const double    B,
+                                                 const double    EpsX,
+                                                 const double    EpsF,
+                                                 const int NbIterations)
 {
 
   Binf     = A;
@@ -57,10 +57,10 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(const double A,
 }
 
 math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                                 const double                 Guess,
-                                                 const double                 EpsX,
-                                                 const double                 EpsF,
-                                                 const int                    NbIterations)
+                                                 const double          Guess,
+                                                 const double          EpsX,
+                                                 const double          EpsF,
+                                                 const int       NbIterations)
 {
   EpsilonX = EpsX;
   EpsilonF = EpsF;
@@ -78,9 +78,9 @@ math_NewtonFunctionRoot::math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
 void math_NewtonFunctionRoot::Perform(math_FunctionWithDerivative& F, const double Guess)
 {
 
-  double Dx;
-  bool   Ok;
-  double AA, BB;
+  double    Dx;
+  bool Ok;
+  double    AA, BB;
 
   //--------------------------------------------------
   //-- lbr le 12 Nov 97

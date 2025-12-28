@@ -22,6 +22,7 @@
 
 #include <Expr_GeneralRelation.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Expr_GeneralRelation.hxx>
 #include <Standard_Integer.hxx>
 class Expr_GeneralExpression;
 class Expr_NamedUnknown;
@@ -51,7 +52,8 @@ public:
 
   //! Returns the relation denoted by <index> in <me>.
   //! An exception is raised if <index> is out of range.
-  Standard_EXPORT occ::handle<Expr_GeneralRelation> SubRelation(const int index) const override;
+  Standard_EXPORT occ::handle<Expr_GeneralRelation> SubRelation(const int index) const
+    override;
 
   Standard_EXPORT bool IsSatisfied() const override;
 
@@ -68,7 +70,8 @@ public:
   Standard_EXPORT occ::handle<Expr_GeneralRelation> Copy() const override;
 
   //! Tests if <me> contains <exp>.
-  Standard_EXPORT bool Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
+  Standard_EXPORT bool
+    Contains(const occ::handle<Expr_GeneralExpression>& exp) const override;
 
   //! Replaces all occurrences of <var> with <with> in <me>.
   Standard_EXPORT void Replace(const occ::handle<Expr_NamedUnknown>&      var,

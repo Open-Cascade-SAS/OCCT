@@ -42,8 +42,8 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                            const GccEnt_QualifiedLin&  Qualified2,
-                                           const double                Radius,
-                                           const double                Tolerance)
+                                           const double         Radius,
+                                           const double         Tolerance)
     : qualifier1(1, 8),
       qualifier2(1, 8),
       TheSame1(1, 8),
@@ -57,8 +57,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       pararg2(1, 8)
 {
 
-  double   Tol = std::abs(Tolerance);
-  gp_Dir2d dirx(gp_Dir2d::D::X);
+  double Tol = std::abs(Tolerance);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
   NbrSol   = 0;
   WellDone = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
@@ -73,27 +73,27 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
   {
     TheSame2(i) = 0;
   }
-  int                        ncote1 = 0;
-  int                        ncote2 = 0;
-  int                        nbsol  = 0;
-  double                     cote   = 0.0;
-  double                     ccote  = 0.0;
+  int     ncote1 = 0;
+  int     ncote2 = 0;
+  int     nbsol  = 0;
+  double        cote   = 0.0;
+  double        ccote  = 0.0;
   NCollection_Array1<double> cote1(1, 3);
   NCollection_Array1<double> cote2(1, 2);
-  gp_Circ2d                  C1   = Qualified1.Qualified();
-  gp_Lin2d                   L2   = Qualified2.Qualified();
-  double                     xdir = (L2.Direction()).X();
-  double                     ydir = (L2.Direction()).Y();
-  gp_Dir2d                   normL2(-ydir, xdir);
-  double                     lxloc = (L2.Location()).X();
-  double                     lyloc = (L2.Location()).Y();
-  double                     cxloc = (C1.Location()).X();
-  double                     cyloc = (C1.Location()).Y();
-  double                     R1    = C1.Radius();
-  gp_Pnt2d                   center1(cxloc, cyloc);
-  gp_Pnt2d                   origin2(lxloc, lyloc);
-  double                     dist     = Radius * 2.0 + R1;
-  double                     distance = L2.Distance(center1);
+  gp_Circ2d            C1   = Qualified1.Qualified();
+  gp_Lin2d             L2   = Qualified2.Qualified();
+  double        xdir = (L2.Direction()).X();
+  double        ydir = (L2.Direction()).Y();
+  gp_Dir2d             normL2(-ydir, xdir);
+  double        lxloc = (L2.Location()).X();
+  double        lyloc = (L2.Location()).Y();
+  double        cxloc = (C1.Location()).X();
+  double        cyloc = (C1.Location()).Y();
+  double        R1    = C1.Radius();
+  gp_Pnt2d             center1(cxloc, cyloc);
+  gp_Pnt2d             origin2(lxloc, lyloc);
+  double        dist     = Radius * 2.0 + R1;
+  double        distance = L2.Distance(center1);
 
   if (Radius < 0.0)
   {
@@ -512,8 +512,8 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
 #ifdef OCCT_DEBUG
                 gp_Dir2d dc1(center1.XY() - Center.XY());
 #endif
-                gp_Dir2d dc2(origin2.XY() - Center.XY());
-                double   distcc1 = Center.Distance(center1);
+                gp_Dir2d      dc2(origin2.XY() - Center.XY());
+                double distcc1 = Center.Distance(center1);
                 if (!Qualified1.IsUnqualified())
                 {
                   qualifier1(NbrSol) = Qualified1.Qualifier();

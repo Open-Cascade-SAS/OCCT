@@ -47,13 +47,12 @@ class PCDM_StorageDriver : public PCDM_Writer
 
 public:
   //! raises NotImplemented.
-  Standard_EXPORT virtual occ::handle<PCDM_Document> Make(
-    const occ::handle<CDM_Document>& aDocument);
+  Standard_EXPORT virtual occ::handle<PCDM_Document> Make(const occ::handle<CDM_Document>& aDocument);
 
   //! By default, puts in the Sequence the document returns
   //! by the previous Make method.
-  Standard_EXPORT virtual void Make(const occ::handle<CDM_Document>&                  aDocument,
-                                    NCollection_Sequence<occ::handle<PCDM_Document>>& Documents);
+  Standard_EXPORT virtual void Make(const occ::handle<CDM_Document>& aDocument,
+                                    NCollection_Sequence<occ::handle<PCDM_Document>>&    Documents);
 
   //! Warning! raises DriverError if an error occurs during inside the
   //! Make method.
@@ -62,15 +61,15 @@ public:
   //! by default Write will use Make method to build a persistent
   //! document and the Schema method to write the persistent document.
   Standard_EXPORT virtual void Write(
-    const occ::handle<CDM_Document>&  aDocument,
+    const occ::handle<CDM_Document>&       aDocument,
     const TCollection_ExtendedString& aFileName,
     const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   //! Write <theDocument> to theOStream
   Standard_EXPORT virtual void Write(
-    const occ::handle<CDM_Document>& theDocument,
-    Standard_OStream&                theOStream,
-    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
+    const occ::handle<CDM_Document>&  theDocument,
+    Standard_OStream&            theOStream,
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT void SetFormat(const TCollection_ExtendedString& aformat);
 
@@ -88,7 +87,7 @@ public:
 
 private:
   TCollection_ExtendedString myFormat;
-  bool                       myIsError;
+  bool           myIsError;
   PCDM_StoreStatus           myStoreStatus;
 };
 

@@ -40,20 +40,20 @@ IntPolyh_StartPoint::IntPolyh_StartPoint()
 {
 }
 
-IntPolyh_StartPoint::IntPolyh_StartPoint(const double _x,
-                                         const double _y,
-                                         const double _z,
-                                         const double _u1,
-                                         const double _v1,
-                                         const double _u2,
-                                         const double _v2,
-                                         const int    _t1,
-                                         const int    _e1,
-                                         const double _lambda1,
-                                         const int    _t2,
-                                         const int    _e2,
-                                         const double _lambda2,
-                                         const int    _chainlist)
+IntPolyh_StartPoint::IntPolyh_StartPoint(const double    _x,
+                                         const double    _y,
+                                         const double    _z,
+                                         const double    _u1,
+                                         const double    _v1,
+                                         const double    _u2,
+                                         const double    _v2,
+                                         const int _t1,
+                                         const int _e1,
+                                         const double    _lambda1,
+                                         const int _t2,
+                                         const int _e2,
+                                         const double    _lambda2,
+                                         const int _chainlist)
     : angle(-2.0)
 {
   x         = _x;
@@ -148,9 +148,9 @@ double IntPolyh_StartPoint::GetAngle() const
 }
 
 int IntPolyh_StartPoint::GetEdgePoints(const IntPolyh_Triangle& Triangle,
-                                       int&                     FirstEdgePoint,
-                                       int&                     SecondEdgePoint,
-                                       int&                     LastPoint) const
+                                                    int&        FirstEdgePoint,
+                                                    int&        SecondEdgePoint,
+                                                    int&        LastPoint) const
 {
   int SurfID;
   if (e1 != -1)
@@ -202,7 +202,9 @@ int IntPolyh_StartPoint::GetEdgePoints(const IntPolyh_Triangle& Triangle,
   return (SurfID);
 }
 
-void IntPolyh_StartPoint::SetXYZ(const double XX, const double YY, const double ZZ)
+void IntPolyh_StartPoint::SetXYZ(const double XX,
+                                 const double YY,
+                                 const double ZZ)
 {
   x = XX;
   y = YY;

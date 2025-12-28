@@ -35,6 +35,7 @@ public:
 
 protected:
   bool done;
+
 };
 
 #endif // _GeomToStep_Root_HeaderFile

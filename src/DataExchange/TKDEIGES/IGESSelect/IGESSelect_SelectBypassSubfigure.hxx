@@ -51,15 +51,17 @@ public:
 
   //! Explores an entity : for a Subfigure, gives its elements
   //! Else, takes the entity itself
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium : "Content of Subfigure"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBypassSubfigure, IFSelect_SelectExplore)
+
 };
 
 #endif // _IGESSelect_SelectBypassSubfigure_HeaderFile

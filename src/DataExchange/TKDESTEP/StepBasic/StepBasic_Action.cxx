@@ -32,7 +32,7 @@ StepBasic_Action::StepBasic_Action()
 //=================================================================================================
 
 void StepBasic_Action::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasDescription,
+                            const bool                  hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepBasic_ActionMethod>&   aChosenMethod)
 {

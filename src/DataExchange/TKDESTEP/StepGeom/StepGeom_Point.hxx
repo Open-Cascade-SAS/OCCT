@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_Point();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_Point, StepGeom_GeometricRepresentationItem)
+
 };
 
 #endif // _StepGeom_Point_HeaderFile

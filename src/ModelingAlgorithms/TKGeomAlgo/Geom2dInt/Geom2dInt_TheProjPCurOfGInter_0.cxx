@@ -25,14 +25,14 @@
 #include <Extrema_POnCurv2d.hxx>
 
 double Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
-                                                    const gp_Pnt2d&          P,
-                                                    const double             LowParameter,
-                                                    const double             HighParameter,
-                                                    const double)
+                                                           const gp_Pnt2d&          P,
+                                                           const double      LowParameter,
+                                                           const double      HighParameter,
+                                                           const double)
 {
-  double            theparam, defaultparam;
-  int               NbPts   = Geom2dInt_Geom2dCurveTool::NbSamples(C);
-  double            theEpsX = Geom2dInt_Geom2dCurveTool::EpsX(C);
+  double     theparam, defaultparam;
+  int  NbPts   = Geom2dInt_Geom2dCurveTool::NbSamples(C);
+  double     theEpsX = Geom2dInt_Geom2dCurveTool::EpsX(C);
   Extrema_POnCurv2d POnC;
 
   Geom2dInt_TheCurveLocatorOfTheProjPCurOfGInter::Locate(P,
@@ -65,8 +65,8 @@ double Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
 }
 
 double Geom2dInt_TheProjPCurOfGInter::FindParameter(const Adaptor2d_Curve2d& C,
-                                                    const gp_Pnt2d&          P,
-                                                    const double             Tol)
+                                                           const gp_Pnt2d&          P,
+                                                           const double      Tol)
 {
 
   double theParam;

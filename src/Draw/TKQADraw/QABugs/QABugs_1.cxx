@@ -48,11 +48,9 @@ Standard_IMPORT Draw_Viewer dout;
 #include <TopoDS.hxx>
 
 #if !defined(_WIN32)
-extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-  GetMapOfAIS();
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
 #else
-Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-                GetMapOfAIS();
+Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
 #endif
 
 #include <AIS_PlaneTrihedron.hxx>
@@ -123,7 +121,7 @@ static int OCC145bug(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   TCollection_AsciiString aFileName = argv[1];
-  int                     aMaxNbr   = Draw::Atoi(argv[2]);
+  int        aMaxNbr   = Draw::Atoi(argv[2]);
 
   BRep_Builder aBld;
   TopoDS_Shape aShape;
@@ -134,8 +132,8 @@ static int OCC145bug(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int         i;
-  TopoDS_Wire aWire = TopoDS::Wire(aShape);
+  int i;
+  TopoDS_Wire      aWire = TopoDS::Wire(aShape);
 
   for (i = 1; i <= aMaxNbr; i++)
   {
@@ -150,7 +148,9 @@ static int OCC145bug(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC73_SelectionMode(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC73_SelectionMode(Draw_Interpretor& di,
+                                            int  argc,
+                                            const char**      argv)
 {
   if (argc < 3)
   {
@@ -216,7 +216,7 @@ static int OCC10bug(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   TCollection_AsciiString name(argv[1]);
-  double                  Length = Draw::Atof(argv[3]);
+  double           Length = Draw::Atof(argv[3]);
 
   // Construction de l'AIS_PlaneTrihedron
   occ::handle<AIS_PlaneTrihedron> theAISPlaneTri;
@@ -272,7 +272,7 @@ static int OCC10bug(Draw_Interpretor& di, int argc, const char** argv)
       C = theCurveB.Value(0.5);
     }
     // Construction du Geom_Plane
-    GC_MakePlane                   MkPlane(A, B, C);
+    GC_MakePlane              MkPlane(A, B, C);
     const occ::handle<Geom_Plane>& theGeomPlane = MkPlane.Value();
 
     // on le display & bind
@@ -317,10 +317,9 @@ static int OCC74bug_set(Draw_Interpretor& di, int argc, const char** argv)
 
   bool updateviewer = true;
 
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
 
-  TCollection_AsciiString            aName(argv[1]);
+  TCollection_AsciiString       aName(argv[1]);
   occ::handle<AIS_InteractiveObject> AISObj;
 
   int SelectMode = Draw::Atoi(argv[2]);
@@ -354,10 +353,9 @@ static int OCC74bug_get(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
 
-  TCollection_AsciiString            aName(argv[1]);
+  TCollection_AsciiString       aName(argv[1]);
   occ::handle<AIS_InteractiveObject> AISObj;
   if (!aMap.Find2(aName, AISObj) || AISObj.IsNull())
   {
@@ -386,7 +384,9 @@ static int OCC74bug_get(Draw_Interpretor& di, int argc, const char** argv)
 // function : OCC30182
 // purpose  : Testing different interfaces of Image_AlienPixMap::Load()
 //=======================================================================
-static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
+static int OCC30182(Draw_Interpretor& di,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (ViewerTest::CurrentView().IsNull())
   {
@@ -395,8 +395,8 @@ static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
   }
 
   TCollection_AsciiString aPrsName, anImgPath;
-  int                     anOffset = 0;
-  int                     aSrc     = 0; // 0 - file name, 1 - file stream, 2 - memory buffer
+  int        anOffset = 0;
+  int        aSrc     = 0; // 0 - file name, 1 - file stream, 2 - memory buffer
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -448,7 +448,7 @@ static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
   else
   {
     const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-    std::shared_ptr<std::istream>      aFile =
+    std::shared_ptr<std::istream> aFile =
       aFileSystem->OpenIStream(anImgPath, std::ios::in | std::ios::binary);
     if (aFile.get() == NULL)
     {
@@ -490,7 +490,7 @@ static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
     }
   }
 
-  TopoDS_Shape           aShape = BRepPrimAPI_MakeBox(100.0 * anImage->Ratio(), 100.0, 1.0).Shape();
+  TopoDS_Shape      aShape = BRepPrimAPI_MakeBox(100.0 * anImage->Ratio(), 100.0, 1.0).Shape();
   occ::handle<AIS_Shape> aPrs   = new AIS_Shape(aShape);
   aPrs->SetDisplayMode(AIS_Shaded);
   aPrs->Attributes()->SetupOwnShadingAspect();
@@ -513,7 +513,9 @@ static int OCC30182(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
 // function : OCC31956
 // purpose  : Testing Image_AlienPixMap::Save() overload for saving into a memory buffer or stream
 //=======================================================================
-static int OCC31956(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
+static int OCC31956(Draw_Interpretor& di,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (ViewerTest::CurrentView().IsNull())
   {
@@ -547,8 +549,8 @@ static int OCC31956(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
   TCollection_AsciiString aPrsName, anImgPath;
   aPrsName                                               = theArgVec[1];
   anImgPath                                              = theArgVec[2];
-  occ::handle<Image_AlienPixMap>             anImage     = new Image_AlienPixMap();
-  const occ::handle<OSD_FileSystem>&         aFileSystem = OSD_FileSystem::DefaultFileSystem();
+  occ::handle<Image_AlienPixMap>                  anImage     = new Image_AlienPixMap();
+  const occ::handle<OSD_FileSystem>&              aFileSystem = OSD_FileSystem::DefaultFileSystem();
   opencascade::std::shared_ptr<std::istream> aFile =
     aFileSystem->OpenIStream(anImgPath, std::ios::in | std::ios::binary);
   if (aFile.get() == NULL)
@@ -594,8 +596,8 @@ static int OCC31956(Draw_Interpretor& di, int theNbArgs, const char** theArgVec)
     aControlImg->Load(&aBuff.ChangeFirst(), aBuff.Size(), anImgPath);
   }
 
-  TopoDS_Shape aShape = BRepPrimAPI_MakeBox(100.0 * aControlImg->Ratio(), 100.0, 1.0).Shape();
-  occ::handle<AIS_Shape> aPrs = new AIS_Shape(aShape);
+  TopoDS_Shape      aShape = BRepPrimAPI_MakeBox(100.0 * aControlImg->Ratio(), 100.0, 1.0).Shape();
+  occ::handle<AIS_Shape> aPrs   = new AIS_Shape(aShape);
   aPrs->SetDisplayMode(AIS_Shaded);
   aPrs->Attributes()->SetupOwnShadingAspect();
   const occ::handle<Graphic3d_AspectFillArea3d>& anAspect =

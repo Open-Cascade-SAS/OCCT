@@ -32,9 +32,10 @@ public:
   Standard_EXPORT TopOpeBRepDS_PointExplorer();
 
   Standard_EXPORT TopOpeBRepDS_PointExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                             const bool                        FindOnlyKeep = true);
+                                             const bool FindOnlyKeep = true);
 
-  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS, const bool FindOnlyKeep = true);
+  Standard_EXPORT void Init(const TopOpeBRepDS_DataStructure& DS,
+                            const bool            FindOnlyKeep = true);
 
   Standard_EXPORT bool More() const;
 
@@ -55,12 +56,12 @@ public:
 private:
   Standard_EXPORT void Find();
 
-  int                myIndex;
-  int                myMax;
-  void*              myDS;
-  bool               myFound;
+  int   myIndex;
+  int   myMax;
+  void*   myDS;
+  bool   myFound;
   TopOpeBRepDS_Point myEmpty;
-  bool               myFindKeep;
+  bool   myFindKeep;
 };
 
 #endif // _TopOpeBRepDS_PointExplorer_HeaderFile

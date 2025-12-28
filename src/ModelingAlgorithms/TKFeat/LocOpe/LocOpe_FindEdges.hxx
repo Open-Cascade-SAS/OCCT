@@ -47,10 +47,10 @@ public:
   void Next();
 
 private:
-  TopoDS_Shape                             myFFrom;
-  TopoDS_Shape                             myFTo;
-  NCollection_List<TopoDS_Shape>           myLFrom;
-  NCollection_List<TopoDS_Shape>           myLTo;
+  TopoDS_Shape                       myFFrom;
+  TopoDS_Shape                       myFTo;
+  NCollection_List<TopoDS_Shape>               myLFrom;
+  NCollection_List<TopoDS_Shape>               myLTo;
   NCollection_List<TopoDS_Shape>::Iterator myItFrom;
   NCollection_List<TopoDS_Shape>::Iterator myItTo;
 };

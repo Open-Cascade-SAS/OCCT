@@ -57,7 +57,8 @@ inline int IntRes2d_Intersection::NbPoints() const
 }
 
 //----------------------------------------------------------------------
-inline const IntRes2d_IntersectionPoint& IntRes2d_Intersection::Point(const int N) const
+inline const IntRes2d_IntersectionPoint& IntRes2d_Intersection::Point(
+  const int N) const
 {
   if (!done)
   {
@@ -77,7 +78,8 @@ inline int IntRes2d_Intersection::NbSegments() const
 }
 
 //----------------------------------------------------------------------
-inline const IntRes2d_IntersectionSegment& IntRes2d_Intersection::Segment(const int N) const
+inline const IntRes2d_IntersectionSegment& IntRes2d_Intersection::Segment(
+  const int N) const
 {
   if (!done)
   {

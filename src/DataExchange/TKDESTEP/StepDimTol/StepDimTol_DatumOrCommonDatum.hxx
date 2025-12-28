@@ -46,7 +46,6 @@ public:
   Standard_EXPORT occ::handle<StepDimTol_Datum> Datum() const;
 
   //! returns Value as a CommonDatumList (Null if another type)
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>>
-                  CommonDatumList() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> CommonDatumList() const;
 };
 #endif // _StepDimTol_DatumOrCommonDatum_HeaderFile

@@ -57,15 +57,15 @@ static int XSHAPE_edge(Draw_Interpretor& di, int argc, const char** argv)
     di << "donner un nom de shape\n";
     return 1 /* Error */;
   }
-  const char*  arg1  = argv[1];
-  TopoDS_Shape Shape = DBRep::Get(arg1);
+  const char* arg1  = argv[1];
+  TopoDS_Shape     Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << arg1 << " inconnu\n";
     return 1 /* Error */;
   }
-  int    nbe = 0, nbf = 0;
-  double f3d, l3d;
+  int nbe = 0, nbf = 0;
+  double    f3d, l3d;
 
   for (TopExp_Explorer exp(Shape, TopAbs_EDGE); exp.More(); exp.Next())
   {
@@ -86,7 +86,9 @@ static int XSHAPE_edge(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
+static int XSHAPE_explorewire(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   char nomsh[30];
   if (argc < 2)
@@ -94,8 +96,8 @@ static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
     di << "donner un nom de wire\n";
     return 1 /* Error */;
   }
-  const char*  arg1  = argv[1];
-  TopoDS_Shape Shape = DBRep::Get(arg1);
+  const char* arg1  = argv[1];
+  TopoDS_Shape     Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << arg1 << " inconnu\n";
@@ -110,12 +112,12 @@ static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Face F;
   if (argc > 2)
   {
-    const char*  arg2        = argv[2];
-    TopoDS_Shape aLocalShape = DBRep::Get(arg2);
-    F                        = TopoDS::Face(aLocalShape);
+    const char* arg2        = argv[2];
+    TopoDS_Shape     aLocalShape = DBRep::Get(arg2);
+    F                            = TopoDS::Face(aLocalShape);
   }
 
-  int                                                           i, num = 0, nbw, nbe = 0;
+  int           i, num = 0, nbw, nbe = 0;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> map;
   for (TopoDS_Iterator ext(W); ext.More(); ext.Next())
   {
@@ -171,15 +173,17 @@ static int XSHAPE_explorewire(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int XSHAPE_ssolid(Draw_Interpretor& di, int argc, const char** argv)
+static int XSHAPE_ssolid(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 3)
   {
     di << "Give new solid name + shell name\n";
     return 1 /* Error */;
   }
-  const char*  arg1  = argv[1];
-  TopoDS_Shape Shape = DBRep::Get(arg1);
+  const char* arg1  = argv[1];
+  TopoDS_Shape     Shape = DBRep::Get(arg1);
   if (Shape.IsNull())
   {
     di << "Shape unknown : " << arg1 << "\n";
@@ -250,12 +254,12 @@ static int samerange(Draw_Interpretor& di, int argc, const char** argv)
       return 1;
     }
 
-    double                    oldFirst      = Draw::Atof(argv[3]);
-    double                    oldLast       = Draw::Atof(argv[4]);
-    double                    current_first = Draw::Atof(argv[5]);
-    double                    current_last  = Draw::Atof(argv[6]);
-    constexpr double          Tol           = Precision::PConfusion();
-    occ::handle<Geom2d_Curve> NewC2d;
+    double           oldFirst      = Draw::Atof(argv[3]);
+    double           oldLast       = Draw::Atof(argv[4]);
+    double           current_first = Draw::Atof(argv[5]);
+    double           current_last  = Draw::Atof(argv[6]);
+    constexpr double Tol           = Precision::PConfusion();
+    occ::handle<Geom2d_Curve>    NewC2d;
     GeomLib::SameRange(Tol, C, oldFirst, oldLast, current_first, current_last, NewC2d);
     DrawTrSurf::Set(argv[1], NewC2d);
   }

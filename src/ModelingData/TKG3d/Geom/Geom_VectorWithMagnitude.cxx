@@ -40,7 +40,9 @@ Geom_VectorWithMagnitude::Geom_VectorWithMagnitude(const gp_Vec& V)
 
 //=================================================================================================
 
-Geom_VectorWithMagnitude::Geom_VectorWithMagnitude(const double X, const double Y, const double Z)
+Geom_VectorWithMagnitude::Geom_VectorWithMagnitude(const double X,
+                                                   const double Y,
+                                                   const double Z)
 {
   gpVec = gp_Vec(X, Y, Z);
 }
@@ -64,7 +66,9 @@ occ::handle<Geom_Geometry> Geom_VectorWithMagnitude::Copy() const
 
 //=================================================================================================
 
-void Geom_VectorWithMagnitude::SetCoord(const double X, const double Y, const double Z)
+void Geom_VectorWithMagnitude::SetCoord(const double X,
+                                        const double Y,
+                                        const double Z)
 {
   gpVec = gp_Vec(X, Y, Z);
 }
@@ -141,8 +145,7 @@ void Geom_VectorWithMagnitude::Cross(const occ::handle<Geom_Vector>& Other)
 
 //=================================================================================================
 
-occ::handle<Geom_Vector> Geom_VectorWithMagnitude::Crossed(
-  const occ::handle<Geom_Vector>& Other) const
+occ::handle<Geom_Vector> Geom_VectorWithMagnitude::Crossed(const occ::handle<Geom_Vector>& Other) const
 {
 
   gp_Vec V(gpVec);
@@ -161,9 +164,8 @@ void Geom_VectorWithMagnitude::CrossCross(const occ::handle<Geom_Vector>& V1,
 
 //=================================================================================================
 
-occ::handle<Geom_Vector> Geom_VectorWithMagnitude::CrossCrossed(
-  const occ::handle<Geom_Vector>& V1,
-  const occ::handle<Geom_Vector>& V2) const
+occ::handle<Geom_Vector> Geom_VectorWithMagnitude::CrossCrossed(const occ::handle<Geom_Vector>& V1,
+                                                           const occ::handle<Geom_Vector>& V2) const
 {
 
   gp_Vec V(gpVec);

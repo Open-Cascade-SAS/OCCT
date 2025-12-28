@@ -56,30 +56,30 @@ class IntegrationFunction
 
   math_MultipleVarFunction* Fsav;
   math_IntegerVector        Ordsav;
-  int                       NVarsav;
+  int          NVarsav;
   math_Vector               xr;
   math_Vector               xm;
   math_Matrix               GaussPoint;
   math_Matrix               GaussWeight;
-  double                    Val;
-  bool                      Done;
+  double             Val;
+  bool          Done;
 
 public:
   IntegrationFunction(math_MultipleVarFunction& F,
-                      const int                 maxsav,
-                      const int                 NVar,
+                      const int    maxsav,
+                      const int    NVar,
                       const math_IntegerVector& Ord,
                       const math_Vector&        Lowsav,
                       const math_Vector&        Uppsav);
 
-  double Value();
-  bool   IsDone() const;
-  bool   recursive_iteration(int& n, math_IntegerVector& inc);
+  double    Value();
+  bool IsDone() const;
+  bool recursive_iteration(int& n, math_IntegerVector& inc);
 };
 
 IntegrationFunction::IntegrationFunction(math_MultipleVarFunction& F,
-                                         const int                 maxsav,
-                                         const int                 NVar,
+                                         const int    maxsav,
+                                         const int    NVar,
                                          const math_IntegerVector& Ord,
                                          const math_Vector&        Lowsav,
                                          const math_Vector&        Uppsav)
@@ -90,7 +90,7 @@ IntegrationFunction::IntegrationFunction(math_MultipleVarFunction& F,
       GaussWeight(1, NVar, 1, maxsav)
 {
 
-  int                i, k;
+  int   i, k;
   math_IntegerVector inc(1, NVar);
   inc.Init(0);
   Fsav    = &F;
@@ -112,8 +112,8 @@ IntegrationFunction::IntegrationFunction(math_MultipleVarFunction& F,
       GaussWeight(i, k) = GW(k); // Gauss de la variable i.
     }
   }
-  Val          = 0.0;
-  int  Iterdeb = 1;
+  Val                      = 0.0;
+  int Iterdeb = 1;
   bool recur   = recursive_iteration(Iterdeb, inc);
   if (recur)
   {
@@ -136,7 +136,8 @@ bool IntegrationFunction::IsDone() const
   return Done;
 }
 
-bool IntegrationFunction::recursive_iteration(int& n, math_IntegerVector& inc)
+bool IntegrationFunction::recursive_iteration(int&   n,
+                                                          math_IntegerVector& inc)
 {
 
   // Termination criterium :
@@ -144,14 +145,14 @@ bool IntegrationFunction::recursive_iteration(int& n, math_IntegerVector& inc)
   int local;
   if (n == (NVarsav + 1))
   {
-    math_Vector dx(1, NVarsav);
-    int         j;
+    math_Vector      dx(1, NVarsav);
+    int j;
     for (j = 1; j <= NVarsav; j++)
     {
       dx(j) = xr(j) * GaussPoint(j, inc(j));
     }
-    double F1;
-    bool   Ok = Fsav->Value(xm + dx, F1);
+    double    F1;
+    bool Ok = Fsav->Value(xm + dx, F1);
     if (!Ok)
     {
       return false;
@@ -184,8 +185,8 @@ math_GaussMultipleIntegration::math_GaussMultipleIntegration(math_MultipleVarFun
 {
   int MaxOrder = math::GaussPointsMax();
 
-  int                i, max = 0;
-  int                NVar = F.NbVariables();
+  int   i, max = 0;
+  int   NVar = F.NbVariables();
   math_IntegerVector Ord(1, NVar);
   math_Vector        Lowsav(1, NVar);
   math_Vector        Uppsav(1, NVar);

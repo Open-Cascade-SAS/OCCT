@@ -41,8 +41,8 @@ int IntImp_ZerCSParFunc::NbEquations() const
 bool IntImp_ZerCSParFunc::Value(const math_Vector& X, math_Vector& F)
 {
 
-  gp_Pnt Psurf = ThePSurfaceTool::Value(surface, X(1), X(2));
-  gp_Pnt Pcurv = TheCurveTool::Value(curve, X(3));
+  gp_Pnt        Psurf = ThePSurfaceTool::Value(surface, X(1), X(2));
+  gp_Pnt        Pcurv = TheCurveTool::Value(curve, X(3));
   double f1, f2, f3;
   F(1) = f1 = Psurf.X() - Pcurv.X();
   F(2) = f2 = Psurf.Y() - Pcurv.Y();

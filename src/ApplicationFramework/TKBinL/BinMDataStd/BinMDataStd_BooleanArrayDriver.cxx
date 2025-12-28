@@ -42,9 +42,10 @@ occ::handle<TDF_Attribute> BinMDataStd_BooleanArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_BooleanArrayDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                           const occ::handle<TDF_Attribute>& theTarget,
-                                           BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMDataStd_BooleanArrayDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   int aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -75,21 +76,20 @@ bool BinMDataStd_BooleanArrayDriver::Paste(const BinObjMgt_Persistent&       the
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_BooleanArrayDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_BooleanArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                           BinObjMgt_Persistent&        theTarget,
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataStd_BooleanArray> anAtt     = occ::down_cast<TDataStd_BooleanArray>(theSource);
-  const int                          aFirstInd = anAtt->Lower();
-  const int                          aLastInd  = anAtt->Upper();
+  const int        aFirstInd = anAtt->Lower();
+  const int        aLastInd  = anAtt->Upper();
   if (aLastInd < aFirstInd)
     return;
   theTarget << aFirstInd << aLastInd;
 
   const occ::handle<NCollection_HArray1<uint8_t>>& bytes = anAtt->InternalArray();
-  NCollection_Array1<uint8_t>                      aSourceArray(bytes->Lower(), bytes->Upper());
-  int lower = bytes->Lower(), i = lower, upper = bytes->Upper();
+  NCollection_Array1<uint8_t>                 aSourceArray(bytes->Lower(), bytes->Upper());
+  int                     lower = bytes->Lower(), i = lower, upper = bytes->Upper();
   for (; i <= upper; i++)
   {
     aSourceArray.SetValue(i, bytes->Value(i));

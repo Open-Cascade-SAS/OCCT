@@ -18,6 +18,7 @@
 #include <StepAP214_OrganizationItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationRole.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -27,7 +28,7 @@ RWStepAP214_RWAppliedOrganizationAssignment::RWStepAP214_RWAppliedOrganizationAs
 
 void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent) const
 {
@@ -55,12 +56,12 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
   // --- own field : items ---
 
   occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> aItems;
-  StepAP214_OrganizationItem                                   aItemsItem;
-  int                                                          nsub3;
+  StepAP214_OrganizationItem                  aItemsItem;
+  int                            nsub3;
   if (data->ReadSubList(num, 3, "items", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aItems  = new NCollection_HArray1<StepAP214_OrganizationItem>(1, nb3);
+    aItems               = new NCollection_HArray1<StepAP214_OrganizationItem>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       bool stat3 = data->ReadEntity(nsub3, i3, "items", ach, aItemsItem);
@@ -75,7 +76,7 @@ void RWStepAP214_RWAppliedOrganizationAssignment::ReadStep(
 }
 
 void RWStepAP214_RWAppliedOrganizationAssignment::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent) const
 {
 
@@ -99,7 +100,7 @@ void RWStepAP214_RWAppliedOrganizationAssignment::WriteStep(
 
 void RWStepAP214_RWAppliedOrganizationAssignment::Share(
   const occ::handle<StepAP214_AppliedOrganizationAssignment>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->AssignedOrganization());

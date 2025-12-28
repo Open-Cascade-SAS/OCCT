@@ -21,7 +21,7 @@
 RWStepShape_RWTorus::RWStepShape_RWTorus() {}
 
 void RWStepShape_RWTorus::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                                   num,
+                                   const int                 num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepShape_Torus>&         ent) const
 {
@@ -60,7 +60,7 @@ void RWStepShape_RWTorus::ReadStep(const occ::handle<StepData_StepReaderData>& d
   ent->Init(aName, aPosition, aMajorRadius, aMinorRadius);
 }
 
-void RWStepShape_RWTorus::WriteStep(StepData_StepWriter&                SW,
+void RWStepShape_RWTorus::WriteStep(StepData_StepWriter&           SW,
                                     const occ::handle<StepShape_Torus>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepShape_RWTorus::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepShape_RWTorus::Share(const occ::handle<StepShape_Torus>& ent,
-                                Interface_EntityIterator&           iter) const
+                                Interface_EntityIterator&      iter) const
 {
 
   iter.GetOneItem(ent->Position());

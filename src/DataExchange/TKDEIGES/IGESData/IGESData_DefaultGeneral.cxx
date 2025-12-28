@@ -35,9 +35,9 @@ IGESData_DefaultGeneral::IGESData_DefaultGeneral()
   Interface_GeneralLib::SetGlobal(this, IGESData::Protocol());
 }
 
-void IGESData_DefaultGeneral::OwnSharedCase(const int                               CN,
+void IGESData_DefaultGeneral::OwnSharedCase(const int             CN,
                                             const occ::handle<IGESData_IGESEntity>& ent,
-                                            Interface_EntityIterator&               iter) const
+                                            Interface_EntityIterator&          iter) const
 {
   if (CN == 0)
     return;
@@ -45,7 +45,7 @@ void IGESData_DefaultGeneral::OwnSharedCase(const int                           
   if (anent.IsNull())
     return;
   occ::handle<Interface_UndefinedContent> cont = anent->UndefinedContent();
-  int                                     nb   = cont->NbParams();
+  int                   nb   = cont->NbParams();
   for (int i = 1; i <= nb; i++)
   {
     if (cont->IsParamEntity(i))
@@ -53,9 +53,8 @@ void IGESData_DefaultGeneral::OwnSharedCase(const int                           
   }
 }
 
-IGESData_DirChecker IGESData_DefaultGeneral::DirChecker(
-  const int,
-  const occ::handle<IGESData_IGESEntity>&) const
+IGESData_DirChecker IGESData_DefaultGeneral::DirChecker(const int,
+                                                        const occ::handle<IGESData_IGESEntity>&) const
 {
   IGESData_DirChecker dc;
   return dc;
@@ -68,7 +67,8 @@ void IGESData_DefaultGeneral::OwnCheckCase(const int,
 {
 } // no specific criteria
 
-bool IGESData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transient>& entto) const
+bool IGESData_DefaultGeneral::NewVoid(const int      CN,
+                                                  occ::handle<Standard_Transient>& entto) const
 {
   entto.Nullify();
   if (CN == 0)
@@ -80,10 +80,10 @@ bool IGESData_DefaultGeneral::NewVoid(const int CN, occ::handle<Standard_Transie
   return (!entto.IsNull());
 }
 
-void IGESData_DefaultGeneral::OwnCopyCase(const int                               CN,
+void IGESData_DefaultGeneral::OwnCopyCase(const int             CN,
                                           const occ::handle<IGESData_IGESEntity>& entfrom,
                                           const occ::handle<IGESData_IGESEntity>& entto,
-                                          Interface_CopyTool&                     TC) const
+                                          Interface_CopyTool&                TC) const
 {
   if (CN == 0)
     return;

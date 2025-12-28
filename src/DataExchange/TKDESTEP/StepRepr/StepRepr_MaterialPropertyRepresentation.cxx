@@ -30,7 +30,7 @@ StepRepr_MaterialPropertyRepresentation::StepRepr_MaterialPropertyRepresentation
 //=================================================================================================
 
 void StepRepr_MaterialPropertyRepresentation::Init(
-  const StepRepr_RepresentedDefinition&        aPropertyDefinitionRepresentation_Definition,
+  const StepRepr_RepresentedDefinition&   aPropertyDefinitionRepresentation_Definition,
   const occ::handle<StepRepr_Representation>&  aPropertyDefinitionRepresentation_UsedRepresentation,
   const occ::handle<StepRepr_DataEnvironment>& aDependentEnvironment)
 {
@@ -43,8 +43,8 @@ void StepRepr_MaterialPropertyRepresentation::Init(
 
 //=================================================================================================
 
-occ::handle<StepRepr_DataEnvironment> StepRepr_MaterialPropertyRepresentation::
-  DependentEnvironment() const
+occ::handle<StepRepr_DataEnvironment> StepRepr_MaterialPropertyRepresentation::DependentEnvironment()
+  const
 {
   return theDependentEnvironment;
 }

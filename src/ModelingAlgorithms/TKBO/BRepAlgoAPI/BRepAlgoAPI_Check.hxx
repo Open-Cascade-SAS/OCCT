@@ -64,8 +64,8 @@ public: //! @name Constructors
   //! @param[in] theRange  - parameter to use progress indicator
   Standard_EXPORT BRepAlgoAPI_Check(
     const TopoDS_Shape&          theS,
-    const bool                   bTestSE  = true,
-    const bool                   bTestSI  = true,
+    const bool       bTestSE  = true,
+    const bool       bTestSI  = true,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Constructor for checking the couple of shapes.
@@ -86,8 +86,8 @@ public: //! @name Constructors
     const TopoDS_Shape&          theS1,
     const TopoDS_Shape&          theS2,
     const BOPAlgo_Operation      theOp    = BOPAlgo_UNKNOWN,
-    const bool                   bTestSE  = true,
-    const bool                   bTestSI  = true,
+    const bool       bTestSE  = true,
+    const bool       bTestSI  = true,
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
 public: //! @name Initializing the algorithm
@@ -98,7 +98,9 @@ public: //! @name Initializing the algorithm
   //!                       on small edges or not; by default it is set to TRUE;
   //! @param[in] bTestSI  - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
-  void SetData(const TopoDS_Shape& theS, const bool bTestSE = true, const bool bTestSI = true)
+  void SetData(const TopoDS_Shape&    theS,
+               const bool bTestSE = true,
+               const bool bTestSI = true)
   {
     myS1     = theS;
     myS2     = TopoDS_Shape();
@@ -123,8 +125,8 @@ public: //! @name Initializing the algorithm
   void SetData(const TopoDS_Shape&     theS1,
                const TopoDS_Shape&     theS2,
                const BOPAlgo_Operation theOp   = BOPAlgo_UNKNOWN,
-               const bool              bTestSE = true,
-               const bool              bTestSI = true)
+               const bool  bTestSE = true,
+               const bool  bTestSI = true)
   {
     myS1        = theS1;
     myS2        = theS2;

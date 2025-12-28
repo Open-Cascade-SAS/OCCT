@@ -23,7 +23,7 @@
 RWStepGeom_RWUniformCurve::RWStepGeom_RWUniformCurve() {}
 
 void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_UniformCurve>&   ent) const
 {
@@ -48,12 +48,12 @@ void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   // --- inherited field : controlPointsList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent3;
-  int                                                                    nsub3;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
-    int nb3            = data->NbParams(nsub3);
-    aControlPointsList = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
+    int nb3 = data->NbParams(nsub3);
+    aControlPointsList   = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -98,7 +98,7 @@ void RWStepGeom_RWUniformCurve::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aDegree, aControlPointsList, aCurveForm, aClosedCurve, aSelfIntersect);
 }
 
-void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                      SW,
+void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepGeom_UniformCurve>& ent) const
 {
 
@@ -133,7 +133,7 @@ void RWStepGeom_RWUniformCurve::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepGeom_RWUniformCurve::Share(const occ::handle<StepGeom_UniformCurve>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   int nbElem1 = ent->NbControlPointsList();

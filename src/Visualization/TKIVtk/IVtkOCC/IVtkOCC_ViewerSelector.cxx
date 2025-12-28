@@ -82,8 +82,8 @@ occ::handle<Graphic3d_Camera> IVtkOCC_ViewerSelector::ConvertVtkToOccCamera(
 // Method:  Pick
 // Purpose: Implements point picking
 //============================================================================
-void IVtkOCC_ViewerSelector::Pick(const int                 theXPix,
-                                  const int                 theYPix,
+void IVtkOCC_ViewerSelector::Pick(const int    theXPix,
+                                  const int    theYPix,
                                   const IVtk_IView::Handle& theView)
 {
   gp_Pnt2d aMousePos(static_cast<double>(theXPix), static_cast<double>(theYPix));
@@ -117,10 +117,10 @@ void IVtkOCC_ViewerSelector::Pick(const int                 theXPix,
 
 //=================================================================================================
 
-void IVtkOCC_ViewerSelector::Pick(const int                 theXMin,
-                                  const int                 theYMin,
-                                  const int                 theXMax,
-                                  const int                 theYMax,
+void IVtkOCC_ViewerSelector::Pick(const int    theXMin,
+                                  const int    theYMin,
+                                  const int    theXMax,
+                                  const int    theYMax,
                                   const IVtk_IView::Handle& theView)
 {
   gp_Pnt2d aMinMousePos(static_cast<double>(theXMin), static_cast<double>(theYMin));
@@ -138,9 +138,9 @@ void IVtkOCC_ViewerSelector::Pick(const int                 theXMin,
     myToUpdateTol = false;
   }
 
-  int    aWidth = 0, aHeight = 0;
-  double aX = RealLast(), aY = RealLast();
-  double aVpWidth = RealLast(), aVpHeight = RealLast();
+  int aWidth = 0, aHeight = 0;
+  double    aX = RealLast(), aY = RealLast();
+  double    aVpWidth = RealLast(), aVpHeight = RealLast();
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 
@@ -183,9 +183,9 @@ void IVtkOCC_ViewerSelector::Pick(double**                  thePoly,
     myToUpdateTol = false;
   }
 
-  int    aWidth = 0, aHeight = 0;
-  double aX = RealLast(), aY = RealLast();
-  double aVpWidth = RealLast(), aVpHeight = RealLast();
+  int aWidth = 0, aHeight = 0;
+  double    aX = RealLast(), aY = RealLast();
+  double    aVpWidth = RealLast(), aVpHeight = RealLast();
 
   mySelectingVolumeMgr.SetCamera(ConvertVtkToOccCamera(theView));
 

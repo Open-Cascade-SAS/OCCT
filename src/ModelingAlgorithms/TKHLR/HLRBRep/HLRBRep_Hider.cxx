@@ -38,9 +38,7 @@ void HLRBRep_Hider::OwnHiding(const int) {}
 
 //=================================================================================================
 
-void HLRBRep_Hider::Hide(
-  const int                                                                        FI,
-  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
+void HLRBRep_Hider::Hide(const int FI, NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   // *****************************************************************
   //
@@ -90,17 +88,17 @@ void HLRBRep_Hider::Hide(
     return;              // **********************
   if (myDS->IsBadFace())
     return;
-  HLRBRep_EdgeInterferenceTool          EIT(myDS); // List of Intersections
-  NCollection_Array1<HLRBRep_EdgeData>& myEData = myDS->EDataArray();
+  HLRBRep_EdgeInterferenceTool EIT(myDS); // List of Intersections
+  NCollection_Array1<HLRBRep_EdgeData>&       myEData = myDS->EDataArray();
 
   for (; myDS->MoreEdge(); myDS->NextEdge())
-  {                       // loop on the Edges
+  {                                    // loop on the Edges
     int E = myDS->Edge(); // *****************
 
     try
     {
       OCC_CATCH_SIGNALS
-      bool                                   hasOut = false;
+      bool         hasOut = false;
       NCollection_List<HLRAlgo_Interference> ILHidden;
       NCollection_List<HLRAlgo_Interference> ILOn;
       EIT.LoadEdge();
@@ -143,14 +141,14 @@ void HLRBRep_Hider::Hide(
         while (ItSegHidden1.More() && Modif == false)
         {
           HLRAlgo_Interference& Int1    = ItSegHidden1.ChangeValue();
-          int                   numseg1 = Int1.Intersection().SegIndex();
+          int      numseg1 = Int1.Intersection().SegIndex();
           if (numseg1 != 0)
           {
             NCollection_List<HLRAlgo_Interference>::Iterator ItSegHidden2(ILHidden);
             while (ItSegHidden2.More() && Modif == false)
             {
               HLRAlgo_Interference& Int2    = ItSegHidden2.ChangeValue();
-              int                   numseg2 = Int2.Intersection().SegIndex();
+              int      numseg2 = Int2.Intersection().SegIndex();
               if (numseg1 + numseg2 == 0)
               {
                 //--printf("\nHidden Traitement du segment %d  %d\n",numseg1,numseg2);
@@ -385,8 +383,8 @@ void HLRBRep_Hider::Hide(
       }
       else
       {
-        double p1 = 0., p2 = 0.;
-        float  tol1 = 0., tol2 = 0.;
+        double      p1 = 0., p2 = 0.;
+        float tol1 = 0., tol2 = 0.;
 
         HLRBRep_EdgeData&   ed = myEData(E);
         HLRAlgo_EdgeStatus& ES = ed.Status();
@@ -406,8 +404,8 @@ void HLRBRep_Hider::Hide(
           if (myDS->SimpleHidingFace()) // remove excess interferences
           {
             NCollection_Sequence<double> ToRemove;
-            TopAbs_Orientation           PrevTrans = TopAbs_EXTERNAL;
-            double                       PrevParam = 0.;
+            TopAbs_Orientation     PrevTrans = TopAbs_EXTERNAL;
+            double          PrevParam = 0.;
             for (; It.More(); It.Next())
             {
               const HLRAlgo_Interference& Int    = It.Value();
@@ -435,8 +433,8 @@ void HLRBRep_Hider::Hide(
             It.Initialize(ILHidden);
             while (It.More())
             {
-              double aParam = It.Value().Intersection().Parameter();
-              bool   found  = false;
+              double    aParam = It.Value().Intersection().Parameter();
+              bool found  = false;
               for (int i = 1; i <= ToRemove.Length(); i++)
                 if (aParam == ToRemove(i))
                 {
@@ -497,15 +495,15 @@ void HLRBRep_Hider::Hide(
         {
           // IFV
 
-          TopAbs_State aBuildIN    = TopAbs_IN;
-          bool         IsSuspicion = true;
+          TopAbs_State     aBuildIN    = TopAbs_IN;
+          bool IsSuspicion = true;
 
-          double pmax, pmin;
-          bool   allInt = false;
-          bool   allFor = false;
-          bool   allRev = false;
-          pmin          = RealLast();
-          pmax          = -pmin;
+          double    pmax, pmin;
+          bool allInt = false;
+          bool allFor = false;
+          bool allRev = false;
+          pmin                    = RealLast();
+          pmax                    = -pmin;
 
           if (ILHidden.Extent() > 1)
           {
@@ -516,9 +514,9 @@ void HLRBRep_Hider::Hide(
             for (; It.More(); It.Next())
             {
               double p = It.Value().Intersection().Parameter();
-              allFor   = allFor && (It.Value().Transition() == TopAbs_FORWARD);
-              allRev   = allRev && (It.Value().Transition() == TopAbs_REVERSED);
-              allInt   = allInt && (It.Value().Transition() == TopAbs_INTERNAL);
+              allFor          = allFor && (It.Value().Transition() == TopAbs_FORWARD);
+              allRev          = allRev && (It.Value().Transition() == TopAbs_REVERSED);
+              allInt          = allInt && (It.Value().Transition() == TopAbs_INTERNAL);
               if (p < pmin)
                 pmin = p;
               if (p > pmax)
@@ -527,7 +525,7 @@ void HLRBRep_Hider::Hide(
           }
 
           NCollection_List<HLRAlgo_Interference>::Iterator Itl(ILHidden);
-          HLRBRep_VertexList                               IL(EIT, Itl);
+          HLRBRep_VertexList                     IL(EIT, Itl);
 
           HLRBRep_EdgeBuilder EB(IL);
 
@@ -535,8 +533,8 @@ void HLRBRep_Hider::Hide(
                                // ******************
           while (EB.MoreEdges())
           {
-            p1            = 0.;
-            p2            = 0.;
+            p1                         = 0.;
+            p2                         = 0.;
             int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
@@ -581,7 +579,7 @@ void HLRBRep_Hider::Hide(
               // int aNbp = 1;
               // aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
               int tmplevel = 0;
-              aTestState   = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
+              aTestState = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
             }
 
             if (aTestState != TopAbs_OUT)
@@ -601,8 +599,8 @@ void HLRBRep_Hider::Hide(
                                 // ******************************
           while (EB.MoreEdges())
           {
-            p1            = 0.;
-            p2            = 0.;
+            p1                         = 0.;
+            p2                         = 0.;
             int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
@@ -637,7 +635,7 @@ void HLRBRep_Hider::Hide(
               // int aNbp = 1;
               // aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
               int tmplevel = 0;
-              aTestState   = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
+              aTestState = myDS->Classify(E, ed, true, tmplevel, (p1 + p2) / 2.);
             }
 
             if (aTestState != TopAbs_OUT)
@@ -706,8 +704,8 @@ void HLRBRep_Hider::Hide(
                                 // ***********************
           while (EB.MoreEdges())
           {
-            p1            = 0.;
-            p2            = 0.;
+            p1                         = 0.;
+            p2                         = 0.;
             int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {
@@ -749,8 +747,8 @@ void HLRBRep_Hider::Hide(
                                 // *************************************
           while (EB.MoreEdges())
           {
-            p1            = 0.;
-            p2            = 0.;
+            p1                         = 0.;
+            p2                         = 0.;
             int aMaskP1P2 = 0;
             while (EB.MoreVertices())
             {

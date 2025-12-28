@@ -60,7 +60,7 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement
 //=======================================================================
 void XmlObjMgt_Persistent::CreateElement(XmlObjMgt_Element&         theParent,
                                          const XmlObjMgt_DOMString& theType,
-                                         const int                  theID)
+                                         const int     theID)
 {
   // AGV  XmlObjMgt_Document& anOwnerDoc =
   // AGV    (XmlObjMgt_Document&)theParent.getOwnerDocument();

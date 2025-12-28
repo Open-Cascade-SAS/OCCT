@@ -22,6 +22,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_ConnectedFaceSubSet.hxx>
 #include <StepShape_Face.hxx>
+#include <StepShape_Face.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -33,7 +34,7 @@ RWStepShape_RWConnectedFaceSubSet::RWStepShape_RWConnectedFaceSubSet() {}
 
 void RWStepShape_RWConnectedFaceSubSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepShape_ConnectedFaceSubSet>& ent) const
 {
@@ -49,11 +50,11 @@ void RWStepShape_RWConnectedFaceSubSet::ReadStep(
   // Inherited fields of ConnectedFaceSet
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aConnectedFaceSet_CfsFaces;
-  int                                                           sub2 = 0;
+  int                sub2 = 0;
   if (data->ReadSubList(num, 2, "connected_face_set.cfs_faces", ach, sub2))
   {
-    int num2                   = sub2;
-    int nb0                    = data->NbParams(num2);
+    int num2      = sub2;
+    int nb0       = data->NbParams(num2);
     aConnectedFaceSet_CfsFaces = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -85,7 +86,7 @@ void RWStepShape_RWConnectedFaceSubSet::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWConnectedFaceSubSet::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepShape_ConnectedFaceSubSet>& ent) const
 {
 

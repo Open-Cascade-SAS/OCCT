@@ -34,7 +34,7 @@ public:
   Standard_EXPORT VrmlConverter_PointAspect();
 
   Standard_EXPORT VrmlConverter_PointAspect(const occ::handle<Vrml_Material>& aMaterial,
-                                            const bool                        OnOff);
+                                            const bool       OnOff);
 
   Standard_EXPORT void SetMaterial(const occ::handle<Vrml_Material>& aMaterial);
 
@@ -52,7 +52,7 @@ public:
 
 private:
   occ::handle<Vrml_Material> myMaterial;
-  bool                       myHasMaterial;
+  bool      myHasMaterial;
 };
 
 #endif // _VrmlConverter_PointAspect_HeaderFile

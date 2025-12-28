@@ -23,6 +23,7 @@
 #include <Bnd_Box.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom_Plane.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -106,13 +107,13 @@ static bool IsPlanar(const Adaptor3d_Surface& theS)
 //  2. Currently, infinite edges/faces (e.g. half-space) are not
 //      processed correctly because computation of UV-bounds is a costly operation.
 //=======================================================================
-static int PointsForOBB(const TopoDS_Shape&         theS,
-                        const bool                  theIsTriangulationUsed,
-                        NCollection_Array1<gp_Pnt>* thePts        = 0,
-                        NCollection_Array1<double>* theArrOfToler = 0)
+static int PointsForOBB(const TopoDS_Shape&    theS,
+                                     const bool theIsTriangulationUsed,
+                                     NCollection_Array1<gp_Pnt>*    thePts        = 0,
+                                     NCollection_Array1<double>*  theArrOfToler = 0)
 {
-  int             aRetVal = 0;
-  TopExp_Explorer anExpF, anExpE;
+  int aRetVal = 0;
+  TopExp_Explorer  anExpF, anExpE;
 
   // get all vertices from the shape
   for (anExpF.Init(theS, TopAbs_VERTEX); anExpF.More(); anExpF.Next())
@@ -181,8 +182,8 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
       return 0;
     }
 
-    const int     aCNode = aTrng->NbNodes();
-    const gp_Trsf aTrsf  = aLoc;
+    const int aCNode = aTrng->NbNodes();
+    const gp_Trsf          aTrsf  = aLoc;
     for (int i = 1; i <= aCNode; i++)
     {
       if (thePts != NULL)
@@ -224,7 +225,7 @@ static int PointsForOBB(const TopoDS_Shape&         theS,
     if (aPolygon.IsNull())
       return 0;
 
-    const int                         aCNode    = aPolygon->NbNodes();
+    const int    aCNode    = aPolygon->NbNodes();
     const NCollection_Array1<gp_Pnt>& aNodesArr = aPolygon->Nodes();
     for (int i = 1; i <= aCNode; i++)
     {
@@ -277,18 +278,18 @@ static int IsWCS(const gp_Dir& theDir)
 //            linear/planar shapes and shapes having triangulation
 //            (http://www.idt.mdh.se/~tla/publ/FastOBBs.pdf).
 //=======================================================================
-static bool CheckPoints(const TopoDS_Shape& theS,
-                        const bool          theIsTriangulationUsed,
-                        const bool          theIsOptimal,
-                        const bool          theIsShapeToleranceUsed,
-                        Bnd_OBB&            theOBB)
+static bool CheckPoints(const TopoDS_Shape&    theS,
+                                    const bool theIsTriangulationUsed,
+                                    const bool theIsOptimal,
+                                    const bool theIsShapeToleranceUsed,
+                                    Bnd_OBB&               theOBB)
 {
   const int aNbPnts = PointsForOBB(theS, theIsTriangulationUsed);
 
   if (aNbPnts < 1)
     return false;
 
-  NCollection_Array1<gp_Pnt> anArrPnts(0, theOBB.IsVoid() ? aNbPnts - 1 : aNbPnts + 7);
+  NCollection_Array1<gp_Pnt>   anArrPnts(0, theOBB.IsVoid() ? aNbPnts - 1 : aNbPnts + 7);
   NCollection_Array1<double> anArrOfTolerances;
   if (theIsShapeToleranceUsed)
   {
@@ -360,11 +361,11 @@ static void ComputeProperties(const TopoDS_Shape& theS, GProp_GProps& theGCommon
 // Function : ComputePCA
 // purpose : Creates OBB with axes of inertia.
 //=======================================================================
-static void ComputePCA(const TopoDS_Shape& theS,
-                       Bnd_OBB&            theOBB,
-                       const bool          theIsTriangulationUsed,
-                       const bool          theIsOptimal,
-                       const bool          theIsShapeToleranceUsed)
+static void ComputePCA(const TopoDS_Shape&    theS,
+                       Bnd_OBB&               theOBB,
+                       const bool theIsTriangulationUsed,
+                       const bool theIsOptimal,
+                       const bool theIsShapeToleranceUsed)
 {
   // Compute the transformation matrix to obtain more tight bounding box
   GProp_GProps aGCommon;
@@ -456,15 +457,15 @@ static void ComputePCA(const TopoDS_Shape& theS,
 
     const gp_XYZ aXext = aX * aXDir, aYext = aY * aYDir, aZext = aZ * aZDir;
 
-    int aPntIdx            = 8;
-    aListOfPnts(aPntIdx++) = aCenter - aXext - aYext - aZext;
-    aListOfPnts(aPntIdx++) = aCenter + aXext - aYext - aZext;
-    aListOfPnts(aPntIdx++) = aCenter - aXext + aYext - aZext;
-    aListOfPnts(aPntIdx++) = aCenter + aXext + aYext - aZext;
-    aListOfPnts(aPntIdx++) = aCenter - aXext - aYext + aZext;
-    aListOfPnts(aPntIdx++) = aCenter + aXext - aYext + aZext;
-    aListOfPnts(aPntIdx++) = aCenter - aXext + aYext + aZext;
-    aListOfPnts(aPntIdx++) = aCenter + aXext + aYext + aZext;
+    int aPntIdx = 8;
+    aListOfPnts(aPntIdx++)   = aCenter - aXext - aYext - aZext;
+    aListOfPnts(aPntIdx++)   = aCenter + aXext - aYext - aZext;
+    aListOfPnts(aPntIdx++)   = aCenter - aXext + aYext - aZext;
+    aListOfPnts(aPntIdx++)   = aCenter + aXext + aYext - aZext;
+    aListOfPnts(aPntIdx++)   = aCenter - aXext - aYext + aZext;
+    aListOfPnts(aPntIdx++)   = aCenter + aXext - aYext + aZext;
+    aListOfPnts(aPntIdx++)   = aCenter - aXext + aYext + aZext;
+    aListOfPnts(aPntIdx++)   = aCenter + aXext + aYext + aZext;
 
     theOBB.ReBuild(aListOfPnts);
   }
@@ -472,11 +473,11 @@ static void ComputePCA(const TopoDS_Shape& theS,
 
 //=================================================================================================
 
-void BRepBndLib::AddOBB(const TopoDS_Shape& theS,
-                        Bnd_OBB&            theOBB,
-                        const bool          theIsTriangulationUsed,
-                        const bool          theIsOptimal,
-                        const bool          theIsShapeToleranceUsed)
+void BRepBndLib::AddOBB(const TopoDS_Shape&    theS,
+                        Bnd_OBB&               theOBB,
+                        const bool theIsTriangulationUsed,
+                        const bool theIsOptimal,
+                        const bool theIsShapeToleranceUsed)
 {
   if (CheckPoints(theS, theIsTriangulationUsed, theIsOptimal, theIsShapeToleranceUsed, theOBB))
     return;

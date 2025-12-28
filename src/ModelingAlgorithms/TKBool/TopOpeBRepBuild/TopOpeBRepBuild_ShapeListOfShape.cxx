@@ -44,9 +44,8 @@ TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(const TopoDS_
 
 //=================================================================================================
 
-TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(
-  const TopoDS_Shape&                   S,
-  const NCollection_List<TopoDS_Shape>& L)
+TopOpeBRepBuild_ShapeListOfShape::TopOpeBRepBuild_ShapeListOfShape(const TopoDS_Shape&         S,
+                                                                   const NCollection_List<TopoDS_Shape>& L)
 {
   myShape = S;
   myList  = L;

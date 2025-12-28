@@ -32,10 +32,10 @@ BRepFill_Section::BRepFill_Section()
 {
 }
 
-BRepFill_Section::BRepFill_Section(const TopoDS_Shape&  Profile,
-                                   const TopoDS_Vertex& V,
-                                   const bool           WithContact,
-                                   const bool           WithCorrection)
+BRepFill_Section::BRepFill_Section(const TopoDS_Shape&    Profile,
+                                   const TopoDS_Vertex&   V,
+                                   const bool WithContact,
+                                   const bool WithCorrection)
     : vertex(V),
       islaw(0),
       ispunctual(0),

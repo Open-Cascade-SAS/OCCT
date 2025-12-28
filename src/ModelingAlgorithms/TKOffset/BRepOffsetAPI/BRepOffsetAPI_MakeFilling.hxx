@@ -84,16 +84,16 @@ public:
   //! length U and the length V indicate a great difference
   //! between the two. In other words, when the surface is, for
   //! example, extremely long.
-  Standard_EXPORT BRepOffsetAPI_MakeFilling(const int    Degree      = 3,
-                                            const int    NbPtsOnCur  = 15,
-                                            const int    NbIter      = 2,
-                                            const bool   Anisotropie = false,
-                                            const double Tol2d       = 0.00001,
-                                            const double Tol3d       = 0.0001,
-                                            const double TolAng      = 0.01,
-                                            const double TolCurv     = 0.1,
-                                            const int    MaxDeg      = 8,
-                                            const int    MaxSegments = 9);
+  Standard_EXPORT BRepOffsetAPI_MakeFilling(const int Degree      = 3,
+                                            const int NbPtsOnCur  = 15,
+                                            const int NbIter      = 2,
+                                            const bool Anisotropie = false,
+                                            const double    Tol2d       = 0.00001,
+                                            const double    Tol3d       = 0.0001,
+                                            const double    TolAng      = 0.01,
+                                            const double    TolCurv     = 0.1,
+                                            const int MaxDeg      = 8,
+                                            const int MaxSegments = 9);
 
   //! Sets the values of Tolerances used to control the constraint.
   //! Tol2d:
@@ -122,9 +122,9 @@ public:
   //! For each iteration the number of discretisation points is
   //! increased.
   //! Anisotropie:
-  Standard_EXPORT void SetResolParam(const int  Degree      = 3,
-                                     const int  NbPtsOnCur  = 15,
-                                     const int  NbIter      = 2,
+  Standard_EXPORT void SetResolParam(const int Degree      = 3,
+                                     const int NbPtsOnCur  = 15,
+                                     const int NbIter      = 2,
                                      const bool Anisotropie = false);
 
   //! Sets the parameters used to approximate the filling
@@ -133,7 +133,8 @@ public:
   //! defining the filling surface can have
   //! - MaxSegments - the greatest number of segments
   //! which the filling surface can have.
-  Standard_EXPORT void SetApproxParam(const int MaxDeg = 8, const int MaxSegments = 9);
+  Standard_EXPORT void SetApproxParam(const int MaxDeg      = 8,
+                                      const int MaxSegments = 9);
 
   //! Loads the initial surface Surf to
   //! begin the construction of the surface.
@@ -165,9 +166,9 @@ public:
   //! with the first face of the edge.
   //! Raises ConstructionError if the edge has no representation on a face and Order is
   //! GeomAbs_G1 or GeomAbs_G2.
-  Standard_EXPORT int Add(const TopoDS_Edge&  Constr,
-                          const GeomAbs_Shape Order,
-                          const bool          IsBound = true);
+  Standard_EXPORT int Add(const TopoDS_Edge&     Constr,
+                                       const GeomAbs_Shape    Order,
+                                       const bool IsBound = true);
 
   //! Adds a new constraint which also defines an edge of the wire
   //! of the face
@@ -181,10 +182,10 @@ public:
   //! of the edge and to respect tangency and curvature
   //! with the given face.
   //! Raises ConstructionError if the edge has no 2d representation on the given face
-  Standard_EXPORT int Add(const TopoDS_Edge&  Constr,
-                          const TopoDS_Face&  Support,
-                          const GeomAbs_Shape Order,
-                          const bool          IsBound = true);
+  Standard_EXPORT int Add(const TopoDS_Edge&     Constr,
+                                       const TopoDS_Face&     Support,
+                                       const GeomAbs_Shape    Order,
+                                       const bool IsBound = true);
 
   //! Adds a free constraint on a face. The corresponding edge has to
   //! be automatically recomputed. It is always a bound.
@@ -194,10 +195,10 @@ public:
   Standard_EXPORT int Add(const gp_Pnt& Point);
 
   //! Adds a punctual constraint.
-  Standard_EXPORT int Add(const double        U,
-                          const double        V,
-                          const TopoDS_Face&  Support,
-                          const GeomAbs_Shape Order);
+  Standard_EXPORT int Add(const double U,
+                                       const double V,
+                                       const TopoDS_Face&  Support,
+                                       const GeomAbs_Shape Order);
 
   //! Builds the resulting faces
   Standard_EXPORT virtual void Build(
@@ -208,8 +209,8 @@ public:
 
   //! Returns the list of shapes generated from the
   //! shape <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
   //! Returns the maximum distance between the result and
   //! the constraints. This is set at construction time.

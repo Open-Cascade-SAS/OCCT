@@ -29,6 +29,11 @@
 #include <ShapeExtend_Status.hxx>
 #include <ShapeFix_WireSegment.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 class ShapeExtend_CompositeSurface;
 class ShapeAnalysis_TransferParameters;
 class ShapeExtend_WireData;
@@ -90,9 +95,9 @@ public:
   //! pcurves. Precision is used (together with tolerance of edges)
   //! for handling subtle cases, such as tangential intersections.
   Standard_EXPORT void Init(const occ::handle<ShapeExtend_CompositeSurface>& Grid,
-                            const TopLoc_Location&                           L,
-                            const TopoDS_Face&                               Face,
-                            const double                                     Prec);
+                            const TopLoc_Location&                      L,
+                            const TopoDS_Face&                          Face,
+                            const double                         Prec);
 
   //! Returns (modifiable) flag for special 'closed'
   //! mode which forces ComposeShell to consider
@@ -133,7 +138,7 @@ public:
   //! and all pcurves on the initial (pseudo)face are reassigned to
   //! that surface. If several wires are one inside another, single
   //! face is created.
-  Standard_EXPORT void DispatchWires(NCollection_Sequence<TopoDS_Shape>&         faces,
+  Standard_EXPORT void DispatchWires(NCollection_Sequence<TopoDS_Shape>&       faces,
                                      NCollection_Sequence<ShapeFix_WireSegment>& wires) const;
 
   //! Sets tool for transfer parameters from 3d to 2d and vice versa.
@@ -157,12 +162,12 @@ protected:
   //! of cutting line, or tangent to it (by several points recomputed to 3d,
   //! distance is compared with tolerance of corresponding edge).
   Standard_EXPORT int ComputeCode(const occ::handle<ShapeExtend_WireData>& wire,
-                                  const gp_Lin2d&                          line,
-                                  const int                                begInd,
-                                  const int                                endInd,
-                                  const double                             begPar,
-                                  const double                             endPar,
-                                  const bool                               IsInternal = false);
+                                               const gp_Lin2d&                     line,
+                                               const int              begInd,
+                                               const int              endInd,
+                                               const double                 begPar,
+                                               const double                 endPar,
+                                               const bool IsInternal = false);
 
   //! Splits edges in the wire by given indices of edges and
   //! parameters on them. Returns resulting wire and vertices
@@ -175,13 +180,13 @@ protected:
   //! NOTE: If edge is split, it is replaced by wire, and
   //! order of edges in the wire corresponds to FORWARD orientation
   //! of the edge.
-  Standard_EXPORT ShapeFix_WireSegment SplitWire(ShapeFix_WireSegment&               wire,
-                                                 NCollection_Sequence<int>&          indexes,
-                                                 const NCollection_Sequence<double>& values,
-                                                 NCollection_Sequence<TopoDS_Shape>& vertices,
-                                                 const NCollection_Sequence<int>&    segcodes,
-                                                 const bool                          cutbyu,
-                                                 const int                           cutindex);
+  Standard_EXPORT ShapeFix_WireSegment SplitWire(ShapeFix_WireSegment&            wire,
+                                                 NCollection_Sequence<int>&       indexes,
+                                                 const NCollection_Sequence<double>&    values,
+                                                 NCollection_Sequence<TopoDS_Shape>&        vertices,
+                                                 const NCollection_Sequence<int>& segcodes,
+                                                 const bool           cutbyu,
+                                                 const int           cutindex);
 
   //! Split edges in the wire by cutting line.
   //! Wires with FORWARD or REVERSED orientation are considered
@@ -194,13 +199,13 @@ protected:
   //! Method fills sequences of parameters of intersection points
   //! of cutting line with all edges, their types, and corresponding
   //! vertices (including ones created during splitting edges).
-  Standard_EXPORT bool SplitByLine(ShapeFix_WireSegment&               wire,
-                                   const gp_Lin2d&                     line,
-                                   const bool                          cutbyu,
-                                   const int                           cutindex,
-                                   NCollection_Sequence<double>&       SplitLinePar,
-                                   NCollection_Sequence<int>&          SplitLineCode,
-                                   NCollection_Sequence<TopoDS_Shape>& SplitLineVertex);
+  Standard_EXPORT bool SplitByLine(ShapeFix_WireSegment&      wire,
+                                               const gp_Lin2d&            line,
+                                               const bool     cutbyu,
+                                               const int     cutindex,
+                                               NCollection_Sequence<double>&    SplitLinePar,
+                                               NCollection_Sequence<int>& SplitLineCode,
+                                               NCollection_Sequence<TopoDS_Shape>&  SplitLineVertex);
 
   //! Split edges in the sequence of wires by cutting line.
   //! Wires with FORWARD or REVERSED orientation are considered
@@ -216,9 +221,9 @@ protected:
   //! except splitting of wires marked as EXTERNAL
   //! (they are supposed to be former cutting lines).
   Standard_EXPORT void SplitByLine(NCollection_Sequence<ShapeFix_WireSegment>& seqw,
-                                   const gp_Lin2d&                             line,
-                                   const bool                                  cutbyu,
-                                   const int                                   cutindex);
+                                   const gp_Lin2d&                 line,
+                                   const bool          cutbyu,
+                                   const int          cutindex);
 
   //! Split initial set of (closed) wires by grid of lines corresponding
   //! to joints between patches on the composite surface.
@@ -249,27 +254,27 @@ protected:
   //! Creates new faces on one path of grid. It dispatches given loops
   //! (wires) into one or several faces depending on their mutual
   //! position.
-  Standard_EXPORT void MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>& faces,
-                                        const occ::handle<Geom_Surface>&    surf,
-                                        NCollection_Sequence<TopoDS_Shape>& loops) const;
+  Standard_EXPORT void MakeFacesOnPatch(NCollection_Sequence<TopoDS_Shape>&   faces,
+                                        const occ::handle<Geom_Surface>& surf,
+                                        NCollection_Sequence<TopoDS_Shape>&   loops) const;
 
   TopAbs_Orientation myOrient;
   TopoDS_Shape       myResult;
-  int                myStatus;
+  int   myStatus;
 
 private:
   occ::handle<ShapeExtend_CompositeSurface>     myGrid;
-  TopLoc_Location                               myLoc;
-  TopoDS_Face                                   myFace;
-  double                                        myUResolution;
-  double                                        myVResolution;
+  TopLoc_Location                          myLoc;
+  TopoDS_Face                              myFace;
+  double                            myUResolution;
+  double                            myVResolution;
   occ::handle<ShapeAnalysis_TransferParameters> myTransferParamTool;
-  bool                                          myInvertEdgeStatus;
-  bool                                          myClosedMode;
-  bool                                          myUClosed;
-  bool                                          myVClosed;
-  double                                        myUPeriod;
-  double                                        myVPeriod;
+  bool                         myInvertEdgeStatus;
+  bool                         myClosedMode;
+  bool                         myUClosed;
+  bool                         myVClosed;
+  double                            myUPeriod;
+  double                            myVPeriod;
 };
 
 #endif // _ShapeFix_ComposeShell_HeaderFile

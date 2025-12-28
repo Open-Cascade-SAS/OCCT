@@ -36,8 +36,8 @@ public:
   Standard_EXPORT Select3D_SensitiveTriangulation(
     const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
     const occ::handle<Poly_Triangulation>&    theTrg,
-    const TopLoc_Location&                    theInitLoc,
-    const bool                                theIsInterior = true);
+    const TopLoc_Location&               theInitLoc,
+    const bool               theIsInterior = true);
 
   //! Constructs a sensitive triangulation object defined by
   //! the owner theOwnerId, the triangulation theTrg,
@@ -48,10 +48,10 @@ public:
   Standard_EXPORT Select3D_SensitiveTriangulation(
     const occ::handle<SelectMgr_EntityOwner>&    theOwnerId,
     const occ::handle<Poly_Triangulation>&       theTrg,
-    const TopLoc_Location&                       theInitLoc,
+    const TopLoc_Location&                  theInitLoc,
     const occ::handle<NCollection_HArray1<int>>& theFreeEdges,
-    const gp_Pnt&                                theCOG,
-    const bool                                   theIsInterior);
+    const gp_Pnt&                           theCOG,
+    const bool                  theIsInterior);
 
 public:
   //! Get last detected triangle.
@@ -87,14 +87,18 @@ public:
   Standard_EXPORT virtual int Size() const override;
 
   //! Returns bounding box of triangle/edge with index theIdx
-  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const override;
+  Standard_EXPORT virtual Select3D_BndBox3d Box(const int theIdx) const
+    override;
 
   //! Returns geometry center of triangle/edge with index theIdx
   //! in array along the given axis theAxis
-  Standard_EXPORT virtual double Center(const int theIdx, const int theAxis) const override;
+  Standard_EXPORT virtual double Center(const int theIdx,
+                                               const int theAxis) const
+    override;
 
   //! Swaps items with indexes theIdx1 and theIdx2 in array
-  Standard_EXPORT virtual void Swap(const int theIdx1, const int theIdx2) override;
+  Standard_EXPORT virtual void Swap(const int theIdx1,
+                                    const int theIdx2) override;
 
   //! Returns bounding box of the triangulation. If location
   //! transformation is set, it will be applied
@@ -115,11 +119,12 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   //! Checks whether one or more entities of the set overlap current selecting volume.
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
 protected:
   //! Compute bounding box.
@@ -131,25 +136,27 @@ protected:
 
 private:
   //! Checks whether the element with index theIdx overlaps the current selecting volume
-  Standard_EXPORT virtual bool overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                               SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT virtual bool overlapsElement(
+    SelectBasics_PickResult&             thePickResult,
+    SelectBasics_SelectingVolumeManager& theMgr,
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
   //! Calculates distance from the 3d projection of used-picked screen point to center of the
   //! geometry
-  Standard_EXPORT virtual double distanceToCOG(
-    SelectBasics_SelectingVolumeManager& theMgr) override;
+  Standard_EXPORT virtual double distanceToCOG(SelectBasics_SelectingVolumeManager& theMgr)
+    override;
 
   //! Checks whether the entity with index theIdx is inside the current selecting volume
-  Standard_EXPORT virtual bool elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                               int                                  theElemIdx,
-                                               bool theIsFullInside) override;
+  Standard_EXPORT virtual bool elementIsInside(
+    SelectBasics_SelectingVolumeManager& theMgr,
+    int                     theElemIdx,
+    bool                     theIsFullInside) override;
 
 protected:
   occ::handle<Poly_Triangulation>       myTriangul;
-  TopLoc_Location                       myInitLocation;
-  gp_Pnt                                myCDG3D; //!< Center of the whole triangulation
+  TopLoc_Location                  myInitLocation;
+  gp_Pnt                           myCDG3D; //!< Center of the whole triangulation
   occ::handle<NCollection_HArray1<int>> myFreeEdges;
   // clang-format off
   bool                 mySensType;            //!< Type of sensitivity: boundary or interior

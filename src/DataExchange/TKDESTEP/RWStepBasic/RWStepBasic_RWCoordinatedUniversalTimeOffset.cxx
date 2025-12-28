@@ -23,7 +23,7 @@ RWStepBasic_RWCoordinatedUniversalTimeOffset::RWStepBasic_RWCoordinatedUniversal
 
 void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num,
+  const int                                  num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& ent) const
 {
@@ -41,7 +41,7 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
 
   // --- own field : minuteOffset ---
 
-  int  aMinuteOffset;
+  int aMinuteOffset;
   bool hasAminuteOffset = true;
   if (data->IsParamDefined(num, 2))
   {
@@ -74,7 +74,7 @@ void RWStepBasic_RWCoordinatedUniversalTimeOffset::ReadStep(
 }
 
 void RWStepBasic_RWCoordinatedUniversalTimeOffset::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& ent) const
 {
 

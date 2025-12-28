@@ -21,8 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignOrganizationAssignment,
 StepAP214_AutoDesignOrganizationAssignment::StepAP214_AutoDesignOrganizationAssignment() {}
 
 void StepAP214_AutoDesignOrganizationAssignment::Init(
-  const occ::handle<StepBasic_Organization>&                                  aAssignedOrganization,
-  const occ::handle<StepBasic_OrganizationRole>&                              aRole,
+  const occ::handle<StepBasic_Organization>&                      aAssignedOrganization,
+  const occ::handle<StepBasic_OrganizationRole>&                  aRole,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>& aItems)
 {
   // --- classe own fields ---
@@ -37,8 +37,8 @@ void StepAP214_AutoDesignOrganizationAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>>
-  StepAP214_AutoDesignOrganizationAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignGeneralOrgItem>> StepAP214_AutoDesignOrganizationAssignment::
+  Items() const
 {
   return items;
 }

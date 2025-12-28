@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepShape_Edge>&           aEdgeElement,
-                            const bool                                   aOrientation);
+                            const bool                  aOrientation);
 
   Standard_EXPORT void SetEdgeElement(const occ::handle<StepShape_Edge>& aEdgeElement);
 
@@ -44,12 +44,13 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetEdgeStart(
-    const occ::handle<StepShape_Vertex>& aEdgeStart) override;
+  Standard_EXPORT virtual void SetEdgeStart(const occ::handle<StepShape_Vertex>& aEdgeStart)
+    override;
 
   Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeStart() const override;
 
-  Standard_EXPORT virtual void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd) override;
+  Standard_EXPORT virtual void SetEdgeEnd(const occ::handle<StepShape_Vertex>& aEdgeEnd)
+    override;
 
   Standard_EXPORT virtual occ::handle<StepShape_Vertex> EdgeEnd() const override;
 
@@ -57,7 +58,7 @@ public:
 
 private:
   occ::handle<StepShape_Edge> edgeElement;
-  bool                        orientation;
+  bool       orientation;
 };
 
 #endif // _StepShape_OrientedEdge_HeaderFile

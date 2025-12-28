@@ -39,7 +39,7 @@ class V3d_RectangularGrid::RectangularGridStructure : public Graphic3d_Structure
 public:
   //! Main constructor.
   RectangularGridStructure(const occ::handle<Graphic3d_StructureManager>& theManager,
-                           V3d_RectangularGrid*                           theGrid)
+                           V3d_RectangularGrid*                      theGrid)
       : Graphic3d_Structure(theManager),
         myGrid(theGrid)
   {
@@ -129,11 +129,11 @@ void V3d_RectangularGrid::UpdateDisplay()
 {
   gp_Ax3 ThePlane = myViewer->PrivilegedPlane();
 
-  bool   MakeTransform = false;
-  double xl, yl, zl;
-  double xdx, xdy, xdz;
-  double ydx, ydy, ydz;
-  double dx, dy, dz;
+  bool MakeTransform = false;
+  double    xl, yl, zl;
+  double    xdx, xdy, xdz;
+  double    ydx, ydy, ydz;
+  double    dx, dy, dz;
   ThePlane.Location().Coord(xl, yl, zl);
   ThePlane.XDirection().Coord(xdx, xdy, xdz);
   ThePlane.YDirection().Coord(ydx, ydy, ydz);
@@ -213,10 +213,10 @@ void V3d_RectangularGrid::UpdateDisplay()
 
 void V3d_RectangularGrid::DefineLines()
 {
-  const double aXStep   = XStep();
-  const double aYStep   = YStep();
-  const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
-                        || aXStep != myCurXStep || aYStep != myCurYStep;
+  const double    aXStep   = XStep();
+  const double    aYStep   = YStep();
+  const bool toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Lines
+                                    || aXStep != myCurXStep || aYStep != myCurYStep;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -230,8 +230,8 @@ void V3d_RectangularGrid::DefineLines()
   myToComputePrs = false;
   myGroup->Clear();
 
-  int    nblines;
-  double xl, yl, zl = myOffSet;
+  int nblines;
+  double    xl, yl, zl = myOffSet;
 
   NCollection_Sequence<gp_Pnt> aSeqLines, aSeqTenth;
 
@@ -264,9 +264,9 @@ void V3d_RectangularGrid::DefineLines()
     occ::handle<Graphic3d_AspectLine3d> aLineAspect =
       new Graphic3d_AspectLine3d(myColor, Aspect_TOL_SOLID, 1.0);
     myGroup->SetPrimitivesAspect(aLineAspect);
-    const int                              nbv    = aSeqLines.Length();
+    const int            nbv    = aSeqLines.Length();
     occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(nbv);
-    int                                    n      = 1;
+    int                  n      = 1;
     while (n <= nbv)
       aPrims->AddVertex(aSeqLines(n++));
     myGroup->AddPrimitiveArray(aPrims, false);
@@ -276,9 +276,9 @@ void V3d_RectangularGrid::DefineLines()
     occ::handle<Graphic3d_AspectLine3d> aLineAspect =
       new Graphic3d_AspectLine3d(myTenthColor, Aspect_TOL_SOLID, 1.0);
     myGroup->SetPrimitivesAspect(aLineAspect);
-    const int                              nbv    = aSeqTenth.Length();
+    const int            nbv    = aSeqTenth.Length();
     occ::handle<Graphic3d_ArrayOfSegments> aPrims = new Graphic3d_ArrayOfSegments(nbv);
-    int                                    n      = 1;
+    int                  n      = 1;
     while (n <= nbv)
       aPrims->AddVertex(aSeqTenth(n++));
     myGroup->AddPrimitiveArray(aPrims, false);
@@ -294,10 +294,10 @@ void V3d_RectangularGrid::DefineLines()
 
 void V3d_RectangularGrid::DefinePoints()
 {
-  const double aXStep   = XStep();
-  const double aYStep   = YStep();
-  const bool   toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
-                        || aXStep != myCurXStep || aYStep != myCurYStep;
+  const double    aXStep   = XStep();
+  const double    aYStep   = YStep();
+  const bool toUpdate = !myCurAreDefined || myCurDrawMode != Aspect_GDM_Points
+                                    || aXStep != myCurXStep || aYStep != myCurYStep;
   if (!toUpdate && !myToComputePrs)
   {
     return;
@@ -312,7 +312,7 @@ void V3d_RectangularGrid::DefinePoints()
   myGroup->Clear();
 
   // horizontals
-  double                       xl, yl;
+  double        xl, yl;
   NCollection_Sequence<gp_Pnt> aSeqPnts;
   for (xl = 0.0; xl <= myXSize; xl += aXStep)
   {
@@ -328,9 +328,9 @@ void V3d_RectangularGrid::DefinePoints()
   }
   if (aSeqPnts.Length())
   {
-    int                                  i;
-    double                               X, Y, Z;
-    const int                            nbv      = aSeqPnts.Length();
+    int                i;
+    double                   X, Y, Z;
+    const int          nbv      = aSeqPnts.Length();
     occ::handle<Graphic3d_ArrayOfPoints> Vertical = new Graphic3d_ArrayOfPoints(nbv);
     for (i = 1; i <= nbv; i++)
     {
@@ -352,7 +352,9 @@ void V3d_RectangularGrid::DefinePoints()
   myViewer->StructureManager()->Update(myStructure->GetZLayer());
 }
 
-void V3d_RectangularGrid::GraphicValues(double& theXSize, double& theYSize, double& theOffSet) const
+void V3d_RectangularGrid::GraphicValues(double& theXSize,
+                                        double& theYSize,
+                                        double& theOffSet) const
 {
   theXSize  = myXSize;
   theYSize  = myYSize;

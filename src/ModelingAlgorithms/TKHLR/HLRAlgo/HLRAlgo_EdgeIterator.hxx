@@ -39,7 +39,10 @@ public:
 
   //! Returns the bounds and the tolerances
   //! of the current Hidden Interval
-  void Hidden(double& Start, float& TolStart, double& End, float& TolEnd) const;
+  void Hidden(double&      Start,
+              float& TolStart,
+              double&      End,
+              float& TolEnd) const;
 
   void InitVisible(HLRAlgo_EdgeStatus& status);
 
@@ -49,19 +52,22 @@ public:
 
   //! Returns the bounds and the tolerances
   //! of the current Visible Interval
-  void Visible(double& Start, float& TolStart, double& End, float& TolEnd);
+  void Visible(double&      Start,
+               float& TolStart,
+               double&      End,
+               float& TolEnd);
 
 private:
-  int                 myNbVis;
-  int                 myNbHid;
+  int    myNbVis;
+  int    myNbHid;
   HLRAlgo_EdgeStatus* EVis;
   HLRAlgo_EdgeStatus* EHid;
-  int                 iVis;
-  int                 iHid;
-  double              myHidStart;
-  double              myHidEnd;
-  float               myHidTolStart;
-  float               myHidTolEnd;
+  int    iVis;
+  int    iHid;
+  double       myHidStart;
+  double       myHidEnd;
+  float  myHidTolStart;
+  float  myHidTolEnd;
 };
 
 #include <HLRAlgo_EdgeIterator.lxx>

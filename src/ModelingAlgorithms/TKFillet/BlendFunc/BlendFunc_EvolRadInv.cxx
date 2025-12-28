@@ -162,7 +162,7 @@ bool BlendFunc_EvolRadInv::Value(const math_Vector& X, math_Vector& F)
   gp_Vec d1cur;
   curv->D1(X(2), ptcur, d1cur);
 
-  const gp_Vec nplan = d1cur.Normalized();
+  const gp_Vec        nplan = d1cur.Normalized();
   const double theD  = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   const gp_Pnt2d pt2d(csurf->Value(X(1)));
@@ -209,10 +209,10 @@ bool BlendFunc_EvolRadInv::Value(const math_Vector& X, math_Vector& F)
     }
   }
 
-  const gp_Vec ncrossns1 = nplan.Crossed(ns1);
-  const gp_Vec ncrossns2 = nplan.Crossed(ns2);
-  double       norm1     = ncrossns1.Magnitude();
-  double       norm2     = ncrossns2.Magnitude();
+  const gp_Vec  ncrossns1 = nplan.Crossed(ns1);
+  const gp_Vec  ncrossns2 = nplan.Crossed(ns2);
+  double norm1     = ncrossns1.Magnitude();
+  double norm2     = ncrossns2.Magnitude();
 
   if (norm1 < Eps)
   {
@@ -223,7 +223,7 @@ bool BlendFunc_EvolRadInv::Value(const math_Vector& X, math_Vector& F)
     norm2 = 1.;
   }
 
-  gp_Vec       resul;
+  gp_Vec              resul;
   const double ndotns1 = nplan.Dot(ns1);
   const double ndotns2 = nplan.Dot(ns2);
   ns1.SetLinearForm(ndotns1 / norm1, nplan, -1. / norm1, ns1);
@@ -252,7 +252,7 @@ bool BlendFunc_EvolRadInv::Values(const math_Vector& X, math_Vector& F, math_Mat
   curv->D2(X(2), ptcur, d1cur, d2cur);
 
   const double normtgcur = d1cur.Magnitude();
-  const gp_Vec nplan     = d1cur.Normalized();
+  const gp_Vec        nplan     = d1cur.Normalized();
   const double theD      = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   gp_Vec dnplan;
@@ -321,10 +321,10 @@ bool BlendFunc_EvolRadInv::Values(const math_Vector& X, math_Vector& F, math_Mat
     }
   }
 
-  const gp_Vec ncrossns1 = nplan.Crossed(ns1);
-  const gp_Vec ncrossns2 = nplan.Crossed(ns2);
-  double       norm1     = ncrossns1.Magnitude();
-  double       norm2     = ncrossns2.Magnitude();
+  const gp_Vec  ncrossns1 = nplan.Crossed(ns1);
+  const gp_Vec  ncrossns2 = nplan.Crossed(ns2);
+  double norm1     = ncrossns1.Magnitude();
+  double norm2     = ncrossns2.Magnitude();
   if (norm1 < Eps)
   {
     norm1 = 1.;
@@ -334,7 +334,7 @@ bool BlendFunc_EvolRadInv::Values(const math_Vector& X, math_Vector& F, math_Mat
     norm2 = 1.;
   }
 
-  gp_Vec resul1, resul2;
+  gp_Vec        resul1, resul2;
   double grosterme;
 
   const double ndotns1 = nplan.Dot(ns1);

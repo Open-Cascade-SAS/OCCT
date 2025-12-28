@@ -36,10 +36,10 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aId,
                             const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasDescription,
+                            const bool                  hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
                             const occ::handle<StepRepr_ProductConcept>&  aItemConcept,
-                            const bool                                   hasPurpose,
+                            const bool                  hasPurpose,
                             const occ::handle<TCollection_HAsciiString>& aPurpose);
 
   //! Returns field Id
@@ -86,8 +86,8 @@ private:
   occ::handle<TCollection_HAsciiString> theDescription;
   occ::handle<StepRepr_ProductConcept>  theItemConcept;
   occ::handle<TCollection_HAsciiString> thePurpose;
-  bool                                  defDescription;
-  bool                                  defPurpose;
+  bool                 defDescription;
+  bool                 defPurpose;
 };
 
 #endif // _StepRepr_ConfigurationItem_HeaderFile

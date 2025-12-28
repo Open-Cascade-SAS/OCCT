@@ -36,11 +36,11 @@ Extrema_GenLocateExtCS::Extrema_GenLocateExtCS()
 
 Extrema_GenLocateExtCS::Extrema_GenLocateExtCS(const Adaptor3d_Curve&   C,
                                                const Adaptor3d_Surface& S,
-                                               const double             T,
-                                               const double             U,
-                                               const double             V,
-                                               const double             Tol1,
-                                               const double             Tol2)
+                                               const double      T,
+                                               const double      U,
+                                               const double      V,
+                                               const double      Tol1,
+                                               const double      Tol2)
 {
   Perform(C, S, T, U, V, Tol1, Tol2);
 }
@@ -49,11 +49,11 @@ Extrema_GenLocateExtCS::Extrema_GenLocateExtCS(const Adaptor3d_Curve&   C,
 
 void Extrema_GenLocateExtCS::Perform(const Adaptor3d_Curve&   C,
                                      const Adaptor3d_Surface& S,
-                                     const double             T,
-                                     const double             U,
-                                     const double             V,
-                                     const double             Tol1,
-                                     const double             Tol2)
+                                     const double      T,
+                                     const double      U,
+                                     const double      V,
+                                     const double      Tol1,
+                                     const double      Tol2)
 {
   myDone = false;
 

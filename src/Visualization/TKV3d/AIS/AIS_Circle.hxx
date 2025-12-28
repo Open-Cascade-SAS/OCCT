@@ -36,15 +36,18 @@ public:
   //! starting point theUStart, the arc ending point theUEnd,
   //! and the type of sensitivity theIsFilledCircleSens.
   Standard_EXPORT AIS_Circle(const occ::handle<Geom_Circle>& theCircle,
-                             const double                    theUStart,
-                             const double                    theUEnd,
-                             const bool                      theIsFilledCircleSens = false);
+                             const double        theUStart,
+                             const double        theUEnd,
+                             const bool     theIsFilledCircleSens = false);
 
   //! Returns index 6 by default.
   virtual int Signature() const override { return 6; }
 
   //! Indicates that the type of Interactive Object is a datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  virtual AIS_KindOfInteractive Type() const override
+  {
+    return AIS_KindOfInteractive_Datum;
+  }
 
   //! Returns the circle component defined in SetCircle.
   const occ::handle<Geom_Circle>& Circle() const { return myComponent; }
@@ -116,10 +119,10 @@ private:
 
 private:
   occ::handle<Geom_Circle> myComponent;
-  double                   myUStart;
-  double                   myUEnd;
-  bool                     myCircleIsArc;
-  bool                     myIsFilledCircleSens;
+  double       myUStart;
+  double       myUEnd;
+  bool    myCircleIsArc;
+  bool    myIsFilledCircleSens;
 };
 
 #endif // _AIS_Circle_HeaderFile

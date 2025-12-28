@@ -36,14 +36,12 @@ public:
   //! Returns a ProductRelatedProductCategory
   Standard_EXPORT StepBasic_ProductRelatedProductCategory();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                            aName,
-    const bool                                                              hasAdescription,
-    const occ::handle<TCollection_HAsciiString>&                            aDescription,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&   aName,
+                            const bool                    hasAdescription,
+                            const occ::handle<TCollection_HAsciiString>&   aDescription,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
 
-  Standard_EXPORT void SetProducts(
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
+  Standard_EXPORT void SetProducts(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>>& aProducts);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_Product>>> Products() const;
 

@@ -23,6 +23,7 @@
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntAna2d_IntPoint.hxx>
 #include <Standard_NegativeValue.hxx>
+#include <gp_Dir2d.hxx>
 #include <NCollection_Array1.hxx>
 
 //=========================================================================
@@ -39,8 +40,8 @@
 //=========================================================================
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualified1,
                                              const gp_Circ2d&            OnCirc,
-                                             const double                Radius,
-                                             const double                Tolerance)
+                                             const double         Radius,
+                                             const double         Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       TheSame1(1, 4),
@@ -52,26 +53,26 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
 {
 
   TheSame1.Init(0);
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol = std::abs(Tolerance);
-  int      signe[5];
+  gp_Dir2d         dirx(gp_Dir2d::D::X);
+  double    Tol = std::abs(Tolerance);
+  int signe[5];
   signe[0] = 0;
   signe[1] = 0;
   signe[2] = 0;
   signe[3] = 0;
   signe[4] = 0;
-  double disparal[2];
-  int    nparal = 0;
-  int    sign   = 0;
-  WellDone      = false;
-  NbrSol        = 0;
+  double    disparal[2];
+  int nparal = 0;
+  int sign   = 0;
+  WellDone                = false;
+  NbrSol                  = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  gp_Circ2d                    C1 = Qualified1.Qualified();
+  gp_Circ2d            C1 = Qualified1.Qualified();
   NCollection_Array1<gp_Pnt2d> Center(1, 4);
   NCollection_Array1<gp_Dir2d> dir1on(1, 4);
 
@@ -81,14 +82,14 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
   }
   else
   {
-    double   R1  = C1.Radius();
-    double   R2  = OnCirc.Radius();
-    double   c1x = C1.Location().X();
-    double   c1y = C1.Location().Y();
-    gp_Pnt2d center1(c1x, c1y);
-    double   dist = OnCirc.Location().Distance(center1);
-    double   onx  = OnCirc.Location().X();
-    double   ony  = OnCirc.Location().Y();
+    double R1  = C1.Radius();
+    double R2  = OnCirc.Radius();
+    double c1x = C1.Location().X();
+    double c1y = C1.Location().Y();
+    gp_Pnt2d      center1(c1x, c1y);
+    double dist = OnCirc.Location().Distance(center1);
+    double onx  = OnCirc.Location().X();
+    double ony  = OnCirc.Location().Y();
     if (Qualified1.IsEnclosed())
     {
       //   ============================

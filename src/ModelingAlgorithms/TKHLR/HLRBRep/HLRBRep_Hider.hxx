@@ -43,9 +43,7 @@ public:
 
   //! Removes from the edges, the parts hidden by the
   //! hiding face number <FI>.
-  Standard_EXPORT void Hide(
-    const int                                                                        FI,
-    NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST);
+  Standard_EXPORT void Hide(const int FI, NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST);
 
 private:
   occ::handle<HLRBRep_Data> myDS;

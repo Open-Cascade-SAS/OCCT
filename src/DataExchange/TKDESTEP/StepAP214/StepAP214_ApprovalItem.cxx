@@ -123,8 +123,8 @@ occ::handle<StepBasic_ProductDefinition> StepAP214_ApprovalItem::ProductDefiniti
   return GetCasted(StepBasic_ProductDefinition, Value());
 }
 
-occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_ApprovalItem::
-  ProductDefinitionFormation() const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP214_ApprovalItem::ProductDefinitionFormation()
+  const
 {
   return GetCasted(StepBasic_ProductDefinitionFormation, Value());
 }
@@ -191,8 +191,7 @@ occ::handle<StepRepr_Representation> StepAP214_ApprovalItem::Representation() co
   return GetCasted(StepRepr_Representation, Value());
 }
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_ApprovalItem::ShapeAspectRelationship()
-  const
+occ::handle<StepRepr_ShapeAspectRelationship> StepAP214_ApprovalItem::ShapeAspectRelationship() const
 {
   return GetCasted(StepRepr_ShapeAspectRelationship, Value());
 }

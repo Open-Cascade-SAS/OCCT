@@ -38,9 +38,10 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_AssemblyItemRefDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                              const occ::handle<TDF_Attribute>& theTarget,
-                                              BinObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theTarget);
   if (aThis.IsNull())
@@ -78,10 +79,9 @@ bool BinMXCAFDoc_AssemblyItemRefDriver::Paste(const BinObjMgt_Persistent&       
 
 //=================================================================================================
 
-void BinMXCAFDoc_AssemblyItemRefDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
+void BinMXCAFDoc_AssemblyItemRefDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                              BinObjMgt_Persistent&        theTarget,
+                                              NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_AssemblyItemRef> aThis = occ::down_cast<XCAFDoc_AssemblyItemRef>(theSource);
   if (!aThis.IsNull())

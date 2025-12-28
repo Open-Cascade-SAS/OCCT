@@ -41,7 +41,8 @@ public:
   //! Creates a status object of type "Failure" with stack trace.
   //! @param[in] theDesc  exception description
   //! @param[in] theStackTrace  associated stack trace
-  Standard_EXPORT Standard_Failure(const char* theDesc, const char* theStackTrace);
+  Standard_EXPORT Standard_Failure(const char* theDesc,
+                                   const char* theStackTrace);
 
   //! Assignment operator
   Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& f);
@@ -91,7 +92,7 @@ public:
 
   //! Used to construct an instance of the exception object as a handle.
   Standard_EXPORT static occ::handle<Standard_Failure> NewInstance(const char* theMessage,
-                                                                   const char* theStackTrace);
+                                                              const char* theStackTrace);
 
   //! Returns the default length of stack trace to be captured by Standard_Failure constructor;
   //! 0 by default meaning no stack trace.
@@ -123,7 +124,7 @@ private:
   //! using low-level malloc() to avoid exceptions.
   struct StringRef
   {
-    int  Counter;
+    int   Counter;
     char Message[1];
 
     //! Return message string.
@@ -148,7 +149,7 @@ private:
 // function : operator<<
 // purpose  :
 // =======================================================================
-inline Standard_OStream& operator<<(Standard_OStream&                    theStream,
+inline Standard_OStream& operator<<(Standard_OStream&               theStream,
                                     const occ::handle<Standard_Failure>& theFailure)
 {
   theFailure->Print(theStream);

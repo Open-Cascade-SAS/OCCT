@@ -55,7 +55,7 @@ public:
   const double& Radius() const { return myRadius; }
 
 private:
-  gp_XY  myLocation;
+  gp_XY         myLocation;
   double myRadius;
 };
 

@@ -32,7 +32,7 @@ RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::
 
 void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                        data,
-  const int                                                                          num0,
+  const int                                                        num0,
   occ::handle<Interface_Check>&                                                      ach,
   const occ::handle<StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel>& ent) const
 {
@@ -47,12 +47,12 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
 
   // items
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems;
-  occ::handle<StepRepr_RepresentationItem>                                   anItem;
-  int                                                                        nsub;
+  occ::handle<StepRepr_RepresentationItem>          anItem;
+  int                             nsub;
   if (data->ReadSubList(num, 2, "items", ach, nsub))
   {
-    int nb  = data->NbParams(nsub);
-    anItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
+    int nb = data->NbParams(nsub);
+    anItems             = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub,
@@ -81,7 +81,7 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::ReadSte
 //=================================================================================================
 
 void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::WriteStep(
-  StepData_StepWriter&                                                               SW,
+  StepData_StepWriter&                                                          SW,
   const occ::handle<StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel>& ent) const
 {
   SW.StartEntity("CHARACTERIZED_OBJECT");
@@ -104,7 +104,7 @@ void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::WriteSt
 
 void RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel::Share(
   const occ::handle<StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel>& ent,
-  Interface_EntityIterator&                                                          iter) const
+  Interface_EntityIterator&                                                     iter) const
 {
   int nbElem = ent->NbItems();
   for (int i = 1; i <= nbElem; i++)

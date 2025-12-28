@@ -66,17 +66,18 @@ TEST_F(StepTidy_CartesianPointReducerTest, DifferentNames)
 
   // Creating axis containing the first Cartesian point.
   occ::handle<StepGeom_Axis2Placement3d> aFirstAxis = new StepGeom_Axis2Placement3d;
-  aFirstAxis->Init(new TCollection_HAsciiString, aPt1, true, aDir, false, nullptr);
+  aFirstAxis
+    ->Init(new TCollection_HAsciiString, aPt1, true, aDir, false, nullptr);
   addToModel(aFirstAxis);
 
   // Creating axis containing the second Cartesian point.
   occ::handle<StepGeom_Axis2Placement3d> aSecondAxis = new StepGeom_Axis2Placement3d;
-  aSecondAxis->Init(new TCollection_HAsciiString, aPt2, true, aDir, false, nullptr);
+  aSecondAxis
+    ->Init(new TCollection_HAsciiString, aPt2, true, aDir, false, nullptr);
   addToModel(aSecondAxis);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -101,17 +102,18 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_Axis2Placement3d)
 
   // Creating axis containing the first Cartesian point.
   occ::handle<StepGeom_Axis2Placement3d> aFirstAxis = new StepGeom_Axis2Placement3d;
-  aFirstAxis->Init(new TCollection_HAsciiString, aPt1, true, aDir, false, nullptr);
+  aFirstAxis
+    ->Init(new TCollection_HAsciiString, aPt1, true, aDir, false, nullptr);
   addToModel(aFirstAxis);
 
   // Creating axis containing the second Cartesian point.
   occ::handle<StepGeom_Axis2Placement3d> aSecondAxis = new StepGeom_Axis2Placement3d;
-  aSecondAxis->Init(new TCollection_HAsciiString, aPt2, true, aDir, false, nullptr);
+  aSecondAxis
+    ->Init(new TCollection_HAsciiString, aPt2, true, aDir, false, nullptr);
   addToModel(aSecondAxis);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -137,8 +139,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepShape_VertexPoint)
   addToModel(aSecondVertex);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -176,8 +177,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepShape_GeometricCurveSet)
   addToModel(aSecondCurveSet);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -221,8 +221,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepVisual_PresentationLayerAssignmen
   addToModel(aSecondAssignment);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -238,24 +237,21 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepVisual_StyledItem)
   occ::handle<StepGeom_CartesianPoint> aPt2 = addCartesianPoint();
 
   // Creating styled item containing the first Cartesian point.
-  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>
-    aFirstAssignedItems =
-      new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aFirstAssignedItems =
+    new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1);
   occ::handle<StepVisual_StyledItem> aFirstStyledItem = new StepVisual_StyledItem;
   aFirstStyledItem->Init(new TCollection_HAsciiString, aFirstAssignedItems, aPt1);
   addToModel(aFirstStyledItem);
 
   // Creating styled item containing the second Cartesian point.
-  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>>
-    aSecondAssignedItems =
-      new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>> aSecondAssignedItems =
+    new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1);
   occ::handle<StepVisual_StyledItem> aSecondStyledItem = new StepVisual_StyledItem;
   aSecondStyledItem->Init(new TCollection_HAsciiString, aSecondAssignedItems, aPt2);
   addToModel(aSecondStyledItem);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -303,8 +299,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_BSplineCurveWithKnots)
   addToModel(aSecondCurve);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -330,8 +325,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_Line)
   addToModel(aSecondLine);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -350,8 +344,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_BSplineSurfaceWithKnots)
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aFirstControlPoints =
     new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, 1, 1, 1);
   aFirstControlPoints->SetValue(1, 1, aPt1);
-  occ::handle<StepGeom_BSplineSurfaceWithKnots> aFirstSurface =
-    new StepGeom_BSplineSurfaceWithKnots;
+  occ::handle<StepGeom_BSplineSurfaceWithKnots> aFirstSurface = new StepGeom_BSplineSurfaceWithKnots;
   aFirstSurface->Init(new TCollection_HAsciiString,
                       1,
                       1,
@@ -371,8 +364,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_BSplineSurfaceWithKnots)
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aSecondControlPoints =
     new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, 1, 1, 1);
   aSecondControlPoints->SetValue(1, 1, aPt2);
-  occ::handle<StepGeom_BSplineSurfaceWithKnots> aSecondSurface =
-    new StepGeom_BSplineSurfaceWithKnots;
+  occ::handle<StepGeom_BSplineSurfaceWithKnots> aSecondSurface = new StepGeom_BSplineSurfaceWithKnots;
   aSecondSurface->Init(new TCollection_HAsciiString,
                        1,
                        1,
@@ -389,8 +381,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_BSplineSurfaceWithKnots)
   addToModel(aSecondSurface);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -416,8 +407,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_Axis1Placement)
   addToModel(aSecondAxis);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -453,8 +443,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepRepr_Representation)
   addToModel(aSecondRepresentation);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -506,8 +495,7 @@ TEST_F(StepTidy_CartesianPointReducerTest, StepGeom_BSplineCurveWithKnotsAndRati
   addToModel(aSecondCurve);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);
@@ -526,16 +514,15 @@ TEST_F(StepTidy_CartesianPointReducerTest,
   // Creating rational BSpline surface to use.
   occ::handle<StepGeom_RationalBSplineSurface> aRationalBSplineSurface =
     new StepGeom_RationalBSplineSurface;
-  aRationalBSplineSurface->Init(
-    new TCollection_HAsciiString,
-    1,
-    1,
-    new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, 1, 1, 1),
-    StepGeom_bssfUnspecified,
-    StepData_LUnknown,
-    StepData_LUnknown,
-    StepData_LUnknown,
-    new NCollection_HArray2<double>(1, 1, 1, 1));
+  aRationalBSplineSurface->Init(new TCollection_HAsciiString,
+                                1,
+                                1,
+                                new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, 1, 1, 1),
+                                StepGeom_bssfUnspecified,
+                                StepData_LUnknown,
+                                StepData_LUnknown,
+                                StepData_LUnknown,
+                                new NCollection_HArray2<double>(1, 1, 1, 1));
 
   // Creating surface containing the first Cartesian point.
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aFirstControlPoints =
@@ -603,8 +590,7 @@ TEST_F(StepTidy_CartesianPointReducerTest,
                        aRationalBSplineSurface);
 
   // Performing removal of duplicate Cartesian points.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateCartesianPoints();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateCartesianPoints();
 
   // Check that duplicate was removed.
   EXPECT_EQ(aRemovedEntities.Size(), 1);

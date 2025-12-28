@@ -46,10 +46,8 @@ public:
 
 public:
   //! Create a persistent object for a curve
-  Standard_EXPORT static occ::handle<Curve> Translate(
-    const occ::handle<Geom2d_Curve>& theCurve,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<Curve> Translate(const occ::handle<Geom2d_Curve>&       theCurve,
+                                                 NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
 };
 
 //=======================================================================
@@ -106,8 +104,8 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction, Geom2d_Di
 //=======================================================================
 template <>
 const char* ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
-                                           Geom2d_VectorWithMagnitude,
-                                           gp_Vec2d>::PName() const;
+                                                Geom2d_VectorWithMagnitude,
+                                                gp_Vec2d>::PName() const;
 
 template <>
 void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,

@@ -30,7 +30,7 @@ RWStepBasic_RWCertification::RWStepBasic_RWCertification() {}
 //=================================================================================================
 
 void RWStepBasic_RWCertification::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepBasic_Certification>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepBasic_RWCertification::ReadStep(const occ::handle<StepData_StepReader
 
 //=================================================================================================
 
-void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                        SW,
+void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepBasic_Certification>& ent) const
 {
 
@@ -71,7 +71,7 @@ void RWStepBasic_RWCertification::WriteStep(StepData_StepWriter&                
 //=================================================================================================
 
 void RWStepBasic_RWCertification::Share(const occ::handle<StepBasic_Certification>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   // Own fields of Certification

@@ -24,7 +24,7 @@ StepDimTol_DatumReferenceModifierWithValue::StepDimTol_DatumReferenceModifierWit
 //=================================================================================================
 
 void StepDimTol_DatumReferenceModifierWithValue::Init(
-  const StepDimTol_DatumReferenceModifierType&        theModifierType,
+  const StepDimTol_DatumReferenceModifierType&   theModifierType,
   const occ::handle<StepBasic_LengthMeasureWithUnit>& theModifierValue)
 {
   myModifierType  = theModifierType;

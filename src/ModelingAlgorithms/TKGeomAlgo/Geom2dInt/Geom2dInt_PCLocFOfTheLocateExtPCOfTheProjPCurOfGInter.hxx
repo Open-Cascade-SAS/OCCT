@@ -20,6 +20,7 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Extrema_GFuncExtPC.hxx>
 #include <Extrema_POnCurv2d.hxx>
+#include <Extrema_POnCurv2d.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <gp_Pnt2d.hxx>

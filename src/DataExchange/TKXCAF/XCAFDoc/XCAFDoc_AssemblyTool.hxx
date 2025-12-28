@@ -73,9 +73,9 @@ public:
   //! \param[in]  theNode   - starting positive one-based graph node ID.
   template <typename Func, typename Filter>
   static void Traverse(const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
-                       Filter                                    theFilter,
-                       Func                                      theFunc,
-                       const int                                 theNode = 1)
+                       Filter                               theFilter,
+                       Func                                 theFunc,
+                       const int               theNode = 1)
   {
     Standard_NullObject_Raise_if(theGraph.IsNull(), "Null assembly graph!");
 

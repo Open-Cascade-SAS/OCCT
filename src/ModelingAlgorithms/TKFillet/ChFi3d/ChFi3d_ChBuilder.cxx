@@ -38,9 +38,14 @@
 #include <ChFiDS_Regul.hxx>
 #include <NCollection_List.hxx>
 #include <ChFiDS_Stripe.hxx>
+#include <NCollection_List.hxx>
+#include <ChFiDS_Regul.hxx>
+#include <ChFiDS_CircSection.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <ChFiDS_Spine.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <ChFiDS_SurfData.hxx>
 #include <ElSLib.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -69,7 +74,7 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
                        TopoDS_Face&       F1,
                        TopoDS_Face&       F2)
 {
-  TopoDS_Face                              Fc;
+  TopoDS_Face                        Fc;
   NCollection_List<TopoDS_Shape>::Iterator It;
 
   F1.Nullify();
@@ -98,13 +103,13 @@ void SearchCommonFaces(const ChFiDS_Map&  EFMap,
 //           isfirst(i) = False if Spine(i) is oriented to V (i = 1,2)
 //=======================================================================
 
-void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>& Spine1,
-                             occ::handle<ChFiDS_Spine>& Spine2,
-                             const TopoDS_Vertex&       V,
-                             const double               dis1,
-                             const double               dis2,
-                             const bool                 isfirst1,
-                             const bool                 isfirst2)
+void ExtentSpineOnCommonFace(occ::handle<ChFiDS_Spine>&  Spine1,
+                             occ::handle<ChFiDS_Spine>&  Spine2,
+                             const TopoDS_Vertex&   V,
+                             const double    dis1,
+                             const double    dis2,
+                             const bool isfirst1,
+                             const bool isfirst2)
 {
   double tolesp = 1.e-7;
 
@@ -198,7 +203,7 @@ void ChFi3d_ChBuilder::Add(const TopoDS_Edge& E)
   {
     occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
     occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
-    Sp                                   = new ChFiDS_ChamfSpine(tolesp);
+    Sp                              = new ChFiDS_ChamfSpine(tolesp);
     occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     TopoDS_Edge E_wnt = E;
@@ -233,7 +238,7 @@ void ChFi3d_ChBuilder::Add(const double Dis, const TopoDS_Edge& E)
 
     occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
     occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
-    Sp                                   = new ChFiDS_ChamfSpine(tolesp);
+    Sp                              = new ChFiDS_ChamfSpine(tolesp);
     occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetMode(myMode);
@@ -257,7 +262,9 @@ void ChFi3d_ChBuilder::Add(const double Dis, const TopoDS_Edge& E)
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDist(const double Dis, const int IC, const TopoDS_Face& F)
+void ChFi3d_ChBuilder::SetDist(const double    Dis,
+                               const int IC,
+                               const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
@@ -269,8 +276,8 @@ void ChFi3d_ChBuilder::SetDist(const double Dis, const int IC, const TopoDS_Face
     // TopAbs_Orientation Or1,Or2;
     // int Choix, ChoixConge;
     BRepAdaptor_Surface Sb1, Sb2;
-    int                 i     = 1;
-    bool                Found = false;
+    int    i     = 1;
+    bool    Found = false;
     while ((i <= csp->NbEdges()) && (!Found))
     {
       SearchCommonFaces(myEFMap, csp->Edges(i), F1, F2);
@@ -313,10 +320,10 @@ void ChFi3d_ChBuilder::GetDist(const int IC, double& Dis) const
 //
 //=======================================================================
 
-void ChFi3d_ChBuilder::Add(const double       Dis1,
-                           const double       Dis2,
-                           const TopoDS_Edge& E,
-                           const TopoDS_Face& F)
+void ChFi3d_ChBuilder::Add(const double Dis1,
+                           const double Dis2,
+                           const TopoDS_Edge&  E,
+                           const TopoDS_Face&  F)
 {
   if (!Contains(E) && myEFMap.Contains(E))
   {
@@ -326,7 +333,7 @@ void ChFi3d_ChBuilder::Add(const double       Dis1,
 
     occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
     occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
-    Sp                                   = new ChFiDS_ChamfSpine(tolesp);
+    Sp                              = new ChFiDS_ChamfSpine(tolesp);
     occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetMode(myMode);
@@ -355,10 +362,10 @@ void ChFi3d_ChBuilder::Add(const double       Dis1,
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDists(const double       Dis1,
-                                const double       Dis2,
-                                const int          IC,
-                                const TopoDS_Face& F)
+void ChFi3d_ChBuilder::SetDists(const double    Dis1,
+                                const double    Dis2,
+                                const int IC,
+                                const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
@@ -368,10 +375,10 @@ void ChFi3d_ChBuilder::SetDists(const double       Dis1,
     // Search the first edge which has a common face equal to F
     TopoDS_Face         F1, F2, FirstF1, FirstF2;
     TopAbs_Orientation  Or1, Or2;
-    int                 Choix, ChoixConge;
+    int    Choix, ChoixConge;
     BRepAdaptor_Surface Sb1, Sb2;
-    int                 i     = 1;
-    bool                Found = false;
+    int    i     = 1;
+    bool    Found = false;
     while ((i <= csp->NbEdges()) && (!Found))
     {
       SearchCommonFaces(myEFMap, csp->Edges(i), F1, F2);
@@ -409,10 +416,12 @@ void ChFi3d_ChBuilder::SetDists(const double       Dis1,
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::Dists(const int IC, double& dis1, double& dis2) const
+void ChFi3d_ChBuilder::Dists(const int IC,
+                             double&         dis1,
+                             double&         dis2) const
 {
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
-  double                         temp1, temp2;
+  double             temp1, temp2;
   chsp->Dists(temp1, temp2);
   dis1 = temp1;
   dis2 = temp2;
@@ -426,10 +435,10 @@ void ChFi3d_ChBuilder::Dists(const int IC, double& dis1, double& dis2) const
 //
 //=======================================================================
 
-void ChFi3d_ChBuilder::AddDA(const double       Dis1,
-                             const double       Angle,
-                             const TopoDS_Edge& E,
-                             const TopoDS_Face& F)
+void ChFi3d_ChBuilder::AddDA(const double Dis1,
+                             const double Angle,
+                             const TopoDS_Edge&  E,
+                             const TopoDS_Face&  F)
 {
   if (!Contains(E) && myEFMap.Contains(E))
   {
@@ -439,7 +448,7 @@ void ChFi3d_ChBuilder::AddDA(const double       Dis1,
 
     occ::handle<ChFiDS_Stripe> Stripe    = new ChFiDS_Stripe();
     occ::handle<ChFiDS_Spine>& Sp        = Stripe->ChangeSpine();
-    Sp                                   = new ChFiDS_ChamfSpine(tolesp);
+    Sp                              = new ChFiDS_ChamfSpine(tolesp);
     occ::handle<ChFiDS_ChamfSpine> Spine = occ::down_cast<ChFiDS_ChamfSpine>(Sp);
 
     Spine->SetEdges(E_wnt);
@@ -461,10 +470,10 @@ void ChFi3d_ChBuilder::AddDA(const double       Dis1,
 //           index IC
 //=======================================================================
 
-void ChFi3d_ChBuilder::SetDistAngle(const double       Dis,
-                                    const double       Angle,
-                                    const int          IC,
-                                    const TopoDS_Face& F)
+void ChFi3d_ChBuilder::SetDistAngle(const double    Dis,
+                                    const double    Angle,
+                                    const int IC,
+                                    const TopoDS_Face&     F)
 {
 
   if (IC <= NbElements())
@@ -474,8 +483,8 @@ void ChFi3d_ChBuilder::SetDistAngle(const double       Dis,
     // Search the first edge which has a common face equal to F
     TopoDS_Face         F1, F2, FirstF1, FirstF2;
     BRepAdaptor_Surface Sb1, Sb2;
-    int                 i     = 1;
-    bool                Found = false;
+    int    i     = 1;
+    bool    Found = false;
 
     while ((i <= csp->NbEdges()) && (!Found))
     {
@@ -509,7 +518,9 @@ void ChFi3d_ChBuilder::SetDistAngle(const double       Dis,
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::GetDistAngle(const int IC, double& Dis, double& Angle) const
+void ChFi3d_ChBuilder::GetDistAngle(const int IC,
+                                    double&         Dis,
+                                    double&         Angle) const
 {
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Value(IC));
 
@@ -570,7 +581,7 @@ void ChFi3d_ChBuilder::Simulate(const int IC)
   }
 #endif
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    i = 1;
+  int                  i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
@@ -599,7 +610,7 @@ void ChFi3d_ChBuilder::Simulate(const int IC)
 int ChFi3d_ChBuilder::NbSurf(const int IC) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    i = 1;
+  int                  i = 1;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
@@ -614,17 +625,17 @@ int ChFi3d_ChBuilder::NbSurf(const int IC) const
 //=================================================================================================
 
 occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_ChBuilder::Sect(const int IC,
-                                                                            const int IS) const
+                                                 const int IS) const
 {
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel;
-  int                                                    i = 1;
-  occ::handle<NCollection_HArray1<ChFiDS_CircSection>>   res;
+  int                  i = 1;
+  occ::handle<NCollection_HArray1<ChFiDS_CircSection>>         res;
   for (itel.Initialize(myListStripe); itel.More(); itel.Next(), i++)
   {
     if (i == IC)
     {
       occ::handle<Standard_Transient> bid = itel.Value()->SetOfSurfData()->Value(IS)->Simul();
-      res = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
+      res                            = occ::down_cast<NCollection_HArray1<ChFiDS_CircSection>>(bid);
       return res;
     }
   }
@@ -640,7 +651,7 @@ occ::handle<NCollection_HArray1<ChFiDS_CircSection>> ChFi3d_ChBuilder::Sect(cons
 void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
 {
   TopOpeBRepDS_DataStructure& DStr = myDS->ChangeDS();
-  occ::handle<Geom_Surface>   S    = DStr.Surface(SD->Surf()).Surface();
+  occ::handle<Geom_Surface>        S    = DStr.Surface(SD->Surf()).Surface();
   gp_Pnt2d                    p1f =
     SD->InterferenceOnS1().PCurveOnSurf()->Value(SD->InterferenceOnS1().FirstParameter());
   gp_Pnt2d p1l =
@@ -649,10 +660,10 @@ void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
     SD->InterferenceOnS2().PCurveOnSurf()->Value(SD->InterferenceOnS2().FirstParameter());
   gp_Pnt2d p2l =
     SD->InterferenceOnS2().PCurveOnSurf()->Value(SD->InterferenceOnS2().LastParameter());
-  GeomAdaptor_Surface                                  AS(S);
+  GeomAdaptor_Surface       AS(S);
   occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-  double                                               u1, v1, u2, v2;
-  GeomAbs_SurfaceType                                  typ = AS.GetType();
+  double             u1, v1, u2, v2;
+  GeomAbs_SurfaceType       typ = AS.GetType();
   switch (typ)
   {
     case GeomAbs_Plane: {
@@ -669,21 +680,21 @@ void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
     }
     break;
     case GeomAbs_Cone: {
-      v1          = p1f.Y();
-      v2          = p2f.Y();
-      u1          = std::max(p1f.X(), p2f.X());
-      u2          = std::min(p1l.X(), p2l.X());
-      double  ang = (u2 - u1);
-      gp_Cone Co  = AS.Cone();
-      double  rad = Co.RefRadius(), sang = Co.SemiAngle();
-      int     n = (int)(36. * ang / M_PI + 1);
+      v1                   = p1f.Y();
+      v2                   = p2f.Y();
+      u1                   = std::max(p1f.X(), p2f.X());
+      u2                   = std::min(p1l.X(), p2l.X());
+      double    ang = (u2 - u1);
+      gp_Cone          Co  = AS.Cone();
+      double    rad = Co.RefRadius(), sang = Co.SemiAngle();
+      int n = (int)(36. * ang / M_PI + 1);
       if (n < 2)
         n = 2;
       sec = new NCollection_HArray1<ChFiDS_CircSection>(1, n);
       for (int i = 1; i <= n; i++)
       {
         ChFiDS_CircSection& isec = sec->ChangeValue(i);
-        double              u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
+        double       u    = u1 + (i - 1) * (u2 - u1) / (n - 1);
         isec.Set(ElSLib::ConeUIso(Co.Position(), rad, sang, u), v1, v2);
       }
     }
@@ -698,24 +709,24 @@ void ChFi3d_ChBuilder::SimulKPart(const occ::handle<ChFiDS_SurfData>& SD) const
 //=================================================================================================
 
 bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
-                                 const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                 const occ::handle<ChFiDS_Spine>&        Spine,
-                                 const int                               Choix,
-                                 const occ::handle<BRepAdaptor_Surface>& S1,
-                                 const occ::handle<Adaptor3d_TopolTool>& I1,
-                                 const occ::handle<BRepAdaptor_Surface>& S2,
-                                 const occ::handle<Adaptor3d_TopolTool>& I2,
-                                 const double                            TolGuide,
-                                 double&                                 First,
-                                 double&                                 Last,
-                                 const bool                              Inside,
-                                 const bool                              Appro,
-                                 const bool                              Forward,
-                                 const bool                              RecOnS1,
-                                 const bool                              RecOnS2,
-                                 const math_Vector&                      Soldep,
-                                 int&                                    intf,
-                                 int&                                    intl)
+                                             const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                             const occ::handle<ChFiDS_Spine>&        Spine,
+                                             const int             Choix,
+                                             const occ::handle<BRepAdaptor_Surface>& S1,
+                                             const occ::handle<Adaptor3d_TopolTool>& I1,
+                                             const occ::handle<BRepAdaptor_Surface>& S2,
+                                             const occ::handle<Adaptor3d_TopolTool>& I2,
+                                             const double                TolGuide,
+                                             double&                     First,
+                                             double&                     Last,
+                                             const bool             Inside,
+                                             const bool             Appro,
+                                             const bool             Forward,
+                                             const bool             RecOnS1,
+                                             const bool             RecOnS2,
+                                             const math_Vector&                 Soldep,
+                                             int&                  intf,
+                                             int&                  intl)
 
 {
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
@@ -729,8 +740,8 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   double longueur    = la - fi;
   double MaxStep     = longueur * 0.05;
   double radiusspine = 0, locfleche, w;
-  gp_Pnt Pbid;
-  gp_Vec d1, d2;
+  gp_Pnt        Pbid;
+  gp_Vec        d1, d2;
   // As ElSpine is parameterized by a curvilinear quasi-abscissa,
   // the min radius is estimated as 1/D2 max;
   // for(int i = 0; i <= 20; i++){
@@ -745,7 +756,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
   }
 
   occ::handle<BRepBlend_Line> lin;
-  double                      PFirst = First;
+  double          PFirst = First;
   if (intf)
     First = chsp->FirstParameter(1);
   if (intl)
@@ -802,14 +813,14 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       return false;
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-    gp_Pnt2d                                             pf1, pl1, pf2, pl2;
+    gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
     int nbp = lin->NbPoints();
-    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double              u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -855,7 +866,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -874,7 +885,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     }
     if (intl)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -911,8 +922,8 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     }
     else
     {
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll        = Spine->ChangeElSpines();
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll_offset = Spine->ChangeOffsetElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
       NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
@@ -960,14 +971,14 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       return false;
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-    gp_Pnt2d                                             pf1, pl1, pf2, pl2;
+    gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
     int nbp = lin->NbPoints();
-    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double              u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -1013,7 +1024,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -1032,7 +1043,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     }
     if (intl)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -1093,14 +1104,14 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     if (!done)
       return false;
     occ::handle<NCollection_HArray1<ChFiDS_CircSection>> sec;
-    gp_Pnt2d                                             pf1, pl1, pf2, pl2;
+    gp_Pnt2d                  pf1, pl1, pf2, pl2;
 
     int nbp = lin->NbPoints();
-    sec     = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
+    sec                  = new NCollection_HArray1<ChFiDS_CircSection>(1, nbp);
     for (i = 1; i <= nbp; i++)
     {
       ChFiDS_CircSection& isec = sec->ChangeValue(i);
-      double              u1, v1, u2, v2, ww, p1, p2;
+      double       u1, v1, u2, v2, ww, p1, p2;
       gp_Lin              line;
       const Blend_Point&  p = lin->Point(i);
       p.ParametersOnS1(u1, v1);
@@ -1146,7 +1157,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
     bool reverse = (!Forward || Inside);
     if (intf && reverse)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexFirstOnS1();
       if (cp1.IsOnArc())
       {
@@ -1166,7 +1177,7 @@ bool ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&           Data,
 
     if (intl)
     {
-      bool                      ok  = false;
+      bool          ok  = false;
       const ChFiDS_CommonPoint& cp1 = Data->VertexLastOnS1();
       if (cp1.IsOnArc())
       {
@@ -1284,16 +1295,16 @@ void ChFi3d_ChBuilder::SimulSurf(occ::handle<ChFiDS_SurfData>&,
 //=======================================================================
 
 bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&        Spine,
-                                           const occ::handle<ChFiDS_ElSpine>&      HGuide,
-                                           const int                               Choix,
-                                           occ::handle<BRepAdaptor_Surface>&       S1,
-                                           occ::handle<BRepAdaptor_Surface>&       S2,
-                                           const occ::handle<Adaptor3d_TopolTool>& I1,
-                                           const occ::handle<Adaptor3d_TopolTool>& I2,
-                                           const double                            Par,
-                                           math_Vector&                            SolDep,
-                                           TopAbs_State&                           Pos1,
-                                           TopAbs_State&                           Pos2) const
+                                                       const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                                       const int             Choix,
+                                                       occ::handle<BRepAdaptor_Surface>&       S1,
+                                                       occ::handle<BRepAdaptor_Surface>&       S2,
+                                                       const occ::handle<Adaptor3d_TopolTool>& I1,
+                                                       const occ::handle<Adaptor3d_TopolTool>& I2,
+                                                       const double                Par,
+                                                       math_Vector&                       SolDep,
+                                                       TopAbs_State&                      Pos1,
+                                                       TopAbs_State& Pos2) const
 {
   occ::handle<ChFiDS_ChamfSpine> chsp = occ::down_cast<ChFiDS_ChamfSpine>(Spine);
 
@@ -1330,9 +1341,9 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    bool   rev1 = false;
-    bool   rev2 = false;
-    double sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
       rev1 = true;
@@ -1386,9 +1397,9 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     }
     else
     {
-      occ::handle<ChFiDS_ElSpine>                    OffsetHGuide;
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll        = Spine->ChangeElSpines();
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll_offset = Spine->ChangeOffsetElSpines();
+      occ::handle<ChFiDS_ElSpine>              OffsetHGuide;
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
       NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
@@ -1419,9 +1430,9 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     pFunc->Set(Par);
     pFunc->Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    bool   rev1 = false;
-    bool   rev2 = false;
-    double sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Choix % 2 == 1)
       rev1 = true;
@@ -1501,9 +1512,9 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
     Func.Set(Par);
     Func.Tangent(SolDep(1), SolDep(2), SolDep(3), SolDep(4), TgF, TgL, tmp1, tmp2);
 
-    bool   rev1 = false;
-    bool   rev2 = false;
-    double sign = (TgF.Crossed(d1gui)).Dot(TgL);
+    bool rev1 = false;
+    bool rev2 = false;
+    double    sign = (TgF.Crossed(d1gui)).Dot(TgL);
 
     if (Ch % 2 == 1)
       rev1 = true;
@@ -1554,27 +1565,27 @@ bool ChFi3d_ChBuilder::PerformFirstSection(const occ::handle<ChFiDS_Spine>&     
 
 //=================================================================================================
 
-bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>& SeqData,
-                                   const occ::handle<ChFiDS_ElSpine>&                  HGuide,
-                                   const occ::handle<ChFiDS_Spine>&                    Spine,
-                                   const int                                           Choix,
-                                   const occ::handle<BRepAdaptor_Surface>&             S1,
-                                   const occ::handle<Adaptor3d_TopolTool>&             I1,
-                                   const occ::handle<BRepAdaptor_Surface>&             S2,
-                                   const occ::handle<Adaptor3d_TopolTool>&             I2,
-                                   const double                                        MaxStep,
-                                   const double                                        Fleche,
-                                   const double                                        TolGuide,
-                                   double&                                             First,
-                                   double&                                             Last,
-                                   const bool                                          Inside,
-                                   const bool                                          Appro,
-                                   const bool                                          Forward,
-                                   const bool                                          RecOnS1,
-                                   const bool                                          RecOnS2,
-                                   const math_Vector&                                  Soldep,
-                                   int&                                                intf,
-                                   int&                                                intl)
+bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfData>>&         SeqData,
+                                               const occ::handle<ChFiDS_ElSpine>&      HGuide,
+                                               const occ::handle<ChFiDS_Spine>&        Spine,
+                                               const int             Choix,
+                                               const occ::handle<BRepAdaptor_Surface>& S1,
+                                               const occ::handle<Adaptor3d_TopolTool>& I1,
+                                               const occ::handle<BRepAdaptor_Surface>& S2,
+                                               const occ::handle<Adaptor3d_TopolTool>& I2,
+                                               const double                MaxStep,
+                                               const double                Fleche,
+                                               const double                TolGuide,
+                                               double&                     First,
+                                               double&                     Last,
+                                               const bool             Inside,
+                                               const bool             Appro,
+                                               const bool             Forward,
+                                               const bool             RecOnS1,
+                                               const bool             RecOnS2,
+                                               const math_Vector&                 Soldep,
+                                               int&                  intf,
+                                               int&                  intl)
 
 {
   occ::handle<ChFiDS_SurfData>   Data = SeqData(1);
@@ -1583,10 +1594,10 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
   if (chsp.IsNull())
     throw Standard_ConstructionError("PerformSurf : this is not the spine of a chamfer");
 
-  bool                        gd1, gd2, gf1, gf2;
+  bool       gd1, gd2, gf1, gf2;
   occ::handle<BRepBlend_Line> lin;
-  TopAbs_Orientation          Or     = S1->Face().Orientation();
-  double                      PFirst = First;
+  TopAbs_Orientation     Or     = S1->Face().Orientation();
+  double          PFirst = First;
   if (intf)
     First = chsp->FirstParameter(1);
   if (intl)
@@ -1662,9 +1673,9 @@ bool ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
     }
     else
     {
-      occ::handle<ChFiDS_ElSpine>                    OffsetHGuide;
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll        = Spine->ChangeElSpines();
-      NCollection_List<occ::handle<ChFiDS_ElSpine>>& ll_offset = Spine->ChangeOffsetElSpines();
+      occ::handle<ChFiDS_ElSpine>              OffsetHGuide;
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll        = Spine->ChangeElSpines();
+      NCollection_List<occ::handle<ChFiDS_ElSpine>>&              ll_offset = Spine->ChangeOffsetElSpines();
       NCollection_List<occ::handle<ChFiDS_ElSpine>>::Iterator ILES(ll), ILES_offset(ll_offset);
       for (; ILES.More(); ILES.Next(), ILES_offset.Next())
       {
@@ -1871,8 +1882,8 @@ void ChFi3d_ChBuilder::PerformSurf(NCollection_Sequence<occ::handle<ChFiDS_SurfD
 
 void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handle<ChFiDS_Stripe>& S)
 {
-  int                       Sens  = 0;
-  double                    Coeff = 0.5;
+  int     Sens  = 0;
+  double        Coeff = 0.5;
   occ::handle<ChFiDS_Spine> Spine = S->Spine();
   ChFi3d_IndexOfSurfData(V, S, Sens);
   if (Spine->IsTangencyExtremity((Sens == 1)))
@@ -1896,14 +1907,13 @@ void ChFi3d_ChBuilder::ExtentOneCorner(const TopoDS_Vertex& V, const occ::handle
 //           on the side of the vertex V
 //=======================================================================
 
-void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                                V,
-                                       const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
+void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
-  int                                                    Sens = 0;
+  int                  Sens = 0;
   NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS);
-  bool                                                   FF = true;
-  bool                                                   isfirst[2];
-  int                                                    Iedge[2];
+  bool                  FF = true;
+  bool                  isfirst[2];
+  int                  Iedge[2];
   Iedge[0] = 1;
   Iedge[1] = 1;
   occ::handle<ChFiDS_Stripe> Stripe[2];
@@ -1926,10 +1936,10 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
   }
 
   occ::handle<ChFiDS_ChamfSpine> chsp[2];
-  double                         d[4], dis[2] = {0.0, 0.0};
-  int                            j;
-  TopoDS_Face                    F[4];
-  double                         tmpang, tmd;
+  double             d[4], dis[2] = {0.0, 0.0};
+  int          j;
+  TopoDS_Face               F[4];
+  double             tmpang, tmd;
 
   for (i = 0, j = 0; i < 2; i++, j += 2)
   {
@@ -1955,7 +1965,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
   }
 
   bool notfound = true;
-  i             = 0;
+  i                         = 0;
   while (notfound && (i < 2))
   {
     j = 0;
@@ -2013,21 +2023,19 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&                     
 
 //=================================================================================================
 
-void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                                V,
-                                         const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
+void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex& V, const NCollection_List<occ::handle<ChFiDS_Stripe>>& LS)
 {
-  int                                          Sens = 0;
+  int    Sens = 0;
   NCollection_List<occ::handle<ChFiDS_Stripe>> check;
-  bool                                         isfirst[3];
-  int                                          Iedge[3];
+  bool    isfirst[3];
+  int    Iedge[3];
   Iedge[0] = 1;
   Iedge[1] = 1;
   Iedge[2] = 1;
   occ::handle<ChFiDS_Spine> Spine[3];
 
   int i = 0;
-  for (NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS); itel.More();
-       itel.Next(), i++)
+  for (NCollection_List<occ::handle<ChFiDS_Stripe>>::Iterator itel(LS); itel.More(); itel.Next(), i++)
   {
     occ::handle<ChFiDS_Stripe> Stripe = itel.Value();
     ChFi3d_IndexOfSurfData(V, Stripe, Sens);
@@ -2048,9 +2056,9 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                   
     check.Append(Stripe);
   }
 
-  double      d[3][2], tmd, tmpangle;
-  int         j;
-  TopoDS_Face F[3][2];
+  double    d[3][2], tmd, tmpangle;
+  int j;
+  TopoDS_Face      F[3][2];
 
   occ::handle<ChFiDS_ChamfSpine> chsp[3];
 
@@ -2086,9 +2094,9 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                   
   {
     //    for (int ii=0; ii<3; ii++) {
     //      j = (i+ii)%3;
-    j             = (i + 1) % 3;
+    j                         = (i + 1) % 3;
     bool notfound = true;
-    int  k, l;
+    int k, l;
     k = 0;
     while (notfound && (k < 2))
     {
@@ -2121,18 +2129,18 @@ void ChFi3d_ChBuilder::ExtentThreeCorner(const TopoDS_Vertex&                   
 void ChFi3d_ChBuilder::SetRegul()
 
 {
-  NCollection_List<ChFiDS_Regul>::Iterator it;
+  NCollection_List<ChFiDS_Regul>::Iterator  it;
   NCollection_List<TopoDS_Shape>::Iterator itc;
   NCollection_List<TopoDS_Shape>::Iterator its1;
   NCollection_List<TopoDS_Shape>::Iterator its2;
-  BRepAdaptor_Surface                      S;
-  BRepAdaptor_Curve2d                      PC;
-  double                                   u, v, t;
-  gp_Pnt                                   p;
-  gp_Vec                                   n1, n2, du, dv;
-  BRep_Builder                             B;
-  double                                   Seuil  = M_PI / 360.;
-  double                                   Seuil2 = Seuil * Seuil;
+  BRepAdaptor_Surface                S;
+  BRepAdaptor_Curve2d                PC;
+  double                      u, v, t;
+  gp_Pnt                             p;
+  gp_Vec                             n1, n2, du, dv;
+  BRep_Builder                       B;
+  double                      Seuil  = M_PI / 360.;
+  double                      Seuil2 = Seuil * Seuil;
   for (it.Initialize(myRegul); it.More(); it.Next())
   {
     const ChFiDS_Regul& reg = it.Value();
@@ -2184,13 +2192,13 @@ void ChFi3d_ChBuilder::SetRegul()
 //=======================================================================
 
 void ChFi3d_ChBuilder::ConexFaces(const occ::handle<ChFiDS_Spine>& Spine,
-                                  const int                        IEdge,
-                                  TopoDS_Face&                     F1,
-                                  TopoDS_Face&                     F2) const
+                                  const int      IEdge,
+                                  TopoDS_Face&                F1,
+                                  TopoDS_Face&                F2) const
 {
   BRepAdaptor_Surface Sb1, Sb2;
   TopAbs_Orientation  tmp1, tmp2;
-  int                 RC, Choix;
+  int    RC, Choix;
   TopoDS_Face         f1, f2, ff1, ff2;
 
   // calculate the reference orientation

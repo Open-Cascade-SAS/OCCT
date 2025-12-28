@@ -32,7 +32,10 @@ Draw_Box::Draw_Box(const Bnd_OBB& theOBB, const Draw_Color& theColor)
 
 //=================================================================================================
 
-void Draw_Box::ToWCS(const double theX, const double theY, const double theZ, gp_Pnt& theP) const
+void Draw_Box::ToWCS(const double theX,
+                     const double theY,
+                     const double theZ,
+                     gp_Pnt&             theP) const
 {
   const gp_XYZ& aC    = myOBB.Center();
   const gp_XYZ  aXDir = myOBB.XDirection(), aYDir = myOBB.YDirection(), aZDir = myOBB.ZDirection();

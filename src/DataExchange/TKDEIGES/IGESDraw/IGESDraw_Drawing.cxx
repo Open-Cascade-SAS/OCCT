@@ -32,14 +32,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Drawing, IGESData_IGESEntity)
 
 IGESDraw_Drawing::IGESDraw_Drawing() {}
 
-void IGESDraw_Drawing::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-  const occ::handle<NCollection_HArray1<gp_XY>>&                                allViewOrigins,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allAnnotations)
+void IGESDraw_Drawing::Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+                            const occ::handle<NCollection_HArray1<gp_XY>>&               allViewOrigins,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&     allAnnotations)
 {
   if (!allViews.IsNull())
   {
-    int  Len  = allViews->Length();
+    int Len  = allViews->Length();
     bool Flag = (allViewOrigins->Length() == Len);
     if (!Flag || allViews->Lower() != 1 || allViewOrigins->Lower() != 1)
       throw Standard_DimensionMismatch("IGESDraw_Drawing : Init");
@@ -74,14 +73,16 @@ int IGESDraw_Drawing::NbAnnotations() const
   return (theAnnotations.IsNull() ? 0 : theAnnotations->Length());
 }
 
-occ::handle<IGESData_IGESEntity> IGESDraw_Drawing::Annotation(const int AnnotationIndex) const
+occ::handle<IGESData_IGESEntity> IGESDraw_Drawing::Annotation(
+  const int AnnotationIndex) const
 {
   return (theAnnotations->Value(AnnotationIndex));
 }
 
-gp_XY IGESDraw_Drawing::ViewToDrawing(const int NumView, const gp_XYZ& ViewCoords) const
+gp_XY IGESDraw_Drawing::ViewToDrawing(const int NumView,
+                                      const gp_XYZ&          ViewCoords) const
 {
-  gp_XY  thisOrigin     = theViewOrigins->Value(NumView);
+  gp_XY         thisOrigin     = theViewOrigins->Value(NumView);
   double XOrigin        = thisOrigin.X();
   double YOrigin        = thisOrigin.Y();
   double theScaleFactor = 0.;
@@ -109,7 +110,7 @@ gp_XY IGESDraw_Drawing::ViewToDrawing(const int NumView, const gp_XYZ& ViewCoord
 
 bool IGESDraw_Drawing::DrawingUnit(double& val) const
 {
-  val                                = 0.;
+  val                           = 0.;
   occ::handle<Standard_Type> typunit = STANDARD_TYPE(IGESGraph_DrawingUnits);
   if (NbTypedProperties(typunit) != 1)
     return false;
@@ -122,7 +123,7 @@ bool IGESDraw_Drawing::DrawingUnit(double& val) const
 
 bool IGESDraw_Drawing::DrawingSize(double& X, double& Y) const
 {
-  X = Y                              = 0.;
+  X = Y                         = 0.;
   occ::handle<Standard_Type> typsize = STANDARD_TYPE(IGESGraph_DrawingSize);
   if (NbTypedProperties(typsize) != 1)
     return false;

@@ -22,9 +22,9 @@ class Aspect_Touch
 public:
   NCollection_Vec2<double> From; //!< original touch position
   NCollection_Vec2<double> To;   //!< current  touch position
-                                 // clang-format off
+                                        // clang-format off
   bool                IsPreciseDevice; //!< precise device input (e.g. mouse cursor, NOT emulated from touch screen)
-                                 // clang-format on
+                                        // clang-format on
 
   //! Return values delta.
   NCollection_Vec2<double> Delta() const { return To - From; }

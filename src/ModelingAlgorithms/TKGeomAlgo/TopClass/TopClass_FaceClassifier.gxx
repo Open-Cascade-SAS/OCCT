@@ -31,9 +31,9 @@ TopClass_FaceClassifier::TopClass_FaceClassifier()
 
 //=================================================================================================
 
-TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer& FExp,
-                                                 const gp_Pnt2d&  P,
-                                                 const double     Tol)
+TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer&    FExp,
+                                                 const gp_Pnt2d&     P,
+                                                 const double Tol)
     : myEdgeParameter(0.0),
       rejected(false),
       nowires(true)
@@ -43,10 +43,12 @@ TopClass_FaceClassifier::TopClass_FaceClassifier(TheFaceExplorer& FExp,
 
 //=================================================================================================
 
-void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp, const gp_Pnt2d& P, const double Tol)
+void TopClass_FaceClassifier::Perform(TheFaceExplorer&    Fexp,
+                                      const gp_Pnt2d&     P,
+                                      const double Tol)
 {
-  gp_Pnt2d aPoint(P);
-  bool     aResOfPointCheck = false;
+  gp_Pnt2d         aPoint(P);
+  bool aResOfPointCheck = false;
   while (aResOfPointCheck == false)
   {
     aResOfPointCheck = Fexp.CheckPoint(aPoint);
@@ -59,15 +61,15 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp, const gp_Pnt2d& P, 
     return;
 
   gp_Lin2d                   aLine;
-  double                     aParam;
-  bool                       IsValidSegment = Fexp.Segment(aPoint, aLine, aParam);
+  double              aParam;
+  bool           IsValidSegment = Fexp.Segment(aPoint, aLine, aParam);
   TheEdge                    anEdge;
   TopAbs_Orientation         anEdgeOri;
-  int                        aClosestInd;
+  int           aClosestInd;
   IntRes2d_IntersectionPoint aPInter;
   TopAbs_State               aState = TopAbs_UNKNOWN;
-  bool                       IsWReject;
-  bool                       IsEReject;
+  bool           IsWReject;
+  bool           IsEReject;
 
   nowires = true;
 
@@ -101,7 +103,7 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp, const gp_Pnt2d& P, 
               {
                 // save the closest edge
                 TheIntersection2d& anIntersector = myClassifier.Intersector();
-                int                aNbPnts       = anIntersector.NbPoints();
+                int   aNbPnts       = anIntersector.NbPoints();
 
                 myEdge = anEdge;
 

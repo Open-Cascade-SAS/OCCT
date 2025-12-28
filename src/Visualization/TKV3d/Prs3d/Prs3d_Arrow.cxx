@@ -28,10 +28,10 @@
 //=================================================================================================
 
 void Prs3d_Arrow::Draw(const occ::handle<Graphic3d_Group>& theGroup,
-                       const gp_Pnt&                       theLocation,
-                       const gp_Dir&                       theDirection,
-                       const double                        theAngle,
-                       const double                        theLength)
+                       const gp_Pnt&                  theLocation,
+                       const gp_Dir&                  theDirection,
+                       const double            theAngle,
+                       const double            theLength)
 {
   occ::handle<Graphic3d_ArrayOfSegments> aPrimitives =
     Prs3d_Arrow::DrawSegments(theLocation, theDirection, theAngle, theLength, 15);
@@ -40,11 +40,11 @@ void Prs3d_Arrow::Draw(const occ::handle<Graphic3d_Group>& theGroup,
 
 //=================================================================================================
 
-occ::handle<Graphic3d_ArrayOfSegments> Prs3d_Arrow::DrawSegments(const gp_Pnt& theLocation,
-                                                                 const gp_Dir& theDir,
-                                                                 const double  theAngle,
-                                                                 const double  theLength,
-                                                                 const int     theNbSegments)
+occ::handle<Graphic3d_ArrayOfSegments> Prs3d_Arrow::DrawSegments(const gp_Pnt&          theLocation,
+                                                            const gp_Dir&          theDir,
+                                                            const double    theAngle,
+                                                            const double    theLength,
+                                                            const int theNbSegments)
 {
   occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(theNbSegments + 1, 2 * (2 * theNbSegments));
@@ -105,21 +105,21 @@ occ::handle<Graphic3d_ArrayOfSegments> Prs3d_Arrow::DrawSegments(const gp_Pnt& t
 
 //=================================================================================================
 
-occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_Arrow::DrawShaded(const gp_Ax1& theAxis,
-                                                                const double  theTubeRadius,
-                                                                const double  theAxisLength,
-                                                                const double  theConeRadius,
-                                                                const double  theConeLength,
-                                                                const int     theNbFacettes)
+occ::handle<Graphic3d_ArrayOfTriangles> Prs3d_Arrow::DrawShaded(const gp_Ax1&          theAxis,
+                                                           const double    theTubeRadius,
+                                                           const double    theAxisLength,
+                                                           const double    theConeRadius,
+                                                           const double    theConeLength,
+                                                           const int theNbFacettes)
 {
-  const double aTubeLength = std::max(0.0, theAxisLength - theConeLength);
-  const int    aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
-                               ? Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1)
-                               : 0;
-  const int    aNbTrisCone = (theConeRadius > 0.0 && theConeLength > 0.0)
-                               ? (Prs3d_ToolDisk ::TrianglesNb(theNbFacettes, 1)
-                               + Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1))
-                               : 0;
+  const double    aTubeLength = std::max(0.0, theAxisLength - theConeLength);
+  const int aNbTrisTube = (theTubeRadius > 0.0 && aTubeLength > 0.0)
+                                         ? Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1)
+                                         : 0;
+  const int aNbTrisCone = (theConeRadius > 0.0 && theConeLength > 0.0)
+                                         ? (Prs3d_ToolDisk ::TrianglesNb(theNbFacettes, 1)
+                                            + Prs3d_ToolCylinder::TrianglesNb(theNbFacettes, 1))
+                                         : 0;
 
   const int aNbTris = aNbTrisTube + aNbTrisCone;
   if (aNbTris == 0)

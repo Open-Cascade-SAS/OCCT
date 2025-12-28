@@ -181,8 +181,7 @@ void BOPAlgo_Builder::Perform(const Message_ProgressRange& theRange)
     }
   }
   //
-  occ::handle<NCollection_BaseAllocator> aAllocator =
-    NCollection_BaseAllocator::CommonBaseAllocator();
+  occ::handle<NCollection_BaseAllocator> aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();
   //
   BOPAlgo_PaveFiller* pPF = new BOPAlgo_PaveFiller(aAllocator);
   //
@@ -456,8 +455,8 @@ void BOPAlgo_Builder::PerformInternal1(const BOPAlgo_PaveFiller&    theFiller,
 
 void BOPAlgo_Builder::PostTreat(const Message_ProgressRange& theRange)
 {
-  int                                                           i, aNbS;
-  TopAbs_ShapeEnum                                              aType;
+  int           i, aNbS;
+  TopAbs_ShapeEnum           aType;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMA;
   if (myPaveFiller->NonDestructive())
   {
@@ -483,12 +482,12 @@ void BOPAlgo_Builder::PostTreat(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
-                               const TopAbs_State                    theObjState,
-                               const NCollection_List<TopoDS_Shape>& theTools,
-                               const TopAbs_State                    theToolsState,
-                               const Message_ProgressRange&          theRange,
-                               occ::handle<Message_Report>           theReport)
+void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>&  theObjects,
+                               const TopAbs_State           theObjState,
+                               const NCollection_List<TopoDS_Shape>&  theTools,
+                               const TopAbs_State           theToolsState,
+                               const Message_ProgressRange& theRange,
+                               occ::handle<Message_Report>       theReport)
 {
   if (HasErrors())
     return;
@@ -536,8 +535,8 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
       // Check if the shape is a solid or collection of them
       if (aS.ShapeType() != TopAbs_SOLID)
       {
-        NCollection_List<TopoDS_Shape>                         aLS;
-        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
+        NCollection_List<TopoDS_Shape> aLS;
+        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aMFence;
         BOPTools_AlgoTools::TreatCompound(aS, aLS, &aMFence);
 
         NCollection_List<TopoDS_Shape>::Iterator it(aLS);
@@ -569,11 +568,10 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
 
   for (int i = 0; i < 2; ++i)
   {
-    const NCollection_List<TopoDS_Shape>& aList   = !i ? theObjects : theTools;
+    const NCollection_List<TopoDS_Shape>&         aList   = !i ? theObjects : theTools;
     NCollection_IndexedMap<TopoDS_Shape>& aMapOri = !i ? aMObjFacesOri : aMToolFacesOri;
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMap =
-      !i ? aMObjFaces : aMToolFaces;
-    NCollection_List<TopoDS_Shape>::Iterator itLS(aList);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&         aMap    = !i ? aMObjFaces : aMToolFaces;
+    NCollection_List<TopoDS_Shape>::Iterator      itLS(aList);
     for (; itLS.More(); itLS.Next())
     {
       const TopoDS_Shape& aShape = itLS.Value();
@@ -611,8 +609,7 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
         const NCollection_List<TopoDS_Shape>* pLFIN = myInParts.Seek(aS);
         if (pLFIN)
         {
-          NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& anINMap =
-            !i ? anINObjects : anINTools;
+          NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&           anINMap = !i ? anINObjects : anINTools;
           NCollection_List<TopoDS_Shape>::Iterator itLFIn(*pLFIN);
           for (; itLFIn.More(); itLFIn.Next())
             anINMap.Add(itLFIn.Value());
@@ -624,17 +621,18 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
   // Now we need to select all faces which will participate in
   // building of the resulting solids. The final set of faces
   // depends on the given states for the groups.
-  bool isObjectsIN = (theObjState == TopAbs_IN), isToolsIN = (theToolsState == TopAbs_IN);
+  bool isObjectsIN = (theObjState == TopAbs_IN),
+                   isToolsIN   = (theToolsState == TopAbs_IN);
 
   // Shortcuts
-  bool bAvoidIN     = (!isObjectsIN && !isToolsIN), // avoid all in faces
-    bAvoidINforBoth = (isObjectsIN != isToolsIN);   // avoid faces IN for both groups
+  bool bAvoidIN = (!isObjectsIN && !isToolsIN), // avoid all in faces
+    bAvoidINforBoth         = (isObjectsIN != isToolsIN);   // avoid faces IN for both groups
 
   // Choose which SD faces are needed to be taken - equally or differently oriented faces
   bool isSameOriNeeded = (theObjState == theToolsState);
   // Resulting faces
-  NCollection_IndexedMap<TopoDS_Shape>                   aMResFacesOri;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMResFacesFence;
+  NCollection_IndexedMap<TopoDS_Shape> aMResFacesOri;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMResFacesFence;
   // Fence map
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence, aMFToAvoid;
   // Oriented fence map
@@ -642,14 +640,11 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
 
   for (int i = 0; i < 2; ++i)
   {
-    const NCollection_IndexedMap<TopoDS_Shape>& aMap = !i ? aMObjFacesOri : aMToolFacesOri;
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& anOppositeMap =
-      !i ? aMToolFaces : aMObjFaces;
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& anINMap =
-      !i ? anINObjects : anINTools;
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& anOppositeINMap =
-      !i ? anINTools : anINObjects;
-    const bool bTakeIN = !i ? isObjectsIN : isToolsIN;
+    const NCollection_IndexedMap<TopoDS_Shape>& aMap            = !i ? aMObjFacesOri : aMToolFacesOri;
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&         anOppositeMap   = !i ? aMToolFaces : aMObjFaces;
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                anINMap         = !i ? anINObjects : anINTools;
+    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                anOppositeINMap = !i ? anINTools : anINObjects;
+    const bool                    bTakeIN         = !i ? isObjectsIN : isToolsIN;
 
     const int aNbF = aMap.Extent();
     for (int j = 1; j <= aNbF; ++j)
@@ -714,8 +709,8 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
   }
 
   // Remove the faces which has to be avoided
-  NCollection_List<TopoDS_Shape> aResFaces;
-  const int                      aNbRF = aMResFacesOri.Extent();
+  NCollection_List<TopoDS_Shape>   aResFaces;
+  const int aNbRF = aMResFacesOri.Extent();
   for (int i = 1; i <= aNbRF; ++i)
   {
     const TopoDS_Shape& aRF = aMResFacesOri(i);

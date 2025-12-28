@@ -20,6 +20,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //=================================================================================================
 
@@ -37,10 +39,10 @@ GeomFill_Coons::GeomFill_Coons(const NCollection_Array1<gp_Pnt>& P1,
 
 //=================================================================================================
 
-GeomFill_Coons::GeomFill_Coons(const NCollection_Array1<gp_Pnt>& P1,
-                               const NCollection_Array1<gp_Pnt>& P2,
-                               const NCollection_Array1<gp_Pnt>& P3,
-                               const NCollection_Array1<gp_Pnt>& P4,
+GeomFill_Coons::GeomFill_Coons(const NCollection_Array1<gp_Pnt>&   P1,
+                               const NCollection_Array1<gp_Pnt>&   P2,
+                               const NCollection_Array1<gp_Pnt>&   P3,
+                               const NCollection_Array1<gp_Pnt>&   P4,
                                const NCollection_Array1<double>& W1,
                                const NCollection_Array1<double>& W2,
                                const NCollection_Array1<double>& W3,
@@ -109,7 +111,7 @@ void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>& P1,
   NCollection_Array1<double> GU(2, NPolU - 1);
   NCollection_Array1<double> FV(2, NPolV - 1);
   NCollection_Array1<double> GV(2, NPolV - 1);
-  double                     Dummy;
+  double        Dummy;
   for (i = 2; i < NPolU; i++)
   {
     CoefU(i).Coord(FU(i), GU(i), Dummy);
@@ -143,10 +145,10 @@ void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>& P1,
 
 //=================================================================================================
 
-void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>& P1,
-                          const NCollection_Array1<gp_Pnt>& P2,
-                          const NCollection_Array1<gp_Pnt>& P3,
-                          const NCollection_Array1<gp_Pnt>& P4,
+void GeomFill_Coons::Init(const NCollection_Array1<gp_Pnt>&   P1,
+                          const NCollection_Array1<gp_Pnt>&   P2,
+                          const NCollection_Array1<gp_Pnt>&   P3,
+                          const NCollection_Array1<gp_Pnt>&   P4,
                           const NCollection_Array1<double>& W1,
                           const NCollection_Array1<double>& W2,
                           const NCollection_Array1<double>& W3,

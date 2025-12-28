@@ -90,15 +90,14 @@ void Graphic3d_Texture1Dsegment::SetSegment(const float X1,
   myZ2 = Z2;
   NCollection_Vec4<float> aPlaneX(X2 - X1, Y2 - Y1, Z2 - Z1, 0.0f);
 
-  float aSqNorm = aPlaneX.x() * aPlaneX.x() + aPlaneX.y() * aPlaneX.y() + aPlaneX.z() * aPlaneX.z();
+  float aSqNorm =
+    aPlaneX.x() * aPlaneX.x() + aPlaneX.y() * aPlaneX.y() + aPlaneX.z() * aPlaneX.z();
   aPlaneX.x() /= aSqNorm;
   aPlaneX.y() /= aSqNorm;
   aPlaneX.z() /= aSqNorm;
   aPlaneX.w() = -aPlaneX.x() * X1 - aPlaneX.y() * Y1 - aPlaneX.z() * Z1;
 
-  myParams->SetGenMode(Graphic3d_TOTM_OBJECT,
-                       aPlaneX,
-                       NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
+  myParams->SetGenMode(Graphic3d_TOTM_OBJECT, aPlaneX, NCollection_Vec4<float>(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 //=================================================================================================

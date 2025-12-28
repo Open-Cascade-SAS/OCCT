@@ -25,8 +25,8 @@ IGESGeom_RuledSurface::IGESGeom_RuledSurface() {}
 
 void IGESGeom_RuledSurface::Init(const occ::handle<IGESData_IGESEntity>& aCurve,
                                  const occ::handle<IGESData_IGESEntity>& anotherCurve,
-                                 const int                               aDirFlag,
-                                 const int                               aDevFlag)
+                                 const int             aDirFlag,
+                                 const int             aDevFlag)
 {
   theCurve1  = aCurve;
   theCurve2  = anotherCurve;

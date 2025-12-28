@@ -36,16 +36,16 @@ public:
   Standard_EXPORT StepAP214_AppliedSecurityClassificationAssignment();
 
   Standard_EXPORT void Init(
-    const occ::handle<StepBasic_SecurityClassification>& aAssignedSecurityClassification,
+    const occ::handle<StepBasic_SecurityClassification>&              aAssignedSecurityClassification,
     const occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>& aItems);
 
   Standard_EXPORT void SetItems(
     const occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>> Items()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_SecurityClassificationItem>> Items() const;
 
-  Standard_EXPORT const StepAP214_SecurityClassificationItem& ItemsValue(const int num) const;
+  Standard_EXPORT const StepAP214_SecurityClassificationItem& ItemsValue(
+    const int num) const;
 
   Standard_EXPORT int NbItems() const;
 

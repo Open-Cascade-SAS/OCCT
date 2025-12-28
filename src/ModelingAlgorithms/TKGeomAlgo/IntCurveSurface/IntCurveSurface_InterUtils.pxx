@@ -61,9 +61,9 @@ constexpr double THE_TOLTANGENCY         = 0.00000001;
 inline void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
                                       const gp_Pln&        thePln,
                                       const ProjLib_Plane& theBasCurvProj,
-                                      double&              theVmin,
-                                      double&              theVmax,
-                                      bool&                theNoIntersection)
+                                      double&       theVmin,
+                                      double&       theVmax,
+                                      bool&    theNoIntersection)
 {
   ProjLib_Plane aLineProj(thePln, theLine);
   if (!aLineProj.IsDone())
@@ -134,7 +134,10 @@ inline void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
 }
 
 //! Estimate limits for infinite surfaces (generic fallback).
-inline void EstLimForInfSurf(double& U1new, double& U2new, double& V1new, double& V2new)
+inline void EstLimForInfSurf(double& U1new,
+                             double& U2new,
+                             double& V1new,
+                             double& V2new)
 {
   U1new = std::max(U1new, -1.e10);
   U2new = std::min(U2new, 1.e10);
@@ -146,19 +149,19 @@ inline void EstLimForInfSurf(double& U1new, double& U2new, double& V1new, double
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void EstLimForInfExtr(const gp_Lin&      Line,
-                      const SurfaceType& surface,
-                      const bool         IsOffSurf,
-                      const int          nbsu,
-                      const bool         U1inf,
-                      const bool         U2inf,
-                      const bool         V1inf,
-                      const bool         V2inf,
-                      double&            U1new,
-                      double&            U2new,
-                      double&            V1new,
-                      double&            V2new,
-                      bool&              NoIntersection)
+void EstLimForInfExtr(const gp_Lin&          Line,
+                      const SurfaceType&     surface,
+                      const bool IsOffSurf,
+                      const int nbsu,
+                      const bool U1inf,
+                      const bool U2inf,
+                      const bool V1inf,
+                      const bool V2inf,
+                      double&         U1new,
+                      double&         U2new,
+                      double&         V1new,
+                      double&         V2new,
+                      bool&      NoIntersection)
 {
   NoIntersection = false;
 
@@ -184,13 +187,13 @@ void EstLimForInfExtr(const gp_Lin&      Line,
 
   if ((V1inf || V2inf) && !(U1inf || U2inf))
   {
-    double          vmin = RealLast(), vmax = -vmin;
-    gp_Lin          aL;
-    double          step = (U2new - U1new) / nbsu;
-    double          u    = U1new, v;
-    gp_Pnt          aP;
-    Extrema_POnCurv aP1, aP2;
-    int             i;
+    double    vmin = RealLast(), vmax = -vmin;
+    gp_Lin           aL;
+    double    step = (U2new - U1new) / nbsu;
+    double    u    = U1new, v;
+    gp_Pnt           aP;
+    Extrema_POnCurv  aP1, aP2;
+    int i;
 
     for (i = 0; i <= nbsu; i++)
     {
@@ -228,7 +231,7 @@ void EstLimForInfExtr(const gp_Lin&      Line,
     double umin = RealLast(), umax = -umin;
     double u0 = std::min(std::max(0., U1new), U2new);
     double v0 = std::min(std::max(0., V1new), V2new);
-    gp_Pnt aP;
+    gp_Pnt        aP;
     SurfaceTool::D0(surface, u0, v0, aP);
     gp_Pln aRefPln(aP, aDirOfExt);
 
@@ -350,17 +353,17 @@ void EstLimForInfExtr(const gp_Lin&      Line,
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void EstLimForInfRevl(const gp_Lin&      Line,
-                      const SurfaceType& surface,
-                      const bool         U1inf,
-                      const bool         U2inf,
-                      const bool         V1inf,
-                      const bool         V2inf,
-                      double&            U1new,
-                      double&            U2new,
-                      double&            V1new,
-                      double&            V2new,
-                      bool&              NoIntersection)
+void EstLimForInfRevl(const gp_Lin&          Line,
+                      const SurfaceType&     surface,
+                      const bool U1inf,
+                      const bool U2inf,
+                      const bool V1inf,
+                      const bool V2inf,
+                      double&         U1new,
+                      double&         U2new,
+                      double&         V1new,
+                      double&         V2new,
+                      bool&      NoIntersection)
 {
   NoIntersection = false;
 
@@ -375,14 +378,14 @@ void EstLimForInfRevl(const gp_Lin&      Line,
   }
 
   occ::handle<Adaptor3d_Curve> aBasisCurve = SurfaceTool::BasisCurve(surface);
-  gp_Ax1                       aRevAx      = SurfaceTool::AxeOfRevolution(surface);
-  gp_Vec                       aXVec       = aRevAx.Direction();
-  constexpr double             aTolAng     = Precision::Angular();
+  gp_Ax1                  aRevAx      = SurfaceTool::AxeOfRevolution(surface);
+  gp_Vec                  aXVec       = aRevAx.Direction();
+  constexpr double aTolAng     = Precision::Angular();
 
   // make plane to project a basis curve
-  gp_Pnt O  = aRevAx.Location();
+  gp_Pnt        O  = aRevAx.Location();
   double aU = 0.;
-  gp_Pnt P  = aBasisCurve->Value(aU);
+  gp_Pnt        P  = aBasisCurve->Value(aU);
   while (O.SquareDistance(P) <= Precision::PConfusion() || aXVec.IsParallel(gp_Vec(O, P), aTolAng))
   {
     aU += 1.;
@@ -435,8 +438,8 @@ void EstLimForInfRevl(const gp_Lin&      Line,
 
   // project Line and its X-axe symmetric one to plane and intersect
   // resulting curve with projection of Basic Curve
-  double aVmin = RealLast(), aVmax = -aVmin;
-  bool   aNoInt1 = false, aNoInt2 = false;
+  double    aVmin = RealLast(), aVmax = -aVmin;
+  bool aNoInt1 = false, aNoInt2 = false;
   ProjectIntersectAndEstLim(Line, aPln, aBasCurvProj, aVmin, aVmax, aNoInt1);
   ProjectIntersectAndEstLim(Line, aPlnPrp, aBasCurvProj, aVmin, aVmax, aNoInt2);
 
@@ -459,23 +462,23 @@ void EstLimForInfRevl(const gp_Lin&      Line,
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void EstLimForInfOffs(const gp_Lin&      Line,
-                      const SurfaceType& surface,
-                      const int          nbsu,
-                      const bool         U1inf,
-                      const bool         U2inf,
-                      const bool         V1inf,
-                      const bool         V2inf,
-                      double&            U1new,
-                      double&            U2new,
-                      double&            V1new,
-                      double&            V2new,
-                      bool&              NoIntersection)
+void EstLimForInfOffs(const gp_Lin&          Line,
+                      const SurfaceType&     surface,
+                      const int nbsu,
+                      const bool U1inf,
+                      const bool U2inf,
+                      const bool V1inf,
+                      const bool V2inf,
+                      double&         U1new,
+                      double&         U2new,
+                      double&         V1new,
+                      double&         V2new,
+                      bool&      NoIntersection)
 {
   NoIntersection = false;
 
   const occ::handle<Adaptor3d_Surface>& aBasSurf = SurfaceTool::BasisSurface(surface);
-  double                                anOffVal = SurfaceTool::OffsetValue(surface);
+  double                    anOffVal = SurfaceTool::OffsetValue(surface);
 
   GeomAbs_SurfaceType aTypeOfBasSurf = aBasSurf->GetType();
 
@@ -509,7 +512,7 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     gp_Cylinder aCyl = aBasSurf->Cylinder();
 
     double aR  = aCyl.Radius();
-    gp_Ax3 anA = aCyl.Position();
+    gp_Ax3        anA = aCyl.Position();
 
     if (anA.Direct())
       aR += anOffVal;
@@ -543,8 +546,8 @@ void EstLimForInfOffs(const gp_Lin&      Line,
       return;
     }
 
-    int    i, nbp = LinCylinder.NbPoints();
-    double vmin = RealLast(), vmax = -vmin, u, v;
+    int i, nbp = LinCylinder.NbPoints();
+    double    vmin = RealLast(), vmax = -vmin, u, v;
 
     for (i = 1; i <= nbp; i++)
     {
@@ -558,10 +561,10 @@ void EstLimForInfOffs(const gp_Lin&      Line,
   }
   else if (aTypeOfBasSurf == GeomAbs_Cone)
   {
-    gp_Cone aCon  = aBasSurf->Cone();
-    double  anAng = aCon.SemiAngle();
-    double  aR    = aCon.RefRadius() + anOffVal * std::cos(anAng);
-    gp_Ax3  anA   = aCon.Position();
+    gp_Cone       aCon  = aBasSurf->Cone();
+    double anAng = aCon.SemiAngle();
+    double aR    = aCon.RefRadius() + anOffVal * std::cos(anAng);
+    gp_Ax3        anA   = aCon.Position();
     if (aR >= 0.)
     {
       gp_Vec aZ(anA.Direction());
@@ -587,8 +590,8 @@ void EstLimForInfOffs(const gp_Lin&      Line,
       return;
     }
 
-    int    i, nbp = LinCone.NbPoints();
-    double vmin = RealLast(), vmax = -vmin, u, v;
+    int i, nbp = LinCone.NbPoints();
+    double    vmin = RealLast(), vmax = -vmin, u, v;
 
     for (i = 1; i <= nbp; i++)
     {
@@ -631,11 +634,11 @@ void EstLimForInfOffs(const gp_Lin&      Line,
       }
       else if (aBasCurvType == GeomAbs_Parabola)
       {
-        gp_Parab aPrb = aBasSurf->BasisCurve()->Parabola();
-        double   aF   = aPrb.Focal();
-        double   dU   = 2.e5 * std::sqrt(aF);
-        U1new         = std::max(anU1, -dU);
-        U2new         = std::min(anU2, dU);
+        gp_Parab      aPrb = aBasSurf->BasisCurve()->Parabola();
+        double aF   = aPrb.Focal();
+        double dU   = 2.e5 * std::sqrt(aF);
+        U1new              = std::max(anU1, -dU);
+        U2new              = std::min(anU2, dU);
       }
       else if (aBasCurvType == GeomAbs_Hyperbola)
       {
@@ -659,11 +662,11 @@ void EstLimForInfOffs(const gp_Lin&      Line,
     }
     else if (aBasCurvType == GeomAbs_Parabola)
     {
-      gp_Parab aPrb = aBasSurf->BasisCurve()->Parabola();
-      double   aF   = aPrb.Focal();
-      double   dV   = 2.e5 * std::sqrt(aF);
-      V1new         = std::max(V1new, -dV);
-      V2new         = std::min(V2new, dV);
+      gp_Parab      aPrb = aBasSurf->BasisCurve()->Parabola();
+      double aF   = aPrb.Focal();
+      double dV   = 2.e5 * std::sqrt(aF);
+      V1new              = std::max(V1new, -dV);
+      V2new              = std::min(V2new, dV);
     }
     else if (aBasCurvType == GeomAbs_Hyperbola)
     {
@@ -690,17 +693,17 @@ template <typename PolyhedronType, typename PolygonType>
 void SectionPointToParameters(const Intf_SectionPoint& Sp,
                               const PolyhedronType&    Polyhedron,
                               const PolygonType&       Polygon,
-                              double&                  U,
-                              double&                  V,
-                              double&                  W)
+                              double&           U,
+                              double&           V,
+                              double&           W)
 {
-  Intf_PIType typ;
-  int         Adr1, Adr2;
-  double      Param, u, v;
-  gp_Pnt      P(Sp.Pnt());
+  Intf_PIType      typ;
+  int Adr1, Adr2;
+  double    Param, u, v;
+  gp_Pnt           P(Sp.Pnt());
 
-  int    Pt1, Pt2, Pt3;
-  double u1 = 0., v1 = 0., param;
+  int Pt1, Pt2, Pt3;
+  double    u1 = 0., v1 = 0., param;
   //----------------------------------------------------------------------
   //--          Approximate parameter calculation on surface            --
   //----------------------------------------------------------------------
@@ -765,14 +768,14 @@ void SectionPointToParameters(const Intf_SectionPoint& Sp,
 //! @tparam SurfaceTool The surface tool class
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
 void ComputeTransitions(const CurveType&                   curve,
-                        const double                       w,
+                        const double                w,
                         IntCurveSurface_TransitionOnCurve& TransOnCurve,
                         const SurfaceType&                 surface,
-                        const double                       u,
-                        const double                       v)
+                        const double                u,
+                        const double                v)
 {
-  gp_Vec NSurf, D1U, D1V;
-  gp_Pnt Psurf;
+  gp_Vec        NSurf, D1U, D1V;
+  gp_Pnt        Psurf;
   double CosDir;
 
   SurfaceTool::D1(surface, u, v, Psurf, D1U, D1V);
@@ -809,7 +812,10 @@ void ComputeTransitions(const CurveType&                   curve,
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void ComputeParamsOnQuadric(const SurfaceType& surface, const gp_Pnt& P, double& u, double& v)
+void ComputeParamsOnQuadric(const SurfaceType& surface,
+                            const gp_Pnt&      P,
+                            double&     u,
+                            double&     v)
 {
   GeomAbs_SurfaceType SurfaceType_ = SurfaceTool::GetType(surface);
   switch (SurfaceType_)
@@ -839,19 +845,19 @@ void ComputeParamsOnQuadric(const SurfaceType& surface, const gp_Pnt& P, double&
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void DoSurface(const SurfaceType&          theSurface,
-               const double                theU0,
-               const double                theU1,
-               const double                theV0,
-               const double                theV1,
+void DoSurface(const SurfaceType&  theSurface,
+               const double theU0,
+               const double theU1,
+               const double theV0,
+               const double theV1,
                NCollection_Array2<gp_Pnt>& thePntsOnSurface,
-               Bnd_Box&                    theBoxSurface,
-               double&                     theGap)
+               Bnd_Box&            theBoxSurface,
+               double&      theGap)
 {
-  int    iU = 0, iV = 0;
-  double U = 0., V = 0.;
-  double dU = (theU1 - theU0) / 50., dV = (theV1 - theV0) / 50.;
-  gp_Pnt aPnt;
+  int iU = 0, iV = 0;
+  double    U = 0., V = 0.;
+  double    dU = (theU1 - theU0) / 50., dV = (theV1 - theV0) / 50.;
+  gp_Pnt           aPnt;
 
   for (iU = 0; iU < 50; iU++)
   {
@@ -878,19 +884,19 @@ void DoSurface(const SurfaceType&          theSurface,
   }
   double Ures = SurfaceTool::UResolution(theSurface, dU);
   double Vres = SurfaceTool::VResolution(theSurface, dV);
-  theGap      = std::max(Ures, Vres);
+  theGap             = std::max(Ures, Vres);
 }
 
 //! Compute new bounds for surface based on intersection with bounding box corners.
 //! @tparam SurfaceType The surface type
 //! @tparam SurfaceTool The surface tool class
 template <typename SurfaceType, typename SurfaceTool>
-void DoNewBounds(const SurfaceType&                theSurface,
-                 const double                      theU0,
-                 const double                      theU1,
-                 const double                      theV0,
-                 const double                      theV1,
-                 const NCollection_Array2<gp_Pnt>& thePntsOnSurface,
+void DoNewBounds(const SurfaceType&          theSurface,
+                 const double         theU0,
+                 const double         theU1,
+                 const double         theV0,
+                 const double         theV1,
+                 const NCollection_Array2<gp_Pnt>&   thePntsOnSurface,
                  const NCollection_Array1<double>& theX,
                  const NCollection_Array1<double>& theY,
                  const NCollection_Array1<double>& theZ,
@@ -901,10 +907,12 @@ void DoNewBounds(const SurfaceType&                theSurface,
   theBounds.SetValue(3, theV0);
   theBounds.SetValue(4, theV1);
 
-  bool isUClosed = (SurfaceTool::IsUClosed(theSurface) || SurfaceTool::IsUPeriodic(theSurface));
-  bool isVClosed = (SurfaceTool::IsVClosed(theSurface) || SurfaceTool::IsVPeriodic(theSurface));
-  bool checkU    = (isUClosed) ? false : true;
-  bool checkV    = (isVClosed) ? false : true;
+  bool isUClosed =
+    (SurfaceTool::IsUClosed(theSurface) || SurfaceTool::IsUPeriodic(theSurface));
+  bool isVClosed =
+    (SurfaceTool::IsVClosed(theSurface) || SurfaceTool::IsVPeriodic(theSurface));
+  bool checkU = (isUClosed) ? false : true;
+  bool checkV = (isVClosed) ? false : true;
 
   int i = 0, j = 0, k = 0, iU = 0, iV = 0;
   int iUmin = 50, iVmin = 50, iUmax = 1, iVmax = 1;
@@ -915,15 +923,15 @@ void DoNewBounds(const SurfaceType&                theSurface,
     {
       for (k = 1; k <= 2; k++)
       {
-        gp_Pnt aPoint(theX(i), theY(j), theZ(k));
-        double DistMin = 1.e+100;
-        int    diU = 0, diV = 0;
+        gp_Pnt           aPoint(theX(i), theY(j), theZ(k));
+        double    DistMin = 1.e+100;
+        int diU = 0, diV = 0;
         for (iU = 1; iU <= 50; iU++)
         {
           for (iV = 1; iV <= 50; iV++)
           {
-            const gp_Pnt aP   = thePntsOnSurface.Value(iU, iV);
-            double       dist = aP.SquareDistance(aPoint);
+            const gp_Pnt  aP   = thePntsOnSurface.Value(iU, iV);
+            double dist = aP.SquareDistance(aPoint);
             if (dist < DistMin)
             {
               DistMin = dist;
@@ -954,14 +962,14 @@ void DoNewBounds(const SurfaceType&                theSurface,
   if (USmin > USmax)
   {
     double tmp = USmax;
-    USmax      = USmin;
-    USmin      = tmp;
+    USmax             = USmin;
+    USmin             = tmp;
   }
   if (VSmin > VSmax)
   {
     double tmp = VSmax;
-    VSmax      = VSmin;
-    VSmin      = tmp;
+    VSmax             = VSmin;
+    VSmin             = tmp;
   }
 
   USmin -= 1.5 * dU;
@@ -998,10 +1006,10 @@ void DoNewBounds(const SurfaceType&                theSurface,
 //! @param[out] thePoint The computed intersection point (valid only if returns true)
 template <typename CurveType, typename CurveTool, typename SurfaceType, typename SurfaceTool>
 bool ComputeAppendPoint(const CurveType&                   theCurve,
-                        const double                       theLw,
+                        const double                theLw,
                         const SurfaceType&                 theSurface,
-                        const double                       theSu,
-                        const double                       theSv,
+                        const double                theSu,
+                        const double                theSv,
                         IntCurveSurface_IntersectionPoint& thePoint)
 {
   double W0 = CurveTool::FirstParameter(theCurve);
@@ -1065,7 +1073,7 @@ template <typename CurveType, typename CurveTool, typename SurfaceType, typename
 bool ProcessIntAna(const CurveType&                                       theCurve,
                    const SurfaceType&                                     theSurface,
                    const IntAna_IntConicQuad&                             theIntAna,
-                   bool&                                                  theIsParallel,
+                   bool&                                      theIsParallel,
                    NCollection_Vector<IntCurveSurface_IntersectionPoint>& thePoints)
 {
   theIsParallel = false;
@@ -1082,8 +1090,8 @@ bool ProcessIntAna(const CurveType&                                       theCur
     return true;
   }
 
-  int    nbp = theIntAna.NbPoints();
-  double u, v, w;
+  int nbp = theIntAna.NbPoints();
+  double    u, v, w;
   for (int i = 1; i <= nbp; i++)
   {
     gp_Pnt P(theIntAna.Point(i));
@@ -1126,8 +1134,8 @@ void PerformCurveQuadric(const CurveType&                                       
   QuadCurvExactType QuadCurv(theSurface, theCurve);
   if (QuadCurv.IsDone())
   {
-    int    NbRoots = QuadCurv.NbRoots();
-    double u, v, w;
+    int NbRoots = QuadCurv.NbRoots();
+    double    u, v, w;
     for (int i = 1; i <= NbRoots; i++)
     {
       w = QuadCurv.Root(i);
@@ -1170,8 +1178,8 @@ bool ProcessLinTorus(const gp_Lin&                                          theL
     return false;
   }
 
-  int    nbp = intlintorus.NbPoints();
-  double fi, theta, w;
+  int nbp = intlintorus.NbPoints();
+  double    fi, theta, w;
   for (int i = 1; i <= nbp; i++)
   {
     w = intlintorus.ParamOnLine(i);
@@ -1242,7 +1250,7 @@ void CollectInterferencePoints(const InterferenceType& theInterference,
   for (int i = 1; i <= NbTangentZones; i++)
   {
     const Intf_TangentZone& TZ     = theInterference.ZoneValue(i);
-    int                     nbpnts = TZ.NumberOfPoints();
+    int        nbpnts = TZ.NumberOfPoints();
     for (int j = 1; j <= nbpnts; j++)
     {
       const Intf_SectionPoint& SP = TZ.GetPoint(j);
@@ -1335,12 +1343,12 @@ template <typename ExactInterType,
 void ProcessSortedPoints(ExactInterType&                                        theExactInter,
                          math_FunctionSetRoot&                                  theRsnld,
                          const SortedStartPoints&                               thePoints,
-                         const double                                           theU0,
-                         const double                                           theU1,
-                         const double                                           theV0,
-                         const double                                           theV1,
-                         const double                                           theWinf,
-                         const double                                           theWsup,
+                         const double                                    theU0,
+                         const double                                    theU1,
+                         const double                                    theV0,
+                         const double                                    theV1,
+                         const double                                    theWinf,
+                         const double                                    theWsup,
                          const CurveType&                                       theCurve,
                          const SurfaceType&                                     theSurface,
                          NCollection_Vector<IntCurveSurface_IntersectionPoint>& theResult)
@@ -1484,7 +1492,10 @@ void DecomposeSurfaceIntervals(const SurfaceType&            theSurface,
 
 //! Clamp UV parameters to prevent double overflow.
 //! Protection from double type overflow in square magnitude computation.
-inline void ClampUVParameters(double& theU1, double& theU2, double& theV1, double& theV2)
+inline void ClampUVParameters(double& theU1,
+                              double& theU2,
+                              double& theV1,
+                              double& theV2)
 {
   constexpr double THE_PARAM_LIMIT = 1.0e50;
   if (theU1 < -THE_PARAM_LIMIT)

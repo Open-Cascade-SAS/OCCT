@@ -63,13 +63,18 @@ public:
 
 public:
   //! Set new input for playback.
-  Standard_EXPORT void SetInput(const TCollection_AsciiString& theInputPath, bool theToWait);
+  Standard_EXPORT void SetInput(const TCollection_AsciiString& theInputPath,
+                                bool               theToWait);
 
   //! Return playback state.
-  Standard_EXPORT void PlaybackState(bool& theIsPaused, double& theProgress, double& theDuration);
+  Standard_EXPORT void PlaybackState(bool& theIsPaused,
+                                     double&    theProgress,
+                                     double&    theDuration);
 
   //! Pause/Pause playback depending on the current state.
-  Standard_EXPORT void PlayPause(bool& theIsPaused, double& theProgress, double& theDuration);
+  Standard_EXPORT void PlayPause(bool& theIsPaused,
+                                 double&    theProgress,
+                                 double&    theDuration);
 
   //! Seek to specified position.
   Standard_EXPORT void Seek(double thePosSec);
@@ -106,7 +111,7 @@ private:
   Standard_EXPORT void pushPlayEvent(Media_PlayerEvent thePlayEvent);
 
   //! Fetch new playback event.
-  Standard_EXPORT bool popPlayEvent(Media_PlayerEvent&                      thePlayEvent,
+  Standard_EXPORT bool popPlayEvent(Media_PlayerEvent&                 thePlayEvent,
                                     const occ::handle<Media_FormatContext>& theFormatCtx,
                                     const occ::handle<Media_CodecContext>&  theVideoCtx,
                                     const occ::handle<Media_Frame>&         theFrame);
@@ -141,7 +146,7 @@ private:
 
   volatile bool              myToShutDown; //!< flag to terminate working thread
   TCollection_AsciiString    myInputPath;  //!< new input to open
-  volatile double            mySeekTo;     //!< new seeking position
+  volatile double     mySeekTo;     //!< new seeking position
   volatile Media_PlayerEvent myPlayEvent;  //!< playback event
 };
 

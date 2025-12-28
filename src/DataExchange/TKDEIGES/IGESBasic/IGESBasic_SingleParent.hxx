@@ -42,10 +42,9 @@ public:
   //! - nbParentEntities : Indicates number of Parents, always = 1
   //! - aParentEntity    : Used to hold the Parent Entity
   //! - allChildren      : Used to hold the children
-  Standard_EXPORT void Init(
-    const int                                                                 nbParentEntities,
-    const occ::handle<IGESData_IGESEntity>&                                   aParentEntity,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren);
+  Standard_EXPORT void Init(const int                      nbParentEntities,
+                            const occ::handle<IGESData_IGESEntity>&          aParentEntity,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allChildren);
 
   //! returns the number of Parent Entities, which should be 1
   Standard_EXPORT int NbParentEntities() const;
@@ -58,13 +57,14 @@ public:
 
   //! returns the specific child as indicated by Index
   //! raises exception if Index <= 0 or Index > NbChildren()
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> Child(const int Index) const override;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> Child(const int Index) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_SingleParent, IGESData_SingleParentEntity)
 
 private:
-  int                                                                theNbParentEntities;
-  occ::handle<IGESData_IGESEntity>                                   theParentEntity;
+  int                     theNbParentEntities;
+  occ::handle<IGESData_IGESEntity>          theParentEntity;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theChildren;
 };
 

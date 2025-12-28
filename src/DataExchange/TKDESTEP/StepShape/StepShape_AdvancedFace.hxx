@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_AdvancedFace();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_AdvancedFace, StepShape_FaceSurface)
+
 };
 
 #endif // _StepShape_AdvancedFace_HeaderFile

@@ -35,6 +35,8 @@
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // MGE 30/07/98
 IGESGeom_ToolSplineSurface::IGESGeom_ToolSplineSurface() {}
@@ -46,11 +48,11 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
 
   // MGE 30/07/98
 
-  int  aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
-  int  i, j, k;
-  bool ubreak = false, vbreak = false;
-  occ::handle<NCollection_HArray1<double>>                                   allUBreakPoints;
-  occ::handle<NCollection_HArray1<double>>                                   allVBreakPoints;
+  int              aBoundaryType, aPatchType, allNbUSegments, allNbVSegments;
+  int              i, j, k;
+  bool              ubreak = false, vbreak = false;
+  occ::handle<NCollection_HArray1<double>> allUBreakPoints;
+  occ::handle<NCollection_HArray1<double>> allVBreakPoints;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allXCoeffs;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allYCoeffs;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allZCoeffs;
@@ -110,18 +112,9 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
 
   if (ubreak && vbreak)
   {
-    allXCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                                   allNbUSegments,
-                                                                                   1,
-                                                                                   allNbVSegments);
-    allYCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                                   allNbUSegments,
-                                                                                   1,
-                                                                                   allNbVSegments);
-    allZCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                                   allNbUSegments,
-                                                                                   1,
-                                                                                   allNbVSegments);
+    allXCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
+    allYCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
+    allZCoeffs = new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
   }
 
   occ::handle<NCollection_HArray1<double>> Temp; // = new NCollection_HArray1<double>(1, 16);
@@ -216,7 +209,7 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams(const occ::handle<IGESGeom_Spline
 }
 
 void IGESGeom_ToolSplineSurface::WriteOwnParams(const occ::handle<IGESGeom_SplineSurface>& ent,
-                                                IGESData_IGESWriter&                       IW) const
+                                                IGESData_IGESWriter&                  IW) const
 {
   int I, J, k;
 
@@ -270,11 +263,9 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurfac
   allNbUSegments = another->NbUSegments();
   allNbVSegments = another->NbVSegments();
 
-  occ::handle<NCollection_HArray1<double>> allUBreakPoints =
-    new NCollection_HArray1<double>(1, allNbUSegments + 1);
+  occ::handle<NCollection_HArray1<double>> allUBreakPoints = new NCollection_HArray1<double>(1, allNbUSegments + 1);
 
-  occ::handle<NCollection_HArray1<double>> allVBreakPoints =
-    new NCollection_HArray1<double>(1, allNbVSegments + 1);
+  occ::handle<NCollection_HArray1<double>> allVBreakPoints = new NCollection_HArray1<double>(1, allNbVSegments + 1);
 
   for (I = 1; I <= allNbUSegments + 1; I++)
     allUBreakPoints->SetValue(I, another->UBreakPoint(I));
@@ -283,22 +274,13 @@ void IGESGeom_ToolSplineSurface::OwnCopy(const occ::handle<IGESGeom_SplineSurfac
     allVBreakPoints->SetValue(I, another->VBreakPoint(I));
 
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allXCoeffs =
-    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                      allNbUSegments,
-                                                                      1,
-                                                                      allNbVSegments);
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allYCoeffs =
-    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                      allNbUSegments,
-                                                                      1,
-                                                                      allNbVSegments);
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> allZCoeffs =
-    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1,
-                                                                      allNbUSegments,
-                                                                      1,
-                                                                      allNbVSegments);
+    new NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>(1, allNbUSegments, 1, allNbVSegments);
 
   occ::handle<NCollection_HArray1<double>> temp = new NCollection_HArray1<double>(1, 16);
 
@@ -356,14 +338,14 @@ void IGESGeom_ToolSplineSurface::OwnCheck(const occ::handle<IGESGeom_SplineSurfa
 
 void IGESGeom_ToolSplineSurface::OwnDump(const occ::handle<IGESGeom_SplineSurface>& ent,
                                          const IGESData_IGESDumper& /* dumper */,
-                                         Standard_OStream& S,
-                                         const int         level) const
+                                         Standard_OStream&      S,
+                                         const int level) const
 {
   S << "IGESGeom_SplineSurface\n";
 
-  int                                      I, J;
-  int                                      nbUSegs = ent->NbUSegments();
-  int                                      nbVSegs = ent->NbVSegments();
+  int              I, J;
+  int              nbUSegs = ent->NbUSegments();
+  int              nbVSegs = ent->NbVSegments();
   occ::handle<NCollection_HArray1<double>> temp;
 
   S << "The  Spline Boundary Type : " << ent->BoundaryType();

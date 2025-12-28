@@ -28,11 +28,11 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner, SelectMgr_EntityOwner)
 //=================================================================================================
 
 MeshVS_MeshEntityOwner::MeshVS_MeshEntityOwner(const SelectMgr_SelectableObject* SelObj,
-                                               const int                         ID,
-                                               void* const                       MeshEntity,
+                                               const int            ID,
+                                               void* const            MeshEntity,
                                                const MeshVS_EntityType&          Type,
-                                               const int                         Priority,
-                                               const bool                        IsGroup)
+                                               const int            Priority,
+                                               const bool            IsGroup)
     : SelectMgr_EntityOwner(SelObj, Priority),
       myAddr(MeshEntity),
       myType(Type),
@@ -66,7 +66,7 @@ bool MeshVS_MeshEntityOwner::IsGroup() const
 //=================================================================================================
 
 bool MeshVS_MeshEntityOwner::IsHilighted(const occ::handle<PrsMgr_PresentationManager>&,
-                                         const int) const
+                                                     const int) const
 {
   return false;
 }
@@ -74,7 +74,7 @@ bool MeshVS_MeshEntityOwner::IsHilighted(const occ::handle<PrsMgr_PresentationMa
 //=================================================================================================
 
 void MeshVS_MeshEntityOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
-                                              const occ::handle<Prs3d_Drawer>& theStyle,
+                                              const occ::handle<Prs3d_Drawer>&               theStyle,
                                               const int /*theMode*/)
 {
   occ::handle<SelectMgr_SelectableObject> aSelObj;
@@ -90,11 +90,17 @@ void MeshVS_MeshEntityOwner::HilightWithColor(const occ::handle<PrsMgr_Presentat
 
 //=================================================================================================
 
-void MeshVS_MeshEntityOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>&, const int) {}
+void MeshVS_MeshEntityOwner::Unhilight(const occ::handle<PrsMgr_PresentationManager>&,
+                                       const int)
+{
+}
 
 //=================================================================================================
 
-void MeshVS_MeshEntityOwner::Clear(const occ::handle<PrsMgr_PresentationManager>&, const int) {}
+void MeshVS_MeshEntityOwner::Clear(const occ::handle<PrsMgr_PresentationManager>&,
+                                   const int)
+{
+}
 
 //=================================================================================================
 

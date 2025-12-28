@@ -27,7 +27,7 @@ StepKinematics_SphericalPairValue::StepKinematics_SphericalPairValue() {}
 void StepKinematics_SphericalPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const StepKinematics_SpatialRotation&            theInputOrientation)
+  const StepKinematics_SpatialRotation&       theInputOrientation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 

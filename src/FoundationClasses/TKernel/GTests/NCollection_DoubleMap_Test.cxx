@@ -17,8 +17,8 @@
 #include <gtest/gtest.h>
 
 // Basic test types for the DoubleMap
-typedef int    Key1Type;
-typedef double Key2Type;
+typedef int Key1Type;
+typedef double    Key2Type;
 
 // Custom key types for testing
 class TestKey1
@@ -363,10 +363,10 @@ TEST(NCollection_DoubleMapTest, Iterator)
   aMap.Bind(30, 3.0);
 
   // Use iterator to check all elements
-  bool   found10 = false;
-  bool   found20 = false;
-  bool   found30 = false;
-  size_t count   = 0;
+  bool found10 = false;
+  bool found20 = false;
+  bool found30 = false;
+  size_t    count   = 0;
 
   for (NCollection_DoubleMap<Key1Type, Key2Type>::Iterator it(aMap); it.More(); it.Next(), ++count)
   {

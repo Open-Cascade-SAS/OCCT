@@ -30,7 +30,7 @@ void LocalAnalysis_CurveContinuity::CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_C
 /****************************************************************************/
 void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Vec V1, V2;
+  gp_Vec        V1, V2;
   double ang;
   V1 = Curv1.D1();
   V2 = Curv2.D1();
@@ -117,7 +117,7 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Dir Tang1, Tang2;
+  gp_Dir        Tang1, Tang2;
   double ang;
   if (Curv1.IsTangentDefined() && Curv2.IsTangentDefined())
   {
@@ -140,8 +140,8 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
 {
-  gp_Vec V1, V2;
-  gp_Dir D1, D2;
+  gp_Vec        V1, V2;
+  gp_Dir        D1, D2;
   double ang;
   double epscrb = 8 * myepsC0 / (myMaxLon * myMaxLon);
 
@@ -180,18 +180,18 @@ void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_C
 /*********************************************************************************/
 
 LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const occ::handle<Geom_Curve>& Curv1,
-                                                             const double                   u1,
+                                                             const double       u1,
                                                              const occ::handle<Geom_Curve>& Curv2,
-                                                             const double                   u2,
-                                                             const GeomAbs_Shape            Order,
-                                                             const double                   Epsnul,
-                                                             const double                   EpsC0,
-                                                             const double                   EpsC1,
-                                                             const double                   EpsC2,
-                                                             const double                   EpsG1,
-                                                             const double                   EpsG2,
-                                                             const double                   Percent,
-                                                             const double                   Maxlen)
+                                                             const double       u2,
+                                                             const GeomAbs_Shape       Order,
+                                                             const double       Epsnul,
+                                                             const double       EpsC0,
+                                                             const double       EpsC1,
+                                                             const double       EpsC2,
+                                                             const double       EpsG1,
+                                                             const double       EpsG2,
+                                                             const double       Percent,
+                                                             const double       Maxlen)
     : myContC0(0.0),
       myContC1(0.0),
       myContC2(0.0),
@@ -331,8 +331,8 @@ bool LocalAnalysis_CurveContinuity::IsG1() const
 
 bool LocalAnalysis_CurveContinuity::IsG2() const
 {
-  double CRBINF, CRBNUL;
-  int    IETA1, IETA2;
+  double    CRBINF, CRBNUL;
+  int IETA1, IETA2;
   // etat des coubures IETA. -> 0 Crbure nulle
   //			   -> 1 Crbure finie
   //			   -> 2 Crbure infinie

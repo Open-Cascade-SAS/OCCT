@@ -32,12 +32,13 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve2d, DrawTrSurf_Drawable)
 
-static double DrawTrSurf_CurveLimit = 400;
-extern bool   Draw_Bounds;
+static double    DrawTrSurf_CurveLimit = 400;
+extern bool Draw_Bounds;
 
 //=================================================================================================
 
-DrawTrSurf_Curve2d::DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C, const bool DispOrigin)
+DrawTrSurf_Curve2d::DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C,
+                                       const bool      DispOrigin)
     : DrawTrSurf_Drawable(50)
 {
   curv           = C;
@@ -51,12 +52,12 @@ DrawTrSurf_Curve2d::DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C, const
 //=================================================================================================
 
 DrawTrSurf_Curve2d::DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C,
-                                       const Draw_Color&                aColor,
-                                       const int                        Discret,
-                                       const bool                       DispOrigin,
-                                       const bool                       DispCurvRadius,
-                                       const double                     RadiusMax,
-                                       const double                     RadiusRatio)
+                                       const Draw_Color&           aColor,
+                                       const int      Discret,
+                                       const bool      DispOrigin,
+                                       const bool      DispCurvRadius,
+                                       const double         RadiusMax,
+                                       const double         RadiusRatio)
     : DrawTrSurf_Drawable(Discret)
 {
   curv           = C;
@@ -72,15 +73,15 @@ DrawTrSurf_Curve2d::DrawTrSurf_Curve2d(const occ::handle<Geom2d_Curve>& C,
 void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
 {
 
-  double First    = curv->FirstParameter();
-  double Last     = curv->LastParameter();
-  bool   firstInf = Precision::IsNegativeInfinite(First);
-  bool   lastInf  = Precision::IsPositiveInfinite(Last);
+  double    First    = curv->FirstParameter();
+  double    Last     = curv->LastParameter();
+  bool firstInf = Precision::IsNegativeInfinite(First);
+  bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt2d P1, P2;
-    double   delta = 1;
+    gp_Pnt2d      P1, P2;
+    double delta = 1;
     if (firstInf && lastInf)
     {
       do
@@ -128,9 +129,9 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
     C2d.D1(Last, p1, v);
     if (v.Magnitude() > gp::Resolution())
     {
-      double   L = 20 / dis.Zoom();
-      double   H = 10 / dis.Zoom();
-      gp_Dir2d d(v);
+      double L = 20 / dis.Zoom();
+      double H = 10 / dis.Zoom();
+      gp_Dir2d      d(v);
       p2.SetCoord(p1.X() - L * d.X() - H * d.Y(), p1.Y() - L * d.Y() + H * d.X());
       dis.MoveTo(p2);
       p2.SetCoord(p1.X() - L * d.X() + H * d.Y(), p1.Y() - L * d.Y() - H * d.X());
@@ -143,11 +144,11 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
   // Draw the curvature Radius
   if (dispcurvradius && (C2d.GetType() != GeomAbs_Line))
   {
-    int                        ii;
-    int                        intrv, nbintv = C2d.NbIntervals(GeomAbs_CN);
+    int     ii;
+    int     intrv, nbintv = C2d.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C2d.Intervals(TI, GeomAbs_CN);
-    double                Resolution = 1.0e-9, Curvature;
+    double         Resolution = 1.0e-9, Curvature;
     Geom2dLProp_CLProps2d LProp(curv, 2, Resolution);
     gp_Pnt2d              P1, P2;
 
@@ -208,7 +209,7 @@ void DrawTrSurf_Curve2d::Save(Standard_OStream& theStream) const
 
 occ::handle<Draw_Drawable3D> DrawTrSurf_Curve2d::Restore(Standard_IStream& theStream)
 {
-  const DrawTrSurf_Params&        aParams    = DrawTrSurf::Parameters();
+  const DrawTrSurf_Params&   aParams    = DrawTrSurf::Parameters();
   occ::handle<Geom2d_Curve>       aGeomCurve = GeomTools_Curve2dSet::ReadCurve2d(theStream);
   occ::handle<DrawTrSurf_Curve2d> aDrawCurve =
     new DrawTrSurf_Curve2d(aGeomCurve, aParams.CurvColor, aParams.Discret);

@@ -39,7 +39,7 @@ public:
   //! line width. The supported line widths vary by 1-pixel units.
   Standard_EXPORT Graphic3d_AspectLine3d(const Quantity_Color& theColor,
                                          Aspect_TypeOfLine     theType,
-                                         double                theWidth);
+                                         double         theWidth);
 
   //! Return line type.
   Aspect_TypeOfLine Type() const { return myLineType; }

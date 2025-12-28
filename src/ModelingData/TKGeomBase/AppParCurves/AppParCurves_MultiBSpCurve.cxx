@@ -23,10 +23,15 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-static int ComputeDegree(const NCollection_Array1<int>& mults, const int nbPoles)
+static int ComputeDegree(const NCollection_Array1<int>& mults,
+                                      const int         nbPoles)
 {
   int i, sum = 0;
   for (i = mults.Lower(); i <= mults.Upper(); i++)
@@ -53,10 +58,9 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const int NbPol)
 
 //=================================================================================================
 
-AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(
-  const NCollection_Array1<AppParCurves_MultiPoint>& tabMU,
-  const NCollection_Array1<double>&                  Knots,
-  const NCollection_Array1<int>&                     Mults)
+AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const NCollection_Array1<AppParCurves_MultiPoint>& tabMU,
+                                                       const NCollection_Array1<double>&            Knots,
+                                                       const NCollection_Array1<int>&         Mults)
     : AppParCurves_MultiCurve(tabMU)
 {
   myknots                 = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
@@ -68,9 +72,9 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(
 
 //=================================================================================================
 
-AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve&    SC,
-                                                       const NCollection_Array1<double>& Knots,
-                                                       const NCollection_Array1<int>&    Mults)
+AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve(const AppParCurves_MultiCurve& SC,
+                                                       const NCollection_Array1<double>&    Knots,
+                                                       const NCollection_Array1<int>& Mults)
     : AppParCurves_MultiCurve(SC)
 {
   myknots                 = new NCollection_HArray1<double>(Knots.Lower(), Knots.Upper());
@@ -120,7 +124,9 @@ int AppParCurves_MultiBSpCurve::Degree() const
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::Value(const int CuIndex, const double U, gp_Pnt& Pt) const
+void AppParCurves_MultiBSpCurve::Value(const int CuIndex,
+                                       const double    U,
+                                       gp_Pnt&                Pt) const
 {
 
   if (Dimension(CuIndex) != 3)
@@ -144,7 +150,9 @@ void AppParCurves_MultiBSpCurve::Value(const int CuIndex, const double U, gp_Pnt
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::Value(const int CuIndex, const double U, gp_Pnt2d& Pt) const
+void AppParCurves_MultiBSpCurve::Value(const int CuIndex,
+                                       const double    U,
+                                       gp_Pnt2d&              Pt) const
 {
 
   if (Dimension(CuIndex) != 2)
@@ -168,7 +176,10 @@ void AppParCurves_MultiBSpCurve::Value(const int CuIndex, const double U, gp_Pnt
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D1(const int CuIndex, const double U, gp_Pnt& Pt, gp_Vec& V1) const
+void AppParCurves_MultiBSpCurve::D1(const int CuIndex,
+                                    const double    U,
+                                    gp_Pnt&                Pt,
+                                    gp_Vec&                V1) const
 {
   if (Dimension(CuIndex) != 3)
   {
@@ -192,11 +203,11 @@ void AppParCurves_MultiBSpCurve::D1(const int CuIndex, const double U, gp_Pnt& P
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D2(const int    CuIndex,
-                                    const double U,
-                                    gp_Pnt&      Pt,
-                                    gp_Vec&      V1,
-                                    gp_Vec&      V2) const
+void AppParCurves_MultiBSpCurve::D2(const int CuIndex,
+                                    const double    U,
+                                    gp_Pnt&                Pt,
+                                    gp_Vec&                V1,
+                                    gp_Vec&                V2) const
 {
   if (Dimension(CuIndex) != 3)
   {
@@ -221,10 +232,10 @@ void AppParCurves_MultiBSpCurve::D2(const int    CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D1(const int    CuIndex,
-                                    const double U,
-                                    gp_Pnt2d&    Pt,
-                                    gp_Vec2d&    V1) const
+void AppParCurves_MultiBSpCurve::D1(const int CuIndex,
+                                    const double    U,
+                                    gp_Pnt2d&              Pt,
+                                    gp_Vec2d&              V1) const
 {
   if (Dimension(CuIndex) != 2)
   {
@@ -248,11 +259,11 @@ void AppParCurves_MultiBSpCurve::D1(const int    CuIndex,
 
 //=================================================================================================
 
-void AppParCurves_MultiBSpCurve::D2(const int    CuIndex,
-                                    const double U,
-                                    gp_Pnt2d&    Pt,
-                                    gp_Vec2d&    V1,
-                                    gp_Vec2d&    V2) const
+void AppParCurves_MultiBSpCurve::D2(const int CuIndex,
+                                    const double    U,
+                                    gp_Pnt2d&              Pt,
+                                    gp_Vec2d&              V1,
+                                    gp_Vec2d&              V2) const
 {
   if (Dimension(CuIndex) != 2)
   {

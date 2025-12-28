@@ -24,7 +24,15 @@
 #include <Standard_TypeMismatch.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TopExp_Explorer.hxx>
@@ -42,7 +50,7 @@
 
 static TCollection_AsciiString    bufasc;
 static TCollection_ExtendedString bufext;
-static const char16_t*            voidext = {0};
+static const char16_t*   voidext = {0};
 
 XSControl_Utils::XSControl_Utils() {}
 
@@ -58,7 +66,7 @@ void XSControl_Utils::TraceLine(const char* line) const
 void XSControl_Utils::TraceLines(const occ::handle<Standard_Transient>& lines) const
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  int                             i, nb;
+  int                i, nb;
   DeclareAndCast(NCollection_HSequence<occ::handle<TCollection_HAsciiString>>, linha, lines);
   if (!linha.IsNull())
   {
@@ -105,7 +113,7 @@ void XSControl_Utils::TraceLines(const occ::handle<Standard_Transient>& lines) c
 //  #######   TRANSIENT : Some  basic  access   #######
 
 bool XSControl_Utils::IsKind(const occ::handle<Standard_Transient>& item,
-                             const occ::handle<Standard_Type>&      what) const
+                                         const occ::handle<Standard_Type>&      what) const
 {
   if (item.IsNull())
     return false;
@@ -115,7 +123,7 @@ bool XSControl_Utils::IsKind(const occ::handle<Standard_Transient>& item,
 }
 
 const char* XSControl_Utils::TypeName(const occ::handle<Standard_Transient>& item,
-                                      const bool                             nopk) const
+                                           const bool            nopk) const
 {
   if (item.IsNull())
     return "";
@@ -135,9 +143,8 @@ const char* XSControl_Utils::TypeName(const occ::handle<Standard_Transient>& ite
 
 //  #######       TRANSIENT : List functions       #######
 
-occ::handle<Standard_Transient> XSControl_Utils::TraValue(
-  const occ::handle<Standard_Transient>& seqval,
-  const int                              num) const
+occ::handle<Standard_Transient> XSControl_Utils::TraValue(const occ::handle<Standard_Transient>& seqval,
+                                                     const int            num) const
 {
   occ::handle<Standard_Transient> val;
   if (num < 1)
@@ -162,15 +169,13 @@ occ::handle<Standard_Transient> XSControl_Utils::TraValue(
   return val;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Utils::NewSeqTra()
-  const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Utils::NewSeqTra() const
 {
   return new NCollection_HSequence<occ::handle<Standard_Transient>>();
 }
 
-void XSControl_Utils::AppendTra(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& seqval,
-  const occ::handle<Standard_Transient>&                                     traval) const
+void XSControl_Utils::AppendTra(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& seqval,
+                                const occ::handle<Standard_Transient>&           traval) const
 {
   seqval->Append(traval);
 }
@@ -178,11 +183,11 @@ void XSControl_Utils::AppendTra(
 //  #######           DATES           #######
 
 const char* XSControl_Utils::DateString(const int yy,
-                                        const int mm,
-                                        const int dd,
-                                        const int hh,
-                                        const int mn,
-                                        const int ss) const
+                                             const int mm,
+                                             const int dd,
+                                             const int hh,
+                                             const int mn,
+                                             const int ss) const
 {
   char ladate[50] = {};
   Interface_MSG::TDate(ladate, yy, mm, dd, hh, mn, ss);
@@ -192,12 +197,12 @@ const char* XSControl_Utils::DateString(const int yy,
 }
 
 void XSControl_Utils::DateValues(const char* text,
-                                 int&        yy,
-                                 int&        mm,
-                                 int&        dd,
-                                 int&        hh,
-                                 int&        mn,
-                                 int&        ss) const
+                                 int&      yy,
+                                 int&      mm,
+                                 int&      dd,
+                                 int&      hh,
+                                 int&      mn,
+                                 int&      ss) const
 {
   Interface_MSG::NDate(text, yy, mm, dd, hh, mn, ss);
 }
@@ -241,7 +246,8 @@ const char16_t* XSControl_Utils::ToEString(const TCollection_ExtendedString& str
   return strval.ToExtString();
 }
 
-occ::handle<TCollection_HExtendedString> XSControl_Utils::ToHString(const char16_t* strcon) const
+occ::handle<TCollection_HExtendedString> XSControl_Utils::ToHString(
+  const char16_t* strcon) const
 {
   return new TCollection_HExtendedString(strcon);
 }
@@ -286,13 +292,14 @@ const char* XSControl_Utils::ExtendedToAscii(const char16_t* str) const
 //  #######              STRING : LISTES              #######
 
 const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& list,
-                                       const int                              num) const
+                                            const int            num) const
 {
   DeclareAndCast(NCollection_HSequence<occ::handle<TCollection_HAsciiString>>, linha, list);
   if (!linha.IsNull())
   {
     // JR/Hp
-    const char* astr = (const char*)(num > linha->Length() ? "" : linha->Value(num)->ToCString());
+    const char* astr =
+      (const char*)(num > linha->Length() ? "" : linha->Value(num)->ToCString());
     return astr;
     //    return (num > linha->Length() ? "" : linha->Value(num)->ToCString());
   }
@@ -301,7 +308,8 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   if (!lina.IsNull())
   {
     // JR/Hp
-    const char* astr = (const char*)(num > lina->Length() ? "" : lina->Value(num).ToCString());
+    const char* astr =
+      (const char*)(num > lina->Length() ? "" : lina->Value(num).ToCString());
     return astr;
     //    return (num > lina->Length() ? "" : lina->Value(num).ToCString());
   }
@@ -311,7 +319,8 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   {
     // JR/Hp
     const char* astr =
-      (const char*)(num > linhe->Length() ? "" : ExtendedToAscii(linhe->Value(num)->ToExtString()));
+      (const char*)(num > linhe->Length() ? ""
+                                               : ExtendedToAscii(linhe->Value(num)->ToExtString()));
     return astr;
     //   return (num > linhe->Length() ? "" : ExtendedToAscii(linhe->Value(num)->ToExtString()));
   }
@@ -321,7 +330,8 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
   {
     // JR/Hp
     const char* astr =
-      (const char*)(num > linee->Length() ? "" : ExtendedToAscii(linee->Value(num).ToExtString()));
+      (const char*)(num > linee->Length() ? ""
+                                               : ExtendedToAscii(linee->Value(num).ToExtString()));
     return astr;
     //    return (num > linee->Length() ? "" : ExtendedToAscii(linee->Value(num).T
   }
@@ -336,7 +346,7 @@ const char* XSControl_Utils::CStrValue(const occ::handle<Standard_Transient>& li
 }
 
 const char16_t* XSControl_Utils::EStrValue(const occ::handle<Standard_Transient>& list,
-                                           const int                              num) const
+                                              const int            num) const
 {
   DeclareAndCast(NCollection_HSequence<occ::handle<TCollection_HAsciiString>>, linha, list);
   if (!linha.IsNull())
@@ -363,28 +373,24 @@ const char16_t* XSControl_Utils::EStrValue(const occ::handle<Standard_Transient>
   return voidext;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> XSControl_Utils::
-  NewSeqCStr() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> XSControl_Utils::NewSeqCStr() const
 {
   return new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
 }
 
-void XSControl_Utils::AppendCStr(
-  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& seqval,
-  const char*                                                                      strval) const
+void XSControl_Utils::AppendCStr(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& seqval,
+                                 const char*                         strval) const
 {
   seqval->Append(new TCollection_HAsciiString(strval));
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> XSControl_Utils::
-  NewSeqEStr() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> XSControl_Utils::NewSeqEStr() const
 {
   return new NCollection_HSequence<occ::handle<TCollection_HExtendedString>>();
 }
 
-void XSControl_Utils::AppendEStr(
-  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>& seqval,
-  const char16_t*                                                                     strval) const
+void XSControl_Utils::AppendEStr(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>& seqval,
+                                 const char16_t*                          strval) const
 {
   seqval->Append(new TCollection_HExtendedString(strval));
 }
@@ -392,8 +398,7 @@ void XSControl_Utils::AppendEStr(
 //  ##########################################################
 //  #######           SHAPES : Basic access           #######
 
-TopoDS_Shape XSControl_Utils::CompoundFromSeq(
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval) const
+TopoDS_Shape XSControl_Utils::CompoundFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval) const
 {
   BRep_Builder    B;
   TopoDS_Compound C;
@@ -404,7 +409,8 @@ TopoDS_Shape XSControl_Utils::CompoundFromSeq(
   return C;
 }
 
-TopAbs_ShapeEnum XSControl_Utils::ShapeType(const TopoDS_Shape& shape, const bool compound) const
+TopAbs_ShapeEnum XSControl_Utils::ShapeType(const TopoDS_Shape&    shape,
+                                            const bool compound) const
 {
   if (shape.IsNull())
     return TopAbs_SHAPE;
@@ -439,14 +445,14 @@ TopAbs_ShapeEnum XSControl_Utils::ShapeType(const TopoDS_Shape& shape, const boo
 
 TopoDS_Shape XSControl_Utils::SortedCompound(const TopoDS_Shape&    shape,
                                              const TopAbs_ShapeEnum type,
-                                             const bool             explore,
-                                             const bool             compound) const
+                                             const bool explore,
+                                             const bool compound) const
 {
   if (shape.IsNull())
     return shape;
   TopAbs_ShapeEnum typ = shape.ShapeType();
   TopoDS_Shape     sh, sh0;
-  int              nb = 0;
+  int nb = 0;
 
   //  Compound: we take it, either as is, or its content
   if (typ == TopAbs_COMPOUND || typ == TopAbs_COMPSOLID)
@@ -553,9 +559,8 @@ TopoDS_Shape XSControl_Utils::SortedCompound(const TopoDS_Shape&    shape,
 
 //  #######               SHAPES : Liste               #######
 
-TopoDS_Shape XSControl_Utils::ShapeValue(
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
-  const int                                               num) const
+TopoDS_Shape XSControl_Utils::ShapeValue(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
+                                         const int                   num) const
 {
   TopoDS_Shape shape;
   if (seqval.IsNull())
@@ -571,15 +576,15 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> XSControl_Utils::NewSeqShape() 
 }
 
 void XSControl_Utils::AppendShape(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
-                                  const TopoDS_Shape& shape) const
+                                  const TopoDS_Shape&                      shape) const
 {
   seqval->Append(shape);
 }
 
 //  #######            SHAPES <-> Transient            #######
 
-occ::handle<Standard_Transient> XSControl_Utils::ShapeBinder(const TopoDS_Shape& shape,
-                                                             const bool          hs) const
+occ::handle<Standard_Transient> XSControl_Utils::ShapeBinder(const TopoDS_Shape&    shape,
+                                                        const bool hs) const
 {
   if (hs)
     return new TopoDS_HShape(shape);
@@ -635,11 +640,10 @@ int XSControl_Utils::SeqLength(const occ::handle<Standard_Transient>& seqval) co
   return 0;
 }
 
-occ::handle<Standard_Transient> XSControl_Utils::SeqToArr(
-  const occ::handle<Standard_Transient>& seqval,
-  const int                              first) const
+occ::handle<Standard_Transient> XSControl_Utils::SeqToArr(const occ::handle<Standard_Transient>& seqval,
+                                                     const int            first) const
 {
-  int                             i, lng;
+  int           i, lng;
   occ::handle<Standard_Transient> val;
   if (seqval.IsNull())
     return val;
@@ -666,20 +670,18 @@ occ::handle<Standard_Transient> XSControl_Utils::SeqToArr(
   throw Standard_TypeMismatch("XSControl_Utils::SeqToArr");
 }
 
-occ::handle<Standard_Transient> XSControl_Utils::ArrToSeq(
-  const occ::handle<Standard_Transient>& arrval) const
+occ::handle<Standard_Transient> XSControl_Utils::ArrToSeq(const occ::handle<Standard_Transient>& arrval) const
 {
-  int                             i, first, last;
+  int           i, first, last;
   occ::handle<Standard_Transient> val;
   if (arrval.IsNull())
     return val;
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, arrs, arrval);
   if (!arrs.IsNull())
   {
-    first = arrs->Lower();
-    last  = arrs->Upper();
-    occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> seqs =
-      new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
+    first                                        = arrs->Lower();
+    last                                         = arrs->Upper();
+    occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> seqs = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
     for (i = first; i <= last; i++)
       seqs->Append(arrs->Value(i));
     return seqs;
@@ -687,10 +689,9 @@ occ::handle<Standard_Transient> XSControl_Utils::ArrToSeq(
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, arrt, arrval);
   if (!arrt.IsNull())
   {
-    first = arrt->Lower();
-    last  = arrt->Upper();
-    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seqt =
-      new NCollection_HSequence<occ::handle<Standard_Transient>>();
+    first                                     = arrt->Lower();
+    last                                      = arrt->Upper();
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seqt = new NCollection_HSequence<occ::handle<Standard_Transient>>();
     for (i = first; i <= last; i++)
       seqt->Append(arrt->Value(i));
     return seqt;
@@ -699,7 +700,7 @@ occ::handle<Standard_Transient> XSControl_Utils::ArrToSeq(
 }
 
 int XSControl_Utils::SeqIntValue(const occ::handle<NCollection_HSequence<int>>& seqval,
-                                 const int                                      num) const
+                                              const int                    num) const
 {
   if (seqval.IsNull())
     return 0;

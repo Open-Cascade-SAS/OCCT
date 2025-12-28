@@ -19,8 +19,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-ChFi3d_SearchSing::ChFi3d_SearchSing(const occ::handle<Geom_Curve>& C1,
-                                     const occ::handle<Geom_Curve>& C2)
+ChFi3d_SearchSing::ChFi3d_SearchSing(const occ::handle<Geom_Curve>& C1, const occ::handle<Geom_Curve>& C2)
 {
   myC1 = C1;
   myC2 = C2;
@@ -49,7 +48,9 @@ bool ChFi3d_SearchSing::Derivative(const double X, double& D)
   return true;
 }
 
-bool ChFi3d_SearchSing::Values(const double X, double& F, double& D)
+bool ChFi3d_SearchSing::Values(const double X,
+                                           double&      F,
+                                           double&      D)
 {
   gp_Pnt P1, P2;
   gp_Vec V1, V2, W1, W2;

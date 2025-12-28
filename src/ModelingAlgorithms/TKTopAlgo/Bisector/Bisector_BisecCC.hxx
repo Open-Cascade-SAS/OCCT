@@ -51,10 +51,10 @@ public:
   //! than <DistMax>.
   Standard_EXPORT Bisector_BisecCC(const occ::handle<Geom2d_Curve>& Cu1,
                                    const occ::handle<Geom2d_Curve>& Cu2,
-                                   const double                     Side1,
-                                   const double                     Side2,
-                                   const gp_Pnt2d&                  Origin,
-                                   const double                     DistMax = 500);
+                                   const double         Side1,
+                                   const double         Side2,
+                                   const gp_Pnt2d&             Origin,
+                                   const double         DistMax = 500);
 
   //! Computes the bisector between the curves <Cu1>
   //! and <Cu2>.
@@ -70,10 +70,10 @@ public:
   //! than <DistMax>.
   Standard_EXPORT void Perform(const occ::handle<Geom2d_Curve>& Cu1,
                                const occ::handle<Geom2d_Curve>& Cu2,
-                               const double                     Side1,
-                               const double                     Side2,
-                               const gp_Pnt2d&                  Origin,
-                               const double                     DistMax = 500);
+                               const double         Side1,
+                               const double         Side2,
+                               const gp_Pnt2d&             Origin,
+                               const double         DistMax = 500);
 
   Standard_EXPORT bool IsExtendAtStart() const override;
 
@@ -149,15 +149,19 @@ public:
 
   Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2) const override;
 
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const override;
 
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   Standard_EXPORT bool IsEmpty() const;
 
@@ -174,22 +178,26 @@ public:
 
   Standard_EXPORT const Bisector_PolyBis& Polygon() const;
 
-  Standard_EXPORT void Dump(const int Deep = 0, const int Offset = 0) const;
+  Standard_EXPORT void Dump(const int Deep   = 0,
+                            const int Offset = 0) const;
 
   DEFINE_STANDARD_RTTIEXT(Bisector_BisecCC, Bisector_Curve)
 
 private:
-  Standard_EXPORT void Values(const double U,
-                              const int    N,
-                              gp_Pnt2d&    P,
-                              gp_Vec2d&    V1,
-                              gp_Vec2d&    V2,
-                              gp_Vec2d&    V3) const;
+  Standard_EXPORT void Values(const double    U,
+                              const int N,
+                              gp_Pnt2d&              P,
+                              gp_Vec2d&              V1,
+                              gp_Vec2d&              V2,
+                              gp_Vec2d&              V3) const;
 
   Standard_EXPORT void SupLastParameter();
 
-  Standard_EXPORT gp_Pnt2d
-    Extension(const double U, double& U1, double& U2, double& Dist, gp_Vec2d& T1) const;
+  Standard_EXPORT gp_Pnt2d Extension(const double U,
+                                     double&      U1,
+                                     double&      U2,
+                                     double&      Dist,
+                                     gp_Vec2d&           T1) const;
 
   Standard_EXPORT double SearchBound(const double U1, const double U2) const;
 
@@ -223,23 +231,23 @@ private:
 
   Standard_EXPORT void LastParameter(const double U1);
 
-  occ::handle<Geom2d_Curve>    curve1;
-  occ::handle<Geom2d_Curve>    curve2;
-  double                       sign1;
-  double                       sign2;
+  occ::handle<Geom2d_Curve>   curve1;
+  occ::handle<Geom2d_Curve>   curve2;
+  double          sign1;
+  double          sign2;
   NCollection_Sequence<double> startIntervals;
   NCollection_Sequence<double> endIntervals;
-  int                          currentInterval;
-  Bisector_PolyBis             myPolygon;
-  double                       shiftParameter;
-  double                       distMax;
-  bool                         isEmpty;
-  bool                         isConvex1;
-  bool                         isConvex2;
-  bool                         extensionStart;
-  bool                         extensionEnd;
-  gp_Pnt2d                     pointStart;
-  gp_Pnt2d                     pointEnd;
+  int       currentInterval;
+  Bisector_PolyBis       myPolygon;
+  double          shiftParameter;
+  double          distMax;
+  bool       isEmpty;
+  bool       isConvex1;
+  bool       isConvex2;
+  bool       extensionStart;
+  bool       extensionEnd;
+  gp_Pnt2d               pointStart;
+  gp_Pnt2d               pointEnd;
 };
 
 #endif // _Bisector_BisecCC_HeaderFile

@@ -19,7 +19,9 @@
 
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 typedef void Convert_CosAndSinEvalFunction(double,
                                            const int,

@@ -37,11 +37,7 @@ public:
   }
 
   //! Return map of actions.
-  const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>& Actions()
-    const
-  {
-    return myActions;
-  }
+  const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>& Actions() const { return myActions; }
 
   //! Main constructor.
   Aspect_XRActionSet(const TCollection_AsciiString& theId)
@@ -53,8 +49,7 @@ public:
 protected:
   TCollection_AsciiString myId;        //!< action set id
   uint64_t                myRawHandle; //!< action set handle
-  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>
-    myActions; //!< map of actions
+  NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Aspect_XRAction>>      myActions;   //!< map of actions
 };
 
 #endif // _Aspect_XRActionSet_HeaderFile

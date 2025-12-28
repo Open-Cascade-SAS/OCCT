@@ -37,7 +37,10 @@ public:
 
   Standard_EXPORT void ParametersOnS2(double& U, double& V) const;
 
-  Standard_EXPORT void Parameters(double& U1, double& V1, double& U2, double& V2) const;
+  Standard_EXPORT void Parameters(double& U1,
+                                  double& V1,
+                                  double& U2,
+                                  double& V2) const;
 
   Standard_EXPORT gp_Pnt2d ValueOnS1() const;
 

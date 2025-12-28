@@ -36,7 +36,7 @@ public:
   //! maximum number of points on the curve: theNbPnts.
   Select3D_SensitiveCurve(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
                           const occ::handle<Geom_Curve>&            theCurve,
-                          const int                                 theNbPnts = 17)
+                          const int               theNbPnts = 17)
       : Select3D_SensitivePoly(theOwnerId, true, theNbPnts)
   {
     loadPoints(theCurve, theNbPnts);
@@ -45,14 +45,13 @@ public:
 
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId and the set of points ThePoints.
-  Standard_EXPORT Select3D_SensitiveCurve(
-    const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
-    const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints);
+  Standard_EXPORT Select3D_SensitiveCurve(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                          const occ::handle<NCollection_HArray1<gp_Pnt>>&   thePoints);
 
   //! Creation of Sensitive Curve from Points.
   //!          Warning : This Method should disappear in the next version...
   Standard_EXPORT Select3D_SensitiveCurve(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                          const NCollection_Array1<gp_Pnt>&         thePoints);
+                                          const NCollection_Array1<gp_Pnt>&            thePoints);
 
   //! Returns the copy of this
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
@@ -60,8 +59,9 @@ public:
 private:
   void loadPoints(const occ::handle<Geom_Curve>& theCurve, const int theNbPnts)
   {
-    const double aStep = (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
-    double       aParam = theCurve->FirstParameter();
+    const double aStep =
+      (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
+    double aParam = theCurve->FirstParameter();
     for (int aPntIdx = 0; aPntIdx < myPolyg.Size(); ++aPntIdx)
     {
       myPolyg.SetPnt(aPntIdx, theCurve->Value(aParam));

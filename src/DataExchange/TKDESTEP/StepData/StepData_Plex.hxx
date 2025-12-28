@@ -25,6 +25,7 @@
 #include <StepData_Described.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class StepData_ECDescr;
 class StepData_Simple;
@@ -60,7 +61,8 @@ public:
   //! Returns a Simple Entity which matches with a Type in <me> :
   //! For a Simple Entity : me if it matches, else a null handle
   //! For a Complex Entity : the member which matches, else null
-  Standard_EXPORT occ::handle<StepData_Simple> As(const char* steptype) const override;
+  Standard_EXPORT occ::handle<StepData_Simple> As(const char* steptype) const
+    override;
 
   //! Tells if a Field brings a given name
   Standard_EXPORT bool HasField(const char* name) const override;

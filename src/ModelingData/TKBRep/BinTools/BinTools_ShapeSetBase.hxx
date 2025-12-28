@@ -48,7 +48,10 @@ public:
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
-  void SetWithTriangles(const bool theWithTriangles) { myWithTriangles = theWithTriangles; }
+  void SetWithTriangles(const bool theWithTriangles)
+  {
+    myWithTriangles = theWithTriangles;
+  }
 
   //! Define if shape will be stored triangulation with normals.
   //! Ignored (always written) if face defines only triangulation (no surface).
@@ -113,7 +116,7 @@ public:
   static const char* THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
 
 private:
-  int  myFormatNb;
+  int myFormatNb;
   bool myWithTriangles;
   bool myWithNormals;
 };

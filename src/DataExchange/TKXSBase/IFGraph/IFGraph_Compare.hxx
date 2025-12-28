@@ -41,13 +41,15 @@ public:
 
   //! adds an entity and its shared ones to the list :
   //! first True means adds to the first sub-list, else to the 2nd
-  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent, const bool first);
+  Standard_EXPORT void GetFromEntity(const occ::handle<Standard_Transient>& ent,
+                                     const bool            first);
 
   //! adds a list of entities (as an iterator) as such, that is,
   //! their shared entities are not considered (use AllShared to
   //! have them)
   //! first True means adds to the first sub-list, else to the 2nd
-  Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter, const bool first);
+  Standard_EXPORT void GetFromIter(const Interface_EntityIterator& iter,
+                                   const bool          first);
 
   //! merges the second list into the first one, hence the second
   //! list is empty

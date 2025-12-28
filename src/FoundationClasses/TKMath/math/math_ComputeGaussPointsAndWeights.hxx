@@ -41,7 +41,7 @@ public:
 private:
   occ::handle<NCollection_HArray1<double>> myPoints;
   occ::handle<NCollection_HArray1<double>> myWeights;
-  bool                                     myIsDone;
+  bool              myIsDone;
 };
 
 #endif // _math_ComputeGaussPointsAndWeights_HeaderFile

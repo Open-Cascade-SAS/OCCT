@@ -43,7 +43,7 @@ static int sortcompound(Draw_Interpretor& di, int argc, const char** argv)
     ShapeExtend_Explorer sbx;
     for (int i = 0; i < 2; i++)
     {
-      bool             viaCompound = (i != 0);
+      bool viaCompound = (i != 0);
       TopAbs_ShapeEnum ts          = sbx.ShapeType(Shape, viaCompound);
       // std::cout<<"   Type "<<(i ? " (via Compound) : " : "(True) : ");
       if (!viaCompound)

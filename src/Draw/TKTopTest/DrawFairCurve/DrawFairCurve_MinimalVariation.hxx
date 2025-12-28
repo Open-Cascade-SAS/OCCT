@@ -41,6 +41,7 @@ public:
   Standard_EXPORT void FreeCurvature(const int Side);
 
   DEFINE_STANDARD_RTTIEXT(DrawFairCurve_MinimalVariation, DrawFairCurve_Batten)
+
 };
 
 #endif // _DrawFairCurve_MinimalVariation_HeaderFile

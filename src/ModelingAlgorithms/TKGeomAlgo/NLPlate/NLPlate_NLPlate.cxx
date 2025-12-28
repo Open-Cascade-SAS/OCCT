@@ -47,7 +47,8 @@ void NLPlate_NLPlate::Load(const occ::handle<NLPlate_HGPPConstraint>& GConst)
 
 //=================================================================================================
 
-void NLPlate_NLPlate::Solve(const int ord, const int InitialConsraintOrder)
+void NLPlate_NLPlate::Solve(const int ord,
+                            const int InitialConsraintOrder)
 {
   int maxOrder = MaxActiveConstraintOrder();
   int ordre    = ord;
@@ -67,7 +68,8 @@ void NLPlate_NLPlate::Solve(const int ord, const int InitialConsraintOrder)
 
 //=================================================================================================
 
-void NLPlate_NLPlate::Solve2(const int ord, const int InitialConsraintOrder)
+void NLPlate_NLPlate::Solve2(const int ord,
+                             const int InitialConsraintOrder)
 {
   int maxOrder = MaxActiveConstraintOrder();
   int ordre    = ord;
@@ -94,7 +96,7 @@ void NLPlate_NLPlate::Solve2(const int ord, const int InitialConsraintOrder)
 
 void NLPlate_NLPlate::IncrementalSolve(const int ord,
                                        const int /*InitialConsraintOrder*/,
-                                       const int  NbIncrements,
+                                       const int NbIncrements,
                                        const bool UVSliding)
 {
   int maxOrder = MaxActiveConstraintOrder();
@@ -151,7 +153,9 @@ gp_XYZ NLPlate_NLPlate::Evaluate(const gp_XY& point2d) const
 
 //=======================================================================
 
-gp_XYZ NLPlate_NLPlate::EvaluateDerivative(const gp_XY& point2d, const int iu, const int iv) const
+gp_XYZ NLPlate_NLPlate::EvaluateDerivative(const gp_XY&           point2d,
+                                           const int iu,
+                                           const int iv) const
 {
   gp_XYZ Value(0., 0., 0.);
   if ((iu == 0) && (iv == 0))
@@ -187,9 +191,9 @@ int NLPlate_NLPlate::Continuity() const
 
 //=======================================================================
 
-bool NLPlate_NLPlate::Iterate(const int    ConstraintOrder,
-                              const int    ResolutionOrder,
-                              const double IncrementalLoading)
+bool NLPlate_NLPlate::Iterate(const int ConstraintOrder,
+                                          const int ResolutionOrder,
+                                          const double    IncrementalLoading)
 {
   Plate_Plate EmptyPlate;
   mySOP.Prepend(EmptyPlate);
@@ -197,7 +201,7 @@ bool NLPlate_NLPlate::Iterate(const int    ConstraintOrder,
   for (int index = 1; index <= myHGPPConstraints.Length(); index++)
   {
     const occ::handle<NLPlate_HGPPConstraint>& HGPP  = myHGPPConstraints(index);
-    int                                        Order = HGPP->ActiveOrder();
+    int                      Order = HGPP->ActiveOrder();
     if (ConstraintOrder < Order)
       Order = ConstraintOrder;
     const gp_XY& UV = HGPP->UV();

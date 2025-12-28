@@ -21,9 +21,9 @@
 //=================================================================================================
 
 void LProp3d_SurfaceTool::Value(const occ::handle<Adaptor3d_Surface>& S,
-                                const double                          U,
-                                const double                          V,
-                                gp_Pnt&                               P)
+                                const double              U,
+                                const double              V,
+                                gp_Pnt&                          P)
 {
   P = S->Value(U, V);
 }
@@ -31,11 +31,11 @@ void LProp3d_SurfaceTool::Value(const occ::handle<Adaptor3d_Surface>& S,
 //=================================================================================================
 
 void LProp3d_SurfaceTool::D1(const occ::handle<Adaptor3d_Surface>& S,
-                             const double                          U,
-                             const double                          V,
-                             gp_Pnt&                               P,
-                             gp_Vec&                               D1U,
-                             gp_Vec&                               D1V)
+                             const double              U,
+                             const double              V,
+                             gp_Pnt&                          P,
+                             gp_Vec&                          D1U,
+                             gp_Vec&                          D1V)
 {
   S->D1(U, V, P, D1U, D1V);
 }
@@ -43,14 +43,14 @@ void LProp3d_SurfaceTool::D1(const occ::handle<Adaptor3d_Surface>& S,
 //=================================================================================================
 
 void LProp3d_SurfaceTool::D2(const occ::handle<Adaptor3d_Surface>& S,
-                             const double                          U,
-                             const double                          V,
-                             gp_Pnt&                               P,
-                             gp_Vec&                               D1U,
-                             gp_Vec&                               D1V,
-                             gp_Vec&                               D2U,
-                             gp_Vec&                               D2V,
-                             gp_Vec&                               DUV)
+                             const double              U,
+                             const double              V,
+                             gp_Pnt&                          P,
+                             gp_Vec&                          D1U,
+                             gp_Vec&                          D1V,
+                             gp_Vec&                          D2U,
+                             gp_Vec&                          D2V,
+                             gp_Vec&                          DUV)
 {
   S->D2(U, V, P, D1U, D1V, D2U, D2V, DUV);
 }
@@ -58,10 +58,10 @@ void LProp3d_SurfaceTool::D2(const occ::handle<Adaptor3d_Surface>& S,
 //=================================================================================================
 
 gp_Vec LProp3d_SurfaceTool::DN(const occ::handle<Adaptor3d_Surface>& S,
-                               const double                          U,
-                               const double                          V,
-                               const int                             IU,
-                               const int                             IV)
+                               const double              U,
+                               const double              V,
+                               const int           IU,
+                               const int           IV)
 {
   return S->DN(U, V, IU, IV);
 }
@@ -94,10 +94,10 @@ int LProp3d_SurfaceTool::Continuity(const occ::handle<Adaptor3d_Surface>& S)
 //=================================================================================================
 
 void LProp3d_SurfaceTool::Bounds(const occ::handle<Adaptor3d_Surface>& S,
-                                 double&                               U1,
-                                 double&                               V1,
-                                 double&                               U2,
-                                 double&                               V2)
+                                 double&                   U1,
+                                 double&                   V1,
+                                 double&                   U2,
+                                 double&                   V2)
 {
   U1 = S->FirstUParameter();
   V1 = S->FirstVParameter();

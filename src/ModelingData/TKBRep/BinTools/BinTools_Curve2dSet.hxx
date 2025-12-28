@@ -67,13 +67,12 @@ public:
                             const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Dumps the curve on the binary stream, that can be read back.
-  Standard_EXPORT static void WriteCurve2d(const occ::handle<Geom2d_Curve>& C,
-                                           BinTools_OStream&                OS);
+  Standard_EXPORT static void WriteCurve2d(const occ::handle<Geom2d_Curve>& C, BinTools_OStream& OS);
 
   //! Reads the curve from the stream. The curve is
   //! assumed to have been written with the Write
   //! method.
-  Standard_EXPORT static Standard_IStream& ReadCurve2d(Standard_IStream&          IS,
+  Standard_EXPORT static Standard_IStream& ReadCurve2d(Standard_IStream&     IS,
                                                        occ::handle<Geom2d_Curve>& C);
 
 private:

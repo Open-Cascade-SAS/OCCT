@@ -43,10 +43,10 @@ public:
   //! Errors : Height < Resolution
   //! Angle < Resolution / Height
   //! Angle > PI/2 - Resolution / Height
-  Standard_EXPORT BRepPrim_Cone(const double  Angle,
-                                const gp_Ax2& Position,
-                                const double  Height,
-                                const double  Radius = 0);
+  Standard_EXPORT BRepPrim_Cone(const double Angle,
+                                const gp_Ax2&       Position,
+                                const double Height,
+                                const double Radius = 0);
 
   //! infinite cone at origin on Z negative
   Standard_EXPORT BRepPrim_Cone(const double Angle);
@@ -67,19 +67,21 @@ public:
   //! std::abs(R1-R2) < Resolution
   //! H < Resolution
   //! H negative
-  Standard_EXPORT BRepPrim_Cone(const double R1, const double R2, const double H);
+  Standard_EXPORT BRepPrim_Cone(const double R1,
+                                const double R2,
+                                const double H);
 
   //! same as above but at a given point
-  Standard_EXPORT BRepPrim_Cone(const gp_Pnt& Center,
-                                const double  R1,
-                                const double  R2,
-                                const double  H);
+  Standard_EXPORT BRepPrim_Cone(const gp_Pnt&       Center,
+                                const double R1,
+                                const double R2,
+                                const double H);
 
   //! same as above with given axes system.
-  Standard_EXPORT BRepPrim_Cone(const gp_Ax2& Axes,
-                                const double  R1,
-                                const double  R2,
-                                const double  H);
+  Standard_EXPORT BRepPrim_Cone(const gp_Ax2&       Axes,
+                                const double R1,
+                                const double R2,
+                                const double H);
 
   //! The surface normal should be directed towards the
   //! outside.
@@ -88,7 +90,9 @@ public:
 private:
   Standard_EXPORT void SetMeridian();
 
-  Standard_EXPORT void SetParameters(const double R1, const double R2, const double H);
+  Standard_EXPORT void SetParameters(const double R1,
+                                     const double R2,
+                                     const double H);
 
   double myHalfAngle;
   double myRadius;

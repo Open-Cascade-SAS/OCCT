@@ -46,10 +46,10 @@ public:
   {
   }
 
-  Standard_EXPORT void Perform(const TopoDS_Wire& theSpine,
-                               const TopoDS_Wire& theProfile,
-                               const double       theTolerance,
-                               const bool         theSolidReq = true);
+  Standard_EXPORT void Perform(const TopoDS_Wire&     theSpine,
+                               const TopoDS_Wire&     theProfile,
+                               const double    theTolerance,
+                               const bool theSolidReq = true);
 
   bool IsDone(unsigned int* theErrorCode = 0) const
   {
@@ -76,12 +76,11 @@ protected:
   Standard_EXPORT void BuildSolid();
 
   Standard_EXPORT void RemoveExcessSolids(const NCollection_List<TopoDS_Shape>& theLSplits,
-                                          const TopoDS_Shape&                   theShape,
+                                          const TopoDS_Shape&         theShape,
                                           NCollection_List<TopoDS_Shape>&       theArgsList,
-                                          BOPAlgo_MakerVolume&                  theMV);
+                                          BOPAlgo_MakerVolume&        theMV);
 
-  Standard_EXPORT void ExtractOuterSolid(TopoDS_Shape&                   theShape,
-                                         NCollection_List<TopoDS_Shape>& theArgsList);
+  Standard_EXPORT void ExtractOuterSolid(TopoDS_Shape& theShape, NCollection_List<TopoDS_Shape>& theArgsList);
 
   Standard_EXPORT void GetSpineAndProfile(const TopoDS_Wire& theSpine,
                                           const TopoDS_Wire& theProfile);
@@ -89,17 +88,16 @@ protected:
   Standard_EXPORT void UnifyShape();
 
   Standard_EXPORT bool PerformBoolean(const NCollection_List<TopoDS_Shape>& theArgsList,
-                                      TopoDS_Shape&                         theResult) const;
+                                                  TopoDS_Shape&               theResult) const;
 
-  Standard_EXPORT bool CheckSingularityAndAdd(
-    const TopoDS_Face&              theF,
-    const double                    theFuzzyToler,
-    NCollection_List<TopoDS_Shape>& theListOfFaces,
-    NCollection_List<TopoDS_Shape>& theListOfSplits) const;
+  Standard_EXPORT bool
+    CheckSingularityAndAdd(const TopoDS_Face&    theF,
+                           const double   theFuzzyToler,
+                           NCollection_List<TopoDS_Shape>& theListOfFaces,
+                           NCollection_List<TopoDS_Shape>& theListOfSplits) const;
 
-  Standard_EXPORT bool IsLid(
-    const TopoDS_Face&                                                   theF,
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfLids) const;
+  Standard_EXPORT bool IsLid(const TopoDS_Face&                theF,
+                                         const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfLids) const;
 
 private:
   enum
@@ -113,14 +111,14 @@ private:
     BRepFill_AdvancedEvolved_OK = UINT_MAX
   } myErrorStatus;
 
-  TopoDS_Wire     mySpine;
-  TopoDS_Wire     myProfile;
-  TopoDS_Shape    myPipeShell;
-  TopoDS_Compound myTopBottom; // Lids can be split on several faces
-  TopoDS_Shape    myResult;
-  double          myFuzzyValue;
-  bool            myIsParallel;
-  const char*     myDebugShapesPath;
+  TopoDS_Wire      mySpine;
+  TopoDS_Wire      myProfile;
+  TopoDS_Shape     myPipeShell;
+  TopoDS_Compound  myTopBottom; // Lids can be split on several faces
+  TopoDS_Shape     myResult;
+  double    myFuzzyValue;
+  bool myIsParallel;
+  const char* myDebugShapesPath;
 };
 
 #endif // _BRepFill_AdvancedEvolved_HeaderFile

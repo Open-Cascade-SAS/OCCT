@@ -75,11 +75,15 @@ public:
 
   //! Constructs a vector in the range [theLower..theUpper]
   //! whose values are all initialized with the value "theInitialValue"
-  inline math_VectorBase(const int theLower, const int theUpper, const TheItemType theInitialValue);
+  inline math_VectorBase(const int theLower,
+                         const int theUpper,
+                         const TheItemType      theInitialValue);
 
   //! Constructs a vector in the range [theLower..theUpper]
   //! whose values are all initialized with the value "theInitialValue"
-  inline math_VectorBase(const TheItemType* theTab, const int theLower, const int theUpper);
+  inline math_VectorBase(const TheItemType*     theTab,
+                         const int theLower,
+                         const int theUpper);
 
   //! Constructor for converting gp_XY to math_VectorBase
   inline math_VectorBase(const gp_XY& Other);
@@ -141,7 +145,9 @@ public:
   //! An exception is raised if "theI1" is less than "LowerIndex" or "theI2" is greater than
   //! "UpperIndex" or "theI1" is greater than "theI2". An exception is raised if "theI2-theI1+1" is
   //! different from the "Length" of "theV".
-  inline void Set(const int theI1, const int theI2, const math_VectorBase& theV);
+  inline void Set(const int theI1,
+                  const int theI2,
+                  const math_VectorBase& theV);
 
   //! Creates a new vector by inverting the values of this vector
   //!  between indexes "theI1" and "theI2".

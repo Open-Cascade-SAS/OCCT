@@ -34,6 +34,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -45,16 +46,16 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
   myFace  = F;
   myList.Clear();
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
-  TopExp_Explorer                                        exp, expf;
-  occ::handle<Geom_Curve>                                C;
-  occ::handle<Geom_Surface>                              S;
-  TopLoc_Location                                        Loc;
-  double                                                 f, l;
-  occ::handle<Standard_Type>                             Tc, Ts;
-  bool                                                   ToAdd;
-  gp_Pln                                                 pl;
-  gp_Cylinder                                            cy;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>   M;
+  TopExp_Explorer       exp, expf;
+  occ::handle<Geom_Curve>    C;
+  occ::handle<Geom_Surface>  S;
+  TopLoc_Location       Loc;
+  double         f, l;
+  occ::handle<Standard_Type> Tc, Ts;
+  bool      ToAdd;
+  gp_Pln                pl;
+  gp_Cylinder           cy;
 
   constexpr double Tol    = Precision::Confusion();
   constexpr double TolAng = Precision::Angular();
@@ -73,7 +74,7 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
   }
 
   occ::handle<BRepAdaptor_Surface> HS = new BRepAdaptor_Surface(myFace);
-  BRepTopAdaptor_TopolTool         TPT(HS);
+  BRepTopAdaptor_TopolTool    TPT(HS);
 
   for (exp.Init(myShape, TopAbs_EDGE); exp.More(); exp.Next())
   {
@@ -161,7 +162,7 @@ void LocOpe_FindEdgesInFace::Set(const TopoDS_Shape& Sh, const TopoDS_Face& F)
     if (ToAdd)
     {
       // On classifie 3 points.
-      gp_Pnt p[3];
+      gp_Pnt        p[3];
       double U, V;
       p[0] = C->Value(f);
       p[1] = C->Value(l);

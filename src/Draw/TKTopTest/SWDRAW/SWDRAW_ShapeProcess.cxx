@@ -25,7 +25,9 @@
 
 //=================================================================================================
 
-static int ApplySequence(Draw_Interpretor& di, int argc, const char** argv)
+static int ApplySequence(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 4)
   {

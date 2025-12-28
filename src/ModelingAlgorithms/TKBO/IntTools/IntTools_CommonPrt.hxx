@@ -115,16 +115,16 @@ public:
   Standard_EXPORT void BoundingPoints(gp_Pnt& aP1, gp_Pnt& aP2) const;
 
 private:
-  TopoDS_Edge                          myEdge1;
-  TopoDS_Edge                          myEdge2;
-  TopAbs_ShapeEnum                     myType;
-  IntTools_Range                       myRange1;
-  double                               myVertPar1;
-  double                               myVertPar2;
+  TopoDS_Edge               myEdge1;
+  TopoDS_Edge               myEdge2;
+  TopAbs_ShapeEnum          myType;
+  IntTools_Range            myRange1;
+  double             myVertPar1;
+  double             myVertPar2;
   NCollection_Sequence<IntTools_Range> myRanges2;
-  bool                                 myAllNullFlag;
-  gp_Pnt                               myPnt1;
-  gp_Pnt                               myPnt2;
+  bool          myAllNullFlag;
+  gp_Pnt                    myPnt1;
+  gp_Pnt                    myPnt2;
 };
 
 #endif // _IntTools_CommonPrt_HeaderFile

@@ -19,26 +19,21 @@
 #include <NCollection_List.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
-Standard_EXPORT int FUN_unkeepFdoubleGBoundinterferences(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  const TopOpeBRepDS_DataStructure&                         BDS,
-  const int                                                 SIX);
-Standard_EXPORT void FUN_resolveFUNKNOWN(
-  NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-  TopOpeBRepDS_DataStructure&                               BDS,
-  const int                                                 SIX,
-  const NCollection_DataMap<TopoDS_Shape,
-                            TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>&       MEsp,
-  TopOpeBRepTool_PShapeClassifier                           pClassif);
+Standard_EXPORT int
+                     FUN_unkeepFdoubleGBoundinterferences(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&  LI,
+                                                          const TopOpeBRepDS_DataStructure& BDS,
+                                                          const int            SIX);
+Standard_EXPORT void FUN_resolveFUNKNOWN(NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&                      LI,
+                                         TopOpeBRepDS_DataStructure&                           BDS,
+                                         const int                                SIX,
+                                         const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp,
+                                         TopOpeBRepTool_PShapeClassifier pClassif);
 
 //=================================================================================================
 
 void TopOpeBRepDS_Filter::ProcessFaceInterferences(
-  const int                                           SIX,
-  const NCollection_DataMap<TopoDS_Shape,
-                            TopOpeBRepDS_ListOfShapeOn1State,
-                            TopTools_ShapeMapHasher>& MEsp)
+  const int                                SIX,
+  const NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>& MEsp)
 {
   TopOpeBRepDS_DataStructure& BDS = myHDS->ChangeDS();
 

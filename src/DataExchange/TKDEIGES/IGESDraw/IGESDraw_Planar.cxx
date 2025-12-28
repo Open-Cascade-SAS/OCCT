@@ -25,10 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_Planar, IGESData_IGESEntity)
 
 IGESDraw_Planar::IGESDraw_Planar() {}
 
-void IGESDraw_Planar::Init(
-  const int                                                                 nbMats,
-  const occ::handle<IGESGeom_TransformationMatrix>&                         aTransformationMatrix,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities)
+void IGESDraw_Planar::Init(const int                       nbMats,
+                           const occ::handle<IGESGeom_TransformationMatrix>& aTransformationMatrix,
+                           const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&  allEntities)
 {
   if (!allEntities.IsNull())
     if (allEntities->Lower() != 1)

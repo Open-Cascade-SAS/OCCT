@@ -97,16 +97,14 @@ inline void MAT_TListNodeOfListOfEdge::SetItem(const occ::handle<MAT_Edge>& anit
 
 //=================================================================================================
 
-inline void MAT_TListNodeOfListOfEdge::Next(
-  const occ::handle<MAT_TListNodeOfListOfEdge>& atlistnode)
+inline void MAT_TListNodeOfListOfEdge::Next(const occ::handle<MAT_TListNodeOfListOfEdge>& atlistnode)
 {
   thenext = atlistnode;
 }
 
 //=================================================================================================
 
-inline void MAT_TListNodeOfListOfEdge::Previous(
-  const occ::handle<MAT_TListNodeOfListOfEdge>& atlistnode)
+inline void MAT_TListNodeOfListOfEdge::Previous(const occ::handle<MAT_TListNodeOfListOfEdge>& atlistnode)
 {
   theprevious = atlistnode;
 }

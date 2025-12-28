@@ -36,7 +36,7 @@
 //  #####################################################################
 //  ....                        CONSTRUCTORS                        ....
 Interface_CopyTool::Interface_CopyTool(const occ::handle<Interface_InterfaceModel>& amodel,
-                                       const Interface_GeneralLib&                  lib)
+                                       const Interface_GeneralLib&             lib)
     : thelib(lib),
       thelst(amodel->NbEntities())
 {
@@ -105,7 +105,7 @@ void Interface_CopyTool::Clear()
 }
 
 bool Interface_CopyTool::NewVoid(const occ::handle<Standard_Transient>& entfrom,
-                                 occ::handle<Standard_Transient>&       entto)
+                                             occ::handle<Standard_Transient>&       entto)
 {
   if (entfrom == theent)
   {
@@ -113,7 +113,7 @@ bool Interface_CopyTool::NewVoid(const occ::handle<Standard_Transient>& entfrom,
       return false;
     return themdu->NewVoid(theCN, entto);
   }
-  theent   = entfrom;
+  theent               = entfrom;
   bool res = thelib.Select(entfrom, themdu, theCN);
   if (res)
     res = themdu->NewVoid(theCN, entto);
@@ -124,9 +124,9 @@ bool Interface_CopyTool::NewVoid(const occ::handle<Standard_Transient>& entfrom,
 }
 
 bool Interface_CopyTool::Copy(const occ::handle<Standard_Transient>& entfrom,
-                              occ::handle<Standard_Transient>&       entto,
-                              const bool                             mapped,
-                              const bool                             errstat)
+                                          occ::handle<Standard_Transient>&       entto,
+                                          const bool            mapped,
+                                          const bool            errstat)
 {
   bool res = true;
   if (entfrom == theent)
@@ -171,15 +171,14 @@ void Interface_CopyTool::Implied(const occ::handle<Standard_Transient>& entfrom,
                                  const occ::handle<Standard_Transient>& entto)
 {
   occ::handle<Interface_GeneralModule> module;
-  int                                  CN;
+  int                CN;
   if (thelib.Select(entfrom, module, CN))
     module->RenewImpliedCase(CN, entfrom, entto, *this);
 }
 
 //  ....                Feeding the Map                ....
 
-occ::handle<Standard_Transient> Interface_CopyTool::Transferred(
-  const occ::handle<Standard_Transient>& ent)
+occ::handle<Standard_Transient> Interface_CopyTool::Transferred(const occ::handle<Standard_Transient>& ent)
 {
   occ::handle<Standard_Transient> res;
   if (ent.IsNull())
@@ -214,7 +213,7 @@ occ::handle<Standard_Transient> Interface_CopyTool::Transferred(
       else
       {
         occ::handle<Standard_Transient> contfrom, contto;
-        contfrom                                  = rep->Content();
+        contfrom                             = rep->Content();
         occ::handle<Interface_ReportEntity> repto = new Interface_ReportEntity(rep->Check(), res);
         if (!contfrom.IsNull())
         {
@@ -244,7 +243,7 @@ void Interface_CopyTool::Bind(const occ::handle<Standard_Transient>& ent,
 }
 
 bool Interface_CopyTool::Search(const occ::handle<Standard_Transient>& ent,
-                                occ::handle<Standard_Transient>&       res) const
+                                            occ::handle<Standard_Transient>&       res) const
 {
   return themap->Search(ent, res);
 }
@@ -257,9 +256,9 @@ void Interface_CopyTool::ClearLastFlags()
   thelst.Init(false);
 }
 
-int Interface_CopyTool::LastCopiedAfter(const int                        numfrom,
-                                        occ::handle<Standard_Transient>& ent,
-                                        occ::handle<Standard_Transient>& res) const
+int Interface_CopyTool::LastCopiedAfter(const int      numfrom,
+                                                     occ::handle<Standard_Transient>& ent,
+                                                     occ::handle<Standard_Transient>& res) const
 {
   int nb = thelst.Length();
   for (int num = numfrom + 1; num <= nb; num++)
@@ -330,10 +329,11 @@ void Interface_CopyTool::FillModel(const occ::handle<Interface_InterfaceModel>& 
   RenewImpliedRefs();
 }
 
-Interface_EntityIterator Interface_CopyTool::CompleteResult(const bool withreports) const
+Interface_EntityIterator Interface_CopyTool::CompleteResult(
+  const bool withreports) const
 {
   Interface_EntityIterator iter;
-  int                      nb = themod->NbEntities();
+  int         nb = themod->NbEntities();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> ent = themod->Value(i);
@@ -354,10 +354,10 @@ Interface_EntityIterator Interface_CopyTool::CompleteResult(const bool withrepor
 Interface_EntityIterator Interface_CopyTool::RootResult(const bool withreports) const
 {
   Interface_EntityIterator iter;
-  int                      nb = therts.Length();
+  int         nb = therts.Length();
   for (int i = 1; i <= nb; i++)
   {
-    int                             j   = therts.Value(i);
+    int           j   = therts.Value(i);
     occ::handle<Standard_Transient> ent = themod->Value(j);
     occ::handle<Standard_Transient> res;
     if (!themap->Search(ent, res))

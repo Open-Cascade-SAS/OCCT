@@ -26,9 +26,9 @@
 
 //=================================================================================================
 
-BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&                    A,
-                                         const double                     VMin,
-                                         const double                     VMax,
+BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&               A,
+                                         const double         VMin,
+                                         const double         VMax,
                                          const occ::handle<Geom_Curve>&   M,
                                          const occ::handle<Geom2d_Curve>& PM)
     : BRepPrim_OneAxis(BRepPrim_Builder(), A, VMin, VMax),
@@ -39,15 +39,16 @@ BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&                    A,
 
 //=================================================================================================
 
-BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2& A, const double VMin, const double VMax)
+BRepPrim_Revolution::BRepPrim_Revolution(const gp_Ax2&       A,
+                                         const double VMin,
+                                         const double VMax)
     : BRepPrim_OneAxis(BRepPrim_Builder(), A, VMin, VMax)
 {
 }
 
 //=================================================================================================
 
-void BRepPrim_Revolution::Meridian(const occ::handle<Geom_Curve>&   M,
-                                   const occ::handle<Geom2d_Curve>& PM)
+void BRepPrim_Revolution::Meridian(const occ::handle<Geom_Curve>& M, const occ::handle<Geom2d_Curve>& PM)
 {
   myMeridian  = M;
   myPMeridian = PM;
@@ -68,9 +69,9 @@ TopoDS_Face BRepPrim_Revolution::MakeEmptyLateralFace() const
 
 TopoDS_Edge BRepPrim_Revolution::MakeEmptyMeridianEdge(const double Ang) const
 {
-  TopoDS_Edge             E;
+  TopoDS_Edge        E;
   occ::handle<Geom_Curve> C = occ::down_cast<Geom_Curve>(myMeridian->Copy());
-  gp_Trsf                 T;
+  gp_Trsf            T;
   T.SetRotation(Axes().Axis(), Ang);
   C->Transform(T);
   myBuilder.Builder().MakeEdge(E, C, Precision::Confusion());

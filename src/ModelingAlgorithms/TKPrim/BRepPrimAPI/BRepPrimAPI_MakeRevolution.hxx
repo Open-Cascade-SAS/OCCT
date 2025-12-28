@@ -41,33 +41,33 @@ public:
 
   //! Make a revolution body by rotating a curve around Z.
   Standard_EXPORT BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   angle);
+                                             const double       angle);
 
   //! Make a revolution body by rotating a curve around Z.
   Standard_EXPORT BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   VMin,
-                                             const double                   VMax);
+                                             const double       VMin,
+                                             const double       VMax);
 
   //! Make a revolution body by rotating a curve around Z.
   Standard_EXPORT BRepPrimAPI_MakeRevolution(const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   VMin,
-                                             const double                   VMax,
-                                             const double                   angle);
+                                             const double       VMin,
+                                             const double       VMax,
+                                             const double       angle);
 
   //! Make a revolution body by rotating a curve around Z.
-  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
+  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
                                              const occ::handle<Geom_Curve>& Meridian);
 
   //! Make a revolution body by rotating a curve around Z.
-  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
+  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
                                              const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   angle);
+                                             const double       angle);
 
   //! Make a revolution body by rotating a curve around Z.
-  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
+  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
                                              const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   VMin,
-                                             const double                   VMax);
+                                             const double       VMin,
+                                             const double       VMax);
 
   //! Make a revolution body by rotating a curve around Z.
   //! For all algorithms the resulting shape is composed of
@@ -78,11 +78,11 @@ public:
   //! axis (in case of a complete revolved shape, these faces are circles),
   //! -   and in the case of a portion of a revolved shape, two
   //! planar faces to close the shape (in the planes u = 0 and u = angle).
-  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&                  Axes,
+  Standard_EXPORT BRepPrimAPI_MakeRevolution(const gp_Ax2&             Axes,
                                              const occ::handle<Geom_Curve>& Meridian,
-                                             const double                   VMin,
-                                             const double                   VMax,
-                                             const double                   angle);
+                                             const double       VMin,
+                                             const double       VMax,
+                                             const double       angle);
 
   //! Returns the algorithm.
   Standard_EXPORT void* OneAxis();

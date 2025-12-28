@@ -29,7 +29,7 @@ RWStepFEA_RWFeaShellShearStiffness::RWStepFEA_RWFeaShellShearStiffness() {}
 
 void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepFEA_FeaShellShearStiffness>& ent) const
 {
@@ -54,7 +54,7 @@ void RWStepFEA_RWFeaShellShearStiffness::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepFEA_FeaShellShearStiffness>& ent) const
 {
 
@@ -69,9 +69,8 @@ void RWStepFEA_RWFeaShellShearStiffness::WriteStep(
 
 //=================================================================================================
 
-void RWStepFEA_RWFeaShellShearStiffness::Share(
-  const occ::handle<StepFEA_FeaShellShearStiffness>& ent,
-  Interface_EntityIterator&                          iter) const
+void RWStepFEA_RWFeaShellShearStiffness::Share(const occ::handle<StepFEA_FeaShellShearStiffness>& ent,
+                                               Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -35,7 +35,7 @@ RWStepGeom_RWSurfaceCurveAndBoundedCurve::RWStepGeom_RWSurfaceCurveAndBoundedCur
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent) const
 {
@@ -68,12 +68,12 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
 
   // --- own field : associatedGeometry ---
   occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aAssociatedGeometry;
-  StepGeom_PcurveOrSurface                                   aAssociatedGeometryItem;
-  int                                                        nsub3;
+  StepGeom_PcurveOrSurface                  aAssociatedGeometryItem;
+  int                          nsub3;
   if (data->ReadSubList(num1, 2, "associated_geometry", ach, nsub3))
   {
-    int nb3             = data->NbParams(nsub3);
-    aAssociatedGeometry = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
+    int nb3 = data->NbParams(nsub3);
+    aAssociatedGeometry  = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -104,7 +104,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::ReadStep(
 }
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent) const
 {
 
@@ -139,7 +139,7 @@ void RWStepGeom_RWSurfaceCurveAndBoundedCurve::WriteStep(
 
 void RWStepGeom_RWSurfaceCurveAndBoundedCurve::Share(
   const occ::handle<StepGeom_SurfaceCurveAndBoundedCurve>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
   RWStepGeom_RWSurfaceCurve tool;
   tool.Share(ent, iter);

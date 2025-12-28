@@ -40,7 +40,7 @@ void IGESSolid_ToolCylinder::ReadOwnParams(const occ::handle<IGESSolid_Cylinder>
                                            IGESData_ParamReader& PR) const
 {
   double tempHeight, tempRadius, tempreal;
-  gp_XYZ tempCenter, tempAxis;
+  gp_XYZ        tempCenter, tempAxis;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadReal(PR.Current(), "Height", tempHeight); // szv#4:S4163:12Mar99 `st=` not needed
@@ -115,7 +115,7 @@ void IGESSolid_ToolCylinder::ReadOwnParams(const occ::handle<IGESSolid_Cylinder>
 }
 
 void IGESSolid_ToolCylinder::WriteOwnParams(const occ::handle<IGESSolid_Cylinder>& ent,
-                                            IGESData_IGESWriter&                   IW) const
+                                            IGESData_IGESWriter&              IW) const
 {
   IW.Send(ent->Height());
   IW.Send(ent->Radius());
@@ -168,8 +168,8 @@ void IGESSolid_ToolCylinder::OwnCheck(const occ::handle<IGESSolid_Cylinder>& ent
 
 void IGESSolid_ToolCylinder::OwnDump(const occ::handle<IGESSolid_Cylinder>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
-                                     Standard_OStream& S,
-                                     const int         level) const
+                                     Standard_OStream&      S,
+                                     const int level) const
 {
 
   //  bool locprint = (ent->HasTransf() && level >=6);

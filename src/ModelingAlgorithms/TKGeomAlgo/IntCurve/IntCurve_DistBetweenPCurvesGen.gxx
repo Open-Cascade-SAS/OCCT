@@ -82,7 +82,9 @@ bool IntCurve_DistBetweenPCurvesGen::Derivatives(const math_Vector& X, math_Matr
 
 //=================================================================================================
 
-bool IntCurve_DistBetweenPCurvesGen::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool IntCurve_DistBetweenPCurvesGen::Values(const math_Vector& X,
+                                                        math_Vector&       F,
+                                                        math_Matrix&       D)
 {
 
   gp_Vec2d T;

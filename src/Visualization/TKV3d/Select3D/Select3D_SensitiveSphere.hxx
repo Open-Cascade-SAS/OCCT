@@ -26,8 +26,8 @@ public:
   //! Constructs a sensitive sphere object defined by the owner theOwnerId,
   //! the center of the sphere and it's radius.
   Standard_EXPORT Select3D_SensitiveSphere(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                           const gp_Pnt&                             theCenter,
-                                           const double                              theRadius);
+                                           const gp_Pnt&                        theCenter,
+                                           const double                  theRadius);
 
   //! Returns the radius of the sphere
   double Radius() const { return myRadius; }
@@ -35,7 +35,8 @@ public:
 public:
   //! Checks whether the sphere overlaps current selecting volume
   Standard_EXPORT virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult) override;
+                                                   SelectBasics_PickResult& thePickResult)
+    override;
 
   //! Returns the copy of this
   Standard_EXPORT virtual occ::handle<Select3D_SensitiveEntity> GetConnected() override;
@@ -63,8 +64,8 @@ public:
   }
 
 protected:
-  gp_Pnt myCenter;
-  gp_Pnt myLastDetectedPoint;
+  gp_Pnt        myCenter;
+  gp_Pnt        myLastDetectedPoint;
   double myRadius;
 };
 

@@ -81,12 +81,12 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
                                               const double SupBound)
 {
 
-  int                        i, j = 0, k, l, NZer = 0, Nit = 10;
-  double                     Depi, Delta, Mod, AA, BB, CC, MyBorneInf;
-  double                     Teta, X;
-  double                     Eps, Tol1 = 1.e-15;
+  int     i, j = 0, k, l, NZer = 0, Nit = 10;
+  double        Depi, Delta, Mod, AA, BB, CC, MyBorneInf;
+  double        Teta, X;
+  double        Eps, Tol1 = 1.e-15;
   NCollection_Array1<double> ko(1, 5), Zer(1, 4);
-  bool                       Flag4;
+  bool     Flag4;
   InfiniteStatus = false;
   Done           = true;
 
@@ -383,10 +383,10 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
         {
           if (Zer(i) > Zer(i + 1))
           {
-            double t   = Zer(i);
-            Zer(i)     = Zer(i + 1);
-            Zer(i + 1) = t;
-            triok      = false;
+            double t = Zer(i);
+            Zer(i)          = Zer(i + 1);
+            Zer(i + 1)      = t;
+            triok           = false;
           }
         }
       } while (triok == false);
@@ -429,7 +429,7 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
   // Verification des solutions par rapport aux bornes:
   // ==================================================
   double SupmInfs100 = (SupBound - InfBound) * 0.01;
-  NbSol              = 0;
+  NbSol                     = 0;
   for (i = 1; i <= NZer; i++)
   {
     Teta = atan(Zer(i));
@@ -449,7 +449,7 @@ void math_TrigonometricFunctionRoots::Perform(const double A,
 
       // Appel de Newton:
       // OCC541(apo):  double TetaNewton=0;
-      double                             TetaNewton = Teta;
+      double                      TetaNewton = Teta;
       math_TrigonometricEquationFunction MyF(A, B, C, D, E);
       math_NewtonFunctionRoot            Resol(MyF, X, Tol1, Eps, Nit);
       if (Resol.IsDone())

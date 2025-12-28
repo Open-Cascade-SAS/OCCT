@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_FunctionDerivative.hxx>
+#include <Expr_GeneralExpression.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Expr_InvalidFunction.hxx>
 #include <Expr_NamedUnknown.hxx>
@@ -57,10 +58,10 @@ occ::handle<Expr_GeneralExpression> Expr_UnaryFunction::ShallowSimplified() cons
   if (op->IsKind(STANDARD_TYPE(Expr_NumericValue)))
   {
     occ::handle<Expr_NumericValue> nval = occ::down_cast<Expr_NumericValue>(op);
-    NCollection_Array1<double>     tabval(1, 1);
+    NCollection_Array1<double>      tabval(1, 1);
     tabval(1) = nval->GetValue();
     NCollection_Array1<occ::handle<Expr_NamedUnknown>> vars(1, 1);
-    vars(1)    = myFunction->Variable(1);
+    vars(1)           = myFunction->Variable(1);
     double res = myFunction->Evaluate(vars, tabval);
     return new Expr_NumericValue(res);
   }
@@ -111,14 +112,13 @@ occ::handle<Expr_GeneralExpression> Expr_UnaryFunction::Derivative(
   occ::handle<Expr_GeneralExpression> myop      = Operand();
   occ::handle<Expr_GeneralExpression> myexpder  = myop->Derivative(X);
   occ::handle<Expr_GeneralFunction>   myfuncder = myFunction->Derivative(myvar);
-  occ::handle<Expr_UnaryFunction>     firstpart =
-    new Expr_UnaryFunction(myfuncder, Expr::CopyShare(myop));
-  occ::handle<Expr_Product> resu = firstpart->ShallowSimplified() * myexpder;
+  occ::handle<Expr_UnaryFunction> firstpart = new Expr_UnaryFunction(myfuncder, Expr::CopyShare(myop));
+  occ::handle<Expr_Product>       resu      = firstpart->ShallowSimplified() * myexpder;
   return resu->ShallowSimplified();
 }
 
 double Expr_UnaryFunction::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                    const NCollection_Array1<double>& vals) const
+                                           const NCollection_Array1<double>&      vals) const
 {
   NCollection_Array1<occ::handle<Expr_NamedUnknown>> varsfunc(1, 1);
   varsfunc(1) = myFunction->Variable(1);

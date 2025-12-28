@@ -120,9 +120,9 @@ bool BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
   gp_Vec d1cur;
   curv->D1(X(2), ptcur, d1cur);
 
-  const gp_XYZ   nplan = d1cur.Normalized().XYZ();
-  const double   theD  = -(nplan.Dot(ptcur.XYZ()));
-  const gp_Pnt2d pt2d(csurf->Value(X(1)));
+  const gp_XYZ        nplan = d1cur.Normalized().XYZ();
+  const double theD  = -(nplan.Dot(ptcur.XYZ()));
+  const gp_Pnt2d      pt2d(csurf->Value(X(1)));
 
   gp_Pnt pts1, pts2;
   gp_Vec d1u1, d1v1, d1u2, d1v2;
@@ -139,8 +139,8 @@ bool BlendFunc_RuledInv::Value(const math_Vector& X, math_Vector& F)
 
   const gp_XYZ temp(pts2.XYZ() - pts1.XYZ());
 
-  gp_XYZ       ns1   = d1u1.Crossed(d1v1).XYZ();
-  gp_XYZ       ns2   = d1u2.Crossed(d1v2).XYZ();
+  gp_XYZ              ns1   = d1u1.Crossed(d1v1).XYZ();
+  gp_XYZ              ns2   = d1u2.Crossed(d1v2).XYZ();
   const double norm1 = nplan.Crossed(ns1).Modulus();
   const double norm2 = nplan.Crossed(ns2).Modulus();
   ns1.SetLinearForm(nplan.Dot(ns1) / norm1, nplan, -1. / norm1, ns1);
@@ -162,7 +162,7 @@ bool BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matrix& D)
   curv->D2(X(2), ptcur, d1cur, d2cur);
 
   const double normtgcur = d1cur.Magnitude();
-  const gp_Vec nplan     = d1cur.Normalized();
+  const gp_Vec        nplan     = d1cur.Normalized();
 
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2cur), nplan, d2cur);
@@ -209,10 +209,10 @@ bool BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matrix& D)
     D(2, 4) = 0.;
   }
 
-  const gp_Vec ns1       = d1u1.Crossed(d1v1);
-  const gp_Vec ns2       = d1u2.Crossed(d1v2);
-  const gp_Vec ncrossns1 = nplan.Crossed(ns1);
-  const gp_Vec ncrossns2 = nplan.Crossed(ns2);
+  const gp_Vec        ns1       = d1u1.Crossed(d1v1);
+  const gp_Vec        ns2       = d1u2.Crossed(d1v2);
+  const gp_Vec        ncrossns1 = nplan.Crossed(ns1);
+  const gp_Vec        ncrossns2 = nplan.Crossed(ns2);
   const double norm1     = ncrossns1.Magnitude();
   const double norm2     = ncrossns2.Magnitude();
 
@@ -238,7 +238,7 @@ bool BlendFunc_RuledInv::Derivatives(const math_Vector& X, math_Matrix& D)
     D(4, 4) = -(d1v1.Dot(nor2));
   }
 
-  gp_Vec resul1, resul2, temp;
+  gp_Vec        resul1, resul2, temp;
   double grosterme;
 
   // Derivee de nor1 par rapport a u1
@@ -336,7 +336,7 @@ bool BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F, math_Matri
   curv->D2(X(2), ptcur, d1cur, d2cur);
 
   const double normtgcur = d1cur.Magnitude();
-  const gp_Vec nplan     = d1cur.Normalized();
+  const gp_Vec        nplan     = d1cur.Normalized();
   const double theD      = -(nplan.XYZ().Dot(ptcur.XYZ()));
 
   gp_Vec dnplan;
@@ -384,10 +384,10 @@ bool BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F, math_Matri
     D(2, 4) = 0.;
   }
 
-  const gp_Vec ns1       = d1u1.Crossed(d1v1);
-  const gp_Vec ns2       = d1u2.Crossed(d1v2);
-  const gp_Vec ncrossns1 = nplan.Crossed(ns1);
-  const gp_Vec ncrossns2 = nplan.Crossed(ns2);
+  const gp_Vec        ns1       = d1u1.Crossed(d1v1);
+  const gp_Vec        ns2       = d1u2.Crossed(d1v2);
+  const gp_Vec        ncrossns1 = nplan.Crossed(ns1);
+  const gp_Vec        ncrossns2 = nplan.Crossed(ns2);
   const double norm1     = ncrossns1.Magnitude();
   const double norm2     = ncrossns2.Magnitude();
 
@@ -419,7 +419,7 @@ bool BlendFunc_RuledInv::Values(const math_Vector& X, math_Vector& F, math_Matri
     D(4, 4) = -(d1v1.Dot(nor2));
   }
 
-  gp_Vec resul1, resul2, temp;
+  gp_Vec        resul1, resul2, temp;
   double grosterme;
 
   // Derivee de nor1 par rapport a u1

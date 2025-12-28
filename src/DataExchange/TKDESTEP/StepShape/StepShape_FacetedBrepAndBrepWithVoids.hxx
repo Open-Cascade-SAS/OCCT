@@ -43,10 +43,9 @@ public:
                             const occ::handle<StepShape_FacetedBrep>&    aFacetedBrep,
                             const occ::handle<StepShape_BrepWithVoids>&  aBrepWithVoids);
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                                        aName,
-    const occ::handle<StepShape_ClosedShell>&                                           aOuter,
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&               aName,
+                            const occ::handle<StepShape_ClosedShell>&                  aOuter,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids);
 
   Standard_EXPORT void SetFacetedBrep(const occ::handle<StepShape_FacetedBrep>& aFacetedBrep);
 
@@ -56,13 +55,12 @@ public:
 
   Standard_EXPORT occ::handle<StepShape_BrepWithVoids> BrepWithVoids() const;
 
-  Standard_EXPORT void SetVoids(
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids);
+  Standard_EXPORT void SetVoids(const occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>& aVoids);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>
-                  Voids() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> Voids() const;
 
-  Standard_EXPORT occ::handle<StepShape_OrientedClosedShell> VoidsValue(const int num) const;
+  Standard_EXPORT occ::handle<StepShape_OrientedClosedShell> VoidsValue(
+    const int num) const;
 
   Standard_EXPORT int NbVoids() const;
 

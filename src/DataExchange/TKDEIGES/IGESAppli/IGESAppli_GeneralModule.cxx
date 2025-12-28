@@ -68,9 +68,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_GeneralModule, IGESData_GeneralModule)
 //  the method TypeNumber from this Protocol
 IGESAppli_GeneralModule::IGESAppli_GeneralModule() {}
 
-void IGESAppli_GeneralModule::OwnSharedCase(const int                               CN,
+void IGESAppli_GeneralModule::OwnSharedCase(const int             CN,
                                             const occ::handle<IGESData_IGESEntity>& ent,
-                                            Interface_EntityIterator&               iter) const
+                                            Interface_EntityIterator&          iter) const
 {
   switch (CN)
   {
@@ -232,7 +232,7 @@ void IGESAppli_GeneralModule::OwnSharedCase(const int                           
 }
 
 IGESData_DirChecker IGESAppli_GeneralModule::DirChecker(
-  const int                               CN,
+  const int             CN,
   const occ::handle<IGESData_IGESEntity>& ent) const
 {
   switch (CN)
@@ -376,9 +376,9 @@ IGESData_DirChecker IGESAppli_GeneralModule::DirChecker(
   return IGESData_DirChecker(); // by default, no specific criterium
 }
 
-void IGESAppli_GeneralModule::OwnCheckCase(const int                               CN,
+void IGESAppli_GeneralModule::OwnCheckCase(const int             CN,
                                            const occ::handle<IGESData_IGESEntity>& ent,
-                                           const Interface_ShareTool&              shares,
+                                           const Interface_ShareTool&         shares,
                                            occ::handle<Interface_Check>&           ach) const
 {
   switch (CN)
@@ -540,7 +540,8 @@ void IGESAppli_GeneralModule::OwnCheckCase(const int                            
   }
 }
 
-bool IGESAppli_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
+bool IGESAppli_GeneralModule::NewVoid(const int      CN,
+                                                  occ::handle<Standard_Transient>& ent) const
 {
   switch (CN)
   {
@@ -607,10 +608,10 @@ bool IGESAppli_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transie
   return true;
 }
 
-void IGESAppli_GeneralModule::OwnCopyCase(const int                               CN,
+void IGESAppli_GeneralModule::OwnCopyCase(const int             CN,
                                           const occ::handle<IGESData_IGESEntity>& entfrom,
                                           const occ::handle<IGESData_IGESEntity>& entto,
-                                          Interface_CopyTool&                     TC) const
+                                          Interface_CopyTool&                TC) const
 {
   switch (CN)
   {
@@ -753,8 +754,8 @@ void IGESAppli_GeneralModule::OwnCopyCase(const int                             
 }
 
 int IGESAppli_GeneralModule::CategoryNumber(const int CN,
-                                            const occ::handle<Standard_Transient>& /*ent*/,
-                                            const Interface_ShareTool&) const
+                                                         const occ::handle<Standard_Transient>& /*ent*/,
+                                                         const Interface_ShareTool&) const
 {
   if (CN == 4 || CN == 5 || CN == 17)
     return Interface_Category::Number("Piping");

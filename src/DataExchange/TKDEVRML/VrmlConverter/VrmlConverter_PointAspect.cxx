@@ -22,7 +22,7 @@ VrmlConverter_PointAspect::VrmlConverter_PointAspect()
 }
 
 VrmlConverter_PointAspect::VrmlConverter_PointAspect(const occ::handle<Vrml_Material>& aMaterial,
-                                                     const bool                        OnOff)
+                                                     const bool       OnOff)
 {
   myMaterial    = aMaterial;
   myHasMaterial = OnOff;

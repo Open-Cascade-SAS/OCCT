@@ -51,7 +51,9 @@ public:
   //! <avalue> as arguments. If there is already a token
   //! with the field <theword> equal to <aword>, the
   //! existing token is updated.
-  Standard_EXPORT void AddToken(const char* aword, const char* amean, const double avalue);
+  Standard_EXPORT void AddToken(const char* aword,
+                                const char* amean,
+                                const double    avalue);
 
   //! Useful for debugging.
   virtual void Dump() const;

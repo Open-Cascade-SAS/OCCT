@@ -39,11 +39,13 @@ public:
   //! tolerance Tol on the solid S.
   Standard_EXPORT BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
                                           const gp_Pnt&              P,
-                                          const double               Tol);
+                                          const double        Tol);
 
   //! Classify the point P with the
   //! tolerance Tol on the solid S.
-  Standard_EXPORT void Perform(BRepClass3d_SolidExplorer& S, const gp_Pnt& P, const double Tol);
+  Standard_EXPORT void Perform(BRepClass3d_SolidExplorer& S,
+                               const gp_Pnt&              P,
+                               const double        Tol);
 
   //! Classify an infinite point with the
   //! tolerance Tol on the solid S.

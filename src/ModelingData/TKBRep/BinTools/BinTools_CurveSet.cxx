@@ -35,6 +35,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Message_ProgressScope.hxx>
 
 #define LINE 1
@@ -316,7 +318,7 @@ void BinTools_CurveSet::WriteCurve(const occ::handle<Geom_Curve>& C, BinTools_OS
 
 void BinTools_CurveSet::Write(Standard_OStream& OS, const Message_ProgressRange& theRange) const
 {
-  int                   i, nbcurv = myMap.Extent();
+  int      i, nbcurv = myMap.Extent();
   Message_ProgressScope aPS(theRange, "Writing curves", nbcurv);
   OS << "Curves " << nbcurv << "\n";
   BinTools_OStream aStream(OS);
@@ -365,8 +367,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Line>
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Circle>& C)
 {
-  gp_Pnt P(0., 0., 0.);
-  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt        P(0., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R);
@@ -378,8 +380,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Circl
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Ellipse>& E)
 {
-  gp_Pnt P(0., 0., 0.);
-  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt        P(0., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);
@@ -392,8 +394,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Ellip
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Parabola>& C)
 {
-  gp_Pnt P(0., 0., 0.);
-  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt        P(0., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);
@@ -405,8 +407,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Parab
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Hyperbola>& H)
 {
-  gp_Pnt P(0., 0., 0.);
-  gp_Dir A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
+  gp_Pnt        P(0., 0., 0.);
+  gp_Dir        A(gp_Dir::D::X), AX(gp_Dir::D::X), AY(gp_Dir::D::X);
   double R1 = 0., R2 = 0.;
   IS >> P >> A >> AX >> AY;
   BinTools::GetReal(IS, R1);
@@ -429,7 +431,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   BinTools::GetExtChar(IS, aVal);
   degree = (int)aVal;
 
-  NCollection_Array1<gp_Pnt> poles(1, degree + 1);
+  NCollection_Array1<gp_Pnt>   poles(1, degree + 1);
   NCollection_Array1<double> weights(1, degree + 1);
 
   for (i = 1; i <= degree + 1; i++)
@@ -467,7 +469,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
 
   BinTools::GetInteger(IS, nbknots);
 
-  NCollection_Array1<gp_Pnt> poles(1, nbpoles);
+  NCollection_Array1<gp_Pnt>   poles(1, nbpoles);
   NCollection_Array1<double> weights(1, nbpoles);
 
   for (i = 1; i <= nbpoles; i++)
@@ -477,8 +479,8 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
       BinTools::GetReal(IS, weights(i));
   }
 
-  NCollection_Array1<double> knots(1, nbknots);
-  NCollection_Array1<int>    mults(1, nbknots);
+  NCollection_Array1<double>    knots(1, nbknots);
+  NCollection_Array1<int> mults(1, nbknots);
 
   for (i = 1; i <= nbknots; i++)
   {
@@ -631,7 +633,7 @@ void BinTools_CurveSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   }
 
   occ::handle<Geom_Curve> C;
-  int                     i, nbcurve;
+  int   i, nbcurve;
   IS >> nbcurve;
 
   Message_ProgressScope aPS(theRange, "Reading curves", nbcurve);

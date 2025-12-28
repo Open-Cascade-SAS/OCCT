@@ -50,9 +50,9 @@ occ::handle<TDF_Attribute> BinTObjDrivers_ObjectDriver::NewEmpty() const
 //           into <theTarget>.
 //=======================================================================
 
-bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        BinObjMgt_RRelocationTable&) const
+bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    BinObjMgt_RRelocationTable&) const
 {
   int aSavedPos = theSource.Position();
 
@@ -106,10 +106,9 @@ bool BinTObjDrivers_ObjectDriver::Paste(const BinObjMgt_Persistent&       theSou
 //           anObject is stored as a Name of class derived from TObj_Object
 //=======================================================================
 
-void BinTObjDrivers_ObjectDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinTObjDrivers_ObjectDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                        BinObjMgt_Persistent&        theTarget,
+                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TObj_TObject> aTObj     = occ::down_cast<TObj_TObject>(theSource);
   occ::handle<TObj_Object>  anIObject = aTObj->Get();

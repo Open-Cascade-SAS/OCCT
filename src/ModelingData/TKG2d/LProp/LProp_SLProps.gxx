@@ -25,15 +25,15 @@
 
 static const double MinStep = 1.0e-7;
 
-static bool IsTangentDefined(LProp_SLProps& SProp,
-                             const int      cn,
-                             const double   linTol,
-                             const int      Derivative,
-                             int&           Order,
-                             LProp_Status&  theStatus)
+static bool IsTangentDefined(LProp_SLProps&         SProp,
+                                         const int cn,
+                                         const double    linTol,
+                                         const int Derivative,
+                                         int&      Order,
+                                         LProp_Status&          theStatus)
 {
   double Tol = linTol * linTol;
-  gp_Vec V[2];
+  gp_Vec        V[2];
   Order = 0;
 
   while (Order < 3)
@@ -69,11 +69,11 @@ static bool IsTangentDefined(LProp_SLProps& SProp,
   return false;
 }
 
-LProp_SLProps::LProp_SLProps(const Surface& S,
-                             const double   U,
-                             const double   V,
-                             const int      N,
-                             const double   Resolution)
+LProp_SLProps::LProp_SLProps(const Surface&         S,
+                             const double    U,
+                             const double    V,
+                             const int N,
+                             const double    Resolution)
     : mySurf(S),
       myDerOrder(N),
       myCN(4), // (Tool::Continuity(S)),
@@ -84,7 +84,9 @@ LProp_SLProps::LProp_SLProps(const Surface& S,
   SetParameters(U, V);
 }
 
-LProp_SLProps::LProp_SLProps(const Surface& S, const int N, const double Resolution)
+LProp_SLProps::LProp_SLProps(const Surface&         S,
+                             const int N,
+                             const double    Resolution)
     : mySurf(S),
       myU(RealLast()),
       myV(RealLast()),
@@ -253,7 +255,7 @@ void LProp_SLProps::TangentU(gp_Dir& D)
     Tool::Value(mySurf, std::min(myU, u), myV, P1);
     Tool::Value(mySurf, std::max(myU, u), myV, P2);
 
-    gp_Vec V1(P1, P2);
+    gp_Vec        V1(P1, P2);
     double aDirFactor = V.Dot(V1);
 
     if (aDirFactor < 0.0)
@@ -315,7 +317,7 @@ void LProp_SLProps::TangentV(gp_Dir& D)
     Tool::Value(mySurf, myU, std::min(myV, v), P1);
     Tool::Value(mySurf, myU, std::max(myV, v), P2);
 
-    gp_Vec V1(P1, P2);
+    gp_Vec        V1(P1, P2);
     double aDirFactor = V.Dot(V1);
 
     if (aDirFactor < 0.0)
@@ -423,7 +425,7 @@ bool LProp_SLProps::IsCurvatureDefined()
   B = B / MaxABC;
   C = C / MaxABC;
   double Curv1, Curv2, Root1, Root2;
-  gp_Vec VectCurv1, VectCurv2;
+  gp_Vec        VectCurv1, VectCurv2;
 
   if (std::abs(A) > RealEpsilon())
   {

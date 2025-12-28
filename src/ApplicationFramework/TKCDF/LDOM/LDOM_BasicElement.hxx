@@ -43,8 +43,8 @@ public:
 
   //    Empty constructor
 
-  static LDOM_BasicElement& Create(const char*                         aName,
-                                   const int                           aLength,
+  static LDOM_BasicElement& Create(const char*                    aName,
+                                   const int         aLength,
                                    const occ::handle<LDOM_MemManager>& aDoc);
 
   //  Standard_EXPORT LDOM_BasicElement (const LDOM_BasicElement& theOther);
@@ -73,10 +73,10 @@ protected:
   //  LDOM_BasicElement (const LDOM_Element& anElement);
   //    Constructor
 
-  Standard_EXPORT const LDOM_BasicNode* AddAttribute(const LDOMBasicString& anAttrName,
-                                                     const LDOMBasicString& anAttrValue,
+  Standard_EXPORT const LDOM_BasicNode* AddAttribute(const LDOMBasicString&         anAttrName,
+                                                     const LDOMBasicString&         anAttrValue,
                                                      const occ::handle<LDOM_MemManager>& aDoc,
-                                                     const LDOM_BasicNode*               aLastCh);
+                                                     const LDOM_BasicNode*          aLastCh);
   //    add or replace an attribute to the element
 
   Standard_EXPORT const LDOM_BasicNode* RemoveAttribute(const LDOMBasicString& aName,

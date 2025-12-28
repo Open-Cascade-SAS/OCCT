@@ -25,9 +25,9 @@
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
 
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2& A2,
-                                             const double  Ang,
-                                             const double  Radius)
+GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2&       A2,
+                                             const double Ang,
+                                             const double Radius)
 {
   if (Radius < 0.)
   {
@@ -73,10 +73,10 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
 //=========================================================================
 //=========================================================================
 
-GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
-                                             const gp_Pnt& P2,
-                                             const double  R1,
-                                             const double  R2)
+GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt&       P1,
+                                             const gp_Pnt&       P2,
+                                             const double R1,
+                                             const double R2)
 {
   gce_MakeCone C = gce_MakeCone(P1, P2, R1, R2);
   TheError       = C.Status();

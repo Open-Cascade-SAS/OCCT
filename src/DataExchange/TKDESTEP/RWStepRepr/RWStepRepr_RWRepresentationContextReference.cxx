@@ -30,7 +30,7 @@ RWStepRepr_RWRepresentationContextReference::RWStepRepr_RWRepresentationContextR
 
 void RWStepRepr_RWRepresentationContextReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 theData,
-  const int                                                   theNum,
+  const int                                 theNum,
   occ::handle<Interface_Check>&                               theAch,
   const occ::handle<StepRepr_RepresentationContextReference>& theEnt) const
 {
@@ -50,7 +50,7 @@ void RWStepRepr_RWRepresentationContextReference::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWRepresentationContextReference::WriteStep(
-  StepData_StepWriter&                                        theSW,
+  StepData_StepWriter&                                   theSW,
   const occ::handle<StepRepr_RepresentationContextReference>& theEnt) const
 {
 

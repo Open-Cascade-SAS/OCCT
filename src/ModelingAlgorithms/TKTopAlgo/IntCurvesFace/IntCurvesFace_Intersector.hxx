@@ -24,6 +24,7 @@
 #include <NCollection_Sequence.hxx>
 #include <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Face.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
@@ -58,10 +59,10 @@ public:
   //! (relative to face);
   //! otherwise it's using maximum between input tolerance(aTol) and tolerances of face bounds
   //! (edges).
-  Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face& F,
-                                            const double       aTol,
-                                            const bool         aRestr    = true,
-                                            const bool         UseBToler = true);
+  Standard_EXPORT IntCurvesFace_Intersector(const TopoDS_Face&     F,
+                                            const double    aTol,
+                                            const bool aRestr    = true,
+                                            const bool UseBToler = true);
 
   //! Perform the intersection between the
   //! segment L and the loaded face.
@@ -76,8 +77,8 @@ public:
   //! same method for a HCurve from Adaptor3d.
   //! PInf an PSup can also be - and + INF.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Curve>& HCu,
-                               const double                        PInf,
-                               const double                        PSup);
+                               const double            PInf,
+                               const double            PSup);
 
   //! Return the surface type
   Standard_EXPORT GeomAbs_SurfaceType SurfaceType() const;
@@ -136,24 +137,24 @@ public:
 
 private:
   Standard_EXPORT void InternalCall(const IntCurveSurface_HInter& HICS,
-                                    const double                  pinf,
-                                    const double                  psup);
+                                    const double           pinf,
+                                    const double           psup);
 
-  occ::handle<BRepTopAdaptor_TopolTool>                   myTopolTool;
-  occ::handle<BRepAdaptor_Surface>                        Hsurface;
-  double                                                  Tol;
-  NCollection_Sequence<IntCurveSurface_IntersectionPoint> SeqPnt;
-  NCollection_Sequence<int>                               mySeqState;
-  bool                                                    done;
-  bool                                                    myReady;
-  int                                                     nbpnt;
-  TopoDS_Face                                             face;
-  std::unique_ptr<IntCurveSurface_ThePolyhedronOfHInter>  myPolyhedron;
-  std::unique_ptr<Bnd_BoundSortBox>                       myBndBounding;
-  bool                                                    myUseBoundTol;
+  occ::handle<BRepTopAdaptor_TopolTool>                       myTopolTool;
+  occ::handle<BRepAdaptor_Surface>                            Hsurface;
+  double                                          Tol;
+  NCollection_Sequence<IntCurveSurface_IntersectionPoint>                          SeqPnt;
+  NCollection_Sequence<int>                              mySeqState;
+  bool                                       done;
+  bool                                       myReady;
+  int                                       nbpnt;
+  TopoDS_Face                                            face;
+  std::unique_ptr<IntCurveSurface_ThePolyhedronOfHInter> myPolyhedron;
+  std::unique_ptr<Bnd_BoundSortBox>                      myBndBounding;
+  bool                                       myUseBoundTol;
   bool myIsParallel; // Curve is "parallel" face surface
-                     // This case is recognized only for some pairs
-                     // of analytical curves and surfaces (plane - line, ...)
+                                 // This case is recognized only for some pairs
+                                 // of analytical curves and surfaces (plane - line, ...)
 };
 
 #include <IntCurvesFace_Intersector.lxx>

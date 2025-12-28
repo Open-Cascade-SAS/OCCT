@@ -88,8 +88,8 @@ public:
     const occ::handle<TDF_Attribute>& anOldAttribute) const override;
 
   //! Applies a DeltaOnModification to <me>.
-  Standard_EXPORT virtual void DeltaOnModification(
-    const occ::handle<TDF_DeltaOnModification>& aDelta) override;
+  Standard_EXPORT virtual void DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& aDelta)
+    override;
 
   //! Makes a DeltaOnRemoval on <me> because <me> has
   //! disappeared from the DS.
@@ -106,31 +106,34 @@ public:
   //! corresponding to the insertor. The pasted
   //! attribute may be a brand new one or a new version
   //! of the previous one.
-  Standard_EXPORT virtual void Paste(
-    const occ::handle<TDF_Attribute>&       intoAttribute,
-    const occ::handle<TDF_RelocationTable>& aRelocTationable) const override;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       intoAttribute,
+                                     const occ::handle<TDF_RelocationTable>& aRelocTationable) const
+    override;
 
   //! Adds the directly referenced attributes and labels
   //! to <aDataSet>. "Directly" means we have only to
   //! look at the first level of references.
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
+    override;
 
   Standard_EXPORT virtual void BeforeRemoval() override;
 
   //! Something to do before applying <anAttDelta>
-  Standard_EXPORT virtual bool BeforeUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                          const bool forceIt = false) override;
+  Standard_EXPORT virtual bool BeforeUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   //! Something to do after applying <anAttDelta>.
-  Standard_EXPORT virtual bool AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                         const bool forceIt = false) override;
+  Standard_EXPORT virtual bool AfterUndo(
+    const occ::handle<TDF_AttributeDelta>& anAttDelta,
+    const bool            forceIt = false) override;
 
   //! Dumps the attribute on <aStream>.
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   friend class TNaming_Builder;
   friend class TNaming_Iterator;
@@ -145,7 +148,7 @@ private:
 
   TNaming_PtrNode   myNode;
   TNaming_Evolution myEvolution;
-  int               myVersion;
+  int  myVersion;
 };
 
 #include <TNaming_NamedShape.lxx>

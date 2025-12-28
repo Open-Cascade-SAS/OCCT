@@ -26,8 +26,8 @@ StepFEA_CurveElementEndOffset::StepFEA_CurveElementEndOffset() {}
 //=================================================================================================
 
 void StepFEA_CurveElementEndOffset::Init(
-  const StepFEA_CurveElementEndCoordinateSystem&  aCoordinateSystem,
-  const occ::handle<NCollection_HArray1<double>>& aOffsetVector)
+  const StepFEA_CurveElementEndCoordinateSystem& aCoordinateSystem,
+  const occ::handle<NCollection_HArray1<double>>&           aOffsetVector)
 {
 
   theCoordinateSystem = aCoordinateSystem;

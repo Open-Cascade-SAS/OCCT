@@ -24,6 +24,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfInteger;
 class IGESBasic_HArray1OfHArray1OfIGESEntity;
 
@@ -55,14 +59,13 @@ public:
   //! raises exception if length of types, edges, index, orient and
   //! nbParameterCurves do not match or the length of
   //! isoparametricFlags and curves do not match
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<int>>&                              types,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& edges,
-    const occ::handle<NCollection_HArray1<int>>&                              index,
-    const occ::handle<NCollection_HArray1<int>>&                              orient,
-    const occ::handle<NCollection_HArray1<int>>&                              nbParameterCurves,
-    const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>&                   isoparametricFlags,
-    const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>&                curves);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<int>>&            types,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&        edges,
+                            const occ::handle<NCollection_HArray1<int>>&            index,
+                            const occ::handle<NCollection_HArray1<int>>&            orient,
+                            const occ::handle<NCollection_HArray1<int>>&            nbParameterCurves,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& isoparametricFlags,
+                            const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>& curves);
 
   //! Tells if a Loop is a Bound (FN 1) else it is free (FN 0)
   Standard_EXPORT bool IsBound() const;
@@ -91,14 +94,16 @@ public:
   //! raises exception if Index <= 0 or Index > NbEdges()
   Standard_EXPORT int NbParameterCurves(const int Index) const;
 
-  Standard_EXPORT bool IsIsoparametric(const int EdgeIndex, const int CurveIndex) const;
+  Standard_EXPORT bool IsIsoparametric(const int EdgeIndex,
+                                                   const int CurveIndex) const;
 
   //! returns the CurveIndex'th parameter space curve associated with
   //! EdgeIndex'th edge
   //! raises exception if EdgeIndex <= 0 or EdgeIndex > NbEdges() or
   //! if CurveIndex <= 0 or CurveIndex > NbParameterCurves(EdgeIndex)
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> ParametricCurve(const int EdgeIndex,
-                                                                   const int CurveIndex) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> ParametricCurve(
+    const int EdgeIndex,
+    const int CurveIndex) const;
 
   //! raises exception If num <= 0 or num > NbEdges()
   Standard_EXPORT int ListIndex(const int num) const;
@@ -106,13 +111,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Loop, IGESData_IGESEntity)
 
 private:
-  occ::handle<NCollection_HArray1<int>>                              theTypes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theEdges;
-  occ::handle<NCollection_HArray1<int>>                              theIndex;
-  occ::handle<NCollection_HArray1<int>>                              theOrientationFlags;
-  occ::handle<NCollection_HArray1<int>>                              theNbParameterCurves;
-  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>                   theIsoparametricFlags;
-  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                theCurves;
+  occ::handle<NCollection_HArray1<int>>               theTypes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           theEdges;
+  occ::handle<NCollection_HArray1<int>>               theIndex;
+  occ::handle<NCollection_HArray1<int>>               theOrientationFlags;
+  occ::handle<NCollection_HArray1<int>>               theNbParameterCurves;
+  occ::handle<IGESBasic_HArray1OfHArray1OfInteger>    theIsoparametricFlags;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> theCurves;
 };
 
 #endif // _IGESSolid_Loop_HeaderFile

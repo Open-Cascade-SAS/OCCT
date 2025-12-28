@@ -26,7 +26,7 @@ RWStepGeom_RWCompositeCurveSegment::RWStepGeom_RWCompositeCurveSegment() {}
 
 void RWStepGeom_RWCompositeCurveSegment::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepGeom_CompositeCurveSegment>& ent) const
 {
@@ -68,7 +68,7 @@ void RWStepGeom_RWCompositeCurveSegment::ReadStep(
 }
 
 void RWStepGeom_RWCompositeCurveSegment::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepGeom_CompositeCurveSegment>& ent) const
 {
 
@@ -85,9 +85,8 @@ void RWStepGeom_RWCompositeCurveSegment::WriteStep(
   SW.Send(ent->ParentCurve());
 }
 
-void RWStepGeom_RWCompositeCurveSegment::Share(
-  const occ::handle<StepGeom_CompositeCurveSegment>& ent,
-  Interface_EntityIterator&                          iter) const
+void RWStepGeom_RWCompositeCurveSegment::Share(const occ::handle<StepGeom_CompositeCurveSegment>& ent,
+                                               Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->ParentCurve());

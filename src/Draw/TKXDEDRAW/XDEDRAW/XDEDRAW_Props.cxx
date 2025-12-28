@@ -35,6 +35,7 @@
 #include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Label.hxx>
@@ -114,14 +115,14 @@ static gp_XYZ TetraCen(const gp_Pnt& RefPoint,
 //=================================================================================================
 
 static double CalculVolume(const TopoDS_Shape& So,
-                           gp_Pnt&             aRefPoint,
-                           double              tol,
-                           bool                withForce,
-                           Draw_Interpretor&   di)
+                                  gp_Pnt&             aRefPoint,
+                                  double       tol,
+                                  bool    withForce,
+                                  Draw_Interpretor&   di)
 {
-  double myVolume = 0, curVolume = 0;
-  gp_XYZ localCentroid(0, 0, 0), curCentroid(0, 0, 0);
-  bool   haveVertex = false;
+  double    myVolume = 0, curVolume = 0;
+  gp_XYZ           localCentroid(0, 0, 0), curCentroid(0, 0, 0);
+  bool haveVertex = false;
   for (TopExp_Explorer ex(So, TopAbs_FACE); ex.More(); ex.Next())
   {
     TopoDS_Face     F = TopoDS::Face(ex.Current());
@@ -149,8 +150,8 @@ static double CalculVolume(const TopoDS_Shape& So,
     for (int i = 1; i <= (facing->NbTriangles()); i++)
     {
 
-      Poly_Triangle trian = facing->Triangle(i);
-      int           index1, index2, index3; // M,N;
+      Poly_Triangle    trian = facing->Triangle(i);
+      int index1, index2, index3; // M,N;
       if (F.Orientation() == TopAbs_REVERSED)
         trian.Get(index1, index3, index2);
       else
@@ -208,7 +209,7 @@ static int SetProps(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   else
@@ -227,20 +228,20 @@ static int SetProps(Draw_Interpretor& di, int argc, const char** argv)
 
     GProp_GProps G;
     BRepGProp::VolumeProperties(aShape, G, anEps, true);
-    Vres                                = G.Mass();
+    Vres                           = G.Mass();
     occ::handle<XCAFDoc_Volume> aVolume = new XCAFDoc_Volume;
     if (!aLabel.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
       aLabel.AddAttribute(aVolume);
     aVolume->Set(Vres);
 
-    gp_Pnt                        aPoint    = G.CentreOfMass();
+    gp_Pnt                   aPoint    = G.CentreOfMass();
     occ::handle<XCAFDoc_Centroid> aCentroid = new XCAFDoc_Centroid;
     if (!aLabel.FindAttribute(XCAFDoc_Centroid::GetID(), aCentroid))
       aLabel.AddAttribute(aCentroid);
     aCentroid->Set(aPoint);
 
     BRepGProp::SurfaceProperties(aShape, G, anEps);
-    Ares                            = G.Mass();
+    Ares                       = G.Mass();
     occ::handle<XCAFDoc_Area> aArea = new XCAFDoc_Area;
     if (!aLabel.FindAttribute(XCAFDoc_Area::GetID(), aArea))
       aLabel.AddAttribute(aArea);
@@ -279,12 +280,12 @@ static int SetVolume(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
   {
-    res                                 = Draw::Atof(argv[3]);
+    res                            = Draw::Atof(argv[3]);
     occ::handle<XCAFDoc_Volume> aVolume = new XCAFDoc_Volume;
     if (!aLabel.FindAttribute(XCAFDoc_Volume::GetID(), aVolume))
       aLabel.AddAttribute(aVolume);
@@ -322,12 +323,12 @@ static int SetArea(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
   {
-    res                             = Draw::Atof(argv[3]);
+    res                        = Draw::Atof(argv[3]);
     occ::handle<XCAFDoc_Area> aArea = new XCAFDoc_Area;
     if (!aLabel.FindAttribute(XCAFDoc_Area::GetID(), aArea))
       aLabel.AddAttribute(aArea);
@@ -364,7 +365,7 @@ static int SetCentroid(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
@@ -406,7 +407,7 @@ static int GetVolume(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
@@ -446,7 +447,7 @@ static int GetArea(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
@@ -488,7 +489,7 @@ static int GetCentroid(Draw_Interpretor& di, int argc, const char** argv)
     if (!aShape.IsNull())
     {
       occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-      aLabel                               = STool->FindShape(aShape);
+      aLabel                          = STool->FindShape(aShape);
     }
   }
   if (!aLabel.IsNull())
@@ -530,7 +531,7 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
   bool withVolFix = false;
   if (argc > 2 && Draw::Atof(argv[2]) != 0)
     withVolFix = true;
-  bool                            wholeDoc = (argc < 4);
+  bool  wholeDoc = (argc < 4);
   NCollection_Sequence<TDF_Label> seq;
   if (!wholeDoc)
   {
@@ -543,7 +544,7 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
       if (!aShape.IsNull())
       {
         occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-        aLabel                               = STool->FindShape(aShape);
+        aLabel                          = STool->FindShape(aShape);
       }
     }
     if (aLabel.IsNull())
@@ -571,7 +572,7 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
       int m = i;
       for (int k = 1; k <= comp.Length(); k++)
       {
-        TDF_Label                     lab = comp(k);
+        TDF_Label                lab = comp(k);
         occ::handle<XCAFDoc_Volume>   aVolume;
         occ::handle<XCAFDoc_Area>     aArea;
         occ::handle<XCAFDoc_Centroid> aCentroid;
@@ -618,13 +619,14 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
         //	(int)( Abs ( G.Mass() ) > 1e-10 ? 100. * ( aArea->Get() - G.Mass() ) /
         // G.Mass() : 999. ), 	( wholeDoc ? "" : "\n" ));
         char string2[260];
-        Sprintf(
-          string2,
-          "%s%9.1f (%3d%%)%s",
-          (wholeDoc ? "" : "  Area defect:   "),
-          aArea->Get() - G.Mass(),
-          (int)(std::abs(G.Mass()) > 1e-10 ? 100. * (aArea->Get() - G.Mass()) / G.Mass() : 999.),
-          (wholeDoc ? "" : "\n"));
+        Sprintf(string2,
+                "%s%9.1f (%3d%%)%s",
+                (wholeDoc ? "" : "  Area defect:   "),
+                aArea->Get() - G.Mass(),
+                (int)(std::abs(G.Mass()) > 1e-10
+                                     ? 100. * (aArea->Get() - G.Mass()) / G.Mass()
+                                     : 999.),
+                (wholeDoc ? "" : "\n"));
         di << string2;
       }
       catch (Standard_Failure const&)
@@ -650,11 +652,11 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
         OCC_CATCH_SIGNALS
         // Added for check Volume. PTV 08 Nov 2000.
         double localVolume;
-        gp_Pnt pcg(0, 0, 0);
+        gp_Pnt        pcg(0, 0, 0);
         if (withVolFix)
         {
-          double tol       = Draw::Atof(argv[2]);
-          bool   withForce = false;
+          double    tol       = Draw::Atof(argv[2]);
+          bool withForce = false;
           if (tol < 0)
           {
             withForce = true;
@@ -681,8 +683,8 @@ static int CheckProps(Draw_Interpretor& di, int argc, const char** argv)
                   (wholeDoc ? "" : "  Volume defect: "),
                   aVolume->Get() - localVolume,
                   (int)(std::abs(localVolume) > 1e-10
-                          ? 100. * (aVolume->Get() - localVolume) / localVolume
-                          : 999.),
+                                       ? 100. * (aVolume->Get() - localVolume) / localVolume
+                                       : 999.),
                   (wholeDoc ? "" : "\n"));
           di << string5;
         }
@@ -776,10 +778,10 @@ static int ShapeVolume(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape aShape = DBRep::Get(argv[1]);
   if (aShape.IsNull())
     return 1;
-  gp_Pnt aPoint(0, 0, 0);
-  double localVolume;
-  double tol       = Draw::Atof(argv[2]);
-  bool   withForce = false;
+  gp_Pnt           aPoint(0, 0, 0);
+  double    localVolume;
+  double    tol       = Draw::Atof(argv[2]);
+  bool withForce = false;
   if (tol < 0)
   {
     withForce = true;
@@ -798,10 +800,10 @@ static int ShapeVolume(Draw_Interpretor& di, int argc, const char** argv)
 // purpose  : auxiliary for ShapeMassProps
 //=======================================================================
 
-static bool GetMassProps(const TDF_Label& aLabel,
-                         gp_XYZ&          theCenterGravity,
-                         double&          theMassVal,
-                         const double     thetol)
+static bool GetMassProps(const TDF_Label&    aLabel,
+                                     gp_XYZ&             theCenterGravity,
+                                     double&      theMassVal,
+                                     const double thetol)
 {
   double aDensity = XCAFDoc_MaterialTool::GetDensityForShape(aLabel);
 
@@ -811,8 +813,8 @@ static bool GetMassProps(const TDF_Label& aLabel,
     GProp_GProps G;
     BRepGProp::VolumeProperties(aShape, G, 0.001, true);
     double localVolume = G.Mass();
-    theMassVal         = aDensity * localVolume;
-    theCenterGravity   = G.CentreOfMass().XYZ();
+    theMassVal                = aDensity * localVolume;
+    theCenterGravity          = G.CentreOfMass().XYZ();
     return true;
   }
 
@@ -855,16 +857,16 @@ static bool GetMassProps(const TDF_Label& aLabel,
       if (!comp.Length())
         return false;
 
-      NCollection_Array1<gp_XYZ> anArrCentres(1, comp.Length());
+      NCollection_Array1<gp_XYZ>   anArrCentres(1, comp.Length());
       NCollection_Array1<double> anArrMass(1, comp.Length());
       anArrMass.Init(0.0);
-      double aTotalMass = 0.0;
-      int    k          = 1;
+      double    aTotalMass = 0.0;
+      int k          = 1;
       for (; k <= comp.Length(); k++)
       {
-        TDF_Label lab = comp(k);
-        gp_XYZ    aCenterGravity(0.0, 0.0, 0.0);
-        double    aMassVal = 0.0;
+        TDF_Label     lab = comp(k);
+        gp_XYZ        aCenterGravity(0.0, 0.0, 0.0);
+        double aMassVal = 0.0;
         if (GetMassProps(lab, aCenterGravity, aMassVal, thetol))
         {
           anArrCentres.SetValue(k, aCenterGravity);
@@ -892,7 +894,9 @@ static bool GetMassProps(const TDF_Label& aLabel,
 
 //=================================================================================================
 
-static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
+static int ShapeMassProps(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
 
   if (argc < 2)
@@ -915,7 +919,7 @@ static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  bool                            wholeDoc = (argc < 4);
+  bool  wholeDoc = (argc < 4);
   NCollection_Sequence<TDF_Label> seq;
   if (!wholeDoc)
   {
@@ -928,7 +932,7 @@ static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
       if (!aShape.IsNull())
       {
         occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-        aLabel                               = STool->FindShape(aShape);
+        aLabel                          = STool->FindShape(aShape);
       }
     }
     if (aLabel.IsNull())
@@ -943,7 +947,7 @@ static int ShapeMassProps(Draw_Interpretor& di, int argc, const char** argv)
   // if ( wholeDoc ) {
   //   di << "Label            Area defect   Volume defect    dX      dY      dZ    Name\n";
   // }
-  gp_XYZ aCenterGravity(0.0, 0.0, 0.0);
+  gp_XYZ        aCenterGravity(0.0, 0.0, 0.0);
   double aMassVal = 0.0;
   for (int i = 1; i <= seq.Length(); i++)
   {
@@ -1002,7 +1006,9 @@ static int SetMaterial(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
+static int GetValidationProps(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 2)
   {
@@ -1016,8 +1022,8 @@ static int GetValidationProps(Draw_Interpretor& di, int argc, const char** argv)
     di << argv[1] << " is not a document\n";
     return 1;
   }
-  occ::handle<XCAFDoc_ShapeTool>  STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  NCollection_Sequence<TDF_Label> aLabels;
+  occ::handle<XCAFDoc_ShapeTool> STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
+  NCollection_Sequence<TDF_Label>         aLabels;
   if (argc == 2)
     STool->GetShapes(aLabels);
   else

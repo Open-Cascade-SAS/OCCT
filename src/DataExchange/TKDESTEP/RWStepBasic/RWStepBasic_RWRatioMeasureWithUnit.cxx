@@ -27,7 +27,7 @@ RWStepBasic_RWRatioMeasureWithUnit::RWStepBasic_RWRatioMeasureWithUnit() {}
 
 void RWStepBasic_RWRatioMeasureWithUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepBasic_RatioMeasureWithUnit>& ent) const
 {
@@ -50,7 +50,7 @@ void RWStepBasic_RWRatioMeasureWithUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWRatioMeasureWithUnit::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepBasic_RatioMeasureWithUnit>& ent) const
 {
   // --- inherited field valueComponent ---
@@ -62,9 +62,8 @@ void RWStepBasic_RWRatioMeasureWithUnit::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWRatioMeasureWithUnit::Share(
-  const occ::handle<StepBasic_RatioMeasureWithUnit>& ent,
-  Interface_EntityIterator&                          iter) const
+void RWStepBasic_RWRatioMeasureWithUnit::Share(const occ::handle<StepBasic_RatioMeasureWithUnit>& ent,
+                                               Interface_EntityIterator& iter) const
 {
   iter.GetOneItem(ent->UnitComponent().Value());
 }

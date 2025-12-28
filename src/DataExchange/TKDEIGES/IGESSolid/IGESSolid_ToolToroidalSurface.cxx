@@ -35,10 +35,10 @@ IGESSolid_ToolToroidalSurface::IGESSolid_ToolToroidalSurface() {}
 
 void IGESSolid_ToolToroidalSurface::ReadOwnParams(const occ::handle<IGESSolid_ToroidalSurface>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,
-                                                  IGESData_ParamReader& PR) const
+                                                  IGESData_ParamReader&                    PR) const
 {
   occ::handle<IGESGeom_Point>      tempCenter;
-  double                           majRad, minRad;
+  double               majRad, minRad;
   occ::handle<IGESGeom_Direction>  tempAxis;   // default Unparametrised
   occ::handle<IGESData_IGESEntity> tempRefdir; // default Unparametrised
   // bool st; //szv#4:S4163:12Mar99 not needed
@@ -68,9 +68,8 @@ void IGESSolid_ToolToroidalSurface::ReadOwnParams(const occ::handle<IGESSolid_To
   ent->Init(tempCenter, tempAxis, majRad, minRad, occ::down_cast<IGESGeom_Direction>(tempRefdir));
 }
 
-void IGESSolid_ToolToroidalSurface::WriteOwnParams(
-  const occ::handle<IGESSolid_ToroidalSurface>& ent,
-  IGESData_IGESWriter&                          IW) const
+void IGESSolid_ToolToroidalSurface::WriteOwnParams(const occ::handle<IGESSolid_ToroidalSurface>& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Center());
   IW.Send(ent->Axis());
@@ -81,7 +80,7 @@ void IGESSolid_ToolToroidalSurface::WriteOwnParams(
 }
 
 void IGESSolid_ToolToroidalSurface::OwnShared(const occ::handle<IGESSolid_ToroidalSurface>& ent,
-                                              Interface_EntityIterator& iter) const
+                                              Interface_EntityIterator&                iter) const
 {
   iter.GetOneItem(ent->Center());
   iter.GetOneItem(ent->Axis());
@@ -90,7 +89,7 @@ void IGESSolid_ToolToroidalSurface::OwnShared(const occ::handle<IGESSolid_Toroid
 
 void IGESSolid_ToolToroidalSurface::OwnCopy(const occ::handle<IGESSolid_ToroidalSurface>& another,
                                             const occ::handle<IGESSolid_ToroidalSurface>& ent,
-                                            Interface_CopyTool&                           TC) const
+                                            Interface_CopyTool&                      TC) const
 {
   DeclareAndCast(IGESGeom_Point, tempCenter, TC.Transferred(another->Center()));
   DeclareAndCast(IGESGeom_Direction, tempAxis, TC.Transferred(another->Axis()));
@@ -141,9 +140,9 @@ void IGESSolid_ToolToroidalSurface::OwnCheck(const occ::handle<IGESSolid_Toroida
 }
 
 void IGESSolid_ToolToroidalSurface::OwnDump(const occ::handle<IGESSolid_ToroidalSurface>& ent,
-                                            const IGESData_IGESDumper&                    dumper,
-                                            Standard_OStream&                             S,
-                                            const int level) const
+                                            const IGESData_IGESDumper&               dumper,
+                                            Standard_OStream&                        S,
+                                            const int                   level) const
 {
   S << "IGESSolid_ToroidalSurface\n";
   int sublevel = (level <= 4) ? 0 : 1;

@@ -33,10 +33,10 @@ StepDimTol_GeometricToleranceWithDatumReference::StepDimTol_GeometricToleranceWi
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceWithDatumReference::Init(
-  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Name,
-  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
-  const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
-  const occ::handle<StepRepr_ShapeAspect>&     theGeometricTolerance_TolerancedShapeAspect,
+  const occ::handle<TCollection_HAsciiString>&           theGeometricTolerance_Name,
+  const occ::handle<TCollection_HAsciiString>&           theGeometricTolerance_Description,
+  const occ::handle<Standard_Transient>&                 theGeometricTolerance_Magnitude,
+  const occ::handle<StepRepr_ShapeAspect>&               theGeometricTolerance_TolerancedShapeAspect,
   const occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>>& theDatumSystem)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
@@ -44,9 +44,8 @@ void StepDimTol_GeometricToleranceWithDatumReference::Init(
                                       theGeometricTolerance_Magnitude,
                                       theGeometricTolerance_TolerancedShapeAspect);
 
-  myDatumSystem =
-    new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(theDatumSystem->Lower(),
-                                                               theDatumSystem->Upper());
+  myDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(theDatumSystem->Lower(),
+                                                                 theDatumSystem->Upper());
   StepDimTol_DatumSystemOrReference anAux;
   for (int i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++)
   {
@@ -58,10 +57,10 @@ void StepDimTol_GeometricToleranceWithDatumReference::Init(
 //=================================================================================================
 
 void StepDimTol_GeometricToleranceWithDatumReference::Init(
-  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Name,
-  const occ::handle<TCollection_HAsciiString>& theGeometricTolerance_Description,
-  const occ::handle<Standard_Transient>&       theGeometricTolerance_Magnitude,
-  const StepDimTol_GeometricToleranceTarget&   theGeometricTolerance_TolerancedShapeAspect,
+  const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Name,
+  const occ::handle<TCollection_HAsciiString>&    theGeometricTolerance_Description,
+  const occ::handle<Standard_Transient>&          theGeometricTolerance_Magnitude,
+  const StepDimTol_GeometricToleranceTarget& theGeometricTolerance_TolerancedShapeAspect,
   const occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>& theDatumSystem)
 {
   StepDimTol_GeometricTolerance::Init(theGeometricTolerance_Name,
@@ -74,13 +73,12 @@ void StepDimTol_GeometricToleranceWithDatumReference::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>>
-  StepDimTol_GeometricToleranceWithDatumReference::DatumSystem() const
+occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>> StepDimTol_GeometricToleranceWithDatumReference::
+  DatumSystem() const
 {
   occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>> aDatumSystem;
   aDatumSystem =
-    new NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>(myDatumSystem->Lower(),
-                                                                    myDatumSystem->Upper());
+    new NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>(myDatumSystem->Lower(), myDatumSystem->Upper());
   for (int i = aDatumSystem->Lower(); i <= aDatumSystem->Upper(); i++)
   {
     aDatumSystem->SetValue(i, myDatumSystem->Value(i).DatumReference());
@@ -90,8 +88,8 @@ occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>>
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
-  StepDimTol_GeometricToleranceWithDatumReference::DatumSystemAP242() const
+occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> StepDimTol_GeometricToleranceWithDatumReference::
+  DatumSystemAP242() const
 {
   return myDatumSystem;
 }
@@ -101,9 +99,8 @@ occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
 void StepDimTol_GeometricToleranceWithDatumReference::SetDatumSystem(
   const occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReference>>>& theDatumSystem)
 {
-  myDatumSystem =
-    new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(theDatumSystem->Lower(),
-                                                               theDatumSystem->Upper());
+  myDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(theDatumSystem->Lower(),
+                                                                 theDatumSystem->Upper());
   StepDimTol_DatumSystemOrReference anAux;
   for (int i = theDatumSystem->Lower(); i <= theDatumSystem->Upper(); i++)
   {

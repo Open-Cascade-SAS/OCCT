@@ -78,8 +78,8 @@ void BRepExtrema_ExtPF::Perform(const TopoDS_Vertex& TheVertex, const TopoDS_Fac
   if (myExtPS.IsDone())
   {
     BRepClass_FaceClassifier classifier;
-    double                   U1, U2;
-    const double             Tol = BRep_Tool::Tolerance(TheFace);
+    double            U1, U2;
+    const double      Tol = BRep_Tool::Tolerance(TheFace);
     for (int i = 1; i <= myExtPS.NbExt(); i++)
     {
       myExtPS.Point(i).Parameter(U1, U2);

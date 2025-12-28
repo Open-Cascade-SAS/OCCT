@@ -39,18 +39,17 @@
 
 IGESDimen_ToolAngularDimension::IGESDimen_ToolAngularDimension() {}
 
-void IGESDimen_ToolAngularDimension::ReadOwnParams(
-  const occ::handle<IGESDimen_AngularDimension>& ent,
-  const occ::handle<IGESData_IGESReaderData>&    IR,
-  IGESData_ParamReader&                          PR) const
+void IGESDimen_ToolAngularDimension::ReadOwnParams(const occ::handle<IGESDimen_AngularDimension>& ent,
+                                                   const occ::handle<IGESData_IGESReaderData>&    IR,
+                                                   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   occ::handle<IGESDimen_GeneralNote> note;
   occ::handle<IGESDimen_WitnessLine> firstWitness;
   occ::handle<IGESDimen_WitnessLine> secondWitness;
-  gp_XY                              vertex;
-  double                             radius;
+  gp_XY                         vertex;
+  double                 radius;
   occ::handle<IGESDimen_LeaderArrow> firstLeader;
   occ::handle<IGESDimen_LeaderArrow> secondLeader;
 
@@ -90,9 +89,8 @@ void IGESDimen_ToolAngularDimension::ReadOwnParams(
   ent->Init(note, firstWitness, secondWitness, vertex, radius, firstLeader, secondLeader);
 }
 
-void IGESDimen_ToolAngularDimension::WriteOwnParams(
-  const occ::handle<IGESDimen_AngularDimension>& ent,
-  IGESData_IGESWriter&                           IW) const
+void IGESDimen_ToolAngularDimension::WriteOwnParams(const occ::handle<IGESDimen_AngularDimension>& ent,
+                                                    IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstWitnessLine());
@@ -105,7 +103,7 @@ void IGESDimen_ToolAngularDimension::WriteOwnParams(
 }
 
 void IGESDimen_ToolAngularDimension::OwnShared(const occ::handle<IGESDimen_AngularDimension>& ent,
-                                               Interface_EntityIterator& iter) const
+                                               Interface_EntityIterator&                 iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstWitnessLine());
@@ -116,14 +114,14 @@ void IGESDimen_ToolAngularDimension::OwnShared(const occ::handle<IGESDimen_Angul
 
 void IGESDimen_ToolAngularDimension::OwnCopy(const occ::handle<IGESDimen_AngularDimension>& another,
                                              const occ::handle<IGESDimen_AngularDimension>& ent,
-                                             Interface_CopyTool& TC) const
+                                             Interface_CopyTool&                       TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_WitnessLine, firstWitness, TC.Transferred(another->FirstWitnessLine()));
   DeclareAndCast(IGESDimen_WitnessLine,
                  secondWitness,
                  TC.Transferred(another->SecondWitnessLine()));
-  gp_XY  vertex = (another->Vertex()).XY();
+  gp_XY         vertex = (another->Vertex()).XY();
   double radius = another->Radius();
   DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, TC.Transferred(another->FirstLeader()));
   DeclareAndCast(IGESDimen_LeaderArrow, secondLeader, TC.Transferred(another->SecondLeader()));
@@ -143,17 +141,16 @@ IGESData_DirChecker IGESDimen_ToolAngularDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolAngularDimension::OwnCheck(
-  const occ::handle<IGESDimen_AngularDimension>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESDimen_ToolAngularDimension::OwnCheck(const occ::handle<IGESDimen_AngularDimension>& /* ent */,
+                                              const Interface_ShareTool&,
+                                              occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESDimen_ToolAngularDimension::OwnDump(const occ::handle<IGESDimen_AngularDimension>& ent,
-                                             const IGESData_IGESDumper&                     dumper,
-                                             Standard_OStream&                              S,
-                                             const int level) const
+                                             const IGESData_IGESDumper&                dumper,
+                                             Standard_OStream&                         S,
+                                             const int                    level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

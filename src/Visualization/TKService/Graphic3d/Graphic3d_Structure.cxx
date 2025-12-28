@@ -104,9 +104,7 @@ void Graphic3d_Structure::Remove()
   // Pass false to Clear(..) method to avoid updating in
   // structure manager, it isn't necessary, besides of it structure manager
   // could be already destroyed and invalid pointers used in structure;
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(
-         myCStructure->Groups());
-       aGroupIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myCStructure->Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
     aGroupIter.ChangeValue()->Clear(false);
@@ -115,12 +113,14 @@ void Graphic3d_Structure::Remove()
   // It is necessary to remove the eventual pointer on the structure that can be destroyed, in the
   // list of descendants of ancestors of this structure and in the list of ancestors of descendants
   // of the same structure.
-  for (int aStructIdx = 1, aNbDesc = myDescendants.Size(); aStructIdx <= aNbDesc; ++aStructIdx)
+  for (int aStructIdx = 1, aNbDesc = myDescendants.Size(); aStructIdx <= aNbDesc;
+       ++aStructIdx)
   {
     myDescendants.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_ANCESTOR);
   }
 
-  for (int aStructIdx = 1, aNbAnces = myAncestors.Size(); aStructIdx <= aNbAnces; ++aStructIdx)
+  for (int aStructIdx = 1, aNbAnces = myAncestors.Size(); aStructIdx <= aNbAnces;
+       ++aStructIdx)
   {
     myAncestors.FindKey(aStructIdx)->Remove(this, Graphic3d_TOC_DESCENDANT);
   }
@@ -214,7 +214,7 @@ void Graphic3d_Structure::erase()
 //=================================================================================================
 
 void Graphic3d_Structure::Highlight(const occ::handle<Graphic3d_PresentationAttributes>& theStyle,
-                                    const bool theToUpdateMgr)
+                                    const bool                          theToUpdateMgr)
 {
   if (IsDeleted())
   {
@@ -286,9 +286,7 @@ bool Graphic3d_Structure::IsEmpty() const
   // - if all these groups are empty
   // - or if all groups are empty and all their descendants are empty
   // - or if all its descendants are empty
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(
-         myCStructure->Groups());
-       aGroupIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myCStructure->Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
     if (!aGroupIter.Value()->IsEmpty())
@@ -333,9 +331,7 @@ void Graphic3d_Structure::GraphicClear(const bool theWithDestruction)
   }
 
   // clean and empty each group
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(
-         myCStructure->Groups());
-       aGroupIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myCStructure->Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
     aGroupIter.ChangeValue()->Clear();
@@ -378,7 +374,8 @@ void Graphic3d_Structure::SetVisual(const Graphic3d_TypeOfStructure theVisual)
 
 //=================================================================================================
 
-void Graphic3d_Structure::SetZoomLimit(const double theLimitInf, const double theLimitSup)
+void Graphic3d_Structure::SetZoomLimit(const double theLimitInf,
+                                       const double theLimitSup)
 {
   (void)theLimitInf;
   (void)theLimitSup;
@@ -391,8 +388,8 @@ void Graphic3d_Structure::SetZoomLimit(const double theLimitInf, const double th
 //=================================================================================================
 
 bool Graphic3d_Structure::AcceptConnection(Graphic3d_Structure*       theStructure1,
-                                           Graphic3d_Structure*       theStructure2,
-                                           Graphic3d_TypeOfConnection theType)
+                                                       Graphic3d_Structure*       theStructure2,
+                                                       Graphic3d_TypeOfConnection theType)
 {
   // cycle detection
   NCollection_Map<Graphic3d_Structure*> aSet;
@@ -413,8 +410,7 @@ void Graphic3d_Structure::Ancestors(NCollection_Map<occ::handle<Graphic3d_Struct
 
 //=================================================================================================
 
-void Graphic3d_Structure::Descendants(
-  NCollection_Map<occ::handle<Graphic3d_Structure>>& theSet) const
+void Graphic3d_Structure::Descendants(NCollection_Map<occ::handle<Graphic3d_Structure>>& theSet) const
 {
   for (NCollection_IndexedMap<Graphic3d_Structure*>::Iterator anIter(myDescendants); anIter.More();
        anIter.Next())
@@ -475,7 +471,7 @@ bool Graphic3d_Structure::RemoveDescendant(Graphic3d_Structure* theDescendant)
 
 void Graphic3d_Structure::Connect(Graphic3d_Structure*       theStructure,
                                   Graphic3d_TypeOfConnection theType,
-                                  bool                       theWithCheck)
+                                  bool           theWithCheck)
 {
   if (IsDeleted())
   {
@@ -629,8 +625,8 @@ Bnd_Box Graphic3d_Structure::MinMaxValues(const bool theToIgnoreInfiniteFlag) co
 
   constexpr double aLimMin = ShortRealFirst() + 1.0;
   constexpr double aLimMax = ShortRealLast() - 1.0;
-  gp_Pnt           aMin    = aResult.CornerMin();
-  gp_Pnt           aMax    = aResult.CornerMax();
+  gp_Pnt                  aMin    = aResult.CornerMin();
+  gp_Pnt                  aMax    = aResult.CornerMax();
   if (aMin.X() < aLimMin && aMin.Y() < aLimMin && aMin.Z() < aLimMin && aMax.X() > aLimMax
       && aMax.Y() > aLimMax && aMax.Z() > aLimMax)
   {
@@ -700,9 +696,7 @@ occ::handle<Graphic3d_StructureManager> Graphic3d_Structure::StructureManager() 
 Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord() const
 {
   Graphic3d_BndBox4f aBnd;
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(
-         myCStructure->Groups());
-       aGroupIter.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIter(myCStructure->Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
     if (!aGroupIter.Value()->TransformPersistence().IsNull())
@@ -717,18 +711,18 @@ Graphic3d_BndBox4f Graphic3d_Structure::minMaxCoord() const
 
 //=================================================================================================
 
-void Graphic3d_Structure::getBox(Graphic3d_BndBox3d& theBox,
-                                 const bool          theToIgnoreInfiniteFlag) const
+void Graphic3d_Structure::getBox(Graphic3d_BndBox3d&    theBox,
+                                 const bool theToIgnoreInfiniteFlag) const
 {
   Graphic3d_BndBox4f aBoxF = minMaxCoord();
   if (aBoxF.IsValid())
   {
     theBox = Graphic3d_BndBox3d(NCollection_Vec3<double>((double)aBoxF.CornerMin().x(),
-                                                         (double)aBoxF.CornerMin().y(),
-                                                         (double)aBoxF.CornerMin().z()),
+                                                (double)aBoxF.CornerMin().y(),
+                                                (double)aBoxF.CornerMin().z()),
                                 NCollection_Vec3<double>((double)aBoxF.CornerMax().x(),
-                                                         (double)aBoxF.CornerMax().y(),
-                                                         (double)aBoxF.CornerMax().z()));
+                                                (double)aBoxF.CornerMax().y(),
+                                                (double)aBoxF.CornerMax().z()));
     if (IsInfinite() && !theToIgnoreInfiniteFlag)
     {
       const NCollection_Vec3<double> aDiagVec = theBox.CornerMax() - theBox.CornerMin();
@@ -749,8 +743,8 @@ void Graphic3d_Structure::getBox(Graphic3d_BndBox3d& theBox,
 
 //=================================================================================================
 
-void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d& theBox,
-                                         const bool          theToIgnoreInfiniteFlag) const
+void Graphic3d_Structure::addTransformed(Graphic3d_BndBox3d&    theBox,
+                                         const bool theToIgnoreInfiniteFlag) const
 {
   Graphic3d_BndBox3d aCombinedBox, aBox;
   getBox(aCombinedBox, theToIgnoreInfiniteFlag);
@@ -819,7 +813,7 @@ void Graphic3d_Structure::Network(Graphic3d_Structure*                   theStru
 //=================================================================================================
 
 void Graphic3d_Structure::PrintNetwork(const occ::handle<Graphic3d_Structure>& theStructure,
-                                       const Graphic3d_TypeOfConnection        theType)
+                                       const Graphic3d_TypeOfConnection   theType)
 {
   NCollection_Map<Graphic3d_Structure*> aSet;
   Graphic3d_Structure::Network(theStructure.get(), theType, aSet);

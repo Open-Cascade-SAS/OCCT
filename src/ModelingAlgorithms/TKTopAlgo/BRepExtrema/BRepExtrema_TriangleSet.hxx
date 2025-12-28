@@ -44,16 +44,19 @@ public: //! @name methods implementing BVH set interface
   Standard_EXPORT int Size() const override;
 
   //! Returns AABB of the given triangle.
-  Standard_EXPORT BVH_Box<double, 3> Box(const int theIndex) const override;
+  Standard_EXPORT BVH_Box<double, 3> Box(const int theIndex) const
+    override;
 
   //! Make inherited method Box() visible to avoid CLang warning
   using BVH_PrimitiveSet3d::Box;
 
   //! Returns centroid position along specified axis.
-  Standard_EXPORT double Center(const int theIndex, const int theAxis) const override;
+  Standard_EXPORT double Center(const int theIndex,
+                                       const int theAxis) const override;
 
   //! Swaps indices of two specified triangles.
-  Standard_EXPORT void Swap(const int theIndex1, const int theIndex2) override;
+  Standard_EXPORT void Swap(const int theIndex1,
+                            const int theIndex2) override;
 
 public:
   //! Clears triangle set data.
@@ -66,10 +69,10 @@ public:
   Standard_EXPORT const BVH_Array3d& GetVertices() const { return myVertexArray; }
 
   //! Returns vertices of the given triangle.
-  Standard_EXPORT void GetVertices(const int  theIndex,
-                                   BVH_Vec3d& theVertex1,
-                                   BVH_Vec3d& theVertex2,
-                                   BVH_Vec3d& theVertex3) const;
+  Standard_EXPORT void GetVertices(const int theIndex,
+                                   BVH_Vec3d&             theVertex1,
+                                   BVH_Vec3d&             theVertex2,
+                                   BVH_Vec3d&             theVertex3) const;
 
   //! Returns vertex indices of the given triangle.
   Standard_EXPORT void GetVtxIndices(const int                theIndex,
@@ -98,8 +101,8 @@ private:
 
   //! Initializes nodes
   void initNodes(const NCollection_Array1<gp_Pnt>& theNodes,
-                 const gp_Trsf&                    theTrsf,
-                 const int                         theIndex);
+                 const gp_Trsf&            theTrsf,
+                 const int    theIndex);
 
 protected:
   //! Array of vertex indices.

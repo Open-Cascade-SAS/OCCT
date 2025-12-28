@@ -85,7 +85,7 @@ BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
 //=================================================================================================
 
 bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
-                                         const TCollection_AsciiString& theFuncName)
+                                                     const TCollection_AsciiString& theFuncName)
 {
   myErrorStatus = BRepMesh_FE_NOERROR;
   if (theName == THE_FAST_DISCRET_MESH)
@@ -135,7 +135,7 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
 
   // try to create dummy tool
   BRepMesh_DiscretRoot* anInstancePtr = NULL;
-  int                   anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
+  int      anErr         = aFunc(TopoDS_Shape(), 0.001, 0.1, anInstancePtr);
   if (anErr != 0 || anInstancePtr == NULL)
   {
     // can not create the algo specified
@@ -156,11 +156,11 @@ bool BRepMesh_DiscretFactory::SetDefault(const TCollection_AsciiString& theName,
 //=================================================================================================
 
 occ::handle<BRepMesh_DiscretRoot> BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
-                                                                   const double theDeflection,
-                                                                   const double theAngle)
+                                                              const double theDeflection,
+                                                              const double theAngle)
 {
   occ::handle<BRepMesh_DiscretRoot> aDiscretRoot;
-  BRepMesh_DiscretRoot*             anInstancePtr = NULL;
+  BRepMesh_DiscretRoot*        anInstancePtr = NULL;
   if (myPluginEntry != NULL)
   {
     // use plugin

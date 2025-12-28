@@ -98,7 +98,9 @@ public:
   //! Standard_ConstructionError if theMajorAxis or theMinorAxis is negative.
   //! Raises ConstructionError if theMajorRadius < 0.0 or theMinorRadius < 0.0
   //! Raised if theMajorRadius < 0.0 or theMinorRadius < 0.0
-  constexpr gp_Hypr(const gp_Ax2& theA2, const double theMajorRadius, const double theMinorRadius)
+  constexpr gp_Hypr(const gp_Ax2&       theA2,
+                    const double theMajorRadius,
+                    const double theMinorRadius)
       : pos(theA2),
         majorRadius(theMajorRadius),
         minorRadius(theMinorRadius)
@@ -331,7 +333,7 @@ public:
 
   //! Translates an hyperbola from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Hypr Translated(const gp_Pnt& theP1,
-                                             const gp_Pnt& theP2) const noexcept
+                                                  const gp_Pnt& theP2) const noexcept
   {
     gp_Hypr aH = *this;
     aH.pos.Translate(theP1, theP2);
@@ -339,7 +341,7 @@ public:
   }
 
 private:
-  gp_Ax2 pos;
+  gp_Ax2        pos;
   double majorRadius;
   double minorRadius;
 };
@@ -374,7 +376,7 @@ inline gp_Ax1 gp_Hypr::Asymptote2() const
 
 inline gp_Pnt gp_Hypr::Focus1() const
 {
-  double        aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  double aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   const gp_Pnt& aPP = pos.Location();
   const gp_Dir& aDD = pos.XDirection();
   return gp_Pnt(aPP.X() + aC * aDD.X(), aPP.Y() + aC * aDD.Y(), aPP.Z() + aC * aDD.Z());
@@ -384,7 +386,7 @@ inline gp_Pnt gp_Hypr::Focus1() const
 
 inline gp_Pnt gp_Hypr::Focus2() const
 {
-  double        aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
+  double aC  = sqrt(majorRadius * majorRadius + minorRadius * minorRadius);
   const gp_Pnt& aPP = pos.Location();
   const gp_Dir& aDD = pos.XDirection();
   return gp_Pnt(aPP.X() - aC * aDD.X(), aPP.Y() - aC * aDD.Y(), aPP.Z() - aC * aDD.Z());
@@ -467,7 +469,7 @@ inline gp_Hypr gp_Hypr::Transformed(const gp_Trsf& theT) const
 inline gp_Ax1 gp_Hypr::Directrix1() const
 {
   double anE    = Eccentricity();
-  gp_XYZ anOrig = pos.XDirection().XYZ();
+  gp_XYZ        anOrig = pos.XDirection().XYZ();
   anOrig.Multiply(majorRadius / anE);
   anOrig.Add(pos.Location().XYZ());
   return gp_Ax1(gp_Pnt(anOrig), pos.YDirection());
@@ -478,7 +480,7 @@ inline gp_Ax1 gp_Hypr::Directrix1() const
 inline gp_Ax1 gp_Hypr::Directrix2() const
 {
   double anE    = Eccentricity();
-  gp_XYZ anOrig = pos.XDirection().XYZ();
+  gp_XYZ        anOrig = pos.XDirection().XYZ();
   anOrig.Multiply(-majorRadius / anE);
   anOrig.Add(pos.Location().XYZ());
   return gp_Ax1(gp_Pnt(anOrig), pos.YDirection());

@@ -36,18 +36,17 @@ public:
 
   Standard_HIDDEN RWStepGeom_RWCartesianTransformationOperator();
 
-  Standard_HIDDEN void ReadStep(
-    const occ::handle<StepData_StepReaderData>&                  data,
-    const int                                                    num,
-    occ::handle<Interface_Check>&                                ach,
-    const occ::handle<StepGeom_CartesianTransformationOperator>& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&                  data,
+                                const int                                  num,
+                                occ::handle<Interface_Check>&                                ach,
+                                const occ::handle<StepGeom_CartesianTransformationOperator>& ent) const;
 
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                         SW,
-    const occ::handle<StepGeom_CartesianTransformationOperator>& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                    SW,
+                                 const occ::handle<StepGeom_CartesianTransformationOperator>& ent) const;
 
   Standard_HIDDEN void Share(const occ::handle<StepGeom_CartesianTransformationOperator>& ent,
-                             Interface_EntityIterator& iter) const;
+                             Interface_EntityIterator&                               iter) const;
+
 };
 
 #endif // _RWStepGeom_RWCartesianTransformationOperator_HeaderFile

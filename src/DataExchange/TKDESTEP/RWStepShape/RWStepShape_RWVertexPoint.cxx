@@ -21,7 +21,7 @@
 RWStepShape_RWVertexPoint::RWStepShape_RWVertexPoint() {}
 
 void RWStepShape_RWVertexPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepShape_VertexPoint>&   ent) const
 {
@@ -48,7 +48,7 @@ void RWStepShape_RWVertexPoint::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aVertexGeometry);
 }
 
-void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                      SW,
+void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepShape_VertexPoint>& ent) const
 {
 
@@ -62,7 +62,7 @@ void RWStepShape_RWVertexPoint::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepShape_RWVertexPoint::Share(const occ::handle<StepShape_VertexPoint>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->VertexGeometry());

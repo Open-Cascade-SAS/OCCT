@@ -25,8 +25,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <AppDef_MultiPointConstraint.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 class AppDef_MultiPointConstraint;
 
@@ -67,8 +71,7 @@ public:
   Standard_EXPORT AppDef_MultiLine(const int NbMult);
 
   //! Constructs a MultiLine with an array of MultiPointConstraints.
-  Standard_EXPORT AppDef_MultiLine(
-    const NCollection_Array1<AppDef_MultiPointConstraint>& tabMultiP);
+  Standard_EXPORT AppDef_MultiLine(const NCollection_Array1<AppDef_MultiPointConstraint>& tabMultiP);
 
   //! The MultiLine constructed will have one line of
   //! 3d points without their tangencies.
@@ -99,7 +102,8 @@ public:
   //! An exception is raised if Index < 0 or Index> MPoint.
   //! An exception is raised if the dimensions of the
   //! MultiPoints are different.
-  Standard_EXPORT void SetValue(const int Index, const AppDef_MultiPointConstraint& MPoint);
+  Standard_EXPORT void SetValue(const int             Index,
+                                const AppDef_MultiPointConstraint& MPoint);
 
   //! returns the MultiPointConstraint of range Index
   //! An exception is raised if Index<0 or Index>MPoint.
@@ -112,6 +116,7 @@ public:
 
 protected:
   occ::handle<NCollection_HArray1<AppDef_MultiPointConstraint>> tabMult;
+
 };
 
 #endif // _AppDef_MultiLine_HeaderFile

@@ -37,14 +37,16 @@ public:
 
   //! Returns True for an Entity which is qualified as "Unknown",
   //! i.e. if <model> known <ent> (through its Number) as Unknown
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Recognized Entities"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectUnknownEntities, IFSelect_SelectExtract)
+
 };
 
 #endif // _IFSelect_SelectUnknownEntities_HeaderFile

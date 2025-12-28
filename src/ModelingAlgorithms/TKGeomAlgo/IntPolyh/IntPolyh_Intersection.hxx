@@ -58,20 +58,20 @@ public: //! @name Constructors
   //! - <theNbSU2> x <theNbSV2> - for the second surface <theS2>.
   //! Performs intersection.
   Standard_EXPORT IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface>& theS1,
-                                        const int                             theNbSU1,
-                                        const int                             theNbSV1,
+                                        const int           theNbSU1,
+                                        const int           theNbSV1,
                                         const occ::handle<Adaptor3d_Surface>& theS2,
-                                        const int                             theNbSU2,
-                                        const int                             theNbSV2);
+                                        const int           theNbSU2,
+                                        const int           theNbSV2);
 
   //! Constructor for intersection of two surfaces with the precomputed sampling.
   //! Performs intersection.
   Standard_EXPORT IntPolyh_Intersection(const occ::handle<Adaptor3d_Surface>& theS1,
-                                        const NCollection_Array1<double>&     theUPars1,
-                                        const NCollection_Array1<double>&     theVPars1,
+                                        const NCollection_Array1<double>&      theUPars1,
+                                        const NCollection_Array1<double>&      theVPars1,
                                         const occ::handle<Adaptor3d_Surface>& theS2,
-                                        const NCollection_Array1<double>&     theUPars2,
-                                        const NCollection_Array1<double>&     theVPars2);
+                                        const NCollection_Array1<double>&      theUPars2,
+                                        const NCollection_Array1<double>&      theVPars2);
 
 public: //! @name Getting the results
   //! Returns state of the operation
@@ -98,25 +98,25 @@ public: //! @name Getting the results
   //! Gets the parameters of the point in section line
   Standard_EXPORT void GetLinePoint(const int IndexLine,
                                     const int IndexPoint,
-                                    double&   x,
-                                    double&   y,
-                                    double&   z,
-                                    double&   u1,
-                                    double&   v1,
-                                    double&   u2,
-                                    double&   v2,
-                                    double&   incidence) const;
+                                    double&         x,
+                                    double&         y,
+                                    double&         z,
+                                    double&         u1,
+                                    double&         v1,
+                                    double&         u2,
+                                    double&         v2,
+                                    double&         incidence) const;
 
   //! Gets the parameters of the point in tangent zone
   Standard_EXPORT void GetTangentZonePoint(const int IndexLine,
                                            const int IndexPoint,
-                                           double&   x,
-                                           double&   y,
-                                           double&   z,
-                                           double&   u1,
-                                           double&   v1,
-                                           double&   u2,
-                                           double&   v2) const;
+                                           double&         x,
+                                           double&         y,
+                                           double&         z,
+                                           double&         u1,
+                                           double&         v1,
+                                           double&         u2,
+                                           double&         v2) const;
 
 private: //! @name Performing the intersection
   //! Compute the intersection by first making the sampling of the surfaces.
@@ -130,49 +130,49 @@ private: //! @name Performing the intersection
 
   //! Performs the default (standard) intersection of the triangles
   Standard_EXPORT bool PerformStd(const NCollection_Array1<double>& theUPars1,
-                                  const NCollection_Array1<double>& theVPars1,
-                                  const NCollection_Array1<double>& theUPars2,
-                                  const NCollection_Array1<double>& theVPars2,
-                                  const double                      theDeflTol1,
-                                  const double                      theDeflTol2,
-                                  IntPolyh_PMaillageAffinage&       theMaillageS,
-                                  int&                              theNbCouples);
+                                              const NCollection_Array1<double>& theVPars1,
+                                              const NCollection_Array1<double>& theUPars2,
+                                              const NCollection_Array1<double>& theVPars2,
+                                              const double         theDeflTol1,
+                                              const double         theDeflTol2,
+                                              IntPolyh_PMaillageAffinage& theMaillageS,
+                                              int&           theNbCouples);
 
   //! Performs the advanced intersection of the triangles - four intersection with
   //! different shifts of the sampling points.
   Standard_EXPORT bool PerformAdv(const NCollection_Array1<double>& theUPars1,
-                                  const NCollection_Array1<double>& theVPars1,
-                                  const NCollection_Array1<double>& theUPars2,
-                                  const NCollection_Array1<double>& theVPars2,
-                                  const double                      theDeflTol1,
-                                  const double                      theDeflTol2,
-                                  IntPolyh_PMaillageAffinage&       theMaillageFF,
-                                  IntPolyh_PMaillageAffinage&       theMaillageFR,
-                                  IntPolyh_PMaillageAffinage&       theMaillageRF,
-                                  IntPolyh_PMaillageAffinage&       theMaillageRR,
-                                  int&                              theNbCouples);
+                                              const NCollection_Array1<double>& theVPars1,
+                                              const NCollection_Array1<double>& theUPars2,
+                                              const NCollection_Array1<double>& theVPars2,
+                                              const double         theDeflTol1,
+                                              const double         theDeflTol2,
+                                              IntPolyh_PMaillageAffinage& theMaillageFF,
+                                              IntPolyh_PMaillageAffinage& theMaillageFR,
+                                              IntPolyh_PMaillageAffinage& theMaillageRF,
+                                              IntPolyh_PMaillageAffinage& theMaillageRR,
+                                              int&           theNbCouples);
 
   //! Performs the advanced intersection of the triangles.
   Standard_EXPORT bool PerformMaillage(const NCollection_Array1<double>& theUPars1,
-                                       const NCollection_Array1<double>& theVPars1,
-                                       const NCollection_Array1<double>& theUPars2,
-                                       const NCollection_Array1<double>& theVPars2,
-                                       const double                      theDeflTol1,
-                                       const double                      theDeflTol2,
-                                       IntPolyh_PMaillageAffinage&       theMaillage);
+                                                   const NCollection_Array1<double>& theVPars1,
+                                                   const NCollection_Array1<double>& theUPars2,
+                                                   const NCollection_Array1<double>& theVPars2,
+                                                   const double         theDeflTol1,
+                                                   const double         theDeflTol2,
+                                                   IntPolyh_PMaillageAffinage& theMaillage);
 
   //! Performs the advanced intersection of the triangles.
-  Standard_EXPORT bool PerformMaillage(const NCollection_Array1<double>&  theUPars1,
-                                       const NCollection_Array1<double>&  theVPars1,
-                                       const NCollection_Array1<double>&  theUPars2,
-                                       const NCollection_Array1<double>&  theVPars2,
-                                       const double                       theDeflTol1,
-                                       const double                       theDeflTol2,
-                                       const IntPolyh_ArrayOfPointNormal& thePoints1,
-                                       const IntPolyh_ArrayOfPointNormal& thePoints2,
-                                       const bool                         theIsFirstFwd,
-                                       const bool                         theIsSecondFwd,
-                                       IntPolyh_PMaillageAffinage&        theMaillage);
+  Standard_EXPORT bool PerformMaillage(const NCollection_Array1<double>&        theUPars1,
+                                                   const NCollection_Array1<double>&        theVPars1,
+                                                   const NCollection_Array1<double>&        theUPars2,
+                                                   const NCollection_Array1<double>&        theVPars2,
+                                                   const double                theDeflTol1,
+                                                   const double                theDeflTol2,
+                                                   const IntPolyh_ArrayOfPointNormal& thePoints1,
+                                                   const IntPolyh_ArrayOfPointNormal& thePoints2,
+                                                   const bool             theIsFirstFwd,
+                                                   const bool      theIsSecondFwd,
+                                                   IntPolyh_PMaillageAffinage& theMaillage);
 
   //! Clears the arrays from the duplicate couples, keeping only one instance of it.
   Standard_EXPORT void MergeCouples(NCollection_List<IntPolyh_Couple>& theArrayFF,
@@ -185,8 +185,8 @@ private: //! @name Performing the intersection
 
 private: //! @name Fields
   // Inputs
-  occ::handle<Adaptor3d_Surface> mySurf1;      //!< First surface
-  occ::handle<Adaptor3d_Surface> mySurf2;      //!< Second surface
+  occ::handle<Adaptor3d_Surface> mySurf1;           //!< First surface
+  occ::handle<Adaptor3d_Surface> mySurf2;           //!< Second surface
                                                // clang-format off
   int myNbSU1;                    //!< Number of samples in U direction for first surface
   int myNbSV1;                    //!< Number of samples in V direction for first surface
@@ -194,10 +194,10 @@ private: //! @name Fields
   int myNbSV2;                    //!< Number of samples in V direction for second surface
   // Results
                                                // clang-format on
-  bool                         myIsDone;       //!< State of the operation
+  bool             myIsDone;       //!< State of the operation
   IntPolyh_ArrayOfSectionLines mySectionLines; //!< Section lines
   IntPolyh_ArrayOfTangentZones myTangentZones; //!< Tangent zones
-  bool                         myIsParallel;
+  bool             myIsParallel;
 };
 
 #endif // _IntPolyh_Intersection_HeaderFile

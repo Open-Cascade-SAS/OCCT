@@ -28,8 +28,7 @@
 //! Defines index map of structures.
 
 //! Defines array of indexed maps of structures.
-typedef std::array<NCollection_IndexedMap<const Graphic3d_CStructure*>,
-                   Graphic3d_DisplayPriority_NB>
+typedef std::array<NCollection_IndexedMap<const Graphic3d_CStructure*>, Graphic3d_DisplayPriority_NB>
   Graphic3d_ArrayOfIndexedMapOfStructure;
 
 class Graphic3d_CullingTool;
@@ -40,7 +39,7 @@ class Graphic3d_Layer : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 public:
   //! Initializes associated priority list and layer properties
-  Standard_EXPORT Graphic3d_Layer(Graphic3d_ZLayerId                theId,
+  Standard_EXPORT Graphic3d_Layer(Graphic3d_ZLayerId           theId,
                                   const occ::handle<BVH_Builder3d>& theBuilder);
 
   //! Destructor.
@@ -72,13 +71,13 @@ public:
 
   Standard_EXPORT void Add(const Graphic3d_CStructure* theStruct,
                            Graphic3d_DisplayPriority   thePriority,
-                           bool                        isForChangePriority = false);
+                           bool            isForChangePriority = false);
 
   //! Remove structure and returns its priority, if the structure is not found, method returns
   //! negative value
   Standard_EXPORT bool Remove(const Graphic3d_CStructure* theStruct,
                               Graphic3d_DisplayPriority&  thePriority,
-                              bool                        isForChangePriority = false);
+                              bool            isForChangePriority = false);
 
   //! @return the number of structures
   int NbStructures() const { return myNbStructures; }
@@ -97,8 +96,7 @@ public:
   const Graphic3d_ArrayOfIndexedMapOfStructure& ArrayOfStructures() const { return myArray; }
 
   //! Returns structures for specified priority.
-  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures(
-    Graphic3d_DisplayPriority thePriority) const
+  const NCollection_IndexedMap<const Graphic3d_CStructure*>& Structures(Graphic3d_DisplayPriority thePriority) const
   {
     return myArray[thePriority];
   }
@@ -121,23 +119,23 @@ public:
   //! @param theToIncludeAuxiliary consider also auxiliary presentations (with infinite flag or with
   //! trihedron transformation persistence)
   //! @return computed bounding box
-  Standard_EXPORT Bnd_Box BoundingBox(int                                  theViewId,
+  Standard_EXPORT Bnd_Box BoundingBox(int                theViewId,
                                       const occ::handle<Graphic3d_Camera>& theCamera,
-                                      int                                  theWindowWidth,
-                                      int                                  theWindowHeight,
-                                      bool theToIncludeAuxiliary) const;
+                                      int                theWindowWidth,
+                                      int                theWindowHeight,
+                                      bool                theToIncludeAuxiliary) const;
 
   //! Returns zoom-scale factor.
-  Standard_EXPORT double considerZoomPersistenceObjects(
-    int                                  theViewId,
-    const occ::handle<Graphic3d_Camera>& theCamera,
-    int                                  theWindowWidth,
-    int                                  theWindowHeight) const;
+  Standard_EXPORT double
+    considerZoomPersistenceObjects(int                theViewId,
+                                   const occ::handle<Graphic3d_Camera>& theCamera,
+                                   int                theWindowWidth,
+                                   int                theWindowHeight) const;
 
   //! Update culling state - should be called before rendering.
   //! Traverses through BVH tree to determine which structures are in view volume.
   Standard_EXPORT void UpdateCulling(
-    int                                             theViewId,
+    int                                theViewId,
     const Graphic3d_CullingTool&                    theSelector,
     const Graphic3d_RenderingParams::FrustumCulling theFrustumCullingState);
 
@@ -145,7 +143,10 @@ public:
   bool IsCulled() const { return myNbStructuresNotCulled == 0; }
 
   //! Returns number of transform persistence objects.
-  int NbOfTransformPersistenceObjects() const { return myBVHPrimitivesTrsfPers.Size(); }
+  int NbOfTransformPersistenceObjects() const
+  {
+    return myBVHPrimitivesTrsfPers.Size();
+  }
 
 public:
   //! Returns set of Graphic3d_CStructures structures for building BVH tree.

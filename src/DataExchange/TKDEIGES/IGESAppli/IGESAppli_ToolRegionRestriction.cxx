@@ -31,10 +31,9 @@
 
 IGESAppli_ToolRegionRestriction::IGESAppli_ToolRegionRestriction() {}
 
-void IGESAppli_ToolRegionRestriction::ReadOwnParams(
-  const occ::handle<IGESAppli_RegionRestriction>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /*IR*/,
-  IGESData_ParamReader& PR) const
+void IGESAppli_ToolRegionRestriction::ReadOwnParams(const occ::handle<IGESAppli_RegionRestriction>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>& /*IR*/,
+                                                    IGESData_ParamReader& PR) const
 {
   int tempNbPropertyValues;
   int tempElectViasRestrict;
@@ -53,9 +52,8 @@ void IGESAppli_ToolRegionRestriction::ReadOwnParams(
             tempElectCktRestrict);
 }
 
-void IGESAppli_ToolRegionRestriction::WriteOwnParams(
-  const occ::handle<IGESAppli_RegionRestriction>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESAppli_ToolRegionRestriction::WriteOwnParams(const occ::handle<IGESAppli_RegionRestriction>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->ElectricalViasRestriction());
@@ -63,16 +61,14 @@ void IGESAppli_ToolRegionRestriction::WriteOwnParams(
   IW.Send(ent->ElectricalCktRestriction());
 }
 
-void IGESAppli_ToolRegionRestriction::OwnShared(
-  const occ::handle<IGESAppli_RegionRestriction>& /*ent*/,
-  Interface_EntityIterator& /*iter*/) const
+void IGESAppli_ToolRegionRestriction::OwnShared(const occ::handle<IGESAppli_RegionRestriction>& /*ent*/,
+                                                Interface_EntityIterator& /*iter*/) const
 {
 }
 
-void IGESAppli_ToolRegionRestriction::OwnCopy(
-  const occ::handle<IGESAppli_RegionRestriction>& another,
-  const occ::handle<IGESAppli_RegionRestriction>& ent,
-  Interface_CopyTool& /*TC*/) const
+void IGESAppli_ToolRegionRestriction::OwnCopy(const occ::handle<IGESAppli_RegionRestriction>& another,
+                                              const occ::handle<IGESAppli_RegionRestriction>& ent,
+                                              Interface_CopyTool& /*TC*/) const
 {
   ent->Init(3,
             another->ElectricalViasRestriction(),

@@ -25,6 +25,7 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
 
 //! A WiresBlock is a set of Blocks. It is used by the
 //! DataStructure to structure the Edges.
@@ -60,8 +61,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(HLRAlgo_WiresBlock, Standard_Transient)
 
 private:
-  NCollection_Array1<occ::handle<Standard_Transient>> myWires;
-  HLRAlgo_EdgesBlock::MinMaxIndices                   myMinMax;
+  NCollection_Array1<occ::handle<Standard_Transient>>         myWires;
+  HLRAlgo_EdgesBlock::MinMaxIndices myMinMax;
 };
 
 #endif // _HLRAlgo_WiresBlock_HeaderFile

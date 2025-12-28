@@ -31,7 +31,7 @@ RWStepBasic_RWProductConceptContext::RWStepBasic_RWProductConceptContext() {}
 
 void RWStepBasic_RWProductConceptContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_ProductConceptContext>& ent) const
 {
@@ -70,7 +70,7 @@ void RWStepBasic_RWProductConceptContext::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWProductConceptContext::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepBasic_ProductConceptContext>& ent) const
 {
 
@@ -87,9 +87,8 @@ void RWStepBasic_RWProductConceptContext::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWProductConceptContext::Share(
-  const occ::handle<StepBasic_ProductConceptContext>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepBasic_RWProductConceptContext::Share(const occ::handle<StepBasic_ProductConceptContext>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of ApplicationContextElement

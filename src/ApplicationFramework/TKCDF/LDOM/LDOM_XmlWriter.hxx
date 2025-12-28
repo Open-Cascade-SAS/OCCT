@@ -52,11 +52,11 @@ private:
   void WriteAttribute(Standard_OStream& theOStream, const LDOM_Node& theAtt);
 
 private:
-  char* myEncodingName;
-  int   myIndent;
-  int   myCurIndent;
-  char* myABuffer;
-  int   myABufferLen;
+  char*            myEncodingName;
+  int myIndent;
+  int myCurIndent;
+  char*            myABuffer;
+  int myABufferLen;
 };
 
 #endif

@@ -20,22 +20,22 @@ IntTools_MarkedRangeSet::IntTools_MarkedRangeSet()
 {
 }
 
-IntTools_MarkedRangeSet::IntTools_MarkedRangeSet(const double theFirstBoundary,
-                                                 const double theLastBoundary,
-                                                 const int    theInitFlag)
+IntTools_MarkedRangeSet::IntTools_MarkedRangeSet(const double    theFirstBoundary,
+                                                 const double    theLastBoundary,
+                                                 const int theInitFlag)
 {
   SetBoundaries(theFirstBoundary, theLastBoundary, theInitFlag);
 }
 
 IntTools_MarkedRangeSet::IntTools_MarkedRangeSet(const NCollection_Array1<double>& theSortedArray,
-                                                 const int                         theInitFlag)
+                                                 const int      theInitFlag)
 {
   SetRanges(theSortedArray, theInitFlag);
 }
 
-void IntTools_MarkedRangeSet::SetBoundaries(const double theFirstBoundary,
-                                            const double theLastBoundary,
-                                            const int    theInitFlag)
+void IntTools_MarkedRangeSet::SetBoundaries(const double    theFirstBoundary,
+                                            const double    theLastBoundary,
+                                            const int theInitFlag)
 {
   myRangeSetStorer.Clear();
   myRangeSetStorer.Append(theFirstBoundary);
@@ -46,7 +46,7 @@ void IntTools_MarkedRangeSet::SetBoundaries(const double theFirstBoundary,
 }
 
 void IntTools_MarkedRangeSet::SetRanges(const NCollection_Array1<double>& theSortedArray,
-                                        const int                         theInitFlag)
+                                        const int      theInitFlag)
 {
   myRangeSetStorer.Clear();
   myFlags.Clear();
@@ -63,9 +63,9 @@ void IntTools_MarkedRangeSet::SetRanges(const NCollection_Array1<double>& theSor
   }
 }
 
-bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
-                                          const double theLastBoundary,
-                                          const int    theFlag)
+bool IntTools_MarkedRangeSet::InsertRange(const double    theFirstBoundary,
+                                                      const double    theLastBoundary,
+                                                      const int theFlag)
 {
   int anIndex1 = GetIndex(theFirstBoundary, true);
 
@@ -80,15 +80,15 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
   { // it can be if theLastBoundary==theFirstBoundary==boundary_of_a_range or theFirstBoundary >
     // theLastBoundary
     int atmpindex = anIndex1;
-    anIndex1      = anIndex2;
-    anIndex2      = atmpindex;
+    anIndex1                   = anIndex2;
+    anIndex2                   = atmpindex;
 
     if (theLastBoundary < theFirstBoundary)
       return false;
   }
 
   bool areEqualIndices = (anIndex1 == anIndex2);
-  int  aPrevFlag       = myFlags(anIndex1);
+  int aPrevFlag       = myFlags(anIndex1);
 
   myRangeSetStorer.InsertAfter(anIndex1, theFirstBoundary);
   anIndex2++;
@@ -122,18 +122,19 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
   return true;
 }
 
-bool IntTools_MarkedRangeSet::InsertRange(const IntTools_Range& theRange, const int theFlag)
+bool IntTools_MarkedRangeSet::InsertRange(const IntTools_Range&  theRange,
+                                                      const int theFlag)
 {
   return InsertRange(theRange.First(), theRange.Last(), theFlag);
 }
 
-bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
-                                          const double theLastBoundary,
-                                          const int    theFlag,
-                                          const int    theIndex)
+bool IntTools_MarkedRangeSet::InsertRange(const double    theFirstBoundary,
+                                                      const double    theLastBoundary,
+                                                      const int theFlag,
+                                                      const int theIndex)
 {
-  double aTolerance = 1.e-15;
-  int    anIndex    = theIndex;
+  double    aTolerance = 1.e-15;
+  int anIndex    = theIndex;
 
   if ((theIndex <= 0) || (theIndex > myRangeNumber))
     return false;
@@ -173,14 +174,15 @@ bool IntTools_MarkedRangeSet::InsertRange(const double theFirstBoundary,
   return true;
 }
 
-bool IntTools_MarkedRangeSet::InsertRange(const IntTools_Range& theRange,
-                                          const int             theFlag,
-                                          const int             theIndex)
+bool IntTools_MarkedRangeSet::InsertRange(const IntTools_Range&  theRange,
+                                                      const int theFlag,
+                                                      const int theIndex)
 {
   return InsertRange(theRange.First(), theRange.Last(), theFlag, theIndex);
 }
 
-void IntTools_MarkedRangeSet::SetFlag(const int theIndex, const int theFlag)
+void IntTools_MarkedRangeSet::SetFlag(const int theIndex,
+                                      const int theFlag)
 {
   myFlags.SetValue(theIndex, theFlag);
 }
@@ -254,7 +256,8 @@ int IntTools_MarkedRangeSet::GetIndex(const double theValue) const
   return anIndex;
 }
 
-int IntTools_MarkedRangeSet::GetIndex(const double theValue, const bool UseLower) const
+int IntTools_MarkedRangeSet::GetIndex(const double    theValue,
+                                                   const bool UseLower) const
 {
   int anIndex = 0;
 

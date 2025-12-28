@@ -76,7 +76,7 @@ int Interface_Protocol::NbTypes(const occ::handle<Standard_Transient>& /*obj*/) 
 //=================================================================================================
 
 occ::handle<Standard_Type> Interface_Protocol::Type(const occ::handle<Standard_Transient>& obj,
-                                                    const int /*nt*/) const
+                                               const int /*nt*/) const
 {
   if (obj.IsNull())
     return STANDARD_TYPE(Standard_Transient);
@@ -86,7 +86,7 @@ occ::handle<Standard_Type> Interface_Protocol::Type(const occ::handle<Standard_T
 //=================================================================================================
 
 bool Interface_Protocol::GlobalCheck(const Interface_Graph& /*graph*/,
-                                     occ::handle<Interface_Check>& /*ach*/) const
+                                                 occ::handle<Interface_Check>& /*ach*/) const
 {
   return true;
 }

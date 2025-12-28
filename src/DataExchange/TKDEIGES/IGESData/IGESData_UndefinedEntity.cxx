@@ -151,8 +151,8 @@ bool IGESData_UndefinedEntity::HasSubScriptNumber() const
 //=================================================================================================
 
 bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_DirPart&                           DP,
-                                       occ::handle<Interface_Check>&               ach)
+                                                   IGESData_DirPart&                      DP,
+                                                   occ::handle<Interface_Check>&               ach)
 {
   // MGE 23/07/98
   // =====================================
@@ -165,13 +165,13 @@ bool IGESData_UndefinedEntity::ReadDir(const occ::handle<IGESData_IGESReaderData
   // Message_Msg Msg72 ("XSTEP_72");
   // =====================================
 
-  int  v[17];
+  int   v[17];
   char res1[9], res2[9], lab[9], subs[9];
-  int  max = 2 * IR->NbRecords(); // max value for DSectNum
-  thedstat = 0;
+  int   max = 2 * IR->NbRecords(); // max value for DSectNum
+  thedstat               = 0;
 
   occ::handle<IGESData_IGESEntity> anent;
-  bool                             iapb;
+  bool            iapb;
   DP.Values(v[0],
             v[1],
             v[2],

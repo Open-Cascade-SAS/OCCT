@@ -23,11 +23,17 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 class gp_Pnt;
 
 //! defined the function used by SweepApproximation to
@@ -37,47 +43,49 @@ class Approx_SweepFunction : public Standard_Transient
 
 public:
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<double>&   Weigths) = 0;
+  Standard_EXPORT virtual bool D0(const double   Param,
+                                              const double   First,
+                                              const double   Last,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<double>& Weigths) = 0;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Vec>&   DPoles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<double>&   Weigths,
-                                  NCollection_Array1<double>&   DWeigths);
+  Standard_EXPORT virtual bool D1(const double   Param,
+                                              const double   First,
+                                              const double   Last,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths);
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double                  Param,
-                                  const double                  First,
-                                  const double                  Last,
-                                  NCollection_Array1<gp_Pnt>&   Poles,
-                                  NCollection_Array1<gp_Vec>&   DPoles,
-                                  NCollection_Array1<gp_Vec>&   D2Poles,
-                                  NCollection_Array1<gp_Pnt2d>& Poles2d,
-                                  NCollection_Array1<gp_Vec2d>& DPoles2d,
-                                  NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                                  NCollection_Array1<double>&   Weigths,
-                                  NCollection_Array1<double>&   DWeigths,
-                                  NCollection_Array1<double>&   D2Weigths);
+  Standard_EXPORT virtual bool D2(const double   Param,
+                                              const double   First,
+                                              const double   Last,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<gp_Vec>&   D2Poles,
+                                              NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                              NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                              NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths,
+                                              NCollection_Array1<double>& D2Weigths);
 
   //! get the number of 2d curves to approximate.
   Standard_EXPORT virtual int Nb2dCurves() const = 0;
 
   //! get the format of an section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const = 0;
+  Standard_EXPORT virtual void SectionShape(int& NbPoles,
+                                            int& NbKnots,
+                                            int& Degree) const = 0;
 
   //! get the Knots of the section
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const = 0;
@@ -98,8 +106,7 @@ public:
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
 
   //! Sets the bounds of the parametric interval on
   //! the function
@@ -110,23 +117,24 @@ public:
   //! Returns the resolutions in the sub-space 2d <Index>
   //! This information is useful to find a good tolerance in
   //! 2d approximation.
-  Standard_EXPORT virtual void Resolution(const int    Index,
-                                          const double Tol,
-                                          double&      TolU,
-                                          double&      TolV) const;
+  Standard_EXPORT virtual void Resolution(const int Index,
+                                          const double    Tol,
+                                          double&         TolU,
+                                          double&         TolV) const;
 
   //! Returns the tolerance to reach in approximation
   //! to satisfy.
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary (in radian)
   //! SurfTol error inside the surface.
-  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
+  Standard_EXPORT virtual void GetTolerance(const double   BoundTol,
+                                            const double   SurfTol,
+                                            const double   AngleTol,
                                             NCollection_Array1<double>& Tol3d) const = 0;
 
   //! Is useful, if (me) have to run numerical algorithm to perform D0, D1 or D2
-  Standard_EXPORT virtual void SetTolerance(const double Tol3d, const double Tol2d) = 0;
+  Standard_EXPORT virtual void SetTolerance(const double Tol3d,
+                                            const double Tol2d) = 0;
 
   //! Get the barycentre of Surface.
   //! An very poor estimation is sufficient.
@@ -145,6 +153,7 @@ public:
   Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const;
 
   DEFINE_STANDARD_RTTIEXT(Approx_SweepFunction, Standard_Transient)
+
 };
 
 #endif // _Approx_SweepFunction_HeaderFile

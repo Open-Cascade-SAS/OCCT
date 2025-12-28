@@ -24,7 +24,7 @@ RWStepShape_RWQualifiedRepresentationItem::RWStepShape_RWQualifiedRepresentation
 
 void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                                                 num,
+  const int                               num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepShape_QualifiedRepresentationItem>& ent) const
 {
@@ -42,11 +42,11 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
   // --- own field : qualifiers ---
 
   occ::handle<NCollection_HArray1<StepShape_ValueQualifier>> quals;
-  int                                                        nsub2;
+  int                          nsub2;
   if (data->ReadSubList(num, 2, "qualifiers", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    quals   = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb2);
+    quals                = new NCollection_HArray1<StepShape_ValueQualifier>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       StepShape_ValueQualifier VQ;
@@ -61,7 +61,7 @@ void RWStepShape_RWQualifiedRepresentationItem::ReadStep(
 }
 
 void RWStepShape_RWQualifiedRepresentationItem::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepShape_QualifiedRepresentationItem>& ent) const
 {
   // --- inherited field name ---
@@ -78,7 +78,7 @@ void RWStepShape_RWQualifiedRepresentationItem::WriteStep(
 
 void RWStepShape_RWQualifiedRepresentationItem::Share(
   const occ::handle<StepShape_QualifiedRepresentationItem>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                            iter) const
 {
   int i, nbq = ent->NbQualifiers();
   for (i = 1; i <= nbq; i++)

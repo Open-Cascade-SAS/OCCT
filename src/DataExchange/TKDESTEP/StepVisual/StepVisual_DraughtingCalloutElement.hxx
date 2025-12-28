@@ -45,18 +45,17 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a AnnotationCurveOccurrence (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_AnnotationCurveOccurrence> AnnotationCurveOccurrence()
-    const;
+  Standard_EXPORT occ::handle<StepVisual_AnnotationCurveOccurrence> AnnotationCurveOccurrence() const;
 
   //! returns Value as a AnnotationTextOccurrence
   Standard_EXPORT occ::handle<StepVisual_AnnotationTextOccurrence> AnnotationTextOccurrence() const;
 
   //! returns Value as a TessellatedAnnotationOccurrence
   Standard_EXPORT occ::handle<StepVisual_TessellatedAnnotationOccurrence>
-                  TessellatedAnnotationOccurrence() const;
+    TessellatedAnnotationOccurrence() const;
 
   //! returns Value as a AnnotationFillAreaOccurrence
-  Standard_EXPORT occ::handle<StepVisual_AnnotationFillAreaOccurrence>
-                  AnnotationFillAreaOccurrence() const;
+  Standard_EXPORT occ::handle<StepVisual_AnnotationFillAreaOccurrence> AnnotationFillAreaOccurrence()
+    const;
 };
 #endif // StepVisual_DraughtingCalloutElement

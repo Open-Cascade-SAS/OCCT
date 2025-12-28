@@ -39,6 +39,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_Line3DDriver, TFunction_Driver)
@@ -81,7 +82,7 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   }
 
   const int aType    = DNaming::GetInteger(aFunction, LINE3D_TYPE)->Get();
-  bool      isClosed = (aType != 0);
+  bool       isClosed = (aType != 0);
   int       aCounter(0), aLength = DNaming::GetInteger(aFunction, LINE3D_PNTNB)->Get();
   if (aLength < 2)
   {
@@ -90,16 +91,15 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   }
 
   occ::handle<TNaming_NamedShape> aNS1, aNS2;
-  BRepBuilderAPI_MakeWire         aMakeWire;
-  TopoDS_Wire                     aWire;
-  TopoDS_Shape                    aShape1, aShape2;
+  BRepBuilderAPI_MakeWire    aMakeWire;
+  TopoDS_Wire                aWire;
+  TopoDS_Shape               aShape1, aShape2;
 
   NCollection_Array1<TopoDS_Shape> anArV(1, aLength); // aLength - number of points
   for (aCounter = 1; aCounter <= aLength - 1; aCounter++)
   {
-    occ::handle<TDataStd_UAttribute> aRefP1 =
-      DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter));
-    aNS1 = DNaming::GetObjectValue(aRefP1);
+    occ::handle<TDataStd_UAttribute> aRefP1 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter));
+    aNS1                               = DNaming::GetObjectValue(aRefP1);
     occ::handle<TDataStd_UAttribute> aRefP2 =
       DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + aCounter + 1));
     aNS2 = DNaming::GetObjectValue(aRefP2);
@@ -158,8 +158,8 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   if (isClosed)
   {
     occ::handle<TDataStd_UAttribute> aRefP1 = DNaming::GetObjectArg(aFunction, (LINE3D_TYPE + 1));
-    aNS1                                    = DNaming::GetObjectValue(aRefP1);
-    aShape1                                 = aNS1->Get();
+    aNS1                               = DNaming::GetObjectValue(aRefP1);
+    aShape1                            = aNS1->Get();
     BRepBuilderAPI_MakeEdge aMakeEdge(TopoDS::Vertex(aShape2), TopoDS::Vertex(aShape1));
     if (aMakeEdge.IsDone())
       aMakeWire.Add(aMakeEdge.Edge());
@@ -204,10 +204,10 @@ int DNaming_Line3DDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
 // function : LoadNamingDS
 // purpose  : Loads a Line3D in a data framework
 //=======================================================================
-void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        theResultLabel,
-                                        const TopoDS_Wire&                      theWire,
+void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&              theResultLabel,
+                                        const TopoDS_Wire&            theWire,
                                         const NCollection_Array1<TopoDS_Shape>& theArV,
-                                        const bool                              isClosed) const
+                                        const bool        isClosed) const
 {
   if (theWire.IsNull())
     return;
@@ -220,15 +220,15 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
   int aLength = theArV.Length();
   if (aLength < 2)
     return;
-  TopoDS_Shape                     aShape;
+  TopoDS_Shape           aShape;
   NCollection_Array1<TopoDS_Shape> anArE(1, aLength);
-  TopoDS_Vertex                    aFirst, aLast;
+  TopoDS_Vertex          aFirst, aLast;
   for (int i = 1; i < aLength; i++)
   {
-    gp_Pnt          aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i)));
-    gp_Pnt          aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i + 1)));
-    bool            aFound = false;
-    TopExp_Explorer anExp(theWire, TopAbs_EDGE);
+    gp_Pnt           aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i)));
+    gp_Pnt           aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(i + 1)));
+    bool aFound = false;
+    TopExp_Explorer  anExp(theWire, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
@@ -250,10 +250,10 @@ void DNaming_Line3DDriver::LoadNamingDS(const TDF_Label&                        
   }
   if (isClosed)
   {
-    bool            aFound = false;
-    gp_Pnt          aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(aLength)));
-    gp_Pnt          aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(1)));
-    TopExp_Explorer anExp(theWire, TopAbs_EDGE);
+    bool aFound = false;
+    gp_Pnt           aP1    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(aLength)));
+    gp_Pnt           aP2    = BRep_Tool::Pnt(TopoDS::Vertex(theArV.Value(1)));
+    TopExp_Explorer  anExp(theWire, TopAbs_EDGE);
     for (; anExp.More(); anExp.Next())
     {
       const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());

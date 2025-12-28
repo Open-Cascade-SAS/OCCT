@@ -82,8 +82,8 @@ int IFSelect_SelectRange::UpperValue() const
 }
 
 bool IFSelect_SelectRange::Sort(const int rank,
-                                const occ::handle<Standard_Transient>&,
-                                const occ::handle<Interface_InterfaceModel>&) const
+                                            const occ::handle<Standard_Transient>&,
+                                            const occ::handle<Interface_InterfaceModel>&) const
 {
   int rankfrom = 0;
   if (!thelower.IsNull())
@@ -96,8 +96,8 @@ bool IFSelect_SelectRange::Sort(const int rank,
 
 TCollection_AsciiString IFSelect_SelectRange::ExtractLabel() const
 {
-  char lab[30];
-  int  rankfrom = 0;
+  char             lab[30];
+  int rankfrom = 0;
   if (!thelower.IsNull())
     rankfrom = thelower->Value();
   int rankto = 0;

@@ -202,7 +202,7 @@ void Contap_ContAna::Perform(const gp_Cylinder& C, const gp_Pnt& Eye)
   done = false;
 
   double radius = C.Radius();
-  gp_Lin theaxis(C.Axis());
+  gp_Lin        theaxis(C.Axis());
   double dist = theaxis.Distance(Eye);
   if (dist <= radius)
   {

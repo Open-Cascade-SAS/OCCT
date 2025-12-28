@@ -46,11 +46,10 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionReference (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionReference> ProductDefinitionReference()
-    const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionReference> ProductDefinitionReference() const;
 
   //! returns Value as a ProductDefinitionReferenceWithLocalRepresentation (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ProductDefinitionReferenceWithLocalRepresentation>
-                  ProductDefinitionReferenceWithLocalRepresentation() const;
+    ProductDefinitionReferenceWithLocalRepresentation() const;
 };
 #endif // _StepBasic_ProductDefinitionOrReference_HeaderFile

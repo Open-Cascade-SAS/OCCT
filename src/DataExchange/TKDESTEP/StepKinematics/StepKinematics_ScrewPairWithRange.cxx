@@ -31,16 +31,16 @@ StepKinematics_ScrewPairWithRange::StepKinematics_ScrewPairWithRange()
 void StepKinematics_ScrewPairWithRange::Init(
   const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
   const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-  const bool                                        hasItemDefinedTransformation_Description,
+  const bool                       hasItemDefinedTransformation_Description,
   const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
   const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
   const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
   const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-  const double                                      theScrewPair_Pitch,
-  const bool                                        hasLowerLimitActualRotation,
-  const double                                      theLowerLimitActualRotation,
-  const bool                                        hasUpperLimitActualRotation,
-  const double                                      theUpperLimitActualRotation)
+  const double                          theScrewPair_Pitch,
+  const bool                       hasLowerLimitActualRotation,
+  const double                          theLowerLimitActualRotation,
+  const bool                       hasUpperLimitActualRotation,
+  const double                          theUpperLimitActualRotation)
 {
   StepKinematics_ScrewPair::Init(theRepresentationItem_Name,
                                  theItemDefinedTransformation_Name,

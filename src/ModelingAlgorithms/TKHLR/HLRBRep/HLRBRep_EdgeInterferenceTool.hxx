@@ -57,8 +57,8 @@ public:
   //! parameter <Para>. See method Reset of class
   //! EdgeFaceTransition from TopCnx for other arguments.
   Standard_EXPORT void EdgeGeometry(const double Param,
-                                    gp_Dir&      Tgt,
-                                    gp_Dir&      Nrm,
+                                    gp_Dir&             Tgt,
+                                    gp_Dir&             Nrm,
                                     double&      Curv) const;
 
   double ParameterOfInterference(const HLRAlgo_Interference& I) const;
@@ -66,7 +66,7 @@ public:
   //! True if the two interferences are on the same
   //! geometric locus.
   Standard_EXPORT bool SameInterferences(const HLRAlgo_Interference& I1,
-                                         const HLRAlgo_Interference& I2) const;
+                                                     const HLRAlgo_Interference& I2) const;
 
   //! True if the Interference and the current Vertex
   //! are on the same geometric locus.
@@ -79,12 +79,12 @@ public:
   Standard_EXPORT void InterferenceBoundaryGeometry(const HLRAlgo_Interference& I,
                                                     gp_Dir&                     Tang,
                                                     gp_Dir&                     Norm,
-                                                    double&                     Curv) const;
+                                                    double&              Curv) const;
 
 private:
   occ::handle<HLRBRep_Data> myDS;
-  HLRAlgo_Intersection      inter[2];
-  int                       cur;
+  HLRAlgo_Intersection inter[2];
+  int     cur;
 };
 
 #include <HLRBRep_EdgeInterferenceTool.lxx>

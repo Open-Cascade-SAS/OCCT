@@ -31,6 +31,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve2dToBezier, ShapeUpgrade_SplitCurve2d)
 
@@ -41,12 +43,12 @@ ShapeUpgrade_ConvertCurve2dToBezier::ShapeUpgrade_ConvertCurve2dToBezier()
 }
 
 static occ::handle<Geom2d_BezierCurve> MakeBezier2d(const occ::handle<Geom2d_Curve>& theCurve2d,
-                                                    const double                     theFirst,
-                                                    const double                     theLast)
+                                               const double         theFirst,
+                                               const double         theLast)
 {
   NCollection_Array1<gp_Pnt2d> poles(1, 2);
-  poles(1)                               = theCurve2d->Value(theFirst);
-  poles(2)                               = theCurve2d->Value(theLast);
+  poles(1)                          = theCurve2d->Value(theFirst);
+  poles(2)                          = theCurve2d->Value(theLast);
   occ::handle<Geom2d_BezierCurve> bezier = new Geom2d_BezierCurve(poles);
   return bezier;
 }
@@ -66,7 +68,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       || myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
     // static function`s code getted from ShapeConvert
-    double                   tmpF, tmpL, aDeviation;
+    double       tmpF, tmpL, aDeviation;
     occ::handle<Geom2d_Line> aTmpLine2d =
       ShapeCustom_Curve2d::ConvertToLine2d(myCurve,
                                            First,
@@ -89,8 +91,8 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
 
   if (myCurve->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
   {
-    occ::handle<Geom2d_TrimmedCurve>    tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
-    occ::handle<Geom2d_Curve>           BasCurve = tmp->BasisCurve();
+    occ::handle<Geom2d_TrimmedCurve>         tmp      = occ::down_cast<Geom2d_TrimmedCurve>(myCurve);
+    occ::handle<Geom2d_Curve>                BasCurve = tmp->BasisCurve();
     ShapeUpgrade_ConvertCurve2dToBezier converter;
     // converter.Init(BasCurve,Max(First,BasCurve->FirstParameter()),Min(Last,BasCurve->LastParameter()));
     // //???
@@ -108,7 +110,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
   else if (myCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
     occ::handle<Geom2d_BezierCurve> bezier = occ::down_cast<Geom2d_BezierCurve>(myCurve);
-    myNbCurves                             = mySplitValues->Length() - 1;
+    myNbCurves                        = mySplitValues->Length() - 1;
     mySplitParams->Append(First);
     mySplitParams->Append(Last);
     if (First < precision && Last > 1 - precision)
@@ -139,7 +141,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
   else
   {
     occ::handle<Geom2d_BSplineCurve> aBSpline2d;
-    double                           Shift = 0.;
+    double               Shift = 0.;
     if (myCurve->IsKind(STANDARD_TYPE(Geom2d_Conic)))
     {
       // clang-format off
@@ -189,8 +191,8 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
     ShapeCustom_Curve2d::SimplifyBSpline2d(aBSpline2d, Precision::Approximation());
 
     Geom2dConvert_BSplineCurveToBezierCurve tool(aBSpline2d, First, Last, precision);
-    int                                     nbArcs = tool.NbArcs();
-    NCollection_Array1<double>              knots(1, nbArcs + 1);
+    int                        nbArcs = tool.NbArcs();
+    NCollection_Array1<double>                    knots(1, nbArcs + 1);
     tool.Knots(knots);
     mySplitParams->Append(First + Shift);
     int j; // svv Jan 10 2000 : porting on DEC
@@ -208,7 +210,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
         {
           newFirst = newLast;
           newLast  = nextKnot;
-          double                   tmpF, tmpL, aDeviation;
+          double       tmpF, tmpL, aDeviation;
           occ::handle<Geom2d_Line> aTmpLine2d =
             ShapeCustom_Curve2d::ConvertToLine2d(aCrv2d,
                                                  newFirst,
@@ -255,10 +257,10 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
 void ShapeUpgrade_ConvertCurve2dToBezier::Build(const bool /*Segment*/)
 {
   constexpr double prec = Precision::PConfusion();
-  int              nb   = mySplitValues->Length();
-  myResultingCurves     = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, nb - 1);
-  double prevPar        = 0.;
-  int    j              = 2;
+  int        nb   = mySplitValues->Length();
+  myResultingCurves            = new NCollection_HArray1<occ::handle<Geom2d_Curve>>(1, nb - 1);
+  double    prevPar     = 0.;
+  int j           = 2;
   for (int i = 2; i <= nb; i++)
   {
     double par = mySplitValues->Value(i);
@@ -281,8 +283,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Build(const bool /*Segment*/)
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> ShapeUpgrade_ConvertCurve2dToBezier::
-  Segments() const
+occ::handle<NCollection_HSequence<occ::handle<Geom2d_Curve>>> ShapeUpgrade_ConvertCurve2dToBezier::Segments() const
 {
   return mySegments;
 }

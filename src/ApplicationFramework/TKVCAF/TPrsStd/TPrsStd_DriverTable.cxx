@@ -88,8 +88,8 @@ void TPrsStd_DriverTable::InitStandardDrivers()
 // purpose  : Adds a driver to the DriverTable
 //=======================================================================
 
-bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&               guid,
-                                    const occ::handle<TPrsStd_Driver>& driver)
+bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&          guid,
+                                                const occ::handle<TPrsStd_Driver>& driver)
 {
   return myDrivers.Bind(guid, driver);
 }
@@ -99,8 +99,8 @@ bool TPrsStd_DriverTable::AddDriver(const Standard_GUID&               guid,
 // purpose  : Returns the driver if find
 //=======================================================================
 
-bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&         guid,
-                                     occ::handle<TPrsStd_Driver>& driver) const
+bool TPrsStd_DriverTable::FindDriver(const Standard_GUID&    guid,
+                                                 occ::handle<TPrsStd_Driver>& driver) const
 {
   if (myDrivers.IsBound(guid))
   {

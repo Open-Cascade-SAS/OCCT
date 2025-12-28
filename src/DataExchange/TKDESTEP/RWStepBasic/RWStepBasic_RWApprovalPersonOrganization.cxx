@@ -24,7 +24,7 @@ RWStepBasic_RWApprovalPersonOrganization::RWStepBasic_RWApprovalPersonOrganizati
 
 void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_ApprovalPersonOrganization>& ent) const
 {
@@ -63,7 +63,7 @@ void RWStepBasic_RWApprovalPersonOrganization::ReadStep(
 }
 
 void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_ApprovalPersonOrganization>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepBasic_RWApprovalPersonOrganization::WriteStep(
 
 void RWStepBasic_RWApprovalPersonOrganization::Share(
   const occ::handle<StepBasic_ApprovalPersonOrganization>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->PersonOrganization().Value());

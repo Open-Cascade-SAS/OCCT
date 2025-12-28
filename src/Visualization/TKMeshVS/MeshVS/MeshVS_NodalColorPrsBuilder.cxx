@@ -43,9 +43,18 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_Color.hxx>
+#include <NCollection_Array1.hxx>
+#include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -92,11 +101,11 @@ static inline int getNearestPow2(int theValue)
 
 //=================================================================================================
 
-MeshVS_NodalColorPrsBuilder::MeshVS_NodalColorPrsBuilder(const occ::handle<MeshVS_Mesh>& Parent,
-                                                         const MeshVS_DisplayModeFlags&  Flags,
+MeshVS_NodalColorPrsBuilder::MeshVS_NodalColorPrsBuilder(const occ::handle<MeshVS_Mesh>&       Parent,
+                                                         const MeshVS_DisplayModeFlags&   Flags,
                                                          const occ::handle<MeshVS_DataSource>& DS,
-                                                         const int                             Id,
-                                                         const MeshVS_BuilderPriority& Priority)
+                                                         const int           Id,
+                                                         const MeshVS_BuilderPriority&    Priority)
     : MeshVS_PrsBuilder(Parent, Flags, DS, Id, Priority),
       myUseTexture(false),
       myInvalidColor(Quantity_NOC_GRAY)
@@ -107,10 +116,10 @@ MeshVS_NodalColorPrsBuilder::MeshVS_NodalColorPrsBuilder(const occ::handle<MeshV
 //=================================================================================================
 
 void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                        const TColStd_PackedMapOfInteger&      IDs,
-                                        TColStd_PackedMapOfInteger&            IDsToExclude,
-                                        const bool                             IsElement,
-                                        const int                              DisplayMode) const
+                                        const TColStd_PackedMapOfInteger& IDs,
+                                        TColStd_PackedMapOfInteger&       IDsToExclude,
+                                        const bool            IsElement,
+                                        const int            DisplayMode) const
 {
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
@@ -121,10 +130,10 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) || aMaxFaceNodes <= 0)
     return;
 
-  MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
+  MeshVS_Buffer        aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
-  int                        NbNodes;
-  MeshVS_EntityType          aType;
+  int     NbNodes;
+  MeshVS_EntityType    aType;
 
   if (!(DisplayMode & GetFlags()) || !IsElement)
     return;
@@ -158,8 +167,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   // Calculate maximum possible number of vertices and bounds
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  int                          PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
+  TColStd_MapIteratorOfPackedMapOfInteger   it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();
@@ -267,7 +276,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
     new Graphic3d_ArrayOfSegments(aNbEdgePrimitives * 2);
 
   double aMin = gp::Resolution() * gp::Resolution();
-  gp_Dir aDefNorm(gp_Dir::D::Z);
+  gp_Dir        aDefNorm(gp_Dir::D::Z);
 
   // Prepare for scaling the incoming colors
   const double anColorRatio = 1.0;
@@ -425,10 +434,10 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   //  Aspect_InteriorStyle  aStyle;
   //  int      aStyleInt;
   Aspect_TypeOfLine anEdgeType  = Aspect_TOL_SOLID;
-  double            anEdgeWidth = 1.0;
+  double     anEdgeWidth = 1.0;
   Quantity_Color    anInteriorColor;
   Quantity_Color    anEdgeColor, aLineColor;
-  bool              aShowEdges = true;
+  bool  aShowEdges = true;
 
   aDrawer->GetColor(MeshVS_DA_InteriorColor, anInteriorColor);
   aDrawer->GetColor(MeshVS_DA_EdgeColor, anEdgeColor);
@@ -508,13 +517,13 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
 void MeshVS_NodalColorPrsBuilder::AddVolumePrs(
   const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
-  const NCollection_Array1<int>&                                     theNodes,
-  const NCollection_Array1<double>&                                  theCoords,
-  const occ::handle<Graphic3d_ArrayOfPrimitives>&                    theArray,
-  const bool                                                         theIsShaded,
-  const int                                                          theNbColors,
-  const int                                                          theNbTexColors,
-  const double                                                       theColorRatio) const
+  const NCollection_Array1<int>&                   theNodes,
+  const NCollection_Array1<double>&                      theCoords,
+  const occ::handle<Graphic3d_ArrayOfPrimitives>&       theArray,
+  const bool                           theIsShaded,
+  const int                           theNbColors,
+  const int                           theNbTexColors,
+  const double                              theColorRatio) const
 {
   int aLow = theCoords.Lower();
 
@@ -525,7 +534,9 @@ void MeshVS_NodalColorPrsBuilder::AddVolumePrs(
 
   if (aIsPolygons)
   {
-    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper();
+         aFaceIdx <= topoup;
+         ++aFaceIdx)
     {
       const NCollection_Sequence<int>& aFaceNodes = theTopo->Value(aFaceIdx);
 
@@ -605,11 +616,14 @@ void MeshVS_NodalColorPrsBuilder::AddVolumePrs(
     // Find all pairs of nodes (edges) to draw (will be drawn only once)
     NCollection_Map<MeshVS_NodePair, MeshVS_SymmetricPairHasher> aEdgeMap;
 
-    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    for (int aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper();
+         aFaceIdx <= topoup;
+         ++aFaceIdx)
     {
       const NCollection_Sequence<int>& aFaceNodes = theTopo->Value(aFaceIdx);
 
-      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes; ++aNodeIdx)
+      for (int aNodeIdx = 0, aNbNodes = aFaceNodes.Length(); aNodeIdx < aNbNodes;
+           ++aNodeIdx)
       {
         const int aNextIdx = (aNodeIdx + 1) % aNbNodes;
 
@@ -638,8 +652,7 @@ void MeshVS_NodalColorPrsBuilder::AddVolumePrs(
 
 //=================================================================================================
 
-void MeshVS_NodalColorPrsBuilder::SetColors(
-  const NCollection_DataMap<int, Quantity_Color>& theColorMap)
+void MeshVS_NodalColorPrsBuilder::SetColors(const NCollection_DataMap<int, Quantity_Color>& theColorMap)
 {
   myNodeColorMap = theColorMap;
 }
@@ -660,7 +673,8 @@ bool MeshVS_NodalColorPrsBuilder::HasColors() const
 
 //=================================================================================================
 
-bool MeshVS_NodalColorPrsBuilder::GetColor(const int ID, Quantity_Color& theColor) const
+bool MeshVS_NodalColorPrsBuilder::GetColor(const int ID,
+                                                       Quantity_Color&        theColor) const
 {
   bool aRes = myNodeColorMap.IsBound(ID);
   if (aRes)
@@ -670,7 +684,8 @@ bool MeshVS_NodalColorPrsBuilder::GetColor(const int ID, Quantity_Color& theColo
 
 //=================================================================================================
 
-void MeshVS_NodalColorPrsBuilder::SetColor(const int theID, const Quantity_Color& theCol)
+void MeshVS_NodalColorPrsBuilder::SetColor(const int theID,
+                                           const Quantity_Color&  theCol)
 {
   bool aRes = myNodeColorMap.IsBound(theID);
   if (aRes)
@@ -765,7 +780,8 @@ const NCollection_DataMap<int, double>& MeshVS_NodalColorPrsBuilder::GetTextureC
 // Purpose  : Specify correspondence between node ID and texture
 //            coordinate (range [0, 1])
 //================================================================
-void MeshVS_NodalColorPrsBuilder::SetTextureCoord(const int theID, const double theCoord)
+void MeshVS_NodalColorPrsBuilder::SetTextureCoord(const int theID,
+                                                  const double    theCoord)
 {
   myTextureCoords.Bind(theID, theCoord);
 }

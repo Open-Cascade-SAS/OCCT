@@ -46,6 +46,7 @@ public:
 
   //! Returns Value as DimensionalSize (or Null if another type)
   Standard_EXPORT occ::handle<StepShape_DimensionalSize> DimensionalSize() const;
+
 };
 
 #endif // _StepShape_DimensionalCharacteristic_HeaderFile

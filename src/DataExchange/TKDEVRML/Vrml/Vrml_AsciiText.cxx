@@ -26,11 +26,10 @@ Vrml_AsciiText::Vrml_AsciiText()
   myWidth         = 0;
 }
 
-Vrml_AsciiText::Vrml_AsciiText(
-  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
-  const double                                                     aSpacing,
-  const Vrml_AsciiTextJustification                                aJustification,
-  const double                                                     aWidth)
+Vrml_AsciiText::Vrml_AsciiText(const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString,
+                               const double                         aSpacing,
+                               const Vrml_AsciiTextJustification           aJustification,
+                               const double                         aWidth)
 {
   myString        = aString;
   mySpacing       = aSpacing;
@@ -38,8 +37,7 @@ Vrml_AsciiText::Vrml_AsciiText(
   myWidth         = aWidth;
 }
 
-void Vrml_AsciiText::SetString(
-  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString)
+void Vrml_AsciiText::SetString(const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& aString)
 {
   myString = aString;
 }

@@ -47,7 +47,9 @@ GC_MakeRotation::GC_MakeRotation(const gp_Ax1& Axis, const double Angle)
 //   droite issue du point Point et de direction Direc.                   +
 //=========================================================================
 
-GC_MakeRotation::GC_MakeRotation(const gp_Pnt& Point, const gp_Dir& Direc, const double Angle)
+GC_MakeRotation::GC_MakeRotation(const gp_Pnt&       Point,
+                                 const gp_Dir&       Direc,
+                                 const double Angle)
 {
   TheRotation = new Geom_Transformation();
   TheRotation->SetRotation(gp_Ax1(Point, Direc), Angle);

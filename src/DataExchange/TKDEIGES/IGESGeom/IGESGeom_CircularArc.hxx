@@ -46,9 +46,9 @@ public:
   //! - aStart  : Starting point of the circular arc
   //! - anEnd   : Ending point of the circular arc
   Standard_EXPORT void Init(const double aZT,
-                            const gp_XY& aCenter,
-                            const gp_XY& aStart,
-                            const gp_XY& anEnd);
+                            const gp_XY&        aCenter,
+                            const gp_XY&        aStart,
+                            const gp_XY&        anEnd);
 
   //! returns the center of the circle of which arc forms a part
   Standard_EXPORT gp_Pnt2d Center() const;
@@ -92,9 +92,9 @@ public:
 
 private:
   double theZT;
-  gp_XY  theCenter;
-  gp_XY  theStart;
-  gp_XY  theEnd;
+  gp_XY         theCenter;
+  gp_XY         theStart;
+  gp_XY         theEnd;
 };
 
 #endif // _IGESGeom_CircularArc_HeaderFile

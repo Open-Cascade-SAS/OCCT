@@ -40,7 +40,7 @@
 //=================================================================================================
 
 occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve1,
-                                            const occ::handle<Geom_Curve>& Curve2)
+                                       const occ::handle<Geom_Curve>& Curve2)
 
 {
   occ::handle<Geom_Curve>   TheCurve1, TheCurve2;
@@ -55,15 +55,15 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
   //     - ou 2 droites
   //     - ou 2 cercles
 
-  double a1 = 0, a2 = 0, b1 = 0, b2 = 0;
-  bool   Trim1 = false, Trim2 = false;
+  double    a1 = 0, a2 = 0, b1 = 0, b2 = 0;
+  bool Trim1 = false, Trim2 = false;
   if (Curve1->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> Ctrim = occ::down_cast<Geom_TrimmedCurve>(Curve1);
-    TheCurve1                            = Ctrim->BasisCurve();
-    a1                                   = Ctrim->FirstParameter();
-    b1                                   = Ctrim->LastParameter();
-    Trim1                                = true;
+    TheCurve1                       = Ctrim->BasisCurve();
+    a1                              = Ctrim->FirstParameter();
+    b1                              = Ctrim->LastParameter();
+    Trim1                           = true;
   }
   else
   {
@@ -72,10 +72,10 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
   if (Curve2->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> Ctrim = occ::down_cast<Geom_TrimmedCurve>(Curve2);
-    TheCurve2                            = Ctrim->BasisCurve();
-    a2                                   = Ctrim->FirstParameter();
-    b2                                   = Ctrim->LastParameter();
-    Trim2                                = true;
+    TheCurve2                       = Ctrim->BasisCurve();
+    a2                              = Ctrim->FirstParameter();
+    b2                              = Ctrim->LastParameter();
+    Trim2                           = true;
   }
   else
   {
@@ -95,7 +95,7 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
 
     if (D1.IsParallel(D2, Precision::Angular()))
     {
-      gp_Vec P1P2(L1.Location(), L2.Location());
+      gp_Vec        P1P2(L1.Location(), L2.Location());
       double proj = P1P2.Dot(D1);
 
       if (D1.IsEqual(D2, Precision::Angular()))
@@ -103,9 +103,9 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
         if (std::abs(a1 - proj - a2) <= Precision::Confusion()
             && std::abs(b1 - proj - b2) <= Precision::Confusion())
         {
-          gp_Ax3                  Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
+          gp_Ax3             Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
           occ::handle<Geom_Plane> P = new Geom_Plane(Ax);
-          double                  V = P1P2.Dot(Ax.YDirection());
+          double      V = P1P2.Dot(Ax.YDirection());
           Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, std::min(0., V), std::max(0., V));
           IsDone = true;
         }
@@ -115,9 +115,9 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
         if (std::abs(a1 - proj + b2) <= Precision::Confusion()
             && std::abs(b1 - proj + a2) <= Precision::Confusion())
         {
-          gp_Ax3                  Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
+          gp_Ax3             Ax(L1.Location(), gp_Dir(D1.Crossed(P1P2)), D1);
           occ::handle<Geom_Plane> P = new Geom_Plane(Ax);
-          double                  V = P1P2.Dot(Ax.YDirection());
+          double      V = P1P2.Dot(Ax.YDirection());
           Surf   = new Geom_RectangularTrimmedSurface(P, a1, b1, std::min(0., V), std::max(0., V));
           IsDone = true;
         }
@@ -145,7 +145,8 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
         if (std::abs(C1.Radius() - C2.Radius()) < Precision::Confusion())
         {
           occ::handle<Geom_CylindricalSurface> C = new Geom_CylindricalSurface(A1, C1.Radius());
-          Surf = new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), false);
+          Surf =
+            new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), false);
         }
         else
         {
@@ -159,7 +160,8 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
           }
           occ::handle<Geom_ConicalSurface> C = new Geom_ConicalSurface(A1, Ang, C1.Radius());
           V /= std::cos(Ang);
-          Surf = new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), false);
+          Surf =
+            new Geom_RectangularTrimmedSurface(C, std::min(0., V), std::max(0., V), false);
         }
         IsDone = true;
       }
@@ -183,10 +185,10 @@ occ::handle<Geom_Surface> GeomFill::Surface(const occ::handle<Geom_Curve>& Curve
 
 //=================================================================================================
 
-void GeomFill::GetShape(const double                  MaxAng,
-                        int&                          NbPoles,
-                        int&                          NbKnots,
-                        int&                          Degree,
+void GeomFill::GetShape(const double           MaxAng,
+                        int&             NbPoles,
+                        int&             NbKnots,
+                        int&             Degree,
                         Convert_ParameterisationType& TConv)
 {
   switch (TConv)
@@ -205,9 +207,9 @@ void GeomFill::GetShape(const double                  MaxAng,
     break;
     default: {
       int NbSpan = (int)(std::ceil(3. * std::abs(MaxAng) / 2. / M_PI));
-      NbPoles    = 2 * NbSpan + 1;
-      NbKnots    = NbSpan + 1;
-      Degree     = 2;
+      NbPoles                 = 2 * NbSpan + 1;
+      NbKnots                 = NbSpan + 1;
+      Degree                  = 2;
       if (NbSpan == 1)
       {
         TConv = Convert_TgtThetaOver2_1;
@@ -231,26 +233,26 @@ void GeomFill::GetShape(const double                  MaxAng,
 //=======================================================================
 
 void GeomFill::GetMinimalWeights(const Convert_ParameterisationType TConv,
-                                 const double                       MinAng,
-                                 const double                       MaxAng,
-                                 NCollection_Array1<double>&        Weights)
+                                 const double                MinAng,
+                                 const double                MaxAng,
+                                 NCollection_Array1<double>&              Weights)
 
 {
   if (TConv == Convert_Polynomial)
     Weights.Init(1);
   else
   {
-    gp_Ax2                         popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
-    gp_Circ                        C(popAx2, 1);
+    gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+    gp_Circ                   C(popAx2, 1);
     occ::handle<Geom_TrimmedCurve> Sect1   = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
     occ::handle<Geom_BSplineCurve> CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);
     CtoBspl->Weights(Weights);
 
     NCollection_Array1<double> poids(Weights.Lower(), Weights.Upper());
-    double                     angle_min = std::max(Precision::PConfusion(), MinAng);
+    double        angle_min = std::max(Precision::PConfusion(), MinAng);
 
     occ::handle<Geom_TrimmedCurve> Sect2 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
-    CtoBspl                              = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
+    CtoBspl                         = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
     CtoBspl->Weights(poids);
 
     for (int ii = Weights.Lower(); ii <= Weights.Upper(); ii++)
@@ -269,8 +271,8 @@ void GeomFill::Knots(const Convert_ParameterisationType TConv, NCollection_Array
 {
   if ((TConv != Convert_QuasiAngular) && (TConv != Convert_Polynomial))
   {
-    int    i;
-    double val = 0.;
+    int i;
+    double    val = 0.;
     for (i = TKnots.Lower(); i <= TKnots.Upper(); i++)
     {
       TKnots(i) = val;
@@ -321,20 +323,19 @@ void GeomFill::Mults(const Convert_ParameterisationType TConv, NCollection_Array
 //=======================================================================
 
 double GeomFill::GetTolerance(const Convert_ParameterisationType TConv,
-                              const double                       AngleMin,
-                              const double                       Radius,
-                              const double                       AngularTol,
-                              const double                       SpatialTol)
+                                     const double                AngleMin,
+                                     const double                Radius,
+                                     const double                AngularTol,
+                                     const double                SpatialTol)
 {
-  gp_Ax2                         popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
-  gp_Circ                        C(popAx2, Radius);
+  gp_Ax2                    popAx2(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z));
+  gp_Circ                   C(popAx2, Radius);
   occ::handle<Geom_Circle>       popCircle = new Geom_Circle(C);
-  occ::handle<Geom_TrimmedCurve> Sect =
-    new Geom_TrimmedCurve(popCircle, 0., std::max(AngleMin, 0.02));
+  occ::handle<Geom_TrimmedCurve> Sect = new Geom_TrimmedCurve(popCircle, 0., std::max(AngleMin, 0.02));
   // 0.02 est proche d'1 degree, en desous on ne se preocupe pas de la tngence
   // afin d'eviter des tolerances d'approximation tendant vers 0 !
   occ::handle<Geom_BSplineCurve> CtoBspl = GeomConvert::CurveToBSplineCurve(Sect, TConv);
-  double                         Dist;
+  double             Dist;
   Dist = CtoBspl->Pole(1).Distance(CtoBspl->Pole(2)) + SpatialTol;
   return Dist * AngularTol / 2;
 }
@@ -348,23 +349,23 @@ double GeomFill::GetTolerance(const Convert_ParameterisationType TConv,
 //  2) Assurer la coherance entre cette methode est celle qui donne la derive
 //============================================================================
 void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
-                         const gp_Vec&               ns1,   // Normal rentrente au premier point
-                         const gp_Vec&               ns2,   // Normal rentrente au second point
-                         const gp_Vec&               nplan, // Normal au plan
-                         const gp_Pnt&               pts1,
-                         const gp_Pnt&               pts2,
-                         const double                Rayon, // Rayon (doit etre positif)
-                         const gp_Pnt&               Center,
-                         NCollection_Array1<gp_Pnt>& Poles,
+                         const gp_Vec&         ns1,   // Normal rentrente au premier point
+                         const gp_Vec&         ns2,   // Normal rentrente au second point
+                         const gp_Vec&         nplan, // Normal au plan
+                         const gp_Pnt&         pts1,
+                         const gp_Pnt&         pts2,
+                         const double   Rayon, // Rayon (doit etre positif)
+                         const gp_Pnt&         Center,
+                         NCollection_Array1<gp_Pnt>&   Poles,
                          NCollection_Array1<double>& Weights)
 {
   // La classe de convertion
 
-  int    i, jj;
-  double Cosa, Sina, Angle, Alpha, Cosas2, lambda;
-  gp_Vec temp, np2;
-  int    low = Poles.Lower();
-  int    upp = Poles.Upper();
+  int i, jj;
+  double    Cosa, Sina, Angle, Alpha, Cosas2, lambda;
+  gp_Vec           temp, np2;
+  int low = Poles.Lower();
+  int upp = Poles.Upper();
 
   Cosa = ns1.Dot(ns2);
   Sina = nplan.Dot(ns1.Crossed(ns2));
@@ -441,31 +442,31 @@ void GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 }
 
 bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
-                         const gp_Vec&                      ns1,
-                         const gp_Vec&                      ns2,
-                         const gp_Vec&                      dn1w,
-                         const gp_Vec&                      dn2w,
-                         const gp_Vec&                      nplan,
-                         const gp_Vec&                      dnplan,
-                         const gp_Pnt&                      pts1,
-                         const gp_Pnt&                      pts2,
-                         const gp_Vec&                      tang1,
-                         const gp_Vec&                      tang2,
-                         const double                       Rayon,
-                         const double                       DRayon,
-                         const gp_Pnt&                      Center,
-                         const gp_Vec&                      DCenter,
-                         NCollection_Array1<gp_Pnt>&        Poles,
-                         NCollection_Array1<gp_Vec>&        DPoles,
-                         NCollection_Array1<double>&        Weights,
-                         NCollection_Array1<double>&        DWeights)
+                                     const gp_Vec&                      ns1,
+                                     const gp_Vec&                      ns2,
+                                     const gp_Vec&                      dn1w,
+                                     const gp_Vec&                      dn2w,
+                                     const gp_Vec&                      nplan,
+                                     const gp_Vec&                      dnplan,
+                                     const gp_Pnt&                      pts1,
+                                     const gp_Pnt&                      pts2,
+                                     const gp_Vec&                      tang1,
+                                     const gp_Vec&                      tang2,
+                                     const double                Rayon,
+                                     const double                DRayon,
+                                     const gp_Pnt&                      Center,
+                                     const gp_Vec&                      DCenter,
+                                     NCollection_Array1<gp_Pnt>&                Poles,
+                                     NCollection_Array1<gp_Vec>&                DPoles,
+                                     NCollection_Array1<double>&              Weights,
+                                     NCollection_Array1<double>&              DWeights)
 {
-  double Cosa, Sina, Cosas2, Sinas2, Angle, DAngle, Alpha, lambda, Dlambda;
-  gp_Vec temp, np2, dnp2;
-  int    i, jj;
-  int    NbSpan = (Poles.Length() - 1) / 2;
-  int    low    = Poles.Lower();
-  int    upp    = Poles.Upper();
+  double    Cosa, Sina, Cosas2, Sinas2, Angle, DAngle, Alpha, lambda, Dlambda;
+  gp_Vec           temp, np2, dnp2;
+  int i, jj;
+  int NbSpan = (Poles.Length() - 1) / 2;
+  int low    = Poles.Lower();
+  int upp    = Poles.Upper();
 
   Cosa = ns1.Dot(ns2);
   Sina = nplan.Dot(ns1.Crossed(ns2));
@@ -595,42 +596,42 @@ bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
 }
 
 bool GeomFill::GetCircle(const Convert_ParameterisationType TConv,
-                         const gp_Vec&                      ns1,
-                         const gp_Vec&                      ns2,
-                         const gp_Vec&                      dn1w,
-                         const gp_Vec&                      dn2w,
-                         const gp_Vec&                      d2n1w,
-                         const gp_Vec&                      d2n2w,
-                         const gp_Vec&                      nplan,
-                         const gp_Vec&                      dnplan,
-                         const gp_Vec&                      d2nplan,
-                         const gp_Pnt&                      pts1,
-                         const gp_Pnt&                      pts2,
-                         const gp_Vec&                      tang1,
-                         const gp_Vec&                      tang2,
-                         const gp_Vec&                      Dtang1,
-                         const gp_Vec&                      Dtang2,
-                         const double                       Rayon,
-                         const double                       DRayon,
-                         const double                       D2Rayon,
-                         const gp_Pnt&                      Center,
-                         const gp_Vec&                      DCenter,
-                         const gp_Vec&                      D2Center,
-                         NCollection_Array1<gp_Pnt>&        Poles,
-                         NCollection_Array1<gp_Vec>&        DPoles,
-                         NCollection_Array1<gp_Vec>&        D2Poles,
-                         NCollection_Array1<double>&        Weights,
-                         NCollection_Array1<double>&        DWeights,
-                         NCollection_Array1<double>&        D2Weights)
+                                     const gp_Vec&                      ns1,
+                                     const gp_Vec&                      ns2,
+                                     const gp_Vec&                      dn1w,
+                                     const gp_Vec&                      dn2w,
+                                     const gp_Vec&                      d2n1w,
+                                     const gp_Vec&                      d2n2w,
+                                     const gp_Vec&                      nplan,
+                                     const gp_Vec&                      dnplan,
+                                     const gp_Vec&                      d2nplan,
+                                     const gp_Pnt&                      pts1,
+                                     const gp_Pnt&                      pts2,
+                                     const gp_Vec&                      tang1,
+                                     const gp_Vec&                      tang2,
+                                     const gp_Vec&                      Dtang1,
+                                     const gp_Vec&                      Dtang2,
+                                     const double                Rayon,
+                                     const double                DRayon,
+                                     const double                D2Rayon,
+                                     const gp_Pnt&                      Center,
+                                     const gp_Vec&                      DCenter,
+                                     const gp_Vec&                      D2Center,
+                                     NCollection_Array1<gp_Pnt>&                Poles,
+                                     NCollection_Array1<gp_Vec>&                DPoles,
+                                     NCollection_Array1<gp_Vec>&                D2Poles,
+                                     NCollection_Array1<double>&              Weights,
+                                     NCollection_Array1<double>&              DWeights,
+                                     NCollection_Array1<double>&              D2Weights)
 {
-  double Cosa, Sina, Cosas2, Sinas2;
-  double Angle, DAngle, D2Angle, Alpha;
-  double lambda, Dlambda, D2lambda, aux;
-  gp_Vec temp, dtemp, np2, dnp2, d2np2;
-  int    i, jj;
-  int    NbSpan = (Poles.Length() - 1) / 2;
-  int    low    = Poles.Lower();
-  int    upp    = Poles.Upper();
+  double    Cosa, Sina, Cosas2, Sinas2;
+  double    Angle, DAngle, D2Angle, Alpha;
+  double    lambda, Dlambda, D2lambda, aux;
+  gp_Vec           temp, dtemp, np2, dnp2, d2np2;
+  int i, jj;
+  int NbSpan = (Poles.Length() - 1) / 2;
+  int low    = Poles.Lower();
+  int upp    = Poles.Upper();
 
   Cosa = ns1.Dot(ns2);
   Sina = nplan.Dot(ns1.Crossed(ns2));

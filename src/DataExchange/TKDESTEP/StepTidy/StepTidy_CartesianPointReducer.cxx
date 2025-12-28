@@ -90,8 +90,8 @@ bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
   occ::handle<Standard_Transient>             theSharing)
 {
-  occ::handle<StepShape_GeometricSet> aSharing = occ::down_cast<StepShape_GeometricSet>(theSharing);
-  bool                                isReplaced = false;
+  occ::handle<StepShape_GeometricSet> aSharing   = occ::down_cast<StepShape_GeometricSet>(theSharing);
+  bool                           isReplaced = false;
   for (auto& anElement : *aSharing->Elements())
   {
     const occ::handle<StepGeom_Point> aCurrentPoint = anElement.Point();
@@ -151,10 +151,10 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
 {
   occ::handle<StepGeom_BSplineCurveWithKnots> aSharing =
     occ::down_cast<StepGeom_BSplineCurveWithKnots>(theSharing);
-  bool                                                                   isReplaced = false;
-  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
-    aSharing->ControlPointsList();
-  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper(); ++anIndex)
+  bool                                     isReplaced     = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints = aSharing->ControlPointsList();
+  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper();
+       ++anIndex)
   {
     if (aControlPoints->Value(anIndex) == theOldEntity)
     {
@@ -190,13 +190,14 @@ bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
 {
   occ::handle<StepGeom_BSplineSurfaceWithKnots> aSharing =
     occ::down_cast<StepGeom_BSplineSurfaceWithKnots>(theSharing);
-  bool                                                                   isReplaced = false;
-  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
-    aSharing->ControlPointsList();
-  for (int anIndexI = aControlPoints->LowerRow(); anIndexI <= aControlPoints->UpperRow();
+  bool                                     isReplaced     = false;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints = aSharing->ControlPointsList();
+  for (int anIndexI = aControlPoints->LowerRow();
+       anIndexI <= aControlPoints->UpperRow();
        ++anIndexI)
   {
-    for (int anIndexJ = aControlPoints->LowerCol(); anIndexJ <= aControlPoints->UpperCol();
+    for (int anIndexJ = aControlPoints->LowerCol();
+         anIndexJ <= aControlPoints->UpperCol();
          ++anIndexJ)
     {
       if (aControlPoints->Value(anIndexI, anIndexJ) == theOldEntity)
@@ -216,8 +217,7 @@ bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
   occ::handle<Standard_Transient>             theSharing)
 {
-  occ::handle<StepGeom_Axis1Placement> aSharing =
-    occ::down_cast<StepGeom_Axis1Placement>(theSharing);
+  occ::handle<StepGeom_Axis1Placement> aSharing = occ::down_cast<StepGeom_Axis1Placement>(theSharing);
   if (aSharing->Location() == theOldEntity)
   {
     aSharing->SetLocation(theNewEntity);
@@ -233,11 +233,9 @@ bool StepTidy_CartesianPointReducer::replaceRepresentation(
   const occ::handle<StepGeom_CartesianPoint>& theNewEntity,
   occ::handle<Standard_Transient>             theSharing)
 {
-  occ::handle<StepRepr_Representation> aSharing =
-    occ::down_cast<StepRepr_Representation>(theSharing);
-  bool                                                                       isReplaced = false;
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems =
-    aSharing->Items();
+  occ::handle<StepRepr_Representation> aSharing = occ::down_cast<StepRepr_Representation>(theSharing);
+  bool                            isReplaced           = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems = aSharing->Items();
   for (int anIndex = 1; anIndex <= aSharing->NbItems(); ++anIndex)
   {
     const occ::handle<StepRepr_RepresentationItem> aRepItem = anItems->Value(anIndex);
@@ -259,10 +257,10 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSpl
 {
   occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve> aSharing =
     occ::down_cast<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>(theSharing);
-  bool                                                                   isReplaced = false;
-  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
-    aSharing->ControlPointsList();
-  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper(); ++anIndex)
+  bool                                     isReplaced     = false;
+  occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPoints = aSharing->ControlPointsList();
+  for (int anIndex = aControlPoints->Lower(); anIndex <= aControlPoints->Upper();
+       ++anIndex)
   {
     if (aControlPoints->Value(anIndex) == theOldEntity)
     {
@@ -282,13 +280,14 @@ bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnotsAndRationalBS
 {
   occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface> aSharing =
     occ::down_cast<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>(theSharing);
-  bool                                                                   isReplaced = false;
-  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints =
-    aSharing->ControlPointsList();
-  for (int anIndexI = aControlPoints->LowerRow(); anIndexI <= aControlPoints->UpperRow();
+  bool                                     isReplaced     = false;
+  occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPoints = aSharing->ControlPointsList();
+  for (int anIndexI = aControlPoints->LowerRow();
+       anIndexI <= aControlPoints->UpperRow();
        ++anIndexI)
   {
-    for (int anIndexJ = aControlPoints->LowerCol(); anIndexJ <= aControlPoints->UpperCol();
+    for (int anIndexJ = aControlPoints->LowerCol();
+         anIndexJ <= aControlPoints->UpperCol();
          ++anIndexJ)
     {
       if (aControlPoints->Value(anIndexI, anIndexJ) == theOldEntity)

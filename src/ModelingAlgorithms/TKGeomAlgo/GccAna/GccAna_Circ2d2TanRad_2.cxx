@@ -41,8 +41,8 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                            const gp_Pnt2d&             Point2,
-                                           const double                Radius,
-                                           const double                Tolerance)
+                                           const double         Radius,
+                                           const double         Tolerance)
     : qualifier1(1, 4),
       qualifier2(1, 4),
       TheSame1(1, 4),
@@ -56,10 +56,10 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
       pararg2(1, 4)
 {
 
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol = std::abs(Tolerance);
-  NbrSol       = 0;
-  WellDone     = false;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol = std::abs(Tolerance);
+  NbrSol            = 0;
+  WellDone          = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -72,16 +72,16 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified
     TheSame1(i) = 0;
     TheSame2(i) = 0;
   }
-  double                        deport = 0.;
-  int                           signe  = 0;
-  int                           nbsol  = 0;
-  gp_Circ2d                     C1     = Qualified1.Qualified();
+  double         deport = 0.;
+  int      signe  = 0;
+  int      nbsol  = 0;
+  gp_Circ2d             C1     = Qualified1.Qualified();
   NCollection_Array1<gp_Circ2d> C(1, 4);
-  double                        R1       = C1.Radius();
-  double                        distance = (C1.Location()).Distance(Point2);
-  double                        dispc1   = C1.Distance(Point2);
-  gp_Dir2d                      dir1(Point2.XY() - (C1.Location().XY()));
-  gp_Pnt2d                      center1(C1.Location());
+  double         R1       = C1.Radius();
+  double         distance = (C1.Location()).Distance(Point2);
+  double         dispc1   = C1.Distance(Point2);
+  gp_Dir2d              dir1(Point2.XY() - (C1.Location().XY()));
+  gp_Pnt2d              center1(C1.Location());
   if (Radius < 0.0)
   {
     throw Standard_NegativeValue();

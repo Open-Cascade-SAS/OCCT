@@ -31,6 +31,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Interface_ShareTool.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDefs_ToolUnitsData::IGESDefs_ToolUnitsData() {}
 
@@ -40,10 +43,10 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  int                                                                     nbval;
+  int                        nbval;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitTypes;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitValues;
-  occ::handle<NCollection_HArray1<double>>                                unitScales;
+  occ::handle<NCollection_HArray1<double>>           unitScales;
 
   bool st = PR.ReadInteger(PR.Current(), "Number of Units", nbval);
   if (st && nbval > 0)
@@ -60,7 +63,7 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>
     {
       occ::handle<TCollection_HAsciiString> unitType;
       occ::handle<TCollection_HAsciiString> unitValue;
-      double                                unitScale;
+      double                    unitScale;
 
       // st = PR.ReadText(PR.Current(), "Type of Unit", unitType); //szv#4:S4163:12Mar99 moved in if
       if (PR.ReadText(PR.Current(), "Type of Unit", unitType))
@@ -82,7 +85,7 @@ void IGESDefs_ToolUnitsData::ReadOwnParams(const occ::handle<IGESDefs_UnitsData>
 }
 
 void IGESDefs_ToolUnitsData::WriteOwnParams(const occ::handle<IGESDefs_UnitsData>& ent,
-                                            IGESData_IGESWriter&                   IW) const
+                                            IGESData_IGESWriter&              IW) const
 {
   int upper = ent->NbUnits();
   IW.Send(upper);
@@ -106,7 +109,7 @@ void IGESDefs_ToolUnitsData::OwnCopy(const occ::handle<IGESDefs_UnitsData>& anot
 {
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitTypes;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> unitValues;
-  occ::handle<NCollection_HArray1<double>>                                unitScales;
+  occ::handle<NCollection_HArray1<double>>           unitScales;
 
   int nbval = another->NbUnits();
 
@@ -116,8 +119,7 @@ void IGESDefs_ToolUnitsData::OwnCopy(const occ::handle<IGESDefs_UnitsData>& anot
 
   for (int i = 1; i <= nbval; i++)
   {
-    occ::handle<TCollection_HAsciiString> unitType =
-      new TCollection_HAsciiString(another->UnitType(i));
+    occ::handle<TCollection_HAsciiString> unitType = new TCollection_HAsciiString(another->UnitType(i));
     unitTypes->SetValue(i, unitType);
     occ::handle<TCollection_HAsciiString> unitValue =
       new TCollection_HAsciiString(another->UnitValue(i));
@@ -151,8 +153,8 @@ void IGESDefs_ToolUnitsData::OwnCheck(const occ::handle<IGESDefs_UnitsData>& /* 
 
 void IGESDefs_ToolUnitsData::OwnDump(const occ::handle<IGESDefs_UnitsData>& ent,
                                      const IGESData_IGESDumper& /* dumper */,
-                                     Standard_OStream& S,
-                                     const int         level) const
+                                     Standard_OStream&      S,
+                                     const int level) const
 {
   S << "IGESDefs_UnitsData\n"
     << "Number of Units : " << ent->NbUnits() << "\n"

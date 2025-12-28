@@ -21,9 +21,9 @@ StepShape_Block::StepShape_Block() {}
 
 void StepShape_Block::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                            const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                           const double                                  aX,
-                           const double                                  aY,
-                           const double                                  aZ)
+                           const double                      aX,
+                           const double                      aY,
+                           const double                      aZ)
 {
   // --- classe own fields ---
   position = aPosition;

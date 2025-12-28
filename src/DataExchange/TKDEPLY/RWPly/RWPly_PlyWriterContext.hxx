@@ -25,6 +25,7 @@
 #include <NCollection_Mat4.hxx>
 #include <gp_Pnt.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
 #include <memory>
@@ -86,18 +87,16 @@ public: //! @name writing into file
   //! @param[in] theNbNodes number of vertex nodes
   //! @param[in] theNbElems number of mesh elements
   //! @param[in] theFileInfo optional comments
-  Standard_EXPORT bool WriteHeader(
-    const int theNbNodes,
-    const int theNbElems,
-    const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>&
-      theFileInfo);
+  Standard_EXPORT bool WriteHeader(const int                      theNbNodes,
+                                   const int                      theNbElems,
+                                   const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theFileInfo);
 
   //! Write single point with all attributes.
   //! @param[in] thePoint 3D point coordinates
   //! @param[in] theNorm  surface normal direction at the point
   //! @param[in] theUV    surface/texture UV coordinates
   //! @param[in] theColor RGB color values
-  Standard_EXPORT bool WriteVertex(const gp_Pnt&                    thePoint,
+  Standard_EXPORT bool WriteVertex(const gp_Pnt&           thePoint,
                                    const NCollection_Vec3<float>&   theNorm,
                                    const NCollection_Vec2<float>&   theUV,
                                    const NCollection_Vec4<uint8_t>& theColor);
@@ -133,12 +132,12 @@ public: //! @name writing into file
 private:
   std::shared_ptr<std::ostream> myStream;
   TCollection_AsciiString       myName;
-  int                           myNbHeaderVerts;
-  int                           myNbHeaderElems;
-  int                           myNbVerts;
-  int                           myNbElems;
-  int                           mySurfId;
-  int                           myVertOffset;
+  int              myNbHeaderVerts;
+  int              myNbHeaderElems;
+  int              myNbVerts;
+  int              myNbElems;
+  int              mySurfId;
+  int              myVertOffset;
   bool                          myIsDoublePrec;
   bool                          myHasNormals;
   bool                          myHasColors;

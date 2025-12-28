@@ -59,20 +59,16 @@ public:
     Standard_EXPORT TopLoc_Location Import() const;
 
   private:
-    occ::handle<Datum3D> myDatum;
-    int                  myPower;
-    StdObject_Location   myNext;
+    occ::handle<Datum3D>    myDatum;
+    int   myPower;
+    StdObject_Location myNext;
   };
 
 public:
-  Standard_EXPORT static occ::handle<ItemLocation> Translate(
-    const TopLoc_Location& theLoc,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
-  Standard_EXPORT static occ::handle<Datum3D> Translate(
-    const occ::handle<TopLoc_Datum3D>& theDatum,
-    NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&
-      theMap);
+  Standard_EXPORT static occ::handle<ItemLocation> Translate(const TopLoc_Location&            theLoc,
+                                                        NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
+  Standard_EXPORT static occ::handle<Datum3D>      Translate(const occ::handle<TopLoc_Datum3D>&     theDatum,
+                                                        NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap);
 };
 
 #endif

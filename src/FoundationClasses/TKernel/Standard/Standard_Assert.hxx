@@ -95,9 +95,9 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 // use debug CRT built-in function that show up message box to user
 // with formatted assert description and 3 possible actions
 inline bool Standard_ASSERT_REPORT_(const char* theFile,
-                                    const int   theLine,
-                                    const char* theExpr,
-                                    const char* theDesc)
+                                                const int   theLine,
+                                                const char* theExpr,
+                                                const char* theDesc)
 {
   // 1 means user pressed Retry button
   return _CrtDbgReport(_CRT_ASSERT,
@@ -112,9 +112,9 @@ inline bool Standard_ASSERT_REPORT_(const char* theFile,
   #else
 // just log assertion description into standard error stream
 inline bool Standard_ASSERT_REPORT_(const char* theFile,
-                                    const int   theLine,
-                                    const char* theExpr,
-                                    const char* theDesc)
+                                                const int   theLine,
+                                                const char* theExpr,
+                                                const char* theDesc)
 {
   std::cerr << "ERROR: statement '" << theExpr << "' is not TRUE!\n"
             << "\nFile: '" << theFile << "'"

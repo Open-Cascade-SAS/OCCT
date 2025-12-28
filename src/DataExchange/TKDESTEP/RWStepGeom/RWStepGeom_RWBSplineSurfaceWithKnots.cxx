@@ -19,11 +19,14 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -34,7 +37,7 @@ RWStepGeom_RWBSplineSurfaceWithKnots::RWStepGeom_RWBSplineSurfaceWithKnots() {}
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepGeom_BSplineSurfaceWithKnots>& ent) const
 {
@@ -65,14 +68,13 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- inherited field : controlPointsList ---
 
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent4;
-  int                                                                    nsub4;
+  occ::handle<StepGeom_CartesianPoint>          anent4;
+  int                         nsub4;
   if (data->ReadSubList(num, 4, "control_points_list", ach, nsub4))
   {
     int nbi4 = data->NbParams(nsub4);
     int nbj4 = data->NbParams(data->ParamNumber(nsub4, 1));
-    aControlPointsList =
-      new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
+    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
     for (int i4 = 1; i4 <= nbi4; i4++)
     {
       int nsi4;
@@ -128,12 +130,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- own field : uMultiplicities ---
 
   occ::handle<NCollection_HArray1<int>> aUMultiplicities;
-  int                                   aUMultiplicitiesItem;
-  int                                   nsub9;
+  int                 aUMultiplicitiesItem;
+  int                 nsub9;
   if (data->ReadSubList(num, 9, "u_multiplicities", ach, nsub9))
   {
-    int nb9          = data->NbParams(nsub9);
-    aUMultiplicities = new NCollection_HArray1<int>(1, nb9);
+    int nb9 = data->NbParams(nsub9);
+    aUMultiplicities     = new NCollection_HArray1<int>(1, nb9);
     for (int i9 = 1; i9 <= nb9; i9++)
     {
       // szv#4:S4163:12Mar99 `bool stat9 =` not needed
@@ -145,12 +147,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- own field : vMultiplicities ---
 
   occ::handle<NCollection_HArray1<int>> aVMultiplicities;
-  int                                   aVMultiplicitiesItem;
-  int                                   nsub10;
+  int                 aVMultiplicitiesItem;
+  int                 nsub10;
   if (data->ReadSubList(num, 10, "v_multiplicities", ach, nsub10))
   {
-    int nb10         = data->NbParams(nsub10);
-    aVMultiplicities = new NCollection_HArray1<int>(1, nb10);
+    int nb10 = data->NbParams(nsub10);
+    aVMultiplicities      = new NCollection_HArray1<int>(1, nb10);
     for (int i10 = 1; i10 <= nb10; i10++)
     {
       // szv#4:S4163:12Mar99 `bool stat10 =` not needed
@@ -162,12 +164,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- own field : uKnots ---
 
   occ::handle<NCollection_HArray1<double>> aUKnots;
-  double                                   aUKnotsItem;
-  int                                      nsub11;
+  double                 aUKnotsItem;
+  int              nsub11;
   if (data->ReadSubList(num, 11, "u_knots", ach, nsub11))
   {
     int nb11 = data->NbParams(nsub11);
-    aUKnots  = new NCollection_HArray1<double>(1, nb11);
+    aUKnots               = new NCollection_HArray1<double>(1, nb11);
     for (int i11 = 1; i11 <= nb11; i11++)
     {
       // szv#4:S4163:12Mar99 `bool stat11 =` not needed
@@ -179,12 +181,12 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
   // --- own field : vKnots ---
 
   occ::handle<NCollection_HArray1<double>> aVKnots;
-  double                                   aVKnotsItem;
-  int                                      nsub12;
+  double                 aVKnotsItem;
+  int              nsub12;
   if (data->ReadSubList(num, 12, "v_knots", ach, nsub12))
   {
     int nb12 = data->NbParams(nsub12);
-    aVKnots  = new NCollection_HArray1<double>(1, nb12);
+    aVKnots               = new NCollection_HArray1<double>(1, nb12);
     for (int i12 = 1; i12 <= nb12; i12++)
     {
       // szv#4:S4163:12Mar99 `bool stat12 =` not needed
@@ -225,7 +227,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::ReadStep(
 }
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepGeom_BSplineSurfaceWithKnots>& ent) const
 {
 
@@ -316,7 +318,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnots::WriteStep(
 
 void RWStepGeom_RWBSplineSurfaceWithKnots::Share(
   const occ::handle<StepGeom_BSplineSurfaceWithKnots>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
 
   int nbiElem1 = ent->NbControlPointsListI();

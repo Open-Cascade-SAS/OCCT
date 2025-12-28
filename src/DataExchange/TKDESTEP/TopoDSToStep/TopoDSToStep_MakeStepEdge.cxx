@@ -39,6 +39,8 @@
 #include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -62,8 +64,8 @@ TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge()
   done = false;
 }
 
-TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&                         E,
-                                                     TopoDSToStep_Tool&                         T,
+TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&                    E,
+                                                     TopoDSToStep_Tool&                    T,
                                                      const occ::handle<Transfer_FinderProcess>& FP,
                                                      const StepData_Factors& theLocalFactors)
 {
@@ -73,10 +75,10 @@ TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge(const TopoDS_Edge&         
 
 //=================================================================================================
 
-void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         aEdge,
-                                     TopoDSToStep_Tool&                         aTool,
+void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                    aEdge,
+                                     TopoDSToStep_Tool&                    aTool,
                                      const occ::handle<Transfer_FinderProcess>& FP,
-                                     const StepData_Factors&                    theLocalFactors)
+                                     const StepData_Factors&               theLocalFactors)
 {
   // ------------------------------------------------------------------
   // The edge is given with its relative orientation (i.e. in the wire)
@@ -111,9 +113,9 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
   }
 
 #define Nbpt 21
-  int    i;
-  double U, U1, U2;
-  gp_Pnt P;
+  int i;
+  double    U, U1, U2;
+  gp_Pnt           P;
 
   bool isSeam = BRep_Tool::IsClosed(aEdge, aTool.CurrentFace());
 
@@ -125,8 +127,8 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
   // writing faces to STEP (see TopoDSToSTEP_MakeStepFace)
   if (isSeam)
   {
-    int             count = 0;
-    TopExp_Explorer exp(aTool.CurrentFace(), TopAbs_EDGE);
+    int count = 0;
+    TopExp_Explorer  exp(aTool.CurrentFace(), TopAbs_EDGE);
     for (; exp.More(); exp.Next())
       if (aEdge.IsSame(exp.Current()))
         count++;
@@ -147,7 +149,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
 
   occ::handle<StepShape_Vertex>                        V1, V2;
   occ::handle<StepShape_TopologicalRepresentationItem> Gpms2;
-  TopoDS_Vertex                                        Vfirst, Vlast;
+  TopoDS_Vertex                                   Vfirst, Vlast;
 
   TopExp::Vertices(aEdge, Vfirst, Vlast);
 
@@ -180,7 +182,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
   // ---------------------------------------
   // Translate 3D representation of the Edge
   // ---------------------------------------
-  BRepAdaptor_Curve           CA = BRepAdaptor_Curve(aEdge);
+  BRepAdaptor_Curve      CA = BRepAdaptor_Curve(aEdge);
   occ::handle<StepGeom_Curve> Gpms;
   occ::handle<Geom_Curve>     C = CA.Curve().Curve();
 
@@ -228,16 +230,16 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
       // (STEP does not support trimmed curves in AIC 514).
       if (C->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
       {
-        double aTolV1       = BRep_Tool::Tolerance(Vfirst);
-        double aTolV2       = BRep_Tool::Tolerance(Vlast);
-        gp_Pnt aP11         = CA.Value(CA.FirstParameter());
-        gp_Pnt aP12         = CA.Value(CA.LastParameter());
-        gp_Pnt aPm          = CA.Value((CA.FirstParameter() + CA.LastParameter()) * 0.5);
-        double aDist11      = aP11.Distance(aP12);
-        double aDist1m      = aP11.Distance(aPm);
-        double aDist2m      = aP12.Distance(aPm);
-        double aDistMax     = std::max(std::max(aDist1m, aDist2m), aDist11);
-        bool   isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
+        double    aTolV1       = BRep_Tool::Tolerance(Vfirst);
+        double    aTolV2       = BRep_Tool::Tolerance(Vlast);
+        gp_Pnt           aP11         = CA.Value(CA.FirstParameter());
+        gp_Pnt           aP12         = CA.Value(CA.LastParameter());
+        gp_Pnt           aPm          = CA.Value((CA.FirstParameter() + CA.LastParameter()) * 0.5);
+        double    aDist11      = aP11.Distance(aP12);
+        double    aDist1m      = aP11.Distance(aPm);
+        double    aDist2m      = aP12.Distance(aPm);
+        double    aDistMax     = std::max(std::max(aDist1m, aDist2m), aDist11);
+        bool isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
         if (BRepTools::Compare(Vfirst, Vlast) && isSmallCurve && dpar > Precision::PConfusion()
             && dpar <= 0.1 * C->Period())
         {
@@ -266,20 +268,20 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
 
     if ((SA.GetType() == GeomAbs_Plane) && (CA.GetType() == GeomAbs_Line))
     {
-      U1                       = CA.FirstParameter();
-      U2                       = CA.LastParameter();
-      gp_Vec                 V = gp_Vec(CA.Value(U1), CA.Value(U2));
-      occ::handle<Geom_Line> L = new Geom_Line(CA.Value(U1), gp_Dir(V));
-      GeomToStep_MakeLine    MkLine(L, theLocalFactors);
+      U1                    = CA.FirstParameter();
+      U2                    = CA.LastParameter();
+      gp_Vec              V = gp_Vec(CA.Value(U1), CA.Value(U2));
+      occ::handle<Geom_Line>   L = new Geom_Line(CA.Value(U1), gp_Dir(V));
+      GeomToStep_MakeLine MkLine(L, theLocalFactors);
       Gpms = MkLine.Value();
     }
     else
     {
       // To Be Optimized : create an approximated BSpline
       //                   using GeomAPI_PointsToBSpline
-      NCollection_Array1<gp_Pnt> Points(1, Nbpt);
-      NCollection_Array1<double> Knots(1, Nbpt);
-      NCollection_Array1<int>    Mult(1, Nbpt);
+      NCollection_Array1<gp_Pnt>      Points(1, Nbpt);
+      NCollection_Array1<double>    Knots(1, Nbpt);
+      NCollection_Array1<int> Mult(1, Nbpt);
       U1 = CA.FirstParameter();
       U2 = CA.LastParameter();
       for (i = 1; i <= Nbpt; i++)
@@ -294,8 +296,8 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
       // Points.SetValue(Nbpt, BRep_Tool::Pnt(Vlast));
       Mult.SetValue(1, 2);
       Mult.SetValue(Nbpt, 2);
-      occ::handle<Geom_Curve> Bs = new Geom_BSplineCurve(Points, Knots, Mult, 1);
-      GeomToStep_MakeCurve    MkCurve(Bs, theLocalFactors);
+      occ::handle<Geom_Curve>   Bs = new Geom_BSplineCurve(Points, Knots, Mult, 1);
+      GeomToStep_MakeCurve MkCurve(Bs, theLocalFactors);
       Gpms = MkCurve.Value();
     }
   }
@@ -312,9 +314,8 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge&                         
   if (aTool.PCurveMode() != 0)
   {
 
-    occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aGeom =
-      new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, 2);
-    occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
+    occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aGeom = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, 2);
+    occ::handle<TCollection_HAsciiString>          aName = new TCollection_HAsciiString("");
 
     if (!isSeam)
     {

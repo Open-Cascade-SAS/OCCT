@@ -56,7 +56,8 @@ public:
 
   //! Initializes a HExtendedString with <length> space allocated.
   //! and filled with <filler>. This is useful for buffers.
-  Standard_EXPORT TCollection_HExtendedString(const int length, const char16_t filler);
+  Standard_EXPORT TCollection_HExtendedString(const int      length,
+                                              const char16_t filler);
 
   //! Initializes a HExtendedString with a ExtendedString.
   Standard_EXPORT TCollection_HExtendedString(const TCollection_ExtendedString& aString);
@@ -71,8 +72,7 @@ public:
   Standard_EXPORT TCollection_HExtendedString(const occ::handle<TCollection_HAsciiString>& aString);
 
   //! Initializes a HExtendedString with a HExtendedString.
-  Standard_EXPORT TCollection_HExtendedString(
-    const occ::handle<TCollection_HExtendedString>& aString);
+  Standard_EXPORT TCollection_HExtendedString(const occ::handle<TCollection_HExtendedString>& aString);
 
   //! Appends <other> to me.
   Standard_EXPORT void AssignCat(const occ::handle<TCollection_HExtendedString>& other);
@@ -83,7 +83,8 @@ public:
 
   //! Substitutes all the characters equal to aChar by NewChar
   //! in the string <me>.
-  Standard_EXPORT void ChangeAll(const char16_t aChar, const char16_t NewChar);
+  Standard_EXPORT void ChangeAll(const char16_t aChar,
+                                 const char16_t NewChar);
 
   //! Removes all characters contained in <me>.
   //! This produces an empty ExtendedString.
@@ -103,14 +104,15 @@ public:
   Standard_EXPORT void Insert(const int where, const char16_t what);
 
   //! Insert a HExtendedString at position <where>.
-  Standard_EXPORT void Insert(const int                                       where,
+  Standard_EXPORT void Insert(const int                     where,
                               const occ::handle<TCollection_HExtendedString>& what);
 
   //! Returns TRUE if <me> is less than <other>.
   Standard_EXPORT bool IsLess(const occ::handle<TCollection_HExtendedString>& other) const;
 
   //! Returns TRUE if <me> is greater than <other>.
-  Standard_EXPORT bool IsGreater(const occ::handle<TCollection_HExtendedString>& other) const;
+  Standard_EXPORT bool
+    IsGreater(const occ::handle<TCollection_HExtendedString>& other) const;
 
   //! Returns True if the string contains only "Ascii Range" characters
   Standard_EXPORT bool IsAscii() const;
@@ -139,7 +141,7 @@ public:
   Standard_EXPORT void SetValue(const int where, const char16_t what);
 
   //! Replaces a part of <me> by another string.
-  Standard_EXPORT void SetValue(const int                                       where,
+  Standard_EXPORT void SetValue(const int                     where,
                                 const occ::handle<TCollection_HExtendedString>& what);
 
   //! Splits a ExtendedString into two sub-strings.
@@ -156,7 +158,8 @@ public:
   //! Searches a ExtendedString in another ExtendedString from the end
   //! and returns position of first item <what> matching.
   //! It returns -1 if not found.
-  Standard_EXPORT int SearchFromEnd(const occ::handle<TCollection_HExtendedString>& what) const;
+  Standard_EXPORT int
+    SearchFromEnd(const occ::handle<TCollection_HExtendedString>& what) const;
 
   //! Returns pointer to ExtString
   const char16_t* ToExtString() const { return myString.ToExtString(); }
@@ -176,8 +179,9 @@ public:
   //! aString contains "1234; test:message   , value"
   //! aString.Token("; :,",4) returns "value"
   //! aString.Token("; :,",2) returns "test"
-  Standard_EXPORT occ::handle<TCollection_HExtendedString> Token(const char16_t* separators,
-                                                                 const int whichone = 1) const;
+  Standard_EXPORT occ::handle<TCollection_HExtendedString> Token(
+    const char16_t* separators,
+    const int   whichone = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.
   //! Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel"
@@ -197,7 +201,8 @@ public:
   //! Displays <me>.
   Standard_EXPORT void Print(Standard_OStream& astream) const;
 
-  Standard_EXPORT bool IsSameState(const occ::handle<TCollection_HExtendedString>& other) const;
+  Standard_EXPORT bool
+    IsSameState(const occ::handle<TCollection_HExtendedString>& other) const;
 
   DEFINE_STANDARD_RTTIEXT(TCollection_HExtendedString, Standard_Transient)
 

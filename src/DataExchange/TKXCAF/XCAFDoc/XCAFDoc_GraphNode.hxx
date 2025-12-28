@@ -52,7 +52,7 @@ public:
   //! the ID returned by <TDF_Attribute::ID> method.
   //! Returns the found/created GraphNode attribute.
   Standard_EXPORT static occ::handle<XCAFDoc_GraphNode> Set(const TDF_Label&     L,
-                                                            const Standard_GUID& ExplicitGraphID);
+                                                       const Standard_GUID& ExplicitGraphID);
 
   //! returns a default Graph ID. this ID is used by the
   //! <Set> method without explicit tree ID.
@@ -127,7 +127,8 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const override;
+  Standard_EXPORT virtual void References(const occ::handle<TDF_DataSet>& aDataSet) const
+    override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
@@ -135,7 +136,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_GraphNode, TDF_Attribute)
 
@@ -148,7 +149,7 @@ private:
 
   NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>> myFathers;
   NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>> myChildren;
-  Standard_GUID                                        myGraphID;
+  Standard_GUID             myGraphID;
 };
 
 #endif // _XCAFDoc_GraphNode_HeaderFile

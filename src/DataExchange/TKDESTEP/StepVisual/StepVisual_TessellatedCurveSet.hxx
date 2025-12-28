@@ -36,17 +36,15 @@ public:
   Standard_EXPORT StepVisual_TessellatedCurveSet();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&   theName,
-    const occ::handle<StepVisual_CoordinatesList>& theCoordList,
-    const NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>>&
-      theCurves);
+    const occ::handle<TCollection_HAsciiString>&                          theName,
+    const occ::handle<StepVisual_CoordinatesList>&                        theCoordList,
+    const NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>>& theCurves);
 
   Standard_EXPORT occ::handle<StepVisual_CoordinatesList> CoordList() const;
-  Standard_EXPORT NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>>
-                  Curves() const;
+  Standard_EXPORT NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> Curves() const;
 
 private:
-  occ::handle<StepVisual_CoordinatesList>                                         myCoordList;
+  occ::handle<StepVisual_CoordinatesList>                        myCoordList;
   NCollection_Handle<NCollection_Vector<occ::handle<NCollection_HSequence<int>>>> myCurves;
 
 public:

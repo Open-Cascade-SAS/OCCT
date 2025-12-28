@@ -81,13 +81,13 @@ public:
       return;
     }
 
-    myFirstParam            = myCurveAdaptor.FirstParameter();
+    myFirstParam                   = myCurveAdaptor.FirstParameter();
     const double aLastParam = myCurveAdaptor.LastParameter();
 
     myFoundParam = myCurParam = myFirstParam;
 
     // Extract parameters stored in polygon
-    myOldFirstParam            = myParameters->Value(myParameters->Lower());
+    myOldFirstParam                   = myParameters->Value(myParameters->Lower());
     const double aOldLastParam = myParameters->Value(myParameters->Upper());
 
     // Calculate scale factor between actual and stored parameters
@@ -118,7 +118,7 @@ public:
     const double aParam = myParameters->Value(theIndex);
 
     const double aPrevParam = myCurParam;
-    myCurParam              = myFirstParam + myScale * (aParam - myOldFirstParam);
+    myCurParam                     = myFirstParam + myScale * (aParam - myOldFirstParam);
 
     const double aPrevFoundParam = myFoundParam;
     myFoundParam += (myCurParam - aPrevParam);
@@ -149,8 +149,8 @@ public:
 private:
   ParametersCollection myParameters;
 
-  bool   myIsSameParam;
-  double myFirstParam;
+  bool myIsSameParam;
+  double    myFirstParam;
 
   double myOldFirstParam;
   double myScale;

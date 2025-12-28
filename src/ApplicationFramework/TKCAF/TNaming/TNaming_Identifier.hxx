@@ -26,6 +26,7 @@
 #include <TNaming_NamedShape.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TNaming_NamedShape;
 class TNaming_Localizer;
 
@@ -34,15 +35,15 @@ class TNaming_Identifier
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT TNaming_Identifier(const TDF_Label&    Lab,
-                                     const TopoDS_Shape& S,
-                                     const TopoDS_Shape& Context,
-                                     const bool          Geom);
+  Standard_EXPORT TNaming_Identifier(const TDF_Label&       Lab,
+                                     const TopoDS_Shape&    S,
+                                     const TopoDS_Shape&    Context,
+                                     const bool Geom);
 
-  Standard_EXPORT TNaming_Identifier(const TDF_Label&                       Lab,
-                                     const TopoDS_Shape&                    S,
+  Standard_EXPORT TNaming_Identifier(const TDF_Label&                  Lab,
+                                     const TopoDS_Shape&               S,
                                      const occ::handle<TNaming_NamedShape>& ContextNS,
-                                     const bool                             Geom);
+                                     const bool            Geom);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -71,27 +72,27 @@ public:
   Standard_EXPORT void AncestorIdentification(TNaming_Localizer&  Localizer,
                                               const TopoDS_Shape& Context);
 
-  Standard_EXPORT void PrimitiveIdentification(TNaming_Localizer&                     Localizer,
+  Standard_EXPORT void PrimitiveIdentification(TNaming_Localizer&                Localizer,
                                                const occ::handle<TNaming_NamedShape>& NS);
 
-  Standard_EXPORT void GeneratedIdentification(TNaming_Localizer&                     Localizer,
+  Standard_EXPORT void GeneratedIdentification(TNaming_Localizer&                Localizer,
                                                const occ::handle<TNaming_NamedShape>& NS);
 
-  Standard_EXPORT void Identification(TNaming_Localizer&                     Localizer,
+  Standard_EXPORT void Identification(TNaming_Localizer&                Localizer,
                                       const occ::handle<TNaming_NamedShape>& NS);
 
 private:
   Standard_EXPORT void Init(const TopoDS_Shape& Context);
 
-  TDF_Label                                         myTDFAcces;
-  TopoDS_Shape                                      myShape;
-  bool                                              myDone;
-  bool                                              myIsFeature;
-  TNaming_NameType                                  myType;
-  occ::handle<TNaming_NamedShape>                   myFeature;
-  NCollection_List<occ::handle<TNaming_NamedShape>> myPrimitiveArgs;
-  NCollection_List<TopoDS_Shape>                    myShapeArgs;
-  occ::handle<TNaming_NamedShape>                   myNSContext;
+  TDF_Label                  myTDFAcces;
+  TopoDS_Shape               myShape;
+  bool           myDone;
+  bool           myIsFeature;
+  TNaming_NameType           myType;
+  occ::handle<TNaming_NamedShape> myFeature;
+  NCollection_List<occ::handle<TNaming_NamedShape>>   myPrimitiveArgs;
+  NCollection_List<TopoDS_Shape>       myShapeArgs;
+  occ::handle<TNaming_NamedShape> myNSContext;
 };
 
 #endif // _TNaming_Identifier_HeaderFile

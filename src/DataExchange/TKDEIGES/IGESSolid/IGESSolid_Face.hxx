@@ -39,10 +39,9 @@ public:
   //! - aSurface      : Pointer to the underlying surface
   //! - outerLoopFlag : True means the first loop is the outer loop
   //! - loops         : Array of loops bounding the face
-  Standard_EXPORT void Init(
-    const occ::handle<IGESData_IGESEntity>&                              aSurface,
-    const bool                                                           outerLoopFlag,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& loops);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&     aSurface,
+                            const bool                 outerLoopFlag,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>>& loops);
 
   //! returns the underlying surface of the face
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Surface() const;
@@ -60,8 +59,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSolid_Face, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESData_IGESEntity>                              theSurface;
-  bool                                                          hasOuterLoop;
+  occ::handle<IGESData_IGESEntity>     theSurface;
+  bool                hasOuterLoop;
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> theLoops;
 };
 

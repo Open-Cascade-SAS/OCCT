@@ -26,6 +26,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
@@ -112,8 +113,8 @@ void IFSelect_SessionPilot::SetCommandLine(const TCollection_AsciiString& comman
     lc--;
   }
   thenbwords = 0;
-  int  i, nc = 0;
-  char unarg[MAXCARS];
+  int i, nc = 0;
+  char             unarg[MAXCARS];
   for (i = 1; i <= lc; i++)
   {
     char val = command.Value(i);
@@ -358,7 +359,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Perform()
 
   //  Command for an Actor
   occ::handle<IFSelect_Activator> actor;
-  int                             num;
+  int           num;
   if (IFSelect_Activator::Select(thewords(0).ToCString(), num, actor))
   {
     stat = actor->Do(num, this);
@@ -405,8 +406,8 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Execute(const TCollection_AsciiStri
 
 IFSelect_ReturnStatus IFSelect_SessionPilot::ExecuteCounter(
   const occ::handle<IFSelect_SignCounter>& counter,
-  const int                                numword,
-  const IFSelect_PrintCount                mode)
+  const int              numword,
+  const IFSelect_PrintCount           mode)
 {
   if (counter.IsNull())
     return IFSelect_RetError;
@@ -416,8 +417,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::ExecuteCounter(
   else
   {
     //   we request a givelist
-    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-      thesession->GiveList(CommandPart(numword));
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = thesession->GiveList(CommandPart(numword));
     if (list.IsNull())
     {
       std::cout << "Nothing selected from : " << CommandPart(numword) << std::endl;
@@ -444,14 +444,14 @@ int IFSelect_SessionPilot::Number(const char* val) const
 #define MAXCOMPERLINE 5
 #define LENGTHFORCOM 15
 
-IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int                                 number,
+IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int               number,
                                                 const occ::handle<IFSelect_SessionPilot>& session)
 {
   //                  Own Commands : x, exit, undo, redo, ?, help
-  IFSelect_ReturnStatus stat    = IFSelect_RetVoid;
-  int                   argc    = NbWords();
-  const char*           arg1    = Word(1).ToCString();
-  int                   modhelp = -1;
+  IFSelect_ReturnStatus  stat    = IFSelect_RetVoid;
+  int       argc    = NbWords();
+  const char* arg1    = Word(1).ToCString();
+  int       modhelp = -1;
   switch (number)
   {
     case -1: //        ****     HELP-XSNEW
@@ -464,14 +464,14 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int                       
       //    Complete Help : we give the list of commands, nothing more (already not bad)
       if (thenbwords <= 1)
       {
-        list      = IFSelect_Activator::Commands(modhelp);
+        list                   = IFSelect_Activator::Commands(modhelp);
         int nbcom = 0;
         int nb    = list->Length();
         std::cout << " -- List of Available Commands --" << std::endl;
         for (int i = 1; i <= nb; i++)
         {
           const TCollection_AsciiString& uncom  = list->Value(i);
-          int                            loncom = uncom.Length();
+          int               loncom = uncom.Length();
           nbcom++;
           if (nbcom > MAXCOMPERLINE)
           {
@@ -504,7 +504,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int                       
         for (int i = 1; i <= nb; i++)
         {
           occ::handle<IFSelect_Activator> actor;
-          int                             num;
+          int           num;
           if (IFSelect_Activator::Select(list->Value(i).ToCString(), num, actor))
           {
             if (IFSelect_Activator::Mode(list->Value(i).ToCString()) == 1)
@@ -640,7 +640,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int                       
 
         //  Command for an Actor
         occ::handle<IFSelect_Activator> actor;
-        int                             num;
+        int           num;
         if (IFSelect_Activator::Select(thewords(0).ToCString(), num, actor))
         {
           theobjrec.Nullify();

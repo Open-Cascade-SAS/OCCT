@@ -60,8 +60,8 @@ public:
   private:
     Handle(StdPersistent_HArray1::Shape1) myOldShapes;
     Handle(StdPersistent_HArray1::Shape1) myNewShapes;
-    int                                   myShapeStatus;
-    int                                   myVersion;
+    int                      myShapeStatus;
+    int                      myVersion;
   };
 
   class Name : public StdObjMgt_Persistent
@@ -85,15 +85,14 @@ public:
     inline const char* PName() const { return "PNaming_Name"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
-                                        const occ::handle<TDF_Data>& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name& theName, const occ::handle<TDF_Data>& theDF) const;
 
   private:
-    int                                        myType;
-    int                                        myShapeType;
+    int                           myType;
+    int                           myShapeType;
     Handle(StdLPersistent_HArray1::Persistent) myArgs;
-    occ::handle<StdObjMgt_Persistent>          myStop;
-    int                                        myIndex;
+    occ::handle<StdObjMgt_Persistent>               myStop;
+    int                           myIndex;
   };
 
   class Name_1 : public Name
@@ -116,8 +115,7 @@ public:
     inline const char* PName() const { return "PNaming_Name_1"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
-                                        const occ::handle<TDF_Data>& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name& theName, const occ::handle<TDF_Data>& theDF) const;
 
   private:
     Handle(StdLPersistent_HString::Ascii) myContextLabel;
@@ -141,8 +139,7 @@ public:
     inline const char* PName() const { return "PNaming_Name_2"; }
 
     //! Import transient object from the persistent data.
-    Standard_EXPORT virtual void Import(TNaming_Name&                theName,
-                                        const occ::handle<TDF_Data>& theDF) const;
+    Standard_EXPORT virtual void Import(TNaming_Name& theName, const occ::handle<TDF_Data>& theDF) const;
 
   private:
     int myOrientation;

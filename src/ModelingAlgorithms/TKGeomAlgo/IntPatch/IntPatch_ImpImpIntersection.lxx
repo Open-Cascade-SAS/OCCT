@@ -86,7 +86,8 @@ inline int IntPatch_ImpImpIntersection::NbLines() const
   return slin.Length();
 }
 
-inline const occ::handle<IntPatch_Line>& IntPatch_ImpImpIntersection::Line(const int Index) const
+inline const occ::handle<IntPatch_Line>& IntPatch_ImpImpIntersection::Line(
+  const int Index) const
 {
   if (!IsDone())
   {

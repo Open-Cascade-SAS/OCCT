@@ -42,7 +42,8 @@ public:
 
   Standard_EXPORT Storage_Error BeginReadInfoSection() override;
 
-  Standard_EXPORT void WritePersistentObjectHeader(const int aRef, const int aType) override;
+  Standard_EXPORT void WritePersistentObjectHeader(const int aRef,
+                                                   const int aType) override;
 
   Standard_EXPORT void BeginWritePersistentObjectData() override;
 
@@ -52,7 +53,8 @@ public:
 
   Standard_EXPORT void EndWritePersistentObjectData() override;
 
-  Standard_EXPORT void ReadPersistentObjectHeader(int& aRef, int& aType) override;
+  Standard_EXPORT void ReadPersistentObjectHeader(int& aRef,
+                                                  int& aType) override;
 
   Standard_EXPORT void BeginReadPersistentObjectData() override;
 
@@ -76,7 +78,8 @@ protected:
   Standard_EXPORT void ReadExtendedLine(TCollection_ExtendedString& buffer) override;
 
   //! write from the current position to the end of line.
-  Standard_EXPORT void WriteExtendedLine(const TCollection_ExtendedString& buffer) override;
+  Standard_EXPORT void WriteExtendedLine(const TCollection_ExtendedString& buffer)
+    override;
 
   //! read from the first none space character position to the end of line.
   Standard_EXPORT void ReadString(TCollection_AsciiString& buffer) override;

@@ -103,8 +103,8 @@ occ::handle<TCollection_HAsciiString> STEPEdit_EditSDR::StringValue(
 }
 
 bool STEPEdit_EditSDR::Load(const occ::handle<IFSelect_EditForm>&        form,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const
+                                        const occ::handle<Standard_Transient>&       ent,
+                                        const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
     occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);
@@ -135,8 +135,8 @@ bool STEPEdit_EditSDR::Load(const occ::handle<IFSelect_EditForm>&        form,
 }
 
 bool STEPEdit_EditSDR::Apply(const occ::handle<IFSelect_EditForm>&        form,
-                             const occ::handle<Standard_Transient>&       ent,
-                             const occ::handle<Interface_InterfaceModel>& model) const
+                                         const occ::handle<Standard_Transient>&       ent,
+                                         const occ::handle<Interface_InterfaceModel>& model) const
 {
   occ::handle<StepShape_ShapeDefinitionRepresentation> sdr =
     occ::down_cast<StepShape_ShapeDefinitionRepresentation>(ent);

@@ -86,10 +86,10 @@ public:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  gp_XY  myCenter;
+  gp_XY         myCenter;
   double myRotation;
-  gp_XY  myScale;
-  gp_XY  myTranslation;
+  gp_XY         myScale;
+  gp_XY         myTranslation;
 
 public:
   // Declaration of CASCADE RTTI

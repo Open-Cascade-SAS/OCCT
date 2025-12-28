@@ -19,6 +19,7 @@
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Pair.hxx>
 #include <NCollection_Map.hxx>
+#include <BOPDS_Pair.hxx>
 
 #include <BOPTools_BoxTree.hxx>
 
@@ -113,7 +114,7 @@ void BOPDS_SubIterator::Intersect()
     aBBTree[i].SetSize(aSubSet->Extent());
     for (NCollection_List<int>::Iterator it(*aSubSet); it.More(); it.Next())
     {
-      const int              nS     = it.Value();
+      const int nS     = it.Value();
       const BOPDS_ShapeInfo& aSI    = myDS->ShapeInfo(nS);
       const Bnd_Box&         aBoxEx = aSI.Box();
       aBBTree[i].Add(nS, Bnd_Tools::Bnd2BVH(aBoxEx));
@@ -128,8 +129,8 @@ void BOPDS_SubIterator::Intersect()
   aPairSelector.Sort();
 
   // Treat the selected pairs
-  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs   = aPairSelector.Pairs();
-  const int                                             aNbPairs = static_cast<int>(aPairs.size());
+  const std::vector<BOPTools_BoxPairSelector::PairIDs>& aPairs = aPairSelector.Pairs();
+  const int aNbPairs = static_cast<int>(aPairs.size());
 
   // Fence map
   NCollection_Map<BOPDS_Pair> aMPKFence;

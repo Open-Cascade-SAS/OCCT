@@ -55,10 +55,10 @@ public:
 
   //! Setup new font size
   Standard_EXPORT void SetFontSize(const occ::handle<OpenGl_Context>& theContext,
-                                   const int                          theFontSize);
+                                   const int        theFontSize);
 
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    override;
   Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and
@@ -75,40 +75,39 @@ public: //! @name methods for compatibility with layers
 
   //! Create key for shared resource
   Standard_EXPORT static TCollection_AsciiString FontKey(const OpenGl_Aspects& theAspect,
-                                                         int                   theHeight,
+                                                         int      theHeight,
                                                          unsigned int          theResolution,
                                                          Font_Hinting          theFontHinting);
 
   //! Find shared resource for specified font or initialize new one
-  Standard_EXPORT static occ::handle<OpenGl_Font> FindFont(
-    const occ::handle<OpenGl_Context>& theCtx,
-    const OpenGl_Aspects&              theAspect,
-    int                                theHeight,
-    unsigned int                       theResolution,
-    Font_Hinting                       theFontHinting,
-    const TCollection_AsciiString&     theKey);
+  Standard_EXPORT static occ::handle<OpenGl_Font> FindFont(const occ::handle<OpenGl_Context>&  theCtx,
+                                                      const OpenGl_Aspects&          theAspect,
+                                                      int               theHeight,
+                                                      unsigned int                   theResolution,
+                                                      Font_Hinting                   theFontHinting,
+                                                      const TCollection_AsciiString& theKey);
 
   //! Compute text width
   Standard_EXPORT static void StringSize(const occ::handle<OpenGl_Context>& theCtx,
-                                         const NCollection_String&          theText,
-                                         const OpenGl_Aspects&              theTextAspect,
-                                         const float                        theHeight,
-                                         const unsigned int                 theResolution,
-                                         const Font_Hinting                 theFontHinting,
-                                         float&                             theWidth,
-                                         float&                             theAscent,
-                                         float&                             theDescent);
+                                         const NCollection_String&     theText,
+                                         const OpenGl_Aspects&         theTextAspect,
+                                         const float      theHeight,
+                                         const unsigned int            theResolution,
+                                         const Font_Hinting            theFontHinting,
+                                         float&           theWidth,
+                                         float&           theAscent,
+                                         float&           theDescent);
 
   //! Perform rendering
   Standard_EXPORT void Render(
     const occ::handle<OpenGl_Context>& theCtx,
-    const OpenGl_Aspects&              theTextAspect,
-    unsigned int theResolution  = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION,
-    Font_Hinting theFontHinting = Font_Hinting_Off) const;
+    const OpenGl_Aspects&         theTextAspect,
+    unsigned int                  theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION,
+    Font_Hinting                  theFontHinting = Font_Hinting_Off) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   //! @name obsolete methods
 public:
@@ -116,8 +115,8 @@ public:
   Standard_DEPRECATED(
     "Deprecated method Init() with obsolete arguments, use Init() and Text() instead of it")
   Standard_EXPORT void Init(const occ::handle<OpenGl_Context>& theCtx,
-                            const char*                        theText,
-                            const NCollection_Vec3<float>&     thePoint);
+                            const char*      theText,
+                            const NCollection_Vec3<float>&            thePoint);
 
   //! Setup new position
   Standard_DEPRECATED("Deprecated method SetPosition(), use Graphic3d_Text for it")
@@ -133,35 +132,34 @@ protected:
 private:
   //! Setup matrix.
   void setupMatrix(const occ::handle<OpenGl_Context>& theCtx,
-                   const OpenGl_Aspects&              theTextAspect,
-                   const NCollection_Vec3<float>&     theDVec) const;
+                   const OpenGl_Aspects&         theTextAspect,
+                   const NCollection_Vec3<float>&            theDVec) const;
 
   //! Draw arrays of vertices.
-  void drawText(const occ::handle<OpenGl_Context>& theCtx,
-                const OpenGl_Aspects&              theTextAspect) const;
+  void drawText(const occ::handle<OpenGl_Context>& theCtx, const OpenGl_Aspects& theTextAspect) const;
 
   //! Draw rectangle from bounding text box.
   void drawRect(const occ::handle<OpenGl_Context>& theCtx,
-                const OpenGl_Aspects&              theTextAspect,
-                const NCollection_Vec4<float>&     theColorSubs) const;
+                const OpenGl_Aspects&         theTextAspect,
+                const NCollection_Vec4<float>&            theColorSubs) const;
 
   //! Main rendering code
   void render(const occ::handle<OpenGl_Context>& theCtx,
-              const OpenGl_Aspects&              theTextAspect,
-              const NCollection_Vec4<float>&     theColorText,
-              const NCollection_Vec4<float>&     theColorSubs,
-              unsigned int                       theResolution,
-              Font_Hinting                       theFontHinting) const;
+              const OpenGl_Aspects&         theTextAspect,
+              const NCollection_Vec4<float>&            theColorText,
+              const NCollection_Vec4<float>&            theColorSubs,
+              unsigned int                  theResolution,
+              Font_Hinting                  theFontHinting) const;
 
 protected:
   occ::handle<Graphic3d_Text>                                  myText; //!< text parameters
   mutable occ::handle<OpenGl_Font>                             myFont;
-  mutable NCollection_Vector<GLuint>                           myTextures; //!< textures' IDs
+  mutable NCollection_Vector<GLuint>                      myTextures; //!< textures' IDs
   mutable NCollection_Vector<occ::handle<OpenGl_VertexBuffer>> myVertsVbo; //!< VBOs of vertices
-                                                                           // clang-format off
+                                                                      // clang-format off
   mutable NCollection_Vector<occ::handle<OpenGl_VertexBuffer>> myTCrdsVbo;   //!< VBOs of texture coordinates
   mutable occ::handle<OpenGl_VertexBuffer>                     myBndVertsVbo;//!< VBOs of vertices for bounding box
-                                                        // clang-format on
+                                                                      // clang-format on
   mutable Font_Rect myBndBox;
 
 protected:
@@ -169,7 +167,7 @@ protected:
   mutable NCollection_Mat4<double> myModelMatrix;
   mutable NCollection_Mat4<double> myOrientationMatrix;
   mutable NCollection_Vec3<double> myWinXYZ;
-  mutable GLdouble                 myScaleHeight;
+  mutable GLdouble     myScaleHeight;
 
 protected:
   bool myIs2d;

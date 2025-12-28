@@ -37,8 +37,7 @@ public:
                             const occ::handle<TCollection_HAsciiString>&       aName,
                             const occ::handle<Standard_Transient>&             aConversionFactor);
 
-  Standard_EXPORT void SetSolidAngleUnit(
-    const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
+  Standard_EXPORT void SetSolidAngleUnit(const occ::handle<StepBasic_SolidAngleUnit>& aSolidAngleUnit);
 
   Standard_EXPORT occ::handle<StepBasic_SolidAngleUnit> SolidAngleUnit() const;
 

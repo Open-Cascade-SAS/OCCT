@@ -44,8 +44,8 @@ public:
   //! entities, FirstShape and SecondShape. The plane
   //! aPlane is initialized in case a visual reference is
   //! needed to show identity.
-  Standard_EXPORT PrsDim_IdenticRelation(const TopoDS_Shape&            FirstShape,
-                                         const TopoDS_Shape&            SecondShape,
+  Standard_EXPORT PrsDim_IdenticRelation(const TopoDS_Shape&       FirstShape,
+                                         const TopoDS_Shape&       SecondShape,
                                          const occ::handle<Geom_Plane>& aPlane);
 
   bool HasUsers() const { return !myUsers.IsEmpty(); }
@@ -70,33 +70,31 @@ private:
   Standard_EXPORT void ComputeOneEdgeOVertexPresentation(
     const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeTwoEdgesPresentation(
-    const occ::handle<Prs3d_Presentation>& aPresentation);
+  Standard_EXPORT void ComputeTwoEdgesPresentation(const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeTwoLinesPresentation(
-    const occ::handle<Prs3d_Presentation>& aPresentation,
-    const occ::handle<Geom_Line>&          aLin,
-    gp_Pnt&                                Pnt1On1,
-    gp_Pnt&                                Pnt2On1,
-    gp_Pnt&                                Pnt1On2,
-    gp_Pnt&                                Pnt2On2,
-    const bool                             isInf1,
-    const bool                             isInf2);
+  Standard_EXPORT void ComputeTwoLinesPresentation(const occ::handle<Prs3d_Presentation>& aPresentation,
+                                                   const occ::handle<Geom_Line>&          aLin,
+                                                   gp_Pnt&                           Pnt1On1,
+                                                   gp_Pnt&                           Pnt2On1,
+                                                   gp_Pnt&                           Pnt1On2,
+                                                   gp_Pnt&                           Pnt2On2,
+                                                   const bool            isInf1,
+                                                   const bool            isInf2);
 
   Standard_EXPORT void ComputeTwoCirclesPresentation(
     const occ::handle<Prs3d_Presentation>& aPresentation,
     const occ::handle<Geom_Circle>&        aCircle,
-    const gp_Pnt&                          Pnt1On1,
-    const gp_Pnt&                          Pnt2On1,
-    const gp_Pnt&                          Pnt1On2,
-    const gp_Pnt&                          Pnt2On2);
+    const gp_Pnt&                     Pnt1On1,
+    const gp_Pnt&                     Pnt2On1,
+    const gp_Pnt&                     Pnt1On2,
+    const gp_Pnt&                     Pnt2On2);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of automatic presentation
   Standard_EXPORT void ComputeAutoArcPresentation(const occ::handle<Geom_Circle>& aCircle,
-                                                  const gp_Pnt&                   firstp,
-                                                  const gp_Pnt&                   lastp,
-                                                  const bool                      isstatic = false);
+                                                  const gp_Pnt&              firstp,
+                                                  const gp_Pnt&              lastp,
+                                                  const bool isstatic = false);
 
   //! Computes the presentation of the identic constraint
   //! between 2 circles in the case of non automatic presentation
@@ -105,21 +103,21 @@ private:
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of non automatic presentation
   Standard_EXPORT void ComputeNotAutoArcPresentation(const occ::handle<Geom_Circle>& aCircle,
-                                                     const gp_Pnt&                   pntfirst,
-                                                     const gp_Pnt&                   pntlast);
+                                                     const gp_Pnt&              pntfirst,
+                                                     const gp_Pnt&              pntlast);
 
   Standard_EXPORT void ComputeTwoEllipsesPresentation(const occ::handle<Prs3d_Presentation>& aPrs,
                                                       const occ::handle<Geom_Ellipse>&       anEll,
-                                                      const gp_Pnt& Pnt1On1,
-                                                      const gp_Pnt& Pnt2On1,
-                                                      const gp_Pnt& Pnt1On2,
-                                                      const gp_Pnt& Pnt2On2);
+                                                      const gp_Pnt&                     Pnt1On1,
+                                                      const gp_Pnt&                     Pnt2On1,
+                                                      const gp_Pnt&                     Pnt1On2,
+                                                      const gp_Pnt&                     Pnt2On2);
 
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of automatic presentation
   Standard_EXPORT void ComputeAutoArcPresentation(const occ::handle<Geom_Ellipse>& theEll,
-                                                  const gp_Pnt&                    firstp,
-                                                  const gp_Pnt&                    lastp,
+                                                  const gp_Pnt&               firstp,
+                                                  const gp_Pnt&               lastp,
                                                   const bool isstatic = false);
 
   //! Computes the presentation of the identic constraint
@@ -129,8 +127,8 @@ private:
   //! Computes the presentation of the identic constraint
   //! between 2 arcs in the case of non automatic presentation
   Standard_EXPORT void ComputeNotAutoArcPresentation(const occ::handle<Geom_Ellipse>& theEll,
-                                                     const gp_Pnt&                    pntfirst,
-                                                     const gp_Pnt&                    pntlast);
+                                                     const gp_Pnt&               pntfirst,
+                                                     const gp_Pnt&               pntlast);
 
   Standard_EXPORT void ComputeTwoVerticesPresentation(
     const occ::handle<Prs3d_Presentation>& aPresentation);
@@ -138,21 +136,21 @@ private:
   Standard_EXPORT double ComputeSegSize() const;
 
   Standard_EXPORT bool ComputeDirection(const TopoDS_Wire&   aWire,
-                                        const TopoDS_Vertex& aVertex,
-                                        gp_Dir&              aDir) const;
+                                                    const TopoDS_Vertex& aVertex,
+                                                    gp_Dir&              aDir) const;
 
   Standard_EXPORT gp_Dir ComputeLineDirection(const occ::handle<Geom_Line>& aLin,
-                                              const gp_Pnt&                 anExtremity) const;
+                                              const gp_Pnt&            anExtremity) const;
 
   Standard_EXPORT gp_Dir ComputeCircleDirection(const occ::handle<Geom_Circle>& aCirc,
-                                                const TopoDS_Vertex& ConnectedVertex) const;
+                                                const TopoDS_Vertex&       ConnectedVertex) const;
 
 private:
   NCollection_List<occ::handle<Standard_Transient>> myUsers;
-  bool                                              isCircle;
-  gp_Pnt                                            myFAttach;
-  gp_Pnt                                            mySAttach;
-  gp_Pnt                                            myCenter;
+  bool        isCircle;
+  gp_Pnt                  myFAttach;
+  gp_Pnt                  mySAttach;
+  gp_Pnt                  myCenter;
 };
 
 #endif // _PrsDim_IdenticRelation_HeaderFile

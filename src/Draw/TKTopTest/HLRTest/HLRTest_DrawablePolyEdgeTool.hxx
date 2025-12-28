@@ -33,8 +33,8 @@ class HLRTest_DrawablePolyEdgeTool : public Draw_Drawable3D
 
 public:
   Standard_EXPORT HLRTest_DrawablePolyEdgeTool(const occ::handle<HLRBRep_PolyAlgo>& Alg,
-                                               const int                            ViewId,
-                                               const bool                           Debug = false);
+                                               const int          ViewId,
+                                               const bool Debug = false);
 
   void Show();
 
@@ -61,15 +61,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(HLRTest_DrawablePolyEdgeTool, Draw_Drawable3D)
 
 private:
-  occ::handle<HLRBRep_PolyAlgo>     myAlgo;
-  bool                              myDispRg1;
-  bool                              myDispRgN;
-  bool                              myDispHid;
-  int                               myViewId;
-  NCollection_List<HLRBRep_BiPoint> myBiPntVis;
-  NCollection_List<HLRBRep_BiPoint> myBiPntHid;
-  bool                              myDebug;
-  bool                              myHideMode;
+  occ::handle<HLRBRep_PolyAlgo> myAlgo;
+  bool         myDispRg1;
+  bool         myDispRgN;
+  bool         myDispHid;
+  int         myViewId;
+  NCollection_List<HLRBRep_BiPoint>     myBiPntVis;
+  NCollection_List<HLRBRep_BiPoint>     myBiPntHid;
+  bool         myDebug;
+  bool         myHideMode;
 };
 
 #include <HLRTest_DrawablePolyEdgeTool.lxx>

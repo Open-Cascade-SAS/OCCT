@@ -40,13 +40,13 @@ occ::handle<TDF_Attribute> BinMDF_TagSourceDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   BinObjMgt_RRelocationTable&) const
+bool BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDF_TagSource> aTag = occ::down_cast<TDF_TagSource>(theTarget);
-  int                        aValue;
-  bool                       ok = theSource >> aValue;
+  int      aValue;
+  bool      ok = theSource >> aValue;
   if (ok)
     aTag->Set(aValue);
   return ok;
@@ -57,7 +57,7 @@ bool BinMDF_TagSourceDriver::Paste(const BinObjMgt_Persistent&       theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void BinMDF_TagSourceDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   BinObjMgt_Persistent&             theTarget,
+                                   BinObjMgt_Persistent&        theTarget,
                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDF_TagSource> aTag = occ::down_cast<TDF_TagSource>(theSource);

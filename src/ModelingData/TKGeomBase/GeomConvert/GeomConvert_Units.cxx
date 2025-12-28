@@ -35,17 +35,16 @@
 
 //=================================================================================================
 
-occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(
-  const occ::handle<Geom2d_Curve>& theCurve2d,
-  const occ::handle<Geom_Surface>& theSurf,
-  const double                     theLengthFactor,
-  const double                     theFactorRadianDegree)
+occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(const occ::handle<Geom2d_Curve>& theCurve2d,
+                                                       const occ::handle<Geom_Surface>& theSurf,
+                                                       const double         theLengthFactor,
+                                                       const double theFactorRadianDegree)
 {
   occ::handle<Geom2d_Curve> aCurve2d   = occ::down_cast<Geom2d_Curve>(theCurve2d->Copy());
-  double                    uFact      = 1.;
-  double                    vFact      = 1.;
-  double                    LengthFact = 1. / theLengthFactor;
-  double                    AngleFact  = theFactorRadianDegree; // 180./PI;  pilotable
+  double        uFact      = 1.;
+  double        vFact      = 1.;
+  double        LengthFact = 1. / theLengthFactor;
+  double        AngleFact  = theFactorRadianDegree; // 180./PI;  pilotable
 
   gp_Pnt2d   Pt1;
   gp_XY      pXY;
@@ -71,9 +70,9 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theSurf);
-    double                           semAng = conicS->SemiAngle();
-    uFact                                   = AngleFact;
-    vFact                                   = LengthFact * std::cos(semAng);
+    double               semAng = conicS->SemiAngle();
+    uFact                              = AngleFact;
+    vFact                              = LengthFact * std::cos(semAng);
   }
   else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
@@ -95,9 +94,9 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(
   if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line)))
   {
     occ::handle<Geom2d_Line> aLine2d = occ::down_cast<Geom2d_Line>(aCurve2d);
-    gp_Pnt2d                 myLoc   = aLine2d->Location();
-    gp_Dir2d                 myDir   = aLine2d->Direction();
-    gp_Pnt2d                 myNewLoc;
+    gp_Pnt2d            myLoc   = aLine2d->Location();
+    gp_Dir2d            myDir   = aLine2d->Direction();
+    gp_Pnt2d            myNewLoc;
     myNewLoc.SetCoord(myLoc.X() * uFact, myLoc.Y() * vFact);
     gp_Dir2d myNewDir;
     myNewDir.SetCoord(myDir.X() * uFact, myDir.Y() * vFact);
@@ -112,7 +111,7 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(
         || aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
     {
       occ::handle<Geom2d_BSplineCurve> aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aCurve2d);
-      aCurve2d                                    = aBSpline2d;
+      aCurve2d                               = aBSpline2d;
     }
     else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Parabola)))
     {
@@ -170,17 +169,16 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::RadianToDegree(
 //             Then pcurves parameter have to be transformed
 //             from DEGREE to RADIAN
 // ============================================================================
-occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(
-  const occ::handle<Geom2d_Curve>& thePcurve,
-  const occ::handle<Geom_Surface>& theSurface,
-  const double                     theLengthFactor,
-  const double                     theFactorRadianDegree)
+occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(const occ::handle<Geom2d_Curve>& thePcurve,
+                                                       const occ::handle<Geom_Surface>& theSurface,
+                                                       const double         theLengthFactor,
+                                                       const double theFactorRadianDegree)
 {
   occ::handle<Geom2d_Curve> aPcurve    = occ::down_cast<Geom2d_Curve>(thePcurve->Copy());
-  double                    uFact      = 1.;
-  double                    vFact      = 1.;
-  double                    LengthFact = theLengthFactor;
-  double                    AngleFact  = theFactorRadianDegree; // PI/180.;  pilotable
+  double        uFact      = 1.;
+  double        vFact      = 1.;
+  double        LengthFact = theLengthFactor;
+  double        AngleFact  = theFactorRadianDegree; // PI/180.;  pilotable
 
   gp_Pnt2d   Pt1;
   gp_XY      pXY;
@@ -205,9 +203,9 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(
   else if (theSurface->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
     occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theSurface);
-    double                           semAng = conicS->SemiAngle();
-    uFact                                   = AngleFact;
-    vFact                                   = LengthFact / std::cos(semAng);
+    double               semAng = conicS->SemiAngle();
+    uFact                              = AngleFact;
+    vFact                              = LengthFact / std::cos(semAng);
   }
   else if (theSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
@@ -232,7 +230,7 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(
         || aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse)))
     {
       occ::handle<Geom2d_BSplineCurve> aBSpline2d = Geom2dConvert::CurveToBSplineCurve(aPcurve);
-      aPcurve                                     = aBSpline2d;
+      aPcurve                                = aBSpline2d;
     }
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Parabola)))
     {
@@ -307,10 +305,10 @@ occ::handle<Geom2d_Curve> GeomConvert_Units::DegreeToRadian(
 occ::handle<Geom2d_Curve> GeomConvert_Units::MirrorPCurve(const occ::handle<Geom2d_Curve>& theCurve)
 {
   occ::handle<Geom2d_Curve> theMirrored = occ::down_cast<Geom2d_Curve>(theCurve->Copy());
-  gp_Trsf2d                 T;
-  gp_Pnt2d                  Loc(0., 0.);
-  gp_Dir2d                  Dir(gp_Dir2d::D::X);
-  gp_Ax2d                   ax2(Loc, Dir);
+  gp_Trsf2d            T;
+  gp_Pnt2d             Loc(0., 0.);
+  gp_Dir2d             Dir(gp_Dir2d::D::X);
+  gp_Ax2d              ax2(Loc, Dir);
   T.SetMirror(ax2);
   theMirrored->Transform(T);
   return theMirrored;

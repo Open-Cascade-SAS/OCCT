@@ -51,11 +51,10 @@ public:
 
   //! Constructor, which performs projecting, using initial curve 2d InitCurve2d, which is any rough
   //! approximation of result curve. Parameter Tol is 3d tolerance of approximation.
-  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(
-    const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
-    const occ::handle<Adaptor3d_Curve>&   C,
-    const occ::handle<Adaptor3d_Surface>& S,
-    const double                          Tol);
+  Standard_EXPORT ProjLib_ComputeApproxOnPolarSurface(const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
+                                                      const occ::handle<Adaptor3d_Curve>&   C,
+                                                      const occ::handle<Adaptor3d_Surface>& S,
+                                                      const double              Tol);
 
   //! Constructor, which performs projecting, using two initial curves 2d: InitCurve2d and
   //! InitCurve2dBis that are any rough approximations of result curves. This constructor is used to
@@ -65,11 +64,12 @@ public:
     const occ::handle<Adaptor2d_Curve2d>& InitCurve2dBis,
     const occ::handle<Adaptor3d_Curve>&   C,
     const occ::handle<Adaptor3d_Surface>& S,
-    const double                          Tol);
+    const double              Tol);
 
   //! Set min and max possible degree of result BSpline curve2d, which is got by approximation.
   //! If theDegMin/Max < 0, algorithm uses values min = 2, max = 8.
-  Standard_EXPORT void SetDegree(const int theDegMin, const int theDegMax);
+  Standard_EXPORT void SetDegree(const int theDegMin,
+                                 const int theDegMax);
 
   //! Set the parameter, which defines maximal value of parametric intervals the projected
   //! curve can be cut for approximation. If theMaxSegments < 0, algorithm uses default
@@ -100,10 +100,9 @@ public:
   //! Method, which performs projecting, using default values of parameters or
   //! they must be set by corresponding methods before using.
   //! Parameter InitCurve2d is any rough estimation of 2d result curve.
-  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Perform(
-    const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
-    const occ::handle<Adaptor3d_Curve>&   C,
-    const occ::handle<Adaptor3d_Surface>& S);
+  Standard_EXPORT occ::handle<Geom2d_BSplineCurve> Perform(const occ::handle<Adaptor2d_Curve2d>& InitCurve2d,
+                                                      const occ::handle<Adaptor3d_Curve>&   C,
+                                                      const occ::handle<Adaptor3d_Surface>& S);
 
   //! Builds initial 2d curve as BSpline with degree = 1 using Extrema algorithm.
   //! Method is used in method Perform(...).
@@ -129,17 +128,17 @@ public:
   Standard_EXPORT double Tolerance() const;
 
 private:
-  bool                             myProjIsDone;
-  double                           myTolerance;
+  bool            myProjIsDone;
+  double               myTolerance;
   occ::handle<Geom2d_BSplineCurve> myBSpline;
   occ::handle<Geom2d_Curve>        my2ndCurve;
-  double                           myTolReached;
-  int                              myDegMin;
-  int                              myDegMax;
-  int                              myMaxSegments;
-  double                           myMaxDist;
-  AppParCurves_Constraint          myBndPnt;
-  double                           myDist;
+  double               myTolReached;
+  int            myDegMin;
+  int            myDegMax;
+  int            myMaxSegments;
+  double               myMaxDist;
+  AppParCurves_Constraint     myBndPnt;
+  double               myDist;
 };
 
 #endif // _ProjLib_ComputeApproxOnPolarSurface_HeaderFile

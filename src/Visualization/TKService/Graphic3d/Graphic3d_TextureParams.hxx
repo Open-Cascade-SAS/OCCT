@@ -18,6 +18,7 @@
 #include <NCollection_Vec2.hxx>
 #include <Standard_TypeDef.hxx>
 #include <NCollection_Vec4.hxx>
+#include <Standard_TypeDef.hxx>
 #include <Graphic3d_TextureUnit.hxx>
 #include <Graphic3d_TypeOfTextureFilter.hxx>
 #include <Graphic3d_TypeOfTextureMode.hxx>
@@ -104,8 +105,8 @@ public:
 
   //! Setup texture coordinates generation mode.
   Standard_EXPORT void SetGenMode(const Graphic3d_TypeOfTextureMode theMode,
-                                  const NCollection_Vec4<float>     thePlaneS,
-                                  const NCollection_Vec4<float>     thePlaneT);
+                                  const NCollection_Vec4<float>              thePlaneS,
+                                  const NCollection_Vec4<float>              thePlaneT);
 
   //! @return base texture mipmap level; 0 by default.
   int BaseLevel() const { return myBaseLevel; }

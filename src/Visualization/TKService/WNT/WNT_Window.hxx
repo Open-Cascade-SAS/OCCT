@@ -54,17 +54,17 @@ public:
   //! Creates a Window defined by his position and size in pixels from the Parent Window.
   //! Trigger: Raises WindowDefinitionError if the Position out of the Screen Space or the window
   //! creation failed.
-  Standard_EXPORT WNT_Window(const char*                    theTitle,
-                             const occ::handle<WNT_WClass>& theClass,
-                             const WNT_Dword&               theStyle,
-                             const int                      thePxLeft,
-                             const int                      thePxTop,
-                             const int                      thePxWidth,
-                             const int                      thePxHeight,
-                             const Quantity_NameOfColor     theBackColor = Quantity_NOC_MATRAGRAY,
-                             const Aspect_Handle            theParent    = 0,
-                             const Aspect_Handle            theMenu      = 0,
-                             void* const                    theClientStruct = 0);
+  Standard_EXPORT WNT_Window(const char*     theTitle,
+                             const occ::handle<WNT_WClass>&  theClass,
+                             const WNT_Dword&           theStyle,
+                             const int     thePxLeft,
+                             const int     thePxTop,
+                             const int     thePxWidth,
+                             const int     thePxHeight,
+                             const Quantity_NameOfColor theBackColor    = Quantity_NOC_MATRAGRAY,
+                             const Aspect_Handle        theParent       = 0,
+                             const Aspect_Handle        theMenu         = 0,
+                             void* const     theClientStruct = 0);
 
   //! Creates a Window based on the existing window handle.
   Standard_EXPORT WNT_Window(const Aspect_Handle        theHandle,
@@ -94,7 +94,10 @@ public:
   virtual bool DoMapping() const override { return true; }
 
   //! Changes variables due to window position.
-  Standard_EXPORT void SetPos(const int X, const int Y, const int X1, const int Y1);
+  Standard_EXPORT void SetPos(const int X,
+                              const int Y,
+                              const int X1,
+                              const int Y1);
 
   //! Returns True if the window <me> is opened
   //! and False if the window is closed.
@@ -105,13 +108,20 @@ public:
   Standard_EXPORT virtual double Ratio() const override;
 
   //! Returns The Window POSITION in PIXEL
-  Standard_EXPORT virtual void Position(int& X1, int& Y1, int& X2, int& Y2) const override;
+  Standard_EXPORT virtual void Position(int& X1,
+                                        int& Y1,
+                                        int& X2,
+                                        int& Y2) const override;
 
   //! Returns The Window SIZE in PIXEL
-  Standard_EXPORT virtual void Size(int& Width, int& Height) const override;
+  Standard_EXPORT virtual void Size(int& Width,
+                                    int& Height) const override;
 
   //! Returns native Window handle (HWND)
-  virtual Aspect_Drawable NativeHandle() const override { return (Aspect_Drawable)myHWindow; }
+  virtual Aspect_Drawable NativeHandle() const override
+  {
+    return (Aspect_Drawable)myHWindow;
+  }
 
   //! Returns parent of native Window handle (HWND on Windows).
   virtual Aspect_Drawable NativeParentHandle() const override
@@ -129,8 +139,8 @@ public:
   //! WM_PAINT event put into window message loop. Method can be called from non-window thread, and
   //! system will also automatically aggregate multiple events into single one.
   Standard_EXPORT virtual void InvalidateContent(
-    const occ::handle<Aspect_DisplayConnection>& theDisp =
-      occ::handle<Aspect_DisplayConnection>()) override;
+    const occ::handle<Aspect_DisplayConnection>& theDisp = occ::handle<Aspect_DisplayConnection>())
+    override;
 
 public:
   //! Returns the Windows NT handle of the created window <me>.
@@ -163,13 +173,13 @@ private:
 protected:
   occ::handle<WNT_WClass>       myWClass;
   occ::handle<TouchInputHelper> myTouchInputHelper;
-  Aspect_Handle                 myHWindow;
-  Aspect_Handle                 myHParentWindow;
-  int                           myXLeft;
-  int                           myYTop;
-  int                           myXRight;
-  int                           myYBottom;
-  bool                          myIsForeign;
+  Aspect_Handle            myHWindow;
+  Aspect_Handle            myHParentWindow;
+  int         myXLeft;
+  int         myYTop;
+  int         myXRight;
+  int         myYBottom;
+  bool         myIsForeign;
 };
 
 #endif // _WIN32

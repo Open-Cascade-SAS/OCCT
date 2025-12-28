@@ -64,9 +64,9 @@ void Interface_BitMap::Reservate(const int moreflags)
   int nbflags = nb / thenbwords - 1; // flag 0 not counted ...
   if (nbflags >= thenbflags + moreflags)
     return;
-  int                                   nbw   = thenbwords * (thenbflags + moreflags + 2);
+  int                 nbw   = thenbwords * (thenbflags + moreflags + 2);
   occ::handle<NCollection_HArray1<int>> flags = new NCollection_HArray1<int>(0, nbw);
-  int                                   i; // svv Jan11 2000 : porting on DEC
+  int                 i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i <= nb; i++)
     flags->SetValue(i, theflags->Value(i));
   for (i = nb + 1; i <= nbw; i++)
@@ -79,8 +79,7 @@ void Interface_BitMap::SetLength(const int nbitems)
   int nbw = nbitems / 32 + 1;
   if (nbw == thenbwords)
     return;
-  occ::handle<NCollection_HArray1<int>> flags =
-    new NCollection_HArray1<int>(0, nbw * (thenbflags + 1));
+  occ::handle<NCollection_HArray1<int>> flags = new NCollection_HArray1<int>(0, nbw * (thenbflags + 1));
   if (nbw > thenbwords)
     flags->Init(0);
   int nbmots = (nbw > thenbwords ? thenbwords : nbw);
@@ -144,7 +143,8 @@ bool Interface_BitMap::RemoveFlag(const int num)
   return true;
 }
 
-bool Interface_BitMap::SetFlagName(const int num, const char* name)
+bool Interface_BitMap::SetFlagName(const int num,
+                                               const char* name)
 {
   if (num < 1 || num > thenames->Length())
     return false;
@@ -189,7 +189,8 @@ int Interface_BitMap::FlagNumber(const char* name) const
 
 //  Values ...
 
-bool Interface_BitMap::Value(const int item, const int flag) const
+bool Interface_BitMap::Value(const int item,
+                                         const int flag) const
 {
   int        numw = (thenbwords * flag) + (item >> 5);
   const int& val  = theflags->Value(numw);
@@ -201,7 +202,9 @@ bool Interface_BitMap::Value(const int item, const int flag) const
   return (((1 << numb) & val) != 0);
 }
 
-void Interface_BitMap::SetValue(const int item, const bool val, const int flag) const
+void Interface_BitMap::SetValue(const int item,
+                                const bool val,
+                                const int flag) const
 {
   if (val)
     SetTrue(item, flag);
@@ -226,7 +229,8 @@ void Interface_BitMap::SetFalse(const int item, const int flag) const
   theflags->ChangeValue(numw) &= ~(1 << numb);
 }
 
-bool Interface_BitMap::CTrue(const int item, const int flag) const
+bool Interface_BitMap::CTrue(const int item,
+                                         const int flag) const
 {
   int  numw = (thenbwords * flag) + (item >> 5);
   int  numb = item & 31;
@@ -246,7 +250,8 @@ bool Interface_BitMap::CTrue(const int item, const int flag) const
   return (res != 0);
 }
 
-bool Interface_BitMap::CFalse(const int item, const int flag) const
+bool Interface_BitMap::CFalse(const int item,
+                                          const int flag) const
 {
   int  numw = (thenbwords * flag) + (item >> 5);
   int  numb = item & 31;

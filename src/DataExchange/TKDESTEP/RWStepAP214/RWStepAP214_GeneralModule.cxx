@@ -1446,9 +1446,9 @@ void RWStepAP214_GeneralModule::FillShared (const occ::handle<Interface_Interfac
 
 //=================================================================================================
 
-void RWStepAP214_GeneralModule::FillSharedCase(const int                              CN,
+void RWStepAP214_GeneralModule::FillSharedCase(const int            CN,
                                                const occ::handle<Standard_Transient>& ent,
-                                               Interface_EntityIterator&              iter) const
+                                               Interface_EntityIterator&         iter) const
 {
   switch (CN)
   {
@@ -5307,9 +5307,9 @@ void RWStepAP214_GeneralModule::FillSharedCase(const int                        
 
 //=================================================================================================
 
-void RWStepAP214_GeneralModule::CheckCase(const int                              CN,
+void RWStepAP214_GeneralModule::CheckCase(const int            CN,
                                           const occ::handle<Standard_Transient>& ent,
-                                          const Interface_ShareTool&             shares,
+                                          const Interface_ShareTool&        shares,
                                           occ::handle<Interface_Check>&          ach) const
 {
   switch (CN)
@@ -5417,7 +5417,8 @@ void RWStepAP214_GeneralModule::CopyCase(const int /*CN*/,
 
 //=================================================================================================
 
-bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Transient>& ent) const
+bool RWStepAP214_GeneralModule::NewVoid(const int      CN,
+                                                    occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)
     return false;
@@ -7617,9 +7618,10 @@ bool RWStepAP214_GeneralModule::NewVoid(const int CN, occ::handle<Standard_Trans
 
 //=================================================================================================
 
-int RWStepAP214_GeneralModule::CategoryNumber(const int CN,
-                                              const occ::handle<Standard_Transient>& /*ent*/,
-                                              const Interface_ShareTool& /*shares*/) const
+int RWStepAP214_GeneralModule::CategoryNumber(
+  const int CN,
+  const occ::handle<Standard_Transient>& /*ent*/,
+  const Interface_ShareTool& /*shares*/) const
 {
   switch (CN)
   {

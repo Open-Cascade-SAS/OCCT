@@ -53,7 +53,7 @@ void IGESBasic_ToolExternalRefFileName::ReadOwnParams(
 
 void IGESBasic_ToolExternalRefFileName::WriteOwnParams(
   const occ::handle<IGESBasic_ExternalRefFileName>& ent,
-  IGESData_IGESWriter&                              IW) const
+  IGESData_IGESWriter&                         IW) const
 {
   IW.Send(ent->FileId());
   IW.Send(ent->ReferenceName());
@@ -70,8 +70,7 @@ void IGESBasic_ToolExternalRefFileName::OwnCopy(
   const occ::handle<IGESBasic_ExternalRefFileName>& ent,
   Interface_CopyTool& /* TC */) const
 {
-  occ::handle<TCollection_HAsciiString> tempFileId =
-    new TCollection_HAsciiString(another->FileId());
+  occ::handle<TCollection_HAsciiString> tempFileId = new TCollection_HAsciiString(another->FileId());
   occ::handle<TCollection_HAsciiString> tempRefName =
     new TCollection_HAsciiString(another->ReferenceName());
   ent->Init(tempFileId, tempRefName);
@@ -91,20 +90,18 @@ IGESData_DirChecker IGESBasic_ToolExternalRefFileName::DirChecker(
   return DC;
 }
 
-void IGESBasic_ToolExternalRefFileName::OwnCheck(
-  const occ::handle<IGESBasic_ExternalRefFileName>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void IGESBasic_ToolExternalRefFileName::OwnCheck(const occ::handle<IGESBasic_ExternalRefFileName>& ent,
+                                                 const Interface_ShareTool&,
+                                                 occ::handle<Interface_Check>& ach) const
 {
   if (ent->FormNumber() == 1)
     ach->AddFail("Invalid Form Number");
 }
 
-void IGESBasic_ToolExternalRefFileName::OwnDump(
-  const occ::handle<IGESBasic_ExternalRefFileName>& ent,
-  const IGESData_IGESDumper& /* dumper */,
-  Standard_OStream& S,
-  const int /* level */) const
+void IGESBasic_ToolExternalRefFileName::OwnDump(const occ::handle<IGESBasic_ExternalRefFileName>& ent,
+                                                const IGESData_IGESDumper& /* dumper */,
+                                                Standard_OStream& S,
+                                                const int /* level */) const
 {
   S << "IGESBasic_ExternalRefFileName\n"
     << "External Reference File Identifier : ";

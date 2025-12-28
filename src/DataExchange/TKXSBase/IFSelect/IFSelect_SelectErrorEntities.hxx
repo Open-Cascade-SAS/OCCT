@@ -40,14 +40,16 @@ public:
   //! Returns True for an Entity which is qualified as "Error", i.e.
   //! if <model> explicitly knows <ent> (through its Number) as
   //! Erroneous
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Error Entities"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectErrorEntities, IFSelect_SelectExtract)
+
 };
 
 #endif // _IFSelect_SelectErrorEntities_HeaderFile

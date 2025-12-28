@@ -20,13 +20,15 @@
 #include <math_Matrix.hxx>
 #include <NCollection_Array1.hxx>
 
-void AppParCurves::BernsteinMatrix(const int NbPoles, const math_Vector& U, math_Matrix& A)
+void AppParCurves::BernsteinMatrix(const int NbPoles,
+                                   const math_Vector&     U,
+                                   math_Matrix&           A)
 {
 
-  int         i, j, id;
-  double      u0, u1, y0, y1, xs;
-  int         first = U.Lower(), last = U.Upper();
-  math_Vector B(1, NbPoles - 1);
+  int i, j, id;
+  double    u0, u1, y0, y1, xs;
+  int first = U.Lower(), last = U.Upper();
+  math_Vector      B(1, NbPoles - 1);
 
   for (i = first; i <= last; i++)
   {
@@ -57,16 +59,16 @@ void AppParCurves::BernsteinMatrix(const int NbPoles, const math_Vector& U, math
   }
 }
 
-void AppParCurves::Bernstein(const int          NbPoles,
-                             const math_Vector& U,
-                             math_Matrix&       A,
-                             math_Matrix&       DA)
+void AppParCurves::Bernstein(const int NbPoles,
+                             const math_Vector&     U,
+                             math_Matrix&           A,
+                             math_Matrix&           DA)
 {
 
-  int         i, j, id, Ndeg = NbPoles - 1;
-  double      u0, u1, y0, y1, xs, bj, bj1;
-  int         first = U.Lower(), last = U.Upper();
-  math_Vector B(1, NbPoles - 1);
+  int i, j, id, Ndeg = NbPoles - 1;
+  double    u0, u1, y0, y1, xs, bj, bj1;
+  int first = U.Lower(), last = U.Upper();
+  math_Vector      B(1, NbPoles - 1);
 
   for (i = first; i <= last; i++)
   {
@@ -105,9 +107,9 @@ void AppParCurves::Bernstein(const int          NbPoles,
 void AppParCurves::SecondDerivativeBernstein(const double U, math_Vector& DDA)
 {
   //  double U1 = 1-U, Y0, Y1, Xs;
-  double Y0, Y1, Xs;
-  int    NbPoles = DDA.Length();
-  int    id, j, N4, deg = NbPoles - 1;
+  double    Y0, Y1, Xs;
+  int NbPoles = DDA.Length();
+  int id, j, N4, deg = NbPoles - 1;
   N4 = deg * (deg - 1);
   math_Vector B(1, deg - 1);
   B(1) = 1.;
@@ -154,13 +156,13 @@ void AppParCurves::SecondDerivativeBernstein(const double U, math_Vector& DDA)
   }
 }
 
-void AppParCurves::SplineFunction(const int           nbpoles,
-                                  const int           deg,
-                                  const math_Vector&  Parameters,
-                                  const math_Vector&  flatknots,
-                                  math_Matrix&        A,
-                                  math_Matrix&        DA,
-                                  math_IntegerVector& index)
+void AppParCurves::SplineFunction(const int nbpoles,
+                                  const int deg,
+                                  const math_Vector&     Parameters,
+                                  const math_Vector&     flatknots,
+                                  math_Matrix&           A,
+                                  math_Matrix&           DA,
+                                  math_IntegerVector&    index)
 {
   //  double U, NewU, co, diff, t1, t2;
   double U, NewU;
@@ -169,10 +171,10 @@ void AppParCurves::SplineFunction(const int           nbpoles,
   //  int i, j, k, iter, in, ik, deg1 = deg+1;
   int i, j, deg1 = deg + 1;
   //  int oldkindex, kindex, theindex, ttindex;
-  int         oldkindex, kindex, theindex;
-  math_Vector locpoles(1, deg1);
-  math_Vector locdpoles(1, deg1);
-  int         firstp = Parameters.Lower(), lastp = Parameters.Upper();
+  int oldkindex, kindex, theindex;
+  math_Vector      locpoles(1, deg1);
+  math_Vector      locdpoles(1, deg1);
+  int firstp = Parameters.Lower(), lastp = Parameters.Upper();
 
   NCollection_Array1<double> Aflatknots(flatknots.Lower(), flatknots.Upper());
   for (i = flatknots.Lower(); i <= flatknots.Upper(); i++)
@@ -182,8 +184,8 @@ void AppParCurves::SplineFunction(const int           nbpoles,
 
   oldkindex = 1;
 
-  int    pp, qq;
-  double Saved, Inverse, LocalInverse, locqq, locdqq, val;
+  int pp, qq;
+  double    Saved, Inverse, LocalInverse, locqq, locdqq, val;
 
   for (i = firstp; i <= lastp; i++)
   {

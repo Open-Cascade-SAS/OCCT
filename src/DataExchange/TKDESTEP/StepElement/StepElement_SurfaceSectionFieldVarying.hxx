@@ -33,13 +33,11 @@ public:
   Standard_EXPORT StepElement_SurfaceSectionFieldVarying();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>>& aDefinitions,
-    const bool aAdditionalNodeValues);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>>& aDefinitions,
+                            const bool aAdditionalNodeValues);
 
   //! Returns field Definitions
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>>
-                  Definitions() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>> Definitions() const;
 
   //! Set field Definitions
   Standard_EXPORT void SetDefinitions(
@@ -55,7 +53,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>> theDefinitions;
-  bool                                                                      theAdditionalNodeValues;
+  bool                            theAdditionalNodeValues;
 };
 
 #endif // _StepElement_SurfaceSectionFieldVarying_HeaderFile

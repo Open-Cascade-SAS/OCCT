@@ -21,9 +21,13 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
 
@@ -36,8 +40,9 @@
 //! that are not connected to any face in the shape.
 //!
 //! Example of use:
-//! NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-//! mymap; TopOpeBRepTool_PurgeInternalEdges mypurgealgo(mysolid); mypurgealgo.GetFaces(mymap);
+//! NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mymap;
+//! TopOpeBRepTool_PurgeInternalEdges
+//! mypurgealgo(mysolid); mypurgealgo.GetFaces(mymap);
 class TopOpeBRepTool_PurgeInternalEdges
 {
 public:
@@ -45,16 +50,15 @@ public:
 
   //! Initialize members and begin exploration of shape
   //! depending of the value of PerformNow
-  Standard_EXPORT TopOpeBRepTool_PurgeInternalEdges(const TopoDS_Shape& theShape,
-                                                    const bool          PerformNow = true);
+  Standard_EXPORT TopOpeBRepTool_PurgeInternalEdges(
+    const TopoDS_Shape&    theShape,
+    const bool PerformNow = true);
 
   //! returns the list internal edges associated with
   //! the faces of the myShape. If PerformNow was False
   //! when created, then call the private Perform method
   //! that do the main job.
-  Standard_EXPORT void Faces(
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      theMapFacLstEdg);
+  Standard_EXPORT void Faces(NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMapFacLstEdg);
 
   //! returns myShape modified with the list of internal
   //! edges removed from it.
@@ -72,8 +76,7 @@ public:
   Standard_EXPORT void Perform();
 
 protected:
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myMapEdgLstFac;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapEdgLstFac;
 
 private:
   //! Do the main job. Explore all the edges of myShape and
@@ -82,10 +85,9 @@ private:
   Standard_EXPORT void BuildList();
 
 private:
-  TopoDS_Shape myShape;
-  bool         myIsDone;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myMapFacLstEdg;
+  TopoDS_Shape                       myShape;
+  bool                   myIsDone;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMapFacLstEdg;
 };
 
 #endif // _TopOpeBRepTool_PurgeInternalEdges_HeaderFile

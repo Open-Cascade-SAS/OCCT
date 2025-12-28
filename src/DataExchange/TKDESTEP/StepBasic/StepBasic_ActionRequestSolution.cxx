@@ -29,9 +29,8 @@ StepBasic_ActionRequestSolution::StepBasic_ActionRequestSolution() {}
 
 //=================================================================================================
 
-void StepBasic_ActionRequestSolution::Init(
-  const occ::handle<StepBasic_ActionMethod>&           aMethod,
-  const occ::handle<StepBasic_VersionedActionRequest>& aRequest)
+void StepBasic_ActionRequestSolution::Init(const occ::handle<StepBasic_ActionMethod>&           aMethod,
+                                           const occ::handle<StepBasic_VersionedActionRequest>& aRequest)
 {
 
   theMethod = aMethod;

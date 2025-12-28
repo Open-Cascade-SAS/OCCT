@@ -64,10 +64,10 @@ public:
   int PlaneIndex() const { return myCurrIndex; }
 
 private:
-  Graphic3d_SequenceOfHClipPlane::Iterator myIter1;
-  Graphic3d_SequenceOfHClipPlane::Iterator myIter2;
-  const NCollection_Vector<bool>*          myDisabled;
-  int                                      myCurrIndex;
+  Graphic3d_SequenceOfHClipPlane::Iterator    myIter1;
+  Graphic3d_SequenceOfHClipPlane::Iterator    myIter2;
+  const NCollection_Vector<bool>* myDisabled;
+  int                            myCurrIndex;
 };
 
 #endif // OpenGl_ClippingIterator_Header

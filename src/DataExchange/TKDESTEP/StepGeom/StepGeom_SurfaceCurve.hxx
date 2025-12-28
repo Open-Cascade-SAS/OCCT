@@ -36,10 +36,10 @@ public:
   Standard_EXPORT StepGeom_SurfaceCurve();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                      aName,
-    const occ::handle<StepGeom_Curve>&                                aCurve3d,
-    const occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>& aAssociatedGeometry,
-    const StepGeom_PreferredSurfaceCurveRepresentation                aMasterRepresentation);
+    const occ::handle<TCollection_HAsciiString>&            aName,
+    const occ::handle<StepGeom_Curve>&                      aCurve3d,
+    const occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>&   aAssociatedGeometry,
+    const StepGeom_PreferredSurfaceCurveRepresentation aMasterRepresentation);
 
   Standard_EXPORT void SetCurve3d(const occ::handle<StepGeom_Curve>& aCurve3d);
 
@@ -48,10 +48,10 @@ public:
   Standard_EXPORT void SetAssociatedGeometry(
     const occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>& aAssociatedGeometry);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> AssociatedGeometry()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> AssociatedGeometry() const;
 
-  Standard_EXPORT StepGeom_PcurveOrSurface AssociatedGeometryValue(const int num) const;
+  Standard_EXPORT StepGeom_PcurveOrSurface
+    AssociatedGeometryValue(const int num) const;
 
   Standard_EXPORT int NbAssociatedGeometry() const;
 
@@ -63,9 +63,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_SurfaceCurve, StepGeom_Curve)
 
 private:
-  occ::handle<StepGeom_Curve>                                curve3d;
-  occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> associatedGeometry;
-  StepGeom_PreferredSurfaceCurveRepresentation               masterRepresentation;
+  occ::handle<StepGeom_Curve>                       curve3d;
+  occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>>    associatedGeometry;
+  StepGeom_PreferredSurfaceCurveRepresentation masterRepresentation;
 };
 
 #endif // _StepGeom_SurfaceCurve_HeaderFile

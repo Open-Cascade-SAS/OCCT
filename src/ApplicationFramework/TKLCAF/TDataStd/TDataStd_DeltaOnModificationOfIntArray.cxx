@@ -19,6 +19,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
@@ -147,7 +148,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  int                                   i;
+  int                 i;
   occ::handle<NCollection_HArray1<int>> IntArr = aCurAtt->Array();
   if (IntArr.IsNull())
     return;
@@ -156,8 +157,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
       IntArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
   else if (aCase == 2)
   {
-    occ::handle<NCollection_HArray1<int>> intArr =
-      new NCollection_HArray1<int>(IntArr->Lower(), myUp1);
+    occ::handle<NCollection_HArray1<int>> intArr = new NCollection_HArray1<int>(IntArr->Lower(), myUp1);
     for (i = IntArr->Lower(); i <= myUp1 && i <= IntArr->Upper(); i++)
       intArr->SetValue(i, IntArr->Value(i));
     if (!myIndxes.IsNull() && !myValues.IsNull())
@@ -167,7 +167,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   }
   else
   { // aCase == 3
-    int                                   low    = IntArr->Lower();
+    int                 low    = IntArr->Lower();
     occ::handle<NCollection_HArray1<int>> intArr = new NCollection_HArray1<int>(low, myUp1);
     for (i = IntArr->Lower(); i <= myUp2 && i <= IntArr->Upper(); i++)
       intArr->SetValue(i, IntArr->Value(i));

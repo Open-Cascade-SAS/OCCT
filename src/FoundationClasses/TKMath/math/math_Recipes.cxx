@@ -60,9 +60,9 @@ static inline double PYTHAG(const double a, const double b)
 static void EigenSort(math_Vector& d, math_Matrix& v)
 { // descending order
 
-  int    k, i, j;
-  double p;
-  int    n = d.Length();
+  int k, i, j;
+  double    p;
+  int n = d.Length();
 
   for (i = 1; i < n; i++)
   {
@@ -87,11 +87,11 @@ static void EigenSort(math_Vector& d, math_Matrix& v)
 int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
 {
 
-  int         n = a.RowNumber();
-  int         j, iq, ip, i;
-  double      tresh, theta, tau, t, sm, s, h, g, c;
-  math_Vector b(1, n);
-  math_Vector z(1, n);
+  int n = a.RowNumber();
+  int j, iq, ip, i;
+  double    tresh, theta, tau, t, sm, s, h, g, c;
+  math_Vector      b(1, n);
+  math_Vector      z(1, n);
 
   for (ip = 1; ip <= n; ip++)
   {
@@ -186,18 +186,18 @@ int Jacobi(math_Matrix& a, math_Vector& d, math_Matrix& v, int& nrot)
 }
 
 int LU_Decompose(math_Matrix&                 a,
-                 math_IntegerVector&          indx,
-                 double&                      d,
-                 math_Vector&                 vv,
-                 double                       TINY,
-                 const Message_ProgressRange& theProgress)
+                              math_IntegerVector&          indx,
+                              double&               d,
+                              math_Vector&                 vv,
+                              double                TINY,
+                              const Message_ProgressRange& theProgress)
 {
 
-  int    i, imax = 0, j, k;
-  double big, dum, sum, temp;
+  int i, imax = 0, j, k;
+  double    big, dum, sum, temp;
 
   int n = a.RowNumber();
-  d     = 1.0;
+  d                  = 1.0;
 
   Message_ProgressScope aPS(theProgress, "math_Gauss LU_Decompose", n);
 
@@ -272,10 +272,10 @@ int LU_Decompose(math_Matrix&                 a,
 }
 
 int LU_Decompose(math_Matrix&                 a,
-                 math_IntegerVector&          indx,
-                 double&                      d,
-                 double                       TINY,
-                 const Message_ProgressRange& theProgress)
+                              math_IntegerVector&          indx,
+                              double&               d,
+                              double                TINY,
+                              const Message_ProgressRange& theProgress)
 {
 
   math_Vector vv(1, a.RowNumber());
@@ -285,8 +285,8 @@ int LU_Decompose(math_Matrix&                 a,
 void LU_Solve(const math_Matrix& a, const math_IntegerVector& indx, math_Vector& b)
 {
 
-  int    i, ii = 0, ip, j;
-  double sum;
+  int i, ii = 0, ip, j;
+  double    sum;
 
   int n     = a.RowNumber();
   int nblow = b.Lower() - 1;
@@ -314,12 +314,12 @@ void LU_Solve(const math_Matrix& a, const math_IntegerVector& indx, math_Vector&
 int LU_Invert(math_Matrix& a)
 {
 
-  int                n = a.RowNumber();
+  int   n = a.RowNumber();
   math_Matrix        inv(1, n, 1, n);
   math_Vector        col(1, n);
   math_IntegerVector indx(1, n);
-  double             d;
-  int                i, j;
+  double      d;
+  int   i, j;
 
   int Error = LU_Decompose(a, indx, d);
   if (!Error)
@@ -355,11 +355,11 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v)
 int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& rv1)
 {
 
-  int    flag, i, its, j, jj, k, l = 0, nm = 0;
-  double ar, aw, aik, aki, f, h, s, x, y, z;
-  double anorm = 0.0, g = 0.0, scale = 0.0;
-  int    m = a.RowNumber();
-  int    n = a.ColNumber();
+  int flag, i, its, j, jj, k, l = 0, nm = 0;
+  double    ar, aw, aik, aki, f, h, s, x, y, z;
+  double    anorm = 0.0, g = 0.0, scale = 0.0;
+  int m = a.RowNumber();
+  int n = a.ColNumber();
 
   for (i = 1; i <= n; i++)
   {
@@ -530,12 +530,12 @@ int SVD_Decompose(math_Matrix& a, math_Vector& w, math_Matrix& v, math_Vector& r
           f = s * rv1(i);
           if (fabs(f) + anorm != anorm)
           {
-            g        = w(i);
-            h        = PYTHAG(f, g);
-            w(i)     = h;
-            h        = 1.0 / h;
+            g               = w(i);
+            h               = PYTHAG(f, g);
+            w(i)            = h;
+            h               = 1.0 / h;
             double c = g * h;
-            s        = (-f * h);
+            s               = (-f * h);
             for (j = 1; j <= m; j++)
             {
               y        = a(j, nm);
@@ -626,12 +626,12 @@ void SVD_Solve(const math_Matrix& u,
                math_Vector&       x)
 {
 
-  int    jj, j, i;
-  double s;
+  int jj, j, i;
+  double    s;
 
-  int         m = u.RowNumber();
-  int         n = u.ColNumber();
-  math_Vector tmp(1, n);
+  int m = u.RowNumber();
+  int n = u.ColNumber();
+  math_Vector      tmp(1, n);
 
   for (j = 1; j <= n; j++)
   {
@@ -653,14 +653,16 @@ void SVD_Solve(const math_Matrix& u,
   }
 }
 
-int DACTCL_Decompose(math_Vector& a, const math_IntegerVector& indx, const double MinPivot)
+int DACTCL_Decompose(math_Vector&              a,
+                                  const math_IntegerVector& indx,
+                                  const double       MinPivot)
 {
 
-  int    i, j, Neq = indx.Length();
-  int    jr, jd, jh, is, ie, k, ir, id, ih, mh;
-  int    idot, idot1, idot2;
-  double aa, d, dot;
-  bool   diag;
+  int i, j, Neq = indx.Length();
+  int jr, jd, jh, is, ie, k, ir, id, ih, mh;
+  int idot, idot1, idot2;
+  double    aa, d, dot;
+  bool diag;
 
   jr = 0;
   for (j = 1; j <= Neq; j++)
@@ -728,15 +730,15 @@ int DACTCL_Decompose(math_Vector& a, const math_IntegerVector& indx, const doubl
 }
 
 int DACTCL_Solve(const math_Vector&        a,
-                 math_Vector&              b,
-                 const math_IntegerVector& indx,
-                 const double              MinPivot)
+                              math_Vector&              b,
+                              const math_IntegerVector& indx,
+                              const double       MinPivot)
 {
 
-  int    i, j, Neq = indx.Length();
-  int    jr, jd, jh, is, k, id;
-  int    jh1, idot, idot1, idot2;
-  double aa, d, dot;
+  int i, j, Neq = indx.Length();
+  int jr, jd, jh, is, k, id;
+  int jh1, idot, idot1, idot2;
+  double    aa, d, dot;
 
   jr = 0;
   for (j = 1; j <= Neq; j++)

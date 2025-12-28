@@ -103,16 +103,17 @@ public:
                               const double Period);
 
 protected:
-  GeomAbs_CurveType                myType;
-  gp_Lin2d                         myLin;
-  gp_Circ2d                        myCirc;
-  gp_Elips2d                       myElips;
-  gp_Hypr2d                        myHypr;
-  gp_Parab2d                       myParab;
+  GeomAbs_CurveType           myType;
+  gp_Lin2d                    myLin;
+  gp_Circ2d                   myCirc;
+  gp_Elips2d                  myElips;
+  gp_Hypr2d                   myHypr;
+  gp_Parab2d                  myParab;
   occ::handle<Geom2d_BSplineCurve> myBSpline;
   occ::handle<Geom2d_BezierCurve>  myBezier;
-  bool                             myIsPeriodic;
-  bool                             isDone;
+  bool            myIsPeriodic;
+  bool            isDone;
+
 };
 
 #endif // _ProjLib_Projector_HeaderFile

@@ -20,10 +20,10 @@
 #include <UnitsAPI.hxx>
 
 static occ::handle<Resource_Manager> CurrentUnits, SICurrentUnits, MDTVCurrentUnits;
-static Units_UnitsSystem             LocalSystemUnits, SILocalSystemUnits, MDTVLocalSystemUnits;
-static TCollection_AsciiString       rstring;
-static UnitsAPI_SystemUnits          localSystem   = UnitsAPI_SI;
-static UnitsAPI_SystemUnits          currentSystem = UnitsAPI_DEFAULT;
+static Units_UnitsSystem        LocalSystemUnits, SILocalSystemUnits, MDTVLocalSystemUnits;
+static TCollection_AsciiString  rstring;
+static UnitsAPI_SystemUnits     localSystem   = UnitsAPI_SI;
+static UnitsAPI_SystemUnits     currentSystem = UnitsAPI_DEFAULT;
 
 //=================================================================================================
 
@@ -223,7 +223,9 @@ double UnitsAPI::CurrentFromSI(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentToAny(const double aData, const char* aQuantity, const char* aUnit)
+double UnitsAPI::CurrentToAny(const double    aData,
+                                     const char* aQuantity,
+                                     const char* aUnit)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -245,7 +247,9 @@ double UnitsAPI::CurrentToAny(const double aData, const char* aQuantity, const c
 
 //=================================================================================================
 
-double UnitsAPI::CurrentFromAny(const double aData, const char* aQuantity, const char* aUnit)
+double UnitsAPI::CurrentFromAny(const double    aData,
+                                       const char* aQuantity,
+                                       const char* aUnit)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -290,11 +294,13 @@ double UnitsAPI::AnyToLS(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToLS(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& aDim)
+double UnitsAPI::AnyToLS(const double       aData,
+                                const char*    aUnit,
+                                occ::handle<Units_Dimensions>& aDim)
 {
   double aValue = aData;
   CheckLoading(localSystem);
-  aValue               = Units::ToSI(aValue, aUnit, aDim);
+  aValue                    = Units::ToSI(aValue, aUnit, aDim);
   const char* quantity = aDim->Quantity();
   if (aDim.IsNull())
     return aValue;
@@ -322,7 +328,9 @@ double UnitsAPI::AnyToSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToSI(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& aDim)
+double UnitsAPI::AnyToSI(const double       aData,
+                                const char*    aUnit,
+                                occ::handle<Units_Dimensions>& aDim)
 {
   double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -337,7 +345,7 @@ double UnitsAPI::AnyFromLS(const double aData, const char* aUnit)
   double aValue = aData;
   CheckLoading(localSystem);
   occ::handle<Units_Dimensions> aDim;
-  aValue               = Units::FromSI(aValue, aUnit, aDim);
+  aValue                    = Units::FromSI(aValue, aUnit, aDim);
   const char* quantity = aDim->Quantity();
   if (quantity)
   {
@@ -364,7 +372,9 @@ double UnitsAPI::AnyFromSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToAny(const double aData, const char* aUnit1, const char* aUnit2)
+double UnitsAPI::AnyToAny(const double    aData,
+                                 const char* aUnit1,
+                                 const char* aUnit2)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);

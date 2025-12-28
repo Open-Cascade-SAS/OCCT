@@ -19,6 +19,7 @@
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
@@ -38,8 +39,7 @@ const Standard_GUID& TDataStd_ExtStringList::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_ExtStringList> SetAttr(const TDF_Label&     label,
-                                                   const Standard_GUID& theGuid)
+static occ::handle<TDataStd_ExtStringList> SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_ExtStringList> A;
   if (!label.FindAttribute(theGuid, A))
@@ -70,7 +70,7 @@ occ::handle<TDataStd_ExtStringList> TDataStd_ExtStringList::Set(const TDF_Label&
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 occ::handle<TDataStd_ExtStringList> TDataStd_ExtStringList::Set(const TDF_Label&     label,
-                                                                const Standard_GUID& theGuid)
+                                                           const Standard_GUID& theGuid)
 {
   return SetAttr(label, theGuid);
 }
@@ -107,8 +107,9 @@ void TDataStd_ExtStringList::Append(const TCollection_ExtendedString& value)
 
 //=================================================================================================
 
-bool TDataStd_ExtStringList::InsertBefore(const TCollection_ExtendedString& value,
-                                          const TCollection_ExtendedString& before_value)
+bool TDataStd_ExtStringList::InsertBefore(
+  const TCollection_ExtendedString& value,
+  const TCollection_ExtendedString& before_value)
 {
   NCollection_List<TCollection_ExtendedString>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
@@ -127,11 +128,12 @@ bool TDataStd_ExtStringList::InsertBefore(const TCollection_ExtendedString& valu
 // function : InsertBefore
 // purpose  : Inserts the <value> before the <index> position.
 //=======================================================================
-bool TDataStd_ExtStringList::InsertBefore(const int                         index,
-                                          const TCollection_ExtendedString& before_value)
+bool TDataStd_ExtStringList::InsertBefore(
+  const int            index,
+  const TCollection_ExtendedString& before_value)
 {
-  int                                                    i(1);
-  bool                                                   found(false);
+  int                            i(1);
+  bool                            found(false);
   NCollection_List<TCollection_ExtendedString>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -149,7 +151,7 @@ bool TDataStd_ExtStringList::InsertBefore(const int                         inde
 //=================================================================================================
 
 bool TDataStd_ExtStringList::InsertAfter(const TCollection_ExtendedString& value,
-                                         const TCollection_ExtendedString& after_value)
+                                                     const TCollection_ExtendedString& after_value)
 {
   NCollection_List<TCollection_ExtendedString>::Iterator itr(myList);
   for (; itr.More(); itr.Next())
@@ -168,11 +170,11 @@ bool TDataStd_ExtStringList::InsertAfter(const TCollection_ExtendedString& value
 // function : InsertAfter
 // purpose  : Inserts the <value> after the <index> position.
 //=======================================================================
-bool TDataStd_ExtStringList::InsertAfter(const int                         index,
-                                         const TCollection_ExtendedString& after_value)
+bool TDataStd_ExtStringList::InsertAfter(const int            index,
+                                                     const TCollection_ExtendedString& after_value)
 {
-  int                                                    i(1);
-  bool                                                   found(false);
+  int                            i(1);
+  bool                            found(false);
   NCollection_List<TCollection_ExtendedString>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -210,8 +212,8 @@ bool TDataStd_ExtStringList::Remove(const TCollection_ExtendedString& value)
 //=======================================================================
 bool TDataStd_ExtStringList::Remove(const int index)
 {
-  int                                                    i(1);
-  bool                                                   found(false);
+  int                            i(1);
+  bool                            found(false);
   NCollection_List<TCollection_ExtendedString>::Iterator itr(myList);
   for (; itr.More(); itr.Next(), ++i)
   {
@@ -336,8 +338,7 @@ void TDataStd_ExtStringList::DumpJson(Standard_OStream& theOStream, int theDepth
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (NCollection_List<TCollection_ExtendedString>::Iterator aListIt(myList); aListIt.More();
-       aListIt.Next())
+  for (NCollection_List<TCollection_ExtendedString>::Iterator aListIt(myList); aListIt.More(); aListIt.Next())
   {
     const TCollection_ExtendedString& aValue = aListIt.Value();
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aValue);

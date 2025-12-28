@@ -45,7 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data, Standard_Transient)
     if (!myTransaction)                                                                            \
     {                                                                                              \
       TCollection_AsciiString entry;                                                               \
-      for (TDF_ChildIterator itr(Root(), true); itr.More(); itr.Next())                            \
+      for (TDF_ChildIterator itr(Root(), true); itr.More(); itr.Next())                   \
       {                                                                                            \
         const TDF_LabelNode* lnp = itr.Value().myLabelNode;                                        \
         if (lnp->AttributesModified() || lnp->MayBeModified())                                     \
@@ -97,8 +97,8 @@ TDF_Data::TDF_Data()
       myAccessByEntries(false)
 {
   const occ::handle<NCollection_IncAllocator> anIncAllocator = new NCollection_IncAllocator(16000);
-  myLabelNodeAllocator                                       = anIncAllocator;
-  myRoot = new (anIncAllocator) TDF_LabelNode(this);
+  myLabelNodeAllocator                                  = anIncAllocator;
+  myRoot                                                = new (anIncAllocator) TDF_LabelNode(this);
 }
 
 //=======================================================================
@@ -188,8 +188,8 @@ occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
 //           the given transaction index.
 //=======================================================================
 
-occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int  untilTransaction,
-                                                        const bool withDelta)
+occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int untilTransaction,
+                                                   const bool withDelta)
 {
   occ::handle<TDF_Delta> delta;
   if ((untilTransaction > 0) && (myTransaction >= untilTransaction))
@@ -208,9 +208,9 @@ occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int  untilTransact
 // purpose  : Recursive method used to implement the commit action.
 //=======================================================================
 
-int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
-                                const occ::handle<TDF_Delta>& aDelta,
-                                const bool                    withDelta)
+int TDF_Data::CommitTransaction(const TDF_Label&         aLabel,
+                                             const occ::handle<TDF_Delta>& aDelta,
+                                             const bool   withDelta)
 {
   aLabel.myLabelNode->MayBeModified(false);
   int nbTouchedAtt = 0;
@@ -224,8 +224,8 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
   {
     occ::handle<TDF_Attribute> lastAtt;
     occ::handle<TDF_Attribute> backupAtt;
-    bool                       currentIsRemoved = false;
-    attMod                                      = false;
+    bool      currentIsRemoved = false;
+    attMod                                 = false;
 
     TDF_AttributeIterator itr1(aLabel, false);
     while (itr1.More())
@@ -379,7 +379,7 @@ void TDF_Data::FixOrder(const occ::handle<TDF_Delta>& theDelta)
   // to do not put two attributes with the same GUID at one label during undo/redo
   NCollection_List<occ::handle<TDF_AttributeDelta>> anOrderedList;
 
-  const NCollection_List<occ::handle<TDF_AttributeDelta>>&    attList = theDelta->AttributeDeltas();
+  const NCollection_List<occ::handle<TDF_AttributeDelta>>&        attList = theDelta->AttributeDeltas();
   NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(attList);
   for (; anIt.More(); anIt.Next())
   { // append not-removal

@@ -22,6 +22,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -35,8 +36,7 @@ BOPAlgo_WireSplitter::BOPAlgo_WireSplitter()
 
 //=================================================================================================
 
-BOPAlgo_WireSplitter::BOPAlgo_WireSplitter(
-  const occ::handle<NCollection_BaseAllocator>& theAllocator)
+BOPAlgo_WireSplitter::BOPAlgo_WireSplitter(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : BOPAlgo_Algo(theAllocator),
       myWES(NULL),
       myLCB(myAllocator)
@@ -151,10 +151,10 @@ public:
   }
 
 protected:
-  TopoDS_Face                   myFace;
-  BOPTools_ConnexityBlock       myCB;
+  TopoDS_Face              myFace;
+  BOPTools_ConnexityBlock  myCB;
   occ::handle<IntTools_Context> myContext;
-  Message_ProgressRange         myRange;
+  Message_ProgressRange    myRange;
 };
 
 typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityBlock;
@@ -163,12 +163,12 @@ typedef NCollection_Vector<BOPAlgo_WS_ConnexityBlock> BOPAlgo_VectorOfConnexityB
 
 void BOPAlgo_WireSplitter::MakeWires(const Message_ProgressRange& theRange)
 {
-  bool                                                bIsRegular;
-  int                                                 aNbVCB, k;
-  TopoDS_Wire                                         aW;
+  bool                            bIsRegular;
+  int                            aNbVCB, k;
+  TopoDS_Wire                                 aW;
   NCollection_List<BOPTools_ConnexityBlock>::Iterator aItCB;
-  NCollection_List<TopoDS_Shape>::Iterator            aIt;
-  BOPAlgo_VectorOfConnexityBlock                      aVCB;
+  NCollection_List<TopoDS_Shape>::Iterator          aIt;
+  BOPAlgo_VectorOfConnexityBlock              aVCB;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
   //
@@ -208,8 +208,8 @@ void BOPAlgo_WireSplitter::MakeWires(const Message_ProgressRange& theRange)
   //===================================================
   for (k = 0; k < aNbVCB; ++k)
   {
-    const BOPAlgo_WS_ConnexityBlock&      aCB = aVCB(k);
-    const NCollection_List<TopoDS_Shape>& aLW = aCB.ConnexityBlock().Loops();
+    const BOPAlgo_WS_ConnexityBlock& aCB = aVCB(k);
+    const NCollection_List<TopoDS_Shape>&      aLW = aCB.ConnexityBlock().Loops();
     aIt.Initialize(aLW);
     for (; aIt.More(); aIt.Next())
     {

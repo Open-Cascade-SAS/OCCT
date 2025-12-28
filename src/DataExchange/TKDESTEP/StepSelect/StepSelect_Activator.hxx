@@ -41,6 +41,7 @@ public:
   Standard_EXPORT const char* Help(const int number) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepSelect_Activator, IFSelect_Activator)
+
 };
 
 #endif // _StepSelect_Activator_HeaderFile

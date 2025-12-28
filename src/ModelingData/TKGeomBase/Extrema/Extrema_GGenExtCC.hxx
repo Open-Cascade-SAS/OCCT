@@ -32,6 +32,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
@@ -114,15 +115,15 @@ public:
   void Points(const int theN, ThePOnC& theP1, ThePOnC& theP2) const;
 
 private:
-  bool                         myIsFindSingleSolution;
-  bool                         myParallel;
-  double                       myCurveMinTol;
-  math_Vector                  myLowBorder;
-  math_Vector                  myUppBorder;
+  bool       myIsFindSingleSolution;
+  bool       myParallel;
+  double                 myCurveMinTol;
+  math_Vector            myLowBorder;
+  math_Vector            myUppBorder;
   NCollection_Sequence<double> myPoints1;
   NCollection_Sequence<double> myPoints2;
-  void*                        myC[2];
-  bool                         myDone;
+  void*       myC[2];
+  bool       myDone;
 };
 
 //==================================================================================================
@@ -150,14 +151,13 @@ inline bool Extrema_GGenExtCC_comp(const gp_XY& theA, const gp_XY& theB)
 }
 
 inline void Extrema_GGenExtCC_ChangeIntervals(occ::handle<NCollection_HArray1<double>>& theInts,
-                                              const int                                 theNbInts)
+                                              const int                      theNbInts)
 {
-  int                                      aNbInts = theInts->Length() - 1;
-  int                                      aNbAdd  = theNbInts - aNbInts;
-  occ::handle<NCollection_HArray1<double>> aNewInts =
-    new NCollection_HArray1<double>(1, theNbInts + 1);
-  int aNbLast = theInts->Length();
-  int i;
+  int                           aNbInts  = theInts->Length() - 1;
+  int                           aNbAdd   = theNbInts - aNbInts;
+  occ::handle<NCollection_HArray1<double>> aNewInts = new NCollection_HArray1<double>(1, theNbInts + 1);
+  int                           aNbLast  = theInts->Length();
+  int                           i;
   if (aNbInts == 1)
   {
     aNewInts->SetValue(1, theInts->First());
@@ -230,9 +230,9 @@ public:
   }
 
 private:
-  double myTol;
-  gp_XY  myCurrent;
-  bool   myIsFind;
+  double           myTol;
+  gp_XY            myCurrent;
+  bool myIsFind;
 };
 
 template <typename TheCurve, typename TheExtPCType, typename ThePointType>
@@ -415,12 +415,12 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheExtPC>
 bool Extrema_GGenExtCC<TheCurve1,
-                       TheCurveTool1,
-                       TheCurve2,
-                       TheCurveTool2,
-                       ThePOnC,
-                       ThePoint,
-                       TheExtPC>::GetSingleSolutionFlag() const
+                                   TheCurveTool1,
+                                   TheCurve2,
+                                   TheCurveTool2,
+                                   ThePOnC,
+                                   ThePoint,
+                                   TheExtPC>::GetSingleSolutionFlag() const
 {
   return myIsFindSingleSolution;
 }
@@ -500,10 +500,8 @@ void Extrema_GGenExtCC<TheCurve1,
     }
   }
 
-  occ::handle<NCollection_HArray1<double>> anIntervals1 =
-    new NCollection_HArray1<double>(1, aNbInter[0] + 1);
-  occ::handle<NCollection_HArray1<double>> anIntervals2 =
-    new NCollection_HArray1<double>(1, aNbInter[1] + 1);
+  occ::handle<NCollection_HArray1<double>> anIntervals1 = new NCollection_HArray1<double>(1, aNbInter[0] + 1);
+  occ::handle<NCollection_HArray1<double>> anIntervals2 = new NCollection_HArray1<double>(1, aNbInter[1] + 1);
   C1.Intervals(anIntervals1->ChangeArray1(), aContinuity);
   C2.Intervals(anIntervals2->ChangeArray1(), aContinuity);
   if (indmax >= 0)
@@ -538,8 +536,8 @@ void Extrema_GGenExtCC<TheCurve1,
   if (aLC > aMaxDer)
     aLC = aMaxDer;
 
-  bool         isConstLockedFlag = false;
-  const double aCR               = 0.001;
+  bool isConstLockedFlag = false;
+  const double     aCR               = 0.001;
   if (aMaxDer1 / aMaxDer < aCR || aMaxDer2 / aMaxDer < aCR)
   {
     isConstLockedFlag = true;
@@ -702,9 +700,9 @@ void Extrema_GGenExtCC<TheCurve1,
   bool bDirsCoinside       = true;
   bool bDifferentSolutions = false;
 
-  bool        isParallel = true;
-  double      aVal       = 0.0;
-  math_Vector aVec(1, 2, 0.0);
+  bool isParallel = true;
+  double           aVal       = 0.0;
+  math_Vector      aVec(1, 2, 0.0);
 
   for (int anIdx = 0; anIdx < aNbSol - 1; anIdx++)
   {
@@ -801,12 +799,12 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheExtPC>
 bool Extrema_GGenExtCC<TheCurve1,
-                       TheCurveTool1,
-                       TheCurve2,
-                       TheCurveTool2,
-                       ThePOnC,
-                       ThePoint,
-                       TheExtPC>::IsDone() const
+                                   TheCurveTool1,
+                                   TheCurve2,
+                                   TheCurveTool2,
+                                   ThePOnC,
+                                   ThePoint,
+                                   TheExtPC>::IsDone() const
 {
   return myDone;
 }
@@ -821,12 +819,12 @@ template <typename TheCurve1,
           typename ThePoint,
           typename TheExtPC>
 bool Extrema_GGenExtCC<TheCurve1,
-                       TheCurveTool1,
-                       TheCurve2,
-                       TheCurveTool2,
-                       ThePOnC,
-                       ThePoint,
-                       TheExtPC>::IsParallel() const
+                                   TheCurveTool1,
+                                   TheCurve2,
+                                   TheCurveTool2,
+                                   ThePOnC,
+                                   ThePoint,
+                                   TheExtPC>::IsParallel() const
 {
   if (!IsDone())
     throw StdFail_NotDone();

@@ -37,17 +37,17 @@ public:
   Standard_EXPORT StepVisual_TextStyleWithBoxCharacteristics();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&           aName,
-    const occ::handle<StepVisual_TextStyleForDefinedFont>& aCharacterAppearance,
+    const occ::handle<TCollection_HAsciiString>&                    aName,
+    const occ::handle<StepVisual_TextStyleForDefinedFont>&          aCharacterAppearance,
     const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics);
 
   Standard_EXPORT void SetCharacteristics(
     const occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>& aCharacteristics);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>>
-                  Characteristics() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_BoxCharacteristicSelect>> Characteristics() const;
 
-  Standard_EXPORT StepVisual_BoxCharacteristicSelect CharacteristicsValue(const int num) const;
+  Standard_EXPORT StepVisual_BoxCharacteristicSelect
+    CharacteristicsValue(const int num) const;
 
   Standard_EXPORT int NbCharacteristics() const;
 

@@ -25,9 +25,12 @@
 #include <Standard_Integer.hxx>
 #include <MAT2d_BiInt.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <MAT_Side.hxx>
 #include <GeomAbs_JoinType.hxx>
+#include <Standard_Integer.hxx>
 #include <MAT_BasicElt.hxx>
+#include <NCollection_DataMap.hxx>
 class MAT_Graph;
 class BRepMAT2d_Explorer;
 class MAT_BasicElt;
@@ -83,10 +86,10 @@ public:
   //! The bisecting locus are computed on the side <aSide>
   //! from the line <LineIndex> in <anExplo>.
   Standard_EXPORT void Compute(BRepMAT2d_Explorer&    anExplo,
-                               const int              LineIndex    = 1,
+                               const int LineIndex    = 1,
                                const MAT_Side         aSide        = MAT_Left,
                                const GeomAbs_JoinType aJoinType    = GeomAbs_Arc,
-                               const bool             IsOpenResult = false);
+                               const bool IsOpenResult = false);
 
   //! Returns True if Compute has succeeded.
   Standard_EXPORT bool IsDone() const;
@@ -104,16 +107,17 @@ public:
   //! Returns the number of sections of a curve.
   //! this curve is the Indexth curve in the IndLineth contour
   //! given by anExplo.
-  Standard_EXPORT int NumberOfSections(const int IndLine, const int Index) const;
+  Standard_EXPORT int NumberOfSections(const int IndLine,
+                                                    const int Index) const;
 
   //! Returns the BasicElts located at the position
   //! <Index> on the contour designed by <IndLine>.
   //! Remark: the BasicElts on a contour are sorted.
-  Standard_EXPORT occ::handle<MAT_BasicElt> BasicElt(const int IndLine, const int Index) const;
+  Standard_EXPORT occ::handle<MAT_BasicElt> BasicElt(const int IndLine,
+                                                const int Index) const;
 
   //! Returns the geometry linked to the <BasicElt>.
-  Standard_EXPORT occ::handle<Geom2d_Geometry> GeomElt(
-    const occ::handle<MAT_BasicElt>& aBasicElt) const;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> GeomElt(const occ::handle<MAT_BasicElt>& aBasicElt) const;
 
   //! Returns the geometry of type <gp> linked to
   //! the <Node>.
@@ -123,22 +127,22 @@ public:
   //! linked to the arc <ARC>.
   //! <Reverse> is False when the FirstNode of <anArc>
   //! correspond to the first point of geometry.
-  Standard_EXPORT Bisector_Bisec GeomBis(const occ::handle<MAT_Arc>& anArc, bool& Reverse) const;
+  Standard_EXPORT Bisector_Bisec GeomBis(const occ::handle<MAT_Arc>& anArc,
+                                         bool&      Reverse) const;
 
 private:
   Standard_EXPORT void Fusion();
 
-  Standard_EXPORT void RenumerationAndFusion(
-    const int                                            IndexLine,
-    const int                                            LengthLine,
-    int&                                                 IndexLast,
-    NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap);
+  Standard_EXPORT void RenumerationAndFusion(const int        IndexLine,
+                                             const int        LengthLine,
+                                             int&             IndexLast,
+                                             NCollection_DataMap<int, occ::handle<MAT_BasicElt>>& NewMap);
 
-  occ::handle<MAT_Graph>                theGraph;
-  MAT2d_Tool2d                          theTool;
-  bool                                  isDone;
+  occ::handle<MAT_Graph>           theGraph;
+  MAT2d_Tool2d                theTool;
+  bool            isDone;
   NCollection_DataMap<MAT2d_BiInt, int> nbSect;
-  int                                   nbContours;
+  int            nbContours;
 };
 
 #endif // _BRepMAT2d_BisectingLocus_HeaderFile

@@ -29,6 +29,7 @@
 #include <NCollection_DataMap.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 class GeomFill_SectionLaw;
 class TopoDS_Vertex;
@@ -60,12 +61,14 @@ public:
 
   Standard_EXPORT virtual occ::handle<GeomFill_SectionLaw> ConcatenedLaw() const = 0;
 
-  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int    Index,
-                                                   const double TolAngular) const = 0;
+  Standard_EXPORT virtual GeomAbs_Shape Continuity(const int Index,
+                                                   const double    TolAngular) const = 0;
 
-  Standard_EXPORT virtual double VertexTol(const int Index, const double Param) const = 0;
+  Standard_EXPORT virtual double VertexTol(const int Index,
+                                                  const double    Param) const = 0;
 
-  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index, const double Param) const = 0;
+  Standard_EXPORT virtual TopoDS_Vertex Vertex(const int Index,
+                                               const double    Param) const = 0;
 
   Standard_EXPORT virtual void D0(const double U, TopoDS_Shape& S) = 0;
 
@@ -77,10 +80,10 @@ public:
 
 protected:
   occ::handle<NCollection_HArray1<occ::handle<GeomFill_SectionLaw>>> myLaws;
-  bool                                                               uclosed;
-  bool                                                               vclosed;
-  bool                                                               myDone;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>    myIndices;
+  bool                     uclosed;
+  bool                     vclosed;
+  bool                     myDone;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>       myIndices;
 
 private:
   BRepTools_WireExplorer myIterator;

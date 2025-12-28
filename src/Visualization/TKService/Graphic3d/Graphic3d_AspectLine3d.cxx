@@ -31,7 +31,7 @@ Graphic3d_AspectLine3d::Graphic3d_AspectLine3d()
 
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d(const Quantity_Color& theColor,
                                                Aspect_TypeOfLine     theType,
-                                               double                theWidth)
+                                               double         theWidth)
 {
   myShadingModel = Graphic3d_TypeOfShadingModel_Unlit;
   myInteriorColor.SetRGB(theColor);

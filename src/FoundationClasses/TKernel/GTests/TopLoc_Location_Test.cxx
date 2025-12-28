@@ -65,7 +65,7 @@ TEST(TopLoc_Location_Test, OCC25545_ConcurrentTransformationAccess)
 
   // Place vertices in a vector, giving the i-th vertex the
   // transformation that translates it on the vector (i,0,0) from the origin
-  int                          n = 1000;
+  int             n = 1000;
   std::vector<TopoDS_Shape>    aShapeVec(n);
   std::vector<TopLoc_Location> aLocVec(n);
   TopoDS_Shape                 aShape = BRepBuilderAPI_MakeVertex(gp::Origin());

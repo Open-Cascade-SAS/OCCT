@@ -23,7 +23,7 @@
 
 namespace
 {
-static int         THE_Interface_Category_init = 0;
+static int              THE_Interface_Category_init = 0;
 static const char* unspec                      = "unspecified";
 
 static volatile bool gMapTypesInit = false;
@@ -43,11 +43,11 @@ static std::mutex& GetMapTypesMutex()
 } // namespace
 
 int Interface_Category::CatNum(const occ::handle<Standard_Transient>& theEnt,
-                               const Interface_ShareTool&             theShares)
+                                            const Interface_ShareTool&        theShares)
 {
   if (theEnt.IsNull())
     return 0;
-  int                                  CN;
+  int                CN;
   occ::handle<Interface_GeneralModule> aModule;
   if (!myGTool->Select(theEnt, aModule, CN))
     return 0;
@@ -55,7 +55,7 @@ int Interface_Category::CatNum(const occ::handle<Standard_Transient>& theEnt,
 }
 
 void Interface_Category::Compute(const occ::handle<Interface_InterfaceModel>& theModel,
-                                 const Interface_ShareTool&                   theShares)
+                                 const Interface_ShareTool&              theShares)
 {
   ClearNums();
   if (theModel.IsNull())

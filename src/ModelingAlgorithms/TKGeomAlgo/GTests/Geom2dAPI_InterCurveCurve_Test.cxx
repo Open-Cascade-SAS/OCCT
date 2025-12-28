@@ -25,9 +25,9 @@
 TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
 {
   // Create two ellipses
-  gp_Elips2d                  e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
+  gp_Elips2d             e1(gp_Ax2d(gp_Pnt2d(0., 0.), gp_Dir2d(gp_Dir2d::D::X)), 2., 1.);
   occ::handle<Geom2d_Ellipse> Ge1 = new Geom2d_Ellipse(e1);
-  gp_Elips2d                  e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
+  gp_Elips2d             e2(gp_Ax2d(gp_Pnt2d(0.5, 0.5), gp_Dir2d(1., 1.)), 2., 1.);
   occ::handle<Geom2d_Ellipse> Ge2 = new Geom2d_Ellipse(e2);
 
   // Find intersection points
@@ -44,18 +44,18 @@ TEST(Geom2dAPI_InterCurveCurve_Test, OCC29289_EllipseIntersectionNewtonRoot)
   E = -.25;
   math_TrigonometricEquationFunction MyF(A, B, C, D, E);
 
-  double Tol1  = 1.e-15;
-  double Eps   = 1.5e-12;
-  int    Nit[] = {5, 6, 7, 6};
+  double    Tol1  = 1.e-15;
+  double    Eps   = 1.5e-12;
+  int Nit[] = {5, 6, 7, 6};
 
   // For each intersection point, verify Newton root finding
-  double TetaPrev = 0.;
-  int    i;
+  double    TetaPrev = 0.;
+  int i;
   for (i = 1; i <= Intersector.NbPoints(); i++)
   {
     double Teta = Intersector.Intersector().Point(i).ParamOnFirst();
     double X    = Teta - 0.1 * (Teta - TetaPrev);
-    TetaPrev    = Teta;
+    TetaPrev           = Teta;
 
     math_NewtonFunctionRoot Resol(MyF, X, Tol1, Eps, Nit[i - 1]);
     ASSERT_TRUE(Resol.IsDone()) << "Error: Newton is not done for " << Teta;

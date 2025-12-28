@@ -33,8 +33,8 @@ private:
 public:
   math_MyFunctionSetWithDerivatives(math_FunctionWithDerivative& F);
 
-  int  NbVariables() const;
-  int  NbEquations() const;
+  int NbVariables() const;
+  int NbEquations() const;
   bool Value(const math_Vector& X, math_Vector& F);
   bool Derivatives(const math_Vector& X, math_Matrix& D);
   bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D);
@@ -60,20 +60,23 @@ bool math_MyFunctionSetWithDerivatives::Value(const math_Vector& X, math_Vector&
   return Ff->Value(X(1), Fs(1));
 }
 
-bool math_MyFunctionSetWithDerivatives::Derivatives(const math_Vector& X, math_Matrix& D)
+bool math_MyFunctionSetWithDerivatives::Derivatives(const math_Vector& X,
+                                                                math_Matrix&       D)
 {
   return Ff->Derivative(X(1), D(1, 1));
 }
 
-bool math_MyFunctionSetWithDerivatives::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool math_MyFunctionSetWithDerivatives::Values(const math_Vector& X,
+                                                           math_Vector&       F,
+                                                           math_Matrix&       D)
 {
   return Ff->Values(X(1), F(1), D(1, 1));
 }
 
 math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
-                                     const double                 Guess,
-                                     const double                 Tolerance,
-                                     const int                    NbIterations)
+                                     const double          Guess,
+                                     const double          Tolerance,
+                                     const int       NbIterations)
 {
   math_Vector                       V(1, 1), Tol(1, 1);
   math_MyFunctionSetWithDerivatives Ff(F);
@@ -93,11 +96,11 @@ math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
 }
 
 math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
-                                     const double                 Guess,
-                                     const double                 Tolerance,
-                                     const double                 A,
-                                     const double                 B,
-                                     const int                    NbIterations)
+                                     const double          Guess,
+                                     const double          Tolerance,
+                                     const double          A,
+                                     const double          B,
+                                     const int       NbIterations)
 {
   math_Vector                       V(1, 1), Aa(1, 1), Bb(1, 1), Tol(1, 1);
   math_MyFunctionSetWithDerivatives Ff(F);

@@ -47,8 +47,7 @@ void StepGeom_SurfaceReplica::SetTransformation(
   transformation = aTransformation;
 }
 
-occ::handle<StepGeom_CartesianTransformationOperator3d> StepGeom_SurfaceReplica::Transformation()
-  const
+occ::handle<StepGeom_CartesianTransformationOperator3d> StepGeom_SurfaceReplica::Transformation() const
 {
   return transformation;
 }

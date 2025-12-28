@@ -27,7 +27,7 @@ RWStepDimTol_RWRunoutZoneOrientation::RWStepDimTol_RWRunoutZoneOrientation() {}
 
 void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepDimTol_RunoutZoneOrientation>& ent) const
 {
@@ -48,7 +48,7 @@ void RWStepDimTol_RWRunoutZoneOrientation::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWRunoutZoneOrientation::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepDimTol_RunoutZoneOrientation>& ent) const
 {
   SW.Send(ent->Angle());

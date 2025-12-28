@@ -23,13 +23,20 @@
 #include <StepData_Factors.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=============================================================================
 // Creation d' une bspline_curve_with_knots_and_rational_bspline_curve de
@@ -38,7 +45,7 @@
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
     const occ::handle<Geom_BSplineCurve>& BS,
-    const StepData_Factors&               theLocalFactors){
+    const StepData_Factors&          theLocalFactors){
 #define Array1OfPnt_gen NCollection_Array1<gp_Pnt>
 #include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
@@ -52,10 +59,11 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(
     const occ::handle<Geom2d_BSplineCurve>& BS,
-    const StepData_Factors&                 theLocalFactors)
+    const StepData_Factors&            theLocalFactors)
 
 {
 #define Array1OfPnt_gen NCollection_Array1<gp_Pnt2d>
+#include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
 #undef Array1OfPnt_gen
 }
 

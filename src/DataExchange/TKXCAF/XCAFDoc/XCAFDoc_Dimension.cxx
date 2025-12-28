@@ -26,6 +26,8 @@
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TNaming_Builder.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopoDS.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <TNaming_Tool.hxx>
@@ -88,8 +90,7 @@ occ::handle<XCAFDoc_Dimension> XCAFDoc_Dimension::Set(const TDF_Label& theLabel)
 
 //=================================================================================================
 
-static void setString(const TDF_Label&                             theLabel,
-                      const occ::handle<TCollection_HAsciiString>& theStr)
+static void setString(const TDF_Label& theLabel, const occ::handle<TCollection_HAsciiString>& theStr)
 {
   if (theStr.IsNull())
     return;
@@ -174,7 +175,7 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
     TDataStd_Integer::Set(Label().FindChild(ChildLab_AngularQualifier),
                           theObject->GetAngularQualifier());
 
-  bool                                    aH;
+  bool                        aH;
   XCAFDimTolObjects_DimensionFormVariance aF;
   XCAFDimTolObjects_DimensionGrade        aG;
   theObject->GetClassOfTolerance(aH, aF, aG);
@@ -333,7 +334,7 @@ void XCAFDoc_Dimension::SetObject(const occ::handle<XCAFDimTolObjects_DimensionO
 occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() const
 {
   occ::handle<XCAFDimTolObjects_DimensionObject> anObj = new XCAFDimTolObjects_DimensionObject();
-  gp_XYZ                                         aXYZValue;
+  gp_XYZ                                    aXYZValue;
 
   anObj->SetSemanticName(getString(Label()));
 
@@ -463,7 +464,7 @@ occ::handle<XCAFDimTolObjects_DimensionObject> XCAFDoc_Dimension::GetObject() co
   }
 
   occ::handle<TNaming_NamedShape> aNS;
-  TDF_Label                       aLPres = Label().FindChild(ChildLab_Presentation);
+  TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
     TopoDS_Shape aPresentation = TNaming_Tool::GetShape(aNS);

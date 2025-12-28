@@ -26,6 +26,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Real.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <BRepFeat_StatusError.hxx>
 #include <BRepFeat_Form.hxx>
 #include <Standard_Integer.hxx>
@@ -63,12 +65,12 @@ public:
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
   //! Initializes the draft prism class
-  BRepFeat_MakeDPrism(const TopoDS_Shape& Sbase,
-                      const TopoDS_Face&  Pbase,
-                      const TopoDS_Face&  Skface,
-                      const double        Angle,
-                      const int           Fuse,
-                      const bool          Modify)
+  BRepFeat_MakeDPrism(const TopoDS_Shape&    Sbase,
+                      const TopoDS_Face&     Pbase,
+                      const TopoDS_Face&     Skface,
+                      const double    Angle,
+                      const int Fuse,
+                      const bool Modify)
   {
     Init(Sbase, Pbase, Skface, Angle, Fuse, Modify);
   }
@@ -88,12 +90,12 @@ public:
   //! The sketch face Skface serves to determine the type of
   //! operation. If it is inside the basis shape, a local
   //! operation such as glueing can be performed.
-  Standard_EXPORT void Init(const TopoDS_Shape& Sbase,
-                            const TopoDS_Face&  Pbase,
-                            const TopoDS_Face&  Skface,
-                            const double        Angle,
-                            const int           Fuse,
-                            const bool          Modify);
+  Standard_EXPORT void Init(const TopoDS_Shape&    Sbase,
+                            const TopoDS_Face&     Pbase,
+                            const TopoDS_Face&     Skface,
+                            const double    Angle,
+                            const int Fuse,
+                            const bool Modify);
 
   //! Indicates that the edge <E> will slide on the face
   //! <OnFace>.
@@ -142,15 +144,14 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& LatEdges();
 
 private:
-  TopoDS_Face myPbase;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                mySlface;
-  double                                        myAngle;
-  NCollection_Sequence<occ::handle<Geom_Curve>> myCurves;
-  occ::handle<Geom_Curve>                       myBCurve;
-  NCollection_List<TopoDS_Shape>                myTopEdges;
-  NCollection_List<TopoDS_Shape>                myLatEdges;
-  BRepFeat_StatusError                          myStatusError;
+  TopoDS_Face                        myPbase;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySlface;
+  double                      myAngle;
+  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurves;
+  occ::handle<Geom_Curve>                 myBCurve;
+  NCollection_List<TopoDS_Shape>               myTopEdges;
+  NCollection_List<TopoDS_Shape>               myLatEdges;
+  BRepFeat_StatusError               myStatusError;
 };
 
 #endif // _BRepFeat_MakeDPrism_HeaderFile

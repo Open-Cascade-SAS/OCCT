@@ -23,15 +23,39 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Transient.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <Message_ProgressRange.hxx>
 
@@ -75,18 +99,18 @@ public:
   //! option for analysis of degenerated shapes
   //! option for cutting of free edges.
   //! option for non manifold processing
-  Standard_EXPORT BRepBuilderAPI_Sewing(const double tolerance = 1.0e-06,
-                                        const bool   option1   = true,
-                                        const bool   option2   = true,
-                                        const bool   option3   = true,
-                                        const bool   option4   = false);
+  Standard_EXPORT BRepBuilderAPI_Sewing(const double    tolerance = 1.0e-06,
+                                        const bool option1   = true,
+                                        const bool option2   = true,
+                                        const bool option3   = true,
+                                        const bool option4   = false);
 
   //! initialize the parameters if necessary
-  Standard_EXPORT void Init(const double tolerance = 1.0e-06,
-                            const bool   option1   = true,
-                            const bool   option2   = true,
-                            const bool   option3   = true,
-                            const bool   option4   = false);
+  Standard_EXPORT void Init(const double    tolerance = 1.0e-06,
+                            const bool option1   = true,
+                            const bool option2   = true,
+                            const bool option3   = true,
+                            const bool option4   = false);
 
   //! Loads the context shape.
   Standard_EXPORT void Load(const TopoDS_Shape& shape);
@@ -129,7 +153,8 @@ public:
   Standard_EXPORT const TopoDS_Edge& ContigousEdge(const int index) const;
 
   //! Gives the sections (edge) belonging to a contiguous edge
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ContigousEdgeCouple(const int index) const;
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& ContigousEdgeCouple(
+    const int index) const;
 
   //! Indicates if a section is bound (before use SectionToBoundary)
   Standard_EXPORT bool IsSectionBound(const TopoDS_Edge& section) const;
@@ -172,7 +197,8 @@ public:
   Standard_EXPORT const TopoDS_Face& DeletedFace(const int index) const;
 
   //! Gives a modified shape
-  Standard_EXPORT TopoDS_Face WhichFace(const TopoDS_Edge& theEdg, const int index = 1) const;
+  Standard_EXPORT TopoDS_Face WhichFace(const TopoDS_Edge&     theEdg,
+                                        const int index = 1) const;
 
   //! Gets same parameter mode.
   bool SameParameterMode() const;
@@ -236,27 +262,27 @@ protected:
   //! theProgress - progress indicator of processing
   Standard_EXPORT void Cutting(const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void Merging(const bool                   passage,
+  Standard_EXPORT void Merging(const bool       passage,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT bool IsMergedClosed(const TopoDS_Edge& Edge1,
-                                      const TopoDS_Edge& Edge2,
-                                      const TopoDS_Face& fase) const;
+                                                  const TopoDS_Edge& Edge2,
+                                                  const TopoDS_Face& fase) const;
 
-  Standard_EXPORT bool FindCandidates(NCollection_Sequence<TopoDS_Shape>& seqSections,
-                                      NCollection_IndexedMap<int>&        mapReference,
-                                      NCollection_Sequence<int>&          seqCandidates,
-                                      NCollection_Sequence<bool>&         seqOrientations);
+  Standard_EXPORT bool FindCandidates(NCollection_Sequence<TopoDS_Shape>&    seqSections,
+                                                  NCollection_IndexedMap<int>& mapReference,
+                                                  NCollection_Sequence<int>&   seqCandidates,
+                                                  NCollection_Sequence<bool>&   seqOrientations);
 
   Standard_EXPORT void AnalysisNearestEdges(const NCollection_Sequence<TopoDS_Shape>& sequenceSec,
-                                            NCollection_Sequence<int>&  seqIndCandidate,
-                                            NCollection_Sequence<bool>& seqOrientations,
-                                            const bool                  evalDist = true);
+                                            NCollection_Sequence<int>&      seqIndCandidate,
+                                            NCollection_Sequence<bool>&      seqOrientations,
+                                            const bool evalDist = true);
 
   //! Merged nearest edges.
-  Standard_EXPORT bool MergedNearestEdges(const TopoDS_Shape&                 edge,
-                                          NCollection_Sequence<TopoDS_Shape>& SeqMergedEdge,
-                                          NCollection_Sequence<bool>&         SeqMergedOri);
+  Standard_EXPORT bool MergedNearestEdges(const TopoDS_Shape&        edge,
+                                                      NCollection_Sequence<TopoDS_Shape>&  SeqMergedEdge,
+                                                      NCollection_Sequence<bool>& SeqMergedOri);
 
   Standard_EXPORT void EdgeProcessing(
     const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -269,13 +295,13 @@ protected:
 
   //! Defines if surface is U closed.
   Standard_EXPORT virtual bool IsUClosedSurface(const occ::handle<Geom_Surface>& surf,
-                                                const TopoDS_Shape&              theEdge,
-                                                const TopLoc_Location&           theloc) const;
+                                                            const TopoDS_Shape&         theEdge,
+                                                            const TopLoc_Location& theloc) const;
 
   //! Defines if surface is V closed.
   Standard_EXPORT virtual bool IsVClosedSurface(const occ::handle<Geom_Surface>& surf,
-                                                const TopoDS_Shape&              theEdge,
-                                                const TopLoc_Location&           theloc) const;
+                                                            const TopoDS_Shape&         theEdge,
+                                                            const TopLoc_Location& theloc) const;
 
   //! This method is called from Perform only
   //! theProgress - progress indicator of processing
@@ -295,82 +321,79 @@ protected:
 
   //! Get wire from free edges.
   //! This method is called from EdgeProcessing only
-  Standard_EXPORT virtual void GetFreeWires(
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapFreeEdges,
-    NCollection_Sequence<TopoDS_Shape>&                            seqWires);
+  Standard_EXPORT virtual void GetFreeWires(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapFreeEdges,
+                                            NCollection_Sequence<TopoDS_Shape>&   seqWires);
 
   //! This method is called from MergingOfSections only
   Standard_EXPORT virtual void EvaluateAngulars(NCollection_Sequence<TopoDS_Shape>& sequenceSec,
-                                                NCollection_Array1<bool>&           secForward,
-                                                NCollection_Array1<double>&         tabAng,
-                                                const int                           indRef) const;
+                                                NCollection_Array1<bool>&  secForward,
+                                                NCollection_Array1<double>&     tabAng,
+                                                const int    indRef) const;
 
   //! This method is called from MergingOfSections only
   Standard_EXPORT virtual void EvaluateDistances(NCollection_Sequence<TopoDS_Shape>& sequenceSec,
-                                                 NCollection_Array1<bool>&           secForward,
-                                                 NCollection_Array1<double>&         tabAng,
-                                                 NCollection_Array1<double>&         arrLen,
-                                                 NCollection_Array1<double>&         tabMinDist,
-                                                 const int                           indRef) const;
+                                                 NCollection_Array1<bool>&  secForward,
+                                                 NCollection_Array1<double>&     tabAng,
+                                                 NCollection_Array1<double>&     arrLen,
+                                                 NCollection_Array1<double>&     tabMinDist,
+                                                 const int    indRef) const;
 
   //! This method is called from SameParameterEdge only
-  Standard_EXPORT virtual occ::handle<Geom2d_Curve> SameRange(
-    const occ::handle<Geom2d_Curve>& CurvePtr,
-    const double                     FirstOnCurve,
-    const double                     LastOnCurve,
-    const double                     RequestedFirst,
-    const double                     RequestedLast) const;
+  Standard_EXPORT virtual occ::handle<Geom2d_Curve> SameRange(const occ::handle<Geom2d_Curve>& CurvePtr,
+                                                         const double         FirstOnCurve,
+                                                         const double         LastOnCurve,
+                                                         const double         RequestedFirst,
+                                                         const double RequestedLast) const;
 
   //! This method is called from SameParameterEdge only
   Standard_EXPORT virtual void SameParameter(const TopoDS_Edge& edge) const;
 
   //! This method is called from Merging only
   Standard_EXPORT virtual TopoDS_Edge SameParameterEdge(
-    const TopoDS_Shape&                                     edge,
-    const NCollection_Sequence<TopoDS_Shape>&               seqEdges,
-    const NCollection_Sequence<bool>&                       seqForward,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& mapMerged,
-    const occ::handle<BRepTools_ReShape>&                   locReShape);
+    const TopoDS_Shape&              edge,
+    const NCollection_Sequence<TopoDS_Shape>&  seqEdges,
+    const NCollection_Sequence<bool>& seqForward,
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&             mapMerged,
+    const occ::handle<BRepTools_ReShape>& locReShape);
 
   //! This method is called from Merging only
   Standard_EXPORT virtual TopoDS_Edge SameParameterEdge(
-    const TopoDS_Edge&                    edge1,
-    const TopoDS_Edge&                    edge2,
+    const TopoDS_Edge&          edge1,
+    const TopoDS_Edge&          edge2,
     const NCollection_List<TopoDS_Shape>& listFaces1,
     const NCollection_List<TopoDS_Shape>& listFaces2,
-    const bool                            secForward,
-    int&                                  whichSec,
-    const bool                            firstCall = true);
+    const bool      secForward,
+    int&           whichSec,
+    const bool      firstCall = true);
 
   //! Projects points on curve
   //! This method is called from Cutting only
   Standard_EXPORT void ProjectPointsOnCurve(const NCollection_Array1<gp_Pnt>& arrPnt,
-                                            const occ::handle<Geom_Curve>&    Crv,
-                                            const double                      first,
-                                            const double                      last,
-                                            NCollection_Array1<double>&       arrDist,
-                                            NCollection_Array1<double>&       arrPara,
+                                            const occ::handle<Geom_Curve>& Crv,
+                                            const double       first,
+                                            const double       last,
+                                            NCollection_Array1<double>&     arrDist,
+                                            NCollection_Array1<double>&     arrPara,
                                             NCollection_Array1<gp_Pnt>&       arrProj,
-                                            const bool                        isConsiderEnds) const;
+                                            const bool    isConsiderEnds) const;
 
   //! Creates cutting vertices on projections
   //! This method is called from Cutting only
-  Standard_EXPORT virtual void CreateCuttingNodes(
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapVert,
-    const TopoDS_Shape&                                                  bound,
-    const TopoDS_Shape&                                                  vfirst,
-    const TopoDS_Shape&                                                  vlast,
-    const NCollection_Array1<double>&                                    arrDist,
-    const NCollection_Array1<double>&                                    arrPara,
-    const NCollection_Array1<gp_Pnt>&                                    arrPnt,
-    NCollection_Sequence<TopoDS_Shape>&                                  seqNode,
-    NCollection_Sequence<double>&                                        seqPara);
+  Standard_EXPORT virtual void CreateCuttingNodes(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MapVert,
+                                                  const TopoDS_Shape&               bound,
+                                                  const TopoDS_Shape&               vfirst,
+                                                  const TopoDS_Shape&               vlast,
+                                                  const NCollection_Array1<double>&       arrDist,
+                                                  const NCollection_Array1<double>&       arrPara,
+                                                  const NCollection_Array1<gp_Pnt>&         arrPnt,
+                                                  NCollection_Sequence<TopoDS_Shape>&         seqNode,
+                                                  NCollection_Sequence<double>&           seqPara);
 
   //! Performs cutting of bound
   //! This method is called from Cutting only
-  Standard_EXPORT virtual void CreateSections(const TopoDS_Shape&                       bound,
+  Standard_EXPORT virtual void CreateSections(const TopoDS_Shape&             bound,
                                               const NCollection_Sequence<TopoDS_Shape>& seqNode,
-                                              const NCollection_Sequence<double>&       seqPara,
+                                              const NCollection_Sequence<double>&   seqPara,
                                               NCollection_List<TopoDS_Shape>&           listEdge);
 
   //! Makes all edges from shape same parameter
@@ -378,44 +401,39 @@ protected:
   //! This method is called from Perform only
   Standard_EXPORT virtual void SameParameterShape();
 
-  double                                                                          myTolerance;
-  bool                                                                            mySewing;
-  bool                                                                            myAnalysis;
-  bool                                                                            myCutting;
-  bool                                                                            myNonmanifold;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myOldShapes;
-  TopoDS_Shape                                                                    mySewedShape;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                   myDegenerated;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                   myFreeEdges;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                   myMultipleEdges;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                           myContigousEdges;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myContigSecBound;
-  int                                                                      myNbShapes;
-  int                                                                      myNbVertices;
-  int                                                                      myNbEdges;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myBoundFaces;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                                  myBoundSections;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>        mySectionBound;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVertexNode;
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVertexNodeFree;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myNodeSections;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                myCuttingNode;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myLittleFace;
-  TopoDS_Shape                                                  myShape;
-  occ::handle<BRepTools_ReShape>                                myReShape;
+  double                             myTolerance;
+  bool                          mySewing;
+  bool                          myAnalysis;
+  bool                          myCutting;
+  bool                          myNonmanifold;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myOldShapes;
+  TopoDS_Shape                              mySewedShape;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                myDegenerated;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                myFreeEdges;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                myMultipleEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myContigousEdges;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>              myContigSecBound;
+  int                          myNbShapes;
+  int                          myNbVertices;
+  int                          myNbEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myBoundFaces;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>        myBoundSections;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>              mySectionBound;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myVertexNode;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myVertexNodeFree;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>        myNodeSections;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>        myCuttingNode;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>                myLittleFace;
+  TopoDS_Shape                              myShape;
+  occ::handle<BRepTools_ReShape>                 myReShape;
 
 private:
-  bool                                                   myFaceMode;
-  bool                                                   myFloatingEdgesMode;
-  bool                                                   mySameParameterMode;
-  bool                                                   myLocalToleranceMode;
-  double                                                 myMinTolerance;
-  double                                                 myMaxTolerance;
+  bool    myFaceMode;
+  bool    myFloatingEdgesMode;
+  bool    mySameParameterMode;
+  bool    myLocalToleranceMode;
+  double       myMinTolerance;
+  double       myMaxTolerance;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMergedEdges;
 };
 

@@ -27,20 +27,21 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
   const double aDiffU = aRangeU.second - aRangeU.first;
   const double aDiffV = aRangeV.second - aRangeV.first;
 
-  const gp_Torus aTorus = GetDFace()->GetSurface()->Torus();
-  const double   r      = aTorus.MinorRadius();
-  const double   R      = aTorus.MajorRadius();
+  const gp_Torus      aTorus = GetDFace()->GetSurface()->Torus();
+  const double r      = aTorus.MinorRadius();
+  const double R      = aTorus.MajorRadius();
 
-  const double oldDv = GCPnts_TangentialDeflection::ArcAngularStep(r,
-                                                                   GetDFace()->GetDeflection(),
-                                                                   theParameters.Angle,
-                                                                   theParameters.MinSize);
+  const double oldDv =
+    GCPnts_TangentialDeflection::ArcAngularStep(r,
+                                                GetDFace()->GetDeflection(),
+                                                theParameters.Angle,
+                                                theParameters.MinSize);
 
   double Dv = 0.9 * oldDv; // TWOTHIRD * oldDv;
-  Dv        = oldDv;
+  Dv               = oldDv;
 
   const int nbV = std::max((int)(aDiffV / Dv), 2);
-  Dv            = aDiffV / (nbV + 1);
+  Dv                         = aDiffV / (nbV + 1);
 
   double       Du;
   const double ru = R + r;
@@ -65,8 +66,8 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
   }
 
   int nbU = std::max((int)(aDiffU / Du), 2);
-  nbU     = std::max(nbU, (int)(nbV * aDiffU * R / (aDiffV * r) / 5.));
-  Du      = aDiffU / (nbU + 1);
+  nbU                  = std::max(nbU, (int)(nbV * aDiffU * R / (aDiffV * r) / 5.));
+  Du                   = aDiffU / (nbU + 1);
 
   const occ::handle<NCollection_IncAllocator> aTmpAlloc =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
@@ -91,9 +92,11 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_TorusRangeSplitter::GenerateSurfaceNodes
 
   aParamV = fillParams(GetParametersV(), GetRangeV(), nbV, 2. / 3., aTmpAlloc);
 
-  const std::pair<double, double> aNewRangeU(aRangeU.first + Du * 0.1, aRangeU.second - Du * 0.1);
+  const std::pair<double, double> aNewRangeU(aRangeU.first + Du * 0.1,
+                                                           aRangeU.second - Du * 0.1);
 
-  const std::pair<double, double> aNewRangeV(aRangeV.first + Dv * 0.1, aRangeV.second - Dv * 0.1);
+  const std::pair<double, double> aNewRangeV(aRangeV.first + Dv * 0.1,
+                                                           aRangeV.second - Dv * 0.1);
 
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(aTmpAlloc);
   for (int i = 1; i <= aParamU->Length(); ++i)
@@ -127,16 +130,16 @@ void BRepMesh_TorusRangeSplitter::AddPoint(const gp_Pnt2d& thePoint)
 //=================================================================================================
 
 Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
-  const IMeshData::IMapOfReal&                 theParams,
-  const std::pair<double, double>&             theRange,
-  const int                                    theStepsNb,
-  const double                                 theScale,
-  const occ::handle<NCollection_IncAllocator>& theAllocator) const
+  const IMeshData::IMapOfReal&                   theParams,
+  const std::pair<double, double>& theRange,
+  const int                         theStepsNb,
+  const double                            theScale,
+  const occ::handle<NCollection_IncAllocator>&        theAllocator) const
 {
   Handle(IMeshData::SequenceOfReal) aParams = new IMeshData::SequenceOfReal(theAllocator);
 
-  const int                  aLength = theParams.Size();
-  NCollection_Array1<double> aParamArray(1, aLength);
+  const int aLength = theParams.Size();
+  NCollection_Array1<double>   aParamArray(1, aLength);
 
   for (int j = 1; j <= aLength; ++j)
   {
@@ -146,7 +149,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
   // Calculate DU, leave array of parameters
   const double aDiff = std::abs(theRange.second - theRange.first);
   double       aStep = FUN_CalcAverageDUV(aParamArray, aLength);
-  aStep              = std::max(aStep, aDiff / (double)theStepsNb / 2.);
+  aStep                     = std::max(aStep, aDiff / (double)theStepsNb / 2.);
 
   double aStdStep = aDiff / (double)aLength;
   if (aStep > aStdStep)
@@ -160,7 +163,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
   {
     const double pp = aParamArray(j);
 
-    bool      isToInsert    = true;
+    bool       isToInsert    = true;
     const int aParamsLength = aParams->Length();
     for (int i = 1; i <= aParamsLength && isToInsert; ++i)
     {
@@ -178,11 +181,11 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_TorusRangeSplitter::fillParams(
 
 //=================================================================================================
 
-double BRepMesh_TorusRangeSplitter::FUN_CalcAverageDUV(NCollection_Array1<double>& P,
-                                                       const int                   PLen) const
+double BRepMesh_TorusRangeSplitter::FUN_CalcAverageDUV(NCollection_Array1<double>&  P,
+                                                              const int PLen) const
 {
-  int    i, j, n = 0;
-  double p, result = 0.;
+  int i, j, n = 0;
+  double    p, result = 0.;
 
   for (i = 1; i <= PLen; i++)
   {

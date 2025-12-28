@@ -22,14 +22,20 @@
 #include <StepData_Factors.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 //=============================================================================
 // Creation d' une bspline_Surface_with_knots_and_rational_bspline_Surface de
@@ -37,18 +43,18 @@
 //=============================================================================
 GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
   const occ::handle<Geom_BSplineSurface>& BS,
-  const StepData_Factors&                 theLocalFactors)
+  const StepData_Factors&            theLocalFactors)
 {
   occ::handle<StepGeom_BSplineSurfaceWithKnots> BSWK;
-  int                                  aUDegree, aVDegree, NU, NV, i, j, NUknots, NVknots, itampon;
-  double                               rtampon;
+  int                aUDegree, aVDegree, NU, NV, i, j, NUknots, NVknots, itampon;
+  double                   rtampon;
   occ::handle<StepGeom_CartesianPoint> Pt = new StepGeom_CartesianPoint;
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  StepGeom_BSplineSurfaceForm                                            aSurfaceForm;
+  StepGeom_BSplineSurfaceForm              aSurfaceForm;
   StepData_Logical                         aUClosed, aVClosed, aSelfIntersect;
-  occ::handle<NCollection_HArray1<int>>    aUMultiplicities, aVMultiplicities;
-  occ::handle<NCollection_HArray1<double>> aUKnots, aVKnots;
-  occ::handle<NCollection_HArray2<double>> aWeightsData;
+  occ::handle<NCollection_HArray1<int>>         aUMultiplicities, aVMultiplicities;
+  occ::handle<NCollection_HArray1<double>>            aUKnots, aVKnots;
+  occ::handle<NCollection_HArray2<double>>            aWeightsData;
   GeomAbs_BSplKnotDistribution             UDistribution, VDistribution;
   StepGeom_KnotType                        KnotSpec;
 
@@ -133,7 +139,7 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
   else
     KnotSpec = StepGeom_ktUnspecified;
 
-  BSWK                                       = new StepGeom_BSplineSurfaceWithKnots;
+  BSWK                                  = new StepGeom_BSplineSurfaceWithKnots;
   occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
   BSWK->Init(name,
              aUDegree,

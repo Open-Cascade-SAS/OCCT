@@ -37,7 +37,8 @@ public: //! @name Bnd_Box to BVH_Box conversion
   {
     double aXMin, aYMin, aZMin, aXMax, aYMax, aZMax;
     theBox.Get(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-    return BVH_Box<double, 3>(BVH_Vec3d(aXMin, aYMin, aZMin), BVH_Vec3d(aXMax, aYMax, aZMax));
+    return BVH_Box<double, 3>(BVH_Vec3d(aXMin, aYMin, aZMin),
+                                     BVH_Vec3d(aXMax, aYMax, aZMax));
   }
 };
 

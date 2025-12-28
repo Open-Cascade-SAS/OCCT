@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_ClosedShell();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ClosedShell, StepShape_ConnectedFaceSet)
+
 };
 
 #endif // _StepShape_ClosedShell_HeaderFile

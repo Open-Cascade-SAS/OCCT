@@ -44,7 +44,10 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Dir.hxx>
 #include <NCollection_Array1.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
@@ -53,7 +56,7 @@ namespace
 
 //! Computes wireframe presentation for free wires and vertices
 void wireframeFromShape(const occ::handle<Prs3d_Presentation>& thePrs,
-                        const TopoDS_Shape&                    theShape,
+                        const TopoDS_Shape&               theShape,
                         const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   TopExp_Explorer aShapeIter(theShape, TopAbs_FACE);
@@ -100,18 +103,18 @@ void wireframeFromShape(const occ::handle<Prs3d_Presentation>& thePrs,
 
 //! Computes special wireframe presentation for faces without triangulation.
 void wireframeNoTriangFacesFromShape(const occ::handle<Prs3d_Presentation>& thePrs,
-                                     const TopoDS_Shape&                    theShape,
+                                     const TopoDS_Shape&               theShape,
                                      const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   TopoDS_Compound aCompoundWF;
   BRep_Builder    aBuilder;
   aBuilder.MakeCompound(aCompoundWF);
-  TopLoc_Location aLoc;
-  bool            hasElement = false;
+  TopLoc_Location  aLoc;
+  bool hasElement = false;
 
   for (TopExp_Explorer aShapeIter(theShape, TopAbs_FACE); aShapeIter.More(); aShapeIter.Next())
   {
-    const TopoDS_Face&                    aFace   = TopoDS::Face(aShapeIter.Current());
+    const TopoDS_Face&               aFace   = TopoDS::Face(aShapeIter.Current());
     const occ::handle<Poly_Triangulation> aTriang = BRep_Tool::Triangulation(aFace, aLoc);
     if (aTriang.IsNull())
     {
@@ -135,17 +138,17 @@ void wireframeNoTriangFacesFromShape(const occ::handle<Prs3d_Presentation>& theP
 }
 
 //! Gets triangulation of every face of shape and fills output array of triangles
-static occ::handle<Graphic3d_ArrayOfTriangles> fillTriangles(const TopoDS_Shape& theShape,
-                                                             const bool          theHasTexels,
-                                                             const gp_Pnt2d&     theUVOrigin,
-                                                             const gp_Pnt2d&     theUVRepeat,
-                                                             const gp_Pnt2d&     theUVScale)
+static occ::handle<Graphic3d_ArrayOfTriangles> fillTriangles(const TopoDS_Shape&    theShape,
+                                                        const bool theHasTexels,
+                                                        const gp_Pnt2d&        theUVOrigin,
+                                                        const gp_Pnt2d&        theUVRepeat,
+                                                        const gp_Pnt2d&        theUVScale)
 {
   occ::handle<Poly_Triangulation> aT;
-  TopLoc_Location                 aLoc;
-  gp_Pnt                          aPoint;
-  int                             aNbTriangles = 0;
-  int                             aNbVertices  = 0;
+  TopLoc_Location            aLoc;
+  gp_Pnt                     aPoint;
+  int           aNbTriangles = 0;
+  int           aNbVertices  = 0;
 
   // Precision for compare square distances
   constexpr double aPreci = Precision::SquareConfusion();
@@ -166,8 +169,11 @@ static occ::handle<Graphic3d_ArrayOfTriangles> fillTriangles(const TopoDS_Shape&
     return occ::handle<Graphic3d_ArrayOfTriangles>();
   }
 
-  occ::handle<Graphic3d_ArrayOfTriangles> anArray =
-    new Graphic3d_ArrayOfTriangles(aNbVertices, 3 * aNbTriangles, true, false, theHasTexels);
+  occ::handle<Graphic3d_ArrayOfTriangles> anArray = new Graphic3d_ArrayOfTriangles(aNbVertices,
+                                                                              3 * aNbTriangles,
+                                                                              true,
+                                                                              false,
+                                                                              theHasTexels);
   double aUmin(0.0), aUmax(0.0), aVmin(0.0), aVmax(0.0), dUmax(0.0), dVmax(0.0);
   for (aFaceIt.Init(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
@@ -270,15 +276,15 @@ static occ::handle<Graphic3d_ArrayOfTriangles> fillTriangles(const TopoDS_Shape&
 }
 
 //! Prepare shaded presentation for specified shape
-static bool shadeFromShape(const TopoDS_Shape&                    theShape,
-                           const occ::handle<Prs3d_Presentation>& thePrs,
-                           const occ::handle<Prs3d_Drawer>&       theDrawer,
-                           const bool                             theHasTexels,
-                           const gp_Pnt2d&                        theUVOrigin,
-                           const gp_Pnt2d&                        theUVRepeat,
-                           const gp_Pnt2d&                        theUVScale,
-                           const bool                             theIsClosed,
-                           const occ::handle<Graphic3d_Group>&    theGroup = NULL)
+static bool shadeFromShape(const TopoDS_Shape&               theShape,
+                                       const occ::handle<Prs3d_Presentation>& thePrs,
+                                       const occ::handle<Prs3d_Drawer>&       theDrawer,
+                                       const bool            theHasTexels,
+                                       const gp_Pnt2d&                   theUVOrigin,
+                                       const gp_Pnt2d&                   theUVRepeat,
+                                       const gp_Pnt2d&                   theUVScale,
+                                       const bool                        theIsClosed,
+                                       const occ::handle<Graphic3d_Group>&    theGroup = NULL)
 {
   occ::handle<Graphic3d_ArrayOfTriangles> aPArray =
     fillTriangles(theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
@@ -296,7 +302,7 @@ static bool shadeFromShape(const TopoDS_Shape&                    theShape,
 
 //! Compute boundary presentation for faces of the shape.
 static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Shape& theShape,
-                                                                 GeomAbs_Shape theUpperContinuity)
+                                                            GeomAbs_Shape       theUpperContinuity)
 {
   // collection of all triangulation nodes on edges
   // for computing boundaries presentation
@@ -322,12 +328,9 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
   }
 
   // explore all boundary edges
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    anEdgesMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anEdgesMap;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_EDGE, TopAbs_FACE, anEdgesMap);
-  for (NCollection_IndexedDataMap<TopoDS_Shape,
-                                  NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>::Iterator anEdgeIter(anEdgesMap);
+  for (NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator anEdgeIter(anEdgesMap);
        anEdgeIter.More();
        anEdgeIter.Next())
   {
@@ -338,7 +341,7 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
     }
 
     // take one of the shared edges and get edge triangulation
-    const TopoDS_Face&              aFace          = TopoDS::Face(anEdgeIter.Value().First());
+    const TopoDS_Face&         aFace          = TopoDS::Face(anEdgeIter.Value().First());
     occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aFace, aTrsf);
     if (aTriangulation.IsNull())
     {
@@ -369,8 +372,7 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
     }
 
     occ::handle<Graphic3d_ArrayOfSegments> aSegments = new Graphic3d_ArrayOfSegments(aNbExtra);
-    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(*aSeqPntsExtra); aPntIter.More();
-         aPntIter.Next())
+    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(*aSeqPntsExtra); aPntIter.More(); aPntIter.Next())
     {
       aSegments->AddVertex(aPntIter.Value());
     }
@@ -378,12 +380,10 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
   }
 
   // create indexed segments array to pack polylines from different edges into single array
-  const int                              aSegmentEdgeNb = (aNodeNumber - aNbPolylines) * 2;
+  const int            aSegmentEdgeNb = (aNodeNumber - aNbPolylines) * 2;
   occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(aNodeNumber + aNbExtra, aSegmentEdgeNb + aNbExtra);
-  for (NCollection_IndexedDataMap<TopoDS_Shape,
-                                  NCollection_List<TopoDS_Shape>,
-                                  TopTools_ShapeMapHasher>::Iterator anEdgeIter(anEdgesMap);
+  for (NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator anEdgeIter(anEdgesMap);
        anEdgeIter.More();
        anEdgeIter.Next())
   {
@@ -392,7 +392,7 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
       continue;
     }
 
-    const TopoDS_Face&              aFace          = TopoDS::Face(anEdgeIter.Value().First());
+    const TopoDS_Face&         aFace          = TopoDS::Face(anEdgeIter.Value().First());
     occ::handle<Poly_Triangulation> aTriangulation = BRep_Tool::Triangulation(aFace, aTrsf);
     if (aTriangulation.IsNull())
     {
@@ -418,12 +418,13 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
 
     // collect the edge nodes
     int aSegmentEdge = aSegments->VertexNumber() + 1;
-    for (int aNodeIdx = anEdgeNodes.Lower(); aNodeIdx <= anEdgeNodes.Upper(); ++aNodeIdx)
+    for (int aNodeIdx = anEdgeNodes.Lower(); aNodeIdx <= anEdgeNodes.Upper();
+         ++aNodeIdx)
     {
       // node index in face triangulation
       // get node and apply location transformation to the node
       const int aTriIndex = anEdgeNodes.Value(aNodeIdx);
-      gp_Pnt    aTriNode  = aTriangulation->Node(aTriIndex);
+      gp_Pnt                 aTriNode  = aTriangulation->Node(aTriIndex);
       if (!aTrsf.IsIdentity())
       {
         aTriNode.Transform(aTrsf);
@@ -441,8 +442,7 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
   if (!aSeqPntsExtra.IsNull())
   {
     int aSegmentEdge = aSegments->VertexNumber();
-    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(*aSeqPntsExtra); aPntIter.More();
-         aPntIter.Next())
+    for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter(*aSeqPntsExtra); aPntIter.More(); aPntIter.Next())
     {
       aSegments->AddVertex(aPntIter.Value());
       aSegments->AddEdge(++aSegmentEdge);
@@ -456,11 +456,11 @@ static occ::handle<Graphic3d_ArrayOfSegments> fillFaceBoundaries(const TopoDS_Sh
 
 //=================================================================================================
 
-void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape& theShape,
-                                       const BRep_Builder& theBuilder,
-                                       TopoDS_Compound&    theClosed,
-                                       TopoDS_Compound&    theOpened,
-                                       const bool          theIgnore1DSubShape)
+void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape&    theShape,
+                                       const BRep_Builder&    theBuilder,
+                                       TopoDS_Compound&       theClosed,
+                                       TopoDS_Compound&       theOpened,
+                                       const bool theIgnore1DSubShape)
 {
   if (theShape.IsNull())
   {
@@ -480,10 +480,10 @@ void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape& theShape,
     case TopAbs_SOLID: {
       for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
       {
-        const TopoDS_Shape& aSubShape = anIter.Value();
-        const bool          isClosed  = aSubShape.ShapeType() == TopAbs_SHELL
-                              && BRep_Tool::IsClosed(aSubShape)
-                              && StdPrs_ToolTriangulatedShape::IsTriangulated(aSubShape);
+        const TopoDS_Shape&    aSubShape = anIter.Value();
+        const bool isClosed =
+          aSubShape.ShapeType() == TopAbs_SHELL && BRep_Tool::IsClosed(aSubShape)
+          && StdPrs_ToolTriangulatedShape::IsTriangulated(aSubShape);
         theBuilder.Add(isClosed ? theClosed : theOpened, aSubShape);
       }
       return;
@@ -511,9 +511,9 @@ void StdPrs_ShadedShape::ExploreSolids(const TopoDS_Shape& theShape,
 //=================================================================================================
 
 void StdPrs_ShadedShape::Add(const occ::handle<Prs3d_Presentation>& thePrs,
-                             const TopoDS_Shape&                    theShape,
+                             const TopoDS_Shape&               theShape,
                              const occ::handle<Prs3d_Drawer>&       theDrawer,
-                             const StdPrs_Volume                    theVolume,
+                             const StdPrs_Volume               theVolume,
                              const occ::handle<Graphic3d_Group>&    theGroup)
 {
   gp_Pnt2d aDummy;
@@ -531,13 +531,13 @@ void StdPrs_ShadedShape::Add(const occ::handle<Prs3d_Presentation>& thePrs,
 //=================================================================================================
 
 void StdPrs_ShadedShape::Add(const occ::handle<Prs3d_Presentation>& thePrs,
-                             const TopoDS_Shape&                    theShape,
+                             const TopoDS_Shape&               theShape,
                              const occ::handle<Prs3d_Drawer>&       theDrawer,
-                             const bool                             theHasTexels,
-                             const gp_Pnt2d&                        theUVOrigin,
-                             const gp_Pnt2d&                        theUVRepeat,
-                             const gp_Pnt2d&                        theUVScale,
-                             const StdPrs_Volume                    theVolume,
+                             const bool            theHasTexels,
+                             const gp_Pnt2d&                   theUVOrigin,
+                             const gp_Pnt2d&                   theUVRepeat,
+                             const gp_Pnt2d&                   theUVScale,
+                             const StdPrs_Volume               theVolume,
                              const occ::handle<Graphic3d_Group>&    theGroup)
 {
   if (theShape.IsNull())
@@ -628,11 +628,11 @@ void StdPrs_ShadedShape::Add(const occ::handle<Prs3d_Presentation>& thePrs,
 //=================================================================================================
 
 occ::handle<Graphic3d_ArrayOfTriangles> StdPrs_ShadedShape::FillTriangles(
-  const TopoDS_Shape& theShape,
-  const bool          theHasTexels,
-  const gp_Pnt2d&     theUVOrigin,
-  const gp_Pnt2d&     theUVRepeat,
-  const gp_Pnt2d&     theUVScale)
+  const TopoDS_Shape&    theShape,
+  const bool theHasTexels,
+  const gp_Pnt2d&        theUVOrigin,
+  const gp_Pnt2d&        theUVRepeat,
+  const gp_Pnt2d&        theUVScale)
 {
   return fillTriangles(theShape, theHasTexels, theUVOrigin, theUVRepeat, theUVScale);
 }
@@ -649,8 +649,8 @@ occ::handle<Graphic3d_ArrayOfSegments> StdPrs_ShadedShape::FillFaceBoundaries(
 //=================================================================================================
 
 void StdPrs_ShadedShape::AddWireframeForFreeElements(const occ::handle<Prs3d_Presentation>& thePrs,
-                                                     const TopoDS_Shape&              theShape,
-                                                     const occ::handle<Prs3d_Drawer>& theDrawer)
+                                                     const TopoDS_Shape&               theShape,
+                                                     const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   wireframeFromShape(thePrs, theShape, theDrawer);
 }
@@ -659,7 +659,7 @@ void StdPrs_ShadedShape::AddWireframeForFreeElements(const occ::handle<Prs3d_Pre
 
 void StdPrs_ShadedShape::AddWireframeForFacesWithoutTriangles(
   const occ::handle<Prs3d_Presentation>& thePrs,
-  const TopoDS_Shape&                    theShape,
+  const TopoDS_Shape&               theShape,
   const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   wireframeNoTriangFacesFromShape(thePrs, theShape, theDrawer);

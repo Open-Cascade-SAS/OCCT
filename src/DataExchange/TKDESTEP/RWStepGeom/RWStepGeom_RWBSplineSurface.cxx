@@ -19,6 +19,7 @@
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -28,7 +29,7 @@
 RWStepGeom_RWBSplineSurface::RWStepGeom_RWBSplineSurface() {}
 
 void RWStepGeom_RWBSplineSurface::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepGeom_BSplineSurface>& ent) const
 {
@@ -59,14 +60,13 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const occ::handle<StepData_StepReader
   // --- own field : controlPointsList ---
 
   occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent4;
-  int                                                                    nsub4;
+  occ::handle<StepGeom_CartesianPoint>          anent4;
+  int                         nsub4;
   if (data->ReadSubList(num, 4, "control_points_list", ach, nsub4))
   {
     int nbi4 = data->NbParams(nsub4);
     int nbj4 = data->NbParams(data->ParamNumber(nsub4, 1));
-    aControlPointsList =
-      new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
+    aControlPointsList    = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, nbi4, 1, nbj4);
     for (int i4 = 1; i4 <= nbi4; i4++)
     {
       int nsi4;
@@ -131,7 +131,7 @@ void RWStepGeom_RWBSplineSurface::ReadStep(const occ::handle<StepData_StepReader
             aSelfIntersect);
 }
 
-void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                        SW,
+void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepGeom_BSplineSurface>& ent) const
 {
 
@@ -181,7 +181,7 @@ void RWStepGeom_RWBSplineSurface::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepGeom_RWBSplineSurface::Share(const occ::handle<StepGeom_BSplineSurface>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   int nbiElem1 = ent->NbControlPointsListI();

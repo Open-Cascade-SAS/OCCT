@@ -39,7 +39,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 #include <IntTools_Context.hxx>
 
@@ -50,11 +53,14 @@ template <class InterfType>
 static void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di);
 
 template <class InterfType>
-static void SearchNewIndex(const char*                           theCType,
-                           const int                             theInd,
-                           const NCollection_Vector<InterfType>& theVInterf,
-                           Draw_Interpretor&                     di);
-static int  bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz);
+static void             SearchNewIndex(const char*                           theCType,
+                                       const int                theInd,
+                                       const NCollection_Vector<InterfType>& theVInterf,
+                                       Draw_Interpretor&                     di);
+static int bopfinfo(Draw_Interpretor&      di,
+                                 int       n,
+                                 const char**           a,
+                                 const int iPriz);
 
 // commands
 // 1. filler commands
@@ -205,8 +211,8 @@ int bopds(Draw_Interpretor& di, int n, const char** a)
   }
   //
   char             buf[32];
-  const char*      aText;
-  int              i, aNbS;
+  const char* aText;
+  int i, aNbS;
   TopAbs_ShapeEnum aType, aTypeShape;
   Draw_Color       aTextColor(Draw_cyan);
   //
@@ -241,7 +247,7 @@ int bopds(Draw_Interpretor& di, int n, const char** a)
     }
     //
     Sprintf(buf, "z%d", i);
-    aText                                      = buf;
+    aText                                 = buf;
     occ::handle<BOPTest_DrawableShape> aDShape = new BOPTest_DrawableShape(aS, aText, aTextColor);
     Draw::Set(aText, aDShape);
   }
@@ -266,9 +272,9 @@ int bopiterator(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int            n1, n2;
-  char           buf[64], aST1[10], aST2[10];
-  BOPDS_Iterator aIt;
+  int n1, n2;
+  char             buf[64], aST1[10], aST2[10];
+  BOPDS_Iterator   aIt;
   //
   occ::handle<IntTools_Context> aCtx = new IntTools_Context();
 
@@ -279,7 +285,7 @@ int bopiterator(Draw_Interpretor& di, int n, const char** a)
   if (n == 1)
   {
     // type has not been defined. show all pairs
-    int              i, j;
+    int i, j;
     TopAbs_ShapeEnum aT[4] = {TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE, TopAbs_SOLID};
     for (i = 0; i < 4; ++i)
     {
@@ -466,24 +472,24 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
   SearchNewIndex<BOPDS_InterfEF>("E/F: ", ind, aEFs, di);
   //
   //--------------------------------------FF
-  char                                                     buf[64];
-  bool                                                     bFound;
-  int                                                      i, n1, n2, k, aNb, aNbC, aNbP, nV1, nV2;
+  char                                buf[64];
+  bool                    bFound;
+  int                    i, n1, n2, k, aNb, aNbC, aNbP, nV1, nV2;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  bFound                                   = false;
+  bFound                       = false;
   NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
-  aNb                                      = aFFs.Length();
+  aNb                          = aFFs.Length();
   for (i = 0; i < aNb; ++i)
   {
     const BOPDS_InterfFF& anInt = aFFs(i);
     anInt.Indices(n1, n2);
     //
     const NCollection_Vector<BOPDS_Curve>& aVNC = anInt.Curves();
-    aNbC                                        = aVNC.Length();
+    aNbC                            = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
-      const BOPDS_Curve&                                    aNC  = aVNC(k);
+      const BOPDS_Curve&           aNC  = aVNC(k);
       const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aNC.PaveBlocks();
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next())
@@ -508,9 +514,9 @@ int bopwho(Draw_Interpretor& di, int n, const char** a)
       di << "\n";
     }
     //
-    bFound                                      = false;
+    bFound                          = false;
     const NCollection_Vector<BOPDS_Point>& aVNP = anInt.Points();
-    aNbP                                        = aVNP.Length();
+    aNbP                            = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -561,11 +567,11 @@ int bopnews(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  char                               buf[32];
-  const char*                        aText;
-  bool                               bFound;
-  int                                i, i1, i2;
-  Draw_Color                         aTextColor(Draw_cyan);
+  char                          buf[32];
+  const char*              aText;
+  bool              bFound;
+  int              i, i1, i2;
+  Draw_Color                    aTextColor(Draw_cyan);
   occ::handle<BOPTest_DrawableShape> aDShape;
   //
   bFound = false;
@@ -626,7 +632,7 @@ int bopindex(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  int  ind    = pDS->Index(aS);
+  int ind    = pDS->Index(aS);
   bool bFound = (ind > 0);
   if (bFound)
   {
@@ -657,9 +663,9 @@ int bopsd(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  char buf[32];
+  char             buf[32];
   bool bHasSD;
-  int  ind, i1, i2, iSD;
+  int ind, i1, i2, iSD;
   //
   ind = Draw::Atoi(a[1]);
   //
@@ -703,13 +709,13 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  char                                                     buf[32];
-  const char*                                              aText;
-  Draw_Color                                               aTextColor(Draw_cyan);
-  int                                                      nSF1, nSF2, nF1, nF2;
-  int                                                      aNb, j, iCnt, k, iPriz, aNbC, aNbP, nSp;
-  int                                                      iX;
-  occ::handle<BOPTest_DrawableShape>                       aDShape;
+  char                                buf[32];
+  const char*                    aText;
+  Draw_Color                          aTextColor(Draw_cyan);
+  int                    nSF1, nSF2, nF1, nF2;
+  int                    aNb, j, iCnt, k, iPriz, aNbC, aNbP, nSp;
+  int                    iX;
+  occ::handle<BOPTest_DrawableShape>       aDShape;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
   nSF1 = nSF2 = -1;
@@ -742,12 +748,12 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
     //
     aFF.Indices(nF1, nF2);
     //
-    iX                                          = 0;
+    iX                              = 0;
     const NCollection_Vector<BOPDS_Curve>& aVNC = aFF.Curves();
-    aNbC                                        = aVNC.Length();
+    aNbC                            = aVNC.Length();
     for (k = 0; k < aNbC; ++k)
     {
-      const BOPDS_Curve&                                    aNC  = aVNC(k);
+      const BOPDS_Curve&           aNC  = aVNC(k);
       const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = aNC.PaveBlocks();
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next())
@@ -780,9 +786,9 @@ int bopsc(Draw_Interpretor& di, int n, const char** a)
       di << "\n";
     }
     //
-    iX                                          = 0;
+    iX                              = 0;
     const NCollection_Vector<BOPDS_Point>& aVNP = aFF.Points();
-    aNbP                                        = aVNP.Length();
+    aNbP                            = aVNP.Length();
     for (k = 0; k < aNbP; ++k)
     {
       const BOPDS_Point& aNP = aVNP(k);
@@ -847,9 +853,9 @@ int boppb(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  bool                                                     bHasPaveBlocks;
-  int                                                      ind, i1, i2;
-  TopAbs_ShapeEnum                                         aType;
+  bool                    bHasPaveBlocks;
+  int                    ind, i1, i2;
+  TopAbs_ShapeEnum                    aType;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
   //
   i1 = 0;
@@ -906,11 +912,11 @@ int bopcb(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  bool                                                     bHasPaveBlocks;
-  int                                                      ind, i1, i2;
-  TopAbs_ShapeEnum                                         aType;
+  bool                    bHasPaveBlocks;
+  int                    ind, i1, i2;
+  TopAbs_ShapeEnum                    aType;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
-  NCollection_Map<occ::handle<BOPDS_CommonBlock>>          aMCB;
+  NCollection_Map<occ::handle<BOPDS_CommonBlock>>              aMCB;
   //
   i1 = 0;
   i2 = pDS->NbSourceShapes();
@@ -973,14 +979,14 @@ int bopsp(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  char                                                     buf[32];
-  bool                                                     bHasPaveBlocks;
-  int                                                      ind, i1, i2, nSp;
-  TopAbs_ShapeEnum                                         aType;
+  char                                buf[32];
+  bool                    bHasPaveBlocks;
+  int                    ind, i1, i2, nSp;
+  TopAbs_ShapeEnum                    aType;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
-  const char*                                              aText;
-  Draw_Color                                               aTextColor(Draw_cyan);
-  occ::handle<BOPTest_DrawableShape>                       aDShape;
+  const char*                    aText;
+  Draw_Color                          aTextColor(Draw_cyan);
+  occ::handle<BOPTest_DrawableShape>       aDShape;
   //
   i1 = 0;
   i2 = pDS->NbSourceShapes();
@@ -1013,8 +1019,8 @@ int bopsp(Draw_Interpretor& di, int n, const char** a)
     for (; aItPB.More(); aItPB.Next())
     {
       const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
-      nSp                                     = aPB->Edge();
-      const TopoDS_Shape& aSp                 = pDS->Shape(nSp);
+      nSp                                = aPB->Edge();
+      const TopoDS_Shape& aSp            = pDS->Shape(nSp);
       //
       Sprintf(buf, "z%d_%d", ind, nSp);
       aText   = buf;
@@ -1051,7 +1057,10 @@ int bopfsc(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
+int bopfinfo(Draw_Interpretor&      di,
+                          int       n,
+                          const char**           a,
+                          const int iPriz)
 {
   if (n != 2)
   {
@@ -1067,8 +1076,8 @@ int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
     return 1;
   }
   //
-  char                         aText[32];
-  int                          nF, i1, i2, nV, i, aNb;
+  char                    aText[32];
+  int        nF, i1, i2, nV, i, aNb;
   occ::handle<BOPDS_PaveBlock> aPB;
   //
   nF = Draw::Atoi(a[1]);
@@ -1095,7 +1104,7 @@ int bopfinfo(Draw_Interpretor& di, int n, const char** a, const int iPriz)
   BOPDS_FaceInfo& aFI = pDS->ChangeFaceInfo(nF);
   //
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPB;
-  NCollection_Map<int>                                 aMI;
+  NCollection_Map<int>        aMI;
   if (iPriz == 0)
   {
     strcpy(aText, "On");
@@ -1236,23 +1245,22 @@ int bopimage(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    anImages = aBuilder.Images();
+  BOPAlgo_Builder&                          aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& anImages = aBuilder.Images();
   if (!anImages.IsBound(aS))
   {
     di << " no images found\n";
     return 0;
   }
   //
-  char            buf[32];
-  int             i;
-  BRep_Builder    aBB;
-  TopoDS_Compound aC;
+  char             buf[32];
+  int i;
+  BRep_Builder     aBB;
+  TopoDS_Compound  aC;
   //
   aBB.MakeCompound(aC);
   //
-  const NCollection_List<TopoDS_Shape>&    aLSIm = anImages.Find(aS);
+  const NCollection_List<TopoDS_Shape>&        aLSIm = anImages.Find(aS);
   NCollection_List<TopoDS_Shape>::Iterator aIt(aLSIm);
   for (i = 0; aIt.More(); aIt.Next(), ++i)
   {
@@ -1292,9 +1300,8 @@ int boporigin(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    aDMI = aBuilder.Origins();
+  BOPAlgo_Builder&                          aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& aDMI     = aBuilder.Origins();
   if (!aDMI.IsBound(aS))
   {
     di << " no origins found\n";
@@ -1353,19 +1360,18 @@ int bopfsd(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  BOPAlgo_Builder& aBuilder = BOPTest_Objects::Builder();
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aDMSD =
-    aBuilder.ShapesSD();
+  BOPAlgo_Builder&                    aBuilder = BOPTest_Objects::Builder();
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aDMSD    = aBuilder.ShapesSD();
   if (!aDMSD.IsBound(aS))
   {
     di << " shape has no sd shape\n";
     return 0;
   }
   //
-  char            buf[32];
-  int             i;
-  BRep_Builder    aBB;
-  TopoDS_Compound aC;
+  char             buf[32];
+  int i;
+  BRep_Builder     aBB;
+  TopoDS_Compound  aC;
   //
   aBB.MakeCompound(aC);
   //
@@ -1420,9 +1426,9 @@ int bopbface(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   //
-  TopoDS_Face                    aF;
+  TopoDS_Face          aF;
   NCollection_List<TopoDS_Shape> aLE;
-  int                            i;
+  int     i;
   //
   TopoDS_Iterator aItS(aS);
   for (i = 0; aItS.More(); aItS.Next(), ++i)
@@ -1458,8 +1464,8 @@ int bopbface(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  char                                     buf[128];
-  const NCollection_List<TopoDS_Shape>&    aLFR = aBF.Areas();
+  char                               buf[128];
+  const NCollection_List<TopoDS_Shape>&        aLFR = aBF.Areas();
   NCollection_List<TopoDS_Shape>::Iterator aIt(aLFR);
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
@@ -1500,7 +1506,7 @@ int bopbsolid(Draw_Interpretor& di, int n, const char** a)
   }
   //
   NCollection_List<TopoDS_Shape> aLF;
-  TopExp_Explorer                aExp(aS, TopAbs_FACE);
+  TopExp_Explorer      aExp(aS, TopAbs_FACE);
   for (; aExp.More(); aExp.Next())
   {
     const TopoDS_Shape& aF = aExp.Current();
@@ -1522,14 +1528,14 @@ int bopbsolid(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  int             i;
-  TopoDS_Compound aSolids;
-  BRep_Builder    aBB;
+  int i;
+  TopoDS_Compound  aSolids;
+  BRep_Builder     aBB;
   //
   aBB.MakeCompound(aSolids);
   //
-  char                                     buf[128];
-  const NCollection_List<TopoDS_Shape>&    aLSR = aBS.Areas();
+  char                               buf[128];
+  const NCollection_List<TopoDS_Shape>&        aLSR = aBS.Areas();
   NCollection_List<TopoDS_Shape>::Iterator aIt(aLSR);
   for (i = 1; aIt.More(); aIt.Next(), ++i)
   {
@@ -1635,8 +1641,8 @@ void GetNameByType(const TopAbs_ShapeEnum& theType, char* theName)
 template <class InterfType>
 void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpretor& di)
 {
-  int  i, aNb, n1, n2, nNew;
-  char buf[64];
+  int i, aNb, n1, n2, nNew;
+  char             buf[64];
   //
   aNb = theVInterf.Length();
   if (aNb == 0)
@@ -1667,13 +1673,13 @@ void DumpInterfs(const NCollection_Vector<InterfType>& theVInterf, Draw_Interpre
 
 template <class InterfType>
 void SearchNewIndex(const char*                           theCType,
-                    const int                             theInd,
+                    const int                theInd,
                     const NCollection_Vector<InterfType>& theVInterf,
                     Draw_Interpretor&                     di)
 {
-  char buf[64];
+  char             buf[64];
   bool bFound;
-  int  i, aNb, n1, n2, nNew;
+  int i, aNb, n1, n2, nNew;
   //
   bFound = false;
   aNb    = theVInterf.Length();

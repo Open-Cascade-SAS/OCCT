@@ -35,7 +35,9 @@
 // purpose  : SetShape (DF, entry, drawshape)
 //=======================================================================
 
-static int DDataStd_SetShape(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_SetShape(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   if (nb == 4)
   {

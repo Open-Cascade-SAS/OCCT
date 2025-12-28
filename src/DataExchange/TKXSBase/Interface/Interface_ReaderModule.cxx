@@ -20,10 +20,10 @@
 IMPLEMENT_STANDARD_RTTIEXT(Interface_ReaderModule, Standard_Transient)
 
 bool Interface_ReaderModule::NewRead(const int,
-                                     const occ::handle<Interface_FileReaderData>&,
-                                     const int,
-                                     occ::handle<Interface_Check>&,
-                                     occ::handle<Standard_Transient>&) const
+                                                 const occ::handle<Interface_FileReaderData>&,
+                                                 const int,
+                                                 occ::handle<Interface_Check>&,
+                                                 occ::handle<Standard_Transient>&) const
 {
   return false;
 }

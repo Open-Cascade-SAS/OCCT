@@ -29,8 +29,8 @@ IGESDraw_View::IGESDraw_View() {}
 
 // This class inherits from IGESData_ViewKindEntity
 
-void IGESDraw_View::Init(const int                          aViewNum,
-                         const double                       aScale,
+void IGESDraw_View::Init(const int        aViewNum,
+                         const double           aScale,
                          const occ::handle<IGESGeom_Plane>& aLeftPlane,
                          const occ::handle<IGESGeom_Plane>& aTopPlane,
                          const occ::handle<IGESGeom_Plane>& aRightPlane,

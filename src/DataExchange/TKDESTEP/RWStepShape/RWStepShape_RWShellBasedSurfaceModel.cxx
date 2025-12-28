@@ -23,7 +23,7 @@ RWStepShape_RWShellBasedSurfaceModel::RWStepShape_RWShellBasedSurfaceModel() {}
 
 void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepShape_ShellBasedSurfaceModel>& ent) const
 {
@@ -42,12 +42,12 @@ void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
   // --- own field : sbsmBoundary ---
 
   occ::handle<NCollection_HArray1<StepShape_Shell>> aSbsmBoundary;
-  StepShape_Shell                                   aSbsmBoundaryItem;
-  int                                               nsub2;
+  StepShape_Shell                  aSbsmBoundaryItem;
+  int                 nsub2;
   if (data->ReadSubList(num, 2, "sbsm_boundary", ach, nsub2))
   {
-    int nb2       = data->NbParams(nsub2);
-    aSbsmBoundary = new NCollection_HArray1<StepShape_Shell>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aSbsmBoundary        = new NCollection_HArray1<StepShape_Shell>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -62,7 +62,7 @@ void RWStepShape_RWShellBasedSurfaceModel::ReadStep(
 }
 
 void RWStepShape_RWShellBasedSurfaceModel::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepShape_ShellBasedSurfaceModel>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepShape_RWShellBasedSurfaceModel::WriteStep(
 
 void RWStepShape_RWShellBasedSurfaceModel::Share(
   const occ::handle<StepShape_ShellBasedSurfaceModel>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
 
   int nbElem1 = ent->NbSbsmBoundary();

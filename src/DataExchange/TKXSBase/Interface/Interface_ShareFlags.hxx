@@ -46,7 +46,7 @@ public:
   //! (flags) by calling the General Service Library given as
   //! argument <lib>
   Standard_EXPORT Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
-                                       const Interface_GeneralLib&                  lib);
+                                       const Interface_GeneralLib&             lib);
 
   //! Same as above, but GeneralLib is detained by a GTool
   Standard_EXPORT Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
@@ -86,11 +86,11 @@ private:
   //! Normally, gtool suffices. But if a Graph is created from a
   //! GeneralLib directly, it cannot be used
   //! If <gtool> is defined, it has priority
-  Standard_EXPORT void Evaluate(const Interface_GeneralLib&         lib,
+  Standard_EXPORT void Evaluate(const Interface_GeneralLib&    lib,
                                 const occ::handle<Interface_GTool>& gtool);
 
-  occ::handle<Interface_InterfaceModel>                               themodel;
-  Interface_BitMap                                                    theflags;
+  occ::handle<Interface_InterfaceModel>     themodel;
+  Interface_BitMap                     theflags;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> theroots;
 };
 

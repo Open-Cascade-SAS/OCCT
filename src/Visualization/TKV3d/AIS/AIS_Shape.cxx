@@ -99,7 +99,7 @@ AIS_Shape::AIS_Shape(const TopoDS_Shape& theShape)
 
 void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                         const occ::handle<Prs3d_Presentation>& thePrs,
-                        const int                              theMode)
+                        const int            theMode)
 {
   if (myshape.IsNull() || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
@@ -110,8 +110,8 @@ void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const int aPrior =
-      (int)Graphic3d_DisplayPriority_Above1 + (int)myshape.ShapeType() - TopAbs_WIRE;
+    const int aPrior = (int)Graphic3d_DisplayPriority_Above1
+                                    + (int)myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
     thePrs->SetDisplayPriority((Graphic3d_DisplayPriority)aPrior);
   }
@@ -205,7 +205,7 @@ void AIS_Shape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 
 void AIS_Shape::computeHlrPresentation(const occ::handle<Graphic3d_Camera>&   theProjector,
                                        const occ::handle<Prs3d_Presentation>& thePrs,
-                                       const TopoDS_Shape&                    theShape,
+                                       const TopoDS_Shape&               theShape,
                                        const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   if (theShape.IsNull())
@@ -285,7 +285,7 @@ void AIS_Shape::computeHlrPresentation(const occ::handle<Graphic3d_Camera>&   th
 //=================================================================================================
 
 void AIS_Shape::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
-                                 const int                               aMode)
+                                 const int             aMode)
 {
   if (myshape.IsNull())
     return;
@@ -319,7 +319,7 @@ void AIS_Shape::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelect
     if (aMode == 0)
     {
       aSelection->Clear();
-      Bnd_Box                            B             = BoundingBox();
+      Bnd_Box                       B             = BoundingBox();
       occ::handle<StdSelect_BRepOwner>   aOwner        = new StdSelect_BRepOwner(shape, this);
       occ::handle<Select3D_SensitiveBox> aSensitiveBox = new Select3D_SensitiveBox(aOwner, B);
       aSelection->Add(aSensitiveBox);
@@ -354,7 +354,7 @@ double AIS_Shape::Transparency() const
 //=================================================================================================
 
 bool AIS_Shape::setColor(const occ::handle<Prs3d_Drawer>& theDrawer,
-                         const Quantity_Color&            theColor) const
+                         const Quantity_Color&       theColor) const
 {
   bool toRecompute = false;
   toRecompute      = theDrawer->SetupOwnShadingAspect() || toRecompute;
@@ -515,7 +515,7 @@ void AIS_Shape::UnsetColor()
 //=================================================================================================
 
 bool AIS_Shape::setWidth(const occ::handle<Prs3d_Drawer>& theDrawer,
-                         const double                     theLineWidth) const
+                         const double         theLineWidth) const
 {
   bool toRecompute = theDrawer->SetOwnLineAspects();
 
@@ -595,15 +595,15 @@ void AIS_Shape::UnsetWidth()
 
 //=================================================================================================
 
-void AIS_Shape::setMaterial(const occ::handle<Prs3d_Drawer>& theDrawer,
-                            const Graphic3d_MaterialAspect&  theMaterial,
-                            const bool                       theToKeepColor,
-                            const bool                       theToKeepTransp) const
+void AIS_Shape::setMaterial(const occ::handle<Prs3d_Drawer>&     theDrawer,
+                            const Graphic3d_MaterialAspect& theMaterial,
+                            const bool          theToKeepColor,
+                            const bool          theToKeepTransp) const
 {
   theDrawer->SetupOwnShadingAspect();
 
   const Quantity_Color aColor  = theDrawer->ShadingAspect()->Color(myCurrentFacingModel);
-  const double         aTransp = theDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
+  const double  aTransp = theDrawer->ShadingAspect()->Transparency(myCurrentFacingModel);
   theDrawer->ShadingAspect()->SetMaterial(theMaterial, myCurrentFacingModel);
 
   if (theToKeepColor)
@@ -674,7 +674,7 @@ void AIS_Shape::UnsetMaterial()
 //=================================================================================================
 
 void AIS_Shape::setTransparency(const occ::handle<Prs3d_Drawer>& theDrawer,
-                                const double                     theValue) const
+                                const double         theValue) const
 {
   theDrawer->SetupOwnShadingAspect();
   // override transparency
@@ -810,7 +810,8 @@ double AIS_Shape::UserAngle() const
 
 //=================================================================================================
 
-bool AIS_Shape::OwnDeviationCoefficient(double& aCoefficient, double& aPreviousCoefficient) const
+bool AIS_Shape::OwnDeviationCoefficient(double& aCoefficient,
+                                                    double& aPreviousCoefficient) const
 {
   aCoefficient         = myDrawer->DeviationCoefficient();
   aPreviousCoefficient = myDrawer->PreviousDeviationCoefficient();
@@ -819,7 +820,8 @@ bool AIS_Shape::OwnDeviationCoefficient(double& aCoefficient, double& aPreviousC
 
 //=================================================================================================
 
-bool AIS_Shape::OwnDeviationAngle(double& anAngle, double& aPreviousAngle) const
+bool AIS_Shape::OwnDeviationAngle(double& anAngle,
+                                              double& aPreviousAngle) const
 {
   anAngle        = myDrawer->DeviationAngle();
   aPreviousAngle = myDrawer->PreviousDeviationAngle();

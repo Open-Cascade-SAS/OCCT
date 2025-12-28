@@ -24,7 +24,11 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class Geom2dGcc_QualifiedCurve;
 class gp_Pnt2d;
 class gp_Lin2d;
@@ -55,14 +59,14 @@ public:
   //! Tolang is used to determine the tolerance for the tangency points.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                       const Geom2dGcc_QualifiedCurve& Qualified2,
-                                      const double                    Tolang);
+                                      const double             Tolang);
 
   //! This class implements the algorithms used to create 2d
   //! lines passing through a point and tangent to a curve.
   //! Tolang is used to determine the tolerance for the tangency points.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                       const gp_Pnt2d&                 ThePoint,
-                                      const double                    Tolang);
+                                      const double             Tolang);
 
   //! This class implements the algorithms used to create 2d
   //! line tangent to two curves.
@@ -71,9 +75,9 @@ public:
   //! Param2 is used for the initial guess on the second curve.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                       const Geom2dGcc_QualifiedCurve& Qualified2,
-                                      const double                    Tolang,
-                                      const double                    Param1,
-                                      const double                    Param2);
+                                      const double             Tolang,
+                                      const double             Param1,
+                                      const double             Param2);
 
   //! This class implements the algorithms used to create 2d
   //! lines passing through a point and tangent to a curve.
@@ -81,8 +85,8 @@ public:
   //! Param2 is used for the initial guess on the curve.
   Standard_EXPORT Geom2dGcc_Lin2d2Tan(const Geom2dGcc_QualifiedCurve& Qualified1,
                                       const gp_Pnt2d&                 ThePoint,
-                                      const double                    Tolang,
-                                      const double                    Param1);
+                                      const double             Tolang,
+                                      const double             Param1);
 
   //! Returns true if the construction algorithm does not fail
   //! (even if it finds no solution).
@@ -121,9 +125,9 @@ public:
   //! Standard_OutOfRange if Index is less than zero or
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
-  Standard_EXPORT void WhichQualifier(const int        Index,
-                                      GccEnt_Position& Qualif1,
-                                      GccEnt_Position& Qualif2) const;
+  Standard_EXPORT void WhichQualifier(const int Index,
+                                      GccEnt_Position&       Qualif1,
+                                      GccEnt_Position&       Qualif2) const;
 
   //! Returns information about the tangency point between the
   //! result and the first argument.
@@ -135,9 +139,9 @@ public:
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result and the first argument.
@@ -148,28 +152,28 @@ public:
   //! greater than the number of solutions computed by this algorithm.
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
 private:
-  Standard_EXPORT bool Add(const int                      theIndex,
-                           const Geom2dGcc_Lin2d2TanIter& theLin,
-                           const double                   theTol,
-                           const Geom2dAdaptor_Curve&     theC1,
-                           const Geom2dAdaptor_Curve&     theC2);
+  Standard_EXPORT bool Add(const int         theIndex,
+                                       const Geom2dGcc_Lin2d2TanIter& theLin,
+                                       const double            theTol,
+                                       const Geom2dAdaptor_Curve&     theC1,
+                                       const Geom2dAdaptor_Curve&     theC2);
 
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Lin2d>        linsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Lin2d>    linsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
 };
 
 #endif // _Geom2dGcc_Lin2d2Tan_HeaderFile

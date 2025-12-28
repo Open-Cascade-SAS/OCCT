@@ -31,8 +31,8 @@ Graphic3d_TextureMap::Graphic3d_TextureMap(const TCollection_AsciiString& theFil
 
 //=================================================================================================
 
-Graphic3d_TextureMap::Graphic3d_TextureMap(const occ::handle<Image_PixMap>& thePixMap,
-                                           const Graphic3d_TypeOfTexture    theType)
+Graphic3d_TextureMap::Graphic3d_TextureMap(const occ::handle<Image_PixMap>&   thePixMap,
+                                           const Graphic3d_TypeOfTexture theType)
     : Graphic3d_TextureRoot(thePixMap, theType)
 {
 }

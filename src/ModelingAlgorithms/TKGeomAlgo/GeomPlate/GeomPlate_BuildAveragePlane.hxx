@@ -25,9 +25,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Pnt.hxx>
 #include <Standard_Integer.hxx>
+#include <gp_Vec.hxx>
 #include <NCollection_Sequence.hxx>
 #include <GeomPlate_Aij.hxx>
+#include <NCollection_Sequence.hxx>
 class Geom_Plane;
 class Geom_Line;
 
@@ -47,13 +50,13 @@ public:
   //! if NOption = 1 : the average plane is the inertial plane.
   //! if NOption = 2 : the average plane is the plane of max. flux.
   Standard_EXPORT GeomPlate_BuildAveragePlane(const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts,
-                                              const int    NbBoundPoints,
-                                              const double Tol,
-                                              const int    POption,
-                                              const int    NOption);
+                                              const int             NbBoundPoints,
+                                              const double                Tol,
+                                              const int             POption,
+                                              const int             NOption);
 
   //! Creates the plane from the "best vector"
-  Standard_EXPORT GeomPlate_BuildAveragePlane(const NCollection_Sequence<gp_Vec>& Normals,
+  Standard_EXPORT GeomPlate_BuildAveragePlane(const NCollection_Sequence<gp_Vec>&        Normals,
                                               const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts);
 
   //! Return the average Plane.
@@ -70,13 +73,16 @@ public:
 
   //! computes the minimal box to include all normal
   //! projection points of the initial array on the plane.
-  Standard_EXPORT void MinMaxBox(double& Umin, double& Umax, double& Vmin, double& Vmax) const;
+  Standard_EXPORT void MinMaxBox(double& Umin,
+                                 double& Umax,
+                                 double& Vmin,
+                                 double& Vmax) const;
 
-  Standard_EXPORT static bool HalfSpace(const NCollection_Sequence<gp_Vec>&  NewNormals,
-                                        NCollection_Sequence<gp_Vec>&        Normals,
-                                        NCollection_Sequence<GeomPlate_Aij>& Bset,
-                                        const double                         LinTol,
-                                        const double                         AngTol);
+  Standard_EXPORT static bool HalfSpace(const NCollection_Sequence<gp_Vec>& NewNormals,
+                                                    NCollection_Sequence<gp_Vec>&       Normals,
+                                                    NCollection_Sequence<GeomPlate_Aij>&    Bset,
+                                                    const double         LinTol,
+                                                    const double         AngTol);
 
 private:
   //! Computes a base of the average plane defined by (myG,N)
@@ -89,17 +95,17 @@ private:
   Standard_EXPORT gp_Vec DefPlan(const int NOption);
 
   occ::handle<NCollection_HArray1<gp_Pnt>> myPts;
-  double                                   myUmax;
-  double                                   myVmax;
-  double                                   myVmin;
-  double                                   myUmin;
-  occ::handle<Geom_Plane>                  myPlane;
-  double                                   myTol;
-  occ::handle<Geom_Line>                   myLine;
-  gp_Vec                                   myOX;
-  gp_Vec                                   myOY;
-  gp_Pnt                                   myG;
-  int                                      myNbBoundPoints;
+  double               myUmax;
+  double               myVmax;
+  double               myVmin;
+  double               myUmin;
+  occ::handle<Geom_Plane>          myPlane;
+  double               myTol;
+  occ::handle<Geom_Line>           myLine;
+  gp_Vec                      myOX;
+  gp_Vec                      myOY;
+  gp_Pnt                      myG;
+  int            myNbBoundPoints;
 };
 
 #endif // _GeomPlate_BuildAveragePlane_HeaderFile

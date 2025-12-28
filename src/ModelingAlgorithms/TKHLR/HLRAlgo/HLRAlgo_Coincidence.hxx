@@ -73,10 +73,10 @@ public:
   }
 
 private:
-  int          myFE;
-  double       myParam;
-  TopAbs_State myStBef;
-  TopAbs_State myStAft;
+  int myFE;
+  double    myParam;
+  TopAbs_State     myStBef;
+  TopAbs_State     myStAft;
 };
 
 #endif // _HLRAlgo_Coincidence_HeaderFile

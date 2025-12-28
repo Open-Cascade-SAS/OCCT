@@ -33,6 +33,7 @@
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
@@ -42,25 +43,29 @@
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
   #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+  #include <NCollection_Array1.hxx>
+  #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
   #ifdef DRAW
     #include <DrawTrSurf.hxx>
   #endif
   // POP pour NT
   #include <stdio.h>
 
-static int  IndexOfSection = 0;
+static int IndexOfSection = 0;
 extern bool Blend_GettraceDRAWSECT();
 
 // Pour debug : visualisation de la section
 
 static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf,
                      const occ::handle<Adaptor3d_Curve>&   curv,
-                     const double                          param,
-                     Blend_CSFunction&                     Func)
+                     const double              param,
+                     Blend_CSFunction&                Func)
 {
-  gp_Pnt2d    p2d = Func.Pnt2d();
-  double      pc  = Func.ParameterOnC();
-  Blend_Point BP(Adaptor3d_HSurfaceTool::Value(surf, p2d.X(), p2d.Y()),
+  gp_Pnt2d      p2d = Func.Pnt2d();
+  double pc  = Func.ParameterOnC();
+  Blend_Point   BP(Adaptor3d_HSurfaceTool::Value(surf, p2d.X(), p2d.Y()),
                  BRepBlend_HCurveTool::Value(curv, pc),
                  param,
                  p2d.X(),
@@ -75,7 +80,7 @@ static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf,
   Func.Mults(TMul);
   NCollection_Array1<gp_Pnt>   TP(1, hp);
   NCollection_Array1<gp_Pnt2d> TP2d(1, hp2d);
-  NCollection_Array1<double>   TW(1, hp);
+  NCollection_Array1<double> TW(1, hp);
   Func.Section(BP, TP, TP2d, TW);
   occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
   IndexOfSection++;
@@ -103,25 +108,25 @@ BRepBlend_CSWalking::BRepBlend_CSWalking(const occ::handle<Adaptor3d_Curve>&    
 
 void BRepBlend_CSWalking::Perform(Blend_CSFunction& Func,
                                   //			      Blend_CSFuncInv& FuncInv,
-                                  const double       Pdep,
-                                  const double       Pmax,
-                                  const double       MaxStep,
-                                  const double       Tol3d,
-                                  const double       TolGuide,
-                                  const math_Vector& ParDep,
-                                  const double       Fleche,
-                                  const bool         Appro)
+                                  const double    Pdep,
+                                  const double    Pmax,
+                                  const double    MaxStep,
+                                  const double    Tol3d,
+                                  const double    TolGuide,
+                                  const math_Vector&     ParDep,
+                                  const double    Fleche,
+                                  const bool Appro)
 {
-  done       = false;
-  iscomplete = false;
-  comptra    = false;
-  line       = new BRepBlend_Line();
-  int Nbvar  = Func.NbVariables();
-  tolpoint3d = Tol3d;
-  tolgui     = std::abs(TolGuide);
-  fleche     = std::abs(Fleche);
-  rebrou     = false;
-  pasmax     = std::abs(MaxStep);
+  done                   = false;
+  iscomplete             = false;
+  comptra                = false;
+  line                   = new BRepBlend_Line();
+  int Nbvar = Func.NbVariables();
+  tolpoint3d             = Tol3d;
+  tolgui                 = std::abs(TolGuide);
+  fleche                 = std::abs(Fleche);
+  rebrou                 = false;
+  pasmax                 = std::abs(MaxStep);
   math_Vector sol(1, Nbvar);
 
   firstsol = new NCollection_HArray1<double>(1, Nbvar);
@@ -217,8 +222,8 @@ situ = domain->Classify(gp_Pnt2d(sol(1),sol(2)),
 }
 
 bool BRepBlend_CSWalking::Complete(Blend_CSFunction& Func,
-                                   //					   Blend_CSFuncInv& FuncInv,
-                                   const double Pmin)
+                                               //					   Blend_CSFuncInv& FuncInv,
+                                               const double Pmin)
 {
   if (!done)
   {
@@ -244,8 +249,8 @@ param = previousP.Parameter();
 previousP.ParametersOnS(sol(1),sol(2));
 sol(3) = previousP.ParameterOnC();
 */
-  int         Nbvar = Func.NbVariables();
-  math_Vector sol(1, Nbvar);
+  int Nbvar = Func.NbVariables();
+  math_Vector      sol(1, Nbvar);
   for (int i = 1; i <= Nbvar; i++)
   {
     sol(i) = firstsol->Value(i);
@@ -261,10 +266,10 @@ sol(3) = previousP.ParameterOnC();
   return true;
 }
 
-Blend_Status BRepBlend_CSWalking::TestArret(Blend_CSFunction&  Function,
-                                            const math_Vector& Sol,
-                                            const bool         TestDefl,
-                                            const Blend_Status State)
+Blend_Status BRepBlend_CSWalking::TestArret(Blend_CSFunction&      Function,
+                                            const math_Vector&     Sol,
+                                            const bool TestDefl,
+                                            const Blend_Status     State)
 
 // On regarde si le point donne est solution.
 // Si c est le cas,
@@ -283,7 +288,7 @@ Blend_Status BRepBlend_CSWalking::TestArret(Blend_CSFunction&  Function,
   gp_Vec            Tgp1, Nor1;
   gp_Vec2d          V12d;
   gp_Pnt2d          pt2d;
-  double            pOnC;
+  double     pOnC;
   Blend_Status      State1, State2;
   IntSurf_TypeTrans tras = IntSurf_Undecided;
 
@@ -507,9 +512,9 @@ Blend_Status BRepBlend_CSWalking::CheckDeflectionOnSurf(const gp_Pnt&   Psurf,
   return Blend_OK;
 }
 
-Blend_Status BRepBlend_CSWalking::CheckDeflectionOnCurv(const gp_Pnt& Pcurv,
-                                                        const double  Param,
-                                                        const gp_Vec& Tgcurv)
+Blend_Status BRepBlend_CSWalking::CheckDeflectionOnCurv(const gp_Pnt&       Pcurv,
+                                                        const double Param,
+                                                        const gp_Vec&       Tgcurv)
 {
   // regle par tests dans U4 correspond a 11.478 d
   const double CosRef3D = 0.98;
@@ -745,9 +750,9 @@ bool BRepBlend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
 */
 
 void BRepBlend_CSWalking::Transition(const occ::handle<Adaptor2d_Curve2d>& A,
-                                     const double                          Param,
-                                     IntSurf_Transition&                   TLine,
-                                     IntSurf_Transition&                   TArc)
+                                     const double              Param,
+                                     IntSurf_Transition&              TLine,
+                                     IntSurf_Transition&              TArc)
 {
   gp_Pnt2d p2d;
   gp_Vec2d dp2d;
@@ -764,15 +769,15 @@ void BRepBlend_CSWalking::Transition(const occ::handle<Adaptor2d_Curve2d>& A,
   IntSurf::MakeTransition(previousP.TangentOnS(), tgrst, normale, TLine, TArc);
 }
 
-void BRepBlend_CSWalking::MakeExtremity(BRepBlend_Extremity&                  Extrem,
-                                        const int                             Index,
-                                        const double                          Param,
-                                        const bool                            IsVtx,
+void BRepBlend_CSWalking::MakeExtremity(BRepBlend_Extremity&             Extrem,
+                                        const int           Index,
+                                        const double              Param,
+                                        const bool           IsVtx,
                                         const occ::handle<Adaptor3d_HVertex>& Vtx)
 {
-  IntSurf_Transition               Tline, Tarc;
-  double                           prm, U, V;
-  int                              nbarc;
+  IntSurf_Transition          Tline, Tarc;
+  double               prm, U, V;
+  int            nbarc;
   occ::handle<Adaptor3d_TopolTool> Iter;
 
   //  Extrem.SetValue(previousP.PointOnS(),sol(1),sol(2),tolesp);
@@ -829,27 +834,27 @@ void BRepBlend_CSWalking::MakeExtremity(BRepBlend_Extremity&                  Ex
 
 void BRepBlend_CSWalking::InternalPerform(Blend_CSFunction& Func,
                                           //				    Blend_CSFuncInv& FuncInv,
-                                          math_Vector& sol,
+                                          math_Vector&        sol,
                                           const double Bound)
 {
   double stepw   = pasmax;
   double parprec = param;
 
-  Blend_Status State;
-  TopAbs_State situ;
-  double       w, U, V;
-  int          nbarc;
-  int          Index = 0;
-  bool         Isvtx = false;
-  int          Nbvar = Func.NbVariables();
-  bool         Arrive, recad, echecrecad;
-  gp_Pnt2d     p2d;
+  Blend_Status     State;
+  TopAbs_State     situ;
+  double    w, U, V;
+  int nbarc;
+  int Index = 0;
+  bool Isvtx = false;
+  int Nbvar = Func.NbVariables();
+  bool Arrive, recad, echecrecad;
+  gp_Pnt2d         p2d;
   //  math_Vector tolerance(1,3),infbound(1,3),supbound(1,3),parinit(1,3);
   //  math_Vector solrst(1,3);
   math_Vector tolerance(1, Nbvar), infbound(1, Nbvar), supbound(1, Nbvar), parinit(1, Nbvar);
   math_Vector solrst(1, Nbvar);
   occ::handle<Adaptor3d_HVertex> Vtx;
-  BRepBlend_Extremity            Exts, Extc;
+  BRepBlend_Extremity       Exts, Extc;
 
   // IntSurf_Transition Tline,Tarc;
 

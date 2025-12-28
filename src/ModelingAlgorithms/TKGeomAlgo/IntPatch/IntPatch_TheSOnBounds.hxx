@@ -24,6 +24,7 @@
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_ThePathPointOfTheSOnBounds.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 class StdFail_NotDone;
 class Standard_OutOfRange;
@@ -49,11 +50,11 @@ public:
   //! F = 0.
   //! TolBoundary defines if a curve is on Q.
   //! TolTangency defines if a point is on Q.
-  Standard_EXPORT void Perform(IntPatch_ArcFunction&                   F,
+  Standard_EXPORT void Perform(IntPatch_ArcFunction&              F,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const double                            TolBoundary,
-                               const double                            TolTangency,
-                               const bool                              RecheckOnRegularity = false);
+                               const double                TolBoundary,
+                               const double                TolTangency,
+                               const bool RecheckOnRegularity = false);
 
   //! Returns True if the calculus was successful.
   bool IsDone() const;
@@ -86,8 +87,8 @@ public:
   const IntPatch_TheSegmentOfTheSOnBounds& Segment(const int Index) const;
 
 private:
-  bool                                                      done;
-  bool                                                      all;
+  bool                           done;
+  bool                           all;
   NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>   sseg;
   NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds> spnt;
 };
@@ -108,13 +109,11 @@ private:
 #define IntStart_ThePathPoint IntPatch_ThePathPointOfTheSOnBounds
 #define IntStart_ThePathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #define IntStart_SequenceOfPathPoint NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>
-#define IntStart_SequenceOfPathPoint_hxx                                                           \
-  <NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>.hxx>
+#define IntStart_SequenceOfPathPoint_hxx <NCollection_Sequence<IntPatch_ThePathPointOfTheSOnBounds>.hxx>
 #define IntStart_TheSegment IntPatch_TheSegmentOfTheSOnBounds
 #define IntStart_TheSegment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #define IntStart_SequenceOfSegment NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>
-#define IntStart_SequenceOfSegment_hxx                                                             \
-  <NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>.hxx>
+#define IntStart_SequenceOfSegment_hxx <NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>.hxx>
 #define IntStart_SearchOnBoundaries IntPatch_TheSOnBounds
 #define IntStart_SearchOnBoundaries_hxx <IntPatch_TheSOnBounds.hxx>
 

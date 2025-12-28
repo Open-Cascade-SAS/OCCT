@@ -31,8 +31,8 @@ class MAT_Arc : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT MAT_Arc(const int                        ArcIndex,
-                          const int                        GeomIndex,
+  Standard_EXPORT MAT_Arc(const int      ArcIndex,
+                          const int      GeomIndex,
                           const occ::handle<MAT_BasicElt>& FirstElement,
                           const occ::handle<MAT_BasicElt>& SecondElement);
 
@@ -64,13 +64,14 @@ public:
   //! Returns True if there is an arc linked to
   //! the Node <aNode> located on the side <aSide> of <me>;
   //! if <aNode> is not on <me>
-  Standard_EXPORT bool HasNeighbour(const occ::handle<MAT_Node>& aNode, const MAT_Side aSide) const;
+  Standard_EXPORT bool HasNeighbour(const occ::handle<MAT_Node>& aNode,
+                                                const MAT_Side          aSide) const;
 
   //! Returns the first arc linked to the Node <aNode>
   //! located on the side <aSide> of <me>;
   //! if HasNeighbour() returns FALSE.
   Standard_EXPORT occ::handle<MAT_Arc> Neighbour(const occ::handle<MAT_Node>& aNode,
-                                                 const MAT_Side               aSide) const;
+                                            const MAT_Side          aSide) const;
 
   Standard_EXPORT void SetIndex(const int anInteger);
 
@@ -88,23 +89,23 @@ public:
 
   Standard_EXPORT void SetSecondArc(const MAT_Side aSide, const occ::handle<MAT_Arc>& anArc);
 
-  Standard_EXPORT void SetNeighbour(const MAT_Side               aSide,
+  Standard_EXPORT void SetNeighbour(const MAT_Side          aSide,
                                     const occ::handle<MAT_Node>& aNode,
                                     const occ::handle<MAT_Arc>&  anArc);
 
   DEFINE_STANDARD_RTTIEXT(MAT_Arc, Standard_Transient)
 
 private:
-  int                       arcIndex;
-  int                       geomIndex;
+  int     arcIndex;
+  int     geomIndex;
   occ::handle<MAT_BasicElt> firstElement;
   occ::handle<MAT_BasicElt> secondElement;
   occ::handle<MAT_Node>     firstNode;
   occ::handle<MAT_Node>     secondNode;
-  void*                     firstArcLeft;
-  void*                     firstArcRight;
-  void*                     secondArcRight;
-  void*                     secondArcLeft;
+  void*     firstArcLeft;
+  void*     firstArcRight;
+  void*     secondArcRight;
+  void*     secondArcLeft;
 };
 
 #endif // _MAT_Arc_HeaderFile

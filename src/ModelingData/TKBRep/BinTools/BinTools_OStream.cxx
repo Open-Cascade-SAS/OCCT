@@ -73,10 +73,9 @@ void BinTools_OStream::WriteReference(const uint64_t& thePosition)
 void BinTools_OStream::WriteShape(const TopAbs_ShapeEnum&   theType,
                                   const TopAbs_Orientation& theOrientation)
 {
-  uint8_t aType = static_cast<uint8_t>(BinTools_ObjectType_EndShape) + 1
-                  + // taking into account that orientation <= 3
-                  (static_cast<uint8_t>(theType) << 2)
-                  + static_cast<uint8_t>(theOrientation); // and type <= 8
+  uint8_t aType =
+    static_cast<uint8_t>(BinTools_ObjectType_EndShape) + 1 + // taking into account that orientation <= 3
+    (static_cast<uint8_t>(theType) << 2) + static_cast<uint8_t>(theOrientation); // and type <= 8
   myStream->put((uint8_t)aType);
   myPosition += sizeof(uint8_t);
 }
@@ -321,7 +320,9 @@ BinTools_OStream& BinTools_OStream::operator<<(const NCollection_Vec3<float>& th
 
 //=================================================================================================
 
-void BinTools_OStream::PutBools(const bool theValue1, const bool theValue2, const bool theValue3)
+void BinTools_OStream::PutBools(const bool theValue1,
+                                const bool theValue2,
+                                const bool theValue3)
 {
   uint8_t aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0);
   myStream->write((char*)&aValue, sizeof(uint8_t));
@@ -339,8 +340,8 @@ void BinTools_OStream::PutBools(const bool theValue1,
                                 const bool theValue7)
 {
   uint8_t aValue = (theValue1 ? 1 : 0) | (theValue2 ? 2 : 0) | (theValue3 ? 4 : 0)
-                   | (theValue4 ? 8 : 0) | (theValue5 ? 16 : 0) | (theValue6 ? 32 : 0)
-                   | (theValue7 ? 64 : 0);
+                         | (theValue4 ? 8 : 0) | (theValue5 ? 16 : 0) | (theValue6 ? 32 : 0)
+                         | (theValue7 ? 64 : 0);
   myStream->write((char*)&aValue, sizeof(uint8_t));
   myPosition += sizeof(uint8_t);
 }

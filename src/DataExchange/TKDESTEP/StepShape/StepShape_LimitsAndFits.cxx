@@ -34,8 +34,7 @@ occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::FormVariance() co
   return theFormVariance;
 }
 
-void StepShape_LimitsAndFits::SetFormVariance(
-  const occ::handle<TCollection_HAsciiString>& form_variance)
+void StepShape_LimitsAndFits::SetFormVariance(const occ::handle<TCollection_HAsciiString>& form_variance)
 {
   theFormVariance = form_variance;
 }
@@ -45,8 +44,7 @@ occ::handle<TCollection_HAsciiString> StepShape_LimitsAndFits::ZoneVariance() co
   return theZoneVariance;
 }
 
-void StepShape_LimitsAndFits::SetZoneVariance(
-  const occ::handle<TCollection_HAsciiString>& zone_variance)
+void StepShape_LimitsAndFits::SetZoneVariance(const occ::handle<TCollection_HAsciiString>& zone_variance)
 {
   theZoneVariance = zone_variance;
 }

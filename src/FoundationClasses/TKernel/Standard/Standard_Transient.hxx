@@ -79,7 +79,8 @@ public:
   Standard_EXPORT virtual const opencascade::handle<Standard_Type>& DynamicType() const;
 
   //! Returns a true value if this is an instance of Type.
-  Standard_EXPORT bool IsInstance(const opencascade::handle<Standard_Type>& theType) const;
+  Standard_EXPORT bool
+    IsInstance(const opencascade::handle<Standard_Type>& theType) const;
 
   //! Returns a true value if this is an instance of TypeName.
   Standard_EXPORT bool IsInstance(const char* theTypeName) const;

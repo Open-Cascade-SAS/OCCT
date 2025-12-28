@@ -29,7 +29,7 @@ public:
 
   Standard_EXPORT Adaptor3d_HVertex(const gp_Pnt2d&          P,
                                     const TopAbs_Orientation Ori,
-                                    const double             Resolution);
+                                    const double      Resolution);
 
   Standard_EXPORT virtual gp_Pnt2d Value();
 
@@ -46,7 +46,7 @@ public:
 
 private:
   gp_Pnt2d           myPnt;
-  double             myTol;
+  double      myTol;
   TopAbs_Orientation myOri;
 };
 

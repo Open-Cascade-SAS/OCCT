@@ -35,31 +35,37 @@ public:
   Standard_EXPORT GeomFill_LocFunction(const occ::handle<GeomFill_LocationLaw>& Law);
 
   //! compute the section for v = param
-  Standard_EXPORT bool D0(const double Param, const double First, const double Last);
+  Standard_EXPORT bool D0(const double Param,
+                                      const double First,
+                                      const double Last);
 
   //! compute the first derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT bool D1(const double Param, const double First, const double Last);
+  Standard_EXPORT bool D1(const double Param,
+                                      const double First,
+                                      const double Last);
 
   //! compute the second derivative in v direction of the
   //! section for v = param
-  Standard_EXPORT bool D2(const double Param, const double First, const double Last);
+  Standard_EXPORT bool D2(const double Param,
+                                      const double First,
+                                      const double Last);
 
-  Standard_EXPORT void DN(const double Param,
-                          const double First,
-                          const double Last,
-                          const int    Order,
-                          double&      Result,
-                          int&         Ier);
+  Standard_EXPORT void DN(const double    Param,
+                          const double    First,
+                          const double    Last,
+                          const int Order,
+                          double&         Result,
+                          int&      Ier);
 
 private:
   occ::handle<GeomFill_LocationLaw> myLaw;
-  NCollection_Array1<gp_Vec>        V;
-  NCollection_Array1<gp_Vec>        DV;
-  NCollection_Array1<gp_Vec>        D2V;
-  gp_Mat                            M;
-  gp_Mat                            DM;
-  gp_Mat                            D2M;
+  NCollection_Array1<gp_Vec>           V;
+  NCollection_Array1<gp_Vec>           DV;
+  NCollection_Array1<gp_Vec>           D2V;
+  gp_Mat                       M;
+  gp_Mat                       DM;
+  gp_Mat                       D2M;
 };
 
 #endif // _GeomFill_LocFunction_HeaderFile

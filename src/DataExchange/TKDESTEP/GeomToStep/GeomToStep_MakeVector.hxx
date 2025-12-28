@@ -48,11 +48,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeVector(
     const occ::handle<Geom_Vector>& V,
-    const StepData_Factors&         theLocalFactors = StepData_Factors());
+    const StepData_Factors&    theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeVector(
     const occ::handle<Geom2d_Vector>& V,
-    const StepData_Factors&           theLocalFactors = StepData_Factors());
+    const StepData_Factors&      theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Vector>& Value() const;
 

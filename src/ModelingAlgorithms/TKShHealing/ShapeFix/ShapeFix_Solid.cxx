@@ -36,13 +36,29 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_Solid, ShapeFix_Root)
@@ -86,20 +102,20 @@ void ShapeFix_Solid::Init(const TopoDS_Solid& solid)
 
 static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
 {
-  TopExp_Explorer aExp(aShape, TopAbs_EDGE);
-  gp_XYZ          center(0.0, 0.0, 0.0);
-  int             numpoints = 0;
+  TopExp_Explorer  aExp(aShape, TopAbs_EDGE);
+  gp_XYZ           center(0.0, 0.0, 0.0);
+  int numpoints = 0;
   for (; aExp.More(); aExp.Next())
   {
-    TopoDS_Edge             e1 = TopoDS::Edge(aExp.Current());
-    double                  f, l;
+    TopoDS_Edge        e1 = TopoDS::Edge(aExp.Current());
+    double      f, l;
     occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(e1, f, l);
     if (!c3d.IsNull())
     {
       for (int i = 1; i <= 5; i++)
       {
         double param = f + (l - f) / 4 * (i - 1);
-        gp_Pnt pt;
+        gp_Pnt        pt;
         numpoints++;
         c3d->D0(param, pt);
         center += pt.XYZ();
@@ -112,18 +128,15 @@ static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
 #endif
 //=================================================================================================
 
-static void CollectSolids(
-  const NCollection_Sequence<TopoDS_Shape>& aSeqShells,
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                                   anIndexedMapShellHoles,
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& theMapStatus)
+static void CollectSolids(const NCollection_Sequence<TopoDS_Shape>&            aSeqShells,
+                          NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& anIndexedMapShellHoles,
+                          NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>&            theMapStatus)
 {
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapHoles;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    aMapShellHoles;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                aMapHoles;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapShellHoles;
   for (int i1 = 1; i1 <= aSeqShells.Length(); i1++)
   {
-    TopoDS_Shell                   aShell1 = TopoDS::Shell(aSeqShells.Value(i1));
+    TopoDS_Shell         aShell1 = TopoDS::Shell(aSeqShells.Value(i1));
     NCollection_List<TopoDS_Shape> lshells;
     aMapShellHoles.Bind(aShell1, lshells);
   }
@@ -143,7 +156,7 @@ static void CollectSolids(
       OCC_CATCH_SIGNALS
       TopAbs_State                infinstatus = TopAbs_UNKNOWN;
       BRepClass3d_SolidClassifier bsc3d(solid);
-      int                         st = 0;
+      int            st = 0;
       if (!theMapStatus.IsBound(aShell1))
       {
 
@@ -173,15 +186,15 @@ static void CollectSolids(
           continue;
         if (aMapShellHoles.IsBound(aShell2))
         {
-          bool                                  isAnalysis = false;
+          bool            isAnalysis = false;
           const NCollection_List<TopoDS_Shape>& ls         = aMapShellHoles.Find(aShell2);
           for (NCollection_List<TopoDS_Shape>::Iterator li(ls); li.More() && !isAnalysis; li.Next())
             isAnalysis = li.Value().IsSame(aShell1);
           if (isAnalysis)
             continue;
         }
-        TopAbs_State                                                  pointstatus = TopAbs_UNKNOWN;
-        int                                                           numon       = 0;
+        TopAbs_State               pointstatus = TopAbs_UNKNOWN;
+        int           numon       = 0;
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> amapVert;
         for (TopExp_Explorer aExpVert(aShell2, TopAbs_VERTEX);
              aExpVert.More() && amapVert.Extent() < 10;
@@ -230,8 +243,7 @@ static void CollectSolids(
       continue;
     }
   }
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator aItShellHoles(aMapShellHoles);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator aItShellHoles(aMapShellHoles);
   for (; aItShellHoles.More(); aItShellHoles.Next())
   {
     if (aMapHoles.Contains(aItShellHoles.Key()))
@@ -239,8 +251,7 @@ static void CollectSolids(
     const NCollection_List<TopoDS_Shape>& lHoles = aItShellHoles.Value();
     if (lHoles.IsEmpty())
       continue;
-    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More();
-         lItHoles.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
     {
       if (aMapHoles.Contains(lItHoles.Value()))
       {
@@ -251,9 +262,7 @@ static void CollectSolids(
       }
     }
   }
-  for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aIterHoles(aMapHoles);
-       aIterHoles.More();
-       aIterHoles.Next())
+  for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aIterHoles(aMapHoles); aIterHoles.More(); aIterHoles.Next())
     aMapShellHoles.UnBind(aIterHoles.Key());
 
   for (int i = 1; i <= aSeqShells.Length(); ++i)
@@ -269,19 +278,18 @@ static void CollectSolids(
 
 //=================================================================================================
 
-static bool CreateSolids(const TopoDS_Shape&                                            theShape,
-                         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSolids)
+static bool CreateSolids(const TopoDS_Shape&         theShape,
+                                     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aMapSolids)
 {
   NCollection_Sequence<TopoDS_Shape> aSeqShells;
-  bool                               isDone = false;
+  bool         isDone = false;
 
   for (TopExp_Explorer aExpShell(theShape, TopAbs_SHELL); aExpShell.More(); aExpShell.Next())
   {
     aSeqShells.Append(aExpShell.Current());
   }
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                                                  aMapShellHoles;
-  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMapStatus;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapShellHoles;
+  NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>            aMapStatus;
   CollectSolids(aSeqShells, aMapShellHoles, aMapStatus);
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> ShellSolid;
   // Defines correct orientation of shells
@@ -340,8 +348,7 @@ static bool CreateSolids(const TopoDS_Shape&                                    
     }
 
     const NCollection_List<TopoDS_Shape>& lHoles = aMapShellHoles(i);
-    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More();
-         lItHoles.Next())
+    for (NCollection_List<TopoDS_Shape>::Iterator lItHoles(lHoles); lItHoles.More(); lItHoles.Next())
     {
       TopoDS_Shell aShellHole = TopoDS::Shell(lItHoles.Value());
       if (aMapStatus.IsBound(aShellHole))
@@ -367,8 +374,7 @@ static bool CreateSolids(const TopoDS_Shape&                                    
     ShellSolid.Add(aShell, aSolid);
   }
   // Creation of compsolid from shells containing shared faces.
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    aMapFaceShells;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> aMapFaceShells;
   TopExp::MapShapesAndAncestors(theShape, TopAbs_FACE, TopAbs_SHELL, aMapFaceShells);
   for (int i = 1; i <= aMapFaceShells.Extent(); i++)
   {
@@ -378,7 +384,7 @@ static bool CreateSolids(const TopoDS_Shape&                                    
     TopoDS_CompSolid aCompSolid;
     BRep_Builder     aB;
     aB.MakeCompSolid(aCompSolid);
-    isDone    = (theShape.ShapeType() != TopAbs_COMPSOLID || isDone);
+    isDone                 = (theShape.ShapeType() != TopAbs_COMPSOLID || isDone);
     int nbSol = 0;
 
     for (NCollection_List<TopoDS_Shape>::Iterator lItSh(lshells); lItSh.More(); lItSh.Next())
@@ -421,8 +427,8 @@ bool ShapeFix_Solid::Perform(const Message_ProgressRange& theProgress)
     SetContext(new ShapeBuild_ReShape);
   myFixShell->SetContext(Context());
 
-  int          NbShells = 0;
-  TopoDS_Shape S        = Context()->Apply(myShape);
+  int NbShells = 0;
+  TopoDS_Shape     S        = Context()->Apply(myShape);
 
   // Calculate number of underlying shells
   int aNbShells = 0;
@@ -469,16 +475,16 @@ bool ShapeFix_Solid::Perform(const Message_ProgressRange& theProgress)
 
   if (NbShells == 1)
   {
-    TopoDS_Shape    tmpShape = Context()->Apply(myShape);
-    TopExp_Explorer aExp(tmpShape, TopAbs_SHELL);
-    bool            isClosed = false;
+    TopoDS_Shape     tmpShape = Context()->Apply(myShape);
+    TopExp_Explorer  aExp(tmpShape, TopAbs_SHELL);
+    bool isClosed = false;
     if (aExp.More())
     {
       TopoDS_Shell             aShtmp = TopoDS::Shell(aExp.Current());
       ShapeAnalysis_FreeBounds sfb(aShtmp);
       const TopoDS_Compound&   aC1     = sfb.GetClosedWires();
       const TopoDS_Compound&   aC2     = sfb.GetOpenWires();
-      int                      numedge = 0;
+      int         numedge = 0;
       TopExp_Explorer          aExp1(aC1, TopAbs_EDGE);
       for (; aExp1.More(); aExp1.Next())
         numedge++;
@@ -605,7 +611,7 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell(const TopoDS_Shell& shell)
   {
     OCC_CATCH_SIGNALS
     BRepClass3d_SolidClassifier bsc3d(solid);
-    constexpr double            t = Precision::Confusion(); // tolerance moyenne
+    constexpr double     t = Precision::Confusion(); // tolerance moyenne
     bsc3d.PerformInfinitePoint(t);
 
     if (bsc3d.State() == TopAbs_IN)

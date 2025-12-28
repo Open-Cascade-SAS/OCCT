@@ -71,12 +71,12 @@ void BOPAlgo_PaveFiller::FillShrunkData(const TopAbs_ShapeEnum aType1,
     return;
   }
   //
-  int                                                      i, nS[2], nE, nV1, nV2, aNbVSD, k;
-  double                                                   aT1, aT2;
+  int                    i, nS[2], nE, nV1, nV2, aNbVSD, k;
+  double                       aT1, aT2;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
-  NCollection_Map<int>                                     aMI;
-  BOPAlgo_VectorOfShrunkRange                              aVSD;
-  TopAbs_ShapeEnum                                         aType[2] = {aType1, aType2};
+  NCollection_Map<int>                aMI;
+  BOPAlgo_VectorOfShrunkRange         aVSD;
+  TopAbs_ShapeEnum                    aType[2] = {aType1, aType2};
   //
   for (; myIterator->More(); myIterator->Next())
   {

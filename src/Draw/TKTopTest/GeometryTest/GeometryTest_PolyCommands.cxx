@@ -23,9 +23,12 @@
 #include <NCollection_Array1.hxx>
 #include <Poly_Polygon2D.hxx>
 #include <Poly_Polygon3D.hxx>
+#include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
@@ -41,7 +44,7 @@ static int polytr(Draw_Interpretor& di, int n, const char** a)
   int nbTri   = Draw::Atoi(a[3]);
 
   // read the nodes
-  int                        i, j = 4;
+  int   i, j = 4;
   NCollection_Array1<gp_Pnt> Nodes(1, nbNodes);
 
   for (i = 1; i <= nbNodes; i++)
@@ -86,7 +89,7 @@ static int polygon3d(Draw_Interpretor& di, int n, const char** a)
   int nbNodes = Draw::Atoi(a[2]);
 
   // read the nodes
-  int                        i, j = 3;
+  int   i, j = 3;
   NCollection_Array1<gp_Pnt> Nodes(1, nbNodes);
 
   for (i = 1; i <= nbNodes; i++)
@@ -117,7 +120,7 @@ static int polygon2d(Draw_Interpretor& di, int n, const char** a)
   int nbNodes = Draw::Atoi(a[2]);
 
   // read the nodes
-  int                          i, j = 3;
+  int     i, j = 3;
   NCollection_Array1<gp_Pnt2d> Nodes(1, nbNodes);
 
   for (i = 1; i <= nbNodes; i++)
@@ -144,8 +147,7 @@ static int shnodes(Draw_Interpretor&, int n, const char** a)
 {
   if (n != 2)
     return 1;
-  occ::handle<DrawTrSurf_Triangulation> T =
-    occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));
+  occ::handle<DrawTrSurf_Triangulation> T = occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));
 
   if (!T.IsNull())
   {
@@ -165,9 +167,8 @@ static int shtriangles(Draw_Interpretor&, int n, const char** a)
   if (n != 2)
     return 1;
 
-  occ::handle<DrawTrSurf_Triangulation> T =
-    occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));
-  bool SHOWTRIANGLES = T->ShowTriangles();
+  occ::handle<DrawTrSurf_Triangulation> T = occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(a[1]));
+  bool                 SHOWTRIANGLES = T->ShowTriangles();
   T->ShowTriangles(!SHOWTRIANGLES);
   dout.RepaintAll();
   return 0; // wnt
@@ -176,9 +177,7 @@ static int shtriangles(Draw_Interpretor&, int n, const char** a)
 //=================================================================================================
 
 template <typename Poly, typename Point, typename PointArr>
-static inline void AddNode(const occ::handle<Poly>& thePolygon,
-                           const Point&             thePnt,
-                           PointArr&                theNodes)
+static inline void AddNode(const occ::handle<Poly>& thePolygon, const Point& thePnt, PointArr& theNodes)
 {
   for (int i = thePolygon->Nodes().Lower(); i <= thePolygon->Nodes().Upper(); i++)
   {
@@ -190,7 +189,9 @@ static inline void AddNode(const occ::handle<Poly>& thePolygon,
 
 //=================================================================================================
 
-static int AddNode(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int AddNode(Draw_Interpretor& theDI,
+                                int  theNArg,
+                                const char**      theArgVal)
 {
   if (theNArg < 4)
   {
@@ -200,8 +201,8 @@ static int AddNode(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 
   if (theNArg == 4)
   {
-    occ::handle<Poly_Polygon2D>  aPoly2d = DrawTrSurf::GetPolygon2D(theArgVal[1]);
-    NCollection_Array1<gp_Pnt2d> aNodes(aPoly2d->Nodes().Lower(), aPoly2d->Nodes().Upper() + 1);
+    occ::handle<Poly_Polygon2D> aPoly2d = DrawTrSurf::GetPolygon2D(theArgVal[1]);
+    NCollection_Array1<gp_Pnt2d>   aNodes(aPoly2d->Nodes().Lower(), aPoly2d->Nodes().Upper() + 1);
     AddNode(aPoly2d, gp_Pnt2d(Draw::Atof(theArgVal[2]), Draw::Atof(theArgVal[3])), aNodes);
     aPoly2d.Nullify();
     aPoly2d = new Poly_Polygon2D(aNodes);
@@ -210,7 +211,7 @@ static int AddNode(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
   else
   {
     occ::handle<Poly_Polygon3D> aPoly3d = DrawTrSurf::GetPolygon3D(theArgVal[1]);
-    NCollection_Array1<gp_Pnt>  aNodes(aPoly3d->Nodes().Lower(), aPoly3d->Nodes().Upper() + 1);
+    NCollection_Array1<gp_Pnt>     aNodes(aPoly3d->Nodes().Lower(), aPoly3d->Nodes().Upper() + 1);
     AddNode(aPoly3d,
             gp_Pnt(Draw::Atof(theArgVal[2]), Draw::Atof(theArgVal[3]), Draw::Atof(theArgVal[4])),
             aNodes);
@@ -224,7 +225,9 @@ static int AddNode(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
 
 //=================================================================================================
 
-static int PolygonProps(Draw_Interpretor& theDI, int theNArg, const char** theArgVal)
+static int PolygonProps(Draw_Interpretor& theDI,
+                                     int  theNArg,
+                                     const char**      theArgVal)
 {
   if (theNArg < 2)
   {

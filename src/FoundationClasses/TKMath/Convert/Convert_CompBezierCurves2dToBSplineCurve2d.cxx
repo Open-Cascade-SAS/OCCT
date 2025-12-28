@@ -20,6 +20,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <PLib.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -48,10 +49,9 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::AddCurve(const NCollection_Arra
     //      ( !P1.IsEqual(P2,Precision::Confusion()),
     //       "Convert_CompBezierCurves2dToBSplineCurve2d::Addcurve");
   }
-  myDone = false;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> HPoles =
-    new NCollection_HArray1<gp_Pnt2d>(Poles.Lower(), Poles.Upper());
-  HPoles->ChangeArray1() = Poles;
+  myDone                               = false;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>> HPoles = new NCollection_HArray1<gp_Pnt2d>(Poles.Lower(), Poles.Upper());
+  HPoles->ChangeArray1()               = Poles;
   mySequence.Append(HPoles);
 }
 
@@ -90,7 +90,7 @@ int Convert_CompBezierCurves2dToBSplineCurve2d::NbKnots() const
 
 //=================================================================================================
 
-void Convert_CompBezierCurves2dToBSplineCurve2d::KnotsAndMults(NCollection_Array1<double>& Knots,
+void Convert_CompBezierCurves2dToBSplineCurve2d::KnotsAndMults(NCollection_Array1<double>&    Knots,
                                                                NCollection_Array1<int>& Mults) const
 {
   int i, LowerK = Knots.Lower(), UpperK = Knots.Upper();
@@ -128,9 +128,9 @@ void Convert_CompBezierCurves2dToBSplineCurve2d::Perform()
     myDegree = std::max(myDegree, (mySequence(i))->Length() - 1);
   }
 
-  double                       Det = 0;
-  gp_Pnt2d                     P1, P2, P3;
-  int                          Deg, Inc, MaxDegree = myDegree;
+  double        Det = 0;
+  gp_Pnt2d             P1, P2, P3;
+  int     Deg, Inc, MaxDegree = myDegree;
   NCollection_Array1<gp_Pnt2d> Points(1, myDegree + 1);
 
   for (i = LowerI; i <= UpperI; i++)

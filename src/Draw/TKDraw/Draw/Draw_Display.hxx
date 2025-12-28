@@ -67,38 +67,46 @@ public:
   //! Draw a circle <C> from angle <A1> to <A2>
   //! (Radians). if ModifyWithZoom = 0, then
   //! rayon of circle is convert to Integer.
-  Standard_EXPORT void Draw(const gp_Circ& C,
-                            const double   A1,
-                            const double   A2,
-                            const bool     ModifyWithZoom = true);
+  Standard_EXPORT void Draw(const gp_Circ&         C,
+                            const double    A1,
+                            const double    A2,
+                            const bool ModifyWithZoom = true);
 
   //! Draw a 2D circle <C> from angle <A1> to <A2>
   //! (Radians). if ModifyWithZoom = 0, then
   //! rayon of circle is convert to Integer.
-  Standard_EXPORT void Draw(const gp_Circ2d& C,
-                            const double     A1,
-                            const double     A2,
-                            const bool       ModifyWithZoom = true);
+  Standard_EXPORT void Draw(const gp_Circ2d&       C,
+                            const double    A1,
+                            const double    A2,
+                            const bool ModifyWithZoom = true);
 
-  Standard_EXPORT void DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const int Size = 5);
+  Standard_EXPORT void DrawMarker(const gp_Pnt&          pt,
+                                  const Draw_MarkerShape S,
+                                  const int Size = 5);
 
-  Standard_EXPORT void DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const int Size = 5);
+  Standard_EXPORT void DrawMarker(const gp_Pnt2d&        pt,
+                                  const Draw_MarkerShape S,
+                                  const int Size = 5);
 
-  Standard_EXPORT void DrawMarker(const gp_Pnt& pt, const Draw_MarkerShape S, const double Size);
+  Standard_EXPORT void DrawMarker(const gp_Pnt&          pt,
+                                  const Draw_MarkerShape S,
+                                  const double    Size);
 
-  Standard_EXPORT void DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const double Size);
+  Standard_EXPORT void DrawMarker(const gp_Pnt2d&        pt,
+                                  const Draw_MarkerShape S,
+                                  const double    Size);
 
   Standard_EXPORT void DrawString(const gp_Pnt& pt, const char* S);
 
   Standard_EXPORT void DrawString(const gp_Pnt2d& pt, const char* S);
 
-  Standard_EXPORT void DrawString(const gp_Pnt& pt,
-                                  const char*   S,
-                                  const double  moveX,
-                                  const double  moveY);
+  Standard_EXPORT void DrawString(const gp_Pnt&          pt,
+                                  const char* S,
+                                  const double    moveX,
+                                  const double    moveY);
 
-  Standard_EXPORT void DrawString(const gp_Pnt2d& pt,
-                                  const char*     S,
+  Standard_EXPORT void DrawString(const gp_Pnt2d&        pt,
+                                  const char* S,
                                   const double    moveX,
                                   const double    moveY);
 
@@ -122,6 +130,7 @@ public:
   //! This function is used to shorten the drawing when
   //! picking and to save the picked sub-parts.
   Standard_EXPORT bool HasPicked() const;
+
 };
 
 #endif // _Draw_Display_HeaderFile

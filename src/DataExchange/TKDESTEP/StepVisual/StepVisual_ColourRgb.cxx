@@ -19,9 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ColourRgb, StepVisual_ColourSpecification)
 StepVisual_ColourRgb::StepVisual_ColourRgb() {}
 
 void StepVisual_ColourRgb::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                const double                                 aRed,
-                                const double                                 aGreen,
-                                const double                                 aBlue)
+                                const double                     aRed,
+                                const double                     aGreen,
+                                const double                     aBlue)
 {
   // --- classe own fields ---
   red   = aRed;

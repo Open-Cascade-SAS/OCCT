@@ -99,6 +99,6 @@ TCollection_AsciiString Graphic3d_TextureEnv::TextureName(const int theRank)
   }
 
   TCollection_AsciiString aFileName(NameOfTextureEnv_to_FileName[theRank - 1]);
-  int                     i = aFileName.SearchFromEnd(".");
+  int        i = aFileName.SearchFromEnd(".");
   return aFileName.SubString(5, i - 1);
 }

@@ -24,9 +24,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SplineCurve, IGESData_IGESEntity)
 
 IGESGeom_SplineCurve::IGESGeom_SplineCurve() {}
 
-void IGESGeom_SplineCurve::Init(const int                                       aType,
-                                const int                                       aDegree,
-                                const int                                       nbDimensions,
+void IGESGeom_SplineCurve::Init(const int               aType,
+                                const int               aDegree,
+                                const int               nbDimensions,
                                 const occ::handle<NCollection_HArray1<double>>& allBreakPoints,
                                 const occ::handle<NCollection_HArray2<double>>& allXPolynomials,
                                 const occ::handle<NCollection_HArray2<double>>& allYPolynomials,
@@ -94,10 +94,10 @@ double IGESGeom_SplineCurve::BreakPoint(const int Index) const
 }
 
 void IGESGeom_SplineCurve::XCoordPolynomial(const int Index,
-                                            double&   AX,
-                                            double&   BX,
-                                            double&   CX,
-                                            double&   DX) const
+                                            double&         AX,
+                                            double&         BX,
+                                            double&         CX,
+                                            double&         DX) const
 {
   AX = theXCoordsPolynomial->Value(Index, 1);
   BX = theXCoordsPolynomial->Value(Index, 2);
@@ -106,10 +106,10 @@ void IGESGeom_SplineCurve::XCoordPolynomial(const int Index,
 }
 
 void IGESGeom_SplineCurve::YCoordPolynomial(const int Index,
-                                            double&   AY,
-                                            double&   BY,
-                                            double&   CY,
-                                            double&   DY) const
+                                            double&         AY,
+                                            double&         BY,
+                                            double&         CY,
+                                            double&         DY) const
 {
   AY = theYCoordsPolynomial->Value(Index, 1);
   BY = theYCoordsPolynomial->Value(Index, 2);
@@ -118,10 +118,10 @@ void IGESGeom_SplineCurve::YCoordPolynomial(const int Index,
 }
 
 void IGESGeom_SplineCurve::ZCoordPolynomial(const int Index,
-                                            double&   AZ,
-                                            double&   BZ,
-                                            double&   CZ,
-                                            double&   DZ) const
+                                            double&         AZ,
+                                            double&         BZ,
+                                            double&         CZ,
+                                            double&         DZ) const
 {
   AZ = theZCoordsPolynomial->Value(Index, 1);
   BZ = theZCoordsPolynomial->Value(Index, 2);
@@ -129,7 +129,10 @@ void IGESGeom_SplineCurve::ZCoordPolynomial(const int Index,
   DZ = theZCoordsPolynomial->Value(Index, 4);
 }
 
-void IGESGeom_SplineCurve::XValues(double& TPX0, double& TPX1, double& TPX2, double& TPX3) const
+void IGESGeom_SplineCurve::XValues(double& TPX0,
+                                   double& TPX1,
+                                   double& TPX2,
+                                   double& TPX3) const
 {
   TPX0 = theXvalues->Value(1);
   TPX1 = theXvalues->Value(2);
@@ -137,7 +140,10 @@ void IGESGeom_SplineCurve::XValues(double& TPX0, double& TPX1, double& TPX2, dou
   TPX3 = theXvalues->Value(4);
 }
 
-void IGESGeom_SplineCurve::YValues(double& TPY0, double& TPY1, double& TPY2, double& TPY3) const
+void IGESGeom_SplineCurve::YValues(double& TPY0,
+                                   double& TPY1,
+                                   double& TPY2,
+                                   double& TPY3) const
 {
   TPY0 = theYvalues->Value(1);
   TPY1 = theYvalues->Value(2);
@@ -145,7 +151,10 @@ void IGESGeom_SplineCurve::YValues(double& TPY0, double& TPY1, double& TPY2, dou
   TPY3 = theYvalues->Value(4);
 }
 
-void IGESGeom_SplineCurve::ZValues(double& TPZ0, double& TPZ1, double& TPZ2, double& TPZ3) const
+void IGESGeom_SplineCurve::ZValues(double& TPZ0,
+                                   double& TPZ1,
+                                   double& TPZ2,
+                                   double& TPZ3) const
 {
   TPZ0 = theZvalues->Value(1);
   TPZ1 = theZvalues->Value(2);

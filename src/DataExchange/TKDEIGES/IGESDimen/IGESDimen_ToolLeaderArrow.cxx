@@ -31,6 +31,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XY.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -42,12 +43,12 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_Leader
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
 
-  double                                  arrowHeadHeight;
-  double                                  arrowHeadWidth;
-  double                                  zDepth;
-  gp_XY                                   arrowHead;
+  double              arrowHeadHeight;
+  double              arrowHeadWidth;
+  double              zDepth;
+  gp_XY                      arrowHead;
   occ::handle<NCollection_HArray1<gp_XY>> segmentTails;
-  int                                     nbval;
+  int           nbval;
 
   bool st = PR.ReadInteger(PR.Current(), "Count of Segments", nbval);
   if (st && nbval > 0)
@@ -77,7 +78,7 @@ void IGESDimen_ToolLeaderArrow::ReadOwnParams(const occ::handle<IGESDimen_Leader
 }
 
 void IGESDimen_ToolLeaderArrow::WriteOwnParams(const occ::handle<IGESDimen_LeaderArrow>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   int upper = ent->NbSegments();
   IW.Send(upper);
@@ -102,11 +103,11 @@ void IGESDimen_ToolLeaderArrow::OwnCopy(const occ::handle<IGESDimen_LeaderArrow>
                                         const occ::handle<IGESDimen_LeaderArrow>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
-  int    nbval           = another->NbSegments();
-  double arrowHeadHeight = another->ArrowHeadHeight();
-  double arrowHeadWidth  = another->ArrowHeadWidth();
-  double zDepth          = another->ZDepth();
-  gp_XY  arrowHead       = another->ArrowHead().XY();
+  int nbval           = another->NbSegments();
+  double    arrowHeadHeight = another->ArrowHeadHeight();
+  double    arrowHeadWidth  = another->ArrowHeadWidth();
+  double    zDepth          = another->ZDepth();
+  gp_XY            arrowHead       = another->ArrowHead().XY();
 
   occ::handle<NCollection_HArray1<gp_XY>> segmentTails = new NCollection_HArray1<gp_XY>(1, nbval);
 
@@ -140,8 +141,8 @@ void IGESDimen_ToolLeaderArrow::OwnCheck(const occ::handle<IGESDimen_LeaderArrow
 
 void IGESDimen_ToolLeaderArrow::OwnDump(const occ::handle<IGESDimen_LeaderArrow>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream& S,
-                                        const int         level) const
+                                        Standard_OStream&      S,
+                                        const int level) const
 {
   S << "IGESDimen_LeaderArrow\n"
     << "Number of Segments : " << ent->NbSegments() << "\n"

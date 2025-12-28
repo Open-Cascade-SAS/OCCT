@@ -34,7 +34,7 @@ math_GaussLeastSquare::math_GaussLeastSquare(const math_Matrix& A, const double 
   LU.Multiply(A2, A);
 
   int Error = LU_Decompose(LU, Index, D, MinPivot);
-  Done      = (!Error) ? true : false;
+  Done                   = (!Error) ? true : false;
 }
 
 void math_GaussLeastSquare::Solve(const math_Vector& B, math_Vector& X) const

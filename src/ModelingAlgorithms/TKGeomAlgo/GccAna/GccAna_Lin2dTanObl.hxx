@@ -24,7 +24,11 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class gp_Pnt2d;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;
@@ -45,9 +49,9 @@ public:
   //! This class implements the algorithms used to
   //! create 2d line passing through a point and
   //! making an angle with a line.
-  Standard_EXPORT GccAna_Lin2dTanObl(const gp_Pnt2d& ThePoint,
-                                     const gp_Lin2d& TheLine,
-                                     const double    TheAngle);
+  Standard_EXPORT GccAna_Lin2dTanObl(const gp_Pnt2d&     ThePoint,
+                                     const gp_Lin2d&     TheLine,
+                                     const double TheAngle);
 
   //! This class implements the algorithms used to
   //! create 2d line tangent to a circle and
@@ -57,7 +61,7 @@ public:
   //! the argument it qualifies (for example, enclosed for a circle).
   Standard_EXPORT GccAna_Lin2dTanObl(const GccEnt_QualifiedCirc& Qualified1,
                                      const gp_Lin2d&             TheLine,
-                                     const double                TheAngle);
+                                     const double         TheAngle);
 
   //! Returns True if the algorithm succeeded.
   //! Note: IsDone protects against a failure arising from a
@@ -102,30 +106,30 @@ public:
   //! didn't succeed.
   //! It raises OutOfRange if Index is greater than the number of solutions.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the intersection between the
   //! result number Index and the third argument.
   //! Raises NotDone if the construction algorithm didn't succeed.
   //! It raises OutOfRange if Index is greater than the number of solutions.
   Standard_EXPORT void Intersection2(const int Index,
-                                     double&   ParSol,
-                                     double&   ParArg,
-                                     gp_Pnt2d& PntSol) const;
+                                     double&         ParSol,
+                                     double&         ParArg,
+                                     gp_Pnt2d&              PntSol) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Lin2d>        linsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Lin2d>    linsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pntint2sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pntint2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
 };
 
 #endif // _GccAna_Lin2dTanObl_HeaderFile

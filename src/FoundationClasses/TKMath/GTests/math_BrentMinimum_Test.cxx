@@ -44,7 +44,7 @@ public:
   bool Value(const double theX, double& theF) override
   {
     double dx = theX - 1.0;
-    theF      = dx * dx * dx * dx + 2.0;
+    theF             = dx * dx * dx * dx + 2.0;
     return true;
   }
 };
@@ -79,7 +79,7 @@ public:
   {
     double dx = 1.0 - theX;
     double dy = theX - theX * theX;
-    theF      = dx * dx + 100.0 * dy * dy;
+    theF             = dx * dx + 100.0 * dy * dy;
     return true;
   }
 };
@@ -130,8 +130,8 @@ TEST(MathBrentMinimumTest, ConstructorWithKnownValue)
 {
   // Test constructor when F(Bx) is known
   QuadraticFunction aFunc;
-  double            Bx  = 1.5;
-  double            Fbx = (Bx - 2.0) * (Bx - 2.0) + 1.0; // F(1.5) = 1.25
+  double     Bx  = 1.5;
+  double     Fbx = (Bx - 2.0) * (Bx - 2.0) + 1.0; // F(1.5) = 1.25
 
   math_BrentMinimum aSolver(1.0e-10, Fbx);
   aSolver.Perform(aFunc, 0.0, Bx, 4.0);

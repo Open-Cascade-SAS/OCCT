@@ -28,19 +28,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_ConnectPoint, IGESData_IGESEntity)
 
 IGESDraw_ConnectPoint::IGESDraw_ConnectPoint() {}
 
-void IGESDraw_ConnectPoint::Init(
-  const gp_XYZ&                                     aPoint,
-  const occ::handle<IGESData_IGESEntity>&           aDisplaySymbol,
-  const int                                         aTypeFlag,
-  const int                                         aFunctionFlag,
-  const occ::handle<TCollection_HAsciiString>&      aFunctionIdentifier,
-  const occ::handle<IGESGraph_TextDisplayTemplate>& anIdentifierTemplate,
-  const occ::handle<TCollection_HAsciiString>&      aFunctionName,
-  const occ::handle<IGESGraph_TextDisplayTemplate>& aFunctionTemplate,
-  const int                                         aPointIdentifier,
-  const int                                         aFunctionCode,
-  const int                                         aSwapFlag,
-  const occ::handle<IGESData_IGESEntity>&           anOwnerSubfigure)
+void IGESDraw_ConnectPoint::Init(const gp_XYZ&                                aPoint,
+                                 const occ::handle<IGESData_IGESEntity>&           aDisplaySymbol,
+                                 const int                       aTypeFlag,
+                                 const int                       aFunctionFlag,
+                                 const occ::handle<TCollection_HAsciiString>&      aFunctionIdentifier,
+                                 const occ::handle<IGESGraph_TextDisplayTemplate>& anIdentifierTemplate,
+                                 const occ::handle<TCollection_HAsciiString>&      aFunctionName,
+                                 const occ::handle<IGESGraph_TextDisplayTemplate>& aFunctionTemplate,
+                                 const int                       aPointIdentifier,
+                                 const int                       aFunctionCode,
+                                 const int                       aSwapFlag,
+                                 const occ::handle<IGESData_IGESEntity>&           anOwnerSubfigure)
 {
   thePoint              = aPoint;
   theDisplaySymbol      = aDisplaySymbol;

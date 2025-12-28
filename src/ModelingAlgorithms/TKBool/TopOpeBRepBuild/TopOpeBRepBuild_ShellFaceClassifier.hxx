@@ -25,6 +25,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_CompositeClassifier.hxx>
 #include <TopAbs_State.hxx>
 class TopOpeBRepBuild_BlockBuilder;
@@ -68,13 +69,13 @@ public:
   Standard_EXPORT TopAbs_State State();
 
 private:
-  bool                                                                     myFirstCompare;
-  gp_Pnt                                                                   myPoint3d;
-  TopoDS_Shell                                                             myShell;
-  BRep_Builder                                                             myBuilder;
-  TopOpeBRepTool_SolidClassifier                                           mySolidClassifier;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myFaceShellMap;
-  TopoDS_Shape                                                             myShape;
+  bool               myFirstCompare;
+  gp_Pnt                         myPoint3d;
+  TopoDS_Shell                   myShell;
+  BRep_Builder                   myBuilder;
+  TopOpeBRepTool_SolidClassifier mySolidClassifier;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>   myFaceShellMap;
+  TopoDS_Shape                   myShape;
 };
 
 #endif // _TopOpeBRepBuild_ShellFaceClassifier_HeaderFile

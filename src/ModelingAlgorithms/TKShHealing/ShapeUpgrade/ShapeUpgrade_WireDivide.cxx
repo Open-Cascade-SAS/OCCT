@@ -44,10 +44,16 @@
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <ShapeUpgrade_WireDivide.hxx>
 #include <Standard_Type.hxx>
+#include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -58,6 +64,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide, ShapeUpgrade_Tool)
 
@@ -132,8 +139,7 @@ void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S)
 
 //=================================================================================================
 
-void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S,
-                                         const TopLoc_Location&           L)
+void ShapeUpgrade_WireDivide::SetSurface(const occ::handle<Geom_Surface>& S, const TopLoc_Location& L)
 {
   BRep_Builder B;
   B.MakeFace(myFace, S, L, Precision::Confusion());
@@ -146,9 +152,9 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
                                occ::handle<NCollection_HSequence<double>>        new2d,
                                occ::handle<NCollection_HSequence<double>>        new3d)
 {
-  constexpr double         preci = Precision::PConfusion();
-  int                      len3d = orig3d->Length();
-  int                      len2d = orig2d->Length();
+  constexpr double preci = Precision::PConfusion();
+  int        len3d = orig3d->Length();
+  int        len2d = orig2d->Length();
   NCollection_Array1<bool> fixNew2d(1, len3d);
   fixNew2d.Init(false);
   NCollection_Array1<bool> fixNew3d(1, len2d);
@@ -159,8 +165,8 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
   int i; // svv #1
   for (i = 1; i <= len3d; i++)
   {
-    double par   = new2d->Value(i);
-    int    index = 0;
+    double    par   = new2d->Value(i);
+    int index = 0;
     for (int j = 1; j <= len2d && !index; j++)
       if (std::abs(par - orig2d->Value(j)) < preci)
         index = j;
@@ -168,7 +174,7 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
     {
       double newPar = orig2d->Value(index);
       new2d->SetValue(i, newPar);
-      fixNew2d(i)     = true;
+      fixNew2d(i)            = true;
       double newPar3d = orig3d->Value(i);
       new3d->SetValue(index, newPar3d);
       fixNew3d(index) = true;
@@ -177,8 +183,8 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
 
   for (i = 1; i <= len2d; i++)
   {
-    double par   = new3d->Value(i);
-    int    index = 0;
+    double    par   = new3d->Value(i);
+    int index = 0;
     for (int j = 1; j <= len3d && !index; j++)
       if (std::abs(par - orig3d->Value(j)) < preci)
         index = j;
@@ -186,7 +192,7 @@ static void CorrectSplitValues(const occ::handle<NCollection_HSequence<double>>&
     {
       double newPar = orig3d->Value(index);
       new3d->SetValue(i, newPar);
-      fixNew3d(i)     = true;
+      fixNew3d(i)            = true;
       double newPar2d = orig2d->Value(i);
       new2d->SetValue(index, newPar2d);
       fixNew2d(index) = true;
@@ -269,7 +275,7 @@ void ShapeUpgrade_WireDivide::Perform()
 
   TopoDS_Wire newWire;
   B.MakeWire(newWire);
-  TopLoc_Location           Loc;
+  TopLoc_Location      Loc;
   occ::handle<Geom_Surface> Surf;
   if (!myFace.IsNull())
     Surf = BRep_Tool::Surface(myFace, Loc);
@@ -375,7 +381,7 @@ void ShapeUpgrade_WireDivide::Perform()
       if (isSeam)
       {
         occ::handle<Geom2d_Curve> c2;
-        double                    f2, l2;
+        double        f2, l2;
         // smh#8
         TopoDS_Shape tmpE = E.Reversed();
         TopoDS_Edge  erev = TopoDS::Edge(tmpE);
@@ -403,11 +409,11 @@ void ShapeUpgrade_WireDivide::Perform()
       }
 
       // Exploring theEdge
-      TopoDS_Vertex V1o       = TopExp::FirstVertex(E, false);
-      TopoDS_Vertex V2o       = TopExp::LastVertex(E, false);
-      bool          isForward = (E.Orientation() == TopAbs_FORWARD);
-      double        TolEdge   = BRep_Tool::Tolerance(E);
-      bool          isDeg     = BRep_Tool::Degenerated(E);
+      TopoDS_Vertex    V1o       = TopExp::FirstVertex(E, false);
+      TopoDS_Vertex    V2o       = TopExp::LastVertex(E, false);
+      bool isForward = (E.Orientation() == TopAbs_FORWARD);
+      double    TolEdge   = BRep_Tool::Tolerance(E);
+      bool isDeg     = BRep_Tool::Degenerated(E);
 
       // Copy vertices to protect original shape against SameParamseter
       // smh#8
@@ -431,8 +437,8 @@ void ShapeUpgrade_WireDivide::Perform()
 
       // collect NM vertices
 
-      double                   af = 0., al = 0.;
-      occ::handle<Geom_Curve>  c3d;
+      double            af = 0., al = 0.;
+      occ::handle<Geom_Curve>       c3d;
       Adaptor3d_CurveOnSurface AdCS;
       if (myEdgeDivide->HasCurve3d())
         sae.Curve3d(E, c3d, af, al, false);
@@ -446,9 +452,9 @@ void ShapeUpgrade_WireDivide::Perform()
         AdCS.Load(AdS);
       }
       NCollection_Sequence<TopoDS_Shape> aSeqNMVertices;
-      NCollection_Sequence<double>       aSeqParNM;
-      TopoDS_Iterator                    aItv(E, false);
-      ShapeAnalysis_Curve                sac;
+      NCollection_Sequence<double>   aSeqParNM;
+      TopoDS_Iterator          aItv(E, false);
+      ShapeAnalysis_Curve      sac;
       for (; aItv.More(); aItv.Next())
       {
         if (aItv.Value().Orientation() == TopAbs_INTERNAL
@@ -456,9 +462,9 @@ void ShapeUpgrade_WireDivide::Perform()
         {
           TopoDS_Vertex aVold = TopoDS::Vertex(aItv.Value());
           aSeqNMVertices.Append(aVold);
-          gp_Pnt aP = BRep_Tool::Pnt(TopoDS::Vertex(aVold));
+          gp_Pnt        aP = BRep_Tool::Pnt(TopoDS::Vertex(aVold));
           double ppar;
-          gp_Pnt pproj;
+          gp_Pnt        pproj;
           if (!c3d.IsNull())
             sac.Project(c3d, aP, Precision(), pproj, ppar, af, al, false);
           else
@@ -504,8 +510,8 @@ void ShapeUpgrade_WireDivide::Perform()
       TopoDS_Wire resWire;
       B.MakeWire(resWire);
       //      TopoDS_Vertex firstVertex, lastVertex;
-      int    numE  = 0;
-      gp_Pnt pntV1 = BRep_Tool::Pnt(V1);
+      int numE  = 0;
+      gp_Pnt           pntV1 = BRep_Tool::Pnt(V1);
       // gp_Pnt pntV2 = BRep_Tool::Pnt(V2); // pntV2 not used - see below (skl)
       // double V2Tol = LimitTolerance( BRep_Tool::Tolerance(V2) ); // V2Tol not used - see
       // below (skl)
@@ -518,9 +524,9 @@ void ShapeUpgrade_WireDivide::Perform()
       FixSmallCurveTool->SetSplitCurve3dTool(theSplit3dTool);
       FixSmallCurveTool->SetSplitCurve2dTool(theSplit2dTool);
       FixSmallCurveTool->SetPrecision(MinTolerance());
-      int    Savnum = 0;
-      double SavParf;
-      int    Small = 0;
+      int Savnum = 0;
+      double    SavParf;
+      int Small = 0;
       for (int icurv = 1; icurv <= nbc; icurv++)
       {
 
@@ -734,7 +740,7 @@ void ShapeUpgrade_WireDivide::Perform()
         sbe.CopyRanges(newEdge,E, alpha, beta);*/
         Savnum = 0;
         occ::handle<Geom2d_Curve> c2dTmp;
-        double                    setF, setL;
+        double        setF, setL;
         if (!myFace.IsNull() && sae.PCurve(newEdge, myFace, c2dTmp, setF, setL, false))
           srNew &= ((setF == f2d) && (setL == l2d));
 
@@ -767,7 +773,7 @@ void ShapeUpgrade_WireDivide::Perform()
         double alpar = (myEdgeDivide->HasCurve3d() ? l3d : l2d);
         for (int n = 1; n <= aSeqParNM.Length(); ++n)
         {
-          double        apar  = aSeqParNM.Value(n);
+          double apar  = aSeqParNM.Value(n);
           TopoDS_Vertex aVold = TopoDS::Vertex(aSeqNMVertices.Value(n));
           TopoDS_Vertex aNMVer =
             ShapeAnalysis_TransferParametersProj::CopyNMVertex(aVold, newEdge, E);

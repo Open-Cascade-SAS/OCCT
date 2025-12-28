@@ -40,10 +40,10 @@ Adaptor2d_Line2d::Adaptor2d_Line2d()
 
 //=================================================================================================
 
-Adaptor2d_Line2d::Adaptor2d_Line2d(const gp_Pnt2d& P,
-                                   const gp_Dir2d& D,
-                                   const double    UFirst,
-                                   const double    ULast)
+Adaptor2d_Line2d::Adaptor2d_Line2d(const gp_Pnt2d&     P,
+                                   const gp_Dir2d&     D,
+                                   const double UFirst,
+                                   const double ULast)
     : myUfirst(UFirst),
       myUlast(ULast),
       myAx2d(P, D)
@@ -123,8 +123,8 @@ void Adaptor2d_Line2d::Intervals(NCollection_Array1<double>& T,
 //=================================================================================================
 
 occ::handle<Adaptor2d_Curve2d> Adaptor2d_Line2d::Trim(const double First,
-                                                      const double Last,
-                                                      const double) const
+                                                 const double Last,
+                                                 const double) const
 {
   occ::handle<Adaptor2d_Line2d> HL = new Adaptor2d_Line2d();
   HL->Load(gp_Lin2d(myAx2d), First, Last);
@@ -184,10 +184,10 @@ void Adaptor2d_Line2d::D2(const double X, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V
 //=================================================================================================
 
 void Adaptor2d_Line2d::D3(const double X,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const
 {
   ElCLib::LineD1(X, myAx2d, P, V1);
   V2.SetCoord(0., 0.);

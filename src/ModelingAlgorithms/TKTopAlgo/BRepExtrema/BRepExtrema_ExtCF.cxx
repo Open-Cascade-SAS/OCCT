@@ -69,7 +69,7 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
   double U1, U2;
   BRep_Tool::Range(E, U1, U2);
 
-  BRepAdaptor_Curve              Curv(E);
+  BRepAdaptor_Curve         Curv(E);
   occ::handle<BRepAdaptor_Curve> HC = new BRepAdaptor_Curve(Curv);
   myExtCS.Perform(*HC, U1, U2);
 
@@ -81,7 +81,7 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
   else
   {
     // Exploration of points and classification
-    const double            Tol = BRep_Tool::Tolerance(F2);
+    const double     Tol = BRep_Tool::Tolerance(F2);
     BRepTopAdaptor_FClass2d classifier(F2, Tol);
 
     // If the underlying surface of the face is periodic

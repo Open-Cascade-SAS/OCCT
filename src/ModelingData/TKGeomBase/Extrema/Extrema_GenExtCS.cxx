@@ -32,6 +32,7 @@
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
@@ -92,7 +93,9 @@ static double GetCurvMaxParamVal(const Adaptor3d_Curve& theC)
 }
 
 // restrict maximal parameter on surfaces based on hyperbola to avoid FPE
-static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS, double& theUmax, double& theVmax)
+static void GetSurfMaxParamVals(const Adaptor3d_Surface& theS,
+                                double&           theUmax,
+                                double&           theVmax)
 {
   theUmax = theVmax = MaxParamVal;
 
@@ -140,11 +143,11 @@ Extrema_GenExtCS::~Extrema_GenExtCS()
 
 Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve&   C,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbT,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             Tol1,
-                                   const double             Tol2)
+                                   const int   NbT,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      Tol1,
+                                   const double      Tol2)
 {
   Initialize(S, NbU, NbV, Tol2);
   Perform(C, NbT, Tol1);
@@ -154,17 +157,17 @@ Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve&   C,
 
 Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve&   C,
                                    const Adaptor3d_Surface& S,
-                                   const int                NbT,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             tmin,
-                                   const double             tsup,
-                                   const double             Umin,
-                                   const double             Usup,
-                                   const double             Vmin,
-                                   const double             Vsup,
-                                   const double             Tol1,
-                                   const double             Tol2)
+                                   const int   NbT,
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      tmin,
+                                   const double      tsup,
+                                   const double      Umin,
+                                   const double      Usup,
+                                   const double      Vmin,
+                                   const double      Vsup,
+                                   const double      Tol1,
+                                   const double      Tol2)
 {
   Initialize(S, NbU, NbV, Umin, Usup, Vmin, Vsup, Tol2);
   Perform(C, NbT, tmin, tsup, Tol1);
@@ -173,9 +176,9 @@ Extrema_GenExtCS::Extrema_GenExtCS(const Adaptor3d_Curve&   C,
 //=================================================================================================
 
 void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Tol2)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Tol2)
 {
   myumin = S.FirstUParameter();
   myusup = S.LastUParameter();
@@ -187,13 +190,13 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 //=================================================================================================
 
 void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Umin,
-                                  const double             Usup,
-                                  const double             Vmin,
-                                  const double             Vsup,
-                                  const double             Tol2)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Umin,
+                                  const double      Usup,
+                                  const double      Vmin,
+                                  const double      Vsup,
+                                  const double      Tol2)
 {
   myS       = &S;
   myusample = NbU;
@@ -269,7 +272,9 @@ void Extrema_GenExtCS::Initialize(const Adaptor3d_Surface& S,
 
 //=================================================================================================
 
-void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C, const int NbT, const double Tol1)
+void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
+                               const int NbT,
+                               const double    Tol1)
 {
   mytmin = C.FirstParameter();
   mytsup = C.LastParameter();
@@ -279,10 +284,10 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C, const int NbT, const do
 //=================================================================================================
 
 void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
-                               const int              NbT,
-                               const double           tmin,
-                               const double           tsup,
-                               const double           Tol1)
+                               const int NbT,
+                               const double    tmin,
+                               const double    tsup,
+                               const double    Tol1)
 {
   myDone = false;
   myF.Initialize(C, *myS);
@@ -303,7 +308,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     mytmin = -aCMaxVal;
   }
   //
-  int                 aNbVar = 3;
+  int    aNbVar = 3;
   GeomAbs_SurfaceType aSType = myS->GetType();
   if (IsQuadric(aSType))
   {
@@ -337,8 +342,8 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     }
   }
 
-  int    anInt;
-  double dT = (mytsup - mytmin) / aNbIntC;
+  int anInt;
+  double    dT = (mytsup - mytmin) / aNbIntC;
   for (anInt = 1; anInt <= aNbIntC; anInt++)
   {
     TUVinf(1) = mytmin + (anInt - 1) * dT;
@@ -369,15 +374,15 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
   if (aNbIntC > 1 && myF.NbExt() > 1)
   {
     // Try to remove "false" extrema caused by dividing curve interval
-    NCollection_Sequence<double>&          aSqDists    = myF.SquareDistances();
+    NCollection_Sequence<double>&    aSqDists    = myF.SquareDistances();
     NCollection_Sequence<Extrema_POnCurv>& aPntsOnCrv  = myF.PointsOnCurve();
     NCollection_Sequence<Extrema_POnSurf>& aPntsOnSurf = myF.PointsOnSurf();
-    NCollection_Sequence<double>           aSqDists1(aSqDists);
+    NCollection_Sequence<double>     aSqDists1(aSqDists);
     NCollection_Sequence<Extrema_POnCurv>  aPntsOnCrv1(aPntsOnCrv);
     NCollection_Sequence<Extrema_POnSurf>  aPntsOnSurf1(aPntsOnSurf);
 
-    double aMinDist = aSqDists(1);
-    int    i;
+    double    aMinDist = aSqDists(1);
+    int i;
     for (i = 2; i <= aSqDists.Length(); ++i)
     {
       double aDist = aSqDists(i);
@@ -407,7 +412,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
 //=================================================================================================
 
 void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
-                                    const int              theNbParticles,
+                                    const int theNbParticles,
                                     const math_Vector&     theTUVinf,
                                     const math_Vector&     theTUVsup,
                                     math_Vector&           theTUV)
@@ -425,9 +430,9 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
   double aStepSV = (aMaxTUV(3) - aMinTUV(3)) / myvsample;
 
   // Correct number of curve samples in case of low resolution
-  int    aNewCsample   = mytsample;
-  double aScaleFactor  = 5.0;
-  double aResolutionCU = aStepCU / theC.Resolution(1.0);
+  int aNewCsample   = mytsample;
+  double    aScaleFactor  = 5.0;
+  double    aResolutionCU = aStepCU / theC.Resolution(1.0);
 
   double aMinResolution =
     aScaleFactor
@@ -491,7 +496,7 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
   aStep(3) = aStepSV;
 
   // Find min approximation
-  double                aValue;
+  double         aValue;
   Extrema_GlobOptFuncCS aFunc(&theC, myS);
   math_PSO              aPSO(&aFunc, theTUVinf, theTUVsup, aStep);
   aPSO.Perform(aParticles, theNbParticles, aValue, theTUV);
@@ -500,14 +505,14 @@ void Extrema_GenExtCS::GlobMinGenCS(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
-                                     const int              theNbParticles,
+                                     const int theNbParticles,
                                      const math_Vector&     theTUVinf,
                                      const math_Vector&     theTUVsup,
                                      math_Vector&           theTUV)
 {
-  int         aNbVar = 2;
-  math_Vector anUVinf(1, aNbVar), anUVsup(1, aNbVar), anUV(1, aNbVar);
-  int         i;
+  int aNbVar = 2;
+  math_Vector      anUVinf(1, aNbVar), anUVsup(1, aNbVar), anUV(1, aNbVar);
+  int i;
   for (i = 1; i <= aNbVar; ++i)
   {
     anUVinf(i) = theTUVinf(i + 1);
@@ -540,7 +545,7 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
 
   for (int aSUI = 0; aSUI <= anUsample; aSUI++, aSU += aStepSU)
   {
-    anUV(1)    = aSU;
+    anUV(1)           = aSU;
     double aSV = aMinUV(2);
     for (int aSVI = 0; aSVI <= aVsample; aSVI++, aSV += aStepSV)
     {
@@ -572,8 +577,8 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
   aStep(2) = aStepSV;
 
   // Find min approximation
-  double   aValue;
-  math_PSO aPSO(&aFunc, anUVinf, anUVsup, aStep);
+  double aValue;
+  math_PSO      aPSO(&aFunc, anUVinf, anUVsup, aStep);
   aPSO.Perform(aParticles, theNbParticles, aValue, anUV);
   //
   double aCT = aFunc.ConicParameter(anUV);
@@ -590,9 +595,9 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
   theTUV(2) = anUV(1);
   theTUV(3) = anUV(2);
 
-  bool   isBadSol = false;
-  gp_Vec aDU, aDV, aDT;
-  gp_Pnt aPOnS, aPOnC;
+  bool isBadSol = false;
+  gp_Vec           aDU, aDV, aDT;
+  gp_Pnt           aPOnS, aPOnC;
   myS->D1(anUV(1), anUV(2), aPOnS, aDU, aDV);
   theC.D1(aCT, aPOnC, aDT);
   double aSqDist = aPOnC.SquareDistance(aPOnS);
@@ -618,13 +623,13 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
     for (iu = -1; iu <= 1; ++iu)
     {
       double u = anUV(1) + iu * aStepSU;
-      u        = std::max(anUVinf(1), u);
-      u        = std::min(anUVsup(1), u);
+      u               = std::max(anUVinf(1), u);
+      u               = std::min(anUVsup(1), u);
       for (iv = -1; iv <= 1; ++iv)
       {
         double v = anUV(2) + iv * aStepSV;
-        v        = std::max(anUVinf(2), v);
-        v        = std::min(anUVsup(2), v);
+        v               = std::max(anUVinf(2), v);
+        v               = std::min(anUVsup(2), v);
         myS->D1(u, v, aPOnS, aDU, aDV);
         if (aPOnC.SquareDistance(aPOnS) < Precision::SquareConfusion())
         {
@@ -657,9 +662,9 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
     // Try to precise solution with help of Extrema PS
 
     math_Vector aF(1, 3);
-    aF(1)      = PcPs.Dot(aDT);
-    aF(2)      = PcPs.Dot(aDU);
-    aF(3)      = PcPs.Dot(aDV);
+    aF(1)             = PcPs.Dot(aDT);
+    aF(2)             = PcPs.Dot(aDU);
+    aF(3)             = PcPs.Dot(aDV);
     double aFF = aF.Norm2();
 
     Extrema_GenLocateExtPS anExtPS(*myS, mytol2, mytol2);
@@ -686,13 +691,13 @@ void Extrema_GenExtCS::GlobMinConicS(const Adaptor3d_Curve& theC,
 //=================================================================================================
 
 void Extrema_GenExtCS::GlobMinCQuadric(const Adaptor3d_Curve& theC,
-                                       const int              theNbParticles,
+                                       const int theNbParticles,
                                        const math_Vector&     theTUVinf,
                                        const math_Vector&     theTUVsup,
                                        math_Vector&           theTUV)
 {
-  int         aNbVar = 1;
-  math_Vector aTinf(1, aNbVar), aTsup(1, aNbVar), aT(1, aNbVar);
+  int aNbVar = 1;
+  math_Vector      aTinf(1, aNbVar), aTsup(1, aNbVar), aT(1, aNbVar);
   aTinf(1) = theTUVinf(1);
   aTsup(1) = theTUVsup(1);
   //
@@ -769,8 +774,8 @@ void Extrema_GenExtCS::GlobMinCQuadric(const Adaptor3d_Curve& theC,
   aStep(1) = aStepCT;
 
   // Find min approximation
-  double   aValue;
-  math_PSO aPSO(&aFunc, aTinf, aTsup, aStep);
+  double aValue;
+  math_PSO      aPSO(&aFunc, aTinf, aTsup, aStep);
   aPSO.Perform(aParticles, theNbParticles, aValue, aT);
   //
   math_Vector anUV(1, 2);

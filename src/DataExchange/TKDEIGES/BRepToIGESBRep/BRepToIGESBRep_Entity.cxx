@@ -41,20 +41,31 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESSolid_EdgeList.hxx>
 #include <IGESSolid_VertexList.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESSolid_Loop.hxx>
 #include <IGESSolid_ManifoldSolid.hxx>
 #include <IGESSolid_Shell.hxx>
+#include <IGESSolid_VertexList.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
@@ -106,10 +117,9 @@ void BRepToIGESBRep_Entity::TransferVertexList()
   int nbvertices = myVertices.Extent();
   if (!nbvertices)
     return;
-  occ::handle<NCollection_HArray1<gp_XYZ>> vertices =
-    new NCollection_HArray1<gp_XYZ>(1, nbvertices);
-  double Unit = GetUnit();
-  double X, Y, Z;
+  occ::handle<NCollection_HArray1<gp_XYZ>> vertices = new NCollection_HArray1<gp_XYZ>(1, nbvertices);
+  double               Unit     = GetUnit();
+  double               X, Y, Z;
 
   for (int ivertex = 1; ivertex <= nbvertices; ivertex++)
   {
@@ -143,7 +153,7 @@ int BRepToIGESBRep_Entity::AddVertex(const TopoDS_Vertex& myvertex)
     return 0;
 
   const TopoDS_Shape& V     = myvertex;
-  int                 index = myVertices.FindIndex(V);
+  int    index = myVertices.FindIndex(V);
   if (index == 0)
   {
     index = myVertices.Add(V);
@@ -163,18 +173,17 @@ void BRepToIGESBRep_Entity::TransferEdgeList()
   occ::handle<IGESSolid_VertexList> TheVertexList = myVertexList;
 
   occ::handle<IGESData_IGESEntity>  mycurve;
-  int                               mystartindex, myendindex;
+  int             mystartindex, myendindex;
   occ::handle<IGESSolid_VertexList> mystartlist;
   occ::handle<IGESSolid_VertexList> myendlist;
 
   int nbedges = myEdges.Extent();
   if (!nbedges)
     return;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Curves =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>  Curves = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> startVertexList =
     new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nbedges);
-  occ::handle<NCollection_HArray1<int>> startVertexIndex = new NCollection_HArray1<int>(1, nbedges);
+  occ::handle<NCollection_HArray1<int>>      startVertexIndex = new NCollection_HArray1<int>(1, nbedges);
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_VertexList>>> endVertexList =
     new NCollection_HArray1<occ::handle<IGESSolid_VertexList>>(1, nbedges);
   occ::handle<NCollection_HArray1<int>> endVertexIndex = new NCollection_HArray1<int>(1, nbedges);
@@ -214,15 +223,15 @@ int BRepToIGESBRep_Entity::IndexEdge(const TopoDS_Edge& myedge) const
 //
 //=============================================================================
 
-int BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&                      myedge,
-                                   const occ::handle<IGESData_IGESEntity>& mycurve3d)
+int BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge&                 myedge,
+                                                const occ::handle<IGESData_IGESEntity>& mycurve3d)
 {
   if (myedge.IsNull())
     return 0;
 
-  const TopoDS_Shape&              E     = myedge;
+  const TopoDS_Shape&         E     = myedge;
   occ::handle<IGESData_IGESEntity> C     = mycurve3d;
-  int                              index = myEdges.FindIndex(E);
+  int            index = myEdges.FindIndex(E);
   if (index == 0)
   {
     index = myEdges.Add(E);
@@ -322,8 +331,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoD
   int anInd = IndexEdge(myedge);
   if (anInd != 0)
   {
-    occ::handle<IGESData_IGESEntity> ICurve3d =
-      occ::down_cast<IGESData_IGESEntity>(myCurves(anInd));
+    occ::handle<IGESData_IGESEntity> ICurve3d = occ::down_cast<IGESData_IGESEntity>(myCurves(anInd));
     if (!ICurve3d.IsNull())
       return ICurve3d;
   }
@@ -337,9 +345,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoD
 // TransferEdge
 //=============================================================================
 
-occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge& myedge,
-                                                                     const TopoDS_Face& myface,
-                                                                     const double       Length)
+occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoDS_Edge&  myedge,
+                                                                const TopoDS_Face&  myface,
+                                                                const double Length)
 {
   occ::handle<IGESData_IGESEntity> ICurve3d;
   occ::handle<IGESData_IGESEntity> ICurve2d;
@@ -372,22 +380,21 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferEdge(const TopoD
 // TransferWire
 //=============================================================================
 
-occ::handle<IGESSolid_Loop> BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire& mywire,
-                                                                const TopoDS_Face& myface,
-                                                                const double       Length)
+occ::handle<IGESSolid_Loop> BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wire&  mywire,
+                                                           const TopoDS_Face&  myface,
+                                                           const double Length)
 {
   occ::handle<IGESSolid_Loop> myLoop = new IGESSolid_Loop;
   if (mywire.IsNull())
     return myLoop;
   occ::handle<IGESData_IGESEntity> Pointeur;
 
-  NCollection_Sequence<int>                                           Seqindex;
-  NCollection_Sequence<int>                                           Seqorient;
-  NCollection_Sequence<int>                                           Seqtype;
-  occ::handle<IGESData_IGESEntity>                                    ent2d;
-  occ::handle<IGESData_IGESEntity>                                    ent3d;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq2d =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  NCollection_Sequence<int>            Seqindex;
+  NCollection_Sequence<int>            Seqorient;
+  NCollection_Sequence<int>            Seqtype;
+  occ::handle<IGESData_IGESEntity>          ent2d;
+  occ::handle<IGESData_IGESEntity>          ent3d;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq2d = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   BRepTools_WireExplorer WE;
   // int nbedge = 0; //szv#4:S4163:12Mar99 unused
@@ -440,24 +447,23 @@ occ::handle<IGESSolid_Loop> BRepToIGESBRep_Entity::TransferWire(const TopoDS_Wir
   else
     AddWarning(mywire, " no Vertex associated to the Wire");
 
-  int                                   nbedges = Seq2d->Length();
-  occ::handle<NCollection_HArray1<int>> types   = new NCollection_HArray1<int>(1, nbedges);
-  int                                   mytype;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> edges =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
-  occ::handle<IGESData_IGESEntity>      myedge;
-  occ::handle<NCollection_HArray1<int>> index = new NCollection_HArray1<int>(1, nbedges);
-  int                                   myindex;
-  occ::handle<NCollection_HArray1<int>> orient = new NCollection_HArray1<int>(1, nbedges);
-  int                                   myorient;
-  occ::handle<NCollection_HArray1<int>> nbcurves = new NCollection_HArray1<int>(1, nbedges);
-  int                                   mynbcurve;
-  occ::handle<NCollection_HArray1<int>> flag;
+  int                            nbedges = Seq2d->Length();
+  occ::handle<NCollection_HArray1<int>>            types   = new NCollection_HArray1<int>(1, nbedges);
+  int                            mytype;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>        edges = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbedges);
+  occ::handle<IGESData_IGESEntity>                 myedge;
+  occ::handle<NCollection_HArray1<int>>            index = new NCollection_HArray1<int>(1, nbedges);
+  int                            myindex;
+  occ::handle<NCollection_HArray1<int>>            orient = new NCollection_HArray1<int>(1, nbedges);
+  int                            myorient;
+  occ::handle<NCollection_HArray1<int>>            nbcurves = new NCollection_HArray1<int>(1, nbedges);
+  int                            mynbcurve;
+  occ::handle<NCollection_HArray1<int>>            flag;
   occ::handle<IGESBasic_HArray1OfHArray1OfInteger> isoflags =
     new IGESBasic_HArray1OfHArray1OfInteger(1, nbedges);
-  int                                                                myisoflag;
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> curve;
-  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>                curves =
+  int                               myisoflag;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           curve;
+  occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> curves =
     new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nbedges);
   occ::handle<IGESData_IGESEntity> mycurve;
 
@@ -506,7 +512,7 @@ occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Fa
   if (start.IsNull())
     return myent;
   occ::handle<IGESData_IGESEntity> ISurf;
-  double                           Length = 1.;
+  double               Length = 1.;
 
   // returns the face surface, the face tolerance, the face natural restriction flag.
   // --------------------------------------------------------------------------------
@@ -544,8 +550,8 @@ occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Fa
   // --------------------------
 
   // to explore the face , it is required to set it FORWARD.
-  TopoDS_Face myface     = start;
-  bool        IsReversed = false;
+  TopoDS_Face      myface     = start;
+  bool IsReversed = false;
   if (start.Orientation() == TopAbs_REVERSED)
   {
     myface.Reverse();
@@ -554,9 +560,9 @@ occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Fa
 
   // outer wire
   //: n3  TopoDS_Wire Outer = BRepTools::OuterWire(myface);
-  TopoDS_Wire                 Outer         = ShapeAlgo::AlgoContainer()->OuterWire(myface); //: n3
+  TopoDS_Wire            Outer         = ShapeAlgo::AlgoContainer()->OuterWire(myface); //: n3
   occ::handle<IGESSolid_Loop> OuterLoop     = new IGESSolid_Loop;
-  bool                        OuterLoopFlag = false;
+  bool       OuterLoopFlag = false;
   if (!Outer.IsNull())
   {
     OuterLoopFlag = true;
@@ -564,13 +570,12 @@ occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Fa
   }
 
   // inner wires
-  TopExp_Explorer                                                     Ex;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                      Ex;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   for (Ex.Init(myface, TopAbs_WIRE); Ex.More(); Ex.Next())
   {
-    TopoDS_Wire                 W         = TopoDS::Wire(Ex.Current());
+    TopoDS_Wire            W         = TopoDS::Wire(Ex.Current());
     occ::handle<IGESSolid_Loop> InnerLoop = new IGESSolid_Loop;
     if (W.IsNull())
     {
@@ -591,7 +596,7 @@ occ::handle<IGESSolid_Face> BRepToIGESBRep_Entity ::TransferFace(const TopoDS_Fa
     AddWarning(E, "An edge alone is not transfer as an IGESBRep Entity");
   }
 
-  int                                                           nbent = Seq->Length();
+  int                nbent = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Loop>>> TabLoop;
   TabLoop = new NCollection_HArray1<occ::handle<IGESSolid_Loop>>(1, nbent + 1);
   TabLoop->SetValue(1, OuterLoop);
@@ -628,11 +633,10 @@ occ::handle<IGESSolid_Shell> BRepToIGESBRep_Entity ::TransferShell(
   if (start.IsNull())
     return myshell;
 
-  TopExp_Explorer                                                     Ex;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  NCollection_Sequence<int>   SeqFlag;
-  occ::handle<IGESSolid_Face> IFace;
+  TopExp_Explorer                      Ex;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  NCollection_Sequence<int>            SeqFlag;
+  occ::handle<IGESSolid_Face>               IFace;
 
   int nbf = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
@@ -662,9 +666,8 @@ occ::handle<IGESSolid_Shell> BRepToIGESBRep_Entity ::TransferShell(
     }
   }
 
-  int                                                           nbfaces = Seq->Length();
-  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>> TabFace =
-    new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
+  int                 nbfaces = Seq->Length();
+  occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Face>>>  TabFace = new NCollection_HArray1<occ::handle<IGESSolid_Face>>(1, nbfaces);
   occ::handle<NCollection_HArray1<int>> TabFlag = new NCollection_HArray1<int>(1, nbfaces);
   for (int itab = 1; itab <= nbfaces; itab++)
   {
@@ -694,12 +697,11 @@ occ::handle<IGESSolid_ManifoldSolid> BRepToIGESBRep_Entity ::TransferSolid(
   if (start.IsNull())
     return mysol;
 
-  TopExp_Explorer                                                     Ex;
-  occ::handle<IGESSolid_Shell>                                        IShell, FirstShell;
-  int                                                                 ShellFlag = 1;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  NCollection_Sequence<int> SeqFlag;
+  TopExp_Explorer                      Ex;
+  occ::handle<IGESSolid_Shell>              IShell, FirstShell;
+  int                     ShellFlag = 1;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq       = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  NCollection_Sequence<int>            SeqFlag;
 
   int nbs = 0;
   for (Ex.Init(start, TopAbs_SHELL); Ex.More(); Ex.Next())
@@ -727,9 +729,9 @@ occ::handle<IGESSolid_ManifoldSolid> BRepToIGESBRep_Entity ::TransferSolid(
     }
   }
 
-  int                                                            nbshells = Seq->Length();
+  int                 nbshells = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>> Tab;
-  occ::handle<NCollection_HArray1<int>>                          TabFlag;
+  occ::handle<NCollection_HArray1<int>> TabFlag;
   if (nbshells > 1)
   {
     Tab     = new NCollection_HArray1<occ::handle<IGESSolid_Shell>>(1, nbshells - 1);
@@ -737,7 +739,7 @@ occ::handle<IGESSolid_ManifoldSolid> BRepToIGESBRep_Entity ::TransferSolid(
     for (int itab = 1; itab <= nbshells; itab++)
     {
       occ::handle<IGESSolid_Shell> itemShell = GetCasted(IGESSolid_Shell, Seq->Value(itab));
-      int                          item      = SeqFlag.Value(itab);
+      int        item      = SeqFlag.Value(itab);
       if (itab == 1)
       {
         FirstShell = itemShell;
@@ -785,9 +787,8 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompSolid(
     return myent;
 
   TopExp_Explorer                      Ex;
-  occ::handle<IGESSolid_ManifoldSolid> ISolid = new IGESSolid_ManifoldSolid;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<IGESSolid_ManifoldSolid>      ISolid = new IGESSolid_ManifoldSolid;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq    = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   int nbs = 0;
   for (Ex.Init(start, TopAbs_SOLID); Ex.More(); Ex.Next())
@@ -809,7 +810,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompSolid(
     }
   }
 
-  int                                                                nbsolids = Seq->Length();
+  int                     nbsolids = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbsolids > 1)
   {
@@ -850,10 +851,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompound(
   if (start.IsNull())
     return res;
 
-  TopExp_Explorer                                                     Ex;
-  occ::handle<IGESData_IGESEntity>                                    IShape;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                      Ex;
+  occ::handle<IGESData_IGESEntity>          IShape;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   // count numbers of subshapes
   int nbshapes = 0;
@@ -962,8 +962,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGESBRep_Entity::TransferCompound(
   nbshapes = Seq->Length();
   if (nbshapes > 0)
   {
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab =
-      new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbshapes);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbshapes);
     for (int itab = 1; itab <= nbshapes; itab++)
     {
       occ::handle<IGESData_IGESEntity> item = GetCasted(IGESData_IGESEntity, Seq->Value(itab));

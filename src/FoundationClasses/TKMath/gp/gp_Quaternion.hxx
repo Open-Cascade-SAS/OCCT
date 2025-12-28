@@ -118,15 +118,15 @@ public:
   //! Create a unit quaternion representing rotation defined
   //! by generalized Euler angles
   Standard_EXPORT void SetEulerAngles(const gp_EulerSequence theOrder,
-                                      const double           theAlpha,
-                                      const double           theBeta,
-                                      const double           theGamma);
+                                      const double    theAlpha,
+                                      const double    theBeta,
+                                      const double    theGamma);
 
   //! Returns Euler angles describing current rotation
   Standard_EXPORT void GetEulerAngles(const gp_EulerSequence theOrder,
-                                      double&                theAlpha,
-                                      double&                theBeta,
-                                      double&                theGamma) const;
+                                      double&         theAlpha,
+                                      double&         theBeta,
+                                      double&         theGamma) const;
 
   constexpr void Set(const double theX,
                      const double theY,
@@ -241,7 +241,8 @@ public:
   }
 
   //! Makes difference of quaternion components; result is "rotations mix"
-  [[nodiscard]] constexpr gp_Quaternion Subtracted(const gp_Quaternion& theOther) const noexcept
+  [[nodiscard]] constexpr gp_Quaternion Subtracted(
+    const gp_Quaternion& theOther) const noexcept
   {
     return gp_Quaternion(x - theOther.x, y - theOther.y, z - theOther.z, w - theOther.w);
   }
@@ -261,7 +262,8 @@ public:
   //! qq' != q'q;
   //! qq^-1 = q;
   //! @endcode
-  [[nodiscard]] constexpr gp_Quaternion Multiplied(const gp_Quaternion& theOther) const noexcept;
+  [[nodiscard]] constexpr gp_Quaternion Multiplied(
+    const gp_Quaternion& theOther) const noexcept;
 
   [[nodiscard]] constexpr gp_Quaternion operator*(const gp_Quaternion& theOther) const noexcept
   {

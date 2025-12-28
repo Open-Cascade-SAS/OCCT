@@ -33,7 +33,10 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESAppli_ToolLevelToPWBLayerMap::IGESAppli_ToolLevelToPWBLayerMap() {}
 
@@ -43,13 +46,12 @@ void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                   num, i;
-  int                                   tempNbPropertyValues;
-  occ::handle<NCollection_HArray1<int>> tempExchangeFileLevelNumber;
+  int                        num, i;
+  int                        tempNbPropertyValues;
+  occ::handle<NCollection_HArray1<int>>        tempExchangeFileLevelNumber;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNativeLevel;
-  occ::handle<NCollection_HArray1<int>>                                   tempPhysicalLayerNumber;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-    tempExchangeFileLevelIdent;
+  occ::handle<NCollection_HArray1<int>>        tempPhysicalLayerNumber;
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempExchangeFileLevelIdent;
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropertyValues);
   if (!PR.ReadInteger(PR.Current(), "Number of definitions", num))
@@ -57,10 +59,9 @@ void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
   if (num > 0)
   {
     tempExchangeFileLevelNumber = new NCollection_HArray1<int>(1, num);
-    tempNativeLevel = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
-    tempPhysicalLayerNumber = new NCollection_HArray1<int>(1, num);
-    tempExchangeFileLevelIdent =
-      new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+    tempNativeLevel             = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+    tempPhysicalLayerNumber     = new NCollection_HArray1<int>(1, num);
+    tempExchangeFileLevelIdent  = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   }
   else
     PR.AddFail("Number of definitions: Not Positive");
@@ -93,7 +94,7 @@ void IGESAppli_ToolLevelToPWBLayerMap::ReadOwnParams(
 
 void IGESAppli_ToolLevelToPWBLayerMap::WriteOwnParams(
   const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
-  IGESData_IGESWriter&                             IW) const
+  IGESData_IGESWriter&                        IW) const
 {
   int i, num;
   IW.Send(ent->NbPropertyValues());
@@ -113,22 +114,19 @@ void IGESAppli_ToolLevelToPWBLayerMap::OwnShared(
 {
 }
 
-void IGESAppli_ToolLevelToPWBLayerMap::OwnCopy(
-  const occ::handle<IGESAppli_LevelToPWBLayerMap>& another,
-  const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
-  Interface_CopyTool& /* TC */) const
+void IGESAppli_ToolLevelToPWBLayerMap::OwnCopy(const occ::handle<IGESAppli_LevelToPWBLayerMap>& another,
+                                               const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
+                                               Interface_CopyTool& /* TC */) const
 {
-  int                                   tempNbPropertyValues = another->NbPropertyValues();
-  int                                   num                  = another->NbLevelToLayerDefs();
+  int                 tempNbPropertyValues = another->NbPropertyValues();
+  int                 num                  = another->NbLevelToLayerDefs();
   occ::handle<NCollection_HArray1<int>> tempExchangeFileLevelNumber =
     new NCollection_HArray1<int>(1, num);
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNativeLevel =
     new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
-  occ::handle<NCollection_HArray1<int>> tempPhysicalLayerNumber =
-    new NCollection_HArray1<int>(1, num);
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-    tempExchangeFileLevelIdent =
-      new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  occ::handle<NCollection_HArray1<int>> tempPhysicalLayerNumber = new NCollection_HArray1<int>(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempExchangeFileLevelIdent =
+    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (int i = 1; i <= num; i++)
   {
     tempExchangeFileLevelNumber->SetValue(i, another->ExchangeFileLevelNumber(i));
@@ -169,8 +167,8 @@ void IGESAppli_ToolLevelToPWBLayerMap::OwnCheck(
 
 void IGESAppli_ToolLevelToPWBLayerMap::OwnDump(const occ::handle<IGESAppli_LevelToPWBLayerMap>& ent,
                                                const IGESData_IGESDumper& /* dumper */,
-                                               Standard_OStream& S,
-                                               const int         level) const
+                                               Standard_OStream&      S,
+                                               const int level) const
 {
   int i, num;
   S << "IGESAppli_LevelToPWBLayerMap\n";

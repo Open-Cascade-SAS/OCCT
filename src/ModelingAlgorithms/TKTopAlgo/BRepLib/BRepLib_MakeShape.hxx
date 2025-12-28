@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <BRepLib_Command.hxx>
 #include <BRepLib_ShapeModification.hxx>
@@ -53,8 +54,7 @@ public:
   Standard_EXPORT virtual bool HasDescendants(const TopoDS_Face& F) const;
 
   //! returns the list of generated Faces.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& DescendantFaces(
-    const TopoDS_Face& F);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& DescendantFaces(const TopoDS_Face& F);
 
   //! returns the number of surfaces
   //! after the shape creation.
@@ -65,16 +65,16 @@ public:
 
   //! returns a list of the created faces
   //! from the edge <E>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& FacesFromEdges(
-    const TopoDS_Edge& E);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& FacesFromEdges(const TopoDS_Edge& E);
 
 protected:
   Standard_EXPORT BRepLib_MakeShape();
 
-  TopoDS_Shape                   myShape;
+  TopoDS_Shape         myShape;
   NCollection_List<TopoDS_Shape> myGenFaces;
   NCollection_List<TopoDS_Shape> myNewFaces;
   NCollection_List<TopoDS_Shape> myEdgFaces;
+
 };
 
 #endif // _BRepLib_MakeShape_HeaderFile

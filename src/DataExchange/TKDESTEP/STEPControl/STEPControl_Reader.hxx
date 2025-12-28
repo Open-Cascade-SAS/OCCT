@@ -26,6 +26,8 @@
 #include <DESTEP_Parameters.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array1.hxx>
 class XSControl_WorkSession;
 class StepData_StepModel;
@@ -77,7 +79,7 @@ public:
   //! Creates a Reader for STEP from an already existing Session
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT STEPControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
-                                     const bool                                scratch = true);
+                                     const bool               scratch = true);
 
   //! Returns the model as a StepModel.
   //! It can then be consulted (header, product)
@@ -85,19 +87,21 @@ public:
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* filename) override;
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* filename)
+    override;
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char*   theName,
-                                                           std::istream& theIStream) override;
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char* theName,
+                                                           std::istream&          theIStream)
+    override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char*              filename,
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char*   filename,
                                                  const DESTEP_Parameters& theParams);
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*              theName,
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*   theName,
                                                    const DESTEP_Parameters& theParams,
                                                    std::istream&            theIStream);
 
@@ -105,9 +109,9 @@ public:
   //! Default is the first one
   //! Returns True if a shape has resulted, false else
   //! Same as inherited TransferOneRoot, kept for compatibility
-  Standard_EXPORT bool TransferRoot(
-    const int                    num         = 1,
-    const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    TransferRoot(const int       num         = 1,
+                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)
@@ -115,10 +119,9 @@ public:
 
   //! Returns sequence of all unit names for shape representations
   //! found in file
-  Standard_EXPORT void FileUnits(
-    NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
-    NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
-    NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames);
+  Standard_EXPORT void FileUnits(NCollection_Sequence<TCollection_AsciiString>& theUnitLengthNames,
+                                 NCollection_Sequence<TCollection_AsciiString>& theUnitAngleNames,
+                                 NCollection_Sequence<TCollection_AsciiString>& theUnitSolidAngleNames);
 
   //! Sets system length unit used by transfer process.
   //! Performs only if a model is not NULL
@@ -132,18 +135,20 @@ protected:
   //! Returns default parameters for shape fixing.
   //! This method is used by the base class to get default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const
+    override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const
+    override;
 
 private:
   //! Returns units for length, angle and solidangle for shape representations
-  Standard_EXPORT bool findUnits(const occ::handle<StepRepr_RepresentationContext>& theReprContext,
-                                 NCollection_Array1<TCollection_AsciiString>&       theNameUnits,
-                                 NCollection_Array1<double>&                        theFactorUnits);
+  Standard_EXPORT bool
+    findUnits(const occ::handle<StepRepr_RepresentationContext>& theReprContext,
+              NCollection_Array1<TCollection_AsciiString>&                  theNameUnits,
+              NCollection_Array1<double>&                         theFactorUnits);
 };
 
 #endif // _STEPControl_Reader_HeaderFile

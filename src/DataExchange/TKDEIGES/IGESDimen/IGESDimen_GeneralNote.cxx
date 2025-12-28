@@ -29,18 +29,17 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_GeneralNote, IGESData_IGESEntity)
 
 IGESDimen_GeneralNote::IGESDimen_GeneralNote() {}
 
-void IGESDimen_GeneralNote::Init(
-  const occ::handle<NCollection_HArray1<int>>&                                   nbChars,
-  const occ::handle<NCollection_HArray1<double>>&                                widths,
-  const occ::handle<NCollection_HArray1<double>>&                                heights,
-  const occ::handle<NCollection_HArray1<int>>&                                   fontCodes,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>&    fonts,
-  const occ::handle<NCollection_HArray1<double>>&                                slants,
-  const occ::handle<NCollection_HArray1<double>>&                                rotations,
-  const occ::handle<NCollection_HArray1<int>>&                                   mirrorFlags,
-  const occ::handle<NCollection_HArray1<int>>&                                   rotFlags,
-  const occ::handle<NCollection_HArray1<gp_XYZ>>&                                start,
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts)
+void IGESDimen_GeneralNote::Init(const occ::handle<NCollection_HArray1<int>>&        nbChars,
+                                 const occ::handle<NCollection_HArray1<double>>&           widths,
+                                 const occ::handle<NCollection_HArray1<double>>&           heights,
+                                 const occ::handle<NCollection_HArray1<int>>&        fontCodes,
+                                 const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>&  fonts,
+                                 const occ::handle<NCollection_HArray1<double>>&           slants,
+                                 const occ::handle<NCollection_HArray1<double>>&           rotations,
+                                 const occ::handle<NCollection_HArray1<int>>&        mirrorFlags,
+                                 const occ::handle<NCollection_HArray1<int>>&        rotFlags,
+                                 const occ::handle<NCollection_HArray1<gp_XYZ>>&             start,
+                                 const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts)
 {
   int num = nbChars->Length();
 

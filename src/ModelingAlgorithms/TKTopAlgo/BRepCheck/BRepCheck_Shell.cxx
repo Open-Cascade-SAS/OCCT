@@ -30,21 +30,27 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepCheck_Shell, BRepCheck_Result)
 
 //=================================================================================================
 
-static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                       NCollection_List<TopoDS_Shape>,
-                                                       TopTools_ShapeMapHasher>&     mapEF,
-                      const TopoDS_Shape&                                            theFace,
-                      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapF)
+static void Propagate(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& mapEF,
+                      const TopoDS_Shape&                              theFace,
+                      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&                      theMapF)
 {
   // Base for the traverse procedure.
   theMapF.Add(theFace);
@@ -124,13 +130,12 @@ void BRepCheck_Shell::Minimum()
 
   if (!myMin)
   {
-    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
-      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
-    NCollection_List<BRepCheck_Status>& lst = **myMap.Bound(myShape, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList = new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    NCollection_List<BRepCheck_Status>&         lst      = **myMap.Bound(myShape, aNewList);
 
     // it is checked if the shell is "connected"
-    TopExp_Explorer exp(myShape, TopAbs_FACE);
-    int             nbface = 0;
+    TopExp_Explorer  exp(myShape, TopAbs_FACE);
+    int nbface = 0;
     myMapEF.Clear();
     for (; exp.More(); exp.Next())
     {
@@ -139,7 +144,7 @@ void BRepCheck_Shell::Minimum()
       for (expe.Init(exp.Current(), TopAbs_EDGE); expe.More(); expe.Next())
       {
         const TopoDS_Shape& edg   = expe.Current();
-        int                 index = myMapEF.FindIndex(edg);
+        int    index = myMapEF.FindIndex(edg);
         if (index == 0)
         {
           NCollection_List<TopoDS_Shape> thelist1;
@@ -189,9 +194,8 @@ void BRepCheck_Shell::InContext(const TopoDS_Shape& S)
     {
       return;
     }
-    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList =
-      new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
-    aHList = *myMap.Bound(S, aNewList);
+    occ::handle<NCollection_Shared<NCollection_List<BRepCheck_Status>>> aNewList = new NCollection_Shared<NCollection_List<BRepCheck_Status>>();
+    aHList                                   = *myMap.Bound(S, aNewList);
   }
   NCollection_List<BRepCheck_Status>& lst = *aHList;
 
@@ -282,8 +286,8 @@ BRepCheck_Status BRepCheck_Shell::Closed(const bool Update)
 
   myCstat = BRepCheck_NoError;
   //
-  int                                                           index, aNbF;
-  TopExp_Explorer                                               exp, ede;
+  int           index, aNbF;
+  TopExp_Explorer            exp, ede;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapS;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        aMEToAvoid;
   myMapEF.Clear();
@@ -470,7 +474,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
   // It is used to check BRepCheck_RedundantFace
 
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> MapOfShapeOrientation;
-  TopExp_Explorer                                                 exp, ede;
+  TopExp_Explorer                exp, ede;
 
   for (exp.Init(myShape, TopAbs_FACE); exp.More(); exp.Next())
   {
@@ -491,8 +495,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 #ifdef OCCT_DEBUG
   if (BRepCheck_Trace(0) > 1)
   {
-    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator itt(
-      MapOfShapeOrientation);
+    NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator itt(MapOfShapeOrientation);
     std::cout << "La map shape Orientation :" << std::endl;
     for (; itt.More(); itt.Next())
     {
@@ -506,7 +509,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
   // BRepCheck_BadOrientationOfSubshape and
   //         BRepCheck_SubshapeNotInShape are checked;
 
-  int                Nbedges = myMapEF.Extent();
+  int   Nbedges = myMapEF.Extent();
   TopoDS_Face        Fref;
   TopAbs_Orientation orf;
 
@@ -516,7 +519,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
     const TopoDS_Edge& edg = TopoDS::Edge(myMapEF.FindKey(i));
     if (BRep_Tool::Degenerated(edg))
       continue;
-    NCollection_List<TopoDS_Shape>&          lface = myMapEF(i);
+    NCollection_List<TopoDS_Shape>&              lface = myMapEF(i);
     NCollection_List<TopoDS_Shape>::Iterator lite(lface);
 
     if (lface.Extent() <= 2)
@@ -540,7 +543,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
       {
         // JR/Hp :
         int iorf = MapOfShapeOrientation.Find(Fref);
-        orf      = (TopAbs_Orientation)iorf;
+        orf                   = (TopAbs_Orientation)iorf;
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
         Fref.Orientation(orf);
 
@@ -569,7 +572,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
           // JR/Hp :
           int anOriFCur = MapOfShapeOrientation.Find(Fcur);
-          orf           = (TopAbs_Orientation)anOriFCur;
+          orf                        = (TopAbs_Orientation)anOriFCur;
           //	orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
           Fcur.Orientation(orf);
 
@@ -615,7 +618,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
     }
     else // more than two faces
     {
-      int                                                    numF = 0, numR = 0;
+      int    numF = 0, numR = 0;
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Fmap;
 
       for (lite.Initialize(lface); lite.More(); lite.Next())
@@ -633,7 +636,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
         }
 
         int iorf = MapOfShapeOrientation.Find(Fcur);
-        orf      = (TopAbs_Orientation)iorf;
+        orf                   = (TopAbs_Orientation)iorf;
         // orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
         Fcur.Orientation(orf);
 
@@ -691,8 +694,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
     {
       if (Nbedges > 0)
       {
-        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> alre;
-        NCollection_List<TopoDS_Shape>                         voisin;
+        NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  alre;
+        NCollection_List<TopoDS_Shape> voisin;
         voisin.Append(Fref);
         alre.Clear();
         while (!voisin.IsEmpty())
@@ -711,7 +714,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
           }
           // JR/Hp :
           int iorf = MapOfShapeOrientation.Find(Fref);
-          orf      = (TopAbs_Orientation)iorf;
+          orf                   = (TopAbs_Orientation)iorf;
           //        orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fref);
           Fref.Orientation(orf);
 
@@ -728,9 +731,9 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
           for (ede.Init(Fref, TopAbs_EDGE); ede.More(); ede.Next())
           {
-            const TopoDS_Edge&                       edg    = TopoDS::Edge(ede.Current());
-            TopAbs_Orientation                       orient = edg.Orientation();
-            NCollection_List<TopoDS_Shape>&          lface  = myMapEF.ChangeFromKey(edg);
+            const TopoDS_Edge&                 edg    = TopoDS::Edge(ede.Current());
+            TopAbs_Orientation                 orient = edg.Orientation();
+            NCollection_List<TopoDS_Shape>&              lface  = myMapEF.ChangeFromKey(edg);
             NCollection_List<TopoDS_Shape>::Iterator lite(lface);
 
             TopoDS_Face Fcur = TopoDS::Face(lite.Value());
@@ -761,7 +764,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const bool Update)
 
             // JR/Hp :
             int anOriFCur = MapOfShapeOrientation.Find(Fcur);
-            orf           = (TopAbs_Orientation)anOriFCur;
+            orf                        = (TopAbs_Orientation)anOriFCur;
             //          orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
             Fcur.Orientation(orf);
 
@@ -874,16 +877,15 @@ bool BRepCheck_Shell::IsUnorientable() const
 int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
 {
   // The connections are found
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    parents;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> parents;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_EDGE, TopAbs_FACE, parents);
   // All faces are taken
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theFaces;
-  TopExp_Explorer                                        exsh(myShape, TopAbs_FACE);
+  TopExp_Explorer     exsh(myShape, TopAbs_FACE);
   for (; exsh.More(); exsh.Next())
     theFaces.Add(exsh.Current());
   // The edges that are not oriented or have more than 2 connections are missing
-  int                                                    iCur;
+  int    iCur;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMultiEd;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theUnOriEd;
   for (iCur = 1; iCur <= parents.Extent(); iCur++)
@@ -895,13 +897,13 @@ int BRepCheck_Shell::NbConnectedSet(NCollection_List<TopoDS_Shape>& theSets)
       theUnOriEd.Add(Ed);
   }
   // Starting from multiconnected edges propagation by simple connections
-  NCollection_List<TopoDS_Shape>::Iterator                         lconx1, lconx2;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator itmsh(theMultiEd);
-  TopoDS_Shell                                                     CurShell;
-  TopoDS_Shape                                                     adFac;
-  NCollection_List<TopoDS_Shape>                                   lesCur;
-  BRep_Builder                                                     BRB;
-  bool                                                             newCur = true;
+  NCollection_List<TopoDS_Shape>::Iterator lconx1, lconx2;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator   itmsh(theMultiEd);
+  TopoDS_Shell                       CurShell;
+  TopoDS_Shape                       adFac;
+  NCollection_List<TopoDS_Shape>               lesCur;
+  BRep_Builder                       BRB;
+  bool                   newCur = true;
   BRB.MakeShell(CurShell);
   for (; itmsh.More(); itmsh.Next())
   {

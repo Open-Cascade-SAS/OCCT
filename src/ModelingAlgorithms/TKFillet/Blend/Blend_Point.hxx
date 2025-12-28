@@ -35,199 +35,199 @@ public:
   Standard_EXPORT Blend_Point();
 
   //! Creates a point on 2 surfaces, with tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt&   Pt1,
-                              const gp_Pnt&   Pt2,
-                              const double    Param,
-                              const double    U1,
-                              const double    V1,
-                              const double    U2,
-                              const double    V2,
-                              const gp_Vec&   Tg1,
-                              const gp_Vec&   Tg2,
-                              const gp_Vec2d& Tg12d,
-                              const gp_Vec2d& Tg22d);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
+                              const gp_Vec&       Tg1,
+                              const gp_Vec&       Tg2,
+                              const gp_Vec2d&     Tg12d,
+                              const gp_Vec2d&     Tg22d);
 
   //! Creates a point on 2 surfaces, without tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt& Pt1,
-                              const gp_Pnt& Pt2,
-                              const double  Param,
-                              const double  U1,
-                              const double  V1,
-                              const double  U2,
-                              const double  V2);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2);
 
   //! Creates a point on a surface and a curve, with tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt&   Pts,
-                              const gp_Pnt&   Ptc,
-                              const double    Param,
-                              const double    U,
-                              const double    V,
-                              const double    W,
-                              const gp_Vec&   Tgs,
-                              const gp_Vec&   Tgc,
-                              const gp_Vec2d& Tg2d);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pts,
+                              const gp_Pnt&       Ptc,
+                              const double Param,
+                              const double U,
+                              const double V,
+                              const double W,
+                              const gp_Vec&       Tgs,
+                              const gp_Vec&       Tgc,
+                              const gp_Vec2d&     Tg2d);
 
   //! Creates a point on a surface and a curve, without tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt& Pts,
-                              const gp_Pnt& Ptc,
-                              const double  Param,
-                              const double  U,
-                              const double  V,
-                              const double  W);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pts,
+                              const gp_Pnt&       Ptc,
+                              const double Param,
+                              const double U,
+                              const double V,
+                              const double W);
 
   //! Creates a point on a surface and a curve on surface,
   //! with tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt&   Pt1,
-                              const gp_Pnt&   Pt2,
-                              const double    Param,
-                              const double    U1,
-                              const double    V1,
-                              const double    U2,
-                              const double    V2,
-                              const double    PC,
-                              const gp_Vec&   Tg1,
-                              const gp_Vec&   Tg2,
-                              const gp_Vec2d& Tg12d,
-                              const gp_Vec2d& Tg22d);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
+                              const double PC,
+                              const gp_Vec&       Tg1,
+                              const gp_Vec&       Tg2,
+                              const gp_Vec2d&     Tg12d,
+                              const gp_Vec2d&     Tg22d);
 
   //! Creates a point on a surface and a curve on surface,
   //! without tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt& Pt1,
-                              const gp_Pnt& Pt2,
-                              const double  Param,
-                              const double  U1,
-                              const double  V1,
-                              const double  U2,
-                              const double  V2,
-                              const double  PC);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
+                              const double PC);
 
   //! Creates a point on two curves on surfaces, with tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt&   Pt1,
-                              const gp_Pnt&   Pt2,
-                              const double    Param,
-                              const double    U1,
-                              const double    V1,
-                              const double    U2,
-                              const double    V2,
-                              const double    PC1,
-                              const double    PC2,
-                              const gp_Vec&   Tg1,
-                              const gp_Vec&   Tg2,
-                              const gp_Vec2d& Tg12d,
-                              const gp_Vec2d& Tg22d);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
+                              const double PC1,
+                              const double PC2,
+                              const gp_Vec&       Tg1,
+                              const gp_Vec&       Tg2,
+                              const gp_Vec2d&     Tg12d,
+                              const gp_Vec2d&     Tg22d);
 
   //! Creates a point on two curves on surfaces, with tangents.
-  Standard_EXPORT Blend_Point(const gp_Pnt& Pt1,
-                              const gp_Pnt& Pt2,
-                              const double  Param,
-                              const double  U1,
-                              const double  V1,
-                              const double  U2,
-                              const double  V2,
-                              const double  PC1,
-                              const double  PC2);
+  Standard_EXPORT Blend_Point(const gp_Pnt&       Pt1,
+                              const gp_Pnt&       Pt2,
+                              const double Param,
+                              const double U1,
+                              const double V1,
+                              const double U2,
+                              const double V2,
+                              const double PC1,
+                              const double PC2);
 
   //! Set the values for a point on 2 surfaces, with tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt&   Pt1,
-                                const gp_Pnt&   Pt2,
-                                const double    Param,
-                                const double    U1,
-                                const double    V1,
-                                const double    U2,
-                                const double    V2,
-                                const gp_Vec&   Tg1,
-                                const gp_Vec&   Tg2,
-                                const gp_Vec2d& Tg12d,
-                                const gp_Vec2d& Tg22d);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                const gp_Vec&       Tg1,
+                                const gp_Vec&       Tg2,
+                                const gp_Vec2d&     Tg12d,
+                                const gp_Vec2d&     Tg22d);
 
   //! Set the values for a point on 2 surfaces, without tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pt1,
-                                const gp_Pnt& Pt2,
-                                const double  Param,
-                                const double  U1,
-                                const double  V1,
-                                const double  U2,
-                                const double  V2);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2);
 
   //! Set the values for a point on a surface and a curve,
   //! with tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt&   Pts,
-                                const gp_Pnt&   Ptc,
-                                const double    Param,
-                                const double    U,
-                                const double    V,
-                                const double    W,
-                                const gp_Vec&   Tgs,
-                                const gp_Vec&   Tgc,
-                                const gp_Vec2d& Tg2d);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pts,
+                                const gp_Pnt&       Ptc,
+                                const double Param,
+                                const double U,
+                                const double V,
+                                const double W,
+                                const gp_Vec&       Tgs,
+                                const gp_Vec&       Tgc,
+                                const gp_Vec2d&     Tg2d);
 
   //! Set the values for a point on a surface and a curve,
   //! without tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pts,
-                                const gp_Pnt& Ptc,
-                                const double  Param,
-                                const double  U,
-                                const double  V,
-                                const double  W);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pts,
+                                const gp_Pnt&       Ptc,
+                                const double Param,
+                                const double U,
+                                const double V,
+                                const double W);
 
   //! Creates a point on a surface and a curve on surface,
   //! with tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt&   Pt1,
-                                const gp_Pnt&   Pt2,
-                                const double    Param,
-                                const double    U1,
-                                const double    V1,
-                                const double    U2,
-                                const double    V2,
-                                const double    PC,
-                                const gp_Vec&   Tg1,
-                                const gp_Vec&   Tg2,
-                                const gp_Vec2d& Tg12d,
-                                const gp_Vec2d& Tg22d);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                const double PC,
+                                const gp_Vec&       Tg1,
+                                const gp_Vec&       Tg2,
+                                const gp_Vec2d&     Tg12d,
+                                const gp_Vec2d&     Tg22d);
 
   //! Creates a point on a surface and a curve on surface,
   //! without tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pt1,
-                                const gp_Pnt& Pt2,
-                                const double  Param,
-                                const double  U1,
-                                const double  V1,
-                                const double  U2,
-                                const double  V2,
-                                const double  PC);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                const double PC);
 
   //! Creates a point on two curves on surfaces, with tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt&   Pt1,
-                                const gp_Pnt&   Pt2,
-                                const double    Param,
-                                const double    U1,
-                                const double    V1,
-                                const double    U2,
-                                const double    V2,
-                                const double    PC1,
-                                const double    PC2,
-                                const gp_Vec&   Tg1,
-                                const gp_Vec&   Tg2,
-                                const gp_Vec2d& Tg12d,
-                                const gp_Vec2d& Tg22d);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                const double PC1,
+                                const double PC2,
+                                const gp_Vec&       Tg1,
+                                const gp_Vec&       Tg2,
+                                const gp_Vec2d&     Tg12d,
+                                const gp_Vec2d&     Tg22d);
 
   //! Creates a point on two curves on surfaces, without tangents.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pt1,
-                                const gp_Pnt& Pt2,
-                                const double  Param,
-                                const double  U1,
-                                const double  V1,
-                                const double  U2,
-                                const double  V2,
-                                const double  PC1,
-                                const double  PC2);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double U1,
+                                const double V1,
+                                const double U2,
+                                const double V2,
+                                const double PC1,
+                                const double PC2);
 
   //! Creates a point on two curves.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pt1,
-                                const gp_Pnt& Pt2,
-                                const double  Param,
-                                const double  PC1,
-                                const double  PC2);
+  Standard_EXPORT void SetValue(const gp_Pnt&       Pt1,
+                                const gp_Pnt&       Pt2,
+                                const double Param,
+                                const double PC1,
+                                const double PC2);
 
   //! Changes parameter on existing point
   void SetParameter(const double Param);
@@ -281,26 +281,26 @@ public:
   const gp_Vec& TangentOnC2() const;
 
 private:
-  gp_Pnt pt1;
-  gp_Pnt pt2;
-  gp_Vec tg1;
-  gp_Vec tg2;
-  double prm;
-  double u1;
-  double v1;
-  double u2;
-  double v2;
-  double pc1;
-  double pc2;
-  double utg12d;
-  double vtg12d;
-  double utg22d;
-  double vtg22d;
-  bool   hass1;
-  bool   hass2;
-  bool   hasc1;
-  bool   hasc2;
-  bool   istgt;
+  gp_Pnt           pt1;
+  gp_Pnt           pt2;
+  gp_Vec           tg1;
+  gp_Vec           tg2;
+  double    prm;
+  double    u1;
+  double    v1;
+  double    u2;
+  double    v2;
+  double    pc1;
+  double    pc2;
+  double    utg12d;
+  double    vtg12d;
+  double    utg22d;
+  double    vtg22d;
+  bool hass1;
+  bool hass2;
+  bool hasc1;
+  bool hasc2;
+  bool istgt;
 };
 
 #include <Blend_Point.lxx>

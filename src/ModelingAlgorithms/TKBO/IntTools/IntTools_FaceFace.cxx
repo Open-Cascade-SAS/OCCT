@@ -63,22 +63,22 @@ static void Parameters(const occ::handle<GeomAdaptor_Surface>&,
                        double&,
                        double&);
 
-static void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
-                                     const double       theTolerance,
-                                     double&            theumin,
-                                     double&            theumax,
-                                     double&            thevmin,
-                                     double&            thevmax);
+static void CorrectSurfaceBoundaries(const TopoDS_Face&  theFace,
+                                     const double theTolerance,
+                                     double&      theumin,
+                                     double&      theumax,
+                                     double&      thevmin,
+                                     double&      thevmax);
 
-static bool ParameterOutOfBoundary(const double                   theParameter,
-                                   const occ::handle<Geom_Curve>& theCurve,
-                                   const TopoDS_Face&             theFace1,
-                                   const TopoDS_Face&             theFace2,
-                                   const double                   theOtherParameter,
-                                   const bool                     bIncreasePar,
-                                   const double                   theTol,
-                                   double&                        theNewParameter,
-                                   const occ::handle<IntTools_Context>&);
+static bool ParameterOutOfBoundary(const double       theParameter,
+                                               const occ::handle<Geom_Curve>& theCurve,
+                                               const TopoDS_Face&        theFace1,
+                                               const TopoDS_Face&        theFace2,
+                                               const double       theOtherParameter,
+                                               const bool    bIncreasePar,
+                                               const double       theTol,
+                                               double&            theNewParameter,
+                                               const occ::handle<IntTools_Context>&);
 
 static bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve);
 
@@ -86,56 +86,60 @@ static bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph
 
 static void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
                           const occ::handle<GeomAdaptor_Surface>& theS2,
-                          const double                            TolF1,
-                          const double                            TolF2,
-                          const double                            TolAng,
-                          const double                            TolTang,
-                          const bool                              theApprox1,
-                          const bool                              theApprox2,
-                          NCollection_Sequence<IntTools_Curve>&   theSeqOfCurve,
-                          bool&                                   theTangentFaces);
+                          const double                TolF1,
+                          const double                TolF2,
+                          const double                TolAng,
+                          const double                TolTang,
+                          const bool             theApprox1,
+                          const bool             theApprox2,
+                          NCollection_Sequence<IntTools_Curve>&         theSeqOfCurve,
+                          bool&                  theTangentFaces);
 
 static bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
-                          const gp_Lin2d&                         theLin2d,
-                          const double                            theTol,
-                          double&                                 theP1,
-                          double&                                 theP2);
+                                      const gp_Lin2d&                    theLin2d,
+                                      const double                theTol,
+                                      double&                     theP1,
+                                      double&                     theP2);
 //
 static void ApproxParameters(const occ::handle<GeomAdaptor_Surface>& aHS1,
                              const occ::handle<GeomAdaptor_Surface>& aHS2,
-                             int&                                    iDegMin,
-                             int&                                    iNbIter,
-                             int&                                    iDegMax);
+                             int&                  iDegMin,
+                             int&                  iNbIter,
+                             int&                  iDegMax);
 
 static void Tolerances(const occ::handle<GeomAdaptor_Surface>& aHS1,
                        const occ::handle<GeomAdaptor_Surface>& aHS2,
-                       double&                                 aTolTang);
+                       double&                     aTolTang);
 
-static bool SortTypes(const GeomAbs_SurfaceType aType1, const GeomAbs_SurfaceType aType2);
-static int  IndexType(const GeomAbs_SurfaceType aType);
+static bool SortTypes(const GeomAbs_SurfaceType aType1,
+                                  const GeomAbs_SurfaceType aType2);
+static int IndexType(const GeomAbs_SurfaceType aType);
 
 //
 static bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
-                        const TopoDS_Face&                   aFace,
-                        const occ::handle<IntTools_Context>& theCtx);
+                                    const TopoDS_Face&              aFace,
+                                    const occ::handle<IntTools_Context>& theCtx);
 
-static double MaxDistance(const occ::handle<Geom_Curve>& theC,
-                          const double                   aT,
-                          GeomAPI_ProjectPointOnSurf&    theProjPS);
+static double MaxDistance(const occ::handle<Geom_Curve>&   theC,
+                                 const double         aT,
+                                 GeomAPI_ProjectPointOnSurf& theProjPS);
 
-static double FindMaxDistance(const occ::handle<Geom_Curve>& theC,
-                              const double                   theFirst,
-                              const double                   theLast,
-                              GeomAPI_ProjectPointOnSurf&    theProjPS,
-                              const double                   theEps);
+static double FindMaxDistance(const occ::handle<Geom_Curve>&   theC,
+                                     const double         theFirst,
+                                     const double         theLast,
+                                     GeomAPI_ProjectPointOnSurf& theProjPS,
+                                     const double         theEps);
 
 static double FindMaxDistance(const occ::handle<Geom_Curve>&       theCurve,
-                              const double                         theFirst,
-                              const double                         theLast,
-                              const TopoDS_Face&                   theFace,
-                              const occ::handle<IntTools_Context>& theContext);
+                                     const double             theFirst,
+                                     const double             theLast,
+                                     const TopoDS_Face&              theFace,
+                                     const occ::handle<IntTools_Context>& theContext);
 
-static void CorrectPlaneBoundaries(double& aUmin, double& aUmax, double& aVmin, double& aVmax);
+static void CorrectPlaneBoundaries(double& aUmin,
+                                   double& aUmax,
+                                   double& aVmin,
+                                   double& aVmax);
 
 //=================================================================================================
 
@@ -216,10 +220,10 @@ const NCollection_Sequence<IntTools_Curve>& IntTools_FaceFace::Lines() const
 // function: SetParameters
 //
 // =======================================================================
-void IntTools_FaceFace::SetParameters(const bool   ToApproxC3d,
-                                      const bool   ToApproxC2dOnS1,
-                                      const bool   ToApproxC2dOnS2,
-                                      const double ApproximationTolerance)
+void IntTools_FaceFace::SetParameters(const bool ToApproxC3d,
+                                      const bool ToApproxC2dOnS1,
+                                      const bool ToApproxC2dOnS2,
+                                      const double    ApproximationTolerance)
 {
   myApprox    = ToApproxC3d;
   myApprox1   = ToApproxC2dOnS1;
@@ -249,8 +253,8 @@ void IntTools_FaceFace::SetList(NCollection_List<IntSurf_PntOn2S>& aListOfPnts)
 }
 
 static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
-                            const BRepAdaptor_Surface& theBAS2,
-                            const double               theTol)
+                                        const BRepAdaptor_Surface& theBAS2,
+                                        const double        theTol)
 {
   const double Tolang = 1.e-8;
   double       aHigh  = 0.0;
@@ -275,7 +279,7 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
 
   if (aType1 == GeomAbs_Cylinder)
   {
-    aS2               = theBAS1.Cylinder();
+    aS2                      = theBAS1.Cylinder();
     const double VMin = theBAS1.FirstVParameter();
     const double VMax = theBAS1.LastVParameter();
 
@@ -305,9 +309,9 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
   inter.Perform(aS1, aS2, Tolang, theTol, aHigh);
   if (inter.TypeInter() == IntAna_Ellipse)
   {
-    const gp_Elips anEl    = inter.Ellipse(1);
-    const double   aMajorR = anEl.MajorRadius();
-    const double   aMinorR = anEl.MinorRadius();
+    const gp_Elips      anEl    = inter.Ellipse(1);
+    const double aMajorR = anEl.MajorRadius();
+    const double aMinorR = anEl.MinorRadius();
 
     return (aMajorR < 100000.0 * aMinorR);
   }
@@ -321,9 +325,9 @@ static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
 // function : Perform
 // purpose  : intersect surfaces of the faces
 //=======================================================================
-void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
-                                const TopoDS_Face& aF2,
-                                const bool         theToRunParallel)
+void IntTools_FaceFace::Perform(const TopoDS_Face&     aF1,
+                                const TopoDS_Face&     aF2,
+                                const bool theToRunParallel)
 {
   if (myContext.IsNull())
   {
@@ -352,7 +356,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
 
     if (myListOfPnts.Extent())
     {
-      double                                      aU1, aV1, aU2, aV2;
+      double                       aU1, aV1, aU2, aV2;
       NCollection_List<IntSurf_PntOn2S>::Iterator aItP2S;
       //
       aItP2S.Initialize(myListOfPnts);
@@ -365,17 +369,17 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
     //
     bool anAproxTmp = myApprox1;
-    myApprox1       = myApprox2;
-    myApprox2       = anAproxTmp;
+    myApprox1                   = myApprox2;
+    myApprox2                   = anAproxTmp;
   }
 
   const occ::handle<Geom_Surface> S1 = BRep_Tool::Surface(myFace1);
   const occ::handle<Geom_Surface> S2 = BRep_Tool::Surface(myFace2);
 
   double aFuzz = myFuzzyValue / 2.;
-  myTolF1      = BRep_Tool::Tolerance(myFace1) + aFuzz;
-  myTolF2      = BRep_Tool::Tolerance(myFace2) + aFuzz;
-  myTol        = myTolF1 + myTolF2;
+  myTolF1             = BRep_Tool::Tolerance(myFace1) + aFuzz;
+  myTolF2             = BRep_Tool::Tolerance(myFace2) + aFuzz;
+  myTol               = myTolF1 + myTolF2;
 
   double TolArc  = myTol;
   double TolTang = TolArc;
@@ -416,8 +420,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
       const int NbLinPP = mySeqOfCurve.Length();
       if (NbLinPP && bReverse)
       {
-        occ::handle<Geom2d_Curve> aC2D1, aC2D2;
-        const int                 aNbLin = mySeqOfCurve.Length();
+        occ::handle<Geom2d_Curve>   aC2D1, aC2D2;
+        const int aNbLin = mySeqOfCurve.Length();
         for (int i = 1; i <= aNbLin; ++i)
         {
           IntTools_Curve& aIC = mySeqOfCurve(i);
@@ -474,8 +478,9 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
   Tolerances(myHS1, myHS2, TolTang);
 
   {
-    const double UVMaxStep  = IntPatch_Intersection::DefineUVMaxStep(myHS1, dom1, myHS2, dom2);
-    double       Deflection = 0.1;
+    const double UVMaxStep =
+      IntPatch_Intersection::DefineUVMaxStep(myHS1, dom1, myHS2, dom2);
+    double Deflection = 0.1;
     if (aType1 == GeomAbs_BSplineSurface && aType2 == GeomAbs_BSplineSurface)
     {
       Deflection /= 10.;
@@ -503,7 +508,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     for (; IterLOP1.More(); IterLOP1.Next())
     {
       const IntSurf_PntOn2S& aPt = IterLOP1.Value();
-      double                 u1, v1, u2, v2;
+      double          u1, v1, u2, v2;
       aPt.Parameters(u1, v1, u2, v2);
 
       Sprintf(aBuff, "%s -p %+10.20f %+10.20f %+10.20f %+10.20f", aBuff, u1, v1, u2, v2);
@@ -553,8 +558,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     }
 
     // Points
-    bool                 bValid2D1, bValid2D2;
-    double               U1, V1, U2, V2;
+    bool     bValid2D1, bValid2D2;
+    double        U1, V1, U2, V2;
     IntTools_PntOnFace   aPntOnF1, aPntOnF2;
     IntTools_PntOn2Faces aPntOn2Faces;
     //
@@ -616,7 +621,7 @@ void IntTools_FaceFace::ComputeTolReached3d(const bool theToRunParallel)
   //
   for (i = 1; i <= aNbLin; ++i)
   {
-    IntTools_Curve&                aIC  = mySeqOfCurve(i);
+    IntTools_Curve&           aIC  = mySeqOfCurve(i);
     const occ::handle<Geom_Curve>& aC3D = aIC.Curve();
     if (aC3D.IsNull())
     {
@@ -637,7 +642,7 @@ void IntTools_FaceFace::ComputeTolReached3d(const bool theToRunParallel)
       if (!aC2D.IsNull())
       {
         // Look for the maximal deviation between 3D and 2D curves
-        double                           aD, aT;
+        double               aD, aT;
         const occ::handle<Geom_Surface>& aS = !j ? aS1 : aS2;
         if (IntTools_Tools::ComputeTolerance(aC3D,
                                              aC2D,
@@ -659,7 +664,7 @@ void IntTools_FaceFace::ComputeTolReached3d(const bool theToRunParallel)
       {
         // Look for the maximal deviation between 3D curve and surface
         const TopoDS_Face& aF = !j ? myFace1 : myFace2;
-        double             aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
+        double      aD = FindMaxDistance(aC3D, aFirst, aLast, aF, myContext);
         if (aD > aTolC)
         {
           aTolC = aD;
@@ -682,18 +687,18 @@ void IntTools_FaceFace::ComputeTolReached3d(const bool theToRunParallel)
 
 //=================================================================================================
 
-void IntTools_FaceFace::MakeCurve(const int                               Index,
+void IntTools_FaceFace::MakeCurve(const int             Index,
                                   const occ::handle<Adaptor3d_TopolTool>& dom1,
                                   const occ::handle<Adaptor3d_TopolTool>& dom2,
-                                  const double                            theToler)
+                                  const double                theToler)
 {
-  bool                       bDone, rejectSurface, reApprox, bAvoidLineConstructor;
-  bool                       ok, bPCurvesOk;
-  int                        i, j, aNbParts;
-  double                     fprm, lprm;
-  double                     Tolpc;
+  bool      bDone, rejectSurface, reApprox, bAvoidLineConstructor;
+  bool      ok, bPCurvesOk;
+  int      i, j, aNbParts;
+  double         fprm, lprm;
+  double         Tolpc;
   occ::handle<IntPatch_Line> L;
-  IntPatch_IType             typl;
+  IntPatch_IType        typl;
   occ::handle<Geom_Curve>    newc;
   //
   const double TOLCHECK    = 1.e-7;
@@ -720,7 +725,7 @@ reapprox:;
     }
     L = aWLine;
 
-    int                    nbp = aWLine->NbPnts();
+    int       nbp = aWLine->NbPnts();
     const IntSurf_PntOn2S& p1  = aWLine->Point(1);
     const IntSurf_PntOn2S& p2  = aWLine->Point(nbp);
 
@@ -901,7 +906,7 @@ reapprox:;
       //
       aNbParts = myLConstruct.NbParts();
       //
-      double                       aPeriod, aNul;
+      double          aPeriod, aNul;
       NCollection_Sequence<double> aSeqFprm, aSeqLprm;
 
       aNul    = 0.;
@@ -1001,7 +1006,7 @@ reapprox:;
         {
           //==============================================
           ////
-          IntTools_Curve                 aCurve;
+          IntTools_Curve            aCurve;
           occ::handle<Geom_TrimmedCurve> aTC3D = new Geom_TrimmedCurve(newc, fprm, lprm);
           aCurve.SetCurve(aTC3D);
           fprm = aTC3D->FirstParameter();
@@ -1056,7 +1061,7 @@ reapprox:;
             //           RealEpsilon()) {
             if (std::abs(fprm) <= aRealEpsilon && std::abs(lprm - 2. * M_PI) <= aRealEpsilon)
             {
-              IntTools_Curve                 aCurve;
+              IntTools_Curve            aCurve;
               occ::handle<Geom_TrimmedCurve> aTC3D = new Geom_TrimmedCurve(newc, fprm, lprm);
               aCurve.SetCurve(aTC3D);
               fprm = aTC3D->FirstParameter();
@@ -1204,12 +1209,12 @@ reapprox:;
       //
       else
       { // X
-        bool                                             bIsDecomposited;
-        int                                              nbiter, aNbSeqOfL;
-        double                                           tol2d, aTolApproxImp;
-        NCollection_Sequence<occ::handle<IntPatch_Line>> aSeqOfL;
-        GeomInt_WLApprox                                 theapp3d;
-        Approx_ParametrizationType                       aParType = Approx_ChordLength;
+        bool           bIsDecomposited;
+        int           nbiter, aNbSeqOfL;
+        double              tol2d, aTolApproxImp;
+        NCollection_Sequence<occ::handle<IntPatch_Line>>    aSeqOfL;
+        GeomInt_WLApprox           theapp3d;
+        Approx_ParametrizationType aParType = Approx_ChordLength;
         //
         bool anApprox1 = myApprox1;
         bool anApprox2 = myApprox2;
@@ -1218,8 +1223,8 @@ reapprox:;
         tol2d         = myTolApprox;
 
         GeomAbs_SurfaceType typs1, typs2;
-        typs1         = myHS1->GetType();
-        typs2         = myHS2->GetType();
+        typs1                     = myHS1->GetType();
+        typs2                     = myHS2->GetType();
         bool anWithPC = true;
 
         if (typs1 == GeomAbs_Cylinder && typs2 == GeomAbs_Sphere)
@@ -1321,8 +1326,14 @@ reapprox:;
               int iDegMax, iDegMin, iNbIter;
               //
               ApproxParameters(myHS1, myHS2, iDegMin, iDegMax, iNbIter);
-              theapp3d
-                .SetParameters(myTolApprox, tol2d, iDegMin, iDegMax, iNbIter, 30, true, aParType);
+              theapp3d.SetParameters(myTolApprox,
+                                     tol2d,
+                                     iDegMin,
+                                     iDegMax,
+                                     iNbIter,
+                                     30,
+                                     true,
+                                     aParType);
             }
           }
 
@@ -1331,11 +1342,13 @@ reapprox:;
           //-- sur cette surface et on remonte les points 2d en 3d.
           if (typs1 == GeomAbs_Plane)
           {
-            theapp3d.Perform(myHS1, myHS2, WL, false, true, myApprox2, ifprm, ilprm);
+            theapp3d
+              .Perform(myHS1, myHS2, WL, false, true, myApprox2, ifprm, ilprm);
           }
           else if (typs2 == GeomAbs_Plane)
           {
-            theapp3d.Perform(myHS1, myHS2, WL, false, myApprox1, true, ifprm, ilprm);
+            theapp3d
+              .Perform(myHS1, myHS2, WL, false, myApprox1, true, ifprm, ilprm);
           }
           else
           {
@@ -1422,10 +1435,10 @@ reapprox:;
                 }
                 //
                 occ::handle<Geom_BSplineCurve> BS = new Geom_BSplineCurve(tpoles,
-                                                                          mbspc.Knots(),
-                                                                          mbspc.Multiplicities(),
-                                                                          mbspc.Degree());
-                GeomLib_CheckBSplineCurve      Check(BS, TOLCHECK, TOLANGCHECK);
+                                                                     mbspc.Knots(),
+                                                                     mbspc.Multiplicities(),
+                                                                     mbspc.Degree());
+                GeomLib_CheckBSplineCurve Check(BS, TOLCHECK, TOLANGCHECK);
                 Check.FixTangent(true, true);
                 //
                 IntTools_Curve aCurve;
@@ -1433,11 +1446,10 @@ reapprox:;
 
                 if (myApprox1)
                 {
-                  occ::handle<Geom2d_BSplineCurve> BS1 =
-                    new Geom2d_BSplineCurve(tpoles2d,
-                                            mbspc.Knots(),
-                                            mbspc.Multiplicities(),
-                                            mbspc.Degree());
+                  occ::handle<Geom2d_BSplineCurve> BS1 = new Geom2d_BSplineCurve(tpoles2d,
+                                                                            mbspc.Knots(),
+                                                                            mbspc.Multiplicities(),
+                                                                            mbspc.Degree());
                   GeomLib_Check2dBSplineCurve Check1(BS1, TOLCHECK, TOLANGCHECK);
                   Check1.FixTangent(true, true);
                   //
@@ -1459,11 +1471,10 @@ reapprox:;
                 {
                   mbspc.Curve(2, tpoles2d);
 
-                  occ::handle<Geom2d_BSplineCurve> BS2 =
-                    new Geom2d_BSplineCurve(tpoles2d,
-                                            mbspc.Knots(),
-                                            mbspc.Multiplicities(),
-                                            mbspc.Degree());
+                  occ::handle<Geom2d_BSplineCurve> BS2 = new Geom2d_BSplineCurve(tpoles2d,
+                                                                            mbspc.Knots(),
+                                                                            mbspc.Multiplicities(),
+                                                                            mbspc.Degree());
                   GeomLib_Check2dBSplineCurve newCheck(BS2, TOLCHECK, TOLANGCHECK);
                   newCheck.FixTangent(true, true);
 
@@ -1507,10 +1518,10 @@ reapprox:;
                 }
                 //
                 occ::handle<Geom_BSplineCurve> BS = new Geom_BSplineCurve(tpoles,
-                                                                          mbspc.Knots(),
-                                                                          mbspc.Multiplicities(),
-                                                                          mbspc.Degree());
-                GeomLib_CheckBSplineCurve      Check(BS, TOLCHECK, TOLANGCHECK);
+                                                                     mbspc.Knots(),
+                                                                     mbspc.Multiplicities(),
+                                                                     mbspc.Degree());
+                GeomLib_CheckBSplineCurve Check(BS, TOLCHECK, TOLANGCHECK);
                 Check.FixTangent(true, true);
                 //
                 IntTools_Curve aCurve;
@@ -1519,11 +1530,10 @@ reapprox:;
 
                 if (myApprox2)
                 {
-                  occ::handle<Geom2d_BSplineCurve> BS1 =
-                    new Geom2d_BSplineCurve(tpoles2d,
-                                            mbspc.Knots(),
-                                            mbspc.Multiplicities(),
-                                            mbspc.Degree());
+                  occ::handle<Geom2d_BSplineCurve> BS1 = new Geom2d_BSplineCurve(tpoles2d,
+                                                                            mbspc.Knots(),
+                                                                            mbspc.Multiplicities(),
+                                                                            mbspc.Degree());
                   GeomLib_Check2dBSplineCurve Check1(BS1, TOLCHECK, TOLANGCHECK);
                   Check1.FixTangent(true, true);
                   //
@@ -1545,11 +1555,10 @@ reapprox:;
                 if (myApprox1)
                 {
                   mbspc.Curve(1, tpoles2d);
-                  occ::handle<Geom2d_BSplineCurve> BS2 =
-                    new Geom2d_BSplineCurve(tpoles2d,
-                                            mbspc.Knots(),
-                                            mbspc.Multiplicities(),
-                                            mbspc.Degree());
+                  occ::handle<Geom2d_BSplineCurve> BS2 = new Geom2d_BSplineCurve(tpoles2d,
+                                                                            mbspc.Knots(),
+                                                                            mbspc.Multiplicities(),
+                                                                            mbspc.Degree());
                   GeomLib_Check2dBSplineCurve Check2(BS2, TOLCHECK, TOLANGCHECK);
                   Check2.FixTangent(true, true);
                   //
@@ -1610,9 +1619,9 @@ reapprox:;
               //
               else
               { // typs2 != GeomAbs_Plane && typs1 != GeomAbs_Plane
-                bool                           bIsValid1, bIsValid2;
+                bool          bIsValid1, bIsValid2;
                 occ::handle<Geom_BSplineCurve> BS;
-                IntTools_Curve                 aCurve;
+                IntTools_Curve            aCurve;
                 //
                 bIsValid1 = true;
                 bIsValid2 = true;
@@ -1636,7 +1645,7 @@ reapprox:;
                   if (anApprox1)
                   {
                     occ::handle<Geom2d_BSplineCurve> BS1;
-                    NCollection_Array1<gp_Pnt2d>     tpoles2d(1, nbpoles);
+                    NCollection_Array1<gp_Pnt2d>        tpoles2d(1, nbpoles);
                     mbspc.Curve(2, tpoles2d);
                     //
                     BS1 = new Geom2d_BSplineCurve(tpoles2d,
@@ -1660,7 +1669,7 @@ reapprox:;
                     lprm = BS->LastParameter();
 
                     occ::handle<Geom2d_Curve> C2d;
-                    double                    aTol = myTolApprox;
+                    double        aTol = myTolApprox;
                     GeomInt_IntSS::BuildPCurves(fprm, lprm, aTol, myHS1->Surface(), BS, C2d);
                     BS1 = occ::down_cast<Geom2d_BSplineCurve>(C2d);
                     aCurve.SetFirstCurve2d(BS1);
@@ -1672,7 +1681,7 @@ reapprox:;
                   if (anApprox2)
                   {
                     occ::handle<Geom2d_BSplineCurve> BS2;
-                    NCollection_Array1<gp_Pnt2d>     tpoles2d(1, nbpoles);
+                    NCollection_Array1<gp_Pnt2d>        tpoles2d(1, nbpoles);
                     mbspc.Curve((myApprox1 == true) ? 3 : 2, tpoles2d);
                     BS2 = new Geom2d_BSplineCurve(tpoles2d,
                                                   mbspc.Knots(),
@@ -1694,7 +1703,7 @@ reapprox:;
                     lprm = BS->LastParameter();
 
                     occ::handle<Geom2d_Curve> C2d;
-                    double                    aTol = myTolApprox;
+                    double        aTol = myTolApprox;
                     GeomInt_IntSS::BuildPCurves(fprm, lprm, aTol, myHS2->Surface(), BS, C2d);
                     BS2 = occ::down_cast<Geom2d_BSplineCurve>(C2d);
                     aCurve.SetSecondCurve2d(BS2);
@@ -1726,7 +1735,7 @@ reapprox:;
 
       occ::handle<Geom_Curve>   aC3d;
       occ::handle<Geom2d_Curve> aC2d1, aC2d2;
-      double                    aTolReached;
+      double        aTolReached;
       GeomInt_IntSS::TreatRLine(RL, myHS1, myHS2, aC3d, aC2d1, aC2d2, aTolReached);
 
       if (aC3d.IsNull())
@@ -1735,9 +1744,9 @@ reapprox:;
       Bnd_Box2d aBox1, aBox2;
 
       const double aU1f = myHS1->FirstUParameter(), aV1f = myHS1->FirstVParameter(),
-                   aU1l = myHS1->LastUParameter(), aV1l = myHS1->LastVParameter();
+                          aU1l = myHS1->LastUParameter(), aV1l = myHS1->LastVParameter();
       const double aU2f = myHS2->FirstUParameter(), aV2f = myHS2->FirstVParameter(),
-                   aU2l = myHS2->LastUParameter(), aV2l = myHS2->LastVParameter();
+                          aU2l = myHS2->LastUParameter(), aV2l = myHS2->LastVParameter();
 
       aBox1.Add(gp_Pnt2d(aU1f, aV1f));
       aBox1.Add(gp_Pnt2d(aU1l, aV1l));
@@ -1774,7 +1783,7 @@ reapprox:;
         }
 
         const double aPar = 0.5 * (aParF + aParL);
-        gp_Pnt2d     aPt;
+        gp_Pnt2d            aPt;
 
         occ::handle<Geom2d_Curve> aCurv2d1, aCurv2d2;
         if (!aC2d1.IsNull())
@@ -1815,11 +1824,11 @@ reapprox:;
 
 void Parameters(const occ::handle<GeomAdaptor_Surface>& HS1,
                 const occ::handle<GeomAdaptor_Surface>& HS2,
-                const gp_Pnt&                           Ptref,
-                double&                                 U1,
-                double&                                 V1,
-                double&                                 U2,
-                double&                                 V2)
+                const gp_Pnt&                      Ptref,
+                double&                     U1,
+                double&                     V1,
+                double&                     U2,
+                double&                     V2)
 {
 
   IntSurf_Quadric     quad1, quad2;
@@ -1875,14 +1884,14 @@ void Parameters(const occ::handle<GeomAdaptor_Surface>& HS1,
 //=================================================================================================
 
 occ::handle<Geom_Curve> MakeBSpline(const occ::handle<IntPatch_WLine>& WL,
-                                    const int                          ideb,
-                                    const int                          ifin)
+                               const int        ideb,
+                               const int        ifin)
 {
-  int                        i, nbpnt = ifin - ideb + 1;
-  NCollection_Array1<gp_Pnt> poles(1, nbpnt);
-  NCollection_Array1<double> knots(1, nbpnt);
-  NCollection_Array1<int>    mults(1, nbpnt);
-  int                        ipidebm1;
+  int        i, nbpnt = ifin - ideb + 1;
+  NCollection_Array1<gp_Pnt>      poles(1, nbpnt);
+  NCollection_Array1<double>    knots(1, nbpnt);
+  NCollection_Array1<int> mults(1, nbpnt);
+  int        ipidebm1;
   for (i = 1, ipidebm1 = i + ideb - 1; i <= nbpnt; ipidebm1++, i++)
   {
     poles(i) = WL->Point(ipidebm1).Value();
@@ -1897,8 +1906,8 @@ occ::handle<Geom_Curve> MakeBSpline(const occ::handle<IntPatch_WLine>& WL,
 
 void IntTools_FaceFace::PrepareLines3D(const bool bToSplit)
 {
-  int                                  i, aNbCurves;
-  GeomAbs_SurfaceType                  aType1, aType2;
+  int          i, aNbCurves;
+  GeomAbs_SurfaceType       aType1, aType2;
   NCollection_Sequence<IntTools_Curve> aNewCvs;
   //
   // 1. Treatment closed  curves
@@ -1909,7 +1918,7 @@ void IntTools_FaceFace::PrepareLines3D(const bool bToSplit)
     //
     if (bToSplit)
     {
-      int                                  j, aNbC;
+      int          j, aNbC;
       NCollection_Sequence<IntTools_Curve> aSeqCvs;
       //
       aNbC = IntTools_Tools::SplitCurve(aIC, aSeqCvs);
@@ -1980,16 +1989,16 @@ void IntTools_FaceFace::PrepareLines3D(const bool bToSplit)
 
 //=================================================================================================
 
-void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
-                              const double       theTolerance,
-                              double&            theumin,
-                              double&            theumax,
-                              double&            thevmin,
-                              double&            thevmax)
+void CorrectSurfaceBoundaries(const TopoDS_Face&  theFace,
+                              const double theTolerance,
+                              double&      theumin,
+                              double&      theumax,
+                              double&      thevmin,
+                              double&      thevmax)
 {
-  bool                      enlarge, isuperiodic, isvperiodic;
-  double                    uinf, usup, vinf, vsup, delta;
-  GeomAbs_SurfaceType       aType;
+  bool     enlarge, isuperiodic, isvperiodic;
+  double        uinf, usup, vinf, vsup, delta;
+  GeomAbs_SurfaceType  aType;
   occ::handle<Geom_Surface> aSurface;
   //
   aSurface = BRep_Tool::Surface(theFace);
@@ -2075,19 +2084,19 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
   //
   if (isuperiodic || isvperiodic)
   {
-    bool            correct  = false;
-    bool            correctU = false;
-    bool            correctV = false;
-    Bnd_Box2d       aBox;
-    TopExp_Explorer anExp;
+    bool correct  = false;
+    bool correctU = false;
+    bool correctV = false;
+    Bnd_Box2d        aBox;
+    TopExp_Explorer  anExp;
 
     for (anExp.Init(theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
     {
       if (BRep_Tool::IsClosed(TopoDS::Edge(anExp.Current()), theFace))
       {
         correct = true;
-        double      f, l;
-        TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
+        double f, l;
+        TopoDS_Edge   anEdge = TopoDS::Edge(anExp.Current());
 
         for (int i = 0; i < 2; i++)
         {
@@ -2113,9 +2122,9 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
             correct = false;
             break;
           }
-          gp_Dir2d anUDir(gp_Dir2d::D::X);
-          gp_Dir2d aVDir(gp_Dir2d::D::Y);
-          double   anAngularTolerance = Precision::Angular();
+          gp_Dir2d      anUDir(gp_Dir2d::D::X);
+          gp_Dir2d      aVDir(gp_Dir2d::D::Y);
+          double anAngularTolerance = Precision::Angular();
 
           correctU =
             correctU || aLine->Position().Direction().IsParallel(aVDir, anAngularTolerance);
@@ -2162,25 +2171,25 @@ void CorrectSurfaceBoundaries(const TopoDS_Face& theFace,
 // purpose:         Computes a new parameter for given curve. The corresponding 2d points
 //                  does not lay on any boundary of given faces
 // ------------------------------------------------------------------------------------------------
-bool ParameterOutOfBoundary(const double                         theParameter,
-                            const occ::handle<Geom_Curve>&       theCurve,
-                            const TopoDS_Face&                   theFace1,
-                            const TopoDS_Face&                   theFace2,
-                            const double                         theOtherParameter,
-                            const bool                           bIncreasePar,
-                            const double                         theTol,
-                            double&                              theNewParameter,
-                            const occ::handle<IntTools_Context>& aContext)
+bool ParameterOutOfBoundary(const double             theParameter,
+                                        const occ::handle<Geom_Curve>&       theCurve,
+                                        const TopoDS_Face&              theFace1,
+                                        const TopoDS_Face&              theFace2,
+                                        const double             theOtherParameter,
+                                        const bool          bIncreasePar,
+                                        const double             theTol,
+                                        double&                  theNewParameter,
+                                        const occ::handle<IntTools_Context>& aContext)
 {
   bool bIsComputed = false;
-  theNewParameter  = theParameter;
+  theNewParameter              = theParameter;
 
-  double       acurpar = theParameter;
-  TopAbs_State aState  = TopAbs_ON;
-  int          iter    = 0;
-  double       asumtol = theTol;
-  double       adelta  = asumtol * 0.1;
-  adelta               = (adelta < Precision::Confusion()) ? Precision::Confusion() : adelta;
+  double    acurpar    = theParameter;
+  TopAbs_State     aState     = TopAbs_ON;
+  int iter       = 0;
+  double    asumtol    = theTol;
+  double    adelta     = asumtol * 0.1;
+  adelta                      = (adelta < Precision::Confusion()) ? Precision::Confusion() : adelta;
   occ::handle<Geom_Surface> aSurf1 = BRep_Tool::Surface(theFace1);
   occ::handle<Geom_Surface> aSurf2 = BRep_Tool::Surface(theFace2);
 
@@ -2254,13 +2263,13 @@ bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve)
   if (thePCurve.IsNull())
     return false;
 
-  double              tolint = 1.e-10;
+  double       tolint = 1.e-10;
   Geom2dAdaptor_Curve PCA;
   IntRes2d_Domain     PCD;
   Geom2dInt_GInter    PCI;
 
-  double   pf = 0., pl = 0.;
-  gp_Pnt2d pntf, pntl;
+  double pf = 0., pl = 0.;
+  gp_Pnt2d      pntf, pntl;
 
   if (!thePCurve->IsClosed() && !thePCurve->IsPeriodic())
   {
@@ -2294,12 +2303,12 @@ bool IsCurveValid(const occ::handle<Geom2d_Curve>& thePCurve)
 //=======================================================================
 bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
 {
-  bool   bRes = true;
-  double R1 = theCyl.Radius(), R2 = theSph.Radius();
+  bool bRes = true;
+  double    R1 = theCyl.Radius(), R2 = theSph.Radius();
   //
   {
     double aD2, aRc2, aEps;
-    gp_Pnt aApexSph;
+    gp_Pnt        aApexSph;
     //
     aEps = 1.E-7;
     aRc2 = R1 * R1;
@@ -2340,8 +2349,8 @@ bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
     return bRes;
 
   double par = ElCLib::Parameter(anCylAx, theSph.Location());
-  gp_Pnt aP  = ElCLib::Value(par, anCylAx);
-  gp_Vec aV(aP, theSph.Location());
+  gp_Pnt        aP  = ElCLib::Value(par, anCylAx);
+  gp_Vec        aV(aP, theSph.Location());
 
   double dd = aV.Dot(theSph.Position().XDirection());
 
@@ -2357,14 +2366,14 @@ bool ApproxWithPCurves(const gp_Cylinder& theCyl, const gp_Sphere& theSph)
 
 void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
                    const occ::handle<GeomAdaptor_Surface>& theS2,
-                   const double                            TolF1,
-                   const double                            TolF2,
-                   const double                            TolAng,
-                   const double                            TolTang,
-                   const bool                              theApprox1,
-                   const bool                              theApprox2,
-                   NCollection_Sequence<IntTools_Curve>&   theSeqOfCurve,
-                   bool&                                   theTangentFaces)
+                   const double                TolF1,
+                   const double                TolF2,
+                   const double                TolAng,
+                   const double                TolTang,
+                   const bool             theApprox1,
+                   const bool             theApprox2,
+                   NCollection_Sequence<IntTools_Curve>&         theSeqOfCurve,
+                   bool&                  theTangentFaces)
 {
 
   gp_Pln aPln1 = theS1->Plane();
@@ -2406,8 +2415,8 @@ void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
   gp_Lin2d aLin2d2 = aProj.Line();
   //
   // classify line2d1 relatively first plane
-  double P11, P12;
-  bool   IsCrossed = ClassifyLin2d(theS1, aLin2d1, TolTang, P11, P12);
+  double    P11, P12;
+  bool IsCrossed = ClassifyLin2d(theS1, aLin2d1, TolTang, P11, P12);
   if (!IsCrossed)
     return;
   // classify line2d2 relatively second plane
@@ -2432,7 +2441,7 @@ void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
 
   occ::handle<Geom_Line> aGLin = new Geom_Line(aLin);
 
-  IntTools_Curve                 aCurve;
+  IntTools_Curve            aCurve;
   occ::handle<Geom_TrimmedCurve> aGTLin = new Geom_TrimmedCurve(aGLin, pmin, pmax);
 
   aCurve.SetCurve(aGTLin);
@@ -2465,13 +2474,13 @@ void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
   //
   // Computation of the tangential tolerance
   double anAngle, aDt;
-  gp_Dir aD1, aD2;
+  gp_Dir        aD1, aD2;
   //
   aD1     = aPln1.Position().Direction();
   aD2     = aPln2.Position().Direction();
   anAngle = aD1.Angle(aD2);
   //
-  aDt             = IntTools_Tools::ComputeIntRange(TolF1, TolF2, anAngle);
+  aDt                    = IntTools_Tools::ComputeIntRange(TolF1, TolF2, anAngle);
   double aTangTol = sqrt(aDt * aDt + TolF1 * TolF1);
   //
   aCurve.SetTangentialTolerance(aTangTol);
@@ -2481,28 +2490,32 @@ void PerformPlanes(const occ::handle<GeomAdaptor_Surface>& theS1,
 
 //=================================================================================================
 
-static inline bool INTER(const double d1, const double d2, const double tol)
+static inline bool INTER(const double d1,
+                                     const double d2,
+                                     const double tol)
 {
   return (d1 > tol && d2 < -tol) || (d1 < -tol && d2 > tol)
          || ((d1 <= tol && d1 >= -tol) && (d2 > tol || d2 < -tol))
          || ((d2 <= tol && d2 >= -tol) && (d1 > tol || d1 < -tol));
 }
 
-static inline bool COINC(const double d1, const double d2, const double tol)
+static inline bool COINC(const double d1,
+                                     const double d2,
+                                     const double tol)
 {
   return (d1 <= tol && d1 >= -tol) && (d2 <= tol && d2 >= -tol);
 }
 
 bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
-                   const gp_Lin2d&                         theLin2d,
-                   const double                            theTol,
-                   double&                                 theP1,
-                   double&                                 theP2)
+                               const gp_Lin2d&                    theLin2d,
+                               const double                theTol,
+                               double&                     theP1,
+                               double&                     theP2)
 
 {
-  double xmin, xmax, ymin, ymax, d1, d2, A, B, C;
-  double par[2];
-  int    nbi = 0;
+  double    xmin, xmax, ymin, ymax, d1, d2, A, B, C;
+  double    par[2];
+  int nbi = 0;
 
   xmin = theS->FirstUParameter();
   xmax = theS->LastUParameter();
@@ -2519,7 +2532,7 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
   {
     // Intersection with boundary
     double y = -(C + A * xmin) / B;
-    par[nbi] = ElCLib::Parameter(theLin2d, gp_Pnt2d(xmin, y));
+    par[nbi]        = ElCLib::Parameter(theLin2d, gp_Pnt2d(xmin, y));
     nbi++;
   }
   else if (COINC(d1, d2, theTol))
@@ -2553,7 +2566,7 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
     if (INTER(d1, d2, theTol))
     {
       double x = -(C + B * ymax) / A;
-      par[nbi] = ElCLib::Parameter(theLin2d, gp_Pnt2d(x, ymax));
+      par[nbi]        = ElCLib::Parameter(theLin2d, gp_Pnt2d(x, ymax));
       nbi++;
     }
     else if (COINC(d1, d2, theTol))
@@ -2586,7 +2599,7 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
     if (INTER(d1, d2, theTol))
     {
       double y = -(C + A * xmax) / B;
-      par[nbi] = ElCLib::Parameter(theLin2d, gp_Pnt2d(xmax, y));
+      par[nbi]        = ElCLib::Parameter(theLin2d, gp_Pnt2d(xmax, y));
       nbi++;
     }
     else if (COINC(d1, d2, theTol))
@@ -2618,7 +2631,7 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
     if (INTER(d1, d2, theTol))
     {
       double x = -(C + B * ymin) / A;
-      par[nbi] = ElCLib::Parameter(theLin2d, gp_Pnt2d(x, ymin));
+      par[nbi]        = ElCLib::Parameter(theLin2d, gp_Pnt2d(x, ymin));
       nbi++;
     }
     else if (COINC(d1, d2, theTol))
@@ -2649,9 +2662,9 @@ bool ClassifyLin2d(const occ::handle<GeomAdaptor_Surface>& theS,
 
 void ApproxParameters(const occ::handle<GeomAdaptor_Surface>& aHS1,
                       const occ::handle<GeomAdaptor_Surface>& aHS2,
-                      int&                                    iDegMin,
-                      int&                                    iDegMax,
-                      int&                                    iNbIter)
+                      int&                  iDegMin,
+                      int&                  iDegMax,
+                      int&                  iNbIter)
 
 {
   GeomAbs_SurfaceType aTS1, aTS2;
@@ -2668,9 +2681,9 @@ void ApproxParameters(const occ::handle<GeomAdaptor_Surface>& aHS1,
   if ((aTS1 == GeomAbs_Cylinder && aTS2 == GeomAbs_Torus)
       || (aTS2 == GeomAbs_Cylinder && aTS1 == GeomAbs_Torus))
   {
-    double      aRC, aRT, dR, aPC;
-    gp_Cylinder aCylinder;
-    gp_Torus    aTorus;
+    double aRC, aRT, dR, aPC;
+    gp_Cylinder   aCylinder;
+    gp_Torus      aTorus;
     //
     aPC = Precision::Confusion();
     //
@@ -2700,7 +2713,7 @@ void ApproxParameters(const occ::handle<GeomAdaptor_Surface>& aHS1,
 
 void Tolerances(const occ::handle<GeomAdaptor_Surface>& aHS1,
                 const occ::handle<GeomAdaptor_Surface>& aHS2,
-                double&                                 aTolTang)
+                double&                     aTolTang)
 {
   GeomAbs_SurfaceType aTS1, aTS2;
   //
@@ -2711,9 +2724,9 @@ void Tolerances(const occ::handle<GeomAdaptor_Surface>& aHS1,
   if ((aTS1 == GeomAbs_Cylinder && aTS2 == GeomAbs_Torus)
       || (aTS2 == GeomAbs_Cylinder && aTS1 == GeomAbs_Torus))
   {
-    double      aRC, aRT, dR, aPC;
-    gp_Cylinder aCylinder;
-    gp_Torus    aTorus;
+    double aRC, aRT, dR, aPC;
+    gp_Cylinder   aCylinder;
+    gp_Torus      aTorus;
     //
     aPC = Precision::Confusion();
     //
@@ -2740,7 +2753,7 @@ void Tolerances(const occ::handle<GeomAdaptor_Surface>& aHS1,
 bool SortTypes(const GeomAbs_SurfaceType aType1, const GeomAbs_SurfaceType aType2)
 {
   bool bRet;
-  int  aI1, aI2;
+  int aI1, aI2;
   //
   bRet = false;
   //
@@ -2811,13 +2824,13 @@ int IndexType(const GeomAbs_SurfaceType aType)
 //=================================================================================================
 
 double FindMaxDistance(const occ::handle<Geom_Curve>&       theCurve,
-                       const double                         theFirst,
-                       const double                         theLast,
-                       const TopoDS_Face&                   theFace,
-                       const occ::handle<IntTools_Context>& theContext)
+                              const double             theFirst,
+                              const double             theLast,
+                              const TopoDS_Face&              theFace,
+                              const occ::handle<IntTools_Context>& theContext)
 {
-  int    aNbS;
-  double aT1, aT2, aDt, aD, aDMax, anEps;
+  int aNbS;
+  double    aT1, aT2, aDt, aD, aDMax, anEps;
   //
   aNbS  = 11;
   aDt   = (theLast - theFirst) / aNbS;
@@ -2848,11 +2861,11 @@ double FindMaxDistance(const occ::handle<Geom_Curve>&       theCurve,
 
 //=================================================================================================
 
-double FindMaxDistance(const occ::handle<Geom_Curve>& theC,
-                       const double                   theFirst,
-                       const double                   theLast,
-                       GeomAPI_ProjectPointOnSurf&    theProjPS,
-                       const double                   theEps)
+double FindMaxDistance(const occ::handle<Geom_Curve>&   theC,
+                              const double         theFirst,
+                              const double         theLast,
+                              GeomAPI_ProjectPointOnSurf& theProjPS,
+                              const double         theEps)
 {
   double aA, aB, aCf, aX, aX1, aX2, aF1, aF2, aF;
   //
@@ -2903,12 +2916,12 @@ double FindMaxDistance(const occ::handle<Geom_Curve>& theC,
 
 //=================================================================================================
 
-double MaxDistance(const occ::handle<Geom_Curve>& theC,
-                   const double                   aT,
-                   GeomAPI_ProjectPointOnSurf&    theProjPS)
+double MaxDistance(const occ::handle<Geom_Curve>&   theC,
+                          const double         aT,
+                          GeomAPI_ProjectPointOnSurf& theProjPS)
 {
   double aD;
-  gp_Pnt aP;
+  gp_Pnt        aP;
   //
   theC->D0(aT, aP);
   theProjPS.Perform(aP);
@@ -2922,12 +2935,12 @@ double MaxDistance(const occ::handle<Geom_Curve>& theC,
 // purpose  : Checks if points of the pcurve are out of the face bounds.
 //=======================================================================
 bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
-                 const TopoDS_Face&                   aFace,
-                 const occ::handle<IntTools_Context>& theCtx)
+                             const TopoDS_Face&              aFace,
+                             const occ::handle<IntTools_Context>& theCtx)
 {
   const int NPoints = 23;
   int       i;
-  double    umin, umax, vmin, vmax;
+  double          umin, umax, vmin, vmax;
 
   theCtx->UVBounds(aFace, umin, umax, vmin, vmax);
   double tolU = std::max((umax - umin) * 0.01, Precision::Confusion());
@@ -2936,20 +2949,20 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
   double lp   = aPC->LastParameter();
 
   // adjust domain for periodic surfaces
-  TopLoc_Location           aLoc;
+  TopLoc_Location      aLoc;
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(aFace, aLoc);
   if (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
   {
     aSurf = (occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf))->BasisSurface();
   }
-  gp_Pnt2d pnt = aPC->Value((fp + lp) / 2);
-  double   u, v;
+  gp_Pnt2d      pnt = aPC->Value((fp + lp) / 2);
+  double u, v;
   pnt.Coord(u, v);
   //
   if (aSurf->IsUPeriodic())
   {
-    double aPer   = aSurf->UPeriod();
-    int    nshift = (int)((u - umin) / aPer);
+    double    aPer   = aSurf->UPeriod();
+    int nshift = (int)((u - umin) / aPer);
     if (u < umin + aPer * nshift)
       nshift--;
     umin += aPer * nshift;
@@ -2957,8 +2970,8 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
   }
   if (aSurf->IsVPeriodic())
   {
-    double aPer   = aSurf->VPeriod();
-    int    nshift = (int)((v - vmin) / aPer);
+    double    aPer   = aSurf->VPeriod();
+    int nshift = (int)((v - vmin) / aPer);
     if (v < vmin + aPer * nshift)
       nshift--;
     vmin += aPer * nshift;
@@ -2966,10 +2979,10 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
   }
   //
   //--------------------------------------------------------
-  bool     bRet;
-  int      j, aNbIntervals;
-  double   aT, dT;
-  gp_Pnt2d aP2D;
+  bool bRet;
+  int j, aNbIntervals;
+  double    aT, dT;
+  gp_Pnt2d         aP2D;
   //
   Geom2dAdaptor_Curve aGAC(aPC);
   aNbIntervals = aGAC.NbIntervals(GeomAbs_CN);
@@ -3000,7 +3013,10 @@ bool CheckPCurve(const occ::handle<Geom2d_Curve>&     aPC,
 
 //=================================================================================================
 
-void CorrectPlaneBoundaries(double& aUmin, double& aUmax, double& aVmin, double& aVmax)
+void CorrectPlaneBoundaries(double& aUmin,
+                            double& aUmax,
+                            double& aVmin,
+                            double& aVmax)
 {
   if (!(Precision::IsInfinite(aUmin) || Precision::IsInfinite(aUmax)))
   {

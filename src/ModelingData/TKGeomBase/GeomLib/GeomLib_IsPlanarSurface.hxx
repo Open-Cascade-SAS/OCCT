@@ -31,7 +31,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   Standard_EXPORT GeomLib_IsPlanarSurface(const occ::handle<Geom_Surface>& S,
-                                          const double                     Tol = 1.0e-7);
+                                          const double         Tol = 1.0e-7);
 
   //! Return if the Surface is a plan
   Standard_EXPORT bool IsPlanar() const;
@@ -40,8 +40,8 @@ public:
   Standard_EXPORT const gp_Pln& Plan() const;
 
 private:
-  gp_Pln myPlan;
-  bool   IsPlan;
+  gp_Pln           myPlan;
+  bool IsPlan;
 };
 
 #endif // _GeomLib_IsPlanarSurface_HeaderFile

@@ -24,7 +24,7 @@
 RWStepShape_RWFaceBound::RWStepShape_RWFaceBound() {}
 
 void RWStepShape_RWFaceBound::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                       const int                                   num,
+                                       const int                 num,
                                        occ::handle<Interface_Check>&               ach,
                                        const occ::handle<StepShape_FaceBound>&     ent) const
 {
@@ -57,7 +57,7 @@ void RWStepShape_RWFaceBound::ReadStep(const occ::handle<StepData_StepReaderData
   ent->Init(aName, aBound, aOrientation);
 }
 
-void RWStepShape_RWFaceBound::WriteStep(StepData_StepWriter&                    SW,
+void RWStepShape_RWFaceBound::WriteStep(StepData_StepWriter&               SW,
                                         const occ::handle<StepShape_FaceBound>& ent) const
 {
 
@@ -75,18 +75,18 @@ void RWStepShape_RWFaceBound::WriteStep(StepData_StepWriter&                    
 }
 
 void RWStepShape_RWFaceBound::Share(const occ::handle<StepShape_FaceBound>& ent,
-                                    Interface_EntityIterator&               iter) const
+                                    Interface_EntityIterator&          iter) const
 {
 
   iter.GetOneItem(ent->Bound());
 }
 
 void RWStepShape_RWFaceBound::Check(const occ::handle<StepShape_FaceBound>& ent,
-                                    const Interface_ShareTool&              aShto,
+                                    const Interface_ShareTool&         aShto,
                                     occ::handle<Interface_Check>&           ach) const
 {
-  bool                            theFBOri2 = true;
-  bool                            theFBOri1 = ent->Orientation();
+  bool           theFBOri2 = true;
+  bool           theFBOri1 = ent->Orientation();
   occ::handle<StepShape_EdgeLoop> theEL1    = occ::down_cast<StepShape_EdgeLoop>(ent->Bound());
   if (!theEL1.IsNull())
   {
@@ -95,7 +95,7 @@ void RWStepShape_RWFaceBound::Check(const occ::handle<StepShape_FaceBound>& ent,
     {
       occ::handle<StepShape_OrientedEdge> theOE1  = theEL1->EdgeListValue(i);
       occ::handle<StepShape_Edge>         theEdg1 = theOE1->EdgeElement();
-      Interface_EntityIterator            myShRef = aShto.Sharings(theEdg1);
+      Interface_EntityIterator       myShRef = aShto.Sharings(theEdg1);
       myShRef.SelectType(STANDARD_TYPE(StepShape_OrientedEdge), true);
       int nbRef = myShRef.NbEntities();
       if (nbRef == 1)
@@ -129,9 +129,8 @@ void RWStepShape_RWFaceBound::Check(const occ::handle<StepShape_FaceBound>& ent,
           myShRef = aShto.Sharings(theOE2);
           myShRef.SelectType(STANDARD_TYPE(StepShape_EdgeLoop), true);
           myShRef.Start();
-          occ::handle<StepShape_EdgeLoop> theEL2 =
-            occ::down_cast<StepShape_EdgeLoop>(myShRef.Value());
-          bool sharEL2 = aShto.IsShared(theEL2);
+          occ::handle<StepShape_EdgeLoop> theEL2 = occ::down_cast<StepShape_EdgeLoop>(myShRef.Value());
+          bool           sharEL2 = aShto.IsShared(theEL2);
           if (!sharEL2)
           {
 #ifdef OCCT_DEBUG

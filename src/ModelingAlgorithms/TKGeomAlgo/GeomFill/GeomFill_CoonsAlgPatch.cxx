@@ -64,8 +64,7 @@ GeomFill_CoonsAlgPatch::GeomFill_CoonsAlgPatch(const occ::handle<GeomFill_Bounda
 
 //=================================================================================================
 
-void GeomFill_CoonsAlgPatch::SetFunc(const occ::handle<Law_Function>& f1,
-                                     const occ::handle<Law_Function>& f2)
+void GeomFill_CoonsAlgPatch::SetFunc(const occ::handle<Law_Function>& f1, const occ::handle<Law_Function>& f2)
 {
   a[0] = f1;
   a[1] = f2;
@@ -73,8 +72,7 @@ void GeomFill_CoonsAlgPatch::SetFunc(const occ::handle<Law_Function>& f1,
 
 //=================================================================================================
 
-void GeomFill_CoonsAlgPatch::Func(occ::handle<Law_Function>& f1,
-                                  occ::handle<Law_Function>& f2) const
+void GeomFill_CoonsAlgPatch::Func(occ::handle<Law_Function>& f1, occ::handle<Law_Function>& f2) const
 {
   f1 = a[0];
   f2 = a[1];

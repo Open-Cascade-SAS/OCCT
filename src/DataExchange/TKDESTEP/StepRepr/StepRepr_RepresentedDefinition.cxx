@@ -29,7 +29,8 @@ StepRepr_RepresentedDefinition::StepRepr_RepresentedDefinition() {}
 
 //=================================================================================================
 
-int StepRepr_RepresentedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepRepr_RepresentedDefinition::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -77,8 +78,8 @@ occ::handle<StepRepr_ShapeAspect> StepRepr_RepresentedDefinition::ShapeAspect() 
 
 //=================================================================================================
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_RepresentedDefinition::
-  ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_RepresentedDefinition::ShapeAspectRelationship()
+  const
 {
   return occ::down_cast<StepRepr_ShapeAspectRelationship>(Value());
 }

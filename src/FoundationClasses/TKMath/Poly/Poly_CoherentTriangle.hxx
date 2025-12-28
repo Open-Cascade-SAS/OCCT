@@ -38,7 +38,9 @@ public:
   /**
    * Constructor.
    */
-  Standard_EXPORT Poly_CoherentTriangle(const int iNode0, const int iNode1, const int iNode2);
+  Standard_EXPORT Poly_CoherentTriangle(const int iNode0,
+                                        const int iNode1,
+                                        const int iNode2);
 
   /**
    * Query the node index in the position given by the parameter 'ind'
@@ -73,7 +75,8 @@ public:
    *   True if successful, False if the connection is rejected
    *   due to improper topology.
    */
-  Standard_EXPORT bool SetConnection(const int iConn, Poly_CoherentTriangle& theTr);
+  Standard_EXPORT bool SetConnection(const int iConn,
+                                                 Poly_CoherentTriangle& theTr);
 
   /**
    * Create connection with another triangle theTri.
@@ -112,7 +115,10 @@ public:
    * Query the connected node on the given side.
    * Returns -1 if there is no connection on the specified side.
    */
-  inline int GetConnectedNode(const int iConn) const { return myNodesOnConnected[iConn]; }
+  inline int GetConnectedNode(const int iConn) const
+  {
+    return myNodesOnConnected[iConn];
+  }
 
   /**
    * Query the connected triangle on the given side.
@@ -127,7 +133,10 @@ public:
    * Query the Link associate with the given side of the Triangle.
    * May return NULL if there are no links in the triangulation.
    */
-  inline const Poly_CoherentLink* GetLink(const int iLink) const { return mypLink[iLink]; }
+  inline const Poly_CoherentLink* GetLink(const int iLink) const
+  {
+    return mypLink[iLink];
+  }
 
   /**
    * Returns the index of the connection with the given triangle, or -1 if not found.
@@ -137,9 +146,9 @@ public:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  int                          myNConnections;
-  int                          myNodes[3]{};
-  int                          myNodesOnConnected[3]{};
+  int             myNConnections;
+  int             myNodes[3]{};
+  int             myNodesOnConnected[3]{};
   const Poly_CoherentTriangle* mypConnected[3]{};
   const Poly_CoherentLink*     mypLink[3]{};
 

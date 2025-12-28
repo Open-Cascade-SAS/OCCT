@@ -40,9 +40,9 @@ occ::handle<Adaptor3d_Surface> BRepAdaptor_Surface::ShallowCopy() const
 {
   occ::handle<BRepAdaptor_Surface> aCopy = new BRepAdaptor_Surface();
 
-  const occ::handle<Adaptor3d_Surface> aSurface = mySurf.ShallowCopy();
-  const GeomAdaptor_Surface& aGeomSurface       = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
-  aCopy->mySurf                                 = aGeomSurface;
+  const occ::handle<Adaptor3d_Surface> aSurface     = mySurf.ShallowCopy();
+  const GeomAdaptor_Surface&      aGeomSurface = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
+  aCopy->mySurf                                = aGeomSurface;
 
   aCopy->myTrsf = myTrsf;
   aCopy->myFace = myFace;
@@ -60,7 +60,7 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const bool Restrictio
   }
 
   myFace = F;
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(F, L);
   if (aSurface.IsNull())
     return;

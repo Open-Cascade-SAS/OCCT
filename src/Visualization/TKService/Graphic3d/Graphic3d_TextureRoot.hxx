@@ -122,7 +122,10 @@ public:
   bool HasMipmaps() const { return myHasMipmaps; }
 
   //! Sets whether to generate mipmaps or not.
-  void SetMipmapsGeneration(bool theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
+  void SetMipmapsGeneration(bool theToGenerateMipmaps)
+  {
+    myHasMipmaps = theToGenerateMipmaps;
+  }
 
   //! Returns whether row's memory layout is top-down.
   bool IsTopDown() const { return myIsTopDown; }
@@ -137,8 +140,8 @@ protected:
   //! Creates a texture from pixmap.
   //! Please note that the implementation expects the image data
   //! to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
-  Standard_EXPORT Graphic3d_TextureRoot(const occ::handle<Image_PixMap>& thePixmap,
-                                        const Graphic3d_TypeOfTexture    theType);
+  Standard_EXPORT Graphic3d_TextureRoot(const occ::handle<Image_PixMap>&   thePixmap,
+                                        const Graphic3d_TypeOfTexture theType);
 
   //! Unconditionally generate new texture id. Should be called only within constructor.
   Standard_EXPORT void generateId();

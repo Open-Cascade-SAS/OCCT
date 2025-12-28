@@ -42,8 +42,8 @@ void StepBasic_ConversionBasedUnitAndSolidAngleUnit::SetSolidAngleUnit(
   solidAngleUnit = aSolidAngleUnit;
 }
 
-occ::handle<StepBasic_SolidAngleUnit> StepBasic_ConversionBasedUnitAndSolidAngleUnit::
-  SolidAngleUnit() const
+occ::handle<StepBasic_SolidAngleUnit> StepBasic_ConversionBasedUnitAndSolidAngleUnit::SolidAngleUnit()
+  const
 {
   return solidAngleUnit;
 }

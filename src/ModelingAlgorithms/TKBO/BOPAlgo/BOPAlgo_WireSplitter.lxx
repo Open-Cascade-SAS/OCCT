@@ -61,11 +61,11 @@ public:
 
   //
 protected:
-  TopoDS_Edge myEdge;
-  bool        myPassed;
-  bool        myInFlag;
-  bool        myIsInside;
-  double      myAngle;
+  TopoDS_Edge      myEdge;
+  bool myPassed;
+  bool myInFlag;
+  bool myIsInside;
+  double    myAngle;
 };
 
 #include <NCollection_List.hxx>

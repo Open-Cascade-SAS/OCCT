@@ -33,11 +33,16 @@
 #include <Convert_GridPolynomialToPoles.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Patch, Standard_Transient)
 
@@ -62,12 +67,12 @@ AdvApp2Var_Patch::AdvApp2Var_Patch()
 
 //=================================================================================================
 
-AdvApp2Var_Patch::AdvApp2Var_Patch(const double U0,
-                                   const double U1,
-                                   const double V0,
-                                   const double V1,
-                                   const int    iu,
-                                   const int    iv)
+AdvApp2Var_Patch::AdvApp2Var_Patch(const double    U0,
+                                   const double    U1,
+                                   const double    V0,
+                                   const double    V1,
+                                   const int iu,
+                                   const int iv)
     : myU0(U0),
       myU1(U1),
       myV0(V0),
@@ -105,11 +110,11 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   ISOFAV = Conditions.FavorIso();
 
   // data related to the patch to be discretized
-  int                                      NBPNTU, NBPNTV;
-  int                                      IORDRU = myOrdInU, IORDRV = myOrdInV;
+  int              NBPNTU, NBPNTV;
+  int              IORDRU = myOrdInU, IORDRV = myOrdInV;
   occ::handle<NCollection_HArray1<double>> HUROOT = Conditions.URoots();
   occ::handle<NCollection_HArray1<double>> HVROOT = Conditions.VRoots();
-  double*                                  UROOT;
+  double*                UROOT;
   UROOT  = (double*)&HUROOT->ChangeArray1()(HUROOT->Lower());
   NBPNTU = (Conditions.URoots())->Length();
   if (myOrdInU > -1)
@@ -122,12 +127,12 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   // data stored in the Framework Constraints cad Nodes and Isos
   // C1, C2, C3 and C4 are dimensionnes in FORTRAN with (NDIMEN,IORDRU+2,IORDRV+2)
-  int                                      SIZE   = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
+  int              SIZE   = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
   occ::handle<NCollection_HArray1<double>> HCOINS = new NCollection_HArray1<double>(1, SIZE * 4);
   HCOINS->Init(0.);
 
-  int    iu, iv;
-  double du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
+  int iu, iv;
+  double    du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
 
   for (iu = 0; iu <= myOrdInU; iu++)
   {
@@ -180,21 +185,17 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   SIZE = (1 + NBPNTV / 2) * NDIMEN;
 
-  occ::handle<NCollection_HArray1<double>> HSU0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HSU0->ChangeArray1() = ((Constraints.IsoU(myU0, myV0, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSU0 = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HSU0->ChangeArray1()               = ((Constraints.IsoU(myU0, myV0, myV1)).SomTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HDU0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HDU0->ChangeArray1() = ((Constraints.IsoU(myU0, myV0, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDU0 = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HDU0->ChangeArray1()               = ((Constraints.IsoU(myU0, myV0, myV1)).DifTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HSU1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HSU1->ChangeArray1() = ((Constraints.IsoU(myU1, myV0, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSU1 = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HSU1->ChangeArray1()               = ((Constraints.IsoU(myU1, myV0, myV1)).SomTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HDU1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HDU1->ChangeArray1() = ((Constraints.IsoU(myU1, myV0, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDU1 = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HDU1->ChangeArray1()               = ((Constraints.IsoU(myU1, myV0, myV1)).DifTab())->Array1();
 
   // normalization
   int ideb1, ideb2, ideb3, ideb4, jj;
@@ -225,21 +226,17 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
 
   SIZE = (1 + NBPNTU / 2) * NDIMEN;
 
-  occ::handle<NCollection_HArray1<double>> HSV0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HSV0->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV0)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSV0 = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HSV0->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV0)).SomTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HDV0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HDV0->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV0)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDV0 = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HDV0->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV0)).DifTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HSV1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HSV1->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV1)).SomTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HSV1 = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HSV1->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV1)).SomTab())->Array1();
 
-  occ::handle<NCollection_HArray1<double>> HDV1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HDV1->ChangeArray1() = ((Constraints.IsoV(myU0, myU1, myV1)).DifTab())->Array1();
+  occ::handle<NCollection_HArray1<double>> HDV1 = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HDV1->ChangeArray1()               = ((Constraints.IsoV(myU0, myU1, myV1)).DifTab())->Array1();
 
   // normalisation
   for (iv = 1; iv <= IORDRV; iv++)
@@ -269,10 +266,10 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   SIZE = (1 + NBPNTU / 2) * (1 + NBPNTV / 2) * NDIMEN;
 
   occ::handle<NCollection_HArray1<double>> HSOSO  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  SOSOTB = (double*)&HSOSO->ChangeArray1()(HSOSO->Lower());
+  double*                SOSOTB = (double*)&HSOSO->ChangeArray1()(HSOSO->Lower());
   HSOSO->Init(0.);
   occ::handle<NCollection_HArray1<double>> HDIDI  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  DIDITB = (double*)&HDIDI->ChangeArray1()(HDIDI->Lower());
+  double*                DIDITB = (double*)&HDIDI->ChangeArray1()(HDIDI->Lower());
   HDIDI->Init(0.);
 
   // SODITB and DISOTB are dimensioned in FORTRAN at
@@ -281,10 +278,10 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   SIZE = (NBPNTU / 2) * (NBPNTV / 2) * NDIMEN;
 
   occ::handle<NCollection_HArray1<double>> HSODI  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  SODITB = (double*)&HSODI->ChangeArray1()(HSODI->Lower());
+  double*                SODITB = (double*)&HSODI->ChangeArray1()(HSODI->Lower());
   HSODI->Init(0.);
   occ::handle<NCollection_HArray1<double>> HDISO  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  DISOTB = (double*)&HDISO->ChangeArray1()(HDISO->Lower());
+  double*                DISOTB = (double*)&HDISO->ChangeArray1()(HDISO->Lower());
   HDISO->Init(0.);
 
   int IERCOD = 0;
@@ -322,13 +319,12 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context&           Conditions
   VDBFN[0] = myV0;
   VDBFN[1] = myV1;
 
-  SIZE                                            = std::max(NBPNTU, NBPNTV);
+  SIZE                                 = std::max(NBPNTU, NBPNTV);
   occ::handle<NCollection_HArray1<double>> HTABLE = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  TAB = (double*)&HTABLE->ChangeArray1()(HTABLE->Lower());
+  double*                TAB    = (double*)&HTABLE->ChangeArray1()(HTABLE->Lower());
 
-  occ::handle<NCollection_HArray1<double>> HPOINTS =
-    new NCollection_HArray1<double>(1, SIZE * NDIMEN);
-  double* PTS = (double*)&HPOINTS->ChangeArray1()(HPOINTS->Lower());
+  occ::handle<NCollection_HArray1<double>> HPOINTS = new NCollection_HArray1<double>(1, SIZE * NDIMEN);
+  double*                PTS = (double*)&HPOINTS->ChangeArray1()(HPOINTS->Lower());
 
   // GCC 3.0 would not accept this line without the void
   // pointer cast.  Perhaps the real problem is a definition
@@ -395,31 +391,29 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   NDegV  = NCFLMV - 1;
 
   // data relative to the patch
-  int     IORDRU = myOrdInU, IORDRV = myOrdInV;
-  double* PATCAN = (double*)&myEquation->ChangeArray1()(myEquation->Lower());
+  int IORDRU = myOrdInU, IORDRV = myOrdInV;
+  double*   PATCAN = (double*)&myEquation->ChangeArray1()(myEquation->Lower());
 
   // curves of approximation of Isos U
-  int                                      SIZE = NCFLMV * NDIMEN;
-  occ::handle<NCollection_HArray1<double>> HIsoU0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HIsoU0->ChangeArray1() = (Constraints.IsoU(myU0, myV0, myV1)).Polynom()->Array1();
-  double*                               IsoU0 = (double*)&HIsoU0->ChangeArray1()(HIsoU0->Lower());
+  int              SIZE     = NCFLMV * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HIsoU0   = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HIsoU0->ChangeArray1()                 = (Constraints.IsoU(myU0, myV0, myV1)).Polynom()->Array1();
+  double*                   IsoU0 = (double*)&HIsoU0->ChangeArray1()(HIsoU0->Lower());
   occ::handle<NCollection_HArray1<int>> HCFU0 = new NCollection_HArray1<int>(1, IORDRU + 1);
-  int*                                  NCFU0 = (int*)&HCFU0->ChangeArray1()(HCFU0->Lower());
+  int* NCFU0 = (int*)&HCFU0->ChangeArray1()(HCFU0->Lower());
   HCFU0->Init((Constraints.IsoU(myU0, myV0, myV1)).NbCoeff());
 
-  occ::handle<NCollection_HArray1<double>> HIsoU1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
-  HIsoU1->ChangeArray1() = (Constraints.IsoU(myU1, myV0, myV1)).Polynom()->Array1();
-  double*                               IsoU1 = (double*)&HIsoU1->ChangeArray1()(HIsoU1->Lower());
+  occ::handle<NCollection_HArray1<double>> HIsoU1   = new NCollection_HArray1<double>(1, SIZE * (IORDRU + 1));
+  HIsoU1->ChangeArray1()                 = (Constraints.IsoU(myU1, myV0, myV1)).Polynom()->Array1();
+  double*                   IsoU1 = (double*)&HIsoU1->ChangeArray1()(HIsoU1->Lower());
   occ::handle<NCollection_HArray1<int>> HCFU1 = new NCollection_HArray1<int>(1, IORDRU + 1);
-  int*                                  NCFU1 = (int*)&HCFU1->ChangeArray1()(HCFU1->Lower());
+  int* NCFU1 = (int*)&HCFU1->ChangeArray1()(HCFU1->Lower());
   HCFU1->Init((Constraints.IsoU(myU1, myV0, myV1)).NbCoeff());
 
   // normalization of Isos U
-  int    iu, iv;
-  double du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
-  int    ideb0, ideb1, jj;
+  int iu, iv;
+  double    du = (myU1 - myU0) / 2, dv = (myV1 - myV0) / 2, rho, valnorm;
+  int ideb0, ideb1, jj;
 
   for (iu = 1; iu <= IORDRU; iu++)
   {
@@ -434,21 +428,19 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   // curves of approximation of Isos V
-  SIZE = NCFLMU * NDIMEN;
-  occ::handle<NCollection_HArray1<double>> HIsoV0 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HIsoV0->ChangeArray1() = (Constraints.IsoV(myU0, myU1, myV0)).Polynom()->Array1();
-  double*                               IsoV0 = (double*)&HIsoV0->ChangeArray1()(HIsoV0->Lower());
+  SIZE                                   = NCFLMU * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HIsoV0   = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HIsoV0->ChangeArray1()                 = (Constraints.IsoV(myU0, myU1, myV0)).Polynom()->Array1();
+  double*                   IsoV0 = (double*)&HIsoV0->ChangeArray1()(HIsoV0->Lower());
   occ::handle<NCollection_HArray1<int>> HCFV0 = new NCollection_HArray1<int>(1, IORDRV + 1);
-  int*                                  NCFV0 = (int*)&HCFV0->ChangeArray1()(HCFV0->Lower());
+  int* NCFV0 = (int*)&HCFV0->ChangeArray1()(HCFV0->Lower());
   HCFV0->Init((Constraints.IsoV(myU0, myU1, myV0)).NbCoeff());
 
-  occ::handle<NCollection_HArray1<double>> HIsoV1 =
-    new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
-  HIsoV1->ChangeArray1() = (Constraints.IsoV(myU0, myU1, myV1)).Polynom()->Array1();
-  double*                               IsoV1 = (double*)&HIsoV1->ChangeArray1()(HIsoV1->Lower());
+  occ::handle<NCollection_HArray1<double>> HIsoV1   = new NCollection_HArray1<double>(1, SIZE * (IORDRV + 1));
+  HIsoV1->ChangeArray1()                 = (Constraints.IsoV(myU0, myU1, myV1)).Polynom()->Array1();
+  double*                   IsoV1 = (double*)&HIsoV1->ChangeArray1()(HIsoV1->Lower());
   occ::handle<NCollection_HArray1<int>> HCFV1 = new NCollection_HArray1<int>(1, IORDRV + 1);
-  int*                                  NCFV1 = (int*)&HCFV1->ChangeArray1()(HCFV1->Lower());
+  int* NCFV1 = (int*)&HCFV1->ChangeArray1()(HCFV1->Lower());
   HCFV1->Init((Constraints.IsoV(myU0, myU1, myV1)).NbCoeff());
 
   //  normalization of Isos V
@@ -514,7 +506,7 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
 
   // add constraints at the corners
   int ideb;
-  SIZE                                            = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
+  SIZE                                 = NDIMEN * (IORDRU + 2) * (IORDRV + 2);
   occ::handle<NCollection_HArray1<double>> HCOINS = new NCollection_HArray1<double>(1, SIZE * 4);
 
   for (iu = 0; iu <= myOrdInU; iu++)
@@ -562,15 +554,14 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context&   Conditions,
   }
 
   //  tables required for FORTRAN
-  int                                      IORDMX = std::max(IORDRU, IORDRV);
-  occ::handle<NCollection_HArray1<double>> HEXTR =
-    new NCollection_HArray1<double>(1, 2 * IORDMX + 2);
-  double*                                  EXTR  = (double*)&HEXTR->ChangeArray1()(HEXTR->Lower());
-  occ::handle<NCollection_HArray1<double>> HFACT = new NCollection_HArray1<double>(1, IORDMX + 1);
-  double*                                  FACT  = (double*)&HFACT->ChangeArray1()(HFACT->Lower());
+  int              IORDMX = std::max(IORDRU, IORDRV);
+  occ::handle<NCollection_HArray1<double>> HEXTR  = new NCollection_HArray1<double>(1, 2 * IORDMX + 2);
+  double*                EXTR   = (double*)&HEXTR->ChangeArray1()(HEXTR->Lower());
+  occ::handle<NCollection_HArray1<double>> HFACT  = new NCollection_HArray1<double>(1, IORDMX + 1);
+  double*                FACT   = (double*)&HFACT->ChangeArray1()(HFACT->Lower());
 
-  int     idim, ncf0, ncf1, iun = 1;
-  double* Is;
+  int idim, ncf0, ncf1, iun = 1;
+  double*   Is;
 
   // add extremities of isos U
   for (iu = 1; iu <= IORDRU + 1; iu++)
@@ -704,8 +695,7 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
     myMoyErrors->SetValue(iesp, std::sqrt(error));
 
     // max errors at iso-borders
-    occ::handle<NCollection_HArray2<double>> HERISO =
-      new NCollection_HArray2<double>(1, NBSESP, 1, 4);
+    occ::handle<NCollection_HArray2<double>> HERISO = new NCollection_HArray2<double>(1, NBSESP, 1, 4);
     HERISO->SetValue(iesp, 1, ((Constraints.IsoV(myU0, myU1, myV0)).MaxErrors())->Value(iesp, 1));
     HERISO->SetValue(iesp, 2, ((Constraints.IsoV(myU0, myU1, myV1)).MaxErrors())->Value(iesp, 1));
     HERISO->SetValue(iesp, 3, ((Constraints.IsoU(myU0, myV0, myV1)).MaxErrors())->Value(iesp, 1));
@@ -759,7 +749,7 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
 
 void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
                                   const AdvApp2Var_Framework& Constraints,
-                                  const int                   NumDec)
+                                  const int      NumDec)
 {
 
   // data stored in the Context
@@ -803,7 +793,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   // tables of approximations
   occ::handle<NCollection_HArray1<double>> HEPSAPR = new NCollection_HArray1<double>(1, NBSESP);
   occ::handle<NCollection_HArray1<double>> HEPSFRO = new NCollection_HArray1<double>(1, NBSESP * 8);
-  int                                      iesp;
+  int              iesp;
   for (iesp = 1; iesp <= NBSESP; iesp++)
   {
     HEPSAPR->SetValue(iesp, (Conditions.IToler())->Value(iesp));
@@ -819,19 +809,19 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   double* EPSAPR = (double*)&HEPSAPR->ChangeArray1()(HEPSAPR->Lower());
   double* EPSFRO = (double*)&HEPSFRO->ChangeArray1()(HEPSFRO->Lower());
 
-  int                                      SIZE   = (1 + NDJACU) * (1 + NDJACV) * NDIMEN;
-  occ::handle<NCollection_HArray1<double>> HPJAC  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  PATJAC = (double*)&HPJAC->ChangeArray1()(HPJAC->Lower());
-  SIZE                                            = 2 * SIZE;
-  occ::handle<NCollection_HArray1<double>> HPAUX  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  PATAUX = (double*)&HPAUX->ChangeArray1()(HPAUX->Lower());
-  SIZE                                            = NCFLMU * NCFLMV * NDIMEN;
-  occ::handle<NCollection_HArray1<double>> HPCAN  = new NCollection_HArray1<double>(1, SIZE);
-  double*                                  PATCAN = (double*)&HPCAN->ChangeArray1()(HPCAN->Lower());
+  int              SIZE    = (1 + NDJACU) * (1 + NDJACV) * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HPJAC   = new NCollection_HArray1<double>(1, SIZE);
+  double*                PATJAC  = (double*)&HPJAC->ChangeArray1()(HPJAC->Lower());
+  SIZE                                  = 2 * SIZE;
+  occ::handle<NCollection_HArray1<double>> HPAUX   = new NCollection_HArray1<double>(1, SIZE);
+  double*                PATAUX  = (double*)&HPAUX->ChangeArray1()(HPAUX->Lower());
+  SIZE                                  = NCFLMU * NCFLMV * NDIMEN;
+  occ::handle<NCollection_HArray1<double>> HPCAN   = new NCollection_HArray1<double>(1, SIZE);
+  double*                PATCAN  = (double*)&HPCAN->ChangeArray1()(HPCAN->Lower());
   occ::handle<NCollection_HArray1<double>> HERRMAX = new NCollection_HArray1<double>(1, NBSESP);
-  double* ERRMAX = (double*)&HERRMAX->ChangeArray1()(HERRMAX->Lower());
+  double*                ERRMAX = (double*)&HERRMAX->ChangeArray1()(HERRMAX->Lower());
   occ::handle<NCollection_HArray1<double>> HERRMOY = new NCollection_HArray1<double>(1, NBSESP);
-  double* ERRMOY = (double*)&HERRMOY->ChangeArray1()(HERRMOY->Lower());
+  double*                ERRMOY = (double*)&HERRMOY->ChangeArray1()(HERRMOY->Lower());
 
   // tables of discretization of the square
   double* SOSOTB = (double*)&mySosoTab->ChangeArray1()(mySosoTab->Lower());
@@ -957,7 +947,10 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
 
 //=================================================================================================
 
-void AdvApp2Var_Patch::ChangeDomain(const double a, const double b, const double c, const double d)
+void AdvApp2Var_Patch::ChangeDomain(const double a,
+                                    const double b,
+                                    const double c,
+                                    const double d)
 {
   myU0 = a;
   myU1 = b;
@@ -1046,7 +1039,8 @@ int AdvApp2Var_Patch::CutSense() const
 //           2 : required cut by V; 3 : required cut by U and by V
 //============================================================================
 
-int AdvApp2Var_Patch::CutSense(const AdvApp2Var_Criterion& Crit, const int NumDec) const
+int AdvApp2Var_Patch::CutSense(const AdvApp2Var_Criterion& Crit,
+                                            const int      NumDec) const
 {
   bool CritRel = (Crit.Type() == AdvApp2Var_Relative);
   if (CritRel && !IsApproximated())
@@ -1085,7 +1079,8 @@ int AdvApp2Var_Patch::NbCoeffInV() const
 // purpose  : allows increasing the nb of coeff (cf Network)
 //============================================================================
 
-void AdvApp2Var_Patch::ChangeNbCoeff(const int NbCoeffU, const int NbCoeffV)
+void AdvApp2Var_Patch::ChangeNbCoeff(const int NbCoeffU,
+                                     const int NbCoeffV)
 {
   if (myNbCoeffInU < NbCoeffU)
     myNbCoeffInU = NbCoeffU;
@@ -1128,9 +1123,8 @@ occ::handle<NCollection_HArray2<double>> AdvApp2Var_Patch::IsoErrors() const
 // purpose  : returns poles of the polynomial approximation
 //============================================================================
 
-occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(
-  const int                 SSPIndex,
-  const AdvApp2Var_Context& Cond) const
+occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(const int    SSPIndex,
+                                                    const AdvApp2Var_Context& Cond) const
 {
   occ::handle<NCollection_HArray1<double>> SousEquation;
   if (Cond.TotalNumberSSP() == 1 && SSPIndex == 1)
@@ -1165,9 +1159,8 @@ occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(
 // purpose  : returns coeff. of the equation of polynomial approximation
 //============================================================================
 
-occ::handle<NCollection_HArray1<double>> AdvApp2Var_Patch::Coefficients(
-  const int                 SSPIndex,
-  const AdvApp2Var_Context& Cond) const
+occ::handle<NCollection_HArray1<double>> AdvApp2Var_Patch::Coefficients(const int    SSPIndex,
+                                                             const AdvApp2Var_Context& Cond) const
 {
   occ::handle<NCollection_HArray1<double>> SousEquation;
   if (Cond.TotalNumberSSP() == 1 && SSPIndex == 1)

@@ -75,18 +75,18 @@ public:
 
   //! Returns Value as ExternallyDefinedGeneralProperty (or Null if another type)
   Standard_EXPORT occ::handle<StepAP214_ExternallyDefinedGeneralProperty>
-                  ExternallyDefinedGeneralProperty() const;
+    ExternallyDefinedGeneralProperty() const;
 
   //! Returns Value as ProductDefinition (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! Returns Value as AppliedOrganizationAssignment (or Null if another type)
-  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment>
-                  AppliedOrganizationAssignment() const;
+  Standard_EXPORT occ::handle<StepAP214_AppliedOrganizationAssignment> AppliedOrganizationAssignment()
+    const;
 
   //! Returns Value as AppliedPersonAndOrganizationAssignment (or Null if another type)
   Standard_EXPORT occ::handle<StepAP214_AppliedPersonAndOrganizationAssignment>
-                  AppliedPersonAndOrganizationAssignment() const;
+    AppliedPersonAndOrganizationAssignment() const;
 
   //! Returns Value as Approval (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
@@ -114,6 +114,7 @@ public:
 
   //! Returns Value as DateAssignment (or Null if another type)
   Standard_EXPORT occ::handle<StepBasic_DateAssignment> DateAssignment() const;
+
 };
 
 #endif // _StepAP214_ExternalIdentificationItem_HeaderFile

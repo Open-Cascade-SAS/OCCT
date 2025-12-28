@@ -34,12 +34,14 @@ public:
 
   Standard_EXPORT StepAP214_AutoDesignOrganizationItem();
 
-  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const
+    override;
 
   Standard_EXPORT occ::handle<StepBasic_Document> Document() const;
 
   Standard_EXPORT occ::handle<StepBasic_PhysicallyModeledProductDefinition>
-                  PhysicallyModeledProductDefinition() const;
+    PhysicallyModeledProductDefinition() const;
+
 };
 
 #endif // _StepAP214_AutoDesignOrganizationItem_HeaderFile

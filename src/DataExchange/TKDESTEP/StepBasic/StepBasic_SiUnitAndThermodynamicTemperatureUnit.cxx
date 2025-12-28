@@ -26,7 +26,7 @@ StepBasic_SiUnitAndThermodynamicTemperatureUnit::StepBasic_SiUnitAndThermodynami
 
 //=================================================================================================
 
-void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const bool                 hasAprefix,
+void StepBasic_SiUnitAndThermodynamicTemperatureUnit::Init(const bool     hasAprefix,
                                                            const StepBasic_SiPrefix   aPrefix,
                                                            const StepBasic_SiUnitName aName)
 {
@@ -51,8 +51,8 @@ void StepBasic_SiUnitAndThermodynamicTemperatureUnit::SetThermodynamicTemperatur
 
 //=================================================================================================
 
-occ::handle<StepBasic_ThermodynamicTemperatureUnit>
-  StepBasic_SiUnitAndThermodynamicTemperatureUnit::ThermodynamicTemperatureUnit() const
+occ::handle<StepBasic_ThermodynamicTemperatureUnit> StepBasic_SiUnitAndThermodynamicTemperatureUnit::
+  ThermodynamicTemperatureUnit() const
 {
   return thermodynamicTemperatureUnit;
 }

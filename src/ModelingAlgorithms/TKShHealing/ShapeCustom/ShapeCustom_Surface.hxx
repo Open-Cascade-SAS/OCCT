@@ -55,20 +55,20 @@ public:
   //! It works by analysing the case which can apply, creating the
   //! corresponding analytic surface, then checking coincidence
   //! Warning: Parameter laws are not kept, hence PCurves should be redone
-  Standard_EXPORT occ::handle<Geom_Surface> ConvertToAnalytical(const double tol,
-                                                                const bool   substitute);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToAnalytical(const double    tol,
+                                                           const bool substitute);
 
   //! Tries to convert the Surface to the Periodic form
   //! Returns the resulting surface
   //! Works only if the Surface is BSpline and is closed with
   //! Precision::Confusion()
   //! Else, or in case of failure, returns a Null Handle
-  Standard_EXPORT occ::handle<Geom_Surface> ConvertToPeriodic(const bool   substitute,
-                                                              const double preci = -1);
+  Standard_EXPORT occ::handle<Geom_Surface> ConvertToPeriodic(const bool substitute,
+                                                         const double    preci = -1);
 
 private:
   occ::handle<Geom_Surface> mySurf;
-  double                    myGap;
+  double        myGap;
 };
 
 #include <ShapeCustom_Surface.lxx>

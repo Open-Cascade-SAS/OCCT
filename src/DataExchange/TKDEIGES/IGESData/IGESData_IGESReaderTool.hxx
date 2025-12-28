@@ -58,9 +58,9 @@ public:
   Standard_EXPORT void Prepare(const occ::handle<IGESData_FileRecognizer>& reco);
 
   //! recognizes records by asking Protocol (on data of DirType)
-  Standard_EXPORT bool Recognize(const int                        num,
-                                 occ::handle<Interface_Check>&    ach,
-                                 occ::handle<Standard_Transient>& ent) override;
+  Standard_EXPORT bool Recognize(const int      num,
+                                             occ::handle<Interface_Check>&    ach,
+                                             occ::handle<Standard_Transient>& ent) override;
 
   //! fills model's header, that is, its GlobalSection
   Standard_EXPORT void BeginRead(const occ::handle<Interface_InterfaceModel>& amodel) override;
@@ -69,19 +69,19 @@ public:
   //! then ReadParams (with help of a ParamReader), then if required
   //! ReadProps and ReadAssocs, from IGESEntity
   //! Returns True if no fail has been recorded
-  Standard_EXPORT bool AnalyseRecord(const int                              num,
-                                     const occ::handle<Standard_Transient>& anent,
-                                     occ::handle<Interface_Check>&          acheck) override;
+  Standard_EXPORT bool AnalyseRecord(const int            num,
+                                                 const occ::handle<Standard_Transient>& anent,
+                                                 occ::handle<Interface_Check>& acheck) override;
 
   //! after reading entities, true line weights can be computed
-  Standard_EXPORT virtual void EndRead(
-    const occ::handle<Interface_InterfaceModel>& amodel) override;
+  Standard_EXPORT virtual void EndRead(const occ::handle<Interface_InterfaceModel>& amodel)
+    override;
 
   //! Reads directory part components from file; DP is the literal
   //! directory part, IR detains entities referenced by DP
   Standard_EXPORT void ReadDir(const occ::handle<IGESData_IGESEntity>&     ent,
                                const occ::handle<IGESData_IGESReaderData>& IR,
-                               const IGESData_DirPart&                     DP,
+                               const IGESData_DirPart&                DP,
                                occ::handle<Interface_Check>&               ach) const;
 
   //! Performs Reading of own Parameters for each IGESEntity
@@ -89,7 +89,7 @@ public:
   //! In case of failure, tries UndefinedEntity from IGES
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESData_IGESEntity>&     ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader&                       PR) const;
+                                     IGESData_ParamReader&                  PR) const;
 
   //! Reads Property List, if there is (if not, does nothing)
   //! criterium is : current parameter of PR remains inside params
@@ -99,7 +99,7 @@ public:
   //! Check of PR) and reading process is stopped
   Standard_EXPORT void ReadProps(const occ::handle<IGESData_IGESEntity>&     ent,
                                  const occ::handle<IGESData_IGESReaderData>& IR,
-                                 IGESData_ParamReader&                       PR) const;
+                                 IGESData_ParamReader&                  PR) const;
 
   //! Reads Associativity List, if there is (if not, does nothing)
   //! criterium is : current parameter of PR remains inside params
@@ -109,20 +109,20 @@ public:
   //! Note that "Associated" entities are not declared "Shared"
   Standard_EXPORT void ReadAssocs(const occ::handle<IGESData_IGESEntity>&     ent,
                                   const occ::handle<IGESData_IGESReaderData>& IR,
-                                  IGESData_ParamReader&                       PR) const;
+                                  IGESData_ParamReader&                  PR) const;
 
 private:
   occ::handle<Interface_ParamList>     thelist;
   occ::handle<IGESData_FileRecognizer> thereco;
-  Interface_GeneralLib                 theglib;
-  Interface_ReaderLib                  therlib;
-  int                                  thecnum;
-  IGESData_IGESType                    thectyp;
-  IGESData_ReadStage                   thestep;
+  Interface_GeneralLib            theglib;
+  Interface_ReaderLib             therlib;
+  int                thecnum;
+  IGESData_IGESType               thectyp;
+  IGESData_ReadStage              thestep;
   occ::handle<Interface_Check>         thechk;
-  int                                  thegradweight;
-  double                               themaxweight;
-  double                               thedefweight;
+  int                thegradweight;
+  double                   themaxweight;
+  double                   thedefweight;
 };
 
 #endif // _IGESData_IGESReaderTool_HeaderFile

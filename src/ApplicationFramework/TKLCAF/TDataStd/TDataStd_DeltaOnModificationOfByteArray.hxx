@@ -21,6 +21,9 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <TDF_DeltaOnModification.hxx>
 class TDataStd_ByteArray;
 
@@ -31,8 +34,7 @@ class TDataStd_DeltaOnModificationOfByteArray : public TDF_DeltaOnModification
 
 public:
   //! Initializes a TDF_DeltaOnModification.
-  Standard_EXPORT TDataStd_DeltaOnModificationOfByteArray(
-    const occ::handle<TDataStd_ByteArray>& Arr);
+  Standard_EXPORT TDataStd_DeltaOnModificationOfByteArray(const occ::handle<TDataStd_ByteArray>& Arr);
 
   //! Applies the delta to the attribute.
   Standard_EXPORT virtual void Apply() override;
@@ -40,10 +42,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfByteArray, TDF_DeltaOnModification)
 
 private:
-  occ::handle<NCollection_HArray1<int>>     myIndxes;
-  occ::handle<NCollection_HArray1<uint8_t>> myValues;
-  int                                       myUp1;
-  int                                       myUp2;
+  occ::handle<NCollection_HArray1<int>> myIndxes;
+  occ::handle<NCollection_HArray1<uint8_t>>    myValues;
+  int                 myUp1;
+  int                 myUp2;
 };
 
 #endif // _TDataStd_DeltaOnModificationOfByteArray_HeaderFile

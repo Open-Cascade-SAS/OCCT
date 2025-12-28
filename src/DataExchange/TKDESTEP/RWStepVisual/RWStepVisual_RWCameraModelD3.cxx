@@ -22,7 +22,7 @@
 RWStepVisual_RWCameraModelD3::RWStepVisual_RWCameraModelD3() {}
 
 void RWStepVisual_RWCameraModelD3::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepVisual_CameraModelD3>& ent) const
 {
@@ -65,7 +65,7 @@ void RWStepVisual_RWCameraModelD3::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aViewReferenceSystem, aPerspectiveOfVolume);
 }
 
-void RWStepVisual_RWCameraModelD3::WriteStep(StepData_StepWriter&                         SW,
+void RWStepVisual_RWCameraModelD3::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepVisual_CameraModelD3>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepVisual_RWCameraModelD3::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepVisual_RWCameraModelD3::Share(const occ::handle<StepVisual_CameraModelD3>& ent,
-                                         Interface_EntityIterator&                    iter) const
+                                         Interface_EntityIterator&               iter) const
 {
 
   iter.GetOneItem(ent->ViewReferenceSystem());

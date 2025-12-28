@@ -98,7 +98,7 @@ void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>
        aSelEntIter.Next())
   {
     const occ::handle<SelectMgr_SensitiveEntity>& aSensEnt = aSelEntIter.Value();
-    const int                                     anEntIdx = mySensitives.FindIndex(aSensEnt);
+    const int                   anEntIdx = mySensitives.FindIndex(aSensEnt);
     if (anEntIdx == 0)
     {
       continue;
@@ -126,8 +126,7 @@ void SelectMgr_SensitiveEntitySet::Remove(const occ::handle<SelectMgr_Selection>
 //=======================================================================
 Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box(const int theIndex) const
 {
-  const occ::handle<Select3D_SensitiveEntity>& aSensitive =
-    GetSensitiveById(theIndex)->BaseSensitive();
+  const occ::handle<Select3D_SensitiveEntity>& aSensitive = GetSensitiveById(theIndex)->BaseSensitive();
   if (!aSensitive->TransformPersistence().IsNull())
   {
     return Select3D_BndBox3d();
@@ -141,12 +140,12 @@ Select3D_BndBox3d SelectMgr_SensitiveEntitySet::Box(const int theIndex) const
 // purpose  : Returns geometry center of sensitive entity index theIdx
 //            along the given axis theAxis
 //=======================================================================
-double SelectMgr_SensitiveEntitySet::Center(const int theIndex, const int theAxis) const
+double SelectMgr_SensitiveEntitySet::Center(const int theIndex,
+                                                   const int theAxis) const
 {
-  const occ::handle<Select3D_SensitiveEntity>& aSensitive =
-    GetSensitiveById(theIndex)->BaseSensitive();
-  const gp_Pnt aCenter      = aSensitive->CenterOfGeometry();
-  double       aCenterCoord = 0.0;
+  const occ::handle<Select3D_SensitiveEntity>& aSensitive = GetSensitiveById(theIndex)->BaseSensitive();
+  const gp_Pnt                            aCenter    = aSensitive->CenterOfGeometry();
+  double                           aCenterCoord = 0.0;
   aCenterCoord = theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 
   return aCenterCoord;
@@ -156,7 +155,8 @@ double SelectMgr_SensitiveEntitySet::Center(const int theIndex, const int theAxi
 // function : Swap
 // purpose  : Swaps items with indexes theIdx1 and theIdx2
 //=======================================================================
-void SelectMgr_SensitiveEntitySet::Swap(const int theIndex1, const int theIndex2)
+void SelectMgr_SensitiveEntitySet::Swap(const int theIndex1,
+                                        const int theIndex2)
 {
   mySensitives.Swap(theIndex1 + 1, theIndex2 + 1);
 }

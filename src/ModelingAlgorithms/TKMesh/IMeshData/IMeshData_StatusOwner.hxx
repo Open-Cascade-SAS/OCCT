@@ -29,7 +29,10 @@ public:
   bool IsEqual(const IMeshData_Status theValue) const { return (myStatus == theValue); }
 
   //! Returns true in case if status is set.
-  bool IsSet(const IMeshData_Status theValue) const { return (myStatus & theValue) != 0; }
+  bool IsSet(const IMeshData_Status theValue) const
+  {
+    return (myStatus & theValue) != 0;
+  }
 
   //! Adds status to status flags of a face.
   void SetStatus(const IMeshData_Status theValue) { myStatus |= theValue; }

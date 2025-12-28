@@ -21,11 +21,10 @@
 
 RWStepVisual_RWPreDefinedColour::RWStepVisual_RWPreDefinedColour() {}
 
-void RWStepVisual_RWPreDefinedColour::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepVisual_PreDefinedColour>& ent) const
+void RWStepVisual_RWPreDefinedColour::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_PreDefinedColour>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -45,7 +44,7 @@ void RWStepVisual_RWPreDefinedColour::ReadStep(
 }
 
 void RWStepVisual_RWPreDefinedColour::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepVisual_PreDefinedColour>& ent) const
 {
 

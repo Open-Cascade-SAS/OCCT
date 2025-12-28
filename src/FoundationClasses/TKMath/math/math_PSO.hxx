@@ -71,36 +71,36 @@ public:
                            const math_Vector&        theLowBorder,
                            const math_Vector&        theUppBorder,
                            const math_Vector&        theSteps,
-                           const int                 theNbParticles = 32,
-                           const int                 theNbIter      = 100);
+                           const int    theNbParticles = 32,
+                           const int    theNbIter      = 100);
 
   //! Perform computations, particles array is constructed inside of this function.
-  Standard_EXPORT void Perform(const math_Vector& theSteps,
-                               double&            theValue,
-                               math_Vector&       theOutPnt,
-                               const int          theNbIter = 100);
+  Standard_EXPORT void Perform(const math_Vector&     theSteps,
+                               double&         theValue,
+                               math_Vector&           theOutPnt,
+                               const int theNbIter = 100);
 
   //! Perform computations with given particles array.
   Standard_EXPORT void Perform(math_PSOParticlesPool& theParticles,
-                               int                    theNbParticles,
-                               double&                theValue,
+                               int       theNbParticles,
+                               double&         theValue,
                                math_Vector&           theOutPnt,
-                               const int              theNbIter = 100);
+                               const int theNbIter = 100);
 
 private:
   void performPSOWithGivenParticles(math_PSOParticlesPool& theParticles,
-                                    int                    theNbParticles,
-                                    double&                theValue,
+                                    int       theNbParticles,
+                                    double&         theValue,
                                     math_Vector&           theOutPnt,
-                                    const int              theNbIter = 100);
+                                    const int theNbIter = 100);
 
   math_MultipleVarFunction* myFunc;
   math_Vector               myLowBorder;   // Lower border.
   math_Vector               myUppBorder;   // Upper border.
   math_Vector               mySteps;       // steps used in PSO algorithm.
-  int                       myN;           // Dimension count.
-  int                       myNbParticles; // Particles number.
-  int                       myNbIter;
+  int          myN;           // Dimension count.
+  int          myNbParticles; // Particles number.
+  int          myNbIter;
 };
 
 #endif

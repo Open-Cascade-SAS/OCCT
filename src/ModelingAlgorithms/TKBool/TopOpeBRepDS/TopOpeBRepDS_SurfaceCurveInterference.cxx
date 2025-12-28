@@ -28,12 +28,12 @@ TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference() {
 //=================================================================================================
 
 TopOpeBRepDS_SurfaceCurveInterference::TopOpeBRepDS_SurfaceCurveInterference(
-  const TopOpeBRepDS_Transition&   T,
-  const TopOpeBRepDS_Kind          ST,
-  const int                        S,
-  const TopOpeBRepDS_Kind          GT,
-  const int                        G,
-  const occ::handle<Geom2d_Curve>& PC)
+  const TopOpeBRepDS_Transition& T,
+  const TopOpeBRepDS_Kind        ST,
+  const int         S,
+  const TopOpeBRepDS_Kind        GT,
+  const int         G,
+  const occ::handle<Geom2d_Curve>&    PC)
     : TopOpeBRepDS_Interference(T, ST, S, GT, G),
       myPCurve(PC)
 {

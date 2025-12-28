@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_OrientedOpenShell, StepShape_OpenShell)
 StepShape_OrientedOpenShell::StepShape_OrientedOpenShell() {}
 
 void StepShape_OrientedOpenShell::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                                       const occ::handle<StepShape_OpenShell>& aOpenShellElement,
-                                       const bool                              aOrientation)
+                                       const occ::handle<StepShape_OpenShell>&      aOpenShellElement,
+                                       const bool                  aOrientation)
 {
   // --- classe own fields ---
   openShellElement = aOpenShellElement;
@@ -52,16 +52,14 @@ bool StepShape_OrientedOpenShell::Orientation() const
   return orientation;
 }
 
-void StepShape_OrientedOpenShell::SetCfsFaces(
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& /*aCfsFaces*/)
+void StepShape_OrientedOpenShell::SetCfsFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& /*aCfsFaces*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.
   std::cout << "Field is redefined, SetUp Forbidden" << std::endl;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_OrientedOpenShell::
-  CfsFaces() const
+occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> StepShape_OrientedOpenShell::CfsFaces() const
 {
   // WARNING : the field is redefined.
   // method body is not yet automatically wrote

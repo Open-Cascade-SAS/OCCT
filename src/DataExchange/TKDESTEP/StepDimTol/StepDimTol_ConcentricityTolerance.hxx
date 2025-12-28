@@ -30,6 +30,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ConcentricityTolerance,
                           StepDimTol_GeometricToleranceWithDatumReference)
+
 };
 
 #endif // _StepDimTol_ConcentricityTolerance_HeaderFile

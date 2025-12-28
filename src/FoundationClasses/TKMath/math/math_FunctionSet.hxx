@@ -58,6 +58,7 @@ public:
   //! an Integer that allows retrieval of the state.
   Standard_EXPORT virtual int GetStateNumber();
   Standard_EXPORT virtual ~math_FunctionSet();
+
 };
 
 #endif // _math_FunctionSet_HeaderFile

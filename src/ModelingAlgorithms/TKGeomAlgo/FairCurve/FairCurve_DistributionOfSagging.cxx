@@ -26,23 +26,24 @@
 #include <math_Vector.hxx>
 
 FairCurve_DistributionOfSagging::FairCurve_DistributionOfSagging(
-  const int                                         BSplOrder,
-  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
   const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-  const int                                         DerivativeOrder,
-  const FairCurve_BattenLaw&                        Law,
-  const int                                         NbValAux)
+  const int               DerivativeOrder,
+  const FairCurve_BattenLaw&           Law,
+  const int               NbValAux)
     : FairCurve_DistributionOfEnergy(BSplOrder, FlatKnots, Poles, DerivativeOrder, NbValAux),
       MyLaw(Law)
 {
 }
 
-bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam, math_Vector& Flexion)
+bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam,
+                                                        math_Vector&       Flexion)
 {
-  bool  Ok = true;
-  int   ier, ii, jj, kk;
-  gp_XY CPrim(0., 0.), CSecn(0., 0.);
-  int   LastGradientIndex, FirstNonZero, LastZero;
+  bool Ok = true;
+  int ier, ii, jj, kk;
+  gp_XY            CPrim(0., 0.), CSecn(0., 0.);
+  int LastGradientIndex, FirstNonZero, LastZero;
 
   // (0.0) initialisations generales
   Flexion.Init(0.0);
@@ -147,9 +148,9 @@ bool FairCurve_DistributionOfSagging::Value(const math_Vector& TParam, math_Vect
       double FacteurXY = -(XPrim * InvNormeCPrim) * (YPrim * InvNormeCPrim) * InvNormeCPrim;
       double FacteurW  = WVal * InvNormeCPrim;
 
-      double Produit, DSeconde, NSeconde;
-      double VIntermed;
-      int    k1, k2, II, JJ;
+      double    Produit, DSeconde, NSeconde;
+      double    VIntermed;
+      int k1, k2, II, JJ;
 
       Facteur = 2 * Mesure;
 

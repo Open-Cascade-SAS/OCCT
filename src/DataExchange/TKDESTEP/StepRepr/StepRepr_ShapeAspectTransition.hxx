@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepRepr_ShapeAspectTransition();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeAspectTransition, StepRepr_ShapeAspectRelationship)
+
 };
 
 #endif // _StepRepr_ShapeAspectTransition_HeaderFile

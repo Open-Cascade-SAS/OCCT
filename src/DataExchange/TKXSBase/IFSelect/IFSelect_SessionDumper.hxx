@@ -69,8 +69,9 @@ public:
   //! try another SessionDumper in the Library.
   //! WriteOwn can use these methods from SessionFile : SendVoid,
   //! SendItem, SendText, and if necessary, WorkSession.
-  Standard_EXPORT virtual bool WriteOwn(IFSelect_SessionFile&                  file,
-                                        const occ::handle<Standard_Transient>& item) const = 0;
+  Standard_EXPORT virtual bool WriteOwn(
+    IFSelect_SessionFile&             file,
+    const occ::handle<Standard_Transient>& item) const = 0;
 
   //! Recognizes a Type (given as <type>) then Creates an Item of
   //! this Type with the Own Parameter, as required.
@@ -80,9 +81,9 @@ public:
   //! SessionDumper in the Library.
   //! ReadOwn can use these methods from SessionFile to access Own
   //! Parameters : NbOwnParams, IsVoid, IsText, TextValue, ItemValue
-  Standard_EXPORT virtual bool ReadOwn(IFSelect_SessionFile&            file,
-                                       const TCollection_AsciiString&   type,
-                                       occ::handle<Standard_Transient>& item) const = 0;
+  Standard_EXPORT virtual bool ReadOwn(IFSelect_SessionFile&          file,
+                                                   const TCollection_AsciiString& type,
+                                                   occ::handle<Standard_Transient>&    item) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SessionDumper, Standard_Transient)
 

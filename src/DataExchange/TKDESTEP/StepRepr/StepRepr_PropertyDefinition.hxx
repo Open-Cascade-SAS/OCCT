@@ -33,9 +33,9 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasDescription,
+                            const bool                  hasDescription,
                             const occ::handle<TCollection_HAsciiString>& aDescription,
-                            const StepRepr_CharacterizedDefinition&      aDefinition);
+                            const StepRepr_CharacterizedDefinition& aDefinition);
 
   //! Returns field Name
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
@@ -63,8 +63,8 @@ public:
 private:
   occ::handle<TCollection_HAsciiString> theName;
   occ::handle<TCollection_HAsciiString> theDescription;
-  StepRepr_CharacterizedDefinition      theDefinition;
-  bool                                  defDescription;
+  StepRepr_CharacterizedDefinition theDefinition;
+  bool                 defDescription;
 };
 
 #endif // _StepRepr_PropertyDefinition_HeaderFile

@@ -61,7 +61,9 @@ public:
   }
 
   //! Returns distance value for the given voxel.
-  T Voxel(const int theX, const int theY, const int theZ) const
+  T Voxel(const int theX,
+          const int theY,
+          const int theZ) const
   {
     return myVoxelData[theX + (theY + theZ * myDimensionY) * myDimensionX];
   }
@@ -86,7 +88,9 @@ public:
 
 protected:
   //! Performs building of distance field for the given Z slices.
-  void BuildSlices(BVH_Geometry<T, N>& theGeometry, const int theStartZ, const int theFinalZ);
+  void BuildSlices(BVH_Geometry<T, N>&    theGeometry,
+                   const int theStartZ,
+                   const int theFinalZ);
 
 protected:
   //! Array of voxels.

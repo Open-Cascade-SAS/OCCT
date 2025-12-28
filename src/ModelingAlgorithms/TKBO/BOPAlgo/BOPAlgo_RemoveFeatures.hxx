@@ -22,10 +22,16 @@
 #include <BOPAlgo_BuilderShape.hxx>
 #include <BRepTools_History.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 //! The RemoveFeatures algorithm is intended for reconstruction of
@@ -228,17 +234,14 @@ protected: //! @name Protected methods performing the removal
   //! @param[in] theAdjFacesHistory  The history of the adjacent faces reconstruction;
   //! @param[in] theSolidsHistoryNeeded  Defines whether the history of solids
   //!                                    modifications should be tracked or not.
-  Standard_EXPORT void RemoveFeature(
-    const TopoDS_Shape&                                                  theFeature,
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolids,
-    const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&        theFeatureFacesMap,
-    const bool                                                           theHasAdjacentFaces,
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>&           theAdjFaces,
-    const occ::handle<BRepTools_History>&                                theAdjFacesHistory,
-    const bool                                                           theSolidsHistoryNeeded,
-    const Message_ProgressRange&                                         theRange);
+  Standard_EXPORT void RemoveFeature(const TopoDS_Shape&               theFeature,
+                                     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolids,
+                                     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&        theFeatureFacesMap,
+                                     const bool            theHasAdjacentFaces,
+                                     const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theAdjFaces,
+                                     const occ::handle<BRepTools_History>& theAdjFacesHistory,
+                                     const bool           theSolidsHistoryNeeded,
+                                     const Message_ProgressRange&     theRange);
 
   //! Updates history with the removed features
   Standard_EXPORT void UpdateHistory(const Message_ProgressRange& theRange);
@@ -251,19 +254,18 @@ protected: //! @name Protected methods performing the removal
   Standard_EXPORT void PostTreat();
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const double     theWhole,
-                                       BOPAlgo_PISteps& theSteps) const override;
+  Standard_EXPORT void fillPIConstants(const double theWhole,
+                                       BOPAlgo_PISteps&    theSteps) const override;
 
 protected: //! @name Fields
   // Inputs
-  TopoDS_Shape                   myInputShape;    //!< Input shape
+  TopoDS_Shape         myInputShape;    //!< Input shape
   NCollection_List<TopoDS_Shape> myFacesToRemove; //!< Faces to remove
 
   // Intermediate
-  NCollection_List<TopoDS_Shape> myFeatures; //!< List of not connected features to remove
-                                             //! (each feature is a compound of faces)
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>
-    myInputsMap; //!< Map of all sub-shapes of the input shape
+  NCollection_List<TopoDS_Shape> myFeatures;        //!< List of not connected features to remove
+                                          //! (each feature is a compound of faces)
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myInputsMap; //!< Map of all sub-shapes of the input shape
 };
 
 #endif // _BOPAlgo_RemoveFeatures_HeaderFile

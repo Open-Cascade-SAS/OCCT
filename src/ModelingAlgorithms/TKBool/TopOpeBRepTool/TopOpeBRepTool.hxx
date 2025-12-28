@@ -26,8 +26,12 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_OStream.hxx>
 #include <TopOpeBRepTool_OutCurveType.hxx>
 class TopoDS_Face;
@@ -52,16 +56,16 @@ public:
   //! 0 wire results from <F>'s wire split.
   //! returns false if purge fails
   Standard_EXPORT static bool PurgeClosingEdges(
-    const TopoDS_Face&                                                     F,
-    const TopoDS_Face&                                                     FF,
+    const TopoDS_Face&                    F,
+    const TopoDS_Face&                    FF,
     const NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& MWisOld,
-    NCollection_IndexedMap<TopoDS_Shape>&                                  MshNOK);
+    NCollection_IndexedMap<TopoDS_Shape>&   MshNOK);
 
   Standard_EXPORT static bool PurgeClosingEdges(
-    const TopoDS_Face&                                                     F,
-    const NCollection_List<TopoDS_Shape>&                                  LOF,
+    const TopoDS_Face&                    F,
+    const NCollection_List<TopoDS_Shape>&           LOF,
     const NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>& MWisOld,
-    NCollection_IndexedMap<TopoDS_Shape>&                                  MshNOK);
+    NCollection_IndexedMap<TopoDS_Shape>&   MshNOK);
 
   Standard_EXPORT static bool CorrectONUVISO(const TopoDS_Face& F, TopoDS_Face& Fsp);
 
@@ -69,21 +73,20 @@ public:
   //! faulty shapes from map <MshNOK>.
   //! <LOF> is the list of <F>'s descendant faces.
   //! returns false if building fails
-  Standard_EXPORT static bool MakeFaces(const TopoDS_Face&                          F,
-                                        const NCollection_List<TopoDS_Shape>&       LOF,
-                                        const NCollection_IndexedMap<TopoDS_Shape>& MshNOK,
-                                        NCollection_List<TopoDS_Shape>&             LOFF);
+  Standard_EXPORT static bool MakeFaces(
+    const TopoDS_Face&                        F,
+    const NCollection_List<TopoDS_Shape>&               LOF,
+    const NCollection_IndexedMap<TopoDS_Shape>& MshNOK,
+    NCollection_List<TopoDS_Shape>&                     LOFF);
 
   //! Returns <False> if the face is valid (the UV
   //! representation of the face is a set of pcurves
   //! connexed by points with connexity 2).
   //! Else, splits <aFace> in order to return a list of valid
   //! faces.
-  Standard_EXPORT static bool Regularize(
-    const TopoDS_Face&              aFace,
-    NCollection_List<TopoDS_Shape>& aListOfFaces,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      ESplits);
+  Standard_EXPORT static bool Regularize(const TopoDS_Face&    aFace,
+                                                     NCollection_List<TopoDS_Shape>& aListOfFaces,
+                                                     NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& ESplits);
 
   //! Returns <False> if the face is valid (the UV
   //! representation of the face is a set of pcurves
@@ -92,19 +95,15 @@ public:
   //! new faces to build up; <OldWiresNewWires> describes (wire,
   //! splits of wire); <ESplits> describes (edge, edge's splits)
   Standard_EXPORT static bool RegularizeWires(
-    const TopoDS_Face& aFace,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      OldWiresNewWires,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      ESplits);
+    const TopoDS_Face&                  aFace,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OldWiresNewWires,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& ESplits);
 
   //! Classify wire's splits of map <OldWiresnewWires> in order to
   //! compute <aListOfFaces>, the splits of <aFace>.
   Standard_EXPORT static bool RegularizeFace(
-    const TopoDS_Face&                                  aFace,
-    const NCollection_DataMap<TopoDS_Shape,
-                              NCollection_List<TopoDS_Shape>,
-                              TopTools_ShapeMapHasher>& OldWiresnewWires,
+    const TopoDS_Face&                        aFace,
+    const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OldWiresnewWires,
     NCollection_List<TopoDS_Shape>&                     aListOfFaces);
 
   //! Returns <False> if the shell is valid (the solid is a set
@@ -112,11 +111,9 @@ public:
   //! Else, splits faces of the shell; <OldFacesnewFaces> describes
   //! (face, splits of face).
   Standard_EXPORT static bool RegularizeShells(
-    const TopoDS_Solid& aSolid,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      OldSheNewShe,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      FSplits);
+    const TopoDS_Solid&                 aSolid,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OldSheNewShe,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& FSplits);
 
   //! Prints <OCT> as string on stream <S>; returns <S>.
   Standard_EXPORT static Standard_OStream& Print(const TopOpeBRepTool_OutCurveType OCT,

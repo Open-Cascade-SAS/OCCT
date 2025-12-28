@@ -34,15 +34,13 @@ class StepAP214_AppliedDocumentReference : public StepBasic_DocumentReference
 public:
   Standard_EXPORT StepAP214_AppliedDocumentReference();
 
-  Standard_EXPORT void Init(
-    const occ::handle<StepBasic_Document>&                                   aAssignedDocument,
-    const occ::handle<TCollection_HAsciiString>&                             aSource,
-    const occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>&       aAssignedDocument,
+                            const occ::handle<TCollection_HAsciiString>& aSource,
+                            const occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>> Items() const;
 
-  Standard_EXPORT void SetItems(
-    const occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>>& aItems);
 
   Standard_EXPORT StepAP214_DocumentReferenceItem ItemsValue(const int num) const;
 

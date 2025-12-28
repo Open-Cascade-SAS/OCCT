@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Surface>&         aBaseSurface,
-                            const bool                                   aAgreementFlag,
+                            const bool                  aAgreementFlag,
                             const occ::handle<StepShape_BoxDomain>&      aEnclosure);
 
   Standard_EXPORT void SetEnclosure(const occ::handle<StepShape_BoxDomain>& aEnclosure);

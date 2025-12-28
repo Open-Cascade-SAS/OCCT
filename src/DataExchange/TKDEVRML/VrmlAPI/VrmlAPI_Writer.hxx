@@ -68,26 +68,22 @@ public:
 
   //! Set transparency to given material
   Standard_EXPORT void SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                                 const double                aTransparency);
+                                                 const double    aTransparency);
 
   Standard_EXPORT void SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                              const double                aShininess);
+                                              const double    aShininess);
 
-  Standard_EXPORT void SetAmbientColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+  Standard_EXPORT void SetAmbientColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                 const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetDiffuseColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+  Standard_EXPORT void SetDiffuseColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                 const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetSpecularColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+  Standard_EXPORT void SetSpecularColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
-  Standard_EXPORT void SetEmissiveColorToMaterial(
-    occ::handle<Vrml_Material>&                             aMaterial,
-    const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
+  Standard_EXPORT void SetEmissiveColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color);
 
   //! Returns the representation of the shape which is
   //! written to the VRML file. Types of representation are set through the
@@ -112,45 +108,47 @@ public:
 
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the file identified by aFile.
-  Standard_EXPORT bool Write(const TopoDS_Shape& aShape,
-                             const char*         aFile,
-                             const int           aVersion = 2) const;
+  Standard_EXPORT bool Write(const TopoDS_Shape&    aShape,
+                                         const char* aFile,
+                                         const int aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the file identified by aFile.
   Standard_EXPORT bool WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
-                                const char*                          theFile,
-                                const double                         theScale) const;
+                                            const char*          theFile,
+                                            const double             theScale) const;
 
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the given stream.
-  Standard_EXPORT bool Write(const TopoDS_Shape& aShape,
-                             Standard_OStream&   theOStream,
-                             const int           aVersion = 2) const;
+  Standard_EXPORT bool Write(const TopoDS_Shape&    aShape,
+                                         Standard_OStream&      theOStream,
+                                         const int aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the given stream.
   Standard_EXPORT bool WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
-                                Standard_OStream&                    theOStream,
-                                const double                         theScale) const;
+                                            Standard_OStream&               theOStream,
+                                            const double             theScale) const;
 
 protected:
   //! Converts the shape aShape to VRML format of version 1.0 and writes it
   //! to the given stream using default parameters.
-  Standard_EXPORT bool write_v1(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const;
+  Standard_EXPORT bool write_v1(const TopoDS_Shape& aShape,
+                                            Standard_OStream&   theOStream) const;
 
   //! Converts the shape aShape to VRML format of version 2.0 and writes it
   //! to the given stream using default parameters.
-  Standard_EXPORT bool write_v2(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const;
+  Standard_EXPORT bool write_v2(const TopoDS_Shape& aShape,
+                                            Standard_OStream&   theOStream) const;
 
 private:
-  VrmlAPI_RepresentationOfShape        myRepresentation;
+  VrmlAPI_RepresentationOfShape   myRepresentation;
   occ::handle<VrmlConverter_Drawer>    myDrawer;
-  double                               myDeflection;
+  double                   myDeflection;
   occ::handle<VrmlConverter_Projector> myPerespectiveCamera;
   occ::handle<VrmlConverter_Projector> myOrthographicCamera;
-  double                               myTransparency;
-  double                               myShininess;
+  double                   myTransparency;
+  double                   myShininess;
   occ::handle<Vrml_Material>           myFrontMaterial;
   occ::handle<Vrml_Material>           myPointsMaterial;
   occ::handle<Vrml_Material>           myUisoMaterial;
@@ -159,13 +157,13 @@ private:
   occ::handle<Vrml_Material>           myWireMaterial;
   occ::handle<Vrml_Material>           myFreeBoundsMaterial;
   occ::handle<Vrml_Material>           myUnfreeBoundsMaterial;
-  double                               DX;
-  double                               DY;
-  double                               DZ;
-  double                               XUp;
-  double                               YUp;
-  double                               ZUp;
-  double                               Focus;
+  double                   DX;
+  double                   DY;
+  double                   DZ;
+  double                   XUp;
+  double                   YUp;
+  double                   ZUp;
+  double                   Focus;
 };
 
 #endif // _VrmlAPI_Writer_HeaderFile

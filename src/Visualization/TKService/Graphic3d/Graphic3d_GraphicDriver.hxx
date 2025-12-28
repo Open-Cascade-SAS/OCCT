@@ -42,13 +42,22 @@ public:
   virtual int InquireLimit(const Graphic3d_TypeOfLimit theType) const = 0;
 
   //! Request maximum number of active light sources supported by driver and hardware.
-  int InquireLightLimit() const { return InquireLimit(Graphic3d_TypeOfLimit_MaxNbLights); }
+  int InquireLightLimit() const
+  {
+    return InquireLimit(Graphic3d_TypeOfLimit_MaxNbLights);
+  }
 
   //! Request maximum number of active clipping planes supported by driver and hardware.
-  int InquirePlaneLimit() const { return InquireLimit(Graphic3d_TypeOfLimit_MaxNbClipPlanes); }
+  int InquirePlaneLimit() const
+  {
+    return InquireLimit(Graphic3d_TypeOfLimit_MaxNbClipPlanes);
+  }
 
   //! Request maximum number of views supported by driver.
-  int InquireViewLimit() const { return InquireLimit(Graphic3d_TypeOfLimit_MaxNbViews); }
+  int InquireViewLimit() const
+  {
+    return InquireLimit(Graphic3d_TypeOfLimit_MaxNbViews);
+  }
 
 public:
   //! Creates new empty graphic structure
@@ -59,8 +68,7 @@ public:
   virtual void RemoveStructure(occ::handle<Graphic3d_CStructure>& theCStructure) = 0;
 
   //! Creates new view for this graphic driver.
-  virtual occ::handle<Graphic3d_CView> CreateView(
-    const occ::handle<Graphic3d_StructureManager>& theMgr) = 0;
+  virtual occ::handle<Graphic3d_CView> CreateView(const occ::handle<Graphic3d_StructureManager>& theMgr) = 0;
 
   //! Removes view from graphic driver and releases its resources.
   virtual void RemoveView(const occ::handle<Graphic3d_CView>& theView) = 0;
@@ -76,17 +84,18 @@ public:
   virtual void SetVerticalSync(bool theToEnable) = 0;
 
   //! Returns information about GPU memory usage.
-  virtual bool MemoryInfo(size_t& theFreeBytes, TCollection_AsciiString& theInfo) const = 0;
+  virtual bool MemoryInfo(size_t&           theFreeBytes,
+                                      TCollection_AsciiString& theInfo) const = 0;
 
   virtual float DefaultTextHeight() const = 0;
 
   //! Computes text width.
   virtual void TextSize(const occ::handle<Graphic3d_CView>& theView,
-                        const char*                         theText,
-                        const float                         theHeight,
-                        float&                              theWidth,
-                        float&                              theAscent,
-                        float&                              theDescent) const = 0;
+                        const char*         theText,
+                        const float       theHeight,
+                        float&            theWidth,
+                        float&            theAscent,
+                        float&            theDescent) const = 0;
 
   //! Adds a layer to all views.
   //! To add a structure to desired layer on display it is necessary to set the layer ID for the
@@ -128,7 +137,7 @@ public:
   //! Returns view associated with the window if it is exists and is activated.
   //! Returns true if the view associated to the window exists.
   virtual bool ViewExists(const occ::handle<Aspect_Window>& theWindow,
-                          occ::handle<Graphic3d_CView>&     theView) = 0;
+                                      occ::handle<Graphic3d_CView>&     theView) = 0;
 
   //! returns Handle to display connection
   Standard_EXPORT const occ::handle<Aspect_DisplayConnection>& GetDisplayConnection() const;
@@ -148,7 +157,7 @@ protected:
 
 protected:
   occ::handle<Aspect_DisplayConnection>                                 myDisplayConnection;
-  Aspect_GenId                                                          myStructGenId;
+  Aspect_GenId                                                     myStructGenId;
   NCollection_List<occ::handle<Graphic3d_Layer>>                        myLayers;
   NCollection_DataMap<Graphic3d_ZLayerId, occ::handle<Graphic3d_Layer>> myLayerIds;
 };

@@ -34,7 +34,7 @@ RWStepKinematics_RWActuatedKinematicPair::RWStepKinematics_RWActuatedKinematicPa
 
 void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   const occ::handle<StepData_StepReaderData>&              theData,
-  const int                                                theNum,
+  const int                              theNum,
   occ::handle<Interface_Check>&                            theArch,
   const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                                  hasItemDefinedTransformation_Description = true;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -101,7 +101,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   // Own fields of ActuatedKinematicPair
 
   StepKinematics_ActuatedDirection aTX   = StepKinematics_adNotActuated;
-  bool                             hasTX = true;
+  bool                 hasTX = true;
   if (theData->IsParamDefined(theNum, 7))
   {
     if (theData->ParamType(theNum, 7) == Interface_ParamEnum)
@@ -127,7 +127,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aTY   = StepKinematics_adNotActuated;
-  bool                             hasTY = true;
+  bool                 hasTY = true;
   if (theData->IsParamDefined(theNum, 8))
   {
     if (theData->ParamType(theNum, 8) == Interface_ParamEnum)
@@ -153,7 +153,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aTZ   = StepKinematics_adNotActuated;
-  bool                             hasTZ = true;
+  bool                 hasTZ = true;
   if (theData->IsParamDefined(theNum, 9))
   {
     if (theData->ParamType(theNum, 9) == Interface_ParamEnum)
@@ -179,7 +179,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRX   = StepKinematics_adNotActuated;
-  bool                             hasRX = true;
+  bool                 hasRX = true;
   if (theData->IsParamDefined(theNum, 10))
   {
     if (theData->ParamType(theNum, 10) == Interface_ParamEnum)
@@ -205,7 +205,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRY   = StepKinematics_adNotActuated;
-  bool                             hasRY = true;
+  bool                 hasRY = true;
   if (theData->IsParamDefined(theNum, 11))
   {
     if (theData->ParamType(theNum, 11) == Interface_ParamEnum)
@@ -231,7 +231,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
   }
 
   StepKinematics_ActuatedDirection aRZ   = StepKinematics_adNotActuated;
-  bool                             hasRZ = true;
+  bool                 hasRZ = true;
   if (theData->IsParamDefined(theNum, 12))
   {
     if (theData->ParamType(theNum, 12) == Interface_ParamEnum)
@@ -281,7 +281,7 @@ void RWStepKinematics_RWActuatedKinematicPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
-  StepData_StepWriter&                                     theSW,
+  StepData_StepWriter&                                theSW,
   const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt) const
 {
 
@@ -441,7 +441,7 @@ void RWStepKinematics_RWActuatedKinematicPair::WriteStep(
 
 void RWStepKinematics_RWActuatedKinematicPair::Share(
   const occ::handle<StepKinematics_ActuatedKinematicPair>& theEnt,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   // Inherited fields of RepresentationItem

@@ -478,7 +478,7 @@ bool Image_AlienPixMap::InitWrapper(Image_Format,
 //=================================================================================================
 
 #ifdef HAVE_FREEIMAGE
-bool Image_AlienPixMap::InitTrash(Image_Format thePixelFormat,
+bool Image_AlienPixMap::InitTrash(Image_Format        thePixelFormat,
                                   const size_t theSizeX,
                                   const size_t theSizeY,
                                   const size_t /*theSizeRowBytes*/)
@@ -514,7 +514,7 @@ bool Image_AlienPixMap::InitTrash(Image_Format thePixelFormat,
   return true;
 }
 #elif defined(HAVE_WINCODEC)
-bool Image_AlienPixMap::InitTrash(Image_Format thePixelFormat,
+bool Image_AlienPixMap::InitTrash(Image_Format        thePixelFormat,
                                   const size_t theSizeX,
                                   const size_t theSizeY,
                                   const size_t theSizeRowBytes)
@@ -544,7 +544,7 @@ bool Image_AlienPixMap::InitTrash(Image_Format thePixelFormat,
   return true;
 }
 #else
-bool Image_AlienPixMap::InitTrash(Image_Format thePixelFormat,
+bool Image_AlienPixMap::InitTrash(Image_Format        thePixelFormat,
                                   const size_t theSizeX,
                                   const size_t theSizeY,
                                   const size_t theSizeRowBytes)
@@ -632,8 +632,8 @@ bool Image_AlienPixMap::IsTopDownDefault()
 //=================================================================================================
 
 #ifdef HAVE_FREEIMAGE
-bool Image_AlienPixMap::Load(const uint8_t*                 theData,
-                             const size_t                   theLength,
+bool Image_AlienPixMap::Load(const uint8_t*           theData,
+                             const size_t            theLength,
                              const TCollection_AsciiString& theImagePath)
 {
   Clear();
@@ -815,8 +815,8 @@ bool Image_AlienPixMap::Load(std::istream& theStream, const TCollection_AsciiStr
 }
 
 #elif defined(HAVE_WINCODEC)
-bool Image_AlienPixMap::Load(const uint8_t*                 theData,
-                             const size_t                   theLength,
+bool Image_AlienPixMap::Load(const uint8_t*           theData,
+                             const size_t            theLength,
                              const TCollection_AsciiString& theFileName)
 {
   Clear();
@@ -971,8 +971,8 @@ bool Image_AlienPixMap::Load(std::istream&, const TCollection_AsciiString&)
   return false;
 }
 
-bool Image_AlienPixMap::Load(const uint8_t*                 theData,
-                             const size_t                   theLength,
+bool Image_AlienPixMap::Load(const uint8_t*           theData,
+                             const size_t            theLength,
                              const TCollection_AsciiString& theImagePath)
 {
   Clear();
@@ -1004,7 +1004,9 @@ bool Image_AlienPixMap::Load(std::istream&, const TCollection_AsciiString&)
   return false;
 }
 
-bool Image_AlienPixMap::Load(const uint8_t*, const size_t, const TCollection_AsciiString&)
+bool Image_AlienPixMap::Load(const uint8_t*,
+                             const size_t,
+                             const TCollection_AsciiString&)
 {
   Clear();
   Message::SendFail("Error: no image library available");
@@ -1110,8 +1112,8 @@ static bool convertData(const Image_AlienPixMap&  theSrcPixMapData,
 
 //=================================================================================================
 
-bool Image_AlienPixMap::Save(uint8_t*                       theBuffer,
-                             const size_t                   theLength,
+bool Image_AlienPixMap::Save(uint8_t*                 theBuffer,
+                             const size_t            theLength,
                              const TCollection_AsciiString& theFileName)
 {
 #ifdef HAVE_FREEIMAGE

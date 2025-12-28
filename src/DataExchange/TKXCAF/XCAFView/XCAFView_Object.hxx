@@ -21,6 +21,7 @@
 
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -142,19 +143,19 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> myName;
-  XCAFView_ProjectionType               myType;
-  gp_Pnt                                myProjectionPoint;
-  gp_Dir                                myViewDirection;
-  gp_Dir                                myUpDirection;
-  double                                myZoomFactor;
-  double                                myWindowHorizontalSize;
-  double                                myWindowVerticalSize;
+  XCAFView_ProjectionType          myType;
+  gp_Pnt                           myProjectionPoint;
+  gp_Dir                           myViewDirection;
+  gp_Dir                           myUpDirection;
+  double                    myZoomFactor;
+  double                    myWindowHorizontalSize;
+  double                    myWindowVerticalSize;
   occ::handle<TCollection_HAsciiString> myClippingExpression;
-  bool                                  myFrontPlaneClipping;
-  double                                myFrontPlaneDistance;
-  bool                                  myBackPlaneClipping;
-  double                                myBackPlaneDistance;
-  bool                                  myViewVolumeSidesClipping;
+  bool                 myFrontPlaneClipping;
+  double                    myFrontPlaneDistance;
+  bool                 myBackPlaneClipping;
+  double                    myBackPlaneDistance;
+  bool                 myViewVolumeSidesClipping;
   // clang-format off
   occ::handle<NCollection_HArray1<gp_Pnt>> myGDTPoints; // Point for each GDT to describe position of GDT frame in View.
   // clang-format on

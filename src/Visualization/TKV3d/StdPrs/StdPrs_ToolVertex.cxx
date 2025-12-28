@@ -18,7 +18,10 @@
 #include <StdPrs_ToolVertex.hxx>
 #include <TopoDS_Vertex.hxx>
 
-void StdPrs_ToolVertex::Coord(const TopoDS_Vertex& aVertex, double& X, double& Y, double& Z)
+void StdPrs_ToolVertex::Coord(const TopoDS_Vertex& aVertex,
+                              double&       X,
+                              double&       Y,
+                              double&       Z)
 {
   gp_Pnt P = BRep_Tool::Pnt(aVertex);
   X        = P.X();

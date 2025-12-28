@@ -42,9 +42,9 @@ public:
   //! Tolang is the angular tolerance.
   Standard_EXPORT Geom2dGcc_Lin2dTanOblIter(const Geom2dGcc_QCurve& Qualified1,
                                             const gp_Lin2d&         TheLin,
-                                            const double            Param1,
-                                            const double            TolAng,
-                                            const double            Angle = 0);
+                                            const double     Param1,
+                                            const double     TolAng,
+                                            const double     Angle = 0);
 
   //! This method returns true when there is a solution
   //! and false in the other cases.
@@ -54,23 +54,27 @@ public:
 
   Standard_EXPORT void WhichQualifier(GccEnt_Position& Qualif1) const;
 
-  Standard_EXPORT void Tangency1(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
+  Standard_EXPORT void Tangency1(double& ParSol,
+                                 double& ParArg,
+                                 gp_Pnt2d&      PntSol) const;
 
-  Standard_EXPORT void Intersection2(double& ParSol, double& ParArg, gp_Pnt2d& PntSol) const;
+  Standard_EXPORT void Intersection2(double& ParSol,
+                                     double& ParArg,
+                                     gp_Pnt2d&      PntSol) const;
 
   Standard_EXPORT bool IsParallel2() const;
 
 private:
-  bool            WellDone;
-  bool            Paral2;
-  gp_Lin2d        linsol;
-  GccEnt_Position qualifier1;
-  gp_Pnt2d        pnttg1sol;
-  gp_Pnt2d        pntint2sol;
-  double          par1sol;
-  double          par2sol;
-  double          pararg1;
-  double          pararg2;
+  bool WellDone;
+  bool Paral2;
+  gp_Lin2d         linsol;
+  GccEnt_Position  qualifier1;
+  gp_Pnt2d         pnttg1sol;
+  gp_Pnt2d         pntint2sol;
+  double    par1sol;
+  double    par2sol;
+  double    pararg1;
+  double    pararg2;
 };
 
 #endif // _Geom2dGcc_Lin2dTanOblIter_HeaderFile

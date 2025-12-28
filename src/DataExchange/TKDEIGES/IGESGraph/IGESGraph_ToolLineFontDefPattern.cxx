@@ -41,9 +41,9 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int                                      tempNbSeg;
-  occ::handle<TCollection_HAsciiString>    tempDisplayPattern;
-  occ::handle<NCollection_HArray1<double>> tempSegmentLengths;
+  int                 tempNbSeg;
+  occ::handle<TCollection_HAsciiString> tempDisplayPattern;
+  occ::handle<NCollection_HArray1<double>>    tempSegmentLengths;
 
   if (PR.ReadInteger(PR.Current(), "Number of Visible-Blank Segments", tempNbSeg))
   { // szv#4:S4163:12Mar99 `st=` not needed
@@ -78,7 +78,7 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams(
 
 void IGESGraph_ToolLineFontDefPattern::WriteOwnParams(
   const occ::handle<IGESGraph_LineFontDefPattern>& ent,
-  IGESData_IGESWriter&                             IW) const
+  IGESData_IGESWriter&                        IW) const
 {
   int up = ent->NbSegments();
   IW.Send(up);
@@ -94,10 +94,9 @@ void IGESGraph_ToolLineFontDefPattern::OwnShared(
 {
 }
 
-void IGESGraph_ToolLineFontDefPattern::OwnCopy(
-  const occ::handle<IGESGraph_LineFontDefPattern>& another,
-  const occ::handle<IGESGraph_LineFontDefPattern>& ent,
-  Interface_CopyTool& /*TC*/) const
+void IGESGraph_ToolLineFontDefPattern::OwnCopy(const occ::handle<IGESGraph_LineFontDefPattern>& another,
+                                               const occ::handle<IGESGraph_LineFontDefPattern>& ent,
+                                               Interface_CopyTool& /*TC*/) const
 {
   occ::handle<NCollection_HArray1<double>> tempSegmentLengths =
     new NCollection_HArray1<double>(1, another->NbSegments());
@@ -127,10 +126,9 @@ IGESData_DirChecker IGESGraph_ToolLineFontDefPattern::DirChecker(
   return DC;
 }
 
-void IGESGraph_ToolLineFontDefPattern::OwnCheck(
-  const occ::handle<IGESGraph_LineFontDefPattern>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void IGESGraph_ToolLineFontDefPattern::OwnCheck(const occ::handle<IGESGraph_LineFontDefPattern>& ent,
+                                                const Interface_ShareTool&,
+                                                occ::handle<Interface_Check>& ach) const
 {
   if (ent->RankLineFont() == 0)
     ach->AddWarning("Line Font Rank is zero");
@@ -140,8 +138,8 @@ void IGESGraph_ToolLineFontDefPattern::OwnCheck(
 
 void IGESGraph_ToolLineFontDefPattern::OwnDump(const occ::handle<IGESGraph_LineFontDefPattern>& ent,
                                                const IGESData_IGESDumper& /*dumper*/,
-                                               Standard_OStream& S,
-                                               const int         level) const
+                                               Standard_OStream&      S,
+                                               const int level) const
 {
   S << "IGESGraph_LineFontDefPattern\n"
     << "Visible-Blank Segments : ";

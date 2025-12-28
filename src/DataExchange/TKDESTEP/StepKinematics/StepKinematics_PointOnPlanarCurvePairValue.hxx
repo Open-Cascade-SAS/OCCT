@@ -33,11 +33,10 @@ public:
   Standard_EXPORT StepKinematics_PointOnPlanarCurvePairValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
-    const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-    const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve,
-    const StepKinematics_SpatialRotation&            theInputOrientation);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
+                            const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
+                            const occ::handle<StepGeom_PointOnCurve>&        theActualPointOnCurve,
+                            const StepKinematics_SpatialRotation&       theInputOrientation);
 
   //! Returns field ActualPointOnCurve
   Standard_EXPORT occ::handle<StepGeom_PointOnCurve> ActualPointOnCurve() const;
@@ -54,7 +53,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_PointOnPlanarCurvePairValue, StepKinematics_PairValue)
 
 private:
-  occ::handle<StepGeom_PointOnCurve> myActualPointOnCurve;
-  StepKinematics_SpatialRotation     myInputOrientation;
+  occ::handle<StepGeom_PointOnCurve>  myActualPointOnCurve;
+  StepKinematics_SpatialRotation myInputOrientation;
 };
 #endif // _StepKinematics_PointOnPlanarCurvePairValue_HeaderFile_

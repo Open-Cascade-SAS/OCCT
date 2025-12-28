@@ -32,7 +32,7 @@
 //=================================================================================================
 
 static double GetDeflection(const occ::handle<BRepAdaptor_Surface>&  aFace,
-                            const occ::handle<VrmlConverter_Drawer>& aDrawer)
+                                   const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   double theRequestedDeflection;
@@ -68,18 +68,18 @@ static double GetDeflection(const occ::handle<BRepAdaptor_Surface>&  aFace,
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
-                                                   const occ::handle<BRepAdaptor_Surface>& aFace,
-                                                   const bool                              DrawUIso,
-                                                   const bool                              DrawVIso,
-                                                   const double Deflection,
-                                                   const int    NBUiso,
-                                                   const int    NBViso,
+void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream&                   anOStream,
+                                                   const occ::handle<BRepAdaptor_Surface>&  aFace,
+                                                   const bool              DrawUIso,
+                                                   const bool              DrawVIso,
+                                                   const double                 Deflection,
+                                                   const int              NBUiso,
+                                                   const int              NBViso,
                                                    const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   StdPrs_ToolRFace ToolRst(aFace);
-  double           UF, UL, VF, VL;
+  double    UF, UL, VF, VL;
   UF = aFace->FirstUParameter();
   UL = aFace->LastUParameter();
   VF = aFace->FirstVParameter();
@@ -88,8 +88,8 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
   double aLimit = aDrawer->MaximalParameterValue();
 
   // compute bounds of the restriction
-  double UMin, UMax, VMin, VMax;
-  int    i;
+  double    UMin, UMax, VMin, VMax;
+  int i;
 
   UMin = UF;
   UMax = UL;
@@ -97,9 +97,9 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
   VMax = VL;
 
   // load the isos
-  Hatch_Hatcher isobuild(1.e-5, ToolRst.IsOriented());
-  bool          UClosed = aFace->IsUClosed();
-  bool          VClosed = aFace->IsVClosed();
+  Hatch_Hatcher    isobuild(1.e-5, ToolRst.IsOriented());
+  bool UClosed = aFace->IsUClosed();
+  bool VClosed = aFace->IsVClosed();
 
   if (!UClosed)
   {
@@ -117,7 +117,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
   {
     if (NBUiso > 0)
     {
-      UClosed   = false;
+      UClosed          = false;
       double du = UClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
       for (i = 1; i <= NBUiso; i++)
       {
@@ -129,7 +129,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
   {
     if (NBViso > 0)
     {
-      VClosed   = false;
+      VClosed          = false;
       double dv = VClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
       for (i = 1; i <= NBViso; i++)
       {
@@ -139,9 +139,9 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
   }
 
   // trim the isos
-  gp_Pnt2d P1, P2;
-  double   U1, U2;
-  gp_Pnt   dummypnt;
+  gp_Pnt2d      P1, P2;
+  double U1, U2;
+  gp_Pnt        dummypnt;
   for (ToolRst.Init(); ToolRst.More(); ToolRst.Next())
   {
     TopAbs_Orientation       Orient    = ToolRst.Orientation();
@@ -244,8 +244,8 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
       {
         if (isobuild.IsXLine(i))
         {
-          int    NumberOfIntervals = isobuild.NbIntervals(i);
-          double Coord             = isobuild.Coordinate(i);
+          int NumberOfIntervals = isobuild.NbIntervals(i);
+          double    Coord             = isobuild.Coordinate(i);
           for (int j = 1; j <= NumberOfIntervals; j++)
           {
             double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
@@ -292,8 +292,8 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
       {
         if (isobuild.IsYLine(i))
         {
-          int    NumberOfIntervals = isobuild.NbIntervals(i);
-          double Coord             = isobuild.Coordinate(i);
+          int NumberOfIntervals = isobuild.NbIntervals(i);
+          double    Coord             = isobuild.Coordinate(i);
           for (int j = 1; j <= NumberOfIntervals; j++)
           {
             double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
@@ -327,7 +327,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
+void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream&                   anOStream,
                                                    const occ::handle<BRepAdaptor_Surface>&  aFace,
                                                    const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
@@ -349,10 +349,9 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add(Standard_OStream& anOStream,
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionRestrictedFace::AddUIso(
-  Standard_OStream&                        anOStream,
-  const occ::handle<BRepAdaptor_Surface>&  aFace,
-  const occ::handle<VrmlConverter_Drawer>& aDrawer)
+void VrmlConverter_WFDeflectionRestrictedFace::AddUIso(Standard_OStream&                  anOStream,
+                                                       const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                       const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   double Deflection = GetDeflection(aFace, aDrawer);
@@ -371,10 +370,9 @@ void VrmlConverter_WFDeflectionRestrictedFace::AddUIso(
 
 //=================================================================================================
 
-void VrmlConverter_WFDeflectionRestrictedFace::AddVIso(
-  Standard_OStream&                        anOStream,
-  const occ::handle<BRepAdaptor_Surface>&  aFace,
-  const occ::handle<VrmlConverter_Drawer>& aDrawer)
+void VrmlConverter_WFDeflectionRestrictedFace::AddVIso(Standard_OStream&                  anOStream,
+                                                       const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                       const occ::handle<VrmlConverter_Drawer>& aDrawer)
 {
 
   double Deflection = GetDeflection(aFace, aDrawer);

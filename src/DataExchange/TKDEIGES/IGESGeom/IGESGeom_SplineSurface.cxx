@@ -24,14 +24,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
 IGESGeom_SplineSurface::IGESGeom_SplineSurface() {}
 
-void IGESGeom_SplineSurface::Init(
-  const int                                                                         aBoundaryType,
-  const int                                                                         aPatchType,
-  const occ::handle<NCollection_HArray1<double>>&                                   allUBreakPoints,
-  const occ::handle<NCollection_HArray1<double>>&                                   allVBreakPoints,
-  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
-  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
-  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs)
+void IGESGeom_SplineSurface::Init(const int                          aBoundaryType,
+                                  const int                          aPatchType,
+                                  const occ::handle<NCollection_HArray1<double>>&            allUBreakPoints,
+                                  const occ::handle<NCollection_HArray1<double>>&            allVBreakPoints,
+                                  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+                                  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+                                  const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs)
 {
   int i, j;
   if (allUBreakPoints->Lower() != 1 || allVBreakPoints->Lower() != 1)
@@ -108,28 +107,30 @@ double IGESGeom_SplineSurface::VBreakPoint(const int Index) const
   return theVBreakPoints->Value(Index);
 }
 
-occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::XPolynomial(const int Index1,
-                                                                             const int Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::XPolynomial(
+  const int Index1,
+  const int Index2) const
 {
   return (theXCoeffs->Value(Index1, Index2));
 }
 
-occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::YPolynomial(const int Index1,
-                                                                             const int Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::YPolynomial(
+  const int Index1,
+  const int Index2) const
 {
   return (theYCoeffs->Value(Index1, Index2));
 }
 
-occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::ZPolynomial(const int Index1,
-                                                                             const int Index2) const
+occ::handle<NCollection_HArray1<double>> IGESGeom_SplineSurface::ZPolynomial(
+  const int Index1,
+  const int Index2) const
 {
   return (theZCoeffs->Value(Index1, Index2));
 }
 
-void IGESGeom_SplineSurface::Polynomials(
-  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
-  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
-  occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs) const
+void IGESGeom_SplineSurface::Polynomials(occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+                                         occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+                                         occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs) const
 {
   allXCoeffs = theXCoeffs;
   allYCoeffs = theYCoeffs;

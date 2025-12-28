@@ -21,7 +21,7 @@
 
 int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
 {
-  int                 nbs;
+  int    nbs;
   GeomAbs_SurfaceType typS = S.GetType();
   switch (typS)
   {
@@ -65,7 +65,7 @@ int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S)
 
 int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
 {
-  int                 nbs;
+  int    nbs;
   GeomAbs_SurfaceType typS = S.GetType();
   switch (typS)
   {
@@ -104,7 +104,9 @@ int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S)
 
 //=================================================================================================
 
-int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S, const double u1, const double u2)
+int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S,
+                                                  const double        u1,
+                                                  const double        u2)
 {
   int nbs = NbSamplesU(S);
   int n   = nbs;
@@ -123,7 +125,9 @@ int HLRBRep_BSurfaceTool::NbSamplesU(const BRepAdaptor_Surface& S, const double 
 
 //=================================================================================================
 
-int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S, const double v1, const double v2)
+int HLRBRep_BSurfaceTool::NbSamplesV(const BRepAdaptor_Surface& S,
+                                                  const double        v1,
+                                                  const double        v2)
 {
   int nbs = NbSamplesV(S);
   int n   = nbs;

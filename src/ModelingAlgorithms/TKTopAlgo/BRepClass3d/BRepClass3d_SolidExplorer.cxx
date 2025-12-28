@@ -49,21 +49,21 @@
 //            different values , different points are returned.
 //=======================================================================
 bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
-                                                    gp_Pnt&            APoint_,
-                                                    double&            param_)
+                                                                gp_Pnt&            APoint_,
+                                                                double&     param_)
 {
-  double u, v;
-  bool   r = FindAPointInTheFace(_face, APoint_, u, v, param_);
+  double    u, v;
+  bool r = FindAPointInTheFace(_face, APoint_, u, v, param_);
   return r;
 }
 
 //=================================================================================================
 
 bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
-                                                    gp_Pnt&            APoint_,
-                                                    double&            u_,
-                                                    double&            v_,
-                                                    double&            param_)
+                                                                gp_Pnt&            APoint_,
+                                                                double&     u_,
+                                                                double&     v_,
+                                                                double&     param_)
 {
   gp_Vec aVecD1U, aVecD1V;
   return FindAPointInTheFace(_face, APoint_, u_, v_, param_, aVecD1U, aVecD1V);
@@ -72,12 +72,12 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
 //=================================================================================================
 
 bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
-                                                    gp_Pnt&            APoint_,
-                                                    double&            u_,
-                                                    double&            v_,
-                                                    double&            param_,
-                                                    gp_Vec&            theVecD1U,
-                                                    gp_Vec&            theVecD1V)
+                                                                gp_Pnt&            APoint_,
+                                                                double&     u_,
+                                                                double&     v_,
+                                                                double&     param_,
+                                                                gp_Vec&            theVecD1U,
+                                                                gp_Vec&            theVecD1V)
 {
   TopoDS_Face face = _face;
   face.Orientation(TopAbs_FORWARD);
@@ -103,9 +103,9 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
     {
       T.SetCoord(y, -x);
     }
-    double ParamInit   = Precision::Infinite();
-    double TolInit     = 0.00001;
-    bool   APointExist = false;
+    double    ParamInit   = Precision::Infinite();
+    double    TolInit     = 0.00001;
+    bool APointExist = false;
 
     BRepClass_FacePassiveClassifier FClassifier;
 
@@ -115,8 +115,8 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
     FClassifier.Reset (gp_Lin2d (P, T), ParamInit, RealEpsilon()); //-- Length and Tolerance #######
     // clang-format on
 
-    TopExp_Explorer otherfaceexplorer;
-    int             aNbEdges = 0;
+    TopExp_Explorer  otherfaceexplorer;
+    int aNbEdges = 0;
     for (otherfaceexplorer.Init(face, TopAbs_EDGE); otherfaceexplorer.More();
          otherfaceexplorer.Next(), ++aNbEdges)
     {
@@ -179,17 +179,17 @@ bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
 
 //=================================================================================================
 
-bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&                      Face,
-                                               gp_Pnt&                                 APoint_,
-                                               double&                                 u_,
-                                               double&                                 v_,
-                                               double&                                 param_,
-                                               int&                                    IndexPoint,
-                                               const occ::handle<BRepAdaptor_Surface>& surf,
-                                               const double                            U1,
-                                               const double                            V1,
-                                               const double                            U2,
-                                               const double                            V2) const
+bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face& Face,
+                                                           gp_Pnt&            APoint_,
+                                                           double&     u_,
+                                                           double&     v_,
+                                                           double&     param_,
+                                                           int&  IndexPoint,
+                                                           const occ::handle<BRepAdaptor_Surface>& surf,
+                                                           const double                U1,
+                                                           const double                V1,
+                                                           const double                U2,
+                                                           const double V2) const
 {
   gp_Vec aVecD1U, aVecD1V;
   return PointInTheFace(Face,
@@ -210,9 +210,9 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
 //=================================================================================================
 
 TopAbs_State BRepClass3d_SolidExplorer::ClassifyUVPoint(
-  const IntCurvesFace_Intersector&        theIntersector,
+  const IntCurvesFace_Intersector&   theIntersector,
   const occ::handle<BRepAdaptor_Surface>& theSurf,
-  const gp_Pnt2d&                         theP2d) const
+  const gp_Pnt2d&                    theP2d) const
 {
   // first find if the point is near an edge/vertex
   gp_Pnt                              aP3d = theSurf->Value(theP2d.X(), theP2d.Y());
@@ -229,19 +229,19 @@ TopAbs_State BRepClass3d_SolidExplorer::ClassifyUVPoint(
 
 //=================================================================================================
 
-bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&                      Face,
-                                               gp_Pnt&                                 APoint_,
-                                               double&                                 u_,
-                                               double&                                 v_,
-                                               double&                                 param_,
-                                               int&                                    IndexPoint,
-                                               const occ::handle<BRepAdaptor_Surface>& surf,
-                                               const double                            U1,
-                                               const double                            V1,
-                                               const double                            U2,
-                                               const double                            V2,
-                                               gp_Vec&                                 theVecD1U,
-                                               gp_Vec& theVecD1V) const
+bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face& Face,
+                                                           gp_Pnt&            APoint_,
+                                                           double&     u_,
+                                                           double&     v_,
+                                                           double&     param_,
+                                                           int&  IndexPoint,
+                                                           const occ::handle<BRepAdaptor_Surface>& surf,
+                                                           const double                U1,
+                                                           const double                V1,
+                                                           const double                U2,
+                                                           const double                V2,
+                                                           gp_Vec& theVecD1U,
+                                                           gp_Vec& theVecD1V) const
 {
   double u, du = (U2 - U1) / 6.0;
   double v, dv = (V2 - V1) / 6.0;
@@ -250,11 +250,11 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
   if (dv < 1e-12)
     dv = 1e-12;
   bool IsNotUper = !surf->IsUPeriodic(), IsNotVper = !surf->IsVPeriodic();
-  int  NbPntCalc = 0;
+  int NbPntCalc = 0;
   if (myMapOfInter.IsBound(Face))
   {
-    void* ptr      = (void*)(myMapOfInter.Find(Face));
-    bool  IsInside = true;
+    void*            ptr      = (void*)(myMapOfInter.Find(Face));
+    bool IsInside = true;
     if (IsNotUper)
     {
       IsInside = (u_ >= U1) && (u_ <= U2);
@@ -409,10 +409,15 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face&               
 // function : LimitInfiniteUV
 // purpose  : Limit infinite parameters
 //=======================================================================
-static void LimitInfiniteUV(double& U1, double& V1, double& U2, double& V2)
+static void LimitInfiniteUV(double& U1,
+                            double& V1,
+                            double& U2,
+                            double& V2)
 {
-  bool infU1 = Precision::IsNegativeInfinite(U1), infV1 = Precision::IsNegativeInfinite(V1),
-       infU2 = Precision::IsPositiveInfinite(U2), infV2 = Precision::IsPositiveInfinite(V2);
+  bool infU1 = Precision::IsNegativeInfinite(U1),
+                   infV1 = Precision::IsNegativeInfinite(V1),
+                   infU2 = Precision::IsPositiveInfinite(U2),
+                   infV2 = Precision::IsPositiveInfinite(V2);
 
   if (infU1)
     U1 = -1e10;
@@ -426,7 +431,10 @@ static void LimitInfiniteUV(double& U1, double& V1, double& U2, double& V2)
 
 //=================================================================================================
 
-static int IsInfiniteUV(double& U1, double& V1, double& U2, double& V2)
+static int IsInfiniteUV(double& U1,
+                                     double& V1,
+                                     double& U2,
+                                     double& V2)
 {
   int aVal = 0;
 
@@ -457,24 +465,26 @@ static int IsInfiniteUV(double& U1, double& V1, double& U2, double& V2)
 //           The Second Call provide a line to the second face
 //           and so on.
 //=======================================================================
-int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& _Par)
+int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt&  P,
+                                                         gp_Lin&        L,
+                                                         double& _Par)
 {
   constexpr double TolU = Precision::PConfusion();
   const double     TolV = TolU;
 
-  TopoDS_Face     face;
-  TopExp_Explorer faceexplorer;
-  gp_Pnt          APoint;
-  gp_Vec          aVecD1U, aVecD1V;
-  double          maxscal = 0;
-  bool            ptfound = false;
-  double          Par;
-  double          _u, _v;
-  int             IndexPoint     = 0;
-  int             NbPointsOK     = 0;
-  int             NbFacesInSolid = 0;
-  bool            aRestr         = true;
-  bool            aTestInvert    = false;
+  TopoDS_Face      face;
+  TopExp_Explorer  faceexplorer;
+  gp_Pnt           APoint;
+  gp_Vec           aVecD1U, aVecD1V;
+  double    maxscal = 0;
+  bool ptfound = false;
+  double    Par;
+  double    _u, _v;
+  int IndexPoint     = 0;
+  int NbPointsOK     = 0;
+  int NbFacesInSolid = 0;
+  bool aRestr         = true;
+  bool aTestInvert    = false;
 
   for (;;)
   {
@@ -502,8 +512,10 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
           if (myMapOfInter.IsBound(face))
           {
             myMapOfInter.UnBind(face);
-            void* ptr =
-              (void*)(new IntCurvesFace_Intersector(face, Precision::Confusion(), aRestr, false));
+            void* ptr = (void*)(new IntCurvesFace_Intersector(face,
+                                                              Precision::Confusion(),
+                                                              aRestr,
+                                                              false));
             myMapOfInter.Bind(face, ptr);
           }
         }
@@ -542,9 +554,9 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
       //
       if (Ext.IsDone() && Ext.NbExt() > 0)
       {
-        int             i, iNear, iEnd;
-        double          aUx, aVx, Dist2, Dist2Min;
-        Extrema_POnSurf aPx;
+        int i, iNear, iEnd;
+        double    aUx, aVx, Dist2, Dist2Min;
+        Extrema_POnSurf  aPx;
         //
         iNear    = 1;
         Dist2Min = Ext.SquareDistance(1);
@@ -575,8 +587,8 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
           else
           {
             BRepClass_FaceClassifier classifier2d;
-            double                   aU;
-            double                   aV;
+            double            aU;
+            double            aV;
 
             (Ext.Point(iNear)).Parameter(aU, aV);
 
@@ -635,7 +647,7 @@ int BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P, gp_Lin& L, double& 
           if (Par > gp::Resolution() && aVecD1U.Magnitude() > gp::Resolution()
               && aVecD1V.Magnitude() > gp::Resolution())
           {
-            gp_Vec Norm = aVecD1U.Crossed(aVecD1V);
+            gp_Vec        Norm = aVecD1U.Crossed(aVecD1V);
             double tt   = Norm.Magnitude();
             if (tt > gp::Resolution())
             {
@@ -751,11 +763,11 @@ int BRepClass3d_SolidExplorer::GetFaceSegmentIndex() const
 //=================================================================================================
 
 bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face& _face,
-                                               gp_Pnt&            APoint_,
-                                               double&            u_,
-                                               double&            v_,
-                                               double&            param_,
-                                               int&               IndexPoint) const
+                                                           gp_Pnt&            APoint_,
+                                                           double&     u_,
+                                                           double&     v_,
+                                                           double&     param_,
+                                                           int&  IndexPoint) const
 {
   TopoDS_Face Face = _face;
   Face.Orientation(TopAbs_FORWARD);
@@ -773,32 +785,33 @@ bool BRepClass3d_SolidExplorer::PointInTheFace(const TopoDS_Face& _face,
 //=================================================================================================
 
 bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
-                                                    gp_Pnt&            APoint_,
-                                                    double&            u_,
-                                                    double&            v_)
+                                                                gp_Pnt&            APoint_,
+                                                                double&     u_,
+                                                                double&     v_)
 {
-  double param = 0.1;
-  bool   r     = FindAPointInTheFace(_face, APoint_, u_, v_, param);
-  return r;
-}
-
-//=================================================================================================
-
-bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face, gp_Pnt& APoint_)
-{
-  double u, v;
-  bool   r = FindAPointInTheFace(_face, APoint_, u, v);
+  double    param = 0.1;
+  bool r     = FindAPointInTheFace(_face, APoint_, u_, v_, param);
   return r;
 }
 
 //=================================================================================================
 
 bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
-                                                    double&            u_,
-                                                    double&            v_)
+                                                                gp_Pnt&            APoint_)
 {
-  gp_Pnt APoint;
-  bool   r = FindAPointInTheFace(_face, APoint, u_, v_);
+  double    u, v;
+  bool r = FindAPointInTheFace(_face, APoint_, u, v);
+  return r;
+}
+
+//=================================================================================================
+
+bool BRepClass3d_SolidExplorer::FindAPointInTheFace(const TopoDS_Face& _face,
+                                                                double&     u_,
+                                                                double&     v_)
+{
+  gp_Pnt           APoint;
+  bool r = FindAPointInTheFace(_face, APoint, u_, v_);
   return r;
 }
 
@@ -876,7 +889,10 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   for (Expl.Init(S, TopAbs_FACE); Expl.More(); Expl.Next())
   {
     const TopoDS_Face Face = TopoDS::Face(Expl.Current());
-    void* ptr = (void*)(new IntCurvesFace_Intersector(Face, Precision::Confusion(), true, false));
+    void*             ptr  = (void*)(new IntCurvesFace_Intersector(Face,
+                                                      Precision::Confusion(),
+                                                      true,
+                                                      false));
     myMapOfInter.Bind(Face, ptr);
     myReject = false; //-- at least one face in the solid
   }

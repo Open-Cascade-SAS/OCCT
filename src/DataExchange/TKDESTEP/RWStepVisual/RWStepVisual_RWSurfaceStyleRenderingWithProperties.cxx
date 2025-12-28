@@ -24,6 +24,7 @@
 #include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepVisual_RenderingPropertiesSelect.hxx>
 
 //=================================================================================================
 
@@ -36,7 +37,7 @@ RWStepVisual_RWSurfaceStyleRenderingWithProperties::
 
 void RWStepVisual_RWSurfaceStyleRenderingWithProperties::ReadStep(
   const occ::handle<StepData_StepReaderData>&                        data,
-  const int                                                          num,
+  const int                                        num,
   occ::handle<Interface_Check>&                                      ach,
   const occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>& ent) const
 {
@@ -76,12 +77,12 @@ void RWStepVisual_RWSurfaceStyleRenderingWithProperties::ReadStep(
   // Own fields of SurfaceStyleRenderingWithProperties
 
   occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>> aProperties;
-  int                                                                    sub3 = 0;
+  int                                      sub3 = 0;
   if (data->ReadSubList(num, 3, "properties", ach, sub3))
   {
-    int nb0     = data->NbParams(sub3);
-    aProperties = new NCollection_HArray1<StepVisual_RenderingPropertiesSelect>(1, nb0);
-    int num2    = sub3;
+    int nb0  = data->NbParams(sub3);
+    aProperties           = new NCollection_HArray1<StepVisual_RenderingPropertiesSelect>(1, nb0);
+    int num2 = sub3;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepVisual_RenderingPropertiesSelect anIt0;
@@ -99,7 +100,7 @@ void RWStepVisual_RWSurfaceStyleRenderingWithProperties::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleRenderingWithProperties::WriteStep(
-  StepData_StepWriter&                                               SW,
+  StepData_StepWriter&                                          SW,
   const occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>& ent) const
 {
 
@@ -138,7 +139,7 @@ void RWStepVisual_RWSurfaceStyleRenderingWithProperties::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleRenderingWithProperties::Share(
   const occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>& ent,
-  Interface_EntityIterator&                                          iter) const
+  Interface_EntityIterator&                                     iter) const
 {
 
   // Inherited fields of SurfaceStyleRendering

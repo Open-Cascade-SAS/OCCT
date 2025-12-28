@@ -46,8 +46,7 @@ public:
   //! Method for create TObj_TXYZ object
 
   //! Creates attribute and sets the XYZ
-  static Standard_EXPORT occ::handle<TObj_TXYZ> Set(const TDF_Label& theLabel,
-                                                    const gp_XYZ&    theXYZ);
+  static Standard_EXPORT occ::handle<TObj_TXYZ> Set(const TDF_Label& theLabel, const gp_XYZ& theXYZ);
 
 public:
   //! Methods for setting and obtaining XYZ

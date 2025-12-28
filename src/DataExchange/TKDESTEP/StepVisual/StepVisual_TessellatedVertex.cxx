@@ -31,9 +31,9 @@ StepVisual_TessellatedVertex::StepVisual_TessellatedVertex()
 void StepVisual_TessellatedVertex::Init(
   const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
   const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
-  const bool                                     theHasTopologicalLink,
+  const bool                    theHasTopologicalLink,
   const occ::handle<StepShape_VertexPoint>&      theTopologicalLink,
-  const int                                      thePointIndex)
+  const int                    thePointIndex)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 

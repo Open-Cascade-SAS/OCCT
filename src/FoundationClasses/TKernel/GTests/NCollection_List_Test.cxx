@@ -410,7 +410,7 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_MinMax)
   NCollection_List<int> aList;
   std::list<int>        aStdList;
 
-  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -434,7 +434,7 @@ TEST_F(NCollection_ListTest, STLAlgorithmCompatibility_Replace)
   NCollection_List<int> aList;
   std::list<int>        aStdList;
 
-  std::mt19937                       aGenerator(1); // Fixed seed for reproducible tests
+  std::mt19937 aGenerator(1); // Fixed seed for reproducible tests
   std::uniform_int_distribution<int> aDistribution(0, RAND_MAX);
   for (int anIdx = 0; anIdx < 100; ++anIdx)
   {
@@ -460,14 +460,14 @@ TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
   // of the target list
 
   occ::handle<NCollection_IncAllocator> anAlloc1 = new NCollection_IncAllocator();
-  NCollection_List<int>                 aList1(anAlloc1);
+  NCollection_List<int>            aList1(anAlloc1);
 
   // Perform multiple assign operations with different source lists,
   // each having their own allocator
   for (int i = 0; i < 10; i++)
   {
     occ::handle<NCollection_IncAllocator> anAlloc2 = new NCollection_IncAllocator();
-    NCollection_List<int>                 aList2(anAlloc2);
+    NCollection_List<int>            aList2(anAlloc2);
     aList2.Append(i);
 
     // Store the allocator before Assign

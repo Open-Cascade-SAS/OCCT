@@ -23,8 +23,14 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESGraph_TextFontDef.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class IGESGraph_TextFontDef;
@@ -55,18 +61,17 @@ public:
   //! - texts         : Text strings
   //! raises exception if there is mismatch between the various
   //! Array Lengths.
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<int>>&                                   nbChars,
-    const occ::handle<NCollection_HArray1<double>>&                                widths,
-    const occ::handle<NCollection_HArray1<double>>&                                heights,
-    const occ::handle<NCollection_HArray1<int>>&                                   fontCodes,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>&    fonts,
-    const occ::handle<NCollection_HArray1<double>>&                                slants,
-    const occ::handle<NCollection_HArray1<double>>&                                rotations,
-    const occ::handle<NCollection_HArray1<int>>&                                   mirrorFlags,
-    const occ::handle<NCollection_HArray1<int>>&                                   rotFlags,
-    const occ::handle<NCollection_HArray1<gp_XYZ>>&                                start,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<int>>&        nbChars,
+                            const occ::handle<NCollection_HArray1<double>>&           widths,
+                            const occ::handle<NCollection_HArray1<double>>&           heights,
+                            const occ::handle<NCollection_HArray1<int>>&        fontCodes,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>&  fonts,
+                            const occ::handle<NCollection_HArray1<double>>&           slants,
+                            const occ::handle<NCollection_HArray1<double>>&           rotations,
+                            const occ::handle<NCollection_HArray1<int>>&        mirrorFlags,
+                            const occ::handle<NCollection_HArray1<int>>&        rotFlags,
+                            const occ::handle<NCollection_HArray1<gp_XYZ>>&             start,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts);
 
   //! Changes FormNumber (indicates Graphical Representation)
   //! Error if not in ranges [0-8] or [100-102] or 105
@@ -142,16 +147,16 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_GeneralNote, IGESData_IGESEntity)
 
 private:
-  occ::handle<NCollection_HArray1<int>>                                   theNbChars;
-  occ::handle<NCollection_HArray1<double>>                                theBoxWidths;
-  occ::handle<NCollection_HArray1<double>>                                theBoxHeights;
-  occ::handle<NCollection_HArray1<int>>                                   theFontCodes;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>    theFontEntities;
-  occ::handle<NCollection_HArray1<double>>                                theSlantAngles;
-  occ::handle<NCollection_HArray1<double>>                                theRotationAngles;
-  occ::handle<NCollection_HArray1<int>>                                   theMirrorFlags;
-  occ::handle<NCollection_HArray1<int>>                                   theRotateFlags;
-  occ::handle<NCollection_HArray1<gp_XYZ>>                                theStartPoints;
+  occ::handle<NCollection_HArray1<int>>        theNbChars;
+  occ::handle<NCollection_HArray1<double>>           theBoxWidths;
+  occ::handle<NCollection_HArray1<double>>           theBoxHeights;
+  occ::handle<NCollection_HArray1<int>>        theFontCodes;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextFontDef>>>  theFontEntities;
+  occ::handle<NCollection_HArray1<double>>           theSlantAngles;
+  occ::handle<NCollection_HArray1<double>>           theRotationAngles;
+  occ::handle<NCollection_HArray1<int>>        theMirrorFlags;
+  occ::handle<NCollection_HArray1<int>>        theRotateFlags;
+  occ::handle<NCollection_HArray1<gp_XYZ>>             theStartPoints;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> theTexts;
 };
 

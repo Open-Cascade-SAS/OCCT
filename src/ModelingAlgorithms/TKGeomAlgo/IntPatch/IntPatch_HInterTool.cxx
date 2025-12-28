@@ -35,8 +35,8 @@ IntPatch_HInterTool::IntPatch_HInterTool()
 }
 
 int IntPatch_HInterTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
-                                    const double,
-                                    const double)
+                                                 const double,
+                                                 const double)
 {
   switch (S->GetType())
   {
@@ -70,8 +70,8 @@ int IntPatch_HInterTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
 }
 
 int IntPatch_HInterTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
-                                    const double,
-                                    const double)
+                                                 const double,
+                                                 const double)
 {
   switch (S->GetType())
   {
@@ -113,14 +113,14 @@ int IntPatch_HInterTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
   if (usup < uinf)
   {
     double temp = uinf;
-    uinf        = usup;
-    usup        = temp;
+    uinf               = usup;
+    usup               = temp;
   }
   if (vsup < vinf)
   {
     double temp = vinf;
-    vinf        = vsup;
-    vsup        = temp;
+    vinf               = vsup;
+    vsup               = temp;
   }
   if (uinf == RealFirst() && usup == RealLast())
   {
@@ -149,14 +149,15 @@ int IntPatch_HInterTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
   {
     vsup = vinf + 2.e5;
   }
-  const int m = (1 + NbSamplesU(S, uinf, usup) / 2) * (1 + NbSamplesV(S, vinf, vsup) / 2);
+  const int m =
+    (1 + NbSamplesU(S, uinf, usup) / 2) * (1 + NbSamplesV(S, vinf, vsup) / 2);
   return (m);
 }
 
 void IntPatch_HInterTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
-                                      const int                             Index,
-                                      double&                               U,
-                                      double&                               V) const
+                                      const int           Index,
+                                      double&                   U,
+                                      double&                   V) const
 {
   int nbIntU = 1 + NbSamplesU(S, uinf, usup);
   nbIntU >>= 1;
@@ -166,10 +167,10 @@ void IntPatch_HInterTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
   if (nbIntU * nbIntV > 5)
   {
 
-    int    NV = (Index - 1) / nbIntU;
-    int    NU = (Index - 1) - NV * nbIntU;
-    double du = ((usup - uinf) / ((double)(nbIntU + 1)));
-    double dv = ((vsup - vinf) / ((double)(nbIntV + 1)));
+    int NV = (Index - 1) / nbIntU;
+    int NU = (Index - 1) - NV * nbIntU;
+    double    du = ((usup - uinf) / ((double)(nbIntU + 1)));
+    double    dv = ((vsup - vinf) / ((double)(nbIntV + 1)));
 
     int perturb = (NU + NV) & 3;
 
@@ -253,22 +254,22 @@ int IntPatch_HInterTool::NbSamplesOnArc(const occ::handle<Adaptor2d_Curve2d>& A)
 }
 
 void IntPatch_HInterTool::Bounds(const occ::handle<Adaptor2d_Curve2d>& A,
-                                 double&                               Ufirst,
-                                 double&                               Ulast)
+                                 double&                   Ufirst,
+                                 double&                   Ulast)
 {
   Ufirst = A->FirstParameter();
   Ulast  = A->LastParameter();
 }
 
 bool IntPatch_HInterTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
-                                  const gp_Pnt2d&                       P,
-                                  double&                               Paramproj,
-                                  gp_Pnt2d&                             Ptproj)
+                                              const gp_Pnt2d&                  P,
+                                              double&                   Paramproj,
+                                              gp_Pnt2d&                        Ptproj)
 {
-  double epsX = 1.e-8;
-  int    Nbu  = 20;
-  double Tol  = 1.e-5;
-  double Dist2;
+  double    epsX = 1.e-8;
+  int Nbu  = 20;
+  double    Tol  = 1.e-5;
+  double    Dist2;
 
   Extrema_EPCOfExtPC2d extrema(P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone())
@@ -281,7 +282,7 @@ bool IntPatch_HInterTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
     return false;
   }
   int indexmin = 1;
-  Dist2        = extrema.SquareDistance(1);
+  Dist2                     = extrema.SquareDistance(1);
   for (int i = 2; i <= Nbext; i++)
   {
     if (extrema.SquareDistance(i) < Dist2)
@@ -296,13 +297,13 @@ bool IntPatch_HInterTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
 }
 
 double IntPatch_HInterTool::Tolerance(const occ::handle<Adaptor3d_HVertex>& V,
-                                      const occ::handle<Adaptor2d_Curve2d>& C)
+                                             const occ::handle<Adaptor2d_Curve2d>& C)
 {
   return V->Resolution(C);
 }
 
 double IntPatch_HInterTool::Parameter(const occ::handle<Adaptor3d_HVertex>& V,
-                                      const occ::handle<Adaptor2d_Curve2d>& C)
+                                             const occ::handle<Adaptor2d_Curve2d>& C)
 {
   return V->Parameter(C);
 }
@@ -326,7 +327,8 @@ void IntPatch_HInterTool::Value(const occ::handle<Adaptor2d_Curve2d>&,
   throw Standard_OutOfRange();
 }
 
-bool IntPatch_HInterTool::IsVertex(const occ::handle<Adaptor2d_Curve2d>&, const int)
+bool IntPatch_HInterTool::IsVertex(const occ::handle<Adaptor2d_Curve2d>&,
+                                               const int)
 {
   return false;
 }
@@ -343,12 +345,16 @@ int IntPatch_HInterTool::NbSegments(const occ::handle<Adaptor2d_Curve2d>&)
   return 0;
 }
 
-bool IntPatch_HInterTool::HasFirstPoint(const occ::handle<Adaptor2d_Curve2d>&, const int, int&)
+bool IntPatch_HInterTool::HasFirstPoint(const occ::handle<Adaptor2d_Curve2d>&,
+                                                    const int,
+                                                    int&)
 {
   throw Standard_OutOfRange();
 }
 
-bool IntPatch_HInterTool::HasLastPoint(const occ::handle<Adaptor2d_Curve2d>&, const int, int&)
+bool IntPatch_HInterTool::HasLastPoint(const occ::handle<Adaptor2d_Curve2d>&,
+                                                   const int,
+                                                   int&)
 {
   throw Standard_OutOfRange();
 }

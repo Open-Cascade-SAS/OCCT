@@ -40,22 +40,23 @@ public:
 
   Standard_HIDDEN void ReadStep(
     const occ::handle<StepData_StepReaderData>&                                   data,
-    const int                                                                     num,
+    const int                                                   num,
     occ::handle<Interface_Check>&                                                 ach,
     const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const;
 
   Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                                          SW,
+    StepData_StepWriter&                                                     SW,
     const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent) const;
 
   Standard_HIDDEN void Share(
     const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
-    Interface_EntityIterator&                                                     iter) const;
+    Interface_EntityIterator&                                                iter) const;
 
   Standard_HIDDEN void Check(
     const occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface>& ent,
-    const Interface_ShareTool&                                                    shares,
+    const Interface_ShareTool&                                               shares,
     occ::handle<Interface_Check>&                                                 ach) const;
+
 };
 
 #endif // _RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface_HeaderFile

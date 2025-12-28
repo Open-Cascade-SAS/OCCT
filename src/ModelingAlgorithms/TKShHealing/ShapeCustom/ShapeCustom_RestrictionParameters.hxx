@@ -95,8 +95,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeCustom_RestrictionParameters, Standard_Transient)
 
 private:
-  int  myGMaxDegree;
-  int  myGMaxSeg;
+  int myGMaxDegree;
+  int myGMaxSeg;
   bool myConvPlane;
   bool myConvConicalSurf;
   bool myConvSphericalSurf;

@@ -32,7 +32,8 @@ public:
                                                           const occ::handle<Adaptor3d_Surface>& S2,
                                                           const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
+  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
+                                              const double Tol) override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
@@ -44,7 +45,9 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) override;
+
 };
 
 #endif // _BlendFunc_ConstThroatWithPenetrationInv_HeaderFile

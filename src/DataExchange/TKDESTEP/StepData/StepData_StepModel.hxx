@@ -46,7 +46,8 @@ public:
   Standard_EXPORT occ::handle<Standard_Transient> Entity(const int num) const;
 
   //! gets header from another Model (uses Header Protocol)
-  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other) override;
+  Standard_EXPORT void GetFromAnother(const occ::handle<Interface_InterfaceModel>& other)
+    override;
 
   //! Returns a New Empty Model, same type as <me>, i.e. StepModel
   Standard_EXPORT occ::handle<Interface_InterfaceModel> NewEmptyModel() const override;
@@ -58,8 +59,7 @@ public:
   Standard_EXPORT bool HasHeaderEntity(const occ::handle<Standard_Type>& atype) const;
 
   //! Returns Header entity with specified type, if there is
-  Standard_EXPORT occ::handle<Standard_Transient> HeaderEntity(
-    const occ::handle<Standard_Type>& atype) const;
+  Standard_EXPORT occ::handle<Standard_Transient> HeaderEntity(const occ::handle<Standard_Type>& atype) const;
 
   //! Clears the Header
   Standard_EXPORT void ClearHeader() override;
@@ -75,14 +75,16 @@ public:
   //! prints its Type. Else sends the Header under the form of
   //! HEADER Section of an Ascii Step File
   //! <level> is not used because Header is not so big
-  Standard_EXPORT void DumpHeader(Standard_OStream& S, const int level = 0) const override;
+  Standard_EXPORT void DumpHeader(Standard_OStream&      S,
+                                  const int level = 0) const override;
 
   //! erases specific labels, i.e. clears the map (entity-ident)
   Standard_EXPORT void ClearLabels() override;
 
   //! Attaches an ident to an entity to produce a label
   //! (does nothing if <ent> is not in <me>)
-  Standard_EXPORT void SetIdentLabel(const occ::handle<Standard_Transient>& ent, const int ident);
+  Standard_EXPORT void SetIdentLabel(const occ::handle<Standard_Transient>& ent,
+                                     const int            ident);
 
   //! returns the label ident attached to an entity, 0 if not in me
   Standard_EXPORT int IdentLabel(const occ::handle<Standard_Transient>& ent) const;
@@ -91,7 +93,7 @@ public:
   //! if a LabelIdent has been recorded, its value with '#', else
   //! the number in the model with '#' and between ()
   Standard_EXPORT void PrintLabel(const occ::handle<Standard_Transient>& ent,
-                                  Standard_OStream&                      S) const override;
+                                  Standard_OStream&                 S) const override;
 
   //! Returns a string with the label attached to a given entity,
   //! same form as for PrintLabel
@@ -129,12 +131,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepData_StepModel, Interface_InterfaceModel)
 
 private:
-  Interface_EntityList                  theheader;
+  Interface_EntityList             theheader;
   occ::handle<NCollection_HArray1<int>> theidnums;
-  mutable double                        myWriteUnit              = 1.0;
-  double                                myLocalLengthUnit        = 1.0;
-  bool                                  myReadUnitIsInitialized  = false;
-  mutable bool                          myWriteUnitIsInitialized = false;
+  mutable double            myWriteUnit              = 1.0;
+  double                    myLocalLengthUnit        = 1.0;
+  bool                 myReadUnitIsInitialized  = false;
+  mutable bool         myWriteUnitIsInitialized = false;
 };
 
 #endif // _StepData_StepModel_HeaderFile

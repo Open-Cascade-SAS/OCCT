@@ -21,7 +21,21 @@
 #include <StepData_SelectMember.hxx>
 #include <StepData_SelectNamed.hxx>
 #include <StepData_SelectReal.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 
@@ -92,7 +106,7 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     if (!sr.IsNull())
     {
       double val = sr->Real();
-      sr         = new StepData_SelectReal;
+      sr                = new StepData_SelectReal;
       sr->SetReal(val);
       theany = sr;
       return;
@@ -125,8 +139,8 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(NCollection_HArray1<int>, hi, theany);
     if (!hi.IsNull())
     {
-      low                                       = hi->Lower();
-      up                                        = hi->Upper();
+      low                                  = hi->Lower();
+      up                                   = hi->Upper();
       occ::handle<NCollection_HArray1<int>> hi2 = new NCollection_HArray1<int>(low, up);
       for (i = low; i <= up; i++)
         hi2->SetValue(i, hi->Value(i));
@@ -135,8 +149,8 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(NCollection_HArray1<double>, hr, theany);
     if (!hr.IsNull())
     {
-      low                                          = hr->Lower();
-      up                                           = hr->Upper();
+      low                               = hr->Lower();
+      up                                = hr->Upper();
       occ::handle<NCollection_HArray1<double>> hr2 = new NCollection_HArray1<double>(low, up);
       for (i = low; i <= up; i++)
         hr2->SetValue(i, hr->Value(i));
@@ -145,10 +159,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
     if (!hs.IsNull())
     {
-      low = hs->Lower();
-      up  = hs->Upper();
-      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> hs2 =
-        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(low, up);
+      low                                         = hs->Lower();
+      up                                          = hs->Upper();
+      occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> hs2 = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(low, up);
       for (i = low; i <= up; i++)
         hs2->SetValue(i, new TCollection_HAsciiString(hs->Value(i)));
       return;
@@ -156,10 +169,9 @@ void StepData_Field::CopyFrom(const StepData_Field& other)
     DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
     if (!ht.IsNull())
     {
-      low = ht->Lower();
-      up  = ht->Upper();
-      occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht2 =
-        new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
+      low                                    = ht->Lower();
+      up                                     = ht->Upper();
+      occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht2 = new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
       //  Should handle SelectMember cases...
       for (i = low; i <= up; i++)
         ht2->SetValue(i, ht->Value(i));
@@ -330,8 +342,7 @@ void StepData_Field::SetList(const int size, const int first)
       break;
     case KindEnum:
     case KindString:
-      theany =
-        new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(first, first + size - 1);
+      theany = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(first, first + size - 1);
       break;
       //  default : en particulier si "non specifie" (any)
     default:
@@ -342,7 +353,10 @@ void StepData_Field::SetList(const int size, const int first)
   thekind |= KindList;
 }
 
-void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, const int f2)
+void StepData_Field::SetList2(const int siz1,
+                              const int siz2,
+                              const int f1,
+                              const int f2)
 {
   //  WARNING: we don't handle expansion...
 
@@ -368,17 +382,11 @@ void StepData_Field::SetList2(const int siz1, const int siz2, const int f1, cons
       break;
     case KindEnum:
     case KindString:
-      theany = new NCollection_HArray2<occ::handle<Standard_Transient>>(f1,
-                                                                        f1 + siz1 - 1,
-                                                                        f2,
-                                                                        f2 + siz2 - 1);
+      theany = new NCollection_HArray2<occ::handle<Standard_Transient>>(f1, f1 + siz1 - 1, f2, f2 + siz2 - 1);
       break;
       //  default : en particulier si "non specifie" (any)
     default:
-      theany = new NCollection_HArray2<occ::handle<Standard_Transient>>(f1,
-                                                                        f1 + siz1 - 1,
-                                                                        f2,
-                                                                        f2 + siz2 - 1);
+      theany = new NCollection_HArray2<occ::handle<Standard_Transient>>(f1, f1 + siz1 - 1, f2, f2 + siz2 - 1);
   }
   if (thekind == 0)
     thekind = KindAny;
@@ -475,7 +483,9 @@ void StepData_Field::ClearItem(const int num)
     hs->ChangeValue(num).Nullify();
 }
 
-void StepData_Field::SetInt(const int num, const int val, const int kind)
+void StepData_Field::SetInt(const int num,
+                            const int val,
+                            const int kind)
 {
   DeclareAndCast(NCollection_HArray1<int>, hi, theany);
   if (!hi.IsNull())
@@ -518,7 +528,9 @@ void StepData_Field::SetLogical(const int num, const StepData_Logical val)
     SetInt(num, 2, KindLogical);
 }
 
-void StepData_Field::SetEnum(const int num, const int val, const char* text)
+void StepData_Field::SetEnum(const int num,
+                             const int val,
+                             const char* text)
 {
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (ht.IsNull())
@@ -585,11 +597,10 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
   DeclareAndCast(NCollection_HArray1<int>, hi, theany);
   if (!hi.IsNull())
   {
-    int low = hi->Lower(), up = hi->Upper();
-    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht =
-      new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
-    occ::handle<StepData_SelectMember> sm;
-    int                                kind = Kind();
+    int                   low = hi->Lower(), up = hi->Upper();
+    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht = new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
+    occ::handle<StepData_SelectMember>      sm;
+    int                   kind = Kind();
     for (int i = low; i <= up; i++)
     {
       if (i == num)
@@ -608,10 +619,9 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
   DeclareAndCast(NCollection_HArray1<double>, hr, theany);
   if (!hr.IsNull())
   {
-    int low = hr->Lower(), up = hr->Upper();
-    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht =
-      new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
-    occ::handle<StepData_SelectMember> sm;
+    int                   low = hr->Lower(), up = hr->Upper();
+    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht = new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
+    occ::handle<StepData_SelectMember>      sm;
     for (int i = low; i <= up; i++)
     {
       if (i == num)
@@ -629,9 +639,8 @@ void StepData_Field::SetEntity(const int num, const occ::handle<Standard_Transie
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
   if (!hs.IsNull())
   {
-    int low = hs->Lower(), up = hs->Upper();
-    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht =
-      new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
+    int                   low = hs->Lower(), up = hs->Upper();
+    occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> ht = new NCollection_HArray1<occ::handle<Standard_Transient>>(low, up);
     for (int i = low; i <= up; i++)
     {
       if (i == num)
@@ -675,7 +684,8 @@ bool StepData_Field::IsSet(const int n1, const int n2) const
   return true;
 }
 
-int StepData_Field::ItemKind(const int n1, const int n2) const
+int StepData_Field::ItemKind(const int n1,
+                                          const int n2) const
 {
   if ((thekind & KindArity) == 0)
     return Kind(true);
@@ -921,12 +931,14 @@ int StepData_Field::Enum(const int n1, const int n2) const
   return Integer(n1, n2);
 }
 
-const char* StepData_Field::EnumText(const int n1, const int n2) const
+const char* StepData_Field::EnumText(const int n1,
+                                          const int n2) const
 {
   return String(n1, n2);
 }
 
-occ::handle<Standard_Transient> StepData_Field::Entity(const int n1, const int n2) const
+occ::handle<Standard_Transient> StepData_Field::Entity(const int n1,
+                                                  const int n2) const
 {
   occ::handle<Standard_Transient> nulval; // null handle
   if ((thekind & KindArity) == 0)

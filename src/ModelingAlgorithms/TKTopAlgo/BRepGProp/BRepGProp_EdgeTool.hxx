@@ -56,20 +56,25 @@ public:
 
   //! Returns the point of parameter U and the first derivative
   //! at this point.
-  Standard_EXPORT static void D1(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P, gp_Vec& V1);
+  Standard_EXPORT static void D1(const BRepAdaptor_Curve& C,
+                                 const double      U,
+                                 gp_Pnt&                  P,
+                                 gp_Vec&                  V1);
 
   //! Returns the number of intervals for continuity
   //! <S>. May be one if Continuity(me) >= <S>
-  Standard_EXPORT static int NbIntervals(const BRepAdaptor_Curve& C, const GeomAbs_Shape S);
+  Standard_EXPORT static int NbIntervals(const BRepAdaptor_Curve& C,
+                                                      const GeomAbs_Shape      S);
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
-  Standard_EXPORT static void Intervals(const BRepAdaptor_Curve&    C,
-                                        NCollection_Array1<double>& T,
-                                        const GeomAbs_Shape         S);
+  Standard_EXPORT static void Intervals(const BRepAdaptor_Curve& C,
+                                        NCollection_Array1<double>&    T,
+                                        const GeomAbs_Shape      S);
+
 };
 
 #endif // _BRepGProp_EdgeTool_HeaderFile

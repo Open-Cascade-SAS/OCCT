@@ -70,8 +70,8 @@ int Adaptor3d_HSurfaceTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S)
 }
 
 int Adaptor3d_HSurfaceTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
-                                       const double                          u1,
-                                       const double                          u2)
+                                                    const double              u1,
+                                                    const double              u2)
 {
   const int nbs = NbSamplesU(S);
   int       n   = nbs;
@@ -89,8 +89,8 @@ int Adaptor3d_HSurfaceTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
 }
 
 int Adaptor3d_HSurfaceTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
-                                       const double                          v1,
-                                       const double                          v2)
+                                                    const double              v1,
+                                                    const double              v2)
 {
   const int nbs = NbSamplesV(S);
   int       n   = nbs;
@@ -108,8 +108,8 @@ int Adaptor3d_HSurfaceTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
 }
 
 bool Adaptor3d_HSurfaceTool::IsSurfG1(const occ::handle<Adaptor3d_Surface>& theSurf,
-                                      const bool                            theAlongU,
-                                      const double                          theAngTol)
+                                                  const bool           theAlongU,
+                                                  const double              theAngTol)
 {
   double aUf, aUl, aVf, aVl;
   aUf = theSurf->FirstUParameter();
@@ -138,7 +138,7 @@ bool Adaptor3d_HSurfaceTool::IsSurfG1(const occ::handle<Adaptor3d_Surface>& theS
     if (aC->GetType() == GeomAbs_OffsetCurve)
     {
       occ::handle<Geom_OffsetCurve> aOC = aC->OffsetCurve();
-      aC                                = new GeomAdaptor_Curve(aOC->BasisCurve());
+      aC                           = new GeomAdaptor_Curve(aOC->BasisCurve());
     }
 
     if (aC->GetType() == GeomAbs_BSplineCurve)
@@ -158,12 +158,12 @@ bool Adaptor3d_HSurfaceTool::IsSurfG1(const occ::handle<Adaptor3d_Surface>& theS
     if (theAlongU)
     {
       const double anIsoPar = (aVf + aVl) / 2.0;
-      aBC                   = occ::down_cast<Geom_BSplineCurve>(aBS->VIso(anIsoPar));
+      aBC                          = occ::down_cast<Geom_BSplineCurve>(aBS->VIso(anIsoPar));
     }
     else
     {
       const double anIsoPar = (aUf + aUl) / 2.0;
-      aBC                   = occ::down_cast<Geom_BSplineCurve>(aBS->UIso(anIsoPar));
+      aBC                          = occ::down_cast<Geom_BSplineCurve>(aBS->UIso(anIsoPar));
     }
   }
 

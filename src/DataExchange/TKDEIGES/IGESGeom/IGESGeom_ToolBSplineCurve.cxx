@@ -32,6 +32,9 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XYZ.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -56,13 +59,13 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
   Message_Msg Msg103("XSTEP_103");
   //========================================
 
-  int                                      anIndex, aDegree;
-  bool                                     aPlanar, aClosed, aPolynomial, aPeriodic;
-  double                                   aUmin, aUmax, normX, normY, normZ;
-  gp_XYZ                                   aNorm(0., 0., 0.);
+  int              anIndex, aDegree;
+  bool              aPlanar, aClosed, aPolynomial, aPeriodic;
+  double                 aUmin, aUmax, normX, normY, normZ;
+  gp_XYZ                        aNorm(0., 0., 0.);
   occ::handle<NCollection_HArray1<double>> allKnots;
   occ::handle<NCollection_HArray1<double>> allWeights;
-  occ::handle<NCollection_HArray1<gp_XYZ>> allPoles;
+  occ::handle<NCollection_HArray1<gp_XYZ>>   allPoles;
 
   // bool st; //szv#4:S4163:12Mar99 moved down
 
@@ -219,7 +222,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const occ::handle<IGESGeom_BSpline
 //=================================================================================================
 
 void IGESGeom_ToolBSplineCurve::WriteOwnParams(const occ::handle<IGESGeom_BSplineCurve>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   int low, up;
   int I;
@@ -268,14 +271,14 @@ void IGESGeom_ToolBSplineCurve::OwnCopy(const occ::handle<IGESGeom_BSplineCurve>
                                         const occ::handle<IGESGeom_BSplineCurve>& ent,
                                         Interface_CopyTool& /* TC */) const
 {
-  int                                      I;
-  int                                      low, up;
-  int                                      anIndex, aDegree;
-  bool                                     aPlanar, aClosed, aPolynomial, aPeriodic;
+  int              I;
+  int              low, up;
+  int              anIndex, aDegree;
+  bool              aPlanar, aClosed, aPolynomial, aPeriodic;
   occ::handle<NCollection_HArray1<double>> allKnots, allWeights;
-  occ::handle<NCollection_HArray1<gp_XYZ>> allPoles;
-  double                                   aUmin, aUmax;
-  gp_XYZ                                   aNorm;
+  occ::handle<NCollection_HArray1<gp_XYZ>>   allPoles;
+  double                 aUmin, aUmax;
+  gp_XYZ                        aNorm;
 
   anIndex     = another->UpperIndex();
   aDegree     = another->Degree();
@@ -349,7 +352,7 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
   //========================================
 
   double eps = 1.E-04; // Test tolerance ??
-                       //  double norm = ent->Normal().SquareModulus();
+                              //  double norm = ent->Normal().SquareModulus();
 
   // modified by rln 17/12/97 check of flag PROP2 according to IGES Standard
   // It is possible to compare V(0) and V(1) only if StartingParameter = FirstKnot
@@ -366,8 +369,8 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
   //      ach.AddWarning("V(0) != V(1) for a Closed Curve (PROP2 = 1)");
   // }
 
-  int  lower = 0;
-  int  upper = ent->UpperIndex();
+  int lower = 0;
+  int upper = ent->UpperIndex();
   bool Flag  = true;
 
   int I; // svv Jan 11 2000 : porting on DEC
@@ -380,7 +383,7 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
     ach->SendFail(Msg104);
   }
 
-  Flag           = true;
+  Flag                  = true;
   double tempVal = ent->Weight(lower);
 
   for (I = lower; ((I < upper) && (Flag)); I++)
@@ -394,7 +397,7 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
 
   if (ent->IsPlanar())
   {
-    gp_XYZ aNorm  = ent->Normal();
+    gp_XYZ        aNorm  = ent->Normal();
     double epsn   = eps * 10.; // Tolerance ?? ici large
     double normod = aNorm.SquareModulus();
     if (normod < epsn)
@@ -409,8 +412,8 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const occ::handle<IGESGeom_BSplineCurve
 
 void IGESGeom_ToolBSplineCurve::OwnDump(const occ::handle<IGESGeom_BSplineCurve>& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        Standard_OStream& S,
-                                        const int         level) const
+                                        Standard_OStream&      S,
+                                        const int level) const
 {
   int upind = ent->UpperIndex();
   S << "BSplineCurve from IGESGeom\n"

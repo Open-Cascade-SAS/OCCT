@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 class TDF_Label;
 class TDocStd_Document;
@@ -55,7 +56,7 @@ public:
     //! \param[in]  theGraph - assembly graph to iterate.
     //! \param[in]  theNode  - graph node ID.
     Standard_EXPORT Iterator(const occ::handle<XCAFDoc_AssemblyGraph>& theGraph,
-                             const int                                 theNode = 1);
+                             const int               theNode = 1);
 
     //! Checks if there are more graph nodes to iterate.
     //! \return true/false.
@@ -69,7 +70,7 @@ public:
 
   private:
     occ::handle<XCAFDoc_AssemblyGraph> myGraph;        //!< Assembly graph to iterate.
-    int                                myCurrentIndex; //!< Current 1-based node ID.
+    int              myCurrentIndex; //!< Current 1-based node ID.
   };
 
 public:
@@ -96,12 +97,16 @@ public:
   //! \param[in]  theNode1 - one-based ID of the first node.
   //! \param[in]  theNode2 - one-based ID of the second node.
   //! \return true/false.
-  Standard_EXPORT bool IsDirectLink(const int theNode1, const int theNode2) const;
+  Standard_EXPORT bool IsDirectLink(const int theNode1,
+                                                const int theNode2) const;
 
   //! \brief Checks whether direct children exist for the given node.
   //! \param[in]  theNode - one-based node ID.
   //! \return true/false.
-  bool HasChildren(const int theNode) const { return myAdjacencyMap.IsBound(theNode); }
+  bool HasChildren(const int theNode) const
+  {
+    return myAdjacencyMap.IsBound(theNode);
+  }
 
   //! \brief Returns IDs of child nodes for the given node.
   //! \param[in]  theNode - one-based node ID.
@@ -153,21 +158,23 @@ private:
   //! \param[in]  theParentId - ID of the already registered node representing
   //!                           the parent object in the assembly graph
   //!                           being populated.
-  Standard_EXPORT void addComponents(const TDF_Label& theParent, const int theParentId);
+  Standard_EXPORT void addComponents(const TDF_Label&       theParent,
+                                     const int theParentId);
 
   //! Adds node into the graph.
   //! \param[in]  theLabel    - label at insertion level.
   //! \param[in]  theParentId - parent one-based node IDS.
   //! \return one-based internal ID of the node.
-  Standard_EXPORT int addNode(const TDF_Label& theLabel, const int theParentId);
+  Standard_EXPORT int addNode(const TDF_Label&       theLabel,
+                                           const int theParentId);
 
 private:
-  occ::handle<XCAFDoc_ShapeTool> myShapeTool;        //!< Document shape tool.
-  TColStd_PackedMapOfInteger     myRoots;            //!< IDs of the root nodes.
-                                                     // clang-format off
+  occ::handle<XCAFDoc_ShapeTool>  myShapeTool;                         //!< Document shape tool.
+  TColStd_PackedMapOfInteger myRoots;                             //!< IDs of the root nodes.
+                                                                  // clang-format off
   NCollection_IndexedMap<TDF_Label>                             myNodes;        //!< Maps assembly/part entries to graph node IDs.
-                                                     // clang-format on
-  AdjacencyMap                       myAdjacencyMap; //!< "Part-of" relations.
+                                                                  // clang-format on
+  AdjacencyMap                                    myAdjacencyMap; //!< "Part-of" relations.
   NCollection_DataMap<int, NodeType> myNodeTypes;    //!< Node types.
   NCollection_DataMap<int,
                       int>           myUsages; //!< Occurrences usage.

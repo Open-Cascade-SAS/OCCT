@@ -27,8 +27,7 @@
 
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 
-extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-  GetMapOfAIS();
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
 
 //=================================================================================================
 
@@ -61,14 +60,10 @@ static int VImmediateFront(Draw_Interpretor&, int theArgNb, const char** theArgV
 }
 
 //! Search the info from the key.
-inline TCollection_AsciiString searchInfo(
-  const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
-  const TCollection_AsciiString&                                                      theKey)
+inline TCollection_AsciiString searchInfo(const NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>& theDict,
+                                          const TCollection_AsciiString&              theKey)
 {
-  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
-         anIter(theDict);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter(theDict); anIter.More(); anIter.Next())
   {
     if (TCollection_AsciiString::IsSameString(anIter.Key(), theKey, false))
     {
@@ -91,9 +86,9 @@ static int VGlInfo(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec
   }
 
   Graphic3d_DiagnosticInfo                      anInfoLevel = Graphic3d_DiagnosticInfo_Basic;
-  int                                           aLineWidth  = 80;
+  int                              aLineWidth  = 80;
   NCollection_Sequence<TCollection_AsciiString> aKeys;
-  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aDict;
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>          aDict;
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString aName(theArgVec[anArgIter]);
@@ -155,9 +150,7 @@ static int VGlInfo(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec
   {
     aView->DiagnosticInformation(aDict, anInfoLevel);
     TCollection_AsciiString aText;
-    for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
-           aValueIter(aDict);
-         aValueIter.More();
+    for (NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aValueIter(aDict); aValueIter.More();
          aValueIter.Next())
     {
       if (!aText.IsEmpty())
@@ -264,7 +257,9 @@ static bool parseShaderTypeArg(Graphic3d_TypeOfShaderObject&  theType,
 // function : VShaderProg
 // purpose  : Sets the pair of vertex and fragment shaders for the object
 //==============================================================================
-static int VShaderProg(Draw_Interpretor&, int theArgNb, const char** theArgVec)
+static int VShaderProg(Draw_Interpretor&,
+                                    int theArgNb,
+                                    const char**     theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -278,11 +273,11 @@ static int VShaderProg(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     return 1;
   }
 
-  bool                                                     isExplicitShaderType = false;
+  bool                                                isExplicitShaderType = false;
   occ::handle<Graphic3d_ShaderProgram>                     aProgram = new Graphic3d_ShaderProgram();
   NCollection_Sequence<occ::handle<AIS_InteractiveObject>> aPrsList;
-  Graphic3d_GroupAspect aGroupAspect     = Graphic3d_ASPECT_FILL_AREA;
-  bool                  isSetGroupAspect = false;
+  Graphic3d_GroupAspect                               aGroupAspect     = Graphic3d_ASPECT_FILL_AREA;
+  bool                                                isSetGroupAspect = false;
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -402,7 +397,7 @@ static int VShaderProg(Draw_Interpretor&, int theArgNb, const char** theArgVec)
         isExplicitShaderType = true;
       }
 
-      const bool                          isSrcFile = OSD_File(aShaderPath).Exists();
+      const bool                     isSrcFile = OSD_File(aShaderPath).Exists();
       occ::handle<Graphic3d_ShaderObject> aShader =
         isSrcFile ? Graphic3d_ShaderObject::CreateFromFile(Graphic3d_TOS_VERTEX, aShaderPath)
                   : Graphic3d_ShaderObject::CreateFromSource(Graphic3d_TOS_VERTEX, aShaderPath);
@@ -446,10 +441,9 @@ static int VShaderProg(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     aProgram->SetOitOutput(Graphic3d_RTM_BLEND_OIT);
   }
 
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-                                                                     aGlobalPrsIter(GetMapOfAIS());
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator   aGlobalPrsIter(GetMapOfAIS());
   NCollection_Sequence<occ::handle<AIS_InteractiveObject>>::Iterator aPrsIter(aPrsList);
-  const bool isGlobalList = aPrsList.IsEmpty();
+  const bool                                                    isGlobalList = aPrsList.IsEmpty();
   for (;;)
   {
     occ::handle<AIS_InteractiveObject> anIO;
@@ -533,7 +527,9 @@ static TCollection_AsciiString formatSvgColoredRect(const Quantity_Color& theCol
 
 //=================================================================================================
 
-static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VListMaterials(Draw_Interpretor& theDI,
+                                       int  theArgNb,
+                                       const char**      theArgVec)
 {
   TCollection_AsciiString                        aDumpFile;
   NCollection_Sequence<Graphic3d_NameOfMaterial> aMatList;
@@ -549,7 +545,9 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
     }
     else if (anArg == "*")
     {
-      for (int aMatIter = 0; aMatIter < (int)Graphic3d_NameOfMaterial_DEFAULT; ++aMatIter)
+      for (int aMatIter = 0;
+           aMatIter < (int)Graphic3d_NameOfMaterial_DEFAULT;
+           ++aMatIter)
       {
         aMatList.Append((Graphic3d_NameOfMaterial)aMatIter);
       }
@@ -570,14 +568,17 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
   {
     if (aDumpFile.IsEmpty())
     {
-      for (int aMatIter = 1; aMatIter <= Graphic3d_MaterialAspect::NumberOfMaterials(); ++aMatIter)
+      for (int aMatIter = 1; aMatIter <= Graphic3d_MaterialAspect::NumberOfMaterials();
+           ++aMatIter)
       {
         theDI << Graphic3d_MaterialAspect::MaterialName(aMatIter) << " ";
       }
       return 0;
     }
 
-    for (int aMatIter = 0; aMatIter < (int)Graphic3d_NameOfMaterial_DEFAULT; ++aMatIter)
+    for (int aMatIter = 0;
+         aMatIter < (int)Graphic3d_NameOfMaterial_DEFAULT;
+         ++aMatIter)
     {
       aMatList.Append((Graphic3d_NameOfMaterial)aMatIter);
     }
@@ -585,23 +586,23 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
 
   // geometry for dumping
   const NCollection_Vec3<float> aBoxVerts[8] = {NCollection_Vec3<float>(1, -1, -1),
-                                                NCollection_Vec3<float>(1, -1, 1),
-                                                NCollection_Vec3<float>(-1, -1, 1),
-                                                NCollection_Vec3<float>(-1, -1, -1),
-                                                NCollection_Vec3<float>(1, 1, -1),
-                                                NCollection_Vec3<float>(1, 1, 1),
-                                                NCollection_Vec3<float>(-1, 1, 1),
-                                                NCollection_Vec3<float>(-1, 1, -1)};
+                                       NCollection_Vec3<float>(1, -1, 1),
+                                       NCollection_Vec3<float>(-1, -1, 1),
+                                       NCollection_Vec3<float>(-1, -1, -1),
+                                       NCollection_Vec3<float>(1, 1, -1),
+                                       NCollection_Vec3<float>(1, 1, 1),
+                                       NCollection_Vec3<float>(-1, 1, 1),
+                                       NCollection_Vec3<float>(-1, 1, -1)};
 
   const NCollection_Vec4<int> aBoxQuads[6] = {NCollection_Vec4<int>(1, 2, 3, 4),
-                                              NCollection_Vec4<int>(5, 8, 7, 6),
-                                              NCollection_Vec4<int>(1, 5, 6, 2),
-                                              NCollection_Vec4<int>(2, 6, 7, 3),
-                                              NCollection_Vec4<int>(3, 7, 8, 4),
-                                              NCollection_Vec4<int>(5, 1, 4, 8)};
+                                        NCollection_Vec4<int>(5, 8, 7, 6),
+                                        NCollection_Vec4<int>(1, 5, 6, 2),
+                                        NCollection_Vec4<int>(2, 6, 7, 3),
+                                        NCollection_Vec4<int>(3, 7, 8, 4),
+                                        NCollection_Vec4<int>(5, 1, 4, 8)};
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aMatFile, anObjFile, aHtmlFile;
+  std::shared_ptr<std::ostream> aMatFile, anObjFile, aHtmlFile;
   if (aDumpFile.EndsWith(".obj") || aDumpFile.EndsWith(".mtl"))
   {
     const TCollection_AsciiString aMatFilePath =
@@ -705,11 +706,11 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
   {
     Graphic3d_MaterialAspect       aMat(aMatIter.Value());
     const TCollection_AsciiString& aMatName   = aMat.StringName();
-    const NCollection_Vec3<float>  anAmbient  = (NCollection_Vec3<float>)aMat.AmbientColor();
-    const NCollection_Vec3<float>  aDiffuse   = (NCollection_Vec3<float>)aMat.DiffuseColor();
-    const NCollection_Vec3<float>  aSpecular  = (NCollection_Vec3<float>)aMat.SpecularColor();
-    const NCollection_Vec3<float>  anEmission = (NCollection_Vec3<float>)aMat.EmissiveColor();
-    const double                   aShiness   = aMat.Shininess() * 1000.0;
+    const NCollection_Vec3<float>           anAmbient  = (NCollection_Vec3<float>)aMat.AmbientColor();
+    const NCollection_Vec3<float>           aDiffuse   = (NCollection_Vec3<float>)aMat.DiffuseColor();
+    const NCollection_Vec3<float>           aSpecular  = (NCollection_Vec3<float>)aMat.SpecularColor();
+    const NCollection_Vec3<float>           anEmission = (NCollection_Vec3<float>)aMat.EmissiveColor();
+    const double            aShiness   = aMat.Shininess() * 1000.0;
     if (aMatFile.get() != NULL)
     {
       *aMatFile << "newmtl " << aMatName << "\n";
@@ -764,8 +765,8 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
     {
       theDI << aMat.StringName() << "\n";
       theDI << "  Transparency:           " << aMat.Transparency() << "\n";
-      theDI << "  PBR.BaseColor:          "
-            << (NCollection_Vec3<float>)aMat.PBRMaterial().Color().GetRGB() << "\n";
+      theDI << "  PBR.BaseColor:          " << (NCollection_Vec3<float>)aMat.PBRMaterial().Color().GetRGB()
+            << "\n";
       theDI << "  PBR.Metallic:           " << aMat.PBRMaterial().Metallic() << "\n";
       theDI << "  PBR.Roughness:          " << aMat.PBRMaterial().NormalizedRoughness() << "\n";
       theDI << "  PBR.Emission:           " << aMat.PBRMaterial().Emission() << "\n";
@@ -794,9 +795,7 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
       *anObjFile << "usemtl " << aMatName << "\n";
       for (int aVertIter = 0; aVertIter < 8; ++aVertIter)
       {
-        *anObjFile << "v "
-                   << (aBoxVerts[aVertIter]
-                       + NCollection_Vec3<float>(3.0f * anX, -3.0f * anY, 0.0f))
+        *anObjFile << "v " << (aBoxVerts[aVertIter] + NCollection_Vec3<float>(3.0f * anX, -3.0f * anY, 0.0f))
                    << "\n";
       }
       *anObjFile << "s off\n";
@@ -822,7 +821,9 @@ static int VListMaterials(Draw_Interpretor& theDI, int theArgNb, const char** th
 
 //=================================================================================================
 
-static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VListColors(Draw_Interpretor& theDI,
+                                    int  theArgNb,
+                                    const char**      theArgVec)
 {
   TCollection_AsciiString                    aDumpFile;
   NCollection_Sequence<Quantity_NameOfColor> aColList;
@@ -837,7 +838,8 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
     }
     else if (anArg == "*")
     {
-      for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE; ++aColIter)
+      for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE;
+           ++aColIter)
       {
         aColList.Append((Quantity_NameOfColor)aColIter);
       }
@@ -856,22 +858,24 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
   {
     if (aDumpFile.IsEmpty())
     {
-      for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE; ++aColIter)
+      for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE;
+           ++aColIter)
       {
         theDI << Quantity_Color::StringName(Quantity_NameOfColor(aColIter)) << " ";
       }
       return 0;
     }
 
-    for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE; ++aColIter)
+    for (int aColIter = 0; aColIter <= (int)Quantity_NOC_WHITE;
+         ++aColIter)
     {
       aColList.Append((Quantity_NameOfColor)aColIter);
     }
   }
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aHtmlFile;
-  TCollection_AsciiString            aFileNameBase, aFolder;
+  std::shared_ptr<std::ostream> aHtmlFile;
+  TCollection_AsciiString       aFileNameBase, aFolder;
   if (aDumpFile.EndsWith(".htm") || aDumpFile.EndsWith(".html"))
   {
     OSD_Path::FolderAndFileFromPath(aDumpFile, aFolder, aFileNameBase);
@@ -934,14 +938,14 @@ static int VListColors(Draw_Interpretor& theDI, int theArgNb, const char** theAr
   }
 
   Image_AlienPixMap anImg;
-  int               aColIndex = 0;
+  int  aColIndex = 0;
   for (NCollection_Sequence<Quantity_NameOfColor>::Iterator aColIter(aColList); aColIter.More();
        aColIter.Next(), ++aColIndex)
   {
     Quantity_Color                aCol(aColIter.Value());
     const TCollection_AsciiString aColName  = Quantity_Color::StringName(aColIter.Value());
     const TCollection_AsciiString anSRgbHex = Quantity_Color::ColorToHex(aCol);
-    const NCollection_Vec3<int>   anSRgbInt((NCollection_Vec3<float>)aCol * 255.0f);
+    const NCollection_Vec3<int>         anSRgbInt((NCollection_Vec3<float>)aCol * 255.0f);
     if (aHtmlFile.get() != NULL)
     {
       const TCollection_AsciiString anImgPath = aFileNameBase + "_" + aColName + ".png";
@@ -1004,10 +1008,12 @@ static std::string envLutWriteToFile(float theValue)
 
 //=================================================================================================
 
-static int VGenEnvLUT(Draw_Interpretor&, int theArgNb, const char** theArgVec)
+static int VGenEnvLUT(Draw_Interpretor&,
+                                   int theArgNb,
+                                   const char**     theArgVec)
 {
-  int                     aTableSize = -1;
-  int                     aNbSamples = -1;
+  int        aTableSize = -1;
+  int        aNbSamples = -1;
   TCollection_AsciiString aFilePath =
     Graphic3d_TextureRoot::TexturesFolder() + "/Textures_EnvLUT.pxx";
 
@@ -1069,7 +1075,7 @@ static int VGenEnvLUT(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   }
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aFile =
+  std::shared_ptr<std::ostream> aFile =
     aFileSystem->OpenOStream(aFilePath, std::ios::out | std::ios::trunc);
 
   if (aFile.get() == NULL || !aFile->good())
@@ -1095,12 +1101,8 @@ static int VGenEnvLUT(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     aCounter = 0;
     for (int x = 0; x < aTableSize; ++x)
     {
-      *aFile << envLutWriteToFile(
-        aPixMap->Value<NCollection_Vec3<float>>(aTableSize - 1 - y, x).x())
-             << ",";
-      *aFile << envLutWriteToFile(
-        aPixMap->Value<NCollection_Vec3<float>>(aTableSize - 1 - y, x).y())
-             << ",";
+      *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(aTableSize - 1 - y, x).x()) << ",";
+      *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(aTableSize - 1 - y, x).y()) << ",";
       if (++aCounter % aNumbersInRow == 0)
       {
         *aFile << "\n";
@@ -1132,10 +1134,8 @@ static int VGenEnvLUT(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     }
   }
 
-  *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(0, aTableSize - 1).x())
-         << ",";
-  *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(0, aTableSize - 1).y())
-         << "\n";
+  *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(0, aTableSize - 1).x()) << ",";
+  *aFile << envLutWriteToFile(aPixMap->Value<NCollection_Vec3<float>>(0, aTableSize - 1).y()) << "\n";
 
   *aFile << "};";
 

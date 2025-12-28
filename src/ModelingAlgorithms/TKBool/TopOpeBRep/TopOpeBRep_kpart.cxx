@@ -46,10 +46,10 @@ static int STATIC_lastVPind;
 #define M_EXTERNAL(st) (st == TopAbs_EXTERNAL)
 
 //-----------------------------------------------------------------------
-static void FUNBREP_Periodize(const TopOpeBRep_LineInter&                   L,
+static void FUNBREP_Periodize(const TopOpeBRep_LineInter&              L,
                               const occ::handle<TopOpeBRepDS_Interference>& Ifound,
-                              double&                                       PIfound,
-                              double&                                       parline)
+                              double&                           PIfound,
+                              double&                           parline)
 //-----------------------------------------------------------------------
 {
   const TopOpeBRepDS_Transition& TIfound  = Ifound->Transition();
@@ -91,14 +91,14 @@ static void FUNBREP_Periodize(const TopOpeBRep_LineInter&                   L,
 }
 
 //-----------------------------------------------------------------------
-static bool FUNBREP_HasSameGPoint(const TopOpeBRepDS_Point&                     DSP,
-                                  const occ::handle<TopOpeBRepDS_Interference>& I,
-                                  const TopOpeBRepDS_DataStructure&             BDS)
+static bool FUNBREP_HasSameGPoint(const TopOpeBRepDS_Point&                DSP,
+                                              const occ::handle<TopOpeBRepDS_Interference>& I,
+                                              const TopOpeBRepDS_DataStructure&        BDS)
 //-----------------------------------------------------------------------
 {
   // returns <true> if <DSP> shares same geometric point with
   // <I> geometry.
-  int  G      = I->Geometry();
+  int G      = I->Geometry();
   bool samegp = false;
   if (I->GeometryType() == TopOpeBRepDS_POINT)
   {
@@ -115,9 +115,9 @@ static bool FUNBREP_HasSameGPoint(const TopOpeBRepDS_Point&                     
 
 //-----------------------------------------------------------------------
 static bool FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
-                           const TopOpeBRep_VPointInter& VP2,
-                           const int                     sind,
-                           const double                  toluv)
+                                       const TopOpeBRep_VPointInter& VP2,
+                                       const int        sind,
+                                       const double           toluv)
 //-----------------------------------------------------------------------
 {
   double u1 = 0., v1 = 0., u2 = 0., v2 = 0.;
@@ -131,21 +131,21 @@ static bool FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
     VP1.ParametersOnS2(u1, v1);
     VP2.ParametersOnS2(u2, v2);
   }
-  gp_Pnt2d p1(u1, v1), p2(u2, v2);
-  double   dist   = p1.Distance(p2);
-  bool     sameuv = (dist < toluv);
+  gp_Pnt2d         p1(u1, v1), p2(u2, v2);
+  double    dist   = p1.Distance(p2);
+  bool sameuv = (dist < toluv);
   return sameuv;
 }
 
 //----------------------------------------------------------------------
-bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&                   Ifound,
-                           const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
-                           const TopOpeBRep_LineInter&                                     L,
-                           const TopOpeBRep_VPointInter&                                   VP,
-                           const TopoDS_Shape&                                             E,
-                           const bool                                                      samepar,
-                           const bool                                                      couture,
-                           TopOpeBRepDS_Transition& transLine)
+bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>& Ifound,
+                                       const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   DSCIL,
+                                       const TopOpeBRep_LineInter&              L,
+                                       const TopOpeBRep_VPointInter&            VP,
+                                       const TopoDS_Shape&                      E,
+                                       const bool                   samepar,
+                                       const bool                   couture,
+                                       TopOpeBRepDS_Transition&                 transLine)
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() != TopOpeBRep_WALKING)
@@ -154,17 +154,18 @@ bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&        
   }
 
   bool CPIfound = !Ifound.IsNull();
-  int  iVP      = VP.Index();
-  int  iINON1, iINONn, nINON;
+  int iVP      = VP.Index();
+  int iINON1, iINONn, nINON;
   L.VPBounds(iINON1, iINONn, nINON);
   bool onsort = (transLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
 
-  bool LITdefinie = DSCIL.IsEmpty() ? false : !DSCIL.Last()->Transition().IsUnknown();
+  bool LITdefinie =
+    DSCIL.IsEmpty() ? false : !DSCIL.Last()->Transition().IsUnknown();
 
   // dealing with INTERNAL/EXTERNAL <E> :
   // ------------------------------------
   TopAbs_Orientation Eori = E.Orientation();
-  bool               EFR  = M_FORWARD(Eori) || M_REVERSED(Eori);
+  bool   EFR  = M_FORWARD(Eori) || M_REVERSED(Eori);
   if (!EFR)
   { // E INTERNAL ou EXTERNAL
     // we assume transition for first vp on non oriented edge to be FORWARD
@@ -191,11 +192,11 @@ bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&        
   if (LITdefinie)
   {
 
-    const occ::handle<TopOpeBRepDS_Interference>& I   = DSCIL.Last();
-    TopOpeBRepDS_Transition                       LIT = I->Transition();
-    bool LITonsort                                    = M_FORWARD(LIT.Orientation(TopAbs_OUT));
-    bool LprecIsEntrant                               = !LITonsort;
-    bool entrantsortant                               = LprecIsEntrant && onsort;
+    const occ::handle<TopOpeBRepDS_Interference>& I         = DSCIL.Last();
+    TopOpeBRepDS_Transition                  LIT       = I->Transition();
+    bool                         LITonsort = M_FORWARD(LIT.Orientation(TopAbs_OUT));
+    bool                         LprecIsEntrant = !LITonsort;
+    bool                         entrantsortant = LprecIsEntrant && onsort;
 
     if (EFR && !entrantsortant)
       keep = false;
@@ -218,20 +219,20 @@ bool FUNBREP_topowalki_new(const occ::handle<TopOpeBRepDS_Interference>&        
       //                  first VP is first walking point (PIfound == 1.0),
       //                  current VP is the second one on walking and not the last.
       const occ::handle<TopOpeBRepDS_Interference>& anI           = DSCIL.First();
-      const TopOpeBRepDS_Transition&                lasttransLine = anI->Transition();
+      const TopOpeBRepDS_Transition&           lasttransLine = anI->Transition();
       // xpu12-12-97 : line is built on only 2 vp,
       //  DSCIL->First() == DSCIL->Last()
       //  lasttransLine = DSCIL's first transition
-      double PIfound    = TopOpeBRepDS_InterferenceTool::Parameter(Ifound);
-      bool   fermee     = L.IsVClosed();
-      bool   lastonsort = LITdefinie && M_FORWARD(lasttransLine.Orientation(TopAbs_OUT));
+      double    PIfound    = TopOpeBRepDS_InterferenceTool::Parameter(Ifound);
+      bool fermee     = L.IsVClosed();
+      bool lastonsort = LITdefinie && M_FORWARD(lasttransLine.Orientation(TopAbs_OUT));
 
       bool kpartclosingwalki = (LITdefinie && !lastonsort);
-      kpartclosingwalki      = kpartclosingwalki && CPIfound && samepar;
-      kpartclosingwalki      = kpartclosingwalki && onsort;
-      kpartclosingwalki      = kpartclosingwalki && fermee;
-      kpartclosingwalki      = kpartclosingwalki && (PIfound == 1.0);
-      kpartclosingwalki      = kpartclosingwalki && (iVP == iINON1 + 1) && (iVP != iINONn);
+      kpartclosingwalki                  = kpartclosingwalki && CPIfound && samepar;
+      kpartclosingwalki                  = kpartclosingwalki && onsort;
+      kpartclosingwalki                  = kpartclosingwalki && fermee;
+      kpartclosingwalki                  = kpartclosingwalki && (PIfound == 1.0);
+      kpartclosingwalki = kpartclosingwalki && (iVP == iINON1 + 1) && (iVP != iINONn);
       if (kpartclosingwalki)
       {
         keep = false;
@@ -249,24 +250,24 @@ Standard_EXPORT void debvpr2(void) {}
 #endif
 
 //----------------------------------------------------------------------
-bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&                   Ifound,
-                       const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
-                       const TopOpeBRep_LineInter&                                     L,
-                       const TopOpeBRep_VPointInter&                                   VP,
-                       const TopOpeBRepDS_Transition& lasttransLine,
-                       // const TopOpeBRepDS_DataStructure& BDS,
-                       const TopOpeBRepDS_DataStructure&,
-                       const TopoDS_Shape& E,
-                       // const TopoDS_Shape& F,
-                       const TopoDS_Shape&,
-                       // const double toluv,
-                       const double,
-                       const bool CPIfound,
-                       const bool samepar,
-                       const bool couture,
-                       // double& parline,
-                       double&,
-                       TopOpeBRepDS_Transition& transLine)
+bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>& Ifound,
+                                   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   DSCIL,
+                                   const TopOpeBRep_LineInter&              L,
+                                   const TopOpeBRep_VPointInter&            VP,
+                                   const TopOpeBRepDS_Transition&           lasttransLine,
+                                   // const TopOpeBRepDS_DataStructure& BDS,
+                                   const TopOpeBRepDS_DataStructure&,
+                                   const TopoDS_Shape& E,
+                                   // const TopoDS_Shape& F,
+                                   const TopoDS_Shape&,
+                                   // const double toluv,
+                                   const double,
+                                   const bool CPIfound,
+                                   const bool samepar,
+                                   const bool couture,
+                                   // double& parline,
+                                   double&,
+                                   TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() != TopOpeBRep_WALKING)
@@ -278,14 +279,15 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
   bool newkp = TopOpeBRep_GetcontextNEWKP();
   if (newkp)
   {
-    bool keep = FUNBREP_topowalki_new(Ifound, DSCIL, L, VP, E, samepar, couture, transLine);
+    bool keep =
+      FUNBREP_topowalki_new(Ifound, DSCIL, L, VP, E, samepar, couture, transLine);
     return keep;
   }
 #endif
 
   TopAbs_Orientation Eori = E.Orientation();
-  int                iVP  = VP.Index();
-  int                iINON1, iINONn, nINON;
+  int   iVP  = VP.Index();
+  int   iINON1, iINONn, nINON;
   L.VPBounds(iINON1, iINONn, nINON);
   bool fermee      = L.IsVClosed();
   bool onsort      = (transLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
@@ -300,11 +302,11 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
     lastinin   = lastinin && (lasttransLine.After() == TopAbs_IN);
   }
 
-  bool                                   LITdefinie = false;
-  bool                                   LITonsort  = false;
-  TopOpeBRepDS_Transition                LIT;
+  bool                  LITdefinie = false;
+  bool                  LITonsort  = false;
+  TopOpeBRepDS_Transition           LIT;
   occ::handle<TopOpeBRepDS_Interference> I;
-  bool                                   nointerf = DSCIL.IsEmpty();
+  bool                  nointerf = DSCIL.IsEmpty();
   if (!nointerf)
   {
     I          = DSCIL.Last();
@@ -361,11 +363,11 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
     else
     {
       bool condCTS19305 = false;
-      condCTS19305      = (!CPIfound);
-      condCTS19305      = condCTS19305 && (!fermee);
-      condCTS19305      = condCTS19305 && (lastdefinie && !lastonsort);
-      condCTS19305      = condCTS19305 && (LITdefinie && !LITonsort);
-      condCTS19305      = condCTS19305 && (iVP == iINONn);
+      condCTS19305                  = (!CPIfound);
+      condCTS19305                  = condCTS19305 && (!fermee);
+      condCTS19305                  = condCTS19305 && (lastdefinie && !lastonsort);
+      condCTS19305                  = condCTS19305 && (LITdefinie && !LITonsort);
+      condCTS19305                  = condCTS19305 && (iVP == iINONn);
 
       if (condCTS19305)
       {
@@ -405,12 +407,12 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
 
         // 971204
         bool cond1 = true;
-        cond1      = cond1 && (lastdefinie && !lastonsort);
-        cond1      = cond1 && onsort;
-        cond1      = cond1 && fermee;
-        cond1      = cond1 && (CPIfound && samepar);
-        cond1      = cond1 && (PIfound == 1.0);
-        cond1      = cond1 && (iVP == iINON1 + 1) && (iVP != iINONn);
+        cond1                  = cond1 && (lastdefinie && !lastonsort);
+        cond1                  = cond1 && onsort;
+        cond1                  = cond1 && fermee;
+        cond1                  = cond1 && (CPIfound && samepar);
+        cond1                  = cond1 && (PIfound == 1.0);
+        cond1                  = cond1 && (iVP == iINON1 + 1) && (iVP != iINONn);
         if (cond1)
         {
           keep = false;
@@ -419,12 +421,12 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
 
         // PRO12107
         bool cond2 = true;
-        cond2      = cond2 && (lastdefinie && !lastonsort);
-        cond1      = cond1 && onsort;
-        cond2      = cond2 && (!fermee);
-        cond2      = cond2 && (CPIfound && samepar);
-        cond2      = cond2 && (PIfound == 1.0);
-        cond2      = cond2 && (iVP == iINON1 + 1) && (iVP != iINONn);
+        cond2                  = cond2 && (lastdefinie && !lastonsort);
+        cond1                  = cond1 && onsort;
+        cond2                  = cond2 && (!fermee);
+        cond2                  = cond2 && (CPIfound && samepar);
+        cond2                  = cond2 && (PIfound == 1.0);
+        cond2                  = cond2 && (iVP == iINON1 + 1) && (iVP != iINONn);
         if (cond2)
         {
           keep = false;
@@ -442,14 +444,14 @@ bool FUNBREP_topowalki(const occ::handle<TopOpeBRepDS_Interference>&            
 
 //----------------------------------------------------------------------
 bool FUNBREP_topogline_new(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
-                           const TopOpeBRep_LineInter&                                     L,
-                           const TopOpeBRep_VPointInter&                                   VP,
-                           const TopOpeBRepDS_DataStructure&                               BDS,
-                           const double                                                    toluv,
-                           const bool                                                      samepar,
-                           const bool                                                      couture,
-                           double&                                                         parline,
-                           TopOpeBRepDS_Transition& transLine)
+                                       const TopOpeBRep_LineInter&            L,
+                                       const TopOpeBRep_VPointInter&          VP,
+                                       const TopOpeBRepDS_DataStructure&      BDS,
+                                       const double                    toluv,
+                                       const bool                 samepar,
+                                       const bool                 couture,
+                                       double&                         parline,
+                                       TopOpeBRepDS_Transition&               transLine)
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
@@ -479,9 +481,9 @@ bool FUNBREP_topogline_new(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
   // (see TopOpeBRep_FacesFiller::ProcessVPonR)
   // vpmin with transition UNKNOWN               => transLine-> OUT/IN
   // vpmin OUT/IN, vpmax with transition UNKNOWN => transLine-> IN/OUT
-  TopOpeBRepDS_Transition                LIT;
+  TopOpeBRepDS_Transition           LIT;
   occ::handle<TopOpeBRepDS_Interference> I;
-  bool                                   LITdefinie, LITonsort;
+  bool                  LITdefinie, LITonsort;
   LITdefinie = LITonsort = false;
   if (!dscilempty)
   {
@@ -533,7 +535,7 @@ bool FUNBREP_topogline_new(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
       // INFO : on geometric line, vp parameter on line is the point on
       //        curve's parameter.
       TopOpeBRepDS_Point pntVP  = TopOpeBRep_PointGeomTool::MakePoint(VP);
-      bool               samegp = FUNBREP_HasSameGPoint(pntVP, I, BDS);
+      bool   samegp = FUNBREP_HasSameGPoint(pntVP, I, BDS);
 
       // !fermee : same p3d && samepar        => same CPI
       // fermee  : (same p3d && samepar
@@ -547,8 +549,8 @@ bool FUNBREP_topogline_new(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
         // have same parameter, but do not describe the same uv
         // points on the closed surface (cobo121)
         const TopOpeBRep_VPointInter& lastVP    = L.VPoint(STATIC_lastVPind);
-        bool                          sameUVon1 = FUNBREP_SameUV(VP, lastVP, 1, toluv);
-        bool                          sameUVon2 = FUNBREP_SameUV(VP, lastVP, 2, toluv);
+        bool              sameUVon1 = FUNBREP_SameUV(VP, lastVP, 1, toluv);
+        bool              sameUVon2 = FUNBREP_SameUV(VP, lastVP, 2, toluv);
         keep                                    = !(sameUVon1 && sameUVon2);
       }
     }
@@ -573,20 +575,20 @@ bool FUNBREP_topogline_new(const NCollection_List<occ::handle<TopOpeBRepDS_Inter
 
 //----------------------------------------------------------------------
 static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifound,
-                              const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
-                              const TopOpeBRep_LineInter&                                     L,
-                              const TopOpeBRep_VPointInter&                                   VP,
-                              const TopOpeBRepDS_DataStructure&                               BDS,
-                              const TopoDS_Shape&                                             E,
-                              // const TopoDS_Shape& F,
-                              const TopoDS_Shape&,
-                              const double toluv,
-                              // const bool CPIfound,
-                              const bool,
-                              const bool               samepar,
-                              const bool               couture,
-                              double&                  parline,
-                              TopOpeBRepDS_Transition& transLine)
+                                          const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   DSCIL,
+                                          const TopOpeBRep_LineInter&              L,
+                                          const TopOpeBRep_VPointInter&            VP,
+                                          const TopOpeBRepDS_DataStructure&        BDS,
+                                          const TopoDS_Shape&                      E,
+                                          // const TopoDS_Shape& F,
+                                          const TopoDS_Shape&,
+                                          const double toluv,
+                                          // const bool CPIfound,
+                                          const bool,
+                                          const bool   samepar,
+                                          const bool   couture,
+                                          double&           parline,
+                                          TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
   if (L.TypeLineCurve() == TopOpeBRep_WALKING)
@@ -605,9 +607,9 @@ static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifou
 #endif
 
   TopAbs_Orientation Eori = E.Orientation();
-  bool               EFR  = M_FORWARD(Eori) || M_REVERSED(Eori);
-  int                iVP  = VP.Index();
-  int                iINON1, iINONn, nINON;
+  bool   EFR  = M_FORWARD(Eori) || M_REVERSED(Eori);
+  int   iVP  = VP.Index();
+  int   iINON1, iINONn, nINON;
   L.VPBounds(iINON1, iINONn, nINON);
   bool fermee = L.IsVClosed();
 
@@ -620,11 +622,11 @@ static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifou
   }
   bool onsort = (transLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
 
-  bool                                   LITdefinie = false;
-  bool                                   LITonsort  = false;
-  TopOpeBRepDS_Transition                LIT;
+  bool                  LITdefinie = false;
+  bool                  LITonsort  = false;
+  TopOpeBRepDS_Transition           LIT;
   occ::handle<TopOpeBRepDS_Interference> I;
-  bool                                   dscilempty = DSCIL.IsEmpty();
+  bool                  dscilempty = DSCIL.IsEmpty();
 
   // xpu : 28-05-97 : if VP<iVP> is on 3 and
   // VP on 1 has transition OUT/IN, VP on 2 has transition IN/OUT,
@@ -699,7 +701,7 @@ static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifou
         // INFO : on geometric line, vp parameter on line is the point on
         //        curve parameter.
         TopOpeBRepDS_Point            pntVP  = TopOpeBRep_PointGeomTool::MakePoint(VP);
-        bool                          samegp = FUNBREP_HasSameGPoint(pntVP, I, BDS);
+        bool              samegp = FUNBREP_HasSameGPoint(pntVP, I, BDS);
         const TopOpeBRep_VPointInter& lastVP = L.VPoint(STATIC_lastVPind);
         // if the line is not closed, same p3d and samepar represent
         // same CPI.else :
@@ -710,7 +712,7 @@ static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifou
           // points on the closed surface (cobo121)
           bool sameUVon1 = FUNBREP_SameUV(VP, lastVP, 1, toluv);
           bool sameUVon2 = FUNBREP_SameUV(VP, lastVP, 2, toluv);
-          samegp         = samegp && sameUVon1 && sameUVon2;
+          samegp                     = samegp && sameUVon1 && sameUVon2;
         }
         if (samegp)
           keep = false;
@@ -734,16 +736,16 @@ static bool FUNBREP_topogline(const occ::handle<TopOpeBRepDS_Interference>& Ifou
 } // end of FUNBREP_topogline
 
 //-----------------------------------------------------------------------
-static bool TopoParameter(const TopOpeBRep_LineInter&                   L,
-                          const occ::handle<TopOpeBRepDS_Interference>& I,
-                          const double                                  parline,
-                          const bool                                    closingedge)
+static bool TopoParameter(const TopOpeBRep_LineInter&              L,
+                                      const occ::handle<TopOpeBRepDS_Interference>& I,
+                                      const double                      parline,
+                                      const bool                   closingedge)
 //-----------------------------------------------------------------------
 {
   if (I.IsNull())
     return false;
-  bool   samepar = false;
-  double pCPI    = TopOpeBRepDS_InterferenceTool::Parameter(I);
+  bool samepar = false;
+  double    pCPI    = TopOpeBRepDS_InterferenceTool::Parameter(I);
   if (!closingedge)
     samepar = (std::abs(parline - pCPI) < Precision::PConfusion());
   else
@@ -766,17 +768,16 @@ static bool TopoParameter(const TopOpeBRep_LineInter&                   L,
 }
 
 //----------------------------------------------------------------------
-Standard_EXPORT bool FUNBREP_topokpart(
-  const occ::handle<TopOpeBRepDS_Interference>&                   Ifound,
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& DSCIL,
-  const TopOpeBRep_LineInter&                                     L,
-  const TopOpeBRep_VPointInter&                                   VP,
-  const TopOpeBRepDS_DataStructure&                               BDS,
-  const TopoDS_Shape&                                             E,
-  const TopoDS_Shape&                                             F,
-  const double                                                    toluv,
-  double&                                                         parline,
-  TopOpeBRepDS_Transition&                                        transLine)
+Standard_EXPORT bool FUNBREP_topokpart(const occ::handle<TopOpeBRepDS_Interference>& Ifound,
+                                                   const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   DSCIL,
+                                                   const TopOpeBRep_LineInter&              L,
+                                                   const TopOpeBRep_VPointInter&            VP,
+                                                   const TopOpeBRepDS_DataStructure&        BDS,
+                                                   const TopoDS_Shape&                      E,
+                                                   const TopoDS_Shape&                      F,
+                                                   const double                      toluv,
+                                                   double&                           parline,
+                                                   TopOpeBRepDS_Transition& transLine)
 //----------------------------------------------------------------------
 {
   bool keep = true;

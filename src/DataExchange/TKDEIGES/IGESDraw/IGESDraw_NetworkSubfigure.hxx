@@ -53,14 +53,13 @@ public:
   //! - aTemplate        : Primary reference designator Text
   //! display Template Entity
   //! - allConnectPoints : Associated Connect Point Entities
-  Standard_EXPORT void Init(
-    const occ::handle<IGESDraw_NetworkSubfigureDef>&                            aDefinition,
-    const gp_XYZ&                                                               aTranslation,
-    const gp_XYZ&                                                               aScaleFactor,
-    const int                                                                   aTypeFlag,
-    const occ::handle<TCollection_HAsciiString>&                                aDesignator,
-    const occ::handle<IGESGraph_TextDisplayTemplate>&                           aTemplate,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints);
+  Standard_EXPORT void Init(const occ::handle<IGESDraw_NetworkSubfigureDef>&   aDefinition,
+                            const gp_XYZ&                                 aTranslation,
+                            const gp_XYZ&                                 aScaleFactor,
+                            const int                        aTypeFlag,
+                            const occ::handle<TCollection_HAsciiString>&       aDesignator,
+                            const occ::handle<IGESGraph_TextDisplayTemplate>&  aTemplate,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>>& allConnectPoints);
 
   //! returns Network Subfigure Definition Entity specified by this entity
   Standard_EXPORT occ::handle<IGESDraw_NetworkSubfigureDef> SubfigureDefinition() const;
@@ -104,12 +103,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_NetworkSubfigure, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESDraw_NetworkSubfigureDef>                            theSubfigureDefinition;
-  gp_XYZ                                                               theTranslation;
-  gp_XYZ                                                               theScaleFactor;
-  int                                                                  theTypeFlag;
-  occ::handle<TCollection_HAsciiString>                                theDesignator;
-  occ::handle<IGESGraph_TextDisplayTemplate>                           theDesignatorTemplate;
+  occ::handle<IGESDraw_NetworkSubfigureDef>   theSubfigureDefinition;
+  gp_XYZ                                 theTranslation;
+  gp_XYZ                                 theScaleFactor;
+  int                       theTypeFlag;
+  occ::handle<TCollection_HAsciiString>       theDesignator;
+  occ::handle<IGESGraph_TextDisplayTemplate>  theDesignatorTemplate;
   occ::handle<NCollection_HArray1<occ::handle<IGESDraw_ConnectPoint>>> theConnectPoints;
 };
 

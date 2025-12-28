@@ -118,7 +118,8 @@ AIS_ViewController::AIS_ViewController()
   myRubberBand->SetDisplayMode(0);
   myRubberBand->SetMutable(true);
 
-  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateOrbit);
+  myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton,
+                         AIS_MouseGesture_RotateOrbit);
   myMouseGestureMap.Bind((unsigned int)Aspect_VKeyMouse_LeftButton
                            | (unsigned int)Aspect_VKeyFlags_CTRL,
                          AIS_MouseGesture_Zoom);
@@ -196,7 +197,7 @@ void AIS_ViewController::ResetViewInput()
 
 void AIS_ViewController::FlushViewEvents(const occ::handle<AIS_InteractiveContext>& theCtx,
                                          const occ::handle<V3d_View>&               theView,
-                                         bool                                       theToHandle)
+                                         bool                      theToHandle)
 {
   flushBuffers(theCtx, theView);
   flushGestures(theCtx, theView);
@@ -387,8 +388,8 @@ void AIS_ViewController::flushBuffers(const occ::handle<AIS_InteractiveContext>&
 void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>&,
                                        const occ::handle<V3d_View>& theView)
 {
-  const double aTolScale = myTouchToleranceScale;
-  const int    aTouchNb  = myTouchPoints.Extent();
+  const double    aTolScale = myTouchToleranceScale;
+  const int aTouchNb  = myTouchPoints.Extent();
   if (myNbTouchesLast != aTouchNb)
   {
     myNbTouchesLast   = aTouchNb;
@@ -425,17 +426,17 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
       if (myNavigationMode == AIS_NavigationMode_Orbit)
       {
         const NCollection_Vec2<double> aRotDelta = aTouch.To - myGL.OrbitRotation.PointStart;
-        myGL.OrbitRotation.ToRotate              = true;
-        myGL.OrbitRotation.PointTo = myGL.OrbitRotation.PointStart + aRotDelta * aRotAccel;
-        myGL.Dragging.ToMove       = true;
+        myGL.OrbitRotation.ToRotate     = true;
+        myGL.OrbitRotation.PointTo      = myGL.OrbitRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove            = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
       else
       {
         const NCollection_Vec2<double> aRotDelta = aTouch.To - myGL.ViewRotation.PointStart;
-        myGL.ViewRotation.ToRotate               = true;
-        myGL.ViewRotation.PointTo = myGL.ViewRotation.PointStart + aRotDelta * aRotAccel;
-        myGL.Dragging.ToMove      = true;
+        myGL.ViewRotation.ToRotate      = true;
+        myGL.ViewRotation.PointTo       = myGL.ViewRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove            = true;
         myGL.Dragging.PointTo.SetValues((int)aTouch.To.x(), (int)aTouch.To.y());
       }
 
@@ -444,13 +445,13 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
   }
   else if (aTouchNb == 2) // pinch
   {
-    Aspect_Touch&                  aFirstTouch = myTouchPoints.ChangeFromIndex(1);
-    Aspect_Touch&                  aLastTouch  = myTouchPoints.ChangeFromIndex(2);
+    Aspect_Touch&         aFirstTouch = myTouchPoints.ChangeFromIndex(1);
+    Aspect_Touch&         aLastTouch  = myTouchPoints.ChangeFromIndex(2);
     const NCollection_Vec2<double> aFrom[2]    = {aFirstTouch.From, aLastTouch.From};
     const NCollection_Vec2<double> aTo[2]      = {aFirstTouch.To, aLastTouch.To};
 
     NCollection_Vec2<double> aPinchCenterStart((aFrom[0].x() + aFrom[1].x()) / 2.0,
-                                               (aFrom[0].y() + aFrom[1].y()) / 2.0);
+                                      (aFrom[0].y() + aFrom[1].y()) / 2.0);
 
     double aPinchCenterXEnd = (aTo[0].x() + aTo[1].x()) / 2.0;
     double aPinchCenterYEnd = (aTo[0].y() + aTo[1].y()) / 2.0;
@@ -483,7 +484,7 @@ void AIS_ViewController::flushGestures(const occ::handle<AIS_InteractiveContext>
       else
       {
         double aNumerator = A1 * B2 - A2 * B1;
-        aRotAngle         = std::atan(aNumerator / aDenomenator);
+        aRotAngle                = std::atan(aNumerator / aDenomenator);
       }
 
       if (std::abs(aRotAngle) > double(myTouchZRotationThreshold))
@@ -542,8 +543,8 @@ void AIS_ViewController::UpdateViewOrientation(V3d_TypeOfOrientation theOrientat
 
 //=================================================================================================
 
-void AIS_ViewController::SelectInViewer(const NCollection_Vec2<int>& thePnt,
-                                        const AIS_SelectionScheme    theScheme)
+void AIS_ViewController::SelectInViewer(const NCollection_Vec2<int>&    thePnt,
+                                        const AIS_SelectionScheme theScheme)
 {
   if (myUI.Selection.Tool != AIS_ViewSelectionTool_Picking)
   {
@@ -558,7 +559,7 @@ void AIS_ViewController::SelectInViewer(const NCollection_Vec2<int>& thePnt,
 //=================================================================================================
 
 void AIS_ViewController::SelectInViewer(const NCollection_Sequence<NCollection_Vec2<int>>& thePnts,
-                                        const AIS_SelectionScheme theScheme)
+                                        const AIS_SelectionScheme                    theScheme)
 {
   myUI.Selection.Scheme      = theScheme;
   myUI.Selection.Points      = thePnts;
@@ -659,9 +660,9 @@ bool AIS_ViewController::UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
 //=================================================================================================
 
 bool AIS_ViewController::UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
-                                          Aspect_VKeyMouse             theButton,
-                                          Aspect_VKeyFlags             theModifiers,
-                                          bool                         theIsDoubleClick)
+                                          Aspect_VKeyMouse       theButton,
+                                          Aspect_VKeyFlags       theModifiers,
+                                          bool                   theIsDoubleClick)
 {
   (void)theIsDoubleClick;
 
@@ -682,9 +683,9 @@ bool AIS_ViewController::UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
 //=================================================================================================
 
 bool AIS_ViewController::UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                            Aspect_VKeyMouse             theButtons,
-                                            Aspect_VKeyFlags             theModifiers,
-                                            bool                         theIsEmulated)
+                                            Aspect_VKeyMouse       theButtons,
+                                            Aspect_VKeyFlags       theModifiers,
+                                            bool                   theIsEmulated)
 {
   bool         toUpdateView = false;
   const double aTolClick    = (theIsEmulated ? myTouchToleranceScale : 1.0) * myMouseClickThreshold;
@@ -895,9 +896,9 @@ bool AIS_ViewController::UpdateMouseButtons(const NCollection_Vec2<int>& thePoin
 //=================================================================================================
 
 bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoint,
-                                             Aspect_VKeyMouse             theButtons,
-                                             Aspect_VKeyFlags             theModifiers,
-                                             bool                         theIsEmulated)
+                                             Aspect_VKeyMouse       theButtons,
+                                             Aspect_VKeyFlags       theModifiers,
+                                             bool                   theIsEmulated)
 {
   myMousePositionLast = thePoint;
   if (myMouseSingleButton > 0)
@@ -914,7 +915,7 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
     }
   }
 
-  bool                  toUpdateView = false;
+  bool            toUpdateView = false;
   NCollection_Vec2<int> aDelta       = thePoint - myMouseProgressPoint;
   if (!theIsEmulated && myNavigationMode == AIS_NavigationMode_FirstPersonWalk)
   {
@@ -995,16 +996,14 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
         if (myMouseActiveGesture == AIS_MouseGesture_RotateOrbit)
         {
           myUI.OrbitRotation.ToRotate = true;
-          myUI.OrbitRotation.PointTo =
-            NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
-            + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
+          myUI.OrbitRotation.PointTo = NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
+                                       + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
         }
         else
         {
           myUI.ViewRotation.ToRotate = true;
-          myUI.ViewRotation.PointTo =
-            NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
-            + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
+          myUI.ViewRotation.PointTo  = NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
+                                      + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
         }
 
         myUI.Dragging.ToMove  = true;
@@ -1089,10 +1088,9 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
         const double aRotAccel =
           myNavigationMode == AIS_NavigationMode_FirstPersonWalk ? myMouseAccel : myOrbitAccel;
         const NCollection_Vec2<int> aRotDelta = thePoint - myMousePressPoint;
-        myUI.ViewRotation.ToRotate            = true;
-        myUI.ViewRotation.PointTo =
-          NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
-          + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
+        myUI.ViewRotation.ToRotate      = true;
+        myUI.ViewRotation.PointTo = NCollection_Vec2<double>(myMousePressPoint.x(), myMousePressPoint.y())
+                                    + NCollection_Vec2<double>(aRotDelta.x(), aRotDelta.y()) * aRotAccel;
         myUI.Dragging.ToMove  = true;
         myUI.Dragging.PointTo = thePoint;
 
@@ -1118,9 +1116,9 @@ bool AIS_ViewController::UpdateMousePosition(const NCollection_Vec2<int>& thePoi
 
 //=================================================================================================
 
-void AIS_ViewController::AddTouchPoint(size_t                          theId,
+void AIS_ViewController::AddTouchPoint(size_t          theId,
                                        const NCollection_Vec2<double>& thePnt,
-                                       bool                            theClearBefore)
+                                       bool       theClearBefore)
 {
   myUI.MoveTo.ToHilight = false;
   Aspect_WindowInputListener::AddTouchPoint(theId, thePnt, theClearBefore);
@@ -1273,7 +1271,8 @@ void AIS_ViewController::KeyFromAxis(Aspect_VKey theNegative,
 
 //=================================================================================================
 
-AIS_WalkDelta AIS_ViewController::FetchNavigationKeys(double theCrouchRatio, double theRunRatio)
+AIS_WalkDelta AIS_ViewController::FetchNavigationKeys(double theCrouchRatio,
+                                                      double theRunRatio)
 {
   AIS_WalkDelta aWalk;
 
@@ -1458,9 +1457,8 @@ void AIS_ViewController::handlePanning(const occ::handle<V3d_View>& theView)
   // clang-format off
   const gp_Pnt aViewDims = aCam->ViewDimensions (anEyeToPnt.Dot (aCam->Direction().XYZ())); // view dimensions at 3D point
   // clang-format on
-  const NCollection_Vec2<double> aDxy(
-    -aViewDims.X() * myGL.Panning.Delta.x() / double(aWinSize.x()),
-    -aViewDims.X() * myGL.Panning.Delta.y() / double(aWinSize.x()));
+  const NCollection_Vec2<double> aDxy(-aViewDims.X() * myGL.Panning.Delta.x() / double(aWinSize.x()),
+                             -aViewDims.X() * myGL.Panning.Delta.y() / double(aWinSize.x()));
 
   // theView->Translate (aCam, aDxy.x(), aDxy.y());
   gp_Trsf      aPanTrsf;
@@ -1495,9 +1493,9 @@ void AIS_ViewController::handleZRotate(const occ::handle<V3d_View>& theView)
 
 //=================================================================================================
 
-void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
-                                    const Aspect_ScrollDelta&    theParams,
-                                    const gp_Pnt*                thePnt)
+void AIS_ViewController::handleZoom(const occ::handle<V3d_View>&   theView,
+                                    const Aspect_ScrollDelta& theParams,
+                                    const gp_Pnt*             thePnt)
 {
   if (!myToAllowZooming)
   {
@@ -1517,7 +1515,7 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
   if (!theParams.HasPoint())
   {
     double aCoeff = std::abs(theParams.Delta) / 100.0 + 1.0;
-    aCoeff        = theParams.Delta > 0.0 ? aCoeff : 1.0 / aCoeff;
+    aCoeff               = theParams.Delta > 0.0 ? aCoeff : 1.0 / aCoeff;
     theView->SetZoom(aCoeff, true);
     theView->Invalidate();
     theView->View()->SynchronizeXRPosedToBaseCamera();
@@ -1582,9 +1580,9 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
     NCollection_Vec2<int> aWinSize;
     theView->Window()->Size(aWinSize.x(), aWinSize.y());
     const NCollection_Vec2<double> aWinSizeF(aWinSize);
-    const NCollection_Vec2<double> aPanFromCenterPx(
-      double(theParams.Point.x()) - 0.5 * aWinSizeF.x(),
-      aWinSizeF.y() - double(theParams.Point.y()) - 1.0 - 0.5 * aWinSizeF.y());
+    const NCollection_Vec2<double> aPanFromCenterPx(double(theParams.Point.x()) - 0.5 * aWinSizeF.x(),
+                                           aWinSizeF.y() - double(theParams.Point.y()) - 1.0
+                                             - 0.5 * aWinSizeF.y());
     aDxy.x() += -aViewDims1.X() * aPanFromCenterPx.x() / aWinSizeF.x();
     aDxy.y() += -aViewDims1.Y() * aPanFromCenterPx.y() / aWinSizeF.y();
   }
@@ -1601,8 +1599,8 @@ void AIS_ViewController::handleZoom(const occ::handle<V3d_View>& theView,
 
 //=================================================================================================
 
-void AIS_ViewController::handleZFocusScroll(const occ::handle<V3d_View>& theView,
-                                            const Aspect_ScrollDelta&    theParams)
+void AIS_ViewController::handleZFocusScroll(const occ::handle<V3d_View>&   theView,
+                                            const Aspect_ScrollDelta& theParams)
 {
   if (!myToAllowZFocus || !theView->Camera()->IsStereo())
   {
@@ -1620,8 +1618,8 @@ void AIS_ViewController::handleZFocusScroll(const occ::handle<V3d_View>& theView
 //=================================================================================================
 
 void AIS_ViewController::handleOrbitRotation(const occ::handle<V3d_View>& theView,
-                                             const gp_Pnt&                thePnt,
-                                             bool                         theToLockZUp)
+                                             const gp_Pnt&           thePnt,
+                                             bool                    theToLockZUp)
 {
   if (!myToAllowRotation)
   {
@@ -1793,10 +1791,10 @@ void AIS_ViewController::handleOrbitRotation(const occ::handle<V3d_View>& theVie
 //=================================================================================================
 
 void AIS_ViewController::handleViewRotation(const occ::handle<V3d_View>& theView,
-                                            double                       theYawExtra,
-                                            double                       thePitchExtra,
-                                            double                       theRoll,
-                                            bool                         theToRestartOnIncrement)
+                                            double                  theYawExtra,
+                                            double                  thePitchExtra,
+                                            double                  theRoll,
+                                            bool                    theToRestartOnIncrement)
 {
   if (!myToAllowRotation)
   {
@@ -1804,8 +1802,8 @@ void AIS_ViewController::handleViewRotation(const occ::handle<V3d_View>& theView
   }
 
   const occ::handle<Graphic3d_Camera>& aCam = theView->Camera();
-  const bool aRollIsChanged = std::abs(theRoll - myCurrentRollAngle) > gp::Resolution();
-  const bool toRotateAnyway = std::abs(theYawExtra) > gp::Resolution()
+  const bool aRollIsChanged            = std::abs(theRoll - myCurrentRollAngle) > gp::Resolution();
+  const bool toRotateAnyway            = std::abs(theYawExtra) > gp::Resolution()
                               || std::abs(thePitchExtra) > gp::Resolution() || aRollIsChanged;
 
   // Store old and new roll values for later processing
@@ -1909,11 +1907,11 @@ void AIS_ViewController::handleViewRotation(const occ::handle<V3d_View>& theView
 
 //=================================================================================================
 
-bool AIS_ViewController::PickPoint(gp_Pnt&                                    thePnt,
+bool AIS_ViewController::PickPoint(gp_Pnt&                               thePnt,
                                    const occ::handle<AIS_InteractiveContext>& theCtx,
                                    const occ::handle<V3d_View>&               theView,
-                                   const NCollection_Vec2<int>&               theCursor,
-                                   bool                                       theToStickToPickRay)
+                                   const NCollection_Vec2<int>&                theCursor,
+                                   bool                                  theToStickToPickRay)
 {
   ResetPreviousMoveTo();
 
@@ -1939,10 +1937,10 @@ bool AIS_ViewController::PickPoint(gp_Pnt&                                    th
 
 //=================================================================================================
 
-bool AIS_ViewController::PickAxis(gp_Pnt&                                    theTopPnt,
+bool AIS_ViewController::PickAxis(gp_Pnt&                               theTopPnt,
                                   const occ::handle<AIS_InteractiveContext>& theCtx,
                                   const occ::handle<V3d_View>&               theView,
-                                  const gp_Ax1&                              theAxis)
+                                  const gp_Ax1&                         theAxis)
 {
   ResetPreviousMoveTo();
 
@@ -1969,7 +1967,7 @@ gp_Pnt AIS_ViewController::GravityPoint(const occ::handle<AIS_InteractiveContext
     case AIS_RotationMode_PickLast:
     case AIS_RotationMode_PickCenter: {
       NCollection_Vec2<int> aCursor((int)myGL.OrbitRotation.PointStart.x(),
-                                    (int)myGL.OrbitRotation.PointStart.y());
+                              (int)myGL.OrbitRotation.PointStart.y());
       if (myRotationMode == AIS_RotationMode_PickCenter)
       {
         NCollection_Vec2<int> aViewPort;
@@ -2041,9 +2039,8 @@ void AIS_ViewController::FitAllAuto(const occ::handle<AIS_InteractiveContext>& t
 
 //=================================================================================================
 
-void AIS_ViewController::handleViewOrientationKeys(
-  const occ::handle<AIS_InteractiveContext>& theCtx,
-  const occ::handle<V3d_View>&               theView)
+void AIS_ViewController::handleViewOrientationKeys(const occ::handle<AIS_InteractiveContext>& theCtx,
+                                                   const occ::handle<V3d_View>&               theView)
 {
   if (myNavigationMode == AIS_NavigationMode_FirstPersonWalk)
   {
@@ -2177,10 +2174,10 @@ AIS_WalkDelta AIS_ViewController::handleNavigationKeys(const occ::handle<AIS_Int
     aBndDiam = 0.001;
   }
 
-  const double                         aWalkSpeed = myNavigationMode != AIS_NavigationMode_Orbit
+  const double                    aWalkSpeed = myNavigationMode != AIS_NavigationMode_Orbit
                                 && myNavigationMode != AIS_NavigationMode_FirstPersonFlight
-                                                      ? theView->View()->UnitFactor() * WalkSpeedAbsolute()
-                                                      : aWalkSpeedCoef * aBndDiam;
+                                                 ? theView->View()->UnitFactor() * WalkSpeedAbsolute()
+                                                 : aWalkSpeedCoef * aBndDiam;
   const occ::handle<Graphic3d_Camera>& aCam =
     theView->View()->IsActiveXR() ? theView->View()->BaseXRCamera() : theView->Camera();
 
@@ -2265,7 +2262,7 @@ AIS_WalkDelta AIS_ViewController::handleNavigationKeys(const occ::handle<AIS_Int
 
 void AIS_ViewController::handleCameraActions(const occ::handle<AIS_InteractiveContext>& theCtx,
                                              const occ::handle<V3d_View>&               theView,
-                                             const AIS_WalkDelta&                       theWalk)
+                                             const AIS_WalkDelta&                  theWalk)
 {
   // apply view actions
   if (myGL.Orientation.ToSetViewOrient)
@@ -2285,9 +2282,7 @@ void AIS_ViewController::handleCameraActions(const occ::handle<AIS_InteractiveCo
 
   NCollection_List<occ::handle<AIS_InteractiveObject>> anObjects;
   theCtx->DisplayedObjects(anObjects);
-  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(anObjects);
-       anObjIter.More();
-       anObjIter.Next())
+  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(anObjects); anObjIter.More(); anObjIter.Next())
   {
     anObjIter.Value()->RecomputeTransformation(theView->Camera());
   }
@@ -2583,15 +2578,18 @@ void AIS_ViewController::handleXRTeleport(const occ::handle<AIS_InteractiveConte
         continue;
       }
 
-      myXRLastTeleportHand = aRole;
-      double& aPickDepth   = aRole == Aspect_XRTrackedDeviceRole_LeftHand ? myXRLastPickDepthLeft
-                                                                          : myXRLastPickDepthRight;
-      aPickDepth           = Precision::Infinite();
-      NCollection_Vec3<float> aPickNorm;
-      const gp_Trsf           aHandBase = theView->View()->PoseXRToWorld(aPose.Orientation);
-      const double aHeadHeight = theView->View()->XRSession()->HeadPose().TranslationPart().Y();
+      myXRLastTeleportHand      = aRole;
+      double& aPickDepth = aRole == Aspect_XRTrackedDeviceRole_LeftHand
+                                    ? myXRLastPickDepthLeft
+                                    : myXRLastPickDepthRight;
+      aPickDepth                = Precision::Infinite();
+      NCollection_Vec3<float>      aPickNorm;
+      const gp_Trsf       aHandBase = theView->View()->PoseXRToWorld(aPose.Orientation);
+      const double aHeadHeight =
+        theView->View()->XRSession()->HeadPose().TranslationPart().Y();
       {
-        const int aPickedId = handleXRMoveTo(theCtx, theView, aPose.Orientation, false);
+        const int aPickedId =
+          handleXRMoveTo(theCtx, theView, aPose.Orientation, false);
         if (aPickedId >= 1)
         {
           const SelectMgr_SortCriterion& aPickedData =
@@ -2741,7 +2739,7 @@ void AIS_ViewController::OnSubviewChanged(const occ::handle<AIS_InteractiveConte
 
 void AIS_ViewController::OnObjectDragged(const occ::handle<AIS_InteractiveContext>& theCtx,
                                          const occ::handle<V3d_View>&               theView,
-                                         AIS_DragAction                             theAction)
+                                         AIS_DragAction                        theAction)
 {
   switch (theAction)
   {
@@ -2849,7 +2847,7 @@ void AIS_ViewController::OnObjectDragged(const occ::handle<AIS_InteractiveContex
 
 void AIS_ViewController::contextLazyMoveTo(const occ::handle<AIS_InteractiveContext>& theCtx,
                                            const occ::handle<V3d_View>&               theView,
-                                           const NCollection_Vec2<int>&               thePnt)
+                                           const NCollection_Vec2<int>&                thePnt)
 {
   if (myPrevMoveTo == thePnt
       || myHasHlrOnBeforeRotation) // ignore highlighting in-between rotation of HLR view
@@ -2890,8 +2888,7 @@ void AIS_ViewController::contextLazyMoveTo(const occ::handle<AIS_InteractiveCont
   if (aLastPicked != aNewPicked || (!aNewPicked.IsNull() && aNewPicked->IsForcedHilight()))
   {
     // dynamic highlight affects all Views
-    for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(
-           theView->Viewer()->ActiveViewIterator());
+    for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(theView->Viewer()->ActiveViewIterator());
          aViewIter.More();
          aViewIter.Next())
     {
@@ -2962,13 +2959,11 @@ void AIS_ViewController::handleSelectionPoly(const occ::handle<AIS_InteractiveCo
              aSelIter.More();
              aSelIter.Next())
         {
-          NCollection_Vec2<int> aPntNew =
-            NCollection_Vec2<int>(aSelIter.Value().x(), -aSelIter.Value().y());
+          NCollection_Vec2<int> aPntNew = NCollection_Vec2<int>(aSelIter.Value().x(), -aSelIter.Value().y());
           if (aPntNew != aPrev)
           {
             aPrev = aPntNew;
-            myRubberBand->AddPoint(
-              NCollection_Vec2<int>(aSelIter.Value().x(), -aSelIter.Value().y()));
+            myRubberBand->AddPoint(NCollection_Vec2<int>(aSelIter.Value().x(), -aSelIter.Value().y()));
           }
         }
       }
@@ -3037,12 +3032,11 @@ void AIS_ViewController::handleSelectionPoly(const occ::handle<AIS_InteractiveCo
         {
           NCollection_Array1<gp_Pnt2d>           aPolyline(1, aPoints.Length());
           NCollection_Array1<gp_Pnt2d>::Iterator aPolyIter(aPolyline);
-          for (NCollection_Sequence<NCollection_Vec2<int>>::Iterator aSelIter(aPoints);
-               aSelIter.More();
+          for (NCollection_Sequence<NCollection_Vec2<int>>::Iterator aSelIter(aPoints); aSelIter.More();
                aSelIter.Next(), aPolyIter.Next())
           {
             const NCollection_Vec2<int>& aNewPnt = aSelIter.Value();
-            aPolyIter.ChangeValue()              = gp_Pnt2d(aNewPnt.x(), -aNewPnt.y());
+            aPolyIter.ChangeValue()        = gp_Pnt2d(aNewPnt.x(), -aNewPnt.y());
           }
 
           theCtx->SelectPolygon(aPolyline, theView, myGL.Selection.Scheme);
@@ -3172,8 +3166,7 @@ void AIS_ViewController::handleViewRedraw(const occ::handle<AIS_InteractiveConte
   for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
   {
     const bool isSubViewPass = (aSubViewPass == 0);
-    for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(
-           theView->Viewer()->ActiveViewIterator());
+    for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(theView->Viewer()->ActiveViewIterator());
          aViewIter.More();
          aViewIter.Next())
     {
@@ -3250,13 +3243,13 @@ void AIS_ViewController::handleViewRedraw(const occ::handle<AIS_InteractiveConte
 //=================================================================================================
 
 int AIS_ViewController::handleXRMoveTo(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                       const occ::handle<V3d_View>&               theView,
-                                       const gp_Trsf&                             thePose,
-                                       const bool                                 theToHighlight)
+                                                    const occ::handle<V3d_View>&               theView,
+                                                    const gp_Trsf&                        thePose,
+                                                    const bool theToHighlight)
 {
   // ResetPreviousMoveTo();
-  const gp_Ax1 aViewAxis   = theView->View()->ViewAxisInWorld(thePose);
-  int          aPickResult = 0;
+  const gp_Ax1     aViewAxis   = theView->View()->ViewAxisInWorld(thePose);
+  int aPickResult = 0;
   if (theToHighlight)
   {
     theCtx->MoveTo(aViewAxis, theView, false);
@@ -3288,7 +3281,8 @@ void AIS_ViewController::handleXRHighlight(const occ::handle<AIS_InteractiveCont
     return;
   }
 
-  const int aDeviceId = theView->View()->XRSession()->NamedTrackedDevice(myXRLastPickingHand);
+  const int aDeviceId =
+    theView->View()->XRSession()->NamedTrackedDevice(myXRLastPickingHand);
   if (aDeviceId == -1)
   {
     return;
@@ -3313,9 +3307,9 @@ void AIS_ViewController::handleXRHighlight(const occ::handle<AIS_InteractiveCont
   }
 
   double& aPickDepth = myXRLastPickingHand == Aspect_XRTrackedDeviceRole_LeftHand
-                         ? myXRLastPickDepthLeft
-                         : myXRLastPickDepthRight;
-  aPickDepth         = Precision::Infinite();
+                                ? myXRLastPickDepthLeft
+                                : myXRLastPickDepthRight;
+  aPickDepth                = Precision::Infinite();
   if (theCtx->MainSelector()->NbPicked() > 0)
   {
     const gp_Trsf                  aHandBase = theView->View()->PoseXRToWorld(aPose.Orientation);
@@ -3495,7 +3489,7 @@ void AIS_ViewController::HandleViewEvents(const occ::handle<AIS_InteractiveConte
   if (theView->IsSubview() || !theView->Subviews().IsEmpty())
   {
     // activate another subview on mouse click
-    bool                  toPickSubview = false;
+    bool            toPickSubview = false;
     NCollection_Vec2<int> aClickPoint;
     if (myGL.Selection.Tool == AIS_ViewSelectionTool_Picking && !myGL.Selection.Points.IsEmpty())
     {
@@ -3515,7 +3509,7 @@ void AIS_ViewController::HandleViewEvents(const occ::handle<AIS_InteractiveConte
         aClickPoint += theView->View()->SubviewTopLeft();
       }
       occ::handle<V3d_View> aParent = !theView->IsSubview() ? theView : theView->ParentView();
-      aPickedView                   = aParent->PickSubview(aClickPoint);
+      aPickedView              = aParent->PickSubview(aClickPoint);
     }
   }
 

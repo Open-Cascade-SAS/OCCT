@@ -69,9 +69,9 @@ public:
   //! defined Level Number (can be zero)
   //! Attaches all these entities to value given by NewNumber, or
   //! zero if not defined
-  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&                    TC) const override;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Changes Level Number <old> to <new>" , or

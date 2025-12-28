@@ -36,15 +36,16 @@
 #include <TopOpeBRepTool_TOPOLOGY.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 Standard_EXPORT bool FUN_EqualponR(const TopOpeBRep_LineInter&   Lrest,
-                                   const TopOpeBRep_VPointInter& VP1,
-                                   const TopOpeBRep_VPointInter& VP2);
+                                               const TopOpeBRep_VPointInter& VP1,
+                                               const TopOpeBRep_VPointInter& VP2);
 Standard_EXPORT bool FUN_EqualPonR(const TopOpeBRep_LineInter&   Lrest,
-                                   const TopOpeBRep_VPointInter& VP1,
-                                   const TopOpeBRep_VPointInter& VP2);
+                                               const TopOpeBRep_VPointInter& VP1,
+                                               const TopOpeBRep_VPointInter& VP2);
 
 //=======================================================================
 // function : GetESL
@@ -68,7 +69,7 @@ void TopOpeBRep_FacesFiller::GetESL(NCollection_List<TopoDS_Shape>& LES)
   {
     const TopOpeBRep_LineInter& L      = myFacesIntersector->CurrentLine();
     TopOpeBRep_TypeLineCurve    t      = L.TypeLineCurve();
-    bool                        isrest = (t == TopOpeBRep_RESTRICTION);
+    bool            isrest = (t == TopOpeBRep_RESTRICTION);
 
     if (isrest)
     {
@@ -89,7 +90,7 @@ void TopOpeBRep_FacesFiller::GetESL(NCollection_List<TopoDS_Shape>& LES)
       if (add)
       {
         bool checkkeep = false;
-        add            = KeepRLine(L, checkkeep);
+        add                        = KeepRLine(L, checkkeep);
       }
       if (add)
       {
@@ -102,14 +103,15 @@ void TopOpeBRep_FacesFiller::GetESL(NCollection_List<TopoDS_Shape>& LES)
 
 //=================================================================================================
 
-bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool checkkeep) const
+bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L,
+                                                   const bool      checkkeep) const
 {
   TopOpeBRep_TypeLineCurve t      = L.TypeLineCurve();
-  bool                     isrest = (t == TopOpeBRep_RESTRICTION);
+  bool         isrest = (t == TopOpeBRep_RESTRICTION);
   if (!isrest)
     return false;
   const TopoDS_Edge& EL   = TopoDS::Edge(L.Arc());
-  bool               isdg = BRep_Tool::Degenerated(EL);
+  bool   isdg = BRep_Tool::Degenerated(EL);
   if (isdg)
     return false;
 
@@ -124,7 +126,7 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   if (!VPI.More())
     return false;
 
-  bool                          samevp = true;
+  bool              samevp = true;
   const TopOpeBRep_VPointInter& vpf    = VPI.CurrentVP();
 
   TopOpeBRep_VPointInter vpl;
@@ -132,18 +134,18 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
   if (VPI.More())
     VPI.Next();
 
-  bool          middle = false; // xpu011098 : cto012U1
-  TopoDS_Vertex vv;
-  bool          closedE = TopOpeBRepTool_TOOL::ClosedE(EL, vv);
+  bool middle = false; // xpu011098 : cto012U1
+  TopoDS_Vertex    vv;
+  bool closedE = TopOpeBRepTool_TOOL::ClosedE(EL, vv);
   if (closedE)
   {
     double parf, parl;
     FUN_tool_bounds(EL, parf, parl);
     for (; VPI.More(); VPI.Next())
     {
-      vpl             = VPI.CurrentVP();
-      double pf       = VPParamOnER(vpl, L);
-      bool   middlept = (parf < pf) && (pf < parl);
+      vpl                       = VPI.CurrentVP();
+      double    pf       = VPParamOnER(vpl, L);
+      bool middlept = (parf < pf) && (pf < parl);
       if (middlept)
       {
         middle = true;
@@ -156,7 +158,7 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
       VPI.Init(L, checkkeep);
       for (; VPI.More(); VPI.Next())
       {
-        vpl         = VPI.CurrentVP();
+        vpl                     = VPI.CurrentVP();
         bool samept = FUN_EqualPonR(L, vpf, vpl);
         if (samept)
           continue;
@@ -186,18 +188,18 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
     bool samept = FUN_EqualPonR(L, vpf, vpl);
     if (samept)
     {
-      TopoDS_Vertex vclo;
-      bool          closedEL = TopOpeBRepTool_TOOL::ClosedE(EL, vclo);
+      TopoDS_Vertex    vclo;
+      bool closedEL = TopOpeBRepTool_TOOL::ClosedE(EL, vclo);
       if (closedEL)
       {
         double tolvclo = BRep_Tool::Tolerance(vclo);
         //	double tolvclo = BRep_Tool::Tolerance(TopoDS::Vertex(vclo));
         gp_Pnt ptclo = BRep_Tool::Pnt(vclo);
         //	gp_Pnt ptclo = BRep_Tool::Pnt(TopoDS::Vertex(vclo));
-        double tolf    = vpf.Tolerance();
-        gp_Pnt ptf     = vpf.Value();
-        double d       = ptf.Distance(ptclo);
-        bool   sameclo = (d < std::max(tolvclo, tolf));
+        double    tolf    = vpf.Tolerance();
+        gp_Pnt           ptf     = vpf.Value();
+        double    d       = ptf.Distance(ptclo);
+        bool sameclo = (d < std::max(tolvclo, tolf));
         if (!sameclo)
           return false;
       }
@@ -217,9 +219,9 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
     {
       const TopOpeBRep_VPointInter& vpf1 = L.VPoint(f);
       const TopOpeBRep_VPointInter& vpl1 = L.VPoint(l);
-      int                           ioo  = (isedge1) ? 2 : 1;
+      int              ioo  = (isedge1) ? 2 : 1;
       TopAbs_State                  sf = vpf1.State(ioo), sl = vpl1.State(ioo);
-      bool                          bfl = true;
+      bool              bfl = true;
       // xpu120898 : when projection fails we get unknown status
       //             recall VP are same. (CTS21182,restriction edge 6)
       bool bf = (sf == TopAbs_IN || sf == TopAbs_ON);
@@ -267,7 +269,7 @@ bool TopOpeBRep_FacesFiller::KeepRLine(const TopOpeBRep_LineInter& L, const bool
 Standard_EXPORT bool FUN_brep_sdmRE(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 { // prequesitory : E1, E2 are restriction edges of opposite rank
   //                found in the same FacesFiller
-  bool              ok = false;
+  bool  ok = false;
   BRepAdaptor_Curve BAC;
   TopoDS_Vertex     v1, v2;
   TopExp::Vertices(E1, v1, v2);
@@ -336,15 +338,15 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     myDS->AncestorRank(E);
   }
 
-  NCollection_List<int>           LOI;
+  NCollection_List<int>               LOI;
   NCollection_List<int>::Iterator itLOI;
 
   // LOI = liste des rank (1 ou 2 ) des aretes de section (liste LES)
   for (itLES.Initialize(LES); itLES.More(); itLES.Next())
   {
     const TopoDS_Edge& ELES = TopoDS::Edge(itLES.Value());
-    bool               is1  = false;
-    bool               is2  = false;
+    bool   is1  = false;
+    bool   is2  = false;
     myFacesIntersector->InitLine();
     TopoDS_Edge ELI;
     for (; myFacesIntersector->MoreLine(); myFacesIntersector->NextLine())
@@ -375,7 +377,7 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
        itLES.Next(), itLOI.Next())
   {
     const TopoDS_Shape& E1  = itLES.Value();
-    int                 rE1 = itLOI.Value();
+    int    rE1 = itLOI.Value();
     myDS->AddShape(E1, rE1);
   }
 
@@ -386,8 +388,8 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
   for (itLES.Initialize(LES); itLES.More(); itLES.Next())
   {
     const TopoDS_Edge& E1  = TopoDS::Edge(itLES.Value());
-    int                iE1 = myDS->Shape(E1);
-    int                rE1 = myDS->AncestorRank(iE1);
+    int   iE1 = myDS->Shape(E1);
+    int   rE1 = myDS->AncestorRank(iE1);
     if (rE1 != 1)
       continue;
     NCollection_List<TopoDS_Shape> thelist;
@@ -397,8 +399,8 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     for (itLES2.Initialize(LES); itLES2.More(); itLES2.Next())
     {
       const TopoDS_Edge& E2  = TopoDS::Edge(itLES2.Value());
-      int                iE2 = myDS->Shape(E2);
-      int                rE2 = myDS->AncestorRank(iE2);
+      int   iE2 = myDS->Shape(E2);
+      int   rE2 = myDS->AncestorRank(iE2);
       if (rE2 == 0 || iE1 == iE2 || rE2 == rE1)
         continue;
 
@@ -410,25 +412,24 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
     }
   }
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itmapELE;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itmapELE;
 
   for (itmapELE.Initialize(mapELE); itmapELE.More(); itmapELE.Next())
   {
-    const TopoDS_Edge&                       E1     = TopoDS::Edge(itmapELE.Key());
-    int                                      iE1    = myDS->Shape(E1);
-    int                                      rE1    = myDS->AncestorRank(iE1);
-    const TopoDS_Face&                       aFace1 = TopoDS::Face(myFacesIntersector->Face(rE1));
-    bool                                     isClosing1 = BRep_Tool::IsClosed(E1, aFace1);
+    const TopoDS_Edge&                 E1         = TopoDS::Edge(itmapELE.Key());
+    int                   iE1        = myDS->Shape(E1);
+    int                   rE1        = myDS->AncestorRank(iE1);
+    const TopoDS_Face&                 aFace1     = TopoDS::Face(myFacesIntersector->Face(rE1));
+    bool                   isClosing1 = BRep_Tool::IsClosed(E1, aFace1);
     NCollection_List<TopoDS_Shape>::Iterator itL(itmapELE.Value());
     for (; itL.More(); itL.Next())
     {
       const TopoDS_Edge& E2         = TopoDS::Edge(itL.Value());
-      int                iE2        = myDS->Shape(E2);
-      int                rE2        = myDS->AncestorRank(iE2);
+      int   iE2        = myDS->Shape(E2);
+      int   rE2        = myDS->AncestorRank(iE2);
       const TopoDS_Face& aFace2     = TopoDS::Face(myFacesIntersector->Face(rE2));
-      bool               isClosing2 = BRep_Tool::IsClosed(E2, aFace2);
-      bool               refFirst   = isClosing1 || !isClosing2;
+      bool   isClosing2 = BRep_Tool::IsClosed(E2, aFace2);
+      bool   refFirst   = isClosing1 || !isClosing2;
       myDS->FillShapesSameDomain(E1,
                                  E2,
                                  TopOpeBRepDS_UNSHGEOMETRY,

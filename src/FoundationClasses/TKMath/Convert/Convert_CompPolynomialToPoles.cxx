@@ -30,19 +30,24 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const int                                       NumCurves,
-  const int                                       Continuity,
-  const int                                       Dimension,
-  const int                                       MaxDegree,
-  const occ::handle<NCollection_HArray1<int>>&    NumCoeffPerCurve,
-  const occ::handle<NCollection_HArray1<double>>& Coefficients,
-  const occ::handle<NCollection_HArray2<double>>& PolynomialIntervals,
-  const occ::handle<NCollection_HArray1<double>>& TrueIntervals)
+  const int                  NumCurves,
+  const int                  Continuity,
+  const int                  Dimension,
+  const int                  MaxDegree,
+  const occ::handle<NCollection_HArray1<int>>& NumCoeffPerCurve,
+  const occ::handle<NCollection_HArray1<double>>&    Coefficients,
+  const occ::handle<NCollection_HArray2<double>>&    PolynomialIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    TrueIntervals)
     : myDone(false)
 {
   int ii, delta;
@@ -93,14 +98,14 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
 }
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const int                         NumCurves,
-  const int                         Dimension,
-  const int                         MaxDegree,
-  const NCollection_Array1<int>&    Continuity,
-  const NCollection_Array1<int>&    NumCoeffPerCurve,
-  const NCollection_Array1<double>& Coefficients,
-  const NCollection_Array2<double>& PolynomialIntervals,
-  const NCollection_Array1<double>& TrueIntervals)
+  const int         NumCurves,
+  const int         Dimension,
+  const int         MaxDegree,
+  const NCollection_Array1<int>& Continuity,
+  const NCollection_Array1<int>& NumCoeffPerCurve,
+  const NCollection_Array1<double>&    Coefficients,
+  const NCollection_Array2<double>&    PolynomialIntervals,
+  const NCollection_Array1<double>&    TrueIntervals)
     : myDone(false)
 {
   int ii, delta;
@@ -150,9 +155,9 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
 }
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
-  const int                         Dimension,
-  const int                         MaxDegree,
-  const int                         Degree,
+  const int      Dimension,
+  const int      MaxDegree,
+  const int      Degree,
   const NCollection_Array1<double>& Coefficients,
   const NCollection_Array1<double>& PolynomialIntervals,
   const NCollection_Array1<double>& TrueIntervals)
@@ -189,16 +194,16 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
           TrueIntervals);
 }
 
-void Convert_CompPolynomialToPoles::Perform(const int                         NumCurves,
-                                            const int                         MaxDegree,
-                                            const int                         Dimension,
-                                            const NCollection_Array1<int>&    NumCoeffPerCurve,
-                                            const NCollection_Array1<double>& Coefficients,
-                                            const NCollection_Array2<double>& PolynomialIntervals,
-                                            const NCollection_Array1<double>& TrueIntervals)
+void Convert_CompPolynomialToPoles::Perform(const int         NumCurves,
+                                            const int         MaxDegree,
+                                            const int         Dimension,
+                                            const NCollection_Array1<int>& NumCoeffPerCurve,
+                                            const NCollection_Array1<double>&    Coefficients,
+                                            const NCollection_Array2<double>&    PolynomialIntervals,
+                                            const NCollection_Array1<double>&    TrueIntervals)
 {
-  int ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
-    num_poles;
+  int ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem,
+    poles_index, num_poles;
   double normalized_value, *coefficient_array, *poles_array;
 
   num_flat_knots = 2 * myDegree + 2;
@@ -247,8 +252,8 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
     coeff_index =
       ((index - 2) * Dimension * (std::max(MaxDegree, myDegree) + 1)) + Coefficients.Lower();
 
-    coefficient_array = (double*)&(Coefficients(coeff_index));
-    int Deg           = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;
+    coefficient_array    = (double*)&(Coefficients(coeff_index));
+    int Deg = NumCoeffPerCurve(NumCoeffPerCurve.Lower() + index - 2) - 1;
 
     PLib::NoDerivativeEvalPolynomial(normalized_value,
                                      Deg,

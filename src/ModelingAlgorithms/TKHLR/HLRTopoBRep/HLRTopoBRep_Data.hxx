@@ -24,11 +24,27 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <HLRTopoBRep_FaceData.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <HLRTopoBRep_VData.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <HLRTopoBRep_VData.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 class TopoDS_Face;
 class TopoDS_Shape;
@@ -62,7 +78,8 @@ public:
   //! Returns True if the Face has isolines.
   Standard_EXPORT bool FaceHasIsoL(const TopoDS_Face& F) const;
 
-  Standard_EXPORT bool IsSplEEdgeEdge(const TopoDS_Edge& E1, const TopoDS_Edge& E2) const;
+  Standard_EXPORT bool IsSplEEdgeEdge(const TopoDS_Edge& E1,
+                                                  const TopoDS_Edge& E2) const;
 
   Standard_EXPORT bool IsIntLFaceEdge(const TopoDS_Face& F, const TopoDS_Edge& E) const;
 
@@ -130,17 +147,15 @@ public:
   Standard_EXPORT void Append(const TopoDS_Vertex& V, const double P);
 
 private:
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>                   myOldS;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mySplE;
-  NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_FaceData, TopTools_ShapeMapHasher>           myData;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                     myOutV;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                     myIntV;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<HLRTopoBRep_VData>, TopTools_ShapeMapHasher>
-    myEdgesVertices;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<HLRTopoBRep_VData>, TopTools_ShapeMapHasher>::
-    Iterator                                    myEIterator;
-  NCollection_List<HLRTopoBRep_VData>::Iterator myVIterator;
-  NCollection_List<HLRTopoBRep_VData>*          myVList;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>                       myOldS;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>                 mySplE;
+  NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_FaceData, TopTools_ShapeMapHasher>                 myData;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                myOutV;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                myIntV;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<HLRTopoBRep_VData>, TopTools_ShapeMapHasher>                  myEdgesVertices;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<HLRTopoBRep_VData>, TopTools_ShapeMapHasher>::Iterator myEIterator;
+  NCollection_List<HLRTopoBRep_VData>::Iterator              myVIterator;
+  NCollection_List<HLRTopoBRep_VData>*                           myVList;
 };
 
 #include <HLRTopoBRep_Data.lxx>

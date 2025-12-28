@@ -54,7 +54,7 @@ public:
 
 private:
   occ::handle<Poly_Polygon3D> myPolygon3D;
-  bool                        myNodes;
+  bool       myNodes;
 };
 
 #endif // _DrawTrSurf_Polygon3D_HeaderFile

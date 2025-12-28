@@ -37,7 +37,7 @@ public:
 
   Standard_EXPORT GeomToStep_MakeSurface(
     const occ::handle<Geom_Surface>& C,
-    const StepData_Factors&          theLocalFactors = StepData_Factors());
+    const StepData_Factors&     theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Surface>& Value() const;
 

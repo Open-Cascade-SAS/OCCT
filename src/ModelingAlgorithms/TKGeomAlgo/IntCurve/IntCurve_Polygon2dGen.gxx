@@ -36,18 +36,18 @@
 //======================================================================
 //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:43 2003 Begin
 IntCurve_Polygon2dGen::IntCurve_Polygon2dGen(const TheCurve&        C,
-                                             const int              tNbPts,
+                                             const int tNbPts,
                                              const IntRes2d_Domain& D,
-                                             const double           Tol)
+                                             const double    Tol)
     : //  Modified by Sergey KHROMOV - Mon Mar 24 12:02:45 2003 End
       ThePnts(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts)),
       TheParams(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts)),
       TheIndex(1, (tNbPts < 3) ? 6 : (tNbPts + tNbPts))
 {
 
-  int NbPts      = (tNbPts < 3) ? 3 : tNbPts;
-  TheMaxNbPoints = NbPts + NbPts;
-  NbPntIn        = NbPts;
+  int NbPts = (tNbPts < 3) ? 3 : tNbPts;
+  TheMaxNbPoints         = NbPts + NbPts;
+  NbPntIn                = NbPts;
   //-----------------------------------------------------
   //--- Initialization of the breaking with d_Parametre constant
   //---
@@ -134,10 +134,10 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
     by0 -= TheDeflection;
     bx1 += TheDeflection;
     by1 += TheDeflection;
-    int    MaxIndexUsed = 1;
-    int    i, nbp;
-    int    Rprec, Ri;
-    double x, y;
+    int MaxIndexUsed = 1;
+    int i, nbp;
+    int Rprec, Ri;
+    double    x, y;
 
     nbp = 0;
     x   = ThePnts.Value(TheIndex.Value(1)).X();
@@ -185,8 +185,8 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
       {
         myBox.Add(ThePnts.Value(TheIndex.Value(1)));
       }
-      double RatioDeflection;
-      int    nbpassagedeflection = 0;
+      double    RatioDeflection;
+      int nbpassagedeflection = 0;
       //      int PointHasBeenAdded = 0;
       do
       {
@@ -197,18 +197,18 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
         //  Modified by Sergey KHROMOV - Mon Mar 24 12:05:29 2003 End
         for (i = 2; i <= nbp; i++)
         {
-          int             Ii   = TheIndex.Value(i);
-          int             Iim1 = TheIndex.Value(i - 1);
-          const gp_Pnt2d& Pi   = ThePnts.Value(Ii);
-          const gp_Pnt2d& Pim1 = ThePnts.Value(Iim1);
+          int Ii   = TheIndex.Value(i);
+          int Iim1 = TheIndex.Value(i - 1);
+          const gp_Pnt2d&  Pi   = ThePnts.Value(Ii);
+          const gp_Pnt2d&  Pim1 = ThePnts.Value(Iim1);
           myBox.Add(Pi);
           int Regi   = CalculRegion(Pi.X(), Pi.Y(), bx0, bx1, by0, by1);
           int Regim1 = CalculRegion(Pim1.X(), Pim1.Y(), bx0, bx1, by0, by1);
           if ((Regi & Regim1) == 0)
           {
-            double   u  = 0.5 * (TheParams.Value(Ii) + TheParams.Value(Iim1));
-            gp_Pnt2d Pm = TheCurveTool::Value(C, u);
-            double   dx, dy, t = 0;
+            double u  = 0.5 * (TheParams.Value(Ii) + TheParams.Value(Iim1));
+            gp_Pnt2d      Pm = TheCurveTool::Value(C, u);
+            double dx, dy, t = 0;
             dx = Pim1.X() - Pi.X();
             if (dx < 0)
               dx = -dx;
@@ -232,9 +232,9 @@ void IntCurve_Polygon2dGen::ComputeWithBox(const TheCurve& C, const Bnd_Box2d& B
                 ThePnts.SetValue(MaxIndexUsed, Pm);
                 TheParams.SetValue(MaxIndexUsed, u);
 
-                double   u1m = 0.5 * (u + TheParams.Value(TheIndex.Value(i - 1)));
-                gp_Pnt2d P1m = TheCurveTool::Value(C, u1m);
-                gp_Lin2d L1m(P1, gp_Dir2d(gp_Vec2d(P1, Pm)));
+                double u1m = 0.5 * (u + TheParams.Value(TheIndex.Value(i - 1)));
+                gp_Pnt2d      P1m = TheCurveTool::Value(C, u1m);
+                gp_Lin2d      L1m(P1, gp_Dir2d(gp_Vec2d(P1, Pm)));
                 t = L1m.Distance(P1m);
                 i--;
               }
@@ -282,11 +282,11 @@ bool IntCurve_Polygon2dGen::AutoIntersectionIsPossible() const
 
 //=================================================================================================
 
-double IntCurve_Polygon2dGen::ApproxParamOnCurve(const int    Aindex,
-                                                 const double TheParamOnLine) const
+double IntCurve_Polygon2dGen::ApproxParamOnCurve(const int Aindex,
+                                                        const double    TheParamOnLine) const
 {
-  int    Indexp1, Index = Aindex;
-  double ParamOnLine = TheParamOnLine;
+  int Indexp1, Index = Aindex;
+  double    ParamOnLine = TheParamOnLine;
   if (Index > NbPntIn)
   {
     std::cout << "OutOfRange Polygon2d::ApproxParamOnCurve " << std::endl;
@@ -313,8 +313,8 @@ double IntCurve_Polygon2dGen::ApproxParamOnCurve(const int    Aindex,
 #if TEST
 
 extern bool DebugPolygon2d;
-extern void DrawSegmentBlanc(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
-extern void DrawSegment(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
+extern void             DrawSegmentBlanc(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
+extern void             DrawSegment(const gp_Pnt2d& _P1, const gp_Pnt2d& _P2);
 
 void IntCurve_Polygon2dGen::Dump(void) const
 {
@@ -367,10 +367,12 @@ void IntCurve_Polygon2dGen::Dump(void) const
 }
 #endif
 //======================================================================
-void IntCurve_Polygon2dGen::Segment(const int theIndex, gp_Pnt2d& theBegin, gp_Pnt2d& theEnd) const
+void IntCurve_Polygon2dGen::Segment(const int theIndex,
+                                    gp_Pnt2d&              theBegin,
+                                    gp_Pnt2d&              theEnd) const
 {
-  int ind  = theIndex;
-  theBegin = ThePnts(TheIndex(theIndex));
+  int ind = theIndex;
+  theBegin             = ThePnts(TheIndex(theIndex));
   if (theIndex >= NbPntIn)
   {
     if (!ClosedPolygon)

@@ -77,8 +77,8 @@ inline int ShapeAnalysis_FreeBoundsProperties::NbOpenFreeBounds() const
 // purpose  : Returns all closed free bounds
 //=======================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>>
-  ShapeAnalysis_FreeBoundsProperties::ClosedFreeBounds() const
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> ShapeAnalysis_FreeBoundsProperties::
+  ClosedFreeBounds() const
 {
   return myClosedFreeBounds;
 }
@@ -88,8 +88,8 @@ inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData
 // purpose  : Returns all open free bounds
 //=======================================================================
 
-inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>>
-  ShapeAnalysis_FreeBoundsProperties::OpenFreeBounds() const
+inline occ::handle<NCollection_HSequence<occ::handle<ShapeAnalysis_FreeBoundData>>> ShapeAnalysis_FreeBoundsProperties::
+  OpenFreeBounds() const
 {
   return myOpenFreeBounds;
 }

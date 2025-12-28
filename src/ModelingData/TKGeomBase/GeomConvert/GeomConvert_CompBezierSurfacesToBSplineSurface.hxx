@@ -22,12 +22,17 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 
 //! An algorithm to convert a grid of adjacent
@@ -121,8 +126,8 @@ public:
   //! Warning: The Continuity C0 is imposed without any check.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
     const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
-    const double                                               Tolerance,
-    const bool                                                 RemoveKnots = true);
+    const double                   Tolerance,
+    const bool                RemoveKnots = true);
 
   //! Computes all the data needed to construct a BSpline
   //! surface equivalent to the adjacent non-rational
@@ -212,11 +217,11 @@ public:
   //! surfaces in the Beziers grid is rational.
   Standard_EXPORT GeomConvert_CompBezierSurfacesToBSplineSurface(
     const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers,
-    const NCollection_Array1<double>&                          UKnots,
-    const NCollection_Array1<double>&                          VKnots,
-    const GeomAbs_Shape                                        UContinuity = GeomAbs_C0,
-    const GeomAbs_Shape                                        VContinuity = GeomAbs_C0,
-    const double                                               Tolerance   = 1.0e-4);
+    const NCollection_Array1<double>&           UKnots,
+    const NCollection_Array1<double>&           VKnots,
+    const GeomAbs_Shape                   UContinuity = GeomAbs_C0,
+    const GeomAbs_Shape                   VContinuity = GeomAbs_C0,
+    const double                   Tolerance   = 1.0e-4);
 
   //! Returns the number of knots in the U direction
   //! of the BSpline surface whose data is computed in this framework.
@@ -281,15 +286,15 @@ private:
   //! It used internally by the constructors.
   Standard_EXPORT void Perform(const NCollection_Array2<occ::handle<Geom_BezierSurface>>& Beziers);
 
-  int                                      myUDegree;
-  int                                      myVDegree;
-  occ::handle<NCollection_HArray1<int>>    myVMults;
-  occ::handle<NCollection_HArray1<int>>    myUMults;
-  occ::handle<NCollection_HArray1<double>> myUKnots;
-  occ::handle<NCollection_HArray1<double>> myVKnots;
-  occ::handle<NCollection_HArray2<gp_Pnt>> myPoles;
-  bool                                     isrational;
-  bool                                     myDone;
+  int                 myUDegree;
+  int                 myVDegree;
+  occ::handle<NCollection_HArray1<int>> myVMults;
+  occ::handle<NCollection_HArray1<int>> myUMults;
+  occ::handle<NCollection_HArray1<double>>    myUKnots;
+  occ::handle<NCollection_HArray1<double>>    myVKnots;
+  occ::handle<NCollection_HArray2<gp_Pnt>>      myPoles;
+  bool                 isrational;
+  bool                 myDone;
 };
 
 #include <GeomConvert_CompBezierSurfacesToBSplineSurface.lxx>

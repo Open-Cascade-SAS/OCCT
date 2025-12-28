@@ -21,11 +21,10 @@
 
 RWStepShape_RWRevolvedAreaSolid::RWStepShape_RWRevolvedAreaSolid() {}
 
-void RWStepShape_RWRevolvedAreaSolid::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepShape_RevolvedAreaSolid>& ent) const
+void RWStepShape_RWRevolvedAreaSolid::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepShape_RevolvedAreaSolid>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -68,7 +67,7 @@ void RWStepShape_RWRevolvedAreaSolid::ReadStep(
 }
 
 void RWStepShape_RWRevolvedAreaSolid::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepShape_RevolvedAreaSolid>& ent) const
 {
 
@@ -90,7 +89,7 @@ void RWStepShape_RWRevolvedAreaSolid::WriteStep(
 }
 
 void RWStepShape_RWRevolvedAreaSolid::Share(const occ::handle<StepShape_RevolvedAreaSolid>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->SweptArea());

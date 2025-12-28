@@ -223,7 +223,7 @@ void DDataStd_DrawPresentation::AfterResume()
 //=======================================================================
 
 bool DDataStd_DrawPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD,
-                                           const bool /*forceIt*/)
+                                                       const bool /*forceIt*/)
 {
   occ::handle<DDataStd_DrawPresentation> Pme = this;
   occ::handle<DDataStd_DrawPresentation> Pdt =
@@ -271,7 +271,7 @@ bool DDataStd_DrawPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>
 //=======================================================================
 
 bool DDataStd_DrawPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD,
-                                          const bool /*forceIt*/)
+                                                      const bool /*forceIt*/)
 {
   occ::handle<DDataStd_DrawPresentation> Pme = this;
   occ::handle<DDataStd_DrawPresentation> Pdt =
@@ -331,7 +331,7 @@ void DDataStd_DrawPresentation::DrawBuild()
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                              L,
+void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                         L,
                                             const occ::handle<DDataStd_DrawPresentation>& P)
 {
   if (!L.IsNull())
@@ -355,7 +355,7 @@ void DDataStd_DrawPresentation::DrawDisplay(const TDF_Label&                    
 
 //=================================================================================================
 
-void DDataStd_DrawPresentation::DrawErase(const TDF_Label&                              L,
+void DDataStd_DrawPresentation::DrawErase(const TDF_Label&                         L,
                                           const occ::handle<DDataStd_DrawPresentation>& P)
 {
   if (!L.IsNull())

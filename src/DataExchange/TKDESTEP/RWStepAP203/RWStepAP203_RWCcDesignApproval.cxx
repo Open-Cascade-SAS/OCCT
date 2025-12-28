@@ -33,11 +33,10 @@ RWStepAP203_RWCcDesignApproval::RWStepAP203_RWCcDesignApproval() {}
 
 //=================================================================================================
 
-void RWStepAP203_RWCcDesignApproval::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepAP203_CcDesignApproval>& ent) const
+void RWStepAP203_RWCcDesignApproval::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepAP203_CcDesignApproval>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 2, ach, "cc_design_approval"))
@@ -56,12 +55,12 @@ void RWStepAP203_RWCcDesignApproval::ReadStep(
   // Own fields of CcDesignApproval
 
   occ::handle<NCollection_HArray1<StepAP203_ApprovedItem>> aItems;
-  int                                                      sub2 = 0;
+  int                        sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems   = new NCollection_HArray1<StepAP203_ApprovedItem>(1, nb0);
+    aItems                = new NCollection_HArray1<StepAP203_ApprovedItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_ApprovedItem anIt0;
@@ -76,9 +75,8 @@ void RWStepAP203_RWCcDesignApproval::ReadStep(
 
 //=================================================================================================
 
-void RWStepAP203_RWCcDesignApproval::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepAP203_CcDesignApproval>& ent) const
+void RWStepAP203_RWCcDesignApproval::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepAP203_CcDesignApproval>& ent) const
 {
 
   // Inherited fields of ApprovalAssignment
@@ -99,7 +97,7 @@ void RWStepAP203_RWCcDesignApproval::WriteStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignApproval::Share(const occ::handle<StepAP203_CcDesignApproval>& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&                 iter) const
 {
 
   // Inherited fields of ApprovalAssignment

@@ -42,8 +42,16 @@
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 #include <ElSLib.hxx>
@@ -77,16 +85,16 @@ Standard_IMPORT Draw_Viewer dout;
 
 static int surface_radius(Draw_Interpretor& di, int n, const char** a)
 {
-  int    report_curvature = 0;
-  double UParameter, VParameter, radius, tolerance = 1.0e-7;
+  int report_curvature = 0;
+  double    UParameter, VParameter, radius, tolerance = 1.0e-7;
 
   if (n < 4)
     return 1;
   if (n >= 6)
     report_curvature = 1;
 
-  UParameter                           = Draw::Atof(a[2]);
-  VParameter                           = Draw::Atof(a[3]);
+  UParameter                      = Draw::Atof(a[2]);
+  VParameter                      = Draw::Atof(a[3]);
   occ::handle<Geom_Surface> SurfacePtr = DrawTrSurf::GetSurface(a[1]);
   if (!SurfacePtr.IsNull())
   {
@@ -174,7 +182,7 @@ static int anasurface(Draw_Interpretor&, int n, const char** a)
   if (!strcasecmp(a[0], "plane"))
   {
     occ::handle<Geom_Plane> C = new Geom_Plane(loc);
-    result                    = C;
+    result               = C;
   }
   else
   {
@@ -185,13 +193,13 @@ static int anasurface(Draw_Interpretor&, int n, const char** a)
     if (!strcasecmp(a[0], "cylinder"))
     {
       occ::handle<Geom_CylindricalSurface> C = new Geom_CylindricalSurface(loc, par1);
-      result                                 = C;
+      result                            = C;
     }
 
     else if (!strcasecmp(a[0], "sphere"))
     {
       occ::handle<Geom_SphericalSurface> C = new Geom_SphericalSurface(loc, par1);
-      result                               = C;
+      result                          = C;
     }
 
     else
@@ -204,13 +212,13 @@ static int anasurface(Draw_Interpretor&, int n, const char** a)
       {
         par1 *= (M_PI / 180.0);
         occ::handle<Geom_ConicalSurface> C = new Geom_ConicalSurface(loc, par1, par2);
-        result                             = C;
+        result                        = C;
       }
 
       else if (!strcasecmp(a[0], "torus"))
       {
         occ::handle<Geom_ToroidalSurface> C = new Geom_ToroidalSurface(loc, par1, par2);
-        result                              = C;
+        result                         = C;
       }
     }
   }
@@ -241,7 +249,7 @@ static int polesurface(Draw_Interpretor&, int n, const char** a)
       return 1;
     bool hasw = i == 4;
 
-    NCollection_Array2<gp_Pnt> poles(1, nup, 1, nvp);
+    NCollection_Array2<gp_Pnt>   poles(1, nup, 1, nvp);
     NCollection_Array2<double> weights(1, nup, 1, nvp);
 
     k = 4;
@@ -276,9 +284,9 @@ static int polesurface(Draw_Interpretor&, int n, const char** a)
     bool uper = (*a[0] == 'u') || (*(a[0] + 1) == 'u');
     bool vper = (*a[0] == 'v') || (*(a[0] + 1) == 'v');
 
-    NCollection_Array1<double> uk(1, nbuk);
-    NCollection_Array1<int>    umult(1, nbuk);
-    k          = 4;
+    NCollection_Array1<double>    uk(1, nbuk);
+    NCollection_Array1<int> umult(1, nbuk);
+    k                       = 4;
     int SigmaU = 0;
     for (i = 1; i <= nbuk; i++)
     {
@@ -294,9 +302,9 @@ static int polesurface(Draw_Interpretor&, int n, const char** a)
     int nbvk = Draw::Atoi(a[k]);
     k++;
 
-    NCollection_Array1<double> vk(1, nbvk);
-    NCollection_Array1<int>    vmult(1, nbvk);
-    int                        SigmaV = 0;
+    NCollection_Array1<double>    vk(1, nbvk);
+    NCollection_Array1<int> vmult(1, nbvk);
+    int        SigmaV = 0;
     for (i = 1; i <= nbvk; i++)
     {
       vk(i) = Draw::Atof(a[k]);
@@ -315,7 +323,7 @@ static int polesurface(Draw_Interpretor&, int n, const char** a)
       nvp = SigmaV - vmult(nbvk);
     else
       nvp = SigmaV - vdeg - 1;
-    NCollection_Array2<gp_Pnt> poles(1, nup, 1, nvp);
+    NCollection_Array2<gp_Pnt>   poles(1, nup, 1, nvp);
     NCollection_Array2<double> weights(1, nup, 1, nvp);
 
     for (j = 1; j <= nvp; j++)
@@ -418,8 +426,8 @@ static int trimming(Draw_Interpretor&, int n, const char** a)
   double u1 = Draw::Atof(a[3]);
   double u2 = Draw::Atof(a[4]);
 
-  double v1 = 0., v2 = 0.;
-  bool   USense = true, VSense = true;
+  double    v1 = 0., v2 = 0.;
+  bool USense = true, VSense = true;
 
   occ::handle<Geom_Geometry> result;
   occ::handle<Geom2d_Curve>  result2d;
@@ -646,8 +654,8 @@ static int tocanon(Draw_Interpretor& di, int n, const char** a)
       aCurvToAna.SetTarget(aCurv);
 
     occ::handle<Geom_Curve> anAnaCurv;
-    double                  tf = GC->FirstParameter(), tl = GC->LastParameter(), ntf, ntl;
-    bool isdone = aCurvToAna.ConvertToAnalytical(tol, anAnaCurv, tf, tl, ntf, ntl);
+    double      tf = GC->FirstParameter(), tl = GC->LastParameter(), ntf, ntl;
+    bool   isdone = aCurvToAna.ConvertToAnalytical(tol, anAnaCurv, tf, tl, ntf, ntl);
     if (isdone)
     {
       anAnaCurv = new Geom_TrimmedCurve(anAnaCurv, ntf, ntl);
@@ -668,8 +676,8 @@ static int tobezier(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 3)
     return 1;
-  int   i, j, NbU, NbV, NbArc;
-  char* name = new char[100];
+  int i, j, NbU, NbV, NbArc;
+  char*            name = new char[100];
 
   occ::handle<Geom2d_BSplineCurve> C2d = DrawTrSurf::GetBSplineCurve2d(a[2]);
   if (C2d.IsNull())
@@ -790,8 +798,8 @@ static int convbz(Draw_Interpretor& di, int n, const char** a)
   if (n < 4)
     return 1;
 
-  int    ii, jj, kk = 0, NbU, NbV;
-  double Tol = Precision::Confusion();
+  int ii, jj, kk = 0, NbU, NbV;
+  double    Tol = Precision::Confusion();
 
   NbU = Draw::Atoi(a[2]);
   occ::handle<Geom_Curve> aCurve(occ::down_cast<Geom_Curve>(DrawTrSurf::Get(a[3])));
@@ -828,21 +836,20 @@ static int convbz(Draw_Interpretor& di, int n, const char** a)
       return 1;
     }
 
-    occ::handle<Geom_BSplineSurface> BSurf =
-      new Geom_BSplineSurface(Conv.Poles()->Array2(),
-                              Conv.UKnots()->Array1(),
-                              Conv.VKnots()->Array1(),
-                              Conv.UMultiplicities()->Array1(),
-                              Conv.VMultiplicities()->Array1(),
-                              Conv.UDegree(),
-                              Conv.VDegree());
+    occ::handle<Geom_BSplineSurface> BSurf = new Geom_BSplineSurface(Conv.Poles()->Array2(),
+                                                                Conv.UKnots()->Array1(),
+                                                                Conv.VKnots()->Array1(),
+                                                                Conv.UMultiplicities()->Array1(),
+                                                                Conv.VMultiplicities()->Array1(),
+                                                                Conv.UDegree(),
+                                                                Conv.VDegree());
 
     DrawTrSurf::Set(a[1], BSurf);
   }
   else
   { // cas de courbes
     Convert_CompBezierCurvesToBSplineCurve Conv;
-    occ::handle<Geom_BezierCurve>          BZ;
+    occ::handle<Geom_BezierCurve>               BZ;
     for (ii = 1, kk = 3; ii <= NbU; ii++, kk++)
     {
       BZ = occ::down_cast<Geom_BezierCurve>(DrawTrSurf::Get(a[kk]));
@@ -860,8 +867,8 @@ static int convbz(Draw_Interpretor& di, int n, const char** a)
 
     NCollection_Array1<gp_Pnt> Poles(1, Conv.NbPoles());
     Conv.Poles(Poles);
-    NCollection_Array1<int>    Mults(1, Conv.NbKnots());
-    NCollection_Array1<double> Knots(1, Conv.NbKnots());
+    NCollection_Array1<int> Mults(1, Conv.NbKnots());
+    NCollection_Array1<double>    Knots(1, Conv.NbKnots());
     Conv.KnotsAndMults(Knots, Mults);
     occ::handle<Geom_BSplineCurve> BS = new (Geom_BSplineCurve)(Poles, Knots, Mults, Conv.Degree());
     DrawTrSurf::Set(a[1], BS);
@@ -972,15 +979,15 @@ static int offseting(Draw_Interpretor&, int n, const char** a)
   if (yasurf)
   {
     occ::handle<Geom_OffsetSurface> GO = new Geom_OffsetSurface(GS, dist);
-    result                             = GO;
+    result                        = GO;
   }
   else
   {
     if (n < 7)
       return 1;
-    gp_Dir                        D(Draw::Atof(a[4]), Draw::Atof(a[5]), Draw::Atof(a[6]));
+    gp_Dir                   D(Draw::Atof(a[4]), Draw::Atof(a[5]), Draw::Atof(a[6]));
     occ::handle<Geom_OffsetCurve> GT = new Geom_OffsetCurve(GC, dist, D);
-    result                           = GT;
+    result                      = GT;
   }
 
   DrawTrSurf::Set(a[1], result);
@@ -1020,7 +1027,7 @@ static int iso(Draw_Interpretor&, int n, const char** a)
     return 1;
 
   occ::handle<Geom_Curve>   C;
-  double                    par = Draw::Atof(a[3]);
+  double        par = Draw::Atof(a[3]);
   occ::handle<Geom_Surface> GS  = DrawTrSurf::GetSurface(a[2]);
   if (!GS.IsNull())
   {
@@ -1099,7 +1106,9 @@ static int value(Draw_Interpretor&, int n, const char** a)
 
 //=================================================================================================
 
-static int derivative(Draw_Interpretor&, int theArgc, const char** theArgv)
+static int derivative(Draw_Interpretor&,
+                                   int theArgc,
+                                   const char**     theArgv)
 {
   if (theArgc != 9)
     return 1;
@@ -1108,10 +1117,10 @@ static int derivative(Draw_Interpretor&, int theArgc, const char** theArgv)
   if (aSurf.IsNull())
     return 1;
 
-  double aU  = Draw::Atof(theArgv[2]);
-  double aV  = Draw::Atof(theArgv[3]);
-  int    aNu = Draw::Atoi(theArgv[4]);
-  int    aNv = Draw::Atoi(theArgv[5]);
+  double    aU  = Draw::Atof(theArgv[2]);
+  double    aV  = Draw::Atof(theArgv[3]);
+  int aNu = Draw::Atoi(theArgv[4]);
+  int aNv = Draw::Atoi(theArgv[5]);
 
   gp_Vec aDeriv = aSurf->DN(aU, aV, aNu, aNv);
 
@@ -1279,9 +1288,9 @@ static int insertknot(Draw_Interpretor&, int n, const char** a)
   if (GBs.IsNull())
     return 1;
 
-  double knot  = 0;
-  int    mult  = 0;
-  int    index = 0;
+  double    knot  = 0;
+  int mult  = 0;
+  int index = 0;
   if (!strcasecmp(a[0], "insertuknot") || !strcasecmp(a[0], "insertvknot"))
   {
     if (n < 4)
@@ -1332,7 +1341,7 @@ static int incdegree(Draw_Interpretor& di, int n, const char** a)
   if (n < 3)
     return 1;
 
-  int  NewDeg  = Draw::Atoi(a[2]);
+  int NewDeg  = Draw::Atoi(a[2]);
   bool BSpline = false;
 
   int UDeg = 0, VDeg = 0;
@@ -1404,7 +1413,7 @@ static int rempole(Draw_Interpretor& di, int n, const char** a)
   if (n < 3)
     return 1;
 
-  int  NewIndex = Draw::Atoi(a[2]);
+  int NewIndex = Draw::Atoi(a[2]);
   bool BSpline  = false;
 
   occ::handle<Geom_BezierSurface>  GBz = DrawTrSurf::GetBezierSurface(a[1]);
@@ -1465,11 +1474,11 @@ static int sfindp(Draw_Interpretor&, int n, const char** a)
     BSpline = true;
   }
 
-  int    UIndex = 0;
-  int    VIndex = 0;
-  int    view   = Draw::Atoi(a[2]);
-  double x      = Draw::Atof(a[3]);
-  double y      = Draw::Atof(a[4]);
+  int UIndex = 0;
+  int VIndex = 0;
+  int view   = Draw::Atoi(a[2]);
+  double    x      = Draw::Atof(a[3]);
+  double    y      = Draw::Atof(a[4]);
 
   Draw_Display d = dout.MakeDisplay(view);
 
@@ -1647,19 +1656,19 @@ static int compBsplSur(Draw_Interpretor&, int n, const char** a)
   double aVmin = std::max(aV11, aV21);
   double aVmax = std::min(aV12, aV22);
 
-  int    nbP    = 100;
-  double aStepU = (aUmax - aUmin) / nbP;
-  double aStepV = (aVmax - aVmin) / nbP;
-  int    i      = 1;
+  int nbP    = 100;
+  double    aStepU = (aUmax - aUmin) / nbP;
+  double    aStepV = (aVmax - aVmin) / nbP;
+  int i      = 1;
   for (; i <= nbP + 1; i++)
   {
-    double aU = aUmin + aStepU * (i - 1);
-    int    j  = 1;
+    double    aU = aUmin + aStepU * (i - 1);
+    int j  = 1;
     for (; j <= nbP + 1; j++)
     {
       double aV    = aVmin + aStepV * (j - 1);
-      gp_Pnt aP1   = GBs1->Value(aU, aV);
-      gp_Pnt aP2   = GBs2->Value(aU, aV);
+      gp_Pnt        aP1   = GBs1->Value(aU, aV);
+      gp_Pnt        aP2   = GBs2->Value(aU, aV);
       double aDist = aP1.SquareDistance(aP2);
       if (aDist > Precision::SquareConfusion())
       {
@@ -1711,9 +1720,9 @@ static int parameters(Draw_Interpretor& di, int n, const char** a)
       di << "Unknown surface\n";
       return 1;
     }
-    gp_Pnt P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
-    double Tol = Draw::Atof(a[5]), U = 0., V = 0.;
-    bool   res = GeomLib_Tool::Parameters(S, P, Tol, U, V);
+    gp_Pnt           P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
+    double    Tol = Draw::Atof(a[5]), U = 0., V = 0.;
+    bool res = GeomLib_Tool::Parameters(S, P, Tol, U, V);
 
     Draw::Set(a[6], U);
     Draw::Set(a[7], V);
@@ -1733,9 +1742,9 @@ static int parameters(Draw_Interpretor& di, int n, const char** a)
       di << "Unknown curve\n";
       return 1;
     }
-    gp_Pnt P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
-    double Tol = Draw::Atof(a[5]), U = 0.;
-    bool   res = GeomLib_Tool::Parameter(C, P, Tol, U);
+    gp_Pnt           P(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
+    double    Tol = Draw::Atof(a[5]), U = 0.;
+    bool res = GeomLib_Tool::Parameter(C, P, Tol, U);
 
     Draw::Set(a[6], U);
 
@@ -1754,9 +1763,9 @@ static int parameters(Draw_Interpretor& di, int n, const char** a)
       di << "Unknown curve 2d\n";
       return 1;
     }
-    gp_Pnt2d P(Draw::Atof(a[2]), Draw::Atof(a[3]));
-    double   Tol = Draw::Atof(a[4]), U = 0.;
-    bool     res = GeomLib_Tool::Parameter(C, P, Tol, U);
+    gp_Pnt2d         P(Draw::Atof(a[2]), Draw::Atof(a[3]));
+    double    Tol = Draw::Atof(a[4]), U = 0.;
+    bool res = GeomLib_Tool::Parameter(C, P, Tol, U);
 
     Draw::Set(a[5], U);
 

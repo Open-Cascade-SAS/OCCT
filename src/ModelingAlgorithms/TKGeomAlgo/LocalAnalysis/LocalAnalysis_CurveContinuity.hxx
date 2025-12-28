@@ -123,18 +123,18 @@ public:
   //! where curvat1 is the curvature at the first point
   //! and curvat2 the curvature at the second point
   Standard_EXPORT LocalAnalysis_CurveContinuity(const occ::handle<Geom_Curve>& Curv1,
-                                                const double                   u1,
+                                                const double       u1,
                                                 const occ::handle<Geom_Curve>& Curv2,
-                                                const double                   u2,
-                                                const GeomAbs_Shape            Order,
-                                                const double                   EpsNul  = 0.001,
-                                                const double                   EpsC0   = 0.001,
-                                                const double                   EpsC1   = 0.001,
-                                                const double                   EpsC2   = 0.001,
-                                                const double                   EpsG1   = 0.001,
-                                                const double                   EpsG2   = 0.001,
-                                                const double                   Percent = 0.01,
-                                                const double                   Maxlen  = 10000);
+                                                const double       u2,
+                                                const GeomAbs_Shape       Order,
+                                                const double       EpsNul  = 0.001,
+                                                const double       EpsC0   = 0.001,
+                                                const double       EpsC1   = 0.001,
+                                                const double       EpsC2   = 0.001,
+                                                const double       EpsG1   = 0.001,
+                                                const double       EpsG2   = 0.001,
+                                                const double       Percent = 0.01,
+                                                const double       Maxlen  = 10000);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -179,26 +179,26 @@ private:
 
   Standard_EXPORT void CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
 
-  double                        myContC0;
-  double                        myContC1;
-  double                        myContC2;
-  double                        myContG1;
-  double                        myContG2;
-  double                        myCourbC1;
-  double                        myCourbC2;
-  double                        myG2Variation;
-  double                        myLambda1;
-  double                        myLambda2;
+  double                 myContC0;
+  double                 myContC1;
+  double                 myContC2;
+  double                 myContG1;
+  double                 myContG2;
+  double                 myCourbC1;
+  double                 myCourbC2;
+  double                 myG2Variation;
+  double                 myLambda1;
+  double                 myLambda2;
   GeomAbs_Shape                 myTypeCont;
-  double                        myepsnul;
-  double                        myepsC0;
-  double                        myepsC1;
-  double                        myepsC2;
-  double                        myepsG1;
-  double                        myepsG2;
-  double                        myMaxLon;
-  double                        myperce;
-  bool                          myIsDone;
+  double                 myepsnul;
+  double                 myepsC0;
+  double                 myepsC1;
+  double                 myepsC2;
+  double                 myepsG1;
+  double                 myepsG2;
+  double                 myMaxLon;
+  double                 myperce;
+  bool              myIsDone;
   LocalAnalysis_StatusErrorType myErrorStatus;
 };
 

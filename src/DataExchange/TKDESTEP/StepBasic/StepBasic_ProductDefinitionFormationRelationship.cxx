@@ -80,8 +80,8 @@ void StepBasic_ProductDefinitionFormationRelationship::SetName(
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormationRelationship::
-  Description() const
+occ::handle<TCollection_HAsciiString> StepBasic_ProductDefinitionFormationRelationship::Description()
+  const
 {
   return theDescription;
 }

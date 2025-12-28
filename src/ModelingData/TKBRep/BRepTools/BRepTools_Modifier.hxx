@@ -24,12 +24,19 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <TopLoc_Location.hxx>
 #include <Message_ProgressRange.hxx>
 
@@ -51,7 +58,7 @@ public:
 
   //! Creates a modifier on the shape <S>, and performs
   //! the modifications described by <M>.
-  Standard_EXPORT BRepTools_Modifier(const TopoDS_Shape&                        S,
+  Standard_EXPORT BRepTools_Modifier(const TopoDS_Shape&                   S,
                                      const occ::handle<BRepTools_Modification>& M);
 
   //! Initializes the modifier with the shape <S>.
@@ -80,57 +87,47 @@ private:
   struct NewCurveInfo
   {
     occ::handle<Geom_Curve> myCurve;
-    TopLoc_Location         myLoc;
-    double                  myToler;
+    TopLoc_Location    myLoc;
+    double      myToler;
   };
 
   struct NewSurfaceInfo
   {
     occ::handle<Geom_Surface> mySurface;
-    TopLoc_Location           myLoc;
-    double                    myToler;
-    bool                      myRevWires;
-    bool                      myRevFace;
+    TopLoc_Location      myLoc;
+    double        myToler;
+    bool     myRevWires;
+    bool     myRevFace;
   };
 
   Standard_EXPORT void Put(const TopoDS_Shape& S);
 
-  Standard_EXPORT bool Rebuild(const TopoDS_Shape&                        S,
-                               const occ::handle<BRepTools_Modification>& M,
-                               bool&                                      theNewGeom,
-                               const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT bool
+    Rebuild(const TopoDS_Shape&                   S,
+            const occ::handle<BRepTools_Modification>& M,
+            bool&                     theNewGeom,
+            const Message_ProgressRange&          theProgress = Message_ProgressRange());
 
-  Standard_EXPORT void CreateNewVertices(
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>& theMVE,
-    const occ::handle<BRepTools_Modification>&                 M);
+  Standard_EXPORT void CreateNewVertices(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMVE,
+                                         const occ::handle<BRepTools_Modification>&            M);
 
-  Standard_EXPORT void FillNewCurveInfo(
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>& theMEF,
-    const occ::handle<BRepTools_Modification>&                 M);
+  Standard_EXPORT void FillNewCurveInfo(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
+                                        const occ::handle<BRepTools_Modification>&            M);
 
   Standard_EXPORT void FillNewSurfaceInfo(const occ::handle<BRepTools_Modification>& M);
 
-  Standard_EXPORT void CreateOtherVertices(
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>& theMVE,
-    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                     NCollection_List<TopoDS_Shape>,
-                                     TopTools_ShapeMapHasher>& theMEF,
-    const occ::handle<BRepTools_Modification>&                 M);
+  Standard_EXPORT void CreateOtherVertices(const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMVE,
+                                           const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMEF,
+                                           const occ::handle<BRepTools_Modification>&            M);
 
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>  myMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>                                              myMap;
   TopoDS_Shape                                                              myShape;
-  bool                                                                      myDone;
+  bool                                                          myDone;
   NCollection_DataMap<TopoDS_Edge, NewCurveInfo, TopTools_ShapeMapHasher>   myNCInfo;
   NCollection_DataMap<TopoDS_Face, NewSurfaceInfo, TopTools_ShapeMapHasher> myNSInfo;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                    myNonUpdFace;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                    myHasNewGeom;
-  bool                                                                      myMutableInput;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                                       myNonUpdFace;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                                       myHasNewGeom;
+  bool                                                          myMutableInput;
 };
 
 #include <BRepTools_Modifier.lxx>

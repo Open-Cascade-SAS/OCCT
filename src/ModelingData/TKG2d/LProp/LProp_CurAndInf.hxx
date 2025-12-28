@@ -23,7 +23,9 @@
 
 #include <NCollection_Sequence.hxx>
 #include <LProp_CIType.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Boolean.hxx>
+#include <LProp_CIType.hxx>
 
 //! Stores the parameters of a curve 2d or 3d corresponding
 //! to the curvature's extremas and the Inflection's Points.
@@ -61,7 +63,7 @@ public:
   Standard_EXPORT LProp_CIType Type(const int N) const;
 
 private:
-  NCollection_Sequence<double>       theParams;
+  NCollection_Sequence<double> theParams;
   NCollection_Sequence<LProp_CIType> theTypes;
 };
 

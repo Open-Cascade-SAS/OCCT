@@ -28,7 +28,7 @@ public:
   //!             with 0 pointing to theStart and 1 to theEnd.
   static gp_Quaternion Interpolate(const gp_Quaternion& theQStart,
                                    const gp_Quaternion& theQEnd,
-                                   double               theT)
+                                   double        theT)
   {
     gp_Quaternion      aResult;
     gp_QuaternionNLerp aLerp(theQStart, theQEnd);
@@ -55,8 +55,8 @@ public:
   //! Initialize the tool with Start and End unit quaternions.
   void InitFromUnit(const gp_Quaternion& theQStart, const gp_Quaternion& theQEnd)
   {
-    myQStart       = theQStart;
-    myQEnd         = theQEnd;
+    myQStart              = theQStart;
+    myQEnd                = theQEnd;
     double anInner = myQStart.Dot(myQEnd);
     if (anInner < 0.0)
     {

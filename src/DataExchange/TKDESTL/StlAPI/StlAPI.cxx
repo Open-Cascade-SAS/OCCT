@@ -19,7 +19,9 @@
 
 //=================================================================================================
 
-bool StlAPI::Write(const TopoDS_Shape& theShape, const char* theFile, const bool theAsciiMode)
+bool StlAPI::Write(const TopoDS_Shape&    theShape,
+                               const char* theFile,
+                               const bool theAsciiMode)
 {
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = theAsciiMode;

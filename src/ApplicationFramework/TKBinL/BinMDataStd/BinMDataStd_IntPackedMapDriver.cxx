@@ -50,9 +50,9 @@ occ::handle<TDF_Attribute> BinMDataStd_IntPackedMapDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&       Source,
-                                           const occ::handle<TDF_Attribute>& Target,
-                                           BinObjMgt_RRelocationTable&       RelocTable) const
+bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&  Source,
+                                                       const occ::handle<TDF_Attribute>& Target,
+                                                       BinObjMgt_RRelocationTable& RelocTable) const
 {
   occ::handle<TDataStd_IntPackedMap> aTagAtt = occ::down_cast<TDataStd_IntPackedMap>(Target);
   if (aTagAtt.IsNull())
@@ -70,7 +70,7 @@ bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&       Sou
   if (aSize)
   {
     occ::handle<TColStd_HPackedMapOfInteger> aHMap = new TColStd_HPackedMapOfInteger();
-    int                                      aKey;
+    int                    aKey;
     for (int i = 0; i < aSize; i++)
     {
       bool ok = Source >> aKey;
@@ -105,10 +105,9 @@ bool BinMDataStd_IntPackedMapDriver::Paste(const BinObjMgt_Persistent&       Sou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMDataStd_IntPackedMapDriver::Paste(
-  const occ::handle<TDF_Attribute>& Source,
-  BinObjMgt_Persistent&             Target,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
+void BinMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& Source,
+                                           BinObjMgt_Persistent&        Target,
+                                           NCollection_IndexedMap<occ::handle<Standard_Transient>>& /*RelocTable*/) const
 {
   occ::handle<TDataStd_IntPackedMap> anAtt = occ::down_cast<TDataStd_IntPackedMap>(Source);
   if (anAtt.IsNull())

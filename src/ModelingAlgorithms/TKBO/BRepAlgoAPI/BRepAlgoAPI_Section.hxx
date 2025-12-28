@@ -54,9 +54,9 @@ public:
   //! <PerformNow> - the flag:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1,
-                                      const TopoDS_Shape& S2,
-                                      const bool          PerformNow = true);
+  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&    S1,
+                                      const TopoDS_Shape&    S2,
+                                      const bool PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  -argument
@@ -68,7 +68,7 @@ public:
   Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&       S1,
                                       const TopoDS_Shape&       S2,
                                       const BOPAlgo_PaveFiller& aDSF,
-                                      const bool                PerformNow = true);
+                                      const bool    PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  - argument
@@ -76,9 +76,9 @@ public:
   //! <PerformNow> - the flag:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape& S1,
-                                      const gp_Pln&       Pl,
-                                      const bool          PerformNow = true);
+  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&    S1,
+                                      const gp_Pln&          Pl,
+                                      const bool PerformNow = true);
 
   //! Constructor with two shapes
   //! <S1>  - argument
@@ -86,9 +86,9 @@ public:
   //! <PerformNow> - the flag:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
-  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&              S1,
+  Standard_EXPORT BRepAlgoAPI_Section(const TopoDS_Shape&         S1,
                                       const occ::handle<Geom_Surface>& Sf,
-                                      const bool                       PerformNow = true);
+                                      const bool      PerformNow = true);
 
   //! Constructor with two shapes
   //! <Sf>  - argument
@@ -97,8 +97,8 @@ public:
   //! if <PerformNow>=True - the algorithm is performed immediately
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf,
-                                      const TopoDS_Shape&              S2,
-                                      const bool                       PerformNow = true);
+                                      const TopoDS_Shape&         S2,
+                                      const bool      PerformNow = true);
 
   //! Constructor with two shapes
   //! <Sf1>  - argument
@@ -108,7 +108,7 @@ public:
   //! Obsolete
   Standard_EXPORT BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf1,
                                       const occ::handle<Geom_Surface>& Sf2,
-                                      const bool                       PerformNow = true);
+                                      const bool      PerformNow = true);
 
   //! initialize the argument
   //! <S1>  - argument

@@ -28,15 +28,15 @@ TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo()
 
 //=================================================================================================
 
-TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo(const bool                ii,
-                                             const bool                in,
-                                             const bool                io,
-                                             const bool                ni,
-                                             const bool                nn,
-                                             const bool                no,
-                                             const bool                oi,
-                                             const bool                on,
-                                             const bool                oo,
+TopOpeBRepBuild_GTopo::TopOpeBRepBuild_GTopo(const bool    ii,
+                                             const bool    in,
+                                             const bool    io,
+                                             const bool    ni,
+                                             const bool    nn,
+                                             const bool    no,
+                                             const bool    oi,
+                                             const bool    on,
+                                             const bool    oo,
                                              const TopAbs_ShapeEnum    t1,
                                              const TopAbs_ShapeEnum    t2,
                                              const TopOpeBRepDS_Config C1,
@@ -124,7 +124,8 @@ void TopOpeBRepBuild_GTopo::ChangeConfig(const TopOpeBRepDS_Config C1, const Top
 
 //=================================================================================================
 
-bool TopOpeBRepBuild_GTopo::Value(const int i1, const int i2) const
+bool TopOpeBRepBuild_GTopo::Value(const int i1,
+                                              const int i2) const
 {
   bool b = mycases[i1][i2];
   return b;
@@ -134,8 +135,8 @@ bool TopOpeBRepBuild_GTopo::Value(const int i1, const int i2) const
 
 bool TopOpeBRepBuild_GTopo::Value(const TopAbs_State s1, const TopAbs_State s2) const
 {
-  int  i1 = GIndex(s1);
-  int  i2 = GIndex(s2);
+  int i1 = GIndex(s1);
+  int i2 = GIndex(s2);
   bool b  = mycases[i1][i2];
   return b;
 }
@@ -152,18 +153,22 @@ bool TopOpeBRepBuild_GTopo::Value(const int II) const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::ChangeValue(const int i1, const int i2, const bool b)
+void TopOpeBRepBuild_GTopo::ChangeValue(const int i1,
+                                        const int i2,
+                                        const bool b)
 {
   mycases[i1][i2] = b;
 }
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::ChangeValue(const TopAbs_State s1, const TopAbs_State s2, const bool b)
+void TopOpeBRepBuild_GTopo::ChangeValue(const TopAbs_State     s1,
+                                        const TopAbs_State     s2,
+                                        const bool b)
 {
-  int i1          = GIndex(s1);
-  int i2          = GIndex(s2);
-  mycases[i1][i2] = b;
+  int i1 = GIndex(s1);
+  int i2 = GIndex(s2);
+  mycases[i1][i2]     = b;
 }
 
 //=================================================================================================
@@ -196,7 +201,9 @@ TopAbs_State TopOpeBRepBuild_GTopo::GState(const int i) const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::Index(const int II, int& i1, int& i2) const
+void TopOpeBRepBuild_GTopo::Index(const int II,
+                                  int&      i1,
+                                  int&      i2) const
 {
   switch (II)
   {
@@ -259,10 +266,10 @@ void TopOpeBRepBuild_GTopo::DumpType(Standard_OStream& OS) const
 
 //=================================================================================================
 
-void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&  OS,
-                                    const TopAbs_State s1,
-                                    const TopAbs_State s2,
-                                    const bool         b)
+void TopOpeBRepBuild_GTopo::DumpSSB(Standard_OStream&      OS,
+                                    const TopAbs_State     s1,
+                                    const TopAbs_State     s2,
+                                    const bool b)
 {
   TopAbs::Print(s1, OS);
   OS << " ";

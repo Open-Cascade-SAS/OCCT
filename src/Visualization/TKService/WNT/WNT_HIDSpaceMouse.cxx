@@ -148,9 +148,9 @@ static SpaceVKey hidToSpaceKey(unsigned long theProductId, unsigned short theKey
 
 //=================================================================================================
 
-WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long  theProductId,
+WNT_HIDSpaceMouse::WNT_HIDSpaceMouse(unsigned long        theProductId,
                                      const uint8_t* theData,
-                                     size_t         theSize)
+                                     size_t        theSize)
     : myData(theData),
       mySize(theSize),
       myProductId(theProductId),
@@ -210,10 +210,10 @@ NCollection_Vec3<double> WNT_HIDSpaceMouse::Rotation(bool& theIsIdle, bool theIs
 
 //=================================================================================================
 
-NCollection_Vec3<double> WNT_HIDSpaceMouse::fromRawVec3(bool&          theIsIdle,
-                                                        const uint8_t* theData,
-                                                        bool           theIsTrans,
-                                                        bool           theIsQuadric) const
+NCollection_Vec3<double> WNT_HIDSpaceMouse::fromRawVec3(bool&                theIsIdle,
+                                               const uint8_t* theData,
+                                               bool                 theIsTrans,
+                                               bool                 theIsQuadric) const
 {
   theIsIdle = true;
   const NCollection_Vec3<int16_t>& aRaw16 =

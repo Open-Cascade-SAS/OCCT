@@ -45,8 +45,8 @@ public:
   struct OffsetData
   {
     occ::handle<GeomAdaptor_Curve> BasisAdaptor; //!< Adaptor for basis curve
-    double                         Offset = 0.0; //!< Offset distance
-    gp_Dir                         Direction;    //!< Offset direction
+    double                    Offset = 0.0; //!< Offset distance
+    gp_Dir                    Direction;    //!< Offset direction
   };
 
   //! Internal structure for Bezier curve cache data.
@@ -77,8 +77,8 @@ public:
 
   //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
   GeomAdaptor_Curve(const occ::handle<Geom_Curve>& theCurve,
-                    const double                   theUFirst,
-                    const double                   theULast)
+                    const double       theUFirst,
+                    const double       theULast)
   {
     Load(theCurve, theUFirst, theULast);
   }
@@ -99,7 +99,9 @@ public:
   }
 
   //! Standard_ConstructionError is raised if theUFirst > theULast + Precision::PConfusion()
-  void Load(const occ::handle<Geom_Curve>& theCurve, const double theUFirst, const double theULast)
+  void Load(const occ::handle<Geom_Curve>& theCurve,
+            const double       theUFirst,
+            const double       theULast)
   {
     if (theCurve.IsNull())
     {
@@ -132,15 +134,15 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns a curve equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double First,
-                                                    const double Last,
-                                                    const double Tol) const override;
+                                               const double Last,
+                                               const double Tol) const override;
 
   Standard_EXPORT bool IsClosed() const override;
 
@@ -161,7 +163,9 @@ public:
   //! if the curve is cut in interval of continuity at least C1, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V) const override final;
+  Standard_EXPORT void D1(const double U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V) const override final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
@@ -170,7 +174,10 @@ public:
   //! if the curve is cut in interval of continuity at least C2, the
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override final;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2) const override final;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -180,10 +187,10 @@ public:
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const override final;
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2,
+                          gp_Vec&             V3) const override final;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
@@ -192,7 +199,8 @@ public:
   //! derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis curve.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override final;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override final;
 
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double R3d) const override;
@@ -248,15 +256,18 @@ public:
   friend class GeomAdaptor_Surface;
 
 private:
-  Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1, const double U2) const;
+  Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1,
+                                                const double U2) const;
 
   Standard_EXPORT void load(const occ::handle<Geom_Curve>& C,
-                            const double                   UFirst,
-                            const double                   ULast);
+                            const double       UFirst,
+                            const double       ULast);
 
   //! Check theU relates to start or finish point of B-spline curve and return indices of span the
   //! point is located
-  bool IsBoundary(const double theU, int& theSpanStart, int& theSpanFinish) const;
+  bool IsBoundary(const double theU,
+                              int&   theSpanStart,
+                              int&   theSpanFinish) const;
 
   //! Rebuilds B-spline cache
   //! \param theParameter the value on the knot axis which identifies the caching span
@@ -264,9 +275,9 @@ private:
 
 private:
   occ::handle<Geom_Curve> myCurve;
-  GeomAbs_CurveType       myTypeCurve;
-  double                  myFirst;
-  double                  myLast;
+  GeomAbs_CurveType  myTypeCurve;
+  double      myFirst;
+  double      myLast;
   CurveDataVariant myCurveData; ///< Curve-specific evaluation data (BSpline, Bezier, offset, etc.)
 };
 

@@ -14,8 +14,8 @@
 #include <Standard_TypeDef.hxx>
 
 // Code pages ANSI -> UTF16
-static const char16_t THE_CODEPAGES_ANSI[Resource_FormatType_CP850 - Resource_FormatType_CP1250
-                                         + 1][128] = {
+static const char16_t THE_CODEPAGES_ANSI[Resource_FormatType_CP850
+                                                      - Resource_FormatType_CP1250 + 1][128] = {
   {// code page: cp1250
    0x20ac, 0x81,   0x201a, 0x83,   0x201e, 0x2026, 0x2020, 0x2021, 0x88,   0x2030, 0x160,  0x2039,
    0x15a,  0x164,  0x17d,  0x179,  0x90,   0x2018, 0x2019, 0x201c, 0x201d, 0x2022, 0x2013, 0x2014,

@@ -45,8 +45,8 @@ occ::handle<Standard_Type> XmlMDataStd_GenericEmptyDriver::SourceType() const
 //=================================================================================================
 
 bool XmlMDataStd_GenericEmptyDriver::Paste(const XmlObjMgt_Persistent&,
-                                           const occ::handle<TDF_Attribute>&,
-                                           XmlObjMgt_RRelocationTable&) const
+                                                       const occ::handle<TDF_Attribute>&,
+                                                       XmlObjMgt_RRelocationTable&) const
 {
   return true;
 }

@@ -39,7 +39,7 @@ void GProp_CelGProps::Perform(const gp_Circ& C, const double U1, const double U2
   C.Axis().Direction().Coord(Xa3, Ya3, Za3);
   double Ray = C.Radius();
 
-  dim         = Ray * std::abs(U2 - U1);
+  dim                = Ray * std::abs(U2 - U1);
   double xloc = Ray * (std::sin(U2) - std::sin(U1)) / (U2 - U1);
   double yloc = Ray * (std::cos(U1) - std::cos(U2)) / (U2 - U1);
 
@@ -133,19 +133,19 @@ GProp_CelGProps::GProp_CelGProps(const gp_Circ& C, const gp_Pnt& CLocation)
   Perform(C, 0., 2. * M_PI);
 }
 
-GProp_CelGProps::GProp_CelGProps(const gp_Circ& C,
-                                 const double   U1,
-                                 const double   U2,
-                                 const gp_Pnt&  CLocation)
+GProp_CelGProps::GProp_CelGProps(const gp_Circ&      C,
+                                 const double U1,
+                                 const double U2,
+                                 const gp_Pnt&       CLocation)
 {
   SetLocation(CLocation);
   Perform(C, U1, U2);
 }
 
-GProp_CelGProps::GProp_CelGProps(const gp_Lin& C,
-                                 const double  U1,
-                                 const double  U2,
-                                 const gp_Pnt& CLocation)
+GProp_CelGProps::GProp_CelGProps(const gp_Lin&       C,
+                                 const double U1,
+                                 const double U2,
+                                 const gp_Pnt&       CLocation)
 {
   SetLocation(CLocation);
   Perform(C, U1, U2);

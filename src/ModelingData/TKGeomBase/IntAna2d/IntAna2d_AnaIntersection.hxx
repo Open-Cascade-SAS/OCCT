@@ -123,11 +123,11 @@ public:
   const IntAna2d_IntPoint& Point(const int N) const;
 
 private:
-  bool              done;
-  bool              para;
-  bool              iden;
-  bool              empt;
-  int               nbp;
+  bool  done;
+  bool  para;
+  bool  iden;
+  bool  empt;
+  int  nbp;
   IntAna2d_IntPoint lpnt[4];
 };
 

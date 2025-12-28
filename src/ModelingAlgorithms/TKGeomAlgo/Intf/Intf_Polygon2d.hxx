@@ -47,11 +47,12 @@ public:
 
   //! Returns the points of the segment <Index> in the Polygon.
   Standard_EXPORT virtual void Segment(const int theIndex,
-                                       gp_Pnt2d& theBegin,
-                                       gp_Pnt2d& theEnd) const = 0;
+                                       gp_Pnt2d&              theBegin,
+                                       gp_Pnt2d&              theEnd) const = 0;
 
 protected:
   Bnd_Box2d myBox;
+
 };
 
 #include <Intf_Polygon2d.lxx>

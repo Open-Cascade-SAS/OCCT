@@ -29,7 +29,8 @@ class Vrml_PointSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT Vrml_PointSet(const int aStartIndex = 0, const int aNumPoints = -1);
+  Standard_EXPORT Vrml_PointSet(const int aStartIndex = 0,
+                                const int aNumPoints  = -1);
 
   Standard_EXPORT void SetStartIndex(const int aStartIndex);
 

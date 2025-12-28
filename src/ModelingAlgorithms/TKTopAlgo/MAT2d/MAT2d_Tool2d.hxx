@@ -26,7 +26,11 @@
 #include <Bisector_Bisec.hxx>
 #include <NCollection_DataMap.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <MAT_Side.hxx>
 class MAT2d_Circuit;
@@ -71,12 +75,14 @@ public:
   //! Creates the Tangent at the end of the Item defined
   //! by <anitem>. Returns the index of this vector in
   //! <theGeomVecs>
-  Standard_EXPORT int TangentBefore(const int anitem, const bool IsOpenResult);
+  Standard_EXPORT int TangentBefore(const int anitem,
+                                                 const bool IsOpenResult);
 
   //! Creates the Reversed Tangent at the origin of the Item
   //! defined by <anitem>. Returns the index of this vector in
   //! <theGeomVecs>
-  Standard_EXPORT int TangentAfter(const int anitem, const bool IsOpenResult);
+  Standard_EXPORT int TangentAfter(const int anitem,
+                                                const bool IsOpenResult);
 
   //! Creates the Tangent at the end of the bisector defined
   //! by <bisector>. Returns the index of this vector in
@@ -96,7 +102,8 @@ public:
   //! <apoint> in <theGeomPnts>.
   //! If the point is out of the bisector, Return FALSE.
   //! else Return True.
-  Standard_EXPORT bool TrimBisector(const occ::handle<MAT_Bisector>& abisector, const int apoint);
+  Standard_EXPORT bool TrimBisector(const occ::handle<MAT_Bisector>& abisector,
+                                                const int      apoint);
 
   //! Computes the point of intersection between the
   //! bisectors defined by <bisectorone> and
@@ -105,14 +112,14 @@ public:
   //! in <theGeomPnts> and Return the distance of the point
   //! from the bisector else Return <RealLast>.
   Standard_EXPORT double IntersectBisector(const occ::handle<MAT_Bisector>& bisectorone,
-                                           const occ::handle<MAT_Bisector>& bisectortwo,
-                                           int&                             intpnt);
+                                                  const occ::handle<MAT_Bisector>& bisectortwo,
+                                                  int&           intpnt);
 
   //! Returns the distance between the two points designed
   //! by their parameters on <abisector>.
   Standard_EXPORT double Distance(const occ::handle<MAT_Bisector>& abisector,
-                                  const double                     param1,
-                                  const double                     param2) const;
+                                         const double         param1,
+                                         const double         param2) const;
 
   //! displays information about the bisector defined by
   //! <bisector>.
@@ -147,33 +154,33 @@ private:
   //! In this case <adistance> is the distance of the point
   //! from the bisectors.
   Standard_EXPORT bool IsSameDistance(const occ::handle<MAT_Bisector>& bisectorone,
-                                      const occ::handle<MAT_Bisector>& bisectortwo,
-                                      const gp_Pnt2d&                  apoint,
-                                      double&                          adistance) const;
+                                                  const occ::handle<MAT_Bisector>& bisectortwo,
+                                                  const gp_Pnt2d&             apoint,
+                                                  double&              adistance) const;
 
   //! Return <True> if the Point can be projected
   //! on the element designed by <IndexElt>.
   //! In this case <Distance> is the minimum of distance
   //! between Point and its projections.
-  Standard_EXPORT bool Projection(const int       IndexElt,
-                                  const gp_Pnt2d& Point,
-                                  double&         Distance) const;
+  Standard_EXPORT bool Projection(const int IndexElt,
+                                              const gp_Pnt2d&        Point,
+                                              double&         Distance) const;
 
-  Standard_EXPORT void TrimBisec(Bisector_Bisec& Bis,
-                                 const int       IndexEdge,
-                                 const bool      OnLine,
-                                 const int       StartOrEnd) const;
+  Standard_EXPORT void TrimBisec(Bisector_Bisec&        Bis,
+                                 const int IndexEdge,
+                                 const bool OnLine,
+                                 const int StartOrEnd) const;
 
-  double                                   theDirection;
-  GeomAbs_JoinType                         theJoinType;
-  int                                      theNumberOfBisectors;
-  int                                      theNumberOfPnts;
-  int                                      theNumberOfVecs;
-  occ::handle<MAT2d_Circuit>               theCircuit;
+  double               theDirection;
+  GeomAbs_JoinType            theJoinType;
+  int            theNumberOfBisectors;
+  int            theNumberOfPnts;
+  int            theNumberOfVecs;
+  occ::handle<MAT2d_Circuit>       theCircuit;
   NCollection_DataMap<int, Bisector_Bisec> theGeomBisectors;
-  NCollection_DataMap<int, gp_Pnt2d>       theGeomPnts;
-  NCollection_DataMap<int, gp_Vec2d>       theGeomVecs;
-  NCollection_Sequence<int>                theLinesLength;
+  NCollection_DataMap<int, gp_Pnt2d> theGeomPnts;
+  NCollection_DataMap<int, gp_Vec2d> theGeomVecs;
+  NCollection_Sequence<int>   theLinesLength;
 };
 
 #endif // _MAT2d_Tool2d_HeaderFile

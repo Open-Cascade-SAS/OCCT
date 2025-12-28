@@ -24,8 +24,11 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //==================================================================================================
 // Basic concatenation tests

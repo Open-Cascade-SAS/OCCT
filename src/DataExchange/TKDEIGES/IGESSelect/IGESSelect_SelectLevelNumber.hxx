@@ -53,9 +53,10 @@ public:
   //! Returns True if <ent> is an IGES Entity with Level Number
   //! admits the criterium (= value if single level, or one of the
   //! attached level numbers = value if level list)
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns the Selection criterium :
   //! "IGES Entity, Level Number admits <nn>" (if nn > 0) or

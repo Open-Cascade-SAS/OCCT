@@ -43,13 +43,13 @@ occ::handle<TDF_Attribute> BinMDataXtd_GeometryDriver::NewEmpty() const
 // function : Paste
 // purpose  : P -> T
 //=======================================================================
-bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       BinObjMgt_RRelocationTable&) const
+bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataXtd_Geometry> aT = occ::down_cast<TDataXtd_Geometry>(theTarget);
 
-  int  aType;
+  int aType;
   bool ok = theSource >> aType;
   if (ok)
     aT->SetType((TDataXtd_GeometryEnum)aType);
@@ -61,10 +61,9 @@ bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSour
 // function : Paste
 // purpose  : T -> P
 //=======================================================================
-void BinMDataXtd_GeometryDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataXtd_GeometryDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDataXtd_Geometry> aG = occ::down_cast<TDataXtd_Geometry>(theSource);
   theTarget << (int)aG->GetType();

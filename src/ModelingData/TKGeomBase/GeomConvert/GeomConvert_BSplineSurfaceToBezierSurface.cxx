@@ -21,6 +21,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
 
 //=================================================================================================
 
@@ -43,17 +44,17 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 
 GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSurface(
   const occ::handle<Geom_BSplineSurface>& BasisSurface,
-  const double                            U1,
-  const double                            U2,
-  const double                            V1,
-  const double                            V2,
-  const double                            ParametricTolerance)
+  const double                U1,
+  const double                U2,
+  const double                V1,
+  const double                V2,
+  const double                ParametricTolerance)
 {
   if ((U2 - U1 < ParametricTolerance) || (V2 - V1 < ParametricTolerance))
     throw Standard_DomainError("GeomConvert_BSplineSurfaceToBezierSurface");
 
-  double Uf = U1, Ul = U2, Vf = V1, Vl = V2, PTol = ParametricTolerance / 2;
-  int    I1, I2;
+  double    Uf = U1, Ul = U2, Vf = V1, Vl = V2, PTol = ParametricTolerance / 2;
+  int I1, I2;
 
   mySurface = occ::down_cast<Geom_BSplineSurface>(BasisSurface->Copy());
 
@@ -96,8 +97,9 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 
 //=================================================================================================
 
-occ::handle<Geom_BezierSurface> GeomConvert_BSplineSurfaceToBezierSurface::Patch(const int UIndex,
-                                                                                 const int VIndex)
+occ::handle<Geom_BezierSurface> GeomConvert_BSplineSurfaceToBezierSurface::Patch(
+  const int UIndex,
+  const int VIndex)
 {
   if (UIndex < 1 || UIndex > mySurface->NbUKnots() - 1 || VIndex < 1
       || VIndex > mySurface->NbVKnots() - 1)
@@ -141,8 +143,7 @@ occ::handle<Geom_BezierSurface> GeomConvert_BSplineSurfaceToBezierSurface::Patch
 
 //=================================================================================================
 
-void GeomConvert_BSplineSurfaceToBezierSurface::Patches(
-  NCollection_Array2<occ::handle<Geom_BezierSurface>>& Surfaces)
+void GeomConvert_BSplineSurfaceToBezierSurface::Patches(NCollection_Array2<occ::handle<Geom_BezierSurface>>& Surfaces)
 {
   int NbU = NbUPatches();
   int NbV = NbVPatches();

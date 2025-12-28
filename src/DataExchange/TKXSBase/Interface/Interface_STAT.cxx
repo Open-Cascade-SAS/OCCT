@@ -15,9 +15,9 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static Interface_STAT statvoid("");
-static Interface_STAT statact("");
-static const char*    voidname = "";
+static Interface_STAT   statvoid("");
+static Interface_STAT   statact("");
+static const char* voidname = "";
 
 Interface_STAT::Interface_STAT(const char* title)
 {
@@ -30,13 +30,13 @@ Interface_STAT::Interface_STAT(const Interface_STAT& other)
   other.Internals(thetitle, thetotal, thephnam, thephw, thephdeb, thephfin, thestw);
 }
 
-void Interface_STAT::Internals(occ::handle<TCollection_HAsciiString>&                       tit,
-                               double&                                                      total,
+void Interface_STAT::Internals(occ::handle<TCollection_HAsciiString>&       tit,
+                               double&                          total,
                                occ::handle<NCollection_HSequence<TCollection_AsciiString>>& phn,
-                               occ::handle<NCollection_HSequence<double>>&                  phw,
-                               occ::handle<NCollection_HSequence<int>>&                     phdeb,
-                               occ::handle<NCollection_HSequence<int>>&                     phfin,
-                               occ::handle<NCollection_HSequence<double>>& stw) const
+                               occ::handle<NCollection_HSequence<double>>&        phw,
+                               occ::handle<NCollection_HSequence<int>>&     phdeb,
+                               occ::handle<NCollection_HSequence<int>>&     phfin,
+                               occ::handle<NCollection_HSequence<double>>&        stw) const
 {
   tit   = thetitle;
   total = thetotal;
@@ -87,18 +87,20 @@ void Interface_STAT::AddStep(const double weight)
   thephfin->ChangeValue(thephfin->Length())++;
 }
 
-void Interface_STAT::Description(int& nbphases, double& total, const char*& title) const
+void Interface_STAT::Description(int& nbphases,
+                                 double&    total,
+                                 const char*& title) const
 {
   nbphases = (thephw.IsNull() ? 1 : thephw->Length());
   total    = thetotal;
   title    = thetitle->ToCString();
 }
 
-void Interface_STAT::Phase(const int    num,
-                           int&         n0step,
-                           int&         nbstep,
-                           double&      weight,
-                           const char*& name) const
+void Interface_STAT::Phase(const int num,
+                           int&      n0step,
+                           int&      nbstep,
+                           double&         weight,
+                           const char*&      name) const
 {
   if (thephdeb.IsNull())
   {
@@ -153,22 +155,22 @@ static struct zestat
 {
   const char* itle;
   const char* name;
-  double      otal, // total of phase weights
-    oldph,          // weight of phases already passed
-    phw,            // weight of the current phase
-    otph,           // weight of steps in the current phase (current cycle)
-    oldst,          // weight of steps already passed (current cycle)
-    stw;            // weight of current step
-  int nbph,         // total nb of phases
-    numph,          // n0 current phase
-    n0, n1,         // n0 and nb steps in current phase
-    nbitp,          // nb items total phase
-    nbcyc,          // nb cycles total phase
-    olditp,         // nb items already passed (cycles passed) / phase
-    numcyc,         // n0 current cycle / phase
-    nbitc,          // nb items current cycle
-    numst,          // n0 current step / cycle
-    numitem;        // nb items already passed / current step
+  double    otal, // total of phase weights
+    oldph,               // weight of phases already passed
+    phw,                 // weight of the current phase
+    otph,                // weight of steps in the current phase (current cycle)
+    oldst,               // weight of steps already passed (current cycle)
+    stw;                 // weight of current step
+  int nbph, // total nb of phases
+    numph,               // n0 current phase
+    n0, n1,              // n0 and nb steps in current phase
+    nbitp,               // nb items total phase
+    nbcyc,               // nb cycles total phase
+    olditp,              // nb items already passed (cycles passed) / phase
+    numcyc,              // n0 current cycle / phase
+    nbitc,               // nb items current cycle
+    numst,               // n0 current step / cycle
+    numitem;             // nb items already passed / current step
 } TheStat;
 
 void Interface_STAT::Start(const int items, const int cycles) const
@@ -263,17 +265,17 @@ int Interface_STAT::Percent(const bool phase)
     TheStat.numitem = TheStat.nbitc;
   //  we count the items already passed
   double enphase = TheStat.olditp * TheStat.otph + // complete cycles passed
-                   TheStat.nbitc * TheStat.oldst + // current cycle, complete steps passed
-                   TheStat.numitem * TheStat.stw;  // current step
-                                                   //  proportion for this phase
-  double prophase = enphase / (TheStat.nbitp * TheStat.otph);
-  int    res      = int(prophase * 100.);
+                          TheStat.nbitc * TheStat.oldst + // current cycle, complete steps passed
+                          TheStat.numitem * TheStat.stw;  // current step
+                                                          //  proportion for this phase
+  double    prophase = enphase / (TheStat.nbitp * TheStat.otph);
+  int res      = int(prophase * 100.);
   if (phase)
     return res;
 
   //  that's it for this phase
   //  counting in the phases
   double encours = (TheStat.oldph + TheStat.phw * prophase) / TheStat.otal;
-  res            = int(encours * 100.);
+  res                   = int(encours * 100.);
   return res;
 }

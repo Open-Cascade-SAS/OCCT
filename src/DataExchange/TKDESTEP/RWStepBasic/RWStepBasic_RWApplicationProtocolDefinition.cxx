@@ -22,7 +22,7 @@ RWStepBasic_RWApplicationProtocolDefinition::RWStepBasic_RWApplicationProtocolDe
 
 void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent) const
 {
@@ -74,7 +74,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::ReadStep(
 }
 
 void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent) const
 {
 
@@ -97,7 +97,7 @@ void RWStepBasic_RWApplicationProtocolDefinition::WriteStep(
 
 void RWStepBasic_RWApplicationProtocolDefinition::Share(
   const occ::handle<StepBasic_ApplicationProtocolDefinition>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   iter.GetOneItem(ent->Application());

@@ -35,7 +35,7 @@ math_SVD::math_SVD(const math_Matrix& A)
   RowA = A.RowNumber();
   U.Set(1, A.RowNumber(), 1, A.ColNumber(), A);
   int Error = SVD_Decompose(U, Diag, V);
-  Done      = (!Error) ? true : false;
+  Done                   = (!Error) ? true : false;
 }
 
 void math_SVD::Solve(const math_Vector& B, math_Vector& X, const double Eps)
@@ -78,9 +78,9 @@ void math_SVD::PseudoInverse(math_Matrix& Result, const double Eps)
       Diag(i) = 0.0;
   }
 
-  int         ColA = Diag.Length();
-  math_Vector VNorme(1, U.RowNumber());
-  math_Vector Column(1, ColA);
+  int ColA = Diag.Length();
+  math_Vector      VNorme(1, U.RowNumber());
+  math_Vector      Column(1, ColA);
 
   for (j = 1; j <= RowA; j++)
   {

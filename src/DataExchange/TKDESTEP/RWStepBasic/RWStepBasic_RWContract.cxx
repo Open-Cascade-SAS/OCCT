@@ -30,7 +30,7 @@ RWStepBasic_RWContract::RWStepBasic_RWContract() {}
 //=================================================================================================
 
 void RWStepBasic_RWContract::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                                   num,
+                                      const int                 num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepBasic_Contract>&      ent) const
 {
@@ -55,7 +55,7 @@ void RWStepBasic_RWContract::ReadStep(const occ::handle<StepData_StepReaderData>
 
 //=================================================================================================
 
-void RWStepBasic_RWContract::WriteStep(StepData_StepWriter&                   SW,
+void RWStepBasic_RWContract::WriteStep(StepData_StepWriter&              SW,
                                        const occ::handle<StepBasic_Contract>& ent) const
 {
 
@@ -71,7 +71,7 @@ void RWStepBasic_RWContract::WriteStep(StepData_StepWriter&                   SW
 //=================================================================================================
 
 void RWStepBasic_RWContract::Share(const occ::handle<StepBasic_Contract>& ent,
-                                   Interface_EntityIterator&              iter) const
+                                   Interface_EntityIterator&         iter) const
 {
 
   // Own fields of Contract

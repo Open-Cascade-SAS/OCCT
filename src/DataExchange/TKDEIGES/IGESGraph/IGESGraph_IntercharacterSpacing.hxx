@@ -50,8 +50,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_IntercharacterSpacing, IGESData_IGESEntity)
 
 private:
-  int    theNbPropertyValues;
-  double theISpace;
+  int theNbPropertyValues;
+  double    theISpace;
 };
 
 #endif // _IGESGraph_IntercharacterSpacing_HeaderFile

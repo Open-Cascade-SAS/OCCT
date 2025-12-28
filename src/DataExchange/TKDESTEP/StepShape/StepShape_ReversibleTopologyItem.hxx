@@ -66,6 +66,7 @@ public:
 
   //! returns Value as a OpenShell (Null if another type)
   Standard_EXPORT occ::handle<StepShape_OpenShell> OpenShell() const;
+
 };
 
 #endif // _StepShape_ReversibleTopologyItem_HeaderFile

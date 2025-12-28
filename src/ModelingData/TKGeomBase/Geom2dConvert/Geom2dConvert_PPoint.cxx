@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-Geom2dConvert_PPoint::Geom2dConvert_PPoint(const double             theParameter,
+Geom2dConvert_PPoint::Geom2dConvert_PPoint(const double      theParameter,
                                            const Adaptor2d_Curve2d& theAdaptor)
     : myParameter(theParameter)
 {

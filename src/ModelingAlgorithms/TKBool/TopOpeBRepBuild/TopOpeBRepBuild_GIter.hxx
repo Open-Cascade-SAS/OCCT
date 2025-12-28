@@ -50,7 +50,7 @@ public:
 private:
   Standard_EXPORT void Find();
 
-  int   myII;
+  int myII;
   void* mypG;
 };
 

@@ -62,7 +62,7 @@ protected:
   {
     occ::handle<NCollection_IncAllocator> aTmpAlloc = new NCollection_IncAllocator;
 
-    const IMeshData::IFaceHandle&                    aDFace = this->getDFace();
+    const IMeshData::IFaceHandle&               aDFace = this->getDFace();
     NCollection_Array1<occ::handle<SequenceOfPnt2d>> aWires(0, aDFace->WiresNb() - 1);
     for (int aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
     {
@@ -85,8 +85,8 @@ protected:
 
     const std::pair<double, double>& aDelta    = myRangeSplitter.GetDelta();
     const std::pair<double, double>& aTolUV    = myRangeSplitter.GetToleranceUV();
-    const double                     uCellSize = 14.0 * aTolUV.first;
-    const double                     vCellSize = 14.0 * aTolUV.second;
+    const double                            uCellSize = 14.0 * aTolUV.first;
+    const double                            vCellSize = 14.0 * aTolUV.second;
 
     this->getStructure()->Data()->SetCellSize(uCellSize / aDelta.first, vCellSize / aDelta.second);
     this->getStructure()->Data()->SetTolerance(aTolUV.first / aDelta.first,
@@ -115,9 +115,9 @@ protected:
   //! Adds the given 2d point to mesh data structure.
   //! Returns index of node in the structure.
   virtual int addNodeToStructure(const gp_Pnt2d&                thePoint,
-                                 const int                      theLocation3d,
-                                 const BRepMesh_DegreeOfFreedom theMovability,
-                                 const bool                     isForceAdd) override
+                                              const int         theLocation3d,
+                                              const BRepMesh_DegreeOfFreedom theMovability,
+                                              const bool isForceAdd) override
   {
     return BaseAlgo::addNodeToStructure(myRangeSplitter.Scale(thePoint, true),
                                         theLocation3d,
@@ -139,9 +139,8 @@ protected:
 
 private:
   //! Creates collection of points representing discrete wire.
-  occ::handle<SequenceOfPnt2d> collectWirePoints(
-    const IMeshData::IWireHandle&                theDWire,
-    const occ::handle<NCollection_IncAllocator>& theAllocator)
+  occ::handle<SequenceOfPnt2d> collectWirePoints(const IMeshData::IWireHandle&           theDWire,
+                                            const occ::handle<NCollection_IncAllocator>& theAllocator)
   {
     occ::handle<SequenceOfPnt2d> aWirePoints = new SequenceOfPnt2d(theAllocator);
     for (int aEdgeIt = 0; aEdgeIt < theDWire->EdgesNb(); ++aEdgeIt)
@@ -220,7 +219,7 @@ private:
   }
 
 private:
-  RangeSplitter                    myRangeSplitter;
+  RangeSplitter               myRangeSplitter;
   occ::handle<BRepMesh_Classifier> myClassifier;
 };
 

@@ -32,6 +32,7 @@
 #include <IntPatch_IType.hxx>
 #include <IntPatch_Line.hxx>
 #include <IntPatch_RLine.hxx>
+#include <IntPatch_Line.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_WLine.hxx>
 #include <Standard_ProgramError.hxx>
@@ -54,10 +55,10 @@ extern bool TopOpeBRep_GettraceCONIC();
 #endif
 
 //-----------------------------------------------------------------------
-static void FUN_ALINETOWLINE(const occ::handle<IntPatch_ALine>&                AL,
-                             const occ::handle<BRepAdaptor_Surface>&           surf1,
-                             const occ::handle<BRepAdaptor_Surface>&           surf2,
-                             NCollection_Sequence<occ::handle<IntPatch_Line>>& theLines)
+static void FUN_ALINETOWLINE(const occ::handle<IntPatch_ALine>&      AL,
+                             const occ::handle<BRepAdaptor_Surface>& surf1,
+                             const occ::handle<BRepAdaptor_Surface>& surf2,
+                             NCollection_Sequence<occ::handle<IntPatch_Line>>&           theLines)
 {
   int nbpointsmax = 200;
 #ifdef OCCT_DEBUG
@@ -73,8 +74,8 @@ static void FUN_ALINETOWLINE(const occ::handle<IntPatch_ALine>&                A
 //=================================================================================================
 
 void TopOpeBRep_LineInter::SetLine(const occ::handle<IntPatch_Line>& L,
-                                   const BRepAdaptor_Surface&        S1,
-                                   const BRepAdaptor_Surface&        S2)
+                                   const BRepAdaptor_Surface&   S1,
+                                   const BRepAdaptor_Surface&   S2)
 {
   // load line according to its type
   myIL                = L;
@@ -259,9 +260,9 @@ void TopOpeBRep_LineInter::SetIsVClosed()
   }*/
 
   TopOpeBRep_VPointInterIterator VPI(*this);
-  int                            nV   = myNbVPoint;
-  double                         pmin = RealLast(), pmax = RealFirst();
-  int                            imin = 0, imax = 0; // index of IsOnArc VPoints
+  int               nV   = myNbVPoint;
+  double                  pmin = RealLast(), pmax = RealFirst();
+  int               imin = 0, imax = 0; // index of IsOnArc VPoints
   if (nV >= 2)
   {
     for (; VPI.More(); VPI.Next())
@@ -269,8 +270,8 @@ void TopOpeBRep_LineInter::SetIsVClosed()
       const TopOpeBRep_VPointInter& P = VPI.CurrentVP();
       if (!P.IsInternal())
       {
-        const int    i = VPI.CurrentVPIndex();
-        const double p = P.ParameterOnLine();
+        const int i = VPI.CurrentVPIndex();
+        const double    p = P.ParameterOnLine();
         if (p < pmin)
         {
           imin = i;
@@ -333,7 +334,7 @@ void TopOpeBRep_LineInter::SetVPBounds()
   myVPBDefined          = true;
 
   TopOpeBRep_VPointInterIterator VPI(*this);
-  int                            f = myNbVPoint + 1, l = 0, n = 0;
+  int               f = myNbVPoint + 1, l = 0, n = 0;
 
   for (; VPI.More(); VPI.Next())
   {
@@ -355,7 +356,9 @@ void TopOpeBRep_LineInter::SetVPBounds()
 
 //=================================================================================================
 
-void TopOpeBRep_LineInter::VPBounds(int& f, int& l, int& n) const
+void TopOpeBRep_LineInter::VPBounds(int& f,
+                                    int& l,
+                                    int& n) const
 {
   if (!myVPBDefined)
   {
@@ -500,7 +503,8 @@ occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve() const
 
 //=================================================================================================
 
-occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve(const double parmin, const double parmax) const
+occ::handle<Geom_Curve> TopOpeBRep_LineInter::Curve(const double parmin,
+                                               const double parmax) const
 {
   // Build the trimmed 3d curve
   occ::handle<Geom_Curve>        C3D  = Curve();
@@ -526,15 +530,15 @@ const TopoDS_Shape& TopOpeBRep_LineInter::Arc() const
     if (myILR->IsArcOnS1())
     {
       const occ::handle<Adaptor2d_Curve2d>& AHC2D = myILR->ArcOnS1();
-      const BRepAdaptor_Curve2d&            BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
-      const TopoDS_Shape&                   S     = BC2DP.Edge();
+      const BRepAdaptor_Curve2d&       BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
+      const TopoDS_Shape&              S     = BC2DP.Edge();
       return S;
     }
     else
     {
       const occ::handle<Adaptor2d_Curve2d>& AHC2D = myILR->ArcOnS2();
-      const BRepAdaptor_Curve2d&            BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
-      const TopoDS_Shape&                   S     = BC2DP.Edge();
+      const BRepAdaptor_Curve2d&       BC2DP = *((BRepAdaptor_Curve2d*)AHC2D.get());
+      const TopoDS_Shape&              S     = BC2DP.Edge();
       return S;
     }
   }
@@ -584,7 +588,8 @@ void TopOpeBRep_LineInter::ComputeFaceFaceTransition()
 
 //=================================================================================================
 
-const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition(const int I) const
+const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition(
+  const int I) const
 {
   if (I == 1)
     return myLineTonF1;
@@ -609,7 +614,9 @@ void TopOpeBRep_LineInter::DumpVPoint
   (const int, const TCollection_AsciiString&, const TCollection_AsciiString&) const
 {
 #else
-  (const int I, const TCollection_AsciiString& s1, const TCollection_AsciiString& s2) const
+  (const int         I,
+   const TCollection_AsciiString& s1,
+   const TCollection_AsciiString& s2) const
 {
   const TopOpeBRep_VPointInter& VP = VPoint(I);
   const gp_Pnt&                 P  = VP.Value();

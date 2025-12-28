@@ -38,12 +38,11 @@ public:
 
   //! Init all fields own and inherited
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                 theName,
-    const occ::handle<TCollection_HAsciiString>&                 theDescription,
+    const occ::handle<TCollection_HAsciiString>&                      theName,
+    const occ::handle<TCollection_HAsciiString>&                      theDescription,
     const StepAP242_ItemIdentifiedRepresentationUsageDefinition& theDefinition,
-    const occ::handle<StepRepr_Representation>&                  theUsedRepresentation,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-      theIdentifiedItem);
+    const occ::handle<StepRepr_Representation>&                       theUsedRepresentation,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&          theIdentifiedItem);
 
   //! Set field Name
   inline void SetName(const occ::handle<TCollection_HAsciiString>& theName) { name = theName; }
@@ -74,21 +73,16 @@ public:
   }
 
   //! Set field UsedRepresentation
-  inline void SetUsedRepresentation(
-    const occ::handle<StepRepr_Representation>& theUsedRepresentation)
+  inline void SetUsedRepresentation(const occ::handle<StepRepr_Representation>& theUsedRepresentation)
   {
     usedRepresentation = theUsedRepresentation;
   }
 
   //! Returns field UsedRepresentation
-  inline occ::handle<StepRepr_Representation> UsedRepresentation() const
-  {
-    return usedRepresentation;
-  }
+  inline occ::handle<StepRepr_Representation> UsedRepresentation() const { return usedRepresentation; }
 
   //! Returns field IdentifiedItem
-  inline occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> IdentifiedItem()
-    const
+  inline occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> IdentifiedItem() const
   {
     return identifiedItem;
   }
@@ -101,8 +95,7 @@ public:
 
   //! Set field IdentifiedItem
   inline void SetIdentifiedItem(
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-      theIdentifiedItem)
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theIdentifiedItem)
   {
     identifiedItem = theIdentifiedItem;
   }
@@ -114,7 +107,7 @@ public:
   }
 
   //! Set identified item with given number
-  inline void SetIdentifiedItemValue(const int                                       num,
+  inline void SetIdentifiedItemValue(const int                     num,
                                      const occ::handle<StepRepr_RepresentationItem>& theItem)
   {
     identifiedItem->SetValue(num, theItem);
@@ -123,10 +116,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepAP242_ItemIdentifiedRepresentationUsage, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>                                      name;
-  occ::handle<TCollection_HAsciiString>                                      description;
-  StepAP242_ItemIdentifiedRepresentationUsageDefinition                      definition;
-  occ::handle<StepRepr_Representation>                                       usedRepresentation;
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> identifiedItem;
+  occ::handle<TCollection_HAsciiString>                      name;
+  occ::handle<TCollection_HAsciiString>                      description;
+  StepAP242_ItemIdentifiedRepresentationUsageDefinition definition;
+  occ::handle<StepRepr_Representation>                       usedRepresentation;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>          identifiedItem;
 };
 #endif // _StepAP242_ItemIdentifiedRepresentationUsage_HeaderFile

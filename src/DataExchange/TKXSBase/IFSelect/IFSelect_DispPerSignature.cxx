@@ -20,9 +20,12 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_DispPerSignature, IFSelect_Dispatch)
@@ -52,7 +55,8 @@ TCollection_AsciiString IFSelect_DispPerSignature::Label() const
   return TCollection_AsciiString(lab);
 }
 
-bool IFSelect_DispPerSignature::LimitedMax(const int nbent, int& max) const
+bool IFSelect_DispPerSignature::LimitedMax(const int nbent,
+                                                       int&      max) const
 {
   max = nbent;
   return true;
@@ -71,9 +75,9 @@ void IFSelect_DispPerSignature::Packets(const Interface_Graph&    G,
   thesign->Clear();
   thesign->AddList(FinalSelection()->RootResult(G).Content(), G.Model());
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list = thesign->List();
-  int                                   i, nb, is, nbs = list->Length();
-  occ::handle<TCollection_HAsciiString> asign;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> ents;
+  int                        i, nb, is, nbs = list->Length();
+  occ::handle<TCollection_HAsciiString>        asign;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>    ents;
   for (is = 1; is <= nbs; is++)
   {
     asign = list->Value(is);

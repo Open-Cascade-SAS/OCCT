@@ -40,13 +40,13 @@
 // -----------------------------------------------------------------
 void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic& Conic)
 {
-  bool   HIsDirect = H.IsDirect();
-  double A, B, C, D, E, F;
-  double px0, px1, px2, px3, px4;
-  double minor_radius = H.MinorRadius();
-  double major_radius = H.MajorRadius();
-  int    i;
-  double tx, ty, S;
+  bool HIsDirect = H.IsDirect();
+  double    A, B, C, D, E, F;
+  double    px0, px1, px2, px3, px4;
+  double    minor_radius = H.MinorRadius();
+  double    major_radius = H.MajorRadius();
+  int i;
+  double    tx, ty, S;
 
   done = false;
   nbp  = 0;
@@ -90,7 +90,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
     }
     // On a X=(CosH(t)*major_radius)/2 , Y=(SinH(t)*minor_radius)/2
     //      la Resolution est en S=Exp(t)
-    nbp                = Sol.NbSolutions();
+    nbp                             = Sol.NbSolutions();
     int nb_sol_valides = 0;
     for (i = 1; i <= nbp; i++)
     {

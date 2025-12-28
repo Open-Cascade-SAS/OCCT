@@ -21,6 +21,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -45,9 +46,9 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
 
 Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve(
   const occ::handle<Geom2d_BSplineCurve>& BasisCurve,
-  const double                            U1,
-  const double                            U2,
-  const double                            ParametricTolerance)
+  const double                U1,
+  const double                U2,
+  const double                ParametricTolerance)
 {
   if (U2 - U1 < ParametricTolerance)
     throw Standard_DomainError("GeomConvert_BSplineCurveToBezierSurface");
@@ -82,7 +83,8 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
 
 //=================================================================================================
 
-occ::handle<Geom2d_BezierCurve> Geom2dConvert_BSplineCurveToBezierCurve::Arc(const int Index)
+occ::handle<Geom2d_BezierCurve> Geom2dConvert_BSplineCurveToBezierCurve::Arc(
+  const int Index)
 {
   if (Index < 1 || Index > myCurve->NbKnots() - 1)
   {
@@ -116,8 +118,7 @@ occ::handle<Geom2d_BezierCurve> Geom2dConvert_BSplineCurveToBezierCurve::Arc(con
 
 //=================================================================================================
 
-void Geom2dConvert_BSplineCurveToBezierCurve::Arcs(
-  NCollection_Array1<occ::handle<Geom2d_BezierCurve>>& Curves)
+void Geom2dConvert_BSplineCurveToBezierCurve::Arcs(NCollection_Array1<occ::handle<Geom2d_BezierCurve>>& Curves)
 {
   int n = NbArcs();
   for (int i = 1; i <= n; i++)

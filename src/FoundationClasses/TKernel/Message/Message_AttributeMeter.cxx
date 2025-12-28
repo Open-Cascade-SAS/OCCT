@@ -58,7 +58,7 @@ double Message_AttributeMeter::StartValue(const Message_MetricType& theMetric) c
 //=================================================================================================
 
 void Message_AttributeMeter::SetStartValue(const Message_MetricType& theMetric,
-                                           const double              theValue)
+                                           const double       theValue)
 {
   if (StartToStopValue* aValPtr = myMetrics.ChangeSeek(theMetric))
   {
@@ -84,7 +84,7 @@ double Message_AttributeMeter::StopValue(const Message_MetricType& theMetric) co
 //=================================================================================================
 
 void Message_AttributeMeter::SetStopValue(const Message_MetricType& theMetric,
-                                          const double              theValue)
+                                          const double       theValue)
 {
   if (StartToStopValue* aValPtr = myMetrics.ChangeSeek(theMetric))
   {
@@ -95,7 +95,7 @@ void Message_AttributeMeter::SetStopValue(const Message_MetricType& theMetric,
 //=================================================================================================
 
 void Message_AttributeMeter::SetAlertMetrics(const occ::handle<Message_AlertExtended>& theAlert,
-                                             const bool theStartValue)
+                                             const bool               theStartValue)
 {
   if (theAlert.IsNull())
   {
@@ -109,7 +109,7 @@ void Message_AttributeMeter::SetAlertMetrics(const occ::handle<Message_AlertExte
     return;
   }
 
-  occ::handle<Message_Report>                       aReport         = Message::DefaultReport(true);
+  occ::handle<Message_Report>                            aReport = Message::DefaultReport(true);
   const NCollection_IndexedMap<Message_MetricType>& anActiveMetrics = aReport->ActiveMetrics();
 
   // time metrics

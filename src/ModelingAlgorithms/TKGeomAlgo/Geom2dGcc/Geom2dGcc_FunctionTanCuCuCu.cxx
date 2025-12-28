@@ -169,13 +169,13 @@ bool Geom2dGcc_FunctionTanCuCuCu::Value(const math_Vector& X, math_Vector& Fval)
   gp_Vec2d D23;
   InitDerivative(X, Point1, Point2, Point3, Tan1, Tan2, Tan3, D21, D22, D23);
   // pipj (normes) et PiPj (non Normes).
-  gp_XY  P1P2(gp_Vec2d(Point1, Point2).XY());
-  gp_XY  P2P3(gp_Vec2d(Point2, Point3).XY());
-  gp_XY  P3P1(gp_Vec2d(Point3, Point1).XY());
+  gp_XY         P1P2(gp_Vec2d(Point1, Point2).XY());
+  gp_XY         P2P3(gp_Vec2d(Point2, Point3).XY());
+  gp_XY         P3P1(gp_Vec2d(Point3, Point1).XY());
   double NorP1P2 = P1P2.Modulus();
   double NorP2P3 = P2P3.Modulus();
   double NorP3P1 = P3P1.Modulus();
-  gp_XY  p1p2, p2p3, p3p1;
+  gp_XY         p1p2, p2p3, p3p1;
   if (NorP1P2 >= gp::Resolution())
   {
     p1p2 = P1P2 / NorP1P2;
@@ -208,10 +208,10 @@ bool Geom2dGcc_FunctionTanCuCuCu::Value(const math_Vector& X, math_Vector& Fval)
   double nnor1 = Deriv1u1.Modulus();
   double nnor2 = Deriv1u2.Modulus();
   double nnor3 = Deriv1u3.Modulus();
-  gp_XY  Nor1(-Deriv1u1.Y(), Deriv1u1.X());
-  gp_XY  Nor2(-Deriv1u2.Y(), Deriv1u2.X());
-  gp_XY  Nor3(-Deriv1u3.Y(), Deriv1u3.X());
-  gp_XY  nor1, nor2, nor3;
+  gp_XY         Nor1(-Deriv1u1.Y(), Deriv1u1.X());
+  gp_XY         Nor2(-Deriv1u2.Y(), Deriv1u2.X());
+  gp_XY         Nor3(-Deriv1u3.Y(), Deriv1u3.X());
+  gp_XY         nor1, nor2, nor3;
   if (nnor1 >= gp::Resolution())
   {
     nor1 = Nor1 / nnor1;
@@ -237,16 +237,16 @@ bool Geom2dGcc_FunctionTanCuCuCu::Value(const math_Vector& X, math_Vector& Fval)
     nor3 = gp_XY(0., 0.);
   }
   // determination des signes pour les produits scalaires.
-  double   signe1 = 1.;
-  double   signe2 = 1.;
-  double   signe3 = 1.;
-  gp_Pnt2d Pcenter(gp_XY(Point1.XY() + Point2.XY() + Point3.XY()) / 3.);
-  gp_XY    fic1(Pcenter.XY() - Point1.XY());
-  gp_XY    fic2(Pcenter.XY() - Point2.XY());
-  gp_XY    fic3(Pcenter.XY() - Point3.XY());
-  double   pscal11 = nor1.Dot(fic1);
-  double   pscal22 = nor2.Dot(fic2);
-  double   pscal33 = nor3.Dot(fic3);
+  double signe1 = 1.;
+  double signe2 = 1.;
+  double signe3 = 1.;
+  gp_Pnt2d      Pcenter(gp_XY(Point1.XY() + Point2.XY() + Point3.XY()) / 3.);
+  gp_XY         fic1(Pcenter.XY() - Point1.XY());
+  gp_XY         fic2(Pcenter.XY() - Point2.XY());
+  gp_XY         fic3(Pcenter.XY() - Point3.XY());
+  double pscal11 = nor1.Dot(fic1);
+  double pscal22 = nor2.Dot(fic2);
+  double pscal33 = nor3.Dot(fic3);
   if (pscal11 <= 0.)
   {
     signe1 = -1;

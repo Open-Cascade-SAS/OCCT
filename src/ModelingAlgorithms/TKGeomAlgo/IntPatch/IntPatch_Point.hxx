@@ -43,7 +43,9 @@ public:
   //! when both surfaces are implicit ones.
   //! If Tangent is True, the point is a point of tangency
   //! between the surfaces.
-  Standard_EXPORT void SetValue(const gp_Pnt& Pt, const double Tol, const bool Tangent);
+  Standard_EXPORT void SetValue(const gp_Pnt&          Pt,
+                                const double    Tol,
+                                const bool Tangent);
 
   void SetValue(const gp_Pnt& Pt);
 
@@ -54,7 +56,10 @@ public:
 
   //! Sets the values of the parameters of the point
   //! on each surface.
-  void SetParameters(const double U1, const double V1, const double U2, const double V2);
+  void SetParameters(const double U1,
+                     const double V1,
+                     const double U2,
+                     const double V2);
 
   //! Set the value of the parameter on the intersection line.
   void SetParameter(const double Para);
@@ -65,18 +70,19 @@ public:
   //! If OnFirst is True, the point is on the domain of the
   //! first patch, otherwise the point is on the domain of the
   //! second surface.
-  Standard_EXPORT void SetVertex(const bool OnFirst, const occ::handle<Adaptor3d_HVertex>& V);
+  Standard_EXPORT void SetVertex(const bool           OnFirst,
+                                 const occ::handle<Adaptor3d_HVertex>& V);
 
   //! Sets the values of a point which is on one of the domain,
   //! when both surfaces are implicit ones.
   //! If OnFirst is True, the point is on the domain of the
   //! first patch, otherwise the point is on the domain of the
   //! second surface.
-  Standard_EXPORT void SetArc(const bool                            OnFirst,
+  Standard_EXPORT void SetArc(const bool           OnFirst,
                               const occ::handle<Adaptor2d_Curve2d>& A,
-                              const double                          Param,
-                              const IntSurf_Transition&             TLine,
-                              const IntSurf_Transition&             TArc);
+                              const double              Param,
+                              const IntSurf_Transition&        TLine,
+                              const IntSurf_Transition&        TArc);
 
   //! Sets (or unsets) the point as a point on several
   //! intersection line.
@@ -201,28 +207,28 @@ public:
   Standard_EXPORT void Dump() const;
 
 private:
-  IntSurf_PntOn2S pt;
-  double          para;
-  double          tol;
-  bool            tgt;
+  IntSurf_PntOn2S  pt;
+  double    para;
+  double    tol;
+  bool tgt;
 
   // TRUE if the point is in several intersection lines
   bool mult;
 
-  bool                           onS1;
-  bool                           vtxonS1;
+  bool          onS1;
+  bool          vtxonS1;
   occ::handle<Adaptor3d_HVertex> vS1;
   occ::handle<Adaptor2d_Curve2d> arcS1;
-  IntSurf_Transition             traline1;
-  IntSurf_Transition             tra1;
-  double                         prm1;
-  bool                           onS2;
-  bool                           vtxonS2;
+  IntSurf_Transition        traline1;
+  IntSurf_Transition        tra1;
+  double             prm1;
+  bool          onS2;
+  bool          vtxonS2;
   occ::handle<Adaptor3d_HVertex> vS2;
   occ::handle<Adaptor2d_Curve2d> arcS2;
-  IntSurf_Transition             traline2;
-  IntSurf_Transition             tra2;
-  double                         prm2;
+  IntSurf_Transition        traline2;
+  IntSurf_Transition        tra2;
+  double             prm2;
 };
 
 #include <IntPatch_Point.lxx>

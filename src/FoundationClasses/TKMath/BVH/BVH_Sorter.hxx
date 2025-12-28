@@ -36,7 +36,9 @@ public:
   virtual void Perform(BVH_Set<T, N>* theSet) = 0;
 
   //! Sorts the given (inclusive) range in the set.
-  virtual void Perform(BVH_Set<T, N>* theSet, const int theStart, const int theFinal) = 0;
+  virtual void Perform(BVH_Set<T, N>*         theSet,
+                       const int theStart,
+                       const int theFinal) = 0;
 
   //! Returns parallel flag.
   inline bool IsParallel() const { return myIsParallel; }

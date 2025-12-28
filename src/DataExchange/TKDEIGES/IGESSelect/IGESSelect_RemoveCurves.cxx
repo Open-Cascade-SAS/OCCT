@@ -16,6 +16,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESGeom_BoundedSurface.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
@@ -25,6 +26,8 @@
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_RemoveCurves, IGESSelect_ModelModifier)
 
@@ -64,8 +67,8 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
   if (!cons.IsNull())
   {
     occ::handle<IGESData_IGESEntity> cuv, c3d;
-    cuv      = cons->CurveUV();
-    c3d      = cons->Curve3D();
+    cuv                   = cons->CurveUV();
+    c3d                   = cons->Curve3D();
     int pref = cons->PreferenceMode();
     if (UV && !c3d.IsNull())
     {
@@ -97,17 +100,15 @@ static bool Edit(const occ::handle<Standard_Transient>& ent, const bool UV)
     int i, nb = bndy->NbModelSpaceCurves();
     if (nb == 0)
       return false;
-    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arc3d =
-      new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+    occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>           arc3d = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
     occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity> arcuv =
       new IGESBasic_HArray1OfHArray1OfIGESEntity(1, nb);
     occ::handle<NCollection_HArray1<int>> sens = new NCollection_HArray1<int>(1, nb);
     for (i = 1; i <= nb; i++)
     {
       sens->SetValue(i, bndy->Sense(i));
-      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> cuv =
-        bndy->ParameterCurves(i);
-      occ::handle<IGESData_IGESEntity> c3d = bndy->ModelSpaceCurve(i);
+      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> cuv = bndy->ParameterCurves(i);
+      occ::handle<IGESData_IGESEntity>          c3d = bndy->ModelSpaceCurve(i);
       if (UV)
       {
         if (cuv.IsNull() || c3d.IsNull())

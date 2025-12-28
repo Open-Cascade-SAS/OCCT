@@ -31,11 +31,11 @@ public:
   //! Returns a LocalTime
   Standard_EXPORT StepBasic_LocalTime();
 
-  Standard_EXPORT void Init(const int    aHourComponent,
-                            const bool   hasAminuteComponent,
-                            const int    aMinuteComponent,
-                            const bool   hasAsecondComponent,
-                            const double aSecondComponent,
+  Standard_EXPORT void Init(const int aHourComponent,
+                            const bool hasAminuteComponent,
+                            const int aMinuteComponent,
+                            const bool hasAsecondComponent,
+                            const double    aSecondComponent,
                             const occ::handle<StepBasic_CoordinatedUniversalTimeOffset>& aZone);
 
   Standard_EXPORT void SetHourComponent(const int aHourComponent);
@@ -65,12 +65,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepBasic_LocalTime, Standard_Transient)
 
 private:
-  int                                                   hourComponent;
-  int                                                   minuteComponent;
-  double                                                secondComponent;
+  int                                 hourComponent;
+  int                                 minuteComponent;
+  double                                    secondComponent;
   occ::handle<StepBasic_CoordinatedUniversalTimeOffset> zone;
-  bool                                                  hasMinuteComponent;
-  bool                                                  hasSecondComponent;
+  bool                                 hasMinuteComponent;
+  bool                                 hasSecondComponent;
 };
 
 #endif // _StepBasic_LocalTime_HeaderFile

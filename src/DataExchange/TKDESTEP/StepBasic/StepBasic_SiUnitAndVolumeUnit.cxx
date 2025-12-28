@@ -23,8 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndVolumeUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndVolumeUnit::StepBasic_SiUnitAndVolumeUnit() {}
 
-void StepBasic_SiUnitAndVolumeUnit::SetVolumeUnit(
-  const occ::handle<StepBasic_VolumeUnit>& aVolumeUnit)
+void StepBasic_SiUnitAndVolumeUnit::SetVolumeUnit(const occ::handle<StepBasic_VolumeUnit>& aVolumeUnit)
 {
   volumeUnit = aVolumeUnit;
 }

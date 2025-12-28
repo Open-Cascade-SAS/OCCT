@@ -54,21 +54,21 @@
 // out      : True if the chanfer has been computed
 //           False else
 //=======================================================================
-bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
-                          const occ::handle<ChFiDS_SurfData>& Data,
-                          const gp_Pln&                       Pln,
-                          const gp_Cone&                      Con,
-                          const double                        fu,
-                          const double                        lu,
-                          const TopAbs_Orientation            Or1,
-                          const TopAbs_Orientation            Or2,
-                          const double                        Dis,
-                          const double                        Angle,
-                          const gp_Circ&                      Spine,
-                          const double                        First,
-                          const TopAbs_Orientation            Ofpl,
-                          const bool                          plandab,
-                          const bool                          DisOnP)
+bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&    DStr,
+                                      const occ::handle<ChFiDS_SurfData>& Data,
+                                      const gp_Pln&                  Pln,
+                                      const gp_Cone&                 Con,
+                                      const double            fu,
+                                      const double            lu,
+                                      const TopAbs_Orientation       Or1,
+                                      const TopAbs_Orientation       Or2,
+                                      const double            Dis,
+                                      const double            Angle,
+                                      const gp_Circ&                 Spine,
+                                      const double            First,
+                                      const TopAbs_Orientation       Ofpl,
+                                      const bool         plandab,
+                                      const bool         DisOnP)
 {
   // Compute the chamfer surface(cone)
   gp_Ax3 PosPl = Pln.Position();
@@ -80,7 +80,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     Dpl.Reverse();
 
   // compute the origin of the conical chamfer PtPl
-  gp_Pnt Or = Con.Location();
+  gp_Pnt        Or = Con.Location();
   double u, v;
   ElSLib::PlaneParameters(PosPl, Or, u, v);
   gp_Pnt2d pt2dPln(u, v);
@@ -105,13 +105,13 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
   bool ouvert = (Dpl.Dot(Dcon) >= 0.);
 
   // variables used to compute the semiangle of the chamfer
-  double angCon = Con.SemiAngle();
-  double move;
-  double ChamfRad, SemiAngl;
-  bool   pointu = false;
-  double dis;
-  bool   iscylinder = false;
-  bool   isConPar   = false;
+  double    angCon = Con.SemiAngle();
+  double    move;
+  double    ChamfRad, SemiAngl;
+  bool pointu = false;
+  double    dis;
+  bool iscylinder = false;
+  bool isConPar   = false;
 
   if ((plandab && DisOnP) || (!plandab && !DisOnP))
   {
@@ -259,9 +259,9 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
 
     Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(gcyl, DStr));
 
-    bool   torevcha = !ChamfAx3.Direct();
-    gp_Dir cylaxe   = (ChamfAx3.Axis()).Direction();
-    torevcha        = ((torevcha && !plandab) || (!torevcha && plandab));
+    bool torevcha = !ChamfAx3.Direct();
+    gp_Dir           cylaxe   = (ChamfAx3.Axis()).Direction();
+    torevcha                  = ((torevcha && !plandab) || (!torevcha && plandab));
 
     if (torevcha)
       cylaxe.Reverse();
@@ -282,7 +282,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     // intersection plane-chamfer
     occ::handle<Geom_Circle>   GCirPln;
     occ::handle<Geom2d_Circle> GCir2dPln;
-    gp_Ax2                     CirAx2 = ChamfAx3.Ax2();
+    gp_Ax2                CirAx2 = ChamfAx3.Ax2();
     CirAx2.SetLocation(PtPl);
 
     Pt.SetCoord(PtPl.X() + ChamfRad * Dx.X(),
@@ -303,7 +303,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     gp_Pnt2d p2dch;
     p2dch.SetCoord(0., 0.);
     // ElSLib::CylinderD1(0.,0.,ChamfAx3,ChamfRad,Pt,deru,derv);
-    gp_Lin2d                 lin2dch(p2dch, gp::DX2d());
+    gp_Lin2d            lin2dch(p2dch, gp::DX2d());
     occ::handle<Geom2d_Line> GLin2dCh1 = new Geom2d_Line(lin2dch);
 
     // orientation
@@ -347,7 +347,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       Rad = ChamfRad - dis;
 
     CirAx2.SetLocation(Or);
-    gp_Circ                  CirCon(CirAx2, Rad);
+    gp_Circ             CirCon(CirAx2, Rad);
     occ::handle<Geom_Circle> GCirCon = new Geom_Circle(CirCon);
 
     // pcurve on chamfer
@@ -379,7 +379,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       d2dCon = -gp::DX2d();
     else
       d2dCon = gp::DX2d();
-    gp_Lin2d                 lin2dCon(p2dCon, d2dCon);
+    gp_Lin2d            lin2dCon(p2dCon, d2dCon);
     occ::handle<Geom2d_Line> GLin2dCon = new Geom2d_Line(lin2dCon);
 
     // orientation
@@ -471,7 +471,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     // intersection plane-chamfer
     occ::handle<Geom_Circle>   GCirPln;
     occ::handle<Geom2d_Circle> GCir2dPln;
-    gp_Ax2                     CirAx2 = ChamfAx3.Ax2();
+    gp_Ax2                CirAx2 = ChamfAx3.Ax2();
     CirAx2.SetLocation(PtPl);
 
     if (!pointu)
@@ -495,7 +495,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
     gp_Pnt2d p2dch;
     p2dch.SetCoord(0., 0.);
     ElSLib::ConeD1(0., 0., ChamfAx3, ChamfRad, SemiAngl, Pt, deru, derv);
-    gp_Lin2d                 lin2dch(p2dch, gp::DX2d());
+    gp_Lin2d            lin2dch(p2dch, gp::DX2d());
     occ::handle<Geom2d_Line> GLin2dCh1 = new Geom2d_Line(lin2dch);
 
     // orientation
@@ -542,7 +542,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       Rad = ChamfRad - dis;
 
     CirAx2.SetLocation(Or);
-    gp_Circ                  CirCon(CirAx2, Rad);
+    gp_Circ             CirCon(CirAx2, Rad);
     occ::handle<Geom_Circle> GCirCon = new Geom_Circle(CirCon);
 
     // pcurve on chamfer
@@ -576,7 +576,7 @@ bool ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure&         DStr,
       d2dCon = -gp::DX2d();
     else
       d2dCon = gp::DX2d();
-    gp_Lin2d                 lin2dCon(p2dCon, d2dCon);
+    gp_Lin2d            lin2dCon(p2dCon, d2dCon);
     occ::handle<Geom2d_Line> GLin2dCon = new Geom2d_Line(lin2dCon);
 
     // orientation

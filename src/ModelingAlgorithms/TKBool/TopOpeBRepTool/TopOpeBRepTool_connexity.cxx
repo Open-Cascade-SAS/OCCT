@@ -84,7 +84,8 @@ const TopoDS_Shape& TopOpeBRepTool_connexity::Key() const
 
 //=================================================================================================
 
-int TopOpeBRepTool_connexity::Item(const int OriKey, NCollection_List<TopoDS_Shape>& Item) const
+int TopOpeBRepTool_connexity::Item(const int OriKey,
+                                                NCollection_List<TopoDS_Shape>&  Item) const
 {
   Item.Clear();
   Item = theItems(OriKey);
@@ -107,7 +108,8 @@ int TopOpeBRepTool_connexity::AllItems(NCollection_List<TopoDS_Shape>& Item) con
 
 //=================================================================================================
 
-void TopOpeBRepTool_connexity::AddItem(const int OriKey, const NCollection_List<TopoDS_Shape>& Item)
+void TopOpeBRepTool_connexity::AddItem(const int      OriKey,
+                                       const NCollection_List<TopoDS_Shape>& Item)
 {
   NCollection_List<TopoDS_Shape> copy;
   copy.Assign(Item);
@@ -123,9 +125,10 @@ void TopOpeBRepTool_connexity::AddItem(const int OriKey, const TopoDS_Shape& Ite
 
 //=================================================================================================
 
-bool TopOpeBRepTool_connexity::RemoveItem(const int OriKey, const TopoDS_Shape& Item)
+bool TopOpeBRepTool_connexity::RemoveItem(const int OriKey,
+                                                      const TopoDS_Shape&    Item)
 {
-  NCollection_List<TopoDS_Shape>&          item = theItems.ChangeValue(OriKey);
+  NCollection_List<TopoDS_Shape>&              item = theItems.ChangeValue(OriKey);
   NCollection_List<TopoDS_Shape>::Iterator it(item);
   while (it.More())
   {
@@ -166,7 +169,7 @@ NCollection_List<TopoDS_Shape>& TopOpeBRepTool_connexity::ChangeItem(const int O
 bool TopOpeBRepTool_connexity::IsMultiple() const
 {
   NCollection_List<TopoDS_Shape> lfound;
-  int                            nkeyitem = Item(FORWARD, lfound);
+  int     nkeyitem = Item(FORWARD, lfound);
   //  nkeyRitem += Item(INTERNAL,lfound); NOT VALID
   // if key is vertex : key appears F in closing E, only one time
   nkeyitem += Item(CLOSING, lfound);
@@ -179,9 +182,9 @@ bool TopOpeBRepTool_connexity::IsMultiple() const
 bool TopOpeBRepTool_connexity::IsFaulty() const
 {
   NCollection_List<TopoDS_Shape> lfound;
-  int                            nkeyRintem = Item(FORWARD, lfound);
-  int                            nkeyFitem  = Item(REVERSED, lfound);
-  bool                           faulty     = (nkeyRintem != nkeyFitem);
+  int     nkeyRintem = Item(FORWARD, lfound);
+  int     nkeyFitem  = Item(REVERSED, lfound);
+  bool     faulty     = (nkeyRintem != nkeyFitem);
   return faulty;
 }
 

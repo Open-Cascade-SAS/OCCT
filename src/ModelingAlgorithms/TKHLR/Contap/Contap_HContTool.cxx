@@ -24,10 +24,10 @@
 static double uinf, vinf, usup, vsup;
 
 int Contap_HContTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
-                                 const double,
-                                 const double)
+                                              const double,
+                                              const double)
 {
-  int                 nbs;
+  int    nbs;
   GeomAbs_SurfaceType typS = S->GetType();
   switch (typS)
   {
@@ -66,10 +66,10 @@ int Contap_HContTool::NbSamplesV(const occ::handle<Adaptor3d_Surface>& S,
 }
 
 int Contap_HContTool::NbSamplesU(const occ::handle<Adaptor3d_Surface>& S,
-                                 const double,
-                                 const double)
+                                              const double,
+                                              const double)
 {
-  int                 nbs;
+  int    nbs;
   GeomAbs_SurfaceType typS = S->GetType();
   switch (typS)
   {
@@ -120,14 +120,14 @@ int Contap_HContTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
   if (usup < uinf)
   {
     double temp = uinf;
-    uinf        = usup;
-    usup        = temp;
+    uinf               = usup;
+    usup               = temp;
   }
   if (vsup < vinf)
   {
     double temp = vinf;
-    vinf        = vsup;
-    vsup        = temp;
+    vinf               = vsup;
+    vsup               = temp;
   }
   if (uinf == RealFirst() && usup == RealLast())
   {
@@ -169,9 +169,9 @@ int Contap_HContTool::NbSamplePoints(const occ::handle<Adaptor3d_Surface>& S)
 }
 
 void Contap_HContTool::SamplePoint(const occ::handle<Adaptor3d_Surface>& S,
-                                   const int                             Index,
-                                   double&                               U,
-                                   double&                               V)
+                                   const int           Index,
+                                   double&                   U,
+                                   double&                   V)
 {
   if (S->GetType() == GeomAbs_BSplineSurface)
   {
@@ -249,24 +249,24 @@ int Contap_HContTool::NbSamplesOnArc(const occ::handle<Adaptor2d_Curve2d>& A)
 }
 
 void Contap_HContTool::Bounds(const occ::handle<Adaptor2d_Curve2d>& A,
-                              double&                               Ufirst,
-                              double&                               Ulast)
+                              double&                   Ufirst,
+                              double&                   Ulast)
 {
   Ufirst = A->FirstParameter();
   Ulast  = A->LastParameter();
 }
 
 bool Contap_HContTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
-                               const gp_Pnt2d&                       P,
-                               double&                               Paramproj,
-                               gp_Pnt2d&                             Ptproj)
+                                           const gp_Pnt2d&                  P,
+                                           double&                   Paramproj,
+                                           gp_Pnt2d&                        Ptproj)
 
 {
 
-  double epsX = 1.e-8;
-  int    Nbu  = 20;
-  double Tol  = 1.e-5;
-  double Dist2;
+  double    epsX = 1.e-8;
+  int Nbu  = 20;
+  double    Tol  = 1.e-5;
+  double    Dist2;
 
   Extrema_EPCOfExtPC2d extrema(P, *C, Nbu, epsX, Tol);
   if (!extrema.IsDone())
@@ -279,7 +279,7 @@ bool Contap_HContTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
     return false;
   }
   int indexmin = 1;
-  Dist2        = extrema.SquareDistance(1);
+  Dist2                     = extrema.SquareDistance(1);
   for (int i = 2; i <= Nbext; i++)
   {
     if (extrema.SquareDistance(i) < Dist2)
@@ -294,14 +294,14 @@ bool Contap_HContTool::Project(const occ::handle<Adaptor2d_Curve2d>& C,
 }
 
 double Contap_HContTool::Tolerance(const occ::handle<Adaptor3d_HVertex>& V,
-                                   const occ::handle<Adaptor2d_Curve2d>& C)
+                                          const occ::handle<Adaptor2d_Curve2d>& C)
 {
   //  return BRepAdaptor2d_Curve2dTool::Resolution(C,BRep_Tool::Tolerance(V));
   return V->Resolution(C);
 }
 
 double Contap_HContTool::Parameter(const occ::handle<Adaptor3d_HVertex>& V,
-                                   const occ::handle<Adaptor2d_Curve2d>& C)
+                                          const occ::handle<Adaptor2d_Curve2d>& C)
 {
   //  return BRep_Tool::Parameter(V,C.Edge());
   return V->Parameter(C);
@@ -326,7 +326,8 @@ void Contap_HContTool::Value(const occ::handle<Adaptor2d_Curve2d>&,
   throw Standard_OutOfRange();
 }
 
-bool Contap_HContTool::IsVertex(const occ::handle<Adaptor2d_Curve2d>&, const int)
+bool Contap_HContTool::IsVertex(const occ::handle<Adaptor2d_Curve2d>&,
+                                            const int)
 {
   return false;
 }
@@ -343,12 +344,16 @@ int Contap_HContTool::NbSegments(const occ::handle<Adaptor2d_Curve2d>&)
   return 0;
 }
 
-bool Contap_HContTool::HasFirstPoint(const occ::handle<Adaptor2d_Curve2d>&, const int, int&)
+bool Contap_HContTool::HasFirstPoint(const occ::handle<Adaptor2d_Curve2d>&,
+                                                 const int,
+                                                 int&)
 {
   throw Standard_OutOfRange();
 }
 
-bool Contap_HContTool::HasLastPoint(const occ::handle<Adaptor2d_Curve2d>&, const int, int&)
+bool Contap_HContTool::HasLastPoint(const occ::handle<Adaptor2d_Curve2d>&,
+                                                const int,
+                                                int&)
 {
   throw Standard_OutOfRange();
 }

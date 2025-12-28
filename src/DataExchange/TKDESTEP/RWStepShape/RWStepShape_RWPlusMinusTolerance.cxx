@@ -22,7 +22,7 @@ RWStepShape_RWPlusMinusTolerance::RWStepShape_RWPlusMinusTolerance() {}
 
 void RWStepShape_RWPlusMinusTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                                        num,
+  const int                      num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepShape_PlusMinusTolerance>& ent) const
 {
@@ -47,7 +47,7 @@ void RWStepShape_RWPlusMinusTolerance::ReadStep(
 }
 
 void RWStepShape_RWPlusMinusTolerance::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                        SW,
   const occ::handle<StepShape_PlusMinusTolerance>& ent) const
 {
   SW.Send(ent->Range().Value());
@@ -55,7 +55,7 @@ void RWStepShape_RWPlusMinusTolerance::WriteStep(
 }
 
 void RWStepShape_RWPlusMinusTolerance::Share(const occ::handle<StepShape_PlusMinusTolerance>& ent,
-                                             Interface_EntityIterator& iter) const
+                                             Interface_EntityIterator&                   iter) const
 {
   iter.AddItem(ent->Range().Value());
   iter.AddItem(ent->TolerancedDimension().Value());

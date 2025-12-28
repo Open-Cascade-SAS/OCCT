@@ -39,7 +39,7 @@ public:
   Standard_EXPORT void AddPart(const TopoDS_Shape& aShape, const TopAbs_State aState);
 
   Standard_EXPORT void AddParts(const NCollection_List<TopoDS_Shape>& aListOfShape,
-                                const TopAbs_State                    aState);
+                                const TopAbs_State          aState);
 
   Standard_EXPORT void SetState(const TopAbs_State aState);
 
@@ -53,8 +53,8 @@ private:
   NCollection_List<TopoDS_Shape> myPartIn;
   NCollection_List<TopoDS_Shape> myPartOut;
   NCollection_List<TopoDS_Shape> myPartOn;
-  TopAbs_State                   myState;
-  bool                           myIsSplitted;
+  TopAbs_State         myState;
+  bool     myIsSplitted;
 };
 
 #endif // _TopOpeBRepDS_ShapeWithState_HeaderFile

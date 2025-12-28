@@ -42,7 +42,7 @@ public:
   //! @param thePoint   the solution point
   //! @param theSolType the type of solution
   //! @param theVertex  and the Vertex
-  BRepExtrema_SolutionElem(const double                  theDist,
+  BRepExtrema_SolutionElem(const double           theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Vertex&          theVertex)
@@ -62,11 +62,11 @@ public:
   //! @param theSolType the type of solution
   //! @param theEdge    the Edge
   //! @param theParam   the parameter to locate the solution
-  BRepExtrema_SolutionElem(const double                  theDist,
+  BRepExtrema_SolutionElem(const double           theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Edge&            theEdge,
-                           const double                  theParam)
+                           const double           theParam)
       : myDist(theDist),
         myPoint(thePoint),
         mySupType(theSolType),
@@ -84,12 +84,12 @@ public:
   //! @param theFace    the Face
   //! @param theU       U parameter to locate the solution
   //! @param theV       V parameter to locate the solution
-  BRepExtrema_SolutionElem(const double                  theDist,
+  BRepExtrema_SolutionElem(const double           theDist,
                            const gp_Pnt&                 thePoint,
                            const BRepExtrema_SupportType theSolType,
                            const TopoDS_Face&            theFace,
-                           const double                  theU,
-                           const double                  theV)
+                           const double           theU,
+                           const double           theV)
       : myDist(theDist),
         myPoint(thePoint),
         mySupType(theSolType),
@@ -131,14 +131,14 @@ public:
   }
 
 private:
-  double                  myDist;
+  double           myDist;
   gp_Pnt                  myPoint;
   BRepExtrema_SupportType mySupType;
   TopoDS_Vertex           myVertex;
   TopoDS_Edge             myEdge;
   TopoDS_Face             myFace;
-  double                  myPar1;
-  double                  myPar2;
+  double           myPar1;
+  double           myPar2;
 };
 
 #endif

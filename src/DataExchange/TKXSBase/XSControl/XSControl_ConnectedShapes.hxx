@@ -55,10 +55,11 @@ public:
 
   //! Explores an entity : entities from which are connected to that
   //! produced by this entity, including itself
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium.
   //! "Connected Entities through produced Shapes"
@@ -66,10 +67,10 @@ public:
 
   //! This functions considers a shape from a transfer and performs
   //! the search function explained above
-  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-    AdjacentEntities(const TopoDS_Shape&                           ashape,
-                     const occ::handle<Transfer_TransientProcess>& TP,
-                     const TopAbs_ShapeEnum                        type);
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> AdjacentEntities(
+    const TopoDS_Shape&                      ashape,
+    const occ::handle<Transfer_TransientProcess>& TP,
+    const TopAbs_ShapeEnum                   type);
 
   DEFINE_STANDARD_RTTIEXT(XSControl_ConnectedShapes, IFSelect_SelectExplore)
 

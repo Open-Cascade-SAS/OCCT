@@ -30,6 +30,8 @@
 #include <AdvApp2Var_Framework.hxx>
 #include <Standard_Boolean.hxx>
 #include <Geom_Surface.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <AdvApp2Var_EvaluatorFunc2Var.hxx>
 #include <Standard_OStream.hxx>
 class AdvApprox_Cutting;
@@ -87,56 +89,54 @@ class AdvApp2Var_ApproxAFunc2Var
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApp2Var_ApproxAFunc2Var(
-    const int                                       Num1DSS,
-    const int                                       Num2DSS,
-    const int                                       Num3DSS,
-    const occ::handle<NCollection_HArray1<double>>& OneDTol,
-    const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-    const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-    const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
-    const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
-    const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
-    const double                                    FirstInU,
-    const double                                    LastInU,
-    const double                                    FirstInV,
-    const double                                    LastInV,
-    const GeomAbs_IsoType                           FavorIso,
-    const GeomAbs_Shape                             ContInU,
-    const GeomAbs_Shape                             ContInV,
-    const int                                       PrecisCode,
-    const int                                       MaxDegInU,
-    const int                                       MaxDegInV,
-    const int                                       MaxPatch,
-    const AdvApp2Var_EvaluatorFunc2Var&             Func,
-    AdvApprox_Cutting&                              UChoice,
-    AdvApprox_Cutting&                              VChoice);
+  Standard_EXPORT AdvApp2Var_ApproxAFunc2Var(const int               Num1DSS,
+                                             const int               Num2DSS,
+                                             const int               Num3DSS,
+                                             const occ::handle<NCollection_HArray1<double>>& OneDTol,
+                                             const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+                                             const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+                                             const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
+                                             const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
+                                             const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
+                                             const double                  FirstInU,
+                                             const double                  LastInU,
+                                             const double                  FirstInV,
+                                             const double                  LastInV,
+                                             const GeomAbs_IsoType                FavorIso,
+                                             const GeomAbs_Shape                  ContInU,
+                                             const GeomAbs_Shape                  ContInV,
+                                             const int               PrecisCode,
+                                             const int               MaxDegInU,
+                                             const int               MaxDegInV,
+                                             const int               MaxPatch,
+                                             const AdvApp2Var_EvaluatorFunc2Var&  Func,
+                                             AdvApprox_Cutting&                   UChoice,
+                                             AdvApprox_Cutting&                   VChoice);
 
-  Standard_EXPORT AdvApp2Var_ApproxAFunc2Var(
-    const int                                       Num1DSS,
-    const int                                       Num2DSS,
-    const int                                       Num3DSS,
-    const occ::handle<NCollection_HArray1<double>>& OneDTol,
-    const occ::handle<NCollection_HArray1<double>>& TwoDTol,
-    const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-    const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
-    const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
-    const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
-    const double                                    FirstInU,
-    const double                                    LastInU,
-    const double                                    FirstInV,
-    const double                                    LastInV,
-    const GeomAbs_IsoType                           FavorIso,
-    const GeomAbs_Shape                             ContInU,
-    const GeomAbs_Shape                             ContInV,
-    const int                                       PrecisCode,
-    const int                                       MaxDegInU,
-    const int                                       MaxDegInV,
-    const int                                       MaxPatch,
-    const AdvApp2Var_EvaluatorFunc2Var&             Func,
-    const AdvApp2Var_Criterion&                     Crit,
-    AdvApprox_Cutting&                              UChoice,
-    AdvApprox_Cutting&                              VChoice);
+  Standard_EXPORT AdvApp2Var_ApproxAFunc2Var(const int               Num1DSS,
+                                             const int               Num2DSS,
+                                             const int               Num3DSS,
+                                             const occ::handle<NCollection_HArray1<double>>& OneDTol,
+                                             const occ::handle<NCollection_HArray1<double>>& TwoDTol,
+                                             const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
+                                             const occ::handle<NCollection_HArray2<double>>& OneDTolFr,
+                                             const occ::handle<NCollection_HArray2<double>>& TwoDTolFr,
+                                             const occ::handle<NCollection_HArray2<double>>& ThreeDTolFr,
+                                             const double                  FirstInU,
+                                             const double                  LastInU,
+                                             const double                  FirstInV,
+                                             const double                  LastInV,
+                                             const GeomAbs_IsoType                FavorIso,
+                                             const GeomAbs_Shape                  ContInU,
+                                             const GeomAbs_Shape                  ContInV,
+                                             const int               PrecisCode,
+                                             const int               MaxDegInU,
+                                             const int               MaxDegInV,
+                                             const int               MaxPatch,
+                                             const AdvApp2Var_EvaluatorFunc2Var&  Func,
+                                             const AdvApp2Var_Criterion&          Crit,
+                                             AdvApprox_Cutting&                   UChoice,
+                                             AdvApprox_Cutting&                   VChoice);
 
   //! True if the approximation succeeded within the imposed
   //! tolerances and the wished continuities
@@ -160,7 +160,8 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> MaxError(const int Dimension) const;
 
   //! returns the average errors
-  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AverageError(const int Dimension) const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<double>> AverageError(
+    const int Dimension) const;
 
   //! returns the errors max on UFrontiers
   //! Warning:
@@ -173,18 +174,23 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> VFrontError(const int Dimension) const;
 
   //! returns the error max of the BSplineSurface of range Index
-  Standard_EXPORT double MaxError(const int Dimension, const int Index) const;
+  Standard_EXPORT double MaxError(const int Dimension,
+                                         const int Index) const;
 
   //! returns the average error of the BSplineSurface of range Index
-  Standard_EXPORT double AverageError(const int Dimension, const int Index) const;
+  Standard_EXPORT double AverageError(const int Dimension,
+                                             const int Index) const;
 
   //! returns the error max of the BSplineSurface of range Index on a UFrontier
-  Standard_EXPORT double UFrontError(const int Dimension, const int Index) const;
+  Standard_EXPORT double UFrontError(const int Dimension,
+                                            const int Index) const;
 
   //! returns the error max of the BSplineSurface of range Index on a VFrontier
-  Standard_EXPORT double VFrontError(const int Dimension, const int Index) const;
+  Standard_EXPORT double VFrontError(const int Dimension,
+                                            const int Index) const;
 
-  Standard_EXPORT double CritError(const int Dimension, const int Index) const;
+  Standard_EXPORT double CritError(const int Dimension,
+                                          const int Index) const;
 
   //! Prints on the stream 'o' information on the current state
   //! of the object.
@@ -241,45 +247,45 @@ private:
   //! Conversion of the approximation result in BSpline; used by Create
   Standard_EXPORT void ConvertBS();
 
-  int                                                         myNumSubSpaces[3];
-  occ::handle<NCollection_HArray1<double>>                    my1DTolerances;
-  occ::handle<NCollection_HArray1<double>>                    my2DTolerances;
-  occ::handle<NCollection_HArray1<double>>                    my3DTolerances;
-  occ::handle<NCollection_HArray2<double>>                    my1DTolOnFront;
-  occ::handle<NCollection_HArray2<double>>                    my2DTolOnFront;
-  occ::handle<NCollection_HArray2<double>>                    my3DTolOnFront;
-  double                                                      myFirstParInU;
-  double                                                      myLastParInU;
-  double                                                      myFirstParInV;
-  double                                                      myLastParInV;
-  GeomAbs_IsoType                                             myFavoriteIso;
-  GeomAbs_Shape                                               myContInU;
-  GeomAbs_Shape                                               myContInV;
-  int                                                         myPrecisionCode;
-  int                                                         myMaxDegInU;
-  int                                                         myMaxDegInV;
-  int                                                         myMaxPatches;
-  AdvApp2Var_Context                                          myConditions;
-  AdvApp2Var_Network                                          myResult;
-  AdvApp2Var_Framework                                        myConstraints;
-  bool                                                        myDone;
-  bool                                                        myHasResult;
+  int                  myNumSubSpaces[3];
+  occ::handle<NCollection_HArray1<double>>     my1DTolerances;
+  occ::handle<NCollection_HArray1<double>>     my2DTolerances;
+  occ::handle<NCollection_HArray1<double>>     my3DTolerances;
+  occ::handle<NCollection_HArray2<double>>     my1DTolOnFront;
+  occ::handle<NCollection_HArray2<double>>     my2DTolOnFront;
+  occ::handle<NCollection_HArray2<double>>     my3DTolOnFront;
+  double                     myFirstParInU;
+  double                     myLastParInU;
+  double                     myFirstParInV;
+  double                     myLastParInV;
+  GeomAbs_IsoType                   myFavoriteIso;
+  GeomAbs_Shape                     myContInU;
+  GeomAbs_Shape                     myContInV;
+  int                  myPrecisionCode;
+  int                  myMaxDegInU;
+  int                  myMaxDegInV;
+  int                  myMaxPatches;
+  AdvApp2Var_Context                myConditions;
+  AdvApp2Var_Network                myResult;
+  AdvApp2Var_Framework              myConstraints;
+  bool                  myDone;
+  bool                  myHasResult;
   occ::handle<NCollection_HArray1<occ::handle<Geom_Surface>>> mySurfaces;
-  int                                                         myDegreeInU;
-  int                                                         myDegreeInV;
-  occ::handle<NCollection_HArray1<double>>                    my1DMaxError;
-  occ::handle<NCollection_HArray1<double>>                    my1DAverageError;
-  occ::handle<NCollection_HArray1<double>>                    my1DUFrontError;
-  occ::handle<NCollection_HArray1<double>>                    my1DVFrontError;
-  occ::handle<NCollection_HArray1<double>>                    my2DMaxError;
-  occ::handle<NCollection_HArray1<double>>                    my2DAverageError;
-  occ::handle<NCollection_HArray1<double>>                    my2DUFrontError;
-  occ::handle<NCollection_HArray1<double>>                    my2DVFrontError;
-  occ::handle<NCollection_HArray1<double>>                    my3DMaxError;
-  occ::handle<NCollection_HArray1<double>>                    my3DAverageError;
-  occ::handle<NCollection_HArray1<double>>                    my3DUFrontError;
-  occ::handle<NCollection_HArray1<double>>                    my3DVFrontError;
-  double                                                      myCriterionError;
+  int                  myDegreeInU;
+  int                  myDegreeInV;
+  occ::handle<NCollection_HArray1<double>>     my1DMaxError;
+  occ::handle<NCollection_HArray1<double>>     my1DAverageError;
+  occ::handle<NCollection_HArray1<double>>     my1DUFrontError;
+  occ::handle<NCollection_HArray1<double>>     my1DVFrontError;
+  occ::handle<NCollection_HArray1<double>>     my2DMaxError;
+  occ::handle<NCollection_HArray1<double>>     my2DAverageError;
+  occ::handle<NCollection_HArray1<double>>     my2DUFrontError;
+  occ::handle<NCollection_HArray1<double>>     my2DVFrontError;
+  occ::handle<NCollection_HArray1<double>>     my3DMaxError;
+  occ::handle<NCollection_HArray1<double>>     my3DAverageError;
+  occ::handle<NCollection_HArray1<double>>     my3DUFrontError;
+  occ::handle<NCollection_HArray1<double>>     my3DVFrontError;
+  double                     myCriterionError;
 };
 
 #include <AdvApp2Var_ApproxAFunc2Var.lxx>

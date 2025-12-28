@@ -21,7 +21,7 @@
 RWStepVisual_RWPointStyle::RWStepVisual_RWPointStyle() {}
 
 void RWStepVisual_RWPointStyle::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepVisual_PointStyle>&   ent) const
 {
@@ -62,7 +62,7 @@ void RWStepVisual_RWPointStyle::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aName, aMarker, aMarkerSize, aMarkerColour);
 }
 
-void RWStepVisual_RWPointStyle::WriteStep(StepData_StepWriter&                      SW,
+void RWStepVisual_RWPointStyle::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepVisual_PointStyle>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepVisual_RWPointStyle::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepVisual_RWPointStyle::Share(const occ::handle<StepVisual_PointStyle>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   if (ent->Marker().CaseNumber() > 0)

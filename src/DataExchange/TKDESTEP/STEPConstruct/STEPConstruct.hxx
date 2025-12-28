@@ -47,7 +47,7 @@ public:
   //! no result is recorded
   Standard_EXPORT static occ::handle<StepRepr_RepresentationItem> FindEntity(
     const occ::handle<Transfer_FinderProcess>& FinderProcess,
-    const TopoDS_Shape&                        Shape);
+    const TopoDS_Shape&                   Shape);
 
   //! The same as above, but in the case if item not found, repeats
   //! search on the same shape without location. The Loc corresponds to the
@@ -55,8 +55,8 @@ public:
   //! or Null)
   Standard_EXPORT static occ::handle<StepRepr_RepresentationItem> FindEntity(
     const occ::handle<Transfer_FinderProcess>& FinderProcess,
-    const TopoDS_Shape&                        Shape,
-    TopLoc_Location&                           Loc);
+    const TopoDS_Shape&                   Shape,
+    TopLoc_Location&                      Loc);
 
   //! Returns Shape resulting from given STEP entity (Null if not mapped)
   Standard_EXPORT static TopoDS_Shape FindShape(

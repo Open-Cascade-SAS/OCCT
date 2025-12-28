@@ -32,10 +32,10 @@ StepBasic_DocumentProductAssociation::StepBasic_DocumentProductAssociation()
 //=================================================================================================
 
 void StepBasic_DocumentProductAssociation::Init(
-  const occ::handle<TCollection_HAsciiString>&    aName,
-  const bool                                      hasDescription,
-  const occ::handle<TCollection_HAsciiString>&    aDescription,
-  const occ::handle<StepBasic_Document>&          aRelatingDocument,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const bool                          hasDescription,
+  const occ::handle<TCollection_HAsciiString>&         aDescription,
+  const occ::handle<StepBasic_Document>&               aRelatingDocument,
   const StepBasic_ProductOrFormationOrDefinition& aRelatedProduct)
 {
 
@@ -63,8 +63,7 @@ occ::handle<TCollection_HAsciiString> StepBasic_DocumentProductAssociation::Name
 
 //=================================================================================================
 
-void StepBasic_DocumentProductAssociation::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_DocumentProductAssociation::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   theName = aName;
 }

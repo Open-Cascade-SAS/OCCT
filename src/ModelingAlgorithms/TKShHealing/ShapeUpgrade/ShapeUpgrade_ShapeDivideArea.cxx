@@ -45,8 +45,8 @@ ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea(const TopoDS_Shape& S
 occ::handle<ShapeUpgrade_FaceDivide> ShapeUpgrade_ShapeDivideArea::GetSplitFaceTool() const
 {
   occ::handle<ShapeUpgrade_FaceDivideArea> aFaceTool = new ShapeUpgrade_FaceDivideArea;
-  aFaceTool->MaxArea()                               = myMaxArea;
-  aFaceTool->NbParts()                               = myNbParts;
+  aFaceTool->MaxArea()                          = myMaxArea;
+  aFaceTool->NbParts()                          = myNbParts;
   aFaceTool->SetNumbersUVSplits(myUnbSplit, myVnbSplit);
   aFaceTool->SetSplittingByNumber(myIsSplittingByNumber);
   return aFaceTool;

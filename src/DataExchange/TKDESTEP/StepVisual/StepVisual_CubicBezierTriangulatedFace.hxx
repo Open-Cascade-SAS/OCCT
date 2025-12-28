@@ -35,13 +35,13 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-    const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
-    const int                                       theTessellatedFace_Pnmax,
-    const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
-    const bool                                      theHasTessellatedFace_GeometricLink,
-    const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
-    const occ::handle<NCollection_HArray2<int>>&    theCtriangles);
+    const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+    const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+    const int                    theTessellatedFace_Pnmax,
+    const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
+    const bool                    theHasTessellatedFace_GeometricLink,
+    const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+    const occ::handle<NCollection_HArray2<int>>&   theCtriangles);
 
   //! Returns field Ctriangles
   Standard_EXPORT occ::handle<NCollection_HArray2<int>> Ctriangles() const;

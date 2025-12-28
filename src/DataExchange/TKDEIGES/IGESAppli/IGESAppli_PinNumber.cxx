@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_PinNumber, IGESData_IGESEntity)
 
 IGESAppli_PinNumber::IGESAppli_PinNumber() {}
 
-void IGESAppli_PinNumber::Init(const int                                    nbPropVal,
+void IGESAppli_PinNumber::Init(const int                  nbPropVal,
                                const occ::handle<TCollection_HAsciiString>& aValue)
 {
   thePinNumber        = aValue;

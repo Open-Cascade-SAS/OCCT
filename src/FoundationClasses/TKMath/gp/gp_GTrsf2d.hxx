@@ -86,7 +86,9 @@ public:
   //! Replaces the coefficient (theRow, theCol) of the matrix representing
   //! this transformation by theValue,
   //! Raises OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
-  void SetValue(const int theRow, const int theCol, const double theValue);
+  void SetValue(const int theRow,
+                const int theCol,
+                const double    theValue);
 
   //! Replaces the translation part of this
   //! transformation by the coordinates of the number pair theCoord.
@@ -135,7 +137,10 @@ public:
   //! Raised OutOfRange if theRow < 1 or theRow > 2 or theCol < 1 or theCol > 3
   constexpr double Value(const int theRow, const int theCol) const;
 
-  double operator()(const int theRow, const int theCol) const { return Value(theRow, theCol); }
+  double operator()(const int theRow, const int theCol) const
+  {
+    return Value(theRow, theCol);
+  }
 
   Standard_EXPORT void Invert();
 
@@ -223,10 +228,10 @@ public:
   Standard_EXPORT gp_Trsf2d Trsf2d() const;
 
 private:
-  gp_Mat2d    matrix;
-  gp_XY       loc;
-  gp_TrsfForm shape;
-  double      scale;
+  gp_Mat2d      matrix;
+  gp_XY         loc;
+  gp_TrsfForm   shape;
+  double scale;
 };
 
 #include <gp_Trsf2d.hxx>
@@ -253,7 +258,9 @@ inline gp_GTrsf2d::gp_GTrsf2d(const gp_Trsf2d& theT)
 
 //=================================================================================================
 
-inline void gp_GTrsf2d::SetValue(const int theRow, const int theCol, const double theValue)
+inline void gp_GTrsf2d::SetValue(const int theRow,
+                                 const int theCol,
+                                 const double    theValue)
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol == 3)
@@ -269,7 +276,8 @@ inline void gp_GTrsf2d::SetValue(const int theRow, const int theCol, const doubl
 
 //=================================================================================================
 
-inline constexpr double gp_GTrsf2d::Value(const int theRow, const int theCol) const
+inline constexpr double gp_GTrsf2d::Value(const int theRow,
+                                                 const int theCol) const
 {
   Standard_OutOfRange_Raise_if(theRow < 1 || theRow > 2 || theCol < 1 || theCol > 3, " ");
   if (theCol == 3)
@@ -297,7 +305,8 @@ inline constexpr void gp_GTrsf2d::Transforms(gp_XY& theCoord) const noexcept
 
 //=================================================================================================
 
-inline constexpr void gp_GTrsf2d::Transforms(double& theX, double& theY) const noexcept
+inline constexpr void gp_GTrsf2d::Transforms(double& theX,
+                                             double& theY) const noexcept
 {
   gp_XY aDoublet(theX, theY);
   aDoublet.Multiply(matrix);

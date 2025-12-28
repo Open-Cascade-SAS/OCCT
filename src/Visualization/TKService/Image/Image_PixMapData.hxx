@@ -41,11 +41,11 @@ public:
 
   //! Initializer.
   bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
-            const size_t                                  theSizeBPP,
-            const size_t                                  theSizeX,
-            const size_t                                  theSizeY,
-            const size_t                                  theSizeRowBytes,
-            uint8_t*                                      theDataPtr)
+            const size_t                      theSizeBPP,
+            const size_t                      theSizeX,
+            const size_t                      theSizeY,
+            const size_t                      theSizeRowBytes,
+            uint8_t*                           theDataPtr)
   {
     return Init(theAlloc,
                 theSizeBPP,
@@ -56,10 +56,10 @@ public:
 
   //! Initializer.
   bool Init(const occ::handle<NCollection_BaseAllocator>& theAlloc,
-            const size_t                                  theSizeBPP,
-            const NCollection_Vec3<size_t>&               theSizeXYZ,
-            const size_t                                  theSizeRowBytes,
-            uint8_t*                                      theDataPtr)
+            const size_t                      theSizeBPP,
+            const NCollection_Vec3<size_t>&   theSizeXYZ,
+            const size_t                      theSizeRowBytes,
+            uint8_t*                           theDataPtr)
   {
     SetAllocator(theAlloc); // will free old data as well
 
@@ -133,7 +133,10 @@ public:
   }
 
   //! Return data pointer to requested 2D slice.
-  uint8_t* ChangeSlice(size_t theSlice) { return myData + ptrdiff_t(SizeSliceBytes * theSlice); }
+  uint8_t* ChangeSlice(size_t theSlice)
+  {
+    return myData + ptrdiff_t(SizeSliceBytes * theSlice);
+  }
 
   //! Return data pointer to requested row (first column).
   const uint8_t* SliceRow(size_t theSlice, size_t theRow) const

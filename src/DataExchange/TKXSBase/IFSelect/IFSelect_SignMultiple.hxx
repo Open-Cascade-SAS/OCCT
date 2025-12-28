@@ -22,7 +22,9 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IFSelect_Signature.hxx>
+#include <Standard_Integer.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;
@@ -45,14 +47,14 @@ public:
   //! replaced by a final dot)
   //! If <maxi> is False, just 3 blanks follow an overlength
   Standard_EXPORT void Add(const occ::handle<IFSelect_Signature>& subsign,
-                           const int                              width = 0,
-                           const bool                             maxi  = false);
+                           const int            width = 0,
+                           const bool            maxi  = false);
 
   //! Concatenates the values of sub-signatures, with their
   //! tabulations
-  Standard_EXPORT const char* Value(
-    const occ::handle<Standard_Transient>&       ent,
-    const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT const char*
+    Value(const occ::handle<Standard_Transient>&       ent,
+          const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Specialized Match Rule
   //! If <exact> is False, simply checks if at least one sub-item
@@ -60,15 +62,16 @@ public:
   //! If <exact> is True, standard match with Value
   //! (i.e. tabulations must be respected)
   Standard_EXPORT virtual bool Matches(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model,
-                                       const TCollection_AsciiString&               text,
-                                       const bool exact) const override;
+                                                   const occ::handle<Interface_InterfaceModel>& model,
+                                                   const TCollection_AsciiString&          text,
+                                                   const bool exact) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SignMultiple, IFSelect_Signature)
 
 private:
   NCollection_Sequence<occ::handle<Standard_Transient>> thesubs;
-  NCollection_Sequence<int>                             thetabs;
+  NCollection_Sequence<int>   thetabs;
 };
 
 #endif // _IFSelect_SignMultiple_HeaderFile

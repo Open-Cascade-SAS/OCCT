@@ -27,9 +27,9 @@ namespace
 //! Return merged style for the child node.
 static XCAFPrs_Style mergedStyle(const occ::handle<XCAFDoc_ColorTool>&       theColorTool,
                                  const occ::handle<XCAFDoc_VisMaterialTool>& theVisMatTool,
-                                 const XCAFPrs_Style&                        theParenStyle,
-                                 const TDF_Label&                            theLabel,
-                                 const TDF_Label&                            theRefLabel)
+                                 const XCAFPrs_Style&                   theParenStyle,
+                                 const TDF_Label&                       theLabel,
+                                 const TDF_Label&                       theRefLabel)
 {
   if (theColorTool.IsNull())
   {
@@ -95,11 +95,10 @@ TCollection_AsciiString XCAFPrs_DocumentExplorer::DefineChildId(
 
 //=================================================================================================
 
-TDF_Label XCAFPrs_DocumentExplorer::FindLabelFromPathId(
-  const occ::handle<TDocStd_Document>& theDocument,
-  const TCollection_AsciiString&       theId,
-  TopLoc_Location&                     theParentLocation,
-  TopLoc_Location&                     theLocation)
+TDF_Label XCAFPrs_DocumentExplorer::FindLabelFromPathId(const occ::handle<TDocStd_Document>& theDocument,
+                                                        const TCollection_AsciiString&  theId,
+                                                        TopLoc_Location& theParentLocation,
+                                                        TopLoc_Location& theLocation)
 {
   theParentLocation = TopLoc_Location();
   theLocation       = TopLoc_Location();
@@ -133,7 +132,7 @@ TDF_Label XCAFPrs_DocumentExplorer::FindLabelFromPathId(
 
 TopoDS_Shape XCAFPrs_DocumentExplorer::FindShapeFromPathId(
   const occ::handle<TDocStd_Document>& theDocument,
-  const TCollection_AsciiString&       theId)
+  const TCollection_AsciiString&  theId)
 {
   TopLoc_Location aLocation;
   TDF_Label       anInstanceLabel = FindLabelFromPathId(theDocument, theId, aLocation);
@@ -171,25 +170,25 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer()
 
 //=================================================================================================
 
-XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>& theDocument,
-                                                   const XCAFPrs_DocumentExplorerFlags  theFlags,
-                                                   const XCAFPrs_Style&                 theDefStyle)
+XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>&     theDocument,
+                                                   const XCAFPrs_DocumentExplorerFlags theFlags,
+                                                   const XCAFPrs_Style&                theDefStyle)
     : myTop(-1),
       myHasMore(false),
       myFlags(XCAFPrs_DocumentExplorerFlags_None)
 {
-  occ::handle<XCAFDoc_ShapeTool>  aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
-  NCollection_Sequence<TDF_Label> aRootLabels;
+  occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+  NCollection_Sequence<TDF_Label>         aRootLabels;
   aShapeTool->GetFreeShapes(aRootLabels);
   Init(theDocument, aRootLabels, theFlags, theDefStyle);
 }
 
 //=================================================================================================
 
-XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>& theDocument,
-                                                   const NCollection_Sequence<TDF_Label>& theRoots,
-                                                   const XCAFPrs_DocumentExplorerFlags    theFlags,
-                                                   const XCAFPrs_Style& theDefStyle)
+XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Document>&     theDocument,
+                                                   const NCollection_Sequence<TDF_Label>&            theRoots,
+                                                   const XCAFPrs_DocumentExplorerFlags theFlags,
+                                                   const XCAFPrs_Style&                theDefStyle)
     : myTop(-1),
       myHasMore(false),
       myFlags(XCAFPrs_DocumentExplorerFlags_None)
@@ -199,10 +198,10 @@ XCAFPrs_DocumentExplorer::XCAFPrs_DocumentExplorer(const occ::handle<TDocStd_Doc
 
 //=================================================================================================
 
-void XCAFPrs_DocumentExplorer::Init(const occ::handle<TDocStd_Document>& theDocument,
-                                    const TDF_Label&                     theRoot,
-                                    const XCAFPrs_DocumentExplorerFlags  theFlags,
-                                    const XCAFPrs_Style&                 theDefStyle)
+void XCAFPrs_DocumentExplorer::Init(const occ::handle<TDocStd_Document>&     theDocument,
+                                    const TDF_Label&                    theRoot,
+                                    const XCAFPrs_DocumentExplorerFlags theFlags,
+                                    const XCAFPrs_Style&                theDefStyle)
 {
   NCollection_Sequence<TDF_Label> aSeq;
   aSeq.Append(theRoot);
@@ -211,10 +210,10 @@ void XCAFPrs_DocumentExplorer::Init(const occ::handle<TDocStd_Document>& theDocu
 
 //=================================================================================================
 
-void XCAFPrs_DocumentExplorer::Init(const occ::handle<TDocStd_Document>&   theDocument,
-                                    const NCollection_Sequence<TDF_Label>& theRoots,
-                                    const XCAFPrs_DocumentExplorerFlags    theFlags,
-                                    const XCAFPrs_Style&                   theDefStyle)
+void XCAFPrs_DocumentExplorer::Init(const occ::handle<TDocStd_Document>&     theDocument,
+                                    const NCollection_Sequence<TDF_Label>&            theRoots,
+                                    const XCAFPrs_DocumentExplorerFlags theFlags,
+                                    const XCAFPrs_Style&                theDefStyle)
 {
   if ((theFlags & XCAFPrs_DocumentExplorerFlags_NoStyle) == 0)
   {

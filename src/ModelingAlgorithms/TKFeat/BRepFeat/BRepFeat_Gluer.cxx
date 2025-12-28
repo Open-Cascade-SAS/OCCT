@@ -17,6 +17,7 @@
 #include <BRepFeat_Gluer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================

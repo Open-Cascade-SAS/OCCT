@@ -29,7 +29,7 @@ StepShape_DimensionalLocationWithPath::StepShape_DimensionalLocationWithPath() {
 
 void StepShape_DimensionalLocationWithPath::Init(
   const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Name,
-  const bool                                   hasShapeAspectRelationship_Description,
+  const bool                  hasShapeAspectRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aShapeAspectRelationship_Description,
   const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatingShapeAspect,
   const occ::handle<StepRepr_ShapeAspect>&     aShapeAspectRelationship_RelatedShapeAspect,

@@ -24,8 +24,7 @@ class Geom_Surface;
 struct GeomHash_SurfaceHasher
 {
   // Hashes any Geom_Surface by dispatching to the appropriate specific hasher.
-  Standard_EXPORT std::size_t operator()(
-    const occ::handle<Geom_Surface>& theSurface) const noexcept;
+  Standard_EXPORT std::size_t operator()(const occ::handle<Geom_Surface>& theSurface) const noexcept;
 
   // Compares two surfaces using polymorphic dispatch.
   Standard_EXPORT bool operator()(const occ::handle<Geom_Surface>& theSurface1,

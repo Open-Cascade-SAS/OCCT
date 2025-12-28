@@ -37,14 +37,14 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-    const bool                                        hasItemDefinedTransformation_Description,
+    const bool                       hasItemDefinedTransformation_Description,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
     const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
     const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve1,
     const occ::handle<StepGeom_Curve>&                thePlanarCurvePair_Curve2,
-    const bool                                        thePlanarCurvePair_Orientation,
+    const bool                       thePlanarCurvePair_Orientation,
     const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve1,
     const occ::handle<StepGeom_TrimmedCurve>&         theRangeOnCurve2);
 

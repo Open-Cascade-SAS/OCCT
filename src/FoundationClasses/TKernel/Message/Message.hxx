@@ -103,9 +103,9 @@ public:
   //! 1. (5, 12, 26.3345) returns "05h:12m:26.33s",
   //! 2. (0,  6, 34.496 ) returns "06m:34.50s",
   //! 3. (0,  0,  4.5   ) returns "4.50s"
-  Standard_EXPORT static TCollection_AsciiString FillTime(const int    Hour,
-                                                          const int    Minute,
-                                                          const double Second);
+  Standard_EXPORT static TCollection_AsciiString FillTime(const int Hour,
+                                                          const int Minute,
+                                                          const double    Second);
 
 public:
   //! returns the only one instance of Report
@@ -117,7 +117,8 @@ public:
   //! @param theString string identifier
   //! @param theType detected type of metric
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool MetricFromString(const char* theString, Message_MetricType& theType);
+  Standard_EXPORT static bool MetricFromString(const char* theString,
+                                                           Message_MetricType&    theType);
 
   //! Returns the string name for a given metric type.
   //! @param theType metric type
@@ -139,14 +140,14 @@ public:
   //! @param[out] theMemInfo  filled memory info type
   //! @return true if converted
   static Standard_EXPORT bool ToOSDMetric(const Message_MetricType theMetric,
-                                          OSD_MemInfo::Counter&    theMemInfo);
+                                                      OSD_MemInfo::Counter&    theMemInfo);
 
   //! Converts OSD memory info type to message metric.
   //! @param theMemInfo [int] memory info type
   //! @param[out] theMetric  filled message metric
   //! @return true if converted
   static Standard_EXPORT bool ToMessageMetric(const OSD_MemInfo::Counter theMemInfo,
-                                              Message_MetricType&        theMetric);
+                                                          Message_MetricType&        theMetric);
 };
 
 #endif // _Message_HeaderFile

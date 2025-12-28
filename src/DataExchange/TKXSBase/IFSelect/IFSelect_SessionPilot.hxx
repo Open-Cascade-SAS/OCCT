@@ -22,6 +22,8 @@
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <IFSelect_Activator.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <IFSelect_PrintCount.hxx>
@@ -176,8 +178,8 @@ public:
   //! CountByItem
   Standard_EXPORT IFSelect_ReturnStatus
     ExecuteCounter(const occ::handle<IFSelect_SignCounter>& counter,
-                   const int                                numword,
-                   const IFSelect_PrintCount                mode = IFSelect_CountByItem);
+                   const int              numword,
+                   const IFSelect_PrintCount           mode = IFSelect_CountByItem);
 
   //! Interprets a string value as an entity number :
   //! if it gives an integer, returns its value
@@ -195,8 +197,9 @@ public:
   //! xstep is a simple prefix (useful in a wider environment, to
   //! avoid conflicts on command names)
   //! xset control commands which create items with names
-  Standard_EXPORT IFSelect_ReturnStatus
-    Do(const int number, const occ::handle<IFSelect_SessionPilot>& session) override;
+  Standard_EXPORT IFSelect_ReturnStatus Do(const int               number,
+                                           const occ::handle<IFSelect_SessionPilot>& session)
+    override;
 
   //! Help for specific commands (apart from general command help)
   Standard_EXPORT const char* Help(const int number) const override;
@@ -204,15 +207,15 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_SessionPilot, IFSelect_Activator)
 
 private:
-  occ::handle<IFSelect_WorkSession>             thesession;
-  TCollection_AsciiString                       theprompt;
-  TCollection_AsciiString                       thecommand;
-  int                                           thenbwords;
+  occ::handle<IFSelect_WorkSession>  thesession;
+  TCollection_AsciiString       theprompt;
+  TCollection_AsciiString       thecommand;
+  int              thenbwords;
   NCollection_Array1<TCollection_AsciiString>   thewords;
-  NCollection_Array1<int>                       thewordeb;
-  bool                                          therecord;
-  int                                           thenumrec;
-  occ::handle<Standard_Transient>               theobjrec;
+  NCollection_Array1<int>       thewordeb;
+  bool              therecord;
+  int              thenumrec;
+  occ::handle<Standard_Transient>    theobjrec;
   NCollection_Sequence<TCollection_AsciiString> thecomlist;
 };
 

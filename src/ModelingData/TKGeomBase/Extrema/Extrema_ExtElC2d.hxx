@@ -42,11 +42,15 @@ public:
   //! Calculates the distance between two lines.
   //! AngTol is used to test if the lines are parallel:
   //! Angle(C1,C2) < AngTol.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Lin2d& C2, const double AngTol);
+  Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d&     C1,
+                                   const gp_Lin2d&     C2,
+                                   const double AngTol);
 
   //! Calculates the distance between a line and a
   //! circle.
-  Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Circ2d& C2, const double Tol);
+  Standard_EXPORT Extrema_ExtElC2d(const gp_Lin2d&     C1,
+                                   const gp_Circ2d&    C2,
+                                   const double Tol);
 
   //! Calculates the distance between a line and an
   //! ellipse.
@@ -90,13 +94,15 @@ public:
 
   //! Returns the points of the Nth extremum distance.
   //! P1 is on the first curve, P2 on the second one.
-  Standard_EXPORT void Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const;
+  Standard_EXPORT void Points(const int N,
+                              Extrema_POnCurv2d&     P1,
+                              Extrema_POnCurv2d&     P2) const;
 
 private:
-  bool              myDone;
-  bool              myIsPar;
-  int               myNbExt;
-  double            mySqDist[8];
+  bool  myDone;
+  bool  myIsPar;
+  int  myNbExt;
+  double     mySqDist[8];
   Extrema_POnCurv2d myPoint[8][2];
 };
 

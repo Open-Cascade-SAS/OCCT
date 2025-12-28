@@ -24,6 +24,7 @@
 #include <Standard_Integer.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 class Geom_BSplineCurve;
 class Geom_BezierCurve;
 
@@ -59,11 +60,10 @@ public:
   //! curve [FirstParameter, LastParameter]. The Tolerance criterion
   //! is ParametricTolerance.
   //! Raised if Abs (U2 - U1) <= ParametricTolerance.
-  Standard_EXPORT GeomConvert_BSplineCurveToBezierCurve(
-    const occ::handle<Geom_BSplineCurve>& BasisCurve,
-    const double                          U1,
-    const double                          U2,
-    const double                          ParametricTolerance);
+  Standard_EXPORT GeomConvert_BSplineCurveToBezierCurve(const occ::handle<Geom_BSplineCurve>& BasisCurve,
+                                                        const double              U1,
+                                                        const double              U2,
+                                                        const double ParametricTolerance);
 
   //! Constructs and returns the Bezier curve of index
   //! Index to the table of adjacent Bezier arcs

@@ -81,7 +81,10 @@ Geom_Plane::Geom_Plane(const Pnt& P, const Dir& V)
 
 //=================================================================================================
 
-Geom_Plane::Geom_Plane(const double A, const double B, const double C, const double D)
+Geom_Plane::Geom_Plane(const double A,
+                       const double B,
+                       const double C,
+                       const double D)
 {
 
   gp_Pln Pl(A, B, C, D);
@@ -175,7 +178,10 @@ bool Geom_Plane::IsVPeriodic() const
 
 //=================================================================================================
 
-void Geom_Plane::Bounds(double& U1, double& U2, double& V1, double& V2) const
+void Geom_Plane::Bounds(double& U1,
+                        double& U2,
+                        double& V1,
+                        double& V2) const
 {
 
   U1 = -Precision::Infinite();
@@ -186,7 +192,10 @@ void Geom_Plane::Bounds(double& U1, double& U2, double& V1, double& V2) const
 
 //=================================================================================================
 
-void Geom_Plane::Coefficients(double& A, double& B, double& C, double& D) const
+void Geom_Plane::Coefficients(double& A,
+                              double& B,
+                              double& C,
+                              double& D) const
 {
 
   gp_Pln Pl(Position());
@@ -213,12 +222,12 @@ void Geom_Plane::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) 
 
 void Geom_Plane::D2(const double U,
                     const double V,
-                    Pnt&         P,
-                    Vec&         D1U,
-                    Vec&         D1V,
-                    Vec&         D2U,
-                    Vec&         D2V,
-                    Vec&         D2UV) const
+                    Pnt&                P,
+                    Vec&                D1U,
+                    Vec&                D1V,
+                    Vec&                D2U,
+                    Vec&                D2V,
+                    Vec&                D2UV) const
 {
 
   ElSLib::PlaneD1(U, V, pos, P, D1U, D1V);
@@ -231,16 +240,16 @@ void Geom_Plane::D2(const double U,
 
 void Geom_Plane::D3(const double U,
                     const double V,
-                    Pnt&         P,
-                    Vec&         D1U,
-                    Vec&         D1V,
-                    Vec&         D2U,
-                    Vec&         D2V,
-                    Vec&         D2UV,
-                    Vec&         D3U,
-                    Vec&         D3V,
-                    Vec&         D3UUV,
-                    Vec&         D3UVV) const
+                    Pnt&                P,
+                    Vec&                D1U,
+                    Vec&                D1V,
+                    Vec&                D2U,
+                    Vec&                D2V,
+                    Vec&                D2UV,
+                    Vec&                D3U,
+                    Vec&                D3V,
+                    Vec&                D3UUV,
+                    Vec&                D3UVV) const
 {
   ElSLib::PlaneD1(U, V, pos, P, D1U, D1V);
   D2U.SetCoord(0.0, 0.0, 0.0);
@@ -254,7 +263,10 @@ void Geom_Plane::D3(const double U,
 
 //=================================================================================================
 
-Vec Geom_Plane::DN(const double, const double, const int Nu, const int Nv) const
+Vec Geom_Plane::DN(const double,
+                   const double,
+                   const int Nu,
+                   const int Nv) const
 {
 
   Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");

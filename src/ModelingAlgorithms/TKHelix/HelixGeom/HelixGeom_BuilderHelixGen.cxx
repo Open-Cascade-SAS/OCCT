@@ -34,12 +34,12 @@ HelixGeom_BuilderHelixGen::~HelixGeom_BuilderHelixGen() {}
 
 //=================================================================================================
 
-void HelixGeom_BuilderHelixGen::SetCurveParameters(const double aT1,
-                                                   const double aT2,
-                                                   const double aPitch,
-                                                   const double aRStart,
-                                                   const double aTaperAngle,
-                                                   const bool   aIsCW)
+void HelixGeom_BuilderHelixGen::SetCurveParameters(const double    aT1,
+                                                   const double    aT2,
+                                                   const double    aPitch,
+                                                   const double    aRStart,
+                                                   const double    aTaperAngle,
+                                                   const bool aIsCW)
 {
   // Input validation would typically be done in derived classes or Load methods
   // Base class just stores the values
@@ -53,12 +53,12 @@ void HelixGeom_BuilderHelixGen::SetCurveParameters(const double aT1,
 
 //=================================================================================================
 
-void HelixGeom_BuilderHelixGen::CurveParameters(double& aT1,
-                                                double& aT2,
-                                                double& aPitch,
-                                                double& aRStart,
-                                                double& aTaperAngle,
-                                                bool&   aIsClockWise) const
+void HelixGeom_BuilderHelixGen::CurveParameters(double&    aT1,
+                                                double&    aT2,
+                                                double&    aPitch,
+                                                double&    aRStart,
+                                                double&    aTaperAngle,
+                                                bool& aIsClockWise) const
 {
   aT1          = myT1;
   aT2          = myT2;

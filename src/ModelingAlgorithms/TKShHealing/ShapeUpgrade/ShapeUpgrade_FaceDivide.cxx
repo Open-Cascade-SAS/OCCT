@@ -105,7 +105,7 @@ bool ShapeUpgrade_FaceDivide::SplitSurface(const double theArea)
   }
   TopoDS_Face face = TopoDS::Face(myResult);
 
-  TopLoc_Location           L;
+  TopLoc_Location      L;
   occ::handle<Geom_Surface> surf;
   surf = BRep_Tool::Surface(face, L);
 

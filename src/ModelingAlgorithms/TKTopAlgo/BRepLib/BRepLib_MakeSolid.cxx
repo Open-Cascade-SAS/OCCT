@@ -24,6 +24,7 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -43,7 +44,7 @@ BRepLib_MakeSolid::BRepLib_MakeSolid(const TopoDS_CompSolid& S)
   BRep_Builder B;
   B.MakeSolid(TopoDS::Solid(myShape));
 
-  TopExp_Explorer                                        ex1, ex2;
+  TopExp_Explorer     ex1, ex2;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfFaces;
   for (ex1.Init(S, TopAbs_SHELL); ex1.More(); ex1.Next())
   {
@@ -158,7 +159,7 @@ BRepLib_MakeSolid::operator TopoDS_Solid()
 
 BRepLib_ShapeModification BRepLib_MakeSolid::FaceStatus(const TopoDS_Face& F) const
 {
-  BRepLib_ShapeModification                myStatus = BRepLib_Preserved;
+  BRepLib_ShapeModification          myStatus = BRepLib_Preserved;
   NCollection_List<TopoDS_Shape>::Iterator anIter(myDeletedFaces);
 
   for (; anIter.More(); anIter.Next())

@@ -29,7 +29,7 @@ RWStepRepr_RWContinuosShapeAspect::RWStepRepr_RWContinuosShapeAspect() {}
 
 void RWStepRepr_RWContinuosShapeAspect::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepRepr_ContinuosShapeAspect>& ent) const
 {
@@ -73,7 +73,7 @@ void RWStepRepr_RWContinuosShapeAspect::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWContinuosShapeAspect::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepRepr_ContinuosShapeAspect>& ent) const
 {
 

@@ -27,7 +27,7 @@ Transfer_ActorOfTransientProcess::Transfer_ActorOfTransientProcess() {}
 occ::handle<Transfer_Binder> Transfer_ActorOfTransientProcess::Transfer(
   const occ::handle<Standard_Transient>&        start,
   const occ::handle<Transfer_TransientProcess>& TP,
-  const Message_ProgressRange&                  theProgress)
+  const Message_ProgressRange&             theProgress)
 {
   occ::handle<Standard_Transient> res = TransferTransient(start, TP, theProgress);
   if (res.IsNull())
@@ -40,7 +40,7 @@ occ::handle<Transfer_Binder> Transfer_ActorOfTransientProcess::Transfer(
 occ::handle<Transfer_Binder> Transfer_ActorOfTransientProcess::Transferring(
   const occ::handle<Standard_Transient>&           ent,
   const occ::handle<Transfer_ProcessForTransient>& TP,
-  const Message_ProgressRange&                     theProgress)
+  const Message_ProgressRange&                theProgress)
 {
   return Transfer(ent, occ::down_cast<Transfer_TransientProcess>(TP), theProgress);
 }

@@ -29,7 +29,7 @@ RWStepFEA_RWFreedomAndCoefficient::RWStepFEA_RWFreedomAndCoefficient() {}
 
 void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepFEA_FreedomAndCoefficient>& ent) const
 {
@@ -52,7 +52,7 @@ void RWStepFEA_RWFreedomAndCoefficient::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFreedomAndCoefficient::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepFEA_FreedomAndCoefficient>& ent) const
 {
 

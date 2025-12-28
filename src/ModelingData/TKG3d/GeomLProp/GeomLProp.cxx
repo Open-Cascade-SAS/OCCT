@@ -59,21 +59,21 @@ static int GeomAbsToInteger(const GeomAbs_Shape gcont)
 
 GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
                                     const occ::handle<Geom_Curve>& C2,
-                                    const double                   u1,
-                                    const double                   u2,
-                                    const bool                     r1,
-                                    const bool                     r2,
-                                    const double                   tl,
-                                    const double                   ta)
+                                    const double       u1,
+                                    const double       u2,
+                                    const bool    r1,
+                                    const bool    r2,
+                                    const double       tl,
+                                    const double       ta)
 {
-  GeomAbs_Shape cont = GeomAbs_C0;
-  int           index1, index2;
-  double        tolerance;
-  bool          fini = false;
-  gp_Vec        d1, d2;
-  gp_Dir        dir1, dir2;
-  int           cont1, cont2;
-  GeomAbs_Shape gcont1 = C1->Continuity(), gcont2 = C2->Continuity();
+  GeomAbs_Shape    cont = GeomAbs_C0;
+  int index1, index2;
+  double    tolerance;
+  bool fini = false;
+  gp_Vec           d1, d2;
+  gp_Dir           dir1, dir2;
+  int cont1, cont2;
+  GeomAbs_Shape    gcont1 = C1->Continuity(), gcont2 = C2->Continuity();
   cont1 = GeomAbsToInteger(gcont1);
   cont2 = GeomAbsToInteger(gcont2);
 
@@ -82,12 +82,12 @@ GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
   if (C1->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve1);
-    aCurve1                                 = aTrimmed->BasisCurve();
+    aCurve1                            = aTrimmed->BasisCurve();
   }
   if (C2->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
     occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(aCurve2);
-    aCurve2                                 = aTrimmed->BasisCurve();
+    aCurve2                            = aTrimmed->BasisCurve();
   }
   if (aCurve1->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
@@ -186,10 +186,10 @@ GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
 
 GeomAbs_Shape GeomLProp::Continuity(const occ::handle<Geom_Curve>& C1,
                                     const occ::handle<Geom_Curve>& C2,
-                                    const double                   u1,
-                                    const double                   u2,
-                                    const bool                     r1,
-                                    const bool                     r2)
+                                    const double       u1,
+                                    const double       u2,
+                                    const bool    r1,
+                                    const bool    r2)
 {
   return Continuity(C1, C2, u1, u2, r1, r2, Precision::Confusion(), Precision::Angular());
 }

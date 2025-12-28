@@ -30,11 +30,10 @@ public:
   Standard_EXPORT StepRepr_CharacterizedRepresentation();
 
   //! Returns a CharacterizedRepresentation
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& theName,
-    const occ::handle<TCollection_HAsciiString>& theDescription,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theItems,
-    const occ::handle<StepRepr_RepresentationContext>& theContextOfItems);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&             theName,
+                            const occ::handle<TCollection_HAsciiString>&             theDescription,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theItems,
+                            const occ::handle<StepRepr_RepresentationContext>&       theContextOfItems);
 
   void SetDescription(const occ::handle<TCollection_HAsciiString>& theDescription)
   {

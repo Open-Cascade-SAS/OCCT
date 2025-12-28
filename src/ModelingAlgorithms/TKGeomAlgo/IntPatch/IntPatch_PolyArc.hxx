@@ -23,6 +23,7 @@
 
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <IntPatch_Polygo.hxx>
 #include <Standard_Integer.hxx>
 class Bnd_Box2d;
@@ -37,10 +38,10 @@ public:
   //! The arc is limited by the parameters Pfirst and Plast.
   //! None of these parameters can be infinite.
   Standard_EXPORT IntPatch_PolyArc(const occ::handle<Adaptor2d_Curve2d>& A,
-                                   const int                             NbSample,
-                                   const double                          Pfirst,
-                                   const double                          Plast,
-                                   const Bnd_Box2d&                      BoxOtherPolygon);
+                                   const int           NbSample,
+                                   const double              Pfirst,
+                                   const double              Plast,
+                                   const Bnd_Box2d&                 BoxOtherPolygon);
 
   Standard_EXPORT virtual bool Closed() const override;
 
@@ -54,10 +55,10 @@ public:
 
 private:
   NCollection_Array1<gp_Pnt2d> brise;
-  NCollection_Array1<double>   param;
-  double                       offsetx;
-  double                       offsety;
-  bool                         ferme;
+  NCollection_Array1<double> param;
+  double        offsetx;
+  double        offsety;
+  bool     ferme;
 };
 
 #endif // _IntPatch_PolyArc_HeaderFile

@@ -45,16 +45,14 @@ public:
   Standard_EXPORT const TopoDS_Shape Copied(const TopoDS_Shape& aShape) const;
 
   //! returns DataMap of results; (shape <-> copied shape)
-  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-                        Copied() const;
+  Standard_EXPORT const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& Copied() const;
 
   Standard_EXPORT void DumpMap(const bool isWrite = false) const;
 
 private:
-  bool myIsDone;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>>
-                                                                           myMap;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myDataMapOfResults;
+  bool                           myIsDone;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Standard_Transient>> myMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>               myDataMapOfResults;
 };
 
 #endif // _TNaming_Translator_HeaderFile

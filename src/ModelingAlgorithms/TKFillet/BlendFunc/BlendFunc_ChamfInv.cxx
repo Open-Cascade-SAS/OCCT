@@ -32,7 +32,9 @@ BlendFunc_ChamfInv::BlendFunc_ChamfInv(const occ::handle<Adaptor3d_Surface>& S1,
 
 //=================================================================================================
 
-void BlendFunc_ChamfInv::Set(const double Dist1, const double Dist2, const int Choix)
+void BlendFunc_ChamfInv::Set(const double    Dist1,
+                             const double    Dist2,
+                             const int Choix)
 {
   double dis1, dis2;
 
@@ -79,8 +81,8 @@ bool BlendFunc_ChamfInv::IsSolution(const math_Vector& Sol, const double Tol)
   gp_Vec2d v2d;
   csurf->D1(Sol(1), p2d, v2d);
 
-  math_Vector Sol1(1, 2), Sol2(1, 2);
-  bool        issol;
+  math_Vector      Sol1(1, 2), Sol2(1, 2);
+  bool issol;
 
   Sol1(1) = p2d.X();
   Sol1(2) = p2d.Y();
@@ -141,13 +143,13 @@ bool BlendFunc_ChamfInv::Value(const math_Vector& X, math_Vector& F)
 
 bool BlendFunc_ChamfInv::Derivatives(const math_Vector& X, math_Matrix& D)
 {
-  int         i, j;
-  gp_Pnt2d    p2d;
-  gp_Vec2d    v2d, df1, df2;
-  gp_Pnt      pts, ptgui;
-  gp_Vec      temp, d1u, d1v, nplan;
-  math_Vector x1(1, 2), x2(1, 2);
-  math_Matrix d1(1, 2, 1, 2), d2(1, 2, 1, 2);
+  int i, j;
+  gp_Pnt2d         p2d;
+  gp_Vec2d         v2d, df1, df2;
+  gp_Pnt           pts, ptgui;
+  gp_Vec           temp, d1u, d1v, nplan;
+  math_Vector      x1(1, 2), x2(1, 2);
+  math_Matrix      d1(1, 2, 1, 2), d2(1, 2, 1, 2);
 
   csurf->D1(X(1), p2d, v2d);
   corde1.SetParam(X(2));

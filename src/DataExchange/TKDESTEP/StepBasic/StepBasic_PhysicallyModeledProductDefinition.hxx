@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepBasic_PhysicallyModeledProductDefinition();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_PhysicallyModeledProductDefinition, StepBasic_ProductDefinition)
+
 };
 
 #endif // _StepBasic_PhysicallyModeledProductDefinition_HeaderFile

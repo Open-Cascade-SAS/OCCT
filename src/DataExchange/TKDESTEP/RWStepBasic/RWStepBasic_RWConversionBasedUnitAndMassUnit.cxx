@@ -28,7 +28,7 @@ RWStepBasic_RWConversionBasedUnitAndMassUnit::RWStepBasic_RWConversionBasedUnitA
 
 void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num0,
+  const int                                  num0,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepBasic_ConversionBasedUnitAndMassUnit>& ent) const
 {
@@ -80,7 +80,7 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWConversionBasedUnitAndMassUnit::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepBasic_ConversionBasedUnitAndMassUnit>& ent) const
 {
   // --- Instance of plex component ConversionBasedUnit ---
@@ -101,7 +101,7 @@ void RWStepBasic_RWConversionBasedUnitAndMassUnit::WriteStep(
 
 void RWStepBasic_RWConversionBasedUnitAndMassUnit::Share(
   const occ::handle<StepBasic_ConversionBasedUnitAndMassUnit>& ent,
-  Interface_EntityIterator&                                    iter) const
+  Interface_EntityIterator&                               iter) const
 {
   iter.GetOneItem(ent->Dimensions());
   iter.GetOneItem(ent->ConversionFactor());

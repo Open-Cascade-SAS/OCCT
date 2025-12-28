@@ -21,8 +21,8 @@ StepGeom_OffsetCurve3d::StepGeom_OffsetCurve3d() {}
 
 void StepGeom_OffsetCurve3d::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepGeom_Curve>&           aBasisCurve,
-                                  const double                                 aDistance,
-                                  const StepData_Logical                       aSelfIntersect,
+                                  const double                     aDistance,
+                                  const StepData_Logical                  aSelfIntersect,
                                   const occ::handle<StepGeom_Direction>&       aRefDirection)
 {
   // --- classe own fields ---

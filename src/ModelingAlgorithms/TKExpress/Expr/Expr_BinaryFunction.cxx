@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <Expr_Array1OfNamedUnknown.hxx>
 #include <Expr_BinaryFunction.hxx>
+#include <Expr_GeneralExpression.hxx>
 #include <Expr_GeneralFunction.hxx>
 #include <Expr_InvalidFunction.hxx>
 #include <Expr_NamedUnknown.hxx>
@@ -57,8 +58,8 @@ occ::handle<Expr_GeneralExpression> Expr_BinaryFunction::ShallowSimplified() con
       tabval(1) = occ::down_cast<Expr_NumericValue>(FirstOperand())->GetValue();
       tabval(2) = occ::down_cast<Expr_NumericValue>(SecondOperand())->GetValue();
       NCollection_Array1<occ::handle<Expr_NamedUnknown>> vars(1, 2);
-      vars(1)    = myFunction->Variable(1);
-      vars(2)    = myFunction->Variable(2);
+      vars(1)           = myFunction->Variable(1);
+      vars(2)           = myFunction->Variable(2);
       double res = myFunction->Evaluate(vars, tabval);
       return new Expr_NumericValue(res);
     }
@@ -150,7 +151,7 @@ occ::handle<Expr_GeneralFunction> Expr_BinaryFunction::Function() const
 }
 
 double Expr_BinaryFunction::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                     const NCollection_Array1<double>& vals) const
+                                            const NCollection_Array1<double>&      vals) const
 {
   NCollection_Array1<occ::handle<Expr_NamedUnknown>> varsfunc(1, 2);
   varsfunc(1) = myFunction->Variable(1);

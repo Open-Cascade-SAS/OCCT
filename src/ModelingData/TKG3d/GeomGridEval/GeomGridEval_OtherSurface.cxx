@@ -236,8 +236,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
 NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams,
-  int                               theNU,
-  int                               theNV) const
+  int                         theNU,
+  int                         theNV) const
 {
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();

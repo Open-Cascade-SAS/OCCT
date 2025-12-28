@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_DrawingUnits, IGESData_IGESEntity)
 
 IGESGraph_DrawingUnits::IGESGraph_DrawingUnits() {}
 
-void IGESGraph_DrawingUnits::Init(const int                                    nbProps,
-                                  const int                                    aFlag,
+void IGESGraph_DrawingUnits::Init(const int                  nbProps,
+                                  const int                  aFlag,
                                   const occ::handle<TCollection_HAsciiString>& anUnit)
 {
   theNbPropertyValues = nbProps;

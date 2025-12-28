@@ -26,6 +26,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Draw_Interpretor.hxx>
 class TDataStd_Real;
@@ -50,28 +51,28 @@ public:
 
   Standard_EXPORT static occ::handle<TDataStd_Real> GetReal(
     const occ::handle<TFunction_Function>& theFunction,
-    const int                              thePosition);
+    const int            thePosition);
 
   Standard_EXPORT static occ::handle<TDataStd_Integer> GetInteger(
     const occ::handle<TFunction_Function>& theFunction,
-    const int                              thePosition);
+    const int            thePosition);
 
   Standard_EXPORT static occ::handle<TDataStd_Name> GetString(
     const occ::handle<TFunction_Function>& theFunction,
-    const int                              thePosition);
+    const int            thePosition);
 
   Standard_EXPORT static bool ComputeAxis(const occ::handle<TNaming_NamedShape>& theNS,
-                                          gp_Ax1&                                theAx1);
+                                                      gp_Ax1&                           theAx1);
 
   Standard_EXPORT static occ::handle<TNaming_NamedShape> GetFunctionResult(
     const occ::handle<TFunction_Function>& theFunction);
 
   Standard_EXPORT static occ::handle<TDataStd_UAttribute> GetObjectArg(
     const occ::handle<TFunction_Function>& theFunction,
-    const int                              thePosition);
+    const int            thePosition);
 
   Standard_EXPORT static void SetObjectArg(const occ::handle<TFunction_Function>&  theFunction,
-                                           const int                               thePosition,
+                                           const int             thePosition,
                                            const occ::handle<TDataStd_UAttribute>& theNewValue);
 
   Standard_EXPORT static occ::handle<TNaming_NamedShape> GetObjectValue(
@@ -89,28 +90,28 @@ public:
   Standard_EXPORT static occ::handle<TDataStd_UAttribute> GetObjectFromFunction(
     const occ::handle<TFunction_Function>& theFunction);
 
-  Standard_EXPORT static bool IsAttachment(const occ::handle<TDataStd_UAttribute>& theObject);
+  Standard_EXPORT static bool IsAttachment(
+    const occ::handle<TDataStd_UAttribute>& theObject);
 
   Standard_EXPORT static occ::handle<TNaming_NamedShape> GetAttachmentsContext(
     const occ::handle<TDataStd_UAttribute>& theObject);
 
-  Standard_EXPORT static bool ComputeSweepDir(const TopoDS_Shape& theShape, gp_Ax1& theAxis);
+  Standard_EXPORT static bool ComputeSweepDir(const TopoDS_Shape& theShape,
+                                                          gp_Ax1&             theAxis);
 
   Standard_EXPORT static void LoadAndOrientModifiedShapes(
-    BRepBuilderAPI_MakeShape& MakeShape,
-    const TopoDS_Shape&       ShapeIn,
-    const TopAbs_ShapeEnum    GeneratedFrom,
-    TNaming_Builder&          Builder,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-      SubShapesOfResult);
+    BRepBuilderAPI_MakeShape&           MakeShape,
+    const TopoDS_Shape&                 ShapeIn,
+    const TopAbs_ShapeEnum              GeneratedFrom,
+    TNaming_Builder&                    Builder,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapesOfResult);
 
   Standard_EXPORT static void LoadAndOrientGeneratedShapes(
-    BRepBuilderAPI_MakeShape& MakeShape,
-    const TopoDS_Shape&       ShapeIn,
-    const TopAbs_ShapeEnum    GeneratedFrom,
-    TNaming_Builder&          Builder,
-    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-      SubShapesOfResult);
+    BRepBuilderAPI_MakeShape&           MakeShape,
+    const TopoDS_Shape&                 ShapeIn,
+    const TopAbs_ShapeEnum              GeneratedFrom,
+    TNaming_Builder&                    Builder,
+    const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& SubShapesOfResult);
 
   Standard_EXPORT static void LoadDeletedShapes(BRepBuilderAPI_MakeShape& MakeShape,
                                                 const TopoDS_Shape&       ShapeIn,
@@ -120,19 +121,19 @@ public:
   Standard_EXPORT static void LoadResult(const TDF_Label&              theLabel,
                                          BRepAlgoAPI_BooleanOperation& MS);
 
-  Standard_EXPORT static TopoDS_Shape CurrentShape(const char*                  ShapeEntry,
+  Standard_EXPORT static TopoDS_Shape CurrentShape(const char*  ShapeEntry,
                                                    const occ::handle<TDF_Data>& Data);
 
-  Standard_EXPORT static void GetShape(const char*                     ShapeEntry,
-                                       const occ::handle<TDF_Data>&    Data,
-                                       NCollection_List<TopoDS_Shape>& Shapes);
+  Standard_EXPORT static void GetShape(const char*  ShapeEntry,
+                                       const occ::handle<TDF_Data>& Data,
+                                       NCollection_List<TopoDS_Shape>&   Shapes);
 
   //! theStatus = 0  Not  found,
   //! theStatus = 1  One  shape,
   //! theStatus = 2  More than one shape.
-  Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&          Shape,
+  Standard_EXPORT static TCollection_AsciiString GetEntry(const TopoDS_Shape&     Shape,
                                                           const occ::handle<TDF_Data>& Data,
-                                                          int&                         theStatus);
+                                                          int&       theStatus);
 
   //! Loads the Shape to DF
   Standard_EXPORT static void LoadImportedShape(const TDF_Label&    theResultLabel,

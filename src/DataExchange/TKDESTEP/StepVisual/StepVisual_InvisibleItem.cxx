@@ -44,8 +44,8 @@ occ::handle<StepVisual_PresentationLayerAssignment> StepVisual_InvisibleItem::
   return GetCasted(StepVisual_PresentationLayerAssignment, Value());
 }
 
-occ::handle<StepVisual_PresentationRepresentation> StepVisual_InvisibleItem::
-  PresentationRepresentation() const
+occ::handle<StepVisual_PresentationRepresentation> StepVisual_InvisibleItem::PresentationRepresentation()
+  const
 {
   return GetCasted(StepVisual_PresentationRepresentation, Value());
 }

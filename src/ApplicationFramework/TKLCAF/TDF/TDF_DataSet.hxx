@@ -20,9 +20,11 @@
 
 #include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Handle.hxx>
 #include <TDF_Attribute.hxx>
+#include <NCollection_Map.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
@@ -79,8 +81,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDF_DataSet, Standard_Transient)
 
 private:
-  NCollection_List<TDF_Label>                 myRootLabels;
-  NCollection_Map<TDF_Label>                  myLabelMap;
+  NCollection_List<TDF_Label>    myRootLabels;
+  NCollection_Map<TDF_Label>     myLabelMap;
   NCollection_Map<occ::handle<TDF_Attribute>> myAttributeMap;
 };
 

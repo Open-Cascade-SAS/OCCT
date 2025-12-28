@@ -32,8 +32,8 @@ Aspect_NeutralWindow::Aspect_NeutralWindow()
 //=================================================================================================
 
 bool Aspect_NeutralWindow::SetNativeHandles(Aspect_Drawable theWindow,
-                                            Aspect_Drawable theParentWindow,
-                                            Aspect_FBConfig theFbConfig)
+                                                        Aspect_Drawable theParentWindow,
+                                                        Aspect_FBConfig theFbConfig)
 {
   if (myHandle == theWindow && myParentHandle == theParentWindow && myFBConfig == theFbConfig)
   {
@@ -62,7 +62,10 @@ bool Aspect_NeutralWindow::SetPosition(int theX1, int theY1)
 
 //=================================================================================================
 
-bool Aspect_NeutralWindow::SetPosition(int theX1, int theY1, int theX2, int theY2)
+bool Aspect_NeutralWindow::SetPosition(int theX1,
+                                                   int theY1,
+                                                   int theX2,
+                                                   int theY2)
 {
   int aWidthNew  = theX2 - theX1;
   int aHeightNew = theY2 - theY1;
@@ -80,7 +83,8 @@ bool Aspect_NeutralWindow::SetPosition(int theX1, int theY1, int theX2, int theY
 
 //=================================================================================================
 
-bool Aspect_NeutralWindow::SetSize(const int theWidth, const int theHeight)
+bool Aspect_NeutralWindow::SetSize(const int theWidth,
+                                               const int theHeight)
 {
   if (myWidth == theWidth && myHeight == theHeight)
   {

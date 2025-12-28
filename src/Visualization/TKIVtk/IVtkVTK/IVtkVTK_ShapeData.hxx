@@ -55,7 +55,8 @@ public:
   //! @param[in]  theNorm point normal
   //! @return id of added point
   Standard_EXPORT virtual IVtk_PointId InsertPoint(const gp_Pnt&                  thePnt,
-                                                   const NCollection_Vec3<float>& theNorm) override;
+                                                   const NCollection_Vec3<float>& theNorm)
+    override;
 
   //! Insert a vertex.
   //! @param[in]  theShapeID id of the subshape to which the vertex belongs.
@@ -79,9 +80,9 @@ public:
   //! @param[in]  theShapeID id of the subshape to which the polyline belongs.
   //! @param[in]  thePointIds vector of point ids
   //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
-  Standard_EXPORT virtual void InsertLine(const IVtk_IdType                     theShapeID,
+  Standard_EXPORT virtual void InsertLine(const IVtk_IdType       theShapeID,
                                           const NCollection_List<IVtk_PointId>* thePointIds,
-                                          const IVtk_MeshType theMeshType) override;
+                                          const IVtk_MeshType     theMeshType) override;
   //! Insert a triangle
   //! @param[in]  theShapeID id of the subshape to which the triangle belongs.
   //! @param[in]  thePointId1 id of the first point

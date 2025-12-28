@@ -34,9 +34,8 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const StepRepr_RepresentedDefinition& aPropertyDefinitionRepresentation_Definition,
-    const occ::handle<StepRepr_Representation>&
-      aPropertyDefinitionRepresentation_UsedRepresentation,
+    const StepRepr_RepresentedDefinition&   aPropertyDefinitionRepresentation_Definition,
+    const occ::handle<StepRepr_Representation>&  aPropertyDefinitionRepresentation_UsedRepresentation,
     const occ::handle<StepRepr_DataEnvironment>& aDependentEnvironment);
 
   //! Returns field DependentEnvironment

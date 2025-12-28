@@ -40,9 +40,9 @@ public:
   //!
   //! Errors : Height < Resolution
   //! Radius < Resolution
-  Standard_EXPORT BRepPrim_Cylinder(const gp_Ax2& Position,
-                                    const double  Radius,
-                                    const double  Height);
+  Standard_EXPORT BRepPrim_Cylinder(const gp_Ax2&       Position,
+                                    const double Radius,
+                                    const double Height);
 
   //! infinite Cylinder at origin on Z negative
   Standard_EXPORT BRepPrim_Cylinder(const double Radius);
@@ -61,7 +61,9 @@ public:
   Standard_EXPORT BRepPrim_Cylinder(const double R, const double H);
 
   //! same as above but at a given point
-  Standard_EXPORT BRepPrim_Cylinder(const gp_Pnt& Center, const double R, const double H);
+  Standard_EXPORT BRepPrim_Cylinder(const gp_Pnt&       Center,
+                                    const double R,
+                                    const double H);
 
   //! The surface normal should be directed towards the
   //! outside.

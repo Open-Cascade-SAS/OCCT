@@ -24,13 +24,18 @@
 #include <Standard_Boolean.hxx>
 #include <TDataStd_NamedData.hxx>
 #include <TDataStd_GenericEmpty.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDF_Attribute.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
 class Standard_GUID;
 class TDF_Label;
 class TopoDS_Shape;
@@ -152,12 +157,13 @@ public:
 
   //! Checks whether shape <sub> is subshape of shape stored on
   //! label shapeL
-  Standard_EXPORT bool IsSubShape(const TDF_Label& shapeL, const TopoDS_Shape& sub) const;
+  Standard_EXPORT bool IsSubShape(const TDF_Label&    shapeL,
+                                              const TopoDS_Shape& sub) const;
 
-  Standard_EXPORT bool SearchUsingMap(const TopoDS_Shape& S,
-                                      TDF_Label&          L,
-                                      const bool          findWithoutLoc,
-                                      const bool          findSubshape) const;
+  Standard_EXPORT bool SearchUsingMap(const TopoDS_Shape&    S,
+                                                  TDF_Label&             L,
+                                                  const bool findWithoutLoc,
+                                                  const bool findSubshape) const;
 
   //! General tool to find a (sub) shape in the document
   //! * If findInstance is True, and S has a non-null location,
@@ -170,11 +176,12 @@ public:
   //! * If not found and findSubshape is True, tries to find a
   //! shape as a subshape of top-level simple shapes
   //! Returns False if nothing is found
-  Standard_EXPORT bool Search(const TopoDS_Shape& S,
-                              TDF_Label&          L,
-                              const bool          findInstance  = true,
-                              const bool          findComponent = true,
-                              const bool          findSubshape  = true) const;
+  Standard_EXPORT bool
+    Search(const TopoDS_Shape&    S,
+           TDF_Label&             L,
+           const bool findInstance  = true,
+           const bool findComponent = true,
+           const bool findSubshape  = true) const;
 
   //! Returns the label corresponding to shape S
   //! (searches among top-level shapes, not including subcomponents
@@ -184,13 +191,15 @@ public:
   //! If findInstance is True, searches for the
   //! input shape as is.
   //! Return True if <S> is found.
-  Standard_EXPORT bool FindShape(const TopoDS_Shape& S,
-                                 TDF_Label&          L,
-                                 const bool          findInstance = false) const;
+  Standard_EXPORT bool
+    FindShape(const TopoDS_Shape&    S,
+              TDF_Label&             L,
+              const bool findInstance = false) const;
 
   //! Does the same as previous method
   //! Returns Null label if not found
-  Standard_EXPORT TDF_Label FindShape(const TopoDS_Shape& S, const bool findInstance = false) const;
+  Standard_EXPORT TDF_Label FindShape(const TopoDS_Shape&    S,
+                                      const bool findInstance = false) const;
 
   //! To get TopoDS_Shape from shape's label
   //! For component, returns new shape with correct location
@@ -224,16 +233,17 @@ public:
   //! NOTE: <makePrepare> replace components without location
   //! in assembly by located components to avoid some problems.
   //! If AutoNaming() is True then automatically attaches names.
-  Standard_EXPORT TDF_Label AddShape(const TopoDS_Shape& S,
-                                     const bool          makeAssembly = true,
-                                     const bool          makePrepare  = true);
+  Standard_EXPORT TDF_Label AddShape(const TopoDS_Shape&    S,
+                                     const bool makeAssembly = true,
+                                     const bool makePrepare  = true);
 
   //! Removes shape (whole label and all its sublabels)
   //! If removeCompletely is true, removes complete shape
   //! If removeCompletely is false, removes instance(location) only
   //! Returns False (and does nothing) if shape is not free
   //! or is not top-level shape
-  Standard_EXPORT bool RemoveShape(const TDF_Label& L, const bool removeCompletely = true) const;
+  Standard_EXPORT bool
+    RemoveShape(const TDF_Label& L, const bool removeCompletely = true) const;
 
   //! set hasComponents into false
   Standard_EXPORT void Init();
@@ -270,9 +280,10 @@ public:
 
   //! Returns list of labels which refer shape L as component
   //! Returns number of users (0 if shape is free)
-  Standard_EXPORT static int GetUsers(const TDF_Label&                 L,
-                                      NCollection_Sequence<TDF_Label>& Labels,
-                                      const bool                       getsubchilds = false);
+  Standard_EXPORT static int GetUsers(
+    const TDF_Label&       L,
+    NCollection_Sequence<TDF_Label>&     Labels,
+    const bool getsubchilds = false);
 
   //! Returns location of instance
   Standard_EXPORT static TopLoc_Location GetLocation(const TDF_Label& L);
@@ -282,13 +293,16 @@ public:
   Standard_EXPORT static bool GetReferredShape(const TDF_Label& L, TDF_Label& Label);
 
   //! Returns number of Assembles components
-  Standard_EXPORT static int NbComponents(const TDF_Label& L, const bool getsubchilds = false);
+  Standard_EXPORT static int NbComponents(
+    const TDF_Label&       L,
+    const bool getsubchilds = false);
 
   //! Returns list of components of assembly
   //! Returns False if label is not assembly
-  Standard_EXPORT static bool GetComponents(const TDF_Label&                 L,
-                                            NCollection_Sequence<TDF_Label>& Labels,
-                                            const bool                       getsubchilds = false);
+  Standard_EXPORT static bool GetComponents(
+    const TDF_Label&       L,
+    NCollection_Sequence<TDF_Label>&     Labels,
+    const bool getsubchilds = false);
 
   //! Adds a component given by its label and location to the assembly
   //! Note: assembly must be IsAssembly() or IsSimpleShape()
@@ -302,9 +316,9 @@ public:
   //! If expand is True and component is Compound, it will
   //! be created as assembly also
   //! Note: assembly must be IsAssembly() or IsSimpleShape()
-  Standard_EXPORT TDF_Label AddComponent(const TDF_Label&    assembly,
-                                         const TopoDS_Shape& comp,
-                                         const bool          expand = false);
+  Standard_EXPORT TDF_Label AddComponent(const TDF_Label&       assembly,
+                                         const TopoDS_Shape&    comp,
+                                         const bool expand = false);
 
   //! Removes a component from its assembly
   Standard_EXPORT void RemoveComponent(const TDF_Label& comp) const;
@@ -316,8 +330,8 @@ public:
   //! label shapeL
   //! Returns Null label if it is not found
   Standard_EXPORT bool FindSubShape(const TDF_Label&    shapeL,
-                                    const TopoDS_Shape& sub,
-                                    TDF_Label&          L) const;
+                                                const TopoDS_Shape& sub,
+                                                TDF_Label&          L) const;
 
   //! Adds a label for subshape <sub> of shape stored on
   //! label shapeL
@@ -329,8 +343,8 @@ public:
   //! subshape. Returns True, if new shape was added, False in case of already existed
   //! subshape/wrong subshape
   Standard_EXPORT bool AddSubShape(const TDF_Label&    shapeL,
-                                   const TopoDS_Shape& sub,
-                                   TDF_Label&          addedSubShapeL) const;
+                                               const TopoDS_Shape& sub,
+                                               TDF_Label&          addedSubShapeL) const;
 
   Standard_EXPORT TDF_Label FindMainShapeUsingMap(const TopoDS_Shape& sub) const;
 
@@ -342,23 +356,25 @@ public:
 
   //! Returns list of labels identifying subshapes of the given shape
   //! Returns False if no subshapes are placed on that label
-  Standard_EXPORT static bool GetSubShapes(const TDF_Label&                 L,
-                                           NCollection_Sequence<TDF_Label>& Labels);
+  Standard_EXPORT static bool GetSubShapes(const TDF_Label&   L,
+                                                       NCollection_Sequence<TDF_Label>& Labels);
 
   //! returns the label under which shapes are stored
   Standard_EXPORT TDF_Label BaseLabel() const;
 
-  Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theDumpLog, const bool deep) const;
+  Standard_EXPORT Standard_OStream& Dump(Standard_OStream&      theDumpLog,
+                                         const bool deep) const;
 
-  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theDumpLog) const override;
+  Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& theDumpLog) const
+    override;
 
   //! Print to std::ostream <theDumpLog> type of shape found on <L> label
   //! and the entry of <L>, with <level> tabs before.
   //! If <deep>, print also TShape and Location addresses
-  Standard_EXPORT static void DumpShape(Standard_OStream& theDumpLog,
-                                        const TDF_Label&  L,
-                                        const int         level = 0,
-                                        const bool        deep  = false);
+  Standard_EXPORT static void DumpShape(Standard_OStream&      theDumpLog,
+                                        const TDF_Label&       L,
+                                        const int level = 0,
+                                        const bool deep  = false);
 
   Standard_EXPORT const Standard_GUID& ID() const override;
 
@@ -368,52 +384,48 @@ public:
   Standard_EXPORT static bool IsExternRef(const TDF_Label& L);
 
   //! Sets the names of references on the no-step files
-  Standard_EXPORT TDF_Label
-    SetExternRefs(const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const;
+  Standard_EXPORT TDF_Label SetExternRefs(const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const;
 
   //! Sets the names of references on the no-step files
-  Standard_EXPORT void SetExternRefs(
-    const TDF_Label&                                                   L,
-    const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const;
+  Standard_EXPORT void SetExternRefs(const TDF_Label&                      L,
+                                     const NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS) const;
 
   //! Gets the names of references on the no-step files
-  Standard_EXPORT static void GetExternRefs(
-    const TDF_Label&                                             L,
-    NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS);
+  Standard_EXPORT static void GetExternRefs(const TDF_Label&                L,
+                                            NCollection_Sequence<occ::handle<TCollection_HAsciiString>>& SHAS);
 
   //! Sets the SHUO structure between upper_usage and next_usage
   //! create multy-level (if number of labels > 2) SHUO from first to last
   //! Initialise out <MainSHUOAttr> by main upper_usage SHUO attribute.
   //! Returns FALSE if some of labels in not component label
-  Standard_EXPORT bool SetSHUO(const NCollection_Sequence<TDF_Label>& Labels,
-                               occ::handle<XCAFDoc_GraphNode>&        MainSHUOAttr) const;
+  Standard_EXPORT bool SetSHUO(const NCollection_Sequence<TDF_Label>&   Labels,
+                                           occ::handle<XCAFDoc_GraphNode>& MainSHUOAttr) const;
 
   //! Returns founded SHUO GraphNode attribute <aSHUOAttr>
   //! Returns false in other case
-  Standard_EXPORT static bool GetSHUO(const TDF_Label&                SHUOLabel,
-                                      occ::handle<XCAFDoc_GraphNode>& aSHUOAttr);
+  Standard_EXPORT static bool GetSHUO(const TDF_Label&           SHUOLabel,
+                                                  occ::handle<XCAFDoc_GraphNode>& aSHUOAttr);
 
   //! Returns founded SHUO GraphNodes of indicated component
   //! Returns false in other case
-  Standard_EXPORT static bool GetAllComponentSHUO(
-    const TDF_Label&                                  CompLabel,
-    NCollection_Sequence<occ::handle<TDF_Attribute>>& SHUOAttrs);
+  Standard_EXPORT static bool GetAllComponentSHUO(const TDF_Label&       CompLabel,
+                                                              NCollection_Sequence<occ::handle<TDF_Attribute>>& SHUOAttrs);
 
   //! Returns the sequence of labels of SHUO attributes,
   //! which is upper_usage for this next_usage SHUO attribute
   //! (that indicated by label)
   //! NOTE: returns upper_usages only on one level (not recurse)
   //! NOTE: do not clear the sequence before filling
-  Standard_EXPORT static bool GetSHUOUpperUsage(const TDF_Label&                 NextUsageL,
-                                                NCollection_Sequence<TDF_Label>& Labels);
+  Standard_EXPORT static bool GetSHUOUpperUsage(const TDF_Label&   NextUsageL,
+                                                            NCollection_Sequence<TDF_Label>& Labels);
 
   //! Returns the sequence of labels of SHUO attributes,
   //! which is next_usage for this upper_usage SHUO attribute
   //! (that indicated by label)
   //! NOTE: returns next_usages only on one level (not recurse)
   //! NOTE: do not clear the sequence before filling
-  Standard_EXPORT static bool GetSHUONextUsage(const TDF_Label&                 UpperUsageL,
-                                               NCollection_Sequence<TDF_Label>& Labels);
+  Standard_EXPORT static bool GetSHUONextUsage(const TDF_Label&   UpperUsageL,
+                                                           NCollection_Sequence<TDF_Label>& Labels);
 
   //! Remove SHUO from component sublabel,
   //! remove all dependencies on other SHUO.
@@ -426,8 +438,8 @@ public:
   //! Try to search the sequence of labels with location that
   //! produce this shape as component of any assembly
   //! NOTE: Clear sequence of labels before filling
-  Standard_EXPORT bool FindComponent(const TopoDS_Shape&              theShape,
-                                     NCollection_Sequence<TDF_Label>& Labels) const;
+  Standard_EXPORT bool FindComponent(const TopoDS_Shape& theShape,
+                                                 NCollection_Sequence<TDF_Label>&  Labels) const;
 
   //! Search for the component shape that styled by shuo
   //! Returns null shape if no any shape is found.
@@ -436,20 +448,19 @@ public:
   //! Search for the component shape by labelks path
   //! and set SHUO structure for founded label structure
   //! Returns null attribute if no component in any assembly found.
-  Standard_EXPORT occ::handle<XCAFDoc_GraphNode> SetInstanceSHUO(
-    const TopoDS_Shape& theShape) const;
+  Standard_EXPORT occ::handle<XCAFDoc_GraphNode> SetInstanceSHUO(const TopoDS_Shape& theShape) const;
 
   //! Searching for component shapes that styled by shuo
   //! Returns empty sequence of shape if no any shape is found.
-  Standard_EXPORT bool GetAllSHUOInstances(
-    const occ::handle<XCAFDoc_GraphNode>& theSHUO,
-    NCollection_Sequence<TopoDS_Shape>&   theSHUOShapeSeq) const;
+  Standard_EXPORT bool
+    GetAllSHUOInstances(const occ::handle<XCAFDoc_GraphNode>& theSHUO,
+                        NCollection_Sequence<TopoDS_Shape>&        theSHUOShapeSeq) const;
 
   //! Searches the SHUO by labels of components
   //! from upper_usage component to next_usage
   //! Returns null attribute if no SHUO found
-  Standard_EXPORT static bool FindSHUO(const NCollection_Sequence<TDF_Label>& Labels,
-                                       occ::handle<XCAFDoc_GraphNode>&        theSHUOAttr);
+  Standard_EXPORT static bool FindSHUO(const NCollection_Sequence<TDF_Label>&   Labels,
+                                                   occ::handle<XCAFDoc_GraphNode>& theSHUOAttr);
 
   //! Sets location to the shape label
   //! If label is reference -> changes location attribute
@@ -459,8 +470,8 @@ public:
   //! @param[out] theRefLabel the reference label with new location
   //! @return TRUE if new location was set
   Standard_EXPORT bool SetLocation(const TDF_Label&       theShapeLabel,
-                                   const TopLoc_Location& theLoc,
-                                   TDF_Label&             theRefLabel);
+                                               const TopLoc_Location& theLoc,
+                                               TDF_Label&             theRefLabel);
 
   //! Convert Shape (compound/compsolid/shell/wire) to assembly
   Standard_EXPORT bool Expand(const TDF_Label& Shape);
@@ -470,20 +481,20 @@ public:
   //! @param[in] theToCreate  create and assign attribute if it doesn't exist
   //! @return Handle to the NamedData attribute or Null if there is none
   Standard_EXPORT occ::handle<TDataStd_NamedData> GetNamedProperties(
-    const TDF_Label& theLabel,
-    const bool       theToCreate = false) const;
+    const TDF_Label&       theLabel,
+    const bool theToCreate = false) const;
 
   //! Method to get NamedData attribute assigned to a label of the given shape.
   //! @param[in] theShape     input shape
   //! @param[in] theToCreate  create and assign attribute if it doesn't exist
   //! @return Handle to the NamedData attribute or Null if there is none
   Standard_EXPORT occ::handle<TDataStd_NamedData> GetNamedProperties(
-    const TopoDS_Shape& theShape,
-    const bool          theToCreate = false) const;
+    const TopoDS_Shape&    theShape,
+    const bool theToCreate = false) const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ShapeTool, TDataStd_GenericEmpty)
 
@@ -491,13 +502,14 @@ private:
   //! Checks recursively if the given assembly item is modified. If so, its
   //! associated compound is updated. Returns true if the assembly item is
   //! modified, false -- otherwise.
-  Standard_EXPORT bool updateComponent(const TDF_Label&            theAssmLabel,
-                                       TopoDS_Shape&               theUpdatedShape,
-                                       NCollection_Map<TDF_Label>& theUpdated) const;
+  Standard_EXPORT bool updateComponent(const TDF_Label& theAssmLabel,
+                                                   TopoDS_Shape&    theUpdatedShape,
+                                                   NCollection_Map<TDF_Label>&    theUpdated) const;
 
   //! Adds a new top-level (creates and returns a new label)
   //! For internal use. Used by public method AddShape.
-  Standard_EXPORT TDF_Label addShape(const TopoDS_Shape& S, const bool makeAssembly = true);
+  Standard_EXPORT TDF_Label addShape(const TopoDS_Shape&    S,
+                                     const bool makeAssembly = true);
 
   //! Makes a shape on label L to be a reference to shape refL
   //! with location loc
@@ -517,7 +529,7 @@ private:
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> myShapeLabels;
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> mySubShapes;
   NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> mySimpleShapes;
-  bool                                                                  hasSimpleShapes;
+  bool            hasSimpleShapes;
 };
 
 #endif // _XCAFDoc_ShapeTool_HeaderFile

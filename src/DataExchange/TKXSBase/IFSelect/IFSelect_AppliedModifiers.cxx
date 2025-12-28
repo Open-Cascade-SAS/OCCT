@@ -17,7 +17,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_AppliedModifiers, Standard_Transient)
 
-IFSelect_AppliedModifiers::IFSelect_AppliedModifiers(const int nbmax, const int nbent)
+IFSelect_AppliedModifiers::IFSelect_AppliedModifiers(const int nbmax,
+                                                     const int nbent)
     : thelists(nbmax + 1)
 {
   thenbent  = nbent;
@@ -44,9 +45,9 @@ int IFSelect_AppliedModifiers::Count() const
   return themodifs.Length();
 }
 
-bool IFSelect_AppliedModifiers::Item(const int                              num,
-                                     occ::handle<IFSelect_GeneralModifier>& modif,
-                                     int&                                   entcount)
+bool IFSelect_AppliedModifiers::Item(const int            num,
+                                                 occ::handle<IFSelect_GeneralModifier>& modif,
+                                                 int&                 entcount)
 {
   if (num < 1 || num > themodifs.Length())
     return false;
@@ -65,7 +66,7 @@ int IFSelect_AppliedModifiers::ItemNum(const int nument) const
 occ::handle<NCollection_HSequence<int>> IFSelect_AppliedModifiers::ItemList() const
 {
   occ::handle<NCollection_HSequence<int>> list = new NCollection_HSequence<int>();
-  int                                     i, nb = (theentcnt > 0 ? theentcnt : thenbent);
+  int                   i, nb = (theentcnt > 0 ? theentcnt : thenbent);
   for (i = 1; i <= nb; i++)
     list->Append(ItemNum(i));
   return list;

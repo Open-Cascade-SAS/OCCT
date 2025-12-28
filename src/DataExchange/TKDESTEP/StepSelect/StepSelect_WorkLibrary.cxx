@@ -51,21 +51,23 @@ void StepSelect_WorkLibrary::SetDumpLabel(const int mode)
   thelabmode = mode;
 }
 
-int StepSelect_WorkLibrary::ReadFile(const char*                            name,
-                                     occ::handle<Interface_InterfaceModel>& model,
-                                     const occ::handle<Interface_Protocol>& protocol) const
+int StepSelect_WorkLibrary::ReadFile(const char*            name,
+                                                  occ::handle<Interface_InterfaceModel>& model,
+                                                  const occ::handle<Interface_Protocol>& protocol) const
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
     return 1;
-  int aStatus = StepFile_Read(name, 0, occ::down_cast<StepData_StepModel>(model), stepro);
+  int aStatus =
+    StepFile_Read(name, 0, occ::down_cast<StepData_StepModel>(model), stepro);
   return aStatus;
 }
 
-int StepSelect_WorkLibrary::ReadStream(const char*                            theName,
-                                       std::istream&                          theIStream,
-                                       occ::handle<Interface_InterfaceModel>& model,
-                                       const occ::handle<Interface_Protocol>& protocol) const
+int StepSelect_WorkLibrary::ReadStream(
+  const char*            theName,
+  std::istream&                     theIStream,
+  occ::handle<Interface_InterfaceModel>& model,
+  const occ::handle<Interface_Protocol>& protocol) const
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull())
@@ -85,7 +87,7 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
     return false;
 
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aStream =
+  std::shared_ptr<std::ostream> aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary | std::ios::trunc);
 
   if (aStream.get() == NULL)
@@ -134,9 +136,9 @@ bool StepSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
 }
 
 bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>& original,
-                                       const occ::handle<Interface_InterfaceModel>& newmodel,
-                                       const Interface_EntityIterator&              list,
-                                       Interface_CopyTool&                          TC) const
+                                                   const occ::handle<Interface_InterfaceModel>& newmodel,
+                                                   const Interface_EntityIterator&         list,
+                                                   Interface_CopyTool&                     TC) const
 {
   if (thecopymode)
     return IFSelect_WorkLibrary::CopyModel(original, newmodel, list, TC);
@@ -146,13 +148,13 @@ bool StepSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceMode
 void StepSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                         const occ::handle<Interface_Protocol>&       protocol,
                                         const occ::handle<Standard_Transient>&       entity,
-                                        Standard_OStream&                            S,
-                                        const int                                    level) const
+                                        Standard_OStream&                       S,
+                                        const int                  level) const
 {
   int nument = model->Number(entity);
   if (nument <= 0 || nument > model->NbEntities())
     return;
-  bool                            iserr = model->IsRedefinedContent(nument);
+  bool           iserr = model->IsRedefinedContent(nument);
   occ::handle<Standard_Transient> ent, con;
   ent = entity;
   S << " --- (STEP) Entity ";

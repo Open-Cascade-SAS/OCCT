@@ -31,12 +31,10 @@ StepFEA_Volume3dElementRepresentation::StepFEA_Volume3dElementRepresentation() {
 //=================================================================================================
 
 void StepFEA_Volume3dElementRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-                                                     aRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&
-                                                            aElementRepresentation_NodeList,
+  const occ::handle<TCollection_HAsciiString>&              aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&  aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&        aRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&   aElementRepresentation_NodeList,
   const occ::handle<StepFEA_FeaModel3d>&                    aModelRef,
   const occ::handle<StepElement_Volume3dElementDescriptor>& aElementDescriptor,
   const occ::handle<StepElement_ElementMaterial>&           aMaterial)
@@ -62,8 +60,7 @@ occ::handle<StepFEA_FeaModel3d> StepFEA_Volume3dElementRepresentation::ModelRef(
 
 //=================================================================================================
 
-void StepFEA_Volume3dElementRepresentation::SetModelRef(
-  const occ::handle<StepFEA_FeaModel3d>& aModelRef)
+void StepFEA_Volume3dElementRepresentation::SetModelRef(const occ::handle<StepFEA_FeaModel3d>& aModelRef)
 {
   theModelRef = aModelRef;
 }

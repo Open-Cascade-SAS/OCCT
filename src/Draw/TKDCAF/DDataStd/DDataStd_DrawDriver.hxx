@@ -55,15 +55,17 @@ public:
   Standard_EXPORT occ::handle<Draw_Drawable3D> DrawableConstraint(
     const occ::handle<TDataXtd_Constraint>& C) const;
 
-  Standard_EXPORT occ::handle<Draw_Drawable3D> DrawableShape(const TDF_Label&     L,
-                                                             const Draw_ColorKind color,
-                                                             const bool current = true) const;
+  Standard_EXPORT occ::handle<Draw_Drawable3D> DrawableShape(
+    const TDF_Label&       L,
+    const Draw_ColorKind   color,
+    const bool current = true) const;
 
   //! May be used for temporary display of a shape
   Standard_EXPORT static occ::handle<Draw_Drawable3D> DrawableShape(const TopoDS_Shape&  s,
-                                                                    const Draw_ColorKind color);
+                                                               const Draw_ColorKind color);
 
   DEFINE_STANDARD_RTTIEXT(DDataStd_DrawDriver, Standard_Transient)
+
 };
 
 #endif // _DDataStd_DrawDriver_HeaderFile

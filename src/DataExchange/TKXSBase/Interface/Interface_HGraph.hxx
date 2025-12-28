@@ -40,7 +40,7 @@ public:
 
   //! Creates an HGraph with a Graph created from <amodel> and <lib>
   Standard_EXPORT Interface_HGraph(const occ::handle<Interface_InterfaceModel>& amodel,
-                                   const Interface_GeneralLib&                  lib,
+                                   const Interface_GeneralLib&             lib,
                                    const bool theModeStats = true);
 
   //! Creates an HGraph with a graph itself created from <amodel>

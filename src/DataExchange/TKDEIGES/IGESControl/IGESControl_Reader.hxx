@@ -72,7 +72,7 @@ public:
 
   //! Creates a Reader from an already existing Session
   Standard_EXPORT IGESControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
-                                     const bool                                scratch = true);
+                                     const bool               scratch = true);
 
   //! Set the transion of ALL Roots (if theReadOnlyVisible is False)
   //! or of Visible Roots (if theReadOnlyVisible is True)
@@ -96,12 +96,13 @@ public:
 protected:
   //! Returns default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const override;
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const
+    override;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.
-  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags()
-    const override;
+  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const
+    override;
 
 private:
   bool theReadOnlyVisible;

@@ -35,8 +35,10 @@
 #include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Geom_Surface.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TopoDS_Edge.hxx>
@@ -80,11 +82,11 @@ void ShapeUpgrade_SplitSurface::Init(const occ::handle<Geom_Surface>& S)
 //=================================================================================================
 
 void ShapeUpgrade_SplitSurface::Init(const occ::handle<Geom_Surface>& S,
-                                     const double                     UFirst,
-                                     const double                     ULast,
-                                     const double                     VFirst,
-                                     const double                     VLast,
-                                     const double                     theArea)
+                                     const double         UFirst,
+                                     const double         ULast,
+                                     const double         VFirst,
+                                     const double         VLast,
+                                     const double         theArea)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -137,14 +139,14 @@ void ShapeUpgrade_SplitSurface::Init(const occ::handle<Geom_Surface>& S,
   {
     //<myArea> is set and will be used with <myUsize> and <myVsize>
     // in further computations
-    double                                      Umid = (UF + UL) / 2, Vmid = (VF + VL) / 2;
+    double                          Umid = (UF + UL) / 2, Vmid = (VF + VL) / 2;
     occ::handle<Geom_RectangularTrimmedSurface> aTrSurf =
       new Geom_RectangularTrimmedSurface(mySurface, UF, UL, VF, VL);
     occ::handle<Geom_Curve> anUiso     = aTrSurf->UIso(Umid);
     occ::handle<Geom_Curve> aViso      = aTrSurf->VIso(Vmid);
-    TopoDS_Edge             anEdgeUiso = BRepLib_MakeEdge(anUiso);
-    TopoDS_Edge             anEdgeViso = BRepLib_MakeEdge(aViso);
-    GProp_GProps            aGprop1, aGprop2;
+    TopoDS_Edge        anEdgeUiso = BRepLib_MakeEdge(anUiso);
+    TopoDS_Edge        anEdgeViso = BRepLib_MakeEdge(aViso);
+    GProp_GProps       aGprop1, aGprop2;
     BRepGProp::LinearProperties(anEdgeViso, aGprop1);
     myUsize = aGprop1.Mass();
     BRepGProp::LinearProperties(anEdgeUiso, aGprop2);
@@ -172,15 +174,15 @@ void ShapeUpgrade_SplitSurface::Init(const occ::handle<Geom_Surface>& S,
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurface::SetUSplitValues(
-  const occ::handle<NCollection_HSequence<double>>& UValues)
+void ShapeUpgrade_SplitSurface::SetUSplitValues(const occ::handle<NCollection_HSequence<double>>& UValues)
 {
   if (UValues.IsNull())
     return;
   constexpr double precision = Precision::PConfusion();
-  double UFirst = myUSplitValues->Value(1), ULast = myUSplitValues->Value(myUSplitValues->Length());
-  int    i   = 1;
-  int    len = UValues->Length();
+  double           UFirst    = myUSplitValues->Value(1),
+                ULast               = myUSplitValues->Value(myUSplitValues->Length());
+  int i                = 1;
+  int len              = UValues->Length();
 
   for (int ku = 2; ku <= myUSplitValues->Length(); ku++)
   {
@@ -199,15 +201,15 @@ void ShapeUpgrade_SplitSurface::SetUSplitValues(
 
 //=================================================================================================
 
-void ShapeUpgrade_SplitSurface::SetVSplitValues(
-  const occ::handle<NCollection_HSequence<double>>& VValues)
+void ShapeUpgrade_SplitSurface::SetVSplitValues(const occ::handle<NCollection_HSequence<double>>& VValues)
 {
   if (VValues.IsNull())
     return;
   constexpr double precision = Precision::PConfusion();
-  double VFirst = myVSplitValues->Value(1), VLast = myVSplitValues->Value(myVSplitValues->Length());
-  int    i   = 1;
-  int    len = VValues->Length();
+  double           VFirst    = myVSplitValues->Value(1),
+                VLast               = myVSplitValues->Value(myVSplitValues->Length());
+  int i                = 1;
+  int len              = VValues->Length();
   for (int kv = 2; kv <= myVSplitValues->Length(); kv++)
   {
     VLast = myVSplitValues->Value(kv);
@@ -242,7 +244,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
   {
     occ::handle<Geom_SurfaceOfRevolution> Surface =
       occ::down_cast<Geom_SurfaceOfRevolution>(mySurface);
-    occ::handle<Geom_Curve>   BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>        BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3d spc;
     spc.Init(BasCurve, VFirst, VLast);
     spc.SetSplitValues(myVSplitValues);
@@ -252,10 +254,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
     if (myUSplitValues->Length() > 2)
     {
       myNbResultingRow = myUSplitValues->Length() - 1;
-      Surfaces         = new NCollection_HArray2<occ::handle<Geom_Surface>>(1,
-                                                                    myNbResultingRow,
-                                                                    1,
-                                                                    myNbResultingCol);
+      Surfaces         = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, myNbResultingRow, 1, myNbResultingCol);
       for (int nc = 1; nc <= myNbResultingCol; nc++)
       {
         occ::handle<Geom_SurfaceOfRevolution> NewSurfaceRev =
@@ -313,7 +312,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
   {
     occ::handle<Geom_SurfaceOfLinearExtrusion> Surface =
       occ::down_cast<Geom_SurfaceOfLinearExtrusion>(mySurface);
-    occ::handle<Geom_Curve>   BasCurve = Surface->BasisCurve();
+    occ::handle<Geom_Curve>        BasCurve = Surface->BasisCurve();
     ShapeUpgrade_SplitCurve3d spc;
     spc.Init(BasCurve, UFirst, ULast);
     spc.SetSplitValues(myUSplitValues);
@@ -323,10 +322,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
     if (myVSplitValues->Length() > 2)
     {
       myNbResultingCol = myVSplitValues->Length() - 1;
-      Surfaces         = new NCollection_HArray2<occ::handle<Geom_Surface>>(1,
-                                                                    myNbResultingRow,
-                                                                    1,
-                                                                    myNbResultingCol);
+      Surfaces         = new NCollection_HArray2<occ::handle<Geom_Surface>>(1, myNbResultingRow, 1, myNbResultingCol);
       for (int nc1 = 1; nc1 <= myNbResultingRow; nc1++)
       {
         occ::handle<Geom_SurfaceOfLinearExtrusion> NewSurfaceEx =
@@ -384,7 +380,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
   {
     occ::handle<Geom_RectangularTrimmedSurface> tmp =
       occ::down_cast<Geom_RectangularTrimmedSurface>(mySurface);
-    occ::handle<Geom_Surface> theSurf = tmp->BasisSurface();
+    occ::handle<Geom_Surface>      theSurf = tmp->BasisSurface();
     ShapeUpgrade_SplitSurface sps;
     sps.Init(theSurf, UFirst, ULast, VFirst, VLast);
     sps.SetUSplitValues(myUSplitValues);
@@ -399,7 +395,7 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
   {
     occ::handle<Geom_OffsetSurface> tmp     = occ::down_cast<Geom_OffsetSurface>(mySurface);
     occ::handle<Geom_Surface>       theSurf = tmp->BasisSurface();
-    ShapeUpgrade_SplitSurface       sps;
+    ShapeUpgrade_SplitSurface  sps;
     sps.Init(theSurf, UFirst, ULast, VFirst, VLast);
     sps.SetUSplitValues(myUSplitValues);
     sps.SetVSplitValues(myVSplitValues);
@@ -407,9 +403,9 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
     sps.Build(Segment);
     occ::handle<NCollection_HArray2<occ::handle<Geom_Surface>>> Patches =
       new NCollection_HArray2<occ::handle<Geom_Surface>>(1,
-                                                         sps.ResSurfaces()->NbUPatches(),
-                                                         1,
-                                                         sps.ResSurfaces()->NbVPatches());
+                                    sps.ResSurfaces()->NbUPatches(),
+                                    1,
+                                    sps.ResSurfaces()->NbVPatches());
     for (int i1 = 1; i1 <= sps.ResSurfaces()->NbUPatches(); i1++)
     {
       for (int j1 = 1; j1 <= sps.ResSurfaces()->NbVPatches(); j1++)
@@ -568,13 +564,13 @@ void ShapeUpgrade_SplitSurface::Build(const bool Segment)
     U1 = U2;
     V1 = myVSplitValues->Value(1);
   }
-  int                        nbU = myUSplitValues->Length();
+  int     nbU = myUSplitValues->Length();
   NCollection_Array1<double> UJoints(1, nbU);
-  int                        i; // svv Jan 10 2000 : porting on DEC
+  int     i; // svv Jan 10 2000 : porting on DEC
   for (i = 1; i <= nbU; i++)
     UJoints(i) = myUSplitValues->Value(i);
 
-  int                        nbV = myVSplitValues->Length();
+  int     nbV = myVSplitValues->Length();
   NCollection_Array1<double> VJoints(1, nbV);
   for (i = 1; i <= nbV; i++)
     VJoints(i) = myVSplitValues->Value(i);

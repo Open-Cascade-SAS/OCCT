@@ -35,12 +35,12 @@ public:
     const occ::handle<Message_Messenger>& theMsgDriver) override;
 
   Standard_EXPORT virtual occ::handle<XmlMDF_ADriver> ReadShapeSection(
-    const XmlObjMgt_Element&              thePDoc,
+    const XmlObjMgt_Element&         thePDoc,
     const occ::handle<Message_Messenger>& theMsgDriver,
-    const Message_ProgressRange&          theRange = Message_ProgressRange()) override;
+    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
 
-  Standard_EXPORT virtual void ShapeSetCleaning(
-    const occ::handle<XmlMDF_ADriver>& theDriver) override;
+  Standard_EXPORT virtual void ShapeSetCleaning(const occ::handle<XmlMDF_ADriver>& theDriver)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentRetrievalDriver)
 };

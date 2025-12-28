@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_CurveOnSurface, IGESData_IGESEntity)
 
 IGESGeom_CurveOnSurface::IGESGeom_CurveOnSurface() {}
 
-void IGESGeom_CurveOnSurface::Init(const int                               aMode,
+void IGESGeom_CurveOnSurface::Init(const int             aMode,
                                    const occ::handle<IGESData_IGESEntity>& aSurface,
                                    const occ::handle<IGESData_IGESEntity>& aCurveUV,
                                    const occ::handle<IGESData_IGESEntity>& aCurve3D,
-                                   const int                               aPreference)
+                                   const int             aPreference)
 {
   theCreationMode   = aMode;
   theSurface        = aSurface;

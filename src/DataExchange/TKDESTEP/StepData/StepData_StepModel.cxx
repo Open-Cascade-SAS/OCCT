@@ -98,12 +98,12 @@ void StepData_StepModel::AddHeaderEntity(const occ::handle<Standard_Transient>& 
 
 void StepData_StepModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
 {
-  Interface_GeneralLib                 lib(StepData::HeaderProtocol());
+  Interface_GeneralLib            lib(StepData::HeaderProtocol());
   occ::handle<StepData_StepModel>      me(this);
   occ::handle<Interface_Protocol>      aHP = StepData::HeaderProtocol();
-  Interface_ShareTool                  sh(me, aHP);
+  Interface_ShareTool             sh(me, aHP);
   occ::handle<Interface_GeneralModule> module;
-  int                                  CN;
+  int                CN;
   for (Interface_EntityIterator iter = Header(); iter.More(); iter.Next())
   {
     const occ::handle<Standard_Transient>& head = iter.Value();
@@ -118,12 +118,12 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const int /*level*/) co
   // Note: level parameter is not used in this implementation
 
   occ::handle<StepData_Protocol> stepro = StepData::HeaderProtocol();
-  bool                           iapro  = !stepro.IsNull();
+  bool          iapro  = !stepro.IsNull();
   if (!iapro)
     S << " -- WARNING : StepModel DumpHeader, Protocol not defined\n";
 
   Interface_EntityIterator iter = Header();
-  int                      nb   = iter.NbEntities();
+  int         nb   = iter.NbEntities();
   S << " --  Step Model Header : " << iter.NbEntities() << " Entities :\n";
   for (iter.Start(); iter.More(); iter.Next())
   {
@@ -135,7 +135,7 @@ void StepData_StepModel::DumpHeader(Standard_OStream& S, const int /*level*/) co
   S << " --   Dumped with Protocol : " << stepro->DynamicType()->Name() << "   --\n";
 
   occ::handle<StepData_StepModel> me(this);
-  StepData_StepWriter             SW(me);
+  StepData_StepWriter        SW(me);
   SW.SendModel(stepro, true); // Send HEADER only
   SW.Print(S);
 }
@@ -147,7 +147,8 @@ void StepData_StepModel::ClearLabels()
 
 // Set identifier label for an entity (used in STEP file format)
 // The identifier is typically a number like #123 that appears in STEP files
-void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& ent, const int ident)
+void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& ent,
+                                       const int            ident)
 {
   int num = Number(ent);
   if (!num)
@@ -163,7 +164,7 @@ void StepData_StepModel::SetIdentLabel(const occ::handle<Standard_Transient>& en
   // Resize array if model has grown since last allocation
   else if (nbEnt > theidnums->Length())
   {
-    int                                   prevLength = theidnums->Length();
+    int                 prevLength = theidnums->Length();
     occ::handle<NCollection_HArray1<int>> idnums1    = new NCollection_HArray1<int>(1, nbEnt);
     idnums1->Init(0);
     // Copy existing identifier mappings
@@ -184,7 +185,7 @@ int StepData_StepModel::IdentLabel(const occ::handle<Standard_Transient>& ent) c
 }
 
 void StepData_StepModel::PrintLabel(const occ::handle<Standard_Transient>& ent,
-                                    Standard_OStream&                      S) const
+                                    Standard_OStream&                 S) const
 {
   int num = (theidnums.IsNull() ? 0 : Number(ent));
   int nid = (!num ? 0 : theidnums->Value(num));
@@ -200,9 +201,9 @@ occ::handle<TCollection_HAsciiString> StepData_StepModel::StringLabel(
   const occ::handle<Standard_Transient>& ent) const
 {
   occ::handle<TCollection_HAsciiString> label;
-  char                                  text[20];
-  int                                   num = (theidnums.IsNull() ? 0 : Number(ent));
-  int                                   nid = (!num ? 0 : theidnums->Value(num));
+  char                             text[20];
+  int                 num = (theidnums.IsNull() ? 0 : Number(ent));
+  int                 nid = (!num ? 0 : theidnums->Value(num));
 
   if (nid > 0)
     Sprintf(text, "#%d", nid);

@@ -22,12 +22,13 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
 
 RWStepShape_RWFacetedBrepAndBrepWithVoids::RWStepShape_RWFacetedBrepAndBrepWithVoids() {}
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                                                 num0,
+  const int                               num0,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent) const
 {
@@ -42,12 +43,12 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
   // --- field : voids ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
-  occ::handle<StepShape_OrientedClosedShell>                                   anent;
-  int                                                                          nsub1;
+  occ::handle<StepShape_OrientedClosedShell>          anent;
+  int                               nsub1;
   if (data->ReadSubList(num, 1, "voids", ach, nsub1))
   {
     int nb1 = data->NbParams(nsub1);
-    aVoids  = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb1);
+    aVoids               = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       // szv#4:S4163:12Mar99 `bool stat1 =` not needed
@@ -113,7 +114,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::ReadStep(
 }
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent) const
 {
 
@@ -158,7 +159,7 @@ void RWStepShape_RWFacetedBrepAndBrepWithVoids::WriteStep(
 
 void RWStepShape_RWFacetedBrepAndBrepWithVoids::Share(
   const occ::handle<StepShape_FacetedBrepAndBrepWithVoids>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   iter.GetOneItem(ent->Outer());

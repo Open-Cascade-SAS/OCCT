@@ -40,15 +40,16 @@ public:
 
   //! Specific action : only <target> is used : the system Date
   //! is set to Global Section Item n0 18.
-  Standard_EXPORT void Performing(IFSelect_ContextModif&                 ctx,
+  Standard_EXPORT void Performing(IFSelect_ContextModif&            ctx,
                                   const occ::handle<IGESData_IGESModel>& target,
-                                  Interface_CopyTool&                    TC) const override;
+                                  Interface_CopyTool&               TC) const override;
 
   //! Returns a text which is
   //! "Update IGES Header Creation Date"
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_UpdateCreationDate, IGESSelect_ModelModifier)
+
 };
 
 #endif // _IGESSelect_UpdateCreationDate_HeaderFile

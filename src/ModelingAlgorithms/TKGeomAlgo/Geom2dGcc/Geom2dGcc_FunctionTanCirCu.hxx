@@ -49,12 +49,14 @@ public:
   //! for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X, double& F, double& Deriv);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      Deriv);
 
 private:
   gp_Circ2d           TheCirc;
   Geom2dAdaptor_Curve Curve;
-  double              myWeight;
+  double       myWeight;
 };
 
 #endif // _Geom2dGcc_FunctionTanCirCu_HeaderFile

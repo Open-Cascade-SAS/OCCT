@@ -51,12 +51,12 @@ public:
   //! If IsByPoint is equal to false, the number of the
   //! coefficients is 4 and they represent the combination of
   //! plane parameters and shift values.
-  Standard_EXPORT BRepGProp_TFunction(const BRepGProp_Face& theSurface,
-                                      const gp_Pnt&         theVertex,
-                                      const bool            IsByPoint,
-                                      const double*         theCoeffs,
-                                      const double          theUMin,
-                                      const double          theTolerance);
+  Standard_EXPORT BRepGProp_TFunction(const BRepGProp_Face&  theSurface,
+                                      const gp_Pnt&          theVertex,
+                                      const bool IsByPoint,
+                                      const double*   theCoeffs,
+                                      const double    theUMin,
+                                      const double    theTolerance);
 
   Standard_EXPORT void Init();
 
@@ -90,7 +90,8 @@ public:
   //! Returns a value of the function. The value represents an
   //! integral of UFunction. It is computed with the predefined
   //! tolerance using the adaptive Gauss-Kronrod method.
-  Standard_EXPORT virtual bool Value(const double X, double& F) override;
+  Standard_EXPORT virtual bool Value(const double X,
+                                                 double&      F) override;
 
   //! Redefined method. Remembers the error reached during
   //! computation of integral values since the object creation
@@ -103,14 +104,14 @@ public:
 private:
   BRepGProp_Face      mySurface;
   BRepGProp_UFunction myUFunction;
-  double              myUMin;
-  double              myTolerance;
-  double              myTolReached;
-  double              myErrReached;
-  double              myAbsError;
+  double       myUMin;
+  double       myTolerance;
+  double       myTolReached;
+  double       myErrReached;
+  double       myAbsError;
   GProp_ValueType     myValueType;
-  bool                myIsByPoint;
-  int                 myNbPntOuter;
+  bool    myIsByPoint;
+  int    myNbPntOuter;
 };
 
 #include <BRepGProp_TFunction.lxx>

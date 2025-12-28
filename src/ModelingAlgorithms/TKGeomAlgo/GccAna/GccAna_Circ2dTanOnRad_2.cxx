@@ -41,10 +41,10 @@ typedef math_DirectPolynomialRoots Roots;
 //                   - of radius Radius.                                   +
 //=========================================================================
 
-GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d& Point1,
-                                             const gp_Lin2d& OnLine,
-                                             const double    Radius,
-                                             const double    Tolerance)
+GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
+                                             const gp_Lin2d&     OnLine,
+                                             const double Radius,
+                                             const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -55,10 +55,10 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d& Point1,
       parcen3(1, 2)
 {
 
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol  = std::abs(Tolerance);
-  WellDone      = false;
-  NbrSol        = 0;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol    = std::abs(Tolerance);
+  WellDone             = false;
+  NbrSol               = 0;
   double dp1lin = OnLine.Distance(Point1);
 
   if (Radius < 0.0)

@@ -51,11 +51,11 @@ public:
   //! @param theColLow lower column bound
   //! @param theColUpp upper column bound
   //! @param theValue initial value for all elements
-  NCollection_HArray2(const int          theRowLow,
-                      const int          theRowUpp,
-                      const int          theColLow,
-                      const int          theColUpp,
-                      const TheItemType& theValue)
+  NCollection_HArray2(const int theRowLow,
+                      const int theRowUpp,
+                      const int theColLow,
+                      const int theColUpp,
+                      const TheItemType&     theValue)
       : Array2Type(theRowLow, theRowUpp, theColLow, theColUpp)
   {
     Array2Type::Init(theValue);

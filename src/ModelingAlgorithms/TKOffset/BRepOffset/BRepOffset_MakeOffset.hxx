@@ -29,11 +29,16 @@
 #include <NCollection_IndexedMap.hxx>
 #include <BRepOffset_Analyse.hxx>
 #include <BRepAlgo_Image.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <BRepOffset_Error.hxx>
 #include <BRepOffset_MakeLoops.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <BRepOffset_Offset.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -51,25 +56,25 @@ public:
 
   Standard_EXPORT BRepOffset_MakeOffset(
     const TopoDS_Shape&          S,
-    const double                 Offset,
-    const double                 Tol,
+    const double          Offset,
+    const double          Tol,
     const BRepOffset_Mode        Mode           = BRepOffset_Skin,
-    const bool                   Intersection   = false,
-    const bool                   SelfInter      = false,
+    const bool       Intersection   = false,
+    const bool       SelfInter      = false,
     const GeomAbs_JoinType       Join           = GeomAbs_Arc,
-    const bool                   Thickening     = false,
-    const bool                   RemoveIntEdges = false,
+    const bool       Thickening     = false,
+    const bool       RemoveIntEdges = false,
     const Message_ProgressRange& theRange       = Message_ProgressRange());
 
   Standard_EXPORT void Initialize(const TopoDS_Shape&    S,
-                                  const double           Offset,
-                                  const double           Tol,
+                                  const double    Offset,
+                                  const double    Tol,
                                   const BRepOffset_Mode  Mode           = BRepOffset_Skin,
-                                  const bool             Intersection   = false,
-                                  const bool             SelfInter      = false,
+                                  const bool Intersection   = false,
+                                  const bool SelfInter      = false,
                                   const GeomAbs_JoinType Join           = GeomAbs_Arc,
-                                  const bool             Thickening     = false,
-                                  const bool             RemoveIntEdges = false);
+                                  const bool Thickening     = false,
+                                  const bool RemoveIntEdges = false);
 
   Standard_EXPORT void Clear();
 
@@ -112,8 +117,7 @@ public:
   Standard_EXPORT const BRepAlgo_Image& OffsetEdgesFromShapes() const;
 
   //! Returns the list of closing faces stores by AddFace
-  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&
-                        ClosingFaces() const;
+  Standard_EXPORT const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& ClosingFaces() const;
 
   //! Makes pre analysis of possibility offset perform. Use method Error() to get more information.
   //! Finds first error. List of checks:
@@ -141,7 +145,7 @@ protected:
   //! Analyze progress steps of the whole operation.
   //! @param theWhole - sum of progress of all operations.
   //! @param theSteps - steps of the operations supported by PI
-  Standard_EXPORT void analyzeProgress(const double                theWhole,
+  Standard_EXPORT void analyzeProgress(const double   theWhole,
                                        NCollection_Array1<double>& theSteps) const;
 
 private:
@@ -163,30 +167,25 @@ private:
   Standard_EXPORT void BuildOffsetByInter(const Message_ProgressRange& theRange);
 
   //! Make Offset faces
-  Standard_EXPORT void MakeOffsetFaces(
-    NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& theMapSF,
-    const Message_ProgressRange&                                                   theRange);
+  Standard_EXPORT void MakeOffsetFaces(NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& theMapSF,
+                                       const Message_ProgressRange&     theRange);
 
   Standard_EXPORT void SelfInter(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif);
 
   Standard_EXPORT void Intersection3D(BRepOffset_Inter3d&          Inter,
                                       const Message_ProgressRange& theRange);
 
-  Standard_EXPORT void Intersection2D(
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif,
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& NewEdges,
-    const Message_ProgressRange&                                         theRange);
+  Standard_EXPORT void Intersection2D(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif,
+                                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& NewEdges,
+                                      const Message_ProgressRange&      theRange);
 
-  Standard_EXPORT void MakeLoops(
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif,
-    const Message_ProgressRange&                                   theRange);
+  Standard_EXPORT void MakeLoops(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&  Modif,
+                                 const Message_ProgressRange& theRange);
 
-  Standard_EXPORT void MakeLoopsOnContext(
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif);
+  Standard_EXPORT void MakeLoopsOnContext(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif);
 
-  Standard_EXPORT void MakeFaces(
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Modif,
-    const Message_ProgressRange&                                   theRange);
+  Standard_EXPORT void MakeFaces(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&  Modif,
+                                 const Message_ProgressRange& theRange);
 
   Standard_EXPORT void MakeShells(const Message_ProgressRange& theRange);
 
@@ -199,8 +198,7 @@ private:
 
   Standard_EXPORT void MakeSolid(const Message_ProgressRange& theRange);
 
-  Standard_EXPORT void ToContext(
-    NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& MapSF);
+  Standard_EXPORT void ToContext(NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& MapSF);
 
   //! Private method use to update the map face<->offset
   Standard_EXPORT void UpdateFaceOffset();
@@ -215,71 +213,68 @@ private:
   Standard_EXPORT void RemoveInternalEdges();
 
   //! Intersects edges
-  Standard_EXPORT void IntersectEdges(
-    const NCollection_List<TopoDS_Shape>&                                          theFaces,
-    NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& theMapSF,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      theMES,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      theBuild,
-    occ::handle<BRepAlgo_AsDes>&                                                   theAsDes,
-    occ::handle<BRepAlgo_AsDes>&                                                   theAsDes2d,
-    const Message_ProgressRange&                                                   theRange);
+  Standard_EXPORT void IntersectEdges(const NCollection_List<TopoDS_Shape>&      theFaces,
+                                      NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>& theMapSF,
+                                      NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&    theMES,
+                                      NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&    theBuild,
+                                      occ::handle<BRepAlgo_AsDes>&          theAsDes,
+                                      occ::handle<BRepAlgo_AsDes>&          theAsDes2d,
+                                      const Message_ProgressRange&     theRange);
 
   //! Building of the splits of the offset faces for mode Complete
   //! and joint type Intersection. This method is an advanced alternative
   //! for BRepOffset_MakeLoops::Build method.
   //! Currently the Complete intersection mode is limited to work only on planar cases.
   Standard_EXPORT void BuildSplitsOfExtendedFaces(
-    const NCollection_List<TopoDS_Shape>& theLF,
-    const BRepOffset_Analyse&             theAnalyse,
-    const occ::handle<BRepAlgo_AsDes>&    theAsDes,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                                              theEdgesOrigins,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theFacesOrigins,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theETrimEInf,
-    BRepAlgo_Image&                                                           theImage,
-    const Message_ProgressRange&                                              theRange);
+    const NCollection_List<TopoDS_Shape>&         theLF,
+    const BRepOffset_Analyse&           theAnalyse,
+    const occ::handle<BRepAlgo_AsDes>&       theAsDes,
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theEdgesOrigins,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       theFacesOrigins,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&       theETrimEInf,
+    BRepAlgo_Image&                     theImage,
+    const Message_ProgressRange&        theRange);
 
   //! Building of the splits of the already trimmed offset faces for mode Complete
   //! and joint type Intersection.
-  Standard_EXPORT void BuildSplitsOfTrimmedFaces(const NCollection_List<TopoDS_Shape>& theLF,
-                                                 const occ::handle<BRepAlgo_AsDes>&    theAsDes,
-                                                 BRepAlgo_Image&                       theImage,
-                                                 const Message_ProgressRange&          theRange);
+  Standard_EXPORT void BuildSplitsOfTrimmedFaces(const NCollection_List<TopoDS_Shape>&   theLF,
+                                                 const occ::handle<BRepAlgo_AsDes>& theAsDes,
+                                                 BRepAlgo_Image&               theImage,
+                                                 const Message_ProgressRange&  theRange);
 
-  double                                                             myOffset;
-  double                                                             myTol;
-  TopoDS_Shape                                                       myInitialShape;
-  TopoDS_Shape                                                       myShape;
-  TopoDS_Compound                                                    myFaceComp;
-  BRepOffset_Mode                                                    myMode;
-  bool                                                               myIsLinearizationAllowed;
-  bool                                                               myInter;
-  bool                                                               mySelfInter;
-  GeomAbs_JoinType                                                   myJoin;
-  bool                                                               myThickening;
-  bool                                                               myRemoveIntEdges;
-  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> myFaceOffset;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>      myFaces;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>      myOriginalFaces;
-  BRepOffset_Analyse                                                 myAnalyse;
-  TopoDS_Shape                                                       myOffsetShape;
-  BRepAlgo_Image                                                     myInitOffsetFace;
-  BRepAlgo_Image                                                     myInitOffsetEdge;
-  BRepAlgo_Image                                                     myImageOffset;
-  BRepAlgo_Image                                                     myImageVV;
-  NCollection_List<TopoDS_Shape>                                     myWalls;
-  occ::handle<BRepAlgo_AsDes>                                        myAsDes;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                       myEdgeIntEdges;
-  bool                 myDone;
-  BRepOffset_Error     myError;
-  BRepOffset_MakeLoops myMakeLoops;
-  bool                 myIsPerformSewing; // Handle bad walls in thicksolid mode.
-  bool                 myIsPlanar;
-  TopoDS_Shape         myBadShape;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myFacePlanfaceMap;
-  NCollection_List<TopoDS_Shape>                                           myGenerated;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                   myResMap;
+  double                      myOffset;
+  double                      myTol;
+  TopoDS_Shape                       myInitialShape;
+  TopoDS_Shape                       myShape;
+  TopoDS_Compound                    myFaceComp;
+  BRepOffset_Mode                    myMode;
+  bool                   myIsLinearizationAllowed;
+  bool                   myInter;
+  bool                   mySelfInter;
+  GeomAbs_JoinType                   myJoin;
+  bool                   myThickening;
+  bool                   myRemoveIntEdges;
+  NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>        myFaceOffset;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         myFaces;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         myOriginalFaces;
+  BRepOffset_Analyse                 myAnalyse;
+  TopoDS_Shape                       myOffsetShape;
+  BRepAlgo_Image                     myInitOffsetFace;
+  BRepAlgo_Image                     myInitOffsetEdge;
+  BRepAlgo_Image                     myImageOffset;
+  BRepAlgo_Image                     myImageVV;
+  NCollection_List<TopoDS_Shape>               myWalls;
+  occ::handle<BRepAlgo_AsDes>             myAsDes;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myEdgeIntEdges;
+  bool                   myDone;
+  BRepOffset_Error                   myError;
+  BRepOffset_MakeLoops               myMakeLoops;
+  bool                   myIsPerformSewing; // Handle bad walls in thicksolid mode.
+  bool                   myIsPlanar;
+  TopoDS_Shape                       myBadShape;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myFacePlanfaceMap;
+  NCollection_List<TopoDS_Shape>               myGenerated;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                myResMap;
 };
 
 #endif // _BRepOffset_MakeOffset_HeaderFile

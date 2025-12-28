@@ -50,14 +50,13 @@ void OpenGl_Material::Init(const OpenGl_Context&           theCtx,
 void OpenGl_Material::init(const OpenGl_Context&           theCtx,
                            const Graphic3d_MaterialAspect& theMat,
                            const Quantity_Color&           theInteriorColor,
-                           const int                       theIndex)
+                           const int          theIndex)
 {
   OpenGl_MaterialCommon& aCommon = Common[theIndex];
   OpenGl_MaterialPBR&    aPbr    = Pbr[theIndex];
   aPbr.ChangeMetallic()          = theMat.PBRMaterial().Metallic();
   aPbr.ChangeRoughness()         = theMat.PBRMaterial().NormalizedRoughness();
-  aPbr.EmissionIOR =
-    NCollection_Vec4<float>(theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
+  aPbr.EmissionIOR = NCollection_Vec4<float>(theMat.PBRMaterial().Emission(), theMat.PBRMaterial().IOR());
 
   const NCollection_Vec3<float>& aSrcAmb = theMat.AmbientColor();
   const NCollection_Vec3<float>& aSrcDif = theMat.DiffuseColor();
@@ -92,8 +91,7 @@ void OpenGl_Material::init(const OpenGl_Context&           theCtx,
 
 //=================================================================================================
 
-OpenGl_Workspace::OpenGl_Workspace(OpenGl_View*                      theView,
-                                   const occ::handle<OpenGl_Window>& theWindow)
+OpenGl_Workspace::OpenGl_Workspace(OpenGl_View* theView, const occ::handle<OpenGl_Window>& theWindow)
     : myView(theView),
       myWindow(theWindow),
       myGlContext(!theWindow.IsNull() ? theWindow->GetGlContext() : NULL),
@@ -347,7 +345,8 @@ int OpenGl_Workspace::Height() const
 
 //=================================================================================================
 
-occ::handle<OpenGl_FrameBuffer> OpenGl_Workspace::FBOCreate(const int theWidth, const int theHeight)
+occ::handle<OpenGl_FrameBuffer> OpenGl_Workspace::FBOCreate(const int theWidth,
+                                                       const int theHeight)
 {
   // activate OpenGL context
   if (!Activate())
@@ -386,8 +385,8 @@ void OpenGl_Workspace::FBORelease(occ::handle<OpenGl_FrameBuffer>& theFbo)
 //=================================================================================================
 
 bool OpenGl_Workspace::BufferDump(const occ::handle<OpenGl_FrameBuffer>& theFbo,
-                                  Image_PixMap&                          theImage,
-                                  const Graphic3d_BufferType&            theBufferType)
+                                              Image_PixMap&                     theImage,
+                                              const Graphic3d_BufferType&       theBufferType)
 {
   return !theImage.IsEmpty() && Activate()
          && OpenGl_FrameBuffer::BufferDump(GetGlContext(), theFbo, theImage, theBufferType);

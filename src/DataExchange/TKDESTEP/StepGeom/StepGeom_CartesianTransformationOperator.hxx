@@ -33,13 +33,13 @@ public:
   Standard_EXPORT StepGeom_CartesianTransformationOperator();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const bool                                   hasAaxis1,
+                            const bool                  hasAaxis1,
                             const occ::handle<StepGeom_Direction>&       aAxis1,
-                            const bool                                   hasAaxis2,
+                            const bool                  hasAaxis2,
                             const occ::handle<StepGeom_Direction>&       aAxis2,
                             const occ::handle<StepGeom_CartesianPoint>&  aLocalOrigin,
-                            const bool                                   hasAscale,
-                            const double                                 aScale);
+                            const bool                  hasAscale,
+                            const double                     aScale);
 
   Standard_EXPORT void SetAxis1(const occ::handle<StepGeom_Direction>& aAxis1);
 
@@ -76,10 +76,10 @@ private:
   occ::handle<StepGeom_Direction>      axis1;
   occ::handle<StepGeom_Direction>      axis2;
   occ::handle<StepGeom_CartesianPoint> localOrigin;
-  double                               scale;
-  bool                                 hasAxis1;
-  bool                                 hasAxis2;
-  bool                                 hasScale;
+  double                   scale;
+  bool                hasAxis1;
+  bool                hasAxis2;
+  bool                hasScale;
 };
 
 #endif // _StepGeom_CartesianTransformationOperator_HeaderFile

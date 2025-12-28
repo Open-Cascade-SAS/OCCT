@@ -31,8 +31,8 @@ void StepVisual_PresentationStyleAssignment::SetStyles(
   styles = aStyles;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>
-  StepVisual_PresentationStyleAssignment::Styles() const
+occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> StepVisual_PresentationStyleAssignment::Styles()
+  const
 {
   return styles;
 }

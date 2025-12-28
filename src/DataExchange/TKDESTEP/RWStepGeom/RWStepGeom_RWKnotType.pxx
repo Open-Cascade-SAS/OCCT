@@ -48,7 +48,8 @@ inline const char* ConvertToString(const StepGeom_KnotType theSourceEnum)
 //! @param theKnotTypeString The string to convert
 //! @param theResultEnum The corresponding StepGeom_KnotType value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* theKnotTypeString, StepGeom_KnotType& theResultEnum)
+inline bool ConvertToEnum(const char* theKnotTypeString,
+                          StepGeom_KnotType&     theResultEnum)
 {
   if (IsEqual(theKnotTypeString, ktUniformKnots))
   {

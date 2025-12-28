@@ -46,9 +46,14 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 #ifdef OCCT_DEBUG
@@ -59,15 +64,15 @@ extern bool BRepFeat_GettraceFEAT();
 
 //=================================================================================================
 
-LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
-                             const double       Height1,
-                             const double       Height2,
-                             const double       Angle)
+LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
+                             const double Height1,
+                             const double Height2,
+                             const double Angle)
     : mySpine(Spine)
 {
   int i;
 
-  myHeight = Height1 + Height2;
+  myHeight        = Height1 + Height2;
   double y = Height1 * sin(Angle);
   double z = Height1 * cos(Angle);
 
@@ -111,19 +116,19 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
 
   if (myDPrism.IsDone())
   {
-    LocOpe_BuildShape              BS;
-    BRep_Builder                   B;
-    TopoDS_Compound                C;
-    TopoDS_Compound                D;
+    LocOpe_BuildShape    BS;
+    BRep_Builder         B;
+    TopoDS_Compound      C;
+    TopoDS_Compound      D;
     NCollection_List<TopoDS_Shape> lfaces, lcomplete;
 
     B.MakeCompound(C);
-    NCollection_List<TopoDS_Shape>::Iterator               it;
-    TopExp_Explorer                                        ExpS(mySpine, TopAbs_EDGE);
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
+    NCollection_List<TopoDS_Shape>::Iterator it;
+    TopExp_Explorer                    ExpS(mySpine, TopAbs_EDGE);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                View;
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const TopoDS_Shape&         ES   = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
       for (it.Initialize(lffs); it.More(); it.Next())
       {
@@ -132,10 +137,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
       }
     }
 
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      theMapEF;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF;
     TopExp::MapShapesAndAncestors(C, TopAbs_EDGE, TopAbs_FACE, theMapEF);
     View.Clear();
 
@@ -184,7 +186,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
 
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const TopoDS_Shape&         ES   = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
       for (it.Initialize(lfls); it.More(); it.Next())
       {
@@ -239,7 +241,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
 
     for (ExpS.ReInit(); ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const TopoDS_Shape&         ES   = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile2);
 
       for (it.Initialize(lffs); it.More(); it.Next())
@@ -338,8 +340,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
       TopExp_Explorer ExpS2;
       for (ExpS2.Init(ES, TopAbs_VERTEX); ExpS2.More(); ExpS2.Next())
       {
-        const NCollection_List<TopoDS_Shape>& ls2 =
-          myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
+        const NCollection_List<TopoDS_Shape>& ls2 = myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
         for (it.Initialize(ls2); it.More(); it.Next())
         {
           if (View.Add(it.Value()) && it.Value().ShapeType() == TopAbs_FACE)
@@ -358,11 +359,13 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine,
 
 //=================================================================================================
 
-LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, const double Angle)
+LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face&  Spine,
+                             const double Height,
+                             const double Angle)
     : mySpine(Spine)
 {
   int i;
-  myHeight = Height;
+  myHeight        = Height;
   double y = Height * sin(Angle);
   double z = Height * cos(Angle);
 
@@ -386,19 +389,19 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
 
   if (myDPrism.IsDone())
   {
-    LocOpe_BuildShape              BS;
-    BRep_Builder                   B;
-    TopoDS_Compound                C;
-    TopoDS_Compound                D;
+    LocOpe_BuildShape    BS;
+    BRep_Builder         B;
+    TopoDS_Compound      C;
+    TopoDS_Compound      D;
     NCollection_List<TopoDS_Shape> lfaces, lcomplete;
 
     B.MakeCompound(C);
-    NCollection_List<TopoDS_Shape>::Iterator               it;
-    TopExp_Explorer                                        ExpS(mySpine, TopAbs_EDGE);
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
+    NCollection_List<TopoDS_Shape>::Iterator it;
+    TopExp_Explorer                    ExpS(mySpine, TopAbs_EDGE);
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                View;
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const TopoDS_Shape&         ES   = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& lffs = myDPrism.GeneratedShapes(ES, myProfile1);
       for (it.Initialize(lffs); it.More(); it.Next())
       {
@@ -407,10 +410,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
       }
     }
 
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      theMapEF;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theMapEF;
     TopExp::MapShapesAndAncestors(C, TopAbs_EDGE, TopAbs_FACE, theMapEF);
     View.Clear();
 
@@ -459,7 +459,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
 
     for (; ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES   = ExpS.Current();
+      const TopoDS_Shape&         ES   = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& lfls = myDPrism.GeneratedShapes(ES, myProfile3);
       for (it.Initialize(lfls); it.More(); it.Next())
       {
@@ -513,7 +513,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
     View.Clear();
     for (ExpS.ReInit(); ExpS.More(); ExpS.Next())
     {
-      const TopoDS_Shape&                   ES = ExpS.Current();
+      const TopoDS_Shape&         ES = ExpS.Current();
       const NCollection_List<TopoDS_Shape>& ls = myDPrism.GeneratedShapes(ES, myProfile2);
       for (it.Initialize(ls); it.More(); it.Next())
       {
@@ -525,8 +525,7 @@ LocOpe_DPrism::LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, cons
       TopExp_Explorer ExpS2;
       for (ExpS2.Init(ES, TopAbs_VERTEX); ExpS2.More(); ExpS2.Next())
       {
-        const NCollection_List<TopoDS_Shape>& ls2 =
-          myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
+        const NCollection_List<TopoDS_Shape>& ls2 = myDPrism.GeneratedShapes(ExpS2.Current(), myProfile2);
         for (it.Initialize(ls2); it.More(); it.Next())
         {
           if (View.Add(it.Value()) && it.Value().ShapeType() == TopAbs_FACE)
@@ -614,8 +613,8 @@ void LocOpe_DPrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurve
   // Retrieves dy and dz with myProfile2
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(myProfile2, V1, V2);
-  gp_Pnt P1 = BRep_Tool::Pnt(V1);
-  gp_Pnt P2 = BRep_Tool::Pnt(V2);
+  gp_Pnt        P1 = BRep_Tool::Pnt(V1);
+  gp_Pnt        P2 = BRep_Tool::Pnt(V2);
   double dy = P2.Y() - P1.Y();
   double dz = P2.Z() - P1.Z();
   Scurves.Clear();
@@ -639,11 +638,11 @@ void LocOpe_DPrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurve
   }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
-  TopExp_Explorer         exp(mySpine.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-  TopLoc_Location         Loc;
-  occ::handle<Geom_Curve> C;
-  double                  f, l, prm;
-  int                     i;
+  TopExp_Explorer     exp(mySpine.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+  TopLoc_Location     Loc;
+  occ::handle<Geom_Curve>  C;
+  double       f, l, prm;
+  int    i;
 
   for (; exp.More(); exp.Next())
   {
@@ -654,8 +653,8 @@ void LocOpe_DPrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurve
     }
     if (!BRep_Tool::Degenerated(edg))
     {
-      C         = BRep_Tool::Curve(edg, Loc, f, l);
-      C         = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
+      C                = BRep_Tool::Curve(edg, Loc, f, l);
+      C                = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
       double u1 = -2 * std::abs(myHeight);
       double u2 = 2 * std::abs(myHeight);
 
@@ -670,9 +669,9 @@ void LocOpe_DPrism::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurve
           d1.Reverse();
         }
         d1.Normalize();
-        gp_Dir                         locy = Normale.Crossed(d1);
-        gp_Vec                         ldir = dy * locy.XYZ() + dz * Normale.XYZ();
-        gp_Lin                         lin(pt, ldir);
+        gp_Dir                    locy = Normale.Crossed(d1);
+        gp_Vec                    ldir = dy * locy.XYZ() + dz * Normale.XYZ();
+        gp_Lin                    lin(pt, ldir);
         occ::handle<Geom_Line>         Lin   = new Geom_Line(lin);
         occ::handle<Geom_TrimmedCurve> trlin = new Geom_TrimmedCurve(Lin, u1, u2, true);
         Scurves.Append(trlin);
@@ -687,8 +686,8 @@ occ::handle<Geom_Curve> LocOpe_DPrism::BarycCurve() const
 {
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(myProfile2, V1, V2);
-  gp_Pnt P1 = BRep_Tool::Pnt(V1);
-  gp_Pnt P2 = BRep_Tool::Pnt(V2);
+  gp_Pnt        P1 = BRep_Tool::Pnt(V1);
+  gp_Pnt        P2 = BRep_Tool::Pnt(V2);
   double dz = P2.Z() - P1.Z();
 
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(mySpine);
@@ -723,7 +722,7 @@ occ::handle<Geom_Curve> LocOpe_DPrism::BarycCurve() const
   }
   gp_Vec Vec = dz * Normale.XYZ();
 
-  gp_Pnt                       bar(0., 0., 0.);
+  gp_Pnt               bar(0., 0., 0.);
   NCollection_Sequence<gp_Pnt> spt;
   if (!myFirstShape.IsNull())
   {
@@ -739,7 +738,7 @@ occ::handle<Geom_Curve> LocOpe_DPrism::BarycCurve() const
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
-  gp_Ax1                 newAx(bar, Vec);
+  gp_Ax1            newAx(bar, Vec);
   occ::handle<Geom_Line> theLin = new Geom_Line(newAx);
   return theLin;
 }

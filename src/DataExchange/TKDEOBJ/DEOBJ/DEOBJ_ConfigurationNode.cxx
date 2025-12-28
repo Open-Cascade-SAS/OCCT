@@ -37,8 +37,7 @@ DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode()
 
 //=================================================================================================
 
-DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode(
-  const occ::handle<DEOBJ_ConfigurationNode>& theNode)
+DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode(const occ::handle<DEOBJ_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

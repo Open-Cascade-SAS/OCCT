@@ -59,7 +59,7 @@ public:
 private:
   NCollection_Mat4<float>         myProjectionMatrix;        //!< OCCT projection matrix
   mutable NCollection_Mat4<float> myProjectionMatrixInverse; //!< Inverse of OCCT projection matrix
-  mutable bool                    myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT model-world transformation.
@@ -81,7 +81,7 @@ public:
 private:
   NCollection_Mat4<float>         myModelWorldMatrix;        //!< OCCT model-world matrix
   mutable NCollection_Mat4<float> myModelWorldMatrixInverse; //!< Inverse of OCCT model-world matrix
-  mutable bool                    myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT world-view transformation.
@@ -103,7 +103,7 @@ public:
 private:
   NCollection_Mat4<float>         myWorldViewMatrix;        //!< OCCT world-view matrix
   mutable NCollection_Mat4<float> myWorldViewMatrixInverse; //!< Inverse of OCCT world-view matrix
-  mutable bool                    myInverseNeedUpdate;      //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;      //!< Is inversed matrix outdated?
 };
 
 //! Defines state of OCCT light sources.
@@ -118,10 +118,7 @@ public:
   }
 
   //! Sets new light sources.
-  void Set(const occ::handle<Graphic3d_LightSet>& theLightSources)
-  {
-    myLightSources = theLightSources;
-  }
+  void Set(const occ::handle<Graphic3d_LightSet>& theLightSources) { myLightSources = theLightSources; }
 
   //! Returns current list of light sources.
   const occ::handle<Graphic3d_LightSet>& LightSources() const { return myLightSources; }
@@ -131,7 +128,10 @@ public:
   int SpecIBLMapLevels() const { return mySpecIBLMapLevels; }
 
   //! Sets number of mipmap levels used in specular IBL map.
-  void SetSpecIBLMapLevels(int theSpecIBLMapLevels) { mySpecIBLMapLevels = theSpecIBLMapLevels; }
+  void SetSpecIBLMapLevels(int theSpecIBLMapLevels)
+  {
+    mySpecIBLMapLevels = theSpecIBLMapLevels;
+  }
 
   //! Returns TRUE if shadowmap is set.
   bool HasShadowMaps() const { return myToCastShadows && !myShadowMaps.IsNull(); }
@@ -150,11 +150,11 @@ public:
 
 private:
   occ::handle<Graphic3d_LightSet> myLightSources;     //!< List of OCCT light sources
-                                                      // clang-format off
+                                                 // clang-format off
   int           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
-                                                      // clang-format on
+                                                 // clang-format on
   occ::handle<OpenGl_ShadowMapArray> myShadowMaps;    //!< active shadowmap
-  bool                               myToCastShadows; //!< enable/disable shadowmap
+  bool              myToCastShadows; //!< enable/disable shadowmap
 };
 
 //! Defines generic state of OCCT clipping state.

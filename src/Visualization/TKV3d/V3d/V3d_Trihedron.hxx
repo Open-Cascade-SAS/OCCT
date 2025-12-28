@@ -50,10 +50,7 @@ public:
   }
 
   //! Return trihedron position.
-  const occ::handle<Graphic3d_TransformPers> TransformPersistence() const
-  {
-    return myTransformPers;
-  }
+  const occ::handle<Graphic3d_TransformPers> TransformPersistence() const { return myTransformPers; }
 
   //! Setup the corner to draw the trihedron.
   Standard_EXPORT void SetPosition(const Aspect_TypeOfTriedronPosition thePosition);
@@ -154,17 +151,17 @@ protected:
   occ::handle<Prs3d_ShadingAspect> mySphereShadingAspect;
   occ::handle<Prs3d_TextAspect>    myTextAspects[3];
   occ::handle<Prs3d_ShadingAspect> myArrowShadingAspects[3];
-  TCollection_AsciiString          myLabels[3];
+  TCollection_AsciiString     myLabels[3];
 
   occ::handle<Graphic3d_Structure>     myStructure;
   occ::handle<Graphic3d_TransformPers> myTransformPers;
 
-  double myScale;
-  double myRatio;
-  double myDiameter;
-  int    myNbFacettes;
-  bool   myIsWireframe;
-  bool   myToCompute;
+  double    myScale;
+  double    myRatio;
+  double    myDiameter;
+  int myNbFacettes;
+  bool myIsWireframe;
+  bool myToCompute;
 };
 
 #endif

@@ -21,6 +21,7 @@
 #include "RWStepAP203_RWChangeRequest.pxx"
 #include <StepAP203_ChangeRequest.hxx>
 #include <StepAP203_ChangeRequestItem.hxx>
+#include <StepAP203_ChangeRequestItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
@@ -34,7 +35,7 @@ RWStepAP203_RWChangeRequest::RWStepAP203_RWChangeRequest() {}
 //=================================================================================================
 
 void RWStepAP203_RWChangeRequest::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepAP203_ChangeRequest>& ent) const
 {
@@ -55,12 +56,12 @@ void RWStepAP203_RWChangeRequest::ReadStep(const occ::handle<StepData_StepReader
   // Own fields of ChangeRequest
 
   occ::handle<NCollection_HArray1<StepAP203_ChangeRequestItem>> aItems;
-  int                                                           sub2 = 0;
+  int                             sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems   = new NCollection_HArray1<StepAP203_ChangeRequestItem>(1, nb0);
+    aItems                = new NCollection_HArray1<StepAP203_ChangeRequestItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_ChangeRequestItem anIt0;
@@ -75,7 +76,7 @@ void RWStepAP203_RWChangeRequest::ReadStep(const occ::handle<StepData_StepReader
 
 //=================================================================================================
 
-void RWStepAP203_RWChangeRequest::WriteStep(StepData_StepWriter&                        SW,
+void RWStepAP203_RWChangeRequest::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepAP203_ChangeRequest>& ent) const
 {
 
@@ -97,7 +98,7 @@ void RWStepAP203_RWChangeRequest::WriteStep(StepData_StepWriter&                
 //=================================================================================================
 
 void RWStepAP203_RWChangeRequest::Share(const occ::handle<StepAP203_ChangeRequest>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   // Inherited fields of ActionRequestAssignment

@@ -50,16 +50,16 @@ public:
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
   Standard_EXPORT BRepLProp_CLProps(const BRepAdaptor_Curve& C,
-                                    const int                N,
-                                    const double             Resolution);
+                                    const int   N,
+                                    const double      Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U>.
   //! All the computations done will be related to <C> and <U>.
   Standard_EXPORT BRepLProp_CLProps(const BRepAdaptor_Curve& C,
-                                    const double             U,
-                                    const int                N,
-                                    const double             Resolution);
+                                    const double      U,
+                                    const int   N,
+                                    const double      Resolution);
 
   //! Same as previous constructor but here the parameter is
   //! set to the value <U> and the curve is set
@@ -111,16 +111,16 @@ public:
 
 private:
   BRepAdaptor_Curve myCurve;
-  double            myU;
-  int               myDerOrder;
-  double            myCN;
-  double            myLinTol;
+  double     myU;
+  int  myDerOrder;
+  double     myCN;
+  double     myLinTol;
   gp_Pnt            myPnt;
   gp_Vec            myDerivArr[3];
   gp_Dir            myTangent;
-  double            myCurvature;
+  double     myCurvature;
   LProp_Status      myTangentStatus;
-  int               mySignificantFirstDerivativeOrder;
+  int  mySignificantFirstDerivativeOrder;
 };
 
 #endif // _BRepLProp_CLProps_HeaderFile

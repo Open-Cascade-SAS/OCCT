@@ -28,12 +28,12 @@ StepVisual_TessellatedFace::StepVisual_TessellatedFace()
 //=================================================================================================
 
 void StepVisual_TessellatedFace::Init(
-  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-  const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
-  const int                                       thePnmax,
-  const occ::handle<NCollection_HArray2<double>>& theNormals,
-  const bool                                      theHasGeometricLink,
-  const StepVisual_FaceOrSurface&                 theGeometricLink)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const int                    thePnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theNormals,
+  const bool                    theHasGeometricLink,
+  const StepVisual_FaceOrSurface&           theGeometricLink)
 {
   StepVisual_TessellatedStructuredItem::Init(theRepresentationItem_Name);
 
@@ -92,8 +92,7 @@ occ::handle<NCollection_HArray2<double>> StepVisual_TessellatedFace::Normals() c
 
 //=================================================================================================
 
-void StepVisual_TessellatedFace::SetNormals(
-  const occ::handle<NCollection_HArray2<double>>& theNormals)
+void StepVisual_TessellatedFace::SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals)
 {
   myNormals = theNormals;
 }

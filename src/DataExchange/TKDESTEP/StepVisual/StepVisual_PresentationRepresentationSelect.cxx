@@ -37,8 +37,8 @@ occ::handle<StepVisual_PresentationRepresentation> StepVisual_PresentationRepres
   return GetCasted(StepVisual_PresentationRepresentation, Value());
 }
 
-occ::handle<StepVisual_PresentationSet> StepVisual_PresentationRepresentationSelect::
-  PresentationSet() const
+occ::handle<StepVisual_PresentationSet> StepVisual_PresentationRepresentationSelect::PresentationSet()
+  const
 {
   return GetCasted(StepVisual_PresentationSet, Value());
 }

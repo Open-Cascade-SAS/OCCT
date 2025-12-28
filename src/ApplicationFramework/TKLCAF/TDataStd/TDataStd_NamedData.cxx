@@ -18,10 +18,23 @@
 #include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TDataStd_HDataMapOfStringByte.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 #include <TDataStd_HDataMapOfStringHArray1OfReal.hxx>
@@ -110,7 +123,8 @@ int TDataStd_NamedData::GetInteger(const TCollection_ExtendedString& theName)
 
 //=================================================================================================
 
-void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName, const int theInteger)
+void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName,
+                                    const int            theInteger)
 {
   if (!HasIntegers())
   {
@@ -125,7 +139,8 @@ void TDataStd_NamedData::setInteger(const TCollection_ExtendedString& theName, c
 // purpose  : Defines a named integer. If the integer already exists,
 //         : it changes its value to <theInteger>.
 //=======================================================================
-void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName, const int theInteger)
+void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName,
+                                    const int            theInteger)
 {
   if (!HasIntegers())
   {
@@ -152,8 +167,7 @@ void TDataStd_NamedData::SetInteger(const TCollection_ExtendedString& theName, c
 // purpose  : Returns the internal container of named integers.
 //         : Use before HasIntegers()
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::
-  GetIntegersContainer()
+const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::GetIntegersContainer()
 {
   if (!HasIntegers())
   {
@@ -167,8 +181,7 @@ const NCollection_DataMap<TCollection_ExtendedString, int>& TDataStd_NamedData::
 // function : ChangeIntegers
 // purpose  : Replace the container content by new content of the <theIntegers>.
 //=======================================================================
-void TDataStd_NamedData::ChangeIntegers(
-  const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers)
+void TDataStd_NamedData::ChangeIntegers(const NCollection_DataMap<TCollection_ExtendedString, int>& theIntegers)
 {
   if (!HasIntegers())
   {
@@ -221,7 +234,8 @@ double TDataStd_NamedData::GetReal(const TCollection_ExtendedString& theName)
 
 //=================================================================================================
 
-void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName, const double theReal)
+void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName,
+                                 const double               theReal)
 {
   if (!HasReals())
   {
@@ -236,7 +250,8 @@ void TDataStd_NamedData::setReal(const TCollection_ExtendedString& theName, cons
 // purpose  : Defines a named real. If the real already exists,
 //         : it changes its value to <theReal>.
 //=======================================================================
-void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName, const double theReal)
+void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName,
+                                 const double               theReal)
 {
   if (!HasReals())
   {
@@ -261,8 +276,7 @@ void TDataStd_NamedData::SetReal(const TCollection_ExtendedString& theName, cons
 // function : GetRealsContainer
 // purpose  : Returns the internal container of named reals.
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedData::
-  GetRealsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedData::GetRealsContainer()
 {
   if (!HasReals())
   {
@@ -276,8 +290,7 @@ const NCollection_DataMap<TCollection_ExtendedString, double>& TDataStd_NamedDat
 // function : ChangeReals
 // purpose  : Replace the container content by new content of the <theReals>.
 //=======================================================================
-void TDataStd_NamedData::ChangeReals(
-  const NCollection_DataMap<TCollection_ExtendedString, double>& theReals)
+void TDataStd_NamedData::ChangeReals(const NCollection_DataMap<TCollection_ExtendedString, double>& theReals)
 {
   if (!HasReals())
   {
@@ -376,8 +389,7 @@ void TDataStd_NamedData::SetString(const TCollection_ExtendedString& theName,
 // function : GetStringsContainer
 // purpose  : Returns the internal container of named strings.
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>&
-  TDataStd_NamedData::GetStringsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& TDataStd_NamedData::GetStringsContainer()
 {
   if (!HasStrings())
   {
@@ -391,8 +403,7 @@ const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString
 // function : ChangeStrings
 // purpose  : Replace the container content by new content of the <theStrings>.
 //=======================================================================
-void TDataStd_NamedData::ChangeStrings(
-  const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings)
+void TDataStd_NamedData::ChangeStrings(const NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>& theStrings)
 {
   if (!HasStrings())
   {
@@ -445,7 +456,8 @@ uint8_t TDataStd_NamedData::GetByte(const TCollection_ExtendedString& theName)
 
 //=================================================================================================
 
-void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName, const uint8_t theByte)
+void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName,
+                                 const uint8_t               theByte)
 {
   if (!HasBytes())
   {
@@ -460,7 +472,8 @@ void TDataStd_NamedData::setByte(const TCollection_ExtendedString& theName, cons
 // purpose  : Defines a named byte. If the byte already exists,
 //         : it changes its value to <theByte>.
 //=======================================================================
-void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName, const uint8_t theByte)
+void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName,
+                                 const uint8_t               theByte)
 {
   if (!HasBytes())
   {
@@ -487,8 +500,7 @@ void TDataStd_NamedData::SetByte(const TCollection_ExtendedString& theName, cons
 // function : GetBytesContainer
 // purpose  : Returns the internal container of named bytes.
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedData::
-  GetBytesContainer()
+const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedData::GetBytesContainer()
 {
   if (!HasBytes())
   {
@@ -502,8 +514,7 @@ const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& TDataStd_NamedDa
 // function : ChangeBytes
 // purpose  : Replace the container content by new content of the <theBytes>.
 //=======================================================================
-void TDataStd_NamedData::ChangeBytes(
-  const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes)
+void TDataStd_NamedData::ChangeBytes(const NCollection_DataMap<TCollection_ExtendedString, uint8_t>& theBytes)
 {
   if (!HasBytes())
   {
@@ -533,7 +544,8 @@ bool TDataStd_NamedData::HasArraysOfIntegers() const
 // purpose  : Returns true if the attribute contains this named array
 //         : of integer values.
 //=======================================================================
-bool TDataStd_NamedData::HasArrayOfIntegers(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasArrayOfIntegers(
+  const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfIntegers())
     return false;
@@ -559,7 +571,7 @@ const occ::handle<NCollection_HArray1<int>>& TDataStd_NamedData::GetArrayOfInteg
 //=================================================================================================
 
 void TDataStd_NamedData::setArrayOfIntegers(
-  const TCollection_ExtendedString&            theName,
+  const TCollection_ExtendedString&       theName,
   const occ::handle<NCollection_HArray1<int>>& theArrayOfIntegers)
 {
   if (!HasArraysOfIntegers())
@@ -572,8 +584,9 @@ void TDataStd_NamedData::setArrayOfIntegers(
   if (!theArrayOfIntegers.IsNull())
   {
     // deep copy of the array
-    const int aLower = theArrayOfIntegers->Lower(), anUpper = theArrayOfIntegers->Upper();
-    anArray = new NCollection_HArray1<int>(aLower, anUpper);
+    const int aLower  = theArrayOfIntegers->Lower(),
+                           anUpper = theArrayOfIntegers->Upper();
+    anArray                        = new NCollection_HArray1<int>(aLower, anUpper);
     for (int anIter = aLower; anIter <= anUpper; ++anIter)
     {
       anArray->SetValue(anIter, theArrayOfIntegers->Value(anIter));
@@ -586,8 +599,7 @@ void TDataStd_NamedData::setArrayOfIntegers(
 // function : GetArraysOfIntegersContainer
 // purpose  : Returns the internal container of named arrays of integer values.
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
-  TDataStd_NamedData::GetArraysOfIntegersContainer()
+const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& TDataStd_NamedData::GetArraysOfIntegersContainer()
 {
   if (!HasArraysOfIntegers())
   {
@@ -602,8 +614,7 @@ const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HA
 // purpose  : Replace the container content by new content of the <theIntegers>.
 //=======================================================================
 void TDataStd_NamedData::ChangeArraysOfIntegers(
-  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
-    theIntegers)
+  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& theIntegers)
 {
   if (!HasArraysOfIntegers())
   {
@@ -633,7 +644,8 @@ bool TDataStd_NamedData::HasArraysOfReals() const
 // purpose  : Returns true if the attribute contains this named array of
 //         : real values.
 //=======================================================================
-bool TDataStd_NamedData::HasArrayOfReals(const TCollection_ExtendedString& theName) const
+bool TDataStd_NamedData::HasArrayOfReals(
+  const TCollection_ExtendedString& theName) const
 {
   if (!HasArraysOfReals())
     return false;
@@ -658,9 +670,8 @@ const occ::handle<NCollection_HArray1<double>>& TDataStd_NamedData::GetArrayOfRe
 
 //=================================================================================================
 
-void TDataStd_NamedData::setArrayOfReals(
-  const TCollection_ExtendedString&               theName,
-  const occ::handle<NCollection_HArray1<double>>& theArrayOfReals)
+void TDataStd_NamedData::setArrayOfReals(const TCollection_ExtendedString&    theName,
+                                         const occ::handle<NCollection_HArray1<double>>& theArrayOfReals)
 {
   if (!HasArraysOfReals())
   {
@@ -686,8 +697,7 @@ void TDataStd_NamedData::setArrayOfReals(
 // function : GetArraysOfRealsContainer
 // purpose  : Returns the internal container of named arrays of real values.
 //=======================================================================
-const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
-  TDataStd_NamedData::GetArraysOfRealsContainer()
+const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& TDataStd_NamedData::GetArraysOfRealsContainer()
 {
   if (!HasArraysOfReals())
   {
@@ -701,9 +711,7 @@ const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HA
 // function : ChangeArraysOfReals
 // purpose  : Replace the container content by new content of the <theReals>.
 //=======================================================================
-void TDataStd_NamedData::ChangeArraysOfReals(
-  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>&
-    theReals)
+void TDataStd_NamedData::ChangeArraysOfReals(const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>& theReals)
 {
   if (!HasArraysOfReals())
   {
@@ -790,8 +798,8 @@ void TDataStd_NamedData::Restore(const occ::handle<TDF_Attribute>& With)
       NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>> aMap;
       myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
     }
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator
-      itr(ND->GetArraysOfIntegersContainer());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(
+      ND->GetArraysOfIntegersContainer());
     for (; itr.More(); itr.Next())
     {
       // Deep copy of the arrays
@@ -815,13 +823,10 @@ void TDataStd_NamedData::Restore(const occ::handle<TDF_Attribute>& With)
   {
     if (!HasArraysOfReals())
     {
-      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>
-        aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
       myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
     }
-    NCollection_DataMap<TCollection_ExtendedString,
-                        occ::handle<NCollection_HArray1<double>>>::Iterator
-      itr(ND->GetArraysOfRealsContainer());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(ND->GetArraysOfRealsContainer());
     for (; itr.More(); itr.Next())
     {
       // Deep copy of the arrays
@@ -903,8 +908,7 @@ void TDataStd_NamedData::Paste(const occ::handle<TDF_Attribute>& Into,
       ND->myArraysOfIntegers = new TDataStd_HDataMapOfStringHArray1OfInteger(aMap);
     }
 
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator
-      itr(myArraysOfIntegers->Map());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>::Iterator itr(myArraysOfIntegers->Map());
     for (; itr.More(); itr.Next())
     {
       const occ::handle<NCollection_HArray1<int>>& ints = itr.Value();
@@ -927,13 +931,10 @@ void TDataStd_NamedData::Paste(const occ::handle<TDF_Attribute>& Into,
   {
     if (!ND->HasArraysOfReals())
     {
-      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>
-        aMap;
+      NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>> aMap;
       ND->myArraysOfReals = new TDataStd_HDataMapOfStringHArray1OfReal(aMap);
     }
-    NCollection_DataMap<TCollection_ExtendedString,
-                        occ::handle<NCollection_HArray1<double>>>::Iterator itr(myArraysOfReals
-                                                                                  ->Map());
+    NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<double>>>::Iterator itr(myArraysOfReals->Map());
     for (; itr.More(); itr.Next())
     {
       const occ::handle<NCollection_HArray1<double>>& dbls = itr.Value();

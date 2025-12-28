@@ -27,7 +27,9 @@ IntAna2d_IntPoint::IntAna2d_IntPoint(const double X,
 {
 }
 
-IntAna2d_IntPoint::IntAna2d_IntPoint(const double X, const double Y, const double U1)
+IntAna2d_IntPoint::IntAna2d_IntPoint(const double X,
+                                     const double Y,
+                                     const double U1)
     : myu1(U1),
       myu2(RealLast()),
       myp(X, Y),
@@ -45,7 +47,10 @@ IntAna2d_IntPoint::IntAna2d_IntPoint()
 {
 }
 
-void IntAna2d_IntPoint::SetValue(const double X, const double Y, const double U1, const double U2)
+void IntAna2d_IntPoint::SetValue(const double X,
+                                 const double Y,
+                                 const double U1,
+                                 const double U2)
 {
 
   myimplicit = false;
@@ -54,7 +59,9 @@ void IntAna2d_IntPoint::SetValue(const double X, const double Y, const double U1
   myu2 = U2;
 }
 
-void IntAna2d_IntPoint::SetValue(const double X, const double Y, const double U1)
+void IntAna2d_IntPoint::SetValue(const double X,
+                                 const double Y,
+                                 const double U1)
 {
 
   myimplicit = true;

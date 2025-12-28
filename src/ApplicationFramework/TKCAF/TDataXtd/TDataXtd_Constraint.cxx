@@ -63,7 +63,7 @@ TDataXtd_Constraint::TDataXtd_Constraint()
 
 //=================================================================================================
 
-void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
+void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum     type,
                               const occ::handle<TNaming_NamedShape>& G1)
 {
   // OCC2932 correction
@@ -82,7 +82,7 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
 
 //=================================================================================================
 
-void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
+void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum     type,
                               const occ::handle<TNaming_NamedShape>& G1,
                               const occ::handle<TNaming_NamedShape>& G2)
 {
@@ -91,8 +91,8 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
   {
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false)
+    if (aShape1.IsNull() == false && G1.IsNull() == false
+        && aShape2.IsNull() == false && G2.IsNull() == false)
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get())
         return;
   }
@@ -105,7 +105,7 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
 
 //=================================================================================================
 
-void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
+void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum     type,
                               const occ::handle<TNaming_NamedShape>& G1,
                               const occ::handle<TNaming_NamedShape>& G2,
                               const occ::handle<TNaming_NamedShape>& G3)
@@ -116,8 +116,9 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape1 = occ::down_cast<TNaming_NamedShape>(myGeometries[0]);
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false && aShape3.IsNull() == false && G3.IsNull() == false)
+    if (aShape1.IsNull() == false && G1.IsNull() == false
+        && aShape2.IsNull() == false && G2.IsNull() == false
+        && aShape3.IsNull() == false && G3.IsNull() == false)
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get())
         return;
   }
@@ -131,7 +132,7 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
 
 //=================================================================================================
 
-void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
+void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum     type,
                               const occ::handle<TNaming_NamedShape>& G1,
                               const occ::handle<TNaming_NamedShape>& G2,
                               const occ::handle<TNaming_NamedShape>& G3,
@@ -144,8 +145,9 @@ void TDataXtd_Constraint::Set(const TDataXtd_ConstraintEnum          type,
     occ::handle<TNaming_NamedShape> aShape2 = occ::down_cast<TNaming_NamedShape>(myGeometries[1]);
     occ::handle<TNaming_NamedShape> aShape3 = occ::down_cast<TNaming_NamedShape>(myGeometries[2]);
     occ::handle<TNaming_NamedShape> aShape4 = occ::down_cast<TNaming_NamedShape>(myGeometries[3]);
-    if (aShape1.IsNull() == false && G1.IsNull() == false && aShape2.IsNull() == false
-        && G2.IsNull() == false && aShape3.IsNull() == false && G3.IsNull() == false
+    if (aShape1.IsNull() == false && G1.IsNull() == false
+        && aShape2.IsNull() == false && G2.IsNull() == false
+        && aShape3.IsNull() == false && G3.IsNull() == false
         && aShape4.IsNull() == false && G4.IsNull() == false)
       if (aShape1->Get() == G1->Get() && aShape2->Get() == G2->Get() && aShape3->Get() == G3->Get()
           && aShape3->Get() == G4->Get())
@@ -216,11 +218,11 @@ void TDataXtd_Constraint::ClearGeometries()
 
 //=================================================================================================
 
-void TDataXtd_Constraint::SetGeometry(const int Index, const occ::handle<TNaming_NamedShape>& G)
+void TDataXtd_Constraint::SetGeometry(const int            Index,
+                                      const occ::handle<TNaming_NamedShape>& G)
 {
   // OCC2932 correction
-  occ::handle<TNaming_NamedShape> aGeom =
-    occ::down_cast<TNaming_NamedShape>(myGeometries[Index - 1]);
+  occ::handle<TNaming_NamedShape> aGeom = occ::down_cast<TNaming_NamedShape>(myGeometries[Index - 1]);
   if (aGeom.IsNull() == false && G.IsNull() == false)
     if (aGeom->Get() == G->Get())
       return;
@@ -301,16 +303,16 @@ occ::handle<TDF_Attribute> TDataXtd_Constraint::NewEmpty() const
 void TDataXtd_Constraint::Restore(const occ::handle<TDF_Attribute>& with)
 {
   occ::handle<TDataXtd_Constraint> CTR = occ::down_cast<TDataXtd_Constraint>(with);
-  myGeometries[0]                      = CTR->GetGeometry(1);
-  myGeometries[1]                      = CTR->GetGeometry(2);
-  myGeometries[2]                      = CTR->GetGeometry(3);
-  myGeometries[3]                      = CTR->GetGeometry(4);
-  myType                               = CTR->GetType();
-  myValue                              = CTR->GetValue();
-  myIsVerified                         = CTR->Verified();
-  myIsInverted                         = CTR->Inverted();
-  myIsReversed                         = CTR->Reversed();
-  myPlane                              = CTR->GetPlane();
+  myGeometries[0]                 = CTR->GetGeometry(1);
+  myGeometries[1]                 = CTR->GetGeometry(2);
+  myGeometries[2]                 = CTR->GetGeometry(3);
+  myGeometries[3]                 = CTR->GetGeometry(4);
+  myType                          = CTR->GetType();
+  myValue                         = CTR->GetValue();
+  myIsVerified                    = CTR->Verified();
+  myIsInverted                    = CTR->Inverted();
+  myIsReversed                    = CTR->Reversed();
+  myPlane                         = CTR->GetPlane();
 }
 
 //=================================================================================================
@@ -426,10 +428,9 @@ bool TDataXtd_Constraint::Inverted() const
 
 //=================================================================================================
 
-void TDataXtd_Constraint::CollectChildConstraints(const TDF_Label&             aLabel,
-                                                  NCollection_List<TDF_Label>& LL)
+void TDataXtd_Constraint::CollectChildConstraints(const TDF_Label& aLabel, NCollection_List<TDF_Label>& LL)
 {
-  TDF_ChildIterator                it(aLabel, true);
+  TDF_ChildIterator           it(aLabel, true);
   occ::handle<TDataXtd_Constraint> aConstraint;
   for (; it.More(); it.Next())
   {

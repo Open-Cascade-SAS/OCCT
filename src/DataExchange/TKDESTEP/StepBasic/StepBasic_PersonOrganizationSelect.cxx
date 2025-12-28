@@ -20,7 +20,8 @@
 
 StepBasic_PersonOrganizationSelect::StepBasic_PersonOrganizationSelect() {}
 
-int StepBasic_PersonOrganizationSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepBasic_PersonOrganizationSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -43,8 +44,8 @@ occ::handle<StepBasic_Organization> StepBasic_PersonOrganizationSelect::Organiza
   return GetCasted(StepBasic_Organization, Value());
 }
 
-occ::handle<StepBasic_PersonAndOrganization> StepBasic_PersonOrganizationSelect::
-  PersonAndOrganization() const
+occ::handle<StepBasic_PersonAndOrganization> StepBasic_PersonOrganizationSelect::PersonAndOrganization()
+  const
 {
   return GetCasted(StepBasic_PersonAndOrganization, Value());
 }

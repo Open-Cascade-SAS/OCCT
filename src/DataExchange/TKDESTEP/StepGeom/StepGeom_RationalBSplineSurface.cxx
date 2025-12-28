@@ -19,15 +19,15 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RationalBSplineSurface, StepGeom_BSplineSurf
 StepGeom_RationalBSplineSurface::StepGeom_RationalBSplineSurface() {}
 
 void StepGeom_RationalBSplineSurface::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const int                                                                     aUDegree,
-  const int                                                                     aVDegree,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aUDegree,
+  const int                          aVDegree,
   const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineSurfaceForm                                             aSurfaceForm,
-  const StepData_Logical                                                        aUClosed,
-  const StepData_Logical                                                        aVClosed,
-  const StepData_Logical                                                        aSelfIntersect,
-  const occ::handle<NCollection_HArray2<double>>&                               aWeightsData)
+  const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+  const StepData_Logical                          aUClosed,
+  const StepData_Logical                          aVClosed,
+  const StepData_Logical                          aSelfIntersect,
+  const occ::handle<NCollection_HArray2<double>>&            aWeightsData)
 {
   // --- classe own fields ---
   weightsData = aWeightsData;
@@ -53,7 +53,8 @@ occ::handle<NCollection_HArray2<double>> StepGeom_RationalBSplineSurface::Weight
   return weightsData;
 }
 
-double StepGeom_RationalBSplineSurface::WeightsDataValue(const int num1, const int num2) const
+double StepGeom_RationalBSplineSurface::WeightsDataValue(const int num1,
+                                                                const int num2) const
 {
   return weightsData->Value(num1, num2);
 }

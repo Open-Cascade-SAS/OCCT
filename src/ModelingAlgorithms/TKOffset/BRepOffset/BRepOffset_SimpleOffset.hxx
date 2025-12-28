@@ -51,8 +51,8 @@ public:
   //! @param theOffsetValue offset distance (signed)
   //! @param theTolerance tolerance for handling singular points
   Standard_EXPORT BRepOffset_SimpleOffset(const TopoDS_Shape& theInputShape,
-                                          const double        theOffsetValue,
-                                          const double        theTolerance);
+                                          const double theOffsetValue,
+                                          const double theTolerance);
 
   //! Returns true if the face <F> has been
   //! modified. In this case, <S> is the new geometric
@@ -65,12 +65,12 @@ public:
   //! face changes in the shells which contain it.
   //! Here, <RevFace> will return true if the
   //! gp_Trsf is negative.
-  Standard_EXPORT bool NewSurface(const TopoDS_Face&         F,
-                                  occ::handle<Geom_Surface>& S,
-                                  TopLoc_Location&           L,
-                                  double&                    Tol,
-                                  bool&                      RevWires,
-                                  bool&                      RevFace) override;
+  Standard_EXPORT bool NewSurface(const TopoDS_Face&    F,
+                                              occ::handle<Geom_Surface>& S,
+                                              TopLoc_Location&      L,
+                                              double&        Tol,
+                                              bool&     RevWires,
+                                              bool&     RevFace) override;
 
   //! Returns true if the edge <E> has been
   //! modified. In this case, <C> is the new geometric
@@ -78,17 +78,19 @@ public:
   //! <Tol> the new tolerance. Otherwise, returns
   //! false, and <C>, <L>,
   //! <Tol> are not significant.
-  Standard_EXPORT bool NewCurve(const TopoDS_Edge&       E,
-                                occ::handle<Geom_Curve>& C,
-                                TopLoc_Location&         L,
-                                double&                  Tol) override;
+  Standard_EXPORT bool NewCurve(const TopoDS_Edge&  E,
+                                            occ::handle<Geom_Curve>& C,
+                                            TopLoc_Location&    L,
+                                            double&      Tol) override;
 
   //! Returns true if the vertex <V> has been
   //! modified. In this case, <P> is the new geometric
   //! support of the vertex, <Tol> the new tolerance.
   //! Otherwise, returns false, and <P>,
   //! <Tol> are not significant.
-  Standard_EXPORT bool NewPoint(const TopoDS_Vertex& V, gp_Pnt& P, double& Tol) override;
+  Standard_EXPORT bool NewPoint(const TopoDS_Vertex& V,
+                                            gp_Pnt&              P,
+                                            double&       Tol) override;
 
   //! Returns true if the edge <E> has a new
   //! curve on surface on the face <F>. In this case,
@@ -96,12 +98,12 @@ public:
   //! <L> the new location, <Tol> the new tolerance.
   //! Otherwise, returns false, and <C>, <L>,
   //! <Tol> are not significant.
-  Standard_EXPORT bool NewCurve2d(const TopoDS_Edge&         E,
-                                  const TopoDS_Face&         F,
-                                  const TopoDS_Edge&         NewE,
-                                  const TopoDS_Face&         NewF,
-                                  occ::handle<Geom2d_Curve>& C,
-                                  double&                    Tol) override;
+  Standard_EXPORT bool NewCurve2d(const TopoDS_Edge&    E,
+                                              const TopoDS_Face&    F,
+                                              const TopoDS_Edge&    NewE,
+                                              const TopoDS_Face&    NewF,
+                                              occ::handle<Geom2d_Curve>& C,
+                                              double&        Tol) override;
 
   //! Returns true if the Vertex <V> has a new
   //! parameter on the edge <E>. In this case,
@@ -109,9 +111,9 @@ public:
   //! Otherwise, returns false, and <P>,
   //! <Tol> are not significant.
   Standard_EXPORT bool NewParameter(const TopoDS_Vertex& V,
-                                    const TopoDS_Edge&   E,
-                                    double&              P,
-                                    double&              Tol) override;
+                                                const TopoDS_Edge&   E,
+                                                double&       P,
+                                                double&       Tol) override;
 
   //! Returns the continuity of <NewE> between <NewF1>
   //! and <NewF2>.
@@ -131,38 +133,34 @@ private:
   void FillFaceData(const TopoDS_Face& theFace);
 
   //! Method to fill new edge data for single edge.
-  void FillEdgeData(const TopoDS_Edge&                                         theEdge,
-                    const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                     NCollection_List<TopoDS_Shape>,
-                                                     TopTools_ShapeMapHasher>& theEdgeFaceMap,
-                    const int                                                  theIdx);
+  void FillEdgeData(const TopoDS_Edge&                               theEdge,
+                    const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theEdgeFaceMap,
+                    const int                           theIdx);
 
   //! Method to fill new vertex data for single vertex.
-  void FillVertexData(const TopoDS_Vertex&                                       theVertex,
-                      const NCollection_IndexedDataMap<TopoDS_Shape,
-                                                       NCollection_List<TopoDS_Shape>,
-                                                       TopTools_ShapeMapHasher>& theVertexEdgeMap,
-                      const int                                                  theIdx);
+  void FillVertexData(const TopoDS_Vertex&                             theVertex,
+                      const NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theVertexEdgeMap,
+                      const int                           theIdx);
 
   struct NewFaceData
   {
     occ::handle<Geom_Surface> myOffsetS;
-    TopLoc_Location           myL;
-    double                    myTol;
-    bool                      myRevWires;
-    bool                      myRevFace;
+    TopLoc_Location      myL;
+    double        myTol;
+    bool     myRevWires;
+    bool     myRevFace;
   };
 
   struct NewEdgeData
   {
     occ::handle<Geom_Curve> myOffsetC; // Resulting curve.
-    TopLoc_Location         myL;
-    double                  myTol;
+    TopLoc_Location    myL;
+    double      myTol;
   };
 
   struct NewVertexData
   {
-    gp_Pnt myP;
+    gp_Pnt        myP;
     double myTol;
   };
 

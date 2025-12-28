@@ -24,10 +24,15 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Transient.hxx>
 #include <IFSelect_EditValue.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 class Interface_TypedValue;
 class IFSelect_EditForm;
@@ -47,10 +52,10 @@ class IFSelect_Editor : public Standard_Transient
 public:
   //! Sets a Typed Value for a given ident and short name, with an
   //! Edit Mode
-  Standard_EXPORT void SetValue(const int                                num,
+  Standard_EXPORT void SetValue(const int              num,
                                 const occ::handle<Interface_TypedValue>& typval,
-                                const char*                              shortname = "",
-                                const IFSelect_EditValue accessmode = IFSelect_Editable);
+                                const char*              shortname  = "",
+                                const IFSelect_EditValue            accessmode = IFSelect_Editable);
 
   //! Sets a parameter to be a List
   //! max < 0 : not for a list (set when starting)
@@ -74,7 +79,8 @@ public:
 
   //! Returns the name of a Value (complete or short) from its ident
   //! Short Name can be empty
-  Standard_EXPORT const char* Name(const int num, const bool isshort = false) const;
+  Standard_EXPORT const char* Name(const int num,
+                                        const bool isshort = false) const;
 
   //! Returns the edit mode of a Value
   Standard_EXPORT IFSelect_EditValue EditMode(const int num) const;
@@ -85,7 +91,8 @@ public:
 
   Standard_EXPORT void PrintNames(Standard_OStream& S) const;
 
-  Standard_EXPORT void PrintDefs(Standard_OStream& S, const bool labels = false) const;
+  Standard_EXPORT void PrintDefs(Standard_OStream&      S,
+                                 const bool labels = false) const;
 
   //! Returns the MaxLength of, according to what :
   //! <what> = -1 : length of short names
@@ -98,18 +105,20 @@ public:
 
   //! Builds and Returns an EditForm, empty (no data yet)
   //! Can be redefined to return a specific type of EditForm
-  Standard_EXPORT virtual occ::handle<IFSelect_EditForm> Form(const bool readonly,
-                                                              const bool undoable = true) const;
+  Standard_EXPORT virtual occ::handle<IFSelect_EditForm> Form(
+    const bool readonly,
+    const bool undoable = true) const;
 
   //! Tells if this Editor can work on this EditForm and its content
   //! (model, entity ?)
-  Standard_EXPORT virtual bool Recognize(const occ::handle<IFSelect_EditForm>& form) const = 0;
+  Standard_EXPORT virtual bool Recognize(
+    const occ::handle<IFSelect_EditForm>& form) const = 0;
 
   //! Returns the value of an EditForm, for a given item
   //! (if not a list. for a list, a Null String may be returned)
   Standard_EXPORT virtual occ::handle<TCollection_HAsciiString> StringValue(
     const occ::handle<IFSelect_EditForm>& form,
-    const int                             num) const = 0;
+    const int           num) const = 0;
 
   //! Returns a ListEditor for a parameter which is a List
   //! Default returns a basic ListEditor for a List, a Null Handle
@@ -120,17 +129,19 @@ public:
   //! If not a list, a Null Handle should be returned
   //! Default returns a Null Handle, because many Editors have
   //! no list to edit. To be redefined as required
-  Standard_EXPORT virtual occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-    ListValue(const occ::handle<IFSelect_EditForm>& form, const int num) const;
+  Standard_EXPORT virtual occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> ListValue(
+    const occ::handle<IFSelect_EditForm>& form,
+    const int           num) const;
 
   //! Loads original values from some data, to an EditForm
   //! Remark: <ent> may be Null, this means all <model> is concerned
   //! Also <model> may be Null, if no context applies for <ent>
   //! And both <ent> and <model> may be Null, for a full static
   //! editor
-  Standard_EXPORT virtual bool Load(const occ::handle<IFSelect_EditForm>&        form,
-                                    const occ::handle<Standard_Transient>&       ent,
-                                    const occ::handle<Interface_InterfaceModel>& model) const = 0;
+  Standard_EXPORT virtual bool Load(
+    const occ::handle<IFSelect_EditForm>&        form,
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const = 0;
 
   //! Updates the EditForm when a parameter is modified
   //! I.E.  default does nothing, can be redefined, as follows :
@@ -142,25 +153,26 @@ public:
   //! If a parameter commands the value of other ones, when it is
   //! modified, it is necessary to touch them by Touch from EditForm
   Standard_EXPORT virtual bool Update(const occ::handle<IFSelect_EditForm>&        form,
-                                      const int                                    num,
-                                      const occ::handle<TCollection_HAsciiString>& newval,
-                                      const bool                                   enforce) const;
+                                                  const int                  num,
+                                                  const occ::handle<TCollection_HAsciiString>& newval,
+                                                  const bool enforce) const;
 
   //! Acts as Update, but when the value is a list
   Standard_EXPORT virtual bool UpdateList(
-    const occ::handle<IFSelect_EditForm>&                                            form,
-    const int                                                                        num,
+    const occ::handle<IFSelect_EditForm>&               form,
+    const int                         num,
     const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& newlist,
-    const bool                                                                       enforce) const;
+    const bool                         enforce) const;
 
   //! Applies modified values of the EditForm with some data
   //! Remark: <ent> may be Null, this means all <model> is concerned
   //! Also <model> may be Null, if no context applies for <ent>
   //! And both <ent> and <model> may be Null, for a full static
   //! editor
-  Standard_EXPORT virtual bool Apply(const occ::handle<IFSelect_EditForm>&        form,
-                                     const occ::handle<Standard_Transient>&       ent,
-                                     const occ::handle<Interface_InterfaceModel>& model) const = 0;
+  Standard_EXPORT virtual bool Apply(
+    const occ::handle<IFSelect_EditForm>&        form,
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_Editor, Standard_Transient)
 
@@ -176,15 +188,15 @@ protected:
   Standard_EXPORT void SetNbValues(const int nbval);
 
 private:
-  int                                                 thenbval;
-  int                                                 themaxsh;
-  int                                                 themaxco;
-  int                                                 themaxla;
-  NCollection_DataMap<TCollection_AsciiString, int>   thenames;
-  NCollection_Array1<occ::handle<Standard_Transient>> thevalues;
-  NCollection_Array1<TCollection_AsciiString>         theshorts;
-  NCollection_Array1<int>                             themodes;
-  NCollection_Array1<int>                             thelists;
+  int                                               thenbval;
+  int                                               themaxsh;
+  int                                               themaxco;
+  int                                               themaxla;
+  NCollection_DataMap<TCollection_AsciiString, int> thenames;
+  NCollection_Array1<occ::handle<Standard_Transient>>                                      thevalues;
+  NCollection_Array1<TCollection_AsciiString>                                    theshorts;
+  NCollection_Array1<int>                                        themodes;
+  NCollection_Array1<int>                                        thelists;
 };
 
 #endif // _IFSelect_Editor_HeaderFile

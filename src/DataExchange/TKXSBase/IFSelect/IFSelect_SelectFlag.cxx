@@ -33,10 +33,10 @@ const char* IFSelect_SelectFlag::FlagName() const
 
 Interface_EntityIterator IFSelect_SelectFlag::RootResult(const Interface_Graph& G) const
 {
-  bool                     direct = IsDirect();
+  bool         direct = IsDirect();
   Interface_EntityIterator res;
   const Interface_BitMap&  bm   = G.BitMap();
-  int                      flag = bm.FlagNumber(thename.ToCString());
+  int         flag = bm.FlagNumber(thename.ToCString());
   if (flag == 0)
     return res;
   Interface_EntityIterator inp = InputResult(G);
@@ -53,8 +53,8 @@ Interface_EntityIterator IFSelect_SelectFlag::RootResult(const Interface_Graph& 
 }
 
 bool IFSelect_SelectFlag::Sort(const int,
-                               const occ::handle<Standard_Transient>&,
-                               const occ::handle<Interface_InterfaceModel>&) const
+                                           const occ::handle<Standard_Transient>&,
+                                           const occ::handle<Interface_InterfaceModel>&) const
 {
   return false;
 }

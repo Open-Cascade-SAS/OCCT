@@ -33,10 +33,10 @@
 
 void DsgPrs_FixPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                  const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                 const gp_Pnt&                          aPntAttach,
-                                 const gp_Pnt&                          aPntEnd,
-                                 const gp_Dir&                          aNormPln,
-                                 const double                           symbsize)
+                                 const gp_Pnt&                     aPntAttach,
+                                 const gp_Pnt&                     aPntEnd,
+                                 const gp_Dir&                     aNormPln,
+                                 const double               symbsize)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -90,7 +90,7 @@ void DsgPrs_FixPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresent
 
   aPresentation->NewGroup();
   aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Quantity_Color                        aColor = LA->LineAspect()->Aspect()->Color();
+  Quantity_Color                   aColor = LA->LineAspect()->Aspect()->Color();
   occ::handle<Graphic3d_AspectMarker3d> aMarkerAsp =
     new Graphic3d_AspectMarker3d(Aspect_TOM_O, aColor, 1.0);
   aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarkerAsp);

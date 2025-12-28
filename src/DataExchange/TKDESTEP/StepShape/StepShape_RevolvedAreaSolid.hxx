@@ -35,7 +35,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aName,
                             const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
                             const occ::handle<StepGeom_Axis1Placement>&      aAxis,
-                            const double                                     aAngle);
+                            const double                         aAngle);
 
   Standard_EXPORT void SetAxis(const occ::handle<StepGeom_Axis1Placement>& aAxis);
 
@@ -49,7 +49,7 @@ public:
 
 private:
   occ::handle<StepGeom_Axis1Placement> axis;
-  double                               angle;
+  double                   angle;
 };
 
 #endif // _StepShape_RevolvedAreaSolid_HeaderFile

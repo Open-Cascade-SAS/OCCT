@@ -20,9 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CurveStyleFont, Standard_Transient)
 StepVisual_CurveStyleFont::StepVisual_CurveStyleFont() {}
 
 void StepVisual_CurveStyleFont::Init(
-  const occ::handle<TCollection_HAsciiString>& aName,
-  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>&
-    aPatternList)
+  const occ::handle<TCollection_HAsciiString>&                  aName,
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>& aPatternList)
 {
   // --- classe own fields ---
   name        = aName;
@@ -40,14 +39,12 @@ occ::handle<TCollection_HAsciiString> StepVisual_CurveStyleFont::Name() const
 }
 
 void StepVisual_CurveStyleFont::SetPatternList(
-  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>&
-    aPatternList)
+  const occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>& aPatternList)
 {
   patternList = aPatternList;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>>
-  StepVisual_CurveStyleFont::PatternList() const
+occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>> StepVisual_CurveStyleFont::PatternList() const
 {
   return patternList;
 }

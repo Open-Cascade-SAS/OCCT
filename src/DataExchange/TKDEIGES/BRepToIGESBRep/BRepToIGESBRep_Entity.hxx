@@ -24,6 +24,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Integer.hxx>
@@ -76,8 +78,8 @@ public:
 
   //! Stores <myedge> in "myEdges" and <mycurve3d> in "myCurves".
   //! Returns the index of <myedge>.
-  Standard_EXPORT int AddEdge(const TopoDS_Edge&                      myedge,
-                              const occ::handle<IGESData_IGESEntity>& mycurve3d);
+  Standard_EXPORT int AddEdge(const TopoDS_Edge&                 myedge,
+                                           const occ::handle<IGESData_IGESEntity>& mycurve3d);
 
   //! Returns the result of the transfert of any Shape
   //! If the transfer has failed, this member returns a NullEntity.
@@ -91,16 +93,16 @@ public:
 
   //! Transfer an Edge entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(const TopoDS_Edge& myedge,
-                                                                const TopoDS_Face& myface,
-                                                                const double       length);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferEdge(const TopoDS_Edge&  myedge,
+                                                           const TopoDS_Face&  myface,
+                                                           const double length);
 
   //! Transfer a Wire entity from TopoDS to IGES.
   //! Returns the curve associated to mywire in the parametric space of myface.
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT occ::handle<IGESSolid_Loop> TransferWire(const TopoDS_Wire& mywire,
-                                                           const TopoDS_Face& myface,
-                                                           const double       length);
+  Standard_EXPORT occ::handle<IGESSolid_Loop> TransferWire(const TopoDS_Wire&  mywire,
+                                                      const TopoDS_Face&  myface,
+                                                      const double length);
 
   //! Transfer a Face entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
@@ -131,11 +133,11 @@ public:
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 private:
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myVertices;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myEdges;
-  NCollection_Sequence<occ::handle<Standard_Transient>>         myCurves;
-  occ::handle<IGESSolid_EdgeList>                               myEdgeList;
-  occ::handle<IGESSolid_VertexList>                             myVertexList;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myVertices;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>   myEdges;
+  NCollection_Sequence<occ::handle<Standard_Transient>>  myCurves;
+  occ::handle<IGESSolid_EdgeList>   myEdgeList;
+  occ::handle<IGESSolid_VertexList> myVertexList;
 };
 
 #endif // _BRepToIGESBRep_Entity_HeaderFile

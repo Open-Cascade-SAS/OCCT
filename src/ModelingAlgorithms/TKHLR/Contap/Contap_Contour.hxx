@@ -45,18 +45,18 @@ public:
   //! Creates the contour in a given direction.
   Standard_EXPORT Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                  const occ::handle<Adaptor3d_TopolTool>& Domain,
-                                 const gp_Vec&                           Direction);
+                                 const gp_Vec&                      Direction);
 
   //! Creates the contour in a given direction.
   Standard_EXPORT Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                  const occ::handle<Adaptor3d_TopolTool>& Domain,
-                                 const gp_Vec&                           Direction,
-                                 const double                            Angle);
+                                 const gp_Vec&                      Direction,
+                                 const double                Angle);
 
   //! Creates the contour for a perspective view.
   Standard_EXPORT Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                  const occ::handle<Adaptor3d_TopolTool>& Domain,
-                                 const gp_Pnt&                           Eye);
+                                 const gp_Pnt&                      Eye);
 
   //! Creates the contour in a given direction.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
@@ -65,18 +65,18 @@ public:
   //! Creates the contour in a given direction.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Vec&                           Direction);
+                               const gp_Vec&                      Direction);
 
   //! Creates the contour in a given direction.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Vec&                           Direction,
-                               const double                            Angle);
+                               const gp_Vec&                      Direction,
+                               const double                Angle);
 
   //! Creates the contour for a perspective view.
   Standard_EXPORT void Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Pnt&                           Eye);
+                               const gp_Pnt&                      Eye);
 
   Standard_EXPORT void Init(const gp_Vec& Direction);
 
@@ -102,13 +102,13 @@ private:
 
   Standard_EXPORT void PerformAna(const occ::handle<Adaptor3d_TopolTool>& Domain);
 
-  bool                              done;
+  bool         done;
   NCollection_Sequence<Contap_Line> slin;
-  Contap_TheSearch                  solrst;
-  Contap_TheSearchInside            solins;
-  Contap_SurfFunction               mySFunc;
-  Contap_ArcFunction                myAFunc;
-  bool                              modeset;
+  Contap_TheSearch         solrst;
+  Contap_TheSearchInside   solins;
+  Contap_SurfFunction      mySFunc;
+  Contap_ArcFunction       myAFunc;
+  bool         modeset;
 };
 
 #include <Contap_Contour.lxx>

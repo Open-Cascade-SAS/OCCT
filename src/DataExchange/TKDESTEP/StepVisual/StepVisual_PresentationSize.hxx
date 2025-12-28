@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepVisual_PresentationSize();
 
   Standard_EXPORT void Init(const StepVisual_PresentationSizeAssignmentSelect& aUnit,
-                            const occ::handle<StepVisual_PlanarBox>&           aSize);
+                            const occ::handle<StepVisual_PlanarBox>&                aSize);
 
   Standard_EXPORT void SetUnit(const StepVisual_PresentationSizeAssignmentSelect& aUnit);
 
@@ -46,7 +46,7 @@ public:
 
 private:
   StepVisual_PresentationSizeAssignmentSelect unit;
-  occ::handle<StepVisual_PlanarBox>           size;
+  occ::handle<StepVisual_PlanarBox>                size;
 };
 
 #endif // _StepVisual_PresentationSize_HeaderFile

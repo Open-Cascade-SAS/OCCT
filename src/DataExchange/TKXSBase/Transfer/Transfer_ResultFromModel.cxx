@@ -18,6 +18,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <Transfer_ResultFromModel.hxx>
 #include <Transfer_ResultFromTransient.hxx>
@@ -53,7 +54,7 @@ const char* Transfer_ResultFromModel::FileName() const
 }
 
 bool Transfer_ResultFromModel::Fill(const occ::handle<Transfer_TransientProcess>& TP,
-                                    const occ::handle<Standard_Transient>&        ent)
+                                                const occ::handle<Standard_Transient>&        ent)
 {
   if (TP.IsNull() || ent.IsNull())
     return false;
@@ -141,16 +142,14 @@ occ::handle<Transfer_ResultFromTransient> Transfer_ResultFromModel::ResultFromKe
   return themain->ResultFromKey(start);
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
-  Results(const int level) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::Results(
+  const int level) const
 {
-  int                                                                 i, nb;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  int                     i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   if (level > 1)
   {
-    NCollection_IndexedMap<occ::handle<Standard_Transient>> map(
-      themodel.IsNull() ? 1000 : themodel->NbEntities());
+    NCollection_IndexedMap<occ::handle<Standard_Transient>> map(themodel.IsNull() ? 1000 : themodel->NbEntities());
     map.Add(themain);
     themain->FillMap(map);
     nb = map.Extent();
@@ -169,14 +168,13 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
   return list;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
-  TransferredList(const int level) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::TransferredList(
+  const int level) const
 {
-  int                                                                 i, nb;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(level);
-  nb                                                                      = res->Length();
+  int                     i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res  = Results(level);
+  nb                                        = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
@@ -188,14 +186,14 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
   return list;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::
-  CheckedList(const Interface_CheckStatus check, const bool result) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_ResultFromModel::CheckedList(
+  const Interface_CheckStatus check,
+  const bool      result) const
 {
-  int                                                                 i, nb;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(2);
-  nb                                                                      = res->Length();
+  int                     i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res  = Results(2);
+  nb                                        = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));
@@ -211,14 +209,13 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_Res
 }
 
 Interface_CheckIterator Transfer_ResultFromModel::CheckList(const bool erronly,
-                                                            const int  level) const
+                                                            const int level) const
 {
-  Interface_CheckIterator                                             chl;
-  int                                                                 i, nb;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res = Results(level);
-  nb                                                                      = res->Length();
+  Interface_CheckIterator              chl;
+  int                     i, nb;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> res  = Results(level);
+  nb                                        = res->Length();
   for (i = 1; i <= nb; i++)
   {
     DeclareAndCast(Transfer_ResultFromTransient, unres, res->Value(i));

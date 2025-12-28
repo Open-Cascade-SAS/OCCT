@@ -23,6 +23,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! Class for drawing a custom color scale.
 //!
@@ -38,20 +40,20 @@ class AIS_ColorScale : public AIS_InteractiveObject
   DEFINE_STANDARD_RTTIEXT(AIS_ColorScale, AIS_InteractiveObject)
 public:
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
-  Standard_EXPORT static bool FindColor(const double                    theValue,
-                                        const double                    theMin,
-                                        const double                    theMax,
-                                        const int                       theColorsCount,
-                                        const NCollection_Vec3<double>& theColorHlsMin,
-                                        const NCollection_Vec3<double>& theColorHlsMax,
-                                        Quantity_Color&                 theColor);
+  Standard_EXPORT static bool FindColor(const double    theValue,
+                                                    const double    theMin,
+                                                    const double    theMax,
+                                                    const int theColorsCount,
+                                                    const NCollection_Vec3<double>& theColorHlsMin,
+                                                    const NCollection_Vec3<double>& theColorHlsMax,
+                                                    Quantity_Color&        theColor);
 
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
   static bool FindColor(const double    theValue,
-                        const double    theMin,
-                        const double    theMax,
-                        const int       theColorsCount,
-                        Quantity_Color& theColor)
+                                    const double    theMin,
+                                    const double    theMax,
+                                    const int theColorsCount,
+                                    Quantity_Color&        theColor)
   {
     return FindColor(theValue,
                      theMin,
@@ -85,7 +87,8 @@ public:
   Standard_EXPORT AIS_ColorScale();
 
   //! Calculate color according passed value; returns true if value is in range or false, if isn't
-  Standard_EXPORT bool FindColor(const double theValue, Quantity_Color& theColor) const;
+  Standard_EXPORT bool FindColor(const double theValue,
+                                             Quantity_Color&     theColor) const;
 
   //! Returns minimal value of color scale, 0.0 by default.
   double GetMin() const { return myMin; }
@@ -212,7 +215,8 @@ public:
   //! @param theColor color value to set
   //! @param theIndex index in range [1, GetNumberOfIntervals()];
   //!                 appended to the end of list if -1 is specified
-  Standard_EXPORT void SetIntervalColor(const Quantity_Color& theColor, const int theIndex);
+  Standard_EXPORT void SetIntervalColor(const Quantity_Color&  theColor,
+                                        const int theIndex);
 
   //! Returns the user specified labels.
   Standard_EXPORT void GetLabels(NCollection_Sequence<TCollection_ExtendedString>& theLabels) const;
@@ -242,7 +246,9 @@ public:
   //! color space, distributed by hue, with perceptually uniform differences
   //! between consequent colors.
   //! See MakeUniformColors() for description of parameters.
-  void SetUniformColors(double theLightness, double theHueFrom, double theHueTo)
+  void SetUniformColors(double theLightness,
+                        double theHueFrom,
+                        double theHueTo)
   {
     SetColors(MakeUniformColors(myNbIntervals, theLightness, theHueFrom, theHueTo));
     SetColorType(Aspect_TOCSD_USER);
@@ -263,10 +269,10 @@ public:
   //! Hue value can be out of the range [0, 360], interpreted as modulo 360.
   //! The colors of the scale will be in the order of increasing hue if
   //! theHueTo > theHueFrom, and decreasing otherwise.
-  Standard_EXPORT static NCollection_Sequence<Quantity_Color> MakeUniformColors(int    theNbColors,
-                                                                                double theLightness,
-                                                                                double theHueFrom,
-                                                                                double theHueTo);
+  Standard_EXPORT static NCollection_Sequence<Quantity_Color> MakeUniformColors(int theNbColors,
+                                                                  double    theLightness,
+                                                                  double    theHueFrom,
+                                                                  double    theHueTo);
 
   //! Returns the position of labels concerning color filled rectangles, Aspect_TOCSP_RIGHT by
   //! default.
@@ -280,7 +286,6 @@ public:
 
   //! Sets the color scale title position.
   Standard_DEPRECATED("AIS_ColorScale::SetTitlePosition() has no effect!")
-
   void SetTitlePosition(const Aspect_TypeOfColorScalePosition thePos) { myTitlePos = thePos; }
 
   //! Returns TRUE if the labels and colors used in reversed order, FALSE by default.
@@ -320,7 +325,8 @@ public:
   //! @param theIndex index in range [1, GetNumberOfIntervals()] or [1, GetNumberOfIntervals() + 1]
   //! if IsLabelAtBorder() is true;
   //!                 label is appended to the end of list if negative index is specified
-  Standard_EXPORT void SetLabel(const TCollection_ExtendedString& theLabel, const int theIndex);
+  Standard_EXPORT void SetLabel(const TCollection_ExtendedString& theLabel,
+                                const int            theIndex);
 
   //! Returns the size of color bar, 0 and 0 by default
   //! (e.g. should be set by user explicitly before displaying).
@@ -393,19 +399,22 @@ public:
   Standard_EXPORT int TextHeight(const TCollection_ExtendedString& theText) const;
 
   Standard_EXPORT void TextSize(const TCollection_ExtendedString& theText,
-                                const int                         theHeight,
-                                int&                              theWidth,
-                                int&                              theAscent,
-                                int&                              theDescent) const;
+                                const int            theHeight,
+                                int&                 theWidth,
+                                int&                 theAscent,
+                                int&                 theDescent) const;
 
 public:
   //! Return true if specified display mode is supported.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Compute presentation.
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                                       const occ::handle<Prs3d_Presentation>& thePresentation,
-                                       const int                              theMode) override;
+                                       const occ::handle<Prs3d_Presentation>&         thePresentation,
+                                       const int theMode) override;
 
   //! Compute selection - not implemented for color scale.
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& /*aSelection*/,
@@ -439,29 +448,29 @@ private:
   //! @param[in] theX      X coordinate of text position
   //! @param[in] theY      Y coordinate of text position
   //! @param[in] theVertAlignment  text vertical alignment
-  void drawText(const occ::handle<Graphic3d_Group>&   theGroup,
+  void drawText(const occ::handle<Graphic3d_Group>&        theGroup,
                 const TCollection_ExtendedString&     theText,
-                const int                             theX,
-                const int                             theY,
+                const int                theX,
+                const int                theY,
                 const Graphic3d_VerticalTextAlignment theVertAlignment);
 
   //! Determine the maximum text label width in pixels.
   int computeMaxLabelWidth(const NCollection_Sequence<TCollection_ExtendedString>& theLabels) const;
 
   //! Draw labels.
-  void drawLabels(const occ::handle<Graphic3d_Group>&                     theGroup,
+  void drawLabels(const occ::handle<Graphic3d_Group>&          theGroup,
                   const NCollection_Sequence<TCollection_ExtendedString>& theLabels,
-                  const int                                               theBarBottom,
-                  const int                                               theBarHeight,
-                  const int                                               theMaxLabelWidth,
-                  const int                                               theColorBreadth);
+                  const int                  theBarBottom,
+                  const int                  theBarHeight,
+                  const int                  theMaxLabelWidth,
+                  const int                  theColorBreadth);
 
   //! Draw a color bar.
   void drawColorBar(const occ::handle<Prs3d_Presentation>& thePrs,
-                    const int                              theBarBottom,
-                    const int                              theBarHeight,
-                    const int                              theMaxLabelWidth,
-                    const int                              theColorBreadth);
+                    const int            theBarBottom,
+                    const int            theBarHeight,
+                    const int            theMaxLabelWidth,
+                    const int            theColorBreadth);
 
   //! Draw a frame.
   //! @param[in] theX  the X coordinate of frame position.
@@ -470,15 +479,15 @@ private:
   //! @param[in] theHeight  the height of frame.
   //! @param[in] theColor  the color of frame.
   void drawFrame(const occ::handle<Prs3d_Presentation>& thePrs,
-                 const int                              theX,
-                 const int                              theY,
-                 const int                              theWidth,
-                 const int                              theHeight,
-                 const Quantity_Color&                  theColor);
+                 const int            theX,
+                 const int            theY,
+                 const int            theWidth,
+                 const int            theHeight,
+                 const Quantity_Color&             theColor);
 
 private:
-  double myMin;                                 //!< values range - minimal value
-  double myMax;                                 //!< values range - maximal value
+  double myMin;                          //!< values range - minimal value
+  double myMax;                          //!< values range - maximal value
                                                 // clang-format off
   NCollection_Vec3<double>                  myColorHlsMin;     //!< HLS color corresponding to minimum value
   NCollection_Vec3<double>                  myColorHlsMax;     //!< HLS color corresponding to maximum value
@@ -496,12 +505,12 @@ private:
   Aspect_TypeOfColorScalePosition  myLabelPos;        //!< label position relative to the color scale
                                                 // clang-format on
   Aspect_TypeOfColorScalePosition myTitlePos;   //!< title position
-  int                             myXPos;       //!< left   position
-  int                             myYPos;       //!< bottom position
-  int                             myBreadth;    //!< color scale breadth
-  int                             myHeight;     //!< height of the color scale
-  int                             mySpacing;    //!< extra spacing between element
-  int                             myTextHeight; //!< label font height
+  int                myXPos;       //!< left   position
+  int                myYPos;       //!< bottom position
+  int                myBreadth;    //!< color scale breadth
+  int                myHeight;     //!< height of the color scale
+  int                mySpacing;    //!< extra spacing between element
+  int                myTextHeight; //!< label font height
 };
 
 #endif

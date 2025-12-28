@@ -56,9 +56,9 @@ public:
 
   const PSelector& Selector() const { return mySelector; }
 
-  void                              SetShapePicker(const PSelector& theSelector);
-  void                              SetPipelines(const occ::handle<ShapePipelineMap>& thePipelines);
-  void                              SetOCCWindow(const occ::handle<Aspect_Window>& theWindow);
+  void                         SetShapePicker(const PSelector& theSelector);
+  void                         SetPipelines(const occ::handle<ShapePipelineMap>& thePipelines);
+  void                         SetOCCWindow(const occ::handle<Aspect_Window>& theWindow);
   const occ::handle<Aspect_Window>& GetOCCWindow() const;
 
   //! Process highlighting
@@ -70,8 +70,8 @@ public:
   bool IsEnabled() const;
 
 #ifndef _WIN32
-  Display* GetDisplayId() const;
-  int      ViewerMainLoop(int theArgNum, const char** theArgs);
+  Display*         GetDisplayId() const;
+  int ViewerMainLoop(int theArgNum, const char** theArgs);
 #endif
 
 protected:
@@ -87,11 +87,23 @@ protected:
                                            IVtkDraw_Interactor* theInteractor);
 
   void OnMouseMove(HWND wnd, UINT nFlags, int X, int Y);
-  void OnRButtonDown(HWND wnd, UINT nFlags, int X, int Y, int repeat = 0);
+  void OnRButtonDown(HWND             wnd,
+                     UINT             nFlags,
+                     int X,
+                     int Y,
+                     int repeat = 0);
   void OnRButtonUp(HWND wnd, UINT nFlags, int X, int Y);
-  void OnMButtonDown(HWND wnd, UINT nFlags, int X, int Y, int repeat = 0);
+  void OnMButtonDown(HWND             wnd,
+                     UINT             nFlags,
+                     int X,
+                     int Y,
+                     int repeat = 0);
   void OnMButtonUp(HWND wnd, UINT nFlags, int X, int Y);
-  void OnLButtonDown(HWND wnd, UINT nFlags, int X, int Y, int repeat = 0);
+  void OnLButtonDown(HWND             wnd,
+                     UINT             nFlags,
+                     int X,
+                     int Y,
+                     int repeat = 0);
   void OnLButtonUp(HWND wnd, UINT nFlags, int X, int Y);
   void OnSize(HWND wnd, UINT nType, int X, int Y);
   void OnTimer(HWND wnd, UINT nIDEvent);
@@ -109,15 +121,15 @@ private:
 
 private:
 #ifdef _WIN32
-  HWND myWindowId;
-  int  myMouseInWindow;
+  HWND             myWindowId;
+  int myMouseInWindow;
 #else
-  Window   myWindowId;
-  Display* myDisplayId;
-  bool     myIsLeftButtonPressed;
+  Window           myWindowId;
+  Display*         myDisplayId;
+  bool myIsLeftButtonPressed;
 #endif
 
-  PSelector                     mySelector;
+  PSelector                mySelector;
   occ::handle<ShapePipelineMap> myPipelines;
   occ::handle<Aspect_Window>    myWindow;
 };

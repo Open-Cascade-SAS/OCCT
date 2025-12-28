@@ -63,8 +63,7 @@ public:
   //! Import transient document from the persistent data
   //! (to be overridden by document class;
   //! does nothing by default for other classes).
-  Standard_EXPORT virtual void ImportDocument(
-    const occ::handle<TDocStd_Document>& theDocument) const;
+  Standard_EXPORT virtual void ImportDocument(const occ::handle<TDocStd_Document>& theDocument) const;
 
   //! Create an empty transient attribute
   //! (to be overridden by attribute classes;

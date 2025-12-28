@@ -36,7 +36,7 @@ class RWGltf_MaterialMetallicRoughness : public Standard_Transient
 {
 public:
   occ::handle<Image_Texture> BaseColorTexture; //!< RGB texture for the base color
-                                               // clang-format off
+                                          // clang-format off
   occ::handle<Image_Texture>   MetallicRoughnessTexture; //!< RG texture packing the metallic and roughness properties together
   occ::handle<Image_Texture>   EmissiveTexture;          //!< RGB emissive map controls the color and intensity of the light being emitted by the material
   occ::handle<Image_Texture>   OcclusionTexture;         //!< R occlusion map indicating areas of indirect lighting
@@ -50,7 +50,7 @@ public:
   float      AlphaCutOff;              //!< alpha cutoff value; 0.5 by default
   RWGltf_GltfAlphaMode    AlphaMode;                //!< alpha mode; RWGltf_GltfAlphaMode_Opaque by default
   bool        IsDoubleSided;            //!< specifies whether the material is double sided; FALSE by default
-                                               // clang-format on
+                                          // clang-format on
 
   RWGltf_MaterialMetallicRoughness()
       : BaseColor(1.0f, 1.0f, 1.0f, 1.0f),

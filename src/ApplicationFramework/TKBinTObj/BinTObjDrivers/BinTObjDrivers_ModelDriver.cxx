@@ -53,9 +53,9 @@ occ::handle<TDF_Attribute> BinTObjDrivers_ModelDriver::NewEmpty() const
 //           if its GUID and GUID stored in theSource are same
 //=======================================================================
 
-bool BinTObjDrivers_ModelDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       BinObjMgt_RRelocationTable&) const
+bool BinTObjDrivers_ModelDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   BinObjMgt_RRelocationTable&) const
 {
   Standard_GUID aGUID;
   if (!(theSource >> aGUID))
@@ -84,10 +84,9 @@ bool BinTObjDrivers_ModelDriver::Paste(const BinObjMgt_Persistent&       theSour
 //           a Model is stored as its GUID
 //=======================================================================
 
-void BinTObjDrivers_ModelDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinTObjDrivers_ModelDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TObj_TModel> aTModel = occ::down_cast<TObj_TModel>(theSource);
   occ::handle<TObj_Model>  aModel  = aTModel->Model();

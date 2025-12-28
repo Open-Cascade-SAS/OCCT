@@ -66,8 +66,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, DifferentNames)
   addToModel(aPlane2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that nothing was removed.
   EXPECT_TRUE(aRemovedEntities.IsEmpty());
@@ -91,8 +90,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_Plane)
   addToModel(aPlane2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -118,8 +116,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepRepr_ItemDefinedTransformation)
   addToModel(aItem2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -144,8 +141,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_CylindricalSurface)
   addToModel(aCylindricalSurface2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -163,8 +159,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepShape_ShapeRepresentation)
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems1 =
     new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   aItems1->SetValue(1, anAxis1);
-  occ::handle<StepShape_ShapeRepresentation> aShapeRepresentation1 =
-    new StepShape_ShapeRepresentation;
+  occ::handle<StepShape_ShapeRepresentation> aShapeRepresentation1 = new StepShape_ShapeRepresentation;
   aShapeRepresentation1->Init(new TCollection_HAsciiString,
                               aItems1,
                               new StepRepr_RepresentationContext);
@@ -174,16 +169,14 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepShape_ShapeRepresentation)
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aItems2 =
     new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, 1);
   aItems2->SetValue(1, anAxis2);
-  occ::handle<StepShape_ShapeRepresentation> aShapeRepresentation2 =
-    new StepShape_ShapeRepresentation;
+  occ::handle<StepShape_ShapeRepresentation> aShapeRepresentation2 = new StepShape_ShapeRepresentation;
   aShapeRepresentation2->Init(new TCollection_HAsciiString,
                               aItems2,
                               new StepRepr_RepresentationContext);
   addToModel(aShapeRepresentation2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -220,8 +213,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepRepr_ConstructiveGeometryRepres
   addToModel(aConstructiveGeometryRepresentation2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -250,8 +242,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_Circle)
   addToModel(aCircle2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -292,8 +283,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepVisual_PresentationLayerAssignm
   addToModel(aPresentationLayerAssignment2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -309,23 +299,20 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepVisual_StyledItem)
 
   // Creating a styled item containing the first Axis2Placement3d.
   occ::handle<StepVisual_StyledItem> aStiledItem1 = new StepVisual_StyledItem;
-  aStiledItem1->Init(
-    new TCollection_HAsciiString,
-    new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1),
-    anAxis1);
+  aStiledItem1->Init(new TCollection_HAsciiString,
+                     new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1),
+                     anAxis1);
   addToModel(aStiledItem1);
 
   // Creating a styled item containing the second Axis2Placement3d.
   occ::handle<StepVisual_StyledItem> aStiledItem2 = new StepVisual_StyledItem;
-  aStiledItem2->Init(
-    new TCollection_HAsciiString,
-    new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1),
-    anAxis2);
+  aStiledItem2->Init(new TCollection_HAsciiString,
+                     new NCollection_HArray1<occ::handle<StepVisual_PresentationStyleAssignment>>(1, 1),
+                     anAxis2);
   addToModel(aStiledItem2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -354,8 +341,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_Ellipse)
   addToModel(aEllipse2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -380,8 +366,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_ConicalSurface)
   addToModel(aConicalSurface2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -406,8 +391,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_ToroidalSurface)
   addToModel(aToroidalSurface2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -444,8 +428,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepShape_AdvancedBrepShapeRepresen
   addToModel(aShapeRepresentation2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);
@@ -470,8 +453,7 @@ TEST_F(StepTidy_Axis2Placement3dReducerTest, StepGeom_SphericalSurface)
   addToModel(aSphericalSurface2);
 
   // Performing removal of duplicate Axis2Placement3ds.
-  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities =
-    replaceDuplicateAxis2Placement3ds();
+  NCollection_Map<occ::handle<Standard_Transient>> aRemovedEntities = replaceDuplicateAxis2Placement3ds();
 
   // Check that one Axis2Placement3d was removed.
   EXPECT_EQ(aRemovedEntities.Extent(), 1);

@@ -54,16 +54,17 @@ public:
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const override;
+  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(DNaming_Line3DDriver, TFunction_Driver)
 
 private:
   //! Loads a Line3D in a data framework
-  Standard_EXPORT void LoadNamingDS(const TDF_Label&                        theResultLabel,
-                                    const TopoDS_Wire&                      theWire,
+  Standard_EXPORT void LoadNamingDS(const TDF_Label&              theResultLabel,
+                                    const TopoDS_Wire&            theWire,
                                     const NCollection_Array1<TopoDS_Shape>& theVertexes,
-                                    const bool                              isClosed = false) const;
+                                    const bool        isClosed = false) const;
 };
 
 #endif // _DNaming_Line3DDriver_HeaderFile

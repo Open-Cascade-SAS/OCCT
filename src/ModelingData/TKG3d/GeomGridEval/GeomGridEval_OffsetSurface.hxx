@@ -22,6 +22,7 @@
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <NCollection_Array1.hxx>
 
 //! @brief Batch evaluator for offset surface grid points.
 //!
@@ -107,11 +108,10 @@ public:
   //! @param[in] theNU derivative order in U direction
   //! @param[in] theNV derivative order in V direction
   //! @return 2D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams,
-    int                               theNU,
-    int                               theNV) const;
+  Standard_EXPORT NCollection_Array2<gp_Vec> EvaluateGridDN(const NCollection_Array1<double>& theUParams,
+                                                            const NCollection_Array1<double>& theVParams,
+                                                            int                         theNU,
+                                                            int theNV) const;
 
   //! Evaluate points at arbitrary UV pairs.
   //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
@@ -154,7 +154,7 @@ public:
 private:
   occ::handle<Geom_OffsetSurface> myGeom;
   occ::handle<Geom_Surface>       myBasis;
-  double                          myOffset;
+  double                     myOffset;
 };
 
 #endif // _GeomGridEval_OffsetSurface_HeaderFile

@@ -42,7 +42,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRPolyShape, StdPrs_HLRShapeI)
 //=================================================================================================
 
 void StdPrs_HLRPolyShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                     const TopoDS_Shape&                    aShape,
+                                     const TopoDS_Shape&               aShape,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
                                      const occ::handle<Graphic3d_Camera>&   theProjector) const
 {
@@ -76,12 +76,12 @@ void StdPrs_HLRPolyShape::ComputeHLR(const occ::handle<Prs3d_Presentation>& aPre
   occ::handle<HLRBRep_PolyAlgo> hider = new HLRBRep_PolyAlgo(aShape);
   hider->Projector(aProj);
   hider->Update();
-  double               sta, end, dx, dy, dz;
-  float                tolsta, tolend;
+  double        sta, end, dx, dy, dz;
+  float   tolsta, tolend;
   HLRAlgo_EdgeStatus   status;
   HLRAlgo_EdgeIterator It;
-  bool                 reg1, regn, outl, intl;
-  void*                Coordinates;
+  bool     reg1, regn, outl, intl;
+  void*     Coordinates;
   TopoDS_Shape         S;
 
   NCollection_List<HLRBRep_BiPoint> BiPntVis, BiPntHid;

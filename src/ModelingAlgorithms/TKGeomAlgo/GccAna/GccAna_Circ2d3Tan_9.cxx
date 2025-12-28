@@ -37,10 +37,10 @@
 //      3/ The three points are distinct.                                +
 //      ----------------------------------                                +
 //=========================================================================
-GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d& Point1,
-                                     const gp_Pnt2d& Point2,
-                                     const gp_Pnt2d& Point3,
-                                     const double    Tolerance)
+GccAna_Circ2d3Tan::GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
+                                     const gp_Pnt2d&     Point2,
+                                     const gp_Pnt2d&     Point3,
+                                     const double Tolerance)
     :
 
       //=========================================================================

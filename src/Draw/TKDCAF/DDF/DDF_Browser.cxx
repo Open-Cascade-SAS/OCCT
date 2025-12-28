@@ -133,7 +133,7 @@ TCollection_AsciiString DDF_Browser::OpenRoot() const
 
 TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
 {
-  bool                    split = false;
+  bool        split = false;
   TCollection_AsciiString entry, list;
   if (aLab.HasAttribute() || aLab.AttributesModified())
   {
@@ -183,14 +183,14 @@ TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
 TCollection_AsciiString DDF_Browser::OpenAttributeList(const TDF_Label& aLab)
 {
   TCollection_AsciiString list;
-  bool                    split1 = false;
+  bool        split1 = false;
   for (TDF_AttributeIterator itr(aLab, false); itr.More(); itr.Next())
   {
     if (split1)
       list.AssignCat(TDF_BrowserSeparator1);
     const occ::handle<TDF_Attribute>& att   = itr.Value();
-    const int                         index = myAttMap.Add(att);
-    TCollection_AsciiString           indexStr(index);
+    const int       index = myAttMap.Add(att);
+    TCollection_AsciiString      indexStr(index);
     list.AssignCat(att->DynamicType()->Name());
     list.AssignCat(TDF_BrowserSeparator3);
     list.AssignCat(indexStr);
@@ -227,9 +227,9 @@ TCollection_AsciiString DDF_Browser::OpenAttributeList(const TDF_Label& aLab)
 
 TCollection_AsciiString DDF_Browser::OpenAttribute(const int anIndex)
 {
-  TCollection_AsciiString    list;
-  occ::handle<TDF_Attribute> att = myAttMap.FindKey(anIndex);
-  DDF_AttributeBrowser*      br  = DDF_AttributeBrowser::FindBrowser(att);
+  TCollection_AsciiString list;
+  occ::handle<TDF_Attribute>   att = myAttMap.FindKey(anIndex);
+  DDF_AttributeBrowser*   br  = DDF_AttributeBrowser::FindBrowser(att);
   if (br)
     list = br->Open(att);
   return list;

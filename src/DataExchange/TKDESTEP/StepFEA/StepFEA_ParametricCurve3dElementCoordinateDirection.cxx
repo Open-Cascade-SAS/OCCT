@@ -42,8 +42,7 @@ void StepFEA_ParametricCurve3dElementCoordinateDirection::Init(
 
 //=================================================================================================
 
-occ::handle<StepGeom_Direction> StepFEA_ParametricCurve3dElementCoordinateDirection::Orientation()
-  const
+occ::handle<StepGeom_Direction> StepFEA_ParametricCurve3dElementCoordinateDirection::Orientation() const
 {
   return theOrientation;
 }

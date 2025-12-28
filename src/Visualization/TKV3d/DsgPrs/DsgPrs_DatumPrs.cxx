@@ -24,7 +24,7 @@
 //=================================================================================================
 
 void DsgPrs_DatumPrs::Add(const occ::handle<Prs3d_Presentation>& thePresentation,
-                          const gp_Ax2&                          theDatum,
+                          const gp_Ax2&                     theDatum,
                           const occ::handle<Prs3d_Drawer>&       theDrawer)
 {
   occ::handle<Prs3d_DatumAspect> aDatumAspect = theDrawer->DatumAspect();
@@ -36,10 +36,10 @@ void DsgPrs_DatumPrs::Add(const occ::handle<Prs3d_Presentation>& thePresentation
   gp_Dir aYDir    = anAxis.YDirection();
   gp_Dir aZDir    = anAxis.Direction();
 
-  double     anAxisLength;
+  double          anAxisLength;
   const bool toDrawLabels = theDrawer->DatumAspect()->ToDrawLabels();
 
-  Prs3d_DatumAxes                anAxes        = aDatumAspect->DatumAxes();
+  Prs3d_DatumAxes           anAxes        = aDatumAspect->DatumAxes();
   occ::handle<Prs3d_ArrowAspect> anArrowAspect = aDatumAspect->ArrowAspect();
   occ::handle<Prs3d_TextAspect>  aTextAspect   = theDrawer->TextAspect();
 

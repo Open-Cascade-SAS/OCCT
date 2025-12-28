@@ -40,8 +40,8 @@ public:
   //! - nbProps : Number of property values (NP = 2)
   //! - aFlag   : DrawingUnits Flag
   //! - aUnit   : DrawingUnits Name
-  Standard_EXPORT void Init(const int                                    nbProps,
-                            const int                                    aFlag,
+  Standard_EXPORT void Init(const int                  nbProps,
+                            const int                  aFlag,
                             const occ::handle<TCollection_HAsciiString>& aUnit);
 
   //! returns the number of property values in <me>
@@ -60,8 +60,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_DrawingUnits, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
-  int                                   theFlag;
+  int                 theNbPropertyValues;
+  int                 theFlag;
   occ::handle<TCollection_HAsciiString> theUnit;
 };
 

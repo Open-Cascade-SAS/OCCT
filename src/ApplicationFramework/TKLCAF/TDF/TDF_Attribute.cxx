@@ -64,8 +64,8 @@ const TDF_Label TDF_Attribute::Label() const
 
 //=================================================================================================
 
-bool TDF_Attribute::FindAttribute(const Standard_GUID&        anID,
-                                  occ::handle<TDF_Attribute>& anAttribute) const
+bool TDF_Attribute::FindAttribute(const Standard_GUID&   anID,
+                                              occ::handle<TDF_Attribute>& anAttribute) const
 {
   return Label().FindAttribute(anID, anAttribute);
 }
@@ -157,7 +157,7 @@ void TDF_Attribute::AfterResume() {}
 //=======================================================================
 
 bool TDF_Attribute::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDelta*/,
-                               const bool /*forceIt*/)
+                                           const bool /*forceIt*/)
 {
   return true;
 }
@@ -168,7 +168,7 @@ bool TDF_Attribute::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDel
 //=======================================================================
 
 bool TDF_Attribute::AfterUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDelta*/,
-                              const bool /*forceIt*/)
+                                          const bool /*forceIt*/)
 {
   return true;
 }

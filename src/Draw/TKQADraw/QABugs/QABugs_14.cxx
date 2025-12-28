@@ -44,6 +44,7 @@
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <Precision.hxx>
@@ -55,6 +56,7 @@
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <TopExp.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -64,7 +66,9 @@
 #include <TDF_Label.hxx>
 #include <TDataStd_Expression.hxx>
 
-static int BUC60897(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
+static int BUC60897(Draw_Interpretor& di,
+                                 int /*argc*/,
+                                 const char** /*argv*/)
 {
   char abuf[16];
 
@@ -96,8 +100,8 @@ static int BUC60897(Draw_Interpretor& di, int /*argc*/, const char** /*argv*/)
     gp_Circ2d aCirc2d = aGccCirc2d.ThisSolution(i);
     di << "circle : X " << aCirc2d.Location().X() << " Y " << aCirc2d.Location().Y() << " R "
        << aCirc2d.Radius();
-    double   aTmpR1, aTmpR2;
-    gp_Pnt2d aPnt2d1, aPnt2d2;
+    double aTmpR1, aTmpR2;
+    gp_Pnt2d      aPnt2d1, aPnt2d2;
     aGccCirc2d.Tangency1(i, aTmpR1, aTmpR2, aPnt2d1);
     aGccCirc2d.Tangency2(i, aTmpR1, aTmpR2, aPnt2d2);
     di << "\ntangency1 : X " << aPnt2d1.X() << " Y " << aPnt2d1.Y();
@@ -190,10 +194,10 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
     return 1;
   TopoDS_Shape        S = DBRep::Get(argv[2]);
   BRepFeat_SplitShape Spls(S);
-  bool                pick = false;
+  bool    pick = false;
   TopoDS_Shape        EF;
-  double              u, v;
-  int                 i = 3;
+  double       u, v;
+  int    i = 3;
   for (newnarg = 3; newnarg < argc; newnarg++)
   {
     if (argv[newnarg][0] == '@')
@@ -223,8 +227,8 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
       i++;
       while (i < newnarg)
       {
-        TopoDS_Shape W;
-        bool         rever = false;
+        TopoDS_Shape     W;
+        bool rever = false;
         if (argv[i][0] == '-')
         {
           if (argv[i][1] == '\0')
@@ -298,8 +302,8 @@ static int BUC60854(Draw_Interpretor& /*di*/, int argc, const char** argv)
   Spls.Build();
   const NCollection_List<TopoDS_Shape>& aLeftPart  = Spls.Left();
   const NCollection_List<TopoDS_Shape>& aRightPart = Spls.Right();
-  BRep_Builder                          BB;
-  TopoDS_Shape                          aShell;
+  BRep_Builder                BB;
+  TopoDS_Shape                aShell;
   BB.MakeShell(TopoDS::Shell(aShell));
   NCollection_List<TopoDS_Shape>::Iterator anIter;
   if (argv[argc - 1][0] == 'L')
@@ -331,7 +335,7 @@ static int BUC60870(Draw_Interpretor& di, int argc, const char** argv)
   }
   const char *               ns1 = (argv[2]), *ns2 = (argv[3]), *ns0 = (argv[1]);
   TopoDS_Shape               S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
-  double                     dev = Draw::Atof(argv[4]);
+  double              dev = Draw::Atof(argv[4]);
   BRepExtrema_DistShapeShape dst(S1, S2, dev);
   if (dst.IsDone())
   {
@@ -407,15 +411,15 @@ static int BUC60944(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
-                           const NCollection_List<TopoDS_Shape>&  theListOfEdges,
-                           NCollection_List<TopoDS_Shape>&        theListOfWires,
-                           const bool                             isFixConnectedMode,
-                           const bool                             isKeepLoopsMode,
-                           const double                           theTolerance)
+                                       const NCollection_List<TopoDS_Shape>&       theListOfEdges,
+                                       NCollection_List<TopoDS_Shape>&             theListOfWires,
+                                       const bool            isFixConnectedMode,
+                                       const bool            isKeepLoopsMode,
+                                       const double               theTolerance)
 {
   NCollection_List<TopoDS_Shape>::Iterator anEdgeIter;
-  bool                                     isDone;
-  TopoDS_Wire                              aWire;
+  bool                   isDone;
+  TopoDS_Wire                        aWire;
 
   theListOfWires.Clear();
   occ::handle<ShapeExtend_WireData> aWireData  = new ShapeExtend_WireData;
@@ -423,7 +427,7 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   aShFixWire->SetContext(theReshape);
 
   occ::handle<ShapeAnalysis_Wire> aWireAnalyzer;
-  ShapeAnalysis_WireOrder         aWireOrder;
+  ShapeAnalysis_WireOrder    aWireOrder;
 
   aShFixWire->Load(aWireData);
   aShFixWire->SetPrecision(theTolerance);
@@ -454,13 +458,13 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
   //     return true;
   //   }
 
-  int           i;
-  BRep_Builder  aBuilder;
-  TopoDS_Wire   aCurWire;
-  TopoDS_Vertex aVf;
-  TopoDS_Vertex aVl;
-  TopoDS_Vertex aVlast;
-  int           aNbEdges = aWireData->NbEdges();
+  int i;
+  BRep_Builder     aBuilder;
+  TopoDS_Wire      aCurWire;
+  TopoDS_Vertex    aVf;
+  TopoDS_Vertex    aVl;
+  TopoDS_Vertex    aVlast;
+  int aNbEdges = aWireData->NbEdges();
 
   aBuilder.MakeWire(aCurWire);
   if (aNbEdges >= 1)
@@ -500,10 +504,10 @@ bool BuildWiresWithReshape(const occ::handle<ShapeBuild_ReShape>& theReshape,
 }
 
 bool BuildWires(const NCollection_List<TopoDS_Shape>& theListOfEdges,
-                NCollection_List<TopoDS_Shape>&       theListOfWires,
-                const bool                            isFixConnectedMode = false,
-                const bool                            isKeepLoopsMode    = true,
-                const double                          theTolerance       = Precision::Confusion())
+                            NCollection_List<TopoDS_Shape>&       theListOfWires,
+                            const bool      isFixConnectedMode = false,
+                            const bool      isKeepLoopsMode    = true,
+                            const double         theTolerance       = Precision::Confusion())
 {
   occ::handle<ShapeBuild_ReShape> aReshape = new ShapeBuild_ReShape;
   return BuildWiresWithReshape(aReshape,
@@ -516,11 +520,10 @@ bool BuildWires(const NCollection_List<TopoDS_Shape>& theListOfEdges,
 
 bool BuildBoundWires(const TopoDS_Shape& theShell, NCollection_List<TopoDS_Shape>& theListOfWires)
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-                                 anEdgeFaceMap;
-  int                            i;
-  bool                           isBound;
-  NCollection_List<TopoDS_Shape> aBoundaryEdges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> anEdgeFaceMap;
+  int                          i;
+  bool                          isBound;
+  NCollection_List<TopoDS_Shape>                      aBoundaryEdges;
 
   TopExp::MapShapesAndAncestors(theShell, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
 
@@ -601,7 +604,7 @@ static int BUC60924(Draw_Interpretor& di, int argc, const char** argv)
   gp_XYZ aVec(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]));
 
   bool isPlanar = false;
-  isPlanar      = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
+  isPlanar                  = ShapeAnalysis_Curve::IsPlanar(aCurve, aVec, 1e-7);
 
   if (isPlanar)
     di << "The curve is planar !\n";
@@ -932,7 +935,9 @@ static int OCC1919_real(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <TDataStd_UAttribute.hxx>
 
-static int OCC2932_SetIDUAttribute(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC2932_SetIDUAttribute(Draw_Interpretor& di,
+                                                int  argc,
+                                                const char**      argv)
 {
   if (argc != 5)
   {
@@ -967,7 +972,9 @@ static int OCC2932_SetIDUAttribute(Draw_Interpretor& di, int argc, const char** 
   return 0;
 }
 
-static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC2932_SetTag(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc != 4)
   {
@@ -979,7 +986,7 @@ static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  int                        Tag = Draw::Atoi(argv[3]);
+  int      Tag = Draw::Atoi(argv[3]);
   occ::handle<TDF_TagSource> A   = TDF_TagSource::Set(L);
   A->Set(Tag);
   return 0;
@@ -987,7 +994,9 @@ static int OCC2932_SetTag(Draw_Interpretor& di, int argc, const char** argv)
 
 #include <TDataStd_Current.hxx>
 
-static int OCC2932_SetCurrent(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC2932_SetCurrent(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc != 3)
   {
@@ -1003,7 +1012,9 @@ static int OCC2932_SetCurrent(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC2932_SetExpression(Draw_Interpretor& di,
+                                              int  argc,
+                                              const char**      argv)
 {
   if (argc != 4)
   {
@@ -1015,7 +1026,7 @@ static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** ar
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  TCollection_ExtendedString       Expression(argv[3]);
+  TCollection_ExtendedString  Expression(argv[3]);
   occ::handle<TDataStd_Expression> A = TDataStd_Expression::Set(L);
   A->SetExpression(Expression);
   return 0;
@@ -1023,7 +1034,9 @@ static int OCC2932_SetExpression(Draw_Interpretor& di, int argc, const char** ar
 
 #include <TDataStd_Relation.hxx>
 
-static int OCC2932_SetRelation(Draw_Interpretor& di, int argc, const char** argv)
+static int OCC2932_SetRelation(Draw_Interpretor& di,
+                                            int  argc,
+                                            const char**      argv)
 {
   if (argc != 4)
   {
@@ -1035,8 +1048,8 @@ static int OCC2932_SetRelation(Draw_Interpretor& di, int argc, const char** argv
     return 1;
   TDF_Label L;
   DDF::AddLabel(DF, argv[2], L);
-  TCollection_ExtendedString     Relation(argv[3]);
-  occ::handle<TDataStd_Relation> A = TDataStd_Relation::Set(L);
+  TCollection_ExtendedString Relation(argv[3]);
+  occ::handle<TDataStd_Relation>  A = TDataStd_Relation::Set(L);
   A->SetRelation(Relation);
   return 0;
 }

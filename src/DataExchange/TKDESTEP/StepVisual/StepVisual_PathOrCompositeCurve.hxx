@@ -40,7 +40,8 @@ public:
   //! Recognizes a kind of PathOrCompositeCurve select type
   //! -- 1 -> CompositeCurve
   //! -- 2 -> Path
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as CompositeCurve (or Null if another type)
   Standard_EXPORT occ::handle<StepGeom_CompositeCurve> CompositeCurve() const;

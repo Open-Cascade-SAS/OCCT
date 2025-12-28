@@ -21,8 +21,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_DataXtd_PatternStd::Import(
-  const occ::handle<TDataXtd_PatternStd>& theAttribute) const
+void StdPersistent_DataXtd_PatternStd::Import(const occ::handle<TDataXtd_PatternStd>& theAttribute) const
 {
   theAttribute->Signature(mySignature);
   theAttribute->Axis1Reversed(myAxis1Reversed);

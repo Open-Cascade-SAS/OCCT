@@ -30,6 +30,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_FeaMaterialPropertyRepresentation,
                           StepRepr_MaterialPropertyRepresentation)
+
 };
 
 #endif // _StepFEA_FeaMaterialPropertyRepresentation_HeaderFile

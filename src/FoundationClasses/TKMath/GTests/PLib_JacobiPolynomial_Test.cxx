@@ -137,7 +137,7 @@ TEST_F(PLibJacobiPolynomialTest, GaussIntegrationWeights)
 {
   PLib_JacobiPolynomial aJac(8, GeomAbs_C1);
 
-  int                        aNbGauss = 15; // Must be > degree for valid computation
+  int     aNbGauss = 15; // Must be > degree for valid computation
   NCollection_Array2<double> aWeights(0, aNbGauss / 2, 0, aJac.WorkDegree());
 
   aJac.Weights(aNbGauss, aWeights);
@@ -242,11 +242,12 @@ TEST_F(PLibJacobiPolynomialTest, BasisFunctionDerivatives)
 // Test coefficient conversion
 TEST_F(PLibJacobiPolynomialTest, CoefficientConversion)
 {
-  const int             aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
-  PLib_JacobiPolynomial aJac(aWorkDegree, GeomAbs_C0);
+  const int aWorkDegree = 6; // Use smaller degree that works well with ToCoefficients
+  PLib_JacobiPolynomial  aJac(aWorkDegree, GeomAbs_C0);
 
   const int aDimension = 1;
-  const int aDegree    = aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1); // Use computational degree
+  const int aDegree =
+    aJac.WorkDegree() - 2 * (aJac.NivConstr() + 1); // Use computational degree
 
   // Create test Jacobi coefficients with proper size
   // ToCoefficients expects arrays sized based on the degree and dimension
@@ -278,20 +279,20 @@ TEST_F(PLibJacobiPolynomialTest, DegreeReduction)
 {
   PLib_JacobiPolynomial aJac(10, GeomAbs_C0);
 
-  const int    aDimension = 1;
-  const int    aMaxDegree = 8;
-  const double aTol       = 1e-6;
+  const int aDimension = 1;
+  const int aMaxDegree = 8;
+  const double    aTol       = 1e-6;
 
   // Create test coefficients - must be sized for full WorkDegree
-  const int                  aWorkDegree = aJac.WorkDegree();
-  NCollection_Array1<double> aCoeff(1, (aWorkDegree + 1) * aDimension);
+  const int aWorkDegree = aJac.WorkDegree();
+  NCollection_Array1<double>   aCoeff(1, (aWorkDegree + 1) * aDimension);
   for (int i = aCoeff.Lower(); i <= aCoeff.Upper(); i++)
   {
     aCoeff(i) = 1.0 / (i + 1); // Decreasing coefficients to allow reduction
   }
 
-  int    aNewDegree = -1;
-  double aMaxError  = -1.0;
+  int aNewDegree = -1;
+  double    aMaxError  = -1.0;
 
   aJac.ReduceDegree(aDimension, aMaxDegree, aTol, aCoeff.ChangeValue(1), aNewDegree, aMaxError);
 

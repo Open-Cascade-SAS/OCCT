@@ -52,14 +52,15 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntPackedMapDriver::NewEmpty() const
 // function : Paste()
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                           const occ::handle<TDF_Attribute>& theTarget,
-                                           XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataStd_IntPackedMapDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataStd_IntPackedMap> aPackedMap = occ::down_cast<TDataStd_IntPackedMap>(theTarget);
   if (!aPackedMap.IsNull())
   {
-    int                      aSize;
+    int         aSize;
     const XmlObjMgt_Element& anElement = theSource;
     XmlObjMgt_DOMString      aSizeDStr = anElement.getAttribute(::IntPackedMapSize());
     if (aSizeDStr == NULL)
@@ -74,7 +75,7 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
       return false;
     }
     occ::handle<TColStd_HPackedMapOfInteger> aHMap = new TColStd_HPackedMapOfInteger();
-    bool                                     Ok    = true;
+    bool                    Ok    = true;
     if (aSize)
     {
       const char* aValueString =
@@ -139,7 +140,7 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                           XmlObjMgt_Persistent&             theTarget,
+                                           XmlObjMgt_Persistent&        theTarget,
                                            XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataStd_IntPackedMap> aS = occ::down_cast<TDataStd_IntPackedMap>(theSource);
@@ -157,7 +158,7 @@ void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& the
   {
     // Allocation of 12 chars for each integer including the space.
     // An example: -2 147 483 648
-    int                          iChar = 0;
+    int                           iChar = 0;
     NCollection_LocalArray<char> str(12 * aSize + 1);
 
     TColStd_MapIteratorOfPackedMapOfInteger anIt(aS->GetMap());

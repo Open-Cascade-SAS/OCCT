@@ -166,8 +166,8 @@ inline TopoDS_Shape HLRBRep_HLRToShape::IsoLineHCompound(const TopoDS_Shape& S)
 //=================================================================================================
 
 inline TopoDS_Shape HLRBRep_HLRToShape::CompoundOfEdges(const HLRBRep_TypeOfResultingEdge type,
-                                                        const bool                        visible,
-                                                        const bool                        In3d)
+                                                        const bool            visible,
+                                                        const bool            In3d)
 {
   return InternalCompound(type, visible, TopoDS_Shape(), In3d);
 }
@@ -176,8 +176,8 @@ inline TopoDS_Shape HLRBRep_HLRToShape::CompoundOfEdges(const HLRBRep_TypeOfResu
 
 inline TopoDS_Shape HLRBRep_HLRToShape::CompoundOfEdges(const TopoDS_Shape&               S,
                                                         const HLRBRep_TypeOfResultingEdge type,
-                                                        const bool                        visible,
-                                                        const bool                        In3d)
+                                                        const bool            visible,
+                                                        const bool            In3d)
 {
   return InternalCompound(type, visible, S, In3d);
 }

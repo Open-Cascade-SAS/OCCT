@@ -20,8 +20,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_DataXtd_Constraint::Import(
-  const occ::handle<TDataXtd_Constraint>& theAttribute) const
+void StdPersistent_DataXtd_Constraint::Import(const occ::handle<TDataXtd_Constraint>& theAttribute) const
 {
   theAttribute->SetType(static_cast<TDataXtd_ConstraintEnum>(myType));
   theAttribute->Reversed(myIsReversed);
@@ -30,8 +29,7 @@ void StdPersistent_DataXtd_Constraint::Import(
 
   if (myGeometries)
   {
-    occ::handle<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>> aGeometries =
-      myGeometries->Array();
+    occ::handle<NCollection_HArray1<occ::handle<StdObjMgt_Persistent>>> aGeometries = myGeometries->Array();
     for (int i = 1; i <= aGeometries->Length(); i++)
     {
       occ::handle<StdObjMgt_Persistent> aPGeometry = aGeometries->Value(i);

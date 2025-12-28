@@ -102,7 +102,7 @@ void IntSurf::MakeTransition(const gp_Vec&       TgFirst,
 
 void IntSurf::SetPeriod(const occ::handle<Adaptor3d_Surface>& theFirstSurf,
                         const occ::handle<Adaptor3d_Surface>& theSecondSurf,
-                        double                                theArrOfPeriod[4])
+                        double                    theArrOfPeriod[4])
 {
   theArrOfPeriod[0] = theFirstSurf->IsUPeriodic() ? theFirstSurf->UPeriod() : 0.0;
   theArrOfPeriod[1] = theFirstSurf->IsVPeriodic() ? theFirstSurf->VPeriod() : 0.0;

@@ -29,10 +29,11 @@ IFSelect_WorkLibrary::IFSelect_WorkLibrary()
   thelevdef = 0;
 }
 
-bool IFSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>& /*original*/,
-                                     const occ::handle<Interface_InterfaceModel>& newmodel,
-                                     const Interface_EntityIterator&              list,
-                                     Interface_CopyTool&                          TC) const
+bool IFSelect_WorkLibrary::CopyModel(
+  const occ::handle<Interface_InterfaceModel>& /*original*/,
+  const occ::handle<Interface_InterfaceModel>& newmodel,
+  const Interface_EntityIterator&         list,
+  Interface_CopyTool&                     TC) const
 {
   for (list.Start(); list.More(); list.Next())
     TC.TransferEntity(list.Value());
@@ -45,7 +46,7 @@ bool IFSelect_WorkLibrary::CopyModel(const occ::handle<Interface_InterfaceModel>
 void IFSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                       const occ::handle<Interface_Protocol>&       protocol,
                                       const occ::handle<Standard_Transient>&       entity,
-                                      Standard_OStream&                            S) const
+                                      Standard_OStream&                       S) const
 {
   if (thelevhlp.IsNull())
     DumpEntity(model, protocol, entity, S, 0);
@@ -95,10 +96,11 @@ const char* IFSelect_WorkLibrary::DumpHelp(const int level) const
   return str->ToCString();
 }
 
-int IFSelect_WorkLibrary::ReadStream(const char* /*name*/,
-                                     std::istream& /*istream*/,
-                                     occ::handle<Interface_InterfaceModel>& /*model*/,
-                                     const occ::handle<Interface_Protocol>& /*protocol*/) const
+int IFSelect_WorkLibrary::ReadStream(
+  const char* /*name*/,
+  std::istream& /*istream*/,
+  occ::handle<Interface_InterfaceModel>& /*model*/,
+  const occ::handle<Interface_Protocol>& /*protocol*/) const
 {
   return 1;
 }

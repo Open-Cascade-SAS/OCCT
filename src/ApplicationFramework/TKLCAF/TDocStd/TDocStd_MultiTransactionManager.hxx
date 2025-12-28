@@ -141,10 +141,10 @@ private:
   NCollection_Sequence<occ::handle<TDocStd_Document>>         myDocuments;
   NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>> myUndos;
   NCollection_Sequence<occ::handle<TDocStd_ApplicationDelta>> myRedos;
-  int                                                         myUndoLimit;
-  bool                                                        myOpenTransaction;
-  bool                                                        myIsNestedTransactionMode;
-  bool                                                        myOnlyTransactionModification;
+  int                   myUndoLimit;
+  bool                   myOpenTransaction;
+  bool                   myIsNestedTransactionMode;
+  bool                   myOnlyTransactionModification;
 };
 
 #include <TDocStd_MultiTransactionManager.lxx>

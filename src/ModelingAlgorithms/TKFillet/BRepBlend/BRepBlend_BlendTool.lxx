@@ -37,14 +37,14 @@ inline bool BRepBlend_BlendTool::SingularOnVMax(const occ::handle<Adaptor3d_Surf
 }
 
 inline double BRepBlend_BlendTool::Tolerance(const occ::handle<Adaptor3d_HVertex>& V,
-                                             const occ::handle<Adaptor2d_Curve2d>& A)
+                                                    const occ::handle<Adaptor2d_Curve2d>& A)
 {
   //  return Adaptor2d_HCurve2dTool::Resolution(A,1.e-6); // a voir
   return V->Resolution(A); // a voir
 }
 
 inline double BRepBlend_BlendTool::Parameter(const occ::handle<Adaptor3d_HVertex>& V,
-                                             const occ::handle<Adaptor2d_Curve2d>& C)
+                                                    const occ::handle<Adaptor2d_Curve2d>& C)
 {
   //  return BRep_Tool::Parameter(V,A->Curve().Edge());
   return V->Parameter(C);

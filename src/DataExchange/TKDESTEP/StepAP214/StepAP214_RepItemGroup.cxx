@@ -27,11 +27,10 @@ StepAP214_RepItemGroup::StepAP214_RepItemGroup() {}
 
 //=================================================================================================
 
-void StepAP214_RepItemGroup::Init(
-  const occ::handle<TCollection_HAsciiString>& aGroup_Name,
-  const bool                                   hasGroup_Description,
-  const occ::handle<TCollection_HAsciiString>& aGroup_Description,
-  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name)
+void StepAP214_RepItemGroup::Init(const occ::handle<TCollection_HAsciiString>& aGroup_Name,
+                                  const bool                  hasGroup_Description,
+                                  const occ::handle<TCollection_HAsciiString>& aGroup_Description,
+                                  const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name)
 {
   StepBasic_Group::Init(aGroup_Name, hasGroup_Description, aGroup_Description);
   theRepresentationItem->Init(aRepresentationItem_Name);

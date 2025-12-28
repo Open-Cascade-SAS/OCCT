@@ -19,13 +19,22 @@
 #include <Standard_Integer.hxx>
 #include <Quantity_Color.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Quantity_Color.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Quantity_Color.hxx>
 #include <MeshVS_PrsBuilder.hxx>
 #include <MeshVS_DisplayModeFlags.hxx>
 #include <MeshVS_BuilderPriority.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 class MeshVS_Mesh;
 class MeshVS_DataSource;
@@ -51,16 +60,16 @@ class MeshVS_NodalColorPrsBuilder : public MeshVS_PrsBuilder
 public:
   Standard_EXPORT MeshVS_NodalColorPrsBuilder(
     const occ::handle<MeshVS_Mesh>&       Parent,
-    const MeshVS_DisplayModeFlags&        Flags    = MeshVS_DMF_NodalColorDataPrs,
+    const MeshVS_DisplayModeFlags&   Flags    = MeshVS_DMF_NodalColorDataPrs,
     const occ::handle<MeshVS_DataSource>& DS       = 0,
-    const int                             Id       = -1,
-    const MeshVS_BuilderPriority&         Priority = MeshVS_BP_NodalColor);
+    const int           Id       = -1,
+    const MeshVS_BuilderPriority&    Priority = MeshVS_BP_NodalColor);
 
   //! Builds presentation of nodes with assigned color.
   Standard_EXPORT virtual void Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                     const TColStd_PackedMapOfInteger&      IDs,
-                                     TColStd_PackedMapOfInteger&            IDsToExclude,
-                                     const bool                             IsElement,
+                                     const TColStd_PackedMapOfInteger& IDs,
+                                     TColStd_PackedMapOfInteger&       IDsToExclude,
+                                     const bool            IsElement,
                                      const int DisplayMode) const override;
 
   //! Returns map of colors assigned to nodes.
@@ -73,7 +82,8 @@ public:
   Standard_EXPORT bool HasColors() const;
 
   //! Returns color assigned to single node
-  Standard_EXPORT bool GetColor(const int ID, Quantity_Color& theColor) const;
+  Standard_EXPORT bool GetColor(const int ID,
+                                            Quantity_Color&        theColor) const;
 
   //! Sets color assigned to single node
   Standard_EXPORT void SetColor(const int ID, const Quantity_Color& theColor);
@@ -112,15 +122,14 @@ public:
   Standard_EXPORT double GetTextureCoord(const int theID);
 
   //! Add to array polygons or polylines representing volume
-  Standard_EXPORT void AddVolumePrs(
-    const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
-    const NCollection_Array1<int>&                                     theNodes,
-    const NCollection_Array1<double>&                                  theCoords,
-    const occ::handle<Graphic3d_ArrayOfPrimitives>&                    theArray,
-    const bool                                                         theIsShaded,
-    const int                                                          theNbColors,
-    const int                                                          theNbTexColors,
-    const double                                                       theColorRatio) const;
+  Standard_EXPORT void AddVolumePrs(const occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& theTopo,
+                                    const NCollection_Array1<int>&                   theNodes,
+                                    const NCollection_Array1<double>&                      theCoords,
+                                    const occ::handle<Graphic3d_ArrayOfPrimitives>&       theArray,
+                                    const bool                           theIsShaded,
+                                    const int                           theNbColors,
+                                    const int                           theNbTexColors,
+                                    const double theColorRatio) const;
 
   DEFINE_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -129,10 +138,10 @@ private:
   Standard_EXPORT occ::handle<Graphic3d_Texture2D> CreateTexture() const;
 
   NCollection_DataMap<int, Quantity_Color> myNodeColorMap;
-  bool                                     myUseTexture;
-  NCollection_Sequence<Quantity_Color>     myTextureColorMap;
-  NCollection_DataMap<int, double>         myTextureCoords;
-  Quantity_Color                           myInvalidColor;
+  bool             myUseTexture;
+  NCollection_Sequence<Quantity_Color>       myTextureColorMap;
+  NCollection_DataMap<int, double> myTextureCoords;
+  Quantity_Color               myInvalidColor;
 };
 
 #endif // _MeshVS_NodalColorPrsBuilder_HeaderFile

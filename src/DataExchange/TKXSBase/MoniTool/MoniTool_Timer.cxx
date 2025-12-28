@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <MoniTool_DataMapOfTimer.hxx>
+#include <MoniTool_DataMapOfTimer.hxx>
 #include <MoniTool_Timer.hxx>
 #include <MoniTool_TimerSentry.hxx>
 #include <OSD_Timer.hxx>
@@ -24,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Timer, Standard_Transient)
 
 void MoniTool_Timer::Dump(Standard_OStream& ostr)
 {
-  int    hours, minutes;
-  double seconds, CPUtime, user, system;
+  int hours, minutes;
+  double    seconds, CPUtime, user, system;
 
   myTimer.Show(seconds, minutes, hours, CPUtime);
   myTimer.OSD_Chronometer::Show(user, system);
@@ -45,8 +46,7 @@ void MoniTool_Timer::Dump(Standard_OStream& ostr)
 
 //=================================================================================================
 
-NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>&
-  MoniTool_Timer::Dictionary()
+NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& MoniTool_Timer::Dictionary()
 {
   static NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher> dic;
   return dic;
@@ -60,8 +60,7 @@ NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHa
 occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* name)
 {
   //  AmendAccess();
-  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic =
-    Dictionary();
+  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic = Dictionary();
   if (dic.IsBound(name))
     return dic.Find(name);
   occ::handle<MoniTool_Timer> MT = new MoniTool_Timer;
@@ -87,23 +86,21 @@ void MoniTool_Timer::ClearTimers()
 
 void MoniTool_Timer::DumpTimers(Standard_OStream& ostr)
 {
-  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic =
-    Dictionary();
-  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>::Iterator
-    iter(dic);
+  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>&                 dic = Dictionary();
+  NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>::Iterator iter(dic);
 
   int NbTimers = dic.Extent();
 
   ostr << "DUMP OF TIMERS:" << std::endl;
   const char** keys = new const char*[NbTimers];
-  int          i    = 0;
+  int  i    = 0;
   for (; iter.More() && i < NbTimers; iter.Next())
   {
     keys[i++] = iter.Key();
   }
   for (i = 0; i < NbTimers; i++)
   {
-    int         ntmp = 0;
+    int ntmp = 0;
     const char* stmp = 0;
     for (int j = 0; j < NbTimers; j++)
     {

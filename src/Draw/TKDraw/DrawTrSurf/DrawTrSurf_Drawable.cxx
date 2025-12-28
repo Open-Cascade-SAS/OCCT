@@ -36,9 +36,9 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Drawable, Draw_Drawable3D)
 //=======================================================================
 DrawTrSurf_Drawable::DrawTrSurf_Drawable(
 
-  const int    discret,
-  const double deflection,
-  const int    DrawMode)
+  const int discret,
+  const double    deflection,
+  const int DrawMode)
     : myDrawMode(DrawMode),
       myDiscret(discret),
       myDeflection(deflection)
@@ -54,7 +54,7 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
   gp_Pnt2d aPoint2d, *aPoint2dPtr;
   if (myDrawMode == 1)
   {
-    double                   Fleche = myDeflection / aDisplay.Zoom();
+    double            Fleche = myDeflection / aDisplay.Zoom();
     GCPnts_UniformDeflection LineVu(C, Fleche);
     if (LineVu.IsDone())
     {
@@ -71,7 +71,7 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
   }
   else
   {
-    int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
+    int     intrv, nbintv = C.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
     C.D0(C.FirstParameter(), aPoint2d);
@@ -101,13 +101,13 @@ void DrawTrSurf_Drawable::DrawCurve2dOn(Adaptor2d_Curve2d& C, Draw_Display& aDis
 //=======================================================================
 static void PlotCurve(Draw_Display&          aDisplay,
                       const Adaptor3d_Curve& C,
-                      double&                theFirstParam,
-                      double                 theHalfStep,
+                      double&         theFirstParam,
+                      double          theHalfStep,
                       const gp_Pnt&          theFirstPnt,
                       const gp_Pnt&          theLastPnt)
 {
   double IsoRatio = 1.001;
-  gp_Pnt Pm;
+  gp_Pnt        Pm;
 
   C.D0(theFirstParam + theHalfStep, Pm);
 
@@ -132,7 +132,7 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
   gp_Pnt P;
   if (myDrawMode == 1)
   {
-    double                   Fleche = myDeflection / aDisplay.Zoom();
+    double            Fleche = myDeflection / aDisplay.Zoom();
     GCPnts_UniformDeflection LineVu(C, Fleche);
     if (LineVu.IsDone())
     {
@@ -145,8 +145,8 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
   }
   else
   {
-    int                        j;
-    int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
+    int     j;
+    int     intrv, nbintv = C.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
     C.D0(C.FirstParameter(), P);
@@ -202,9 +202,9 @@ void DrawTrSurf_Drawable::DrawCurveOn(Adaptor3d_Curve& C, Draw_Display& aDisplay
 
 void DrawTrSurf_Drawable::DrawIsoCurveOn(Adaptor3d_IsoCurve&   C,
                                          const GeomAbs_IsoType T,
-                                         const double          P,
-                                         const double          F,
-                                         const double          L,
+                                         const double   P,
+                                         const double   F,
+                                         const double   L,
                                          Draw_Display&         dis) const
 {
   C.Load(T, P, F, L);

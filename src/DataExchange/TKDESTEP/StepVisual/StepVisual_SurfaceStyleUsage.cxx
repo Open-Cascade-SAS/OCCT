@@ -18,7 +18,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleUsage, Standard_Transient)
 
 StepVisual_SurfaceStyleUsage::StepVisual_SurfaceStyleUsage() {}
 
-void StepVisual_SurfaceStyleUsage::Init(const StepVisual_SurfaceSide                    aSide,
+void StepVisual_SurfaceStyleUsage::Init(const StepVisual_SurfaceSide               aSide,
                                         const occ::handle<StepVisual_SurfaceSideStyle>& aStyle)
 {
   // --- classe own fields ---

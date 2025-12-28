@@ -51,8 +51,8 @@ static int BattenCurve(Draw_Interpretor& di, int argc, const char** argv)
   const char* BattenName = argv[6];
 
   FairCurve_AnalysisCode Iana;
-  double   a1 = Draw::Atof(cangle1), a2 = Draw::Atof(cangle2), h = Draw::Atof(cheigth);
-  gp_Pnt2d P1, P2;
+  double a1 = Draw::Atof(cangle1), a2 = Draw::Atof(cangle2), h = Draw::Atof(cheigth);
+  gp_Pnt2d      P1, P2;
 
   if (!DrawTrSurf::GetPoint2d(cp1, P1))
     return 1;
@@ -93,8 +93,8 @@ static int MVCurve(Draw_Interpretor& di, int argc, const char** argv)
   const char* MVCName = argv[6];
 
   FairCurve_AnalysisCode Iana;
-  double   a1 = Draw::Atof(cangle1), a2 = Draw::Atof(cangle2), h = Draw::Atof(cheigth);
-  gp_Pnt2d P1, P2;
+  double a1 = Draw::Atof(cangle1), a2 = Draw::Atof(cangle2), h = Draw::Atof(cheigth);
+  gp_Pnt2d      P1, P2;
 
   if (!DrawTrSurf::GetPoint2d(cp1, P1))
     return 1;
@@ -137,8 +137,7 @@ static int SetPoint(Draw_Interpretor& di, int argc, const char** argv)
   if (Pnt.IsNull())
     return 1;
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -158,11 +157,10 @@ static int SetAngle(Draw_Interpretor& di, int argc, const char** argv)
   const char* val        = argv[2];
   const char* BattenName = argv[3];
 
-  double angle = Draw::Atof(val);
-  int    cote  = Draw::Atoi(side);
+  double    angle = Draw::Atof(val);
+  int cote  = Draw::Atoi(side);
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -182,8 +180,8 @@ static int SetCurvature(Draw_Interpretor& di, int argc, const char** argv)
   const char* val     = argv[2];
   const char* MVCName = argv[3];
 
-  double rho  = Draw::Atof(val);
-  int    cote = Draw::Atoi(side);
+  double    rho  = Draw::Atof(val);
+  int cote = Draw::Atoi(side);
 
   occ::handle<DrawFairCurve_MinimalVariation> MVC =
     occ::down_cast<DrawFairCurve_MinimalVariation>(Draw::Get(MVCName));
@@ -207,8 +205,7 @@ static int SetSlide(Draw_Interpretor& di, int argc, const char** argv)
 
   double slide = Draw::Atof(val);
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -229,8 +226,7 @@ static int FreeAngle(Draw_Interpretor& di, int argc, const char** argv)
 
   int cote = Draw::Atoi(side);
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -240,7 +236,9 @@ static int FreeAngle(Draw_Interpretor& di, int argc, const char** argv)
 }
 
 //=======================================================================
-static int FreeCurvature(Draw_Interpretor& di, int argc, const char** argv)
+static int FreeCurvature(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))
@@ -270,8 +268,7 @@ static int FreeSlide(Draw_Interpretor& di, int argc, const char** argv)
 
   const char* BattenName = argv[1];
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -292,8 +289,7 @@ static int SetHeight(Draw_Interpretor& di, int argc, const char** argv)
 
   double Height = Draw::Atof(val);
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -314,8 +310,7 @@ static int SetSlope(Draw_Interpretor& di, int argc, const char** argv)
 
   double Slope = Draw::Atof(val);
 
-  occ::handle<DrawFairCurve_Batten> Bat =
-    occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
+  occ::handle<DrawFairCurve_Batten> Bat = occ::down_cast<DrawFairCurve_Batten>(Draw::Get(BattenName));
   if (Bat.IsNull())
     return 1;
 
@@ -324,7 +319,9 @@ static int SetSlope(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 //=======================================================================
-static int SetPhysicalRatio(Draw_Interpretor& di, int argc, const char** argv)
+static int SetPhysicalRatio(Draw_Interpretor& di,
+                                         int  argc,
+                                         const char**      argv)
 //=======================================================================
 {
   if (!IsGoodNumber(argc, 2, di))

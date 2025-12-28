@@ -27,6 +27,8 @@
 #include <NCollection_HArray2.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepData_Logical.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 class StepGeom_UniformSurface;
 class StepGeom_RationalBSplineSurface;
 class TCollection_HAsciiString;
@@ -38,33 +40,28 @@ public:
   //! Returns a UniformSurfaceAndRationalBSplineSurface
   Standard_EXPORT StepGeom_UniformSurfaceAndRationalBSplineSurface();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aUDegree,
-    const int                                    aVDegree,
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
-                                                        aControlPointsList,
-    const StepGeom_BSplineSurfaceForm                   aSurfaceForm,
-    const StepData_Logical                              aUClosed,
-    const StepData_Logical                              aVClosed,
-    const StepData_Logical                              aSelfIntersect,
-    const occ::handle<StepGeom_UniformSurface>&         aUniformSurface,
-    const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aUDegree,
+                            const int                          aVDegree,
+                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+                            const StepData_Logical                          aUClosed,
+                            const StepData_Logical                          aVClosed,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<StepGeom_UniformSurface>&          aUniformSurface,
+                            const occ::handle<StepGeom_RationalBSplineSurface>& aRationalBSplineSurface);
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aUDegree,
-    const int                                    aVDegree,
-    const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>&
-                                                    aControlPointsList,
-    const StepGeom_BSplineSurfaceForm               aSurfaceForm,
-    const StepData_Logical                          aUClosed,
-    const StepData_Logical                          aVClosed,
-    const StepData_Logical                          aSelfIntersect,
-    const occ::handle<NCollection_HArray2<double>>& aWeightsData);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aUDegree,
+                            const int                          aVDegree,
+                            const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineSurfaceForm               aSurfaceForm,
+                            const StepData_Logical                          aUClosed,
+                            const StepData_Logical                          aVClosed,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<NCollection_HArray2<double>>&            aWeightsData);
 
-  Standard_EXPORT void SetUniformSurface(
-    const occ::handle<StepGeom_UniformSurface>& aUniformSurface);
+  Standard_EXPORT void SetUniformSurface(const occ::handle<StepGeom_UniformSurface>& aUniformSurface);
 
   Standard_EXPORT occ::handle<StepGeom_UniformSurface> UniformSurface() const;
 
@@ -77,7 +74,8 @@ public:
 
   Standard_EXPORT occ::handle<NCollection_HArray2<double>> WeightsData() const;
 
-  Standard_EXPORT double WeightsDataValue(const int num1, const int num2) const;
+  Standard_EXPORT double WeightsDataValue(const int num1,
+                                                 const int num2) const;
 
   Standard_EXPORT int NbWeightsDataI() const;
 

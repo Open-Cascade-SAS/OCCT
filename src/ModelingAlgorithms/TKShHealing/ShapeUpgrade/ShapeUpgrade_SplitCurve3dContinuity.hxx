@@ -50,9 +50,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3dContinuity, ShapeUpgrade_SplitCurve3d)
 
 private:
-  GeomAbs_Shape myCriterion;
-  double        myTolerance;
-  int           myCont;
+  GeomAbs_Shape    myCriterion;
+  double    myTolerance;
+  int myCont;
 };
 
 #endif // _ShapeUpgrade_SplitCurve3dContinuity_HeaderFile

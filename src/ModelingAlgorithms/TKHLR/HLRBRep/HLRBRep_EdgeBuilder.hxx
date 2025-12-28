@@ -105,11 +105,11 @@ public:
   ~HLRBRep_EdgeBuilder() { Destroy(); }
 
 private:
-  TopAbs_State                   toBuild;
+  TopAbs_State              toBuild;
   occ::handle<HLRBRep_AreaLimit> myLimits;
   occ::handle<HLRBRep_AreaLimit> left;
   occ::handle<HLRBRep_AreaLimit> right;
-  int                            current;
+  int          current;
 };
 
 #endif // _HLRBRep_EdgeBuilder_HeaderFile

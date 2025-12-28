@@ -31,7 +31,8 @@ public:
     return opencascade::hashBytes(theString, aLen);
   }
 
-  bool operator()(const char* theString1, const char* theString2) const noexcept
+  bool operator()(const char* theString1,
+                  const char* theString2) const noexcept
   {
     return strcmp(theString1, theString2) == 0;
   }

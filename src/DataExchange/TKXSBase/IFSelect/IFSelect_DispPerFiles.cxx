@@ -54,7 +54,8 @@ TCollection_AsciiString IFSelect_DispPerFiles::Label() const
   return lab;
 }
 
-bool IFSelect_DispPerFiles::LimitedMax(const int /* nbent */, int& pcount) const
+bool IFSelect_DispPerFiles::LimitedMax(const int /* nbent */,
+                                                   int& pcount) const
 {
   pcount = CountValue();
   return true;

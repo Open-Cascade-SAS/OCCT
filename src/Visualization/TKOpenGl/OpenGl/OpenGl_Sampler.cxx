@@ -87,7 +87,7 @@ bool OpenGl_Sampler::Create(const occ::handle<OpenGl_Context>& theCtx)
 //=================================================================================================
 
 bool OpenGl_Sampler::Init(const occ::handle<OpenGl_Context>& theCtx,
-                          const OpenGl_Texture&              theTexture)
+                                      const OpenGl_Texture&         theTexture)
 {
   if (isValidSampler())
   {
@@ -120,8 +120,7 @@ bool OpenGl_Sampler::Init(const occ::handle<OpenGl_Context>& theCtx,
 // function : Bind
 // purpose  : Binds sampler object to the given texture unit
 // =======================================================================
-void OpenGl_Sampler::Bind(const occ::handle<OpenGl_Context>& theCtx,
-                          const Graphic3d_TextureUnit        theUnit)
+void OpenGl_Sampler::Bind(const occ::handle<OpenGl_Context>& theCtx, const Graphic3d_TextureUnit theUnit)
 {
   if (isValidSampler())
   {
@@ -134,7 +133,7 @@ void OpenGl_Sampler::Bind(const occ::handle<OpenGl_Context>& theCtx,
 // purpose  : Unbinds sampler object from the given texture unit
 // =======================================================================
 void OpenGl_Sampler::Unbind(const occ::handle<OpenGl_Context>& theCtx,
-                            const Graphic3d_TextureUnit        theUnit)
+                            const Graphic3d_TextureUnit   theUnit)
 {
   if (isValidSampler())
   {
@@ -145,10 +144,10 @@ void OpenGl_Sampler::Unbind(const occ::handle<OpenGl_Context>& theCtx,
 //=================================================================================================
 
 void OpenGl_Sampler::setParameter(const occ::handle<OpenGl_Context>& theCtx,
-                                  OpenGl_Sampler*                    theSampler,
-                                  unsigned int                       theTarget,
-                                  unsigned int                       theParam,
-                                  int                                theValue)
+                                  OpenGl_Sampler*               theSampler,
+                                  unsigned int                  theTarget,
+                                  unsigned int                  theParam,
+                                  int              theValue)
 {
   if (theSampler != NULL && theSampler->isValidSampler())
   {
@@ -175,9 +174,9 @@ void OpenGl_Sampler::SetParameters(const occ::handle<Graphic3d_TextureParams>& t
 
 void OpenGl_Sampler::applySamplerParams(const occ::handle<OpenGl_Context>&          theCtx,
                                         const occ::handle<Graphic3d_TextureParams>& theParams,
-                                        OpenGl_Sampler*                             theSampler,
-                                        const unsigned int                          theTarget,
-                                        const int                                   theMaxMipLevels)
+                                        OpenGl_Sampler*                        theSampler,
+                                        const unsigned int                     theTarget,
+                                        const int                 theMaxMipLevels)
 {
   if (theSampler != NULL && theSampler->Parameters() == theParams)
   {
@@ -260,8 +259,8 @@ void OpenGl_Sampler::applySamplerParams(const occ::handle<OpenGl_Context>&      
 
 //=================================================================================================
 
-void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>& theCtx,
-                                              const OpenGl_Texture&              theTexture,
+void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>&          theCtx,
+                                              const OpenGl_Texture&                  theTexture,
                                               const occ::handle<Graphic3d_TextureParams>& theParams)
 {
   if (theCtx->core11ffp == NULL || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
@@ -361,8 +360,8 @@ void OpenGl_Sampler::applyGlobalTextureParams(const occ::handle<OpenGl_Context>&
 
 //=================================================================================================
 
-void OpenGl_Sampler::resetGlobalTextureParams(const occ::handle<OpenGl_Context>& theCtx,
-                                              const OpenGl_Texture&              theTexture,
+void OpenGl_Sampler::resetGlobalTextureParams(const occ::handle<OpenGl_Context>&          theCtx,
+                                              const OpenGl_Texture&                  theTexture,
                                               const occ::handle<Graphic3d_TextureParams>& theParams)
 {
   if (theCtx->core11ffp == NULL)

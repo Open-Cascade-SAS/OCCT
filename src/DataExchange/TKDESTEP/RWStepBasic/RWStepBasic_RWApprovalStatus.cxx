@@ -19,7 +19,7 @@
 RWStepBasic_RWApprovalStatus::RWStepBasic_RWApprovalStatus() {}
 
 void RWStepBasic_RWApprovalStatus::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepBasic_ApprovalStatus>& ent) const
 {
@@ -40,7 +40,7 @@ void RWStepBasic_RWApprovalStatus::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName);
 }
 
-void RWStepBasic_RWApprovalStatus::WriteStep(StepData_StepWriter&                         SW,
+void RWStepBasic_RWApprovalStatus::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepBasic_ApprovalStatus>& ent) const
 {
 

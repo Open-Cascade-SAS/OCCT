@@ -37,18 +37,18 @@ namespace PolyUtils = IntCurveSurface_PolyhedronUtils;
 //================================================================================
 static int NbPOnU(const occ::handle<Adaptor3d_Surface>& S)
 {
-  const double u0   = S->FirstUParameter();
-  const double u1   = S->LastUParameter();
-  const int    nbpu = IntPatch_HInterTool::NbSamplesU(S, u0, u1);
+  const double    u0   = S->FirstUParameter();
+  const double    u1   = S->LastUParameter();
+  const int nbpu = IntPatch_HInterTool::NbSamplesU(S, u0, u1);
   return (nbpu > NBMAXUV ? NBMAXUV : nbpu);
 }
 
 //================================================================================
 static int NbPOnV(const occ::handle<Adaptor3d_Surface>& S)
 {
-  const double v0   = S->FirstVParameter();
-  const double v1   = S->LastVParameter();
-  const int    nbpv = IntPatch_HInterTool::NbSamplesV(S, v0, v1);
+  const double    v0   = S->FirstVParameter();
+  const double    v1   = S->LastVParameter();
+  const int nbpv = IntPatch_HInterTool::NbSamplesV(S, v0, v1);
   return (nbpv > NBMAXUV ? NBMAXUV : nbpv);
 }
 
@@ -83,12 +83,12 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
       VMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface))
 {
   const int t       = (nbdeltaU + 1) * (nbdeltaV + 1) + 1;
-  gp_Pnt*   CMyPnts = new gp_Pnt[t];
-  double*   CMyU    = new double[t];
-  double*   CMyV    = new double[t];
-  C_MyPnts          = CMyPnts;
-  C_MyU             = CMyU;
-  C_MyV             = CMyV;
+  gp_Pnt*                CMyPnts = new gp_Pnt[t];
+  double*         CMyU    = new double[t];
+  double*         CMyV    = new double[t];
+  C_MyPnts                       = CMyPnts;
+  C_MyU                          = CMyU;
+  C_MyV                          = CMyV;
 
   const double u0 = Surface->FirstUParameter();
   const double u1 = Surface->LastUParameter();
@@ -98,8 +98,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   // Build UV parameter arrays
   NCollection_Array1<double> aUParams(0, nbdeltaU);
   NCollection_Array1<double> aVParams(0, nbdeltaV);
-  const double               U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
-  const double               V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
+  const double  U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
+  const double  V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
 
   for (int i = 0; i <= nbdeltaU; ++i)
   {
@@ -140,8 +140,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
 //=================================================================================================
 
 IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& Surface,
-                                         const int                             nbu,
-                                         const int                             nbv)
+                                         const int           nbu,
+                                         const int           nbv)
     : TheDeflection(Epsilon(100.)),
       nbdeltaU(nbu),
       nbdeltaV(nbv),
@@ -154,12 +154,12 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
       VMaxSingular(IntPatch_HInterTool::SingularOnVMin(Surface))
 {
   const int t       = (nbdeltaU + 1) * (nbdeltaV + 1) + 1;
-  gp_Pnt*   CMyPnts = new gp_Pnt[t];
-  double*   CMyU    = new double[t];
-  double*   CMyV    = new double[t];
-  C_MyPnts          = CMyPnts;
-  C_MyU             = CMyU;
-  C_MyV             = CMyV;
+  gp_Pnt*                CMyPnts = new gp_Pnt[t];
+  double*         CMyU    = new double[t];
+  double*         CMyV    = new double[t];
+  C_MyPnts                       = CMyPnts;
+  C_MyU                          = CMyU;
+  C_MyV                          = CMyV;
 
   const double u0 = Surface->FirstUParameter();
   const double u1 = Surface->LastUParameter();
@@ -169,8 +169,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   // Build UV parameter arrays
   NCollection_Array1<double> aUParams(0, nbdeltaU);
   NCollection_Array1<double> aVParams(0, nbdeltaV);
-  const double               U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
-  const double               V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
+  const double  U1mU0sNbdeltaU = (u1 - u0) / (double)nbdeltaU;
+  const double  V1mV0sNbdeltaV = (v1 - v0) / (double)nbdeltaV;
 
   for (int i = 0; i <= nbdeltaU; ++i)
   {
@@ -210,7 +210,9 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
 
 //=================================================================================================
 
-void IntPatch_Polyhedron::Parameters(const int Index, double& U, double& V) const
+void IntPatch_Polyhedron::Parameters(const int Index,
+                                     double&         U,
+                                     double&         V) const
 {
   U = ((double*)C_MyU)[Index];
   V = ((double*)C_MyV)[Index];
@@ -251,9 +253,9 @@ const Bnd_Box& IntPatch_Polyhedron::Bounding() const
 void IntPatch_Polyhedron::FillBounding()
 {
   TheComponentsBnd = new NCollection_HArray1<Bnd_Box>(1, NbTriangles());
-  Bnd_Box Boite;
-  int     p1, p2, p3;
-  int     nbtriangles = NbTriangles();
+  Bnd_Box          Boite;
+  int p1, p2, p3;
+  int nbtriangles = NbTriangles();
   for (int iTri = 1; iTri <= nbtriangles; iTri++)
   {
     Triangle(iTri, p1, p2, p3);
@@ -302,10 +304,10 @@ int IntPatch_Polyhedron::NbPoints() const
 //=================================================================================================
 
 int IntPatch_Polyhedron::TriConnex(const int Triang,
-                                   const int Pivot,
-                                   const int Pedge,
-                                   int&      TriCon,
-                                   int&      OtherP) const
+                                                const int Pivot,
+                                                const int Pedge,
+                                                int&      TriCon,
+                                                int&      OtherP) const
 {
 
   int Pivotm1    = Pivot - 1;
@@ -565,8 +567,8 @@ int IntPatch_Polyhedron::TriConnex(const int Triang,
 //=================================================================================================
 
 void IntPatch_Polyhedron::PlaneEquation(const int Triang,
-                                        gp_XYZ&   NormalVector,
-                                        double&   PolarDistance) const
+                                        gp_XYZ&                NormalVector,
+                                        double&         PolarDistance) const
 {
   int i1, i2, i3;
   Triangle(Triang, i1, i2, i3);
@@ -595,7 +597,7 @@ void IntPatch_Polyhedron::PlaneEquation(const int Triang,
     return;
   }
 
-  NormalVector    = (v1 ^ v2) + (v2 ^ v3) + (v3 ^ v1);
+  NormalVector           = (v1 ^ v2) + (v2 ^ v3) + (v3 ^ v1);
   double aNormLen = NormalVector.Modulus();
   if (aNormLen < gp::Resolution())
   {
@@ -610,7 +612,8 @@ void IntPatch_Polyhedron::PlaneEquation(const int Triang,
 
 //=================================================================================================
 
-bool IntPatch_Polyhedron::Contain(const int Triang, const gp_Pnt& ThePnt) const
+bool IntPatch_Polyhedron::Contain(const int Triang,
+                                              const gp_Pnt&          ThePnt) const
 {
   int i1, i2, i3;
   Triangle(Triang, i1, i2, i3);
@@ -641,7 +644,10 @@ void IntPatch_Polyhedron::Size(int& nbdu, int& nbdv) const
 
 //=================================================================================================
 
-void IntPatch_Polyhedron::Triangle(const int Index, int& P1, int& P2, int& P3) const
+void IntPatch_Polyhedron::Triangle(const int Index,
+                                   int&      P1,
+                                   int&      P2,
+                                   int&      P3) const
 {
   int line   = 1 + ((Index - 1) / (nbdeltaV * 2));
   int colon  = 1 + ((Index - 1) % (nbdeltaV * 2));
@@ -663,13 +669,15 @@ void IntPatch_Polyhedron::Triangle(const int Index, int& P1, int& P2, int& P3) c
 //=======================================================================
 // function : Point
 //=======================================================================
-const gp_Pnt& IntPatch_Polyhedron::Point(const int Index, double& U, double& V) const
+const gp_Pnt& IntPatch_Polyhedron::Point(const int Index,
+                                         double&         U,
+                                         double&         V) const
 {
-  gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
+  gp_Pnt*        CMyPnts = (gp_Pnt*)C_MyPnts;
   double* CMyU    = (double*)C_MyU;
   double* CMyV    = (double*)C_MyV;
-  U               = CMyU[Index];
-  V               = CMyV[Index];
+  U                      = CMyU[Index];
+  V                      = CMyV[Index];
   return CMyPnts[Index];
 }
 

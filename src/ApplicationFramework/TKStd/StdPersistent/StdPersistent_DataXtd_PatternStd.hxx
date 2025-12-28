@@ -54,9 +54,9 @@ public:
   void Import(const occ::handle<TDataXtd_PatternStd>& theAttribute) const;
 
 private:
-  int                               mySignature;
-  bool                              myAxis1Reversed;
-  bool                              myAxis2Reversed;
+  int             mySignature;
+  bool             myAxis1Reversed;
+  bool             myAxis2Reversed;
   occ::handle<StdObjMgt_Persistent> myAxis1;
   occ::handle<StdObjMgt_Persistent> myAxis2;
   occ::handle<StdObjMgt_Persistent> myValue1;

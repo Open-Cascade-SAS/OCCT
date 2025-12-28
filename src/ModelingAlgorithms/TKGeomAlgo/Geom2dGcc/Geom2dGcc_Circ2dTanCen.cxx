@@ -29,9 +29,9 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  Qualified1,
-                                               const occ::handle<Geom2d_Point>& PCenter,
-                                               const double                     Tolerance)
+Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve& Qualified1,
+                                               const occ::handle<Geom2d_Point>&     PCenter,
+                                               const double             Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -39,9 +39,9 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  
       par1sol(1, 2),
       pararg1(1, 2)
 {
-  Geom2dAdaptor_Curve              C1    = Qualified1.Qualified();
+  Geom2dAdaptor_Curve         C1    = Qualified1.Qualified();
   const occ::handle<Geom2d_Curve>& CC1   = C1.Curve();
-  GeomAbs_CurveType                Type1 = C1.GetType();
+  GeomAbs_CurveType           Type1 = C1.GetType();
 
   //=============================================================================
   //                            Appel a GccAna.                                 +
@@ -54,9 +54,9 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  
     if (Type1 == GeomAbs_Circle)
     {
       occ::handle<Geom2d_Circle> CCC1 = occ::down_cast<Geom2d_Circle>(CC1);
-      gp_Circ2d                  c1(CCC1->Circ2d());
-      GccEnt_QualifiedCirc       Qc1(c1, Qualified1.Qualifier());
-      GccAna_Circ2dTanCen        Circ(Qc1, pcenter, Tolerance);
+      gp_Circ2d             c1(CCC1->Circ2d());
+      GccEnt_QualifiedCirc  Qc1(c1, Qualified1.Qualifier());
+      GccAna_Circ2dTanCen   Circ(Qc1, pcenter, Tolerance);
       WellDone = Circ.IsDone();
       NbrSol   = Circ.NbSolutions();
       for (int j = 1; j <= NbrSol; j++)
@@ -77,8 +77,8 @@ Geom2dGcc_Circ2dTanCen::Geom2dGcc_Circ2dTanCen(const Geom2dGcc_QualifiedCurve&  
     else
     {
       occ::handle<Geom2d_Line> LL1 = occ::down_cast<Geom2d_Line>(CC1);
-      gp_Lin2d                 l1(LL1->Lin2d());
-      GccAna_Circ2dTanCen      Circ(l1, pcenter);
+      gp_Lin2d            l1(LL1->Lin2d());
+      GccAna_Circ2dTanCen Circ(l1, pcenter);
       WellDone = Circ.IsDone();
       NbrSol   = Circ.NbSolutions();
       for (int j = 1; j <= NbrSol; j++)
@@ -141,7 +141,8 @@ gp_Circ2d Geom2dGcc_Circ2dTanCen::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void Geom2dGcc_Circ2dTanCen::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
+void Geom2dGcc_Circ2dTanCen::WhichQualifier(const int Index,
+                                            GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
   {
@@ -158,9 +159,9 @@ void Geom2dGcc_Circ2dTanCen::WhichQualifier(const int Index, GccEnt_Position& Qu
 }
 
 void Geom2dGcc_Circ2dTanCen::Tangency1(const int Index,
-                                       double&   ParSol,
-                                       double&   ParArg,
-                                       gp_Pnt2d& PntSol) const
+                                       double&         ParSol,
+                                       double&         ParArg,
+                                       gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {

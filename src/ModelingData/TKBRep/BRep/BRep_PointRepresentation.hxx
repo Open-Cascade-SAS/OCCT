@@ -43,16 +43,16 @@ public:
 
   //! A point on the curve <C>.
   Standard_EXPORT virtual bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
-                                              const TopLoc_Location&         L) const;
+                                                          const TopLoc_Location&    L) const;
 
   //! A point on the 2d curve <PC> on the surface <S>.
   Standard_EXPORT virtual bool IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
-                                                       const occ::handle<Geom_Surface>& S,
-                                                       const TopLoc_Location&           L) const;
+                                                                   const occ::handle<Geom_Surface>& S,
+                                                                   const TopLoc_Location& L) const;
 
   //! A point on the surface <S>.
   Standard_EXPORT virtual bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const;
+                                                            const TopLoc_Location&      L) const;
 
   const TopLoc_Location& Location() const;
 
@@ -79,7 +79,8 @@ public:
   Standard_EXPORT virtual void Surface(const occ::handle<Geom_Surface>& S);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation, Standard_Transient)
 
@@ -88,7 +89,7 @@ protected:
 
 private:
   TopLoc_Location myLocation;
-  double          myParameter;
+  double   myParameter;
 };
 
 #include <BRep_PointRepresentation.lxx>

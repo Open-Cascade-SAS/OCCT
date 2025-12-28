@@ -37,8 +37,8 @@ int StepAP203_ContractedItem::CaseNum(const occ::handle<Standard_Transient>& ent
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ContractedItem::
-  ProductDefinitionFormation() const
+occ::handle<StepBasic_ProductDefinitionFormation> StepAP203_ContractedItem::ProductDefinitionFormation()
+  const
 {
   return occ::down_cast<StepBasic_ProductDefinitionFormation>(Value());
 }

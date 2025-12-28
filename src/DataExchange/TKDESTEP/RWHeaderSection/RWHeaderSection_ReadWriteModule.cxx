@@ -105,11 +105,11 @@ const std::string_view& RWHeaderSection_ReadWriteModule::StepType(const int CN) 
 
 // -- Reading of a file --
 
-void RWHeaderSection_ReadWriteModule::ReadStep(const int                                   CN,
+void RWHeaderSection_ReadWriteModule::ReadStep(const int                 CN,
                                                const occ::handle<StepData_StepReaderData>& data,
-                                               const int                                   num,
+                                               const int                 num,
                                                occ::handle<Interface_Check>&               ach,
-                                               const occ::handle<Standard_Transient>& ent) const
+                                               const occ::handle<Standard_Transient>&      ent) const
 {
   if (CN == 0)
     return;
@@ -163,8 +163,8 @@ void RWHeaderSection_ReadWriteModule::ReadStep(const int                        
 
 // -- Writing of a file --
 
-void RWHeaderSection_ReadWriteModule::WriteStep(const int                              CN,
-                                                StepData_StepWriter&                   SW,
+void RWHeaderSection_ReadWriteModule::WriteStep(const int            CN,
+                                                StepData_StepWriter&              SW,
                                                 const occ::handle<Standard_Transient>& ent) const
 {
   if (CN == 0)

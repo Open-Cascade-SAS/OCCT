@@ -104,7 +104,8 @@ TopoDS_Shape ShapeUpgrade_ShellSewing::Apply(const TopoDS_Shape& shape, const do
 
 //=================================================================================================
 
-TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape, const double tol)
+TopoDS_Shape ShapeUpgrade_ShellSewing::ApplySewing(const TopoDS_Shape& shape,
+                                                   const double tol)
 {
   if (shape.IsNull())
     return shape;

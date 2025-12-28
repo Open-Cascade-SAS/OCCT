@@ -32,7 +32,7 @@ public:
   //! Returns a SiUnitAndTimeUnit
   Standard_EXPORT StepBasic_SiUnitAndTimeUnit();
 
-  Standard_EXPORT void Init(const bool                 hasAprefix,
+  Standard_EXPORT void Init(const bool     hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 

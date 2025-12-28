@@ -31,7 +31,7 @@ RWStepAP214_RWExternallyDefinedClass::RWStepAP214_RWExternallyDefinedClass() {}
 
 void RWStepAP214_RWExternallyDefinedClass::ReadStep(
   const occ::handle<StepData_StepReaderData>&          data,
-  const int                                            num,
+  const int                          num,
   occ::handle<Interface_Check>&                        ach,
   const occ::handle<StepAP214_ExternallyDefinedClass>& ent) const
 {
@@ -45,7 +45,7 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
   data->ReadString(num, 1, "group.name", ach, aGroup_Name);
 
   occ::handle<TCollection_HAsciiString> aGroup_Description;
-  bool                                  hasGroup_Description = true;
+  bool                 hasGroup_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "group.description", ach, aGroup_Description);
@@ -79,7 +79,7 @@ void RWStepAP214_RWExternallyDefinedClass::ReadStep(
 //=================================================================================================
 
 void RWStepAP214_RWExternallyDefinedClass::WriteStep(
-  StepData_StepWriter&                                 SW,
+  StepData_StepWriter&                            SW,
   const occ::handle<StepAP214_ExternallyDefinedClass>& ent) const
 {
 
@@ -105,7 +105,7 @@ void RWStepAP214_RWExternallyDefinedClass::WriteStep(
 
 void RWStepAP214_RWExternallyDefinedClass::Share(
   const occ::handle<StepAP214_ExternallyDefinedClass>& ent,
-  Interface_EntityIterator&                            iter) const
+  Interface_EntityIterator&                       iter) const
 {
 
   // Inherited fields of Group

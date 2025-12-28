@@ -29,11 +29,10 @@ StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
 //=================================================================================================
 
 void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::Init(
-  const occ::handle<TCollection_HAsciiString>& theRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-                                                     theRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>& theRepresentation_ContextOfItems,
-  const occ::handle<NCollection_HArray1<double>>&    theTessellationAccuracyParameters)
+  const occ::handle<TCollection_HAsciiString>&             theRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>& theRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&       theRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<double>>&                theTessellationAccuracyParameters)
 {
   StepVisual_TessellatedShapeRepresentation::Init(theRepresentation_Name,
                                                   theRepresentation_Items,
@@ -44,9 +43,8 @@ void StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>>
-  StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::TessellationAccuracyParameters()
-    const
+occ::handle<NCollection_HArray1<double>> StepVisual_TessellatedShapeRepresentationWithAccuracyParameters::
+  TessellationAccuracyParameters() const
 {
   return myTessellationAccuracyParameters;
 }

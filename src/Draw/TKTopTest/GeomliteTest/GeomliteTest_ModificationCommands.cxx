@@ -81,9 +81,9 @@ static int extendsurf(Draw_Interpretor& di, int n, const char** a)
     di << "extendsurf needs a Bounded surface";
     return 1;
   }
-  double chord = Draw::Atof(a[2]);
-  int    cont  = Draw::Atoi(a[3]);
-  bool   enU = true, apres = true;
+  double    chord = Draw::Atof(a[2]);
+  int cont  = Draw::Atoi(a[3]);
+  bool enU = true, apres = true;
   if (n >= 5)
   {
     if (strcmp(a[4], "V") == 0)
@@ -117,7 +117,7 @@ static int samerange(Draw_Interpretor& /*di*/, int n, const char** a)
     return 1;
   occ::handle<Geom2d_Curve> C = DrawTrSurf::GetCurve2d(a[2]);
   occ::handle<Geom2d_Curve> Res;
-  double                    f, l, rf, rl;
+  double        f, l, rf, rl;
   f  = Draw::Atof(a[3]);
   l  = Draw::Atof(a[4]);
   rf = Draw::Atof(a[5]);
@@ -143,9 +143,9 @@ static int setweight(Draw_Interpretor& /*di*/, int n, const char** a)
     return 1;
   }
 
-  int    anIndex1 = Draw::Atoi(a[2]);
-  int    anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
-  double aWeight  = Draw::Atof(a[n - 1]);
+  int anIndex1 = Draw::Atoi(a[2]);
+  int anIndex2 = n == 5 ? Draw::Atoi(a[3]) : 0;
+  double    aWeight  = Draw::Atof(a[n - 1]);
 
   occ::handle<Geom_BSplineCurve> aBSplCurve = DrawTrSurf::GetBSplineCurve(a[1]);
   if (!aBSplCurve.IsNull())

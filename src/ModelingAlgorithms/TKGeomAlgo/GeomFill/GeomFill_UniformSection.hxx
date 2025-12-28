@@ -23,8 +23,12 @@
 #include <GeomFill_SectionLaw.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 class Geom_Curve;
 class Geom_BSplineCurve;
@@ -39,33 +43,33 @@ public:
   //! Make an constant Law with C.
   //! [First, Last] define law definition domain
   Standard_EXPORT GeomFill_UniformSection(const occ::handle<Geom_Curve>& C,
-                                          const double                   FirstParameter = 0.0,
-                                          const double                   LastParameter  = 1.0);
+                                          const double       FirstParameter = 0.0,
+                                          const double       LastParameter  = 1.0);
 
   //! compute the section for v = param
-  Standard_EXPORT virtual bool D0(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<double>& Weigths) override;
+  Standard_EXPORT virtual bool D0(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<double>& Weigths) override;
 
   //! compute the first derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT virtual bool D1(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths) override;
+  Standard_EXPORT virtual bool D1(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths) override;
 
   //! compute the second derivative in v direction of the
   //! section for v = param
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT virtual bool D2(const double                Param,
-                                  NCollection_Array1<gp_Pnt>& Poles,
-                                  NCollection_Array1<gp_Vec>& DPoles,
-                                  NCollection_Array1<gp_Vec>& D2Poles,
-                                  NCollection_Array1<double>& Weigths,
-                                  NCollection_Array1<double>& DWeigths,
-                                  NCollection_Array1<double>& D2Weigths) override;
+  Standard_EXPORT virtual bool D2(const double   Param,
+                                              NCollection_Array1<gp_Pnt>&   Poles,
+                                              NCollection_Array1<gp_Vec>&   DPoles,
+                                              NCollection_Array1<gp_Vec>&   D2Poles,
+                                              NCollection_Array1<double>& Weigths,
+                                              NCollection_Array1<double>& DWeigths,
+                                              NCollection_Array1<double>& D2Weigths) override;
 
   //! give if possible an bspline Surface, like iso-v are the
   //! section. If it is not possible this method have to
@@ -73,7 +77,9 @@ public:
   Standard_EXPORT virtual occ::handle<Geom_BSplineSurface> BSplineSurface() const override;
 
   //! get the format of an section
-  Standard_EXPORT virtual void SectionShape(int& NbPoles, int& NbKnots, int& Degree) const override;
+  Standard_EXPORT virtual void SectionShape(int& NbPoles,
+                                            int& NbKnots,
+                                            int& Degree) const override;
 
   //! get the Knots of the section
   Standard_EXPORT virtual void Knots(NCollection_Array1<double>& TKnots) const override;
@@ -93,7 +99,8 @@ public:
   //! Returns the number of intervals for continuity
   //! <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -101,31 +108,34 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Sets the bounds of the parametric interval on
   //! the function
   //! This determines the derivatives in these values if the
   //! function is not Cn.
-  Standard_EXPORT virtual void SetInterval(const double First, const double Last) override;
+  Standard_EXPORT virtual void SetInterval(const double First,
+                                           const double Last) override;
 
   //! Gets the bounds of the parametric interval on
   //! the function
-  Standard_EXPORT virtual void GetInterval(double& First, double& Last) const override;
+  Standard_EXPORT virtual void GetInterval(double& First,
+                                           double& Last) const override;
 
   //! Gets the bounds of the function parametric domain.
   //! Warning: This domain it is not modified by the
   //! SetValue method
-  Standard_EXPORT virtual void GetDomain(double& First, double& Last) const override;
+  Standard_EXPORT virtual void GetDomain(double& First,
+                                         double& Last) const override;
 
   //! Returns the tolerances associated at each poles to
   //! reach in approximation, to satisfy: BoundTol error
   //! at the Boundary AngleTol tangent error at the
   //! Boundary (in radian) SurfTol error inside the
   //! surface.
-  Standard_EXPORT virtual void GetTolerance(const double                BoundTol,
-                                            const double                SurfTol,
-                                            const double                AngleTol,
+  Standard_EXPORT virtual void GetTolerance(const double   BoundTol,
+                                            const double   SurfTol,
+                                            const double   AngleTol,
                                             NCollection_Array1<double>& Tol3d) const override;
 
   //! Get the barycentre of Surface.
@@ -145,7 +155,8 @@ public:
   //! This information is useful to control error
   //! in rational approximation.
   //! Warning: Used only if <me> IsRational
-  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const override;
+  Standard_EXPORT virtual void GetMinimalWeight(NCollection_Array1<double>& Weigths) const
+    override;
 
   //! return True
   Standard_EXPORT virtual bool IsConstant(double& Error) const override;
@@ -156,8 +167,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomFill_UniformSection, GeomFill_SectionLaw)
 
 private:
-  double                         First;
-  double                         Last;
+  double             First;
+  double             Last;
   occ::handle<Geom_Curve>        mySection;
   occ::handle<Geom_BSplineCurve> myCurve;
 };

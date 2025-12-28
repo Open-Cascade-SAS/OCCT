@@ -25,6 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 
 //=================================================================================================
 
@@ -34,7 +35,7 @@ RWStepVisual_RWTessellatedEdge::RWStepVisual_RWTessellatedEdge() {}
 
 void RWStepVisual_RWTessellatedEdge::ReadStep(
   const occ::handle<StepData_StepReaderData>&    theData,
-  const int                                      theNum,
+  const int                    theNum,
   occ::handle<Interface_Check>&                  theCheck,
   const occ::handle<StepVisual_TessellatedEdge>& theEnt) const
 {
@@ -60,7 +61,7 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
                       aCoordinates);
 
   StepVisual_EdgeOrCurve aGeometricLink;
-  bool                   hasGeometricLink = true;
+  bool       hasGeometricLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum, 3, "geometric_link", theCheck, aGeometricLink);
@@ -72,12 +73,12 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<int>> aLineStrip;
-  int                                   sub4 = 0;
+  int                 sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "line_strip", theCheck, sub4))
   {
-    int nb0    = theData->NbParams(sub4);
-    aLineStrip = new NCollection_HArray1<int>(1, nb0);
-    int num2   = sub4;
+    int nb0  = theData->NbParams(sub4);
+    aLineStrip            = new NCollection_HArray1<int>(1, nb0);
+    int num2 = sub4;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       int anIt0;
@@ -97,7 +98,7 @@ void RWStepVisual_RWTessellatedEdge::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedEdge::WriteStep(
-  StepData_StepWriter&                           theSW,
+  StepData_StepWriter&                      theSW,
   const occ::handle<StepVisual_TessellatedEdge>& theEnt) const
 {
 
@@ -130,7 +131,7 @@ void RWStepVisual_RWTessellatedEdge::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedEdge::Share(const occ::handle<StepVisual_TessellatedEdge>& theEnt,
-                                           Interface_EntityIterator& theIter) const
+                                           Interface_EntityIterator&                 theIter) const
 {
 
   // Inherited fields of RepresentationItem

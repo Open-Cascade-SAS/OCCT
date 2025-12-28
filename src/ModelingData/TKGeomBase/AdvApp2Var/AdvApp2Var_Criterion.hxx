@@ -47,9 +47,10 @@ public:
   Standard_EXPORT AdvApp2Var_CriterionRepartition Repartition() const;
 
 protected:
-  double                          myMaxValue;
+  double                   myMaxValue;
   AdvApp2Var_CriterionType        myType;
   AdvApp2Var_CriterionRepartition myRepartition;
+
 };
 
 #endif // _AdvApp2Var_Criterion_HeaderFile

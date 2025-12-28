@@ -48,7 +48,8 @@ public:
   //! sentcount = 1, atleast = False -> sent just once (non-dupl.d)
   //! sentcount = 2, atleast = False -> sent just twice
   //! etc...
-  Standard_EXPORT IFSelect_SelectSent(const int sentcount = 1, const bool atleast = true);
+  Standard_EXPORT IFSelect_SelectSent(const int sentcount = 1,
+                                      const bool atleast   = true);
 
   //! Returns the queried count of sending
   Standard_EXPORT int SentCount() const;
@@ -65,13 +66,14 @@ public:
   //! Direct Mode, rejected in Reversed Mode
   //!
   //! Query works on the sending count recorded as status in Graph
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(
-    const Interface_Graph& G) const override;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
+    override;
 
   //! Returns always False because RootResult has done the work
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : query :
   //! SentCount = 0 -> "Remaining (non-sent) entities"
@@ -86,7 +88,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectSent, IFSelect_SelectExtract)
 
 private:
-  int  thecnt;
+  int thecnt;
   bool thelst;
 };
 

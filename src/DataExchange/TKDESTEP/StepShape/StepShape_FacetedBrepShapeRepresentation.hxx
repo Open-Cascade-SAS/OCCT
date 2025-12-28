@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_FacetedBrepShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrepShapeRepresentation, StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_FacetedBrepShapeRepresentation_HeaderFile

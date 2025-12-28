@@ -46,17 +46,20 @@ public:
   //!
   //! Raised if U1 = U2 or U1 = U2 + 2.0 * Pi
   //! Raised if V1 = V2.
-  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone& C,
-                                               const double   U1,
-                                               const double   U2,
-                                               const double   V1,
-                                               const double   V2);
+  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone&      C,
+                                               const double U1,
+                                               const double U2,
+                                               const double V1,
+                                               const double V2);
 
   //! The equivalent B-spline surface as the same orientation as the
   //! Cone in the U and V parametric directions.
   //!
   //! Raised if V1 = V2.
-  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone& C, const double V1, const double V2);
+  Standard_EXPORT Convert_ConeToBSplineSurface(const gp_Cone&      C,
+                                               const double V1,
+                                               const double V2);
+
 };
 
 #endif // _Convert_ConeToBSplineSurface_HeaderFile

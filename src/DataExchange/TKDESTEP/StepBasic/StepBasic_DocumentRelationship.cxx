@@ -67,8 +67,7 @@ occ::handle<StepBasic_Document> StepBasic_DocumentRelationship::RelatedDocument(
   return theRelated;
 }
 
-void StepBasic_DocumentRelationship::SetRelatedDocument(
-  const occ::handle<StepBasic_Document>& aRelated)
+void StepBasic_DocumentRelationship::SetRelatedDocument(const occ::handle<StepBasic_Document>& aRelated)
 {
   theRelated = aRelated;
 }

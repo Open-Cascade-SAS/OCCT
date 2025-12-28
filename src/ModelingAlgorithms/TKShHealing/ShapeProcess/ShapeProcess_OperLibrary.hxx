@@ -59,12 +59,13 @@ public:
   //! if theMutableInput vat is set to true then input shape S
   //! can be modified during the modification process.
   Standard_EXPORT static TopoDS_Shape ApplyModifier(
-    const TopoDS_Shape&                                                       S,
-    const occ::handle<ShapeProcess_ShapeContext>&                             context,
-    const occ::handle<BRepTools_Modification>&                                M,
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& map,
-    const occ::handle<ShapeExtend_MsgRegistrator>&                            msg = 0,
-    bool theMutableInput                                                          = false);
+    const TopoDS_Shape&                       S,
+    const occ::handle<ShapeProcess_ShapeContext>&  context,
+    const occ::handle<BRepTools_Modification>&     M,
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             map,
+    const occ::handle<ShapeExtend_MsgRegistrator>& msg             = 0,
+    bool                          theMutableInput = false);
+
 };
 
 #endif // _ShapeProcess_OperLibrary_HeaderFile

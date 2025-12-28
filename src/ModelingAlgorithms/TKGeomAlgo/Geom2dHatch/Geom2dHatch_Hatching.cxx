@@ -155,7 +155,8 @@ HatchGen_ErrorStatus Geom2dHatch_Hatching::Status() const
 // Purpose  : Adds an intersection point to the hatching.
 //=======================================================================
 
-void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point, const double Confusion)
+void Geom2dHatch_Hatching::AddPoint(const HatchGen_PointOnHatching& Point,
+                                    const double             Confusion)
 {
   int NbPoints = myPoints.Length();
   // for (int IPntH = 1 ; IPntH <= NbPoints ; IPntH++) {

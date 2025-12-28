@@ -44,7 +44,9 @@ public:
   }
 
   //! Constructor
-  IntPolyh_Couple(const int theTriangle1, const int theTriangle2, const double theAngle = -2.0)
+  IntPolyh_Couple(const int theTriangle1,
+                  const int theTriangle2,
+                  const double    theAngle = -2.0)
       : myIndex1(theTriangle1),
         myIndex2(theTriangle2),
         myAnalyzed(false),
@@ -91,10 +93,10 @@ public:
   Standard_EXPORT void Dump(const int v) const;
 
 private:
-  int    myIndex1;
-  int    myIndex2;
-  bool   myAnalyzed;
-  double myAngle;
+  int myIndex1;
+  int myIndex2;
+  bool myAnalyzed;
+  double    myAngle;
 };
 
 namespace std

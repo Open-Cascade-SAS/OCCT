@@ -64,7 +64,9 @@ public:
     return true;
   }
 
-  Standard_EXPORT virtual bool Values(const math_Vector& X, double& F, math_Vector& G)
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
+                                                  double&     F,
+                                                  math_Vector&       G)
   {
     F = myS1->Value(X(1), X(2)).SquareDistance(myS2->Value(X(3), X(4)));
 
@@ -121,10 +123,10 @@ Extrema_GenExtSS::~Extrema_GenExtSS()
 
 Extrema_GenExtSS::Extrema_GenExtSS(const Adaptor3d_Surface& S1,
                                    const Adaptor3d_Surface& S2,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             Tol1,
-                                   const double             Tol2)
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      Tol1,
+                                   const double      Tol2)
     : myF(S1, S2)
 {
   Initialize(S2, NbU, NbV, Tol2);
@@ -135,18 +137,18 @@ Extrema_GenExtSS::Extrema_GenExtSS(const Adaptor3d_Surface& S1,
 
 Extrema_GenExtSS::Extrema_GenExtSS(const Adaptor3d_Surface& S1,
                                    const Adaptor3d_Surface& S2,
-                                   const int                NbU,
-                                   const int                NbV,
-                                   const double             U1min,
-                                   const double             U1sup,
-                                   const double             V1min,
-                                   const double             V1sup,
-                                   const double             U2min,
-                                   const double             U2sup,
-                                   const double             V2min,
-                                   const double             V2sup,
-                                   const double             Tol1,
-                                   const double             Tol2)
+                                   const int   NbU,
+                                   const int   NbV,
+                                   const double      U1min,
+                                   const double      U1sup,
+                                   const double      V1min,
+                                   const double      V1sup,
+                                   const double      U2min,
+                                   const double      U2sup,
+                                   const double      V2min,
+                                   const double      V2sup,
+                                   const double      Tol1,
+                                   const double      Tol2)
     : myF(S1, S2)
 {
   Initialize(S2, NbU, NbV, U2min, U2sup, V2min, V2sup, Tol2);
@@ -156,9 +158,9 @@ Extrema_GenExtSS::Extrema_GenExtSS(const Adaptor3d_Surface& S1,
 //=================================================================================================
 
 void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             Tol2)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      Tol2)
 {
   myu2min = S2.FirstUParameter();
   myu2sup = S2.LastUParameter();
@@ -170,13 +172,13 @@ void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
 //=================================================================================================
 
 void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
-                                  const int                NbU,
-                                  const int                NbV,
-                                  const double             U2min,
-                                  const double             U2sup,
-                                  const double             V2min,
-                                  const double             V2sup,
-                                  const double             Tol2)
+                                  const int   NbU,
+                                  const int   NbV,
+                                  const double      U2min,
+                                  const double      U2sup,
+                                  const double      V2min,
+                                  const double      V2sup,
+                                  const double      Tol2)
 {
   myS2      = &S2;
   mypoints1 = new NCollection_HArray2<gp_Pnt>(0, NbU + 1, 0, NbV + 1);
@@ -195,10 +197,10 @@ void Extrema_GenExtSS::Initialize(const Adaptor3d_Surface& S2,
   double PasV = myv2sup - myv2min;
   double U0   = PasU / myusample / 100.;
   double V0   = PasV / myvsample / 100.;
-  PasU        = (PasU - U0) / (myusample - 1);
-  PasV        = (PasV - V0) / (myvsample - 1);
-  U0          = myu2min + U0 / 2.;
-  V0          = myv2min + V0 / 2.;
+  PasU               = (PasU - U0) / (myusample - 1);
+  PasV               = (PasV - V0) / (myvsample - 1);
+  U0                 = myu2min + U0 / 2.;
+  V0                 = myv2min + V0 / 2.;
 
   // Build UV parameter arrays for batch evaluation
   NCollection_Array1<double> aUParams(1, myusample);
@@ -244,11 +246,11 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1, const double Tol1)
 //=================================================================================================
 
 void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
-                               const double             U1min,
-                               const double             U1sup,
-                               const double             V1min,
-                               const double             V1sup,
-                               const double             Tol1)
+                               const double      U1min,
+                               const double      U1sup,
+                               const double      V1min,
+                               const double      V1sup,
+                               const double      Tol1)
 {
   myF.Initialize(S1, *myS2);
   myu1min = U1min;
@@ -257,9 +259,9 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   myv1sup = V1sup;
   mytol1  = Tol1;
 
-  double U1, V1, U2, V2;
-  int    NoU1, NoV1, NoU2, NoV2;
-  gp_Pnt P1, P2;
+  double    U1, V1, U2, V2;
+  int NoU1, NoV1, NoU2, NoV2;
+  gp_Pnt           P1, P2;
 
   // Parametrage de l echantillon sur S1
 
@@ -267,19 +269,19 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
   double PasV1 = myv1sup - myv1min;
   double U10   = PasU1 / myusample / 100.;
   double V10   = PasV1 / myvsample / 100.;
-  PasU1        = (PasU1 - U10) / (myusample - 1);
-  PasV1        = (PasV1 - V10) / (myvsample - 1);
-  U10          = myu1min + U10 / 2.;
-  V10          = myv1min + V10 / 2.;
+  PasU1               = (PasU1 - U10) / (myusample - 1);
+  PasV1               = (PasV1 - V10) / (myvsample - 1);
+  U10                 = myu1min + U10 / 2.;
+  V10                 = myv1min + V10 / 2.;
 
   double PasU2 = myu2sup - myu2min;
   double PasV2 = myv2sup - myv2min;
   double U20   = PasU2 / myusample / 100.;
   double V20   = PasV2 / myvsample / 100.;
-  PasU2        = (PasU2 - U20) / (myusample - 1);
-  PasV2        = (PasV2 - V20) / (myvsample - 1);
-  U20          = myu2min + U20 / 2.;
-  V20          = myv2min + V20 / 2.;
+  PasU2               = (PasU2 - U20) / (myusample - 1);
+  PasV2               = (PasV2 - V20) / (myvsample - 1);
+  U20                 = myu2min + U20 / 2.;
+  V20                 = myv2min + V20 / 2.;
 
   // Build UV parameter arrays for batch evaluation of S1
   NCollection_Array1<double> aU1Params(1, myusample);
@@ -333,10 +335,10 @@ void Extrema_GenExtSS::Perform(const Adaptor3d_Surface& S1,
 
   double distmin = RealLast(), distmax = 0.0, TheDist;
 
-  int    N1Umin = 0, N1Vmin = 0, N2Umin = 0, N2Vmin = 0;
-  gp_Pnt PP1min, PP2min;
-  int    N1Umax = 0, N1Vmax = 0, N2Umax = 0, N2Vmax = 0;
-  gp_Pnt PP1max, PP2max;
+  int N1Umin = 0, N1Vmin = 0, N2Umin = 0, N2Vmin = 0;
+  gp_Pnt           PP1min, PP2min;
+  int N1Umax = 0, N1Vmax = 0, N2Umax = 0, N2Vmax = 0;
+  gp_Pnt           PP1max, PP2max;
 
   for (NoU1 = 1, U1 = U10; NoU1 <= myusample; NoU1++, U1 += PasU1)
   {

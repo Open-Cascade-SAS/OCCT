@@ -58,7 +58,10 @@ public:
 
 protected:
   //! Returns true for 0 mode.
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Compute presentation.
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
@@ -80,11 +83,11 @@ private:
   occ::handle<Graphic3d_Group> myRayGroup;
 
   occ::handle<Graphic3d_ArrayOfTriangles> myTris;
-  Quantity_Color                          myLaserColor;
-  float                                   myLaserLength;
-  float                                   myUnitFactor;
-  Aspect_XRTrackedDeviceRole              myRole;
-  bool                                    myToShowAxes;
+  Quantity_Color                     myLaserColor;
+  float                 myLaserLength;
+  float                 myUnitFactor;
+  Aspect_XRTrackedDeviceRole         myRole;
+  bool                   myToShowAxes;
 };
 
 #endif // _AIS_XRTrackedDevice_HeaderFile

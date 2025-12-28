@@ -94,14 +94,15 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 protected:
   occ::handle<Graphic3d_AspectFillArea3d> myBasicFillAreaAspect; //!< presentation fill area aspect
-  Quantity_ColorRGBA                      myBasicColor;          //!< presentation color
-  Aspect_TypeOfHighlightMethod            myHiMethod;            //!< box or color highlighting
-  Graphic3d_ZLayerId                      myZLayer;              //!< Z-layer
-  int                                     myDispMode;            //!< display mode
+  Quantity_ColorRGBA                 myBasicColor;          //!< presentation color
+  Aspect_TypeOfHighlightMethod       myHiMethod;            //!< box or color highlighting
+  Graphic3d_ZLayerId                 myZLayer;              //!< Z-layer
+  int                   myDispMode;            //!< display mode
 };
 
 #endif // _Graphic3d_PresentationAttributes_HeaderFile

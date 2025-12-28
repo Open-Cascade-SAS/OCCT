@@ -27,7 +27,8 @@ TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator()
 
 //=================================================================================================
 
-TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator(const int Lower, const int Upper)
+TopOpeBRepBuild_BlockIterator::TopOpeBRepBuild_BlockIterator(const int Lower,
+                                                             const int Upper)
     : myLower(Lower),
       myUpper(Upper),
       myValue(Lower)

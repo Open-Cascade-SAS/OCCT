@@ -21,6 +21,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Attribute.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_GUID.hxx>
 
@@ -42,7 +43,7 @@ public:
 
   //! Finds or creates a list of integer values attribute with explicit user defined <guid>.
   Standard_EXPORT static occ::handle<TDataStd_IntegerList> Set(const TDF_Label&     label,
-                                                               const Standard_GUID& theGuid);
+                                                          const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_IntegerList();
 
@@ -61,18 +62,22 @@ public:
   Standard_EXPORT void SetID() override;
 
   //! Inserts the <value> before the first meet of <before_value>.
-  Standard_EXPORT bool InsertBefore(const int value, const int before_value);
+  Standard_EXPORT bool InsertBefore(const int value,
+                                                const int before_value);
 
   //! Inserts the <value> before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertBeforeByIndex(const int index, const int before_value);
+  Standard_EXPORT bool InsertBeforeByIndex(const int index,
+                                                       const int before_value);
 
   //! Inserts the <value> after the first meet of <after_value>.
-  Standard_EXPORT bool InsertAfter(const int value, const int after_value);
+  Standard_EXPORT bool InsertAfter(const int value,
+                                               const int after_value);
 
   //! Inserts the <value> after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertAfterByIndex(const int index, const int after_value);
+  Standard_EXPORT bool InsertAfterByIndex(const int index,
+                                                      const int after_value);
 
   //! Removes the first meet of the <value>.
   Standard_EXPORT bool Remove(const int value);
@@ -101,7 +106,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_IntegerList, TDF_Attribute)
 

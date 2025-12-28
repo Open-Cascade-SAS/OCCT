@@ -28,6 +28,9 @@
 #include <NCollection_HArray2.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_OStream.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 
@@ -41,11 +44,11 @@ class AdvApprox_SimpleApprox
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT AdvApprox_SimpleApprox(const int                          TotalDimension,
-                                         const int                          TotalNumSS,
+  Standard_EXPORT AdvApprox_SimpleApprox(const int             TotalDimension,
+                                         const int             TotalNumSS,
                                          const GeomAbs_Shape                Continuity,
-                                         const int                          WorkDegree,
-                                         const int                          NbGaussPoints,
+                                         const int             WorkDegree,
+                                         const int             NbGaussPoints,
                                          const PLib_JacobiPolynomial&       JacobiBase,
                                          const AdvApprox_EvaluatorFunction& Func);
 
@@ -55,11 +58,11 @@ public:
   //! the Func should be valid reference to object of type
   //! inherited from class EvaluatorFunction from Approx
   //! with life time longer than that of the approximator tool;
-  Standard_EXPORT void Perform(const NCollection_Array1<int>&    LocalDimension,
-                               const NCollection_Array1<double>& LocalTolerancesArray,
-                               const double                      First,
-                               const double                      Last,
-                               const int                         MaxDegree);
+  Standard_EXPORT void Perform(const NCollection_Array1<int>& LocalDimension,
+                               const NCollection_Array1<double>&    LocalTolerancesArray,
+                               const double            First,
+                               const double            Last,
+                               const int         MaxDegree);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -86,16 +89,16 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  int                                      myTotalNumSS;
-  int                                      myTotalDimension;
-  int                                      myNbGaussPoints;
-  int                                      myWorkDegree;
-  int                                      myNivConstr;
-  PLib_JacobiPolynomial                    myJacPol;
+  int              myTotalNumSS;
+  int              myTotalDimension;
+  int              myNbGaussPoints;
+  int              myWorkDegree;
+  int              myNivConstr;
+  PLib_JacobiPolynomial         myJacPol;
   occ::handle<NCollection_HArray1<double>> myTabPoints;
   occ::handle<NCollection_HArray2<double>> myTabWeights;
-  void*                                    myEvaluator;
-  int                                      myDegree;
+  void*              myEvaluator;
+  int              myDegree;
   occ::handle<NCollection_HArray1<double>> myCoeff;
   occ::handle<NCollection_HArray2<double>> myFirstConstr;
   occ::handle<NCollection_HArray2<double>> myLastConstr;
@@ -103,7 +106,7 @@ private:
   occ::handle<NCollection_HArray1<double>> myDifTab;
   occ::handle<NCollection_HArray1<double>> myMaxError;
   occ::handle<NCollection_HArray1<double>> myAverageError;
-  bool                                     done;
+  bool              done;
 };
 
 #endif // _AdvApprox_SimpleApprox_HeaderFile

@@ -57,6 +57,7 @@ public:
                                                         const TopAbs_ShapeEnum s2);
 
   Standard_EXPORT static void Dump(Standard_OStream& OS);
+
 };
 
 #endif // _TopOpeBRepBuild_GTool_HeaderFile

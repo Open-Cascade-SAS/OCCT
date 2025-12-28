@@ -72,7 +72,8 @@ struct OpenGl_GlFunctions
   Standard_EXPORT static bool debugPrintError(const char* theName);
 
   //! Read OpenGL version.
-  Standard_EXPORT static void readGlVersion(int& theGlVerMajor, int& theGlVerMinor);
+  Standard_EXPORT static void readGlVersion(int& theGlVerMajor,
+                                            int& theGlVerMinor);
 
   //! Load functions.
   Standard_EXPORT void load(OpenGl_Context& theCtx, bool theIsCoreProfile);

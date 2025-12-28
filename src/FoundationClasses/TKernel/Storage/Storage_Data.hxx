@@ -26,8 +26,11 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Storage_Root.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Storage_HeaderData;
 class Storage_RootData;
 class Storage_TypeData;
@@ -171,7 +174,7 @@ public:
   //! When naming the roots, it is easier to retrieve
   //! objects by significant references rather than by
   //! references without any semantic values.
-  Standard_EXPORT void AddRoot(const TCollection_AsciiString&          aName,
+  Standard_EXPORT void AddRoot(const TCollection_AsciiString&     aName,
                                const occ::handle<Standard_Persistent>& anObject) const;
 
   //! Removes from this set of data the root object named aName.
@@ -236,8 +239,8 @@ private:
   occ::handle<Storage_RootData>     myRootData;
   occ::handle<Storage_TypeData>     myTypeData;
   occ::handle<Storage_InternalData> myInternal;
-  Storage_Error                     myErrorStatus;
-  TCollection_AsciiString           myErrorStatusExt;
+  Storage_Error                myErrorStatus;
+  TCollection_AsciiString      myErrorStatusExt;
 };
 
 #endif // _Storage_Data_HeaderFile

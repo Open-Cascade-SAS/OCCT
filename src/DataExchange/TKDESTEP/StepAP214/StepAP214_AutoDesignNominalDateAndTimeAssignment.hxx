@@ -35,16 +35,13 @@ public:
   //! Returns a AutoDesignNominalDateAndTimeAssignment
   Standard_EXPORT StepAP214_AutoDesignNominalDateAndTimeAssignment();
 
-  Standard_EXPORT void Init(
-    const occ::handle<StepBasic_DateAndTime>&  aAssignedDateAndTime,
-    const occ::handle<StepBasic_DateTimeRole>& aRole,
-    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_DateAndTime>&  aAssignedDateAndTime,
+                            const occ::handle<StepBasic_DateTimeRole>& aRole,
+                            const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems);
 
-  Standard_EXPORT void SetItems(
-    const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>>& aItems);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>> Items()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>> Items() const;
 
   Standard_EXPORT StepAP214_AutoDesignDateAndTimeItem ItemsValue(const int num) const;
 

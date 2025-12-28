@@ -52,11 +52,11 @@ void AIS_InteractiveObject::Redisplay(const bool AllModes)
 //=================================================================================================
 
 bool AIS_InteractiveObject::ProcessDragging(const occ::handle<AIS_InteractiveContext>&,
-                                            const occ::handle<V3d_View>&,
-                                            const occ::handle<SelectMgr_EntityOwner>&,
-                                            const NCollection_Vec2<int>&,
-                                            const NCollection_Vec2<int>&,
-                                            const AIS_DragAction)
+                                                        const occ::handle<V3d_View>&,
+                                                        const occ::handle<SelectMgr_EntityOwner>&,
+                                                        const NCollection_Vec2<int>&,
+                                                        const NCollection_Vec2<int>&,
+                                                        const AIS_DragAction)
 {
   return false;
 }
@@ -129,8 +129,7 @@ void AIS_InteractiveObject::SetAspect(const occ::handle<Prs3d_BasicAspect>& theA
     return;
   }
   const occ::handle<Graphic3d_Group>& aGroup = aPrs->Groups().Last();
-  if (occ::handle<Prs3d_ShadingAspect> aShadingAspect =
-        occ::down_cast<Prs3d_ShadingAspect>(theAspect))
+  if (occ::handle<Prs3d_ShadingAspect> aShadingAspect = occ::down_cast<Prs3d_ShadingAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aShadingAspect->Aspect());
   }
@@ -138,8 +137,7 @@ void AIS_InteractiveObject::SetAspect(const occ::handle<Prs3d_BasicAspect>& theA
   {
     aGroup->SetGroupPrimitivesAspect(aLineAspect->Aspect());
   }
-  else if (occ::handle<Prs3d_PointAspect> aPointAspect =
-             occ::down_cast<Prs3d_PointAspect>(theAspect))
+  else if (occ::handle<Prs3d_PointAspect> aPointAspect = occ::down_cast<Prs3d_PointAspect>(theAspect))
   {
     aGroup->SetGroupPrimitivesAspect(aPointAspect->Aspect());
   }

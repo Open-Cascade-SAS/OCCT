@@ -23,11 +23,10 @@
 
 RWStepBasic_RWMechanicalContext::RWStepBasic_RWMechanicalContext() {}
 
-void RWStepBasic_RWMechanicalContext::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepBasic_MechanicalContext>& ent) const
+void RWStepBasic_RWMechanicalContext::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepBasic_MechanicalContext>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -64,7 +63,7 @@ void RWStepBasic_RWMechanicalContext::ReadStep(
 }
 
 void RWStepBasic_RWMechanicalContext::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepBasic_MechanicalContext>& ent) const
 {
 
@@ -82,7 +81,7 @@ void RWStepBasic_RWMechanicalContext::WriteStep(
 }
 
 void RWStepBasic_RWMechanicalContext::Share(const occ::handle<StepBasic_MechanicalContext>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->FrameOfReference());

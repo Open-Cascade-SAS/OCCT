@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_CurveTessellator, IMeshTools_CurveTessellato
 
 BRepMesh_CurveTessellator::BRepMesh_CurveTessellator(const IMeshData::IEdgeHandle& theEdge,
                                                      const IMeshTools_Parameters&  theParameters,
-                                                     const int                     theMinPointsNb)
+                                                     const int        theMinPointsNb)
     : myDEdge(theEdge),
       myParameters(theParameters),
       myEdge(theEdge->GetEdge()),
@@ -49,7 +49,7 @@ BRepMesh_CurveTessellator::BRepMesh_CurveTessellator(const IMeshData::IEdgeHandl
                                                      const TopAbs_Orientation      theOrientation,
                                                      const IMeshData::IFaceHandle& theFace,
                                                      const IMeshTools_Parameters&  theParameters,
-                                                     const int                     theMinPointsNb)
+                                                     const int        theMinPointsNb)
     : myDEdge(theEdge),
       myParameters(theParameters),
       myEdge(TopoDS::Edge(theEdge->GetEdge().Oriented(theOrientation))),
@@ -123,7 +123,7 @@ void BRepMesh_CurveTessellator::init()
 
   if (myCurve.IsCurveOnSurface())
   {
-    const Adaptor3d_CurveOnSurface&       aCurve   = myCurve.CurveOnSurface();
+    const Adaptor3d_CurveOnSurface&  aCurve   = myCurve.CurveOnSurface();
     const occ::handle<Adaptor3d_Surface>& aSurface = aCurve.GetSurface();
 
     constexpr double aTol = Precision::Confusion();
@@ -161,10 +161,10 @@ void BRepMesh_CurveTessellator::splitByDeflection2d()
   {
     for (int aPCurveIt = 0; aPCurveIt < myDEdge->PCurvesNb(); ++aPCurveIt)
     {
-      TopLoc_Location                  aLoc;
-      const IMeshData::IPCurveHandle&  aPCurve  = myDEdge->GetPCurve(aPCurveIt);
-      const TopoDS_Face&               aFace    = aPCurve->GetFace()->GetFace();
-      const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(aFace, aLoc);
+      TopLoc_Location                 aLoc;
+      const IMeshData::IPCurveHandle& aPCurve  = myDEdge->GetPCurve(aPCurveIt);
+      const TopoDS_Face&              aFace    = aPCurve->GetFace()->GetFace();
+      const occ::handle<Geom_Surface>&     aSurface = BRep_Tool::Surface(aFace, aLoc);
       if (aSurface->IsInstance(STANDARD_TYPE(Geom_Plane)))
       {
         continue;
@@ -172,8 +172,8 @@ void BRepMesh_CurveTessellator::splitByDeflection2d()
 
       const TopoDS_Edge aCurrEdge = TopoDS::Edge(myEdge.Oriented(aPCurve->GetOrientation()));
 
-      double                     aF, aL;
-      occ::handle<Geom2d_Curve>  aCurve2d = BRep_Tool::CurveOnSurface(aCurrEdge, aFace, aF, aL);
+      double        aF, aL;
+      occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(aCurrEdge, aFace, aF, aL);
       NCollection_Array1<double> aParamArray(1, aNodesNb);
       for (int i = 1; i <= aNodesNb; ++i)
         aParamArray.SetValue(i, myDiscretTool.Parameter(i));
@@ -199,16 +199,19 @@ void BRepMesh_CurveTessellator::addInternalVertices()
       continue;
     }
 
-    myDiscretTool.AddPoint(BRep_Tool::Pnt(aVertex), BRep_Tool::Parameter(aVertex, myEdge), true);
+    myDiscretTool.AddPoint(BRep_Tool::Pnt(aVertex),
+                           BRep_Tool::Parameter(aVertex, myEdge),
+                           true);
   }
 }
 
 //=================================================================================================
 
-bool BRepMesh_CurveTessellator::isInToleranceOfVertex(const gp_Pnt&        thePoint,
-                                                      const TopoDS_Vertex& theVertex) const
+bool BRepMesh_CurveTessellator::isInToleranceOfVertex(
+  const gp_Pnt&        thePoint,
+  const TopoDS_Vertex& theVertex) const
 {
-  const gp_Pnt aPoint     = BRep_Tool::Pnt(theVertex);
+  const gp_Pnt        aPoint     = BRep_Tool::Pnt(theVertex);
   const double aTolerance = BRep_Tool::Tolerance(theVertex);
 
   return (thePoint.SquareDistance(aPoint) < aTolerance * aTolerance);
@@ -217,8 +220,8 @@ bool BRepMesh_CurveTessellator::isInToleranceOfVertex(const gp_Pnt&        thePo
 //=================================================================================================
 
 bool BRepMesh_CurveTessellator::Value(const int theIndex,
-                                      gp_Pnt&   thePoint,
-                                      double&   theParameter) const
+                                                  gp_Pnt&                thePoint,
+                                                  double&         theParameter) const
 {
   thePoint     = myDiscretTool.Value(theIndex);
   theParameter = myDiscretTool.Parameter(theIndex);
@@ -233,7 +236,7 @@ bool BRepMesh_CurveTessellator::Value(const int theIndex,
 
   // If point coordinates are out of surface range,
   // it is necessary to re-project point.
-  const Adaptor3d_CurveOnSurface&       aCurve   = myCurve.CurveOnSurface();
+  const Adaptor3d_CurveOnSurface&  aCurve   = myCurve.CurveOnSurface();
   const occ::handle<Adaptor3d_Surface>& aSurface = aCurve.GetSurface();
   if (aSurface->GetType() != GeomAbs_BSplineSurface && aSurface->GetType() != GeomAbs_BezierSurface
       && aSurface->GetType() != GeomAbs_OtherSurface)
@@ -269,9 +272,9 @@ bool BRepMesh_CurveTessellator::Value(const int theIndex,
 
 void BRepMesh_CurveTessellator::splitSegment(const occ::handle<Geom_Surface>& theSurf,
                                              const occ::handle<Geom2d_Curve>& theCurve2d,
-                                             const double                     theFirst,
-                                             const double                     theLast,
-                                             const int                        theNbIter)
+                                             const double         theFirst,
+                                             const double         theLast,
+                                             const int      theNbIter)
 {
   // limit iteration depth
   if (theNbIter > 10)
@@ -279,9 +282,9 @@ void BRepMesh_CurveTessellator::splitSegment(const occ::handle<Geom_Surface>& th
     return;
   }
 
-  gp_Pnt2d uvf, uvl, uvm;
-  gp_Pnt   P3dF, P3dL, midP3d, midP3dFromSurf;
-  double   midpar;
+  gp_Pnt2d      uvf, uvl, uvm;
+  gp_Pnt        P3dF, P3dL, midP3d, midP3dFromSurf;
+  double midpar;
 
   if (std::abs(theLast - theFirst) < 2 * Precision::PConfusion())
   {
@@ -319,8 +322,8 @@ void BRepMesh_CurveTessellator::splitSegment(const occ::handle<Geom_Surface>& th
   aVec.Normalize();
 
   double aModulus = Vec1.Dot(aVec);
-  gp_XYZ aProj    = aVec * aModulus;
-  gp_XYZ aDist    = Vec1 - aProj;
+  gp_XYZ        aProj    = aVec * aModulus;
+  gp_XYZ        aDist    = Vec1 - aProj;
 
   if (aDist.SquareModulus() < mySquareEdgeDef)
   {

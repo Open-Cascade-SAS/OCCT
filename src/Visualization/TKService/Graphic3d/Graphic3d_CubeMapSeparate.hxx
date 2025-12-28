@@ -58,11 +58,11 @@ public:
   ~Graphic3d_CubeMapSeparate() {}
 
 protected:
-  OSD_Path                  myPaths[6];  //!< array of paths to cubemap images
+  OSD_Path             myPaths[6];  //!< array of paths to cubemap images
   occ::handle<Image_PixMap> myImages[6]; //!< array of cubemap images
 
-  size_t       mySize;   //!< size of each side of cubemap
-  Image_Format myFormat; //!< format each side of cubemap
+  size_t mySize;   //!< size of each side of cubemap
+  Image_Format  myFormat; //!< format each side of cubemap
 
 private:
   //! Nulifies whole images array.

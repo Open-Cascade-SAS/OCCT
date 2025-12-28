@@ -30,14 +30,14 @@
 #include <Interface_Version.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_StepModel.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
 // This is a generic header for any STEP scheme
-static occ::handle<TCollection_HAsciiString>                                   nulstr;
+static occ::handle<TCollection_HAsciiString>        nulstr;
 static occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> nularr;
 
-APIHeaderSection_MakeHeader::APIHeaderSection_MakeHeader(
-  const occ::handle<StepData_StepModel>& model)
+APIHeaderSection_MakeHeader::APIHeaderSection_MakeHeader(const occ::handle<StepData_StepModel>& model)
 {
   done = true;
   if (model->HasHeaderEntity(STANDARD_TYPE(HeaderSection_FileName)))
@@ -101,14 +101,12 @@ void APIHeaderSection_MakeHeader::Init(const char* nameval)
   // clang-format on
   occ::handle<TCollection_HAsciiString> tst = new TCollection_HAsciiString(timestamp);
   fn->SetTimeStamp(tst);
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> authors =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
-  occ::handle<TCollection_HAsciiString> a1 = new TCollection_HAsciiString("Author");
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> authors = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
+  occ::handle<TCollection_HAsciiString>        a1      = new TCollection_HAsciiString("Author");
   authors->SetValue(1, a1);
   fn->SetAuthor(authors);
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> org =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
-  occ::handle<TCollection_HAsciiString> org1 = new TCollection_HAsciiString("Open CASCADE");
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> org  = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
+  occ::handle<TCollection_HAsciiString>        org1 = new TCollection_HAsciiString("Open CASCADE");
   org->SetValue(1, org1);
   fn->SetOrganization(org);
 
@@ -129,8 +127,7 @@ void APIHeaderSection_MakeHeader::Init(const char* nameval)
 
   if (fd.IsNull())
     fd = new HeaderSection_FileDescription;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> descr =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> descr = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
   occ::handle<TCollection_HAsciiString> descr1 = new TCollection_HAsciiString("Open CASCADE Model");
   descr->SetValue(1, descr1);
   fd->SetDescription(descr);
@@ -141,9 +138,8 @@ void APIHeaderSection_MakeHeader::Init(const char* nameval)
 
   if (fs.IsNull())
     fs = new HeaderSection_FileSchema;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> schid =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
-  occ::handle<TCollection_HAsciiString> schid1 = new TCollection_HAsciiString("");
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> schid  = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, 1);
+  occ::handle<TCollection_HAsciiString>        schid1 = new TCollection_HAsciiString("");
   schid->SetValue(1, schid1);
   fs->SetSchemaIdentifiers(schid);
 }
@@ -164,9 +160,8 @@ void APIHeaderSection_MakeHeader::Apply(const occ::handle<StepData_StepModel>& m
   {
 
     // Schema defined? If not take it from the protocole
-    occ::handle<TCollection_HAsciiString>                                   sch;
-    occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> schid =
-      fs->SchemaIdentifiers();
+    occ::handle<TCollection_HAsciiString>        sch;
+    occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> schid = fs->SchemaIdentifiers();
     if (!schid.IsNull())
       sch = schid->Value(1);
     else
@@ -264,8 +259,7 @@ occ::handle<TCollection_HAsciiString> APIHeaderSection_MakeHeader::Name() const
   return (fn.IsNull() ? nulstr : fn->Name());
 }
 
-void APIHeaderSection_MakeHeader::SetTimeStamp(
-  const occ::handle<TCollection_HAsciiString>& aTimeStamp)
+void APIHeaderSection_MakeHeader::SetTimeStamp(const occ::handle<TCollection_HAsciiString>& aTimeStamp)
 {
   if (!fn.IsNull())
     fn->SetTimeStamp(aTimeStamp);
@@ -276,16 +270,14 @@ occ::handle<TCollection_HAsciiString> APIHeaderSection_MakeHeader::TimeStamp() c
   return (fn.IsNull() ? nulstr : fn->TimeStamp());
 }
 
-void APIHeaderSection_MakeHeader::SetAuthor(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor)
+void APIHeaderSection_MakeHeader::SetAuthor(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aAuthor)
 {
   if (!fn.IsNull())
     fn->SetAuthor(aAuthor);
 }
 
-void APIHeaderSection_MakeHeader::SetAuthorValue(
-  const int                                    num,
-  const occ::handle<TCollection_HAsciiString>& aAuthor)
+void APIHeaderSection_MakeHeader::SetAuthorValue(const int                  num,
+                                                 const occ::handle<TCollection_HAsciiString>& aAuthor)
 {
   if (fn.IsNull())
     return;
@@ -294,13 +286,13 @@ void APIHeaderSection_MakeHeader::SetAuthorValue(
     li->SetValue(num, aAuthor);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-  APIHeaderSection_MakeHeader::Author() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> APIHeaderSection_MakeHeader::Author() const
 {
   return (fn.IsNull() ? nularr : fn->Author());
 }
 
-occ::handle<TCollection_HAsciiString> APIHeaderSection_MakeHeader::AuthorValue(const int num) const
+occ::handle<TCollection_HAsciiString> APIHeaderSection_MakeHeader::AuthorValue(
+  const int num) const
 {
   return (fn.IsNull() ? nulstr : fn->AuthorValue(num));
 }
@@ -318,7 +310,7 @@ void APIHeaderSection_MakeHeader::SetOrganization(
 }
 
 void APIHeaderSection_MakeHeader::SetOrganizationValue(
-  const int                                    num,
+  const int                  num,
   const occ::handle<TCollection_HAsciiString>& aOrgan)
 {
   if (fn.IsNull())
@@ -328,8 +320,7 @@ void APIHeaderSection_MakeHeader::SetOrganizationValue(
     li->SetValue(num, aOrgan);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-  APIHeaderSection_MakeHeader::Organization() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> APIHeaderSection_MakeHeader::Organization() const
 {
   return (fn.IsNull() ? nularr : fn->Organization());
 }
@@ -403,19 +394,17 @@ void APIHeaderSection_MakeHeader::SetSchemaIdentifiers(
 }
 
 void APIHeaderSection_MakeHeader::SetSchemaIdentifiersValue(
-  const int                                    num,
+  const int                  num,
   const occ::handle<TCollection_HAsciiString>& aSchem)
 {
   if (fs.IsNull())
     return;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> li =
-    fs->SchemaIdentifiers();
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> li = fs->SchemaIdentifiers();
   if (num >= li->Lower() && num <= li->Upper())
     li->SetValue(num, aSchem);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-  APIHeaderSection_MakeHeader::SchemaIdentifiers() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> APIHeaderSection_MakeHeader::SchemaIdentifiers() const
 {
   return (fs.IsNull() ? nularr : fs->SchemaIdentifiers());
 }
@@ -438,8 +427,7 @@ void APIHeaderSection_MakeHeader::AddSchemaIdentifier(
 {
   if (fs.IsNull())
     fs = new HeaderSection_FileSchema;
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> idents =
-    fs->SchemaIdentifiers();
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> idents = fs->SchemaIdentifiers();
 
   // check that requested subschema is already in the list
   int i;
@@ -451,9 +439,7 @@ void APIHeaderSection_MakeHeader::AddSchemaIdentifier(
 
   // add a subshema
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> ids =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(
-      1,
-      (idents.IsNull() ? 1 : idents->Length() + 1));
+    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, (idents.IsNull() ? 1 : idents->Length() + 1));
   for (i = 1; !idents.IsNull() && i <= idents->Length(); i++)
   {
     ids->SetValue(i, idents->Value(i));
@@ -485,7 +471,7 @@ void APIHeaderSection_MakeHeader::SetDescription(
 }
 
 void APIHeaderSection_MakeHeader::SetDescriptionValue(
-  const int                                    num,
+  const int                  num,
   const occ::handle<TCollection_HAsciiString>& aDescr)
 {
   if (fd.IsNull())
@@ -495,8 +481,7 @@ void APIHeaderSection_MakeHeader::SetDescriptionValue(
     li->SetValue(num, aDescr);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-  APIHeaderSection_MakeHeader::Description() const
+occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> APIHeaderSection_MakeHeader::Description() const
 {
   return (fd.IsNull() ? nularr : fd->Description());
 }

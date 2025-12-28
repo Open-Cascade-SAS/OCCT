@@ -37,7 +37,8 @@ public:
 
   //! Defines the first point or the last point,
   //! depending on the value of the boolean First.
-  Standard_EXPORT void SetLimitPoint(const Contap_ThePathPointOfTheSearch& V, const bool First);
+  Standard_EXPORT void SetLimitPoint(const Contap_ThePathPointOfTheSearch& V,
+                                     const bool                First);
 
   //! Returns the geometric curve on the surface 's domain
   //! which is solution.
@@ -58,10 +59,10 @@ public:
   const Contap_ThePathPointOfTheSearch& LastPoint() const;
 
 private:
-  occ::handle<Adaptor2d_Curve2d> arc;
-  bool                           hasfp;
+  occ::handle<Adaptor2d_Curve2d>      arc;
+  bool               hasfp;
   Contap_ThePathPointOfTheSearch thefp;
-  bool                           haslp;
+  bool               haslp;
   Contap_ThePathPointOfTheSearch thelp;
 };
 

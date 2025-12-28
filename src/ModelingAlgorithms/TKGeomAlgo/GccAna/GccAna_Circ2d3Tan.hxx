@@ -24,7 +24,13 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class GccEnt_QualifiedCirc;
 class GccEnt_QualifiedLin;
 class gp_Pnt2d;
@@ -61,7 +67,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const GccEnt_QualifiedCirc& Qualified2,
                                     const GccEnt_QualifiedCirc& Qualified3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 2 circles and 1 line.
@@ -70,7 +76,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const GccEnt_QualifiedCirc& Qualified2,
                                     const GccEnt_QualifiedLin&  Qualified3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 1 circle and 2 lines.
@@ -79,7 +85,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const GccEnt_QualifiedLin&  Qualified2,
                                     const GccEnt_QualifiedLin&  Qualified3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 3 lines.
@@ -88,7 +94,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                                     const GccEnt_QualifiedLin& Qualified2,
                                     const GccEnt_QualifiedLin& Qualified3,
-                                    const double               Tolerance);
+                                    const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 2 circles and 1 Point.
@@ -97,7 +103,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const GccEnt_QualifiedCirc& Qualified2,
                                     const gp_Pnt2d&             Point3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and a line and
@@ -107,7 +113,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const GccEnt_QualifiedLin&  Qualified2,
                                     const gp_Pnt2d&             Point3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to 2 lines and 1 Point.
@@ -116,7 +122,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                                     const GccEnt_QualifiedLin& Qualified2,
                                     const gp_Pnt2d&            Point3,
-                                    const double               Tolerance);
+                                    const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a circle and passing
@@ -126,7 +132,7 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedCirc& Qualified1,
                                     const gp_Pnt2d&             Point2,
                                     const gp_Pnt2d&             Point3,
-                                    const double                Tolerance);
+                                    const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and passing
@@ -136,16 +142,16 @@ public:
   Standard_EXPORT GccAna_Circ2d3Tan(const GccEnt_QualifiedLin& Qualified1,
                                     const gp_Pnt2d&            Point2,
                                     const gp_Pnt2d&            Point3,
-                                    const double               Tolerance);
+                                    const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles passing through 3 Points.
   //! ConstructionError is raised if there is a problem during
   //! the computation.
-  Standard_EXPORT GccAna_Circ2d3Tan(const gp_Pnt2d& Point1,
-                                    const gp_Pnt2d& Point2,
-                                    const gp_Pnt2d& Point3,
-                                    const double    Tolerance);
+  Standard_EXPORT GccAna_Circ2d3Tan(const gp_Pnt2d&     Point1,
+                                    const gp_Pnt2d&     Point2,
+                                    const gp_Pnt2d&     Point3,
+                                    const double Tolerance);
 
   //! This method returns True if the construction
   //! algorithm succeeded.
@@ -175,10 +181,10 @@ public:
   //! It returns the real qualifiers (the qualifiers given to the
   //! constructor method in case of enclosed, enclosing and outside
   //! and the qualifiers computedin case of unqualified).
-  Standard_EXPORT void WhichQualifier(const int        Index,
-                                      GccEnt_Position& Qualif1,
-                                      GccEnt_Position& Qualif2,
-                                      GccEnt_Position& Qualif3) const;
+  Standard_EXPORT void WhichQualifier(const int Index,
+                                      GccEnt_Position&       Qualif1,
+                                      GccEnt_Position&       Qualif2,
+                                      GccEnt_Position&       Qualif3) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -189,9 +195,9 @@ public:
   //! the number of solutions.
   //! It raises NotDone if the algorithm failed.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -202,9 +208,9 @@ public:
   //! the number of solutions.
   //! It raises NotDone if the algorithm failed.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -215,9 +221,9 @@ public:
   //! the number of solutions.
   //! It raises NotDone if the algorithm failed.
   Standard_EXPORT void Tangency3(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument. Raises OutOfRange if Index is greater than
@@ -238,24 +244,24 @@ public:
   Standard_EXPORT bool IsTheSame3(const int Index) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
   NCollection_Array1<GccEnt_Position> qualifier3;
-  NCollection_Array1<int>             TheSame1;
-  NCollection_Array1<int>             TheSame2;
-  NCollection_Array1<int>             TheSame3;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
-  NCollection_Array1<gp_Pnt2d>        pnttg3sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          par3sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
-  NCollection_Array1<double>          pararg3;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<int> TheSame2;
+  NCollection_Array1<int> TheSame3;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg3sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    par3sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
+  NCollection_Array1<double>    pararg3;
 };
 
 #endif // _GccAna_Circ2d3Tan_HeaderFile

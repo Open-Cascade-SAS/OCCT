@@ -45,6 +45,7 @@
 #include <NCollection_Map.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_EventManager.hxx>
 
 #include <TopoDS_Solid.hxx>
@@ -67,6 +68,9 @@
 
 #include <Draw_Window.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <NCollection_List.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <NCollection_List.hxx>
 #include <AIS_ColoredShape.hxx>
 
 #include <AIS_InteractiveContext.hxx>
@@ -121,6 +125,10 @@
 #include <AIS_MultipleConnectedInteractive.hxx>
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_TextLabel.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
@@ -146,23 +154,23 @@
 #include <Prs3d_ToolTorus.hxx>
 
 #include <Image_AlienPixMap.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-            GetMapOfAIS();
-extern bool VDisplayAISObject(const TCollection_AsciiString&            theName,
-                              const occ::handle<AIS_InteractiveObject>& theAISObj,
-                              bool                                      theReplaceIfExists = true);
+extern NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS();
+extern bool                VDisplayAISObject(const TCollection_AsciiString&       theName,
+                                                         const occ::handle<AIS_InteractiveObject>& theAISObj,
+                                                         bool theReplaceIfExists = true);
 extern occ::handle<AIS_InteractiveContext>& TheAISContext();
 
 namespace
 {
-static bool convertToColor(
-  const occ::handle<NCollection_HSequence<TCollection_AsciiString>>& theColorValues,
-  Quantity_Color&                                                    theColor)
+static bool convertToColor(const occ::handle<NCollection_HSequence<TCollection_AsciiString>>& theColorValues,
+                           Quantity_Color&                               theColor)
 {
   const char* anArgs[3] = {theColorValues->Size() >= 1 ? theColorValues->Value(1).ToCString() : "",
                            theColorValues->Size() >= 2 ? theColorValues->Value(2).ToCString() : "",
@@ -208,7 +216,7 @@ static void convertToDatumParts(const TCollection_AsciiString&      theValue,
                                 NCollection_List<Prs3d_DatumParts>& theParts)
 {
   TCollection_AsciiString aValue    = theValue;
-  const int               aSplitPos = theValue.Search("|");
+  const int  aSplitPos = theValue.Search("|");
   Prs3d_DatumParts        aPart     = Prs3d_DatumParts_None;
   if (aSplitPos > 0)
   {
@@ -255,7 +263,7 @@ static void convertToDatumAttributes(const TCollection_AsciiString&          the
                                      NCollection_List<Prs3d_DatumAttribute>& theAttributes)
 {
   TCollection_AsciiString aValue      = theValue;
-  const int               aSplitPos   = theValue.Search("|");
+  const int  aSplitPos   = theValue.Search("|");
   Prs3d_DatumAttribute    anAttribute = Prs3d_DatumAttribute_XAxisLength;
   if (aSplitPos > 0)
   {
@@ -298,14 +306,12 @@ static bool convertToDatumAxes(const TCollection_AsciiString& theValue,
   return true;
 }
 
-static bool setTrihedronParams(int                        theArgsNb,
-                               const char**               theArgVec,
-                               occ::handle<AIS_Trihedron> theTrihedron)
+static bool setTrihedronParams(int      theArgsNb,
+                                           const char**          theArgVec,
+                                           occ::handle<AIS_Trihedron> theTrihedron)
 {
-  NCollection_DataMap<TCollection_AsciiString,
-                      occ::handle<NCollection_HSequence<TCollection_AsciiString>>>
-                          aMapOfArgs;
-  TCollection_AsciiString aParseKey;
+  NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_HSequence<TCollection_AsciiString>>> aMapOfArgs;
+  TCollection_AsciiString                                                              aParseKey;
   for (int anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIt]);
@@ -336,7 +342,7 @@ static bool setTrihedronParams(int                        theArgsNb,
   }
 
   occ::handle<NCollection_HSequence<TCollection_AsciiString>> aValues;
-  occ::handle<Geom_Axis2Placement> aComponent = theTrihedron->Component();
+  occ::handle<Geom_Axis2Placement>            aComponent = theTrihedron->Component();
   if (aMapOfArgs.Find("origin", aValues))
   {
     aComponent->SetLocation(gp_Pnt(aValues->Value(1).RealValue(),
@@ -564,7 +570,8 @@ static bool setTrihedronParams(int                        theArgsNb,
 }
 
 //! Auxiliary function to parse font aspect style argument
-static bool parseFontStyle(const TCollection_AsciiString& theArg, Font_FontAspect& theAspect)
+static bool parseFontStyle(const TCollection_AsciiString& theArg,
+                                       Font_FontAspect&               theAspect)
 {
   if (theArg == "regular" || *theArg.ToCString() == 'r')
   {
@@ -591,9 +598,9 @@ static bool parseFontStyle(const TCollection_AsciiString& theArg, Font_FontAspec
 }
 
 //! Auxiliary function to parse font strict level argument
-static int parseFontStrictLevel(const int         theArgNb,
-                                const char**      theArgVec,
-                                Font_StrictLevel& theLevel)
+static int parseFontStrictLevel(const int theArgNb,
+                                             const char**           theArgVec,
+                                             Font_StrictLevel&      theLevel)
 {
   if (theArgNb >= 1)
   {
@@ -625,7 +632,9 @@ static int parseFontStrictLevel(const int         theArgNb,
 // purpose  : Create a plane with a 2D  trihedron from a faceselection
 // Draw arg : vtri2d  name
 //==============================================================================
-static int VTrihedron2D(Draw_Interpretor& /*theDI*/, int theArgsNum, const char** theArgVec)
+static int VTrihedron2D(Draw_Interpretor& /*theDI*/,
+                        int theArgsNum,
+                        const char**     theArgVec)
 {
   if (ViewerTest::CurrentView().IsNull())
   {
@@ -675,7 +684,7 @@ static int VTrihedron2D(Draw_Interpretor& /*theDI*/, int theArgsNum, const char*
   GC_MakePlane aMkPlane(A, B, C);
 
   occ::handle<AIS_PlaneTrihedron> anAISPlaneTri = new AIS_PlaneTrihedron(aMkPlane.Value());
-  TCollection_AsciiString         aName(theArgVec[1]);
+  TCollection_AsciiString    aName(theArgVec[1]);
 
   VDisplayAISObject(aName, anAISPlaneTri);
 
@@ -698,9 +707,9 @@ static int VTrihedron(Draw_Interpretor&, int theArgsNb, const char** theArgVec)
   }
 
   TCollection_AsciiString aName(theArgVec[1]);
-  bool                    toUpdate = true;
+  bool        toUpdate = true;
 
-  NCollection_DataMap<TCollection_AsciiString, double>                  aRealParams;
+  NCollection_DataMap<TCollection_AsciiString, double>           aRealParams;
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> aStringParams;
 
   occ::handle<AIS_Trihedron>         aTrihedron;
@@ -756,7 +765,7 @@ static int VSize(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   TCollection_AsciiString aName;
-  double                  aSize = 0.0;
+  double           aSize = 0.0;
   switch (argc)
   {
     case 1: {
@@ -797,9 +806,7 @@ static int VSize(Draw_Interpretor& di, int argc, const char** argv)
   }
   else if (TheAISContext()->NbSelected() > 0)
   {
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator it(GetMapOfAIS());
-         it.More();
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator it(GetMapOfAIS()); it.More();
          it.Next())
     {
       const occ::handle<AIS_InteractiveObject>& aShape = it.Key1();
@@ -818,8 +825,8 @@ static int VSize(Draw_Interpretor& di, int argc, const char** argv)
        anObjIter.Next())
   {
     const occ::handle<AIS_Trihedron>& aTrihedron = anObjIter.Value();
-    Quantity_Color                    aColor     = Quantity_NOC_BLACK;
-    const bool                        hasColor   = aTrihedron->HasColor();
+    Quantity_Color               aColor     = Quantity_NOC_BLACK;
+    const bool                   hasColor   = aTrihedron->HasColor();
     if (hasColor)
     {
       aTrihedron->Color(aColor);
@@ -911,7 +918,7 @@ static int VPlaneTrihedron(Draw_Interpretor& di, int argc, const char** argv)
 static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
 {
   // Declarations
-  bool                    HasArg;
+  bool        HasArg;
   TCollection_AsciiString name;
 
   // Verification
@@ -941,7 +948,7 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
     }
     gp_Pnt p1(coord[0], coord[1], coord[2]), p2(coord[3], coord[4], coord[5]);
 
-    gp_Vec                 myVect(p1, p2);
+    gp_Vec            myVect(p1, p2);
     occ::handle<Geom_Line> myLine  = new Geom_Line(p1, myVect);
     occ::handle<AIS_Axis>  TheAxis = new AIS_Axis(myLine);
     GetMapOfAIS().Bind(TheAxis, name);
@@ -978,10 +985,10 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
         }
 
         // Construction de l'axe
-        gp_Pnt                           A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
-        gp_Pnt                           B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
-        gp_Vec                           V(A, B);
-        gp_Dir                           D(V);
+        gp_Pnt                      A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
+        gp_Pnt                      B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
+        gp_Vec                      V(A, B);
+        gp_Dir                      D(V);
         occ::handle<Geom_Axis1Placement> OrigineAndVect = new Geom_Axis1Placement(A, D);
         occ::handle<AIS_Axis>            TheAxis        = new AIS_Axis(OrigineAndVect);
         GetMapOfAIS().Bind(TheAxis, name);
@@ -992,10 +999,10 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
         TopoDS_Edge   ed = TopoDS::Edge(aShapeA);
         TopoDS_Vertex Va, Vb;
         TopExp::Vertices(ed, Va, Vb);
-        gp_Pnt                           A = BRep_Tool::Pnt(Va);
-        gp_Pnt                           B = BRep_Tool::Pnt(Vb);
-        gp_Vec                           V(A, B);
-        gp_Dir                           D(V);
+        gp_Pnt                      A = BRep_Tool::Pnt(Va);
+        gp_Pnt                      B = BRep_Tool::Pnt(Vb);
+        gp_Vec                      V(A, B);
+        gp_Dir                      D(V);
         occ::handle<Geom_Axis1Placement> OrigineAndVect = new Geom_Axis1Placement(A, D);
         occ::handle<AIS_Axis>            TheAxis        = new AIS_Axis(OrigineAndVect);
         GetMapOfAIS().Bind(TheAxis, name);
@@ -1026,10 +1033,10 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
       gp_Pnt        B  = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
       TopoDS_Vertex Va, Vc;
       TopExp::Vertices(ed, Va, Vc);
-      gp_Pnt                           A = BRep_Tool::Pnt(Va);
-      gp_Pnt                           C = BRep_Tool::Pnt(Vc);
-      gp_Vec                           V(A, C);
-      gp_Dir                           D(V);
+      gp_Pnt                      A = BRep_Tool::Pnt(Va);
+      gp_Pnt                      C = BRep_Tool::Pnt(Vc);
+      gp_Vec                      V(A, C);
+      gp_Dir                      D(V);
       occ::handle<Geom_Axis1Placement> OrigineAndVect = new Geom_Axis1Placement(B, D);
       occ::handle<AIS_Axis>            TheAxis        = new AIS_Axis(OrigineAndVect);
       GetMapOfAIS().Bind(TheAxis, name);
@@ -1058,11 +1065,11 @@ static int VAxisBuilder(Draw_Interpretor& di, int argc, const char** argv)
       gp_Pnt        B  = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
       TopoDS_Vertex Va, Vc;
       TopExp::Vertices(ed, Va, Vc);
-      gp_Pnt A = BRep_Tool::Pnt(Va);
-      gp_Pnt C = BRep_Tool::Pnt(Vc);
-      gp_Pnt E(A.Y() + A.Z() - C.Y() - C.Z(), C.X() - A.X(), C.X() - A.X());
-      gp_Vec V(A, E);
-      gp_Dir D(V);
+      gp_Pnt                      A = BRep_Tool::Pnt(Va);
+      gp_Pnt                      C = BRep_Tool::Pnt(Vc);
+      gp_Pnt                      E(A.Y() + A.Z() - C.Y() - C.Z(), C.X() - A.X(), C.X() - A.X());
+      gp_Vec                      V(A, E);
+      gp_Dir                      D(V);
       occ::handle<Geom_Axis1Placement> OrigineAndVect = new Geom_Axis1Placement(B, D);
       occ::handle<AIS_Axis>            TheAxis        = new AIS_Axis(OrigineAndVect);
       GetMapOfAIS().Bind(TheAxis, name);
@@ -1199,10 +1206,12 @@ static int VPointBuilder(Draw_Interpretor&, int theArgNb, const char** theArgVec
 //                            [PlaneName] [PointName] [TypeOfSensitivity]
 //==============================================================================
 
-static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
+static int VPlaneBuilder(Draw_Interpretor& /*di*/,
+                                      int argc,
+                                      const char**     argv)
 {
   // Declarations
-  bool                    hasArg;
+  bool        hasArg;
   TCollection_AsciiString aName;
 
   // Verification
@@ -1308,7 +1317,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       gp_Pnt C = aCartPointC->Pnt();
 
       // Construction of AIS_Plane
-      GC_MakePlane                   MkPlane(A, B, C);
+      GC_MakePlane              MkPlane(A, B, C);
       const occ::handle<Geom_Plane>& aGeomPlane = MkPlane.Value();
       occ::handle<AIS_Plane>         anAISPlane = new AIS_Plane(aGeomPlane);
       GetMapOfAIS().Bind(anAISPlane, aName);
@@ -1356,9 +1365,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       occ::handle<Geom_Line>  aGeomLineA  = anAISAxisA->Component();
       occ::handle<Geom_Point> aGeomPointB = anAISPointB->Component();
 
-      gp_Ax1                           anAxis = aGeomLineA->Position();
-      occ::handle<Geom_CartesianPoint> aCartPointB =
-        occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
+      gp_Ax1                      anAxis      = aGeomLineA->Position();
+      occ::handle<Geom_CartesianPoint> aCartPointB = occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
 
       gp_Dir D = anAxis.Direction();
       gp_Pnt B = aCartPointB->Pnt();
@@ -1411,9 +1419,8 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       occ::handle<Geom_Plane> aNewGeomPlane = anAISPlaneA->Component();
       occ::handle<Geom_Point> aGeomPointB   = anAISPointB->Component();
 
-      occ::handle<Geom_CartesianPoint> aCartPointB =
-        occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
-      gp_Pnt B = aCartPointB->Pnt();
+      occ::handle<Geom_CartesianPoint> aCartPointB = occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
+      gp_Pnt                      B           = aCartPointB->Pnt();
 
       // Construction of an AIS_Plane
       occ::handle<AIS_Plane> anAISPlane = new AIS_Plane(aNewGeomPlane, B);
@@ -1489,9 +1496,9 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
             gp_Pnt        A = BRep_Tool::Pnt(aVertA);
             TopoDS_Vertex aVBa, aVBb;
             TopExp::Vertices(anEdgeB, aVBa, aVBb);
-            gp_Pnt                         aBa = BRep_Tool::Pnt(aVBa);
-            gp_Pnt                         aBb = BRep_Tool::Pnt(aVBb);
-            GC_MakePlane                   MkPlane(A, aBa, aBb);
+            gp_Pnt                    aBa = BRep_Tool::Pnt(aVBa);
+            gp_Pnt                    aBb = BRep_Tool::Pnt(aVBb);
+            GC_MakePlane              MkPlane(A, aBa, aBb);
             const occ::handle<Geom_Plane>& aGeomPlane = MkPlane.Value();
             occ::handle<AIS_Plane>         anAISPlane = new AIS_Plane(aGeomPlane);
             GetMapOfAIS().Bind(anAISPlane, aName);
@@ -1515,10 +1522,10 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
             return 1;
           }
 
-          gp_Pnt                         A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
-          gp_Pnt                         B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
-          gp_Pnt                         C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
-          GC_MakePlane                   MkPlane(A, B, C);
+          gp_Pnt                    A = BRep_Tool::Pnt(TopoDS::Vertex(aShapeA));
+          gp_Pnt                    B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
+          gp_Pnt                    C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
+          GC_MakePlane              MkPlane(A, B, C);
           const occ::handle<Geom_Plane>& aGeomPlane = MkPlane.Value();
           occ::handle<AIS_Plane>         anAISPlane = new AIS_Plane(aGeomPlane);
           GetMapOfAIS().Bind(anAISPlane, aName);
@@ -1561,9 +1568,9 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         gp_Pnt        B = BRep_Tool::Pnt(aVertB);
         TopoDS_Vertex aVAa, aVAb;
         TopExp::Vertices(anEdgeA, aVAa, aVAb);
-        gp_Pnt                         Aa = BRep_Tool::Pnt(aVAa);
-        gp_Pnt                         Ab = BRep_Tool::Pnt(aVAb);
-        GC_MakePlane                   MkPlane(B, Aa, Ab);
+        gp_Pnt                    Aa = BRep_Tool::Pnt(aVAa);
+        gp_Pnt                    Ab = BRep_Tool::Pnt(aVAb);
+        GC_MakePlane              MkPlane(B, Aa, Ab);
         const occ::handle<Geom_Plane>& aGeomPlane = MkPlane.Value();
         occ::handle<AIS_Plane>         anAISPlane = new AIS_Plane(aGeomPlane);
         GetMapOfAIS().Bind(anAISPlane, aName);
@@ -1575,7 +1582,7 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
         BRepAdaptor_Surface aSurface(aFace, false);
         if (aSurface.GetType() == GeomAbs_Plane)
         {
-          gp_Pln                  aPlane     = aSurface.Plane();
+          gp_Pln             aPlane     = aSurface.Plane();
           occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(aPlane);
           occ::handle<AIS_Plane>  anAISPlane = new AIS_Plane(aGeomPlane);
           GetMapOfAIS().Bind(anAISPlane, aName);
@@ -1716,7 +1723,9 @@ static int VPlaneBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
 
 //=================================================================================================
 
-static int VChangePlane(Draw_Interpretor& /*theDi*/, int theArgsNb, const char** theArgVec)
+static int VChangePlane(Draw_Interpretor& /*theDi*/,
+                        int theArgsNb,
+                        const char**     theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aContextAIS = ViewerTest::GetAISContext();
   if (aContextAIS.IsNull())
@@ -1751,10 +1760,10 @@ static int VChangePlane(Draw_Interpretor& /*theDi*/, int theArgsNb, const char**
   double aDirY = aPlane->Component()->Axis().Direction().Y();
   double aDirZ = aPlane->Component()->Axis().Direction().Z();
 
-  double aSizeX      = 0.0;
-  double aSizeY      = 0.0;
-  bool   aHasMinSize = aPlane->HasMinimumSize();
-  double aMinSizeY   = 0.0;
+  double    aSizeX      = 0.0;
+  double    aSizeY      = 0.0;
+  bool aHasMinSize = aPlane->HasMinimumSize();
+  double    aMinSizeY   = 0.0;
   aPlane->Size(aSizeX, aSizeY);
   bool isUpdate = true;
 
@@ -1860,8 +1869,7 @@ static int VLineBuilder(Draw_Interpretor& di, int argc, const char** argv)
     }
 
     occ::handle<Geom_Point>          aGeomPointBA = anAISPointA->Component();
-    occ::handle<Geom_CartesianPoint> aCartPointA =
-      occ::down_cast<Geom_CartesianPoint>(aGeomPointBA);
+    occ::handle<Geom_CartesianPoint> aCartPointA  = occ::down_cast<Geom_CartesianPoint>(aGeomPointBA);
 
     occ::handle<Geom_Point>          aGeomPointB = anAISPointB->Component();
     occ::handle<Geom_CartesianPoint> aCartPointB = occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
@@ -1947,8 +1955,8 @@ static int VLineBuilder(Draw_Interpretor& di, int argc, const char** argv)
 
 occ::handle<Geom_Circle> CreateCircle(gp_Pnt theCenter, double theRadius)
 {
-  gp_Ax2                   anAxes(theCenter, gp_Dir(gp_Vec(0., 0., 1.)));
-  gp_Circ                  aCirc(anAxes, theRadius);
+  gp_Ax2              anAxes(theCenter, gp_Dir(gp_Vec(0., 0., 1.)));
+  gp_Circ             aCirc(anAxes, theRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
   return aCircle;
 }
@@ -1960,13 +1968,13 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(FilledCircle, AIS_InteractiveObject);
 
   FilledCircle(const occ::handle<Geom_Circle>& theCircle,
-               const double                    theUStart,
-               const double                    theUEnd);
+               const double        theUStart,
+               const double        theUEnd);
 
-  FilledCircle(const gp_Pnt& theCenter,
-               const double  theRadius,
-               const double  theUStart,
-               const double  theUEnd);
+  FilledCircle(const gp_Pnt&       theCenter,
+               const double theRadius,
+               const double theUStart,
+               const double theUEnd);
 
 private:
   TopoDS_Face ComputeFace();
@@ -1974,21 +1982,21 @@ private:
   // Virtual methods implementation
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+                       const int                    theMode) override;
 
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+                                const int             theMode) override;
 
 protected:
   occ::handle<Geom_Circle> myCircle;
-  double                   myUStart;
-  double                   myUEnd;
-  bool                     myFilledStatus;
+  double       myUStart;
+  double       myUEnd;
+  bool    myFilledStatus;
 };
 
 FilledCircle::FilledCircle(const occ::handle<Geom_Circle>& theCircle,
-                           const double                    theUStart,
-                           const double                    theUEnd)
+                           const double        theUStart,
+                           const double        theUEnd)
     : myCircle(theCircle),
       myUStart(theUStart),
       myUEnd(theUEnd),
@@ -1996,10 +2004,10 @@ FilledCircle::FilledCircle(const occ::handle<Geom_Circle>& theCircle,
 {
 }
 
-FilledCircle::FilledCircle(const gp_Pnt& theCenter,
-                           const double  theRadius,
-                           const double  theUStart,
-                           const double  theUEnd)
+FilledCircle::FilledCircle(const gp_Pnt&       theCenter,
+                           const double theRadius,
+                           const double theUStart,
+                           const double theUEnd)
     : FilledCircle(CreateCircle(theCenter, theRadius), theUStart, theUEnd)
 {
 }
@@ -2035,7 +2043,7 @@ TopoDS_Face FilledCircle::ComputeFace()
 
 void FilledCircle::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                            const occ::handle<Prs3d_Presentation>& thePrs,
-                           const int                              theMode)
+                           const int            theMode)
 {
   thePrs->Clear();
 
@@ -2081,11 +2089,11 @@ void FilledCircle::ComputeSelection(const occ::handle<SelectMgr_Selection>& theS
 //                              PointName PointName PointName IsFilled UStart UEnd
 //==============================================================================
 
-void DisplayCircle(const occ::handle<Geom_Circle>& theGeomCircle,
-                   const TCollection_AsciiString&  theName,
-                   const bool                      isFilled,
-                   const double                    theUStart,
-                   const double                    theUEnd)
+void DisplayCircle(const occ::handle<Geom_Circle>&     theGeomCircle,
+                   const TCollection_AsciiString& theName,
+                   const bool         isFilled,
+                   const double            theUStart,
+                   const double            theUEnd)
 {
   occ::handle<AIS_InteractiveObject> aCircle;
   if (isFilled)
@@ -2136,7 +2144,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
   if (argc == 6 || argc == 8)
   {
     TCollection_AsciiString aName(argv[1]);
-    bool                    isFilled = Draw::Atoi(argv[5]) != 0;
+    bool        isFilled = Draw::Atoi(argv[5]) != 0;
 
     occ::handle<AIS_InteractiveObject> aShapeA, aShapeB;
     GetMapOfAIS().Find2(argv[2], aShapeA);
@@ -2227,14 +2235,13 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       // Recover the normal to the plane
       occ::handle<Geom_Plane>          aGeomPlane  = anAISPlane->Component();
       occ::handle<Geom_Point>          aGeomPointB = anAISPointB->Component();
-      occ::handle<Geom_CartesianPoint> aCartPointB =
-        occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
+      occ::handle<Geom_CartesianPoint> aCartPointB = occ::down_cast<Geom_CartesianPoint>(aGeomPointB);
 
-      gp_Pln                   aGpPlane = aGeomPlane->Pln();
-      gp_Ax1                   aGpAxe   = aGpPlane.Axis();
-      gp_Dir                   aDir     = aGpAxe.Direction();
-      gp_Pnt                   aCenter  = aCartPointB->Pnt();
-      GC_MakeCircle            aCir     = GC_MakeCircle(aCenter, aDir, anR);
+      gp_Pln              aGpPlane = aGeomPlane->Pln();
+      gp_Ax1              aGpAxe   = aGpPlane.Axis();
+      gp_Dir              aDir     = aGpAxe.Direction();
+      gp_Pnt              aCenter  = aCartPointB->Pnt();
+      GC_MakeCircle       aCir     = GC_MakeCircle(aCenter, aDir, anR);
       occ::handle<Geom_Circle> aGeomCircle;
       try
       {
@@ -2294,7 +2301,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
       gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
 
-      GC_MakeCircle            aCir = GC_MakeCircle(A, B, C);
+      GC_MakeCircle       aCir = GC_MakeCircle(A, B, C);
       occ::handle<Geom_Circle> aGeomCircle;
       try
       {
@@ -2326,19 +2333,19 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, int argc, const char** argv)
       std::cin >> isFilled;
 
       // Recover the normal to the plane. tag
-      TopoDS_Face             aFace = TopoDS::Face(aShapeA);
-      BRepAdaptor_Surface     aSurface(aFace, false);
-      gp_Pln                  aPlane     = aSurface.Plane();
-      occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(aPlane);
-      gp_Pln                  aGpPlane   = aGeomPlane->Pln();
-      gp_Ax1                  aGpAxe     = aGpPlane.Axis();
-      gp_Dir                  aDir       = aGpAxe.Direction();
+      TopoDS_Face         aFace = TopoDS::Face(aShapeA);
+      BRepAdaptor_Surface aSurface(aFace, false);
+      gp_Pln              aPlane     = aSurface.Plane();
+      occ::handle<Geom_Plane>  aGeomPlane = new Geom_Plane(aPlane);
+      gp_Pln              aGpPlane   = aGeomPlane->Pln();
+      gp_Ax1              aGpAxe     = aGpPlane.Axis();
+      gp_Dir              aDir       = aGpAxe.Direction();
 
       // Recover the center
       gp_Pnt aCenter = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
 
       // Construct the circle
-      GC_MakeCircle            aCir = GC_MakeCircle(aCenter, aDir, aRad);
+      GC_MakeCircle       aCir = GC_MakeCircle(aCenter, aDir, aRad);
       occ::handle<Geom_Circle> aGeomCircle;
       try
       {
@@ -2379,10 +2386,10 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
     return 1;
   }
 
-  int                        anArgIt = 1;
+  int           anArgIt = 1;
   TCollection_ExtendedString aName(theArgVec[anArgIt++], true);
   TCollection_ExtendedString aText(theArgVec[anArgIt++], true);
-  occ::handle<AIS_TextLabel> aTextPrs;
+  occ::handle<AIS_TextLabel>      aTextPrs;
   ViewerTest_AutoUpdater     anAutoUpdater(aContext, ViewerTest::CurrentView());
 
   bool isNewPrs = false;
@@ -2400,12 +2407,12 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
   aTextPrs->SetText(aText);
 
   occ::handle<Graphic3d_TransformPers> aTrsfPers;
-  Aspect_TypeOfDisplayText             aDisplayType = Aspect_TODT_NORMAL;
+  Aspect_TypeOfDisplayText        aDisplayType = Aspect_TODT_NORMAL;
 
-  bool   aHasPlane = false;
-  gp_Dir aNormal;
-  gp_Dir aDirection;
-  gp_Pnt aPos;
+  bool aHasPlane = false;
+  gp_Dir           aNormal;
+  gp_Dir           aDirection;
+  gp_Pnt           aPos;
 
   occ::handle<Font_TextFormatter> aTextFormatter;
   for (; anArgIt < theArgsNb; ++anArgIt)
@@ -2426,8 +2433,9 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
     }
     else if (aParam == "-color")
     {
-      Quantity_Color aColor;
-      int aNbParsed = Draw::ParseColor(theArgsNb - anArgIt - 1, theArgVec + anArgIt + 1, aColor);
+      Quantity_Color   aColor;
+      int aNbParsed =
+        Draw::ParseColor(theArgsNb - anArgIt - 1, theArgVec + anArgIt + 1, aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << aParam << "'";
@@ -2604,8 +2612,9 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
     }
     else if (aParam == "-subcolor" || aParam == "-subtitlecolor")
     {
-      Quantity_Color aColor;
-      int aNbParsed = Draw::ParseColor(theArgsNb - anArgIt - 1, theArgVec + anArgIt + 1, aColor);
+      Quantity_Color   aColor;
+      int aNbParsed =
+        Draw::ParseColor(theArgsNb - anArgIt - 1, theArgVec + anArgIt + 1, aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << aParam << "'";
@@ -2710,20 +2719,34 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Poly_Triangle.hxx>
+#include <NCollection_Array1.hxx>
+#include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_ShortReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <AIS_Triangulation.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <gp_Dir.hxx>
+#include <NCollection_Array1.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 
 #include <BRepPrimAPI_MakeCylinder.hxx>
+#include <AIS_InteractiveObject.hxx>
 
 //===============================================================================================
 // function : CalculationOfSphere
@@ -2731,11 +2754,7 @@ static int VDrawText(Draw_Interpretor& theDI, int theArgsNb, const char** theArg
 // purpose  : Create a Sphere
 //===============================================================================================
 
-occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
-                                                    double Y,
-                                                    double Z,
-                                                    int    res,
-                                                    double Radius)
+occ::handle<Poly_Triangulation> CalculationOfSphere(double X, double Y, double Z, int res, double Radius)
 {
   double mRadius    = Radius;
   double mCenter[3] = {X, Y, Z};
@@ -2939,7 +2958,7 @@ occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
 
   Poly_Connect pc(polyTriangulation);
 
-  int              index[3];
+  int        index[3];
   constexpr double Tol = Precision::Confusion();
 
   gp_Dir Nor;
@@ -2949,11 +2968,11 @@ occ::handle<Poly_Triangulation> CalculationOfSphere(double X,
     for (pc.Initialize(i); pc.More(); pc.Next())
     {
       polyTriangulation->Triangle(pc.Value()).Get(index[0], index[1], index[2]);
-      gp_XYZ v1(polyTriangulation->Node(index[1]).Coord()
+      gp_XYZ        v1(polyTriangulation->Node(index[1]).Coord()
                 - polyTriangulation->Node(index[0]).Coord());
-      gp_XYZ v2(polyTriangulation->Node(index[2]).Coord()
+      gp_XYZ        v2(polyTriangulation->Node(index[2]).Coord()
                 - polyTriangulation->Node(index[1]).Coord());
-      gp_XYZ vv  = v1 ^ v2;
+      gp_XYZ        vv  = v1 ^ v2;
       double mod = vv.Modulus();
       if (mod < Tol)
         continue;
@@ -2996,13 +3015,13 @@ static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
 
   // read the arguments
   TCollection_AsciiString aShapeName(argv[1]);
-  int                     aResolution = Draw::Atoi(argv[2]);
-  double                  aCenterX    = (argc > 5) ? Draw::Atof(argv[3]) : 0.0;
-  double                  aCenterY    = (argc > 5) ? Draw::Atof(argv[4]) : 0.0;
-  double                  aCenterZ    = (argc > 5) ? Draw::Atof(argv[5]) : 0.0;
-  double                  aRadius     = (argc > 6) ? Draw::Atof(argv[6]) : 100.0;
-  bool                    toShowEdges = (argc > 7) ? Draw::Atoi(argv[7]) == 1 : false;
-  bool                    toPrintInfo = (argc > 8) ? Draw::Atoi(argv[8]) == 1 : true;
+  int        aResolution = Draw::Atoi(argv[2]);
+  double           aCenterX    = (argc > 5) ? Draw::Atof(argv[3]) : 0.0;
+  double           aCenterY    = (argc > 5) ? Draw::Atof(argv[4]) : 0.0;
+  double           aCenterZ    = (argc > 5) ? Draw::Atof(argv[5]) : 0.0;
+  double           aRadius     = (argc > 6) ? Draw::Atof(argv[6]) : 100.0;
+  bool        toShowEdges = (argc > 7) ? Draw::Atoi(argv[7]) == 1 : false;
+  bool        toPrintInfo = (argc > 8) ? Draw::Atoi(argv[8]) == 1 : true;
 
   // remove AIS object with given name from map
   VDisplayAISObject(aShapeName, occ::handle<AIS_InteractiveObject>());
@@ -3019,8 +3038,7 @@ static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
   const NCollection_Vec4<uint8_t> aColor(0, 255, 0, 0);
 
   // setup colors array per vertex
-  occ::handle<NCollection_HArray1<int>> aColorArray =
-    new NCollection_HArray1<int>(1, aNumberPoints);
+  occ::handle<NCollection_HArray1<int>> aColorArray = new NCollection_HArray1<int>(1, aNumberPoints);
   for (int aNodeId = 1; aNodeId <= aNumberPoints; ++aNodeId)
   {
     aColorArray->SetValue(aNodeId, *reinterpret_cast<const int*>(aColor.GetData()));
@@ -3030,9 +3048,9 @@ static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
   // show statistics
   int aPointsSize  = aNumberPoints * 3 * sizeof(float);      // 3x GLfloat
   int aNormalsSize = aNumberPoints * 3 * sizeof(float);      // 3x GLfloat
-                                                             // clang-format off
+                                                                          // clang-format off
   int aColorsSize      = aNumberPoints * 3 * sizeof(float);  // 3x GLfloat without alpha
-                                                             // clang-format on
+                                                                          // clang-format on
   int aTrianglesSize   = aNumberTriangles * 3 * sizeof(int); // 3x GLint
   int aPolyConnectSize = aNumberPoints * 4 + aNumberTriangles * 6 * 4;
   int aTotalSize       = aPointsSize + aNormalsSize + aColorsSize + aTrianglesSize;
@@ -3056,15 +3074,14 @@ static int VDrawSphere(Draw_Interpretor& /*di*/, int argc, const char** argv)
   Graphic3d_MaterialAspect aMat(Graphic3d_NameOfMaterial_Plastified);
   aMat.SetAmbientColor(Quantity_Color(NCollection_Vec3<float>(0.04f)));
   aMat.SetSpecularColor(Quantity_Color(NCollection_Vec3<float>(0.50f)));
-  occ::handle<Graphic3d_AspectFillArea3d> anAspect =
-    new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
-                                   Quantity_NOC_WHITE,
-                                   Quantity_NOC_YELLOW,
-                                   Aspect_TOL_SOLID,
-                                   1.0,
-                                   aMat,
-                                   aMat);
-  occ::handle<Prs3d_ShadingAspect> aShAsp = new Prs3d_ShadingAspect();
+  occ::handle<Graphic3d_AspectFillArea3d> anAspect = new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
+                                                                               Quantity_NOC_WHITE,
+                                                                               Quantity_NOC_YELLOW,
+                                                                               Aspect_TOL_SOLID,
+                                                                               1.0,
+                                                                               aMat,
+                                                                               aMat);
+  occ::handle<Prs3d_ShadingAspect>        aShAsp   = new Prs3d_ShadingAspect();
   anAspect->SetDrawEdges(toShowEdges);
   aShAsp->SetAspect(anAspect);
   aShape->Attributes()->SetShadingAspect(aShAsp);
@@ -3088,11 +3105,11 @@ static int VComputeHLR(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   int                     aNbIsolines = 0;
   if (occ::handle<V3d_Viewer> aViewer = ViewerTest::GetViewerFromContext())
   {
-    gp_Dir                aRight;
+    gp_Dir           aRight;
     occ::handle<V3d_View> aView = ViewerTest::CurrentView();
-    int                   aWidth, aHeight;
-    double                aCentX, aCentY, aCentZ, aDirX, aDirY, aDirZ;
-    double                aRightX, aRightY, aRightZ;
+    int aWidth, aHeight;
+    double    aCentX, aCentY, aCentZ, aDirX, aDirY, aDirZ;
+    double    aRightX, aRightY, aRightZ;
     aView->Window()->Size(aWidth, aHeight);
 
     aView->ConvertWithProj(aWidth, aHeight / 2, aRightX, aRightY, aRightZ, aDirX, aDirY, aDirZ);
@@ -3325,22 +3342,25 @@ public:
   {
   }
 
-  MyPArrayObject(Graphic3d_TypeOfPrimitiveArray                                   thePrimType,
+  MyPArrayObject(Graphic3d_TypeOfPrimitiveArray              thePrimType,
                  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theDesc,
-                 const occ::handle<Graphic3d_AspectMarker3d>&                     theMarkerAspect)
+                 const occ::handle<Graphic3d_AspectMarker3d>&     theMarkerAspect)
   {
     Init(thePrimType, theDesc, theMarkerAspect, false);
   }
 
   //! Initialize the array from specified description.
-  bool Init(Graphic3d_TypeOfPrimitiveArray                                   thePrimType,
-            const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theDesc,
-            const occ::handle<Graphic3d_AspectMarker3d>&                     theMarkerAspect,
-            bool                                                             theToPatch);
+  bool Init(Graphic3d_TypeOfPrimitiveArray              thePrimType,
+                        const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theDesc,
+                        const occ::handle<Graphic3d_AspectMarker3d>&     theMarkerAspect,
+                        bool                            theToPatch);
 
   DEFINE_STANDARD_RTTI_INLINE(MyPArrayObject, AIS_InteractiveObject);
 
-  virtual bool AcceptDisplayMode(const int theMode) const override { return theMode == 0; }
+  virtual bool AcceptDisplayMode(const int theMode) const override
+  {
+    return theMode == 0;
+  }
 
   //! Sets color to this interactive object
   //! @param theColor the color to be set
@@ -3349,17 +3369,16 @@ public:
 private:
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+                       const int                    theMode) override;
 
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+                                const int             theMode) override;
 
-  bool CheckInputCommand(
-    const TCollection_AsciiString&                                   theCommand,
-    const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theArgsArray,
-    int&                                                             theArgIndex,
-    int                                                              theArgCount,
-    int                                                              theMaxArgs);
+  bool CheckInputCommand(const TCollection_AsciiString&              theCommand,
+                         const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theArgsArray,
+                         int&                           theArgIndex,
+                         int                            theArgCount,
+                         int                            theMaxArgs);
 
   //! Sets color for the shading aspect of the drawer used in this interactive object
   //! @param theColor the color to be set
@@ -3376,7 +3395,7 @@ protected:
 
 void MyPArrayObject::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                              const occ::handle<Prs3d_Presentation>& thePrs,
-                             const int                              theMode)
+                             const int            theMode)
 {
   if (myPArray.IsNull() || theMode != 0)
   {
@@ -3395,10 +3414,10 @@ void MyPArrayObject::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   aGroup->AddPrimitiveArray(myPArray);
 }
 
-bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
-                          const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theDesc,
-                          const occ::handle<Graphic3d_AspectMarker3d>& theMarkerAspect,
-                          bool                                         theToPatch)
+bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray              thePrimType,
+                                      const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theDesc,
+                                      const occ::handle<Graphic3d_AspectMarker3d>&     theMarkerAspect,
+                                      bool                            theToPatch)
 {
   myMarkerAspect = theMarkerAspect;
   if (!theToPatch)
@@ -3407,10 +3426,10 @@ bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
   }
 
   // Parsing array description
-  int                  aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
+  int     aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
   Graphic3d_ArrayFlags anArrayFlags = Graphic3d_ArrayFlags_None;
 
-  const int               anArgsCount = theDesc->Length();
+  const int  anArgsCount = theDesc->Length();
   TCollection_AsciiString aCommand;
   for (int anArgIndex = theDesc->Lower(); anArgIndex <= theDesc->Upper();)
   {
@@ -3536,8 +3555,8 @@ bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
     else if (CheckInputCommand("v", theDesc, anArgIndex, 3, anArgsCount))
     {
       const NCollection_Vec3<float> aVert((float)theDesc->Value(anArgIndex - 3).RealValue(),
-                                          (float)theDesc->Value(anArgIndex - 2).RealValue(),
-                                          (float)theDesc->Value(anArgIndex - 1).RealValue());
+                                 (float)theDesc->Value(anArgIndex - 2).RealValue(),
+                                 (float)theDesc->Value(anArgIndex - 1).RealValue());
       if ((anArrayFlags & Graphic3d_ArrayFlags_AttribsDeinterleaved) != 0
           || (anArrayFlags & Graphic3d_ArrayFlags_AttribsMutable) != 0)
       {
@@ -3553,22 +3572,22 @@ bool MyPArrayObject::Init(Graphic3d_TypeOfPrimitiveArray thePrimType,
       if (CheckInputCommand("n", theDesc, anArgIndex, 3, anArgsCount))
       {
         const NCollection_Vec3<float> aNorm((float)theDesc->Value(anArgIndex - 3).RealValue(),
-                                            (float)theDesc->Value(anArgIndex - 2).RealValue(),
-                                            (float)theDesc->Value(anArgIndex - 1).RealValue());
+                                   (float)theDesc->Value(anArgIndex - 2).RealValue(),
+                                   (float)theDesc->Value(anArgIndex - 1).RealValue());
         myPArray->SetVertexNormal(aVertIndex, aNorm.x(), aNorm.y(), aNorm.z());
       }
 
       if (CheckInputCommand("c", theDesc, anArgIndex, 3, anArgsCount))
       {
         const NCollection_Vec3<double> aCol(theDesc->Value(anArgIndex - 3).RealValue(),
-                                            theDesc->Value(anArgIndex - 2).RealValue(),
-                                            theDesc->Value(anArgIndex - 1).RealValue());
+                                   theDesc->Value(anArgIndex - 2).RealValue(),
+                                   theDesc->Value(anArgIndex - 1).RealValue());
         myPArray->SetVertexColor(aVertIndex, aCol.r(), aCol.g(), aCol.b());
       }
       if (CheckInputCommand("t", theDesc, anArgIndex, 2, anArgsCount))
       {
         const NCollection_Vec2<float> aTex((float)theDesc->Value(anArgIndex - 2).RealValue(),
-                                           (float)theDesc->Value(anArgIndex - 1).RealValue());
+                                  (float)theDesc->Value(anArgIndex - 1).RealValue());
         myPArray->SetVertexTexel(aVertIndex, aTex.x(), aTex.y());
       }
     }
@@ -3617,7 +3636,7 @@ void MyPArrayObject::SetColor(const Quantity_Color& theColor)
 }
 
 void MyPArrayObject::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                      const int                               theMode)
+                                      const int             theMode)
 {
   if (theMode != 0 || myPArray.IsNull())
   {
@@ -3674,12 +3693,11 @@ void MyPArrayObject::ComputeSelection(const occ::handle<SelectMgr_Selection>& th
   }
 }
 
-bool MyPArrayObject::CheckInputCommand(
-  const TCollection_AsciiString&                                   theCommand,
-  const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theArgsArray,
-  int&                                                             theArgIndex,
-  int                                                              theArgCount,
-  int                                                              theMaxArgs)
+bool MyPArrayObject::CheckInputCommand(const TCollection_AsciiString&              theCommand,
+                                       const occ::handle<NCollection_HArray1<TCollection_AsciiString>>& theArgsArray,
+                                       int&                           theArgIndex,
+                                       int                            theArgCount,
+                                       int                            theMaxArgs)
 {
   // check if there is more elements than expected
   if (theArgIndex >= theMaxArgs)
@@ -3723,8 +3741,7 @@ void MyPArrayObject::replaceShadingAspect()
   {
     return;
   }
-  NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>>
-    anAspectReplacementMap;
+  NCollection_DataMap<occ::handle<Graphic3d_Aspects>, occ::handle<Graphic3d_Aspects>> anAspectReplacementMap;
   anAspectReplacementMap.Bind(myDrawer->Link()->ShadingAspect()->Aspect(),
                               myDrawer->ShadingAspect()->Aspect());
   replaceAspects(anAspectReplacementMap);
@@ -3750,15 +3767,15 @@ static int VDrawPArray(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   // read the arguments
-  int                     anArgIndex = 1;
+  int        anArgIndex = 1;
   TCollection_AsciiString aName(argv[anArgIndex++]);
   TCollection_AsciiString anArrayType(argv[anArgIndex++]);
   anArrayType.LowerCase();
   occ::handle<MyPArrayObject> aPObject;
   if (anArrayType == "-shape")
   {
-    const char*                              aShapeName = argv[anArgIndex++];
-    TopoDS_Shape                             aShape     = DBRep::Get(aShapeName);
+    const char*                    aShapeName = argv[anArgIndex++];
+    TopoDS_Shape                        aShape     = DBRep::Get(aShapeName);
     occ::handle<Graphic3d_ArrayOfPrimitives> aTris      = StdPrs_ShadedShape::FillTriangles(aShape);
     if (aShape.IsNull())
     {
@@ -3839,9 +3856,8 @@ static int VDrawPArray(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  int                                                       aLowerArg = anArgIndex;
-  occ::handle<NCollection_HArray1<TCollection_AsciiString>> anArgsArray =
-    new NCollection_HArray1<TCollection_AsciiString>(0, argc - 3);
+  int                     aLowerArg   = anArgIndex;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>> anArgsArray = new NCollection_HArray1<TCollection_AsciiString>(0, argc - 3);
   for (; anArgIndex < argc; ++anArgIndex)
   {
     TCollection_AsciiString aCommand(argv[anArgIndex]);
@@ -3891,7 +3907,9 @@ static int VDrawPArray(Draw_Interpretor& di, int argc, const char** argv)
 namespace
 {
 //! Auxiliary function for parsing translation vector - either 2D or 3D.
-static int parseTranslationVec(int theArgNb, const char** theArgVec, gp_Vec& theVec)
+static int parseTranslationVec(int theArgNb,
+                                            const char**     theArgVec,
+                                            gp_Vec&          theVec)
 {
   if (theArgNb < 2)
   {
@@ -3925,19 +3943,21 @@ static int parseTranslationVec(int theArgNb, const char** theArgVec, gp_Vec& the
 // purpose  : Change location of AIS interactive object
 //=======================================================================
 
-static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VSetLocation(Draw_Interpretor& theDI,
+                                     int  theArgNb,
+                                     const char**      theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater              anUpdateTool(aContext, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater         anUpdateTool(aContext, ViewerTest::CurrentView());
   if (aContext.IsNull())
   {
     Message::SendFail("Error: no active viewer");
     return 1;
   }
 
-  bool                               toPrintInfo = true;
+  bool              toPrintInfo = true;
   occ::handle<AIS_InteractiveObject> anObj;
-  TCollection_AsciiString            aCmdName(theArgVec[0]);
+  TCollection_AsciiString       aCmdName(theArgVec[0]);
   aCmdName.LowerCase();
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -3970,7 +3990,7 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
         return 1;
       }
 
-      const TCollection_AsciiString      aName2(theArgVec[anArgIter + 1]);
+      const TCollection_AsciiString aName2(theArgVec[anArgIter + 1]);
       occ::handle<AIS_InteractiveObject> anObj2;
       GetMapOfAIS().Find2(aName2, anObj2);
       if (anObj2.IsNull())
@@ -4014,8 +4034,8 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
     else if (anArg == "-translate" || anArg == "-pretranslate")
     {
       toPrintInfo = false;
-      gp_Vec aLocVec;
-      int    aNbParsed =
+      gp_Vec           aLocVec;
+      int aNbParsed =
         parseTranslationVec(theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aLocVec);
       anArgIter += aNbParsed;
       if (aNbParsed == 0)
@@ -4039,17 +4059,17 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
     else if (anArg == "-scale" || anArg == "-prescale" || anArg == "-setscale")
     {
       toPrintInfo = false;
-      gp_XYZ aScaleLoc;
-      double aScale       = 1.0;
-      bool   toPrintScale = true;
-      bool   hasScaleLoc  = false;
+      gp_XYZ           aScaleLoc;
+      double    aScale       = 1.0;
+      bool toPrintScale = true;
+      bool hasScaleLoc  = false;
       if (anArgIter + 4 < theArgNb)
       {
         TCollection_AsciiString aScaleArgs[4] = {TCollection_AsciiString(theArgVec[anArgIter + 1]),
                                                  TCollection_AsciiString(theArgVec[anArgIter + 2]),
                                                  TCollection_AsciiString(theArgVec[anArgIter + 3]),
                                                  TCollection_AsciiString(theArgVec[anArgIter + 4])};
-        int                     aScaleArgIter = 0;
+        int        aScaleArgIter = 0;
         for (; aScaleArgIter < 4; ++aScaleArgIter)
         {
           if (!aScaleArgs[aScaleArgIter].IsRealValue(true))
@@ -4171,7 +4191,7 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
                                                 TCollection_AsciiString(theArgVec[anArgIter + 2]),
                                                 TCollection_AsciiString(theArgVec[anArgIter + 3]),
                                                 TCollection_AsciiString(theArgVec[anArgIter + 4])};
-        int                     aQuatArgIter = 0;
+        int        aQuatArgIter = 0;
         for (; aQuatArgIter < 4; ++aQuatArgIter)
         {
           if (!aQuatArgs[aQuatArgIter].IsRealValue(true))
@@ -4207,8 +4227,8 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
     else if (anArg == "-setlocation" || anArg == "-location")
     {
       toPrintInfo = false;
-      gp_Vec aLocVec;
-      int    aNbParsed =
+      gp_Vec           aLocVec;
+      int aNbParsed =
         parseTranslationVec(theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aLocVec);
       anArgIter += aNbParsed;
       if (aNbParsed != 0)
@@ -4231,8 +4251,9 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
     else if (aCmdName == "vsetlocation")
     {
       // compatibility with old syntax
-      gp_Vec aLocVec;
-      int    aNbParsed = parseTranslationVec(theArgNb - anArgIter, theArgVec + anArgIter, aLocVec);
+      gp_Vec           aLocVec;
+      int aNbParsed =
+        parseTranslationVec(theArgNb - anArgIter, theArgVec + anArgIter, aLocVec);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -4283,8 +4304,7 @@ static int VSetLocation(Draw_Interpretor& theDI, int theArgNb, const char** theA
 }
 
 //! Find displayed object.
-static occ::handle<AIS_InteractiveObject> findConnectedObject(
-  const TCollection_AsciiString& theName)
+static occ::handle<AIS_InteractiveObject> findConnectedObject(const TCollection_AsciiString& theName)
 {
   occ::handle<AIS_InteractiveObject> aPrs;
   if (!GetMapOfAIS().Find2(theName, aPrs))
@@ -4337,12 +4357,12 @@ static int VConnect(Draw_Interpretor& /*di*/, int argc, const char** argv)
   }
 
   // Get values
-  int                                           anArgIter = 1;
-  const TCollection_AsciiString                 aName(argv[anArgIter++]);
+  int                         anArgIter = 1;
+  const TCollection_AsciiString            aName(argv[anArgIter++]);
   occ::handle<AIS_MultipleConnectedInteractive> aMultiConObject;
-  TCollection_AsciiString                       aColorString(argv[argc - 1]);
-  Quantity_Color                                aColor;
-  bool                                          hasColor = false;
+  TCollection_AsciiString                  aColorString(argv[argc - 1]);
+  Quantity_Color                           aColor;
+  bool                         hasColor = false;
   if (aColorString.Search("color=") != -1)
   {
     hasColor = true;
@@ -4357,7 +4377,7 @@ static int VConnect(Draw_Interpretor& /*di*/, int argc, const char** argv)
   const int aNbShapes = hasColor ? (argc - 1) : argc;
   for (int i = 5; i < aNbShapes; ++i)
   {
-    TCollection_AsciiString            anOriginObjectName(argv[i]);
+    TCollection_AsciiString       anOriginObjectName(argv[i]);
     occ::handle<AIS_InteractiveObject> anObject;
     if (aName.IsEqual(anOriginObjectName))
     {
@@ -4414,10 +4434,12 @@ static int VConnect(Draw_Interpretor& /*di*/, int argc, const char** argv)
 // function : VConnectTo
 // purpose  : Creates and displays AIS_ConnectedInteractive object from input object and location
 //===============================================================================================
-static int VConnectTo(Draw_Interpretor& /*di*/, int argc, const char** argv)
+static int VConnectTo(Draw_Interpretor& /*di*/,
+                                   int argc,
+                                   const char**     argv)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater              anUpdateTool(aContext, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater         anUpdateTool(aContext, ViewerTest::CurrentView());
   if (aContext.IsNull())
   {
     Message::SendFail("Error: no active viewer");
@@ -4429,8 +4451,8 @@ static int VConnectTo(Draw_Interpretor& /*di*/, int argc, const char** argv)
     return 1;
   }
 
-  int                                anArgIter = 1;
-  TCollection_AsciiString            aName(argv[anArgIter++]);
+  int              anArgIter = 1;
+  TCollection_AsciiString       aName(argv[anArgIter++]);
   occ::handle<AIS_InteractiveObject> anOriginObject;
 
   TCollection_AsciiString anOriginObjectName(argv[5]);
@@ -4514,12 +4536,11 @@ static int VDisconnect(Draw_Interpretor& di, int argc, const char** argv)
 
   TCollection_AsciiString aName(argv[1]);
   TCollection_AsciiString anObject(argv[2]);
-  int                     anObjectNumber = Draw::Atoi(argv[2]);
+  int        anObjectNumber = Draw::Atoi(argv[2]);
 
   // find objects
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
-  occ::handle<AIS_MultipleConnectedInteractive> anAssembly;
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
+  occ::handle<AIS_MultipleConnectedInteractive>  anAssembly;
   if (!aMap.IsBound2(aName))
   {
     Message::SendFail("Error: no active viewer");
@@ -4540,9 +4561,7 @@ static int VDisconnect(Draw_Interpretor& di, int argc, const char** argv)
     if (anObjectNumber > 0 && anObjectNumber <= anAssembly->Children().Size())
     {
       int aCounter = 1;
-      for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(
-             anAssembly->Children());
-           anIter.More();
+      for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(anAssembly->Children()); anIter.More();
            anIter.Next())
       {
         if (aCounter == anObjectNumber)
@@ -4583,15 +4602,14 @@ static int VAddConnected(Draw_Interpretor&, int argc, const char** argv)
   }
 
   const TCollection_AsciiString aName(argv[1]);
-  const double                  aX = Draw::Atof(argv[2]);
-  const double                  aY = Draw::Atof(argv[3]);
-  const double                  aZ = Draw::Atof(argv[4]);
+  const double           aX = Draw::Atof(argv[2]);
+  const double           aY = Draw::Atof(argv[3]);
+  const double           aZ = Draw::Atof(argv[4]);
   const TCollection_AsciiString anObjectName(argv[5]);
 
   // find object
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
-  occ::handle<AIS_MultipleConnectedInteractive> anAssembly;
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
+  occ::handle<AIS_MultipleConnectedInteractive>  anAssembly;
   {
     occ::handle<AIS_InteractiveObject> aPrs;
     aMap.Find2(aName, aPrs);
@@ -4622,7 +4640,9 @@ static int VAddConnected(Draw_Interpretor&, int argc, const char** argv)
 
 //=================================================================================================
 
-static int VListConnected(Draw_Interpretor& /*di*/, int argc, const char** argv)
+static int VListConnected(Draw_Interpretor& /*di*/,
+                                       int argc,
+                                       const char**     argv)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -4641,9 +4661,8 @@ static int VListConnected(Draw_Interpretor& /*di*/, int argc, const char** argv)
   TCollection_AsciiString aName(argv[1]);
 
   // find object
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
-  occ::handle<AIS_MultipleConnectedInteractive> anAssembly;
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
+  occ::handle<AIS_MultipleConnectedInteractive>  anAssembly;
   if (!aMap.IsBound2(aName))
   {
     Message::SendFail("Error: no active viewer");
@@ -4660,13 +4679,10 @@ static int VListConnected(Draw_Interpretor& /*di*/, int argc, const char** argv)
   std::cout << "Children of " << aName << ":\n";
 
   int aCounter = 1;
-  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(
-         anAssembly->Children());
-       anIter.More();
+  for (NCollection_List<occ::handle<PrsMgr_PresentableObject>>::Iterator anIter(anAssembly->Children()); anIter.More();
        anIter.Next())
   {
-    occ::handle<AIS_InteractiveObject> anObj =
-      occ::down_cast<AIS_InteractiveObject>(anIter.Value());
+    occ::handle<AIS_InteractiveObject> anObj = occ::down_cast<AIS_InteractiveObject>(anIter.Value());
     if (GetMapOfAIS().IsBound1(anObj))
     {
       TCollection_AsciiString aCuurrentName = GetMapOfAIS().Find1(anObj);
@@ -4693,7 +4709,9 @@ static int VListConnected(Draw_Interpretor& /*di*/, int argc, const char** argv)
 
 //=================================================================================================
 
-static int VChild(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
+static int VChild(Draw_Interpretor&,
+                               int theNbArgs,
+                               const char**     theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -4702,11 +4720,11 @@ static int VChild(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
     return 1;
   }
 
-  int                                toAdd = -1;
+  int                           toAdd = -1;
   occ::handle<AIS_InteractiveObject> aParent;
-  bool                               hasActions    = false;
-  int                                toInheritTrsf = -1;
-  ViewerTest_AutoUpdater             anUpdateTool(aContext, ViewerTest::CurrentView());
+  bool                          hasActions    = false;
+  int                           toInheritTrsf = -1;
+  ViewerTest_AutoUpdater        anUpdateTool(aContext, ViewerTest::CurrentView());
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -4790,7 +4808,9 @@ static int VChild(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 
 //=================================================================================================
 
-static int VParent(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
+static int VParent(Draw_Interpretor&,
+                                int theNbArgs,
+                                const char**     theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -4805,7 +4825,7 @@ static int VParent(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
     return 1;
   }
 
-  TCollection_AsciiString            aName(theArgVec[1]);
+  TCollection_AsciiString       aName(theArgVec[1]);
   occ::handle<AIS_InteractiveObject> aParent;
   if (!GetMapOfAIS().Find2(theArgVec[1], aParent))
   {
@@ -4826,7 +4846,9 @@ static int VParent(Draw_Interpretor&, int theNbArgs, const char** theArgVec)
 
 //=================================================================================================
 
-static int VSetSelectionMode(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgv)
+static int VSetSelectionMode(Draw_Interpretor& /*di*/,
+                                          int theNbArgs,
+                                          const char**     theArgv)
 {
   // Check errors
   occ::handle<AIS_InteractiveContext> anAISContext = ViewerTest::GetAISContext();
@@ -4837,8 +4859,8 @@ static int VSetSelectionMode(Draw_Interpretor& /*di*/, int theNbArgs, const char
   }
 
   NCollection_Sequence<TCollection_AsciiString> anObjNames;
-  int                                           aSelectionMode = -1;
-  bool                                          toTurnOn       = true;
+  int                              aSelectionMode = -1;
+  bool                              toTurnOn       = true;
   AIS_SelectionModesConcurrency aSelModeConcurrency = AIS_SelectionModesConcurrency_GlobalOrLocal;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -4893,8 +4915,8 @@ static int VSetSelectionMode(Draw_Interpretor& /*di*/, int theNbArgs, const char
        anObjIter.More();
        anObjIter.Next())
   {
-    const TCollection_AsciiString&     aNameIO = anObjIter.Value();
-    occ::handle<AIS_InteractiveObject> anIO;
+    const TCollection_AsciiString& aNameIO = anObjIter.Value();
+    occ::handle<AIS_InteractiveObject>  anIO;
     GetMapOfAIS().Find2(aNameIO, anIO);
     if (anIO.IsNull())
     {
@@ -4908,8 +4930,7 @@ static int VSetSelectionMode(Draw_Interpretor& /*di*/, int theNbArgs, const char
     anAISContext->DisplayedObjects(aTargetIOs);
   }
 
-  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aTargetIt(aTargetIOs);
-       aTargetIt.More();
+  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator aTargetIt(aTargetIOs); aTargetIt.More();
        aTargetIt.Next())
   {
     const occ::handle<AIS_InteractiveObject>& anIO = aTargetIt.Value();
@@ -4921,8 +4942,8 @@ static int VSetSelectionMode(Draw_Interpretor& /*di*/, int theNbArgs, const char
 //=================================================================================================
 
 static int VSelectionNext(Draw_Interpretor& /*theDI*/,
-                          int /*theArgsNb*/,
-                          const char** /*theArgVec*/)
+                                       int /*theArgsNb*/,
+                                       const char** /*theArgVec*/)
 {
   // Check errors
   occ::handle<AIS_InteractiveContext> anAISContext = ViewerTest::GetAISContext();
@@ -4941,8 +4962,8 @@ static int VSelectionNext(Draw_Interpretor& /*theDI*/,
 //=================================================================================================
 
 static int VSelectionPrevious(Draw_Interpretor& /*theDI*/,
-                              int /*theArgsNb*/,
-                              const char** /*theArgVec*/)
+                                           int /*theArgsNb*/,
+                                           const char** /*theArgVec*/)
 {
   // Check errors
   occ::handle<AIS_InteractiveContext> anAISContext = ViewerTest::GetAISContext();
@@ -4963,9 +4984,11 @@ static int VSelectionPrevious(Draw_Interpretor& /*theDI*/,
 // Draw arg : vtriangle Name PointName PointName PointName
 // purpose  : creates and displays Triangle
 //===========================================================================
-static int VTriangle(Draw_Interpretor& /*di*/, int argc, const char** argv)
+static int VTriangle(Draw_Interpretor& /*di*/,
+                                  int argc,
+                                  const char**     argv)
 {
-  const bool                               isTri = TCollection_AsciiString(argv[0]) == "vtriangle";
+  const bool              isTri = TCollection_AsciiString(argv[0]) == "vtriangle";
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims;
   if (isTri)
   {
@@ -5028,7 +5051,9 @@ static int VTriangle(Draw_Interpretor& /*di*/, int argc, const char** argv)
 // function : VTorus
 // purpose  : creates and displays a torus or torus segment
 //===========================================================================
-static int VTorus(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVec)
+static int VTorus(Draw_Interpretor& /*di*/,
+                               int theNbArgs,
+                               const char**     theArgVec)
 {
   if (ViewerTest::GetAISContext().IsNull())
   {
@@ -5037,10 +5062,10 @@ static int VTorus(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVe
   }
 
   TCollection_AsciiString aName;
-  int                     aNbSlices = 100, aNbStacks = 100;
-  double                  aMajorRad = -1.0, aMinorRad = -1.0;
-  double                  aPipeAngle = 360.0, aSegAngle1 = 0.0, aSegAngle2 = 360.0;
-  double                  anAngles[3] = {-1.0, -1.0, -1.0};
+  int        aNbSlices = 100, aNbStacks = 100;
+  double           aMajorRad = -1.0, aMinorRad = -1.0;
+  double           aPipeAngle = 360.0, aSegAngle1 = 0.0, aSegAngle2 = 360.0;
+  double           anAngles[3] = {-1.0, -1.0, -1.0};
   ViewerTest_AutoUpdater  anUpdateTool(ViewerTest::GetAISContext(), ViewerTest::CurrentView());
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -5149,13 +5174,13 @@ static int VTorus(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVe
   }
 
   occ::handle<Graphic3d_ArrayOfTriangles> aTriangles = Prs3d_ToolTorus::Create(aMajorRad,
-                                                                               aMinorRad,
-                                                                               aSegAngle1,
-                                                                               aSegAngle2,
-                                                                               aPipeAngle,
-                                                                               aNbSlices,
-                                                                               aNbStacks,
-                                                                               gp_Trsf());
+                                                                          aMinorRad,
+                                                                          aSegAngle1,
+                                                                          aSegAngle2,
+                                                                          aPipeAngle,
+                                                                          aNbSlices,
+                                                                          aNbStacks,
+                                                                          gp_Trsf());
   occ::handle<AIS_InteractiveObject>      anIO       = new MyPArrayObject(aTriangles);
   ViewerTest::Display(aName, anIO, false);
   return 0;
@@ -5165,7 +5190,9 @@ static int VTorus(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVe
 // function : VCylinder
 // purpose  : creates and displays a cylinder
 //===========================================================================
-static int VCylinder(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVec)
+static int VCylinder(Draw_Interpretor& /*di*/,
+                                  int theNbArgs,
+                                  const char**     theArgVec)
 {
   if (ViewerTest::GetAISContext().IsNull())
   {
@@ -5174,8 +5201,8 @@ static int VCylinder(Draw_Interpretor& /*di*/, int theNbArgs, const char** theAr
   }
 
   TCollection_AsciiString aName;
-  int                     aNbSlices = 100, aNbStacks = 1;
-  double                  aBotRad = -1.0, aTopRad = -1.0, aHeight = -1.0;
+  int        aNbSlices = 100, aNbStacks = 1;
+  double           aBotRad = -1.0, aTopRad = -1.0, aHeight = -1.0;
   ViewerTest_AutoUpdater  anUpdateTool(ViewerTest::GetAISContext(), ViewerTest::CurrentView());
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -5256,7 +5283,9 @@ static int VCylinder(Draw_Interpretor& /*di*/, int theNbArgs, const char** theAr
 // function : VSphere
 // purpose  : creates and displays a sphere
 //===========================================================================
-static int VSphere(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgVec)
+static int VSphere(Draw_Interpretor& /*di*/,
+                                int theNbArgs,
+                                const char**     theArgVec)
 {
   if (ViewerTest::GetAISContext().IsNull())
   {
@@ -5265,8 +5294,8 @@ static int VSphere(Draw_Interpretor& /*di*/, int theNbArgs, const char** theArgV
   }
 
   TCollection_AsciiString aName;
-  int                     aNbSlices = 100, aNbStacks = 100;
-  double                  aRad = -1.0;
+  int        aNbSlices = 100, aNbStacks = 100;
+  double           aRad = -1.0;
   ViewerTest_AutoUpdater  anUpdateTool(ViewerTest::GetAISContext(), ViewerTest::CurrentView());
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -5349,7 +5378,7 @@ static int VObjZLayer(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   // find object
-  TCollection_AsciiString            aName(argv[2]);
+  TCollection_AsciiString       aName(argv[2]);
   occ::handle<AIS_InteractiveObject> anInterObj;
   GetMapOfAIS().Find2(aName, anInterObj);
   if (anInterObj.IsNull())
@@ -5376,7 +5405,9 @@ static int VObjZLayer(Draw_Interpretor& di, int argc, const char** argv)
 // function : VPolygonOffset
 // purpose  : Set or get polygon offset parameters
 //=======================================================================
-static int VPolygonOffset(Draw_Interpretor& /*di*/, int argc, const char** argv)
+static int VPolygonOffset(Draw_Interpretor& /*di*/,
+                                       int argc,
+                                       const char**     argv)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -5451,8 +5482,8 @@ class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
 {
 
 public:
-  ViewerTest_MarkersArrayObject(const gp_XYZ&                         theStartPoint,
-                                const int&                            thePointsOnSide,
+  ViewerTest_MarkersArrayObject(const gp_XYZ&                    theStartPoint,
+                                const int&          thePointsOnSide,
                                 occ::handle<Graphic3d_AspectMarker3d> theMarkerAspect = NULL)
   {
     myStartPoint   = theStartPoint;
@@ -5465,14 +5496,14 @@ public:
 private:
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override;
+                       const int                    theMode) override;
 
   virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSel,
-                                const int                               theMode) override;
+                                const int             theMode) override;
 
 protected:
-  gp_XYZ                                myStartPoint;
-  int                                   myPointsOnSide;
+  gp_XYZ                           myStartPoint;
+  int                 myPointsOnSide;
   occ::handle<Graphic3d_AspectMarker3d> myMarkerAspect;
 };
 
@@ -5520,7 +5551,7 @@ void ViewerTest_MarkersArrayObject::ComputeSelection(
 
   if (myPointsOnSide == 1)
   {
-    gp_Pnt                               aPoint(myStartPoint);
+    gp_Pnt                          aPoint(myStartPoint);
     occ::handle<Select3D_SensitivePoint> aSensetivePoint =
       new Select3D_SensitivePoint(anEntityOwner, aPoint);
     theSelection->Add(aSensetivePoint);
@@ -5547,7 +5578,9 @@ void ViewerTest_MarkersArrayObject::ComputeSelection(
 // function : VMarkersTest
 // purpose  : Draws an array of markers for testing purposes.
 //=======================================================================
-static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
+static int VMarkersTest(Draw_Interpretor&,
+                                     int theArgNb,
+                                     const char**     theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -5571,9 +5604,9 @@ static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
               Atof(theArgVec[anArgIter + 2]));
   anArgIter += 3;
 
-  int    aPointsOnSide = 10;
-  int    aMarkerType   = -1;
-  double aScale        = 1.0;
+  int aPointsOnSide = 10;
+  int aMarkerType   = -1;
+  double    aScale        = 1.0;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -5602,7 +5635,7 @@ static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 
   occ::handle<Graphic3d_AspectMarker3d> anAspect;
   occ::handle<Image_AlienPixMap>        anImage;
-  Quantity_Color                        aColor(Quantity_NOC_GREEN1);
+  Quantity_Color                   aColor(Quantity_NOC_GREEN1);
   if ((aMarkerType == Aspect_TOM_USERDEFINED || aMarkerType < 0) && !aFileName.IsEmpty())
   {
     anImage = new Image_AlienPixMap();
@@ -5640,7 +5673,9 @@ static int VMarkersTest(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 // function : TextToBrep
 // purpose  : Tool for conversion text to occt-shapes
 //=======================================================================
-static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** theArgVec)
+static int TextToBRep(Draw_Interpretor& /*theDI*/,
+                      int theArgNb,
+                      const char**     theArgVec)
 {
   // Check arguments
   if (theArgNb < 3)
@@ -5649,15 +5684,15 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
     return 1;
   }
 
-  int         anArgIt = 1;
+  int anArgIt = 1;
   const char* aName   = theArgVec[anArgIt++];
   const char* aText   = theArgVec[anArgIt++];
 
   Font_BRepFont           aFont;
   TCollection_AsciiString aFontName("Courier");
-  double                  aTextHeight        = 16.0;
+  double           aTextHeight        = 16.0;
   Font_FontAspect         aFontAspect        = Font_FA_Regular;
-  bool                    anIsCompositeCurve = false;
+  bool        anIsCompositeCurve = false;
   gp_Ax3                  aPenAx3(gp::XOY());
   gp_Dir                  aNormal(gp_Dir::D::Z);
   gp_Dir                  aDirection(gp_Dir::D::X);
@@ -5836,8 +5871,7 @@ static int TextToBRep(Draw_Interpretor& /*theDI*/, int theArgNb, const char** th
 
 struct FontComparator
 {
-  bool operator()(const occ::handle<Font_SystemFont>& theFontA,
-                  const occ::handle<Font_SystemFont>& theFontB)
+  bool operator()(const occ::handle<Font_SystemFont>& theFontA, const occ::handle<Font_SystemFont>& theFontB)
   {
     return theFontA->FontKey().IsLess(theFontB->FontKey());
   }
@@ -5846,8 +5880,8 @@ struct FontComparator
 static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   occ::handle<Font_FontMgr> aMgr        = Font_FontMgr::GetInstance();
-  bool                      toPrintList = theArgNb < 2, toPrintNames = false;
-  Font_StrictLevel          aStrictLevel = Font_StrictLevel_Any;
+  bool                 toPrintList = theArgNb < 2, toPrintNames = false;
+  Font_StrictLevel     aStrictLevel = Font_StrictLevel_Any;
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString anArg(theArgVec[anArgIter]);
@@ -5896,12 +5930,10 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       TCollection_AsciiString aResult;
       if (toFindAll || aFontName.Search("*") != -1)
       {
-        const NCollection_List<occ::handle<Font_SystemFont>> aFonts = aMgr->GetAvailableFonts();
-        std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
+        const NCollection_List<occ::handle<Font_SystemFont>>         aFonts = aMgr->GetAvailableFonts();
+        std::vector<occ::handle<Font_SystemFont>> aFontsSorted;
         aFontsSorted.reserve(aFonts.Size());
-        for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
-             aFontIter.More();
-             aFontIter.Next())
+        for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts); aFontIter.More(); aFontIter.Next())
         {
           aFontsSorted.push_back(aFontIter.Value());
         }
@@ -5910,8 +5942,8 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
              aFontIter != aFontsSorted.end();
              ++aFontIter)
         {
-          const occ::handle<Font_SystemFont>& aFont = *aFontIter;
-          const TCollection_AsciiString aCheck = TCollection_AsciiString("string match -nocase \"")
+          const occ::handle<Font_SystemFont>& aFont  = *aFontIter;
+          const TCollection_AsciiString  aCheck = TCollection_AsciiString("string match -nocase \"")
                                                  + aFontName + "\" \"" + aFont->FontName() + "\"";
           if (theDI.Eval(aCheck.ToCString()) == 0 && *theDI.Result() != '1')
           {
@@ -5932,8 +5964,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
           }
         }
       }
-      else if (occ::handle<Font_SystemFont> aFont =
-                 aMgr->FindFont(aFontName, aStrictLevel, aFontAspect))
+      else if (occ::handle<Font_SystemFont> aFont = aMgr->FindFont(aFontName, aStrictLevel, aFontAspect))
       {
         aResult = toPrintInfo ? aFont->ToString() : aFont->FontName();
       }
@@ -5952,10 +5983,10 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
                  || anArgCase == "register"))
     {
       ++anArgIter;
-      const char*             aFontPath = theArgVec[anArgIter++];
+      const char*        aFontPath = theArgVec[anArgIter++];
       TCollection_AsciiString aFontName;
       Font_FontAspect         aFontAspect    = Font_FA_Undefined;
-      int                     isSingelStroke = -1;
+      int        isSingelStroke = -1;
       for (; anArgIter < theArgNb; ++anArgIter)
       {
         anArgCase = theArgVec[anArgIter];
@@ -6019,7 +6050,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
     }
     else if (anArgCase == "-aliases")
     {
-      TCollection_AsciiString                                     anAliasName;
+      TCollection_AsciiString        anAliasName;
       NCollection_Sequence<occ::handle<TCollection_HAsciiString>> aNames;
       if (anArgIter + 1 < theArgNb && *theArgVec[anArgIter + 1] != '-')
       {
@@ -6033,8 +6064,7 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       {
         aMgr->GetAllAliases(aNames);
       }
-      for (NCollection_Sequence<occ::handle<TCollection_HAsciiString>>::Iterator aNameIter(aNames);
-           aNameIter.More();
+      for (NCollection_Sequence<occ::handle<TCollection_HAsciiString>>::Iterator aNameIter(aNames); aNameIter.More();
            aNameIter.Next())
       {
         theDI << "{" << aNameIter.Value()->String() << "} ";
@@ -6089,13 +6119,11 @@ static int VFont(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   if (toPrintList)
   {
     // just print the list of available fonts
-    bool                                                 isFirst = true;
-    const NCollection_List<occ::handle<Font_SystemFont>> aFonts  = aMgr->GetAvailableFonts();
-    std::vector<occ::handle<Font_SystemFont>>            aFontsSorted;
+    bool                     isFirst = true;
+    const NCollection_List<occ::handle<Font_SystemFont>>         aFonts  = aMgr->GetAvailableFonts();
+    std::vector<occ::handle<Font_SystemFont>> aFontsSorted;
     aFontsSorted.reserve(aFonts.Size());
-    for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts);
-         aFontIter.More();
-         aFontIter.Next())
+    for (NCollection_List<occ::handle<Font_SystemFont>>::Iterator aFontIter(aFonts); aFontIter.More(); aFontIter.Next())
     {
       aFontsSorted.push_back(aFontIter.Value());
     }
@@ -6171,7 +6199,7 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
                                          ? Prs3d_VDM_Isolated
                                          : (aModeStr == "all" ? Prs3d_VDM_All : Prs3d_VDM_Inherited);
 
-    bool                                                 aRedrawNeeded = false;
+    bool      aRedrawNeeded = false;
     NCollection_List<occ::handle<AIS_InteractiveObject>> anObjs;
 
     // No object(s) specified -> use all displayed
@@ -6195,8 +6223,7 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
       anObjs.Append(anObject);
     }
 
-    for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anIt(anObjs); anIt.More();
-         anIt.Next())
+    for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anIt(anObjs); anIt.More(); anIt.Next())
     {
       anObject = anIt.Value();
       anObject->Attributes()->SetVertexDrawMode(aNewMode);
@@ -6228,7 +6255,9 @@ static int VVertexMode(Draw_Interpretor& theDI, int theArgNum, const char** theA
 // function : VPointCloud
 // purpose  : Create interactive object for arbitrary set of points.
 //=======================================================================
-static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
+static int VPointCloud(Draw_Interpretor& theDI,
+                                    int  theArgNum,
+                                    const char**      theArgs)
 {
   if (theArgNum < 2)
   {
@@ -6248,13 +6277,13 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
 
   TCollection_AsciiString aDistribution;
   gp_Pnt                  aDistCenter;
-  double                  aDistRadius   = 0.0;
-  int                     aDistNbPoints = 0;
+  double           aDistRadius   = 0.0;
+  int        aDistNbPoints = 0;
 
   // parse options
-  bool   toRandColors = false;
-  bool   hasNormals = true, hasUV = false;
-  bool   isDensityPoints = false;
+  bool          toRandColors = false;
+  bool          hasNormals = true, hasUV = false;
+  bool          isDensityPoints = false;
   double aDensity = 0.0, aDist = 0.0;
   double aTol = Precision::Confusion();
   for (int anArgIter = 1; anArgIter < theArgNum; ++anArgIter)
@@ -6365,10 +6394,7 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
       {
       }
 
-      void SetPointArray(const occ::handle<Graphic3d_ArrayOfPoints>& thePoints)
-      {
-        myPoints = thePoints;
-      }
+      void SetPointArray(const occ::handle<Graphic3d_ArrayOfPoints>& thePoints) { myPoints = thePoints; }
 
     protected:
       virtual void addPoint(const gp_Pnt&   thePoint,
@@ -6401,12 +6427,12 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
     aPoitCloudTool.SetDistance(aDist);
 
     int aNbPoints = isDensityPoints ? aPoitCloudTool.NbPointsByDensity(aDensity)
-                                    : aPoitCloudTool.NbPointsByTriangulation();
+                                                 : aPoitCloudTool.NbPointsByTriangulation();
     theDI << "Number of the generated points : " << aNbPoints << "\n";
     anArrayPoints = new Graphic3d_ArrayOfPoints(aNbPoints, aFlags);
     aPoitCloudTool.SetPointArray(anArrayPoints);
     bool isDone = isDensityPoints ? aPoitCloudTool.GeneratePointsByDensity(aDensity)
-                                  : aPoitCloudTool.GeneratePointsByTriangulation();
+                                              : aPoitCloudTool.GeneratePointsByTriangulation();
     if (!isDone)
     {
       Message::SendFail() << "Error: Point cloud was not generated";
@@ -6475,7 +6501,7 @@ static int VPointCloud(Draw_Interpretor& theDI, int theArgNum, const char** theA
 static int VPriority(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 {
   occ::handle<AIS_InteractiveContext> aContext = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater              anUpdateTool(aContext, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater         anUpdateTool(aContext, ViewerTest::CurrentView());
   if (aContext.IsNull())
   {
     Message::SendFail("Error: no active viewer");
@@ -6483,8 +6509,8 @@ static int VPriority(Draw_Interpretor& theDI, int theArgNum, const char** theArg
   }
 
   TCollection_AsciiString aLastArg(theArgs[theArgNum - 1]);
-  int                     aPriority = Graphic3d_DisplayPriority_INVALID;
-  int                     aNbArgs   = theArgNum;
+  int        aPriority = Graphic3d_DisplayPriority_INVALID;
+  int        aNbArgs   = theArgNum;
   if (aLastArg.IsIntegerValue())
   {
     aPriority = aLastArg.IntegerValue();
@@ -6517,7 +6543,7 @@ static int VPriority(Draw_Interpretor& theDI, int theArgNum, const char** theArg
       continue;
     }
 
-    TCollection_AsciiString            aName(theArgs[anArgIter]);
+    TCollection_AsciiString       aName(theArgs[anArgIter]);
     occ::handle<AIS_InteractiveObject> anIObj;
     GetMapOfAIS().Find2(aName, anIObj);
     if (anIObj.IsNull())
@@ -6544,11 +6570,11 @@ class MyShapeWithNormals : public AIS_Shape
   DEFINE_STANDARD_RTTI_INLINE(MyShapeWithNormals, AIS_Shape);
 
 public:
-  double NormalLength;
-  int    NbAlongU;
-  int    NbAlongV;
-  bool   ToUseMesh;
-  bool   ToOrient;
+  double    NormalLength;
+  int NbAlongU;
+  int NbAlongV;
+  bool ToUseMesh;
+  bool ToOrient;
 
 public:
   //! Main constructor.
@@ -6566,7 +6592,7 @@ protected:
   //! Compute presentation.
   virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
                        const occ::handle<Prs3d_Presentation>&         thePrs,
-                       const int                                      theMode) override
+                       const int                    theMode) override
   {
     AIS_Shape::Compute(thePrsMgr, thePrs, theMode);
 
@@ -6637,28 +6663,27 @@ static int VNormals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs
     return 1;
   }
 
-  int          anArgIter  = 1;
-  const char*  aShapeName = theArgs[anArgIter++];
-  TopoDS_Shape aShape     = DBRep::Get(aShapeName);
-  bool         isOn       = true;
+  int anArgIter  = 1;
+  const char* aShapeName = theArgs[anArgIter++];
+  TopoDS_Shape     aShape     = DBRep::Get(aShapeName);
+  bool isOn       = true;
   if (aShape.IsNull())
   {
     Message::SendFail() << "Error: shape with name '" << aShapeName << "' is not found";
     return 1;
   }
 
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
-  occ::handle<MyShapeWithNormals> aShapePrs;
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
+  occ::handle<MyShapeWithNormals>                aShapePrs;
   if (aMap.IsBound2(aShapeName))
   {
     aShapePrs = occ::down_cast<MyShapeWithNormals>(aMap.Find2(aShapeName));
   }
 
-  bool   isUseMesh = false;
-  double aLength   = 10.0;
-  int    aNbAlongU = 1, aNbAlongV = 1;
-  bool   isOriented = false;
+  bool isUseMesh = false;
+  double    aLength   = 10.0;
+  int aNbAlongU = 1, aNbAlongV = 1;
+  bool isOriented = false;
   for (; anArgIter < theArgNum; ++anArgIter)
   {
     TCollection_AsciiString aParam(theArgs[anArgIter]);

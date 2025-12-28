@@ -38,8 +38,8 @@
 #endif
 
 #ifdef _WIN32
-extern Draw_Viewer dout;
-extern bool        Draw_Batch;
+extern Draw_Viewer      dout;
+extern bool Draw_Batch;
 #endif
 
 extern bool Draw_BlackBackGround;
@@ -136,8 +136,8 @@ static int zoom(Draw_Interpretor&, int n, const char** a)
 
 static int wzoom(Draw_Interpretor& di, int argc, const char** argv)
 {
-  int    id, X, Y, W, H, X1, Y1, X2 = 0, Y2 = 0, b;
-  double dX1, dY1, dX2, dY2, zx, zy;
+  int id, X, Y, W, H, X1, Y1, X2 = 0, Y2 = 0, b;
+  double    dX1, dY1, dX2, dY2, zx, zy;
   if (argc != 1 && argc != 6)
   {
     di << "Usage : " << argv[0] << " [view-id X1 Y1 X2 Y2]\n";
@@ -354,8 +354,8 @@ static int fit(Draw_Interpretor&, int n, const char** a)
   bool f2d = !strcasecmp(a[0], "2dfit");
   if (n == 1)
   {
-    double zoom = RealLast();
-    int    id;
+    double    zoom = RealLast();
+    int id;
     for (id = 0; id < MAXVIEW; id++)
     {
       if (dout.HasView(id))
@@ -467,8 +467,8 @@ static int magnify(Draw_Interpretor&, int n, const char** a)
       return 1;
     start = end = anid;
   }
-  bool        v2d = (a[0][0] == '2'); // 2dmu, 2dmd
-  const char* com = a[0];
+  bool v2d = (a[0][0] == '2'); // 2dmu, 2dmd
+  const char*      com = a[0];
   if (v2d)
     com += 2;
   double dz = 1.;
@@ -492,7 +492,9 @@ static int magnify(Draw_Interpretor&, int n, const char** a)
   return 0;
 }
 
-Standard_EXPORT int Draw_magnify(Draw_Interpretor& di, int n, const char** a)
+Standard_EXPORT int Draw_magnify(Draw_Interpretor& di,
+                                              int  n,
+                                              const char**      a)
 {
   return magnify(di, n, a);
 }
@@ -511,8 +513,8 @@ static int rotate(Draw_Interpretor&, int n, const char** a)
     start = end = anid;
   }
 
-  gp_Dir2d D;
-  double   ang = 0;
+  gp_Dir2d      D;
+  double ang = 0;
   if (!strcasecmp(a[0], "u"))
   {
     D.SetCoord(1., 0.);
@@ -562,8 +564,8 @@ static int panning(Draw_Interpretor&, int n, const char** a)
   int DY = 0;
   int X, Y, W, H;
 
-  bool        v2d = (a[0][0] == '2'); // pu2d, pd2d, pr2d, pl2d
-  const char* com = a[0];
+  bool v2d = (a[0][0] == '2'); // pu2d, pd2d, pr2d, pl2d
+  const char*      com = a[0];
   if (v2d)
     com += 2;
 
@@ -584,7 +586,9 @@ static int panning(Draw_Interpretor&, int n, const char** a)
       {
         dout.GetPosSize(id, X, Y, W, H);
         //	dout.PanView(id,W * DX * steppan, H * DY * steppan);
-        dout.PanView(id, (int)(W * DX * steppan), (int)(H * DY * steppan));
+        dout.PanView(id,
+                     (int)(W * DX * steppan),
+                     (int)(H * DY * steppan));
         dout.RepaintView(id);
       }
     }
@@ -596,9 +600,9 @@ static int panning(Draw_Interpretor&, int n, const char** a)
 
 static int ptv(Draw_Interpretor&, int n, const char** a)
 {
-  double X, Y, Z;
-  int    start = 0;
-  int    end   = MAXVIEW - 1;
+  double    X, Y, Z;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n < 4)
     return 1;
   if (n >= 5)
@@ -637,9 +641,9 @@ static int ptv(Draw_Interpretor&, int n, const char** a)
 
 static int dptv(Draw_Interpretor&, int n, const char** a)
 {
-  double DX, DY, DZ;
-  int    start = 0;
-  int    end   = MAXVIEW - 1;
+  double    DX, DY, DZ;
+  int start = 0;
+  int end   = MAXVIEW - 1;
   if (n < 4)
     return 1;
   if (n >= 5)
@@ -712,8 +716,8 @@ static int hardcopy(Draw_Interpretor&, int n, const char** a)
   double dx  = 210;
   double dy  = 210 * std::sqrt(2.);
 
-  int         iview = 1;
-  const char* file  = "a4.ps";
+  int iview = 1;
+  const char*      file  = "a4.ps";
   if (n >= 2)
   {
     file = a[1];
@@ -791,10 +795,10 @@ static int hardcopy(Draw_Interpretor&, int n, const char** a)
     double kx = (double)(pxmax - pxmin) / (vxmax - vxmin);
     double ky = (double)(pymax - pymin) / (vymax - vymin);
     double k  = std::min(std::abs(kx), std::abs(ky));
-    kx        = (kx > 0) ? k : -k;
-    ky        = (ky > 0) ? k : -k;
-    pxmax     = (int)(pxmin + kx * (vxmax - vxmin));
-    pymax     = (int)(pymin + ky * (vymax - vymin));
+    kx               = (kx > 0) ? k : -k;
+    ky               = (ky > 0) ? k : -k;
+    pxmax            = (int)(pxmin + kx * (vxmax - vxmin));
+    pymax            = (int)(pymin + ky * (vymax - vymin));
 
     // si on veut choisir l'orientation : 90 rotate
 
@@ -889,8 +893,8 @@ static int xwd(Draw_Interpretor&, int n, const char** a)
   // enforce repaint if necessary
   Draw_RepaintNowIfNecessary();
 
-  int         id   = 1;
-  const char* file = a[1];
+  int id   = 1;
+  const char*      file = a[1];
   if (n > 2)
   {
     id   = Draw::Atoi(a[1]);
@@ -963,8 +967,8 @@ static int dflush(Draw_Interpretor&, int, const char**)
 
 static int dtext(Draw_Interpretor& di, int n, const char** a)
 {
-  gp_Pnt P;
-  bool   is3d;
+  gp_Pnt           P;
+  bool is3d;
   if (n == 2)
   {
     int id, X, Y, b;

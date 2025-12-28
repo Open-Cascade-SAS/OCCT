@@ -21,7 +21,7 @@
 RWStepGeom_RWSurfaceReplica::RWStepGeom_RWSurfaceReplica() {}
 
 void RWStepGeom_RWSurfaceReplica::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepGeom_SurfaceReplica>& ent) const
 {
@@ -59,7 +59,7 @@ void RWStepGeom_RWSurfaceReplica::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aParentSurface, aTransformation);
 }
 
-void RWStepGeom_RWSurfaceReplica::WriteStep(StepData_StepWriter&                        SW,
+void RWStepGeom_RWSurfaceReplica::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepGeom_SurfaceReplica>& ent) const
 {
 
@@ -77,7 +77,7 @@ void RWStepGeom_RWSurfaceReplica::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepGeom_RWSurfaceReplica::Share(const occ::handle<StepGeom_SurfaceReplica>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->ParentSurface());

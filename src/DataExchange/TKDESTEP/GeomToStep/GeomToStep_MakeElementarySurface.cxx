@@ -41,37 +41,37 @@
 //=============================================================================
 GeomToStep_MakeElementarySurface::GeomToStep_MakeElementarySurface(
   const occ::handle<Geom_ElementarySurface>& S,
-  const StepData_Factors&                    theLocalFactors)
+  const StepData_Factors&               theLocalFactors)
 {
   done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_CylindricalSurface)))
   {
-    occ::handle<Geom_CylindricalSurface> Sur = occ::down_cast<Geom_CylindricalSurface>(S);
-    GeomToStep_MakeCylindricalSurface    MkCylindrical(Sur, theLocalFactors);
+    occ::handle<Geom_CylindricalSurface>   Sur = occ::down_cast<Geom_CylindricalSurface>(S);
+    GeomToStep_MakeCylindricalSurface MkCylindrical(Sur, theLocalFactors);
     theElementarySurface = MkCylindrical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
   {
-    occ::handle<Geom_ConicalSurface> Sur = occ::down_cast<Geom_ConicalSurface>(S);
-    GeomToStep_MakeConicalSurface    MkConical(Sur, theLocalFactors);
+    occ::handle<Geom_ConicalSurface>   Sur = occ::down_cast<Geom_ConicalSurface>(S);
+    GeomToStep_MakeConicalSurface MkConical(Sur, theLocalFactors);
     theElementarySurface = MkConical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SphericalSurface)))
   {
-    occ::handle<Geom_SphericalSurface> Sur = occ::down_cast<Geom_SphericalSurface>(S);
-    GeomToStep_MakeSphericalSurface    MkSpherical(Sur, theLocalFactors);
+    occ::handle<Geom_SphericalSurface>   Sur = occ::down_cast<Geom_SphericalSurface>(S);
+    GeomToStep_MakeSphericalSurface MkSpherical(Sur, theLocalFactors);
     theElementarySurface = MkSpherical.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ToroidalSurface)))
   {
-    occ::handle<Geom_ToroidalSurface> Sur = occ::down_cast<Geom_ToroidalSurface>(S);
-    GeomToStep_MakeToroidalSurface    MkToroidal(Sur, theLocalFactors);
+    occ::handle<Geom_ToroidalSurface>   Sur = occ::down_cast<Geom_ToroidalSurface>(S);
+    GeomToStep_MakeToroidalSurface MkToroidal(Sur, theLocalFactors);
     theElementarySurface = MkToroidal.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_Plane)))
   {
-    occ::handle<Geom_Plane> Sur = occ::down_cast<Geom_Plane>(S);
-    GeomToStep_MakePlane    MkPlane(Sur, theLocalFactors);
+    occ::handle<Geom_Plane>   Sur = occ::down_cast<Geom_Plane>(S);
+    GeomToStep_MakePlane MkPlane(Sur, theLocalFactors);
     theElementarySurface = MkPlane.Value();
   }
   else

@@ -29,7 +29,7 @@ RWStepFEA_RWFeaRepresentationItem::RWStepFEA_RWFeaRepresentationItem() {}
 
 void RWStepFEA_RWFeaRepresentationItem::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepFEA_FeaRepresentationItem>& ent) const
 {
@@ -49,7 +49,7 @@ void RWStepFEA_RWFeaRepresentationItem::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaRepresentationItem::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepFEA_FeaRepresentationItem>& ent) const
 {
 

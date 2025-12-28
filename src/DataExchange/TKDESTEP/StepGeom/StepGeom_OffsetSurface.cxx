@@ -21,8 +21,8 @@ StepGeom_OffsetSurface::StepGeom_OffsetSurface() {}
 
 void StepGeom_OffsetSurface::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                   const occ::handle<StepGeom_Surface>&         aBasisSurface,
-                                  const double                                 aDistance,
-                                  const StepData_Logical                       aSelfIntersect)
+                                  const double                     aDistance,
+                                  const StepData_Logical                  aSelfIntersect)
 {
   // --- classe own fields ---
   basisSurface  = aBasisSurface;

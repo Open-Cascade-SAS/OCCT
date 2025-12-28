@@ -25,11 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ManifoldSolid, IGESData_IGESEntity)
 
 IGESSolid_ManifoldSolid::IGESSolid_ManifoldSolid() {}
 
-void IGESSolid_ManifoldSolid::Init(
-  const occ::handle<IGESSolid_Shell>&                                   aShell,
-  const bool                                                            Shellflag,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>>& VoidShells,
-  const occ::handle<NCollection_HArray1<int>>&                          VoidShellFlags)
+void IGESSolid_ManifoldSolid::Init(const occ::handle<IGESSolid_Shell>&          aShell,
+                                   const bool                  Shellflag,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESSolid_Shell>>>& VoidShells,
+                                   const occ::handle<NCollection_HArray1<int>>& VoidShellFlags)
 {
   if (!VoidShells.IsNull())
     if (VoidShells->Lower() != 1 || VoidShellFlags->Lower() != 1

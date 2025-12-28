@@ -36,23 +36,23 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-    const bool                                        hasItemDefinedTransformation_Description,
+    const bool                       hasItemDefinedTransformation_Description,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
     const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-    const bool                                        hasTX,
-    const StepKinematics_ActuatedDirection            theTX,
-    const bool                                        hasTY,
-    const StepKinematics_ActuatedDirection            theTY,
-    const bool                                        hasTZ,
-    const StepKinematics_ActuatedDirection            theTZ,
-    const bool                                        hasRX,
-    const StepKinematics_ActuatedDirection            theRX,
-    const bool                                        hasRY,
-    const StepKinematics_ActuatedDirection            theRY,
-    const bool                                        hasRZ,
-    const StepKinematics_ActuatedDirection            theRZ);
+    const bool                       hasTX,
+    const StepKinematics_ActuatedDirection       theTX,
+    const bool                       hasTY,
+    const StepKinematics_ActuatedDirection       theTY,
+    const bool                       hasTZ,
+    const StepKinematics_ActuatedDirection       theTZ,
+    const bool                       hasRX,
+    const StepKinematics_ActuatedDirection       theRX,
+    const bool                       hasRY,
+    const StepKinematics_ActuatedDirection       theRY,
+    const bool                       hasRZ,
+    const StepKinematics_ActuatedDirection       theRZ);
 
   //! Returns field TX
   Standard_EXPORT StepKinematics_ActuatedDirection TX() const;
@@ -105,11 +105,11 @@ private:
   StepKinematics_ActuatedDirection myRX;  //!< optional
   StepKinematics_ActuatedDirection myRY;  //!< optional
   StepKinematics_ActuatedDirection myRZ;  //!< optional
-  bool                             defTX; //!< flag "is TX defined"
-  bool                             defTY; //!< flag "is TY defined"
-  bool                             defTZ; //!< flag "is TZ defined"
-  bool                             defRX; //!< flag "is RX defined"
-  bool                             defRY; //!< flag "is RY defined"
-  bool                             defRZ; //!< flag "is RZ defined"
+  bool                 defTX; //!< flag "is TX defined"
+  bool                 defTY; //!< flag "is TY defined"
+  bool                 defTZ; //!< flag "is TZ defined"
+  bool                 defRX; //!< flag "is RX defined"
+  bool                 defRY; //!< flag "is RY defined"
+  bool                 defRZ; //!< flag "is RZ defined"
 };
 #endif // _StepKinematics_ActuatedKinematicPair_HeaderFile_

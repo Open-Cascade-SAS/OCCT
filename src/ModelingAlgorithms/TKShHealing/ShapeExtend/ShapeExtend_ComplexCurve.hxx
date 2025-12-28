@@ -41,11 +41,13 @@ public:
 
   //! Returns number of the curve for the given parameter U
   //! and local parameter UOut for the found curve
-  Standard_EXPORT virtual int LocateParameter(const double U, double& UOut) const = 0;
+  Standard_EXPORT virtual int LocateParameter(const double U,
+                                                           double&      UOut) const = 0;
 
   //! Returns global parameter for the whole curve according
   //! to the segment and local parameter on it
-  Standard_EXPORT virtual double LocalToGlobal(const int index, const double Ulocal) const = 0;
+  Standard_EXPORT virtual double LocalToGlobal(const int index,
+                                                      const double    Ulocal) const = 0;
 
   //! Applies transformation to each curve
   Standard_EXPORT virtual void Transform(const gp_Trsf& T) override;
@@ -75,17 +77,23 @@ public:
   //! Finds appropriate curve and local parameter on it.
   Standard_EXPORT virtual void D0(const double U, gp_Pnt& P) const override;
 
-  Standard_EXPORT virtual void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT virtual void D1(const double U,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1) const override;
 
-  Standard_EXPORT virtual void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT virtual void D2(const double U,
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1,
+                                  gp_Vec&             V2) const override;
 
   Standard_EXPORT virtual void D3(const double U,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const override;
+                                  gp_Pnt&             P,
+                                  gp_Vec&             V1,
+                                  gp_Vec&             V2,
+                                  gp_Vec&             V3) const override;
 
-  Standard_EXPORT virtual gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT virtual gp_Vec DN(const double    U,
+                                    const int N) const override;
 
   //! Returns scale factor for recomputing of deviatives.
   Standard_EXPORT virtual double GetScaleFactor(const int ind) const = 0;
@@ -100,9 +108,12 @@ protected:
   Standard_EXPORT ShapeExtend_ComplexCurve();
 
   //! Transform the derivative according to its order
-  Standard_EXPORT void TransformDN(gp_Vec& V, const int ind, const int N) const;
+  Standard_EXPORT void TransformDN(gp_Vec&                V,
+                                   const int ind,
+                                   const int N) const;
 
   bool myClosed;
+
 };
 
 #include <ShapeExtend_ComplexCurve.lxx>

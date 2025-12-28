@@ -55,7 +55,7 @@ static BRepMAT2d_BisectingLocus MapBiLo;
 static BRepMAT2d_Explorer       anExplo;
 static BRepMAT2d_LinkTopoBilo   TopoBilo;
 static MAT_Side                 SideOfMat = MAT_Left;
-static bool                     LinkComputed;
+static bool         LinkComputed;
 
 static void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice);
 
@@ -78,7 +78,7 @@ static int topoload(Draw_Interpretor&, int argc, const char** argv)
   if (argc >= 3 && (strcmp(argv[2], "-approx") == 0))
   {
     double aTol = 0.1;
-    aFace       = BRepOffsetAPI_MakeOffset::ConvertFace(aFace, aTol);
+    aFace              = BRepOffsetAPI_MakeOffset::ConvertFace(aFace, aTol);
   }
 
   anExplo.Perform(aFace);
@@ -146,7 +146,7 @@ static int zone(Draw_Interpretor&, int argc, const char** argv)
     LinkComputed = true;
   }
 
-  bool                  Reverse;
+  bool Reverse;
   occ::handle<MAT_Zone> TheZone = new MAT_Zone();
 
   for (TopoBilo.Init(S); TopoBilo.More(); TopoBilo.Next())
@@ -183,7 +183,7 @@ static int side(Draw_Interpretor&, int, const char** argv)
 //==========================================================================
 static int result(Draw_Interpretor&, int, const char**)
 {
-  int  i, NbArcs = 0;
+  int i, NbArcs = 0;
   bool Rev;
 
   NbArcs = MapBiLo.Graph()->NumberOfArcs();
@@ -208,7 +208,7 @@ void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
   occ::handle<Standard_Type>      type = aCurve->DynamicType();
   occ::handle<Geom2d_Curve>       curve, CurveDraw;
   occ::handle<DrawTrSurf_Curve2d> dr;
-  Draw_Color                      Couleur;
+  Draw_Color                 Couleur;
 
   if (type == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
@@ -220,11 +220,11 @@ void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
       type  = curve->DynamicType();
     }
     // PB of representation of semi_infinite curves.
-    gp_Parab2d gpParabola;
-    gp_Hypr2d  gpHyperbola;
-    double     Focus;
-    double     Limit = 50000.;
-    double     delta = 400;
+    gp_Parab2d    gpParabola;
+    gp_Hypr2d     gpHyperbola;
+    double Focus;
+    double Limit = 50000.;
+    double delta = 400;
 
     // PB of representation of semi_infinite curves.
     if (aCurve->LastParameter() == Precision::Infinite())
@@ -232,22 +232,22 @@ void DrawCurve(const occ::handle<Geom2d_Curve>& aCurve, const int Indice)
 
       if (type == STANDARD_TYPE(Geom2d_Parabola))
       {
-        gpParabola  = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
-        Focus       = gpParabola.Focal();
+        gpParabola         = occ::down_cast<Geom2d_Parabola>(curve)->Parab2d();
+        Focus              = gpParabola.Focal();
         double Val1 = std::sqrt(Limit * Focus);
         double Val2 = std::sqrt(Limit * Limit);
-        delta       = (Val1 <= Val2 ? Val1 : Val2);
+        delta              = (Val1 <= Val2 ? Val1 : Val2);
       }
       else if (type == STANDARD_TYPE(Geom2d_Hyperbola))
       {
-        gpHyperbola  = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
+        gpHyperbola         = occ::down_cast<Geom2d_Hyperbola>(curve)->Hypr2d();
         double Majr  = gpHyperbola.MajorRadius();
         double Minr  = gpHyperbola.MinorRadius();
         double Valu1 = Limit / Majr;
         double Valu2 = Limit / Minr;
         double Val1  = std::log(Valu1 + std::sqrt(Valu1 * Valu1 - 1));
         double Val2  = std::log(Valu2 + std::sqrt(Valu2 * Valu2 + 1));
-        delta        = (Val1 <= Val2 ? Val1 : Val2);
+        delta               = (Val1 <= Val2 ? Val1 : Val2);
       }
       if (aCurve->FirstParameter() == -Precision::Infinite())
         CurveDraw = new Geom2d_TrimmedCurve(aCurve, -delta, delta);

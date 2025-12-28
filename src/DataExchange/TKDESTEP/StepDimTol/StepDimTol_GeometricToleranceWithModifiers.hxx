@@ -37,10 +37,10 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& theName,
-    const occ::handle<TCollection_HAsciiString>& theDescription,
-    const occ::handle<Standard_Transient>&       theMagnitude,
-    const StepDimTol_GeometricToleranceTarget&   theTolerancedShapeAspect,
+    const occ::handle<TCollection_HAsciiString>&                       theName,
+    const occ::handle<TCollection_HAsciiString>&                       theDescription,
+    const occ::handle<Standard_Transient>&                             theMagnitude,
+    const StepDimTol_GeometricToleranceTarget&                    theTolerancedShapeAspect,
     const occ::handle<NCollection_HArray1<StepDimTol_GeometricToleranceModifier>>& theModifiers);
 
   //! Returns field Modifiers
@@ -57,7 +57,10 @@ public:
   }
 
   //! Returns number of modifiers
-  inline int NbModifiers() const { return (myModifiers.IsNull() ? 0 : myModifiers->Length()); }
+  inline int NbModifiers() const
+  {
+    return (myModifiers.IsNull() ? 0 : myModifiers->Length());
+  }
 
   //! Returns modifier with the given number
   inline StepDimTol_GeometricToleranceModifier ModifierValue(const int theNum) const
@@ -66,7 +69,7 @@ public:
   }
 
   //! Sets modifier with given number
-  inline void SetModifierValue(const int                                   theNum,
+  inline void SetModifierValue(const int                      theNum,
                                const StepDimTol_GeometricToleranceModifier theItem)
   {
     myModifiers->SetValue(theNum, theItem);

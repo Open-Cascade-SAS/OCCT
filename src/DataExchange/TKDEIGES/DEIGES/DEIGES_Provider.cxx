@@ -32,7 +32,7 @@ namespace
 {
 // Helper function to validate configuration node
 bool validateConfigurationNode(const occ::handle<DE_ConfigurationNode>& theNode,
-                               const TCollection_AsciiString&           theContext)
+                                           const TCollection_AsciiString&      theContext)
 {
   return DE_ValidationUtils::ValidateConfigurationNode(theNode,
                                                        STANDARD_TYPE(DEIGES_ConfigurationNode),
@@ -40,7 +40,7 @@ bool validateConfigurationNode(const occ::handle<DE_ConfigurationNode>& theNode,
 }
 
 // Helper function to configure IGES CAF reader parameters
-void configureIGESCAFReader(IGESCAFControl_Reader&                       theReader,
+void configureIGESCAFReader(IGESCAFControl_Reader&                  theReader,
                             const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
   theReader.SetReadVisible(theNode->InternalParameters.ReadOnlyVisible);
@@ -51,7 +51,7 @@ void configureIGESCAFReader(IGESCAFControl_Reader&                       theRead
 }
 
 // Helper function to configure IGES control reader parameters
-void configureIGESControlReader(IGESControl_Reader&                          theReader,
+void configureIGESControlReader(IGESControl_Reader&                     theReader,
                                 const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
   theReader.SetReadVisible(theNode->InternalParameters.ReadOnlyVisible);
@@ -59,20 +59,22 @@ void configureIGESControlReader(IGESControl_Reader&                          the
 }
 
 // Helper function to setup IGES unit configuration
-void setupIGESUnits(IGESData_GlobalSection&                      theGS,
+void setupIGESUnits(IGESData_GlobalSection&                 theGS,
                     const occ::handle<DEIGES_ConfigurationNode>& theNode,
                     const occ::handle<TDocStd_Document>&         theDocument,
-                    const TCollection_AsciiString&               thePath,
-                    bool                                         theUseDocumentUnits)
+                    const TCollection_AsciiString&          thePath,
+                    bool                        theUseDocumentUnits)
 {
-  int aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+  int aFlag =
+    IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
 
   if (theUseDocumentUnits && !theDocument.IsNull())
   {
-    double aScaleFactorMM = 1.;
-    bool   aHasUnits      = XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
-                                                         aScaleFactorMM,
-                                                         UnitsMethods_LengthUnit_Millimeter);
+    double    aScaleFactorMM = 1.;
+    bool aHasUnits =
+      XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
+                                          aScaleFactorMM,
+                                          UnitsMethods_LengthUnit_Millimeter);
     if (aHasUnits)
     {
       theGS.SetCascadeUnit(aScaleFactorMM);
@@ -97,10 +99,10 @@ void setupIGESUnits(IGESData_GlobalSection&                      theGS,
 }
 
 // Helper function to configure IGES CAF writer parameters
-void configureIGESCAFWriter(IGESCAFControl_Writer&                       theWriter,
+void configureIGESCAFWriter(IGESCAFControl_Writer&                  theWriter,
                             const occ::handle<DEIGES_ConfigurationNode>& theNode,
                             const occ::handle<TDocStd_Document>&         theDocument,
-                            const TCollection_AsciiString&               thePath)
+                            const TCollection_AsciiString&          thePath)
 {
   IGESData_GlobalSection aGS = theWriter.Model()->GlobalSection();
   setupIGESUnits(aGS, theNode, theDocument, thePath, true);
@@ -113,10 +115,10 @@ void configureIGESCAFWriter(IGESCAFControl_Writer&                       theWrit
 }
 
 // Helper function to configure IGES control writer for shapes
-void configureIGESControlWriter(IGESControl_Writer&                          theWriter,
+void configureIGESControlWriter(IGESControl_Writer&                     theWriter,
                                 const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
-  IGESData_GlobalSection        aGS = theWriter.Model()->GlobalSection();
+  IGESData_GlobalSection   aGS = theWriter.Model()->GlobalSection();
   occ::handle<TDocStd_Document> aNullDoc;
   setupIGESUnits(aGS, theNode, aNullDoc, "", false);
 
@@ -127,12 +129,14 @@ void configureIGESControlWriter(IGESControl_Writer&                          the
 // Helper function to setup IGES writer unit flags
 TCollection_AsciiString getIGESUnitString(const occ::handle<DEIGES_ConfigurationNode>& theNode)
 {
-  int aFlag = IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
+  int aFlag =
+    IGESData_BasicEditor::GetFlagByValue(theNode->GlobalParameters.LengthUnit);
   return (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM";
 }
 
 // Helper function to process read file operation
-bool processReadFile(IGESControl_Reader& theReader, const TCollection_AsciiString& thePath)
+bool processReadFile(IGESControl_Reader&            theReader,
+                                 const TCollection_AsciiString& thePath)
 {
   IFSelect_ReturnStatus aReadStat = theReader.ReadFile(thePath.ToCString());
   if (aReadStat != IFSelect_RetDone)
@@ -274,10 +278,10 @@ void DEIGES_Provider::resetStatic()
 
 //=================================================================================================
 
-bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEIGES_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
@@ -320,10 +324,10 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEIGES_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
                             occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext)
@@ -359,9 +363,9 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEIGES_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Read(thePath, theDocument, aWS, theProgress);
@@ -369,9 +373,9 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEIGES_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   occ::handle<XSControl_WorkSession> aWS = new XSControl_WorkSession();
   return Write(thePath, theDocument, aWS, theProgress);
@@ -379,10 +383,10 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
-                           TopoDS_Shape&                       theShape,
+bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
+                           TopoDS_Shape&                  theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+                           const Message_ProgressRange&   theProgress)
 {
   if (!validateConfigurationNode(GetNode(), TCollection_AsciiString("reading the file ") + thePath))
   {
@@ -417,10 +421,10 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&      thePath,
 
 //=================================================================================================
 
-bool DEIGES_Provider::Write(const TCollection_AsciiString&      thePath,
-                            const TopoDS_Shape&                 theShape,
+bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
+                            const TopoDS_Shape&            theShape,
                             occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+                            const Message_ProgressRange&   theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("writing the file ") + thePath;
   if (!validateConfigurationNode(GetNode(), aContext))

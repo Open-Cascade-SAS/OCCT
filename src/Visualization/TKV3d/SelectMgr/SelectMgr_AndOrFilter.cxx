@@ -14,6 +14,7 @@
 #include <SelectMgr_AndOrFilter.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
+#include <SelectMgr_Filter.hxx>
 #include <NCollection_List.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
@@ -29,8 +30,7 @@ SelectMgr_AndOrFilter::SelectMgr_AndOrFilter(const SelectMgr_FilterType theFilte
 
 //=================================================================================================
 
-void SelectMgr_AndOrFilter::SetDisabledObjects(
-  const occ::handle<NCollection_Shared<NCollection_Map<const Standard_Transient*>>>& theObjects)
+void SelectMgr_AndOrFilter::SetDisabledObjects(const occ::handle<NCollection_Shared<NCollection_Map<const Standard_Transient*>>>& theObjects)
 {
   myDisabledObjects = theObjects;
 }
@@ -45,8 +45,7 @@ bool SelectMgr_AndOrFilter::IsOk(const occ::handle<SelectMgr_EntityOwner>& theOb
     return false;
   }
 
-  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator anIter(myFilters); anIter.More();
-       anIter.Next())
+  for (NCollection_List<occ::handle<SelectMgr_Filter>>::Iterator anIter(myFilters); anIter.More(); anIter.Next())
   {
     bool isOK = anIter.Value()->IsOk(theObj);
     if (isOK && myFilterType == SelectMgr_FilterType_OR)

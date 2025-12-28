@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepFEA_NodeDefinition();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeDefinition, StepRepr_ShapeAspect)
+
 };
 
 #endif // _StepFEA_NodeDefinition_HeaderFile

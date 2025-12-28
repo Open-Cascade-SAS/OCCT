@@ -24,7 +24,11 @@
 #include <NCollection_IndexedMap.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Transient.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
 class IGESData_IGESModel;
 class IGESData_IGESEntity;
 class Interface_InterfaceModel;
@@ -61,8 +65,7 @@ public:
   Standard_EXPORT bool AddEntity(const occ::handle<IGESData_IGESEntity>& igesent);
 
   //! Adds a list of entities by adding each of the items
-  Standard_EXPORT void AddList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT void AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Adds all the entities contained in a Model
   Standard_EXPORT void AddModel(const occ::handle<Interface_InterfaceModel>& model);
@@ -104,7 +107,8 @@ public:
   //! Returns the Item which is attached to a set of entities
   //! For <final> and definition of sets, see method NbSets.
   //! This item can be a kind of View or a Drawing
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> SetItem(const int num, const bool final) const;
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> SetItem(const int num,
+                                                      const bool final) const;
 
   //! Returns the complete content of the determined Sets, which
   //! include Duplicated and Remaining (duplication 0) lists
@@ -114,12 +118,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSelect_ViewSorter, Standard_Transient)
 
 private:
-  occ::handle<IGESData_IGESModel>                         themodel;
+  occ::handle<IGESData_IGESModel>    themodel;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> themap;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> theitems;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> thefinals;
-  NCollection_Sequence<int>                               theinditem;
-  NCollection_Sequence<int>                               theindfin;
+  NCollection_Sequence<int>     theinditem;
+  NCollection_Sequence<int>     theindfin;
 };
 
 #endif // _IGESSelect_ViewSorter_HeaderFile

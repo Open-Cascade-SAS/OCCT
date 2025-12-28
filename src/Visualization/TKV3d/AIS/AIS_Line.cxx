@@ -47,8 +47,7 @@ AIS_Line::AIS_Line(const occ::handle<Geom_Line>& aComponent)
 
 //=================================================================================================
 
-AIS_Line::AIS_Line(const occ::handle<Geom_Point>& aStartPoint,
-                   const occ::handle<Geom_Point>& aEndPoint)
+AIS_Line::AIS_Line(const occ::handle<Geom_Point>& aStartPoint, const occ::handle<Geom_Point>& aEndPoint)
     : myStartPoint(aStartPoint),
       myEndPoint(aEndPoint),
       myLineIsSegment(true)
@@ -74,7 +73,7 @@ void AIS_Line::Compute(const occ::handle<PrsMgr_PresentationManager>&,
 //=================================================================================================
 
 void AIS_Line::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
-                                const int                               theMode)
+                                const int             theMode)
 {
   // Do not support selection modes different from 0 currently
   if (theMode)
@@ -119,9 +118,10 @@ void AIS_Line::SetColor(const Quantity_Color& aCol)
   hasOwnColor = true;
   myDrawer->SetColor(aCol);
 
-  double WW = HasWidth()            ? myOwnWidth
-              : myDrawer->HasLink() ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-                                    : 1.;
+  double WW = HasWidth() ? myOwnWidth
+                     : myDrawer->HasLink()
+                       ? AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+                       : 1.;
 
   if (!myDrawer->HasOwnLineAspect())
   {
@@ -189,9 +189,10 @@ void AIS_Line::UnsetWidth()
   }
   else
   {
-    float WW = myDrawer->HasLink()
-                 ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
-                 : 1.0f;
+    float WW =
+      myDrawer->HasLink()
+        ? (float)AIS_GraphicTool::GetLineWidth(myDrawer->Link(), AIS_TOA_Line)
+        : 1.0f;
     myDrawer->LineAspect()->SetWidth(WW);
     myOwnWidth = WW;
     SynchronizeAspects();
@@ -218,7 +219,7 @@ void AIS_Line::ComputeSegmentLine(const occ::handle<Prs3d_Presentation>& aPresen
 
   myComponent = new Geom_Line(P1, gp_Dir(P2.XYZ() - P1.XYZ()));
 
-  double            dist = P1.Distance(P2);
+  double     dist = P1.Distance(P2);
   GeomAdaptor_Curve curv(myComponent, 0., dist);
   StdPrs_Curve::Add(aPresentation, curv, myDrawer);
 }
@@ -238,9 +239,9 @@ void AIS_Line::ComputeInfiniteLineSelection(const occ::handle<SelectMgr_Selectio
   const gp_XYZ& dir_xyz = thedir.XYZ();
   const gp_XYZ& loc_xyz = loc.XYZ();
   // POP  double aLength = UnitsAPI::CurrentToLS (250000. ,"LENGTH");
-  double                                 aLength = UnitsAPI::AnyToLS(250000., "mm");
-  gp_Pnt                                 P1      = loc_xyz + aLength * dir_xyz;
-  gp_Pnt                                 P2      = loc_xyz - aLength * dir_xyz;
+  double                     aLength = UnitsAPI::AnyToLS(250000., "mm");
+  gp_Pnt                            P1      = loc_xyz + aLength * dir_xyz;
+  gp_Pnt                            P2      = loc_xyz - aLength * dir_xyz;
   occ::handle<SelectMgr_EntityOwner>     eown    = new SelectMgr_EntityOwner(this, 5);
   occ::handle<Select3D_SensitiveSegment> seg     = new Select3D_SensitiveSegment(eown, P1, P2);
   aSelection->Add(seg);

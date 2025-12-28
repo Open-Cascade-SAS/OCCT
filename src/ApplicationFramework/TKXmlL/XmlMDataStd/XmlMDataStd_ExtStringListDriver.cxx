@@ -49,11 +49,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExtStringListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                            const occ::handle<TDF_Attribute>& theTarget,
-                                            XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                        const occ::handle<TDF_Attribute>& theTarget,
+                                                        XmlObjMgt_RRelocationTable&) const
 {
-  int                      aFirstInd, aLastInd;
+  int         aFirstInd, aLastInd;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -125,13 +125,13 @@ bool XmlMDataStd_ExtStringListDriver::Paste(const XmlObjMgt_Persistent&       th
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_ExtStringListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                            XmlObjMgt_Persistent&             theTarget,
+                                            XmlObjMgt_Persistent&        theTarget,
                                             XmlObjMgt_SRelocationTable&) const
 {
   const occ::handle<TDataStd_ExtStringList> anExtStringList =
     occ::down_cast<TDataStd_ExtStringList>(theSource);
 
-  int                anU       = anExtStringList->Extent();
+  int   anU       = anExtStringList->Extent();
   XmlObjMgt_Element& anElement = theTarget;
   anElement.setAttribute(::LastIndexString(), anU);
 
@@ -149,7 +149,7 @@ void XmlMDataStd_ExtStringListDriver::Paste(const occ::handle<TDF_Attribute>& th
   if (anExtStringList->ID() != TDataStd_ExtStringList::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anExtStringList->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

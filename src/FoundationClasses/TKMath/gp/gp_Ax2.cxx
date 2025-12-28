@@ -37,7 +37,7 @@ gp_Ax2::gp_Ax2(const gp_Pnt& P, const gp_Dir& V)
   const double Aabs = std::abs(A);
   const double Babs = std::abs(B);
   const double Cabs = std::abs(C);
-  gp_Dir       D;
+  gp_Dir              D;
 
   //  pour determiner l axe X :
   //  on dit que le produit scalaire Vx.V = 0.
@@ -118,28 +118,26 @@ gp_Ax2 gp_Ax2::Mirrored(const gp_Ax2& A2) const
   return Temp;
 }
 
-void gp_Ax2::DumpJson(Standard_OStream& theOStream, int) const
-{
+void gp_Ax2::DumpJson(Standard_OStream& theOStream, int) const {
   OCCT_DUMP_VECTOR_CLASS(theOStream,
                          "Location",
                          3,
                          axis.Location().X(),
                          axis.Location().Y(),
-                         axis.Location().Z())
-  OCCT_DUMP_VECTOR_CLASS(theOStream,
-                         "Direction",
-                         3,
-                         axis.Direction().X(),
-                         axis.Direction().Y(),
-                         axis.Direction().Z())
+                         axis.Location().Z()) OCCT_DUMP_VECTOR_CLASS(theOStream,
+                                                                     "Direction",
+                                                                     3,
+                                                                     axis.Direction().X(),
+                                                                     axis.Direction().Y(),
+                                                                     axis.Direction().Z())
 
-  OCCT_DUMP_VECTOR_CLASS(theOStream, "XDirection", 3, vxdir.X(), vxdir.Y(), vxdir.Z())
-  OCCT_DUMP_VECTOR_CLASS(theOStream, "YDirection", 3, vydir.X(), vydir.Y(), vydir.Z())
-}
+    OCCT_DUMP_VECTOR_CLASS(theOStream, "XDirection", 3, vxdir.X(), vxdir.Y(), vxdir.Z())
+      OCCT_DUMP_VECTOR_CLASS(theOStream, "YDirection", 3, vydir.X(), vydir.Y(), vydir.Z())}
 
-bool gp_Ax2::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
+bool gp_Ax2::InitFromJson(const Standard_SStream& theSStream,
+                                      int&       theStreamPos)
 {
-  int                     aPos       = theStreamPos;
+  int        aPos       = theStreamPos;
   TCollection_AsciiString aStreamStr = Standard_Dump::Text(theSStream);
 
   gp_XYZ anXYZLoc;

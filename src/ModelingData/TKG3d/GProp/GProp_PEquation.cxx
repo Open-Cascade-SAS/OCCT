@@ -29,12 +29,12 @@ GProp_PEquation::GProp_PEquation(const NCollection_Array1<gp_Pnt>& Pnts, const d
   g.Coord(Xg, Yg, Zg);
   GProp_PrincipalProps Pp = Pmat.PrincipalProperties();
   gp_Vec               V1 = Pp.FirstAxisOfInertia();
-  double               Xv1, Yv1, Zv1;
+  double        Xv1, Yv1, Zv1;
   V1.Coord(Xv1, Yv1, Zv1);
-  gp_Vec V2 = Pp.SecondAxisOfInertia();
+  gp_Vec        V2 = Pp.SecondAxisOfInertia();
   double Xv2, Yv2, Zv2;
   V2.Coord(Xv2, Yv2, Zv2);
-  gp_Vec V3 = Pp.ThirdAxisOfInertia();
+  gp_Vec        V3 = Pp.ThirdAxisOfInertia();
   double Xv3, Yv3, Zv3;
   V3.Coord(Xv3, Yv3, Zv3);
   double D, X, Y, Z;

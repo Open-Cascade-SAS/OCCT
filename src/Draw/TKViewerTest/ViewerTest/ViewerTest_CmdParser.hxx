@@ -121,7 +121,7 @@ public:
   //! @param theOptionArgument an argument of the option with the given name
   //! @return true if an access was successful, or false otherwise
   bool Arg(const std::string& theOptionName,
-           int                theArgumentIndex,
+           int   theArgumentIndex,
            std::string&       theOptionArgument) const;
 
   //! Accesses a local argument with the index 'theArgumentIndex' of the option with the key
@@ -131,7 +131,7 @@ public:
   //! @param theOptionArgument an argument of the option with the given key
   //! @return true if an access was successful, or false otherwise
   bool Arg(ViewerTest_CommandOptionKey theOptionKey,
-           int                         theArgumentIndex,
+           int            theArgumentIndex,
            std::string&                theOptionArgument) const;
 
   //! Accesses local argument of option 'theOptionName' with index 'theArgumentIndex'.
@@ -145,34 +145,40 @@ public:
   //! @param theOptionKey the access key of the option which argument is to be accessed
   //! @param theArgumentIndex the index of an accessed argument
   //! @return an argument of the option with the given key
-  std::string Arg(ViewerTest_CommandOptionKey theOptionKey, int theArgumentIndex) const;
+  std::string Arg(ViewerTest_CommandOptionKey theOptionKey,
+                  int            theArgumentIndex) const;
 
   // Interprets arguments of option 'theOptionName' as float vector starting with index
   // 'theArgumentIndex'.
-  NCollection_Vec3<float> ArgVec3f(const std::string& theOptionName,
-                                   const int          theArgumentIndex = 0) const;
+  NCollection_Vec3<float> ArgVec3f(const std::string&     theOptionName,
+                          const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as double vector starting with index
   // 'theArgumentIndex'.
-  NCollection_Vec3<double> ArgVec3d(const std::string& theOptionName,
-                                    const int          theArgumentIndex = 0) const;
+  NCollection_Vec3<double> ArgVec3d(const std::string&     theOptionName,
+                           const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as gp vector starting with index
   // 'theArgumentIndex'.
-  gp_Vec ArgVec(const std::string& theOptionName, const int theArgumentIndex = 0) const;
+  gp_Vec ArgVec(const std::string&     theOptionName,
+                const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as gp vector starting with index
   // 'theArgumentIndex'.
-  gp_Pnt ArgPnt(const std::string& theOptionName, const int theArgumentIndex = 0) const;
+  gp_Pnt ArgPnt(const std::string&     theOptionName,
+                const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as double at index 'theArgumentIndex'.
-  double ArgDouble(const std::string& theOptionName, const int theArgumentIndex = 0) const;
+  double ArgDouble(const std::string&     theOptionName,
+                          const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as float at index 'theArgumentIndex'.
-  float ArgFloat(const std::string& theOptionName, const int theArgumentIndex = 0) const;
+  float ArgFloat(const std::string&     theOptionName,
+                              const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as integer at index 'theArgumentIndex'.
-  int ArgInt(const std::string& theOptionName, const int theArgumentIndex = 0) const;
+  int ArgInt(const std::string&     theOptionName,
+                          const int theArgumentIndex = 0) const;
 
   // Interprets arguments of option 'theOptionName' as boolean at index 'theArgumentIndex'.
   bool ArgBool(const std::string& theOptionName, const int theArgumentIndex = 0) const;
@@ -187,7 +193,9 @@ public:
   //! name
   //! @return true if an interpretation was successful, or false otherwise
   template <typename TheColor>
-  bool ArgColor(const std::string& theOptionName, int& theArgumentIndex, TheColor& theColor) const;
+  bool ArgColor(const std::string& theOptionName,
+                int&  theArgumentIndex,
+                TheColor&          theColor) const;
 
   //! Interprets arguments of the option with the key 'theOptionKey' as an RGB(A) color object.
   //! @tparam theColor the type of a resulting RGB(A) color object
@@ -199,7 +207,7 @@ public:
   //! @return true if an interpretation was successful, or false otherwise
   template <typename TheColor>
   bool ArgColor(ViewerTest_CommandOptionKey theOptionKey,
-                int&                        theArgumentIndex,
+                int&           theArgumentIndex,
                 TheColor&                   theColor) const;
 
 private:

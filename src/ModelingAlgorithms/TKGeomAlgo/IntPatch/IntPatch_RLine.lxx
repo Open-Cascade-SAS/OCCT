@@ -28,11 +28,11 @@ inline const occ::handle<Adaptor2d_Curve2d>& IntPatch_RLine::ArcOnS2() const
   return theArcOnS2;
 }
 
-//-- Il faut mettre cet include ici , car l include fait un define occ::handle<Adaptor2d_Curve2d>
-//...
+//-- Il faut mettre cet include ici , car l include fait un define occ::handle<Adaptor2d_Curve2d> ...
 //-- et en fin de fichier un undef occ::handle<Adaptor2d_Curve2d> ...
 
-inline void IntPatch_RLine::AddVertex(const IntPatch_Point& thePnt, const bool theIsPrepend)
+inline void IntPatch_RLine::AddVertex(const IntPatch_Point&  thePnt,
+                                      const bool theIsPrepend)
 {
   if (theIsPrepend)
     svtx.Prepend(thePnt);

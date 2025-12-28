@@ -36,7 +36,7 @@ public:
   {
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theF      = dx * dx + dy * dy;
+    theF             = dx * dx + dy * dy;
     return true;
   }
 };
@@ -51,7 +51,7 @@ public:
   {
     double x = theX(1);
     double y = theX(2);
-    theF     = sin(x) + sin(y) + 0.1 * (x * x + y * y);
+    theF            = sin(x) + sin(y) + 0.1 * (x * x + y * y);
     return true;
   }
 };
@@ -65,7 +65,7 @@ public:
   bool Value(const math_Vector& theX, double& theF) override
   {
     double x = theX(1);
-    theF     = sin(x) + 0.5 * sin(3.0 * x);
+    theF            = sin(x) + 0.5 * sin(3.0 * x);
     return true;
   }
 };
@@ -82,7 +82,7 @@ public:
     double y  = theX(2);
     double dx = 1.0 - x;
     double dy = y - x * x;
-    theF      = dx * dx + 100.0 * dy * dy;
+    theF             = dx * dx + 100.0 * dy * dy;
     return true;
   }
 };

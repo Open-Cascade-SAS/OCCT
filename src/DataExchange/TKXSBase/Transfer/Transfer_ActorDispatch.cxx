@@ -25,7 +25,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorDispatch, Transfer_ActorOfTransientProcess)
 
 Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
-                                               const Interface_GeneralLib&                  lib)
+                                               const Interface_GeneralLib&             lib)
     : thetool(amodel, lib)
 {
   SetLast(true); // actor par defaut
@@ -33,7 +33,7 @@ Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_Inter
 }
 
 Transfer_ActorDispatch::Transfer_ActorDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
-                                               const occ::handle<Interface_Protocol>& protocol)
+                                               const occ::handle<Interface_Protocol>&       protocol)
     : thetool(amodel, protocol)
 {
   SetLast(true); // actor par defaut

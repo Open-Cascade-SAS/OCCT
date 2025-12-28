@@ -28,7 +28,10 @@ const gp_Pnt& Intf_SectionPoint::Pnt() const
 
 //=================================================================================================
 
-void Intf_SectionPoint::InfoFirst(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const
+void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
+                                  int& Add1,
+                                  int& Add2,
+                                  double&    Param) const
 {
   Dim   = DimenObje;
   Add1  = IndexO1;
@@ -38,7 +41,9 @@ void Intf_SectionPoint::InfoFirst(Intf_PIType& Dim, int& Add1, int& Add2, double
 
 //=================================================================================================
 
-void Intf_SectionPoint::InfoFirst(Intf_PIType& Dim, int& Add, double& Param) const
+void Intf_SectionPoint::InfoFirst(Intf_PIType&      Dim,
+                                  int& Add,
+                                  double&    Param) const
 {
   Dim   = DimenObje;
   Add   = IndexO2;
@@ -47,7 +52,10 @@ void Intf_SectionPoint::InfoFirst(Intf_PIType& Dim, int& Add, double& Param) con
 
 //=================================================================================================
 
-void Intf_SectionPoint::InfoSecond(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const
+void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
+                                   int& Add1,
+                                   int& Add2,
+                                   double&    Param) const
 {
   Dim   = DimenTool;
   Add1  = IndexT1;
@@ -57,7 +65,9 @@ void Intf_SectionPoint::InfoSecond(Intf_PIType& Dim, int& Add1, int& Add2, doubl
 
 //=================================================================================================
 
-void Intf_SectionPoint::InfoSecond(Intf_PIType& Dim, int& Add, double& Param) const
+void Intf_SectionPoint::InfoSecond(Intf_PIType&      Dim,
+                                   int& Add,
+                                   double&    Param) const
 {
   Dim   = DimenTool;
   Add   = IndexT2;
@@ -150,16 +160,16 @@ Intf_SectionPoint::Intf_SectionPoint()
 
 //=================================================================================================
 
-Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt&     Where,
-                                     const Intf_PIType Dim1,
-                                     const int         Addr1,
-                                     const int         Addr2,
-                                     const double      Param1,
-                                     const Intf_PIType Dim2,
-                                     const int         Addr3,
-                                     const int         Addr4,
-                                     const double      Param2,
-                                     const double      Incid)
+Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt&          Where,
+                                     const Intf_PIType      Dim1,
+                                     const int Addr1,
+                                     const int Addr2,
+                                     const double    Param1,
+                                     const Intf_PIType      Dim2,
+                                     const int Addr3,
+                                     const int Addr4,
+                                     const double    Param2,
+                                     const double    Incid)
     : myPnt(Where),
       DimenObje(Dim1),
       IndexO1(Addr1),
@@ -175,14 +185,14 @@ Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt&     Where,
 
 //=================================================================================================
 
-Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt2d&   Where,
-                                     const Intf_PIType Dim1,
-                                     const int         Addr1,
-                                     const double      Param1,
-                                     const Intf_PIType Dim2,
-                                     const int         Addr2,
-                                     const double      Param2,
-                                     const double      Incid)
+Intf_SectionPoint::Intf_SectionPoint(const gp_Pnt2d&        Where,
+                                     const Intf_PIType      Dim1,
+                                     const int Addr1,
+                                     const double    Param1,
+                                     const Intf_PIType      Dim2,
+                                     const int Addr2,
+                                     const double    Param2,
+                                     const double    Incid)
     : myPnt(Where.X(), Where.Y(), 0.),
       DimenObje(Dim1),
       IndexO1(0),

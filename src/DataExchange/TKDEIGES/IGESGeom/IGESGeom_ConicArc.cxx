@@ -36,8 +36,8 @@ void IGESGeom_ConicArc::Init(const double A,
                              const double E,
                              const double F,
                              const double ZT,
-                             const gp_XY& aStart,
-                             const gp_XY& anEnd)
+                             const gp_XY&        aStart,
+                             const gp_XY&        anEnd)
 {
   theA     = A;
   theB     = B;
@@ -64,8 +64,12 @@ bool IGESGeom_ConicArc::OwnCorrect()
   return true;
 }
 
-void IGESGeom_ConicArc::Equation(double& A, double& B, double& C, double& D, double& E, double& F)
-  const
+void IGESGeom_ConicArc::Equation(double& A,
+                                 double& B,
+                                 double& C,
+                                 double& D,
+                                 double& E,
+                                 double& F) const
 {
   A = theA;
   B = theB;
@@ -113,12 +117,12 @@ gp_Pnt IGESGeom_ConicArc::TransformedEndPoint() const
 int IGESGeom_ConicArc::ComputedFormNumber() const
 {
   double eps, eps2, eps4;
-  eps       = 1.E-08;
-  eps2      = eps * eps;
-  eps4      = eps2 * eps2; // #59 rln
+  eps              = 1.E-08;
+  eps2             = eps * eps;
+  eps4             = eps2 * eps2; // #59 rln
   double Q1 = theA * (theC * theF - theE * theE / 4.)
-              + theB / 2. * (theE * theD / 4. - theB * theF / 2.)
-              + theD / 2. * (theB * theE / 4. - theC * theD / 2.);
+                     + theB / 2. * (theE * theD / 4. - theB * theF / 2.)
+                     + theD / 2. * (theB * theE / 4. - theC * theD / 2.);
   double Q2 = theA * theC - theB * theB / 4;
   double Q3 = theA + theC;
 
@@ -183,8 +187,8 @@ gp_Dir IGESGeom_ConicArc::TransformedAxis() const
   return gp_Dir(axis);
 }
 
-void IGESGeom_ConicArc::Definition(gp_Pnt& Center,
-                                   gp_Dir& MainAxis,
+void IGESGeom_ConicArc::Definition(gp_Pnt&        Center,
+                                   gp_Dir&        MainAxis,
                                    double& Rmin,
                                    double& Rmax) const
 {
@@ -194,8 +198,8 @@ void IGESGeom_ConicArc::Definition(gp_Pnt& Center,
   MainAxis.SetCoord(Xax, Yax, 0.);
 }
 
-void IGESGeom_ConicArc::TransformedDefinition(gp_Pnt& Center,
-                                              gp_Dir& MainAxis,
+void IGESGeom_ConicArc::TransformedDefinition(gp_Pnt&        Center,
+                                              gp_Dir&        MainAxis,
                                               double& Rmin,
                                               double& Rmax) const
 {
@@ -237,11 +241,11 @@ void IGESGeom_ConicArc::ComputedDefinition(double& Xcen,
     Rmin = Rmax = -1.; // radii : there are none
     if ((std::abs(a) <= eps) && (std::abs(b) <= eps))
     {
-      Xcen         = (f * c - e * e) / c / d / 2.;
-      Ycen         = e / c;
+      Xcen                = (f * c - e * e) / c / d / 2.;
+      Ycen                = e / c;
       double focal = -d / c;
-      Xax          = (focal >= 0 ? 1. : -1.);
-      Yax          = 0.;
+      Xax                 = (focal >= 0 ? 1. : -1.);
+      Yax                 = 0.;
       Rmin = Rmax = std::abs(focal);
     }
     else
@@ -253,8 +257,8 @@ void IGESGeom_ConicArc::ComputedDefinition(double& Xcen,
       double ee = e + fc;
 
       double dn = a * ee - dd * b;
-      Xcen      = (cc * ee + f * b) / dn;
-      Ycen      = (-cc * dd - f * a) / dn;
+      Xcen             = (cc * ee + f * b) / dn;
+      Ycen             = (-cc * dd - f * a) / dn;
 
       double teta = M_PI / 2.;
       if (std::abs(b) > eps)
@@ -295,8 +299,8 @@ void IGESGeom_ConicArc::ComputedDefinition(double& Xcen,
     else
     {
       double t2d = term2 / term1; // skl 28.12.2001
-      cos2t      = 1. / sqrt(1 + t2d * t2d);
-      auxil      = sqrt(term1 * term1 + term2 * term2);
+      cos2t             = 1. / sqrt(1 + t2d * t2d);
+      auxil             = sqrt(term1 * term1 + term2 * term2);
     }
 
     double cost = sqrt((1 + cos2t) / 2.);

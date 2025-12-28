@@ -52,11 +52,11 @@ public:
   //! TProj the projection
   //! Focal <= 0 means parallel projection
   //! Alg : the hidden lines
-  Standard_EXPORT void Set(const int           ViewId,
-                           const gp_Trsf&      TProj,
-                           const double        Focal,
-                           const TopoDS_Shape& S,
-                           const double        ang);
+  Standard_EXPORT void Set(const int ViewId,
+                           const gp_Trsf&         TProj,
+                           const double    Focal,
+                           const TopoDS_Shape&    S,
+                           const double    ang);
 
   int ViewId() const { return myView; }
 
@@ -65,24 +65,24 @@ public:
   //! Returns True if the projection is the same
   Standard_EXPORT bool IsSame(const gp_Trsf& TProj, const double Focla) const;
 
-  Standard_EXPORT void DrawOn(Draw_Display&     D,
-                              const bool        withRg1,
-                              const bool        withRgN,
-                              const bool        withHid,
-                              const Draw_Color& VisCol,
-                              const Draw_Color& HidCol);
+  Standard_EXPORT void DrawOn(Draw_Display&          D,
+                              const bool withRg1,
+                              const bool withRgN,
+                              const bool withHid,
+                              const Draw_Color&      VisCol,
+                              const Draw_Color&      HidCol);
 
   //! Returns the subshape touched by the last pick.
   Standard_EXPORT const TopoDS_Shape& LastPick() const;
 
 private:
-  int                               myView;
-  gp_Trsf                           myTrsf;
-  double                            myFocal;
+  int     myView;
+  gp_Trsf              myTrsf;
+  double        myFocal;
   NCollection_List<HLRBRep_BiPoint> myBiPntVis;
   NCollection_List<HLRBRep_BiPoint> myBiPntHid;
-  TopoDS_Shape                      myPickShap;
-  double                            myAngle;
+  TopoDS_Shape         myPickShap;
+  double        myAngle;
 };
 
 #endif // _DBRep_HideData_HeaderFile

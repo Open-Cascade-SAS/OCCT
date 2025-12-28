@@ -38,9 +38,9 @@ public:
   //! Creates a SelectSignedSharing, defaulted for any level
   //! with a given Signature and text to match
   Standard_EXPORT IFSelect_SelectSignedSharing(const occ::handle<IFSelect_Signature>& matcher,
-                                               const char*                            signtext,
-                                               const bool                             exact = true,
-                                               const int                              level = 0);
+                                               const char*            signtext,
+                                               const bool exact = true,
+                                               const int level = 0);
 
   //! Returns the used Signature, then it is possible to access it,
   //! modify it as required
@@ -55,10 +55,11 @@ public:
   //! Explores an entity : its sharing entities
   //! <ent> to take if it matches the Signature
   //! At level max, filters the result. Else gives all sharings
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium.
   //! (it refers to the text and exact flag to be matched, and is
@@ -69,8 +70,8 @@ public:
 
 private:
   occ::handle<IFSelect_Signature> thematcher;
-  TCollection_AsciiString         thesigntext;
-  bool                            theexact;
+  TCollection_AsciiString    thesigntext;
+  bool           theexact;
 };
 
 #endif // _IFSelect_SelectSignedSharing_HeaderFile

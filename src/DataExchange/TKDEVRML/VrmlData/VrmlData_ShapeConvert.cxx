@@ -39,9 +39,12 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <GeomLib.hxx>
 #include <Standard_ShortReal.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <VrmlData_Appearance.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -93,13 +96,12 @@ void VrmlData_ShapeConvert::AddShape(const TopoDS_Shape& theShape, const char* t
 
 //=================================================================================================
 
-occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
-  const TopoDS_Shape&    theShape,
-  const TopAbs_ShapeEnum theShapeType,
-  TopLoc_Location&       theLoc)
+occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(const TopoDS_Shape&    theShape,
+                                                                const TopAbs_ShapeEnum theShapeType,
+                                                                TopLoc_Location&       theLoc)
 {
   occ::handle<VrmlData_Geometry> aTShapeNode = 0L;
-  const bool                     isReverse   = (theShape.Orientation() == TopAbs_REVERSED);
+  const bool    isReverse   = (theShape.Orientation() == TopAbs_REVERSED);
 
   TopoDS_Shape aTestedShape;
   aTestedShape.TShape(theShape.TShape());
@@ -166,18 +168,18 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
         // try to find PolygonOnTriangulation
         occ::handle<Poly_PolygonOnTriangulation> aPT;
         occ::handle<Poly_Triangulation>          aT;
-        TopLoc_Location                          aL;
+        TopLoc_Location                     aL;
         BRep_Tool::PolygonOnTriangulation(aEdge, aPT, aT, aL);
 
         // If PolygonOnTriangulation was found -> get the Polygon3D
         occ::handle<Poly_Polygon3D> aPol;
         if (!aPT.IsNull() && !aT.IsNull() && aPT->HasParameters())
         {
-          BRepAdaptor_Curve                        aCurve(aEdge);
+          BRepAdaptor_Curve             aCurve(aEdge);
           occ::handle<NCollection_HArray1<double>> aPrs    = aPT->Parameters();
-          int                                      nbNodes = aPT->NbNodes();
-          NCollection_Array1<gp_Pnt>               arrNodes(1, nbNodes);
-          NCollection_Array1<double>               arrUVNodes(1, nbNodes);
+          int              nbNodes = aPT->NbNodes();
+          NCollection_Array1<gp_Pnt>            arrNodes(1, nbNodes);
+          NCollection_Array1<double>          arrUVNodes(1, nbNodes);
 
           for (int j = 1; j <= nbNodes; j++)
           {
@@ -194,14 +196,14 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
           // If polygon was not found -> generate it
           if (aPol.IsNull())
           {
-            BRepAdaptor_Curve aCurve(aEdge);
-            const double      aFirst = aCurve.FirstParameter();
-            const double      aLast  = aCurve.LastParameter();
+            BRepAdaptor_Curve   aCurve(aEdge);
+            const double aFirst = aCurve.FirstParameter();
+            const double aLast  = aCurve.LastParameter();
 
             GCPnts_TangentialDeflection TD(aCurve, aFirst, aLast, myDeflAngle, myDeflection, 2);
-            const int                   nbNodes = TD.NbPoints();
+            const int      nbNodes = TD.NbPoints();
 
-            NCollection_Array1<gp_Pnt> arrNodes(1, nbNodes);
+            NCollection_Array1<gp_Pnt>   arrNodes(1, nbNodes);
             NCollection_Array1<double> arrUVNodes(1, nbNodes);
             for (int j = 1; j <= nbNodes; j++)
             {
@@ -232,10 +234,10 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::makeTShapeNode(
 
 //=================================================================================================
 
-void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
-                                    const bool   theExtractEdges,
-                                    const double theDeflection,
-                                    const double theDeflAngle)
+void VrmlData_ShapeConvert::Convert(const bool theExtractFaces,
+                                    const bool theExtractEdges,
+                                    const double    theDeflection,
+                                    const double    theDeflAngle)
 {
   // const double aDeflection =
   //   theDeflection < 0.0001 ? 0.0001 : theDeflection;
@@ -243,9 +245,9 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
   myDeflection = theDeflection < 0.0001 ? 0.0001 : theDeflection;
   myDeflAngle  = theDeflAngle;
 
-  bool             Extract[2]   = {theExtractFaces, theExtractEdges};
+  bool Extract[2]   = {theExtractFaces, theExtractEdges};
   TopAbs_ShapeEnum ShapeType[2] = {TopAbs_FACE, TopAbs_EDGE};
-  int              i;
+  int i;
 
   const occ::handle<NCollection_IncAllocator> anAlloc = new NCollection_IncAllocator;
 
@@ -274,8 +276,8 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
       TopExp_Explorer anExp(aData.Shape, ShapeType[i]);
       for (; anExp.More(); anExp.Next())
       {
-        const TopoDS_Shape&            aShape = anExp.Current();
-        TopLoc_Location                aLoc;
+        const TopoDS_Shape&       aShape = anExp.Current();
+        TopLoc_Location           aLoc;
         occ::handle<VrmlData_Geometry> aTShapeNode = makeTShapeNode(aShape, ShapeType[i], aLoc);
         if (!aTShapeNode.IsNull())
         {
@@ -291,7 +293,7 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
           {
             // Create a Transform grouping node
             occ::handle<VrmlData_Group> aTrans = new VrmlData_Group(myScene, 0L, true);
-            gp_Trsf                     aTrsf(aLoc);
+            gp_Trsf                aTrsf(aLoc);
             if (fabs(myScale - 1.) > Precision::Confusion())
             {
               const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
@@ -315,7 +317,7 @@ void VrmlData_ShapeConvert::Convert(const bool   theExtractFaces,
 
 occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
   const occ::handle<Poly_Triangulation>&  theTri,
-  const TopoDS_Face&                      theFace,
+  const TopoDS_Face&                 theFace,
   const occ::handle<VrmlData_Coordinate>& theCoord)
 {
   int       i;
@@ -323,7 +325,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
   const int nTriangles(theTri->NbTriangles());
 
   // protection against creation degenerative triangles
-  int                               nbTri = 0;
+  int      nbTri = 0;
   NCollection_Array1<Poly_Triangle> aTriangles(1, nTriangles);
   for (i = 0; i < nTriangles; i++)
   {
@@ -340,29 +342,31 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 
   const occ::handle<VrmlData_IndexedFaceSet> aFaceSet =
     new VrmlData_IndexedFaceSet(myScene,
-                                0L,     // no name
+                                0L,              // no name
                                 true,   // IsCCW
                                 false,  // IsSolid
                                 false); // IsConvex
-  const occ::handle<NCollection_IncAllocator>& anAlloc = myScene.Allocator();
-  const bool isReverse                                 = (theFace.Orientation() == TopAbs_REVERSED);
+  const occ::handle<NCollection_IncAllocator>& anAlloc   = myScene.Allocator();
+  const bool                  isReverse = (theFace.Orientation() == TopAbs_REVERSED);
 
   // Create the array of triangles
-  const int** arrPolygons = static_cast<const int**>(anAlloc->Allocate(nbTri * sizeof(const int*)));
+  const int** arrPolygons = static_cast<const int**>(
+    anAlloc->Allocate(nbTri * sizeof(const int*)));
   aFaceSet->SetPolygons(nbTri, arrPolygons);
 
   // Store the triangles
   for (i = 0; i < nbTri; i++)
   {
-    int* aPolygon = static_cast<int*>(anAlloc->Allocate(4 * sizeof(int)));
-    aPolygon[0]   = 3;
+    int* aPolygon =
+      static_cast<int*>(anAlloc->Allocate(4 * sizeof(int)));
+    aPolygon[0] = 3;
     aTriangles(i + 1).Get(aPolygon[1], aPolygon[2], aPolygon[3]);
     aPolygon[1]--;
     if (isReverse)
     {
       const int aTmp = aPolygon[2] - 1;
-      aPolygon[2]    = aPolygon[3] - 1;
-      aPolygon[3]    = aTmp;
+      aPolygon[2]                 = aPolygon[3] - 1;
+      aPolygon[3]                 = aTmp;
     }
     else
     {
@@ -392,7 +396,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
   // Create the Normals node if theTri has normals
   if (theTri->HasNormals())
   {
-    gp_XYZ* arrVec = static_cast<gp_XYZ*>(anAlloc->Allocate(nNodes * sizeof(gp_XYZ)));
+    gp_XYZ*  arrVec = static_cast<gp_XYZ*>(anAlloc->Allocate(nNodes * sizeof(gp_XYZ)));
     NCollection_Vec3<float> aVec3;
     for (i = 0; i < nNodes; i++)
     {
@@ -404,8 +408,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
       }
       arrVec[i] = aNormal;
     }
-    const occ::handle<VrmlData_Normal> aNormalNode =
-      new VrmlData_Normal(myScene, 0L, nNodes, arrVec);
+    const occ::handle<VrmlData_Normal> aNormalNode = new VrmlData_Normal(myScene, 0L, nNodes, arrVec);
     myScene.AddNode(aNormalNode, false);
     aFaceSet->SetNormals(aNormalNode);
     return occ::handle<VrmlData_Geometry>(aFaceSet);
@@ -413,8 +416,8 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 
   Poly_Connect PC(theTri);
   // Create the Normals node (if UV- values are available)
-  TopLoc_Location                 aLoc;
-  constexpr double                aConf2   = Precision::SquareConfusion();
+  TopLoc_Location            aLoc;
+  constexpr double    aConf2   = Precision::SquareConfusion();
   const occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(theFace, aLoc);
   if (theTri->HasUVNodes() && aSurface.IsNull() == false)
   {
@@ -464,8 +467,7 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
         arrVec[i] = aNormal.XYZ();
       }
 
-      const occ::handle<VrmlData_Normal> aNormalNode =
-        new VrmlData_Normal(myScene, 0L, nNodes, arrVec);
+      const occ::handle<VrmlData_Normal> aNormalNode = new VrmlData_Normal(myScene, 0L, nNodes, arrVec);
       myScene.AddNode(aNormalNode, false);
       aFaceSet->SetNormals(aNormalNode);
     }
@@ -482,20 +484,22 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::triToIndexedFaceSet(
 occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::polToIndexedLineSet(
   const occ::handle<Poly_Polygon3D>& thePol)
 {
-  int                                          i;
-  const int                                    nNodes(thePol->NbNodes());
-  const NCollection_Array1<gp_Pnt>&            arrPolyNodes = thePol->Nodes();
+  int                        i;
+  const int                  nNodes(thePol->NbNodes());
+  const NCollection_Array1<gp_Pnt>&               arrPolyNodes = thePol->Nodes();
   const occ::handle<NCollection_IncAllocator>& anAlloc      = myScene.Allocator();
 
   const occ::handle<VrmlData_IndexedLineSet> aLineSet = new VrmlData_IndexedLineSet(myScene, 0L);
 
   // Create the array of polygons (1 member)
-  const int** arrPolygons = static_cast<const int**>(anAlloc->Allocate(sizeof(const int*)));
+  const int** arrPolygons =
+    static_cast<const int**>(anAlloc->Allocate(sizeof(const int*)));
   aLineSet->SetPolygons(1, arrPolygons);
 
   // Store the polygon
-  int* aPolygon = static_cast<int*>(anAlloc->Allocate((nNodes + 1) * sizeof(int)));
-  aPolygon[0]   = nNodes;
+  int* aPolygon =
+    static_cast<int*>(anAlloc->Allocate((nNodes + 1) * sizeof(int)));
+  aPolygon[0] = nNodes;
   for (i = 1; i <= nNodes; i++)
     aPolygon[i] = i - 1;
   arrPolygons[0] = aPolygon;
@@ -517,13 +521,12 @@ occ::handle<VrmlData_Geometry> VrmlData_ShapeConvert::polToIndexedLineSet(
 
 occ::handle<VrmlData_Appearance> VrmlData_ShapeConvert::defaultMaterialFace() const
 {
-  static char                      aNodeName[] = "__defaultMaterialFace";
+  static char                 aNodeName[] = "__defaultMaterialFace";
   occ::handle<VrmlData_Appearance> anAppearance =
     occ::down_cast<VrmlData_Appearance>(myScene.FindNode(aNodeName));
   if (anAppearance.IsNull())
   {
-    const occ::handle<VrmlData_Material> aMaterial =
-      new VrmlData_Material(myScene, 0L, 1.0, 0.022, 0.);
+    const occ::handle<VrmlData_Material> aMaterial = new VrmlData_Material(myScene, 0L, 1.0, 0.022, 0.);
     aMaterial->SetDiffuseColor(Quantity_Color(0.780392, 0.568627, 0.113725, Quantity_TOC_sRGB));
     aMaterial->SetEmissiveColor(Quantity_Color(0.329412, 0.223529, 0.027451, Quantity_TOC_sRGB));
     aMaterial->SetSpecularColor(Quantity_Color(0.992157, 0.941176, 0.807843, Quantity_TOC_sRGB));
@@ -539,13 +542,12 @@ occ::handle<VrmlData_Appearance> VrmlData_ShapeConvert::defaultMaterialFace() co
 
 occ::handle<VrmlData_Appearance> VrmlData_ShapeConvert::defaultMaterialEdge() const
 {
-  static char                      aNodeName[] = "__defaultMaterialEdge";
+  static char                 aNodeName[] = "__defaultMaterialEdge";
   occ::handle<VrmlData_Appearance> anAppearance =
     occ::down_cast<VrmlData_Appearance>(myScene.FindNode(aNodeName));
   if (anAppearance.IsNull())
   {
-    const occ::handle<VrmlData_Material> aMaterial =
-      new VrmlData_Material(myScene, 0L, 0.2, 0.2, 0.2);
+    const occ::handle<VrmlData_Material> aMaterial = new VrmlData_Material(myScene, 0L, 0.2, 0.2, 0.2);
     aMaterial->SetDiffuseColor(Quantity_Color(0.2, 0.7, 0.2, Quantity_TOC_RGB));
     aMaterial->SetEmissiveColor(Quantity_Color(0.2, 0.7, 0.2, Quantity_TOC_RGB));
     aMaterial->SetSpecularColor(Quantity_Color(0.2, 0.7, 0.2, Quantity_TOC_RGB));
@@ -562,19 +564,17 @@ occ::handle<VrmlData_Appearance> VrmlData_ShapeConvert::defaultMaterialEdge() co
 // purpose  : Adds the shape from the document
 //=======================================================================
 void VrmlData_ShapeConvert::addShape(const occ::handle<VrmlData_Group>&   theParent,
-                                     const TDF_Label&                     theLabel,
+                                     const TDF_Label&                theLabel,
                                      const occ::handle<TDocStd_Document>& theDoc)
 {
   occ::handle<XCAFDoc_ShapeTool>       aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
   occ::handle<XCAFDoc_ColorTool>       aColorTool = XCAFDoc_DocumentTool::ColorTool(theDoc->Main());
-  occ::handle<XCAFDoc_VisMaterialTool> aMatTool =
-    XCAFDoc_DocumentTool::VisMaterialTool(theDoc->Main());
+  occ::handle<XCAFDoc_VisMaterialTool> aMatTool = XCAFDoc_DocumentTool::VisMaterialTool(theDoc->Main());
 
   NCollection_DataMap<TopoDS_Shape, TDF_Label> aChildShapeToLabels;
-  NCollection_Sequence<TDF_Label>              aChildLabels;
+  NCollection_Sequence<TDF_Label>                            aChildLabels;
   aShapeTool->GetSubShapes(theLabel, aChildLabels);
-  for (NCollection_Sequence<TDF_Label>::Iterator aChildIter(aChildLabels); aChildIter.More();
-       aChildIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aChildIter(aChildLabels); aChildIter.More(); aChildIter.Next())
   {
     const TDF_Label& aChildLabel = aChildIter.Value();
     TopoDS_Shape     aChildShape;
@@ -584,10 +584,10 @@ void VrmlData_ShapeConvert::addShape(const occ::handle<VrmlData_Group>&   thePar
     }
   }
 
-  const TopoDS_Shape          aShape = aShapeTool->GetShape(theLabel);
+  const TopoDS_Shape     aShape = aShapeTool->GetShape(theLabel);
   occ::handle<VrmlData_Group> aGroup = 0L;
-  TopExp_Explorer             anExp(aShape, TopAbs_FACE);
-  int                         nbFaces = 0;
+  TopExp_Explorer        anExp(aShape, TopAbs_FACE);
+  int       nbFaces = 0;
   for (; anExp.More(); anExp.Next())
   {
     nbFaces++;
@@ -617,7 +617,7 @@ void VrmlData_ShapeConvert::addShape(const occ::handle<VrmlData_Group>&   thePar
   anExp.Init(aShape, TopAbs_FACE);
   for (; anExp.More(); anExp.Next())
   {
-    TopLoc_Location                aLoc;
+    TopLoc_Location           aLoc;
     occ::handle<VrmlData_Geometry> aTShapeNode = makeTShapeNode(anExp.Current(), TopAbs_FACE, aLoc);
     if (!aTShapeNode.IsNull())
     {
@@ -695,7 +695,7 @@ void VrmlData_ShapeConvert::addShape(const occ::handle<VrmlData_Group>&   thePar
       {
         // Create a Transform grouping node
         occ::handle<VrmlData_Group> aTrans = new VrmlData_Group(myScene, 0L, true);
-        gp_Trsf                     aTrsf(aLoc);
+        gp_Trsf                aTrsf(aLoc);
         if (fabs(myScale - 1.) > Precision::Confusion())
         {
           const gp_XYZ aTransl = aTrsf.TranslationPart() * myScale;
@@ -723,12 +723,12 @@ void VrmlData_ShapeConvert::addShape(const occ::handle<VrmlData_Group>&   thePar
 // purpose  : Adds the reference from the document
 //=======================================================================
 void VrmlData_ShapeConvert::addInstance(const occ::handle<VrmlData_Group>&   theParent,
-                                        const TDF_Label&                     theLabel,
+                                        const TDF_Label&                theLabel,
                                         const occ::handle<TDocStd_Document>& theDoc)
 {
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
 
-  const TopLoc_Location       aLoc   = aShapeTool->GetLocation(theLabel);
+  const TopLoc_Location  aLoc   = aShapeTool->GetLocation(theLabel);
   occ::handle<VrmlData_Group> aTrans = 0L;
   if (!aLoc.IsIdentity())
   {
@@ -771,9 +771,9 @@ void VrmlData_ShapeConvert::addInstance(const occ::handle<VrmlData_Group>&   the
 // purpose  : Adds the assembly from the document
 //=======================================================================
 void VrmlData_ShapeConvert::addAssembly(const occ::handle<VrmlData_Group>&   theParent,
-                                        const TDF_Label&                     theLabel,
+                                        const TDF_Label&                theLabel,
                                         const occ::handle<TDocStd_Document>& theDoc,
-                                        const bool                           theNeedCreateGroup)
+                                        const bool          theNeedCreateGroup)
 {
   occ::handle<XCAFDoc_ShapeTool> aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
 
@@ -813,8 +813,7 @@ void VrmlData_ShapeConvert::addAssembly(const occ::handle<VrmlData_Group>&   the
 
   NCollection_Sequence<TDF_Label> aChildLabels;
   aShapeTool->GetComponents(theLabel, aChildLabels);
-  for (NCollection_Sequence<TDF_Label>::Iterator aChildIter(aChildLabels); aChildIter.More();
-       aChildIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aChildIter(aChildLabels); aChildIter.More(); aChildIter.Next())
   {
     const TDF_Label& aChildLabel = aChildIter.Value();
     if (aShapeTool->IsAssembly(aChildLabel))
@@ -851,8 +850,7 @@ void VrmlData_ShapeConvert::ConvertDocument(const occ::handle<TDocStd_Document>&
     myScene.AddNode(aGroup);
   }
 
-  for (NCollection_Sequence<TDF_Label>::Iterator aRootIter(aFreeShapeLabels); aRootIter.More();
-       aRootIter.Next())
+  for (NCollection_Sequence<TDF_Label>::Iterator aRootIter(aFreeShapeLabels); aRootIter.More(); aRootIter.Next())
   {
     const TDF_Label& aFreeShapeLabel = aRootIter.Value();
     if (aShapeTool->IsAssembly(aFreeShapeLabel))
@@ -879,8 +877,8 @@ occ::handle<VrmlData_Appearance> VrmlData_ShapeConvert::makeMaterialFromStyle(
   const Quantity_ColorRGBA aColor =
     !theStyle.Material().IsNull() ? theStyle.Material()->BaseColor() : theStyle.GetColorSurfRGBA();
 
-  TCollection_AsciiString    aNodeName = "_materialFace_";
-  occ::handle<TDataStd_Name> aNameAttribute;
+  TCollection_AsciiString aNodeName = "_materialFace_";
+  occ::handle<TDataStd_Name>   aNameAttribute;
   if (theAttribLab.FindAttribute(TDataStd_Name::GetID(), aNameAttribute))
   {
     aNodeName.AssignCat(aNameAttribute->Get());

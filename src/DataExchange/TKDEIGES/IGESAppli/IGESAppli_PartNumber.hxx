@@ -41,7 +41,7 @@ public:
   //! - aMilName  : Military Standard (MIL-STD) part number
   //! - aVendName : Vendor part number or name
   //! - anIntName : Internal part number
-  Standard_EXPORT void Init(const int                                    nbPropVal,
+  Standard_EXPORT void Init(const int                  nbPropVal,
                             const occ::handle<TCollection_HAsciiString>& aGenName,
                             const occ::handle<TCollection_HAsciiString>& aMilName,
                             const occ::handle<TCollection_HAsciiString>& aVendName,
@@ -65,7 +65,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PartNumber, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
+  int                 theNbPropertyValues;
   occ::handle<TCollection_HAsciiString> theGenericNumber;
   occ::handle<TCollection_HAsciiString> theMilitaryNumber;
   occ::handle<TCollection_HAsciiString> theVendorNumber;

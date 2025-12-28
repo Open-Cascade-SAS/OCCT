@@ -16,8 +16,8 @@
 
 //=================================================================================================
 
-inline void ChFiDS_FaceInterference::SetInterference(const int                        LineIndex,
-                                                     const TopAbs_Orientation         Trans,
+inline void ChFiDS_FaceInterference::SetInterference(const int      LineIndex,
+                                                     const TopAbs_Orientation    Trans,
                                                      const occ::handle<Geom2d_Curve>& PCurv1,
                                                      const occ::handle<Geom2d_Curve>& PCurv2)
 {

@@ -35,18 +35,14 @@ public:
   Standard_EXPORT StepRepr_GlobalUncertaintyAssignedContext();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
-    const occ::handle<TCollection_HAsciiString>& aContextType,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
-      aUncertainty);
+    const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
+    const occ::handle<TCollection_HAsciiString>&                      aContextType,
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
 
   Standard_EXPORT void SetUncertainty(
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
-      aUncertainty);
+    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty);
 
-  Standard_EXPORT occ::handle<
-    NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>
-    Uncertainty() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> Uncertainty() const;
 
   Standard_EXPORT occ::handle<StepBasic_UncertaintyMeasureWithUnit> UncertaintyValue(
     const int num) const;

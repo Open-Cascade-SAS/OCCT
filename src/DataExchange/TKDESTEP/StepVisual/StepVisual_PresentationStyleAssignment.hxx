@@ -33,14 +33,12 @@ public:
   //! Returns a PresentationStyleAssignment
   Standard_EXPORT StepVisual_PresentationStyleAssignment();
 
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles);
 
   Standard_EXPORT void SetStyles(
     const occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>>& aStyles);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> Styles()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> Styles() const;
 
   Standard_EXPORT StepVisual_PresentationStyleSelect StylesValue(const int num) const;
 

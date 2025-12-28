@@ -30,9 +30,10 @@ public:
   //! Structure defining shader uniform or in/out variable.
   struct ShaderVariable
   {
-    TCollection_AsciiString Name;   //!< variable name
-    int                     Stages; //!< active stages as Graphic3d_TypeOfShaderObject bits;
-                //!  for in/out variables, intermediate stages will be automatically filled
+    TCollection_AsciiString Name; //!< variable name
+    int
+      Stages; //!< active stages as Graphic3d_TypeOfShaderObject bits;
+              //!  for in/out variables, intermediate stages will be automatically filled
 
     //! Create new shader variable.
     ShaderVariable(const TCollection_AsciiString& theVarName, int theShaderStageBits)
@@ -83,7 +84,7 @@ public:
     const ShaderVariableList&      theStageInOuts,
     const TCollection_AsciiString& theInName           = TCollection_AsciiString::EmptyString(),
     const TCollection_AsciiString& theOutName          = TCollection_AsciiString::EmptyString(),
-    int                            theNbGeomInputVerts = 0);
+    int               theNbGeomInputVerts = 0);
 
 private:
   //! Creates new shader object of specified type.

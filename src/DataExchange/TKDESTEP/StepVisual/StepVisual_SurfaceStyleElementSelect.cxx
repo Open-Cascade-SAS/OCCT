@@ -22,7 +22,8 @@
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect() {}
 
-int StepVisual_SurfaceStyleElementSelect::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepVisual_SurfaceStyleElementSelect::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -40,14 +41,14 @@ int StepVisual_SurfaceStyleElementSelect::CaseNum(const occ::handle<Standard_Tra
   return 0;
 }
 
-occ::handle<StepVisual_SurfaceStyleFillArea> StepVisual_SurfaceStyleElementSelect::
-  SurfaceStyleFillArea() const
+occ::handle<StepVisual_SurfaceStyleFillArea> StepVisual_SurfaceStyleElementSelect::SurfaceStyleFillArea()
+  const
 {
   return GetCasted(StepVisual_SurfaceStyleFillArea, Value());
 }
 
-occ::handle<StepVisual_SurfaceStyleBoundary> StepVisual_SurfaceStyleElementSelect::
-  SurfaceStyleBoundary() const
+occ::handle<StepVisual_SurfaceStyleBoundary> StepVisual_SurfaceStyleElementSelect::SurfaceStyleBoundary()
+  const
 {
   return GetCasted(StepVisual_SurfaceStyleBoundary, Value());
 }

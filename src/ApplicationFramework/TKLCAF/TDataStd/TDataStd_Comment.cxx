@@ -32,7 +32,7 @@ const Standard_GUID& TDataStd_Comment::GetID()
 //=================================================================================================
 
 occ::handle<TDataStd_Comment> TDataStd_Comment::Set(const TDF_Label&                  L,
-                                                    const TCollection_ExtendedString& S)
+                                               const TCollection_ExtendedString& S)
 {
   occ::handle<TDataStd_Comment> A;
   if (!L.FindAttribute(TDataStd_Comment::GetID(), A))

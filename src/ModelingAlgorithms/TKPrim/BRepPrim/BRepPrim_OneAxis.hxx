@@ -261,8 +261,8 @@ protected:
   //! the Topology. The angle defaults to 2*PI.
   Standard_EXPORT BRepPrim_OneAxis(const BRepPrim_Builder& B,
                                    const gp_Ax2&           A,
-                                   const double            VMin,
-                                   const double            VMax);
+                                   const double     VMin,
+                                   const double     VMax);
 
   BRepPrim_Builder myBuilder;
 
@@ -277,21 +277,21 @@ private:
   //! This indicates the AxisEdge would be degenerate (zero length).
   bool areHeightsEqual() const;
 
-  gp_Ax2        myAxes;
-  double        myAngle;
-  double        myVMin;
-  double        myVMax;
-  double        myMeridianOffset;
-  TopoDS_Shell  myShell;
-  bool          ShellBuilt;
-  TopoDS_Vertex myVertices[6];
-  bool          VerticesBuilt[6];
-  TopoDS_Edge   myEdges[9];
-  bool          EdgesBuilt[9];
-  TopoDS_Wire   myWires[9];
-  bool          WiresBuilt[9];
-  TopoDS_Face   myFaces[5];
-  bool          FacesBuilt[5];
+  gp_Ax2           myAxes;
+  double    myAngle;
+  double    myVMin;
+  double    myVMax;
+  double    myMeridianOffset;
+  TopoDS_Shell     myShell;
+  bool ShellBuilt;
+  TopoDS_Vertex    myVertices[6];
+  bool VerticesBuilt[6];
+  TopoDS_Edge      myEdges[9];
+  bool EdgesBuilt[9];
+  TopoDS_Wire      myWires[9];
+  bool WiresBuilt[9];
+  TopoDS_Face      myFaces[5];
+  bool FacesBuilt[5];
 };
 
 #endif // _BRepPrim_OneAxis_HeaderFile

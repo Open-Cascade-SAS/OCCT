@@ -56,7 +56,8 @@ inline void TDF_DataSet::AddAttribute(const occ::handle<TDF_Attribute>& anAttrib
     myAttributeMap.Add(anAttribute);
 }
 
-inline bool TDF_DataSet::ContainsAttribute(const occ::handle<TDF_Attribute>& anAttribute) const
+inline bool TDF_DataSet::ContainsAttribute(
+  const occ::handle<TDF_Attribute>& anAttribute) const
 {
   return myAttributeMap.Contains(anAttribute);
 }

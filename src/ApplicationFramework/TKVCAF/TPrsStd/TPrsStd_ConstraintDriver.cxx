@@ -30,8 +30,8 @@ TPrsStd_ConstraintDriver::TPrsStd_ConstraintDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_ConstraintDriver::Update(const TDF_Label&                    aLabel,
-                                      occ::handle<AIS_InteractiveObject>& anAISObject)
+bool TPrsStd_ConstraintDriver::Update(const TDF_Label&               aLabel,
+                                                  occ::handle<AIS_InteractiveObject>& anAISObject)
 {
   occ::handle<TDataXtd_Constraint> apConstraint;
   if (!aLabel.FindAttribute(TDataXtd_Constraint::GetID(), apConstraint))

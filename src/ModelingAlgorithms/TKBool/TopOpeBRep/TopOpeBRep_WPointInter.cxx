@@ -45,7 +45,10 @@ void TopOpeBRep_WPointInter::ParametersOnS2(double& U2, double& V2) const
 
 //=================================================================================================
 
-void TopOpeBRep_WPointInter::Parameters(double& U1, double& V1, double& U2, double& V2) const
+void TopOpeBRep_WPointInter::Parameters(double& U1,
+                                        double& V1,
+                                        double& U2,
+                                        double& V2) const
 {
   myPP2S->Parameters(U1, V1, U2, V2);
 }

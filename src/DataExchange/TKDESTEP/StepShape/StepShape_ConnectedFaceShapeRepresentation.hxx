@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_ConnectedFaceShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ConnectedFaceShapeRepresentation, StepRepr_Representation)
+
 };
 
 #endif // _StepShape_ConnectedFaceShapeRepresentation_HeaderFile

@@ -30,7 +30,7 @@ RWStepBasic_RWEffectivityAssignment::RWStepBasic_RWEffectivityAssignment() {}
 
 void RWStepBasic_RWEffectivityAssignment::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepBasic_EffectivityAssignment>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepBasic_RWEffectivityAssignment::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWEffectivityAssignment::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepBasic_EffectivityAssignment>& ent) const
 {
 
@@ -66,9 +66,8 @@ void RWStepBasic_RWEffectivityAssignment::WriteStep(
 
 //=================================================================================================
 
-void RWStepBasic_RWEffectivityAssignment::Share(
-  const occ::handle<StepBasic_EffectivityAssignment>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepBasic_RWEffectivityAssignment::Share(const occ::handle<StepBasic_EffectivityAssignment>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Own fields of EffectivityAssignment

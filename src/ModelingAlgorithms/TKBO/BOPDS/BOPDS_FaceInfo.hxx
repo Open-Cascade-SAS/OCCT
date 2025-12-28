@@ -26,6 +26,7 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Map.hxx>
 
 //! The class BOPDS_FaceInfo is to store
@@ -127,14 +128,15 @@ public:
   NCollection_Map<int>& ChangeVerticesSc();
 
 protected:
-  occ::handle<NCollection_BaseAllocator>               myAllocator;
-  int                                                  myIndex;
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksIn;
-  NCollection_Map<int>                                 myVerticesIn;
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksOn;
-  NCollection_Map<int>                                 myVerticesOn;
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> myPaveBlocksSc;
-  NCollection_Map<int>                                 myVerticesSc;
+  occ::handle<NCollection_BaseAllocator> myAllocator;
+  int                  myIndex;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>       myPaveBlocksIn;
+  NCollection_Map<int>              myVerticesIn;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>       myPaveBlocksOn;
+  NCollection_Map<int>              myVerticesOn;
+  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>       myPaveBlocksSc;
+  NCollection_Map<int>              myVerticesSc;
+
 };
 
 #include <BOPDS_FaceInfo.lxx>

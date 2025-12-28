@@ -33,7 +33,7 @@ namespace
 // Helper function to validate configuration node and downcast
 static occ::handle<DEVRML_ConfigurationNode> ValidateConfigurationNode(
   const occ::handle<DE_ConfigurationNode>& theNode,
-  const TCollection_AsciiString&           theContext)
+  const TCollection_AsciiString&      theContext)
 {
   if (!DE_ValidationUtils::ValidateConfigurationNode(theNode,
                                                      STANDARD_TYPE(DEVRML_ConfigurationNode),
@@ -46,7 +46,7 @@ static occ::handle<DEVRML_ConfigurationNode> ValidateConfigurationNode(
 
 // Static function to handle VrmlData_Scene status errors
 static bool HandleVrmlSceneStatus(const VrmlData_Scene&          theScene,
-                                  const TCollection_AsciiString& theContext)
+                                              const TCollection_AsciiString& theContext)
 {
   const char* aStr = nullptr;
   switch (theScene.Status())
@@ -119,8 +119,8 @@ static bool HandleVrmlSceneStatus(const VrmlData_Scene&          theScene,
 
 // Static function to calculate scaling factor
 static double CalculateScalingFactor(const occ::handle<TDocStd_Document>&         theDocument,
-                                     const occ::handle<DEVRML_ConfigurationNode>& theNode,
-                                     const TCollection_AsciiString&               theContext)
+                                            const occ::handle<DEVRML_ConfigurationNode>& theNode,
+                                            const TCollection_AsciiString&          theContext)
 {
   double aScaling       = 1.;
   double aScaleFactorMM = 1.;
@@ -164,11 +164,11 @@ static TCollection_AsciiString ExtractVrmlDirectory(const TCollection_AsciiStrin
 }
 
 // Static function to process VRML scene from stream and extract shape
-static bool ProcessVrmlScene(Standard_IStream&                            theStream,
-                             const occ::handle<DEVRML_ConfigurationNode>& theNode,
-                             const TCollection_AsciiString&               theVrmlDir,
-                             TopoDS_Shape&                                theShape,
-                             const TCollection_AsciiString&               theContext)
+static bool ProcessVrmlScene(Standard_IStream&                       theStream,
+                                         const occ::handle<DEVRML_ConfigurationNode>& theNode,
+                                         const TCollection_AsciiString&          theVrmlDir,
+                                         TopoDS_Shape&                           theShape,
+                                         const TCollection_AsciiString&          theContext)
 {
   VrmlData_Scene aScene;
   aScene.SetLinearScale(theNode->GlobalParameters.LengthUnit);
@@ -184,8 +184,8 @@ static bool ProcessVrmlScene(Standard_IStream&                            theStr
   if (aScene.Status() == VrmlData_StatusOK)
   {
     NCollection_DataMap<occ::handle<TopoDS_TShape>, occ::handle<VrmlData_Appearance>> aShapeAppMap;
-    TopoDS_Shape aShape = aScene.GetShape(aShapeAppMap);
-    theShape            = aShape;
+    TopoDS_Shape                      aShape = aScene.GetShape(aShapeAppMap);
+    theShape                                 = aShape;
 
     // Verify that a valid shape was extracted
     if (theShape.IsNull())
@@ -220,10 +220,10 @@ DEVRML_Provider::DEVRML_Provider(const occ::handle<DE_ConfigurationNode>& theNod
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
                            occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Read(thePath, theDocument, theProgress);
@@ -231,10 +231,10 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
                             occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Write(thePath, theDocument, theProgress);
@@ -242,9 +242,9 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
+bool DEVRML_Provider::Read(const TCollection_AsciiString&  thePath,
                            const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+                           const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = TCollection_AsciiString("reading the file ") + thePath;
   if (!DE_ValidationUtils::ValidateDocument(theDocument, aContext))
@@ -284,9 +284,9 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
+bool DEVRML_Provider::Write(const TCollection_AsciiString&  thePath,
                             const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+                            const Message_ProgressRange&    theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing the file ";
@@ -319,10 +319,10 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString&       thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(const TCollection_AsciiString&      thePath,
-                           TopoDS_Shape&                       theShape,
+bool DEVRML_Provider::Read(const TCollection_AsciiString& thePath,
+                           TopoDS_Shape&                  theShape,
                            occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+                           const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Read(thePath, theShape, theProgress);
@@ -330,10 +330,10 @@ bool DEVRML_Provider::Read(const TCollection_AsciiString&      thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(const TCollection_AsciiString&      thePath,
-                            const TopoDS_Shape&                 theShape,
+bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
+                            const TopoDS_Shape&            theShape,
                             occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+                            const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Write(thePath, theShape, theProgress);
@@ -382,10 +382,10 @@ bool DEVRML_Provider::Write(const TCollection_AsciiString& thePath,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
-                           const occ::handle<TDocStd_Document>& theDocument,
-                           occ::handle<XSControl_WorkSession>&  theWS,
-                           const Message_ProgressRange&         theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
+                                       occ::handle<XSControl_WorkSession>&  theWS,
+                                       const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Read(theStreams, theDocument, theProgress);
@@ -393,10 +393,10 @@ bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
-                            const occ::handle<TDocStd_Document>& theDocument,
-                            occ::handle<XSControl_WorkSession>&  theWS,
-                            const Message_ProgressRange&         theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
+                                        occ::handle<XSControl_WorkSession>&  theWS,
+                                        const Message_ProgressRange&    theProgress)
 {
   (void)theWS;
   return Write(theStreams, theDocument, theProgress);
@@ -404,10 +404,10 @@ bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(ReadStreamList&                     theStreams,
-                           TopoDS_Shape&                       theShape,
-                           occ::handle<XSControl_WorkSession>& theWS,
-                           const Message_ProgressRange&        theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                theStreams,
+                                       TopoDS_Shape&                  theShape,
+                                       occ::handle<XSControl_WorkSession>& theWS,
+                                       const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Read(theStreams, theShape, theProgress);
@@ -415,10 +415,10 @@ bool DEVRML_Provider::Read(ReadStreamList&                     theStreams,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(WriteStreamList&                    theStreams,
-                            const TopoDS_Shape&                 theShape,
-                            occ::handle<XSControl_WorkSession>& theWS,
-                            const Message_ProgressRange&        theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&               theStreams,
+                                        const TopoDS_Shape&            theShape,
+                                        occ::handle<XSControl_WorkSession>& theWS,
+                                        const Message_ProgressRange&   theProgress)
 {
   (void)theWS;
   return Write(theStreams, theShape, theProgress);
@@ -426,9 +426,9 @@ bool DEVRML_Provider::Write(WriteStreamList&                    theStreams,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
-                           const occ::handle<TDocStd_Document>& theDocument,
-                           const Message_ProgressRange&         theProgress)
+bool DEVRML_Provider::Read(ReadStreamList&                 theStreams,
+                                       const occ::handle<TDocStd_Document>& theDocument,
+                                       const Message_ProgressRange&    theProgress)
 {
   TCollection_AsciiString aContext = "reading stream";
   if (!DE_ValidationUtils::ValidateReadStreamList(theStreams, aContext))
@@ -456,9 +456,9 @@ bool DEVRML_Provider::Read(ReadStreamList&                      theStreams,
 
 //=================================================================================================
 
-bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
-                            const occ::handle<TDocStd_Document>& theDocument,
-                            const Message_ProgressRange&         theProgress)
+bool DEVRML_Provider::Write(WriteStreamList&                theStreams,
+                                        const occ::handle<TDocStd_Document>& theDocument,
+                                        const Message_ProgressRange&    theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing stream";
@@ -502,8 +502,8 @@ bool DEVRML_Provider::Write(WriteStreamList&                     theStreams,
 //=================================================================================================
 
 bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
-                           TopoDS_Shape&                theShape,
-                           const Message_ProgressRange& theProgress)
+                                       TopoDS_Shape&                theShape,
+                                       const Message_ProgressRange& theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "reading stream";
@@ -515,7 +515,7 @@ bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
   const TCollection_AsciiString& aFirstKey = theStreams.First().Path;
   Standard_IStream&              aStream   = theStreams.First().Stream;
 
-  TCollection_AsciiString               aFullContext = aContext + " " + aFirstKey;
+  TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
   occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {
@@ -528,8 +528,8 @@ bool DEVRML_Provider::Read(ReadStreamList&              theStreams,
 //=================================================================================================
 
 bool DEVRML_Provider::Write(WriteStreamList&             theStreams,
-                            const TopoDS_Shape&          theShape,
-                            const Message_ProgressRange& theProgress)
+                                        const TopoDS_Shape&          theShape,
+                                        const Message_ProgressRange& theProgress)
 {
   (void)theProgress;
   TCollection_AsciiString aContext = "writing stream";
@@ -538,8 +538,8 @@ bool DEVRML_Provider::Write(WriteStreamList&             theStreams,
     return false;
   }
 
-  const TCollection_AsciiString&        aFirstKey    = theStreams.First().Path;
-  TCollection_AsciiString               aFullContext = aContext + " " + aFirstKey;
+  const TCollection_AsciiString&   aFirstKey    = theStreams.First().Path;
+  TCollection_AsciiString          aFullContext = aContext + " " + aFirstKey;
   occ::handle<DEVRML_ConfigurationNode> aNode = ValidateConfigurationNode(GetNode(), aFullContext);
   if (aNode.IsNull())
   {

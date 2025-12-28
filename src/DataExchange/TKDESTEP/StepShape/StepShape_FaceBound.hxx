@@ -34,7 +34,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepShape_Loop>&           aBound,
-                            const bool                                   aOrientation);
+                            const bool                  aOrientation);
 
   Standard_EXPORT void SetBound(const occ::handle<StepShape_Loop>& aBound);
 
@@ -48,7 +48,7 @@ public:
 
 private:
   occ::handle<StepShape_Loop> bound;
-  bool                        orientation;
+  bool       orientation;
 };
 
 #endif // _StepShape_FaceBound_HeaderFile

@@ -137,7 +137,7 @@ public:
   Standard_EXPORT void SetPRPCdescription(const occ::handle<TCollection_HAsciiString>& text);
 
 private:
-  bool                                                 myDone;
+  bool                                myDone;
   occ::handle<StepShape_ShapeDefinitionRepresentation> mySDR;
   occ::handle<StepBasic_ProductRelatedProductCategory> myPRPC;
 };

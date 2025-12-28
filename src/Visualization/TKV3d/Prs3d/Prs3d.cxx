@@ -25,9 +25,9 @@
 
 //=================================================================================================
 
-void Prs3d::AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
+void Prs3d::AddFreeEdges(NCollection_Sequence<gp_Pnt>&             theSegments,
                          const occ::handle<Poly_Triangulation>& thePolyTri,
-                         const gp_Trsf&                         theLocation)
+                         const gp_Trsf&                    theLocation)
 {
   if (thePolyTri.IsNull() || !thePolyTri->HasGeometry())
   {
@@ -35,10 +35,10 @@ void Prs3d::AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
   }
 
   // Build the connect tool.
-  Poly_Connect aPolyConnect(thePolyTri);
-  int          aNbTriangles = thePolyTri->NbTriangles();
-  int          aT[3];
-  int          aN[3];
+  Poly_Connect     aPolyConnect(thePolyTri);
+  int aNbTriangles = thePolyTri->NbTriangles();
+  int aT[3];
+  int aN[3];
 
   // Count the free edges.
   int aNbFree = 0;
@@ -90,13 +90,13 @@ void Prs3d::AddFreeEdges(NCollection_Sequence<gp_Pnt>&          theSegments,
 
 //=================================================================================================
 
-bool Prs3d::MatchSegment(const double  X,
-                         const double  Y,
-                         const double  Z,
-                         const double  aDistance,
-                         const gp_Pnt& P1,
-                         const gp_Pnt& P2,
-                         double&       dist)
+bool Prs3d::MatchSegment(const double X,
+                                     const double Y,
+                                     const double Z,
+                                     const double aDistance,
+                                     const gp_Pnt&       P1,
+                                     const gp_Pnt&       P2,
+                                     double&      dist)
 {
   double X1, Y1, Z1, X2, Y2, Z2;
   P1.Coord(X1, Y1, Z1);
@@ -127,18 +127,14 @@ occ::handle<Graphic3d_ArrayOfPrimitives> Prs3d::PrimitivesFromPolylines(
   }
 
   int aNbVertices = 0;
-  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints); anIt.More(); anIt.Next())
   {
     aNbVertices += anIt.Value()->Length();
   }
-  const int                              aSegmentEdgeNb = (aNbVertices - thePoints.Size()) * 2;
+  const int            aSegmentEdgeNb = (aNbVertices - thePoints.Size()) * 2;
   occ::handle<Graphic3d_ArrayOfSegments> aSegments =
     new Graphic3d_ArrayOfSegments(aNbVertices, aSegmentEdgeNb);
-  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints);
-       anIt.More();
-       anIt.Next())
+  for (NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>::Iterator anIt(thePoints); anIt.More(); anIt.Next())
   {
     const occ::handle<NCollection_HSequence<gp_Pnt>>& aPoints = anIt.Value();
 
@@ -157,10 +153,9 @@ occ::handle<Graphic3d_ArrayOfPrimitives> Prs3d::PrimitivesFromPolylines(
 
 //=================================================================================================
 
-void Prs3d::AddPrimitivesGroup(
-  const occ::handle<Prs3d_Presentation>&                        thePrs,
-  const occ::handle<Prs3d_LineAspect>&                          theAspect,
-  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& thePolylines)
+void Prs3d::AddPrimitivesGroup(const occ::handle<Prs3d_Presentation>& thePrs,
+                               const occ::handle<Prs3d_LineAspect>&   theAspect,
+                               NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&       thePolylines)
 {
   occ::handle<Graphic3d_ArrayOfPrimitives> aPrims = Prs3d::PrimitivesFromPolylines(thePolylines);
   thePolylines.Clear();

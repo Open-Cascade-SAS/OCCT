@@ -65,31 +65,31 @@ private:
   //     point on the 2nd segment (xend, yend)
   //     is the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
   bool SegmentFilletSegment(const double radius,
-                            double&      xc,
-                            double&      yc,
-                            bool&        cw,
-                            double&      start,
-                            double&      end);
+                                        double&      xc,
+                                        double&      yc,
+                                        bool&   cw,
+                                        double&      start,
+                                        double&      end);
 
   // A function constructs a fillet between a segment and an arc.
   bool SegmentFilletArc(const double radius,
-                        double&      xc,
-                        double&      yc,
-                        bool&        cw,
-                        double&      start,
-                        double&      end,
-                        double&      xend,
-                        double&      yend);
+                                    double&      xc,
+                                    double&      yc,
+                                    bool&   cw,
+                                    double&      start,
+                                    double&      end,
+                                    double&      xend,
+                                    double&      yend);
 
   // A function constructs a fillet between an arc and a segment.
   bool ArcFilletSegment(const double radius,
-                        double&      xc,
-                        double&      yc,
-                        bool&        cw,
-                        double&      start,
-                        double&      end,
-                        double&      xstart,
-                        double&      ystart);
+                                    double&      xc,
+                                    double&      yc,
+                                    bool&   cw,
+                                    double&      start,
+                                    double&      end,
+                                    double&      xstart,
+                                    double&      ystart);
 
   // WW5 method to compute fillet: arc - arc.
   // It returns a constructed fillet definition:
@@ -98,11 +98,11 @@ private:
   //     shrinking parameter of the 2nd circle (end)
   //     if the arc of fillet clockwise (cw = true) or counterclockwise (cw = false).
   bool ArcFilletArc(const double radius,
-                    double&      xc,
-                    double&      yc,
-                    bool&        cw,
-                    double&      start,
-                    double&      end);
+                                double&      xc,
+                                double&      yc,
+                                bool&   cw,
+                                double&      start,
+                                double&      end);
 
   // Cuts intersecting edges of a contour.
   bool Cut(const gp_Pln& plane, TopoDS_Edge& e1, TopoDS_Edge& e2);
@@ -111,28 +111,28 @@ private:
   gp_Pln plane;
 
   // Left neighbour.
-  TopoDS_Edge e1;
-  bool        segment1;
-  double      x11;
-  double      y11;
-  double      x12;
-  double      y12;
-  double      xc1;
-  double      yc1;
-  double      radius1;
-  bool        cw1;
+  TopoDS_Edge      e1;
+  bool segment1;
+  double    x11;
+  double    y11;
+  double    x12;
+  double    y12;
+  double    xc1;
+  double    yc1;
+  double    radius1;
+  bool cw1;
 
   // Right neighbour.
-  TopoDS_Edge e2;
-  bool        segment2;
-  double      x21;
-  double      y21;
-  double      x22;
-  double      y22;
-  double      xc2;
-  double      yc2;
-  double      radius2;
-  bool        cw2;
+  TopoDS_Edge      e2;
+  bool segment2;
+  double    x21;
+  double    y21;
+  double    x22;
+  double    y22;
+  double    xc2;
+  double    yc2;
+  double    radius2;
+  bool cw2;
 
   // Fillet (result).
   TopoDS_Edge fillet;

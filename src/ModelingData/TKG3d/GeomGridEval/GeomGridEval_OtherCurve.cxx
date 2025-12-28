@@ -110,7 +110,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
 
 NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,
-  int                               theN) const
+  int                         theN) const
 {
   if (theParams.IsEmpty() || theN < 1)
   {

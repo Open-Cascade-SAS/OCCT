@@ -22,7 +22,7 @@ RWStepVisual_RWSurfaceStyleFillArea::RWStepVisual_RWSurfaceStyleFillArea() {}
 
 void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepVisual_SurfaceStyleFillArea>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepVisual_RWSurfaceStyleFillArea::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleFillArea::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepVisual_SurfaceStyleFillArea>& ent) const
 {
 
@@ -53,9 +53,8 @@ void RWStepVisual_RWSurfaceStyleFillArea::WriteStep(
   SW.Send(ent->FillArea());
 }
 
-void RWStepVisual_RWSurfaceStyleFillArea::Share(
-  const occ::handle<StepVisual_SurfaceStyleFillArea>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepVisual_RWSurfaceStyleFillArea::Share(const occ::handle<StepVisual_SurfaceStyleFillArea>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->FillArea());

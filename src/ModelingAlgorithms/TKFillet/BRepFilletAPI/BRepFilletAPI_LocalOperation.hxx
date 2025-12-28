@@ -54,7 +54,8 @@ public:
   Standard_EXPORT virtual int NbEdges(const int I) const = 0;
 
   //! Returns the Edge J in the contour I.
-  Standard_EXPORT virtual const TopoDS_Edge& Edge(const int I, const int J) const = 0;
+  Standard_EXPORT virtual const TopoDS_Edge& Edge(const int I,
+                                                  const int J) const = 0;
 
   //! remove the contour containing the Edge E.
   Standard_EXPORT virtual void Remove(const TopoDS_Edge& E) = 0;
@@ -70,11 +71,13 @@ public:
 
   //! returns the abscissa of the vertex V on
   //! the contour of index IC.
-  Standard_EXPORT virtual double Abscissa(const int IC, const TopoDS_Vertex& V) const = 0;
+  Standard_EXPORT virtual double Abscissa(const int IC,
+                                                 const TopoDS_Vertex&   V) const = 0;
 
   //! returns the relative abscissa([0.,1.]) of the
   //! vertex V on the contour of index IC.
-  Standard_EXPORT virtual double RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const = 0;
+  Standard_EXPORT virtual double RelativeAbscissa(const int IC,
+                                                         const TopoDS_Vertex&   V) const = 0;
 
   //! returns true if the contour of index IC is closed
   //! an tangent.
@@ -93,9 +96,9 @@ public:
 
   Standard_EXPORT virtual int NbSurf(const int IC) const = 0;
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(
-    const int IC,
-    const int IS) const = 0;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<ChFiDS_CircSection>> Sect(const int IC,
+                                                         const int IS) const = 0;
+
 };
 
 #endif // _BRepFilletAPI_LocalOperation_HeaderFile

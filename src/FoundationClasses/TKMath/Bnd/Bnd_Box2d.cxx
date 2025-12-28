@@ -38,7 +38,10 @@ constexpr gp_Dir2d THE_DIR_YMAX{gp_Dir2d::D::Y};
 
 //=================================================================================================
 
-void Bnd_Box2d::Update(const double x, const double y, const double X, const double Y)
+void Bnd_Box2d::Update(const double x,
+                       const double y,
+                       const double X,
+                       const double Y)
 {
   if (Flags & VoidMask)
   {
@@ -161,14 +164,14 @@ Bnd_Box2d Bnd_Box2d::Transformed(const gp_Trsf2d& T) const
   }
   else
   {
-    gp_Pnt2d aP[4];
-    bool     aVertex[4];
+    gp_Pnt2d         aP[4];
+    bool aVertex[4];
     aVertex[0] = true;
     aVertex[1] = true;
     aVertex[2] = true;
     aVertex[3] = true;
-    gp_Dir2d aD[6];
-    int      aNbDirs = 0;
+    gp_Dir2d         aD[6];
+    int aNbDirs = 0;
 
     if (Flags & XminMask)
     {
@@ -335,9 +338,9 @@ bool Bnd_Box2d::IsOut(const gp_Lin2d& theL) const
   gp_XY aHeigh(std::abs(aXMax - aCenter.X()), std::abs(aYMax - aCenter.Y()));
 
   const double aProd[3] = {theL.Direction().XY() ^ (aCenter - theL.Location().XY()),
-                           theL.Direction().X() * aHeigh.Y(),
-                           theL.Direction().Y() * aHeigh.X()};
-  bool         aStatus  = (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
+                                  theL.Direction().X() * aHeigh.Y(),
+                                  theL.Direction().Y() * aHeigh.X()};
+  bool    aStatus  = (std::abs(aProd[0]) > (std::abs(aProd[1]) + std::abs(aProd[2])));
   return aStatus;
 }
 
@@ -354,8 +357,8 @@ bool Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const
     return true;
   }
 
-  bool   aStatus = true;
-  double aLocXMin, aLocXMax, aLocYMin, aLocYMax;
+  bool aStatus = true;
+  double    aLocXMin, aLocXMax, aLocYMin, aLocYMax;
   Get(aLocXMin, aLocYMin, aLocXMax, aLocYMax);
 
   //// Intersect the line containing the segment.
@@ -365,8 +368,8 @@ bool Bnd_Box2d::IsOut(const gp_Pnt2d& theP0, const gp_Pnt2d& theP1) const
   gp_XY aHeigh(std::abs(aLocXMax - aCenter.X()), std::abs(aLocYMax - aCenter.Y()));
 
   const double aProd[3] = {aSegDelta ^ (aCenter - theP0.XY()),
-                           aSegDelta.X() * aHeigh.Y(),
-                           aSegDelta.Y() * aHeigh.X()};
+                                  aSegDelta.X() * aHeigh.Y(),
+                                  aSegDelta.Y() * aHeigh.X()};
 
   if ((std::abs(aProd[0]) <= (std::abs(aProd[1]) + std::abs(aProd[2]))))
   {

@@ -45,7 +45,8 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve()
 {
 }
 
-BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire, const bool theIsAC)
+BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire&     theWire,
+                                             const bool theIsAC)
     : myWire(theWire),
       TFirst(0.0),
       TLast(0.0),
@@ -57,11 +58,11 @@ BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire, const b
   Initialize(theWire, theIsAC);
 }
 
-BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire& theWire,
-                                             const bool         theIsAC,
-                                             const double       theFirst,
-                                             const double       theLast,
-                                             const double       theTolerance)
+BRepAdaptor_CompCurve::BRepAdaptor_CompCurve(const TopoDS_Wire&     theWire,
+                                             const bool theIsAC,
+                                             const double    theFirst,
+                                             const double    theLast,
+                                             const double    theTolerance)
     : myWire(theWire),
       TFirst(theFirst),
       TLast(theLast),
@@ -87,7 +88,7 @@ occ::handle<Adaptor3d_Curve> BRepAdaptor_CompCurve::ShallowCopy() const
   for (int anI = 1; anI <= myCurves->Size(); ++anI)
   {
     const occ::handle<Adaptor3d_Curve> aCurve     = myCurves->Value(anI).ShallowCopy();
-    const BRepAdaptor_Curve&           aBrepCurve = *(occ::down_cast<BRepAdaptor_Curve>(aCurve));
+    const BRepAdaptor_Curve&      aBrepCurve = *(occ::down_cast<BRepAdaptor_Curve>(aCurve));
     aCopy->myCurves->SetValue(anI, aBrepCurve);
   }
   aCopy->myKnots  = myKnots;
@@ -100,7 +101,7 @@ occ::handle<Adaptor3d_Curve> BRepAdaptor_CompCurve::ShallowCopy() const
 
 void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
 {
-  int                    ii, NbEdge;
+  int       ii, NbEdge;
   BRepTools_WireExplorer wexp;
   TopoDS_Edge            E;
 
@@ -160,11 +161,11 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W, const bool AC)
   TLast  = myKnots->Value(myKnots->Length());
 }
 
-void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
-                                       const bool         AC,
-                                       const double       First,
-                                       const double       Last,
-                                       const double       Tol)
+void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire&     W,
+                                       const bool AC,
+                                       const double    First,
+                                       const double    Last,
+                                       const double    Tol)
 {
   Initialize(W, AC);
   TFirst = First;
@@ -173,8 +174,8 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
 
   // Trim the extremal curves.
   occ::handle<BRepAdaptor_Curve> HC;
-  int                            i1, i2;
-  double                         f = TFirst, l = TLast, d;
+  int          i1, i2;
+  double             f = TFirst, l = TLast, d;
   i1 = i2 = CurIndex;
   Prepare(f, d, i1);
   Prepare(l, d, i2);
@@ -191,7 +192,7 @@ void BRepAdaptor_CompCurve::Initialize(const TopoDS_Wire& W,
   {
     const BRepAdaptor_Curve& c1 = myCurves->Value(i1);
     const BRepAdaptor_Curve& c2 = myCurves->Value(i2);
-    double                   k;
+    double            k;
 
     k = c1.LastParameter();
     if (k > f)
@@ -216,9 +217,9 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
 void BRepAdaptor_CompCurve::Edge(const double U, TopoDS_Edge& E, double& UonE) const
 {
-  double d;
-  int    index = CurIndex;
-  UonE         = U;
+  double    d;
+  int index = CurIndex;
+  UonE                   = U;
   Prepare(UonE, d, index);
   E = myCurves->Value(index).Edge();
 }
@@ -251,11 +252,11 @@ int BRepAdaptor_CompCurve::NbIntervals(const GeomAbs_Shape S) const
 
 void BRepAdaptor_CompCurve::Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const
 {
-  int    ii, jj, kk, n;
-  double f, F, delta;
+  int ii, jj, kk, n;
+  double    f, F, delta;
 
   // First curve (direction of parsing of the edge)
-  n                                           = myCurves->ChangeValue(1).NbIntervals(S);
+  n                                = myCurves->ChangeValue(1).NbIntervals(S);
   occ::handle<NCollection_HArray1<double>> Ti = new (NCollection_HArray1<double>)(1, n + 1);
   myCurves->ChangeValue(1).Intervals(Ti->ChangeArray1(), S);
   InvPrepare(1, f, delta);
@@ -296,10 +297,10 @@ void BRepAdaptor_CompCurve::Intervals(NCollection_Array1<double>& T, const GeomA
 }
 
 occ::handle<Adaptor3d_Curve> BRepAdaptor_CompCurve::Trim(const double First,
-                                                         const double Last,
-                                                         const double Tol) const
+                                                    const double Last,
+                                                    const double Tol) const
 {
-  BRepAdaptor_CompCurve              C(myWire, IsbyAC, First, Last, Tol);
+  BRepAdaptor_CompCurve         C(myWire, IsbyAC, First, Last, Tol);
   occ::handle<BRepAdaptor_CompCurve> HC = new (BRepAdaptor_CompCurve)(C);
   return HC;
 }
@@ -321,24 +322,24 @@ double BRepAdaptor_CompCurve::Period() const
 
 gp_Pnt BRepAdaptor_CompCurve::Value(const double U) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
   return myCurves->Value(index).Value(u);
 }
 
 void BRepAdaptor_CompCurve::D0(const double U, gp_Pnt& P) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
   myCurves->Value(index).D0(u, P);
 }
 
 void BRepAdaptor_CompCurve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
   myCurves->Value(index).D1(u, P, V);
   V *= d;
@@ -346,18 +347,22 @@ void BRepAdaptor_CompCurve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 
 void BRepAdaptor_CompCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
   myCurves->Value(index).D2(u, P, V1, V2);
   V1 *= d;
   V2 *= d * d;
 }
 
-void BRepAdaptor_CompCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+void BRepAdaptor_CompCurve::D3(const double U,
+                               gp_Pnt&             P,
+                               gp_Vec&             V1,
+                               gp_Vec&             V2,
+                               gp_Vec&             V3) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
   myCurves->Value(index).D3(u, P, V1, V2, V3);
   V1 *= d;
@@ -367,8 +372,8 @@ void BRepAdaptor_CompCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2
 
 gp_Vec BRepAdaptor_CompCurve::DN(const double U, const int N) const
 {
-  double u     = U, d;
-  int    index = CurIndex;
+  double    u     = U, d;
+  int index = CurIndex;
   Prepare(u, d, index);
 
   return (myCurves->Value(index).DN(u, N) * std::pow(d, N));
@@ -376,8 +381,8 @@ gp_Vec BRepAdaptor_CompCurve::DN(const double U, const int N) const
 
 double BRepAdaptor_CompCurve::Resolution(const double R3d) const
 {
-  double Res = 1.e200, r;
-  int    ii, L = myCurves->Length();
+  double    Res = 1.e200, r;
+  int ii, L = myCurves->Length();
   for (ii = 1; ii <= L; ii++)
   {
     r = myCurves->Value(ii).Resolution(R3d);
@@ -458,10 +463,12 @@ occ::handle<Geom_BSplineCurve> BRepAdaptor_CompCurve::BSpline() const
 //   - positive -> Rule following after the node.
 //=======================================================================
 
-void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) const
+void BRepAdaptor_CompCurve::Prepare(double&    W,
+                                    double&    Delta,
+                                    int& theCurIndex) const
 {
-  double f, l, Wtest, Eps;
-  int    ii;
+  double    f, l, Wtest, Eps;
+  int ii;
   if (W - TFirst < TLast - W)
   {
     Eps = PTol;
@@ -502,7 +509,7 @@ void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) 
   // Invert ?
   const TopoDS_Edge& E  = myCurves->Value(theCurIndex).Edge();
   TopAbs_Orientation Or = E.Orientation();
-  bool               Reverse;
+  bool   Reverse;
   Reverse = (Forward && (Or == TopAbs_REVERSED)) || (!Forward && (Or != TopAbs_REVERSED));
 
   // Calculate the local parameter
@@ -522,12 +529,14 @@ void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) 
   }
 }
 
-void BRepAdaptor_CompCurve::InvPrepare(const int index, double& First, double& Delta) const
+void BRepAdaptor_CompCurve::InvPrepare(const int index,
+                                       double&         First,
+                                       double&         Delta) const
 {
   // Invert?
   const TopoDS_Edge& E  = myCurves->Value(index).Edge();
   TopAbs_Orientation Or = E.Orientation();
-  bool               Reverse;
+  bool   Reverse;
   Reverse = (Forward && (Or == TopAbs_REVERSED)) || (!Forward && (Or != TopAbs_REVERSED));
 
   // Calculate the parameters of reparametrisation

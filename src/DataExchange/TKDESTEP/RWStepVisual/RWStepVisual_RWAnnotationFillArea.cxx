@@ -20,6 +20,7 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -31,7 +32,7 @@ RWStepVisual_RWAnnotationFillArea::RWStepVisual_RWAnnotationFillArea() {}
 
 void RWStepVisual_RWAnnotationFillArea::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepVisual_AnnotationFillArea>& ent) const
 {
@@ -46,12 +47,12 @@ void RWStepVisual_RWAnnotationFillArea::ReadStep(
 
   // Own field : boundaries
   occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> aElements;
-  StepShape_GeometricSetSelect                                   aElementsItem;
-  int                                                            nsub;
+  StepShape_GeometricSetSelect                  aElementsItem;
+  int                              nsub;
   if (data->ReadSubList(num, 2, "boundaries", ach, nsub))
   {
-    int nb    = data->NbParams(nsub);
-    aElements = new NCollection_HArray1<StepShape_GeometricSetSelect>(1, nb);
+    int nb = data->NbParams(nsub);
+    aElements           = new NCollection_HArray1<StepShape_GeometricSetSelect>(1, nb);
     for (int i = 1; i <= nb; i++)
     {
       if (data->ReadEntity(nsub, i, "boundaries", ach, aElementsItem))
@@ -66,7 +67,7 @@ void RWStepVisual_RWAnnotationFillArea::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWAnnotationFillArea::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepVisual_AnnotationFillArea>& ent) const
 {
   // Inherited field : name

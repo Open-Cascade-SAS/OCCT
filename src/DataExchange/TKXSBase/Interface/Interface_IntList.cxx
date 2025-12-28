@@ -46,7 +46,7 @@ Interface_IntList::Interface_IntList(const Interface_IntList& other, const bool 
   other.Internals(thenbr, theents, therefs);
   if (copied)
   {
-    int                                   i;
+    int                 i;
     occ::handle<NCollection_HArray1<int>> ents = new NCollection_HArray1<int>(0, thenbe);
     ents->Init(0);
     for (i = 1; i <= thenbe; i++)
@@ -69,7 +69,7 @@ void Interface_IntList::Initialize(const int nbe)
   theents->Init(0);
 }
 
-void Interface_IntList::Internals(int&                                   nbrefs,
+void Interface_IntList::Internals(int&                 nbrefs,
                                   occ::handle<NCollection_HArray1<int>>& ents,
                                   occ::handle<NCollection_HArray1<int>>& refs) const
 {
@@ -87,7 +87,7 @@ void Interface_IntList::SetNbEntities(const int nbe)
 {
   if (nbe <= theents->Upper())
     return;
-  int                                   i;
+  int                 i;
   occ::handle<NCollection_HArray1<int>> ents = new NCollection_HArray1<int>(0, nbe);
   ents->Init(0);
   for (i = 1; i <= thenbe; i++)
@@ -105,8 +105,8 @@ void Interface_IntList::SetNumber(const int number)
     if (thenum == -number || number < -thenbe)
       return;
     bool preres = true;
-    thenum      = -number;
-    int val     = theents->Value(thenum);
+    thenum                  = -number;
+    int val    = theents->Value(thenum);
     if (val == 0)
     {
       thecount = 0;
@@ -179,7 +179,8 @@ int Interface_IntList::Number() const
   return thenum;
 }
 
-Interface_IntList Interface_IntList::List(const int number, const bool copied) const
+Interface_IntList Interface_IntList::List(const int number,
+                                          const bool copied) const
 {
   Interface_IntList alist(*this, copied);
   alist.SetNumber(number);
@@ -283,7 +284,7 @@ void Interface_IntList::Add(const int ref)
   else if (therank < 0)
   {
     Reservate(2);
-    therank = thenbr;
+    therank              = thenbr;
     int val = theents->Value(thenum);
     theents->SetValue(thenum, -thenbr);
     if (thecount == 1)
@@ -312,7 +313,7 @@ void Interface_IntList::Add(const int ref)
   { // copy further !
     Reservate(thecount + 2);
     int rank = therank;
-    therank  = thenbr;
+    therank               = thenbr;
     theents->SetValue(thenum, -therank);
     for (int i = 1; i < thecount; i++)
     {

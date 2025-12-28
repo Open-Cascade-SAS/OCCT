@@ -41,9 +41,10 @@ public:
   Standard_EXPORT IGESSelect_SelectName();
 
   //! Returns True if Name of Entity complies with Name Filter
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Sets a Name as a criterium : IGES Entities which have this name
   //! are kept (without regular expression, there should be at most

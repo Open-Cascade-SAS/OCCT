@@ -66,8 +66,8 @@ public:
   Standard_EXPORT virtual int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a GeometricRepresentationItem (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepGeom_GeometricRepresentationItem>
-    GeometricRepresentationItem() const;
+  Standard_EXPORT virtual occ::handle<StepGeom_GeometricRepresentationItem> GeometricRepresentationItem()
+    const;
 
   //! returns Value as a GroupRelationship (Null if another type)
   Standard_EXPORT virtual occ::handle<StepBasic_GroupRelationship> GroupRelationship() const;
@@ -79,8 +79,8 @@ public:
   Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormation>
-    ProductDefinitionFormation() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! returns Value as a PropertyDefinitionRepresentation (Null if another type)
   Standard_EXPORT virtual occ::handle<StepRepr_PropertyDefinitionRepresentation>
@@ -100,8 +100,7 @@ public:
   Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspect> ShapeAspect() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship()
-    const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
 
   //! returns Value as a ShapeRepresentationRelationship (Null if another type)
   Standard_EXPORT virtual occ::handle<StepRepr_ShapeRepresentationRelationship>
@@ -113,6 +112,7 @@ public:
   //! returns Value as a TopologicalRepresentationItem (Null if another type)
   Standard_EXPORT virtual occ::handle<StepShape_TopologicalRepresentationItem>
     TopologicalRepresentationItem() const;
+
 };
 
 #endif // _StepAP214_GroupItem_HeaderFile

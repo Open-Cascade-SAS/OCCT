@@ -31,21 +31,17 @@ public:
   //! Returns a ProductDefinitionReferenceWithLocalRepresentation
   Standard_EXPORT StepBasic_ProductDefinitionReferenceWithLocalRepresentation();
 
-  Standard_EXPORT void Init(
-    const occ::handle<StepBasic_ExternalSource>&             theSource,
-    const occ::handle<TCollection_HAsciiString>&             theId,
-    const occ::handle<TCollection_HAsciiString>&             theDescription,
-    const occ::handle<StepBasic_ProductDefinitionFormation>& theFormation,
-    const occ::handle<StepBasic_ProductDefinitionContext>&   theFrameOfReference);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_ExternalSource>&             theSource,
+                            const occ::handle<TCollection_HAsciiString>&             theId,
+                            const occ::handle<TCollection_HAsciiString>&             theDescription,
+                            const occ::handle<StepBasic_ProductDefinitionFormation>& theFormation,
+                            const occ::handle<StepBasic_ProductDefinitionContext>& theFrameOfReference);
 
   //! Returns field Source
   inline occ::handle<StepBasic_ExternalSource> Source() const { return mySource; }
 
   //! Set field Source
-  inline void SetSource(const occ::handle<StepBasic_ExternalSource>& theSource)
-  {
-    mySource = theSource;
-  }
+  inline void SetSource(const occ::handle<StepBasic_ExternalSource>& theSource) { mySource = theSource; }
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_ProductDefinitionReferenceWithLocalRepresentation,
                           StepBasic_ProductDefinition)

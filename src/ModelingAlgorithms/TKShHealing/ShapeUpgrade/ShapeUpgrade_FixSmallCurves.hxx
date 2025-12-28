@@ -43,10 +43,10 @@ public:
   Standard_EXPORT void Init(const TopoDS_Edge& theEdge, const TopoDS_Face& theFace);
 
   Standard_EXPORT virtual bool Approx(occ::handle<Geom_Curve>&   Curve3d,
-                                      occ::handle<Geom2d_Curve>& Curve2d,
-                                      occ::handle<Geom2d_Curve>& Curve2dR,
-                                      double&                    First,
-                                      double&                    Last);
+                                                  occ::handle<Geom2d_Curve>& Curve2d,
+                                                  occ::handle<Geom2d_Curve>& Curve2dR,
+                                                  double&        First,
+                                                  double&        Last);
 
   //! Sets the tool for splitting 3D curves.
   Standard_EXPORT void SetSplitCurve3dTool(
@@ -71,11 +71,12 @@ protected:
   //! Returns the tool for splitting pcurves.
   Standard_EXPORT virtual occ::handle<ShapeUpgrade_SplitCurve2d> GetSplitCurve2dTool() const;
 
-  int                                    myStatus;
+  int                  myStatus;
   occ::handle<ShapeUpgrade_SplitCurve3d> mySplitCurve3dTool;
   occ::handle<ShapeUpgrade_SplitCurve2d> mySplitCurve2dTool;
-  TopoDS_Edge                            myEdge;
-  TopoDS_Face                            myFace;
+  TopoDS_Edge                       myEdge;
+  TopoDS_Face                       myFace;
+
 };
 
 #endif // _ShapeUpgrade_FixSmallCurves_HeaderFile

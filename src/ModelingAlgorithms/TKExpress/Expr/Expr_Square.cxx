@@ -20,6 +20,7 @@
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_Operators.hxx>
 #include <Expr_Product.hxx>
+#include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Expr_Square.hxx>
 #include <Expr_SquareRoot.hxx>
@@ -56,7 +57,7 @@ occ::handle<Expr_GeneralExpression> Expr_Square::ShallowSimplified() const
     occ::handle<Expr_GeneralExpression> op      = myexp->SubExpression(1);
     occ::handle<Expr_GeneralExpression> puis    = myexp->SubExpression(2);
     occ::handle<Expr_Product>           newpuis = 2.0 * puis;
-    occ::handle<Expr_Exponentiate> res = new Expr_Exponentiate(op, newpuis->ShallowSimplified());
+    occ::handle<Expr_Exponentiate>      res = new Expr_Exponentiate(op, newpuis->ShallowSimplified());
     return res->ShallowSimplified();
   }
   occ::handle<Expr_Square> me = this;
@@ -82,16 +83,15 @@ bool Expr_Square::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Square::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Square::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
     return new Expr_NumericValue(0.0);
   }
-  occ::handle<Expr_GeneralExpression> myder                      = Operand();
-  myder                                                          = myder->Derivative(X);
-  occ::handle<Expr_NumericValue>                            coef = new Expr_NumericValue(2.0);
+  occ::handle<Expr_GeneralExpression> myder  = Operand();
+  myder                                 = myder->Derivative(X);
+  occ::handle<Expr_NumericValue>        coef = new Expr_NumericValue(2.0);
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> ops;
   ops.Append(coef);
   ops.Append(myder);
@@ -102,7 +102,7 @@ occ::handle<Expr_GeneralExpression> Expr_Square::Derivative(
 }
 
 double Expr_Square::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                             const NCollection_Array1<double>&                         vals) const
+                                    const NCollection_Array1<double>&      vals) const
 {
   double val = Operand()->Evaluate(vars, vals);
   return val * val;
@@ -110,7 +110,7 @@ double Expr_Square::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnkn
 
 TCollection_AsciiString Expr_Square::String() const
 {
-  TCollection_AsciiString             str;
+  TCollection_AsciiString        str;
   occ::handle<Expr_GeneralExpression> op = Operand();
   if (op->NbSubExpressions() > 1)
   {

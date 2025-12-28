@@ -31,6 +31,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_ShapeRepresentationWithParameters,
                           StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_ShapeRepresentationWithParameters_HeaderFile

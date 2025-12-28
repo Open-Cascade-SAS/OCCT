@@ -28,9 +28,9 @@
 
 void DsgPrs_Chamf2dPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const gp_Pnt&                          aPntAttach,
-                                     const gp_Pnt&                          aPntEnd,
-                                     const TCollection_ExtendedString&      aText)
+                                     const gp_Pnt&                     aPntAttach,
+                                     const gp_Pnt&                     aPntEnd,
+                                     const TCollection_ExtendedString& aText)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 
@@ -58,10 +58,10 @@ void DsgPrs_Chamf2dPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
 
 void DsgPrs_Chamf2dPresentation::Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                      const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                     const gp_Pnt&                          aPntAttach,
-                                     const gp_Pnt&                          aPntEnd,
-                                     const TCollection_ExtendedString&      aText,
-                                     const DsgPrs_ArrowSide                 ArrowPrs)
+                                     const gp_Pnt&                     aPntAttach,
+                                     const gp_Pnt&                     aPntEnd,
+                                     const TCollection_ExtendedString& aText,
+                                     const DsgPrs_ArrowSide            ArrowPrs)
 {
   occ::handle<Prs3d_DimensionAspect> LA = aDrawer->DimensionAspect();
 

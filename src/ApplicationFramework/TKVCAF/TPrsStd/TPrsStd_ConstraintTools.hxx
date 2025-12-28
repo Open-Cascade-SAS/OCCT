@@ -98,40 +98,40 @@ public:
                                             occ::handle<AIS_InteractiveObject>&     anAIS);
 
   Standard_EXPORT static void ComputeTextAndValue(const occ::handle<TDataXtd_Constraint>& aConst,
-                                                  double&                                 aValue,
-                                                  TCollection_ExtendedString&             aText,
-                                                  const bool anIsAngle);
+                                                  double&                     aValue,
+                                                  TCollection_ExtendedString&        aText,
+                                                  const bool             anIsAngle);
 
   Standard_EXPORT static void ComputeAngleForOneFace(const occ::handle<TDataXtd_Constraint>& aConst,
                                                      occ::handle<AIS_InteractiveObject>&     anAIS);
 
 private:
   Standard_EXPORT static void GetOneShape(const occ::handle<TDataXtd_Constraint>& aConst,
-                                          TopoDS_Shape&                           aShape);
+                                          TopoDS_Shape&                      aShape);
 
   Standard_EXPORT static void GetGeom(const occ::handle<TDataXtd_Constraint>& aConst,
                                       occ::handle<Geom_Geometry>&             aGeom);
 
   Standard_EXPORT static void GetTwoShapes(const occ::handle<TDataXtd_Constraint>& aConst,
-                                           TopoDS_Shape&                           aShape1,
-                                           TopoDS_Shape&                           aShape2);
+                                           TopoDS_Shape&                      aShape1,
+                                           TopoDS_Shape&                      aShape2);
 
   Standard_EXPORT static void GetShapesAndGeom(const occ::handle<TDataXtd_Constraint>& aConst,
-                                               TopoDS_Shape&                           aShape1,
-                                               TopoDS_Shape&                           aShape2,
+                                               TopoDS_Shape&                      aShape1,
+                                               TopoDS_Shape&                      aShape2,
                                                occ::handle<Geom_Geometry>&             aGeom);
 
   Standard_EXPORT static void GetShapesAndGeom(const occ::handle<TDataXtd_Constraint>& aConst,
-                                               TopoDS_Shape&                           aShape1,
-                                               TopoDS_Shape&                           aShape2,
-                                               TopoDS_Shape&                           aShape3,
+                                               TopoDS_Shape&                      aShape1,
+                                               TopoDS_Shape&                      aShape2,
+                                               TopoDS_Shape&                      aShape3,
                                                occ::handle<Geom_Geometry>&             aGeom);
 
   Standard_EXPORT static void GetShapesAndGeom(const occ::handle<TDataXtd_Constraint>& aConst,
-                                               TopoDS_Shape&                           aShape1,
-                                               TopoDS_Shape&                           aShape2,
-                                               TopoDS_Shape&                           aShape3,
-                                               TopoDS_Shape&                           aShape4,
+                                               TopoDS_Shape&                      aShape1,
+                                               TopoDS_Shape&                      aShape2,
+                                               TopoDS_Shape&                      aShape3,
+                                               TopoDS_Shape&                      aShape4,
                                                occ::handle<Geom_Geometry>&             aGeom);
 };
 

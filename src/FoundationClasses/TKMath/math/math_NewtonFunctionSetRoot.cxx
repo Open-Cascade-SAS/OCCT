@@ -27,9 +27,9 @@
 //=================================================================================================
 
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                                       const math_Vector& theXTolerance,
-                                                       const double       theFTolerance,
-                                                       const int          theNbIterations)
+                                                       const math_Vector&     theXTolerance,
+                                                       const double    theFTolerance,
+                                                       const int theNbIterations)
 
     : TolX(1, theFunction.NbVariables()),
       TolF(theFTolerance),
@@ -50,8 +50,8 @@ math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDeriv
 //=================================================================================================
 
 math_NewtonFunctionSetRoot::math_NewtonFunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                                       const double theFTolerance,
-                                                       const int    theNbIterations)
+                                                       const double    theFTolerance,
+                                                       const int theNbIterations)
 
     : TolX(1, theFunction.NbVariables()),
       TolF(theFTolerance),
@@ -99,9 +99,9 @@ void math_NewtonFunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                          const math_Vector&               SupBound)
 {
 
-  double d;
-  bool   OK;
-  int    Error;
+  double    d;
+  bool OK;
+  int Error;
 
   Done = false;
   Sol  = StartingPoint;

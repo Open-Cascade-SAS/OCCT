@@ -30,12 +30,13 @@ public:
   virtual ~IMeshData_Curve() {}
 
   //! Inserts new discretization point at the given position.
-  Standard_EXPORT virtual void InsertPoint(const int     thePosition,
-                                           const gp_Pnt& thePoint,
-                                           const double  theParamOnPCurve) = 0;
+  Standard_EXPORT virtual void InsertPoint(const int thePosition,
+                                           const gp_Pnt&          thePoint,
+                                           const double    theParamOnPCurve) = 0;
 
   //! Adds new discretization point to curve.
-  Standard_EXPORT virtual void AddPoint(const gp_Pnt& thePoint, const double theParamOnCurve) = 0;
+  Standard_EXPORT virtual void AddPoint(const gp_Pnt&       thePoint,
+                                        const double theParamOnCurve) = 0;
 
   //! Returns discretization point with the given index.
   Standard_EXPORT virtual gp_Pnt& GetPoint(const int theIndex) = 0;

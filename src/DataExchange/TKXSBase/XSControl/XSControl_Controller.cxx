@@ -37,6 +37,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
@@ -60,7 +61,8 @@ static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transie
 
 //=================================================================================================
 
-XSControl_Controller::XSControl_Controller(const char* theLongName, const char* theShortName)
+XSControl_Controller::XSControl_Controller(const char* theLongName,
+                                           const char* theShortName)
     : myShortName(theShortName),
       myLongName(theLongName)
 {
@@ -74,7 +76,8 @@ XSControl_Controller::XSControl_Controller(const char* theLongName, const char* 
 
 //=================================================================================================
 
-void XSControl_Controller::TraceStatic(const char* theName, const int theUse)
+void XSControl_Controller::TraceStatic(const char* theName,
+                                       const int theUse)
 {
   occ::handle<Interface_Static> val = Interface_Static::Static(theName);
   if (val.IsNull())
@@ -85,7 +88,8 @@ void XSControl_Controller::TraceStatic(const char* theName, const int theUse)
 
 //=================================================================================================
 
-void XSControl_Controller::SetNames(const char* theLongName, const char* theShortName)
+void XSControl_Controller::SetNames(const char* theLongName,
+                                    const char* theShortName)
 {
   if (theLongName && theLongName[0] != '\0')
   {
@@ -146,20 +150,23 @@ occ::handle<Transfer_ActorOfFinderProcess> XSControl_Controller::ActorWrite() co
 
 //=================================================================================================
 
-void XSControl_Controller::SetModeWrite(const int modemin, const int modemax, const bool)
+void XSControl_Controller::SetModeWrite(const int modemin,
+                                        const int modemax,
+                                        const bool)
 {
   if (modemin > modemax)
   {
     myModeWriteShapeN.Nullify();
     return;
   }
-  myModeWriteShapeN =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(modemin, modemax);
+  myModeWriteShapeN = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(modemin, modemax);
 }
 
 //=================================================================================================
 
-void XSControl_Controller::SetModeWriteHelp(const int modetrans, const char* help, const bool)
+void XSControl_Controller::SetModeWriteHelp(const int modetrans,
+                                            const char* help,
+                                            const bool)
 {
   if (myModeWriteShapeN.IsNull())
     return;
@@ -171,7 +178,9 @@ void XSControl_Controller::SetModeWriteHelp(const int modetrans, const char* hel
 
 //=================================================================================================
 
-bool XSControl_Controller::ModeWriteBounds(int& modemin, int& modemax, const bool) const
+bool XSControl_Controller::ModeWriteBounds(int& modemin,
+                                                       int& modemax,
+                                                       const bool) const
 {
   modemin = modemax = 0;
   if (myModeWriteShapeN.IsNull())
@@ -183,7 +192,8 @@ bool XSControl_Controller::ModeWriteBounds(int& modemin, int& modemax, const boo
 
 //=================================================================================================
 
-bool XSControl_Controller::IsModeWrite(const int modetrans, const bool) const
+bool XSControl_Controller::IsModeWrite(const int modetrans,
+                                                   const bool) const
 {
   if (myModeWriteShapeN.IsNull())
     return true;
@@ -196,7 +206,8 @@ bool XSControl_Controller::IsModeWrite(const int modetrans, const bool) const
 
 //=================================================================================================
 
-const char* XSControl_Controller::ModeWriteHelp(const int modetrans, const bool) const
+const char* XSControl_Controller::ModeWriteHelp(const int modetrans,
+                                                     const bool) const
 {
   if (myModeWriteShapeN.IsNull())
     return "";
@@ -216,8 +227,9 @@ const char* XSControl_Controller::ModeWriteHelp(const int modetrans, const bool)
 
 //=================================================================================================
 
-bool XSControl_Controller::RecognizeWriteTransient(const occ::handle<Standard_Transient>& obj,
-                                                   const int modetrans) const
+bool XSControl_Controller::RecognizeWriteTransient(
+  const occ::handle<Standard_Transient>& obj,
+  const int            modetrans) const
 {
   if (myAdaptorWrite.IsNull())
     return false;
@@ -227,13 +239,12 @@ bool XSControl_Controller::RecognizeWriteTransient(const occ::handle<Standard_Tr
 
 //=================================================================================================
 
-static IFSelect_ReturnStatus TransferFinder(
-  const occ::handle<Transfer_ActorOfFinderProcess>& theActor,
-  const occ::handle<Transfer_Finder>&               theMapper,
-  const occ::handle<Transfer_FinderProcess>&        theFP,
-  const occ::handle<Interface_InterfaceModel>&      theModel,
-  const int                                         theModeTrans,
-  const Message_ProgressRange&                      theProgress)
+static IFSelect_ReturnStatus TransferFinder(const occ::handle<Transfer_ActorOfFinderProcess>& theActor,
+                                            const occ::handle<Transfer_Finder>&               theMapper,
+                                            const occ::handle<Transfer_FinderProcess>&        theFP,
+                                            const occ::handle<Interface_InterfaceModel>&      theModel,
+                                            const int       theModeTrans,
+                                            const Message_ProgressRange& theProgress)
 {
   if (theActor.IsNull())
     return IFSelect_RetError;
@@ -244,7 +255,7 @@ static IFSelect_ReturnStatus TransferFinder(
   theFP->SetActor(theActor);
   theFP->Transfer(theMapper, theProgress);
 
-  IFSelect_ReturnStatus                         stat   = IFSelect_RetFail;
+  IFSelect_ReturnStatus                    stat   = IFSelect_RetFail;
   occ::handle<Transfer_Binder>                  binder = theFP->Find(theMapper);
   occ::handle<Transfer_SimpleBinderOfTransient> bindtr;
   while (!binder.IsNull())
@@ -270,8 +281,8 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteTransient(
   const occ::handle<Standard_Transient>&       theObj,
   const occ::handle<Transfer_FinderProcess>&   theFP,
   const occ::handle<Interface_InterfaceModel>& theModel,
-  const int                                    theModeTrans,
-  const Message_ProgressRange&                 theProgress) const
+  const int                  theModeTrans,
+  const Message_ProgressRange&            theProgress) const
 {
   if (theObj.IsNull())
     return IFSelect_RetVoid;
@@ -285,7 +296,8 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteTransient(
 
 //=================================================================================================
 
-bool XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape& shape, const int modetrans) const
+bool XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape&    shape,
+                                                           const int modetrans) const
 {
   if (myAdaptorWrite.IsNull())
     return false;
@@ -296,11 +308,11 @@ bool XSControl_Controller::RecognizeWriteShape(const TopoDS_Shape& shape, const 
 //=================================================================================================
 
 IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
-  const TopoDS_Shape&                          shape,
+  const TopoDS_Shape&                     shape,
   const occ::handle<Transfer_FinderProcess>&   FP,
   const occ::handle<Interface_InterfaceModel>& model,
-  const int                                    modetrans,
-  const Message_ProgressRange&                 theProgress) const
+  const int                  modetrans,
+  const Message_ProgressRange&            theProgress) const
 {
   if (shape.IsNull())
     return IFSelect_RetVoid;
@@ -322,8 +334,8 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
 //=================================================================================================
 
 void XSControl_Controller::AddSessionItem(const occ::handle<Standard_Transient>& theItem,
-                                          const char*                            theName,
-                                          const bool                             toApply)
+                                          const char*            theName,
+                                          const bool            toApply)
 {
   if (theItem.IsNull() || theName[0] == '\0')
     return;
@@ -444,9 +456,8 @@ void XSControl_Controller::Customise(occ::handle<XSControl_WorkSession>& WS)
   // Here for the specific manufacturers of controllers could create the
   // Parameters: So wait here
 
-  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> listat =
-    Interface_Static::Items();
-  occ::handle<IFSelect_ParamEditor> paramed =
+  occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> listat = Interface_Static::Items();
+  occ::handle<IFSelect_ParamEditor>            paramed =
     IFSelect_ParamEditor::StaticEditor(listat, "All Static Parameters");
   WS->AddNamedItem("xst-static-params-edit", paramed);
   occ::handle<IFSelect_EditForm> paramform = paramed->Form(false);

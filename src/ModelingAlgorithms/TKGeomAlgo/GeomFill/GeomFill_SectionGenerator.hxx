@@ -25,10 +25,17 @@
 #include <NCollection_HArray1.hxx>
 #include <GeomFill_Profiler.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 
 //! gives the functions needed for instantiation from
 //! AppSurf in AppBlend. Allow to evaluate a surface
@@ -42,7 +49,10 @@ public:
 
   Standard_EXPORT void SetParam(const occ::handle<NCollection_HArray1<double>>& Params);
 
-  Standard_EXPORT void GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d) const;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) const;
 
   Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) const;
 
@@ -51,18 +61,18 @@ public:
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
-  Standard_EXPORT bool Section(const int                     P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                               NCollection_Array1<double>&   Weigths,
-                               NCollection_Array1<double>&   DWeigths) const;
+  Standard_EXPORT bool Section(const int P,
+                                           NCollection_Array1<gp_Pnt>&    Poles,
+                                           NCollection_Array1<gp_Vec>&    DPoles,
+                                           NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                                           NCollection_Array1<gp_Vec2d>&  DPoles2d,
+                                           NCollection_Array1<double>&  Weigths,
+                                           NCollection_Array1<double>&  DWeigths) const;
 
-  Standard_EXPORT void Section(const int                     P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<double>&   Weigths) const;
+  Standard_EXPORT void Section(const int P,
+                               NCollection_Array1<gp_Pnt>&    Poles,
+                               NCollection_Array1<gp_Pnt2d>&  Poles2d,
+                               NCollection_Array1<double>&  Weigths) const;
 
   //! Returns the parameter of Section<P>, to impose it for the
   //! approximation.
@@ -70,6 +80,7 @@ public:
 
 protected:
   occ::handle<NCollection_HArray1<double>> myParams;
+
 };
 
 #endif // _GeomFill_SectionGenerator_HeaderFile

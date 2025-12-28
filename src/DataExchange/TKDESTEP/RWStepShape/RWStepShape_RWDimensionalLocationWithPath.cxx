@@ -30,7 +30,7 @@ RWStepShape_RWDimensionalLocationWithPath::RWStepShape_RWDimensionalLocationWith
 
 void RWStepShape_RWDimensionalLocationWithPath::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                                                 num,
+  const int                               num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepShape_DimensionalLocationWithPath>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepShape_RWDimensionalLocationWithPath::ReadStep(
   data->ReadString(num, 1, "shape_aspect_relationship.name", ach, aShapeAspectRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Description;
-  bool                                  hasShapeAspectRelationship_Description = true;
+  bool                 hasShapeAspectRelationship_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -91,7 +91,7 @@ void RWStepShape_RWDimensionalLocationWithPath::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalLocationWithPath::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepShape_DimensionalLocationWithPath>& ent) const
 {
 
@@ -119,7 +119,7 @@ void RWStepShape_RWDimensionalLocationWithPath::WriteStep(
 
 void RWStepShape_RWDimensionalLocationWithPath::Share(
   const occ::handle<StepShape_DimensionalLocationWithPath>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   // Inherited fields of ShapeAspectRelationship

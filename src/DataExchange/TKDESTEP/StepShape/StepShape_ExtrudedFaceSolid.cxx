@@ -22,8 +22,8 @@ StepShape_ExtrudedFaceSolid::StepShape_ExtrudedFaceSolid() {}
 
 void StepShape_ExtrudedFaceSolid::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepShape_FaceSurface>&    aSweptArea,
-                                       const occ::handle<StepGeom_Direction>& aExtrudedDirection,
-                                       const double                           aDepth)
+                                       const occ::handle<StepGeom_Direction>&       aExtrudedDirection,
+                                       const double                     aDepth)
 {
   // --- classe own fields ---
   extrudedDirection = aExtrudedDirection;

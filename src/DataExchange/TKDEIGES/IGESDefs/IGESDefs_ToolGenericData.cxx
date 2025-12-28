@@ -34,19 +34,23 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDefs_ToolGenericData::IGESDefs_ToolGenericData() {}
 
 void IGESDefs_ToolGenericData::ReadOwnParams(const occ::handle<IGESDefs_GenericData>&    ent,
                                              const occ::handle<IGESData_IGESReaderData>& IR,
-                                             IGESData_ParamReader&                       PR) const
+                                             IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                                                               i, num;
-  int                                                               tempNbPropVal;
-  occ::handle<TCollection_HAsciiString>                             tempName;
-  occ::handle<NCollection_HArray1<int>>                             tempTypes;
+  int                   i, num;
+  int                   tempNbPropVal;
+  occ::handle<TCollection_HAsciiString>   tempName;
+  occ::handle<NCollection_HArray1<int>>   tempTypes;
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> tempValues;
 
   // clang-format off
@@ -117,7 +121,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const occ::handle<IGESDefs_GenericD
         case 6: // Logical
         {
           occ::handle<NCollection_HArray1<int>> tempObj = new NCollection_HArray1<int>(1, 1);
-          bool                                  tempBool;
+          bool                 tempBool;
           // st = PR.ReadBoolean(PR.Current(), "Boolean value", tempBool); //szv#4:S4163:12Mar99
           // moved in if
           if (PR.ReadBoolean(PR.Current(), "Boolean value", tempBool))
@@ -135,7 +139,7 @@ void IGESDefs_ToolGenericData::ReadOwnParams(const occ::handle<IGESDefs_GenericD
 }
 
 void IGESDefs_ToolGenericData::WriteOwnParams(const occ::handle<IGESDefs_GenericData>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   int i, num;
   IW.Send(ent->NbPropertyValues());
@@ -174,7 +178,7 @@ void IGESDefs_ToolGenericData::WriteOwnParams(const occ::handle<IGESDefs_Generic
 }
 
 void IGESDefs_ToolGenericData::OwnShared(const occ::handle<IGESDefs_GenericData>& ent,
-                                         Interface_EntityIterator&                iter) const
+                                         Interface_EntityIterator&           iter) const
 {
   int i, num;
   for (num = ent->NbTypeValuePairs(), i = 1; i <= num; i++)
@@ -186,14 +190,13 @@ void IGESDefs_ToolGenericData::OwnShared(const occ::handle<IGESDefs_GenericData>
 
 void IGESDefs_ToolGenericData::OwnCopy(const occ::handle<IGESDefs_GenericData>& another,
                                        const occ::handle<IGESDefs_GenericData>& ent,
-                                       Interface_CopyTool&                      TC) const
+                                       Interface_CopyTool&                 TC) const
 {
-  int                                   num           = another->NbTypeValuePairs();
-  int                                   tempNbPropVal = another->NbPropertyValues();
-  occ::handle<TCollection_HAsciiString> tempName  = new TCollection_HAsciiString(another->Name());
-  occ::handle<NCollection_HArray1<int>> tempTypes = new NCollection_HArray1<int>(1, num);
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> tempValues =
-    new NCollection_HArray1<occ::handle<Standard_Transient>>(1, num);
+  int                   num           = another->NbTypeValuePairs();
+  int                   tempNbPropVal = another->NbPropertyValues();
+  occ::handle<TCollection_HAsciiString>   tempName      = new TCollection_HAsciiString(another->Name());
+  occ::handle<NCollection_HArray1<int>>   tempTypes     = new NCollection_HArray1<int>(1, num);
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> tempValues    = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, num);
 
   for (int i = 1; i <= num; i++)
   {
@@ -266,9 +269,9 @@ void IGESDefs_ToolGenericData::OwnCheck(const occ::handle<IGESDefs_GenericData>&
 }
 
 void IGESDefs_ToolGenericData::OwnDump(const occ::handle<IGESDefs_GenericData>& ent,
-                                       const IGESData_IGESDumper&               dumper,
-                                       Standard_OStream&                        S,
-                                       const int                                level) const
+                                       const IGESData_IGESDumper&          dumper,
+                                       Standard_OStream&                   S,
+                                       const int              level) const
 {
   S << "IGESDefs_GenericData\n"
     << "Number of property values : " << ent->NbPropertyValues() << "\n"

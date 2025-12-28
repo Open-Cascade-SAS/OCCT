@@ -72,66 +72,66 @@ public:
   //! if the singularity is at the first point ,the next point
   //! calculated is the P(LastParameter)
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor3d_Curve& C,
-                                          const double           Deflection,
-                                          const double           Resolution,
-                                          const bool             WithControl);
+                                          const double    Deflection,
+                                          const double    Resolution,
+                                          const bool WithControl);
 
   //! As above with 2d curve
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
-                                          const double             Deflection,
-                                          const double             Resolution,
-                                          const bool               WithControl);
+                                          const double      Deflection,
+                                          const double      Resolution,
+                                          const bool   WithControl);
 
   //! Computes an uniform deflection distribution of points on a part of
   //! the curve <C>. Deflection defines the step between the points.
   //! <U1> and <U2> define the distribution span.
   //! <U1> and <U2> must be in the parametric range of the curve.
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor3d_Curve& C,
-                                          const double           Deflection,
-                                          const double           U1,
-                                          const double           U2,
-                                          const double           Resolution,
-                                          const bool             WithControl);
+                                          const double    Deflection,
+                                          const double    U1,
+                                          const double    U2,
+                                          const double    Resolution,
+                                          const bool WithControl);
 
   //! As above with 2d curve
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor2d_Curve2d& C,
-                                          const double             Deflection,
-                                          const double             U1,
-                                          const double             U2,
-                                          const double             Resolution,
-                                          const bool               WithControl);
+                                          const double      Deflection,
+                                          const double      U1,
+                                          const double      U2,
+                                          const double      Resolution,
+                                          const bool   WithControl);
 
   //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <Resolution> and <WithControl>
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& C,
-                                  const double           Deflection,
-                                  const double           Resolution,
-                                  const bool             WithControl);
+                                  const double    Deflection,
+                                  const double    Resolution,
+                                  const bool WithControl);
 
   //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <Resolution> and <WithControl>
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& C,
-                                  const double             Deflection,
-                                  const double             Resolution,
-                                  const bool               WithControl);
+                                  const double      Deflection,
+                                  const double      Resolution,
+                                  const bool   WithControl);
 
   //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <U1>, <U2> and <WithControl>
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& C,
-                                  const double           Deflection,
-                                  const double           U1,
-                                  const double           U2,
-                                  const double           Resolution,
-                                  const bool             WithControl);
+                                  const double    Deflection,
+                                  const double    U1,
+                                  const double    U2,
+                                  const double    Resolution,
+                                  const bool WithControl);
 
   //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <U1>, <U2> and <WithControl>
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& C,
-                                  const double             Deflection,
-                                  const double             U1,
-                                  const double             U2,
-                                  const double             Resolution,
-                                  const bool               WithControl);
+                                  const double      Deflection,
+                                  const double      U1,
+                                  const double      U2,
+                                  const double      Resolution,
+                                  const bool   WithControl);
 
   //! To know if all the calculus were done successfully
   //! (ie all the points have been computed). The calculus can fail if
@@ -155,21 +155,21 @@ private:
   //! algorithm
   Standard_EXPORT void Perform();
 
-  bool   myDone;
-  bool   my3d;
-  void*  myCurve;
-  bool   myFinish;
-  double myTolCur;
-  bool   myControl;
-  int    myIPoint;
-  int    myNbPoints;
-  double myParams[3];
-  gp_Pnt myPoints[3];
-  double myDwmax;
-  double myDeflection;
-  double myFirstParam;
-  double myLastParam;
-  double myDu;
+  bool myDone;
+  bool my3d;
+  void* myCurve;
+  bool myFinish;
+  double    myTolCur;
+  bool myControl;
+  int myIPoint;
+  int myNbPoints;
+  double    myParams[3];
+  gp_Pnt           myPoints[3];
+  double    myDwmax;
+  double    myDeflection;
+  double    myFirstParam;
+  double    myLastParam;
+  double    myDu;
 };
 
 #include <CPnts_UniformDeflection.lxx>

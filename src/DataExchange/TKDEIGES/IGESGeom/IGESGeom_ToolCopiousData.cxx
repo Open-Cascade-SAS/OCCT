@@ -47,8 +47,8 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const occ::handle<IGESGeom_CopiousD
   // MGE 28/07/98
   // Building of messages
 
-  int                                      aDataType, nbData;
-  double                                   aZPlane = 0;
+  int              aDataType, nbData;
+  double                 aZPlane = 0;
   occ::handle<NCollection_HArray1<double>> allData;
 
   int upper;
@@ -104,7 +104,7 @@ void IGESGeom_ToolCopiousData::ReadOwnParams(const occ::handle<IGESGeom_CopiousD
 //=================================================================================================
 
 void IGESGeom_ToolCopiousData::WriteOwnParams(const occ::handle<IGESGeom_CopiousData>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   int upper = ent->NbPoints();
   int dtype = ent->DataType();
@@ -140,10 +140,10 @@ void IGESGeom_ToolCopiousData::OwnCopy(const occ::handle<IGESGeom_CopiousData>& 
                                        const occ::handle<IGESGeom_CopiousData>& ent,
                                        Interface_CopyTool& /* TC */) const
 {
-  int                                      upper;
-  double                                   aZPlane   = 0;
-  int                                      nbTuples  = another->NbPoints();
-  int                                      aDataType = another->DataType();
+  int              upper;
+  double                 aZPlane   = 0;
+  int              nbTuples  = another->NbPoints();
+  int              aDataType = another->DataType();
   occ::handle<NCollection_HArray1<double>> allData;
 
   if (aDataType == 1)
@@ -249,15 +249,15 @@ void IGESGeom_ToolCopiousData::OwnCheck(const occ::handle<IGESGeom_CopiousData>&
 
 void IGESGeom_ToolCopiousData::OwnDump(const occ::handle<IGESGeom_CopiousData>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream& S,
-                                       const int         level) const
+                                       Standard_OStream&      S,
+                                       const int level) const
 {
-  int      nbPnts = ent->NbPoints();
-  int      dtype  = ent->DataType();
-  int      i;
-  gp_GTrsf loca = ent->Location();
-  gp_GTrsf locv = ent->VectorLocation();
-  bool     yatr = (level > 5 && ent->HasTransf());
+  int nbPnts = ent->NbPoints();
+  int dtype  = ent->DataType();
+  int i;
+  gp_GTrsf         loca = ent->Location();
+  gp_GTrsf         locv = ent->VectorLocation();
+  bool yatr = (level > 5 && ent->HasTransf());
 
   S << "IGESGeom_CopiousData\n";
 

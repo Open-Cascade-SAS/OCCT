@@ -32,7 +32,7 @@ void StepData_FileProtocol::Add(const occ::handle<StepData_Protocol>& protocol)
   if (protocol.IsNull())
     return;
   occ::handle<Standard_Type> ptype = protocol->DynamicType();
-  int                        nb    = thecomps.Length();
+  int      nb    = thecomps.Length();
   // Check if a protocol of the same type is already present
   for (int i = 1; i <= nb; i++)
   {
@@ -59,12 +59,12 @@ int StepData_FileProtocol::TypeNumber(const occ::handle<Standard_Type>& /*atype*
   return 0;
 }
 
-bool StepData_FileProtocol::GlobalCheck(const Interface_Graph&        G,
-                                        occ::handle<Interface_Check>& ach) const
+bool StepData_FileProtocol::GlobalCheck(const Interface_Graph&   G,
+                                                    occ::handle<Interface_Check>& ach) const
 {
   // Perform global validation check across all component protocols
   bool res = false;
-  int  i, nb = NbResources();
+  int i, nb = NbResources();
   for (i = 1; i <= nb; i++)
     res |= Resource(i)->GlobalCheck(G, ach); // Aggregate results from all protocols
   return res;

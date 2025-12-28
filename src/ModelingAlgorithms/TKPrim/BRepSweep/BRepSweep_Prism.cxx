@@ -27,10 +27,10 @@
 
 //=================================================================================================
 
-BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape& S,
-                                 const gp_Vec&       V,
-                                 const bool          C,
-                                 const bool          Canonize)
+BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape&    S,
+                                 const gp_Vec&          V,
+                                 const bool C,
+                                 const bool Canonize)
     : myTranslation(S, NumShape(), Location(V), V, C, Canonize)
 {
   Standard_ConstructionError_Raise_if(V.Magnitude() <= Precision::Confusion(),
@@ -39,11 +39,11 @@ BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape& S,
-                                 const gp_Dir&       D,
-                                 const bool          Inf,
-                                 const bool          C,
-                                 const bool          Canonize)
+BRepSweep_Prism::BRepSweep_Prism(const TopoDS_Shape&    S,
+                                 const gp_Dir&          D,
+                                 const bool Inf,
+                                 const bool C,
+                                 const bool Canonize)
     : myTranslation(S, NumShape(Inf), Location(D), D, C, Canonize)
 {
 }

@@ -36,6 +36,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
@@ -73,8 +74,8 @@ void LocOpe_Revol::Perform(const TopoDS_Shape& Base, const gp_Ax1& Axis, const d
 
 void LocOpe_Revol::Perform(const TopoDS_Shape& Base,
                            const gp_Ax1&       Axis,
-                           const double        Angle,
-                           const double        angledec)
+                           const double Angle,
+                           const double angledec)
 {
   myMap.Clear();
   myFirstShape.Nullify();
@@ -133,16 +134,13 @@ void LocOpe_Revol::IntPerf()
   else
   {
     // Cas base != FACE
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      theEFMap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> theEFMap;
     TopExp::MapShapesAndAncestors(theBase, TopAbs_EDGE, TopAbs_FACE, theEFMap);
     NCollection_List<TopoDS_Shape> lfaces;
-    bool                           toremove = false;
+    bool     toremove = false;
     for (int i = 1; i <= theEFMap.Extent(); i++)
     {
-      const TopoDS_Shape&            edg = theEFMap.FindKey(i);
+      const TopoDS_Shape&  edg = theEFMap.FindKey(i);
       NCollection_List<TopoDS_Shape> thelist1;
       myMap.Bind(edg, thelist1);
       TopoDS_Shape desc = theRevol.Shape(edg);
@@ -257,8 +255,8 @@ void LocOpe_Revol::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves
     gp_Circ       CAX;
     if (FindCircle(myAxis, pvt, CAX))
     {
-      gp_Ax2                   A2 = CAX.Position();
-      double                   r  = CAX.Radius();
+      gp_Ax2              A2 = CAX.Position();
+      double       r  = CAX.Radius();
       occ::handle<Geom_Circle> Ci = new Geom_Circle(A2, r);
       Scurves.Append(Ci);
     }
@@ -269,7 +267,7 @@ void LocOpe_Revol::Curves(NCollection_Sequence<occ::handle<Geom_Curve>>& Scurves
 
 occ::handle<Geom_Curve> LocOpe_Revol::BarycCurve() const
 {
-  gp_Pnt                       bar(0., 0., 0.);
+  gp_Pnt               bar(0., 0., 0.);
   NCollection_Sequence<gp_Pnt> spt;
   LocOpe::SampleEdges(myFirstShape, spt);
   for (int jj = 1; jj <= spt.Length(); jj++)
@@ -278,13 +276,13 @@ occ::handle<Geom_Curve> LocOpe_Revol::BarycCurve() const
     bar.ChangeCoord() += pvt.XYZ();
   }
   bar.ChangeCoord().Divide(spt.Length());
-  gp_Circ                  CAX;
+  gp_Circ             CAX;
   occ::handle<Geom_Circle> theCi;
   if (FindCircle(myAxis, bar, CAX))
   {
-    gp_Ax2 A2 = CAX.Position();
+    gp_Ax2        A2 = CAX.Position();
     double r  = CAX.Radius();
-    theCi     = new Geom_Circle(A2, r);
+    theCi            = new Geom_Circle(A2, r);
   }
   return theCi;
 }
@@ -299,8 +297,8 @@ static bool FindCircle(const gp_Ax1& Ax, const gp_Pnt& Pt, gp_Circ& Ci)
 
   double prm = OP.Dot(Dax);
 
-  gp_Pnt prj(Ax.Location().XYZ().Added(prm * Dax.XYZ()));
-  gp_Vec axx(prj, Pt);
+  gp_Pnt        prj(Ax.Location().XYZ().Added(prm * Dax.XYZ()));
+  gp_Vec        axx(prj, Pt);
   double Radius = axx.Magnitude();
   if (Radius < Precision::Confusion())
   {

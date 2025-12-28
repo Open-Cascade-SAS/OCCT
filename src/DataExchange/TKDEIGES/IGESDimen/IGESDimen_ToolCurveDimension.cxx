@@ -37,7 +37,7 @@ IGESDimen_ToolCurveDimension::IGESDimen_ToolCurveDimension() {}
 
 void IGESDimen_ToolCurveDimension::ReadOwnParams(const occ::handle<IGESDimen_CurveDimension>& ent,
                                                  const occ::handle<IGESData_IGESReaderData>&  IR,
-                                                 IGESData_ParamReader& PR) const
+                                                 IGESData_ParamReader&                   PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -92,7 +92,7 @@ void IGESDimen_ToolCurveDimension::ReadOwnParams(const occ::handle<IGESDimen_Cur
 }
 
 void IGESDimen_ToolCurveDimension::WriteOwnParams(const occ::handle<IGESDimen_CurveDimension>& ent,
-                                                  IGESData_IGESWriter& IW) const
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstCurve());
@@ -104,7 +104,7 @@ void IGESDimen_ToolCurveDimension::WriteOwnParams(const occ::handle<IGESDimen_Cu
 }
 
 void IGESDimen_ToolCurveDimension::OwnShared(const occ::handle<IGESDimen_CurveDimension>& ent,
-                                             Interface_EntityIterator& iter) const
+                                             Interface_EntityIterator&               iter) const
 {
   iter.GetOneItem(ent->Note());
   iter.GetOneItem(ent->FirstCurve());
@@ -117,7 +117,7 @@ void IGESDimen_ToolCurveDimension::OwnShared(const occ::handle<IGESDimen_CurveDi
 
 void IGESDimen_ToolCurveDimension::OwnCopy(const occ::handle<IGESDimen_CurveDimension>& another,
                                            const occ::handle<IGESDimen_CurveDimension>& ent,
-                                           Interface_CopyTool&                          TC) const
+                                           Interface_CopyTool&                     TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   DeclareAndCast(IGESData_IGESEntity, firstCurve, TC.Transferred(another->FirstCurve()));
@@ -157,9 +157,9 @@ void IGESDimen_ToolCurveDimension::OwnCheck(const occ::handle<IGESDimen_CurveDim
 }
 
 void IGESDimen_ToolCurveDimension::OwnDump(const occ::handle<IGESDimen_CurveDimension>& ent,
-                                           const IGESData_IGESDumper&                   dumper,
-                                           Standard_OStream&                            S,
-                                           const int                                    level) const
+                                           const IGESData_IGESDumper&              dumper,
+                                           Standard_OStream&                       S,
+                                           const int                  level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

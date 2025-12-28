@@ -24,7 +24,16 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Converts a list of connecting Bezier Curves 2d to a
 //! BSplineCurve 2d.
@@ -161,17 +170,17 @@ public:
   //! computed in this framework.
   //! Particular care must be taken with respect to the above as
   //! these conditions are not checked, and an error may occur.
-  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>& Knots,
-                                     NCollection_Array1<int>&    Mults) const;
+  Standard_EXPORT void KnotsAndMults(NCollection_Array1<double>&    Knots,
+                                     NCollection_Array1<int>& Mults) const;
 
 private:
   NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt2d>>> mySequence;
-  NCollection_Sequence<gp_Pnt2d>                                   CurvePoles;
-  NCollection_Sequence<double>                                     CurveKnots;
-  NCollection_Sequence<int>                                        KnotsMultiplicities;
-  int                                                              myDegree;
-  double                                                           myAngular;
-  bool                                                             myDone;
+  NCollection_Sequence<gp_Pnt2d>            CurvePoles;
+  NCollection_Sequence<double>            CurveKnots;
+  NCollection_Sequence<int>         KnotsMultiplicities;
+  int                  myDegree;
+  double                     myAngular;
+  bool                  myDone;
 };
 
 #endif // _Convert_CompBezierCurves2dToBSplineCurve2d_HeaderFile

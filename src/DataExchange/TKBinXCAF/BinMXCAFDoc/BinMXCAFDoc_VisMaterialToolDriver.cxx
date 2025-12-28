@@ -36,18 +36,17 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_VisMaterialToolDriver::NewEmpty() const
 //=================================================================================================
 
 bool BinMXCAFDoc_VisMaterialToolDriver::Paste(const BinObjMgt_Persistent&,
-                                              const occ::handle<TDF_Attribute>&,
-                                              BinObjMgt_RRelocationTable&) const
+                                                          const occ::handle<TDF_Attribute>&,
+                                                          BinObjMgt_RRelocationTable&) const
 {
   return true;
 }
 
 //=================================================================================================
 
-void BinMXCAFDoc_VisMaterialToolDriver::Paste(
-  const occ::handle<TDF_Attribute>&,
-  BinObjMgt_Persistent&,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMXCAFDoc_VisMaterialToolDriver::Paste(const occ::handle<TDF_Attribute>&,
+                                              BinObjMgt_Persistent&,
+                                              NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   //
 }

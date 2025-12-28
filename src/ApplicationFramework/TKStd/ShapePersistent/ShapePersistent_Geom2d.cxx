@@ -42,8 +42,8 @@ void ShapePersistent_Geom::instance<ShapePersistent_Geom2d::Direction, Geom2d_Di
 //=======================================================================
 template <>
 const char* ShapePersistent_Geom::instance<ShapePersistent_Geom2d::VectorWithMagnitude,
-                                           Geom2d_VectorWithMagnitude,
-                                           gp_Vec2d>::PName() const
+                                                Geom2d_VectorWithMagnitude,
+                                                gp_Vec2d>::PName() const
 {
   return "PGeom2d_VectorWithMagnitude";
 }
@@ -107,7 +107,7 @@ void ShapePersistent_Geom2d::instance<ShapePersistent_Geom2d::Transformation,
 //=======================================================================
 
 Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
-  const occ::handle<Geom2d_Curve>&                                                         theCurve,
+  const occ::handle<Geom2d_Curve>&       theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom2d::Curve) aPC;
@@ -125,13 +125,13 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Circle))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Circle>(theCurve), theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Circle>(theCurve),
+                                                      theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Ellipse))
       {
-        aPC =
-          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Ellipse>(theCurve), theMap);
+        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_Ellipse>(theCurve),
+                                                      theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_Hyperbola))
       {
@@ -145,23 +145,27 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d::Translate(
       }
       else if (aCT == STANDARD_TYPE(Geom2d_BezierCurve))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BezierCurve>(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BezierCurve>(theCurve),
+                                                  theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_BSplineCurve))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BSplineCurve>(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_BSplineCurve>(theCurve),
+                                                  theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_TrimmedCurve))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_TrimmedCurve>(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_TrimmedCurve>(theCurve),
+                                                  theMap);
       }
       else if (aCT == STANDARD_TYPE(Geom2d_OffsetCurve))
       {
-        aPC = ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_OffsetCurve>(theCurve),
-                                                      theMap);
+        aPC =
+          ShapePersistent_Geom2d_Curve::Translate(occ::down_cast<Geom2d_OffsetCurve>(theCurve),
+                                                  theMap);
       }
       else
       {

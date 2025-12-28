@@ -23,7 +23,7 @@
 #include <Standard_Transient.hxx>
 
 Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_InterfaceModel>& amodel,
-                                           const Interface_GeneralLib&                  lib)
+                                           const Interface_GeneralLib&             lib)
     : theflags(amodel->NbEntities())
 {
   occ::handle<Interface_GTool> gtool; // null
@@ -60,17 +60,16 @@ Interface_ShareFlags::Interface_ShareFlags(const occ::handle<Interface_Interface
 Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
     : theflags(agraph.Model()->NbEntities())
 {
-  themodel = agraph.Model();
-  int nb   = themodel->NbEntities();
+  themodel            = agraph.Model();
+  int nb = themodel->NbEntities();
   if (nb == 0)
     return;
   theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   for (int i = 1; i <= nb; i++)
   {
     //    Result obtained from the Graph
-    occ::handle<Standard_Transient>                                     ent = themodel->Value(i);
-    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list =
-      agraph.GetSharings(ent);
+    occ::handle<Standard_Transient>           ent  = themodel->Value(i);
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list = agraph.GetSharings(ent);
 
     if (!list.IsNull() && list->Length() > 0)
       theflags.SetTrue(i);
@@ -79,11 +78,11 @@ Interface_ShareFlags::Interface_ShareFlags(const Interface_Graph& agraph)
   }
 }
 
-void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
+void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&    lib,
                                     const occ::handle<Interface_GTool>& gtool)
 {
   bool patool = gtool.IsNull();
-  int  nb     = themodel->NbEntities();
+  int nb     = themodel->NbEntities();
   if (nb == 0)
     return;
   theroots = new NCollection_HSequence<occ::handle<Standard_Transient>>();
@@ -98,9 +97,9 @@ void Interface_ShareFlags::Evaluate(const Interface_GeneralLib&         lib,
       ent = themodel->ReportEntity(i)->Content();
 
     //    Result obtained via GeneralLib
-    Interface_EntityIterator             iter;
+    Interface_EntityIterator        iter;
     occ::handle<Interface_GeneralModule> module;
-    int                                  CN;
+    int                CN;
     if (patool)
     {
       if (lib.Select(ent, module, CN))

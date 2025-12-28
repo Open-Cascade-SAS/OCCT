@@ -64,9 +64,9 @@ PrsDim_RadiusDimension::PrsDim_RadiusDimension(const TopoDS_Shape& theShape)
 
 //=================================================================================================
 
-void PrsDim_RadiusDimension::SetMeasuredGeometry(const gp_Circ& theCircle,
-                                                 const gp_Pnt&  theAnchorPoint,
-                                                 const bool     theHasAnchor)
+void PrsDim_RadiusDimension::SetMeasuredGeometry(const gp_Circ&         theCircle,
+                                                 const gp_Pnt&          theAnchorPoint,
+                                                 const bool theHasAnchor)
 {
   myCircle          = theCircle;
   myGeometryType    = GeometryType_Edge;
@@ -84,13 +84,13 @@ void PrsDim_RadiusDimension::SetMeasuredGeometry(const gp_Circ& theCircle,
 
 //=================================================================================================
 
-void PrsDim_RadiusDimension::SetMeasuredGeometry(const TopoDS_Shape& theShape,
-                                                 const gp_Pnt&       theAnchorPoint,
-                                                 const bool          theHasAnchor)
+void PrsDim_RadiusDimension::SetMeasuredGeometry(const TopoDS_Shape&    theShape,
+                                                 const gp_Pnt&          theAnchorPoint,
+                                                 const bool theHasAnchor)
 {
-  bool isClosed  = false;
-  myShape        = theShape;
-  myGeometryType = GeometryType_UndefShapes;
+  bool isClosed = false;
+  myShape                   = theShape;
+  myGeometryType            = GeometryType_UndefShapes;
   myIsGeometryValid =
     InitCircularDimension(theShape, myCircle, myAnchorPoint, isClosed) && IsValidCircle(myCircle);
   if (theHasAnchor)
@@ -179,7 +179,7 @@ double PrsDim_RadiusDimension::ComputeValue() const
 
 void PrsDim_RadiusDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                      const occ::handle<Prs3d_Presentation>& thePresentation,
-                                     const int                              theMode)
+                                     const int            theMode)
 {
   mySelectionGeom.Clear(theMode);
   if (!IsValid())
@@ -199,9 +199,10 @@ bool PrsDim_RadiusDimension::IsValidCircle(const gp_Circ& theCircle) const
 
 //=================================================================================================
 
-bool PrsDim_RadiusDimension::IsValidAnchor(const gp_Circ& theCircle, const gp_Pnt& theAnchor) const
+bool PrsDim_RadiusDimension::IsValidAnchor(const gp_Circ& theCircle,
+                                                       const gp_Pnt&  theAnchor) const
 {
-  gp_Pln aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
+  gp_Pln        aCirclePlane(theCircle.Location(), theCircle.Axis().Direction());
   double anAnchorDist = theAnchor.Distance(theCircle.Location());
 
   return anAnchorDist > Precision::Confusion()

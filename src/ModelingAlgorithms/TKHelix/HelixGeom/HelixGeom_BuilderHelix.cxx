@@ -17,6 +17,7 @@
 #include <gp_Trsf.hxx>
 #include <HelixGeom_BuilderHelix.hxx>
 #include <HelixGeom_BuilderHelixCoil.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -52,8 +53,8 @@ void HelixGeom_BuilderHelix::Perform()
   myWarningStatus = 0;
 
   // Initialize variables for helix segmentation
-  int                        iErr, aN, i, aNbC;
-  double                     aTwoPI, dT, aT1x, aT2x, aTR;
+  int           iErr, aN, i, aNbC;
+  double              aTwoPI, dT, aT1x, aT2x, aTR;
   HelixGeom_BuilderHelixCoil aBHC;
 
   // Initialize result containers
@@ -77,15 +78,15 @@ void HelixGeom_BuilderHelix::Perform()
       return;
     }
     const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
-    const occ::handle<Geom_Curve>&                       aC  = aSC(1);
+    const occ::handle<Geom_Curve>&       aC  = aSC(1);
     myCurves.Append(aC);
     myTolReached = aBHC.ToleranceReached();
   }
   else
   {
     // Case: helix spans multiple full turns - process in segments
-    bool   bIsCylindrical;
-    double aTolAngle;
+    bool bIsCylindrical;
+    double    aTolAngle;
 
     aTolAngle      = 1.e-4;
     bIsCylindrical = fabs(myTaperAngle) < aTolAngle;
@@ -97,7 +98,7 @@ void HelixGeom_BuilderHelix::Perform()
       {
         // Optimization: for cylindrical helixes, reuse first coil with translation
         occ::handle<Geom_Curve> aCi;
-        gp_Pnt                  aP1, aPi;
+        gp_Pnt             aP1, aPi;
 
         const occ::handle<Geom_Curve>& aC1 = myCurves(1);
         aC1->D0(aC1->FirstParameter(), aP1);
@@ -122,7 +123,7 @@ void HelixGeom_BuilderHelix::Perform()
       }
       // Extract approximated curves from builder
       const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
-      const occ::handle<Geom_Curve>&                       aC  = aSC(1);
+      const occ::handle<Geom_Curve>&       aC  = aSC(1);
       myCurves.Append(aC);
       aTR = aBHC.ToleranceReached();
       if (aTR > myTolReached)
@@ -134,7 +135,7 @@ void HelixGeom_BuilderHelix::Perform()
       aT2x = aT1x + aTwoPI;
     } // for (i=1; i<=aN; ++i) {
     // Handle remaining partial turn if any
-    aT2x       = myT2;
+    aT2x              = myT2;
     double eps = 1.e-7 * aTwoPI;
     if (fabs(aT2x - aT1x) > eps)
     {
@@ -148,7 +149,7 @@ void HelixGeom_BuilderHelix::Perform()
       }
       // Extract curves from the final partial segment
       const NCollection_Sequence<occ::handle<Geom_Curve>>& aSC = aBHC.Curves();
-      const occ::handle<Geom_Curve>&                       aC  = aSC(1);
+      const occ::handle<Geom_Curve>&       aC  = aSC(1);
       myCurves.Append(aC);
       aTR = aBHC.ToleranceReached();
       if (aTR > myTolReached)

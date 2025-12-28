@@ -29,10 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_LeaderArrow, IGESData_IGESEntity)
 
 IGESDimen_LeaderArrow::IGESDimen_LeaderArrow() {}
 
-void IGESDimen_LeaderArrow::Init(const double                                   height,
-                                 const double                                   width,
-                                 const double                                   depth,
-                                 const gp_XY&                                   position,
+void IGESDimen_LeaderArrow::Init(const double               height,
+                                 const double               width,
+                                 const double               depth,
+                                 const gp_XY&                      position,
                                  const occ::handle<NCollection_HArray1<gp_XY>>& segments)
 {
   if (segments->Lower() != 1)

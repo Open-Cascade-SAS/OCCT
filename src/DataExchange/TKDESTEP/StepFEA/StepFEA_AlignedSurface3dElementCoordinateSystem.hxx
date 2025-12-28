@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepFEA_AlignedSurface3dElementCoordinateSystem();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&    aRepresentationItem_Name,
                             const occ::handle<StepFEA_FeaAxis2Placement3d>& aCoordinateSystem);
 
   //! Returns field CoordinateSystem

@@ -19,6 +19,7 @@
 
 #include <SelectMgr_Filter.hxx>
 #include <NCollection_List.hxx>
+#include <SelectMgr_Filter.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
 //! A framework to define a compound filter composed of
@@ -46,7 +47,8 @@ public:
   //! Clears the filters used in this framework.
   Standard_EXPORT void Clear();
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_CompositionFilter, SelectMgr_Filter)
 

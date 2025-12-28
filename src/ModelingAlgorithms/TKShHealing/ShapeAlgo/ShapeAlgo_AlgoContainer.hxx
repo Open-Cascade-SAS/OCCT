@@ -23,9 +23,13 @@
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Geom2d_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Geom_BoundedCurve.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Geom2d_BoundedCurve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 class ShapeAlgo_ToolContainer;
@@ -63,52 +67,51 @@ public:
   //! <revsewd>   is True if <sewd>     has been reversed before connecting.
   //! <revnextwd> is True if <nextsewd> has been reversed before connecting.
   //! Uses functionality of ShapeAnalysis_Wire.
-  Standard_EXPORT virtual bool ConnectNextWire(const occ::handle<ShapeAnalysis_Wire>&   saw,
-                                               const occ::handle<ShapeExtend_WireData>& nextsewd,
-                                               const double                             maxtol,
-                                               double&                                  distmin,
-                                               bool&                                    revsewd,
-                                               bool& revnextsewd) const;
+  Standard_EXPORT virtual bool ConnectNextWire(
+    const occ::handle<ShapeAnalysis_Wire>&   saw,
+    const occ::handle<ShapeExtend_WireData>& nextsewd,
+    const double                 maxtol,
+    double&                      distmin,
+    bool&                   revsewd,
+    bool&                   revnextsewd) const;
 
-  Standard_EXPORT virtual void ApproxBSplineCurve(
-    const occ::handle<Geom_BSplineCurve>&          bspline,
-    NCollection_Sequence<occ::handle<Geom_Curve>>& seq) const;
+  Standard_EXPORT virtual void ApproxBSplineCurve(const occ::handle<Geom_BSplineCurve>& bspline,
+                                                  NCollection_Sequence<occ::handle<Geom_Curve>>&        seq) const;
 
-  Standard_EXPORT virtual void ApproxBSplineCurve(
-    const occ::handle<Geom2d_BSplineCurve>&          bspline,
-    NCollection_Sequence<occ::handle<Geom2d_Curve>>& seq) const;
+  Standard_EXPORT virtual void ApproxBSplineCurve(const occ::handle<Geom2d_BSplineCurve>& bspline,
+                                                  NCollection_Sequence<occ::handle<Geom2d_Curve>>&        seq) const;
 
   Standard_EXPORT virtual bool C0BSplineToSequenceOfC1BSplineCurve(
-    const occ::handle<Geom_BSplineCurve>&                               BS,
+    const occ::handle<Geom_BSplineCurve>&          BS,
     occ::handle<NCollection_HSequence<occ::handle<Geom_BoundedCurve>>>& seqBS) const;
 
   //! Converts C0 B-Spline curve into sequence of C1 B-Spline curves.
   //! Calls ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve.
   Standard_EXPORT virtual bool C0BSplineToSequenceOfC1BSplineCurve(
-    const occ::handle<Geom2d_BSplineCurve>&                               BS,
+    const occ::handle<Geom2d_BSplineCurve>&          BS,
     occ::handle<NCollection_HSequence<occ::handle<Geom2d_BoundedCurve>>>& seqBS) const;
 
   //! Converts a shape on C0 geometry into the shape on C1 geometry.
   Standard_EXPORT virtual TopoDS_Shape C0ShapeToC1Shape(const TopoDS_Shape& shape,
-                                                        const double        tol) const;
+                                                        const double tol) const;
 
   //! Converts a surface to B-Spline.
   //! Uses ShapeConstruct.
   Standard_EXPORT virtual occ::handle<Geom_BSplineSurface> ConvertSurfaceToBSpline(
     const occ::handle<Geom_Surface>& surf,
-    const double                     UF,
-    const double                     UL,
-    const double                     VF,
-    const double                     VL) const;
+    const double         UF,
+    const double         UL,
+    const double         VF,
+    const double         VL) const;
 
   //! Return 2 wires with the same number of edges. The both Edges
   //! number i of these wires have got the same ratio between
   //! theirs parameter lengths and their wire parameter lengths.
-  Standard_EXPORT virtual bool HomoWires(const TopoDS_Wire& wireIn1,
-                                         const TopoDS_Wire& wireIn2,
-                                         TopoDS_Wire&       wireOut1,
-                                         TopoDS_Wire&       wireOut2,
-                                         const bool         byParam) const;
+  Standard_EXPORT virtual bool HomoWires(const TopoDS_Wire&     wireIn1,
+                                                     const TopoDS_Wire&     wireIn2,
+                                                     TopoDS_Wire&           wireOut1,
+                                                     TopoDS_Wire&           wireOut2,
+                                                     const bool byParam) const;
 
   //! Returns the outer wire on the face <Face>.
   Standard_EXPORT virtual TopoDS_Wire OuterWire(const TopoDS_Face& face) const;
@@ -120,20 +123,20 @@ public:
 
   //! Computes exact UV bounds of all wires on the face
   Standard_EXPORT virtual void GetFaceUVBounds(const TopoDS_Face& F,
-                                               double&            Umin,
-                                               double&            Umax,
-                                               double&            Vmin,
-                                               double&            Vmax) const;
+                                               double&     Umin,
+                                               double&     Umax,
+                                               double&     Vmin,
+                                               double&     Vmax) const;
 
   //! Convert Geom_Curve to Geom_BSplineCurve
   Standard_EXPORT virtual occ::handle<Geom_BSplineCurve> ConvertCurveToBSpline(
     const occ::handle<Geom_Curve>& C3D,
-    const double                   First,
-    const double                   Last,
-    const double                   Tol3d,
-    const GeomAbs_Shape            Continuity,
-    const int                      MaxSegments,
-    const int                      MaxDegree) const;
+    const double       First,
+    const double       Last,
+    const double       Tol3d,
+    const GeomAbs_Shape       Continuity,
+    const int    MaxSegments,
+    const int    MaxDegree) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeAlgo_AlgoContainer, Standard_Transient)
 

@@ -38,8 +38,7 @@ DEBREP_ConfigurationNode::DEBREP_ConfigurationNode()
 
 //=================================================================================================
 
-DEBREP_ConfigurationNode::DEBREP_ConfigurationNode(
-  const occ::handle<DEBREP_ConfigurationNode>& theNode)
+DEBREP_ConfigurationNode::DEBREP_ConfigurationNode(const occ::handle<DEBREP_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

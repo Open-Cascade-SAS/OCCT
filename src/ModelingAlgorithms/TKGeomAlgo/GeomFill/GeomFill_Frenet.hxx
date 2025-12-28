@@ -25,6 +25,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <NCollection_Array1.hxx>
 class gp_Vec;
 
 //! Defined Frenet Trihedron Law
@@ -40,42 +41,44 @@ public:
 
   //! initialize curve of frenet law
   //! @return true
-  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C) override;
+  Standard_EXPORT virtual bool SetCurve(const occ::handle<Adaptor3d_Curve>& C)
+    override;
 
   //! compute Triedrhon on curve at parameter <Param>
   Standard_EXPORT virtual bool D0(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      BiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             BiNormal) override;
 
   //! compute Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning: It used only for C1 or C2 approximation
   Standard_EXPORT virtual bool D1(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             DTangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             DNormal,
+                                              gp_Vec&             BiNormal,
+                                              gp_Vec&             DBiNormal) override;
 
   //! compute Trihedron on curve
   //! first and second derivatives.
   //! Warning: It used only for C2 approximation
   Standard_EXPORT virtual bool D2(const double Param,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      D2Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      D2Normal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal,
-                                  gp_Vec&      D2BiNormal) override;
+                                              gp_Vec&             Tangent,
+                                              gp_Vec&             DTangent,
+                                              gp_Vec&             D2Tangent,
+                                              gp_Vec&             Normal,
+                                              gp_Vec&             DNormal,
+                                              gp_Vec&             D2Normal,
+                                              gp_Vec&             BiNormal,
+                                              gp_Vec&             DBiNormal,
+                                              gp_Vec&             D2BiNormal) override;
 
   //! Returns the number of intervals for continuity <S>.
   //! May be one if Continuity(me) >= <S>
-  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const override;
+  Standard_EXPORT virtual int NbIntervals(const GeomAbs_Shape S) const
+    override;
 
   //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
@@ -83,7 +86,7 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const override;
+                                         const GeomAbs_Shape   S) const override;
 
   //! Get average value of Tangent(t) and Normal(t) it is useful to
   //! make fast approximation of rational surfaces.
@@ -102,65 +105,65 @@ public:
 private:
   Standard_EXPORT bool IsSingular(const double U, int& Index) const;
 
-  Standard_EXPORT bool DoSingular(const double U,
-                                  const int    Index,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      BiNormal,
-                                  int&         n,
-                                  int&         k,
-                                  int&         TFlag,
-                                  int&         BNFlag,
-                                  double&      Delta);
+  Standard_EXPORT bool DoSingular(const double    U,
+                                              const int Index,
+                                              gp_Vec&                Tangent,
+                                              gp_Vec&                BiNormal,
+                                              int&      n,
+                                              int&      k,
+                                              int&      TFlag,
+                                              int&      BNFlag,
+                                              double&         Delta);
 
   //! computes Triedrhon on curve at parameter <Param>
-  Standard_EXPORT bool SingularD0(const double Param,
-                                  const int    Index,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      BiNormal,
-                                  double&      Delta);
+  Standard_EXPORT bool SingularD0(const double    Param,
+                                              const int Index,
+                                              gp_Vec&                Tangent,
+                                              gp_Vec&                Normal,
+                                              gp_Vec&                BiNormal,
+                                              double&         Delta);
 
   //! computes Triedrhon and derivative Trihedron on curve
   //! at parameter <Param>
   //! Warning : It used only for C1 or C2 approximation
-  Standard_EXPORT bool SingularD1(const double Param,
-                                  const int    Index,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal,
-                                  double&      Delta);
+  Standard_EXPORT bool SingularD1(const double    Param,
+                                              const int Index,
+                                              gp_Vec&                Tangent,
+                                              gp_Vec&                DTangent,
+                                              gp_Vec&                Normal,
+                                              gp_Vec&                DNormal,
+                                              gp_Vec&                BiNormal,
+                                              gp_Vec&                DBiNormal,
+                                              double&         Delta);
 
   //! computes Trihedron on curve
   //! first and second derivatives.
   //! Warning : It used only for C2 approximation
-  Standard_EXPORT bool SingularD2(const double Param,
-                                  const int    Index,
-                                  gp_Vec&      Tangent,
-                                  gp_Vec&      DTangent,
-                                  gp_Vec&      D2Tangent,
-                                  gp_Vec&      Normal,
-                                  gp_Vec&      DNormal,
-                                  gp_Vec&      D2Normal,
-                                  gp_Vec&      BiNormal,
-                                  gp_Vec&      DBiNormal,
-                                  gp_Vec&      D2BiNormal,
-                                  double&      Delta);
+  Standard_EXPORT bool SingularD2(const double    Param,
+                                              const int Index,
+                                              gp_Vec&                Tangent,
+                                              gp_Vec&                DTangent,
+                                              gp_Vec&                D2Tangent,
+                                              gp_Vec&                Normal,
+                                              gp_Vec&                DNormal,
+                                              gp_Vec&                D2Normal,
+                                              gp_Vec&                BiNormal,
+                                              gp_Vec&                DBiNormal,
+                                              gp_Vec&                D2BiNormal,
+                                              double&         Delta);
 
   //! revolves the trihedron (which is determined
   //! of given "Tangent", "Normal" and "BiNormal" vectors)
   //! to coincide "Tangent" and "NewTangent" axes.
   Standard_EXPORT bool RotateTrihedron(gp_Vec&       Tangent,
-                                       gp_Vec&       Normal,
-                                       gp_Vec&       BiNormal,
-                                       const gp_Vec& NewTangent) const;
+                                                   gp_Vec&       Normal,
+                                                   gp_Vec&       BiNormal,
+                                                   const gp_Vec& NewTangent) const;
 
-  gp_Pnt                                   P;
+  gp_Pnt                        P;
   occ::handle<NCollection_HArray1<double>> mySngl;
   occ::handle<NCollection_HArray1<double>> mySnglLen;
-  bool                                     isSngl;
+  bool              isSngl;
 };
 
 #endif // _GeomFill_Frenet_HeaderFile

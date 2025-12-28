@@ -21,7 +21,7 @@
 RWStepShape_RWOrientedEdge::RWStepShape_RWOrientedEdge() {}
 
 void RWStepShape_RWOrientedEdge::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_OrientedEdge>&  ent) const
 {
@@ -64,7 +64,7 @@ void RWStepShape_RWOrientedEdge::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aEdgeElement, aOrientation);
 }
 
-void RWStepShape_RWOrientedEdge::WriteStep(StepData_StepWriter&                       SW,
+void RWStepShape_RWOrientedEdge::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<StepShape_OrientedEdge>& ent) const
 {
 
@@ -90,7 +90,7 @@ void RWStepShape_RWOrientedEdge::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWOrientedEdge::Share(const occ::handle<StepShape_OrientedEdge>& ent,
-                                       Interface_EntityIterator&                  iter) const
+                                       Interface_EntityIterator&             iter) const
 {
 
   iter.GetOneItem(ent->EdgeElement());

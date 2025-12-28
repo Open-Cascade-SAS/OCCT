@@ -58,6 +58,7 @@ public:
                                    const TopoDS_Shape&          S2,
                                    const BOPAlgo_PaveFiller&    aDSF,
                                    const Message_ProgressRange& theRange = Message_ProgressRange());
+
 };
 
 #endif // _BRepAlgoAPI_Fuse_HeaderFile

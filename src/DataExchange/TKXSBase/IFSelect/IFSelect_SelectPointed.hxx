@@ -65,8 +65,7 @@ public:
   //! - SetList or SetEntity to define the input list
   //! - RootResult to get it
   //! - then Clear to drop it
-  Standard_EXPORT void SetList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT void SetList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Adds an item. Returns True if Done, False if <item> is already
   //! in the selected list
@@ -82,18 +81,15 @@ public:
 
   //! Adds all the items defined in a list. Returns True if at least
   //! one item has been added, False else
-  Standard_EXPORT bool AddList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT bool AddList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Removes all the items defined in a list. Returns True if at
   //! least one item has been removed, False else
-  Standard_EXPORT bool RemoveList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT bool RemoveList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Toggles status of all the items defined in a list : adds it if
   //! not pointed or removes it if already pointed.
-  Standard_EXPORT bool ToggleList(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
+  Standard_EXPORT bool ToggleList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list);
 
   //! Returns the rank of an item in the selected list, or 0.
   Standard_EXPORT int Rank(const occ::handle<Standard_Transient>& item) const;
@@ -115,7 +111,8 @@ public:
   //! Returns the list of selected items. Only the selected entities
   //! which are present in the graph are given (this result assures
   //! uniqueness).
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text which identifies the type of selection made.
   //! It is "Pointed Entities"
@@ -124,7 +121,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectPointed, IFSelect_SelectBase)
 
 private:
-  bool                                                  theset;
+  bool            theset;
   NCollection_Sequence<occ::handle<Standard_Transient>> theitems;
 };
 

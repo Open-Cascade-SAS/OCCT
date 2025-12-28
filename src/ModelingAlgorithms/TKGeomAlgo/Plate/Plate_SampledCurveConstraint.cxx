@@ -32,7 +32,7 @@ static inline double B0(double t)
 
 Plate_SampledCurveConstraint::Plate_SampledCurveConstraint(
   const NCollection_Sequence<Plate_PinpointConstraint>& SOPPC,
-  const int                                             n)
+  const int                    n)
     : myLXYZC(n, SOPPC.Length())
 {
   int m = SOPPC.Length();

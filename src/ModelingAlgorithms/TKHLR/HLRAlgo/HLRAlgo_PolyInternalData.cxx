@@ -30,7 +30,8 @@ static int HLRAlgo_PolyInternalData_ERROR = false;
 #endif
 //=================================================================================================
 
-HLRAlgo_PolyInternalData::HLRAlgo_PolyInternalData(const int nbNod, const int nbTri)
+HLRAlgo_PolyInternalData::HLRAlgo_PolyInternalData(const int nbNod,
+                                                   const int nbTri)
     : myNbTData(nbTri),
       myNbPISeg(0),
       myNbPINod(nbNod),
@@ -45,8 +46,8 @@ HLRAlgo_PolyInternalData::HLRAlgo_PolyInternalData(const int nbNod, const int nb
   myPISeg   = new NCollection_HArray1<HLRAlgo_PolyInternalSegment>(0, myMxPISeg);
   myPINod   = new NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>(0, myMxPINod);
 
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& PINod = myPINod->ChangeArray1();
-  occ::handle<HLRAlgo_PolyInternalNode>*                     NN    = &(PINod.ChangeValue(1));
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&            PINod = myPINod->ChangeArray1();
+  occ::handle<HLRAlgo_PolyInternalNode>* NN    = &(PINod.ChangeValue(1));
 
   for (i = 1; i <= myMxPINod; i++)
   {
@@ -57,13 +58,12 @@ HLRAlgo_PolyInternalData::HLRAlgo_PolyInternalData(const int nbNod, const int nb
 
 //=================================================================================================
 
-void HLRAlgo_PolyInternalData::UpdateLinks(
-  NCollection_Array1<HLRAlgo_TriangleData>&                  theTData,
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>&           thePISeg,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& thePINod)
+void HLRAlgo_PolyInternalData::UpdateLinks(NCollection_Array1<HLRAlgo_TriangleData>& theTData,
+                                           NCollection_Array1<HLRAlgo_PolyInternalSegment>& thePISeg,
+                                           NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& thePINod)
 {
-  int                          n1, n2;
-  int                          find, iiii, icsv = 0;
+  int             n1, n2;
+  int             find, iiii, icsv = 0;
   HLRAlgo_PolyInternalSegment* aSegIndices = NULL;
 
   bool newSeg = false;
@@ -371,28 +371,28 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 //=================================================================================================
 
 int HLRAlgo_PolyInternalData::AddNode(
-  HLRAlgo_PolyInternalNode::NodeData&                         theNod1RValues,
-  HLRAlgo_PolyInternalNode::NodeData&                         theNod2RValues,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod1,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& thePINod2,
-  const double                                                theCoef1,
-  const double                                                theX3,
-  const double                                                theY3,
-  const double                                                theZ3)
+  HLRAlgo_PolyInternalNode::NodeData& theNod1RValues,
+  HLRAlgo_PolyInternalNode::NodeData& theNod2RValues,
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&             thePINod1,
+  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&             thePINod2,
+  const double                 theCoef1,
+  const double                 theX3,
+  const double                 theY3,
+  const double                 theZ3)
 {
   double coef2 = 1 - theCoef1;
   IncPINod(thePINod1, thePINod2);
-  int                                    ip3          = myNbPINod;
-  occ::handle<HLRAlgo_PolyInternalNode>& pip3         = thePINod1->ChangeValue(ip3);
+  int                  ip3               = myNbPINod;
+  occ::handle<HLRAlgo_PolyInternalNode>& pip3              = thePINod1->ChangeValue(ip3);
   pip3                                                = new HLRAlgo_PolyInternalNode();
   HLRAlgo_PolyInternalNode::NodeData&    Nod3RValues  = pip3->Data();
   HLRAlgo_PolyInternalNode::NodeIndices& aNodeIndices = pip3->Indices();
   aNodeIndices.NdSg                                   = 0;
   aNodeIndices.Flag                                   = 0;
   Nod3RValues.Point                                   = gp_XYZ(theX3, theY3, theZ3);
-  Nod3RValues.UV     = coef2 * theNod1RValues.UV + theCoef1 * theNod2RValues.UV;
-  Nod3RValues.Scal   = theNod1RValues.Scal * coef2 + theNod2RValues.Scal * theCoef1;
-  const gp_XYZ aXYZ  = coef2 * theNod1RValues.Normal + theCoef1 * theNod2RValues.Normal;
+  Nod3RValues.UV            = coef2 * theNod1RValues.UV + theCoef1 * theNod2RValues.UV;
+  Nod3RValues.Scal          = theNod1RValues.Scal * coef2 + theNod2RValues.Scal * theCoef1;
+  const gp_XYZ        aXYZ  = coef2 * theNod1RValues.Normal + theCoef1 * theNod2RValues.Normal;
   const double aNorm = aXYZ.Modulus();
 
   if (aNorm > 0)
@@ -412,18 +412,17 @@ int HLRAlgo_PolyInternalData::AddNode(
 
 //=================================================================================================
 
-void HLRAlgo_PolyInternalData::UpdateLinks(
-  const int                                                   ip1,
-  const int                                                   ip2,
-  const int                                                   ip3,
-  NCollection_Array1<HLRAlgo_TriangleData>*&                  TData1,
-  NCollection_Array1<HLRAlgo_TriangleData>*&                  TData2,
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*&           PISeg1,
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*&           PISeg2,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod1,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&)
+void HLRAlgo_PolyInternalData::UpdateLinks(const int  ip1,
+                                           const int  ip2,
+                                           const int  ip3,
+                                           NCollection_Array1<HLRAlgo_TriangleData>*& TData1,
+                                           NCollection_Array1<HLRAlgo_TriangleData>*& TData2,
+                                           NCollection_Array1<HLRAlgo_PolyInternalSegment>*& PISeg1,
+                                           NCollection_Array1<HLRAlgo_PolyInternalSegment>*& PISeg2,
+                                           NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod1,
+                                           NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*&)
 {
-  int                          find, iiii, iisv, icsv, iip2 = 0, cnx1 = 0, cnx2 = 0;
+  int             find, iiii, iisv, icsv, iip2 = 0, cnx1 = 0, cnx2 = 0;
   HLRAlgo_PolyInternalSegment* aSegIndices  = NULL;
   HLRAlgo_PolyInternalSegment* aSegIndices2 = NULL;
   find                                      = 0;
@@ -550,7 +549,7 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
         nNew[0]                          = n1;
         nNew[1]                          = n2;
         nNew[2]                          = n3;
-        bool found                       = false;
+        bool found           = false;
         if (n1 == ip1 && n2 == ip2)
         {
           found      = true;
@@ -644,9 +643,9 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 
         if (!((n1 == ip3 && n2 == ip4) || (n2 == ip3 && n1 == ip4)))
         {
-          bool found   = false;
-          aNodIndices1 = &PINod1->ChangeValue(n1)->Indices();
-          iiii         = aNodIndices1->NdSg;
+          bool found = false;
+          aNodIndices1           = &PINod1->ChangeValue(n1)->Indices();
+          iiii                   = aNodIndices1->NdSg;
 
           while (iiii != 0 && !found)
           {
@@ -682,9 +681,9 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 
         if (!((n2 == ip3 && n3 == ip4) || (n3 == ip3 && n2 == ip4)))
         {
-          bool found   = false;
-          aNodIndices1 = &PINod1->ChangeValue(n2)->Indices();
-          iiii         = aNodIndices1->NdSg;
+          bool found = false;
+          aNodIndices1           = &PINod1->ChangeValue(n2)->Indices();
+          iiii                   = aNodIndices1->NdSg;
 
           while (iiii != 0 && !found)
           {
@@ -720,9 +719,9 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 
         if (!((n3 == ip3 && n1 == ip4) || (n1 == ip3 && n3 == ip4)))
         {
-          bool found   = false;
-          aNodIndices1 = &PINod1->ChangeValue(n3)->Indices();
-          iiii         = aNodIndices1->NdSg;
+          bool found = false;
+          aNodIndices1           = &PINod1->ChangeValue(n3)->Indices();
+          iiii                   = aNodIndices1->NdSg;
 
           while (iiii != 0 && !found)
           {
@@ -764,16 +763,16 @@ void HLRAlgo_PolyInternalData::UpdateLinks(
 
 void HLRAlgo_PolyInternalData::Dump() const
 {
-  int                                                        i; //,i1,i2,i3;
-  NCollection_Array1<HLRAlgo_TriangleData>*                  TData = &myTData->ChangeArray1();
-  NCollection_Array1<HLRAlgo_PolyInternalSegment>*           PISeg = &myPISeg->ChangeArray1();
+  int       i; //,i1,i2,i3;
+  NCollection_Array1<HLRAlgo_TriangleData>* TData = &myTData->ChangeArray1();
+  NCollection_Array1<HLRAlgo_PolyInternalSegment>* PISeg = &myPISeg->ChangeArray1();
   NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>* PINod = &myPINod->ChangeArray1();
 
   for (i = 1; i <= myNbPINod; i++)
   {
     const occ::handle<HLRAlgo_PolyInternalNode>* pi           = &PINod->ChangeValue(i);
-    HLRAlgo_PolyInternalNode::NodeIndices&       aNodIndices1 = (*pi)->Indices();
-    HLRAlgo_PolyInternalNode::NodeData&          Nod1RValues  = (*pi)->Data();
+    HLRAlgo_PolyInternalNode::NodeIndices&  aNodIndices1 = (*pi)->Indices();
+    HLRAlgo_PolyInternalNode::NodeData&     Nod1RValues  = (*pi)->Data();
     std::cout << "Node " << std::setw(6) << i << " : ";
     std::cout << std::setw(6) << aNodIndices1.NdSg;
     std::cout << std::setw(20) << Nod1RValues.Point.X();
@@ -821,10 +820,9 @@ void HLRAlgo_PolyInternalData::IncTData(NCollection_Array1<HLRAlgo_TriangleData>
     j = myMxTData;
     k = 2 * j;
 
-    occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>> NwTData =
-      new NCollection_HArray1<HLRAlgo_TriangleData>(0, k);
-    NCollection_Array1<HLRAlgo_TriangleData>& oTData = myTData->ChangeArray1();
-    NCollection_Array1<HLRAlgo_TriangleData>& nTData = NwTData->ChangeArray1();
+    occ::handle<NCollection_HArray1<HLRAlgo_TriangleData>> NwTData = new NCollection_HArray1<HLRAlgo_TriangleData>(0, k);
+    NCollection_Array1<HLRAlgo_TriangleData>&         oTData  = myTData->ChangeArray1();
+    NCollection_Array1<HLRAlgo_TriangleData>&         nTData  = NwTData->ChangeArray1();
 
     for (i = 1; i <= j; i++)
     {
@@ -857,12 +855,11 @@ void HLRAlgo_PolyInternalData::IncPISeg(NCollection_Array1<HLRAlgo_PolyInternalS
       std::cout << "HLRAlgo_PolyInternalData::IncPISeg : " << myMxPISeg << std::endl;
 #endif
     int i, j, k;
-    j = myMxPISeg;
-    k = 2 * j;
-    occ::handle<NCollection_HArray1<HLRAlgo_PolyInternalSegment>> NwPISeg =
-      new NCollection_HArray1<HLRAlgo_PolyInternalSegment>(0, k);
-    NCollection_Array1<HLRAlgo_PolyInternalSegment>& oPISeg = myPISeg->ChangeArray1();
-    NCollection_Array1<HLRAlgo_PolyInternalSegment>& nPISeg = NwPISeg->ChangeArray1();
+    j                                      = myMxPISeg;
+    k                                      = 2 * j;
+    occ::handle<NCollection_HArray1<HLRAlgo_PolyInternalSegment>> NwPISeg = new NCollection_HArray1<HLRAlgo_PolyInternalSegment>(0, k);
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>&         oPISeg  = myPISeg->ChangeArray1();
+    NCollection_Array1<HLRAlgo_PolyInternalSegment>&         nPISeg  = NwPISeg->ChangeArray1();
 
     for (i = 1; i <= j; i++)
     {
@@ -885,9 +882,8 @@ void HLRAlgo_PolyInternalData::IncPISeg(NCollection_Array1<HLRAlgo_PolyInternalS
 
 //=================================================================================================
 
-void HLRAlgo_PolyInternalData::IncPINod(
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod1,
-  NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod2)
+void HLRAlgo_PolyInternalData::IncPINod(NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod1,
+                                        NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>*& PINod2)
 {
   if (myNbPINod >= myMxPINod)
   {
@@ -896,14 +892,13 @@ void HLRAlgo_PolyInternalData::IncPINod(
       std::cout << "HLRAlgo_PolyInternalData::IncPINod : " << myMxPINod << std::endl;
 #endif
     int i, j, k;
-    j = myMxPINod;
-    k = 2 * j;
-    occ::handle<NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>> NwPINod =
-      new NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>(0, k);
-    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& oPINod = myPINod->ChangeArray1();
-    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>& nPINod = NwPINod->ChangeArray1();
-    occ::handle<HLRAlgo_PolyInternalNode>*                     ON     = &(oPINod.ChangeValue(1));
-    occ::handle<HLRAlgo_PolyInternalNode>*                     NN     = &(nPINod.ChangeValue(1));
+    j                                         = myMxPINod;
+    k                                         = 2 * j;
+    occ::handle<NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>>    NwPINod = new NCollection_HArray1<occ::handle<HLRAlgo_PolyInternalNode>>(0, k);
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&            oPINod  = myPINod->ChangeArray1();
+    NCollection_Array1<occ::handle<HLRAlgo_PolyInternalNode>>&            nPINod  = NwPINod->ChangeArray1();
+    occ::handle<HLRAlgo_PolyInternalNode>* ON      = &(oPINod.ChangeValue(1));
+    occ::handle<HLRAlgo_PolyInternalNode>* NN      = &(nPINod.ChangeValue(1));
 
     for (i = 1; i <= j; i++)
     {

@@ -35,15 +35,22 @@ public:
 
   virtual bool HasName() const override { return true; }
 
-  virtual const char* Name() const override { return "SIMPLE_DATUM_REFERENCE_MODIFIER"; }
+  virtual const char* Name() const override
+  {
+    return "SIMPLE_DATUM_REFERENCE_MODIFIER";
+  }
 
-  virtual bool SetName(const char* /*theName*/) override { return true; }
+  virtual bool SetName(const char* /*theName*/) override
+  {
+    return true;
+  }
 
   int Kind() const override { return 4; }
 
   Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int theValue, const char* theText) override;
+  Standard_EXPORT virtual void SetEnumText(const int theValue,
+                                           const char* theText) override;
 
   Standard_EXPORT void SetValue(const StepDimTol_SimpleDatumReferenceModifier theValue);
 

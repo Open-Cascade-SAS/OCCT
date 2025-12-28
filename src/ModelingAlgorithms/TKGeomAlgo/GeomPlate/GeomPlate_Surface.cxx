@@ -38,7 +38,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_Surface, Geom_Surface)
 //=================================================================================================
 
 GeomPlate_Surface::GeomPlate_Surface(const occ::handle<Geom_Surface>& Surfinit,
-                                     const Plate_Plate&               Surfinter)
+                                     const Plate_Plate&          Surfinter)
     : mySurfinter(Surfinter),
       mySurfinit(Surfinit),
       myUmin(0.0),
@@ -93,7 +93,10 @@ gp_GTrsf2d GeomPlate_Surface::ParametricTransformation(const gp_Trsf&) const
 
 //=================================================================================================
 
-void GeomPlate_Surface::Bounds(double& U1, double& U2, double& V1, double& V2) const
+void GeomPlate_Surface::Bounds(double& U1,
+                               double& U2,
+                               double& V1,
+                               double& V2) const
 {
   if (mySurfinit->DynamicType() == STANDARD_TYPE(GeomPlate_Surface))
     mySurfinit->Bounds(U1, U2, V1, V2);
@@ -208,9 +211,9 @@ void GeomPlate_Surface::D0(const double U, const double V, gp_Pnt& P) const
 
 void GeomPlate_Surface::D1(const double U,
                            const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V) const
+                           gp_Pnt&             P,
+                           gp_Vec&             D1U,
+                           gp_Vec&             D1V) const
 {
   gp_XY  P1(U, V);
   gp_Pnt P2;
@@ -230,12 +233,12 @@ void GeomPlate_Surface::D1(const double U,
 
 void GeomPlate_Surface::D2(const double U,
                            const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V,
-                           gp_Vec&      D2U,
-                           gp_Vec&      D2V,
-                           gp_Vec&      D2UV) const
+                           gp_Pnt&             P,
+                           gp_Vec&             D1U,
+                           gp_Vec&             D1V,
+                           gp_Vec&             D2U,
+                           gp_Vec&             D2V,
+                           gp_Vec&             D2UV) const
 {
   gp_XY  P1(U, V);
   gp_Pnt P2;
@@ -279,7 +282,10 @@ void GeomPlate_Surface::D3(const double,
 
 // gp_Vec GeomPlate_Surface::DN(const double U, const double V, const int
 // Nu, const int Nv) const
-gp_Vec GeomPlate_Surface::DN(const double, const double, const int, const int) const
+gp_Vec GeomPlate_Surface::DN(const double,
+                             const double,
+                             const int,
+                             const int) const
 {
   throw Standard_Failure("DN");
 }
@@ -326,7 +332,10 @@ void GeomPlate_Surface::SetBounds(const double Umin,
 
 //=================================================================================================
 
-void GeomPlate_Surface::RealBounds(double& U1, double& U2, double& V1, double& V2) const
+void GeomPlate_Surface::RealBounds(double& U1,
+                                   double& U2,
+                                   double& V1,
+                                   double& V2) const
 {
   mySurfinter.UVBox(U1, U2, V1, V2);
 }

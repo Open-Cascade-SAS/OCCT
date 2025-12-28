@@ -99,7 +99,7 @@ public:
   //! - <atnum> > 0 : at rank <atnum>
   //! Returns True if done, False if <atnum> is out of range
   Standard_EXPORT bool AddModifier(const occ::handle<IFSelect_Modifier>& modif,
-                                   const int                             atnum = 0);
+                                               const int           atnum = 0);
 
   //! Removes a Modifier from the list
   //! Returns True if done, False if <modif> not in the list
@@ -111,28 +111,29 @@ public:
 
   //! Performs the Standard Transformation, by calling Copy then
   //! ApplyModifiers (which can return an error status)
-  Standard_EXPORT bool Perform(const Interface_Graph&                 G,
-                               const occ::handle<Interface_Protocol>& protocol,
-                               Interface_CheckIterator&               checks,
-                               occ::handle<Interface_InterfaceModel>& newmod) override;
+  Standard_EXPORT bool Perform(const Interface_Graph&            G,
+                                           const occ::handle<Interface_Protocol>& protocol,
+                                           Interface_CheckIterator&          checks,
+                                           occ::handle<Interface_InterfaceModel>& newmod)
+    override;
 
   //! This the first operation. It calls StandardCopy or OnTheSpot
   //! according the option
-  Standard_EXPORT void Copy(const Interface_Graph&                 G,
-                            Interface_CopyTool&                    TC,
+  Standard_EXPORT void Copy(const Interface_Graph&            G,
+                            Interface_CopyTool&               TC,
                             occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This is the standard action of Copy : its takes into account
   //! only the remaining entities (noted by Graph Status positive)
   //! and their proper dependences of course. Produces a new model.
-  Standard_EXPORT void StandardCopy(const Interface_Graph&                 G,
-                                    Interface_CopyTool&                    TC,
+  Standard_EXPORT void StandardCopy(const Interface_Graph&            G,
+                                    Interface_CopyTool&               TC,
                                     occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This is the OnTheSpot action : each entity is bound with ...
   //! itself. The produced model is the same as the starting one.
-  Standard_EXPORT void OnTheSpot(const Interface_Graph&                 G,
-                                 Interface_CopyTool&                    TC,
+  Standard_EXPORT void OnTheSpot(const Interface_Graph&            G,
+                                 Interface_CopyTool&               TC,
                                  occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! Applies the modifiers sequentially.
@@ -141,17 +142,18 @@ public:
   //! changed and updates <newmod> if required
   //! If a Modifier causes an error (check "HasFailed"),
   //! ApplyModifier stops : the following Modifiers are ignored
-  Standard_EXPORT bool ApplyModifiers(const Interface_Graph&                 G,
-                                      const occ::handle<Interface_Protocol>& protocol,
-                                      Interface_CopyTool&                    TC,
-                                      Interface_CheckIterator&               checks,
-                                      occ::handle<Interface_InterfaceModel>& newmod) const;
+  Standard_EXPORT bool ApplyModifiers(const Interface_Graph&            G,
+                                                  const occ::handle<Interface_Protocol>& protocol,
+                                                  Interface_CopyTool&               TC,
+                                                  Interface_CheckIterator&          checks,
+                                                  occ::handle<Interface_InterfaceModel>& newmod) const;
 
   //! This methods allows to know what happened to a starting
   //! entity after the last Perform. It reads result from the map
   //! which was filled by Perform.
-  Standard_EXPORT bool Updated(const occ::handle<Standard_Transient>& entfrom,
-                               occ::handle<Standard_Transient>&       entto) const override;
+  Standard_EXPORT bool
+    Updated(const occ::handle<Standard_Transient>& entfrom,
+            occ::handle<Standard_Transient>&       entto) const override;
 
   //! Returns a text which defines the way a Transformer works :
   //! "On the spot edition" or "Standard Copy" followed by
@@ -161,10 +163,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(IFSelect_TransformStandard, IFSelect_Transformer)
 
 private:
-  bool                                                        thecopy;
-  occ::handle<IFSelect_Selection>                             thesel;
+  bool                   thecopy;
+  occ::handle<IFSelect_Selection>         thesel;
   NCollection_Sequence<occ::handle<IFSelect_GeneralModifier>> themodifs;
-  occ::handle<Interface_CopyControl>                          themap;
+  occ::handle<Interface_CopyControl>      themap;
 };
 
 #endif // _IFSelect_TransformStandard_HeaderFile

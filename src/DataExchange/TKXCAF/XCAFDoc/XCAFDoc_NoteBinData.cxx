@@ -38,13 +38,12 @@ occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Get(const TDF_Label& theLa
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(
-  const TDF_Label&                  theLabel,
-  const TCollection_ExtendedString& theUserName,
-  const TCollection_ExtendedString& theTimeStamp,
-  const TCollection_ExtendedString& theTitle,
-  const TCollection_AsciiString&    theMIMEtype,
-  OSD_File&                         theFile)
+occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
+                                                     const TCollection_ExtendedString& theUserName,
+                                                     const TCollection_ExtendedString& theTimeStamp,
+                                                     const TCollection_ExtendedString& theTitle,
+                                                     const TCollection_AsciiString&    theMIMEtype,
+                                                     OSD_File&                         theFile)
 {
   occ::handle<XCAFDoc_NoteBinData> aNoteBinData;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteBinData::GetID(), aNoteBinData))
@@ -61,13 +60,12 @@ occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(
-  const TDF_Label&                                 theLabel,
-  const TCollection_ExtendedString&                theUserName,
-  const TCollection_ExtendedString&                theTimeStamp,
-  const TCollection_ExtendedString&                theTitle,
-  const TCollection_AsciiString&                   theMIMEtype,
-  const occ::handle<NCollection_HArray1<uint8_t>>& theData)
+occ::handle<XCAFDoc_NoteBinData> XCAFDoc_NoteBinData::Set(const TDF_Label&                  theLabel,
+                                                     const TCollection_ExtendedString& theUserName,
+                                                     const TCollection_ExtendedString& theTimeStamp,
+                                                     const TCollection_ExtendedString& theTitle,
+                                                     const TCollection_AsciiString&    theMIMEtype,
+                                                     const occ::handle<NCollection_HArray1<uint8_t>>& theData)
 {
   occ::handle<XCAFDoc_NoteBinData> aNoteBinData;
   if (!theLabel.IsNull() && !theLabel.FindAttribute(XCAFDoc_NoteBinData::GetID(), aNoteBinData))
@@ -87,8 +85,8 @@ XCAFDoc_NoteBinData::XCAFDoc_NoteBinData() {}
 //=================================================================================================
 
 bool XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
-                              const TCollection_AsciiString&    theMIMEtype,
-                              OSD_File&                         theFile)
+                                          const TCollection_AsciiString&    theMIMEtype,
+                                          OSD_File&                         theFile)
 {
   if (!theFile.IsOpen() || !theFile.IsReadable())
     return false;
@@ -112,8 +110,8 @@ bool XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString& theTitle,
 
 //=================================================================================================
 
-void XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&                theTitle,
-                              const TCollection_AsciiString&                   theMIMEtype,
+void XCAFDoc_NoteBinData::Set(const TCollection_ExtendedString&    theTitle,
+                              const TCollection_AsciiString&       theMIMEtype,
                               const occ::handle<NCollection_HArray1<uint8_t>>& theData)
 {
   Backup();

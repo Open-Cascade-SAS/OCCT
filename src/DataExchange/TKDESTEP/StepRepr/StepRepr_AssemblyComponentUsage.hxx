@@ -35,26 +35,26 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-    const bool                                   hasProductDefinitionRelationship_Description,
+    const bool                  hasProductDefinitionRelationship_Description,
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
     const occ::handle<StepBasic_ProductDefinition>&
       aProductDefinitionRelationship_RelatingProductDefinition,
     const occ::handle<StepBasic_ProductDefinition>&
-               aProductDefinitionRelationship_RelatedProductDefinition,
-    const bool hasReferenceDesignator,
+                                            aProductDefinitionRelationship_RelatedProductDefinition,
+    const bool                  hasReferenceDesignator,
     const occ::handle<TCollection_HAsciiString>& aReferenceDesignator);
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-    const bool                                   hasProductDefinitionRelationship_Description,
+    const bool                  hasProductDefinitionRelationship_Description,
     const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
     const StepBasic_ProductDefinitionOrReference&
       aProductDefinitionRelationship_RelatingProductDefinition,
     const StepBasic_ProductDefinitionOrReference&
-               aProductDefinitionRelationship_RelatedProductDefinition,
-    const bool hasReferenceDesignator,
+                                            aProductDefinitionRelationship_RelatedProductDefinition,
+    const bool                  hasReferenceDesignator,
     const occ::handle<TCollection_HAsciiString>& aReferenceDesignator);
 
   //! Returns field ReferenceDesignator
@@ -71,7 +71,7 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> theReferenceDesignator;
-  bool                                  defReferenceDesignator;
+  bool                 defReferenceDesignator;
 };
 
 #endif // _StepRepr_AssemblyComponentUsage_HeaderFile

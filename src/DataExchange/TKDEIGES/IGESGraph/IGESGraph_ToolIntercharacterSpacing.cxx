@@ -37,8 +37,8 @@ void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int    nbPropertyValues;
-  double iSpace;
+  int nbPropertyValues;
+  double    iSpace;
 
   // Reading nbPropertyValues(Integer)
   // clang-format off
@@ -56,7 +56,7 @@ void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams(
 
 void IGESGraph_ToolIntercharacterSpacing::WriteOwnParams(
   const occ::handle<IGESGraph_IntercharacterSpacing>& ent,
-  IGESData_IGESWriter&                                IW) const
+  IGESData_IGESWriter&                           IW) const
 {
   IW.Send(ent->NbPropertyValues());
   IW.Send(ent->ISpace());

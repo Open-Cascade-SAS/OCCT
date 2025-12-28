@@ -41,8 +41,8 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
                           myUSplitValues->Value(2),
                           myVSplitValues->Value(1),
                           myVSplitValues->Value(2));
-  double              aKoefU = ads.UResolution(1.);
-  double              aKoefV = ads.VResolution(1.);
+  double       aKoefU = ads.UResolution(1.);
+  double       aKoefV = ads.VResolution(1.);
   if (aKoefU == 0)
     aKoefU = 1.;
   if (aKoefV == 0)
@@ -50,23 +50,21 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
   double aUSize = fabs(myUSplitValues->Value(2) - myUSplitValues->Value(1)) / aKoefU;
   double aVSize = fabs(myVSplitValues->Value(2) - myVSplitValues->Value(1)) / aKoefV;
   double aNbUV  = aUSize / aVSize;
-  occ::handle<NCollection_HSequence<double>> aFirstSplit =
-    (aNbUV < 1. ? myVSplitValues : myUSplitValues);
-  occ::handle<NCollection_HSequence<double>> aSecondSplit =
-    (aNbUV < 1. ? myUSplitValues : myVSplitValues);
-  bool anIsUFirst = (aNbUV > 1.);
+  occ::handle<NCollection_HSequence<double>> aFirstSplit  = (aNbUV < 1. ? myVSplitValues : myUSplitValues);
+  occ::handle<NCollection_HSequence<double>> aSecondSplit = (aNbUV < 1. ? myUSplitValues : myVSplitValues);
+  bool                anIsUFirst   = (aNbUV > 1.);
   if (aNbUV < 1)
     aNbUV = 1. / aNbUV;
 
   bool anIsFixedUVnbSplits = (myUnbSplit > 0 && myVnbSplit > 0);
-  int  nbSplitF, nbSplitS;
+  int nbSplitF, nbSplitS;
   if (myIsSplittingIntoSquares && myNbParts > 0)
   {
     if (!anIsFixedUVnbSplits) //(myUnbSplit <= 0 || myVnbSplit <= 0)
     {
       double aSquareSize = std::sqrt(myArea / myNbParts);
-      myUnbSplit         = (int)(myUsize / aSquareSize);
-      myVnbSplit         = (int)(myVsize / aSquareSize);
+      myUnbSplit                = (int)(myUsize / aSquareSize);
+      myVnbSplit                = (int)(myVsize / aSquareSize);
       if (myUnbSplit == 0)
         myUnbSplit = 1;
       if (myVnbSplit == 0)
@@ -87,15 +85,17 @@ void ShapeUpgrade_SplitSurfaceArea::Compute(const bool /*Segment*/)
   else
   {
     nbSplitF = (aNbUV >= myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts * ceil(aNbUV)))));
-    nbSplitS = (aNbUV >= myNbParts ? 0 : RealToInt(ceil((double)myNbParts / (double)nbSplitF)));
+    nbSplitS =
+      (aNbUV >= myNbParts ? 0
+                          : RealToInt(ceil((double)myNbParts / (double)nbSplitF)));
   }
   if (nbSplitS == 1 && !anIsFixedUVnbSplits)
     nbSplitS++;
   if (!nbSplitF)
     return;
-  double aStep    = (aFirstSplit->Value(2) - aFirstSplit->Value(1)) / nbSplitF;
-  double aPrevPar = aFirstSplit->Value(1);
-  int    i        = 1;
+  double    aStep    = (aFirstSplit->Value(2) - aFirstSplit->Value(1)) / nbSplitF;
+  double    aPrevPar = aFirstSplit->Value(1);
+  int i        = 1;
   for (; i < nbSplitF; i++)
   {
     double aNextPar = aPrevPar + aStep;

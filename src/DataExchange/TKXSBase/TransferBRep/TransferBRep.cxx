@@ -34,7 +34,7 @@
 #include <stdio.h>
 
 // #include <TransferBRep_Analyzer.hxx>
-static void ShapeAppend(const occ::handle<Transfer_Binder>&                     binder,
+static void ShapeAppend(const occ::handle<Transfer_Binder>&           binder,
                         const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapes)
 {
   if (binder.IsNull())
@@ -66,7 +66,7 @@ static void ShapeAppend(const occ::handle<Transfer_Binder>&                     
 
 TopoDS_Shape TransferBRep::ShapeResult(const occ::handle<Transfer_Binder>& binder)
 {
-  TopoDS_Shape                 shape;
+  TopoDS_Shape            shape;
   occ::handle<Transfer_Binder> bnd = binder;
   while (!bnd.IsNull())
   {
@@ -88,7 +88,7 @@ TopoDS_Shape TransferBRep::ShapeResult(const occ::handle<Transfer_Binder>& binde
 TopoDS_Shape TransferBRep::ShapeResult(const occ::handle<Transfer_TransientProcess>& TP,
                                        const occ::handle<Standard_Transient>&        ent)
 {
-  TopoDS_Shape                 shape;
+  TopoDS_Shape            shape;
   occ::handle<Transfer_Binder> binder = TP->Find(ent);
   if (binder.IsNull())
     binder = GetCasted(Transfer_Binder, ent);
@@ -102,16 +102,15 @@ TopoDS_Shape TransferBRep::ShapeResult(const occ::handle<Transfer_TransientProce
 
 void TransferBRep::SetShapeResult(const occ::handle<Transfer_TransientProcess>& TP,
                                   const occ::handle<Standard_Transient>&        ent,
-                                  const TopoDS_Shape&                           result)
+                                  const TopoDS_Shape&                      result)
 {
   if (result.IsNull() || ent.IsNull() || TP.IsNull())
     return;
   TP->Bind(ent, new TransferBRep_ShapeBinder(result));
 }
 
-occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::Shapes(
-  const occ::handle<Transfer_TransientProcess>& TP,
-  const bool                                    roots)
+occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::Shapes(const occ::handle<Transfer_TransientProcess>& TP,
+                                                       const bool roots)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> shapes;
   if (TP.IsNull())
@@ -129,7 +128,7 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::Shapes(
 }
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::Shapes(
-  const occ::handle<Transfer_TransientProcess>&                              TP,
+  const occ::handle<Transfer_TransientProcess>&    TP,
   const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> shapes;
@@ -148,12 +147,12 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::Shapes(
 }
 
 TopAbs_Orientation TransferBRep::ShapeState(const occ::handle<Transfer_FinderProcess>& FP,
-                                            const TopoDS_Shape&                        shape)
+                                            const TopoDS_Shape&                   shape)
 {
   if (FP.IsNull() || shape.IsNull())
     return TopAbs_EXTERNAL;
   occ::handle<TransferBRep_ShapeMapper> sm    = new TransferBRep_ShapeMapper(shape);
-  int                                   index = FP->MapIndex(sm);
+  int                 index = FP->MapIndex(sm);
   if (index == 0)
     return TopAbs_EXTERNAL;
   sm = occ::down_cast<TransferBRep_ShapeMapper>(FP->Mapped(index));
@@ -166,9 +165,8 @@ TopAbs_Orientation TransferBRep::ShapeState(const occ::handle<Transfer_FinderPro
   return TopAbs_FORWARD;
 }
 
-occ::handle<Transfer_Binder> TransferBRep::ResultFromShape(
-  const occ::handle<Transfer_FinderProcess>& FP,
-  const TopoDS_Shape&                        shape)
+occ::handle<Transfer_Binder> TransferBRep::ResultFromShape(const occ::handle<Transfer_FinderProcess>& FP,
+                                                      const TopoDS_Shape&                   shape)
 {
   occ::handle<Transfer_Binder> res;
   if (FP.IsNull() || shape.IsNull())
@@ -179,7 +177,7 @@ occ::handle<Transfer_Binder> TransferBRep::ResultFromShape(
 
 occ::handle<Standard_Transient> TransferBRep::TransientFromShape(
   const occ::handle<Transfer_FinderProcess>& FP,
-  const TopoDS_Shape&                        shape)
+  const TopoDS_Shape&                   shape)
 {
   occ::handle<Standard_Transient> res;
   if (FP.IsNull() || shape.IsNull())
@@ -189,7 +187,7 @@ occ::handle<Standard_Transient> TransferBRep::TransientFromShape(
 }
 
 void TransferBRep::SetTransientFromShape(const occ::handle<Transfer_FinderProcess>& FP,
-                                         const TopoDS_Shape&                        shape,
+                                         const TopoDS_Shape&                   shape,
                                          const occ::handle<Standard_Transient>&     result)
 {
   if (FP.IsNull() || shape.IsNull())
@@ -198,12 +196,11 @@ void TransferBRep::SetTransientFromShape(const occ::handle<Transfer_FinderProces
   FP->BindTransient(sm, result);
 }
 
-occ::handle<TransferBRep_ShapeMapper> TransferBRep::ShapeMapper(
-  const occ::handle<Transfer_FinderProcess>& FP,
-  const TopoDS_Shape&                        shape)
+occ::handle<TransferBRep_ShapeMapper> TransferBRep::ShapeMapper(const occ::handle<Transfer_FinderProcess>& FP,
+                                                           const TopoDS_Shape& shape)
 {
   occ::handle<TransferBRep_ShapeMapper> mapper = new TransferBRep_ShapeMapper(shape);
-  int                                   index  = FP->MapIndex(mapper);
+  int                 index  = FP->MapIndex(mapper);
   if (index == 0)
     return mapper;
   return occ::down_cast<TransferBRep_ShapeMapper>(FP->Mapped(index));
@@ -247,10 +244,9 @@ static void FillInfo(const occ::handle<Transfer_Binder>&                 Binder,
 
 //=================================================================================================
 
-void TransferBRep::TransferResultInfo(
-  const occ::handle<Transfer_TransientProcess>&                                     TP,
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>&        EntityTypes,
-  occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq)
+void TransferBRep::TransferResultInfo(const occ::handle<Transfer_TransientProcess>&    TP,
+                                      const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& EntityTypes,
+                                      occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq)
 {
   // create output Sequence in accordance with required ShapeTypes
   InfoSeq = new NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>;
@@ -289,10 +285,9 @@ void TransferBRep::TransferResultInfo(
 
 //=================================================================================================
 
-void TransferBRep::TransferResultInfo(
-  const occ::handle<Transfer_FinderProcess>&                                        FP,
-  const occ::handle<NCollection_HSequence<int>>&                                    ShapeTypes,
-  occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq)
+void TransferBRep::TransferResultInfo(const occ::handle<Transfer_FinderProcess>&     FP,
+                                      const occ::handle<NCollection_HSequence<int>>& ShapeTypes,
+                                      occ::handle<NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>>& InfoSeq)
 {
   // create output Sequence in accordance with required ShapeTypes
   InfoSeq = new NCollection_HSequence<occ::handle<TransferBRep_TransferResultInfo>>;
@@ -352,10 +347,9 @@ Interface_CheckIterator TransferBRep::BRepCheck
 
 //  ###  conversion resultat -> starting
 
-Interface_CheckIterator TransferBRep::ResultCheckList(
-  const Interface_CheckIterator&               chl,
-  const occ::handle<Transfer_FinderProcess>&   FP,
-  const occ::handle<Interface_InterfaceModel>& model)
+Interface_CheckIterator TransferBRep::ResultCheckList(const Interface_CheckIterator&          chl,
+                                                      const occ::handle<Transfer_FinderProcess>&   FP,
+                                                      const occ::handle<Interface_InterfaceModel>& model)
 {
   Interface_CheckIterator nchl;
   if (FP.IsNull() || model.IsNull())
@@ -363,7 +357,7 @@ Interface_CheckIterator TransferBRep::ResultCheckList(
   nchl.SetModel(model);
   for (chl.Start(); chl.More(); chl.Next())
   {
-    int                                 num = 0;
+    int               num = 0;
     const occ::handle<Interface_Check>& ach = chl.Value();
     if (ach->NbFails() + ach->NbWarnings() == 0)
       continue;
@@ -381,12 +375,10 @@ Interface_CheckIterator TransferBRep::ResultCheckList(
   return nchl;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferBRep::Checked(
-  const Interface_CheckIterator& chl,
-  const bool                     alsoshapes)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferBRep::Checked(const Interface_CheckIterator& chl,
+                                                           const bool alsoshapes)
 {
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> ls =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> ls = new NCollection_HSequence<occ::handle<Standard_Transient>>();
   for (chl.Start(); chl.More(); chl.Next())
   {
     const occ::handle<Interface_Check>& ach = chl.Value();
@@ -407,8 +399,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferBRep
   return ls;
 }
 
-occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::CheckedShapes(
-  const Interface_CheckIterator& chl)
+occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::CheckedShapes(const Interface_CheckIterator& chl)
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> ls = new NCollection_HSequence<TopoDS_Shape>();
   for (chl.Start(); chl.More(); chl.Next())
@@ -432,7 +423,7 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> TransferBRep::CheckedShapes(
   return ls;
 }
 
-Interface_CheckIterator TransferBRep::CheckObject(const Interface_CheckIterator&         chl,
+Interface_CheckIterator TransferBRep::CheckObject(const Interface_CheckIterator&    chl,
                                                   const occ::handle<Standard_Transient>& obj)
 {
   TopoDS_Shape S;
@@ -490,9 +481,9 @@ Interface_CheckIterator TransferBRep::CheckObject(const Interface_CheckIterator&
 //=================================================================================================
 
 void TransferBRep::PrintResultInfo(const occ::handle<Message_Printer>&                 Printer,
-                                   const Message_Msg&                                  Header,
+                                   const Message_Msg&                             Header,
                                    const occ::handle<TransferBRep_TransferResultInfo>& ResultInfo,
-                                   const bool                                          printEmpty)
+                                   const bool                         printEmpty)
 {
   int R, RW, RF, RWF, NR, NRW, NRF, NRWF;
   R    = ResultInfo->Result();

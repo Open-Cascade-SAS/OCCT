@@ -35,13 +35,11 @@ public:
   //! Returns a AppliedOrganizationAssignment
   Standard_EXPORT StepAP214_AppliedOrganizationAssignment();
 
-  Standard_EXPORT void Init(
-    const occ::handle<StepBasic_Organization>&                          aAssignedOrganization,
-    const occ::handle<StepBasic_OrganizationRole>&                      aRole,
-    const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Organization>&     aAssignedOrganization,
+                            const occ::handle<StepBasic_OrganizationRole>& aRole,
+                            const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
 
-  Standard_EXPORT void SetItems(
-    const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>>& aItems);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP214_OrganizationItem>> Items() const;
 

@@ -71,8 +71,8 @@ public:
   //! If Select has failed, <module> is Null Handle and CN is zero.
   //! (Select can work on any criterium, such as Object DynamicType)
   Standard_EXPORT bool Select(const occ::handle<IGESData_IGESEntity>& obj,
-                              occ::handle<IGESData_SpecificModule>&   module,
-                              int&                                    CN) const;
+                                          occ::handle<IGESData_SpecificModule>&   module,
+                                          int&                  CN) const;
 
   //! Starts Iteration on the Modules (sets it on the first one)
   Standard_EXPORT void Start();

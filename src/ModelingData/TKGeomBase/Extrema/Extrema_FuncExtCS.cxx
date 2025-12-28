@@ -176,7 +176,7 @@ int Extrema_FuncExtCS::GetStateNumber()
 #endif
   // comparison of solution with previous solutions
   constexpr double tol2d = Precision::SquarePConfusion();
-  int              i = 1, nbSol = mySqDist.Length();
+  int        i = 1, nbSol = mySqDist.Length();
   for (; i <= nbSol; i++)
   {
     double aT = myPoint1(i).Parameter();

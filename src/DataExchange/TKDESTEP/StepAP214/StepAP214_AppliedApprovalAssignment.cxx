@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AppliedApprovalAssignment, StepBasic_Approv
 StepAP214_AppliedApprovalAssignment::StepAP214_AppliedApprovalAssignment() {}
 
 void StepAP214_AppliedApprovalAssignment::Init(
-  const occ::handle<StepBasic_Approval>&                          aAssignedApproval,
+  const occ::handle<StepBasic_Approval>&              aAssignedApproval,
   const occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>>& aItems)
 {
   // --- classe own fields ---
@@ -35,13 +35,13 @@ void StepAP214_AppliedApprovalAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> StepAP214_AppliedApprovalAssignment::
-  Items() const
+occ::handle<NCollection_HArray1<StepAP214_ApprovalItem>> StepAP214_AppliedApprovalAssignment::Items() const
 {
   return items;
 }
 
-StepAP214_ApprovalItem StepAP214_AppliedApprovalAssignment::ItemsValue(const int num) const
+StepAP214_ApprovalItem StepAP214_AppliedApprovalAssignment::ItemsValue(
+  const int num) const
 {
   return items->Value(num);
 }

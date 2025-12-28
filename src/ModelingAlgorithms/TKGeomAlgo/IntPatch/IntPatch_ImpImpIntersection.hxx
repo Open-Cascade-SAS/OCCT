@@ -21,6 +21,7 @@
 #include <IntPatch_Point.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntPatch_Line.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntPatch_TheSOnBounds.hxx>
 
 class Adaptor3d_TopolTool;
@@ -56,13 +57,14 @@ public:
   //! When intersection result returns IntPatch_RLine and another
   //! IntPatch_Line (not restriction) we (in case of theIsReqToKeepRLine==TRUE)
   //! will always keep both lines even if they are coincided.
-  Standard_EXPORT IntPatch_ImpImpIntersection(const occ::handle<Adaptor3d_Surface>&   S1,
-                                              const occ::handle<Adaptor3d_TopolTool>& D1,
-                                              const occ::handle<Adaptor3d_Surface>&   S2,
-                                              const occ::handle<Adaptor3d_TopolTool>& D2,
-                                              const double                            TolArc,
-                                              const double                            TolTang,
-                                              const bool theIsReqToKeepRLine = false);
+  Standard_EXPORT IntPatch_ImpImpIntersection(
+    const occ::handle<Adaptor3d_Surface>&   S1,
+    const occ::handle<Adaptor3d_TopolTool>& D1,
+    const occ::handle<Adaptor3d_Surface>&   S2,
+    const occ::handle<Adaptor3d_TopolTool>& D2,
+    const double                TolArc,
+    const double                TolTang,
+    const bool             theIsReqToKeepRLine = false);
 
   //! Flag theIsReqToKeepRLine has been entered only for
   //! compatibility with TopOpeBRep package. It shall be deleted
@@ -74,9 +76,9 @@ public:
                                const occ::handle<Adaptor3d_TopolTool>& D1,
                                const occ::handle<Adaptor3d_Surface>&   S2,
                                const occ::handle<Adaptor3d_TopolTool>& D2,
-                               const double                            TolArc,
-                               const double                            TolTang,
-                               const bool                              theIsReqToKeepRLine = false);
+                               const double                TolArc,
+                               const double                TolTang,
+                               const bool theIsReqToKeepRLine = false);
 
   //! Returns True if the calculus was successful.
   bool IsDone() const;
@@ -114,13 +116,13 @@ public:
   const occ::handle<IntPatch_Line>& Line(const int Index) const;
 
 private:
-  IntStatus                                        myDone;
-  bool                                             empt;
-  bool                                             tgte;
-  bool                                             oppo;
-  NCollection_Sequence<IntPatch_Point>             spnt;
-  NCollection_Sequence<occ::handle<IntPatch_Line>> slin;
-  IntPatch_TheSOnBounds                            solrst;
+  IntStatus                myDone;
+  bool         empt;
+  bool         tgte;
+  bool         oppo;
+  NCollection_Sequence<IntPatch_Point> spnt;
+  NCollection_Sequence<occ::handle<IntPatch_Line>>  slin;
+  IntPatch_TheSOnBounds    solrst;
 };
 
 #include <IntPatch_ImpImpIntersection.lxx>

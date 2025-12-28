@@ -103,8 +103,8 @@ void BRepAlgoAPI_BuilderAlgo::Build(const Message_ProgressRange& theRange)
 // function : IntersectShapes
 // purpose  : Intersects the given shapes with the intersection tool
 //=======================================================================
-void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const NCollection_List<TopoDS_Shape>& theArgs,
-                                              const Message_ProgressRange&          theRange)
+void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const NCollection_List<TopoDS_Shape>&  theArgs,
+                                              const Message_ProgressRange& theRange)
 {
   if (!myIsIntersectionNeeded)
     return;
@@ -163,9 +163,9 @@ void BRepAlgoAPI_BuilderAlgo::BuildResult(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-void BRepAlgoAPI_BuilderAlgo::SimplifyResult(const bool   theUnifyEdges,
-                                             const bool   theUnifyFaces,
-                                             const double theAngularTol)
+void BRepAlgoAPI_BuilderAlgo::SimplifyResult(const bool theUnifyEdges,
+                                             const bool theUnifyFaces,
+                                             const double    theAngularTol)
 {
   if (HasErrors())
     return;
@@ -253,23 +253,23 @@ const NCollection_List<TopoDS_Shape>& BRepAlgoAPI_BuilderAlgo::SectionEdges()
   const BOPDS_PDS& pDS = myDSFiller->PDS();
   // Iterate on all Face/Face interferences and take section edges
   NCollection_Vector<BOPDS_InterfFF>& aFFs  = pDS->InterfFF();
-  const int                           aNbFF = aFFs.Length();
+  const int  aNbFF = aFFs.Length();
   for (int i = 0; i < aNbFF; ++i)
   {
     BOPDS_InterfFF& aFFi = aFFs(i);
     // Section curves between pair of faces
     const NCollection_Vector<BOPDS_Curve>& aSectionCurves = aFFi.Curves();
-    const int                              aNbC           = aSectionCurves.Length();
+    const int     aNbC           = aSectionCurves.Length();
     for (int j = 0; j < aNbC; ++j)
     {
       const BOPDS_Curve& aCurve = aSectionCurves(j);
       // Section edges created from the curve
-      const NCollection_List<occ::handle<BOPDS_PaveBlock>>&    aSectionEdges = aCurve.PaveBlocks();
+      const NCollection_List<occ::handle<BOPDS_PaveBlock>>&        aSectionEdges = aCurve.PaveBlocks();
       NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB(aSectionEdges);
       for (; aItPB.More(); aItPB.Next())
       {
         const occ::handle<BOPDS_PaveBlock>& aPB = aItPB.Value();
-        const TopoDS_Shape&                 aSE = pDS->Shape(aPB->Edge());
+        const TopoDS_Shape&            aSE = pDS->Shape(aPB->Edge());
         if (!aMFence.Add(aSE))
           continue;
         // Take into account simplification of the result shape

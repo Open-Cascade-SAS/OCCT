@@ -22,7 +22,7 @@
 RWHeaderSection_RWFileName::RWHeaderSection_RWFileName() {}
 
 void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<HeaderSection_FileName>&  ent) const
 {
@@ -45,13 +45,13 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
   // --- own field : author ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aAuthor;
-  occ::handle<TCollection_HAsciiString>                                   aAuthorItem;
-  int                                                                     nsub3;
+  occ::handle<TCollection_HAsciiString>        aAuthorItem;
+  int                        nsub3;
   nsub3 = data->SubListNumber(num, 3, false);
   if (nsub3 != 0)
   {
     int nb3 = data->NbParams(nsub3);
-    aAuthor = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb3);
+    aAuthor              = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       bool stat3 = data->ReadString(nsub3, i3, "author", ach, aAuthorItem);
@@ -67,13 +67,13 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
   // --- own field : organization ---
 
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> aOrganization;
-  occ::handle<TCollection_HAsciiString>                                   aOrganizationItem;
-  int                                                                     nsub4;
+  occ::handle<TCollection_HAsciiString>        aOrganizationItem;
+  int                        nsub4;
   nsub4 = data->SubListNumber(num, 4, false);
   if (nsub4 != 0)
   {
-    int nb4       = data->NbParams(nsub4);
-    aOrganization = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb4);
+    int nb4 = data->NbParams(nsub4);
+    aOrganization        = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, nb4);
     for (int i4 = 1; i4 <= nb4; i4++)
     {
       bool stat4 = data->ReadString(nsub4, i4, "organization", ach, aOrganizationItem);
@@ -113,7 +113,7 @@ void RWHeaderSection_RWFileName::ReadStep(const occ::handle<StepData_StepReaderD
               aAuthorisation);
 }
 
-void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                       SW,
+void RWHeaderSection_RWFileName::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<HeaderSection_FileName>& ent) const
 {
 

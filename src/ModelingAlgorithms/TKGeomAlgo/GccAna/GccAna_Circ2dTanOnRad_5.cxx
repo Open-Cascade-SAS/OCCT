@@ -35,10 +35,10 @@
 //  of found solutions.                                                   +
 //  Create solutions cirsol.                                              +
 //=========================================================================
-GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&  Point1,
-                                             const gp_Circ2d& OnCirc,
-                                             const double     Radius,
-                                             const double     Tolerance)
+GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&     Point1,
+                                             const gp_Circ2d&    OnCirc,
+                                             const double Radius,
+                                             const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       TheSame1(1, 2),
@@ -49,10 +49,10 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const gp_Pnt2d&  Point1,
       parcen3(1, 2)
 {
 
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol   = std::abs(Tolerance);
-  WellDone       = false;
-  NbrSol         = 0;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol     = std::abs(Tolerance);
+  WellDone              = false;
+  NbrSol                = 0;
   double Roncirc = OnCirc.Radius();
   double dist1   = Point1.Distance(OnCirc.Location()) - Roncirc;
   double dist2   = Point1.Distance(OnCirc.Location()) + Roncirc;

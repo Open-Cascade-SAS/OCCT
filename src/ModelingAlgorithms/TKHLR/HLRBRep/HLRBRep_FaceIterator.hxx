@@ -68,10 +68,10 @@ public:
   bool IsoLine() const;
 
 private:
-  int                             iWire;
-  int                             nbWires;
-  int                             iEdge;
-  int                             nbEdges;
+  int           iWire;
+  int           nbWires;
+  int           iEdge;
+  int           nbEdges;
   occ::handle<HLRAlgo_WiresBlock> myWires;
   occ::handle<HLRAlgo_EdgesBlock> myEdges;
 };

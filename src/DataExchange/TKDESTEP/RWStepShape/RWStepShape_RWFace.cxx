@@ -18,13 +18,14 @@
 #include <StepData_StepWriter.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceBound.hxx>
+#include <StepShape_FaceBound.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 RWStepShape_RWFace::RWStepShape_RWFace() {}
 
 void RWStepShape_RWFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                                   num,
+                                  const int                 num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepShape_Face>&          ent) const
 {
@@ -43,12 +44,12 @@ void RWStepShape_RWFace::ReadStep(const occ::handle<StepData_StepReaderData>& da
   // --- own field : bounds ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> aBounds;
-  occ::handle<StepShape_FaceBound>                                   anent2;
-  int                                                                nsub2;
+  occ::handle<StepShape_FaceBound>          anent2;
+  int                     nsub2;
   if (data->ReadSubList(num, 2, "bounds", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
-    aBounds = new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nb2);
+    aBounds              = new NCollection_HArray1<occ::handle<StepShape_FaceBound>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -63,8 +64,7 @@ void RWStepShape_RWFace::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName, aBounds);
 }
 
-void RWStepShape_RWFace::WriteStep(StepData_StepWriter&               SW,
-                                   const occ::handle<StepShape_Face>& ent) const
+void RWStepShape_RWFace::WriteStep(StepData_StepWriter& SW, const occ::handle<StepShape_Face>& ent) const
 {
 
   // --- inherited field name ---
@@ -82,7 +82,7 @@ void RWStepShape_RWFace::WriteStep(StepData_StepWriter&               SW,
 }
 
 void RWStepShape_RWFace::Share(const occ::handle<StepShape_Face>& ent,
-                               Interface_EntityIterator&          iter) const
+                               Interface_EntityIterator&     iter) const
 {
 
   int nbElem1 = ent->NbBounds();

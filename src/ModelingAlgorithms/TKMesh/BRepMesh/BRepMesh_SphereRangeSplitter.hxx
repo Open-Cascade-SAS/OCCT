@@ -37,12 +37,12 @@ public:
 private:
   //! Computes step for the given range.
   void computeStep(const std::pair<double, double>& theRange,
-                   const double                     theDefaultStep,
+                   const double                            theDefaultStep,
                    std::pair<double, double>&       theStepAndOffset) const
   {
-    const double aDiff      = theRange.second - theRange.first;
-    theStepAndOffset.first  = aDiff / ((int)(aDiff / theDefaultStep) + 1);
-    theStepAndOffset.second = theRange.second - Precision::PConfusion();
+    const double aDiff = theRange.second - theRange.first;
+    theStepAndOffset.first    = aDiff / ((int)(aDiff / theDefaultStep) + 1);
+    theStepAndOffset.second   = theRange.second - Precision::PConfusion();
   }
 };
 

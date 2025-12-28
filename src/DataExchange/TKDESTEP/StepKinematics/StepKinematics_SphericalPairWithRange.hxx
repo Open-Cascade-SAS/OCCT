@@ -35,29 +35,29 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-    const bool                                        hasItemDefinedTransformation_Description,
+    const bool                       hasItemDefinedTransformation_Description,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
     const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-    const bool                                        theLowOrderKinematicPair_TX,
-    const bool                                        theLowOrderKinematicPair_TY,
-    const bool                                        theLowOrderKinematicPair_TZ,
-    const bool                                        theLowOrderKinematicPair_RX,
-    const bool                                        theLowOrderKinematicPair_RY,
-    const bool                                        theLowOrderKinematicPair_RZ,
-    const bool                                        hasLowerLimitYaw,
-    const double                                      theLowerLimitYaw,
-    const bool                                        hasUpperLimitYaw,
-    const double                                      theUpperLimitYaw,
-    const bool                                        hasLowerLimitPitch,
-    const double                                      theLowerLimitPitch,
-    const bool                                        hasUpperLimitPitch,
-    const double                                      theUpperLimitPitch,
-    const bool                                        hasLowerLimitRoll,
-    const double                                      theLowerLimitRoll,
-    const bool                                        hasUpperLimitRoll,
-    const double                                      theUpperLimitRoll);
+    const bool                       theLowOrderKinematicPair_TX,
+    const bool                       theLowOrderKinematicPair_TY,
+    const bool                       theLowOrderKinematicPair_TZ,
+    const bool                       theLowOrderKinematicPair_RX,
+    const bool                       theLowOrderKinematicPair_RY,
+    const bool                       theLowOrderKinematicPair_RZ,
+    const bool                       hasLowerLimitYaw,
+    const double                          theLowerLimitYaw,
+    const bool                       hasUpperLimitYaw,
+    const double                          theUpperLimitYaw,
+    const bool                       hasLowerLimitPitch,
+    const double                          theLowerLimitPitch,
+    const bool                       hasUpperLimitPitch,
+    const double                          theUpperLimitPitch,
+    const bool                       hasLowerLimitRoll,
+    const double                          theLowerLimitRoll,
+    const bool                       hasUpperLimitRoll,
+    const double                          theUpperLimitRoll);
 
   //! Returns field LowerLimitYaw
   Standard_EXPORT double LowerLimitYaw() const;
@@ -104,17 +104,17 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_SphericalPairWithRange, StepKinematics_SphericalPair)
 
 private:
-  double myLowerLimitYaw;    //!< optional
-  double myUpperLimitYaw;    //!< optional
-  double myLowerLimitPitch;  //!< optional
-  double myUpperLimitPitch;  //!< optional
-  double myLowerLimitRoll;   //!< optional
-  double myUpperLimitRoll;   //!< optional
-  bool   defLowerLimitYaw;   //!< flag "is LowerLimitYaw defined"
-  bool   defUpperLimitYaw;   //!< flag "is UpperLimitYaw defined"
-  bool   defLowerLimitPitch; //!< flag "is LowerLimitPitch defined"
-  bool   defUpperLimitPitch; //!< flag "is UpperLimitPitch defined"
-  bool   defLowerLimitRoll;  //!< flag "is LowerLimitRoll defined"
-  bool   defUpperLimitRoll;  //!< flag "is UpperLimitRoll defined"
+  double    myLowerLimitYaw;    //!< optional
+  double    myUpperLimitYaw;    //!< optional
+  double    myLowerLimitPitch;  //!< optional
+  double    myUpperLimitPitch;  //!< optional
+  double    myLowerLimitRoll;   //!< optional
+  double    myUpperLimitRoll;   //!< optional
+  bool defLowerLimitYaw;   //!< flag "is LowerLimitYaw defined"
+  bool defUpperLimitYaw;   //!< flag "is UpperLimitYaw defined"
+  bool defLowerLimitPitch; //!< flag "is LowerLimitPitch defined"
+  bool defUpperLimitPitch; //!< flag "is UpperLimitPitch defined"
+  bool defLowerLimitRoll;  //!< flag "is LowerLimitRoll defined"
+  bool defUpperLimitRoll;  //!< flag "is UpperLimitRoll defined"
 };
 #endif // _StepKinematics_SphericalPairWithRange_HeaderFile_

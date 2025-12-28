@@ -29,7 +29,7 @@ ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const double MaxAng
 
 //=================================================================================================
 
-ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const double        MaxAngle,
+ShapeUpgrade_ShapeDivideAngle::ShapeUpgrade_ShapeDivideAngle(const double MaxAngle,
                                                              const TopoDS_Shape& S)
     : ShapeUpgrade_ShapeDivide(S)
 {

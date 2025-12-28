@@ -27,10 +27,10 @@ IntTools_PntOnFace::IntTools_PntOnFace()
 
 //=================================================================================================
 
-void IntTools_PntOnFace::Init(const TopoDS_Face& aF,
-                              const gp_Pnt&      aP,
-                              const double       anU,
-                              const double       aV)
+void IntTools_PntOnFace::Init(const TopoDS_Face&  aF,
+                              const gp_Pnt&       aP,
+                              const double anU,
+                              const double aV)
 {
   myFace = aF;
   myPnt  = aP;

@@ -51,7 +51,8 @@ TCollection_HAsciiString::TCollection_HAsciiString(const char aChar)
 
 //=================================================================================================
 
-TCollection_HAsciiString::TCollection_HAsciiString(const int length, const char filler)
+TCollection_HAsciiString::TCollection_HAsciiString(const int   length,
+                                                   const char filler)
     : myString(length, filler)
 {
 }
@@ -72,8 +73,7 @@ TCollection_HAsciiString::TCollection_HAsciiString(const double aValue)
 
 //=================================================================================================
 
-TCollection_HAsciiString::TCollection_HAsciiString(
-  const occ::handle<TCollection_HAsciiString>& astring)
+TCollection_HAsciiString::TCollection_HAsciiString(const occ::handle<TCollection_HAsciiString>& astring)
     : myString(astring->String())
 {
 }
@@ -82,7 +82,7 @@ TCollection_HAsciiString::TCollection_HAsciiString(
 
 TCollection_HAsciiString::TCollection_HAsciiString(
   const occ::handle<TCollection_HExtendedString>& astring,
-  const char                                      replaceNonAscii)
+  const char                   replaceNonAscii)
     : myString(astring->String(), replaceNonAscii)
 {
 }
@@ -122,7 +122,7 @@ void TCollection_HAsciiString::Center(const int Width, const char Filler)
 
 void TCollection_HAsciiString::ChangeAll(const char aChar,
                                          const char NewChar,
-                                         const bool CaseSensitive)
+                                         const bool   CaseSensitive)
 {
   myString.ChangeAll(aChar, NewChar, CaseSensitive);
 }
@@ -136,9 +136,10 @@ void TCollection_HAsciiString::Clear()
 
 //=================================================================================================
 
-int TCollection_HAsciiString::FirstLocationInSet(const occ::handle<TCollection_HAsciiString>& Set,
-                                                 const int FromIndex,
-                                                 const int ToIndex) const
+int TCollection_HAsciiString::FirstLocationInSet(
+  const occ::handle<TCollection_HAsciiString>& Set,
+  const int                  FromIndex,
+  const int                  ToIndex) const
 {
   if (Length() == 0 || Set->Length() == 0)
     return 0;
@@ -151,8 +152,8 @@ int TCollection_HAsciiString::FirstLocationInSet(const occ::handle<TCollection_H
 
 int TCollection_HAsciiString::FirstLocationNotInSet(
   const occ::handle<TCollection_HAsciiString>& Set,
-  const int                                    FromIndex,
-  const int                                    ToIndex) const
+  const int                  FromIndex,
+  const int                  ToIndex) const
 {
   if (Length() == 0 || Set->Length() == 0)
     return 0;
@@ -177,7 +178,7 @@ void TCollection_HAsciiString::Insert(const int where, const char* what)
 
 //=================================================================================================
 
-void TCollection_HAsciiString::Insert(const int                                    where,
+void TCollection_HAsciiString::Insert(const int                  where,
                                       const occ::handle<TCollection_HAsciiString>& what)
 {
   myString.Insert(where, what->String());
@@ -185,7 +186,7 @@ void TCollection_HAsciiString::Insert(const int                                 
 
 //=================================================================================================
 
-void TCollection_HAsciiString::InsertAfter(const int                                    Index,
+void TCollection_HAsciiString::InsertAfter(const int                  Index,
                                            const occ::handle<TCollection_HAsciiString>& S)
 {
   int size1 = Length();
@@ -198,7 +199,7 @@ void TCollection_HAsciiString::InsertAfter(const int                            
 
 //=================================================================================================
 
-void TCollection_HAsciiString::InsertBefore(const int                                    Index,
+void TCollection_HAsciiString::InsertBefore(const int                  Index,
                                             const occ::handle<TCollection_HAsciiString>& S)
 {
   int size1 = Length();
@@ -218,14 +219,16 @@ bool TCollection_HAsciiString::IsEmpty() const
 
 //=================================================================================================
 
-bool TCollection_HAsciiString::IsLess(const occ::handle<TCollection_HAsciiString>& other) const
+bool TCollection_HAsciiString::IsLess(
+  const occ::handle<TCollection_HAsciiString>& other) const
 {
   return myString.IsLess(other->String());
 }
 
 //=================================================================================================
 
-bool TCollection_HAsciiString::IsGreater(const occ::handle<TCollection_HAsciiString>& other) const
+bool TCollection_HAsciiString::IsGreater(
+  const occ::handle<TCollection_HAsciiString>& other) const
 {
   return myString.IsGreater(other->String());
 }
@@ -260,7 +263,8 @@ bool TCollection_HAsciiString::IsAscii() const
 
 //=================================================================================================
 
-bool TCollection_HAsciiString::IsDifferent(const occ::handle<TCollection_HAsciiString>& S) const
+bool TCollection_HAsciiString::IsDifferent(
+  const occ::handle<TCollection_HAsciiString>& S) const
 {
   if (S.IsNull())
     throw Standard_NullObject("TCollection_HAsciiString::IsDifferent");
@@ -271,7 +275,8 @@ bool TCollection_HAsciiString::IsDifferent(const occ::handle<TCollection_HAsciiS
 
 //=================================================================================================
 
-bool TCollection_HAsciiString::IsSameString(const occ::handle<TCollection_HAsciiString>& S) const
+bool TCollection_HAsciiString::IsSameString(
+  const occ::handle<TCollection_HAsciiString>& S) const
 {
   if (S.IsNull())
     throw Standard_NullObject("TCollection_HAsciiString::IsSameString");
@@ -284,7 +289,7 @@ bool TCollection_HAsciiString::IsSameString(const occ::handle<TCollection_HAscii
 //=================================================================================================
 
 bool TCollection_HAsciiString::IsSameString(const occ::handle<TCollection_HAsciiString>& S,
-                                            const bool CaseSensitive) const
+                                                        const bool CaseSensitive) const
 {
   if (S.IsNull())
     throw Standard_NullObject("TCollection_HAsciiString::IsSameString");
@@ -300,7 +305,8 @@ void TCollection_HAsciiString::LeftAdjust()
 
 //=================================================================================================
 
-void TCollection_HAsciiString::LeftJustify(const int Width, const char Filler)
+void TCollection_HAsciiString::LeftJustify(const int   Width,
+                                           const char Filler)
 {
   if (Width < 0)
     throw Standard_NegativeValue();
@@ -309,10 +315,10 @@ void TCollection_HAsciiString::LeftJustify(const int Width, const char Filler)
 
 //=================================================================================================
 
-int TCollection_HAsciiString::Location(const int  N,
-                                       const char C,
-                                       const int  FromIndex,
-                                       const int  ToIndex) const
+int TCollection_HAsciiString::Location(const int   N,
+                                                    const char C,
+                                                    const int   FromIndex,
+                                                    const int   ToIndex) const
 {
   if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex)
     throw Standard_OutOfRange();
@@ -322,8 +328,8 @@ int TCollection_HAsciiString::Location(const int  N,
 //=================================================================================================
 
 int TCollection_HAsciiString::Location(const occ::handle<TCollection_HAsciiString>& S,
-                                       const int                                    FromIndex,
-                                       const int                                    ToIndex) const
+                                                    const int FromIndex,
+                                                    const int ToIndex) const
 {
   if (Length() == 0 || S->Length() == 0)
     return 0;
@@ -363,7 +369,8 @@ double TCollection_HAsciiString::RealValue() const
 
 //=================================================================================================
 
-void TCollection_HAsciiString::RemoveAll(const char what, const bool CaseSensitive)
+void TCollection_HAsciiString::RemoveAll(const char what,
+                                         const bool   CaseSensitive)
 {
   myString.RemoveAll(what, CaseSensitive);
 }
@@ -391,7 +398,8 @@ void TCollection_HAsciiString::RightAdjust()
 
 //=================================================================================================
 
-void TCollection_HAsciiString::RightJustify(const int Width, const char Filler)
+void TCollection_HAsciiString::RightJustify(const int   Width,
+                                            const char Filler)
 {
   if (Width < 0)
     throw Standard_NegativeValue();
@@ -407,7 +415,8 @@ int TCollection_HAsciiString::Search(const char* what) const
 
 //=================================================================================================
 
-int TCollection_HAsciiString::Search(const occ::handle<TCollection_HAsciiString>& what) const
+int TCollection_HAsciiString::Search(
+  const occ::handle<TCollection_HAsciiString>& what) const
 {
   return myString.Search(what->String());
 }
@@ -421,7 +430,8 @@ int TCollection_HAsciiString::SearchFromEnd(const char* what) const
 
 //=================================================================================================
 
-int TCollection_HAsciiString::SearchFromEnd(const occ::handle<TCollection_HAsciiString>& what) const
+int TCollection_HAsciiString::SearchFromEnd(
+  const occ::handle<TCollection_HAsciiString>& what) const
 {
   return myString.SearchFromEnd(what->String());
 }
@@ -442,7 +452,7 @@ void TCollection_HAsciiString::SetValue(const int where, const char* what)
 
 //=================================================================================================
 
-void TCollection_HAsciiString::SetValue(const int                                    where,
+void TCollection_HAsciiString::SetValue(const int                  where,
                                         const occ::handle<TCollection_HAsciiString>& what)
 {
   myString.SetValue(where, what->String());
@@ -457,16 +467,18 @@ occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Split(const int 
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::SubString(const int FromIndex,
-                                                                          const int ToIndex) const
+occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::SubString(
+  const int FromIndex,
+  const int ToIndex) const
 {
   return new TCollection_HAsciiString(myString.SubString(FromIndex, ToIndex));
 }
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Token(const char* separators,
-                                                                      const int   whichone) const
+occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Token(
+  const char* separators,
+  const int whichone) const
 {
   return new TCollection_HAsciiString(myString.Token(separators, whichone));
 }
@@ -501,7 +513,8 @@ char TCollection_HAsciiString::Value(const int where) const
 
 //=================================================================================================
 
-bool TCollection_HAsciiString::IsSameState(const occ::handle<TCollection_HAsciiString>& other) const
+bool TCollection_HAsciiString::IsSameState(
+  const occ::handle<TCollection_HAsciiString>& other) const
 {
   if (myString.Length() == other->Length())
     return (strncmp(myString.ToCString(), other->ToCString(), myString.Length()) == 0);

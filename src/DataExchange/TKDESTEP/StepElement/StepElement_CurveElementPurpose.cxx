@@ -27,14 +27,16 @@ StepElement_CurveElementPurpose::StepElement_CurveElementPurpose() {}
 
 //=================================================================================================
 
-int StepElement_CurveElementPurpose::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
+int StepElement_CurveElementPurpose::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-int StepElement_CurveElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
+int StepElement_CurveElementPurpose::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -83,7 +85,7 @@ StepElement_EnumeratedCurveElementPurpose StepElement_CurveElementPurpose::
     new TCollection_HAsciiString("ENUMERATED_CURVEELEMENT_PURPOSE");
   if (name->IsDifferent(nameitem))
     return StepElement_Axial;
-  int                                       numit = SelMem->Enum();
+  int                          numit = SelMem->Enum();
   StepElement_EnumeratedCurveElementPurpose val;
   switch (numit)
   {
@@ -132,8 +134,8 @@ void StepElement_CurveElementPurpose::SetApplicationDefinedElementPurpose(
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> StepElement_CurveElementPurpose::
-  ApplicationDefinedElementPurpose() const
+occ::handle<TCollection_HAsciiString> StepElement_CurveElementPurpose::ApplicationDefinedElementPurpose()
+  const
 {
   occ::handle<StepElement_CurveElementPurposeMember> SelMem =
     occ::down_cast<StepElement_CurveElementPurposeMember>(Value());

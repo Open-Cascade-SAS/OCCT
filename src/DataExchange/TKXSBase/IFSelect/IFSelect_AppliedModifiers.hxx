@@ -24,6 +24,8 @@
 #include <Interface_IntList.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 class IFSelect_GeneralModifier;
 
@@ -48,7 +50,8 @@ class IFSelect_AppliedModifiers : public Standard_Transient
 public:
   //! Creates an AppliedModifiers, ready to record up to <nbmax>
   //! modifiers, on a model of <nbent> entities
-  Standard_EXPORT IFSelect_AppliedModifiers(const int nbmax, const int nbent);
+  Standard_EXPORT IFSelect_AppliedModifiers(const int nbmax,
+                                            const int nbent);
 
   //! Records a modifier. By default, it is to apply on all a
   //! produced file. Further calls to AddNum will restrict this.
@@ -74,9 +77,9 @@ public:
   //! the file (see below). Else, the numbers are then queried by
   //! calls to ItemNum between 1 and <entcount>
   //! Returns True if OK, False if <num> is out of range
-  Standard_EXPORT bool Item(const int                              num,
-                            occ::handle<IFSelect_GeneralModifier>& modif,
-                            int&                                   entcount);
+  Standard_EXPORT bool Item(const int            num,
+                                        occ::handle<IFSelect_GeneralModifier>& modif,
+                                        int&                 entcount);
 
   //! Returns a numero of entity to be applied on, given its rank
   //! in the list. If no list is defined (i.e. for all the file),
@@ -99,9 +102,9 @@ public:
 
 private:
   NCollection_Sequence<occ::handle<IFSelect_GeneralModifier>> themodifs;
-  Interface_IntList                                           thelists;
-  int                                                         thenbent;
-  int                                                         theentcnt;
+  Interface_IntList                  thelists;
+  int                   thenbent;
+  int                   theentcnt;
 };
 
 #endif // _IFSelect_AppliedModifiers_HeaderFile

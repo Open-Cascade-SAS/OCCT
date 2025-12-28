@@ -30,7 +30,7 @@ RWStepBasic_RWThermodynamicTemperatureUnit::RWStepBasic_RWThermodynamicTemperatu
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::ReadStep(
   const occ::handle<StepData_StepReaderData>&                data,
-  const int                                                  num,
+  const int                                num,
   occ::handle<Interface_Check>&                              ach,
   const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent) const
 {
@@ -55,7 +55,7 @@ void RWStepBasic_RWThermodynamicTemperatureUnit::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::WriteStep(
-  StepData_StepWriter&                                       SW,
+  StepData_StepWriter&                                  SW,
   const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent) const
 {
 
@@ -68,7 +68,7 @@ void RWStepBasic_RWThermodynamicTemperatureUnit::WriteStep(
 
 void RWStepBasic_RWThermodynamicTemperatureUnit::Share(
   const occ::handle<StepBasic_ThermodynamicTemperatureUnit>& ent,
-  Interface_EntityIterator&                                  iter) const
+  Interface_EntityIterator&                             iter) const
 {
 
   // Inherited fields of NamedUnit

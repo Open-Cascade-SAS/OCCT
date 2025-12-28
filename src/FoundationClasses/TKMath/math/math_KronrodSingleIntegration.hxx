@@ -35,31 +35,31 @@ public:
 
   //! Constructor. Takes the function, the lower and upper bound
   //! values, the initial number of Kronrod points
-  Standard_EXPORT math_KronrodSingleIntegration(math_Function& theFunction,
-                                                const double   theLower,
-                                                const double   theUpper,
-                                                const int      theNbPnts);
+  Standard_EXPORT math_KronrodSingleIntegration(math_Function&         theFunction,
+                                                const double    theLower,
+                                                const double    theUpper,
+                                                const int theNbPnts);
 
   //! Constructor. Takes the function, the lower and upper bound
   //! values, the initial number of Kronrod points, the
   //! tolerance value and the maximal number of iterations as
   //! parameters.
-  Standard_EXPORT math_KronrodSingleIntegration(math_Function& theFunction,
-                                                const double   theLower,
-                                                const double   theUpper,
-                                                const int      theNbPnts,
-                                                const double   theTolerance,
-                                                const int      theMaxNbIter);
+  Standard_EXPORT math_KronrodSingleIntegration(math_Function&         theFunction,
+                                                const double    theLower,
+                                                const double    theUpper,
+                                                const int theNbPnts,
+                                                const double    theTolerance,
+                                                const int theMaxNbIter);
 
   //! Computation of the integral. Takes the function,
   //! the lower and upper bound values, the initial number
   //! of Kronrod points, the relative tolerance value and the
   //! maximal number of iterations as parameters.
   //! theNbPnts should be odd and greater then or equal to 3.
-  Standard_EXPORT void Perform(math_Function& theFunction,
-                               const double   theLower,
-                               const double   theUpper,
-                               const int      theNbPnts);
+  Standard_EXPORT void Perform(math_Function&         theFunction,
+                               const double    theLower,
+                               const double    theUpper,
+                               const int theNbPnts);
 
   //! Computation of the integral. Takes the function,
   //! the lower and upper bound values, the initial number
@@ -70,12 +70,12 @@ public:
   //! solution reaching is:
   //! std::abs(Kronrod - Gauss)/std::abs(Kronrod) < theTolerance.
   //! theTolerance should be positive.
-  Standard_EXPORT void Perform(math_Function& theFunction,
-                               const double   theLower,
-                               const double   theUpper,
-                               const int      theNbPnts,
-                               const double   theTolerance,
-                               const int      theMaxNbIter);
+  Standard_EXPORT void Perform(math_Function&         theFunction,
+                               const double    theLower,
+                               const double    theUpper,
+                               const int theNbPnts,
+                               const double    theTolerance,
+                               const int theMaxNbIter);
 
   //! Returns true if computation is performed
   //! successfully.
@@ -98,23 +98,23 @@ public:
   //! that were made to compute result.
   int NbIterReached() const;
 
-  Standard_EXPORT static bool GKRule(math_Function&     theFunction,
-                                     const double       theLower,
-                                     const double       theUpper,
-                                     const math_Vector& theGaussP,
-                                     const math_Vector& theGaussW,
-                                     const math_Vector& theKronrodP,
-                                     const math_Vector& theKronrodW,
-                                     double&            theValue,
-                                     double&            theError);
+  Standard_EXPORT static bool GKRule(math_Function&      theFunction,
+                                                 const double theLower,
+                                                 const double theUpper,
+                                                 const math_Vector&  theGaussP,
+                                                 const math_Vector&  theGaussW,
+                                                 const math_Vector&  theKronrodP,
+                                                 const math_Vector&  theKronrodW,
+                                                 double&      theValue,
+                                                 double&      theError);
 
 private:
-  bool   myIsDone;
-  double myValue;
-  double myErrorReached;
-  double myAbsolutError;
-  int    myNbPntsReached;
-  int    myNbIterReached;
+  bool myIsDone;
+  double    myValue;
+  double    myErrorReached;
+  double    myAbsolutError;
+  int myNbPntsReached;
+  int myNbIterReached;
 };
 
 #include <math_KronrodSingleIntegration.lxx>

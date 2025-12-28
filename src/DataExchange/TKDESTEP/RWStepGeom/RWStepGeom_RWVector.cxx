@@ -22,7 +22,7 @@
 RWStepGeom_RWVector::RWStepGeom_RWVector() {}
 
 void RWStepGeom_RWVector::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                                   num,
+                                   const int                 num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepGeom_Vector>&         ent) const
 {
@@ -55,7 +55,7 @@ void RWStepGeom_RWVector::ReadStep(const occ::handle<StepData_StepReaderData>& d
   ent->Init(aName, aOrientation, aMagnitude);
 }
 
-void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&                SW,
+void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&           SW,
                                     const occ::handle<StepGeom_Vector>& ent) const
 {
 
@@ -73,7 +73,7 @@ void RWStepGeom_RWVector::WriteStep(StepData_StepWriter&                SW,
 }
 
 void RWStepGeom_RWVector::Share(const occ::handle<StepGeom_Vector>& ent,
-                                Interface_EntityIterator&           iter) const
+                                Interface_EntityIterator&      iter) const
 {
 
   iter.GetOneItem(ent->Orientation());

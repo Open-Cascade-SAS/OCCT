@@ -145,17 +145,17 @@ void IntAna_Quadric::Coefficients(double& _CXX,
 //----------------------------------------------------------------------
 //-- Computes the Coefficients in a new coordinate system
 //----------------------------------------------------------------------
-void IntAna_Quadric::NewCoefficients(double&       _CXX,
-                                     double&       _CYY,
-                                     double&       _CZZ,
-                                     double&       _CXY,
-                                     double&       _CXZ,
-                                     double&       _CYZ,
-                                     double&       _CX,
-                                     double&       _CY,
-                                     double&       _CZ,
-                                     double&       _CCte,
-                                     const gp_Ax3& Axis) const
+void IntAna_Quadric::NewCoefficients(double& _CXX,
+                                     double& _CYY,
+                                     double& _CZZ,
+                                     double& _CXY,
+                                     double& _CXZ,
+                                     double& _CYZ,
+                                     double& _CX,
+                                     double& _CY,
+                                     double& _CZ,
+                                     double& _CCte,
+                                     const gp_Ax3&  Axis) const
 {
   double t11, t12, t13, t14; // x = t11 X + t12 Y + t13 Z + t14
   double t21, t22, t23, t24; // y = t21 X + t22 Y + t23 Z + t24

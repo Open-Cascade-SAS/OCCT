@@ -29,10 +29,10 @@
 //              theAngTol is angular tolerance.
 //=================================================================================================
 
-static bool IsSingular(const gp_Vec& theDU,
-                       const gp_Vec& theDV,
-                       const double  theSqLinTol,
-                       const double  theAngTol)
+static bool IsSingular(const gp_Vec&       theDU,
+                                   const gp_Vec&       theDV,
+                                   const double theSqLinTol,
+                                   const double theAngTol)
 {
   gp_Vec aDU(theDU), aDV(theDV);
 
@@ -77,13 +77,13 @@ static bool IsSingular(const gp_Vec& theDU,
 //            always have magnitude 1.0).
 //=================================================================================================
 
-static bool SingularProcessing(const gp_Vec& theDU,
-                               const gp_Vec& theDV,
-                               const bool    theIsTo3DTgCompute,
-                               const double  theLinTol,
-                               const double  theAngTol,
-                               gp_Vec&       theTg3D,
-                               gp_Vec2d&     theTg2D)
+static bool SingularProcessing(const gp_Vec&          theDU,
+                                           const gp_Vec&          theDV,
+                                           const bool theIsTo3DTgCompute,
+                                           const double    theLinTol,
+                                           const double    theAngTol,
+                                           gp_Vec&                theTg3D,
+                                           gp_Vec2d&              theTg2D)
 {
   // Attention: @ \sin theAngTol \approx theAngTol @ (for cross-product)
 
@@ -117,7 +117,7 @@ static bool SingularProcessing(const gp_Vec& theDU,
       const double aTgMagn = 1.0;
 
       const double aNorm = sqrt(aSqMagnDV);
-      theTg3D            = theDV.Divided(aNorm);
+      theTg3D                   = theDV.Divided(aNorm);
       theTg2D.SetCoord(0.0, aTgMagn / aNorm);
     }
     else
@@ -159,7 +159,7 @@ static bool SingularProcessing(const gp_Vec& theDU,
       const double aTgMagn = 1.0;
 
       const double aNorm = sqrt(aSqMagnDU);
-      theTg3D            = theDU.Divided(aNorm);
+      theTg3D                   = theDU.Divided(aNorm);
       theTg2D.SetCoord(aTgMagn / aNorm, 0.0);
     }
     else
@@ -284,14 +284,14 @@ static bool SingularProcessing(const gp_Vec& theDU,
 //              More over, vector Tg has always to be NORMALIZED.
 //=================================================================================================
 
-static bool NonSingularProcessing(const gp_Vec& theDU,
-                                  const gp_Vec& theDV,
-                                  const gp_Vec& theTg3D,
-                                  const double  theLinTol,
-                                  const double  theAngTol,
-                                  gp_Vec2d&     theTg2D)
+static bool NonSingularProcessing(const gp_Vec&       theDU,
+                                              const gp_Vec&       theDV,
+                                              const gp_Vec&       theTg3D,
+                                              const double theLinTol,
+                                              const double theAngTol,
+                                              gp_Vec2d&           theTg2D)
 {
-  const gp_Vec aNormal = theDU.Crossed(theDV);
+  const gp_Vec        aNormal = theDU.Crossed(theDV);
   const double aSQMagn = aNormal.SquareMagnitude();
 
   if (IsSingular(theDU, theDV, theLinTol, theAngTol))
@@ -311,7 +311,7 @@ static bool NonSingularProcessing(const gp_Vec& theDU,
   //(if @\left \| \vec{A} \times \vec{B} \right \| > 0.0 @,
   // else it is singular case).
 
-  const gp_Vec aTgU(theTg3D.Crossed(theDU)), aTgV(theTg3D.Crossed(theDV));
+  const gp_Vec        aTgU(theTg3D.Crossed(theDU)), aTgV(theTg3D.Crossed(theDV));
   const double aDeltaU = aTgV.SquareMagnitude() / aSQMagn;
   const double aDeltaV = aTgU.SquareMagnitude() / aSQMagn;
 
@@ -355,15 +355,15 @@ void ApproxInt_ImpPrmSvSurfaces::Pnt(const double u1,
                                      const double v1,
                                      const double u2,
                                      const double v2,
-                                     gp_Pnt&      P)
+                                     gp_Pnt&             P)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
+  gp_Pnt        aP;
+  gp_Vec        aT;
+  gp_Vec2d      aTS1, aTS2;
+  double tu1 = u1;
+  double tu2 = u2;
+  double tv1 = v1;
+  double tv2 = v2;
   this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
   P = MyPnt;
 }
@@ -371,60 +371,60 @@ void ApproxInt_ImpPrmSvSurfaces::Pnt(const double u1,
 //=================================================================================================
 
 bool ApproxInt_ImpPrmSvSurfaces::Tangency(const double u1,
-                                          const double v1,
-                                          const double u2,
-                                          const double v2,
-                                          gp_Vec&      T)
+                                                      const double v1,
+                                                      const double u2,
+                                                      const double v2,
+                                                      gp_Vec&             T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTg;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTg;
   return (t);
 }
 
 //=================================================================================================
 
 bool ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf1(const double u1,
-                                                 const double v1,
-                                                 const double u2,
-                                                 const double v2,
-                                                 gp_Vec2d&    T)
+                                                             const double v1,
+                                                             const double u2,
+                                                             const double v2,
+                                                             gp_Vec2d&           T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTguv1;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv1;
   return (t);
 }
 
 //=================================================================================================
 
 bool ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf2(const double u1,
-                                                 const double v1,
-                                                 const double u2,
-                                                 const double v2,
-                                                 gp_Vec2d&    T)
+                                                             const double v1,
+                                                             const double u2,
+                                                             const double v2,
+                                                             gp_Vec2d&           T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTguv2;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv2;
   return (t);
 }
 
@@ -434,14 +434,14 @@ bool ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf2(const double u1,
 //            parameters on the surfaces.
 //=================================================================================================
 
-bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
-                                         double&   v1,
-                                         double&   u2,
-                                         double&   v2,
-                                         gp_Pnt&   P,
-                                         gp_Vec&   Tg,
-                                         gp_Vec2d& Tguv1,
-                                         gp_Vec2d& Tguv2)
+bool ApproxInt_ImpPrmSvSurfaces::Compute(double& u1,
+                                                     double& v1,
+                                                     double& u2,
+                                                     double& v2,
+                                                     gp_Pnt&        P,
+                                                     gp_Vec&        Tg,
+                                                     gp_Vec2d&      Tguv1,
+                                                     gp_Vec2d&      Tguv2)
 {
   const IntSurf_Quadric& aQSurf  = MyZerImpFunc.ISurface();
   const ThePSurface&     aPSurf  = MyZerImpFunc.PSurface();
@@ -450,7 +450,7 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
 
   // for square
   constexpr double aNullValue = Precision::Approximation() * Precision::Approximation(),
-                   anAngTol   = Precision::Angular();
+                          anAngTol   = Precision::Angular();
 
   double tu1 = u1;
   double tu2 = u2;
@@ -483,13 +483,13 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
         && (MyParOnS2bis.Y() == v2))
     {
 
-      gp_Vec   TV(MyTg);
-      gp_Vec2d TV1(MyTguv1);
-      gp_Vec2d TV2(MyTguv2);
-      gp_Pnt   TP(MyPnt);
-      gp_Pnt2d TP1(MyParOnS1);
-      gp_Pnt2d TP2(MyParOnS2);
-      bool     TB = MyIsTangent;
+      gp_Vec           TV(MyTg);
+      gp_Vec2d         TV1(MyTguv1);
+      gp_Vec2d         TV2(MyTguv2);
+      gp_Pnt           TP(MyPnt);
+      gp_Pnt2d         TP1(MyParOnS1);
+      gp_Pnt2d         TP2(MyParOnS2);
+      bool TB = MyIsTangent;
 
       MyTg        = MyTgbis;
       MyTguv1     = MyTguv1bis;
@@ -517,14 +517,14 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
   Tolerance(1) = 1.0e-8;
   Tolerance(2) = 1.0e-8;
   double binfu, bsupu, binfv, bsupv;
-  binfu               = ThePSurfaceTool::FirstUParameter(aPSurf);
-  binfv               = ThePSurfaceTool::FirstVParameter(aPSurf);
-  bsupu               = ThePSurfaceTool::LastUParameter(aPSurf);
-  bsupv               = ThePSurfaceTool::LastVParameter(aPSurf);
-  BornInf(1)          = binfu;
-  BornSup(1)          = bsupu;
-  BornInf(2)          = binfv;
-  BornSup(2)          = bsupv;
+  binfu                      = ThePSurfaceTool::FirstUParameter(aPSurf);
+  binfv                      = ThePSurfaceTool::FirstVParameter(aPSurf);
+  bsupu                      = ThePSurfaceTool::LastUParameter(aPSurf);
+  bsupv                      = ThePSurfaceTool::LastVParameter(aPSurf);
+  BornInf(1)                 = binfu;
+  BornSup(1)                 = bsupu;
+  BornInf(2)                 = binfv;
+  BornSup(2)                 = bsupv;
   double TranslationU = 0., TranslationV = 0.;
 
   if (!FillInitialVectorOfSolution(u1,
@@ -544,9 +544,9 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
     return (false);
   }
 
-  bool   aRsnldIsDone = false;
-  double PourTesterU  = X(1);
-  double PourTesterV  = X(2);
+  bool aRsnldIsDone = false;
+  double    PourTesterU  = X(1);
+  double    PourTesterV  = X(2);
   if (GetUseSolver())
   {
     math_FunctionSetRoot Rsnld(MyZerImpFunc);
@@ -625,7 +625,7 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
       gp_Vec aNormalPrm(aD1uPrm.Crossed(aD1vPrm)), aNormalImp(aQSurf.Normale(MyPnt));
 
       const double aSQMagnPrm = aNormalPrm.SquareMagnitude(),
-                   aSQMagnImp = aNormalImp.SquareMagnitude();
+                          aSQMagnImp = aNormalImp.SquareMagnitude();
 
       bool isPrmSingular = false, isImpSingular = false;
 
@@ -774,11 +774,11 @@ bool ApproxInt_ImpPrmSvSurfaces::Compute(double&   u1,
 //            parameters on the surfaces.
 //=================================================================================================
 
-bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
-                                           const double     v1,
-                                           const double     u2,
-                                           const double     v2,
-                                           IntSurf_PntOn2S& Point)
+bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double u1,
+                                                       const double v1,
+                                                       const double u2,
+                                                       const double v2,
+                                                       IntSurf_PntOn2S&    Point)
 {
   const IntSurf_Quadric& aQSurf = MyZerImpFunc.ISurface();
   const ThePSurface&     aPSurf = MyZerImpFunc.PSurface();
@@ -789,14 +789,14 @@ bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
   Tolerance(1) = 1.0e-8;
   Tolerance(2) = 1.0e-8;
   double binfu, bsupu, binfv, bsupv;
-  binfu               = ThePSurfaceTool::FirstUParameter(aPSurf);
-  binfv               = ThePSurfaceTool::FirstVParameter(aPSurf);
-  bsupu               = ThePSurfaceTool::LastUParameter(aPSurf);
-  bsupv               = ThePSurfaceTool::LastVParameter(aPSurf);
-  BornInf(1)          = binfu;
-  BornSup(1)          = bsupu;
-  BornInf(2)          = binfv;
-  BornSup(2)          = bsupv;
+  binfu                      = ThePSurfaceTool::FirstUParameter(aPSurf);
+  binfv                      = ThePSurfaceTool::FirstVParameter(aPSurf);
+  bsupu                      = ThePSurfaceTool::LastUParameter(aPSurf);
+  bsupv                      = ThePSurfaceTool::LastVParameter(aPSurf);
+  BornInf(1)                 = binfu;
+  BornSup(1)                 = bsupu;
+  BornInf(2)                 = binfv;
+  BornSup(2)                 = bsupv;
   double TranslationU = 0., TranslationV = 0.;
 
   if (!FillInitialVectorOfSolution(u1,
@@ -862,17 +862,18 @@ bool ApproxInt_ImpPrmSvSurfaces::SeekPoint(const double     u1,
 
 //=================================================================================================
 
-bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
-                                                             const double v1,
-                                                             const double u2,
-                                                             const double v2,
-                                                             const double binfu,
-                                                             const double bsupu,
-                                                             const double binfv,
-                                                             const double bsupv,
-                                                             math_Vector& X,
-                                                             double&      TranslationU,
-                                                             double&      TranslationV)
+bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(
+  const double u1,
+  const double v1,
+  const double u2,
+  const double v2,
+  const double binfu,
+  const double bsupu,
+  const double binfv,
+  const double bsupv,
+  math_Vector&        X,
+  double&      TranslationU,
+  double&      TranslationV)
 {
   const ThePSurface& aPSurf = MyZerImpFunc.PSurface();
 
@@ -1003,9 +1004,9 @@ bool ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const double u1,
   if (GetUseSolver())
   {
     double du = std::max(Precision::Confusion(),
-                         ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
+                                ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
     double dv = std::max(Precision::Confusion(),
-                         ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
+                                ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
     if (X(1) - 0.0000000001 <= binfu)
       X(1) = X(1) + du;
     if (X(1) + 0.0000000001 >= bsupu)

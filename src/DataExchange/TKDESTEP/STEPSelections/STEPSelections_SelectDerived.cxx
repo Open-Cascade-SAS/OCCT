@@ -22,6 +22,7 @@
 #include <StepData_ReadWriteModule.hxx>
 #include <STEPSelections_SelectDerived.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPSelections_SelectDerived, StepSelect_StepType)
@@ -32,7 +33,7 @@ STEPSelections_SelectDerived::STEPSelections_SelectDerived()
 }
 
 static occ::handle<Standard_Type> GetStepType(const occ::handle<StepData_ReadWriteModule>& module,
-                                              const TCollection_AsciiString&               type)
+                                         const TCollection_AsciiString&          type)
 {
   occ::handle<Standard_Type> atype;
   if (module.IsNull())
@@ -41,20 +42,21 @@ static occ::handle<Standard_Type> GetStepType(const occ::handle<StepData_ReadWri
   if (num == 0)
     return atype;
   occ::handle<Standard_Transient> ent;
-  RWStepAP214_GeneralModule       genModul;
+  RWStepAP214_GeneralModule  genModul;
   genModul.NewVoid(num, ent);
   atype = ent->DynamicType();
   return atype;
 }
 
-bool STEPSelections_SelectDerived::Matches(const occ::handle<Standard_Transient>& ent,
-                                           const occ::handle<Interface_InterfaceModel>& /*model*/,
-                                           const TCollection_AsciiString& text,
-                                           const bool /*exact*/) const
+bool STEPSelections_SelectDerived::Matches(
+  const occ::handle<Standard_Transient>& ent,
+  const occ::handle<Interface_InterfaceModel>& /*model*/,
+  const TCollection_AsciiString& text,
+  const bool /*exact*/) const
 {
-  int                                   CN;
+  int                 CN;
   occ::handle<StepData_ReadWriteModule> module;
-  bool                                  ok = thelib.Select(ent, module, CN);
+  bool                 ok = thelib.Select(ent, module, CN);
   if (!ok)
     return false;
   occ::handle<Standard_Type> checker = GetStepType(module, text);

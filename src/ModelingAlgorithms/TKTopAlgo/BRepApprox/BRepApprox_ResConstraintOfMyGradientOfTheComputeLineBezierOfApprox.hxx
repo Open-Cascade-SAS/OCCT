@@ -25,8 +25,10 @@
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 class Standard_OutOfRange;
 class BRepApprox_TheMultiLineOfApprox;
@@ -50,14 +52,14 @@ public:
   //! from an approximation with ParLeastSquare.)
   //! The MultiCurve is modified. New MultiPoles are given.
   Standard_EXPORT BRepApprox_ResConstraintOfMyGradientOfTheComputeLineBezierOfApprox(
-    const BRepApprox_TheMultiLineOfApprox&                                 SSP,
-    AppParCurves_MultiCurve&                                               SCurv,
-    const int                                                              FirstPoint,
-    const int                                                              LastPoint,
+    const BRepApprox_TheMultiLineOfApprox&                SSP,
+    AppParCurves_MultiCurve&                              SCurv,
+    const int                                FirstPoint,
+    const int                                LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& Constraints,
-    const math_Matrix&                                                     Bern,
-    const math_Matrix&                                                     DerivativeBern,
-    const double                                                           Tolerance = 1.0e-10);
+    const math_Matrix&                                    Bern,
+    const math_Matrix&                                    DerivativeBern,
+    const double                                   Tolerance = 1.0e-10);
 
   //! returns True if all has been correctly done.
   Standard_EXPORT bool IsDone() const;
@@ -75,7 +77,7 @@ public:
   Standard_EXPORT const math_Matrix& ConstraintDerivative(
     const BRepApprox_TheMultiLineOfApprox& SSP,
     const math_Vector&                     Parameters,
-    const int                              Deg,
+    const int                 Deg,
     const math_Matrix&                     DA);
 
   //! returns the Inverse of Cont*Transposed(Cont), where
@@ -84,26 +86,27 @@ public:
 
 protected:
   //! is used internally to create the fields.
-  Standard_EXPORT int NbConstraints(
-    const BRepApprox_TheMultiLineOfApprox&                                 SSP,
-    const int                                                              FirstPoint,
-    const int                                                              LastPoint,
-    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints) const;
+  Standard_EXPORT int
+    NbConstraints(const BRepApprox_TheMultiLineOfApprox&                SSP,
+                  const int                                FirstPoint,
+                  const int                                LastPoint,
+                  const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints) const;
 
   //! is internally used for the fields creation.
-  Standard_EXPORT int NbColumns(const BRepApprox_TheMultiLineOfApprox& SSP, const int Deg) const;
+  Standard_EXPORT int NbColumns(const BRepApprox_TheMultiLineOfApprox& SSP,
+                                             const int                 Deg) const;
 
 private:
-  bool                    Done;
-  double                  Err;
+  bool        Done;
+  double           Err;
   math_Matrix             Cont;
   math_Matrix             DeCont;
   math_Vector             Secont;
   math_Matrix             CTCinv;
   math_Vector             Vardua;
-  int                     IncPass;
-  int                     IncTan;
-  int                     IncCurv;
+  int        IncPass;
+  int        IncTan;
+  int        IncCurv;
   NCollection_Array1<int> IPas;
   NCollection_Array1<int> ITan;
   NCollection_Array1<int> ICurv;

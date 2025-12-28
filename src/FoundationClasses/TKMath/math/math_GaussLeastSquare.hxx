@@ -43,7 +43,8 @@ public:
   //! to do subsequent calculation.
   //! If the largest pivot found is less than MinPivot the matrix <A>
   //! is considered as singular.
-  Standard_EXPORT math_GaussLeastSquare(const math_Matrix& A, const double MinPivot = 1.0e-20);
+  Standard_EXPORT math_GaussLeastSquare(const math_Matrix&  A,
+                                        const double MinPivot = 1.0e-20);
 
   //! Returns true if the computations are successful, otherwise returns false.e
   bool IsDone() const;
@@ -64,11 +65,11 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 protected:
-  bool               Singular{};
+  bool   Singular{};
   math_Matrix        LU;
   math_Matrix        A2;
   math_IntegerVector Index;
-  double             D{};
+  double      D{};
 
 private:
   bool Done;

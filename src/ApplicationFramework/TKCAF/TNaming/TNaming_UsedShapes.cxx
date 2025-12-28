@@ -29,6 +29,7 @@
 #include <NCollection_DataMap.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_UsedShapes.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TNaming_UsedShapes, TDF_Attribute)
 
@@ -72,7 +73,7 @@ void TNaming_UsedShapes::BeforeRemoval()
 //=======================================================================
 
 bool TNaming_UsedShapes::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
-                                   const bool /*forceIt*/)
+                                               const bool /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition)))
   {
@@ -120,8 +121,7 @@ void TNaming_UsedShapes::Paste(const occ::handle<TDF_Attribute>&,
 Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 {
   anOS << "The content of UsedShapes attribute:" << std::endl;
-  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>::Iterator itr(
-    myMap);
+  NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>::Iterator itr(myMap);
   for (; itr.More(); itr.Next())
   {
     if (itr.Key().IsNull())

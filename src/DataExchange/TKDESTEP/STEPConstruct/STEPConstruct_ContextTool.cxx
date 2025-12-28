@@ -48,8 +48,7 @@ STEPConstruct_ContextTool::STEPConstruct_ContextTool() {}
 
 //=================================================================================================
 
-STEPConstruct_ContextTool::STEPConstruct_ContextTool(
-  const occ::handle<StepData_StepModel>& aStepModel)
+STEPConstruct_ContextTool::STEPConstruct_ContextTool(const occ::handle<StepData_StepModel>& aStepModel)
 {
   SetModel(aStepModel);
 }
@@ -261,8 +260,7 @@ void STEPConstruct_ContextTool::SetACstatus(const occ::handle<TCollection_HAscii
 
 //=================================================================================================
 
-void STEPConstruct_ContextTool::SetACschemaName(
-  const occ::handle<TCollection_HAsciiString>& schemaName)
+void STEPConstruct_ContextTool::SetACschemaName(const occ::handle<TCollection_HAsciiString>& schemaName)
 {
   if (GetAPD().IsNull())
     return;
@@ -400,11 +398,10 @@ occ::handle<TCollection_HAsciiString> STEPConstruct_ContextTool::GetProductName(
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> STEPConstruct_ContextTool::
-  GetRootsForPart(const STEPConstruct_Part& SDRTool)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> STEPConstruct_ContextTool::GetRootsForPart(
+  const STEPConstruct_Part& SDRTool)
 {
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq = new NCollection_HSequence<occ::handle<Standard_Transient>>;
 
   seq->Append(SDRTool.SDRValue());
   //  seq->Append ( GetAPD() );
@@ -434,11 +431,10 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> STEPConstruc
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> STEPConstruct_ContextTool::
-  GetRootsForAssemblyLink(const STEPConstruct_Assembly& assembly)
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> STEPConstruct_ContextTool::GetRootsForAssemblyLink(
+  const STEPConstruct_Assembly& assembly)
 {
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq = new NCollection_HSequence<occ::handle<Standard_Transient>>;
 
   seq->Append(assembly.ItemValue());
 

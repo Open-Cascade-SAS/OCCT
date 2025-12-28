@@ -39,9 +39,10 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_NoteCommentDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMXCAFDoc_NoteCommentDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                          const occ::handle<TDF_Attribute>& theTarget,
-                                          XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMXCAFDoc_NoteCommentDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -63,8 +64,8 @@ bool XmlMXCAFDoc_NoteCommentDriver::Paste(const XmlObjMgt_Persistent&       theS
 //=================================================================================================
 
 void XmlMXCAFDoc_NoteCommentDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          XmlObjMgt_Persistent&             theTarget,
-                                          XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                          XmlObjMgt_Persistent&        theTarget,
+                                          XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -79,7 +80,7 @@ void XmlMXCAFDoc_NoteCommentDriver::Paste(const occ::handle<TDF_Attribute>& theS
 
 XmlMXCAFDoc_NoteCommentDriver::XmlMXCAFDoc_NoteCommentDriver(
   const occ::handle<Message_Messenger>& theMsgDriver,
-  const char*                           theName)
+  const char*                 theName)
     : XmlMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {
 }

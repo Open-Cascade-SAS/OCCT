@@ -19,11 +19,11 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly, Select3D_SensitiveSet)
 
 namespace
 {
-static int GetCircleNbPoints(const gp_Circ& theCircle,
-                             const int      theNbPnts,
-                             const double   theU1,
-                             const double   theU2,
-                             const bool     theIsFilled)
+static int GetCircleNbPoints(const gp_Circ&         theCircle,
+                                          const int theNbPnts,
+                                          const double    theU1,
+                                          const double    theU2,
+                                          const bool theIsFilled)
 {
   // Check if number of points is invalid.
   // In this case myPolyg raises Standard_ConstructionError
@@ -45,19 +45,19 @@ static int GetCircleNbPoints(const gp_Circ& theCircle,
 }
 
 //! Definition of circle polyline
-static void initCircle(Select3D_PointData& thePolygon,
-                       const gp_Circ&      theCircle,
-                       const double        theU1,
-                       const double        theU2,
-                       const bool          theIsFilled,
-                       const int           theNbPnts)
+static void initCircle(Select3D_PointData&    thePolygon,
+                       const gp_Circ&         theCircle,
+                       const double    theU1,
+                       const double    theU2,
+                       const bool theIsFilled,
+                       const int theNbPnts)
 {
   const double aStep   = (theU2 - theU1) / theNbPnts;
   const double aRadius = theCircle.Radius();
-  int          aPntIdx = 0;
+  int    aPntIdx = 0;
   double       aCurU   = theU1;
-  gp_Pnt       aP1;
-  gp_Vec       aV1;
+  gp_Pnt              aP1;
+  gp_Vec              aV1;
 
   const bool isSector = std::abs(theU2 - theU1 - 2.0 * M_PI) > gp::Resolution();
 
@@ -88,23 +88,23 @@ static void initCircle(Select3D_PointData& thePolygon,
 //=================================================================================================
 
 Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                               const NCollection_Array1<gp_Pnt>&         thePoints,
-                                               const bool theIsBVHEnabled)
+                                               const NCollection_Array1<gp_Pnt>&            thePoints,
+                                               const bool               theIsBVHEnabled)
     : Select3D_SensitiveSet(theOwnerId),
       myPolyg(thePoints.Upper() - thePoints.Lower() + 1),
       mySensType(Select3D_TOS_BOUNDARY)
 {
-  int    aLowerIdx  = thePoints.Lower();
-  int    anUpperIdx = thePoints.Upper();
-  gp_XYZ aPntSum(0.0, 0.0, 0.0);
+  int aLowerIdx  = thePoints.Lower();
+  int anUpperIdx = thePoints.Upper();
+  gp_XYZ           aPntSum(0.0, 0.0, 0.0);
 
   Select3D_BndBox3d aBndBox;
   for (int aIdx = aLowerIdx; aIdx <= anUpperIdx; ++aIdx)
   {
     aPntSum += thePoints.Value(aIdx).XYZ();
     const NCollection_Vec3<double> aPnt(thePoints.Value(aIdx).X(),
-                                        thePoints.Value(aIdx).Y(),
-                                        thePoints.Value(aIdx).Z());
+                              thePoints.Value(aIdx).Y(),
+                              thePoints.Value(aIdx).Z());
     aBndBox.Add(aPnt);
     myPolyg.SetPnt(aIdx - aLowerIdx, thePoints.Value(aIdx));
   }
@@ -115,48 +115,7 @@ Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_Entit
   if (theIsBVHEnabled)
   {
     const int aPntsNum = myPolyg.Size();
-    mySegmentIndexes   = new NCollection_HArray1<int>(0, aPntsNum - 2);
-    for (int aSegmIter = 0; aSegmIter < aPntsNum - 1; ++aSegmIter)
-    {
-      mySegmentIndexes->SetValue(aSegmIter, aSegmIter);
-    }
-  }
-
-  myIsComputed = true;
-}
-
-//=================================================================================================
-
-Select3D_SensitivePoly::Select3D_SensitivePoly(
-  const occ::handle<SelectMgr_EntityOwner>&       theOwnerId,
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& thePoints,
-  const bool                                      theIsBVHEnabled)
-    : Select3D_SensitiveSet(theOwnerId),
-      myPolyg(thePoints->Upper() - thePoints->Lower() + 1),
-      mySensType(Select3D_TOS_BOUNDARY)
-{
-  int    aLowerIdx  = thePoints->Lower();
-  int    anUpperIdx = thePoints->Upper();
-  gp_XYZ aPntSum(0.0, 0.0, 0.0);
-
-  Select3D_BndBox3d aBndBox;
-  for (int aIdx = aLowerIdx; aIdx <= anUpperIdx; ++aIdx)
-  {
-    aPntSum += thePoints->Value(aIdx).XYZ();
-    const NCollection_Vec3<double> aPnt(thePoints->Value(aIdx).X(),
-                                        thePoints->Value(aIdx).Y(),
-                                        thePoints->Value(aIdx).Z());
-    aBndBox.Add(aPnt);
-    myPolyg.SetPnt(aIdx - aLowerIdx, thePoints->Value(aIdx));
-  }
-
-  myBndBox = aBndBox;
-  myCOG    = aPntSum / myPolyg.Size();
-
-  if (theIsBVHEnabled)
-  {
-    const int aPntsNum = myPolyg.Size();
-    mySegmentIndexes   = new NCollection_HArray1<int>(0, aPntsNum - 2);
+    mySegmentIndexes                = new NCollection_HArray1<int>(0, aPntsNum - 2);
     for (int aSegmIter = 0; aSegmIter < aPntsNum - 1; ++aSegmIter)
     {
       mySegmentIndexes->SetValue(aSegmIter, aSegmIter);
@@ -169,8 +128,48 @@ Select3D_SensitivePoly::Select3D_SensitivePoly(
 //=================================================================================================
 
 Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                               const bool theIsBVHEnabled,
-                                               const int  theNbPnts)
+                                               const occ::handle<NCollection_HArray1<gp_Pnt>>&   thePoints,
+                                               const bool               theIsBVHEnabled)
+    : Select3D_SensitiveSet(theOwnerId),
+      myPolyg(thePoints->Upper() - thePoints->Lower() + 1),
+      mySensType(Select3D_TOS_BOUNDARY)
+{
+  int aLowerIdx  = thePoints->Lower();
+  int anUpperIdx = thePoints->Upper();
+  gp_XYZ           aPntSum(0.0, 0.0, 0.0);
+
+  Select3D_BndBox3d aBndBox;
+  for (int aIdx = aLowerIdx; aIdx <= anUpperIdx; ++aIdx)
+  {
+    aPntSum += thePoints->Value(aIdx).XYZ();
+    const NCollection_Vec3<double> aPnt(thePoints->Value(aIdx).X(),
+                              thePoints->Value(aIdx).Y(),
+                              thePoints->Value(aIdx).Z());
+    aBndBox.Add(aPnt);
+    myPolyg.SetPnt(aIdx - aLowerIdx, thePoints->Value(aIdx));
+  }
+
+  myBndBox = aBndBox;
+  myCOG    = aPntSum / myPolyg.Size();
+
+  if (theIsBVHEnabled)
+  {
+    const int aPntsNum = myPolyg.Size();
+    mySegmentIndexes                = new NCollection_HArray1<int>(0, aPntsNum - 2);
+    for (int aSegmIter = 0; aSegmIter < aPntsNum - 1; ++aSegmIter)
+    {
+      mySegmentIndexes->SetValue(aSegmIter, aSegmIter);
+    }
+  }
+
+  myIsComputed = true;
+}
+
+//=================================================================================================
+
+Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                               const bool               theIsBVHEnabled,
+                                               const int               theNbPnts)
     : Select3D_SensitiveSet(theOwnerId),
       myPolyg(theNbPnts),
       mySensType(Select3D_TOS_BOUNDARY)
@@ -190,11 +189,11 @@ Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_Entit
 //=================================================================================================
 
 Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-                                               const gp_Circ&                            theCircle,
-                                               const double                              theU1,
-                                               const double                              theU2,
-                                               const bool theIsFilled,
-                                               const int  theNbPnts)
+                                               const gp_Circ&                       theCircle,
+                                               const double                  theU1,
+                                               const double                  theU2,
+                                               const bool               theIsFilled,
+                                               const int               theNbPnts)
     : Select3D_SensitivePoly(theOwnerId,
                              !theIsFilled,
                              GetCircleNbPoints(theCircle, theNbPnts, theU1, theU2, theIsFilled))
@@ -224,7 +223,7 @@ Select3D_SensitivePoly::Select3D_SensitivePoly(const occ::handle<SelectMgr_Entit
 //=================================================================================================
 
 bool Select3D_SensitivePoly::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                     SelectBasics_PickResult&             thePickResult)
+                                                 SelectBasics_PickResult&             thePickResult)
 {
   if (mySensType == Select3D_TOS_BOUNDARY)
   {
@@ -244,7 +243,8 @@ bool Select3D_SensitivePoly::Matches(SelectBasics_SelectingVolumeManager& theMgr
         SelectBasics_PickResult aDummy;
         return theMgr.OverlapsPolygon(anArrayOfPnt->Array1(), mySensType, aDummy);
       }
-      for (int aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper(); ++aPntIdx)
+      for (int aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper();
+           ++aPntIdx)
       {
         if (!theMgr.OverlapsPoint(anArrayOfPnt->Value(aPntIdx)))
         {
@@ -277,9 +277,7 @@ Select3D_BndBox3d Select3D_SensitivePoly::BoundingBox()
   Select3D_BndBox3d aBndBox;
   for (int aPntIter = 0; aPntIter < myPolyg.Size(); ++aPntIter)
   {
-    NCollection_Vec3<double> aPnt(myPolyg.Pnt(aPntIter).x,
-                                  myPolyg.Pnt(aPntIter).y,
-                                  myPolyg.Pnt(aPntIter).z);
+    NCollection_Vec3<double> aPnt(myPolyg.Pnt(aPntIter).x, myPolyg.Pnt(aPntIter).y, myPolyg.Pnt(aPntIter).z);
     aBndBox.Add(aPnt);
   }
 
@@ -312,15 +310,15 @@ Select3D_BndBox3d Select3D_SensitivePoly::Box(const int theIdx) const
     return Select3D_BndBox3d(NCollection_Vec3<double>(RealLast()));
 
   const int aSegmentIdx = mySegmentIndexes->Value(theIdx);
-  gp_Pnt    aPnt1       = myPolyg.Pnt3d(aSegmentIdx);
-  gp_Pnt    aPnt2       = myPolyg.Pnt3d(aSegmentIdx + 1);
+  gp_Pnt                 aPnt1       = myPolyg.Pnt3d(aSegmentIdx);
+  gp_Pnt                 aPnt2       = myPolyg.Pnt3d(aSegmentIdx + 1);
 
   const NCollection_Vec3<double> aMinPnt(std::min(aPnt1.X(), aPnt2.X()),
-                                         std::min(aPnt1.Y(), aPnt2.Y()),
-                                         std::min(aPnt1.Z(), aPnt2.Z()));
+                               std::min(aPnt1.Y(), aPnt2.Y()),
+                               std::min(aPnt1.Z(), aPnt2.Z()));
   const NCollection_Vec3<double> aMaxPnt(std::max(aPnt1.X(), aPnt2.X()),
-                                         std::max(aPnt1.Y(), aPnt2.Y()),
-                                         std::max(aPnt1.Z(), aPnt2.Z()));
+                               std::max(aPnt1.Y(), aPnt2.Y()),
+                               std::max(aPnt1.Z(), aPnt2.Z()));
 
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
@@ -331,13 +329,14 @@ Select3D_BndBox3d Select3D_SensitivePoly::Box(const int theIdx) const
 //           entity index theIdx in the vector along
 //           the given axis theAxis
 //==================================================
-double Select3D_SensitivePoly::Center(const int theIdx, const int theAxis) const
+double Select3D_SensitivePoly::Center(const int theIdx,
+                                             const int theAxis) const
 {
   if (mySegmentIndexes.IsNull())
     return RealLast();
 
-  const Select3D_BndBox3d        aBndBox = Box(theIdx);
-  const NCollection_Vec3<double> aCenter = (aBndBox.CornerMin() + aBndBox.CornerMax()) * 0.5;
+  const Select3D_BndBox3d aBndBox = Box(theIdx);
+  const NCollection_Vec3<double>    aCenter = (aBndBox.CornerMin() + aBndBox.CornerMax()) * 0.5;
   return theAxis == 0 ? aCenter.x() : (theAxis == 1 ? aCenter.y() : aCenter.z());
 }
 
@@ -351,8 +350,8 @@ void Select3D_SensitivePoly::Swap(const int theIdx1, const int theIdx2)
   if (mySegmentIndexes.IsNull())
     return;
 
-  const int aSegmentIdx1                 = mySegmentIndexes->Value(theIdx1);
-  const int aSegmentIdx2                 = mySegmentIndexes->Value(theIdx2);
+  const int aSegmentIdx1    = mySegmentIndexes->Value(theIdx1);
+  const int aSegmentIdx2    = mySegmentIndexes->Value(theIdx2);
   mySegmentIndexes->ChangeValue(theIdx1) = aSegmentIdx2;
   mySegmentIndexes->ChangeValue(theIdx2) = aSegmentIdx1;
 }
@@ -363,10 +362,11 @@ void Select3D_SensitivePoly::Swap(const int theIdx1, const int theIdx2)
 //           theIdx overlaps the current selecting
 //           volume
 //==================================================
-bool Select3D_SensitivePoly::overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                             SelectBasics_SelectingVolumeManager& theMgr,
-                                             int                                  theElemIdx,
-                                             bool                                 theIsFullInside)
+bool Select3D_SensitivePoly::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool                     theIsFullInside)
 {
   if (mySegmentIndexes.IsNull())
   {
@@ -378,16 +378,17 @@ bool Select3D_SensitivePoly::overlapsElement(SelectBasics_PickResult&           
   }
 
   const int aSegmentIdx = mySegmentIndexes->Value(theElemIdx);
-  gp_Pnt    aPnt1       = myPolyg.Pnt3d(aSegmentIdx);
-  gp_Pnt    aPnt2       = myPolyg.Pnt3d(aSegmentIdx + 1);
+  gp_Pnt                 aPnt1       = myPolyg.Pnt3d(aSegmentIdx);
+  gp_Pnt                 aPnt2       = myPolyg.Pnt3d(aSegmentIdx + 1);
   return theMgr.OverlapsSegment(aPnt1, aPnt2, thePickResult);
 }
 
 //=================================================================================================
 
-bool Select3D_SensitivePoly::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                             int                                  theElemIdx,
-                                             bool                                 theIsFullInside)
+bool Select3D_SensitivePoly::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool                     theIsFullInside)
 {
   if (theIsFullInside)
   {

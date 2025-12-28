@@ -18,16 +18,16 @@
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CurveStyleFont.hxx>
 #include <StepVisual_CurveStyleFontPattern.hxx>
+#include <StepVisual_CurveStyleFontPattern.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 RWStepVisual_RWCurveStyleFont::RWStepVisual_RWCurveStyleFont() {}
 
-void RWStepVisual_RWCurveStyleFont::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepVisual_CurveStyleFont>& ent) const
+void RWStepVisual_RWCurveStyleFont::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepVisual_CurveStyleFont>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -44,12 +44,12 @@ void RWStepVisual_RWCurveStyleFont::ReadStep(
   // --- own field : patternList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>> aPatternList;
-  occ::handle<StepVisual_CurveStyleFontPattern>                                   anent2;
-  int                                                                             nsub2;
+  occ::handle<StepVisual_CurveStyleFontPattern>          anent2;
+  int                                  nsub2;
   if (data->ReadSubList(num, 2, "pattern_list", ach, nsub2))
   {
-    int nb2      = data->NbParams(nsub2);
-    aPatternList = new NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aPatternList         = new NCollection_HArray1<occ::handle<StepVisual_CurveStyleFontPattern>>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -68,9 +68,8 @@ void RWStepVisual_RWCurveStyleFont::ReadStep(
   ent->Init(aName, aPatternList);
 }
 
-void RWStepVisual_RWCurveStyleFont::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepVisual_CurveStyleFont>& ent) const
+void RWStepVisual_RWCurveStyleFont::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepVisual_CurveStyleFont>& ent) const
 {
 
   // --- own field : name ---
@@ -88,7 +87,7 @@ void RWStepVisual_RWCurveStyleFont::WriteStep(
 }
 
 void RWStepVisual_RWCurveStyleFont::Share(const occ::handle<StepVisual_CurveStyleFont>& ent,
-                                          Interface_EntityIterator&                     iter) const
+                                          Interface_EntityIterator&                iter) const
 {
 
   int nbElem1 = ent->NbPatternList();

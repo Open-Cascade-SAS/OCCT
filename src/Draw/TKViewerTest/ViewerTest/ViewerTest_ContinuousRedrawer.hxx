@@ -69,13 +69,13 @@ private:
   ViewerTest_ContinuousRedrawer();
 
 private:
-  occ::handle<V3d_View> myView;      //!< view to invalidate
-  OSD_Thread            myThread;    //!< working thread
-  std::mutex            myMutex;     //!< mutex for accessing common variables
-  Standard_Condition    myWakeEvent; //!< event to wake up working thread
-  double                myTargetFps; //!< desired update framerate
-  volatile bool         myToStop;    //!< flag to stop working thread
-  volatile bool         myToPause;   //!< flag to put  working thread asleep without stopping
+  occ::handle<V3d_View>   myView;      //!< view to invalidate
+  OSD_Thread         myThread;    //!< working thread
+  std::mutex         myMutex;     //!< mutex for accessing common variables
+  Standard_Condition myWakeEvent; //!< event to wake up working thread
+  double      myTargetFps; //!< desired update framerate
+  volatile bool      myToStop;    //!< flag to stop working thread
+  volatile bool      myToPause;   //!< flag to put  working thread asleep without stopping
 };
 
 #endif // _ViewerTest_ContinuousRedrawer_HeaderFile

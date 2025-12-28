@@ -44,8 +44,7 @@ TDF_Transaction::TDF_Transaction(const TCollection_AsciiString& aName)
 
 //=================================================================================================
 
-TDF_Transaction::TDF_Transaction(const occ::handle<TDF_Data>&   aDF,
-                                 const TCollection_AsciiString& aName)
+TDF_Transaction::TDF_Transaction(const occ::handle<TDF_Data>& aDF, const TCollection_AsciiString& aName)
     : myDF(aDF),
       myName(aName),
       myUntilTransaction(0)
@@ -97,9 +96,9 @@ occ::handle<TDF_Delta> TDF_Transaction::Commit(const bool withDelta)
     std::cout << "DF before commit" << std::endl;
     TDF_Tool::DeepDump(std::cout, myDF);
 #endif
-    int until          = myUntilTransaction;
-    myUntilTransaction = 0;
-    delta              = myDF->CommitUntilTransaction(until, withDelta);
+    int until = myUntilTransaction;
+    myUntilTransaction     = 0;
+    delta                  = myDF->CommitUntilTransaction(until, withDelta);
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
     std::cout << "DF after commit" << std::endl;
     TDF_Tool::DeepDump(std::cout, myDF);

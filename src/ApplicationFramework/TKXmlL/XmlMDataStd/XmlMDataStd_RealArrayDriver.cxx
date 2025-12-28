@@ -53,13 +53,13 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealArrayDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    XmlObjMgt_RRelocationTable& theRelocTable) const
 {
 
   occ::handle<TDataStd_RealArray> aRealArray = occ::down_cast<TDataStd_RealArray>(theTarget);
-  const XmlObjMgt_Element&        anElement  = theSource;
+  const XmlObjMgt_Element&   anElement  = theSource;
 
   // attribute id
   Standard_GUID       aGUID;
@@ -121,7 +121,7 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
   }
   else
   {
-    double      aValue;
+    double    aValue;
     const char* aValueStr = static_cast<const char*>(aString.GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -170,13 +170,13 @@ bool XmlMDataStd_RealArrayDriver::Paste(const XmlObjMgt_Persistent&       theSou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        XmlObjMgt_Persistent&             theTarget,
+                                        XmlObjMgt_Persistent&        theTarget,
                                         XmlObjMgt_SRelocationTable&) const
 {
-  occ::handle<TDataStd_RealArray> aRealArray = occ::down_cast<TDataStd_RealArray>(theSource);
+  occ::handle<TDataStd_RealArray>           aRealArray = occ::down_cast<TDataStd_RealArray>(theSource);
   const occ::handle<NCollection_HArray1<double>>& hRealArray = aRealArray->Array();
-  const NCollection_Array1<double>&               realArray  = hRealArray->Array1();
-  int                                             aL = realArray.Lower(), anU = realArray.Upper();
+  const NCollection_Array1<double>&          realArray  = hRealArray->Array1();
+  int                     aL = realArray.Lower(), anU = realArray.Upper();
 
   if (aL != 1)
     theTarget.Element().setAttribute(::FirstIndexString(), aL);
@@ -185,7 +185,7 @@ void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
 
   // Allocation of 25 chars for each double value including the space:
   // An example: -3.1512678732195273e+020
-  int                          iChar = 0;
+  int                           iChar = 0;
   NCollection_LocalArray<char> str;
   if (realArray.Length())
   {
@@ -201,7 +201,7 @@ void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
       // It may take some time... therefore it was not done initially and
       // an attempt to use a simple 25 chars for a double value was used.
       char buf[25];
-      int  i(aL), nbChars(0);
+      int   i(aL), nbChars(0);
       while (i <= anU)
       {
         nbChars += Sprintf(buf, "%.17g ", realArray.Value(i++)) + 1 /*a space*/;
@@ -229,7 +229,7 @@ void XmlMDataStd_RealArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSou
   if (aRealArray->ID() != TDataStd_RealArray::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     aRealArray->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

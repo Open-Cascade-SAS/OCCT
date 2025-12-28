@@ -51,9 +51,9 @@ public:
   Standard_EXPORT gp_Lin2d ThisSolution() const;
 
 private:
-  bool     WellDone;
-  bool     HasSol;
-  gp_Lin2d linsol;
+  bool WellDone;
+  bool HasSol;
+  gp_Lin2d         linsol;
 };
 
 #endif // _GccAna_Pnt2dBisec_HeaderFile

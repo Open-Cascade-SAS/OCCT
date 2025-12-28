@@ -28,13 +28,41 @@
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
+#include <gp_Vec.hxx>
 class Approx_SweepFunction;
 class AdvApprox_Cutting;
 
@@ -69,22 +97,22 @@ public:
   //! Segmax     : The maximum number of span in v required on
   //! the surface
   //! Warning : The continuity ci can be obtained only if Ft is Ci
-  Standard_EXPORT void Perform(const double        First,
-                               const double        Last,
-                               const double        Tol3d,
-                               const double        BoundTol,
-                               const double        Tol2d,
-                               const double        TolAngular,
-                               const GeomAbs_Shape Continuity = GeomAbs_C0,
-                               const int           Degmax     = 11,
-                               const int           Segmax     = 50);
+  Standard_EXPORT void Perform(const double    First,
+                               const double    Last,
+                               const double    Tol3d,
+                               const double    BoundTol,
+                               const double    Tol2d,
+                               const double    TolAngular,
+                               const GeomAbs_Shape    Continuity = GeomAbs_C0,
+                               const int Degmax     = 11,
+                               const int Segmax     = 50);
 
   //! The EvaluatorFunction from AdvApprox;
-  Standard_EXPORT int Eval(const double Parameter,
-                           const int    DerivativeRequest,
-                           const double First,
-                           const double Last,
-                           double&      Result);
+  Standard_EXPORT int Eval(const double    Parameter,
+                                        const int DerivativeRequest,
+                                        const double    First,
+                                        const double    Last,
+                                        double&         Result);
 
   //! returns if we have an result
   bool IsDone() const;
@@ -96,12 +124,12 @@ public:
                                  int& NbUKnots,
                                  int& NbVKnots) const;
 
-  Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>& TPoles,
-                               NCollection_Array2<double>& TWeights,
-                               NCollection_Array1<double>& TUKnots,
-                               NCollection_Array1<double>& TVKnots,
-                               NCollection_Array1<int>&    TUMults,
-                               NCollection_Array1<int>&    TVMults) const;
+  Standard_EXPORT void Surface(NCollection_Array2<gp_Pnt>&      TPoles,
+                               NCollection_Array2<double>&    TWeights,
+                               NCollection_Array1<double>&    TUKnots,
+                               NCollection_Array1<double>&    TVKnots,
+                               NCollection_Array1<int>& TUMults,
+                               NCollection_Array1<int>& TVMults) const;
 
   int UDegree() const;
 
@@ -127,12 +155,14 @@ public:
 
   int NbCurves2d() const;
 
-  Standard_EXPORT void Curves2dShape(int& Degree, int& NbPoles, int& NbKnots) const;
+  Standard_EXPORT void Curves2dShape(int& Degree,
+                                     int& NbPoles,
+                                     int& NbKnots) const;
 
-  Standard_EXPORT void Curve2d(const int                     Index,
-                               NCollection_Array1<gp_Pnt2d>& TPoles,
-                               NCollection_Array1<double>&   TKnots,
-                               NCollection_Array1<int>&      TMults) const;
+  Standard_EXPORT void Curve2d(const int   Index,
+                               NCollection_Array1<gp_Pnt2d>&    TPoles,
+                               NCollection_Array1<double>&    TKnots,
+                               NCollection_Array1<int>& TMults) const;
 
   int Curves2dDegree() const;
 
@@ -161,69 +191,69 @@ private:
   Standard_EXPORT void Approximation(const occ::handle<NCollection_HArray1<double>>& OneDTol,
                                      const occ::handle<NCollection_HArray1<double>>& TwoDTol,
                                      const occ::handle<NCollection_HArray1<double>>& ThreeDTol,
-                                     const double                                    BounTol,
-                                     const double                                    First,
-                                     const double                                    Last,
-                                     const GeomAbs_Shape                             Continuity,
-                                     const int                                       Degmax,
-                                     const int                                       Segmax,
-                                     const AdvApprox_EvaluatorFunction& TheApproxFunction,
-                                     const AdvApprox_Cutting&           TheCuttingTool);
+                                     const double                  BounTol,
+                                     const double                  First,
+                                     const double                  Last,
+                                     const GeomAbs_Shape                  Continuity,
+                                     const int               Degmax,
+                                     const int               Segmax,
+                                     const AdvApprox_EvaluatorFunction&   TheApproxFunction,
+                                     const AdvApprox_Cutting&             TheCuttingTool);
 
   Standard_EXPORT bool D0(const double Param,
-                          const double First,
-                          const double Last,
-                          double&      Result);
+                                      const double First,
+                                      const double Last,
+                                      double&      Result);
 
   Standard_EXPORT bool D1(const double Param,
-                          const double First,
-                          const double Last,
-                          double&      Result);
+                                      const double First,
+                                      const double Last,
+                                      double&      Result);
 
   Standard_EXPORT bool D2(const double Param,
-                          const double First,
-                          const double Last,
-                          double&      Result);
+                                      const double First,
+                                      const double Last,
+                                      double&      Result);
 
-  occ::handle<Approx_SweepFunction>                                myFunc;
-  bool                                                             done;
-  int                                                              Num1DSS;
-  int                                                              Num2DSS;
-  int                                                              Num3DSS;
-  int                                                              udeg;
-  int                                                              vdeg;
-  int                                                              deg2d;
-  occ::handle<NCollection_HArray2<gp_Pnt>>                         tabPoles;
-  occ::handle<NCollection_HArray2<double>>                         tabWeights;
-  occ::handle<NCollection_HArray1<double>>                         tabUKnots;
-  occ::handle<NCollection_HArray1<double>>                         tabVKnots;
-  occ::handle<NCollection_HArray1<double>>                         tab2dKnots;
-  occ::handle<NCollection_HArray1<int>>                            tabUMults;
-  occ::handle<NCollection_HArray1<int>>                            tabVMults;
-  occ::handle<NCollection_HArray1<int>>                            tab2dMults;
-  NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt2d>>> seqPoles2d;
-  occ::handle<NCollection_HArray1<double>>                         MError1d;
-  occ::handle<NCollection_HArray1<double>>                         tab2dError;
-  occ::handle<NCollection_HArray1<double>>                         MError3d;
-  occ::handle<NCollection_HArray1<double>>                         AError1d;
-  occ::handle<NCollection_HArray1<double>>                         Ave2dError;
-  occ::handle<NCollection_HArray1<double>>                         AError3d;
-  occ::handle<NCollection_HArray1<gp_GTrsf2d>>                     AAffin;
-  occ::handle<NCollection_HArray1<double>>                         COnSurfErr;
-  gp_Vec                                                           Translation;
-  occ::handle<NCollection_HArray1<gp_Pnt>>                         myPoles;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>>                       myPoles2d;
-  occ::handle<NCollection_HArray1<double>>                         myWeigths;
-  occ::handle<NCollection_HArray1<gp_Vec>>                         myDPoles;
-  occ::handle<NCollection_HArray1<gp_Vec>>                         myD2Poles;
-  occ::handle<NCollection_HArray1<gp_Vec2d>>                       myDPoles2d;
-  occ::handle<NCollection_HArray1<gp_Vec2d>>                       myD2Poles2d;
-  occ::handle<NCollection_HArray1<double>>                         myDWeigths;
-  occ::handle<NCollection_HArray1<double>>                         myD2Weigths;
-  int                                                              myOrder;
-  double                                                           myParam;
-  double                                                           first;
-  double                                                           last;
+  occ::handle<Approx_SweepFunction>     myFunc;
+  bool                 done;
+  int                 Num1DSS;
+  int                 Num2DSS;
+  int                 Num3DSS;
+  int                 udeg;
+  int                 vdeg;
+  int                 deg2d;
+  occ::handle<NCollection_HArray2<gp_Pnt>>      tabPoles;
+  occ::handle<NCollection_HArray2<double>>    tabWeights;
+  occ::handle<NCollection_HArray1<double>>    tabUKnots;
+  occ::handle<NCollection_HArray1<double>>    tabVKnots;
+  occ::handle<NCollection_HArray1<double>>    tab2dKnots;
+  occ::handle<NCollection_HArray1<int>> tabUMults;
+  occ::handle<NCollection_HArray1<int>> tabVMults;
+  occ::handle<NCollection_HArray1<int>> tab2dMults;
+  NCollection_Sequence<occ::handle<NCollection_HArray1<gp_Pnt2d>>>   seqPoles2d;
+  occ::handle<NCollection_HArray1<double>>    MError1d;
+  occ::handle<NCollection_HArray1<double>>    tab2dError;
+  occ::handle<NCollection_HArray1<double>>    MError3d;
+  occ::handle<NCollection_HArray1<double>>    AError1d;
+  occ::handle<NCollection_HArray1<double>>    Ave2dError;
+  occ::handle<NCollection_HArray1<double>>    AError3d;
+  occ::handle<NCollection_HArray1<gp_GTrsf2d>>  AAffin;
+  occ::handle<NCollection_HArray1<double>>    COnSurfErr;
+  gp_Vec                           Translation;
+  occ::handle<NCollection_HArray1<gp_Pnt>>      myPoles;
+  occ::handle<NCollection_HArray1<gp_Pnt2d>>    myPoles2d;
+  occ::handle<NCollection_HArray1<double>>    myWeigths;
+  occ::handle<NCollection_HArray1<gp_Vec>>      myDPoles;
+  occ::handle<NCollection_HArray1<gp_Vec>>      myD2Poles;
+  occ::handle<NCollection_HArray1<gp_Vec2d>>    myDPoles2d;
+  occ::handle<NCollection_HArray1<gp_Vec2d>>    myD2Poles2d;
+  occ::handle<NCollection_HArray1<double>>    myDWeigths;
+  occ::handle<NCollection_HArray1<double>>    myD2Weigths;
+  int                 myOrder;
+  double                    myParam;
+  double                    first;
+  double                    last;
 };
 
 #include <Approx_SweepApproximation.lxx>

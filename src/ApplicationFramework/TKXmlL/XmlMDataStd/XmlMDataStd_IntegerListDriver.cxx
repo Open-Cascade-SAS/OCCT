@@ -46,11 +46,11 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                          const occ::handle<TDF_Attribute>& theTarget,
-                                          XmlObjMgt_RRelocationTable&) const
+bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                      const occ::handle<TDF_Attribute>& theTarget,
+                                                      XmlObjMgt_RRelocationTable&) const
 {
-  int                      aFirstInd, aLastInd, aValue, ind;
+  int         aFirstInd, aLastInd, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
@@ -78,8 +78,7 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
     return false;
   }
 
-  const occ::handle<TDataStd_IntegerList> anIntList =
-    occ::down_cast<TDataStd_IntegerList>(theTarget);
+  const occ::handle<TDataStd_IntegerList> anIntList = occ::down_cast<TDataStd_IntegerList>(theTarget);
 
   // attribute id
   Standard_GUID       aGUID;
@@ -107,8 +106,7 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
   }
   else if (aLastInd >= 1)
   {
-    const char* aValueStr =
-      static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
       if (!XmlObjMgt::GetInteger(aValueStr, aValue))
@@ -132,11 +130,10 @@ bool XmlMDataStd_IntegerListDriver::Paste(const XmlObjMgt_Persistent&       theS
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          XmlObjMgt_Persistent&             theTarget,
+                                          XmlObjMgt_Persistent&        theTarget,
                                           XmlObjMgt_SRelocationTable&) const
 {
-  const occ::handle<TDataStd_IntegerList> anIntList =
-    occ::down_cast<TDataStd_IntegerList>(theSource);
+  const occ::handle<TDataStd_IntegerList> anIntList = occ::down_cast<TDataStd_IntegerList>(theSource);
 
   int anU = anIntList->Extent();
   theTarget.Element().setAttribute(::LastIndexString(), anU);
@@ -147,7 +144,7 @@ void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theS
   {
     // Allocation of 12 chars for each integer including the space.
     // An example: -2 147 483 648
-    int                             iChar = 0;
+    int                    iChar = 0;
     NCollection_List<int>::Iterator itr(anIntList->List());
     for (; itr.More(); itr.Next())
     {
@@ -161,7 +158,7 @@ void XmlMDataStd_IntegerListDriver::Paste(const occ::handle<TDF_Attribute>& theS
   if (anIntList->ID() != TDataStd_IntegerList::GetID())
   {
     // convert GUID
-    char                aGuidStr[Standard_GUID_SIZE_ALLOC];
+    char  aGuidStr[Standard_GUID_SIZE_ALLOC];
     Standard_PCharacter pGuidStr = aGuidStr;
     anIntList->ID().ToCString(pGuidStr);
     theTarget.Element().setAttribute(::AttributeIDString(), aGuidStr);

@@ -64,65 +64,54 @@ public:
   //! Transfer a GeometryEntity which answer True to the
   //! member : BRepToIGES::IsGeomCurve(Geometry). If this
   //! Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Curve>& start,
-    const double                   Udeb,
-    const double                   Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Curve>& start,
+                                                            const double       Udeb,
+                                                            const double       Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_BoundedCurve>& start,
-    const double                          Udeb,
-    const double                          Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BoundedCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_BSplineCurve>& start,
-    const double                          Udeb,
-    const double                          Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BSplineCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_BezierCurve>& start,
-    const double                         Udeb,
-    const double                         Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_BezierCurve>& start,
+                                                            const double             Udeb,
+                                                            const double             Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_TrimmedCurve>& start,
-    const double                          Udeb,
-    const double                          Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_TrimmedCurve>& start,
+                                                            const double              Udeb,
+                                                            const double              Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Conic>& start,
-    const double                   Udeb,
-    const double                   Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Conic>& start,
+                                                            const double       Udeb,
+                                                            const double       Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Circle>& start,
-    const double                    Udeb,
-    const double                    Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Circle>& start,
+                                                            const double        Udeb,
+                                                            const double        Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Ellipse>& start,
-    const double                     Udeb,
-    const double                     Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Ellipse>& start,
+                                                            const double         Udeb,
+                                                            const double         Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Hyperbola>& start,
-    const double                       Udeb,
-    const double                       Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Hyperbola>& start,
+                                                            const double           Udeb,
+                                                            const double           Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Line>& start,
-    const double                  Udeb,
-    const double                  Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Line>& start,
+                                                            const double      Udeb,
+                                                            const double      Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_Parabola>& start,
-    const double                      Udeb,
-    const double                      Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_Parabola>& start,
+                                                            const double          Udeb,
+                                                            const double          Ufin);
 
-  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(
-    const occ::handle<Geom_OffsetCurve>& start,
-    const double                         Udeb,
-    const double                         Ufin);
+  Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferCurve(const occ::handle<Geom_OffsetCurve>& start,
+                                                            const double             Udeb,
+                                                            const double             Ufin);
+
 };
 
 #endif // _GeomToIGES_GeomCurve_HeaderFile

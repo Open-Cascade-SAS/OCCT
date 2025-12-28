@@ -128,11 +128,11 @@ Method:
   x2 = C2.XAxis().Direction();
   y2 = C2.YAxis().Direction();
 
-  double   Dx = D.Dot(x2);
-  double   Dy = D.Dot(y2);
-  double   U1, teta[2];
-  gp_Pnt2d O1 = C1.Location();
-  gp_Pnt2d P1, P2;
+  double Dx = D.Dot(x2);
+  double Dy = D.Dot(y2);
+  double U1, teta[2];
+  gp_Pnt2d      O1 = C1.Location();
+  gp_Pnt2d      P1, P2;
 
   if (std::abs(Dy) <= RealEpsilon())
   {
@@ -180,10 +180,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Elips2d& C2)
   x2 = C2.XAxis().Direction();
   y2 = C2.YAxis().Direction();
 
-  double   Dx = D.Dot(x2);
-  double   Dy = D.Dot(y2);
-  double   U1, teta[2], r1 = C2.MajorRadius(), r2 = C2.MinorRadius();
-  gp_Pnt2d O1 = C1.Location(), P1, P2;
+  double Dx = D.Dot(x2);
+  double Dy = D.Dot(y2);
+  double U1, teta[2], r1 = C2.MajorRadius(), r2 = C2.MinorRadius();
+  gp_Pnt2d      O1 = C1.Location(), P1, P2;
 
   if (std::abs(Dy) <= RealEpsilon())
   {
@@ -228,13 +228,13 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Hypr2d& C2)
   // Calculate T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
-  x2        = C2.XAxis().Direction();
-  y2        = C2.YAxis().Direction();
+  x2               = C2.XAxis().Direction();
+  y2               = C2.YAxis().Direction();
   double Dx = D.Dot(x2);
   double Dy = D.Dot(y2);
 
-  double   U1, v2, U2 = 0, R = C2.MajorRadius(), r = C2.MinorRadius();
-  gp_Pnt2d P1, P2;
+  double U1, v2, U2 = 0, R = C2.MajorRadius(), r = C2.MinorRadius();
+  gp_Pnt2d      P1, P2;
   if (std::abs(Dy) < RealEpsilon())
   {
     return;
@@ -271,13 +271,13 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Lin2d& C1, const gp_Parab2d& C2)
   // Calculate  T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
   gp_Dir2d x2, y2;
-  x2        = C2.MirrorAxis().Direction();
-  y2        = C2.Axis().YAxis().Direction();
+  x2               = C2.MirrorAxis().Direction();
+  y2               = C2.Axis().YAxis().Direction();
   double Dx = D.Dot(x2);
   double Dy = D.Dot(y2);
 
-  double   U1, U2, P = C2.Parameter();
-  gp_Pnt2d P1, P2;
+  double U1, U2, P = C2.Parameter();
+  gp_Pnt2d      P1, P2;
   if (std::abs(Dy) < RealEpsilon())
   {
     return;
@@ -310,24 +310,24 @@ Extrema_ExtElC2d::Extrema_ExtElC2d(const gp_Circ2d& C1, const gp_Circ2d& C2)
   gp_Pnt2d O1 = C1.Location();
   gp_Pnt2d O2 = C2.Location();
 
-  gp_Vec2d     DO1O2(O1, O2);
+  gp_Vec2d            DO1O2(O1, O2);
   const double aSqDCenters = DO1O2.SquareMagnitude();
   if (aSqDCenters < Precision::SquareConfusion())
   {
-    myIsPar          = true;
-    myNbExt          = 1;
-    myDone           = true;
+    myIsPar                 = true;
+    myNbExt                 = 1;
+    myDone                  = true;
     const double aDR = C1.Radius() - C2.Radius();
-    mySqDist[0]      = aDR * aDR;
+    mySqDist[0]             = aDR * aDR;
     return;
   }
 
-  int      NoSol, kk;
-  double   U1, U2;
-  double   r1 = C1.Radius(), r2 = C2.Radius();
-  double   Usol2[2], Usol1[2];
-  gp_Pnt2d P1[2], P2[2];
-  gp_Vec2d O1O2(DO1O2 / std::sqrt(aSqDCenters));
+  int NoSol, kk;
+  double    U1, U2;
+  double    r1 = C1.Radius(), r2 = C2.Radius();
+  double    Usol2[2], Usol1[2];
+  gp_Pnt2d         P1[2], P2[2];
+  gp_Vec2d         O1O2(DO1O2 / std::sqrt(aSqDCenters));
 
   P1[0]    = O1.Translated(r1 * O1O2);
   Usol1[0] = ElCLib::Parameter(C1, P1[0]);
@@ -517,7 +517,9 @@ double Extrema_ExtElC2d::SquareDistance(const int N) const
 
 //============================================================================
 
-void Extrema_ExtElC2d::Points(const int N, Extrema_POnCurv2d& P1, Extrema_POnCurv2d& P2) const
+void Extrema_ExtElC2d::Points(const int N,
+                              Extrema_POnCurv2d&     P1,
+                              Extrema_POnCurv2d&     P2) const
 {
   if (N < 1 || N > NbExt())
   {

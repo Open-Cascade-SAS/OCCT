@@ -25,8 +25,7 @@ StepFEA_FreedomsList::StepFEA_FreedomsList() {}
 
 //=================================================================================================
 
-void StepFEA_FreedomsList::Init(
-  const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
+void StepFEA_FreedomsList::Init(const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
 {
 
   theFreedoms = aFreedoms;
@@ -41,8 +40,7 @@ occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>> StepFEA_FreedomsList::
 
 //=================================================================================================
 
-void StepFEA_FreedomsList::SetFreedoms(
-  const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
+void StepFEA_FreedomsList::SetFreedoms(const occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>>& aFreedoms)
 {
   theFreedoms = aFreedoms;
 }

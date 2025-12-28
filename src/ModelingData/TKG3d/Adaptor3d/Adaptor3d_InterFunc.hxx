@@ -34,8 +34,8 @@ public:
   //! build the function U(t)=FixVal if Fix =1 or
   //! V(t)=FixVal if Fix=2
   Standard_EXPORT Adaptor3d_InterFunc(const occ::handle<Adaptor2d_Curve2d>& C,
-                                      const double                          FixVal,
-                                      const int                             Fix);
+                                      const double              FixVal,
+                                      const int           Fix);
 
   //! computes the value <F>of the function for the variable <X>.
   //! Returns True if the calculation were successfully done,
@@ -52,12 +52,14 @@ public:
   //! function for the variable <X>.
   //! Returns True if the calculation were successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X, double& F, double& D);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      D);
 
 private:
   occ::handle<Adaptor2d_Curve2d> myCurve2d;
-  double                         myFixVal;
-  int                            myFix;
+  double             myFixVal;
+  int          myFix;
 };
 
 #endif // _Adaptor3d_InterFunc_HeaderFile

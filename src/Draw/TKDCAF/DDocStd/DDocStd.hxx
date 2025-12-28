@@ -48,31 +48,33 @@ public:
   //! Returns the global instance of application.
   Standard_EXPORT static const occ::handle<TDocStd_Application>& GetApplication();
 
-  Standard_EXPORT static bool GetDocument(const char*&                   Name,
-                                          occ::handle<TDocStd_Document>& Doc,
-                                          const bool                     Complain = true);
+  Standard_EXPORT static bool GetDocument(
+    const char*&         Name,
+    occ::handle<TDocStd_Document>& Doc,
+    const bool    Complain = true);
 
   Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
-                                   const char*                          Entry,
-                                   TDF_Label&                           Label,
-                                   const bool                           Complain = true);
+                                               const char*          Entry,
+                                               TDF_Label&                      Label,
+                                               const bool Complain = true);
 
   Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
-                                   const char*                          Entry,
-                                   const Standard_GUID&                 ID,
-                                   occ::handle<TDF_Attribute>&          A,
-                                   const bool                           Complain = true);
+                                               const char*          Entry,
+                                               const Standard_GUID&            ID,
+                                               occ::handle<TDF_Attribute>&          A,
+                                               const bool Complain = true);
 
   //! Safe variant for arbitrary type of argument
   template <class T>
   static bool Find(const occ::handle<TDocStd_Document>& Document,
-                   const char*                          Entry,
-                   const Standard_GUID&                 ID,
-                   occ::handle<T>&                      A,
-                   const bool                           Complain = true)
+                               const char*          Entry,
+                               const Standard_GUID&            ID,
+                               occ::handle<T>&                      A,
+                               const bool          Complain = true)
   {
     occ::handle<TDF_Attribute> anAttr = A;
-    return Find(Document, Entry, ID, anAttr, Complain) && !(A = occ::down_cast<T>(anAttr)).IsNull();
+    return Find(Document, Entry, ID, anAttr, Complain)
+           && !(A = occ::down_cast<T>(anAttr)).IsNull();
   }
 
   Standard_EXPORT static Draw_Interpretor& ReturnLabel(Draw_Interpretor& theCommands,

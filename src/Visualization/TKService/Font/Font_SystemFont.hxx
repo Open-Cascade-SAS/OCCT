@@ -53,7 +53,7 @@ public:
   //! Sets font file path for specific aspect.
   Standard_EXPORT void SetFontPath(Font_FontAspect                theAspect,
                                    const TCollection_AsciiString& thePath,
-                                   const int                      theFaceId = 0);
+                                   const int         theFaceId = 0);
 
   //! Returns TRUE if dedicated file for specified font aspect has been defined.
   bool HasFontAspect(Font_FontAspect theAspect) const
@@ -64,9 +64,9 @@ public:
   }
 
   //! Returns any defined font file path.
-  const TCollection_AsciiString& FontPathAny(Font_FontAspect theAspect,
-                                             bool&           theToSynthesizeItalic,
-                                             int&            theFaceId) const
+  const TCollection_AsciiString& FontPathAny(Font_FontAspect   theAspect,
+                                             bool&             theToSynthesizeItalic,
+                                             int& theFaceId) const
   {
     const Font_FontAspect anAspect =
       theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular;
@@ -133,10 +133,10 @@ public:
 
 private:
   TCollection_AsciiString myFilePaths[Font_FontAspect_NB]; //!< paths to the font file
-  int                     myFaceIds[Font_FontAspect_NB];   //!< face ids per font file
+  int        myFaceIds[Font_FontAspect_NB];   //!< face ids per font file
   TCollection_AsciiString myFontKey;                       //!< font family name, lower cased
   TCollection_AsciiString myFontName;                      //!< font family name
-  bool                    myIsSingleLine; //!< single stroke font flag, FALSE by default
+  bool        myIsSingleLine; //!< single stroke font flag, FALSE by default
 };
 
 namespace std

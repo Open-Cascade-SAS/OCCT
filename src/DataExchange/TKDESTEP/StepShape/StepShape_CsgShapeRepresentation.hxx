@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_CsgShapeRepresentation();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_CsgShapeRepresentation, StepShape_ShapeRepresentation)
+
 };
 
 #endif // _StepShape_CsgShapeRepresentation_HeaderFile

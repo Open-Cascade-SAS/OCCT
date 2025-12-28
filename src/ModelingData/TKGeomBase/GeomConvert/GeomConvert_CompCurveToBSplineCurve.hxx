@@ -40,8 +40,8 @@ public:
   //! Initialize the algorithm with one curve
   //! - Parameterisation is used to convert
   Standard_EXPORT GeomConvert_CompCurveToBSplineCurve(
-    const occ::handle<Geom_BoundedCurve>& BasisCurve,
-    const Convert_ParameterisationType    Parameterisation = Convert_TgtThetaOver2);
+    const occ::handle<Geom_BoundedCurve>&   BasisCurve,
+    const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! Append a curve in the BSpline Return False if the
   //! curve is not G0 with the BSplineCurve. Tolerance
@@ -54,10 +54,10 @@ public:
   //! decrease the speed of algorithms like CPnts_AbscissaPoint::AdvPerform
   //! when applied to the resulting curve.
   Standard_EXPORT bool Add(const occ::handle<Geom_BoundedCurve>& NewCurve,
-                           const double                          Tolerance,
-                           const bool                            After     = false,
-                           const bool                            WithRatio = true,
-                           const int                             MinM      = 0);
+                                       const double              Tolerance,
+                                       const bool           After     = false,
+                                       const bool           WithRatio = true,
+                                       const int           MinM      = 0);
 
   Standard_EXPORT occ::handle<Geom_BSplineCurve> BSplineCurve() const;
 
@@ -68,13 +68,13 @@ private:
   //! Concat two BSplineCurves.
   Standard_EXPORT void Add(occ::handle<Geom_BSplineCurve>& FirstCurve,
                            occ::handle<Geom_BSplineCurve>& SecondCurve,
-                           const bool                      After,
-                           const bool                      WithRatio,
-                           const int                       MinM);
+                           const bool     After,
+                           const bool     WithRatio,
+                           const int     MinM);
 
-  occ::handle<Geom_BSplineCurve> myCurve;
-  double                         myTol;
-  Convert_ParameterisationType   myType;
+  occ::handle<Geom_BSplineCurve>    myCurve;
+  double                myTol;
+  Convert_ParameterisationType myType;
 };
 
 #endif // _GeomConvert_CompCurveToBSplineCurve_HeaderFile

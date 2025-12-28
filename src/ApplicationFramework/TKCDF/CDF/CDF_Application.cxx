@@ -89,10 +89,10 @@ void CDF_Application::Close(const occ::handle<CDM_Document>& aDocument)
 //=================================================================================================
 
 occ::handle<CDM_Document> CDF_Application::Retrieve(const TCollection_ExtendedString& aFolder,
-                                                    const TCollection_ExtendedString& aName,
-                                                    const bool UseStorageConfiguration,
-                                                    const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                                    const Message_ProgressRange&          theRange)
+                                               const TCollection_ExtendedString& aName,
+                                               const bool UseStorageConfiguration,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&     theRange)
 {
   TCollection_ExtendedString nullVersion;
   return Retrieve(aFolder, aName, nullVersion, UseStorageConfiguration, theFilter, theRange);
@@ -101,11 +101,11 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const TCollection_ExtendedSt
 //=================================================================================================
 
 occ::handle<CDM_Document> CDF_Application::Retrieve(const TCollection_ExtendedString& aFolder,
-                                                    const TCollection_ExtendedString& aName,
-                                                    const TCollection_ExtendedString& aVersion,
-                                                    const bool UseStorageConfiguration,
-                                                    const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                                    const Message_ProgressRange&          theRange)
+                                               const TCollection_ExtendedString& aName,
+                                               const TCollection_ExtendedString& aVersion,
+                                               const bool UseStorageConfiguration,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&     theRange)
 {
   occ::handle<CDM_MetaData> theMetaData;
 
@@ -114,7 +114,7 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const TCollection_ExtendedSt
   else
     theMetaData = myMetaDataDriver->MetaData(aFolder, aName, aVersion);
 
-  CDF_TypeOfActivation      theTypeOfActivation = TypeOfActivation(theMetaData);
+  CDF_TypeOfActivation theTypeOfActivation = TypeOfActivation(theMetaData);
   occ::handle<CDM_Document> theDocument =
     Retrieve(theMetaData, UseStorageConfiguration, false, theFilter, theRange);
 
@@ -149,8 +149,7 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
     return PCDM_RS_PermissionDenied;
   else
   {
-    occ::handle<CDM_MetaData> theMetaData =
-      myMetaDataDriver->MetaData(theFolder, theName, theVersion);
+    occ::handle<CDM_MetaData> theMetaData = myMetaDataDriver->MetaData(theFolder, theName, theVersion);
 
     if (!theAppendMode && theMetaData->IsRetrieved())
     {
@@ -195,8 +194,8 @@ PCDM_ReaderStatus CDF_Application::CanRetrieve(const TCollection_ExtendedString&
 
 //=================================================================================================
 
-// void CDF_Application::Activate(const occ::handle<CDM_Document>& aDocument,const
-// CDF_TypeOfActivation aTypeOfActivation) {
+// void CDF_Application::Activate(const occ::handle<CDM_Document>& aDocument,const CDF_TypeOfActivation
+// aTypeOfActivation) {
 void CDF_Application::Activate(const occ::handle<CDM_Document>&, const CDF_TypeOfActivation) {}
 
 //=================================================================================================
@@ -223,9 +222,9 @@ bool CDF_Application::SetDefaultFolder(const char16_t* aFolder)
 //=================================================================================================
 
 occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaData>& aMetaData,
-                                                    const bool UseStorageConfiguration,
-                                                    const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                                    const Message_ProgressRange&          theRange)
+                                               const bool      UseStorageConfiguration,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&     theRange)
 {
   return Retrieve(aMetaData, UseStorageConfiguration, true, theFilter, theRange);
 }
@@ -233,15 +232,15 @@ occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaDa
 //=================================================================================================
 
 occ::handle<CDM_Document> CDF_Application::Retrieve(const occ::handle<CDM_MetaData>& aMetaData,
-                                                    const bool UseStorageConfiguration,
-                                                    const bool IsComponent,
-                                                    const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                                    const Message_ProgressRange&          theRange)
+                                               const bool      UseStorageConfiguration,
+                                               const bool      IsComponent,
+                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
+                                               const Message_ProgressRange&     theRange)
 {
 
   occ::handle<CDM_Document> theDocumentToReturn;
-  myRetrievableStatus = PCDM_RS_DriverFailure;
-  bool isAppendMode   = !theFilter.IsNull() && theFilter->IsAppendMode();
+  myRetrievableStatus           = PCDM_RS_DriverFailure;
+  bool isAppendMode = !theFilter.IsNull() && theFilter->IsAppendMode();
   if (IsComponent)
   {
     Standard_SStream aMsg;
@@ -364,10 +363,10 @@ CDF_TypeOfActivation CDF_Application::TypeOfActivation(const occ::handle<CDM_Met
 
 //=================================================================================================
 
-void CDF_Application::Read(Standard_IStream&                     theIStream,
+void CDF_Application::Read(Standard_IStream&                theIStream,
                            occ::handle<CDM_Document>&            theDocument,
                            const occ::handle<PCDM_ReaderFilter>& theFilter,
-                           const Message_ProgressRange&          theRange)
+                           const Message_ProgressRange&     theRange)
 {
   occ::handle<Storage_Data> dData;
 
@@ -439,8 +438,7 @@ void CDF_Application::Read(Standard_IStream&                     theIStream,
 
 //=================================================================================================
 
-occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(
-  const TCollection_ExtendedString& theFormat)
+occ::handle<PCDM_Reader> CDF_Application::ReaderFromFormat(const TCollection_ExtendedString& theFormat)
 {
   // check map of readers
   occ::handle<PCDM_RetrievalDriver> aReader;
@@ -551,7 +549,7 @@ occ::handle<PCDM_StorageDriver> CDF_Application::WriterFromFormat(
 //=================================================================================================
 
 bool CDF_Application::Format(const TCollection_ExtendedString& aFileName,
-                             TCollection_ExtendedString&       theFormat)
+                                         TCollection_ExtendedString&       theFormat)
 {
 
   theFormat = PCDM_ReadWriter::FileFormat(aFileName);
@@ -575,7 +573,7 @@ bool CDF_Application::Format(const TCollection_ExtendedString& aFileName,
 //=================================================================================================
 
 PCDM_ReaderStatus CDF_Application::CanRetrieve(const occ::handle<CDM_MetaData>& aMetaData,
-                                               const bool                       theAppendMode)
+                                               const bool                  theAppendMode)
 {
   if (aMetaData->HasVersion())
     return CanRetrieve(aMetaData->Folder(), aMetaData->Name(), aMetaData->Version(), theAppendMode);

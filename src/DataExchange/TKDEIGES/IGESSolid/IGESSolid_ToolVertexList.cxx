@@ -32,6 +32,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
@@ -91,7 +92,7 @@ void IGESSolid_ToolVertexList::ReadOwnParams(const occ::handle<IGESSolid_VertexL
 //=================================================================================================
 
 void IGESSolid_ToolVertexList::WriteOwnParams(const occ::handle<IGESSolid_VertexList>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   int nbitems = ent->NbVertices();
   int i;
@@ -120,9 +121,8 @@ void IGESSolid_ToolVertexList::OwnCopy(const occ::handle<IGESSolid_VertexList>& 
 {
   int nbitems, i;
 
-  nbitems = another->NbVertices();
-  occ::handle<NCollection_HArray1<gp_XYZ>> tempVertices =
-    new NCollection_HArray1<gp_XYZ>(1, nbitems);
+  nbitems                                  = another->NbVertices();
+  occ::handle<NCollection_HArray1<gp_XYZ>> tempVertices = new NCollection_HArray1<gp_XYZ>(1, nbitems);
 
   for (i = 1; i <= nbitems; i++)
   {
@@ -171,8 +171,8 @@ void IGESSolid_ToolVertexList::OwnCheck(const occ::handle<IGESSolid_VertexList>&
 
 void IGESSolid_ToolVertexList::OwnDump(const occ::handle<IGESSolid_VertexList>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream& S,
-                                       const int         level) const
+                                       Standard_OStream&      S,
+                                       const int level) const
 {
   S << "IGESSolid_VertexList\n"
     << "Vertices : ";

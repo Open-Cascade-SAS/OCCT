@@ -62,10 +62,10 @@ const Standard_GUID& TDataStd_BooleanArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_BooleanArray> SetAttr(const TDF_Label&     label,
-                                                  const int            lower,
-                                                  const int            upper,
-                                                  const Standard_GUID& theGuid)
+static occ::handle<TDataStd_BooleanArray> SetAttr(const TDF_Label&       label,
+                                             const int lower,
+                                             const int upper,
+                                             const Standard_GUID&   theGuid)
 {
   occ::handle<TDataStd_BooleanArray> A;
   if (!label.FindAttribute(theGuid, A))
@@ -102,9 +102,9 @@ void TDataStd_BooleanArray::Init(const int lower, const int upper)
 
 //=================================================================================================
 
-occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label& label,
-                                                              const int        lower,
-                                                              const int        upper)
+occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label&       label,
+                                                         const int lower,
+                                                         const int upper)
 {
   return SetAttr(label, lower, upper, GetID());
 }
@@ -113,10 +113,10 @@ occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label& l
 // function : Set
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
-occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label&     label,
-                                                              const Standard_GUID& theGuid,
-                                                              const int            lower,
-                                                              const int            upper)
+occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label&       label,
+                                                         const Standard_GUID&   theGuid,
+                                                         const int lower,
+                                                         const int upper)
 {
   return SetAttr(label, lower, upper, theGuid);
 }
@@ -193,8 +193,7 @@ const occ::handle<NCollection_HArray1<uint8_t>>& TDataStd_BooleanArray::Internal
 
 //=================================================================================================
 
-void TDataStd_BooleanArray::SetInternalArray(
-  const occ::handle<NCollection_HArray1<uint8_t>>& values)
+void TDataStd_BooleanArray::SetInternalArray(const occ::handle<NCollection_HArray1<uint8_t>>& values)
 {
   myValues = values;
 }
@@ -238,10 +237,10 @@ void TDataStd_BooleanArray::Restore(const occ::handle<TDF_Attribute>& With)
   occ::handle<TDataStd_BooleanArray> anArray = occ::down_cast<TDataStd_BooleanArray>(With);
   if (!anArray->myValues.IsNull())
   {
-    myLower        = anArray->Lower();
-    myUpper        = anArray->Upper();
+    myLower                     = anArray->Lower();
+    myUpper                     = anArray->Upper();
     int byte_upper = Length() >> 3;
-    myValues       = new NCollection_HArray1<uint8_t>(0, byte_upper, 0 /*initialize to FALSE*/);
+    myValues = new NCollection_HArray1<uint8_t>(0, byte_upper, 0 /*initialize to FALSE*/);
     const NCollection_Array1<uint8_t>& with_array = anArray->myValues->Array1();
     for (int i = 0; i <= byte_upper; i++)
     {

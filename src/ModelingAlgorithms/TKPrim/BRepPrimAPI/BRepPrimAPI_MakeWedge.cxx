@@ -32,11 +32,11 @@ BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const double dx,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const gp_Ax2& Axes,
-                                             const double  dx,
-                                             const double  dy,
-                                             const double  dz,
-                                             const double  ltx)
+BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
+                                             const double dx,
+                                             const double dy,
+                                             const double dz,
+                                             const double ltx)
     : myWedge(Axes, dx, dy, dz, ltx)
 {
 }
@@ -66,14 +66,14 @@ BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const double dx,
 
 //=================================================================================================
 
-BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const gp_Ax2& Axes,
-                                             const double  dx,
-                                             const double  dy,
-                                             const double  dz,
-                                             const double  xmin,
-                                             const double  zmin,
-                                             const double  xmax,
-                                             const double  zmax)
+BRepPrimAPI_MakeWedge::BRepPrimAPI_MakeWedge(const gp_Ax2&       Axes,
+                                             const double dx,
+                                             const double dy,
+                                             const double dz,
+                                             const double xmin,
+                                             const double zmin,
+                                             const double xmax,
+                                             const double zmax)
     : myWedge(Axes, 0, 0, 0, zmin, xmin, dx, dy, dz, zmax, xmax)
 {
 }

@@ -86,11 +86,11 @@ public:
   void Initialize(const math_Vector& p0, const math_Vector& dir) const;
   // For hp :
   bool Value(const math_Vector& Sol,
-             math_Vector&       FF,
-             math_Matrix&       DF,
-             math_Vector&       GH,
-             double&            F2,
-             double&            Gnr1);
+                         math_Vector&       FF,
+                         math_Matrix&       DF,
+                         math_Vector&       GH,
+                         double&     F2,
+                         double&     Gnr1);
   //     bool MyDirFunction::Value(const math_Vector& Sol, math_Vector& FF,
   //					   math_Matrix& DF, math_Vector& GH,
   //					   double& F2, double& Gnr1);
@@ -146,11 +146,11 @@ bool MyDirFunction::Value(const double x, double& fval)
 }
 
 bool MyDirFunction::Value(const math_Vector& Sol,
-                          math_Vector&       FF,
-                          math_Matrix&       DF,
-                          math_Vector&       GH,
-                          double&            F2,
-                          double&            Gnr1)
+                                      math_Vector&       FF,
+                                      math_Matrix&       DF,
+                                      math_Vector&       GH,
+                                      double&     F2,
+                                      double&     Gnr1)
 {
   if (F->Values(Sol, FF, DF))
   {
@@ -187,13 +187,13 @@ bool MyDirFunction::Value(const math_Vector& Sol,
 }
 
 //--------------------------------------------------------------
-static bool MinimizeDirection(const math_Vector& P0,
-                              const math_Vector& P1,
-                              const math_Vector& P2,
-                              const double       F1,
-                              math_Vector&       Delta,
-                              const math_Vector& Tol,
-                              MyDirFunction&     F)
+static bool MinimizeDirection(const math_Vector&  P0,
+                                          const math_Vector&  P1,
+                                          const math_Vector&  P2,
+                                          const double F1,
+                                          math_Vector&        Delta,
+                                          const math_Vector&  Tol,
+                                          MyDirFunction&      F)
 // Purpose : minimisation a partir de 3 points
 //-------------------------------------------------------
 {
@@ -248,14 +248,14 @@ static bool MinimizeDirection(const math_Vector& P0,
 }
 
 //----------------------------------------------------------------------
-static bool MinimizeDirection(const math_Vector& P,
-                              math_Vector&       Dir,
-                              const double&      PValue,
-                              const double&      PDirValue,
-                              const math_Vector& Gradient,
-                              const math_Vector& DGradient,
-                              const math_Vector& Tol,
-                              MyDirFunction&     F)
+static bool MinimizeDirection(const math_Vector&   P,
+                                          math_Vector&         Dir,
+                                          const double& PValue,
+                                          const double& PDirValue,
+                                          const math_Vector&   Gradient,
+                                          const math_Vector&   DGradient,
+                                          const math_Vector&   Tol,
+                                          MyDirFunction&       F)
 // Purpose: minimisation a partir de 2 points et une derives
 //----------------------------------------------------------------------
 
@@ -265,9 +265,9 @@ static bool MinimizeDirection(const math_Vector& P,
     return false;
   }
   // (0) Evaluation d'un tolerance parametrique 1D
-  bool   good  = false;
-  double Eps   = 1.e-20;
-  double tol1d = 1.1, Result = PValue, absdir;
+  bool good  = false;
+  double    Eps   = 1.e-20;
+  double    tol1d = 1.1, Result = PValue, absdir;
 
   for (int ii = 1; ii <= Tol.Length(); ii++)
   {
@@ -411,14 +411,14 @@ static bool MinimizeDirection(const math_Vector& P,
 static void SearchDirection(const math_Matrix& DF,
                             const math_Vector& GH,
                             const math_Vector& FF,
-                            bool               ChangeDirection,
+                            bool   ChangeDirection,
                             const math_Vector& InvLengthMax,
                             math_Vector&       Direction,
-                            double&            Dy)
+                            double&     Dy)
 
 {
-  int    Ninc = DF.ColNumber(), Neq = DF.RowNumber();
-  double Eps = 1.e-32;
+  int Ninc = DF.ColNumber(), Neq = DF.RowNumber();
+  double    Eps = 1.e-32;
   if (!ChangeDirection)
   {
     if (Ninc == Neq)
@@ -462,8 +462,8 @@ static void SearchDirection(const math_Matrix& DF,
   // PMN 12/05/97 Traitement des singularite dans les conges
   // Sur des surfaces periodiques
 
-  double ratio = std::abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
-  int    i;
+  double    ratio = std::abs(Direction(Direction.Lower()) * InvLengthMax(Direction.Lower()));
+  int i;
   for (i = Direction.Lower() + 1; i <= Direction.Upper(); i++)
   {
     ratio = std::max(ratio, std::abs(Direction(i) * InvLengthMax(i)));
@@ -495,10 +495,10 @@ static void SearchDirection(const math_Matrix&        DF,
                             const math_IntegerVector& Constraints,
                             //			    const math_Vector& X, // Le point d'init
                             const math_Vector&, // Le point d'init
-                            bool               ChangeDirection,
+                            bool   ChangeDirection,
                             const math_Vector& InvLengthMax,
                             math_Vector&       Direction,
-                            double&            Dy)
+                            double&     Dy)
 // Purpose : Recherche une direction (et un pas si Newton Fonctionne) le long
 //           d'une frontiere
 //=====================================================================
@@ -575,13 +575,13 @@ static void SearchDirection(const math_Matrix&        DF,
 
 //====================================================
 bool Bounds(const math_Vector&  InfBound,
-            const math_Vector&  SupBound,
-            const math_Vector&  Tol,
-            math_Vector&        Sol,
-            const math_Vector&  SolSave,
-            math_IntegerVector& Constraints,
-            math_Vector&        Delta,
-            bool&               theIsNewSol)
+                        const math_Vector&  SupBound,
+                        const math_Vector&  Tol,
+                        math_Vector&        Sol,
+                        const math_Vector&  SolSave,
+                        math_IntegerVector& Constraints,
+                        math_Vector&        Delta,
+                        bool&   theIsNewSol)
 //
 // Purpose: Trims an initial solution Sol to be within a domain defined by
 //   InfBound and SupBound. Delta will contain a distance between final Sol and
@@ -590,9 +590,9 @@ bool Bounds(const math_Vector&  InfBound,
 //   if SolSave already lied on a boundary and initial Sol was fully beyond it
 //======================================================
 {
-  bool   Out = false;
-  int    i, Ninc = Sol.Length();
-  double monratio = 1;
+  bool Out = false;
+  int i, Ninc = Sol.Length();
+  double    monratio = 1;
 
   theIsNewSol = true;
 
@@ -658,7 +658,7 @@ bool Bounds(const math_Vector&  InfBound,
 
 math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
                                            const math_Vector&               theTolerance,
-                                           const int                        theNbIterations)
+                                           const int           theNbIterations)
 
     : Delta(1, theFunction.NbVariables()),
       Sol(1, theFunction.NbVariables()),
@@ -690,7 +690,7 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theF
 //=================================================================================================
 
 math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& theFunction,
-                                           const int                        theNbIterations)
+                                           const int           theNbIterations)
 
     : Delta(1, theFunction.NbVariables()),
       Sol(1, theFunction.NbVariables()),
@@ -734,7 +734,7 @@ void math_FunctionSetRoot::SetTolerance(const math_Vector& theTolerance)
 
 void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& theFunction,
                                    const math_Vector&               theStartingPoint,
-                                   const bool                       theStopOnDivergent)
+                                   const bool           theStopOnDivergent)
 {
   Perform(theFunction, theStartingPoint, InfBound, SupBound, theStopOnDivergent);
 }
@@ -745,7 +745,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                    const math_Vector&               StartingPoint,
                                    const math_Vector&               theInfBound,
                                    const math_Vector&               theSupBound,
-                                   bool                             theStopOnDivergent)
+                                   bool                 theStopOnDivergent)
 {
   int Ninc = F.NbVariables(), Neq = F.NbEquations();
 
@@ -755,24 +755,25 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     throw Standard_DimensionError();
   }
 
-  int                i;
-  bool               ChangeDirection = false, Sort = false, isNewSol = false;
-  bool               Good, Verif;
-  bool               Stop;
-  const double       EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
-  double             F2, PreviousMinimum, Dy, OldF;
-  double             Ambda, Ambda2, Gnr1, Oldgr;
-  math_Vector        InvLengthMax(1, Ninc); // Pour bloquer les pas a 1/4 du domaine
-  math_IntegerVector aConstraints(1, Ninc); // Pour savoir sur quels bord on se trouve
+  int i;
+  bool ChangeDirection = false, Sort = false,
+                   isNewSol = false;
+  bool    Good, Verif;
+  bool    Stop;
+  const double EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
+  double       F2, PreviousMinimum, Dy, OldF;
+  double       Ambda, Ambda2, Gnr1, Oldgr;
+  math_Vector         InvLengthMax(1, Ninc); // Pour bloquer les pas a 1/4 du domaine
+  math_IntegerVector  aConstraints(1, Ninc); // Pour savoir sur quels bord on se trouve
   for (i = 1; i <= Ninc; i++)
   {
     const double aSupBound  = std::min(theSupBound(i), Precision::Infinite());
     const double anInfBound = std::max(theInfBound(i), -Precision::Infinite());
-    InvLengthMax(i)         = 1. / std::max((aSupBound - anInfBound) / 4, 1.e-9);
+    InvLengthMax(i)                = 1. / std::max((aSupBound - anInfBound) / 4, 1.e-9);
   }
 
-  MyDirFunction F_Dir(Temp1, Temp2, Temp3, Temp4, F);
-  int           DescenteIter;
+  MyDirFunction    F_Dir(Temp1, Temp2, Temp3, Temp4, F);
+  int DescenteIter;
 
   Done  = false;
   Sol   = StartingPoint;
@@ -813,7 +814,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Rank 0 of Save should only be used for the accelerator test at the end of the loop.
   // If we are already on the solution, we need to bypass this test to avoid
   // making a second iteration...
-  Save(0)          = std::max(F2, EpsSqrt);
+  Save(0)                 = std::max(F2, EpsSqrt);
   double aTol_Func = Epsilon(F2);
   FSR_DEBUG("=== Mode Debug de Function Set Root" << std::endl);
   FSR_DEBUG("    F2 Initial = " << F2);

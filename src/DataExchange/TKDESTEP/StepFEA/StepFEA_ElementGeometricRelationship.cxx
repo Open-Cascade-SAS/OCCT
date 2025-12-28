@@ -28,9 +28,9 @@ StepFEA_ElementGeometricRelationship::StepFEA_ElementGeometricRelationship() {}
 //=================================================================================================
 
 void StepFEA_ElementGeometricRelationship::Init(
-  const StepFEA_ElementOrElementGroup&                             aElementRef,
+  const StepFEA_ElementOrElementGroup&                        aElementRef,
   const occ::handle<StepElement_AnalysisItemWithinRepresentation>& aItem,
-  const StepElement_ElementAspect&                                 aAspect)
+  const StepElement_ElementAspect&                            aAspect)
 {
 
   theElementRef = aElementRef;
@@ -57,8 +57,8 @@ void StepFEA_ElementGeometricRelationship::SetElementRef(
 
 //=================================================================================================
 
-occ::handle<StepElement_AnalysisItemWithinRepresentation> StepFEA_ElementGeometricRelationship::
-  Item() const
+occ::handle<StepElement_AnalysisItemWithinRepresentation> StepFEA_ElementGeometricRelationship::Item()
+  const
 {
   return theItem;
 }

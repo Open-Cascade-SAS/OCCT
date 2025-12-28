@@ -30,8 +30,7 @@ IMPLEMENT_DOMSTRING(ValueIndexString, "values")
 
 //=================================================================================================
 
-XmlMXCAFDoc_DimTolDriver::XmlMXCAFDoc_DimTolDriver(
-  const occ::handle<Message_Messenger>& theMsgDriver)
+XmlMXCAFDoc_DimTolDriver::XmlMXCAFDoc_DimTolDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, "xcaf", "DimTol")
 {
 }
@@ -47,11 +46,11 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_DimTolDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     XmlObjMgt_RRelocationTable&) const
+bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
+                                                 XmlObjMgt_RRelocationTable&) const
 {
-  int                 aKind;
+  int    aKind;
   XmlObjMgt_DOMString anIntStr = XmlObjMgt::GetStringValue(theSource);
 
   if (anIntStr.GetInteger(aKind) == false)
@@ -73,11 +72,10 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
     return false;
   }
 
-  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString(aNameStr.GetString());
-  occ::handle<TCollection_HAsciiString> aDescr =
-    new TCollection_HAsciiString(aDescrStr.GetString());
+  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(aNameStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
 
-  int                 aFirstInd, aLastInd;
+  int    aFirstInd, aLastInd;
   XmlObjMgt_DOMString aFirstIndex = anElement.getAttribute(::FirstIndexString());
   if (aFirstIndex == NULL)
     aFirstInd = 1;
@@ -99,15 +97,15 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
     return false;
   }
 
-  const int                                aLength = aLastInd - aFirstInd + 1;
+  const int        aLength = aLastInd - aFirstInd + 1;
   occ::handle<NCollection_HArray1<double>> aHArr;
   if (aLength > 0)
   {
     // read real array
-    double                     aValue  = 0.;
+    double              aValue  = 0.;
     const XmlObjMgt_DOMString& aString = anElement.getAttribute(::ValueIndexString());
     aHArr                              = new NCollection_HArray1<double>(aFirstInd, aLastInd);
-    const char* aValueStr              = static_cast<const char*>(aString.GetString());
+    const char* aValueStr         = static_cast<const char*>(aString.GetString());
     for (int ind = aFirstInd; ind <= aLastInd; ind++)
     {
       if (!XmlObjMgt::GetReal(aValueStr, aValue))
@@ -134,7 +132,7 @@ bool XmlMXCAFDoc_DimTolDriver::Paste(const XmlObjMgt_Persistent&       theSource
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMXCAFDoc_DimTolDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                     XmlObjMgt_Persistent&             theTarget,
+                                     XmlObjMgt_Persistent&        theTarget,
                                      XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<XCAFDoc_DimTol> anAtt = occ::down_cast<XCAFDoc_DimTol>(theSource);
@@ -150,7 +148,7 @@ void XmlMXCAFDoc_DimTolDriver::Paste(const occ::handle<TDF_Attribute>& theSource
   theTarget.Element().setAttribute(::DescrIndexString(), aDescrString);
 
   occ::handle<NCollection_HArray1<double>> aHArr     = anAtt->GetVal();
-  int                                      aFirstInd = 1, aLastInd = 0;
+  int              aFirstInd = 1, aLastInd = 0;
   if (!aHArr.IsNull())
   {
     aFirstInd = aHArr->Lower();

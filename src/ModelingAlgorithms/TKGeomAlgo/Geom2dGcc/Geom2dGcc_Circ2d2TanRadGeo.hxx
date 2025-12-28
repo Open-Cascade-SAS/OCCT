@@ -24,7 +24,13 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class GccEnt_QualifiedCirc;
 class Geom2dGcc_QCurve;
 class GccEnt_QualifiedLin;
@@ -63,8 +69,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedCirc& Qualified1,
                                              const Geom2dGcc_QCurve&     Qualified2,
-                                             const double                Radius,
-                                             const double                Tolerance);
+                                             const double         Radius,
+                                             const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d line and a curve
@@ -72,8 +78,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT Geom2dGcc_Circ2d2TanRadGeo(const GccEnt_QualifiedLin& Qualified1,
                                              const Geom2dGcc_QCurve&    Qualified2,
-                                             const double               Radius,
-                                             const double               Tolerance);
+                                             const double        Radius,
+                                             const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two curves with
@@ -81,8 +87,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                              const Geom2dGcc_QCurve& Qualified2,
-                                             const double            Radius,
-                                             const double            Tolerance);
+                                             const double     Radius,
+                                             const double     Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a curve and a point
@@ -90,8 +96,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT Geom2dGcc_Circ2d2TanRadGeo(const Geom2dGcc_QCurve& Qualified1,
                                              const gp_Pnt2d&         Point2,
-                                             const double            Radius,
-                                             const double            Tolerance);
+                                             const double     Radius,
+                                             const double     Tolerance);
 
   //! This method returns True if the algorithm succeeded.
   Standard_EXPORT bool IsDone() const;
@@ -115,9 +121,9 @@ public:
   //! It returns the real qualifiers (the qualifiers given to the
   //! constructor method in case of enclosed, enclosing and outside
   //! and the qualifiers computedin case of unqualified).
-  Standard_EXPORT void WhichQualifier(const int        Index,
-                                      GccEnt_Position& Qualif1,
-                                      GccEnt_Position& Qualif2) const;
+  Standard_EXPORT void WhichQualifier(const int Index,
+                                      GccEnt_Position&       Qualif1,
+                                      GccEnt_Position&       Qualif2) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -129,9 +135,9 @@ public:
   //! It raises NotDone if the construction algorithm did not
   //! succeed.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the second argument.
@@ -144,9 +150,9 @@ public:
   //! It raises NotDone if the construction algorithm did not
   //! succeed.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument.
@@ -165,19 +171,19 @@ public:
   Standard_EXPORT bool IsTheSame2(const int Index) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
-  NCollection_Array1<int>             TheSame1;
-  NCollection_Array1<int>             TheSame2;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<int> TheSame2;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
 };
 
 #endif // _Geom2dGcc_Circ2d2TanRadGeo_HeaderFile

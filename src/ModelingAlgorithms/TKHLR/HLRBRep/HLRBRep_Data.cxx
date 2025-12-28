@@ -26,6 +26,7 @@
 #include <gp_Dir2d.hxx>
 #include <HLRAlgo.hxx>
 #include <HLRAlgo_Interference.hxx>
+#include <HLRAlgo_Interference.hxx>
 #include <NCollection_List.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Data.hxx>
@@ -40,6 +41,7 @@
 #include <Standard_Type.hxx>
 #include <StdFail_UndefinedDerivative.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_Data, Standard_Transient)
@@ -84,8 +86,8 @@ public:
   int*  nbUV;  //-- nbUV[i][j]   nombre de valeurs pour la ligne i
   int   N;
 
-  long unsigned** TabBit;
-  int             nTabBit;
+  long unsigned**  TabBit;
+  int nTabBit;
 
 #ifdef OCCT_DEBUG
   int StNbLect, StNbEcr, StNbMax, StNbMoy, StNbMoyNonNul; //-- STAT
@@ -264,8 +266,10 @@ public:
 
       //-- std::cout<<" \n alloc nbUV["<<i0<<"]="<<nbUV[i0];
 
-      double* NvLigneUV  = (double*)malloc((nbUV[i0] + SIZEUV) * sizeof(double));
-      int*    NvLigneInd = (int*)malloc((nbUV[i0] + SIZEUV) * sizeof(int));
+      double* NvLigneUV =
+        (double*)malloc((nbUV[i0] + SIZEUV) * sizeof(double));
+      int* NvLigneInd =
+        (int*)malloc((nbUV[i0] + SIZEUV) * sizeof(int));
       //--
       //-- Recopie des anciennes valeurs ds la nouvelle ligne
       //--
@@ -294,19 +298,19 @@ public:
     bool TriOk;
     do
     {
-      TriOk   = true;
+      TriOk                = true;
       int im1 = 0;
       for (i = 1; IndUV[i0][i] != -1 && i < nbUV[i0]; i++, im1++)
       {
         if (IndUV[i0][i] > IndUV[i0][im1])
         {
-          TriOk          = false;
-          k              = IndUV[i0][i];
-          IndUV[i0][i]   = IndUV[i0][im1];
-          IndUV[i0][im1] = k;
-          double t       = UV[i0][i];
-          UV[i0][i]      = UV[i0][im1];
-          UV[i0][im1]    = t;
+          TriOk           = false;
+          k               = IndUV[i0][i];
+          IndUV[i0][i]    = IndUV[i0][im1];
+          IndUV[i0][im1]  = k;
+          double t = UV[i0][i];
+          UV[i0][i]       = UV[i0][im1];
+          UV[i0][im1]     = t;
         }
       }
     } while (TriOk == false);
@@ -388,9 +392,9 @@ public:
     {
       ResetTabBit(nTabBit);
     }
-    TabBit  = (long unsigned**)malloc((nbedgs) * sizeof(long unsigned*));
-    nTabBit = nbedgs;
-    int n   = 1 + (nbedgs >> 5);
+    TabBit             = (long unsigned**)malloc((nbedgs) * sizeof(long unsigned*));
+    nTabBit            = nbedgs;
+    int n = 1 + (nbedgs >> 5);
 
     for (int i = 0; i < nbedgs; i++)
     {
@@ -411,8 +415,8 @@ public:
     if (i0 > i1)
     {
       int t = i0;
-      i0    = i1;
-      i1    = t;
+      i0                 = i1;
+      i1                 = t;
     }
     int c = i1 >> 5;
     int o = i1 & 31;
@@ -428,8 +432,8 @@ public:
     if (i0 > i1)
     {
       int t = i0;
-      i0    = i1;
-      i1    = t;
+      i0                 = i1;
+      i1                 = t;
     }
     int c = i1 >> 5;
     int o = i1 & 31;
@@ -443,7 +447,9 @@ public:
   }
 
   //-- ============================================================
-  void SetIntersection(int i0, int i1, const IntRes2d_IntersectionPoint& IP)
+  void SetIntersection(int                  i0,
+                       int                  i1,
+                       const IntRes2d_IntersectionPoint& IP)
   {
     const IntRes2d_Transition& T1 = IP.TransitionOfFirst();
     const IntRes2d_Transition& T2 = IP.TransitionOfSecond();
@@ -461,7 +467,10 @@ public:
   }
 
   //-- ============================================================
-  void GetSingleIntersection(int i0, int i1, double& u, double& v)
+  void GetSingleIntersection(int i0,
+                             int i1,
+                             double&   u,
+                             double&   v)
   {
     u = Get(i0, i1);
     if (u != RealLast())
@@ -479,10 +488,13 @@ public:
 
 //=================================================================================================
 
-static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float& t)
+static void AdjustParameter(HLRBRep_EdgeData*      E,
+                            const bool h,
+                            double&         p,
+                            float&    t)
 {
-  double p1, p2;
-  float  t1, t2;
+  double      p1, p2;
+  float t1, t2;
   if (h)
   {
     E->Status().Bounds(p, t, p2, t2);
@@ -499,7 +511,9 @@ static void AdjustParameter(HLRBRep_EdgeData* E, const bool h, double& p, float&
 
 //=================================================================================================
 
-HLRBRep_Data::HLRBRep_Data(const int NV, const int NE, const int NF)
+HLRBRep_Data::HLRBRep_Data(const int NV,
+                           const int NE,
+                           const int NF)
     : myNbVertices(NV),
       myNbEdges(NE),
       myNbFaces(NF),
@@ -526,9 +540,9 @@ void HLRBRep_Data::Destroy()
 //=================================================================================================
 
 void HLRBRep_Data::Write(const occ::handle<HLRBRep_Data>& DS,
-                         const int                        dv,
-                         const int                        de,
-                         const int                        df)
+                         const int      dv,
+                         const int      de,
+                         const int      df)
 {
   int n1edge = DS->NbEdges();
   int n1face = DS->NbFaces();
@@ -566,12 +580,12 @@ void HLRBRep_Data::Write(const occ::handle<HLRBRep_Data>& DS,
     if (de != 0)
     {
       const occ::handle<HLRAlgo_WiresBlock>& wb = fd->Wires();
-      int                                    nw = wb->NbWires();
+      int                  nw = wb->NbWires();
 
       for (int iw = 1; iw <= nw; iw++)
       {
         const occ::handle<HLRAlgo_EdgesBlock>& eb = wb->Wire(iw);
-        int                                    ne = eb->NbEdges();
+        int                  ne = eb->NbEdges();
 
         for (int ie = 1; ie <= ne; ie++)
           eb->Edge(ie, eb->Edge(ie) + de);
@@ -589,17 +603,17 @@ void HLRBRep_Data::Write(const occ::handle<HLRBRep_Data>& DS,
 
 void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
 {
-  myProj           = P;
-  const gp_Trsf& T = myProj.Transformation();
-  int            i;
-  double         tolMinMax = 0;
+  myProj             = P;
+  const gp_Trsf&   T = myProj.Transformation();
+  int i;
+  double    tolMinMax = 0;
 
   HLRAlgo_EdgesBlock::MinMaxIndices FaceMin, FaceMax;
   HLRAlgo_EdgesBlock::MinMaxIndices MinMaxFace;
   HLRAlgo_EdgesBlock::MinMaxIndices WireMin, WireMax, MinMaxWire;
   HLRAlgo_EdgesBlock::MinMaxIndices EdgeMin, EdgeMax;
   HLRAlgo_EdgesBlock::MinMaxIndices MinMaxEdge;
-  double                            TotMin[16], TotMax[16];
+  double                     TotMin[16], TotMax[16];
   HLRAlgo::InitMinMax(Precision::Infinite(), TotMin, TotMax);
 
   // compute the global MinMax
@@ -635,8 +649,8 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
   for (i = 0; i <= 15; i++)
     myDeca[i] = -TotMin[i] + precad;
 
-  double tol;
-  bool   ver1, ver2;
+  double    tol;
+  bool ver1, ver2;
 
   // update the edges
   // ****************
@@ -692,10 +706,10 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
     ed.UpdateMinMax(MinMaxEdge);
     if (ed.Vertical())
     {
-      ver1      = true;
-      ver2      = true;
-      int  vsta = ed.VSta();
-      int  vend = ed.VEnd();
+      ver1                  = true;
+      ver2                  = true;
+      int vsta = ed.VSta();
+      int vend = ed.VEnd();
       bool vout = ed.OutLVSta() || ed.OutLVEnd();
       bool vcut = ed.CutAtSta() || ed.CutAtEnd();
 
@@ -930,8 +944,8 @@ void HLRBRep_Data::Update(const HLRAlgo_Projector& P)
 //=================================================================================================
 
 void HLRBRep_Data::InitBoundSort(const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxTot,
-                                 const int                                e1,
-                                 const int                                e2)
+                                 const int                   e1,
+                                 const int                   e2)
 {
   myNbrSortEd                                         = 0;
   const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxShap = MinMaxTot;
@@ -967,9 +981,7 @@ void HLRBRep_Data::InitBoundSort(const HLRAlgo_EdgesBlock::MinMaxIndices& MinMax
 
 //=================================================================================================
 
-void HLRBRep_Data::InitEdge(
-  const int                                                                        FI,
-  NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
+void HLRBRep_Data::InitEdge(const int FI, NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST)
 {
   myHideCount++;
   myHideCount++;
@@ -1045,8 +1057,8 @@ bool HLRBRep_Data::MoreEdge()
     }
     else
     {
-      iFaceTest = false;     // at the end of the test
-      iFaceSimp = iFaceSmpl; // we know if it is a simple face
+      iFaceTest = false; // at the end of the test
+      iFaceSimp = iFaceSmpl;      // we know if it is a simple face
       iFaceData->Simple(iFaceSimp);
       myCurSortEd = 1;
       NextEdge(false);
@@ -1263,11 +1275,11 @@ void HLRBRep_Data::NextInterference()
             if (!rej)
             {
               nbCal1Intersection++;
-              bool h1      = false;
-              bool e1      = false;
-              bool h2      = false;
-              bool e2      = false;
-              mySameVertex = false;
+              bool h1 = false;
+              bool e1 = false;
+              bool h2 = false;
+              bool e2 = false;
+              mySameVertex        = false;
 
               if (myLE == myFE)
               {
@@ -1420,26 +1432,28 @@ bool HLRBRep_Data::RejectedInterference()
   }
   else
   {
-    int  n          = iInterf - myNbPoints;
+    int n          = iInterf - myNbPoints;
     bool firstPoint = (n & 1) != 0;
-    int  nseg       = n >> 1;
+    int nseg       = n >> 1;
     if (firstPoint)
       nseg++;
     double pf = ((HLRBRep_Curve*)myLEGeom)
-                  ->Parameter3d(myIntersector.Segment(nseg).FirstPoint().ParamOnFirst());
+                         ->Parameter3d(myIntersector.Segment(nseg).FirstPoint().ParamOnFirst());
     double pl = ((HLRBRep_Curve*)myLEGeom)
-                  ->Parameter3d(myIntersector.Segment(nseg).LastPoint().ParamOnFirst());
+                         ->Parameter3d(myIntersector.Segment(nseg).LastPoint().ParamOnFirst());
     if (pf > pl)
       firstPoint = !firstPoint;
 
     if (firstPoint)
     {
-      bool ret1 = RejectedPoint(myIntersector.Segment(nseg).FirstPoint(), TopAbs_FORWARD, nseg);
+      bool ret1 =
+        RejectedPoint(myIntersector.Segment(nseg).FirstPoint(), TopAbs_FORWARD, nseg);
       return (ret1);
     }
     else
     {
-      bool ret2 = RejectedPoint(myIntersector.Segment(nseg).LastPoint(), TopAbs_REVERSED, -nseg);
+      bool ret2 =
+        RejectedPoint(myIntersector.Segment(nseg).LastPoint(), TopAbs_REVERSED, -nseg);
       return (ret2);
     }
   }
@@ -1454,7 +1468,10 @@ bool HLRBRep_Data::AboveInterference()
 
 //=================================================================================================
 
-void HLRBRep_Data::LocalLEGeometry2D(const double Param, gp_Dir2d& Tg, gp_Dir2d& Nm, double& Cu)
+void HLRBRep_Data::LocalLEGeometry2D(const double Param,
+                                     gp_Dir2d&           Tg,
+                                     gp_Dir2d&           Nm,
+                                     double&      Cu)
 {
   myLLProps.SetParameter(Param);
   if (!myLLProps.IsTangentDefined())
@@ -1469,11 +1486,11 @@ void HLRBRep_Data::LocalLEGeometry2D(const double Param, gp_Dir2d& Tg, gp_Dir2d&
 
 //=================================================================================================
 
-void HLRBRep_Data::LocalFEGeometry2D(const int    FE,
-                                     const double Param,
-                                     gp_Dir2d&    Tg,
-                                     gp_Dir2d&    Nm,
-                                     double&      Cu)
+void HLRBRep_Data::LocalFEGeometry2D(const int FE,
+                                     const double    Param,
+                                     gp_Dir2d&              Tg,
+                                     gp_Dir2d&              Nm,
+                                     double&         Cu)
 {
   const HLRBRep_Curve* aCurve = &myEData(FE).ChangeGeometry();
   myFLProps.SetCurve(aCurve);
@@ -1490,10 +1507,10 @@ void HLRBRep_Data::LocalFEGeometry2D(const int    FE,
 
 //=================================================================================================
 
-void HLRBRep_Data::EdgeState(const double  p1,
-                             const double  p2,
-                             TopAbs_State& stbef,
-                             TopAbs_State& staft)
+void HLRBRep_Data::EdgeState(const double p1,
+                             const double p2,
+                             TopAbs_State&       stbef,
+                             TopAbs_State&       staft)
 {
   // compute the state of The Edge near the Intersection
   // this method should give the states before and after
@@ -1527,7 +1544,8 @@ void HLRBRep_Data::EdgeState(const double  p1,
       if (NrmFace.Dot(V) > 0.)
         NrmFace.Reverse();
 
-      const double scal = (TngEdge.SquareMagnitude() > 1.e-10) ? NrmFace.Dot(gp_Dir(TngEdge)) : 0.;
+      const double scal =
+        (TngEdge.SquareMagnitude() > 1.e-10) ? NrmFace.Dot(gp_Dir(TngEdge)) : 0.;
 
       if (scal > myToler * 10)
       {
@@ -1566,17 +1584,17 @@ void HLRBRep_Data::EdgeState(const double  p1,
 
 //=================================================================================================
 
-int HLRBRep_Data::HidingStartLevel(const int                                     E,
-                                   const HLRBRep_EdgeData&                       ED,
-                                   const NCollection_List<HLRAlgo_Interference>& IL)
+int HLRBRep_Data::HidingStartLevel(const int          E,
+                                                const HLRBRep_EdgeData&         ED,
+                                                const NCollection_List<HLRAlgo_Interference>& IL)
 {
-  bool                                             Loop;
+  bool                       Loop;
   NCollection_List<HLRAlgo_Interference>::Iterator It;
-  const HLRBRep_Curve&                             EC     = ED.Geometry();
-  double                                           sta    = EC.Parameter3d(EC.FirstParameter());
-  double                                           end    = EC.Parameter3d(EC.LastParameter());
-  double                                           tolpar = (end - sta) * 0.01;
-  double                                           param;
+  const HLRBRep_Curve&                   EC     = ED.Geometry();
+  double                          sta    = EC.Parameter3d(EC.FirstParameter());
+  double                          end    = EC.Parameter3d(EC.LastParameter());
+  double                          tolpar = (end - sta) * 0.01;
+  double                          param;
   Loop = true;
   It.Initialize(IL);
 
@@ -1594,7 +1612,7 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
     }
     It.Next();
   }
-  param     = 0.5 * (sta + end);
+  param                  = 0.5 * (sta + end);
   int level = 0;
   /*TopAbs_State st = */ Classify(E, ED, true, level, param);
   Loop = true;
@@ -1603,7 +1621,7 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
   while (It.More() && Loop)
   {
     const HLRAlgo_Interference& Int = It.Value();
-    double                      p   = Int.Intersection().Parameter();
+    double               p   = Int.Intersection().Parameter();
     if (p < param - tolpar)
     {
       switch (Int.Transition())
@@ -1639,8 +1657,8 @@ int HLRBRep_Data::HidingStartLevel(const int                                    
 
 TopAbs_State HLRBRep_Data::Compare(const int E, const HLRBRep_EdgeData& ED)
 {
-  int    level  = 0;
-  double parbid = 0.;
+  int level  = 0;
+  double    parbid = 0.;
   return Classify(E, ED, false, level, parbid);
 }
 
@@ -1651,17 +1669,17 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
   (void)I; // avoid compiler warning
 
   const occ::handle<HLRAlgo_WiresBlock>& wb = FD.Wires();
-  int                                    nw = wb->NbWires();
-  int                                    iw1, ie1, ne1;
-  const gp_Trsf&                         T              = myProj.Transformation();
-  const gp_Trsf&                         TI             = myProj.InvertedTransformation();
-  bool                                   inverted       = false;
-  bool                                   FirstInversion = true;
+  int                  nw = wb->NbWires();
+  int                  iw1, ie1, ne1;
+  const gp_Trsf&                    T              = myProj.Transformation();
+  const gp_Trsf&                    TI             = myProj.InvertedTransformation();
+  bool                  inverted       = false;
+  bool                  FirstInversion = true;
 
   for (iw1 = 1; iw1 <= nw; iw1++)
   {
     const occ::handle<HLRAlgo_EdgesBlock>& eb1 = wb->Wire(iw1);
-    ne1                                        = eb1->NbEdges();
+    ne1                                   = eb1->NbEdges();
 
     for (ie1 = 1; ie1 <= ne1; ie1++)
     {
@@ -1676,8 +1694,8 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
         double p, pu, pv, r;
         myFEGeom                  = &(ed1.ChangeGeometry());
         const HLRBRep_Curve& EC   = ed1.Geometry();
-        int                  vsta = ed1.VSta();
-        int                  vend = ed1.VEnd();
+        int     vsta = ed1.VSta();
+        int     vend = ed1.VEnd();
         if (vsta == 0 && vend == 0)
           p = 0;
         else if (vsta == 0)
@@ -1707,7 +1725,7 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
           if (mySLProps.IsNormalDefined())
           {
             double curv = HLRBRep_EdgeFaceTool::CurvatureValue(iFaceGeom, pu, pv, V);
-            gp_Vec Nm   = mySLProps.Normal();
+            gp_Vec        Nm   = mySLProps.Normal();
             if (curv == 0)
             {
 #ifdef OCCT_DEBUG
@@ -1765,16 +1783,16 @@ bool HLRBRep_Data::OrientOutLine(const int I, HLRBRep_FaceData& FD)
 
 void HLRBRep_Data::OrientOthEdge(const int I, HLRBRep_FaceData& FD)
 {
-  double                                 p, pu, pv, r;
+  double                     p, pu, pv, r;
   const occ::handle<HLRAlgo_WiresBlock>& wb = FD.Wires();
-  int                                    nw = wb->NbWires();
-  int                                    iw1, ie1, ne1;
-  const gp_Trsf&                         T = myProj.Transformation();
+  int                  nw = wb->NbWires();
+  int                  iw1, ie1, ne1;
+  const gp_Trsf&                    T = myProj.Transformation();
 
   for (iw1 = 1; iw1 <= nw; iw1++)
   {
     const occ::handle<HLRAlgo_EdgesBlock>& eb1 = wb->Wire(iw1);
-    ne1                                        = eb1->NbEdges();
+    ne1                                   = eb1->NbEdges();
 
     for (ie1 = 1; ie1 <= ne1; ie1++)
     {
@@ -1832,10 +1850,10 @@ void HLRBRep_Data::OrientOthEdge(const int I, HLRBRep_FaceData& FD)
 namespace
 {
 
-static void REJECT1(const double                       theDeca[],
-                    const double                       theTotMin[],
-                    const double                       theTotMax[],
-                    const double                       theSurD[],
+static void REJECT1(const double                theDeca[],
+                    const double                theTotMin[],
+                    const double                theTotMax[],
+                    const double                theSurD[],
                     HLRAlgo_EdgesBlock::MinMaxIndices& theVertMin,
                     HLRAlgo_EdgesBlock::MinMaxIndices& theVertMax)
 {
@@ -1875,25 +1893,25 @@ static void REJECT1(const double                       theDeca[],
 
 } // namespace
 
-TopAbs_State HLRBRep_Data::Classify(const int               E,
+TopAbs_State HLRBRep_Data::Classify(const int  E,
                                     const HLRBRep_EdgeData& ED,
-                                    const bool              LevelFlag,
-                                    int&                    Level,
-                                    const double            param)
+                                    const bool  LevelFlag,
+                                    int&       Level,
+                                    const double     param)
 {
   (void)E; // avoid compiler warning
 
   nbClassification++;
   HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
-  double                            TotMin[16], TotMax[16];
+  double                     TotMin[16], TotMax[16];
 
   int i;
   Level              = 0;
   TopAbs_State state = TopAbs_OUT;
   //  bool rej = false;
   const HLRBRep_Curve& EC = ED.Geometry();
-  double               sta, xsta, ysta, zsta, end, xend, yend, zend;
-  double               tol = (double)(ED.Tolerance());
+  double        sta, xsta, ysta, zsta, end, xend, yend, zend;
+  double        tol = (double)(ED.Tolerance());
 
   if (LevelFlag)
   {
@@ -2074,7 +2092,7 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
     printf("\npoint PNR%d  %g %g %g", ++nump1, PLim.X(), PLim.Y(), PLim.Z());
   }
 
-  gp_Lin L    = myProj.Shoot(Psta.X(), Psta.Y());
+  gp_Lin        L    = myProj.Shoot(Psta.X(), Psta.Y());
   double wLim = ElCLib::Parameter(L, PLim);
   myIntersector.Perform(L, wLim);
   if (myIntersector.IsDone())
@@ -2109,7 +2127,7 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
       else
         PeriodV = 0;
       gp_Pnt                            PInter;
-      double                            u, v, w;
+      double                     u, v, w;
       IntCurveSurface_TransitionOnCurve Tr;
 
       for (i = 1; i <= nbPoints; i++)
@@ -2144,20 +2162,20 @@ q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
 
 TopAbs_State HLRBRep_Data::SimplClassify(const int /*E*/,
                                          const HLRBRep_EdgeData& ED,
-                                         const int               Nbp,
-                                         const double            p1,
-                                         const double            p2)
+                                         const int  Nbp,
+                                         const double     p1,
+                                         const double     p2)
 {
   nbClassification++;
   HLRAlgo_EdgesBlock::MinMaxIndices VertMin, VertMax, MinMaxVert;
-  double                            TotMin[16], TotMax[16];
+  double                     TotMin[16], TotMax[16];
 
-  int          i;
-  TopAbs_State state = TopAbs_IN;
+  int i;
+  TopAbs_State     state = TopAbs_IN;
   //  bool rej = false;
   const HLRBRep_Curve& EC = ED.Geometry();
-  double               sta, xsta, ysta, zsta, dp;
-  double               tol = (double)(ED.Tolerance());
+  double        sta, xsta, ysta, zsta, dp;
+  double        tol = (double)(ED.Tolerance());
 
   dp = (p2 - p1) / (Nbp + 1);
 
@@ -2201,20 +2219,20 @@ TopAbs_State HLRBRep_Data::SimplClassify(const int /*E*/,
 //=======================================================================
 
 bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
-                                 const TopAbs_Orientation          BoundOri,
-                                 const int                         NumSeg)
+                                             const TopAbs_Orientation          BoundOri,
+                                             const int            NumSeg)
 {
-  int                        Ind = 0;
-  int                        decal;
-  double                     p1, p2, dz;
-  float                      t1, t2;
+  int           Ind = 0;
+  int           decal;
+  double              p1, p2, dz;
+  float         t1, t2;
   TopAbs_State               st;
   TopAbs_Orientation         Orie     = TopAbs_FORWARD;
   TopAbs_Orientation         Or2      = TopAbs_INTERNAL;
-  bool                       inverted = false;
+  bool           inverted = false;
   const IntRes2d_Transition* Tr1;
   const IntRes2d_Transition* Tr2;
-  double                     TolZ = myBigSize * 0.00001;
+  double              TolZ = myBigSize * 0.00001;
 
   p1 = ((HLRBRep_Curve*)myLEGeom)->Parameter3d(PInter.ParamOnFirst());
   p2 = ((HLRBRep_Curve*)myFEGeom)->Parameter3d(PInter.ParamOnSecond());
@@ -2224,11 +2242,11 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
   { // auto intersection can be inverted
     if (dz >= TolZ)
     {
-      inverted = true;
+      inverted        = true;
       double p = p1;
-      p1       = p2;
-      p2       = p;
-      dz       = -dz;
+      p1              = p2;
+      p2              = p;
+      dz              = -dz;
     }
   }
 
@@ -2320,10 +2338,10 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       if (mySameVertex) return true;        // si intersection a une extremite verticale !
       // clang-format on
 
-      bool     douteux = false;
-      double   psav    = p2;
-      gp_Pnt2d Ptsav;
-      gp_Vec2d Tgsav, Nmsav;
+      bool douteux = false;
+      double    psav    = p2;
+      gp_Pnt2d         Ptsav;
+      gp_Vec2d         Tgsav, Nmsav;
       if (Tr2->PositionOnCurve() == IntRes2d_Head)
       {
         Ind = ((HLRBRep_EdgeData*)myFEData)->VSta();
@@ -2365,11 +2383,11 @@ bool HLRBRep_Data::RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
       myIntf.ChangeBoundary().Set2D(myFE, p2);
     }
     if (Ori != TopAbs_INTERNAL)
-    {                           // correction de la transition  sur myLE
-      bool     douteux = false; // si intersection a une extremite verticale !
-      double   psav    = p1;
-      gp_Pnt2d Ptsav;
-      gp_Vec2d Tgsav, Nmsav;
+    {                                            // correction de la transition  sur myLE
+      bool douteux = false; // si intersection a une extremite verticale !
+      double    psav    = p1;
+      gp_Pnt2d         Ptsav;
+      gp_Vec2d         Tgsav, Nmsav;
       if (Ori == TopAbs_FORWARD)
       {
         AdjustParameter((HLRBRep_EdgeData*)myLEData, true, p1, t1);

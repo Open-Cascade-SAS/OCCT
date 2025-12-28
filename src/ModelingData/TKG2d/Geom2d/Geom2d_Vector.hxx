@@ -74,6 +74,7 @@ public:
 
 protected:
   gp_Vec2d gpVec2d;
+
 };
 
 #endif // _Geom2d_Vector_HeaderFile

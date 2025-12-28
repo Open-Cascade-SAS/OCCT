@@ -39,8 +39,8 @@ TopOpeBRepDS_Curve::TopOpeBRepDS_Curve()
 //=================================================================================================
 
 TopOpeBRepDS_Curve::TopOpeBRepDS_Curve(const occ::handle<Geom_Curve>& C,
-                                       const double                   T,
-                                       const bool                     IsWalk)
+                                       const double       T,
+                                       const bool    IsWalk)
     : myFirst(0.0),
       myLast(0.0),
       myRangeDefined(false),
@@ -54,8 +54,8 @@ TopOpeBRepDS_Curve::TopOpeBRepDS_Curve(const occ::handle<Geom_Curve>& C,
 //=================================================================================================
 
 void TopOpeBRepDS_Curve::DefineCurve(const occ::handle<Geom_Curve>& C,
-                                     const double                   T,
-                                     const bool                     IsWalk)
+                                     const double       T,
+                                     const bool    IsWalk)
 {
   myCurve     = C;
   myTolerance = T;

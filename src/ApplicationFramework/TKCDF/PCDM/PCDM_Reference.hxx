@@ -30,9 +30,9 @@ public:
 
   Standard_EXPORT PCDM_Reference();
 
-  Standard_EXPORT PCDM_Reference(const int                         aReferenceIdentifier,
+  Standard_EXPORT PCDM_Reference(const int            aReferenceIdentifier,
                                  const TCollection_ExtendedString& aFileName,
-                                 const int                         aDocumentVersion);
+                                 const int            aDocumentVersion);
 
   Standard_EXPORT int ReferenceIdentifier() const;
 
@@ -41,9 +41,9 @@ public:
   Standard_EXPORT int DocumentVersion() const;
 
 private:
-  int                        myReferenceIdentifier;
+  int           myReferenceIdentifier;
   TCollection_ExtendedString myFileName;
-  int                        myDocumentVersion;
+  int           myDocumentVersion;
 };
 
 #endif // _PCDM_Reference_HeaderFile

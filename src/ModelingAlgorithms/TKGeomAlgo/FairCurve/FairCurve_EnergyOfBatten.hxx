@@ -30,6 +30,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Boolean.hxx>
 #include <math_Vector.hxx>
 
@@ -45,17 +47,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Angles correspond to the Ox axis
-  Standard_EXPORT FairCurve_EnergyOfBatten(
-    const int                                         BSplOrder,
-    const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
-    const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-    const int                                         ContrOrder1,
-    const int                                         ContrOrder2,
-    const FairCurve_BattenLaw&                        Law,
-    const double                                      LengthSliding,
-    const bool                                        FreeSliding = true,
-    const double                                      Angle1      = 0,
-    const double                                      Angle2      = 0);
+  Standard_EXPORT FairCurve_EnergyOfBatten(const int               BSplOrder,
+                                           const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+                                           const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+                                           const int               ContrOrder1,
+                                           const int               ContrOrder2,
+                                           const FairCurve_BattenLaw&           Law,
+                                           const double                  LengthSliding,
+                                           const bool FreeSliding = true,
+                                           const double    Angle1      = 0,
+                                           const double    Angle2      = 0);
 
   //! return the lengthSliding = P1P2 + Sliding
   double LengthSliding() const;
@@ -71,11 +72,12 @@ protected:
   Standard_EXPORT virtual void ComputePoles(const math_Vector& X) override;
 
   //! compute the energy in intermediate format
-  Standard_EXPORT virtual bool Compute(const int DerivativeOrder, math_Vector& Result) override;
+  Standard_EXPORT virtual bool Compute(const int DerivativeOrder,
+                                                   math_Vector&           Result) override;
 
 private:
-  double                          MyLengthSliding;
-  double                          OriginalSliding;
+  double                   MyLengthSliding;
+  double                   OriginalSliding;
   FairCurve_BattenLaw             MyBattenLaw;
   FairCurve_DistributionOfTension MyTension;
   FairCurve_DistributionOfSagging MySagging;

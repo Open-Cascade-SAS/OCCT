@@ -19,8 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_PresentationLayerAssignment, Standard_Tran
 StepVisual_PresentationLayerAssignment::StepVisual_PresentationLayerAssignment() {}
 
 void StepVisual_PresentationLayerAssignment::Init(
-  const occ::handle<TCollection_HAsciiString>&                    aName,
-  const occ::handle<TCollection_HAsciiString>&                    aDescription,
+  const occ::handle<TCollection_HAsciiString>&        aName,
+  const occ::handle<TCollection_HAsciiString>&        aDescription,
   const occ::handle<NCollection_HArray1<StepVisual_LayeredItem>>& aAssignedItems)
 {
   // --- classe own fields ---
@@ -29,8 +29,7 @@ void StepVisual_PresentationLayerAssignment::Init(
   assignedItems = aAssignedItems;
 }
 
-void StepVisual_PresentationLayerAssignment::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepVisual_PresentationLayerAssignment::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
@@ -57,8 +56,8 @@ void StepVisual_PresentationLayerAssignment::SetAssignedItems(
   assignedItems = aAssignedItems;
 }
 
-occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> StepVisual_PresentationLayerAssignment::
-  AssignedItems() const
+occ::handle<NCollection_HArray1<StepVisual_LayeredItem>> StepVisual_PresentationLayerAssignment::AssignedItems()
+  const
 {
   return assignedItems;
 }

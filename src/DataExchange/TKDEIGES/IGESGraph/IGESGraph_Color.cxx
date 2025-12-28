@@ -32,9 +32,9 @@ IGESGraph_Color::IGESGraph_Color() {}
 
 // This class inherits from IGESData_ColorEntity
 
-void IGESGraph_Color::Init(const double                                 red,
-                           const double                                 green,
-                           const double                                 blue,
+void IGESGraph_Color::Init(const double                     red,
+                           const double                     green,
+                           const double                     blue,
                            const occ::handle<TCollection_HAsciiString>& aColorName)
 {
   theRed       = red;
@@ -44,21 +44,27 @@ void IGESGraph_Color::Init(const double                                 red,
   InitTypeAndForm(314, 0);
 }
 
-void IGESGraph_Color::RGBIntensity(double& Red, double& Green, double& Blue) const
+void IGESGraph_Color::RGBIntensity(double& Red,
+                                   double& Green,
+                                   double& Blue) const
 {
   Red   = theRed;
   Green = theGreen;
   Blue  = theBlue;
 }
 
-void IGESGraph_Color::CMYIntensity(double& Cyan, double& Magenta, double& Yellow) const
+void IGESGraph_Color::CMYIntensity(double& Cyan,
+                                   double& Magenta,
+                                   double& Yellow) const
 {
   Cyan    = 100.0 - theRed;
   Magenta = 100.0 - theGreen;
   Yellow  = 100.0 - theBlue;
 }
 
-void IGESGraph_Color::HLSPercentage(double& Hue, double& Lightness, double& Saturation) const
+void IGESGraph_Color::HLSPercentage(double& Hue,
+                                    double& Lightness,
+                                    double& Saturation) const
 {
   Hue        = ((1.0 / (2.0 * M_PI))
          * (std::atan(((2 * theRed) - theGreen - theBlue) / (SQRT_3 * (theGreen - theBlue)))));

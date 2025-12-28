@@ -33,6 +33,7 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IGESBasic_ToolExternalReferenceFile::IGESBasic_ToolExternalReferenceFile() {}
 
@@ -42,7 +43,7 @@ void IGESBasic_ToolExternalReferenceFile::ReadOwnParams(
   IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  int                                                                     num;
+  int                        num;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames;
   bool st = PR.ReadInteger(PR.Current(), "Number of list entries", num);
   if (st && num > 0)
@@ -60,7 +61,7 @@ void IGESBasic_ToolExternalReferenceFile::ReadOwnParams(
 
 void IGESBasic_ToolExternalReferenceFile::WriteOwnParams(
   const occ::handle<IGESBasic_ExternalReferenceFile>& ent,
-  IGESData_IGESWriter&                                IW) const
+  IGESData_IGESWriter&                           IW) const
 {
   int i, num;
   IW.Send(ent->NbListEntries());
@@ -79,9 +80,8 @@ void IGESBasic_ToolExternalReferenceFile::OwnCopy(
   const occ::handle<IGESBasic_ExternalReferenceFile>& ent,
   Interface_CopyTool& /* TC */) const
 {
-  int num = another->NbListEntries();
-  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames =
-    new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
+  int                        num       = another->NbListEntries();
+  occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> tempNames = new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, num);
   for (int i = 1; i <= num; i++)
     tempNames->SetValue(i, new TCollection_HAsciiString(another->Name(i)));
   ent->Init(tempNames);
@@ -112,8 +112,8 @@ void IGESBasic_ToolExternalReferenceFile::OwnCheck(
 void IGESBasic_ToolExternalReferenceFile::OwnDump(
   const occ::handle<IGESBasic_ExternalReferenceFile>& ent,
   const IGESData_IGESDumper& /* dumper */,
-  Standard_OStream& S,
-  const int         level) const
+  Standard_OStream&      S,
+  const int level) const
 {
   S << "IGESBasic_ExternalReferenceFile\n"
     << "External Reference Names : ";

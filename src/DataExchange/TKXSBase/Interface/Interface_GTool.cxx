@@ -46,7 +46,7 @@ occ::handle<Interface_SignType> Interface_GTool::SignType() const
 }
 
 const char* Interface_GTool::SignValue(const occ::handle<Standard_Transient>&       ent,
-                                       const occ::handle<Interface_InterfaceModel>& model) const
+                                            const occ::handle<Interface_InterfaceModel>& model) const
 {
   if (ent.IsNull())
     return "";
@@ -62,7 +62,8 @@ const char* Interface_GTool::SignName() const
   return thesign->Name();
 }
 
-void Interface_GTool::SetProtocol(const occ::handle<Interface_Protocol>& proto, const bool enforce)
+void Interface_GTool::SetProtocol(const occ::handle<Interface_Protocol>& proto,
+                                  const bool            enforce)
 {
   if (proto == theproto && !enforce)
     return;
@@ -99,12 +100,12 @@ void Interface_GTool::ClearEntities()
 //=================================================================================================
 
 bool Interface_GTool::Select(const occ::handle<Standard_Transient>& ent,
-                             occ::handle<Interface_GeneralModule>&  gmod,
-                             int&                                   CN,
-                             const bool                             enforce)
+                                         occ::handle<Interface_GeneralModule>&  gmod,
+                                         int&                 CN,
+                                         const bool            enforce)
 {
   const occ::handle<Standard_Type>& aType = ent->DynamicType();
-  int                               num   = thentmod.FindIndex(aType); // (ent);
+  int             num   = thentmod.FindIndex(aType); // (ent);
   if (num == 0 || enforce)
   {
     if (thelib.Select(ent, gmod, CN))

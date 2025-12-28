@@ -40,21 +40,20 @@ StepToTopoDS_MakeTransformed::StepToTopoDS_MakeTransformed() {}
 
 //=================================================================================================
 
-bool StepToTopoDS_MakeTransformed::Compute(const occ::handle<StepGeom_Axis2Placement3d>& Origin,
-                                           const occ::handle<StepGeom_Axis2Placement3d>& Target,
-                                           const StepData_Factors& theLocalFactors)
+bool StepToTopoDS_MakeTransformed::Compute(
+  const occ::handle<StepGeom_Axis2Placement3d>& Origin,
+  const occ::handle<StepGeom_Axis2Placement3d>& Target,
+  const StepData_Factors&                  theLocalFactors)
 {
   theTrsf = gp_Trsf(); // reinit
   if (Origin.IsNull() || Target.IsNull())
     return false;
 
   // sln 23.10.2001 : If the directions have not been created do nothing.
-  occ::handle<Geom_Axis2Placement> theOrig =
-    StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
+  occ::handle<Geom_Axis2Placement> theOrig = StepToGeom::MakeAxis2Placement(Origin, theLocalFactors);
   if (theOrig.IsNull())
     return false;
-  occ::handle<Geom_Axis2Placement> theTarg =
-    StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
+  occ::handle<Geom_Axis2Placement> theTarg = StepToGeom::MakeAxis2Placement(Target, theLocalFactors);
   if (theTarg.IsNull())
     return false;
 
@@ -70,7 +69,7 @@ bool StepToTopoDS_MakeTransformed::Compute(const occ::handle<StepGeom_Axis2Place
 
 bool StepToTopoDS_MakeTransformed::Compute(
   const occ::handle<StepGeom_CartesianTransformationOperator3d>& Operator,
-  const StepData_Factors&                                        theLocalFactors)
+  const StepData_Factors&                                   theLocalFactors)
 {
   return StepToGeom::MakeTransformation3d(Operator, theTrsf, theLocalFactors);
 }
@@ -98,8 +97,8 @@ bool StepToTopoDS_MakeTransformed::Transform(TopoDS_Shape& shape) const
 TopoDS_Shape StepToTopoDS_MakeTransformed::TranslateMappedItem(
   const occ::handle<StepRepr_MappedItem>&       mapit,
   const occ::handle<Transfer_TransientProcess>& TP,
-  const StepData_Factors&                       theLocalFactors,
-  const Message_ProgressRange&                  theProgress)
+  const StepData_Factors&                  theLocalFactors,
+  const Message_ProgressRange&             theProgress)
 {
   TopoDS_Shape theResult;
 

@@ -16,7 +16,8 @@
 #include <Interface_GraphContent.hxx>
 
 // #include <IFGraph_SortedStrongs.hxx>
-IFGraph_StrongComponants::IFGraph_StrongComponants(const Interface_Graph& agraph, const bool whole)
+IFGraph_StrongComponants::IFGraph_StrongComponants(const Interface_Graph& agraph,
+                                                   const bool whole)
     : IFGraph_SubPartsIterator(agraph, whole)
 {
 }

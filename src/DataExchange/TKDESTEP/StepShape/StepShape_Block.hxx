@@ -33,9 +33,9 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
                             const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                            const double                                  aX,
-                            const double                                  aY,
-                            const double                                  aZ);
+                            const double                      aX,
+                            const double                      aY,
+                            const double                      aZ);
 
   Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis2Placement3d>& aPosition);
 
@@ -57,9 +57,9 @@ public:
 
 private:
   occ::handle<StepGeom_Axis2Placement3d> position;
-  double                                 x;
-  double                                 y;
-  double                                 z;
+  double                     x;
+  double                     y;
+  double                     z;
 };
 
 #endif // _StepShape_Block_HeaderFile

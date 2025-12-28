@@ -55,7 +55,7 @@ public:
   Standard_EXPORT TFunction_Logbook();
 
   //! Clears this logbook to its default, empty state.
-  Standard_EXPORT void Clear();
+  Standard_EXPORT void             Clear();
   Standard_EXPORT bool IsEmpty() const;
 
   //! Sets the label L as a touched label in this logbook.
@@ -64,17 +64,20 @@ public:
 
   //! Sets the label L as an impacted label in this logbook.
   //! This method is called by execution of the function driver.
-  Standard_EXPORT void SetImpacted(const TDF_Label& L, const bool WithChildren = false);
+  Standard_EXPORT void SetImpacted(const TDF_Label&       L,
+                                   const bool WithChildren = false);
 
   //! Sets the label L as a valid label in this logbook.
-  Standard_EXPORT void SetValid(const TDF_Label& L, const bool WithChildren = false);
+  Standard_EXPORT void SetValid(const TDF_Label&       L,
+                                const bool WithChildren = false);
   Standard_EXPORT void SetValid(const NCollection_Map<TDF_Label>& Ls);
 
   //! Returns True if the label L is touched or impacted. This method
   //! is called by <TFunction_FunctionDriver::MustExecute>.
   //! If <WithChildren> is set to true, the method checks
   //! all the sublabels of <L> too.
-  Standard_EXPORT bool IsModified(const TDF_Label& L, const bool WithChildren = false) const;
+  Standard_EXPORT bool
+    IsModified(const TDF_Label& L, const bool WithChildren = false) const;
 
   //! Returns the map of touched labels in this logbook.
   //! A touched label is the one modified by the end user.
@@ -84,8 +87,8 @@ public:
   const NCollection_Map<TDF_Label>& GetImpacted() const;
 
   //! Returns the map of valid labels in this logbook.
-  const NCollection_Map<TDF_Label>& GetValid() const;
-  Standard_EXPORT void              GetValid(NCollection_Map<TDF_Label>& Ls) const;
+  const NCollection_Map<TDF_Label>&  GetValid() const;
+  Standard_EXPORT void GetValid(NCollection_Map<TDF_Label>& Ls) const;
 
   //! Sets status of execution.
   void Done(const bool status);
@@ -115,10 +118,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
 
 private:
-  NCollection_Map<TDF_Label> myTouched;
-  NCollection_Map<TDF_Label> myImpacted;
-  NCollection_Map<TDF_Label> myValid;
-  bool                       isDone;
+  NCollection_Map<TDF_Label>     myTouched;
+  NCollection_Map<TDF_Label>     myImpacted;
+  NCollection_Map<TDF_Label>     myValid;
+  bool isDone;
 };
 
 #include <TFunction_Logbook.lxx>

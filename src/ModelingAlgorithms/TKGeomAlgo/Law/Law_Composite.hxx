@@ -22,6 +22,7 @@
 
 #include <Law_Function.hxx>
 #include <NCollection_List.hxx>
+#include <Law_Function.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
@@ -43,7 +44,9 @@ public:
   Standard_EXPORT Law_Composite();
 
   //! Construct an empty, trimmed Law
-  Standard_EXPORT Law_Composite(const double First, const double Last, const double Tol);
+  Standard_EXPORT Law_Composite(const double First,
+                                const double Last,
+                                const double Tol);
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
@@ -55,17 +58,22 @@ public:
   //! The array must provide enough room to accommodate for the parameters,
   //! i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
   //! Returns the value at parameter X.
   Standard_EXPORT double Value(const double X) override;
 
   //! Returns the value and the first derivative at parameter X.
-  Standard_EXPORT void D1(const double X, double& F, double& D) override;
+  Standard_EXPORT void D1(const double X,
+                          double&      F,
+                          double&      D) override;
 
   //! Returns the value, first and second derivatives
   //! at parameter X.
-  Standard_EXPORT void D2(const double X, double& F, double& D, double& D2) override;
+  Standard_EXPORT void D2(const double X,
+                          double&      F,
+                          double&      D,
+                          double&      D2) override;
 
   //! Returns a law equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -74,8 +82,8 @@ public:
   //! in these values <First> and <Last> if
   //! the Law is not Cn.
   Standard_EXPORT occ::handle<Law_Function> Trim(const double PFirst,
-                                                 const double PLast,
-                                                 const double Tol) const override;
+                                            const double PLast,
+                                            const double Tol) const override;
 
   //! Returns the parametric bounds of the function.
   Standard_EXPORT void Bounds(double& PFirst, double& PLast) override;
@@ -96,14 +104,14 @@ private:
   //! Set the current function.
   Standard_EXPORT void Prepare(double& W);
 
-  double                                      first;
-  double                                      last;
-  occ::handle<Law_Function>                   curfunc;
-  NCollection_List<occ::handle<Law_Function>> funclist;
-  bool                                        periodic;
-  double                                      TFirst;
-  double                                      TLast;
-  double                                      PTol;
+  double        first;
+  double        last;
+  occ::handle<Law_Function> curfunc;
+  NCollection_List<occ::handle<Law_Function>>             funclist;
+  bool     periodic;
+  double        TFirst;
+  double        TLast;
+  double        PTol;
 };
 
 #endif // _Law_Composite_HeaderFile

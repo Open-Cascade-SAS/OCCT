@@ -39,8 +39,8 @@ public:
   Standard_EXPORT virtual ~OpenGl_ShaderObject();
 
   //! Loads shader source code.
-  Standard_EXPORT bool LoadSource(const occ::handle<OpenGl_Context>& theCtx,
-                                  const TCollection_AsciiString&     theSource);
+  Standard_EXPORT bool LoadSource(const occ::handle<OpenGl_Context>&  theCtx,
+                                              const TCollection_AsciiString& theSource);
 
   //! Compiles the shader object.
   Standard_EXPORT bool Compile(const occ::handle<OpenGl_Context>& theCtx);
@@ -51,20 +51,20 @@ public:
   //! @param theSource source code to load
   //! @param theIsVerbose flag to print log on error
   //! @param theToPrintSource flag to print source code on error
-  Standard_EXPORT bool LoadAndCompile(const occ::handle<OpenGl_Context>& theCtx,
-                                      const TCollection_AsciiString&     theId,
-                                      const TCollection_AsciiString&     theSource,
-                                      bool                               theIsVerbose     = true,
-                                      bool                               theToPrintSource = true);
+  Standard_EXPORT bool LoadAndCompile(const occ::handle<OpenGl_Context>&  theCtx,
+                                                  const TCollection_AsciiString& theId,
+                                                  const TCollection_AsciiString& theSource,
+                                                  bool theIsVerbose     = true,
+                                                  bool theToPrintSource = true);
 
   //! Print source code of this shader object to messenger.
-  Standard_EXPORT void DumpSourceCode(const occ::handle<OpenGl_Context>& theCtx,
-                                      const TCollection_AsciiString&     theId,
-                                      const TCollection_AsciiString&     theSource) const;
+  Standard_EXPORT void DumpSourceCode(const occ::handle<OpenGl_Context>&  theCtx,
+                                      const TCollection_AsciiString& theId,
+                                      const TCollection_AsciiString& theSource) const;
 
   //! Fetches information log of the last compile operation.
   Standard_EXPORT bool FetchInfoLog(const occ::handle<OpenGl_Context>& theCtx,
-                                    TCollection_AsciiString&           theLog);
+                                                TCollection_AsciiString&      theLog);
 
   //! Creates new empty shader object of specified type.
   Standard_EXPORT bool Create(const occ::handle<OpenGl_Context>& theCtx);
@@ -90,11 +90,11 @@ public:
   //! @param theFolder folder to store files
   //! @param theToBeautify flag improving formatting (add extra newlines)
   //! @param theToReset when TRUE, existing dumps will be overridden
-  Standard_EXPORT bool updateDebugDump(const occ::handle<OpenGl_Context>& theCtx,
-                                       const TCollection_AsciiString&     theId,
-                                       const TCollection_AsciiString&     theFolder,
-                                       bool                               theToBeautify,
-                                       bool                               theToReset);
+  Standard_EXPORT bool updateDebugDump(const occ::handle<OpenGl_Context>&  theCtx,
+                                                   const TCollection_AsciiString& theId,
+                                                   const TCollection_AsciiString& theFolder,
+                                                   bool               theToBeautify,
+                                                   bool               theToReset);
 
 protected:
   Quantity_Date myDumpDate; //!< The recent date of the shader dump

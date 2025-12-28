@@ -35,9 +35,9 @@ public:
   //! @param[in] theIsInf  infinite flag
   Message_LazyProgressScope(const Message_ProgressRange& theRange,
                             const char*                  theName,
-                            const double                 theMax,
-                            const double                 thePatchStep,
-                            const bool                   theIsInf = false)
+                            const double          theMax,
+                            const double          thePatchStep,
+                            const bool       theIsInf = false)
       : Message_ProgressScope(theRange, theName, theMax, theIsInf),
         myPatchStep(thePatchStep),
         myPatchProgress(0.0),
@@ -69,9 +69,9 @@ public:
   }
 
 protected:
-  double myPatchStep;
-  double myPatchProgress;
-  bool   myIsLazyAborted;
+  double    myPatchStep;
+  double    myPatchProgress;
+  bool myIsLazyAborted;
 };
 
 #endif // _Message_LazyProgressScope_HeaderFiler

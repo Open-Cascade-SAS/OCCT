@@ -85,10 +85,11 @@ public:
   //! source of geometry data. If UseTriangulation = false,
   //! exact geometry objects (curves) are used, otherwise polygons of
   //! triangulation are used first.
-  Standard_EXPORT static void LinearProperties(const TopoDS_Shape& S,
-                                               GProp_GProps&       LProps,
-                                               const bool          SkipShared       = false,
-                                               const bool          UseTriangulation = false);
+  Standard_EXPORT static void LinearProperties(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          LProps,
+    const bool SkipShared       = false,
+    const bool UseTriangulation = false);
 
   //! Computes the surface global properties of the
   //! shape S, i.e. the global properties induced by each
@@ -130,10 +131,11 @@ public:
   //! source of geometry data. If UseTriangulation = false,
   //! exact geometry objects (surfaces) are used,
   //! otherwise face triangulations are used first.
-  Standard_EXPORT static void SurfaceProperties(const TopoDS_Shape& S,
-                                                GProp_GProps&       SProps,
-                                                const bool          SkipShared       = false,
-                                                const bool          UseTriangulation = false);
+  Standard_EXPORT static void SurfaceProperties(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          SProps,
+    const bool SkipShared       = false,
+    const bool UseTriangulation = false);
 
   //! Updates <SProps> with the shape <S>, that contains its principal properties.
   //! The surface properties of all the faces in <S> are computed.
@@ -147,10 +149,11 @@ public:
   //! shared topological entities or not
   //! For ex., if SkipShared = True, faces, shared by two or more shells,
   //! are taken into calculation only once.
-  Standard_EXPORT static double SurfaceProperties(const TopoDS_Shape& S,
-                                                  GProp_GProps&       SProps,
-                                                  const double        Eps,
-                                                  const bool          SkipShared = false);
+  Standard_EXPORT static double SurfaceProperties(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          SProps,
+    const double    Eps,
+    const bool SkipShared = false);
   //!
   //! Computes the global volume properties of the solid
   //! S, and brings them together with the global
@@ -193,11 +196,12 @@ public:
   //! source of geometry data. If UseTriangulation = false,
   //! exact geometry objects (surfaces) are used,
   //! otherwise face triangulations are used first.
-  Standard_EXPORT static void VolumeProperties(const TopoDS_Shape& S,
-                                               GProp_GProps&       VProps,
-                                               const bool          OnlyClosed       = false,
-                                               const bool          SkipShared       = false,
-                                               const bool          UseTriangulation = false);
+  Standard_EXPORT static void VolumeProperties(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          VProps,
+    const bool OnlyClosed       = false,
+    const bool SkipShared       = false,
+    const bool UseTriangulation = false);
 
   //! Updates <VProps> with the shape <S>, that contains its principal properties.
   //! The volume properties of all the FORWARD and REVERSED faces in <S> are computed.
@@ -213,11 +217,12 @@ public:
   //! For ex., if SkipShared = True, the volumes formed by the equal
   //! (the same TShape, location and orientation)
   //! faces are taken into calculation only once.
-  Standard_EXPORT static double VolumeProperties(const TopoDS_Shape& S,
-                                                 GProp_GProps&       VProps,
-                                                 const double        Eps,
-                                                 const bool          OnlyClosed = false,
-                                                 const bool          SkipShared = false);
+  Standard_EXPORT static double VolumeProperties(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          VProps,
+    const double    Eps,
+    const bool OnlyClosed = false,
+    const bool SkipShared = false);
 
   //! Updates <VProps> with the shape <S>, that contains its principal properties.
   //! The volume properties of all the FORWARD and REVERSED faces in <S> are computed.
@@ -234,24 +239,26 @@ public:
   //! shared topological entities or not.
   //! For ex., if SkipShared = True, the volumes formed by the equal
   //! (the same TShape, location and orientation) faces are taken into calculation only once.
-  Standard_EXPORT static double VolumePropertiesGK(const TopoDS_Shape& S,
-                                                   GProp_GProps&       VProps,
-                                                   const double        Eps        = 0.001,
-                                                   const bool          OnlyClosed = false,
-                                                   const bool          IsUseSpan  = false,
-                                                   const bool          CGFlag     = false,
-                                                   const bool          IFlag      = false,
-                                                   const bool          SkipShared = false);
+  Standard_EXPORT static double VolumePropertiesGK(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          VProps,
+    const double    Eps        = 0.001,
+    const bool OnlyClosed = false,
+    const bool IsUseSpan  = false,
+    const bool CGFlag     = false,
+    const bool IFlag      = false,
+    const bool SkipShared = false);
 
-  Standard_EXPORT static double VolumePropertiesGK(const TopoDS_Shape& S,
-                                                   GProp_GProps&       VProps,
-                                                   const gp_Pln&       thePln,
-                                                   const double        Eps        = 0.001,
-                                                   const bool          OnlyClosed = false,
-                                                   const bool          IsUseSpan  = false,
-                                                   const bool          CGFlag     = false,
-                                                   const bool          IFlag      = false,
-                                                   const bool          SkipShared = false);
+  Standard_EXPORT static double VolumePropertiesGK(
+    const TopoDS_Shape&    S,
+    GProp_GProps&          VProps,
+    const gp_Pln&          thePln,
+    const double    Eps        = 0.001,
+    const bool OnlyClosed = false,
+    const bool IsUseSpan  = false,
+    const bool CGFlag     = false,
+    const bool IFlag      = false,
+    const bool SkipShared = false);
 };
 
 #endif // _BRepGProp_HeaderFile

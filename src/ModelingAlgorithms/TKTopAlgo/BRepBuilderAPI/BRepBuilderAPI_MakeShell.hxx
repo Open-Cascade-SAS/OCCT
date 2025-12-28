@@ -65,18 +65,18 @@ public:
 
   //! Constructs a shell from the surface S.
   Standard_EXPORT BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
-                                           const bool                       Segment = false);
+                                           const bool      Segment = false);
 
   //! Constructs a shell from the surface S,
   //! limited in the u parametric direction by the two
   //! parameter values UMin and UMax, and limited in the v
   //! parametric direction by the two parameter values VMin and VMax.
   Standard_EXPORT BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
-                                           const double                     UMin,
-                                           const double                     UMax,
-                                           const double                     VMin,
-                                           const double                     VMax,
-                                           const bool                       Segment = false);
+                                           const double         UMin,
+                                           const double         UMax,
+                                           const double         VMin,
+                                           const double         VMax,
+                                           const bool      Segment = false);
 
   //! Defines or redefines the arguments
   //! for the construction of a shell. The construction is initialized
@@ -89,11 +89,11 @@ public:
   //! when the given parameters are outside the bounds of the
   //! surface or the basis surface if S is trimmed
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
-                            const double                     UMin,
-                            const double                     UMax,
-                            const double                     VMin,
-                            const double                     VMax,
-                            const bool                       Segment = false);
+                            const double         UMin,
+                            const double         UMax,
+                            const double         VMin,
+                            const double         VMax,
+                            const bool      Segment = false);
 
   //! Returns true if the shell is built.
   Standard_EXPORT virtual bool IsDone() const override;

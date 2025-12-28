@@ -50,7 +50,8 @@ public:
   virtual Standard_EXPORT bool Merge(const occ::handle<Message_Alert>& theTarget);
 
   //! Dumps the content of me into the stream
-  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  virtual Standard_EXPORT void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
   // OCCT RTTI
   DEFINE_STANDARD_RTTIEXT(Message_Alert, Standard_Transient)

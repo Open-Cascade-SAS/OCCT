@@ -43,7 +43,7 @@ public:
 
   //! Finds or creates a list of double values attribute with explicit user defined <guid>.
   Standard_EXPORT static occ::handle<TDataStd_RealList> Set(const TDF_Label&     label,
-                                                            const Standard_GUID& theGuid);
+                                                       const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_RealList();
 
@@ -62,18 +62,22 @@ public:
   Standard_EXPORT void SetID() override;
 
   //! Inserts the <value> before the first meet of <before_value>.
-  Standard_EXPORT bool InsertBefore(const double value, const double before_value);
+  Standard_EXPORT bool InsertBefore(const double value,
+                                                const double before_value);
 
   //! Inserts the <value> before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertBeforeByIndex(const int index, const double before_value);
+  Standard_EXPORT bool InsertBeforeByIndex(const int index,
+                                                       const double    before_value);
 
   //! Inserts the <value> after the first meet of <after_value>.
-  Standard_EXPORT bool InsertAfter(const double value, const double after_value);
+  Standard_EXPORT bool InsertAfter(const double value,
+                                               const double after_value);
 
   //! Inserts the <value> after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertAfterByIndex(const int index, const double after_value);
+  Standard_EXPORT bool InsertAfterByIndex(const int index,
+                                                      const double    after_value);
 
   //! Removes the first meet of the <value>.
   Standard_EXPORT bool Remove(const double value);
@@ -102,13 +106,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_RealList, TDF_Attribute)
 
 private:
   NCollection_List<double> myList;
-  Standard_GUID            myID;
+  Standard_GUID      myID;
 };
 
 #endif // _TDataStd_RealList_HeaderFile

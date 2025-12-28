@@ -21,11 +21,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Association, Standard_Transient)
 
 //=================================================================================================
 
-static bool Contains(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI,
-                     const occ::handle<TopOpeBRepDS_Interference>&                   I)
+static bool Contains(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   LI,
+                                 const occ::handle<TopOpeBRepDS_Interference>& I)
 {
-  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More();
-       it.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
   {
     if (I->HasSameGeometry(it.Value()))
       return 1;
@@ -66,12 +65,10 @@ void TopOpeBRepDS_Association::Associate(const occ::handle<TopOpeBRepDS_Interfer
 
 //=================================================================================================
 
-void TopOpeBRepDS_Association::Associate(
-  const occ::handle<TopOpeBRepDS_Interference>&                   I,
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI)
+void TopOpeBRepDS_Association::Associate(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                         const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   LI)
 {
-  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More();
-       it.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(LI); it.More(); it.Next())
   {
     Associate(I, it.Value());
   }
@@ -79,7 +76,8 @@ void TopOpeBRepDS_Association::Associate(
 
 //=================================================================================================
 
-bool TopOpeBRepDS_Association::HasAssociation(const occ::handle<TopOpeBRepDS_Interference>& I) const
+bool TopOpeBRepDS_Association::HasAssociation(
+  const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   return myMap.IsBound(I);
 }
@@ -99,8 +97,9 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_Associati
 
 //=================================================================================================
 
-bool TopOpeBRepDS_Association::AreAssociated(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                             const occ::handle<TopOpeBRepDS_Interference>& K) const
+bool TopOpeBRepDS_Association::AreAssociated(
+  const occ::handle<TopOpeBRepDS_Interference>& I,
+  const occ::handle<TopOpeBRepDS_Interference>& K) const
 {
   return (myMap.IsBound(I) && Contains(myMap(I), K));
 }

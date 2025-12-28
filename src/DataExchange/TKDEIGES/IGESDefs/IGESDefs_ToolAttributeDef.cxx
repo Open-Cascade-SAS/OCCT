@@ -28,15 +28,25 @@
 #include <IGESGraph_TextDisplayTemplate.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESGraph_TextDisplayTemplate.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include <stdio.h>
 
@@ -44,18 +54,18 @@ IGESDefs_ToolAttributeDef::IGESDefs_ToolAttributeDef() {}
 
 void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_AttributeDef>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                       PR) const
+                                              IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
-  occ::handle<TCollection_HAsciiString>                             aName;
-  int                                                               aListType;
-  occ::handle<NCollection_HArray1<int>>                             attrTypes;
-  occ::handle<NCollection_HArray1<int>>                             attrValueDataTypes;
-  occ::handle<NCollection_HArray1<int>>                             attrValueCounts;
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> attrValues;
-  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>       attrValuePointers;
-  int                                                               nbval;
-  int                                                               fn = ent->FormNumber();
+  occ::handle<TCollection_HAsciiString>                       aName;
+  int                                       aListType;
+  occ::handle<NCollection_HArray1<int>>                       attrTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueDataTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueCounts;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                     attrValues;
+  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate> attrValuePointers;
+  int                                       nbval;
+  int                                       fn = ent->FormNumber();
 
   if (PR.DefinedElseSkip())
     // clang-format off
@@ -105,17 +115,16 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
       {
         attrValueCounts->SetValue(i, avc);
         if (fn > 1)
-          attrValuePointer =
-            new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
+          attrValuePointer = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
       }
 
       if (!attrValues.IsNull())
         if (fn > 0)
         {
-          occ::handle<NCollection_HArray1<int>>                                   attrInt;
-          occ::handle<NCollection_HArray1<double>>                                attrReal;
+          occ::handle<NCollection_HArray1<int>>        attrInt;
+          occ::handle<NCollection_HArray1<double>>           attrReal;
           occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> attrStr;
-          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      attrEnt;
+          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    attrEnt;
           switch (attrValueDataType)
           {
             case 1:
@@ -224,7 +233,7 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams(const occ::handle<IGESDefs_Attribu
 }
 
 void IGESDefs_ToolAttributeDef::WriteOwnParams(const occ::handle<IGESDefs_AttributeDef>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   if (ent->HasTableName())
     IW.Send(ent->TableName());
@@ -279,7 +288,7 @@ void IGESDefs_ToolAttributeDef::WriteOwnParams(const occ::handle<IGESDefs_Attrib
 }
 
 void IGESDefs_ToolAttributeDef::OwnShared(const occ::handle<IGESDefs_AttributeDef>& ent,
-                                          Interface_EntityIterator&                 iter) const
+                                          Interface_EntityIterator&            iter) const
 {
   int upper = ent->NbAttributes();
   for (int i = 1; i <= upper; i++)
@@ -301,19 +310,19 @@ void IGESDefs_ToolAttributeDef::OwnShared(const occ::handle<IGESDefs_AttributeDe
 
 void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>& another,
                                         const occ::handle<IGESDefs_AttributeDef>& ent,
-                                        Interface_CopyTool&                       TC) const
+                                        Interface_CopyTool&                  TC) const
 {
   occ::handle<TCollection_HAsciiString> aName;
   if (!another->TableName().IsNull())
     aName = new TCollection_HAsciiString(another->TableName());
   int aListType = another->ListType();
 
-  occ::handle<NCollection_HArray1<int>>                             attrTypes;
-  occ::handle<NCollection_HArray1<int>>                             attrValueDataTypes;
-  occ::handle<NCollection_HArray1<int>>                             attrValueCounts;
-  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> attrValues;
-  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate>       attrValuePointers;
-  int                                                               nbval = another->NbAttributes();
+  occ::handle<NCollection_HArray1<int>>                       attrTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueDataTypes;
+  occ::handle<NCollection_HArray1<int>>                       attrValueCounts;
+  occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>                     attrValues;
+  occ::handle<IGESDefs_HArray1OfHArray1OfTextDisplayTemplate> attrValuePointers;
+  int                                       nbval = another->NbAttributes();
 
   attrTypes          = new NCollection_HArray1<int>(1, nbval);
   attrValueDataTypes = new NCollection_HArray1<int>(1, nbval);
@@ -334,15 +343,14 @@ void IGESDefs_ToolAttributeDef::OwnCopy(const occ::handle<IGESDefs_AttributeDef>
     occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> attrValuePointer;
 
     if (another->HasTextDisplay())
-      attrValuePointer =
-        new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
+      attrValuePointer = new NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>(1, avc);
 
     if (another->HasValues())
     {
-      occ::handle<NCollection_HArray1<int>>                                   attrInt;
-      occ::handle<NCollection_HArray1<double>>                                attrReal;
+      occ::handle<NCollection_HArray1<int>>        attrInt;
+      occ::handle<NCollection_HArray1<double>>           attrReal;
       occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> attrStr;
-      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>      attrEnt;
+      occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>    attrEnt;
       switch (attrValueDataType)
       {
         case 1:
@@ -483,8 +491,7 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const occ::handle<IGESDefs_AttributeDef
         }
         break;
       case 3:
-        if (!list->IsKind(
-              STANDARD_TYPE(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>)))
+        if (!list->IsKind(STANDARD_TYPE(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>)))
         {
           Sprintf(mess, "Attribute List n0.%d (Strings) badly defined", aty);
         }
@@ -510,9 +517,9 @@ void IGESDefs_ToolAttributeDef::OwnCheck(const occ::handle<IGESDefs_AttributeDef
 }
 
 void IGESDefs_ToolAttributeDef::OwnDump(const occ::handle<IGESDefs_AttributeDef>& ent,
-                                        const IGESData_IGESDumper&                dumper,
-                                        Standard_OStream&                         S,
-                                        const int                                 level) const
+                                        const IGESData_IGESDumper&           dumper,
+                                        Standard_OStream&                    S,
+                                        const int               level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

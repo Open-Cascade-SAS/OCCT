@@ -49,7 +49,7 @@ static int DDF_Children(Draw_Interpretor& di, int n, const char** a)
   if (n < 2)
     return 1;
 
-  occ::handle<TDF_Data>   DF;
+  occ::handle<TDF_Data>        DF;
   TCollection_AsciiString entry;
 
   if (!DDF::GetDF(a[1], DF))
@@ -108,7 +108,9 @@ static int DDF_Attributes(Draw_Interpretor& di, int n, const char** a)
 // purpose  : Adds an empty attribute to the label by its dynamic type.
 //=======================================================================
 
-static int DDF_SetEmptyAttribute(Draw_Interpretor& di, int n, const char** a)
+static int DDF_SetEmptyAttribute(Draw_Interpretor& di,
+                                              int  n,
+                                              const char**      a)
 {
   if (n != 4)
     return 1;
@@ -165,7 +167,9 @@ static int DDF_ForgetAll(Draw_Interpretor& /*di*/, int n, const char** a)
 // purpose  : "ForgetAtt dfname Label guid_or_type"
 //=======================================================================
 
-static int DDF_ForgetAttribute(Draw_Interpretor& di, int n, const char** a)
+static int DDF_ForgetAttribute(Draw_Interpretor& di,
+                                            int  n,
+                                            const char**      a)
 {
   if (n != 4)
     return 1;

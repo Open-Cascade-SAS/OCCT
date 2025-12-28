@@ -66,19 +66,22 @@ public:
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) = 0;
+  Standard_EXPORT virtual bool Values(const math_Vector& X,
+                                                  math_Vector&       F,
+                                                  math_Matrix&       D) = 0;
 
   //! Sets the CurveOnSurface on which a solution has
   //! to be found. If <OnFirst> is set to true,
   //! the curve will be on the first surface, otherwise the
   //! curve is on the second one.
-  Standard_EXPORT virtual void Set(const bool                            OnFirst,
+  Standard_EXPORT virtual void Set(const bool           OnFirst,
                                    const occ::handle<Adaptor2d_Curve2d>& COnSurf) = 0;
 
   //! Returns in the vector Tolerance the parametric tolerance
   //! for each of the 4 variables;
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual void GetTolerance(math_Vector& Tolerance, const double Tol) const = 0;
+  Standard_EXPORT virtual void GetTolerance(math_Vector&        Tolerance,
+                                            const double Tol) const = 0;
 
   //! Returns in the vector InfBound the lowest values allowed
   //! for each of the 4 variables.
@@ -88,7 +91,9 @@ public:
 
   //! Returns true if Sol is a zero of the function.
   //! Tol is the tolerance used in 3d space.
-  Standard_EXPORT virtual bool IsSolution(const math_Vector& Sol, const double Tol) = 0;
+  Standard_EXPORT virtual bool IsSolution(const math_Vector&  Sol,
+                                                      const double Tol) = 0;
+
 };
 
 #endif // _Blend_FuncInv_HeaderFile

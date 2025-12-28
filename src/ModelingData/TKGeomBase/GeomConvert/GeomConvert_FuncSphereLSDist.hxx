@@ -51,13 +51,9 @@ public:
   //! Constructor.
   Standard_EXPORT GeomConvert_FuncSphereLSDist() {};
 
-  Standard_EXPORT GeomConvert_FuncSphereLSDist(
-    const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints);
+  Standard_EXPORT GeomConvert_FuncSphereLSDist(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints);
 
-  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints)
-  {
-    myPoints = thePoints;
-  }
+  void SetPoints(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints) { myPoints = thePoints; }
 
   //! Number of variables.
   Standard_EXPORT int NbVariables() const override;
@@ -69,7 +65,9 @@ public:
   Standard_EXPORT bool Gradient(const math_Vector& X, math_Vector& G) override;
 
   //! Value and gradient.
-  Standard_EXPORT bool Values(const math_Vector& X, double& F, math_Vector& G) override;
+  Standard_EXPORT bool Values(const math_Vector& X,
+                                          double&     F,
+                                          math_Vector&       G) override;
 
 private:
   occ::handle<NCollection_HArray1<gp_XYZ>> myPoints;

@@ -35,9 +35,9 @@ bool GeomLib_PolyFunc::Value(const double X, double& F)
 
 bool GeomLib_PolyFunc::Derivative(const double X, double& D)
 {
-  double*     coeff = &myCoeffs(1);
-  math_Vector Aux(1, 2);
-  double*     ff = &Aux(1);
+  double* coeff = &myCoeffs(1);
+  math_Vector    Aux(1, 2);
+  double* ff = &Aux(1);
   PLib::EvalPolynomial(X, 1, myCoeffs.Length() - 1, 1, coeff[0], ff[0]);
   D = Aux(2);
   return true;
@@ -45,9 +45,9 @@ bool GeomLib_PolyFunc::Derivative(const double X, double& D)
 
 bool GeomLib_PolyFunc::Values(const double X, double& F, double& D)
 {
-  double*     coeff = &myCoeffs(1);
-  math_Vector Aux(1, 2);
-  double*     ff = &Aux(1);
+  double* coeff = &myCoeffs(1);
+  math_Vector    Aux(1, 2);
+  double* ff = &Aux(1);
   PLib::EvalPolynomial(X, 1, myCoeffs.Length() - 1, 1, coeff[0], ff[0]);
   F = Aux(1);
   D = Aux(2);

@@ -39,6 +39,7 @@ public:
   Standard_EXPORT static bool Translate(const XmlObjMgt_DOMString& aStr, gp_Mat& T);
 
   Standard_EXPORT static bool Translate(const XmlObjMgt_DOMString& aStr, gp_XYZ& T);
+
 };
 
 #endif // _XmlObjMgt_GP_HeaderFile

@@ -33,6 +33,7 @@ public:
   //! <astring> describes an algebraic formula in natural
   //! language.
   Standard_EXPORT Units_MathSentence(const char* astring);
+
 };
 
 #endif // _Units_MathSentence_HeaderFile

@@ -19,11 +19,16 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
+#include <StepGeom_CartesianPoint.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 #include "RWStepGeom_RWBSplineCurveForm.pxx"
 #include "RWStepGeom_RWKnotType.pxx"
@@ -32,7 +37,7 @@ RWStepGeom_RWBSplineCurveWithKnots::RWStepGeom_RWBSplineCurveWithKnots() {}
 
 void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepGeom_BSplineCurveWithKnots>& ent) const
 {
@@ -57,8 +62,8 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   // --- inherited field : controlPointsList ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> aControlPointsList;
-  occ::handle<StepGeom_CartesianPoint>                                   anent3;
-  int                                                                    nsub3;
+  occ::handle<StepGeom_CartesianPoint>          anent3;
+  int                         nsub3;
   if (data->ReadSubList(num, 3, "control_points_list", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
@@ -110,12 +115,12 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   // --- own field : knotMultiplicities ---
 
   occ::handle<NCollection_HArray1<int>> aKnotMultiplicities;
-  int                                   aKnotMultiplicitiesItem;
-  int                                   nsub7;
+  int                 aKnotMultiplicitiesItem;
+  int                 nsub7;
   if (data->ReadSubList(num, 7, "knot_multiplicities", ach, nsub7))
   {
-    int nb7             = data->NbParams(nsub7);
-    aKnotMultiplicities = new NCollection_HArray1<int>(1, nb7);
+    int nb7 = data->NbParams(nsub7);
+    aKnotMultiplicities  = new NCollection_HArray1<int>(1, nb7);
     for (int i7 = 1; i7 <= nb7; i7++)
     {
       // szv#4:S4163:12Mar99 `bool stat7 =` not needed
@@ -127,12 +132,12 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
   // --- own field : knots ---
 
   occ::handle<NCollection_HArray1<double>> aKnots;
-  double                                   aKnotsItem;
-  int                                      nsub8;
+  double                 aKnotsItem;
+  int              nsub8;
   if (data->ReadSubList(num, 8, "knots", ach, nsub8))
   {
     int nb8 = data->NbParams(nsub8);
-    aKnots  = new NCollection_HArray1<double>(1, nb8);
+    aKnots               = new NCollection_HArray1<double>(1, nb8);
     for (int i8 = 1; i8 <= nb8; i8++)
     {
       // szv#4:S4163:12Mar99 `bool stat8 =` not needed
@@ -169,7 +174,7 @@ void RWStepGeom_RWBSplineCurveWithKnots::ReadStep(
 }
 
 void RWStepGeom_RWBSplineCurveWithKnots::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepGeom_BSplineCurveWithKnots>& ent) const
 {
 
@@ -225,9 +230,8 @@ void RWStepGeom_RWBSplineCurveWithKnots::WriteStep(
   SW.SendEnum(RWStepGeom_RWKnotType::ConvertToString(ent->KnotSpec()));
 }
 
-void RWStepGeom_RWBSplineCurveWithKnots::Share(
-  const occ::handle<StepGeom_BSplineCurveWithKnots>& ent,
-  Interface_EntityIterator&                          iter) const
+void RWStepGeom_RWBSplineCurveWithKnots::Share(const occ::handle<StepGeom_BSplineCurveWithKnots>& ent,
+                                               Interface_EntityIterator& iter) const
 {
 
   int nbElem1 = ent->NbControlPointsList();
@@ -237,10 +241,9 @@ void RWStepGeom_RWBSplineCurveWithKnots::Share(
   }
 }
 
-void RWStepGeom_RWBSplineCurveWithKnots::Check(
-  const occ::handle<StepGeom_BSplineCurveWithKnots>& ent,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& ach) const
+void RWStepGeom_RWBSplineCurveWithKnots::Check(const occ::handle<StepGeom_BSplineCurveWithKnots>& ent,
+                                               const Interface_ShareTool&,
+                                               occ::handle<Interface_Check>& ach) const
 {
   int nbCPL   = ent->NbControlPointsList();
   int dgBSC   = ent->Degree();

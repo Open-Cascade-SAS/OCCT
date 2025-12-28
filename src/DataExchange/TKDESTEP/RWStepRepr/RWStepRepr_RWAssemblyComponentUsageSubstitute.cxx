@@ -24,7 +24,7 @@ RWStepRepr_RWAssemblyComponentUsageSubstitute::RWStepRepr_RWAssemblyComponentUsa
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
   const occ::handle<StepData_StepReaderData>&                   data,
-  const int                                                     num,
+  const int                                   num,
   occ::handle<Interface_Check>&                                 ach,
   const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const
 {
@@ -67,7 +67,7 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::ReadStep(
 }
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::WriteStep(
-  StepData_StepWriter&                                          SW,
+  StepData_StepWriter&                                     SW,
   const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent) const
 {
 
@@ -79,7 +79,7 @@ void RWStepRepr_RWAssemblyComponentUsageSubstitute::WriteStep(
 
 void RWStepRepr_RWAssemblyComponentUsageSubstitute::Share(
   const occ::handle<StepRepr_AssemblyComponentUsageSubstitute>& ent,
-  Interface_EntityIterator&                                     iter) const
+  Interface_EntityIterator&                                iter) const
 {
 
   iter.GetOneItem(ent->Base());

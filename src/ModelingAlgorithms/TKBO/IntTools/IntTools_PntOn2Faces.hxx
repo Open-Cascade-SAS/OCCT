@@ -55,7 +55,7 @@ public:
   Standard_EXPORT bool IsValid() const;
 
 private:
-  bool               myIsValid;
+  bool   myIsValid;
   IntTools_PntOnFace myPnt1;
   IntTools_PntOnFace myPnt2;
 };

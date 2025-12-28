@@ -49,8 +49,8 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfQuadrangleStrips(int                  theMaxVertexs,
-                                    int                  theMaxStrips,
+  Graphic3d_ArrayOfQuadrangleStrips(int     theMaxVertexs,
+                                    int     theMaxStrips,
                                     Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_QUADRANGLESTRIPS,
                                     theMaxVertexs,
@@ -63,8 +63,8 @@ public:
   //! Creates an array of quadrangle strips (Graphic3d_TOPA_QUADRANGLESTRIPS).
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxStrips  defines the maximum allowed strip  number in the array
-  Graphic3d_ArrayOfQuadrangleStrips(int  theMaxVertexs,
-                                    int  theMaxStrips   = 0,
+  Graphic3d_ArrayOfQuadrangleStrips(int theMaxVertexs,
+                                    int theMaxStrips   = 0,
                                     bool theHasVNormals = false,
                                     bool theHasVColors  = false,
                                     bool theHasSColors  = false,

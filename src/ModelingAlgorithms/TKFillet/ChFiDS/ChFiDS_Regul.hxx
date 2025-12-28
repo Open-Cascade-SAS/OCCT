@@ -33,9 +33,11 @@ public:
 
   Standard_EXPORT void SetCurve(const int IC);
 
-  Standard_EXPORT void SetS1(const int IS1, const bool IsFace = true);
+  Standard_EXPORT void SetS1(const int IS1,
+                             const bool IsFace = true);
 
-  Standard_EXPORT void SetS2(const int IS2, const bool IsFace = true);
+  Standard_EXPORT void SetS2(const int IS2,
+                             const bool IsFace = true);
 
   Standard_EXPORT bool IsSurface1() const;
 

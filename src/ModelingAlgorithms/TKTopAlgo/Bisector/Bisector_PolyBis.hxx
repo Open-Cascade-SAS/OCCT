@@ -51,7 +51,7 @@ public:
 
 private:
   Bisector_PointOnBis thePoints[30];
-  int                 nbPoints;
+  int    nbPoints;
 };
 
 #endif // _Bisector_PolyBis_HeaderFile

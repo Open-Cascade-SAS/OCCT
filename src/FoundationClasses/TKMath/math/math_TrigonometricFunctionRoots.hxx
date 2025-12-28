@@ -95,10 +95,10 @@ protected:
                                const double SupBound);
 
 private:
-  int                        NbSol;
+  int     NbSol;
   NCollection_Array1<double> Sol;
-  bool                       InfiniteStatus;
-  bool                       Done;
+  bool     InfiniteStatus;
+  bool     Done;
 };
 
 #include <math_TrigonometricFunctionRoots.lxx>

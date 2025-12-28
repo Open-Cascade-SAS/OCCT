@@ -47,19 +47,19 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_GraphNodeDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    XmlObjMgt_RRelocationTable& theRelocTable) const
 {
   occ::handle<XCAFDoc_GraphNode> aT        = occ::down_cast<XCAFDoc_GraphNode>(theTarget);
-  const XmlObjMgt_Element&       anElement = theSource;
+  const XmlObjMgt_Element&  anElement = theSource;
 
   // tree id
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::TreeIdString());
   Standard_GUID       aGUID(static_cast<const char*>(aGUIDStr.GetString()));
   aT->SetGraphID(aGUID);
 
-  XmlObjMgt_DOMString            aDOMStr;
+  XmlObjMgt_DOMString       aDOMStr;
   occ::handle<XCAFDoc_GraphNode> aTChild;
 
   // fathers
@@ -67,7 +67,7 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
   if (aDOMStr != NULL) // void list is allowed
   {
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
-    int         aNb       = 0;
+    int aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
       return false;
 
@@ -101,7 +101,7 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
   if (aDOMStr != NULL) // void list is allowed
   {
     const char* aChildren = static_cast<const char*>(aDOMStr.GetString());
-    int         aNb       = 0;
+    int aNb       = 0;
     if (!XmlObjMgt::GetInteger(aChildren, aNb))
       return false;
 
@@ -138,25 +138,25 @@ bool XmlMXCAFDoc_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSou
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMXCAFDoc_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                        XmlObjMgt_Persistent&             theTarget,
-                                        XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                        XmlObjMgt_Persistent&        theTarget,
+                                        XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   occ::handle<XCAFDoc_GraphNode> aS = occ::down_cast<XCAFDoc_GraphNode>(theSource);
   if (aS.IsNull())
     return;
 
   // graph id
-  char                aGuidStr[40];
+  char  aGuidStr[40];
   Standard_PCharacter pGuidStr;
   //
   pGuidStr = (Standard_PCharacter)aGuidStr;
   aS->ID().ToCString(pGuidStr);
   theTarget.Element().setAttribute(::TreeIdString(), aGuidStr);
 
-  int                            aNb;
-  TCollection_AsciiString        aStr;
+  int          aNb;
+  TCollection_AsciiString   aStr;
   occ::handle<XCAFDoc_GraphNode> aF;
-  int                            i;
+  int          i;
 
   // fathers
   for (i = 1; i <= aS->NbFathers(); i++)

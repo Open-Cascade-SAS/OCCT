@@ -23,6 +23,7 @@
 #include <TopoDS_Shape.hxx>
 #include <HLRTopoBRep_Data.hxx>
 #include <Standard_Transient.hxx>
+#include <TopoDS_Shape.hxx>
 #include <BRepTopAdaptor_Tool.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
@@ -50,22 +51,19 @@ public:
 
   HLRTopoBRep_Data& DataStructure();
 
-  Standard_EXPORT void Fill(
-    const HLRAlgo_Projector&                                                         P,
-    NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
-    const int                                                                        nbIso);
+  Standard_EXPORT void Fill(const HLRAlgo_Projector&       P,
+                            NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST,
+                            const int         nbIso);
 
   DEFINE_STANDARD_RTTIEXT(HLRTopoBRep_OutLiner, Standard_Transient)
 
 private:
   //! Builds faces from F and add them to S.
-  Standard_EXPORT void ProcessFace(
-    const TopoDS_Face&                                                               F,
-    TopoDS_Shape&                                                                    S,
-    NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& M);
+  Standard_EXPORT void ProcessFace(const TopoDS_Face&             F,
+                                   TopoDS_Shape&                  S,
+                                   NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& M);
 
-  Standard_EXPORT void BuildShape(
-    NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& M);
+  Standard_EXPORT void BuildShape(NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& M);
 
   TopoDS_Shape     myOriginalShape;
   TopoDS_Shape     myOutLinedShape;

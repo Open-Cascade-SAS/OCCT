@@ -31,7 +31,7 @@ CDM_MetaData::CDM_MetaData(const TCollection_ExtendedString& aFolder,
                            const TCollection_ExtendedString& aName,
                            const TCollection_ExtendedString& aPath,
                            const TCollection_ExtendedString& aFileName,
-                           const bool                        ReadOnly)
+                           const bool            ReadOnly)
     : myIsRetrieved(false),
       myDocument(NULL),
       myFolder(aFolder),
@@ -49,7 +49,7 @@ CDM_MetaData::CDM_MetaData(const TCollection_ExtendedString& aFolder,
                            const TCollection_ExtendedString& aPath,
                            const TCollection_ExtendedString& aVersion,
                            const TCollection_ExtendedString& aFileName,
-                           const bool                        ReadOnly)
+                           const bool            ReadOnly)
     : myIsRetrieved(false),
       myDocument(NULL),
       myFolder(aFolder),
@@ -84,15 +84,14 @@ void CDM_MetaData::UnsetDocument()
   myIsRetrieved = false;
 }
 
-occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
-  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-  const TCollection_ExtendedString&                                           aFolder,
-  const TCollection_ExtendedString&                                           aName,
-  const TCollection_ExtendedString&                                           aPath,
-  const TCollection_ExtendedString&                                           aFileName,
-  const bool                                                                  ReadOnly)
+occ::handle<CDM_MetaData> CDM_MetaData::LookUp(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>&          theLookUpTable,
+                                          const TCollection_ExtendedString& aFolder,
+                                          const TCollection_ExtendedString& aName,
+                                          const TCollection_ExtendedString& aPath,
+                                          const TCollection_ExtendedString& aFileName,
+                                          const bool            ReadOnly)
 {
-  occ::handle<CDM_MetaData>  theMetaData;
+  occ::handle<CDM_MetaData>       theMetaData;
   TCollection_ExtendedString aConventionalPath = aPath;
   aConventionalPath.ChangeAll('\\', '/');
   if (!theLookUpTable.IsBound(aConventionalPath))
@@ -108,16 +107,15 @@ occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
   return theMetaData;
 }
 
-occ::handle<CDM_MetaData> CDM_MetaData::LookUp(
-  NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-  const TCollection_ExtendedString&                                           aFolder,
-  const TCollection_ExtendedString&                                           aName,
-  const TCollection_ExtendedString&                                           aPath,
-  const TCollection_ExtendedString&                                           aVersion,
-  const TCollection_ExtendedString&                                           aFileName,
-  const bool                                                                  ReadOnly)
+occ::handle<CDM_MetaData> CDM_MetaData::LookUp(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>&          theLookUpTable,
+                                          const TCollection_ExtendedString& aFolder,
+                                          const TCollection_ExtendedString& aName,
+                                          const TCollection_ExtendedString& aPath,
+                                          const TCollection_ExtendedString& aVersion,
+                                          const TCollection_ExtendedString& aFileName,
+                                          const bool            ReadOnly)
 {
-  occ::handle<CDM_MetaData>  theMetaData;
+  occ::handle<CDM_MetaData>       theMetaData;
   TCollection_ExtendedString aConventionalPath = aPath;
   aConventionalPath.ChangeAll('\\', '/');
   if (!theLookUpTable.IsBound(aConventionalPath))

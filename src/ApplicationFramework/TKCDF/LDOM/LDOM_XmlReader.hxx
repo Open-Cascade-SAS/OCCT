@@ -49,12 +49,14 @@ public:
 
   // ---------- PUBLIC METHODS ----------
   LDOM_XmlReader(const occ::handle<LDOM_MemManager>& aDocument,
-                 TCollection_AsciiString&            anErrorString,
-                 const bool                          theTagPerStep = false);
+                 TCollection_AsciiString&       anErrorString,
+                 const bool         theTagPerStep = false);
   // Constructor - takes a file descriptor for input
   // Constructor - takes an std::istream for input
 
-  RecordType ReadRecord(Standard_IStream& theIStream, LDOM_OSStream& theData, bool& theDocStart);
+  RecordType ReadRecord(Standard_IStream& theIStream,
+                        LDOM_OSStream&    theData,
+                        bool& theDocStart);
 
   // reading a markup or other element of XML format
 
@@ -64,7 +66,9 @@ public:
 
   void CreateElement(const char* theName, const int theLen);
 
-  static bool getInteger(LDOMBasicString& theValue, const char* theStart, const char* theEnd);
+  static bool getInteger(LDOMBasicString& theValue,
+                                     const char*      theStart,
+                                     const char*      theEnd);
 
   // try convert string theStart to LDOM_AsciiInteger, return False on success
 
@@ -82,16 +86,16 @@ private:
 private:
   // ---------- PRIVATE FIELDS ----------
 
-  bool                         myEOF;
-  TCollection_AsciiString&     myError;
-  occ::handle<LDOM_MemManager> myDocument;
-  LDOM_BasicElement*           myElement;
-  const LDOM_BasicNode*        myLastChild; // optim. reading attributes
-  const char*                  myPtr;
-  const char*                  myEndPtr;
-  char                         myBuffer[XML_BUFFER_SIZE + 4];
-  bool                         myTagPerStep;
-  LDOM_OSStream::BOMType       myBOM;
+  bool         myEOF;
+  TCollection_AsciiString& myError;
+  occ::handle<LDOM_MemManager>  myDocument;
+  LDOM_BasicElement*       myElement;
+  const LDOM_BasicNode*    myLastChild; // optim. reading attributes
+  const char*              myPtr;
+  const char*              myEndPtr;
+  char                     myBuffer[XML_BUFFER_SIZE + 4];
+  bool         myTagPerStep;
+  LDOM_OSStream::BOMType   myBOM;
 };
 
 #endif

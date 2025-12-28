@@ -50,24 +50,24 @@ public:
   //! be multiplicated with BS later.
   Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> Solution(
     const occ::handle<Geom_BSplineCurve>& BS,
-    const double                          TolPoles = 0.000001,
-    const double                          TolKnots = 0.000001);
+    const double              TolPoles = 0.000001,
+    const double              TolKnots = 0.000001);
 
   //! returns the correct spline a(u) which will
   //! be multiplicated with BS later.
   Standard_EXPORT static occ::handle<Geom2d_BSplineCurve> Solution(
     const occ::handle<Geom2d_BSplineCurve>& BS,
-    const double                            TolPoles = 0.000001,
-    const double                            TolKnots = 0.000001);
+    const double                TolPoles = 0.000001,
+    const double                TolKnots = 0.000001);
 
   //! returns the knots to insert to a(u) to
   //! stay with a constant sign and in the
   //! tolerances.
   Standard_EXPORT static void Solutionbis(const occ::handle<Geom_BSplineCurve>& BS,
-                                          double&                               Knotmin,
-                                          double&                               Knotmax,
-                                          const double                          TolPoles = 0.000001,
-                                          const double TolKnots = 0.000001);
+                                          double&                   Knotmin,
+                                          double&                   Knotmax,
+                                          const double              TolPoles = 0.000001,
+                                          const double              TolKnots = 0.000001);
 };
 
 #endif // _Hermit_HeaderFile

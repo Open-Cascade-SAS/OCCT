@@ -41,7 +41,7 @@ extern bool TopOpeBRep_GettraceSAVFF();
 static void SAVFE(const TopoDS_Face& F1, const TopoDS_Edge& E)
 {
   TCollection_AsciiString aname_1("FE_face"), aname_2("FE_edge");
-  const char *            name_1 = aname_1.ToCString(), name_2 = aname_2.ToCString();
+  const char*        name_1 = aname_1.ToCString(), name_2 = aname_2.ToCString();
   std::cout << "FaceEdgeIntersector : " << name_1 << "," << name_2 << std::endl;
   BRepTools::Write(F1, name_1);
   BRepTools::Write(E, name_2);
@@ -92,8 +92,8 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF, const TopoD
     SAVFE(myFace, myEdge);
 #endif
 
-  double                        f, l;
-  TopLoc_Location               loc;
+  double            f, l;
+  TopLoc_Location          loc;
   const occ::handle<Geom_Curve> C = BRep_Tool::Curve(myEdge, loc, f, l);
 
   occ::handle<Geom_Geometry> GGao1  = C->Transformed(loc.Transformation());
@@ -208,7 +208,7 @@ gp_Pnt TopOpeBRep_FaceEdgeIntersector::Value() const
 double TopOpeBRep_FaceEdgeIntersector::Parameter() const
 {
   const IntCurveSurface_IntersectionPoint& IP = mySequenceOfPnt(myPointIndex);
-  double                                   p  = IP.W();
+  double                            p  = IP.W();
   return p;
 }
 
@@ -217,8 +217,8 @@ double TopOpeBRep_FaceEdgeIntersector::Parameter() const
 void TopOpeBRep_FaceEdgeIntersector::UVPoint(gp_Pnt2d& P2d) const
 {
   const IntCurveSurface_IntersectionPoint& IP = mySequenceOfPnt(myPointIndex);
-  double                                   u  = IP.U();
-  double                                   v  = IP.V();
+  double                            u  = IP.U();
+  double                            v  = IP.V();
   P2d.SetCoord(u, v);
 }
 
@@ -226,15 +226,15 @@ void TopOpeBRep_FaceEdgeIntersector::UVPoint(gp_Pnt2d& P2d) const
 
 TopAbs_State TopOpeBRep_FaceEdgeIntersector::State() const
 {
-  int          i = mySequenceOfState(myPointIndex);
-  TopAbs_State s = (i == 0) ? TopAbs_IN : TopAbs_ON;
+  int i = mySequenceOfState(myPointIndex);
+  TopAbs_State     s = (i == 0) ? TopAbs_IN : TopAbs_ON;
   return s;
 }
 
 //=================================================================================================
 
 TopOpeBRepDS_Transition TopOpeBRep_FaceEdgeIntersector::Transition(
-  const int                Index,
+  const int   Index,
   const TopAbs_Orientation FaceOrientation) const
 {
   //  TopAbs_ShapeEnum onB = TopAbs_FACE, onA = TopAbs_FACE; // bidon
@@ -307,12 +307,12 @@ TopOpeBRepDS_Transition TopOpeBRep_FaceEdgeIntersector::Transition(
 //=================================================================================================
 
 bool TopOpeBRep_FaceEdgeIntersector::IsVertex(const TopoDS_Shape& S,
-                                              const gp_Pnt&       P,
-                                              const double        Tol,
-                                              TopoDS_Vertex&      VR)
+                                                          const gp_Pnt&       P,
+                                                          const double Tol,
+                                                          TopoDS_Vertex&      VR)
 {
   bool isv = false;
-  VR       = myNullVertex;
+  VR                   = myNullVertex;
 
   double Tol2 = Tol * Tol;
   for (myVertexExplorer.Init(S, TopAbs_VERTEX); myVertexExplorer.More(); myVertexExplorer.Next())
@@ -332,10 +332,11 @@ bool TopOpeBRep_FaceEdgeIntersector::IsVertex(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-bool TopOpeBRep_FaceEdgeIntersector::IsVertex(const int I, TopoDS_Vertex& VR)
+bool TopOpeBRep_FaceEdgeIntersector::IsVertex(const int I,
+                                                          TopoDS_Vertex&         VR)
 {
-  bool   isv = false;
-  gp_Pnt P   = Value();
+  bool isv = false;
+  gp_Pnt           P   = Value();
   if (I == 1)
     isv = IsVertex(myFace, P, myTol, VR);
   else if (I == 2)
@@ -376,7 +377,7 @@ void TopOpeBRep_FaceEdgeIntersector::ShapeTolerances(const TopoDS_Shape& S1, con
 //=================================================================================================
 
 double TopOpeBRep_FaceEdgeIntersector::ToleranceMax(const TopoDS_Shape&    S,
-                                                    const TopAbs_ShapeEnum T) const
+                                                           const TopAbs_ShapeEnum T) const
 {
   TopExp_Explorer e(S, T);
   if (!e.More())

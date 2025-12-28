@@ -45,9 +45,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_SymmetricRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_SymmetricRelation::PrsDim_SymmetricRelation(const TopoDS_Shape&            aSymmTool,
-                                                   const TopoDS_Shape&            FirstShape,
-                                                   const TopoDS_Shape&            SecondShape,
+PrsDim_SymmetricRelation::PrsDim_SymmetricRelation(const TopoDS_Shape&       aSymmTool,
+                                                   const TopoDS_Shape&       FirstShape,
+                                                   const TopoDS_Shape&       SecondShape,
                                                    const occ::handle<Geom_Plane>& aPlane)
     : PrsDim_Relation(),
       myTool(aSymmTool)
@@ -87,8 +87,8 @@ void PrsDim_SymmetricRelation::Compute(const occ::handle<PrsMgr_PresentationMana
   if (myTool.ShapeType() == TopAbs_EDGE)
   {
     occ::handle<Geom_Curve> aCurve, extcurve;
-    gp_Pnt                  p1, p2;
-    bool                    isinfinite, isonplane;
+    gp_Pnt             p1, p2;
+    bool   isinfinite, isonplane;
     if (PrsDim::ComputeGeometry(TopoDS::Edge(myTool),
                                 aCurve,
                                 p1,
@@ -121,11 +121,11 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
 {
   occ::handle<Select3D_SensitiveSegment> seg;
   occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
-  double                                 F, L;
+  double                     F, L;
 
   occ::handle<Geom_Curve> geom_axis, extcurve;
-  gp_Pnt                  p1, p2;
-  bool                    isinfinite, isonplane;
+  gp_Pnt             p1, p2;
+  bool   isinfinite, isonplane;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myTool),
                                geom_axis,
                                p1,
@@ -137,7 +137,7 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
     return;
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
-  gp_Lin                 laxis(geom_line->Lin());
+  gp_Lin            laxis(geom_line->Lin());
 
   if (myFShape.ShapeType() != TopAbs_VERTEX)
   {
@@ -146,12 +146,12 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
     if (cu1.GetType() == GeomAbs_Line)
     {
       //      gp_Lin L1 (myFAttach,myFDirAttach);
-      gp_Pnt PjAttachPnt1 = ElCLib::Value(ElCLib::Parameter(laxis, myFAttach), laxis);
-      gp_Pnt PjOffSetPnt  = ElCLib::Value(ElCLib::Parameter(laxis, myPosition), laxis);
+      gp_Pnt        PjAttachPnt1 = ElCLib::Value(ElCLib::Parameter(laxis, myFAttach), laxis);
+      gp_Pnt        PjOffSetPnt  = ElCLib::Value(ElCLib::Parameter(laxis, myPosition), laxis);
       double h =
         fabs(PjOffSetPnt.Distance(PjAttachPnt1) / cos(myAxisDirAttach.Angle(myFDirAttach)));
-      gp_Vec VL1(myFDirAttach);
-      gp_Vec VLa(PjAttachPnt1, PjOffSetPnt);
+      gp_Vec        VL1(myFDirAttach);
+      gp_Vec        VLa(PjAttachPnt1, PjOffSetPnt);
       double scal = VL1.Dot(VLa);
       if (scal < 0)
         VL1.Reverse();
@@ -170,14 +170,14 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
       else
       {
         L3 = gce_MakeLin(P1, myFDirAttach);
-        double size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                           myPosition.X(),
-                                                                           myPosition.Y(),
-                                                                           myPosition.Z(),
-                                                                           myPosition.X() + size,
-                                                                           myPosition.Y() + size,
-                                                                           myPosition.Z() + size);
+                                                                      myPosition.X(),
+                                                                      myPosition.Y(),
+                                                                      myPosition.Z(),
+                                                                      myPosition.X() + size,
+                                                                      myPosition.Y() + size,
+                                                                      myPosition.Z() + size);
         aSel->Add(box);
       }
       double parmin, parmax, parcur;
@@ -250,14 +250,14 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
       else
       {
         L3 = gce_MakeLin(P1, laxis.Direction());
-        double size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                           myPosition.X(),
-                                                                           myPosition.Y(),
-                                                                           myPosition.Z(),
-                                                                           myPosition.X() + size,
-                                                                           myPosition.Y() + size,
-                                                                           myPosition.Z() + size);
+                                                                      myPosition.X(),
+                                                                      myPosition.Y(),
+                                                                      myPosition.Z(),
+                                                                      myPosition.X() + size,
+                                                                      myPosition.Y() + size,
+                                                                      myPosition.Z() + size);
         aSel->Add(box);
       }
       double parmin, parmax, parcur;
@@ -306,14 +306,14 @@ void PrsDim_SymmetricRelation::ComputeSelection(const occ::handle<SelectMgr_Sele
       else
       {
         L3 = gce_MakeLin(P1, myFDirAttach);
-        double size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+        double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
         occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                           myPosition.X(),
-                                                                           myPosition.Y(),
-                                                                           myPosition.Z(),
-                                                                           myPosition.X() + size,
-                                                                           myPosition.Y() + size,
-                                                                           myPosition.Z() + size);
+                                                                      myPosition.X(),
+                                                                      myPosition.Y(),
+                                                                      myPosition.Z(),
+                                                                      myPosition.X() + size,
+                                                                      myPosition.Y() + size,
+                                                                      myPosition.Z() + size);
         aSel->Add(box);
       }
       double parmin, parmax, parcur;
@@ -365,9 +365,9 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
   if (cu2.GetType() != GeomAbs_Line && cu2.GetType() != GeomAbs_Circle)
     return;
   //  gp_Pnt pint3d,ptat11,ptat12,ptat21,ptat22;
-  gp_Pnt                  ptat11, ptat12, ptat21, ptat22;
+  gp_Pnt             ptat11, ptat12, ptat21, ptat22;
   occ::handle<Geom_Curve> geom1, geom2;
-  bool                    isInfinite1, isInfinite2;
+  bool   isInfinite1, isInfinite2;
   occ::handle<Geom_Curve> extCurv;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myFShape),
                                TopoDS::Edge(mySShape),
@@ -387,8 +387,8 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
   }
   aprs->SetInfiniteState((isInfinite1 || isInfinite2) && (myExtShape != 0));
   occ::handle<Geom_Curve> geom_axis, extcurve;
-  gp_Pnt                  p1, p2;
-  bool                    isinfinite, isonplane;
+  gp_Pnt             p1, p2;
+  bool   isinfinite, isonplane;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myTool),
                                geom_axis,
                                p1,
@@ -400,20 +400,20 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
     return;
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
-  gp_Lin                 laxis(geom_line->Lin());
+  gp_Lin            laxis(geom_line->Lin());
   myAxisDirAttach = laxis.Direction();
 
   if (cu1.GetType() == GeomAbs_Line)
   {
     occ::handle<Geom_Line> geom_lin1(occ::down_cast<Geom_Line>(geom1));
-    gp_Lin                 l1(geom_lin1->Lin());
+    gp_Lin            l1(geom_lin1->Lin());
     myFDirAttach = l1.Direction();
   }
   gp_Circ circ;
   if (cu1.GetType() == GeomAbs_Circle)
   {
     occ::handle<Geom_Circle> geom_cir1(occ::down_cast<Geom_Circle>(geom1));
-    gp_Circ                  c(geom_cir1->Circ());
+    gp_Circ             c(geom_cir1->Circ());
     circ = c;
   }
 
@@ -511,7 +511,7 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
   if (PjFAttach.IsEqual(myFAttach, Precision::Confusion()))
   {
     occ::handle<Geom_Line> geom_lin2(occ::down_cast<Geom_Line>(geom2));
-    gp_Lin                 l2(geom_lin2->Lin());
+    gp_Lin            l2(geom_lin2->Lin());
     myFDirAttach = l2.Direction();
     gp_Pnt PntTempo;
     PntTempo  = myFAttach;
@@ -586,14 +586,13 @@ void PrsDim_SymmetricRelation::ComputeTwoEdgesSymmetric(const occ::handle<Prs3d_
 
 //=================================================================================================
 
-void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
-  const occ::handle<Prs3d_Presentation>& aprs)
+void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(const occ::handle<Prs3d_Presentation>& aprs)
 {
   if (myFShape.ShapeType() != TopAbs_VERTEX || mySShape.ShapeType() != TopAbs_VERTEX)
     return;
   occ::handle<Geom_Curve> geom_axis, extcurve;
-  gp_Pnt                  p1, p2;
-  bool                    isinfinite, isonplane;
+  gp_Pnt             p1, p2;
+  bool   isinfinite, isonplane;
   if (!PrsDim::ComputeGeometry(TopoDS::Edge(myTool),
                                geom_axis,
                                p1,
@@ -622,7 +621,7 @@ void PrsDim_SymmetricRelation::ComputeTwoVerticesSymmetric(
     return;
 
   occ::handle<Geom_Line> geom_line = occ::down_cast<Geom_Line>(geom_axis);
-  gp_Lin                 laxis(geom_line->Lin());
+  gp_Lin            laxis(geom_line->Lin());
   myAxisDirAttach = laxis.Direction();
 
   // search for attachment points

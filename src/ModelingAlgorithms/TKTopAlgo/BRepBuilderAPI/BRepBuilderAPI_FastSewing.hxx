@@ -92,7 +92,7 @@ public:
 protected:
   class NodeInspector;
 
-  Standard_EXPORT void FindVertexes(const int                              theSurfID,
+  Standard_EXPORT void FindVertexes(const int                 theSurfID,
                                     NCollection_CellFilter<NodeInspector>& theCells);
   Standard_EXPORT void FindEdges(const int theSurfID);
   Standard_EXPORT void UpdateEdgeInfo(const int theIDPrevVertex,
@@ -161,7 +161,7 @@ protected:
 
     //! Creates topological members (wire and face)
     void CreateTopologicalWire(const NCollection_Vector<FS_Edge>& theEdgeVec,
-                               const double                       theToler);
+                               const double                theToler);
     void CreateTopologicalFace();
 
     //! Sets vertex
@@ -219,7 +219,7 @@ protected:
     //! Creates topological member (TopoDS_Edge)
     void CreateTopologicalEdge(const NCollection_Vector<FS_Vertex>& theVertexVec,
                                const NCollection_Vector<FS_Face>&   theFaceVec,
-                               const double                         theTol);
+                               const double                  theTol);
 
     //! Sets vertex
     void SetVertex(const int thePlaceID, const int theVertID)
@@ -256,7 +256,7 @@ protected:
 
     NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
                   const gp_Pnt&                        thePnt,
-                  const double                         theTol);
+                  const double                  theTol);
 
     Standard_EXPORT NCollection_CellFilter_Action Inspect(const Target theId);
 
@@ -266,9 +266,9 @@ protected:
     NodeInspector&                       operator=(const NodeInspector&);
     const NCollection_Vector<FS_Vertex>& myVecOfVertexes;
     gp_Pnt                               myPoint;
-    double                               mySQToler;
+    double                        mySQToler;
     Target                               myResID;
-    bool                                 myIsFindingEnable;
+    bool                     myIsFindingEnable;
   };
 
 private:

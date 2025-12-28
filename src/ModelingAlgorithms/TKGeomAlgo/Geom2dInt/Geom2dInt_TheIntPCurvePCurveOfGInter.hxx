@@ -42,36 +42,36 @@ public:
                                const IntRes2d_Domain&   Domain1,
                                const Adaptor2d_Curve2d& Curve2,
                                const IntRes2d_Domain&   Domain2,
-                               const double             TolConf,
-                               const double             Tol);
+                               const double      TolConf,
+                               const double      Tol);
 
   Standard_EXPORT void Perform(const Adaptor2d_Curve2d& Curve1,
                                const IntRes2d_Domain&   Domain1,
-                               const double             TolConf,
-                               const double             Tol);
+                               const double      TolConf,
+                               const double      Tol);
 
   //! Set / get minimum number of points in polygon for intersection.
-  Standard_EXPORT void SetMinNbSamples(const int theMinNbSamples);
-  Standard_EXPORT int  GetMinNbSamples() const;
+  Standard_EXPORT void             SetMinNbSamples(const int theMinNbSamples);
+  Standard_EXPORT int GetMinNbSamples() const;
 
 protected:
   Standard_EXPORT void Perform(const Adaptor2d_Curve2d& Curve1,
                                const IntRes2d_Domain&   Domain1,
                                const Adaptor2d_Curve2d& Curve2,
                                const IntRes2d_Domain&   Domain2,
-                               const double             TolConf,
-                               const double             Tol,
-                               const int                NbIter,
-                               const double             DeltaU,
-                               const double             DeltaV);
+                               const double      TolConf,
+                               const double      Tol,
+                               const int   NbIter,
+                               const double      DeltaU,
+                               const double      DeltaV);
 
   Standard_EXPORT void Perform(const Adaptor2d_Curve2d& Curve1,
                                const IntRes2d_Domain&   Domain1,
-                               const double             TolConf,
-                               const double             Tol,
-                               const int                NbIter,
-                               const double             DeltaU,
-                               const double             DeltaV);
+                               const double      TolConf,
+                               const double      Tol,
+                               const int   NbIter,
+                               const double      DeltaU,
+                               const double      DeltaV);
 
 private:
   //! Method to find intersection between two curves
@@ -79,19 +79,19 @@ private:
   //! : were replaced on line and exact point of intersection was not found
   //! : for case when point of intersection was found
   //! : during prelimanary search for line (case of bad parameterization of Bspline for example).
-  Standard_EXPORT bool findIntersect(
-    const Adaptor2d_Curve2d&                                  Curve1,
-    const IntRes2d_Domain&                                    Domain1,
-    const Adaptor2d_Curve2d&                                  Curve2,
-    const IntRes2d_Domain&                                    Domain2,
-    const double                                              TolConf,
-    const double                                              Tol,
-    const int                                                 NbIter,
-    const double                                              DeltaU,
-    const double                                              DeltaV,
-    const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly1,
-    const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly2,
-    const bool                                                isFullRepresentation);
+  Standard_EXPORT bool
+    findIntersect(const Adaptor2d_Curve2d&                                  Curve1,
+                  const IntRes2d_Domain&                                    Domain1,
+                  const Adaptor2d_Curve2d&                                  Curve2,
+                  const IntRes2d_Domain&                                    Domain2,
+                  const double                                       TolConf,
+                  const double                                       Tol,
+                  const int                                    NbIter,
+                  const double                                       DeltaU,
+                  const double                                       DeltaV,
+                  const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly1,
+                  const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& thePoly2,
+                  const bool                                    isFullRepresentation);
 
   IntRes2d_Domain DomainOnCurve1;
   IntRes2d_Domain DomainOnCurve2;

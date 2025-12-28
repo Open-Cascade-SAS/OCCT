@@ -62,7 +62,7 @@ private:
   //! Returns a string composed with the sub-TreeNodes
   //! of <aTreeNode>. Used to implement other methods.
   Standard_EXPORT void OpenNode(const occ::handle<TDataStd_TreeNode>& aTreeNode,
-                                TCollection_AsciiString&              aList) const;
+                                TCollection_AsciiString&         aList) const;
 
   TDF_Label myRoot;
 };

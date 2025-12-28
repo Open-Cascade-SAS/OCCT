@@ -30,7 +30,7 @@ RWStepFEA_RWNodeSet::RWStepFEA_RWNodeSet() {}
 //=================================================================================================
 
 void RWStepFEA_RWNodeSet::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                   const int                                   num,
+                                   const int                 num,
                                    occ::handle<Interface_Check>&               ach,
                                    const occ::handle<StepFEA_NodeSet>&         ent) const
 {
@@ -46,11 +46,11 @@ void RWStepFEA_RWNodeSet::ReadStep(const occ::handle<StepData_StepReaderData>& d
   // Own fields of NodeSet
 
   occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>> aNodes;
-  int                                                                       sub2 = 0;
+  int                            sub2 = 0;
   if (data->ReadSubList(num, 2, "nodes", ach, sub2))
   {
     int nb0  = data->NbParams(sub2);
-    aNodes   = new NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>(1, nb0);
+    aNodes                = new NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -71,7 +71,7 @@ void RWStepFEA_RWNodeSet::ReadStep(const occ::handle<StepData_StepReaderData>& d
 
 //=================================================================================================
 
-void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter&                SW,
+void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter&           SW,
                                     const occ::handle<StepFEA_NodeSet>& ent) const
 {
 
@@ -93,7 +93,7 @@ void RWStepFEA_RWNodeSet::WriteStep(StepData_StepWriter&                SW,
 //=================================================================================================
 
 void RWStepFEA_RWNodeSet::Share(const occ::handle<StepFEA_NodeSet>& ent,
-                                Interface_EntityIterator&           iter) const
+                                Interface_EntityIterator&      iter) const
 {
 
   // Inherited fields of RepresentationItem

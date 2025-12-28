@@ -41,8 +41,8 @@ public:
   //! - dataType   : Interpretation Flag, always = 1
   //! - aDisp      : Common z displacement
   //! - dataPoints : Data points
-  Standard_EXPORT void Init(const int                                      dataType,
-                            const double                                   aDisp,
+  Standard_EXPORT void Init(const int            dataType,
+                            const double               aDisp,
                             const occ::handle<NCollection_HArray1<gp_XY>>& dataPoints);
 
   //! Changes FormNumber (indicates the Type of the Hatches)
@@ -69,8 +69,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_Section, IGESData_IGESEntity)
 
 private:
-  int                                     theDatatype;
-  double                                  theZDisplacement;
+  int           theDatatype;
+  double              theZDisplacement;
   occ::handle<NCollection_HArray1<gp_XY>> theDataPoints;
 };
 

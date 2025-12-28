@@ -42,8 +42,7 @@ public:
   Standard_EXPORT static void Init();
 
   //! Sets default AlgoContainer
-  Standard_EXPORT static void SetAlgoContainer(
-    const occ::handle<IGESToBRep_AlgoContainer>& aContainer);
+  Standard_EXPORT static void SetAlgoContainer(const occ::handle<IGESToBRep_AlgoContainer>& aContainer);
 
   //! Returns default AlgoContainer
   Standard_EXPORT static occ::handle<IGESToBRep_AlgoContainer> AlgoContainer();
@@ -51,7 +50,8 @@ public:
   //! Return True if the IGESEntity can be transferred by
   //! TransferCurveAndSurface.
   //! ex: All IGESEntity from IGESGeom
-  Standard_EXPORT static bool IsCurveAndSurface(const occ::handle<IGESData_IGESEntity>& start);
+  Standard_EXPORT static bool IsCurveAndSurface(
+    const occ::handle<IGESData_IGESEntity>& start);
 
   //! Return True if the IGESEntity can be transferred by
   //! TransferBasicCurve.
@@ -86,12 +86,12 @@ public:
   Standard_EXPORT static bool IsBRepEntity(const occ::handle<IGESData_IGESEntity>& start);
 
   Standard_EXPORT static int IGESCurveToSequenceOfIGESCurve(
-    const occ::handle<IGESData_IGESEntity>&                              curve,
+    const occ::handle<IGESData_IGESEntity>&    curve,
     occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& sequence);
 
   Standard_EXPORT static bool TransferPCurve(const TopoDS_Edge& fromedge,
-                                             const TopoDS_Edge& toedge,
-                                             const TopoDS_Face& face);
+                                                         const TopoDS_Edge& toedge,
+                                                         const TopoDS_Face& face);
 };
 
 #endif // _IGESToBRep_HeaderFile

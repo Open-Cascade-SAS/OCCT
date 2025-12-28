@@ -26,16 +26,16 @@ IMPLEMENT_DOMSTRING(TimeStamp, "time_stamp")
 //=================================================================================================
 
 XmlMXCAFDoc_NoteDriver::XmlMXCAFDoc_NoteDriver(const occ::handle<Message_Messenger>& theMsgDriver,
-                                               const char*                           theName)
+                                               const char*                 theName)
     : XmlMDF_ADriver(theMsgDriver, theName)
 {
 }
 
 //=================================================================================================
 
-bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
+bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               XmlObjMgt_RRelocationTable& /*theRelocTable*/) const
 {
   const XmlObjMgt_Element& anElement = theSource;
 
@@ -56,7 +56,7 @@ bool XmlMXCAFDoc_NoteDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 //=================================================================================================
 
 void XmlMXCAFDoc_NoteDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   XmlObjMgt_Persistent&             theTarget,
+                                   XmlObjMgt_Persistent&        theTarget,
                                    XmlObjMgt_SRelocationTable& /*theRelocTable*/) const
 {
   occ::handle<XCAFDoc_Note> aNote = occ::down_cast<XCAFDoc_Note>(theSource);

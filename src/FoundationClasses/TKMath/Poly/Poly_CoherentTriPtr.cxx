@@ -29,7 +29,7 @@ void Poly_CoherentTriPtr::Iterator::Next()
 
 //=================================================================================================
 
-void Poly_CoherentTriPtr::Append(const Poly_CoherentTriangle*                  pTri,
+void Poly_CoherentTriPtr::Append(const Poly_CoherentTriangle*             pTri,
                                  const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = theAlloc;
@@ -44,7 +44,7 @@ void Poly_CoherentTriPtr::Append(const Poly_CoherentTriangle*                  p
 
 //=================================================================================================
 
-void Poly_CoherentTriPtr::Prepend(const Poly_CoherentTriangle*                  pTri,
+void Poly_CoherentTriPtr::Prepend(const Poly_CoherentTriangle*             pTri,
                                   const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = theAlloc;
@@ -59,7 +59,7 @@ void Poly_CoherentTriPtr::Prepend(const Poly_CoherentTriangle*                  
 
 //=================================================================================================
 
-void Poly_CoherentTriPtr::Remove(Poly_CoherentTriPtr*                          thePtr,
+void Poly_CoherentTriPtr::Remove(Poly_CoherentTriPtr*                     thePtr,
                                  const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = theAlloc;
@@ -77,7 +77,7 @@ void Poly_CoherentTriPtr::Remove(Poly_CoherentTriPtr*                          t
 
 //=================================================================================================
 
-void Poly_CoherentTriPtr::RemoveList(Poly_CoherentTriPtr*                          thePtr,
+void Poly_CoherentTriPtr::RemoveList(Poly_CoherentTriPtr*                     thePtr,
                                      const occ::handle<NCollection_BaseAllocator>& theAlloc)
 {
   occ::handle<NCollection_BaseAllocator> anAlloc = theAlloc;

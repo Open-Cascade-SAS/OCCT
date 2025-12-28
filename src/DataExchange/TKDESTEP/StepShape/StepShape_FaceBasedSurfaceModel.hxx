@@ -34,17 +34,14 @@ public:
   Standard_EXPORT StepShape_FaceBasedSurfaceModel();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& aFbsmFaces);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& aFbsmFaces);
 
   //! Returns field FbsmFaces
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>
-                  FbsmFaces() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> FbsmFaces() const;
 
   //! Set field FbsmFaces
-  Standard_EXPORT void SetFbsmFaces(
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& FbsmFaces);
+  Standard_EXPORT void SetFbsmFaces(const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>>& FbsmFaces);
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FaceBasedSurfaceModel, StepGeom_GeometricRepresentationItem)
 

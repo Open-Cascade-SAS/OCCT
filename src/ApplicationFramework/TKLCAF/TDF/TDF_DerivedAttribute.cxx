@@ -26,8 +26,8 @@ namespace TDF_DerivedAttributeGlobals
 struct CreatorData
 {
   TDF_DerivedAttribute::NewDerived myCreator;
-  const char*                      myNameSpace;
-  const char*                      myTypeName;
+  const char*                 myNameSpace;
+  const char*                 myTypeName;
 };
 
 //! List that contains the methods that create all registered derived attributes
@@ -47,7 +47,8 @@ static NCollection_DataMap<const char*, occ::handle<TDF_Attribute>, Standard_CSt
 }
 
 //! Global map of the string-type of derived attribute -> type name to identify this attribute
-static NCollection_DataMap<const char*, TCollection_AsciiString*, Standard_CStringHasher>& Types()
+static NCollection_DataMap<const char*, TCollection_AsciiString*, Standard_CStringHasher>&
+  Types()
 {
   static NCollection_DataMap<const char*, TCollection_AsciiString*, Standard_CStringHasher>
     THE_DERIVED_TYPES;
@@ -67,7 +68,7 @@ static std::mutex& Mutex()
 // purpose  : Registers a derived by the pointer to a method that creates a new derived attribute
 // instance
 //=======================================================================
-TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived  theNewAttributeFunction,
+TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived theNewAttributeFunction,
                                                                 const char* theNameSpace,
                                                                 const char* theTypeName)
 {
@@ -93,7 +94,7 @@ static void Initialize()
          aCreator.Next())
     {
       occ::handle<TDF_Attribute> aDerived            = aCreator.Value().myCreator();
-      const char*                aDerivedDynamicType = aDerived->DynamicType()->Name();
+      const char*      aDerivedDynamicType = aDerived->DynamicType()->Name();
 
       TCollection_AsciiString aTypeName;
       if (aCreator.Value().myNameSpace != NULL)

@@ -61,14 +61,13 @@ public:
   //! raises exception if allXCoeffs, allYCoeffs & allZCoeffs are not
   //! of the same size.
   //! or if the size of each element of the double array is not 16
-  Standard_EXPORT void Init(
-    const int                                       aBoundaryType,
-    const int                                       aPatchType,
-    const occ::handle<NCollection_HArray1<double>>& allUBreakpoints,
-    const occ::handle<NCollection_HArray1<double>>& allVBreakpoints,
-    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
-    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
-    const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs);
+  Standard_EXPORT void Init(const int                          aBoundaryType,
+                            const int                          aPatchType,
+                            const occ::handle<NCollection_HArray1<double>>&            allUBreakpoints,
+                            const occ::handle<NCollection_HArray1<double>>&            allVBreakpoints,
+                            const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allXCoeffs,
+                            const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allYCoeffs,
+                            const occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& allZCoeffs);
 
   //! returns the number of U segments
   Standard_EXPORT int NbUSegments() const;
@@ -94,34 +93,33 @@ public:
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> XPolynomial(const int anIndex1,
-                                                                       const int anIndex2) const;
+                                                            const int anIndex2) const;
 
   //! returns Y polynomial of patch referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> YPolynomial(const int anIndex1,
-                                                                       const int anIndex2) const;
+                                                            const int anIndex2) const;
 
   //! returns Z polynomial of patch referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbUSegments()
   //! or anIndex2 <= 0 or anIndex2 > NbVSegments()
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> ZPolynomial(const int anIndex1,
-                                                                       const int anIndex2) const;
+                                                            const int anIndex2) const;
 
   //! returns in one all the polynomial values "in bulk"
   //! useful for massive treatments
-  Standard_EXPORT void Polynomials(
-    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& XCoef,
-    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& YCoef,
-    occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& ZCoef) const;
+  Standard_EXPORT void Polynomials(occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& XCoef,
+                                   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& YCoef,
+                                   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>>& ZCoef) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESGeom_SplineSurface, IGESData_IGESEntity)
 
 private:
-  int                                                                        theBoundaryType;
-  int                                                                        thePatchType;
-  occ::handle<NCollection_HArray1<double>>                                   theUBreakPoints;
-  occ::handle<NCollection_HArray1<double>>                                   theVBreakPoints;
+  int                         theBoundaryType;
+  int                         thePatchType;
+  occ::handle<NCollection_HArray1<double>>            theUBreakPoints;
+  occ::handle<NCollection_HArray1<double>>            theVBreakPoints;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theXCoeffs;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theYCoeffs;
   occ::handle<NCollection_HArray2<occ::handle<NCollection_HArray1<double>>>> theZCoeffs;

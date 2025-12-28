@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
@@ -44,7 +45,7 @@ public:
   //! - nbPropVal    : number of property values
   //! - anArtIdent   : Artwork Stackup Identification
   //! - allLevelNums : Level Numbers
-  Standard_EXPORT void Init(const int                                    nbPropVal,
+  Standard_EXPORT void Init(const int                  nbPropVal,
                             const occ::handle<TCollection_HAsciiString>& anArtIdent,
                             const occ::handle<NCollection_HArray1<int>>& allLevelNums);
 
@@ -64,7 +65,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_PWBArtworkStackup, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
+  int                 theNbPropertyValues;
   occ::handle<TCollection_HAsciiString> theArtworkStackupIdent;
   occ::handle<NCollection_HArray1<int>> theLevelNumbers;
 };

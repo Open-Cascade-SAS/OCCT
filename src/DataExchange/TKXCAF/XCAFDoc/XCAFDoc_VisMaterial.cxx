@@ -144,8 +144,7 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
   aComMat.Shininess      = 1.0f - myPbrMat.Roughness;
   if (myPbrMat.EmissiveTexture.IsNull())
   {
-    aComMat.EmissiveColor =
-      Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(NCollection_Vec3<float>(1.0f)));
+    aComMat.EmissiveColor = Quantity_Color(myPbrMat.EmissiveFactor.cwiseMin(NCollection_Vec3<float>(1.0f)));
   }
   return aComMat;
 }
@@ -282,7 +281,7 @@ void XCAFDoc_VisMaterial::FillAspect(const occ::handle<Graphic3d_Aspects>& theAs
     return;
   }
 
-  int                               aTexIter    = 0;
+  int             aTexIter    = 0;
   occ::handle<Graphic3d_TextureSet> aTextureSet = new Graphic3d_TextureSet(aNbTexUnits);
   if (!aColorTexture.IsNull())
   {

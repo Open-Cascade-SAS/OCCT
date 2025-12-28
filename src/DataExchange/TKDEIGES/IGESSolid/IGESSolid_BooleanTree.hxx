@@ -23,6 +23,10 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <Standard_Integer.hxx>
 
 //! defines BooleanTree, Type <180> Form Number <0>
 //! in package IGESSolid
@@ -39,9 +43,8 @@ public:
   //! BooleanTree
   //! - operands   : Array containing pointer to DE of operands
   //! - operations : Array containing integer type for operations
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& operands,
-    const occ::handle<NCollection_HArray1<int>>&                              operations);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& operands,
+                            const occ::handle<NCollection_HArray1<int>>&     operations);
 
   //! returns the length of the post-order list
   Standard_EXPORT int Length() const;
@@ -65,7 +68,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theOperands;
-  occ::handle<NCollection_HArray1<int>>                              theOperations;
+  occ::handle<NCollection_HArray1<int>>     theOperations;
 };
 
 #endif // _IGESSolid_BooleanTree_HeaderFile

@@ -35,8 +35,8 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        theName,
                             const occ::handle<TCollection_HAsciiString>&        theDescription,
                             const occ::handle<StepRepr_ProductDefinitionShape>& theOfShape,
-                            const StepData_Logical                 theProductDefinitional,
-                            const occ::handle<Standard_Transient>& theOffset);
+                            const StepData_Logical                         theProductDefinitional,
+                            const occ::handle<Standard_Transient>&              theOffset);
 
   //! Returns field Offset
   inline occ::handle<Standard_Transient> Offset() const { return offset; }

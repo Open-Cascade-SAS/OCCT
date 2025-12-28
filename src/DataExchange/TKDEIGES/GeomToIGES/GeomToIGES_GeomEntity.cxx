@@ -35,9 +35,9 @@ GeomToIGES_GeomEntity::GeomToIGES_GeomEntity(const GeomToIGES_GeomEntity& other)
 
 void GeomToIGES_GeomEntity::SetModel(const occ::handle<IGESData_IGESModel>& model)
 {
-  TheModel          = model;
+  TheModel                 = model;
   double unitfactor = TheModel->GlobalSection().UnitValue();
-  TheUnitFactor     = unitfactor;
+  TheUnitFactor            = unitfactor;
 }
 
 //=================================================================================================

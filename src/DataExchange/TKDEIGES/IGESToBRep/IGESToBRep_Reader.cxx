@@ -145,8 +145,8 @@ int IGESToBRep_Reader::LoadFile(const char* filename)
   OSD_Timer c;
   c.Reset();
   c.Start();
-  char* pfilename  = (char*)filename;
-  int   StatusFile = IGESFile_Read(pfilename, model, protocol);
+  char*            pfilename  = (char*)filename;
+  int StatusFile = IGESFile_Read(pfilename, model, protocol);
   if (StatusFile != 0)
   {
     // Sending of message : IGES file opening error
@@ -217,8 +217,8 @@ int IGESToBRep_Reader::LoadFile(const char* filename)
   // Message fin de loading iGES file (elapsed time %s)
   char t[20];
   t[0] = '\0';
-  double second, cpu;
-  int    minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -306,7 +306,7 @@ bool IGESToBRep_Reader::IsDone() const
 
 //=============================================================================
 
-void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
+void IGESToBRep_Reader::TransferRoots(const bool       onlyvisible,
                                       const Message_ProgressRange& theProgress)
 {
   if (theModel.IsNull() || theProc.IsNull())
@@ -335,12 +335,12 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
   Transfer_TransferOutput TP(theProc, theModel);
 
   const occ::handle<Interface_Protocol> aProtocol = protocol; // to avoid ambiguity
-  Interface_ShareFlags                  SH(theModel, aProtocol);
-  int                                   nb = theModel->NbEntities();
-  ShapeExtend_Explorer                  SBE;
+  Interface_ShareFlags             SH(theModel, aProtocol);
+  int                 nb = theModel->NbEntities();
+  ShapeExtend_Explorer             SBE;
 
-  int         precisionMode = Interface_Static::IVal("read.precision.mode");
-  Message_Msg msg2035("IGES_2035");
+  int precisionMode = Interface_Static::IVal("read.precision.mode");
+  Message_Msg      msg2035("IGES_2035");
   msg2035.Arg(precisionMode);
   TF->Send(msg2035, Message_Info);
   if (precisionMode == 1)
@@ -362,7 +362,7 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
   Message_ProgressScope PS(theProgress, "Root", nb);
   for (int i = 1; i <= nb && PS.More(); i++)
   {
-    Message_ProgressRange            aRange = PS.Next();
+    Message_ProgressRange       aRange = PS.Next();
     occ::handle<IGESData_IGESEntity> ent    = theModel->Entity(i);
     if (SH.IsShared(ent) || !theActor->Recognize(ent))
       continue;
@@ -412,8 +412,8 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
   }
   char t[20];
   t[0] = '\0';
-  double second, cpu;
-  int    minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -428,10 +428,11 @@ void IGESToBRep_Reader::TransferRoots(const bool                   onlyvisible,
 
 //=============================================================================
 
-bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& theProgress)
+bool IGESToBRep_Reader::Transfer(const int       num,
+                                             const Message_ProgressRange& theProgress)
 {
   occ::handle<Message_Messenger> TF = theProc->Messenger();
-  theDone                           = false;
+  theDone                      = false;
   if (theModel.IsNull())
   {
     Message_Msg msg2031("IGES_2031");
@@ -460,9 +461,9 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
   XSAlgo_ShapeProcessor::PrepareForTransfer();
   IGESToBRep_CurveAndSurface CAS;
   CAS.SetModel(theModel);
-  double      eps;
-  int         Ival = Interface_Static::IVal("read.precision.mode");
-  Message_Msg msg2035("IGES_2035");
+  double    eps;
+  int Ival = Interface_Static::IVal("read.precision.mode");
+  Message_Msg      msg2035("IGES_2035");
   msg2035.Arg(Ival);
   TF->Send(msg2035, Message_Info);
   if (Ival == 0)
@@ -492,9 +493,9 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
     CAS.SetEpsGeom(eps);
   CAS.SetTransferProcess(theProc);
 
-  bool         exceptionRaised = false;
-  TopoDS_Shape shape;
-  int          nbTPitems = theProc->NbMapped();
+  bool exceptionRaised = false;
+  TopoDS_Shape     shape;
+  int nbTPitems = theProc->NbMapped();
   {
     try
     {
@@ -554,8 +555,8 @@ bool IGESToBRep_Reader::Transfer(const int num, const Message_ProgressRange& the
 
   char t[20];
   t[0] = '\0';
-  double second, cpu;
-  int    minute, hour;
+  double    second, cpu;
+  int minute, hour;
   c.Show(second, minute, hour, cpu);
   if (hour > 0)
     Sprintf(t, "%dh:%dm:%.2fs", hour, minute, second);
@@ -597,8 +598,8 @@ TopoDS_Shape IGESToBRep_Reader::Shape(const int num) const
 
 TopoDS_Shape IGESToBRep_Reader::OneShape() const
 {
-  TopoDS_Shape res;
-  int          nb = theShapes.Length();
+  TopoDS_Shape     res;
+  int nb = theShapes.Length();
   if (nb == 0)
     return res;
   else if (nb == 1)

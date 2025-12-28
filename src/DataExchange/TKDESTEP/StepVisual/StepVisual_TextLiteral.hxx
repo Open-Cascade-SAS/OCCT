@@ -34,10 +34,10 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<TCollection_HAsciiString>& aLiteral,
-                            const StepGeom_Axis2Placement&               aPlacement,
+                            const StepGeom_Axis2Placement&          aPlacement,
                             const occ::handle<TCollection_HAsciiString>& aAlignment,
-                            const StepVisual_TextPath                    aPath,
-                            const StepVisual_FontSelect&                 aFont);
+                            const StepVisual_TextPath               aPath,
+                            const StepVisual_FontSelect&            aFont);
 
   Standard_EXPORT void SetLiteral(const occ::handle<TCollection_HAsciiString>& aLiteral);
 
@@ -63,10 +63,10 @@ public:
 
 private:
   occ::handle<TCollection_HAsciiString> literal;
-  StepGeom_Axis2Placement               placement;
+  StepGeom_Axis2Placement          placement;
   occ::handle<TCollection_HAsciiString> alignment;
-  StepVisual_TextPath                   path;
-  StepVisual_FontSelect                 font;
+  StepVisual_TextPath              path;
+  StepVisual_FontSelect            font;
 };
 
 #endif // _StepVisual_TextLiteral_HeaderFile

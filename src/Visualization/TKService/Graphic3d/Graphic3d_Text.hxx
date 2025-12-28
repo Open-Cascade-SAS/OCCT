@@ -87,7 +87,10 @@ public:
   bool HasOwnAnchorPoint() const { return myHasOwnAnchor; }
 
   //! Returns true if the text has an anchor point
-  void SetOwnAnchorPoint(const bool theHasOwnAnchor) { myHasOwnAnchor = theHasOwnAnchor; }
+  void SetOwnAnchorPoint(const bool theHasOwnAnchor)
+  {
+    myHasOwnAnchor = theHasOwnAnchor;
+  }
 
   //! Sets height of text. (Relative to the Normalized Projection Coordinates (NPC) Space).
   float Height() const { return myHeight; }
@@ -119,7 +122,7 @@ protected:
   NCollection_String myText;        //!< text value
   gp_Ax2             myOrientation; //!< Text orientation in 3D space.
 
-  float                             myHeight; //!< height of text
+  float                myHeight; //!< height of text
   Graphic3d_HorizontalTextAlignment myHAlign; //!< horizontal alignment
   Graphic3d_VerticalTextAlignment   myVAlign; //!< vertical alignment
 

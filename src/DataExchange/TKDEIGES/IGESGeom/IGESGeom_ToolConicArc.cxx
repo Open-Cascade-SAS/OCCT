@@ -58,7 +58,7 @@ void IGESGeom_ToolConicArc::ReadOwnParams(const occ::handle<IGESGeom_ConicArc>& 
 
   // bool st; //szv#4:S4163:12Mar99 not needed
   double A, B = 0., C = 0., D = 0., E = 0., F = 0., ZT;
-  gp_XY  tempStart, tempEnd;
+  gp_XY         tempStart, tempEnd;
 
   /* PR.ReadReal(PR.Current(), Msg81, A); //szv#4:S4163:12Mar99 `st=` not needed
    PR.ReadReal(PR.Current(), Msg81, B); //szv#4:S4163:12Mar99 `st=` not needed
@@ -101,7 +101,7 @@ void IGESGeom_ToolConicArc::ReadOwnParams(const occ::handle<IGESGeom_ConicArc>& 
 //=================================================================================================
 
 void IGESGeom_ToolConicArc::WriteOwnParams(const occ::handle<IGESGeom_ConicArc>& ent,
-                                           IGESData_IGESWriter&                  IW) const
+                                           IGESData_IGESWriter&             IW) const
 {
   double A, B, C, D, E, F;
   ent->Equation(A, B, C, D, E, F);
@@ -252,8 +252,8 @@ void IGESGeom_ToolConicArc::OwnCheck(const occ::handle<IGESGeom_ConicArc>& ent,
 
 void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
                                     const IGESData_IGESDumper& /* dumper */,
-                                    Standard_OStream& S,
-                                    const int         level) const
+                                    Standard_OStream&      S,
+                                    const int level) const
 {
   double A, B, C, D, E, F;
   ent->Equation(A, B, C, D, E, F);
@@ -287,8 +287,8 @@ void IGESGeom_ToolConicArc::OwnDump(const occ::handle<IGESGeom_ConicArc>& ent,
     S << " -- Computed Definition : ask level > 4" << std::endl;
   else
   {
-    gp_Pnt Cen;
-    gp_Dir Ax;
+    gp_Pnt        Cen;
+    gp_Dir        Ax;
     double Rmin, Rmax;
     ent->Definition(Cen, Ax, Rmin, Rmax);
     S << " -- Computed Definition (and Transformed if level > 5)\n";

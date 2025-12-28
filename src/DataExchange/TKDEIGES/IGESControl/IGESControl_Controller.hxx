@@ -57,10 +57,10 @@ public:
   //! modeshape : 0 group of face (version < 5.1)
   //! 1  BREP-version 5.1 of IGES
   Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape(
-    const TopoDS_Shape&                          shape,
+    const TopoDS_Shape&                     shape,
     const occ::handle<Transfer_FinderProcess>&   FP,
     const occ::handle<Interface_InterfaceModel>& model,
-    const int                                    modetrans = 0,
+    const int                  modetrans = 0,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const override;
 
   //! Standard Initialisation. It creates a Controller for IGES and

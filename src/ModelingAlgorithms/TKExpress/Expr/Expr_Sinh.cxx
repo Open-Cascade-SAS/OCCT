@@ -68,8 +68,7 @@ bool Expr_Sinh::IsLinear() const
   return !ContainsUnknowns();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Sinh::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Sinh::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -83,7 +82,7 @@ occ::handle<Expr_GeneralExpression> Expr_Sinh::Derivative(
 }
 
 double Expr_Sinh::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                           const NCollection_Array1<double>&                         vals) const
+                                  const NCollection_Array1<double>&      vals) const
 {
   double val = Operand()->Evaluate(vars, vals);
   return (std::exp(val) - std::exp(-val)) / 2.0;

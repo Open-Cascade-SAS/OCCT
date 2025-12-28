@@ -95,7 +95,10 @@ public: //! @name Setters/Getters
   //! of the following conditions are met:
   //! - The vertices of edge are lying on the face;
   //! - The edge does not intersect the boundaries of the face on the given range.
-  void UseQuickCoincidenceCheck(const bool theFlag) { myQuickCoincidenceCheck = theFlag; }
+  void UseQuickCoincidenceCheck(const bool theFlag)
+  {
+    myQuickCoincidenceCheck = theFlag;
+  }
 
   //! Returns the flag myQuickCoincidenceCheck
   bool IsCoincidenceCheckedQuickly() { return myQuickCoincidenceCheck; }
@@ -125,10 +128,10 @@ public: //! @name Obtaining results
 
 protected: //! @name Protected methods performing the intersection
   Standard_EXPORT static bool IsEqDistance(const gp_Pnt&              aP,
-                                           const BRepAdaptor_Surface& aS,
-                                           const double               aT,
-                                           double&                    aD);
-  Standard_EXPORT void        CheckData();
+                                                       const BRepAdaptor_Surface& aS,
+                                                       const double        aT,
+                                                       double&             aD);
+  Standard_EXPORT void                    CheckData();
 
   Standard_EXPORT bool IsProjectable(const double t) const;
 
@@ -138,25 +141,26 @@ protected: //! @name Protected methods performing the intersection
 
   Standard_EXPORT bool CheckTouch(const IntTools_CommonPrt& aCP, double& aTX);
 
-  Standard_EXPORT bool CheckTouchVertex(const IntTools_CommonPrt& aCP, double& aTX);
+  Standard_EXPORT bool CheckTouchVertex(const IntTools_CommonPrt& aCP,
+                                                    double&            aTX);
 
   //! Checks if the edge is in the face really.
   Standard_EXPORT bool IsCoincident();
 
 protected:
-  TopoDS_Edge                              myEdge;
-  TopoDS_Face                              myFace;
-  double                                   myFuzzyValue;
-  BRepAdaptor_Curve                        myC;
-  BRepAdaptor_Surface                      myS;
-  double                                   myCriteria;
-  bool                                     myIsDone;
-  int                                      myErrorStatus;
-  occ::handle<IntTools_Context>            myContext;
+  TopoDS_Edge                   myEdge;
+  TopoDS_Face                   myFace;
+  double                 myFuzzyValue;
+  BRepAdaptor_Curve             myC;
+  BRepAdaptor_Surface           myS;
+  double                 myCriteria;
+  bool              myIsDone;
+  int              myErrorStatus;
+  occ::handle<IntTools_Context>      myContext;
   NCollection_Sequence<IntTools_CommonPrt> mySeqOfCommonPrts;
-  IntTools_Range                           myRange;
-  bool                                     myQuickCoincidenceCheck;
-  double                                   myMinDistance; //!< Minimal distance found
+  IntTools_Range                myRange;
+  bool              myQuickCoincidenceCheck;
+  double                 myMinDistance; //!< Minimal distance found
 };
 
 #endif // _IntTools_EdgeFace_HeaderFile

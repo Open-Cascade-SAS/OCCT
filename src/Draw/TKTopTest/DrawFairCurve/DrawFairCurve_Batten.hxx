@@ -59,6 +59,7 @@ public:
 
 protected:
   void* MyBatten;
+
 };
 
 #endif // _DrawFairCurve_Batten_HeaderFile

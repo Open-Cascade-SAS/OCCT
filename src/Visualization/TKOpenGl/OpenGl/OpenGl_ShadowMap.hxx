@@ -83,8 +83,8 @@ private:
   occ::handle<OpenGl_FrameBuffer> myShadowMapFbo;  //!< frame buffer for rendering shadow map
   occ::handle<Graphic3d_CLight>   myShadowLight;   //!< light source to render shadow map
   occ::handle<Graphic3d_Camera>   myShadowCamera;  //!< rendering camera
-  NCollection_Mat4<float>         myLightMatrix;   //!< light source matrix
-  float                           myShadowMapBias; //!< shadowmap bias
+  NCollection_Mat4<float>             myLightMatrix;   //!< light source matrix
+  float         myShadowMapBias; //!< shadowmap bias
 };
 
 //! Array of shadow maps.

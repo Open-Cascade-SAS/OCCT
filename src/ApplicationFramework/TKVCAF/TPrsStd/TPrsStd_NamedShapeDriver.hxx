@@ -36,10 +36,12 @@ public:
   //! No compute is done.
   //! Returns <True> if information was found
   //! and AISObject updated.
-  Standard_EXPORT virtual bool Update(const TDF_Label&                    aLabel,
-                                      occ::handle<AIS_InteractiveObject>& anAISObject) override;
+  Standard_EXPORT virtual bool Update(const TDF_Label&               aLabel,
+                                                  occ::handle<AIS_InteractiveObject>& anAISObject)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(TPrsStd_NamedShapeDriver, TPrsStd_Driver)
+
 };
 
 #endif // _TPrsStd_NamedShapeDriver_HeaderFile

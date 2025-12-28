@@ -35,6 +35,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BinXCAFDrivers_DocumentRetrievalDriver,
                           BinDrivers_DocumentRetrievalDriver)
+
 };
 
 #endif // _BinXCAFDrivers_DocumentRetrievalDriver_HeaderFile

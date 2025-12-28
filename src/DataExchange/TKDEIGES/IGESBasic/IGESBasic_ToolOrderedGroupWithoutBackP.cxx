@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESDumper.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESReaderData.hxx>
 #include <IGESData_IGESWriter.hxx>
 #include <IGESData_ParamReader.hxx>
@@ -40,10 +41,10 @@ IGESBasic_ToolOrderedGroupWithoutBackP::IGESBasic_ToolOrderedGroupWithoutBackP()
 void IGESBasic_ToolOrderedGroupWithoutBackP::ReadOwnParams(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,
   const occ::handle<IGESData_IGESReaderData>&            IR,
-  IGESData_ParamReader&                                  PR) const
+  IGESData_ParamReader&                             PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                                                nbval = 0;
+  int                     nbval = 0;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray;
 
   if (PR.ReadInteger(PR.Current(), "Count of Entities", nbval))
@@ -67,7 +68,7 @@ void IGESBasic_ToolOrderedGroupWithoutBackP::ReadOwnParams(
 
 void IGESBasic_ToolOrderedGroupWithoutBackP::WriteOwnParams(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,
-  IGESData_IGESWriter&                                   IW) const
+  IGESData_IGESWriter&                              IW) const
 {
   int upper = ent->NbEntities();
   IW.Send(ent->NbEntities());
@@ -77,7 +78,7 @@ void IGESBasic_ToolOrderedGroupWithoutBackP::WriteOwnParams(
 
 void IGESBasic_ToolOrderedGroupWithoutBackP::OwnShared(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                         iter) const
 {
   int upper = ent->NbEntities();
   for (int i = 1; i <= upper; i++)
@@ -87,13 +88,12 @@ void IGESBasic_ToolOrderedGroupWithoutBackP::OwnShared(
 void IGESBasic_ToolOrderedGroupWithoutBackP::OwnCopy(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& another,
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,
-  Interface_CopyTool&                                    TC) const
+  Interface_CopyTool&                               TC) const
 {
   int lower, upper;
-  lower = 1;
-  upper = another->NbEntities();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
+  lower                                         = 1;
+  upper                                         = another->NbEntities();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> EntArray = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(lower, upper);
   for (int i = lower; i <= upper; i++)
   {
     DeclareAndCast(IGESData_IGESEntity, myentity, TC.Transferred(another->Entity(i)));
@@ -151,7 +151,7 @@ void IGESBasic_ToolOrderedGroupWithoutBackP::OwnCheck(
   occ::handle<Interface_Check>& ach) const
 {
   bool ianul = false;
-  int  i, nb = ent->NbEntities();
+  int i, nb = ent->NbEntities();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_IGESEntity> val = ent->Entity(i);
@@ -169,9 +169,9 @@ void IGESBasic_ToolOrderedGroupWithoutBackP::OwnCheck(
 
 void IGESBasic_ToolOrderedGroupWithoutBackP::OwnDump(
   const occ::handle<IGESBasic_OrderedGroupWithoutBackP>& ent,
-  const IGESData_IGESDumper&                             dumper,
-  Standard_OStream&                                      S,
-  const int                                              level) const
+  const IGESData_IGESDumper&                        dumper,
+  Standard_OStream&                                 S,
+  const int                            level) const
 {
   S << "IGESBasic_OrderedGroupWithoutBackP\n"
     << "Entries in the Group : ";

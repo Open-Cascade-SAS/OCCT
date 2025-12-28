@@ -40,7 +40,8 @@ public:
   //! Recognizes a kind of TessellatedEdgeOrVertex select type
   //! -- 1 -> TessellatedEdge
   //! -- 2 -> TessellatedVertex
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as TessellatedEdge (or Null if another type)
   Standard_EXPORT occ::handle<StepVisual_TessellatedEdge> TessellatedEdge() const;

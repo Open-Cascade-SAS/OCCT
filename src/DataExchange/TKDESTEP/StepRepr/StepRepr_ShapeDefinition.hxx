@@ -51,6 +51,7 @@ public:
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
+
 };
 
 #endif // _StepRepr_ShapeDefinition_HeaderFile

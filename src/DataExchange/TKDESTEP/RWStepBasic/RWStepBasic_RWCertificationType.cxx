@@ -28,11 +28,10 @@ RWStepBasic_RWCertificationType::RWStepBasic_RWCertificationType() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWCertificationType::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepBasic_CertificationType>& ent) const
+void RWStepBasic_RWCertificationType::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepBasic_CertificationType>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 1, ach, "certification_type"))
@@ -50,7 +49,7 @@ void RWStepBasic_RWCertificationType::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWCertificationType::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepBasic_CertificationType>& ent) const
 {
 

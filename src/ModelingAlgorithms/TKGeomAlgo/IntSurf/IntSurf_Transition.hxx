@@ -40,15 +40,17 @@ public:
   Standard_EXPORT IntSurf_Transition(const bool Tangent, const IntSurf_TypeTrans Type);
 
   //! Create a TOUCH transition.
-  Standard_EXPORT IntSurf_Transition(const bool              Tangent,
+  Standard_EXPORT IntSurf_Transition(const bool  Tangent,
                                      const IntSurf_Situation Situ,
-                                     const bool              Oppos);
+                                     const bool  Oppos);
 
   //! Set the values of an IN or OUT transition.
   void SetValue(const bool Tangent, const IntSurf_TypeTrans Type);
 
   //! Set the values of a TOUCH transition.
-  void SetValue(const bool Tangent, const IntSurf_Situation Situ, const bool Oppos);
+  void SetValue(const bool  Tangent,
+                const IntSurf_Situation Situ,
+                const bool  Oppos);
 
   //! Set the values of an UNDECIDED transition.
   void SetValue();
@@ -85,10 +87,10 @@ public:
   bool IsOpposite() const;
 
 private:
-  bool              tangent;
+  bool  tangent;
   IntSurf_TypeTrans typetra;
   IntSurf_Situation situat;
-  bool              oppos;
+  bool  oppos;
 };
 
 #include <IntSurf_Transition.lxx>

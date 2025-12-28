@@ -27,6 +27,11 @@
 #include <NCollection_HArray1.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepGeom_KnotType.hxx>
 class StepGeom_BSplineCurveWithKnots;
 class StepGeom_RationalBSplineCurve;
@@ -39,29 +44,25 @@ public:
   //! Returns a BSplineCurveWithKnotsAndRationalBSplineCurve
   Standard_EXPORT StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aDegree,
-    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
-                                                       aControlPointsList,
-    const StepGeom_BSplineCurveForm                    aCurveForm,
-    const StepData_Logical                             aClosedCurve,
-    const StepData_Logical                             aSelfIntersect,
-    const occ::handle<StepGeom_BSplineCurveWithKnots>& aBSplineCurveWithKnots,
-    const occ::handle<StepGeom_RationalBSplineCurve>&  aRationalBSplineCurve);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineCurveForm                 aCurveForm,
+                            const StepData_Logical                          aClosedCurve,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<StepGeom_BSplineCurveWithKnots>&   aBSplineCurveWithKnots,
+                            const occ::handle<StepGeom_RationalBSplineCurve>&    aRationalBSplineCurve);
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const int                                    aDegree,
-    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>&
-                                                    aControlPointsList,
-    const StepGeom_BSplineCurveForm                 aCurveForm,
-    const StepData_Logical                          aClosedCurve,
-    const StepData_Logical                          aSelfIntersect,
-    const occ::handle<NCollection_HArray1<int>>&    aKnotMultiplicities,
-    const occ::handle<NCollection_HArray1<double>>& aKnots,
-    const StepGeom_KnotType                         aKnotSpec,
-    const occ::handle<NCollection_HArray1<double>>& aWeightsData);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const int                          aDegree,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                            const StepGeom_BSplineCurveForm                 aCurveForm,
+                            const StepData_Logical                          aClosedCurve,
+                            const StepData_Logical                          aSelfIntersect,
+                            const occ::handle<NCollection_HArray1<int>>&         aKnotMultiplicities,
+                            const occ::handle<NCollection_HArray1<double>>&            aKnots,
+                            const StepGeom_KnotType                         aKnotSpec,
+                            const occ::handle<NCollection_HArray1<double>>&            aWeightsData);
 
   Standard_EXPORT void SetBSplineCurveWithKnots(
     const occ::handle<StepGeom_BSplineCurveWithKnots>& aBSplineCurveWithKnots);

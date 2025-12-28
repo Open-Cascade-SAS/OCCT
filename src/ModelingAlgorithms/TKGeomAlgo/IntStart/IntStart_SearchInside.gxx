@@ -28,10 +28,10 @@ IntStart_SearchInside::IntStart_SearchInside()
 {
 }
 
-IntStart_SearchInside::IntStart_SearchInside(TheFunction&                     Func,
-                                             const ThePSurface&               PS,
+IntStart_SearchInside::IntStart_SearchInside(TheFunction&                Func,
+                                             const ThePSurface&          PS,
                                              const occ::handle<TheTopolTool>& T,
-                                             const double                     Epsilon)
+                                             const double         Epsilon)
 {
 
   Perform(Func, PS, T, Epsilon);
@@ -42,21 +42,21 @@ IntStart_SearchInside::IntStart_SearchInside(TheFunction&                     Fu
 // purpose  : Search all inside points
 //=======================================================================
 
-void IntStart_SearchInside::Perform(TheFunction&                     Func,
-                                    const ThePSurface&               PS,
+void IntStart_SearchInside::Perform(TheFunction&                Func,
+                                    const ThePSurface&          PS,
                                     const occ::handle<TheTopolTool>& T,
-                                    const double                     Epsilon)
+                                    const double         Epsilon)
 {
 
   done = false;
   list.Clear();
-  double       aBinf[2], aBsup[2], aUVap[2], atoler[2];
-  math_Vector  Binf(aBinf, 1, 2), Bsup(aBsup, 1, 2), UVap(aUVap, 1, 2), toler(atoler, 1, 2);
-  gp_Pnt       psol;
-  bool         testpnt;
-  int          i, j, nbpt;
-  TopAbs_State situ;
-  double       umin, umax, vmin, vmax;
+  double    aBinf[2], aBsup[2], aUVap[2], atoler[2];
+  math_Vector      Binf(aBinf, 1, 2), Bsup(aBsup, 1, 2), UVap(aUVap, 1, 2), toler(atoler, 1, 2);
+  gp_Pnt           psol;
+  bool testpnt;
+  int i, j, nbpt;
+  TopAbs_State     situ;
+  double    umin, umax, vmin, vmax;
   Binf(1) = umin = ThePSurfaceTool::FirstUParameter(PS);
   Binf(2) = vmin = ThePSurfaceTool::FirstVParameter(PS);
   Bsup(1) = umax = ThePSurfaceTool::LastUParameter(PS);
@@ -119,9 +119,9 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
 
   for (i = 1; i <= Nbsample + 12; i++)
   {
-    gp_Pnt2d s2d;
-    gp_Pnt   s3d;
-    bool     nepastester = false;
+    gp_Pnt2d         s2d;
+    gp_Pnt           s3d;
+    bool nepastester = false;
     if (i <= Nbsample)
     {
       T->SamplePoint(i, s2d, s3d);
@@ -135,10 +135,10 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
       v2 = Bsup(2) = std::min(vmax, UVap(2) + dv);
 
       //-- gp_Pnt Pmilieu = ThePSurfaceTool::Value(PS,0.5*(u1+u2),0.5*(v1+v2));
-      gp_Pnt      Pextrm1 = ThePSurfaceTool::Value(PS, u1, v1);
-      gp_Pnt      Pextrm2 = ThePSurfaceTool::Value(PS, u2, v2);
-      double      aValf[1];
-      math_Vector Valf(aValf, 1, 1);
+      gp_Pnt        Pextrm1 = ThePSurfaceTool::Value(PS, u1, v1);
+      gp_Pnt        Pextrm2 = ThePSurfaceTool::Value(PS, u2, v2);
+      double aValf[1];
+      math_Vector   Valf(aValf, 1, 1);
       Func.Value(UVap, Valf);
       double rvalf  = Valf(1);
       double DistPP = Pextrm1.SquareDistance(Pextrm2);
@@ -246,9 +246,10 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
             if (j > nbpt)
             {
               //	    situ = TheSITool::Classify(PS,UVap(1),UVap(2));
-              situ = T->Classify(gp_Pnt2d(UVap(1), UVap(2)),
-                                 Maxtoler1toler2,
-                                 false); //-- ,false pour ne pas recadrer on Periodic
+              situ =
+                T->Classify(gp_Pnt2d(UVap(1), UVap(2)),
+                            Maxtoler1toler2,
+                            false); //-- ,false pour ne pas recadrer on Periodic
               if (situ == TopAbs_IN)
               {
                 list.Append(IntSurf_InteriorPoint(psol,
@@ -273,10 +274,10 @@ void IntStart_SearchInside::Perform(TheFunction&                     Func,
 // purpose  : Test the given inside point
 //=======================================================================
 
-void IntStart_SearchInside::Perform(TheFunction&       Func,
-                                    const ThePSurface& PS,
-                                    const double       UStart,
-                                    const double       VStart)
+void IntStart_SearchInside::Perform(TheFunction&        Func,
+                                    const ThePSurface&  PS,
+                                    const double UStart,
+                                    const double VStart)
 {
   done = false;
   list.Clear();

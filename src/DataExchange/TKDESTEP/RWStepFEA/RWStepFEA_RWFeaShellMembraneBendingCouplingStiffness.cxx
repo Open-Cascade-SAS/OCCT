@@ -32,7 +32,7 @@ RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::
 
 void RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          data,
-  const int                                                            num,
+  const int                                          num,
   occ::handle<Interface_Check>&                                        ach,
   const occ::handle<StepFEA_FeaShellMembraneBendingCouplingStiffness>& ent) const
 {
@@ -57,7 +57,7 @@ void RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::ReadStep(
 //=================================================================================================
 
 void RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::WriteStep(
-  StepData_StepWriter&                                                 SW,
+  StepData_StepWriter&                                            SW,
   const occ::handle<StepFEA_FeaShellMembraneBendingCouplingStiffness>& ent) const
 {
 
@@ -74,7 +74,7 @@ void RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::WriteStep(
 
 void RWStepFEA_RWFeaShellMembraneBendingCouplingStiffness::Share(
   const occ::handle<StepFEA_FeaShellMembraneBendingCouplingStiffness>& ent,
-  Interface_EntityIterator&                                            iter) const
+  Interface_EntityIterator&                                       iter) const
 {
 
   // Inherited fields of RepresentationItem

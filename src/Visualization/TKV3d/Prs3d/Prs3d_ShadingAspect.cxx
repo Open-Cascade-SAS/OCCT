@@ -117,7 +117,7 @@ const Graphic3d_MaterialAspect& Prs3d_ShadingAspect::Material(
 
 //=================================================================================================
 
-void Prs3d_ShadingAspect::SetTransparency(const double                   theValue,
+void Prs3d_ShadingAspect::SetTransparency(const double            theValue,
                                           const Aspect_TypeOfFacingModel theModel)
 {
   if (theModel != Aspect_TOFM_BOTH_SIDE)

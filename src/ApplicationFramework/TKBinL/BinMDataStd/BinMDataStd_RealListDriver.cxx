@@ -43,9 +43,9 @@ occ::handle<TDF_Attribute> BinMDataStd_RealListDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   int aIndex, aFirstInd, aLastInd;
   if (!(theSource >> aFirstInd >> aLastInd))
@@ -74,15 +74,14 @@ bool BinMDataStd_RealListDriver::Paste(const BinObjMgt_Persistent&       theSour
 // function : Paste
 // purpose  : transient -> persistent (store)
 //=======================================================================
-void BinMDataStd_RealListDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                       BinObjMgt_Persistent&        theTarget,
+                                       NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   const occ::handle<TDataStd_RealList> anAtt     = occ::down_cast<TDataStd_RealList>(theSource);
-  const int                            aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
-  const int                            aLastInd(anAtt->Extent());
-  const int                            aLength = aLastInd - aFirstInd + 1;
+  const int          aFirstInd = (anAtt->Extent() > 0) ? 1 : 0;
+  const int          aLastInd(anAtt->Extent());
+  const int          aLength = aLastInd - aFirstInd + 1;
   if (aLength <= 0)
     return;
   theTarget << aFirstInd << aLastInd;

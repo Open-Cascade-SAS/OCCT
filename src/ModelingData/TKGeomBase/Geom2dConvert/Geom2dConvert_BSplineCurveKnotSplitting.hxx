@@ -23,6 +23,9 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class Geom2d_BSplineCurve;
 
 //! An algorithm to determine points at which a BSpline
@@ -62,7 +65,7 @@ public:
   //! Standard_RangeError if ContinuityRange is less than zero.
   Standard_EXPORT Geom2dConvert_BSplineCurveKnotSplitting(
     const occ::handle<Geom2d_BSplineCurve>& BasisCurve,
-    const int                               ContinuityRange);
+    const int             ContinuityRange);
 
   //! Returns the number of points at which the analysed
   //! BSpline curve should be split, in order to obtain arcs

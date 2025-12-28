@@ -25,8 +25,12 @@
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Sequence.hxx>
 class TopoDS_Face;
 class TopoDS_Wire;
 class Geom2d_Curve;
@@ -108,11 +112,11 @@ private:
   //! Add the curve <aCurve> at me.
   Standard_EXPORT void Add(const occ::handle<Geom2d_Curve>& aCurve);
 
-  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Curve>>>           theCurves;
-  int                                                                             current;
-  int                                                                             currentContour;
-  TopoDS_Shape                                                                    myShape;
-  NCollection_Sequence<bool>                                                      myIsClosed;
+  NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Curve>>>     theCurves;
+  int                    current;
+  int                    currentContour;
+  TopoDS_Shape                        myShape;
+  NCollection_Sequence<bool>           myIsClosed;
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myModifShapes;
 };
 

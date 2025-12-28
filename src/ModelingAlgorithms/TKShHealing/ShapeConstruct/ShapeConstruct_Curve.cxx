@@ -42,10 +42,10 @@
 //=================================================================================================
 
 bool ShapeConstruct_Curve::AdjustCurve(const occ::handle<Geom_Curve>& C3D,
-                                       const gp_Pnt&                  P1,
-                                       const gp_Pnt&                  P2,
-                                       const bool                     take1,
-                                       const bool                     take2) const
+                                                   const gp_Pnt&             P1,
+                                                   const gp_Pnt&             P2,
+                                                   const bool    take1,
+                                                   const bool    take2) const
 {
   if (!take1 && !take2)
     return true;
@@ -64,9 +64,9 @@ bool ShapeConstruct_Curve::AdjustCurve(const occ::handle<Geom_Curve>& C3D,
   {
     occ::handle<Geom_Line> L3D = occ::down_cast<Geom_Line>(C3D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
-    gp_Vec avec(P1, P2);
-    gp_Dir adir(avec);
-    gp_Lin alin(P1, adir);
+    gp_Vec        avec(P1, P2);
+    gp_Dir        adir(avec);
+    gp_Lin        alin(P1, adir);
     double theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L3D->SetLin(alin);
@@ -79,10 +79,10 @@ bool ShapeConstruct_Curve::AdjustCurve(const occ::handle<Geom_Curve>& C3D,
 //=================================================================================================
 
 bool ShapeConstruct_Curve::AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D,
-                                              const gp_Pnt&                  P1,
-                                              const gp_Pnt&                  P2,
-                                              const double                   U1,
-                                              const double                   U2) const
+                                                          const gp_Pnt&             P1,
+                                                          const gp_Pnt&             P2,
+                                                          const double       U1,
+                                                          const double       U2) const
 {
   if (C3D->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
@@ -104,9 +104,9 @@ bool ShapeConstruct_Curve::AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D
     occ::handle<Geom_Line> L3D = occ::down_cast<Geom_Line>(C3D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
     //   NB : on ne s aide pas de U1 et U2
-    gp_Vec avec(P1, P2);
-    gp_Dir adir(avec);
-    gp_Lin alin(P1, adir);
+    gp_Vec        avec(P1, P2);
+    gp_Dir        adir(avec);
+    gp_Lin        alin(P1, adir);
     double theParam = ElCLib::Parameter(alin, L3D->Lin().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L3D->SetLin(alin);
@@ -119,10 +119,10 @@ bool ShapeConstruct_Curve::AdjustCurveSegment(const occ::handle<Geom_Curve>& C3D
 //=================================================================================================
 
 bool ShapeConstruct_Curve::AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
-                                         const gp_Pnt2d&                  P1,
-                                         const gp_Pnt2d&                  P2,
-                                         const bool                       take1,
-                                         const bool                       take2) const
+                                                     const gp_Pnt2d&             P1,
+                                                     const gp_Pnt2d&             P2,
+                                                     const bool      take1,
+                                                     const bool      take2) const
 {
   if (!take1 && !take2)
     return true;
@@ -141,10 +141,10 @@ bool ShapeConstruct_Curve::AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
   {
     occ::handle<Geom2d_Line> L2D = occ::down_cast<Geom2d_Line>(C2D);
     //   ATTENTION, P1 et P2 sont supposes tous deux pertinents ...
-    gp_Vec2d avec(P1, P2);
-    gp_Dir2d adir(avec);
-    gp_Lin2d alin(P1, adir);
-    double   theParam = ElCLib::Parameter(alin, L2D->Lin2d().Location());
+    gp_Vec2d      avec(P1, P2);
+    gp_Dir2d      adir(avec);
+    gp_Lin2d      alin(P1, adir);
+    double theParam = ElCLib::Parameter(alin, L2D->Lin2d().Location());
     alin.SetLocation(ElCLib::Value(theParam, alin));
     L2D->SetLin2d(alin);
     return true;
@@ -155,11 +155,10 @@ bool ShapeConstruct_Curve::AdjustCurve2d(const occ::handle<Geom2d_Curve>& C2D,
 
 //=================================================================================================
 
-occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
-  const occ::handle<Geom_Curve>& C,
-  const double                   first,
-  const double                   last,
-  const double                   prec) const
+occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(const occ::handle<Geom_Curve>& C,
+                                                                 const double       first,
+                                                                 const double       last,
+                                                                 const double prec) const
 {
   occ::handle<Geom_BSplineCurve> bspl;
 
@@ -189,8 +188,8 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
   if (!bspl.IsNull())
   {
     // take segment if trim and range differ
-    double fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
-    bool   segment = false;
+    double    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
+    bool segment = false;
     if (first > fbsp + Precision::PConfusion())
     {
       fbsp    = first;
@@ -249,11 +248,10 @@ occ::handle<Geom_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
 
 //=================================================================================================
 
-occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
-  const occ::handle<Geom2d_Curve>& C,
-  const double                     first,
-  const double                     last,
-  const double                     prec) const
+occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(const occ::handle<Geom2d_Curve>& C,
+                                                                   const double first,
+                                                                   const double last,
+                                                                   const double prec) const
 {
   occ::handle<Geom2d_BSplineCurve> bspl;
 
@@ -284,8 +282,8 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
   if (!bspl.IsNull())
   {
     // take segment if trim and range differ
-    double fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
-    bool   segment = false;
+    double    fbsp = bspl->FirstParameter(), lbsp = bspl->LastParameter();
+    bool segment = false;
     if (first > fbsp + Precision::PConfusion())
     {
       fbsp    = first;
@@ -353,9 +351,9 @@ occ::handle<Geom2d_BSplineCurve> ShapeConstruct_Curve::ConvertToBSpline(
 
 bool ShapeConstruct_Curve::FixKnots(occ::handle<NCollection_HArray1<double>>& knots)
 {
-  bool   Fixed   = false;
-  int    nbKnots = knots->Length();
-  double knotVal = knots->Value(1);
+  bool Fixed   = false;
+  int nbKnots = knots->Length();
+  double    knotVal = knots->Value(1);
   for (int i = 2; i <= nbKnots; i++)
   {
     double knotNext = knots->Value(i);
@@ -374,9 +372,9 @@ bool ShapeConstruct_Curve::FixKnots(occ::handle<NCollection_HArray1<double>>& kn
 
 bool ShapeConstruct_Curve::FixKnots(NCollection_Array1<double>& knots)
 {
-  bool   Fixed   = false;
-  int    nbKnots = knots.Length();
-  double knotVal = knots.Value(1);
+  bool Fixed   = false;
+  int nbKnots = knots.Length();
+  double    knotVal = knots.Value(1);
   for (int i = 2; i <= nbKnots; i++)
   {
     double knotNext = knots.Value(i);

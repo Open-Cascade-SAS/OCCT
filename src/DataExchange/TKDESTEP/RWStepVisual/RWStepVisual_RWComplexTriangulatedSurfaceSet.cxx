@@ -27,7 +27,15 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
@@ -37,7 +45,7 @@ RWStepVisual_RWComplexTriangulatedSurfaceSet::RWStepVisual_RWComplexTriangulated
 
 void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  theData,
-  const int                                                    theNum,
+  const int                                  theNum,
   occ::handle<Interface_Check>&                                theCheck,
   const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>& theEnt) const
 {
@@ -70,11 +78,11 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
                        aTessellatedSurfaceSet_Pnmax);
 
   occ::handle<NCollection_HArray2<double>> aTessellatedSurfaceSet_Normals;
-  int                                      sub4 = 0;
+  int              sub4 = 0;
   if (theData->ReadSubList(theNum, 4, "tessellated_surface_set.normals", theCheck, sub4))
   {
-    int nb0                        = theData->NbParams(sub4);
-    int nbj0                       = theData->NbParams(theData->ParamNumber(sub4, 1));
+    int nb0           = theData->NbParams(sub4);
+    int nbj0          = theData->NbParams(theData->ParamNumber(sub4, 1));
     aTessellatedSurfaceSet_Normals = new NCollection_HArray2<double>(1, nb0, 1, nbj0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -96,11 +104,11 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
   // Own fields of ComplexTriangulatedSurfaceSet
 
   occ::handle<NCollection_HArray1<int>> aPnindex;
-  int                                   sub5 = 0;
+  int                 sub5 = 0;
   if (theData->ReadSubList(theNum, 5, "pnindex", theCheck, sub5))
   {
     int nb0  = theData->NbParams(sub5);
-    aPnindex = new NCollection_HArray1<int>(1, nb0);
+    aPnindex              = new NCollection_HArray1<int>(1, nb0);
     int num2 = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -111,17 +119,16 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleStrips;
-  int                                                               sub6 = 0;
+  int                   sub6 = 0;
   if (theData->ReadSubList(theNum, 6, "triangle_strips", theCheck, sub6))
   {
-    int nb0         = theData->NbParams(sub6);
-    aTriangleStrips = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb0);
+    int nb0 = theData->NbParams(sub6);
+    aTriangleStrips      = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
-      int nbj0 = theData->NbParams(theData->ParamNumber(sub6, i0));
-      occ::handle<NCollection_HArray1<int>> aSingleTriangleStrip =
-        new NCollection_HArray1<int>(1, nbj0);
-      int subj6 = 0;
+      int                 nbj0 = theData->NbParams(theData->ParamNumber(sub6, i0));
+      occ::handle<NCollection_HArray1<int>> aSingleTriangleStrip = new NCollection_HArray1<int>(1, nbj0);
+      int                 subj6                = 0;
       if (theData->ReadSubList(sub6, i0, "sub-part(triangle_strips)", theCheck, subj6))
       {
         int num4 = subj6;
@@ -137,17 +144,16 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
   }
 
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> aTriangleFans;
-  int                                                               sub7 = 0;
+  int                   sub7 = 0;
   if (theData->ReadSubList(theNum, 7, "triangle_fans", theCheck, sub7))
   {
-    int nb0       = theData->NbParams(sub7);
-    aTriangleFans = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb0);
+    int nb0 = theData->NbParams(sub7);
+    aTriangleFans        = new NCollection_HArray1<occ::handle<Standard_Transient>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
-      int nbj0 = theData->NbParams(theData->ParamNumber(sub7, i0));
-      occ::handle<NCollection_HArray1<int>> aSingleTriangleFan =
-        new NCollection_HArray1<int>(1, nbj0);
-      int subj7 = 0;
+      int                 nbj0 = theData->NbParams(theData->ParamNumber(sub7, i0));
+      occ::handle<NCollection_HArray1<int>> aSingleTriangleFan = new NCollection_HArray1<int>(1, nbj0);
+      int                 subj7              = 0;
       if (theData->ReadSubList(sub7, i0, "sub-part(triangle_fans)", theCheck, subj7))
       {
         int num4 = subj7;
@@ -175,7 +181,7 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWComplexTriangulatedSurfaceSet::WriteStep(
-  StepData_StepWriter&                                         theSW,
+  StepData_StepWriter&                                    theSW,
   const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>& theEnt) const
 {
 
@@ -258,7 +264,7 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::WriteStep(
 
 void RWStepVisual_RWComplexTriangulatedSurfaceSet::Share(
   const occ::handle<StepVisual_ComplexTriangulatedSurfaceSet>& theEnt,
-  Interface_EntityIterator&                                    theIter) const
+  Interface_EntityIterator&                               theIter) const
 {
 
   // Inherited fields of RepresentationItem

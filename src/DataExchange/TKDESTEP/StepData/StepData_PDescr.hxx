@@ -200,7 +200,7 @@ public:
 
   //! Semantic Check of a Field : does it complies with the given
   //! description ?
-  Standard_EXPORT virtual void Check(const StepData_Field&         afild,
+  Standard_EXPORT virtual void Check(const StepData_Field&    afild,
                                      occ::handle<Interface_Check>& ach) const;
 
   DEFINE_STANDARD_RTTIEXT(StepData_PDescr, Standard_Transient)
@@ -208,20 +208,20 @@ public:
 private:
   Standard_EXPORT int Kind() const;
 
-  TCollection_AsciiString      thename;
-  int                          thesel;
-  TCollection_AsciiString      thesnam;
+  TCollection_AsciiString thename;
+  int        thesel;
+  TCollection_AsciiString thesnam;
   occ::handle<StepData_PDescr> thenext;
-  int                          thekind;
-  StepData_EnumTool            theenum;
+  int        thekind;
+  StepData_EnumTool       theenum;
   occ::handle<Standard_Type>   thetype;
-  TCollection_AsciiString      thednam;
-  int                          thearit;
+  TCollection_AsciiString thednam;
+  int        thearit;
   occ::handle<StepData_PDescr> thefrom;
-  bool                         theopt;
-  bool                         theder;
-  TCollection_AsciiString      thefnam;
-  int                          thefnum;
+  bool        theopt;
+  bool        theder;
+  TCollection_AsciiString thefnam;
+  int        thefnum;
 };
 
 #endif // _StepData_PDescr_HeaderFile

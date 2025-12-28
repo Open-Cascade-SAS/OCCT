@@ -45,8 +45,8 @@
 //========================================================================
 GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                            const gp_Pnt2d&            Point2,
-                                           const double               Radius,
-                                           const double               Tolerance)
+                                           const double        Radius,
+                                           const double        Tolerance)
     : qualifier1(1, 2),
       qualifier2(1, 2),
       TheSame1(1, 2),
@@ -60,28 +60,28 @@ GccAna_Circ2d2TanRad::GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1
       pararg2(1, 2)
 {
 
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol = std::abs(Tolerance);
-  NbrSol       = 0;
-  WellDone     = false;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol = std::abs(Tolerance);
+  NbrSol            = 0;
+  WellDone          = false;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsOutside() || Qualified1.IsUnqualified()))
   {
     throw GccEnt_BadQualifier();
     return;
   }
-  int                        nbsol  = 0;
-  int                        nbcote = 0;
+  int     nbsol  = 0;
+  int     nbcote = 0;
   NCollection_Array1<double> cote(1, 2);
-  gp_Lin2d                   L1     = Qualified1.Qualified();
-  double                     displ1 = L1.Distance(Point2);
-  double                     xdir   = (L1.Direction()).X();
-  double                     ydir   = (L1.Direction()).Y();
-  double                     lxloc  = (L1.Location()).X();
-  double                     lyloc  = (L1.Location()).Y();
-  gp_Pnt2d                   origin1(lxloc, lyloc);
-  gp_Dir2d                   normL1(-ydir, xdir);
-  double                     cxloc = Point2.X();
-  double                     cyloc = Point2.Y();
+  gp_Lin2d             L1     = Qualified1.Qualified();
+  double        displ1 = L1.Distance(Point2);
+  double        xdir   = (L1.Direction()).X();
+  double        ydir   = (L1.Direction()).Y();
+  double        lxloc  = (L1.Location()).X();
+  double        lyloc  = (L1.Location()).Y();
+  gp_Pnt2d             origin1(lxloc, lyloc);
+  gp_Dir2d             normL1(-ydir, xdir);
+  double        cxloc = Point2.X();
+  double        cyloc = Point2.Y();
 
   if (Radius < 0.0)
   {

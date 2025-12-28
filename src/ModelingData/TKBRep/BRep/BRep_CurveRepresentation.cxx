@@ -65,7 +65,7 @@ bool BRep_CurveRepresentation::IsRegularity() const
 //=================================================================================================
 
 bool BRep_CurveRepresentation::IsCurveOnSurface(const occ::handle<Geom_Surface>&,
-                                                const TopLoc_Location&) const
+                                                            const TopLoc_Location&) const
 {
   return false;
 }
@@ -73,9 +73,9 @@ bool BRep_CurveRepresentation::IsCurveOnSurface(const occ::handle<Geom_Surface>&
 //=================================================================================================
 
 bool BRep_CurveRepresentation::IsRegularity(const occ::handle<Geom_Surface>&,
-                                            const occ::handle<Geom_Surface>&,
-                                            const TopLoc_Location&,
-                                            const TopLoc_Location&) const
+                                                        const occ::handle<Geom_Surface>&,
+                                                        const TopLoc_Location&,
+                                                        const TopLoc_Location&) const
 {
   return false;
 }
@@ -96,8 +96,9 @@ bool BRep_CurveRepresentation::IsPolygonOnTriangulation() const
 
 //=================================================================================================
 
-bool BRep_CurveRepresentation::IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>&,
-                                                        const TopLoc_Location&) const
+bool BRep_CurveRepresentation::IsPolygonOnTriangulation(
+  const occ::handle<Poly_Triangulation>&,
+  const TopLoc_Location&) const
 {
   return false;
 }
@@ -126,7 +127,7 @@ bool BRep_CurveRepresentation::IsPolygonOnSurface() const
 //=================================================================================================
 
 bool BRep_CurveRepresentation::IsPolygonOnSurface(const occ::handle<Geom_Surface>&,
-                                                  const TopLoc_Location&) const
+                                                              const TopLoc_Location&) const
 {
   return false;
 }
@@ -238,32 +239,28 @@ void BRep_CurveRepresentation::Polygon(const occ::handle<Poly_Polygon2D>&)
 
 //=================================================================================================
 
-const occ::handle<Poly_PolygonOnTriangulation>& BRep_CurveRepresentation::PolygonOnTriangulation2()
-  const
+const occ::handle<Poly_PolygonOnTriangulation>& BRep_CurveRepresentation::PolygonOnTriangulation2() const
 {
   throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_CurveRepresentation::PolygonOnTriangulation2(
-  const occ::handle<Poly_PolygonOnTriangulation>&)
+void BRep_CurveRepresentation::PolygonOnTriangulation2(const occ::handle<Poly_PolygonOnTriangulation>&)
 {
   throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=================================================================================================
 
-void BRep_CurveRepresentation::PolygonOnTriangulation(
-  const occ::handle<Poly_PolygonOnTriangulation>&)
+void BRep_CurveRepresentation::PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>&)
 {
   throw Standard_DomainError("BRep_CurveRepresentation");
 }
 
 //=================================================================================================
 
-const occ::handle<Poly_PolygonOnTriangulation>& BRep_CurveRepresentation::PolygonOnTriangulation()
-  const
+const occ::handle<Poly_PolygonOnTriangulation>& BRep_CurveRepresentation::PolygonOnTriangulation() const
 {
   throw Standard_DomainError("BRep_CurveRepresentation");
 }
@@ -291,7 +288,8 @@ void BRep_CurveRepresentation::Polygon2(const occ::handle<Poly_Polygon2D>&)
 
 //=================================================================================================
 
-void BRep_CurveRepresentation::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void BRep_CurveRepresentation::DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

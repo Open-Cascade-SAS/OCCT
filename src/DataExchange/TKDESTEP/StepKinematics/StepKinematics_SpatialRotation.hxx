@@ -41,7 +41,8 @@ public:
   //! Recognizes a kind of SpatialRotation select type
   //! -- 1 -> RotationAboutDirection
   //! -- 2 -> YprRotation
-  Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const override;
+  Standard_EXPORT int
+    CaseNum(const occ::handle<Standard_Transient>& ent) const override;
 
   //! Returns Value as RotationAboutDirection (or Null if another type)
   Standard_EXPORT occ::handle<StepKinematics_RotationAboutDirection> RotationAboutDirection() const;

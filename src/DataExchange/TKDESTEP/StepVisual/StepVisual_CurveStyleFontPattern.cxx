@@ -26,7 +26,8 @@ void StepVisual_CurveStyleFontPattern::Init(const double aVisibleSegmentLength,
   invisibleSegmentLength = aInvisibleSegmentLength;
 }
 
-void StepVisual_CurveStyleFontPattern::SetVisibleSegmentLength(const double aVisibleSegmentLength)
+void StepVisual_CurveStyleFontPattern::SetVisibleSegmentLength(
+  const double aVisibleSegmentLength)
 {
   visibleSegmentLength = aVisibleSegmentLength;
 }

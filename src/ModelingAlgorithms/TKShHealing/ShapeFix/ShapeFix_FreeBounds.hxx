@@ -60,19 +60,19 @@ public:
   //! Tolerance <closetoler> should be greater than tolerance
   //! <sewtoler> used for initializing sewing analyzer, otherwise
   //! connection of open wires is not performed.
-  Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape& shape,
-                                      const double        sewtoler,
-                                      const double        closetoler,
-                                      const bool          splitclosed,
-                                      const bool          splitopen);
+  Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
+                                      const double    sewtoler,
+                                      const double    closetoler,
+                                      const bool splitclosed,
+                                      const bool splitopen);
 
   //! Builds actual free bounds of the <shape> and connects
   //! open wires with tolerance <closetoler>.
   //! <shape> should be a compound of shells.
-  Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape& shape,
-                                      const double        closetoler,
-                                      const bool          splitclosed,
-                                      const bool          splitopen);
+  Standard_EXPORT ShapeFix_FreeBounds(const TopoDS_Shape&    shape,
+                                      const double    closetoler,
+                                      const bool splitclosed,
+                                      const bool splitopen);
 
   //! Returns compound of closed wires out of free edges.
   const TopoDS_Compound& GetClosedWires() const;
@@ -86,14 +86,14 @@ public:
 private:
   Standard_EXPORT bool Perform();
 
-  TopoDS_Compound myWires;
-  TopoDS_Compound myEdges;
-  TopoDS_Shape    myShape;
-  bool            myShared;
-  double          mySewToler;
-  double          myCloseToler;
-  bool            mySplitClosed;
-  bool            mySplitOpen;
+  TopoDS_Compound  myWires;
+  TopoDS_Compound  myEdges;
+  TopoDS_Shape     myShape;
+  bool myShared;
+  double    mySewToler;
+  double    myCloseToler;
+  bool mySplitClosed;
+  bool mySplitOpen;
 };
 
 #include <ShapeFix_FreeBounds.lxx>

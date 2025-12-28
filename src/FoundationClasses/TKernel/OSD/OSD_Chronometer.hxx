@@ -111,21 +111,23 @@ public:
   //! process since its start, in seconds. The actual precision of
   //! the measurement depends on granularity provided by the system,
   //! and is platform-specific.
-  Standard_EXPORT static void GetProcessCPU(double& UserSeconds, double& SystemSeconds);
+  Standard_EXPORT static void GetProcessCPU(double& UserSeconds,
+                                            double& SystemSeconds);
 
   //! Returns CPU time (user and system) consumed by the current
   //! thread since its start. Note that this measurement is
   //! platform-specific, as threads are implemented and managed
   //! differently on different platforms and CPUs.
-  Standard_EXPORT static void GetThreadCPU(double& UserSeconds, double& SystemSeconds);
+  Standard_EXPORT static void GetThreadCPU(double& UserSeconds,
+                                           double& SystemSeconds);
 
 protected:
-  double myStartCpuUser;
-  double myStartCpuSys;
-  double myCumulCpuUser;
-  double myCumulCpuSys;
-  bool   myIsStopped;
-  bool   myIsThreadOnly;
+  double    myStartCpuUser;
+  double    myStartCpuSys;
+  double    myCumulCpuUser;
+  double    myCumulCpuSys;
+  bool myIsStopped;
+  bool myIsThreadOnly;
 };
 
 #endif // _OSD_Chronometer_HeaderFile

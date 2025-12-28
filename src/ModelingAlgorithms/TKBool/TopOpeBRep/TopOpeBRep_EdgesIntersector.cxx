@@ -90,7 +90,7 @@ extern bool TopOpeBRep_GetcontextTOL0();
 extern bool TopOpeBRep_GetcontextNOFEI();
 extern bool TopOpeBRep_GettraceFITOL();
 extern bool TopOpeBRep_GettraceEEFF();
-extern void debeeff();
+extern void             debeeff();
   #include <TopOpeBRepTool_KRO.hxx>
 Standard_EXPORT TOPKRO KRO_DSFILLER_INTEE("intersection edge/edge");
 #endif
@@ -149,8 +149,8 @@ void TopOpeBRep_EdgesIntersector::SetFaces(const TopoDS_Shape& F1,
 {
   bool computerestriction = false;
 
-  bool so11               = true;
-  bool so21               = true;
+  bool so11   = true;
+  bool so21   = true;
   myf1surf1F_sameoriented = so11;
   myf2surf1F_sameoriented = so21;
   mySurfacesSameOriented  = true;
@@ -213,7 +213,8 @@ void TopOpeBRep_EdgesIntersector::SetFaces(const TopoDS_Shape& F1,
 
 //=================================================================================================
 
-void TopOpeBRep_EdgesIntersector::ForceTolerances(const double Tol1, const double Tol2)
+void TopOpeBRep_EdgesIntersector::ForceTolerances(const double Tol1,
+                                                  const double Tol2)
 {
   myTol1      = Tol1;
   myTol2      = Tol2;
@@ -223,7 +224,7 @@ void TopOpeBRep_EdgesIntersector::ForceTolerances(const double Tol1, const doubl
 #include <IntRes2d_Transition.hxx>
 
 static bool TransitionEqualAndExtremity(const IntRes2d_Transition& T1,
-                                        const IntRes2d_Transition& T2)
+                                                    const IntRes2d_Transition& T2)
 {
   if (T1.PositionOnCurve() == IntRes2d_Head || T1.PositionOnCurve() == IntRes2d_End)
   {
@@ -256,10 +257,10 @@ static bool TransitionEqualAndExtremity(const IntRes2d_Transition& T1,
 
 //  Modified by Sergey KHROMOV - Fri Jan 11 14:49:48 2002 Begin
 static bool IsTangentSegment(const IntRes2d_IntersectionPoint& P1,
-                             const IntRes2d_IntersectionPoint& P2,
-                             const Geom2dAdaptor_Curve&        aC1,
-                             const Geom2dAdaptor_Curve&        aC2,
-                             const double                      aTolConf)
+                                         const IntRes2d_IntersectionPoint& P2,
+                                         const Geom2dAdaptor_Curve&        aC1,
+                                         const Geom2dAdaptor_Curve&        aC2,
+                                         const double               aTolConf)
 {
   const gp_Pnt2d&            aP2d1   = P1.Value();
   const gp_Pnt2d&            aP2d2   = P2.Value();
@@ -288,9 +289,9 @@ static bool IsTangentSegment(const IntRes2d_IntersectionPoint& P1,
 
 //------------------------------------------------------------------------
 bool EdgesIntersector_checkT1D(const TopoDS_Edge&       E1,
-                               const TopoDS_Edge&       E2,
-                               const TopoDS_Vertex&     vG,
-                               TopOpeBRepDS_Transition& newT)
+                                           const TopoDS_Edge&       E2,
+                                           const TopoDS_Vertex&     vG,
+                                           TopOpeBRepDS_Transition& newT)
 //------------------------------------------------------------------------
 // E1 sdm E2, interferes with E2 at vertex vG
 // vG is vertex of E2, but not vertex of E1
@@ -316,12 +317,12 @@ bool EdgesIntersector_checkT1D(const TopoDS_Edge&       E1,
   bool last  = (ovine == LAST);
 
   TopOpeBRepDS_Config C   = TopOpeBRepDS_SAMEORIENTED;
-  bool                sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(E1, E2);
+  bool    sso = TopOpeBRepTool_ShapeTool::ShapesSameOriented(E1, E2);
   if (!sso)
     C = TopOpeBRepDS_DIFFORIENTED;
 
-  bool               SO = (C == TopOpeBRepDS_SAMEORIENTED);
-  bool               DO = (C == TopOpeBRepDS_DIFFORIENTED);
+  bool   SO = (C == TopOpeBRepDS_SAMEORIENTED);
+  bool   DO = (C == TopOpeBRepDS_DIFFORIENTED);
   TopAbs_Orientation o1 = E1.Orientation();
   if (o1 == TopAbs_REVERSED)
   {
@@ -344,9 +345,9 @@ bool EdgesIntersector_checkT1D(const TopoDS_Edge&       E1,
 // modified by NIZNHY-PKV Fri Nov  5 12:27:10 1999 to
 //=================================================================================================
 
-void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
-                                          const TopoDS_Shape& E2,
-                                          const bool          ReduceSegment)
+void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape&    E1,
+                                          const TopoDS_Shape&    E2,
+                                          const bool ReduceSegment)
 {
   mysp2d.Clear();
   myip2d = 1;
@@ -355,8 +356,8 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   myEdge1 = TopoDS::Edge(E1);
   myEdge2 = TopoDS::Edge(E2);
 
-  double                    first, last, tole, tolpc;
-  gp_Pnt2d                  pfirst, plast;
+  double        first, last, tole, tolpc;
+  gp_Pnt2d             pfirst, plast;
   occ::handle<Geom2d_Curve> PC1;
   // modified by NIZNHY-PKV Thu Nov  4 16:08:05 1999 f
 
@@ -392,9 +393,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   }
 #endif
 
-  bool                            memesfaces  = myFace1.IsSame(myFace2);
-  bool                            memesupport = false;
-  TopLoc_Location                 L1, L2;
+  bool           memesfaces  = myFace1.IsSame(myFace2);
+  bool           memesupport = false;
+  TopLoc_Location            L1, L2;
   const occ::handle<Geom_Surface> S1 = BRep_Tool::Surface(myFace1, L1);
   const occ::handle<Geom_Surface> S2 = BRep_Tool::Surface(myFace2, L2);
   if (S1 == S2 && L1 == L2)
@@ -424,42 +425,39 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
 
     occ::handle<Geom2d_Curve> PC2on1;
     occ::handle<Geom_Curve>   NC;
-    bool                      dgE2 = BRep_Tool::Degenerated(myEdge2);
+    bool     dgE2 = BRep_Tool::Degenerated(myEdge2);
     if (dgE2)
     { // xpu210998 : cto900Q3
       TopExp_Explorer      exv(myEdge2, TopAbs_VERTEX);
       const TopoDS_Vertex& v2  = TopoDS::Vertex(exv.Current());
       gp_Pnt               pt2 = BRep_Tool::Pnt(v2);
       gp_Pnt2d             uv2;
-      double               d;
-      bool                 ok = FUN_tool_projPonF(pt2, myFace1, uv2, d);
+      double        d;
+      bool     ok = FUN_tool_projPonF(pt2, myFace1, uv2, d);
       if (!ok)
         return; // nyiRaise
 
       occ::handle<Geom_Surface> aSurf1 = BRep_Tool::Surface(myFace1);
-      bool                      apex   = FUN_tool_onapex(uv2, aSurf1);
+      bool     apex   = FUN_tool_onapex(uv2, aSurf1);
       if (apex)
       {
         TopoDS_Vertex vf, vl;
         TopExp::Vertices(myEdge1, vf, vl);
-        gp_Pnt ptf = BRep_Tool::Pnt(vf);
+        gp_Pnt        ptf = BRep_Tool::Pnt(vf);
         double df  = pt2.Distance(ptf);
 
         double tolf = BRep_Tool::Tolerance(vf);
 
-        bool          onf = (df < tolf);
-        TopoDS_Vertex v1  = onf ? vf : vl;
-        NCollection_IndexedDataMap<TopoDS_Shape,
-                                   NCollection_List<TopoDS_Shape>,
-                                   TopTools_ShapeMapHasher>
-          mapVE;
+        bool                          onf = (df < tolf);
+        TopoDS_Vertex                             v1  = onf ? vf : vl;
+        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapVE;
         TopExp::MapShapesAndAncestors(myFace1, TopAbs_VERTEX, TopAbs_EDGE, mapVE);
-        const NCollection_List<TopoDS_Shape>&    Edsanc = mapVE.FindFromKey(v1);
+        const NCollection_List<TopoDS_Shape>&        Edsanc = mapVE.FindFromKey(v1);
         NCollection_List<TopoDS_Shape>::Iterator it(Edsanc);
         for (; it.More(); it.Next())
         {
           const TopoDS_Edge& ee   = TopoDS::Edge(it.Value());
-          bool               dgee = BRep_Tool::Degenerated(ee);
+          bool   dgee = BRep_Tool::Degenerated(ee);
           if (!dgee)
             continue;
           //	  double f,l;
@@ -473,9 +471,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
     else
     {
       // project curve of edge 2 on surface of face 1
-      TopLoc_Location         loc;
+      TopLoc_Location    loc;
       occ::handle<Geom_Curve> C = BRep_Tool::Curve(myEdge2, loc, first, last);
-      NC                        = occ::down_cast<Geom_Curve>(C->Transformed(loc.Transformation()));
+      NC                   = occ::down_cast<Geom_Curve>(C->Transformed(loc.Transformation()));
       double tolreached2d;
 
       // modified by NIZNHY-PKV Fri Nov  5 12:29:13 1999 from
@@ -642,9 +640,9 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
   for (InitPoint(); MorePoint(); NextPoint())
   {
     TopOpeBRep_Point2d& P2D       = mysp2d(myip2d);
-    bool                isvertex1 = P2D.IsVertex(1);
-    bool                isvertex2 = P2D.IsVertex(2);
-    bool                isvertex  = isvertex1 || isvertex2;
+    bool    isvertex1 = P2D.IsVertex(1);
+    bool    isvertex2 = P2D.IsVertex(2);
+    bool    isvertex  = isvertex1 || isvertex2;
 
     if (isvertex && esd)
     {
@@ -661,7 +659,7 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
       {
         const TopoDS_Vertex&    V2 = P2D.Vertex(2);
         TopOpeBRepDS_Transition newT;
-        bool                    computed = ::EdgesIntersector_checkT1D(myEdge1, myEdge2, V2, newT);
+        bool        computed = ::EdgesIntersector_checkT1D(myEdge1, myEdge2, V2, newT);
         if (computed)
           T1.Set(newT.Orientation(TopAbs_IN));
       }
@@ -673,20 +671,20 @@ void TopOpeBRep_EdgesIntersector::Perform(const TopoDS_Shape& E1,
       {
         const TopoDS_Vertex&    V1 = P2D.Vertex(1);
         TopOpeBRepDS_Transition newT;
-        bool                    computed = ::EdgesIntersector_checkT1D(myEdge2, myEdge1, V1, newT);
+        bool        computed = ::EdgesIntersector_checkT1D(myEdge2, myEdge1, V1, newT);
         if (computed)
           T2.Set(newT.Orientation(TopAbs_IN));
       }
 
       // xpu121098 : cto900I7 (e12on,vG14)
-      TopoDS_Vertex vcl2;
-      bool          clE2 = TopOpeBRepTool_TOOL::ClosedE(myEdge2, vcl2);
-      bool          nT1  = (!T1INT && clE2 && isvertex22 && vcl2.IsSame(P2D.Vertex(2)));
+      TopoDS_Vertex    vcl2;
+      bool clE2 = TopOpeBRepTool_TOOL::ClosedE(myEdge2, vcl2);
+      bool nT1  = (!T1INT && clE2 && isvertex22 && vcl2.IsSame(P2D.Vertex(2)));
       if (nT1)
         T1.Set(TopAbs_INTERNAL);
-      TopoDS_Vertex vcl1;
-      bool          clE1 = TopOpeBRepTool_TOOL::ClosedE(myEdge1, vcl1);
-      bool          nT2  = (!T2INT && clE1 && isvertex11 && vcl1.IsSame(P2D.Vertex(1)));
+      TopoDS_Vertex    vcl1;
+      bool clE1 = TopOpeBRepTool_TOOL::ClosedE(myEdge1, vcl1);
+      bool nT2  = (!T2INT && clE1 && isvertex11 && vcl1.IsSame(P2D.Vertex(1)));
       if (nT2)
         T2.Set(TopAbs_INTERNAL);
 
@@ -744,10 +742,10 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
     return SetSameDomain(false);
   }
 
-  gp_Circ2d c1 = C1.Circle();
-  gp_Circ2d c2 = C2.Circle();
-  double    r1 = c1.Radius();
-  double    r2 = c2.Radius();
+  gp_Circ2d     c1 = C1.Circle();
+  gp_Circ2d     c2 = C2.Circle();
+  double r1 = c1.Radius();
+  double r2 = c2.Radius();
   //  bool rr = (r1 == r2);
   // clang-format off
   bool rr = (std::abs(r1-r2) < Precision::Confusion()); //xpu281098 (cto019D2) tolerance a revoir
@@ -760,11 +758,11 @@ bool TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   double u1,v1; p1.Coord(u1,v1); gp_Pnt P1 = BAS1.Value(u1,v1);
   double u2,v2; p2.Coord(u2,v2); gp_Pnt P2 = BAS1.Value(u2,v2);// recall myCurve2=C2d(myEdge2,myFace1);
   // clang-format on
-  double dpp  = P1.Distance(P2);
-  double tol1 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(1)));
-  double tol2 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(2)));
-  double tol  = tol1 + tol2;
-  bool   esd  = (dpp <= tol);
+  double    dpp  = P1.Distance(P2);
+  double    tol1 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(1)));
+  double    tol2 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(2)));
+  double    tol  = tol1 + tol2;
+  bool esd  = (dpp <= tol);
   if (esd)
     return SetSameDomain(true);
 
@@ -820,24 +818,24 @@ void TopOpeBRep_EdgesIntersector::MakePoints2d()
 //=================================================================================================
 
 bool TopOpeBRep_EdgesIntersector::ReduceSegment(TopOpeBRep_Point2d& psa,
-                                                TopOpeBRep_Point2d& psb,
-                                                TopOpeBRep_Point2d& Pn) const
+                                                            TopOpeBRep_Point2d& psb,
+                                                            TopOpeBRep_Point2d& Pn) const
 {
   bool reduced = false;
-  int  ixpsa   = psa.Index();
-  int  ixpsb   = psb.Index();
+  int ixpsa   = psa.Index();
+  int ixpsb   = psb.Index();
 
-  bool                           pospsa = psa.IsPointOfSegment();
+  bool               pospsa = psa.IsPointOfSegment();
   TopOpeBRep_P2Dstatus           stspsa = psa.Status();
-  double                         tpsa1  = psa.Parameter(1);
-  double                         tpsa2  = psa.Parameter(2);
+  double                  tpsa1  = psa.Parameter(1);
+  double                  tpsa2  = psa.Parameter(2);
   const TopOpeBRepDS_Transition& Tpsa1  = psa.Transition(1);
   const TopOpeBRepDS_Transition& Tpsa2  = psa.Transition(2);
 
-  bool                           pospsb = psb.IsPointOfSegment();
+  bool               pospsb = psb.IsPointOfSegment();
   TopOpeBRep_P2Dstatus           stspsb = psb.Status();
-  double                         tpsb1  = psb.Parameter(1);
-  double                         tpsb2  = psb.Parameter(2);
+  double                  tpsb1  = psb.Parameter(1);
+  double                  tpsb2  = psb.Parameter(2);
   const TopOpeBRepDS_Transition& Tpsb1  = psb.Transition(1);
   const TopOpeBRepDS_Transition& Tpsb2  = psb.Transition(2);
 
@@ -920,7 +918,7 @@ void TopOpeBRep_EdgesIntersector::ReduceSegments()
     TopOpeBRep_Point2d& psa = mysp2d(ip);
     TopOpeBRep_Point2d& psb = mysp2d(ip + 1);
     TopOpeBRep_Point2d  pn;
-    bool                reduced = ReduceSegment(psa, psb, pn);
+    bool    reduced = ReduceSegment(psa, psb, pn);
     if (reduced)
     {
       pn.SetIndex(++mynp2d);
@@ -1122,12 +1120,14 @@ int TopOpeBRep_EdgesIntersector::NbSegments() const
 //=================================================================================================
 
 #ifndef OCCT_DEBUG
-void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString&, const int, const int)
+void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString&,
+                                       const int,
+                                       const int)
 {
 #else
 void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString& str,
-                                       const int                      E1index,
-                                       const int                      E2index)
+                                       const int         E1index,
+                                       const int         E2index)
 {
   InitPoint();
   if (!MorePoint())

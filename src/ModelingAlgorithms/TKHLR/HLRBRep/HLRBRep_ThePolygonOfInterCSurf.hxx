@@ -25,7 +25,9 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 class Standard_OutOfRange;
 class gp_Lin;
 class HLRBRep_LineTool;
@@ -39,12 +41,12 @@ public:
 
   Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin& Curve, const int NbPnt);
 
-  Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin& Curve,
-                                                 const double  U1,
-                                                 const double  U2,
-                                                 const int     NbPnt);
+  Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&          Curve,
+                                                 const double    U1,
+                                                 const double    U2,
+                                                 const int NbPnt);
 
-  Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&                     Curve,
+  Standard_EXPORT HLRBRep_ThePolygonOfInterCSurf(const gp_Lin&               Curve,
                                                  const NCollection_Array1<double>& Upars);
 
   //! Give the bounding box of the polygon.
@@ -84,7 +86,8 @@ public:
 
   //! Give an approximation of the parameter on the curve
   //! according to the discretization of the Curve.
-  Standard_EXPORT double ApproxParamOnCurve(const int Index, const double ParamOnLine) const;
+  Standard_EXPORT double ApproxParamOnCurve(const int Index,
+                                                   const double    ParamOnLine) const;
 
   Standard_EXPORT void Dump() const;
 
@@ -94,13 +97,13 @@ protected:
   Standard_EXPORT void Init(const gp_Lin& Curve, const NCollection_Array1<double>& Upars);
 
 private:
-  Bnd_Box                                  TheBnd;
-  double                                   TheDeflection;
-  int                                      NbPntIn;
-  NCollection_Array1<gp_Pnt>               ThePnts;
-  bool                                     ClosedPolygon;
-  double                                   Binf;
-  double                                   Bsup;
+  Bnd_Box                       TheBnd;
+  double                 TheDeflection;
+  int              NbPntIn;
+  NCollection_Array1<gp_Pnt>            ThePnts;
+  bool              ClosedPolygon;
+  double                 Binf;
+  double                 Bsup;
   occ::handle<NCollection_HArray1<double>> myParams;
 };
 

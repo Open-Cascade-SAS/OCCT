@@ -35,6 +35,7 @@ public:
   Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P, const double Tol) = 0;
 
   DEFINE_STANDARD_RTTIEXT(IntStart_SITopolTool, Standard_Transient)
+
 };
 
 #endif // _IntStart_SITopolTool_HeaderFile

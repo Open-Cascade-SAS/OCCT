@@ -45,9 +45,9 @@ GeomToStep_MakePlane::GeomToStep_MakePlane(const gp_Pln& P, const StepData_Facto
 //=============================================================================
 
 GeomToStep_MakePlane::GeomToStep_MakePlane(const occ::handle<Geom_Plane>& Gpln,
-                                           const StepData_Factors&        theLocalFactors)
+                                           const StepData_Factors&   theLocalFactors)
 {
-  gp_Pln                                 P;
+  gp_Pln                            P;
   occ::handle<StepGeom_Plane>            Plan = new StepGeom_Plane;
   occ::handle<StepGeom_Axis2Placement3d> aPosition;
 

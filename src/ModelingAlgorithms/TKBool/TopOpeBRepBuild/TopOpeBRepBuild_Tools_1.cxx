@@ -41,19 +41,20 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-static void CheckEdge(const TopoDS_Edge& E, const double aMaxTol);
-static void CorrectEdgeTolerance(const TopoDS_Edge& myShape,
-                                 const TopoDS_Face& S,
-                                 const double       aMaxTol);
+static void             CheckEdge(const TopoDS_Edge& E, const double aMaxTol);
+static void             CorrectEdgeTolerance(const TopoDS_Edge&  myShape,
+                                             const TopoDS_Face&  S,
+                                             const double aMaxTol);
 static bool Validate(const Adaptor3d_Curve& CRef,
-                     const Adaptor3d_Curve& Other,
-                     const double           Tol,
-                     const bool             SameParameter,
-                     double&                aNewTolerance);
+                                 const Adaptor3d_Curve& Other,
+                                 const double    Tol,
+                                 const bool SameParameter,
+                                 double&         aNewTolerance);
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Tools::CorrectTolerances(const TopoDS_Shape& aShape, const double aMaxTol)
+void TopOpeBRepBuild_Tools::CorrectTolerances(const TopoDS_Shape& aShape,
+                                              const double aMaxTol)
 {
   TopOpeBRepBuild_Tools::CorrectPointOnCurve(aShape, aMaxTol);
   TopOpeBRepBuild_Tools::CorrectCurveOnSurface(aShape, aMaxTol);
@@ -63,7 +64,7 @@ void TopOpeBRepBuild_Tools::CorrectTolerances(const TopoDS_Shape& aShape, const 
 
 void TopOpeBRepBuild_Tools::CorrectPointOnCurve(const TopoDS_Shape& S, const double aMaxTol)
 {
-  int                                                           i, aNb;
+  int           i, aNb;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> Edges;
   TopExp::MapShapes(S, TopAbs_EDGE, Edges);
   aNb = Edges.Extent();
@@ -76,16 +77,17 @@ void TopOpeBRepBuild_Tools::CorrectPointOnCurve(const TopoDS_Shape& S, const dou
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Tools::CorrectCurveOnSurface(const TopoDS_Shape& S, const double aMaxTol)
+void TopOpeBRepBuild_Tools::CorrectCurveOnSurface(const TopoDS_Shape& S,
+                                                  const double aMaxTol)
 {
-  int                                                           i, aNbFaces, j, aNbEdges;
+  int           i, aNbFaces, j, aNbEdges;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> Faces;
   TopExp::MapShapes(S, TopAbs_FACE, Faces);
 
   aNbFaces = Faces.Extent();
   for (i = 1; i <= aNbFaces; i++)
   {
-    const TopoDS_Face&                                            F = TopoDS::Face(Faces(i));
+    const TopoDS_Face&         F = TopoDS::Face(Faces(i));
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> Edges;
     TopExp::MapShapes(F, TopAbs_EDGE, Edges);
     aNbEdges = Edges.Extent();
@@ -101,7 +103,9 @@ void TopOpeBRepBuild_Tools::CorrectCurveOnSurface(const TopoDS_Shape& S, const d
 // Function : CorrectEdgeTolerance
 // purpose :  Correct tolerances for Edge
 //=======================================================================
-void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, const double aMaxTol)
+void CorrectEdgeTolerance(const TopoDS_Edge&  myShape,
+                          const TopoDS_Face&  S,
+                          const double aMaxTol)
 {
   //
   // 1. Minimum of conditions to Perform
@@ -110,9 +114,9 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
 
   myCref.Nullify();
 
-  occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
+  occ::handle<BRep_TEdge>&                          TE = *((occ::handle<BRep_TEdge>*)&myShape.TShape());
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
-  bool Degenerated, SameParameter, SameRange;
+  bool                             Degenerated, SameParameter, SameRange;
 
   int unique = 0;
 
@@ -171,7 +175,7 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
   if (!myCref.IsNull())
   {
     occ::handle<BRep_GCurve> GCref(occ::down_cast<BRep_GCurve>(myCref));
-    double                   First, Last;
+    double       First, Last;
     GCref->Range(First, Last);
     if (Last <= First)
     {
@@ -191,11 +195,12 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
       else
       { // curve on surface
         occ::handle<Geom_Surface> Sref = myCref->Surface();
-        Sref = occ::down_cast<Geom_Surface>(Sref->Transformed(myCref->Location().Transformation()));
+        Sref =
+          occ::down_cast<Geom_Surface>(Sref->Transformed(myCref->Location().Transformation()));
         const occ::handle<Geom2d_Curve>& PCref   = myCref->PCurve();
         occ::handle<GeomAdaptor_Surface> GAHSref = new GeomAdaptor_Surface(Sref);
         occ::handle<Geom2dAdaptor_Curve> GHPCref = new Geom2dAdaptor_Curve(PCref, First, Last);
-        Adaptor3d_CurveOnSurface         ACSref(GHPCref, GAHSref);
+        Adaptor3d_CurveOnSurface    ACSref(GHPCref, GAHSref);
         myHCurve = new Adaptor3d_CurveOnSurface(ACSref);
       }
     }
@@ -215,11 +220,11 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
     double Last  = myHCurve->LastParameter();
 
     occ::handle<BRep_TFace>&         TF          = *((occ::handle<BRep_TFace>*)&S.TShape());
-    const TopLoc_Location&           Floc        = S.Location();
-    const TopLoc_Location&           TFloc       = TF->Location();
+    const TopLoc_Location&      Floc        = S.Location();
+    const TopLoc_Location&      TFloc       = TF->Location();
     const occ::handle<Geom_Surface>& Su          = TF->Surface();
-    TopLoc_Location                  L           = (Floc * TFloc).Predivided(myShape.Location());
-    bool                             pcurvefound = false;
+    TopLoc_Location             L           = (Floc * TFloc).Predivided(myShape.Location());
+    bool            pcurvefound = false;
 
     itcr.Initialize(TE->Curves());
     while (itcr.More())
@@ -229,7 +234,7 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
       {
         pcurvefound = true;
         occ::handle<BRep_GCurve> GC(occ::down_cast<BRep_GCurve>(cr));
-        double                   f, l;
+        double       f, l;
         GC->Range(f, l);
         if (SameRange && (f != First || l != Last))
         {
@@ -241,7 +246,7 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
         occ::handle<Geom2d_Curve>        PC   = cr->PCurve();
         occ::handle<GeomAdaptor_Surface> GAHS = new GeomAdaptor_Surface(Sb);
         occ::handle<Geom2dAdaptor_Curve> GHPC = new Geom2dAdaptor_Curve(PC, f, l);
-        Adaptor3d_CurveOnSurface         ACS(GHPC, GAHS);
+        Adaptor3d_CurveOnSurface    ACS(GHPC, GAHS);
         ok = Validate(*myHCurve, ACS, Tol, SameParameter, aNewTol);
         if (ok)
         {
@@ -299,7 +304,7 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
 
         occ::handle<GeomAdaptor_Curve> aHCurve = new GeomAdaptor_Curve(ProjOnPlane);
 
-        ProjLib_ProjectedCurve           proj(GAHS, aHCurve);
+        ProjLib_ProjectedCurve      proj(GAHS, aHCurve);
         occ::handle<Geom2d_Curve>        PC = Geom2dAdaptor::MakeCurve(proj);
         occ::handle<Geom2dAdaptor_Curve> GHPC =
           new Geom2dAdaptor_Curve(PC, myHCurve->FirstParameter(), myHCurve->LastParameter());
@@ -322,10 +327,10 @@ void CorrectEdgeTolerance(const TopoDS_Edge& myShape, const TopoDS_Face& S, cons
 //=================================================================================================
 
 bool Validate(const Adaptor3d_Curve& CRef,
-              const Adaptor3d_Curve& Other,
-              const double           Tol,
-              const bool             SameParameter,
-              double&                aNewTolerance)
+                          const Adaptor3d_Curve& Other,
+                          const double    Tol,
+                          const bool SameParameter,
+                          double&         aNewTolerance)
 {
   double First, Last, MaxDistance, aD;
 
@@ -336,7 +341,8 @@ bool Validate(const Adaptor3d_Curve& CRef,
   int i, aNC1 = NCONTROL - 1;
 
   bool aFlag = false;
-  bool proj  = (!SameParameter || First != Other.FirstParameter() || Last != Other.LastParameter());
+  bool proj =
+    (!SameParameter || First != Other.FirstParameter() || Last != Other.LastParameter());
   //
   // 1.
   if (!proj)
@@ -344,8 +350,8 @@ bool Validate(const Adaptor3d_Curve& CRef,
     for (i = 0; i < NCONTROL; i++)
     {
       double prm    = ((aNC1 - i) * First + i * Last) / aNC1;
-      gp_Pnt pref   = CRef.Value(prm);
-      gp_Pnt pother = Other.Value(prm);
+      gp_Pnt        pref   = CRef.Value(prm);
+      gp_Pnt        pother = Other.Value(prm);
 
       aD = pref.SquareDistance(pother);
 
@@ -362,7 +368,7 @@ bool Validate(const Adaptor3d_Curve& CRef,
   else
   {
     Extrema_LocateExtPC refd, otherd;
-    double              OFirst, OLast;
+    double       OFirst, OLast;
     OFirst = Other.FirstParameter();
     OLast  = Other.LastParameter();
 
@@ -391,10 +397,10 @@ bool Validate(const Adaptor3d_Curve& CRef,
     for (i = 2; i < aNC1; i++)
     {
       double rprm = ((aNC1 - i) * First + i * Last) / aNC1;
-      gp_Pnt pref = CRef.Value(rprm);
+      gp_Pnt        pref = CRef.Value(rprm);
 
       double oprm   = ((aNC1 - i) * OFirst + i * OLast) / aNC1;
-      gp_Pnt pother = Other.Value(oprm);
+      gp_Pnt        pother = Other.Value(oprm);
 
       refd.Perform(pother, rprm);
       if (!refd.IsDone() || refd.SquareDistance() > Tol * Tol)
@@ -454,7 +460,7 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
     TopoDS_Vertex aVertex = TopoDS::Vertex(aVExp.Current());
 
     occ::handle<BRep_TVertex>& TV   = *((occ::handle<BRep_TVertex>*)&aVertex.TShape());
-    const gp_Pnt&              prep = TV->Pnt();
+    const gp_Pnt&         prep = TV->Pnt();
 
     double Tol, aD2, aNewTolerance, dd;
 
@@ -463,16 +469,16 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
     dd  = 0.1 * Tol;
     Tol *= Tol;
 
-    const TopLoc_Location&                                            Eloc = E.Location();
+    const TopLoc_Location&                       Eloc = E.Location();
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr;
 
-    occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
+    occ::handle<BRep_TEdge>&                          TE = *((occ::handle<BRep_TEdge>*)&E.TShape());
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
     while (itcr.More())
     {
       const occ::handle<BRep_CurveRepresentation>& cr  = itcr.Value();
-      const TopLoc_Location&                       loc = cr->Location();
-      TopLoc_Location                              L = (Eloc * loc).Predivided(aVertex.Location());
+      const TopLoc_Location&                  loc = cr->Location();
+      TopLoc_Location                         L   = (Eloc * loc).Predivided(aVertex.Location());
 
       if (cr->IsCurve3D())
       {
@@ -529,8 +535,8 @@ void CheckEdge(const TopoDS_Edge& Ed, const double aMaxTol)
 
 bool TopOpeBRepBuild_Tools::CheckFaceClosed2d(const TopoDS_Face& theFace)
 {
-  bool            isClosed = true;
-  TopExp_Explorer ex(theFace, TopAbs_WIRE);
+  bool isClosed = true;
+  TopExp_Explorer  ex(theFace, TopAbs_WIRE);
   for (; ex.More() && isClosed; ex.Next())
   {
     const TopoDS_Wire& aW = TopoDS::Wire(ex.Current());

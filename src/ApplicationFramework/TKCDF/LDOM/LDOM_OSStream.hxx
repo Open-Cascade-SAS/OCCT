@@ -71,7 +71,8 @@ public:
   Standard_EXPORT virtual int underflow() override;
   // virtual int uflow();
 
-  Standard_EXPORT virtual std::streamsize xsputn(const char* s, std::streamsize n) override;
+  Standard_EXPORT virtual std::streamsize xsputn(const char*     s,
+                                                 std::streamsize n) override;
   // virtual int xsgetn(char* s, int n);
   // virtual int sync();
 
@@ -79,10 +80,10 @@ public:
   // Destructor
 
 private:
-  int                                    myMaxBuf;      // default length of one element
-  int                                    myLength;      // full length of contained data
-  LDOM_StringElem*                       myFirstString; // the head of the sequence
-  LDOM_StringElem*                       myCurString;   // current element of the sequence
+  int                  myMaxBuf;      // default length of one element
+  int                  myLength;      // full length of contained data
+  LDOM_StringElem*                  myFirstString; // the head of the sequence
+  LDOM_StringElem*                  myCurString;   // current element of the sequence
   occ::handle<NCollection_BaseAllocator> myAlloc;       // allocator for chunks
 };
 

@@ -47,7 +47,9 @@ void BRepFilletAPI_MakeChamfer::Add(const double Dis, const TopoDS_Edge& E)
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::SetDist(const double Dis, const int IC, const TopoDS_Face& F)
+void BRepFilletAPI_MakeChamfer::SetDist(const double    Dis,
+                                        const int IC,
+                                        const TopoDS_Face&     F)
 {
   myBuilder.SetDist(Dis, IC, F);
 }
@@ -61,27 +63,29 @@ void BRepFilletAPI_MakeChamfer::GetDist(const int IC, double& Dis) const
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::Add(const double       Dis1,
-                                    const double       Dis2,
-                                    const TopoDS_Edge& E,
-                                    const TopoDS_Face& F)
+void BRepFilletAPI_MakeChamfer::Add(const double Dis1,
+                                    const double Dis2,
+                                    const TopoDS_Edge&  E,
+                                    const TopoDS_Face&  F)
 {
   myBuilder.Add(Dis1, Dis2, E, F);
 }
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::SetDists(const double       Dis1,
-                                         const double       Dis2,
-                                         const int          IC,
-                                         const TopoDS_Face& F)
+void BRepFilletAPI_MakeChamfer::SetDists(const double    Dis1,
+                                         const double    Dis2,
+                                         const int IC,
+                                         const TopoDS_Face&     F)
 {
   myBuilder.SetDists(Dis1, Dis2, IC, F);
 }
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::Dists(const int IC, double& Dis1, double& Dis2) const
+void BRepFilletAPI_MakeChamfer::Dists(const int IC,
+                                      double&         Dis1,
+                                      double&         Dis2) const
 {
   double temp1, temp2;
   myBuilder.Dists(IC, temp1, temp2);
@@ -91,27 +95,29 @@ void BRepFilletAPI_MakeChamfer::Dists(const int IC, double& Dis1, double& Dis2) 
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::AddDA(const double       Dis,
-                                      const double       Angle,
-                                      const TopoDS_Edge& E,
-                                      const TopoDS_Face& F)
+void BRepFilletAPI_MakeChamfer::AddDA(const double Dis,
+                                      const double Angle,
+                                      const TopoDS_Edge&  E,
+                                      const TopoDS_Face&  F)
 {
   myBuilder.AddDA(Dis, Angle, E, F);
 }
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::SetDistAngle(const double       Dis,
-                                             const double       Angle,
-                                             const int          IC,
-                                             const TopoDS_Face& F)
+void BRepFilletAPI_MakeChamfer::SetDistAngle(const double    Dis,
+                                             const double    Angle,
+                                             const int IC,
+                                             const TopoDS_Face&     F)
 {
   myBuilder.SetDistAngle(Dis, Angle, IC, F);
 }
 
 //=================================================================================================
 
-void BRepFilletAPI_MakeChamfer::GetDistAngle(const int IC, double& Dis, double& Angle) const
+void BRepFilletAPI_MakeChamfer::GetDistAngle(const int IC,
+                                             double&         Dis,
+                                             double&         Angle) const
 {
   myBuilder.GetDistAngle(IC, Dis, Angle);
 }
@@ -128,7 +134,7 @@ void BRepFilletAPI_MakeChamfer::SetMode(const ChFiDS_ChamfMode theMode)
 bool BRepFilletAPI_MakeChamfer::IsSymetric(const int IC) const
 {
   ChFiDS_ChamfMethod ChamfMeth = myBuilder.IsChamfer(IC);
-  bool               ret       = false;
+  bool   ret       = false;
 
   if (ChamfMeth == ChFiDS_Sym)
     ret = true;
@@ -141,7 +147,7 @@ bool BRepFilletAPI_MakeChamfer::IsSymetric(const int IC) const
 bool BRepFilletAPI_MakeChamfer::IsTwoDistances(const int IC) const
 {
   ChFiDS_ChamfMethod ChamfMeth = myBuilder.IsChamfer(IC);
-  bool               ret       = false;
+  bool   ret       = false;
 
   if (ChamfMeth == ChFiDS_TwoDist)
     ret = true;
@@ -154,7 +160,7 @@ bool BRepFilletAPI_MakeChamfer::IsTwoDistances(const int IC) const
 bool BRepFilletAPI_MakeChamfer::IsDistanceAngle(const int IC) const
 {
   ChFiDS_ChamfMethod ChamfMeth = myBuilder.IsChamfer(IC);
-  bool               ret       = false;
+  bool   ret       = false;
 
   if (ChamfMeth == ChFiDS_DistAngle)
     ret = true;
@@ -194,10 +200,11 @@ int BRepFilletAPI_MakeChamfer::NbEdges(const int I) const
 
 //=================================================================================================
 
-const TopoDS_Edge& BRepFilletAPI_MakeChamfer::Edge(const int I, const int J) const
+const TopoDS_Edge& BRepFilletAPI_MakeChamfer::Edge(const int I,
+                                                   const int J) const
 {
   const occ::handle<ChFiDS_Spine>& Spine = myBuilder.Value(I);
-  const TopoDS_Edge&               E     = Spine->Edges(J);
+  const TopoDS_Edge&          E     = Spine->Edges(J);
   return E;
 }
 
@@ -231,14 +238,16 @@ TopoDS_Vertex BRepFilletAPI_MakeChamfer::LastVertex(const int IC) const
 
 //=================================================================================================
 
-double BRepFilletAPI_MakeChamfer::Abscissa(const int IC, const TopoDS_Vertex& V) const
+double BRepFilletAPI_MakeChamfer::Abscissa(const int IC,
+                                                  const TopoDS_Vertex&   V) const
 {
   return myBuilder.Abscissa(IC, V);
 }
 
 //=================================================================================================
 
-double BRepFilletAPI_MakeChamfer::RelativeAbscissa(const int IC, const TopoDS_Vertex& V) const
+double BRepFilletAPI_MakeChamfer::RelativeAbscissa(const int IC,
+                                                          const TopoDS_Vertex&   V) const
 {
   return myBuilder.RelativeAbscissa(IC, V);
 }
@@ -359,9 +368,8 @@ int BRepFilletAPI_MakeChamfer::NbSurf(const int IC) const
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<ChFiDS_CircSection>> BRepFilletAPI_MakeChamfer::Sect(
-  const int IC,
-  const int IS) const
+occ::handle<NCollection_HArray1<ChFiDS_CircSection>> BRepFilletAPI_MakeChamfer::Sect(const int IC,
+                                                          const int IS) const
 {
   return myBuilder.Sect(IC, IS);
 }

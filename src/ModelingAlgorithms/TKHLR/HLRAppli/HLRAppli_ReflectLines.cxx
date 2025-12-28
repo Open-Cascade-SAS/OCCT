@@ -39,8 +39,8 @@ void HLRAppli_ReflectLines::SetAxes(const double Nx,
                                     const double YUp,
                                     const double ZUp)
 {
-  bool   IsPerspective = false;
-  double aFocus        = 1;
+  bool IsPerspective = false;
+  double    aFocus        = 1;
   // Prs3d_Projector aPrs3dProjector(IsPerspective, aFocus, Nx, Ny, Nz, XAt, YAt, ZAt, XUp, YUp,
   // ZUp);
 
@@ -78,7 +78,7 @@ void HLRAppli_ReflectLines::Perform()
 //=================================================================================================
 
 TopoDS_Shape HLRAppli_ReflectLines::GetCompoundOf3dEdges(const HLRBRep_TypeOfResultingEdge type,
-                                                         const bool                        visible,
+                                                         const bool            visible,
                                                          const bool In3d) const
 {
   HLRBRep_HLRToShape aHLRToShape(myHLRAlgo);

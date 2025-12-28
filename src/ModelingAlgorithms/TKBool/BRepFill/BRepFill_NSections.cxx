@@ -37,16 +37,26 @@
 #include <GeomFill_Line.hxx>
 #include <GeomFill_NSections.hxx>
 #include <GeomFill_SectionGenerator.hxx>
+#include <GeomFill_SectionLaw.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_NSections, BRepFill_SectionLaw)
@@ -82,7 +92,7 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
     aMults(2) = 2;
 
     NCollection_Array1<gp_Pnt> aPoles(1, 2);
-    TopoDS_Vertex              vf, vl;
+    TopoDS_Vertex      vf, vl;
     TopExp::Vertices(theEdge, vl, vf);
     aPoles(1) = BRep_Tool::Pnt(vf);
     aPoles(2) = BRep_Tool::Pnt(vl);
@@ -92,8 +102,8 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
   else
   {
     // get the curve of the edge
-    TopLoc_Location         aLoc;
-    double                  aFirst, aLast;
+    TopLoc_Location    aLoc;
+    double      aFirst, aLast;
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theEdge, aLoc, aFirst, aLast);
 
     // convert its part used by edge to bspline; note that if edge curve is bspline,
@@ -102,7 +112,7 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
     occ::handle<Geom_TrimmedCurve> aTrimCurve = new Geom_TrimmedCurve(aCurve, aFirst, aLast);
 
     const occ::handle<Geom_Curve>& aCurveTemp = aTrimCurve; // to avoid ambiguity
-    GeomConvert_ApproxCurve        anAppr(aCurveTemp, Precision::Confusion(), GeomAbs_C1, 16, 14);
+    GeomConvert_ApproxCurve   anAppr(aCurveTemp, Precision::Confusion(), GeomAbs_C1, 16, 14);
     if (anAppr.HasResult())
       aBSCurve = anAppr.Curve();
 
@@ -130,20 +140,20 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
 //=================================================================================================
 
 static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoDS_Shape>& shapes,
-                                                  const int                               NbSects,
-                                                  const int                               NbEdges,
-                                                  const NCollection_Sequence<double>&     params,
-                                                  const bool                              w1Point,
-                                                  const bool                              w2Point,
-                                                  const bool                              uClosed,
-                                                  const bool                              vClosed,
-                                                  const double                            myPres3d)
+                                             const int        NbSects,
+                                             const int        NbEdges,
+                                             const NCollection_Sequence<double>& params,
+                                             const bool        w1Point,
+                                             const bool        w2Point,
+                                             const bool        uClosed,
+                                             const bool        vClosed,
+                                             const double           myPres3d)
 {
-  int           i, j, jdeb = 1, jfin = NbSects;
-  TopoDS_Edge   edge;
-  TopoDS_Vertex vf, vl;
+  int i, j, jdeb = 1, jfin = NbSects;
+  TopoDS_Edge      edge;
+  TopoDS_Vertex    vf, vl;
 
-  GeomFill_SectionGenerator        section;
+  GeomFill_SectionGenerator   section;
   occ::handle<Geom_BSplineSurface> surface;
   occ::handle<Geom_BSplineCurve>   BS, BS1;
 
@@ -159,8 +169,8 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
     Bounds(1) = 0.;
     Bounds(2) = 1.;
     NCollection_Array1<int> Mult(1, 2);
-    Mult(1)                                = 2;
-    Mult(2)                                = 2;
+    Mult(1)                           = 2;
+    Mult(2)                           = 2;
     occ::handle<Geom_BSplineCurve> BSPoint = new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
     section.AddCurve(BSPoint);
   }
@@ -182,7 +192,7 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
     else
     {
       // read the first edge to initialise CompBS;
-      TopoDS_Edge                    aPrevEdge = TopoDS::Edge(shapes.Value(1, j));
+      TopoDS_Edge               aPrevEdge = TopoDS::Edge(shapes.Value(1, j));
       occ::handle<Geom_BSplineCurve> curvBS    = EdgeToBSpline(aPrevEdge);
 
       // initialization
@@ -195,9 +205,9 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
         curvBS                = EdgeToBSpline(aNextEdge);
 
         // concatenation
-        TopoDS_Vertex ComV;
-        double        epsV;
-        bool          Bof = TopExp::CommonVertex(aPrevEdge, aNextEdge, ComV);
+        TopoDS_Vertex    ComV;
+        double    epsV;
+        bool Bof = TopExp::CommonVertex(aPrevEdge, aNextEdge, ComV);
         if (Bof)
           epsV = BRep_Tool::Tolerance(ComV);
         else
@@ -233,14 +243,13 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
     Bounds(1) = 0.;
     Bounds(2) = 1.;
     NCollection_Array1<int> Mult(1, 2);
-    Mult(1)                                = 2;
-    Mult(2)                                = 2;
+    Mult(1)                           = 2;
+    Mult(2)                           = 2;
     occ::handle<Geom_BSplineCurve> BSPoint = new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
     section.AddCurve(BSPoint);
   }
 
-  occ::handle<NCollection_HArray1<double>> HPar =
-    new NCollection_HArray1<double>(1, params.Length());
+  occ::handle<NCollection_HArray1<double>> HPar = new NCollection_HArray1<double>(1, params.Length());
   for (i = 1; i <= params.Length(); i++)
   {
     HPar->SetValue(i, params(i));
@@ -248,14 +257,14 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
   section.SetParam(HPar);
   section.Perform(Precision::PConfusion());
   occ::handle<GeomFill_Line> line = new GeomFill_Line(NbSects);
-  int                        nbIt = 0, degmin = 2, degmax = 6;
-  bool                       knownP = true;
-  GeomFill_AppSurf           anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
-  bool                       SpApprox = true;
+  int      nbIt = 0, degmin = 2, degmax = 6;
+  bool      knownP = true;
+  GeomFill_AppSurf      anApprox(degmin, degmax, myPres3d, myPres3d, nbIt, knownP);
+  bool      SpApprox = true;
   anApprox.Perform(line, section, SpApprox);
   bool uperiodic = uClosed;
   bool vperiodic = vClosed;
-  int  nup = anApprox.SurfPoles().ColLength(), nvp = anApprox.SurfPoles().RowLength();
+  int nup = anApprox.SurfPoles().ColLength(), nvp = anApprox.SurfPoles().RowLength();
   NCollection_Array1<int> Umults(1, anApprox.SurfUKnots().Length());
   Umults = anApprox.SurfUMults();
   NCollection_Array1<int> Vmults(1, anApprox.SurfVKnots().Length());
@@ -277,7 +286,7 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
     nvp--;
   }
 
-  NCollection_Array2<gp_Pnt> poles(1, nup, 1, nvp);
+  NCollection_Array2<gp_Pnt>   poles(1, nup, 1, nvp);
   NCollection_Array2<double> weights(1, nup, 1, nvp);
   for (j = 1; j <= nvp; j++)
   {
@@ -289,8 +298,8 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
   }
 
   // To create non-rational surface if possible
-  double TolEps    = 1.e-13;
-  bool   Vrational = false, Urational = false;
+  double    TolEps    = 1.e-13;
+  bool Vrational = false, Urational = false;
   for (j = 1; j <= weights.UpperCol(); j++)
     if (!Vrational)
       for (i = 1; i <= weights.UpperRow() - 1; i++)
@@ -341,7 +350,7 @@ static occ::handle<Geom_BSplineSurface> totalsurf(const NCollection_Array2<TopoD
 //=================================================================================================
 
 BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>& S,
-                                       const bool                                Build)
+                                       const bool          Build)
 
 {
   myShapes = S;
@@ -364,11 +373,11 @@ BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>&
 //=======================================================================
 
 BRepFill_NSections::BRepFill_NSections(const NCollection_Sequence<TopoDS_Shape>& S,
-                                       const NCollection_Sequence<gp_Trsf>&      Transformations,
-                                       const NCollection_Sequence<double>&       P,
-                                       const double                              VF,
-                                       const double                              VL,
-                                       const bool                                Build)
+                                       const NCollection_Sequence<gp_Trsf>&  Transformations,
+                                       const NCollection_Sequence<double>&   P,
+                                       const double             VF,
+                                       const double             VL,
+                                       const bool          Build)
 
 {
 #ifdef OCCT_DEBUG
@@ -414,12 +423,12 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
   BRepTools_WireExplorer wexp;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  TopoDS_Edge E;
-  int         ii, NbEdge, jj, NbSects = P.Length();
-  int         ideb = 1, ifin   = NbSects;
-  bool        wClosed, w1Point = true, w2Point = true;
-  double      First, Last;
-  TopoDS_Wire W;
+  TopoDS_Edge      E;
+  int ii, NbEdge, jj, NbSects = P.Length();
+  int ideb = 1, ifin   = NbSects;
+  bool wClosed, w1Point = true, w2Point = true;
+  double    First, Last;
+  TopoDS_Wire      W;
 
   // Check if the start and end wires are punctual
   W = TopoDS::Wire(myShapes(1));
@@ -504,9 +513,9 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
       {
         BRepAdaptor_Curve Curve1(Edge1);
         BRepAdaptor_Curve Curve2(Edge2);
-        double            U1  = BRep_Tool::Parameter(V1, Edge1);
-        double            U2  = BRep_Tool::Parameter(V2, Edge2);
-        double            Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
+        double     U1  = BRep_Tool::Parameter(V1, Edge1);
+        double     U2  = BRep_Tool::Parameter(V2, Edge2);
+        double     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
 
         wClosed = Curve1.Value(U1).IsEqual(Curve2.Value(U2), Eps);
       }
@@ -541,7 +550,7 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
   myLaws = new (NCollection_HArray1<occ::handle<GeomFill_SectionLaw>>)(1, NbEdge);
 
   constexpr double tol = Precision::Confusion();
-  mySurface            = totalsurf(myEdges->Array2(),
+  mySurface                   = totalsurf(myEdges->Array2(),
                         myShapes.Length(),
                         NbEdge,
                         myParams,
@@ -590,11 +599,10 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
           Bounds(1) = 0.;
           Bounds(2) = 1.;
           NCollection_Array1<int> Mult(1, 2);
-          Mult(1) = 2;
-          Mult(2) = 2;
-          occ::handle<Geom_BSplineCurve> BSPoint =
-            new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
-          C = BSPoint;
+          Mult(1)                           = 2;
+          Mult(2)                           = 2;
+          occ::handle<Geom_BSplineCurve> BSPoint = new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
+          C                                 = BSPoint;
         }
         else
         {
@@ -602,7 +610,7 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
 
           if (E.Orientation() == TopAbs_REVERSED)
           {
-            double                  aux;
+            double      aux;
             occ::handle<Geom_Curve> CBis;
             CBis  = C->Reversed(); // To avoid the spoiling of the topology
             aux   = C->ReversedParameter(First);
@@ -613,7 +621,7 @@ void BRepFill_NSections::Init(const NCollection_Sequence<double>& P, const bool 
           if ((ii > 1) || (!BRep_Tool::IsClosed(E)))
           { // Cut C
             occ::handle<Geom_TrimmedCurve> TC = new (Geom_TrimmedCurve)(C, First, Last);
-            C                                 = TC;
+            C                            = TC;
           }
           //  otherwise preserve the integrity of the curve
         }
@@ -644,7 +652,8 @@ bool BRepFill_NSections::IsConstant() const
 
 //=================================================================================================
 
-TopoDS_Vertex BRepFill_NSections::Vertex(const int Index, const double Param) const
+TopoDS_Vertex BRepFill_NSections::Vertex(const int Index,
+                                         const double    Param) const
 {
   BRep_Builder  B;
   TopoDS_Vertex V;
@@ -675,10 +684,11 @@ TopoDS_Vertex BRepFill_NSections::Vertex(const int Index, const double Param) co
 // function : VertexTol
 // purpose  : Evaluate the hole between 2 edges of the section
 //=======================================================================
-double BRepFill_NSections::VertexTol(const int Index, const double Param) const
+double BRepFill_NSections::VertexTol(const int Index,
+                                            const double    Param) const
 {
-  double Tol = Precision::Confusion();
-  int    I1, I2;
+  double    Tol = Precision::Confusion();
+  int I1, I2;
   if ((Index == 0) || (Index == myEdges->ColLength()))
   {
     if (!uclosed)
@@ -692,13 +702,13 @@ double BRepFill_NSections::VertexTol(const int Index, const double Param) const
     I2 = I1 + 1;
   }
 
-  occ::handle<GeomFill_SectionLaw>         Loi;
-  int                                      NbPoles, NbKnots, Degree;
-  occ::handle<NCollection_HArray1<gp_Pnt>> Poles;
-  occ::handle<NCollection_HArray1<double>> Knots, Weigth;
-  occ::handle<NCollection_HArray1<int>>    Mults;
-  occ::handle<Geom_BSplineCurve>           BS;
-  gp_Pnt                                   PFirst;
+  occ::handle<GeomFill_SectionLaw>      Loi;
+  int                 NbPoles, NbKnots, Degree;
+  occ::handle<NCollection_HArray1<gp_Pnt>>      Poles;
+  occ::handle<NCollection_HArray1<double>>    Knots, Weigth;
+  occ::handle<NCollection_HArray1<int>> Mults;
+  occ::handle<Geom_BSplineCurve>        BS;
+  gp_Pnt                           PFirst;
 
   Loi = myLaws->Value(I1);
   Loi->SectionShape(NbPoles, NbKnots, Degree);
@@ -761,12 +771,13 @@ occ::handle<GeomFill_SectionLaw> BRepFill_NSections::ConcatenedLaw() const
 
 //=================================================================================================
 
-GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAngular) const
+GeomAbs_Shape BRepFill_NSections::Continuity(const int Index,
+                                             const double    TolAngular) const
 {
 
-  int           jj;
-  GeomAbs_Shape cont_jj;
-  GeomAbs_Shape cont = GeomAbs_C0;
+  int jj;
+  GeomAbs_Shape    cont_jj;
+  GeomAbs_Shape    cont = GeomAbs_C0;
 
   for (jj = 1; jj <= myShapes.Length(); jj++)
   {
@@ -808,11 +819,11 @@ GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAn
       cont_jj = GeomAbs_CN;
     else
     {
-      double            U1 = BRep_Tool::Parameter(V1, Edge1);
-      double            U2 = BRep_Tool::Parameter(V2, Edge2);
+      double     U1 = BRep_Tool::Parameter(V1, Edge1);
+      double     U2 = BRep_Tool::Parameter(V2, Edge2);
       BRepAdaptor_Curve Curve1(Edge1);
       BRepAdaptor_Curve Curve2(Edge2);
-      double            Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
+      double     Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
       cont_jj               = BRepLProp::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
     }
 
@@ -831,13 +842,13 @@ void BRepFill_NSections::D0(const double V, TopoDS_Shape& S)
 {
   TopoDS_Wire      W;
   BRepLib_MakeWire MW;
-  int              ii, NbEdge = myLaws->Length();
+  int ii, NbEdge = myLaws->Length();
   for (ii = 1; ii <= NbEdge; ii++)
   {
     occ::handle<Geom_BSplineCurve> Curve =
       occ::down_cast<Geom_BSplineCurve>(myLaws->Value(ii)->BSplineSurface()->VIso(V));
-    double      first = Curve->FirstParameter(), last = Curve->LastParameter();
-    TopoDS_Edge E = BRepLib_MakeEdge(Curve, first, last);
+    double first = Curve->FirstParameter(), last = Curve->LastParameter();
+    TopoDS_Edge   E = BRepLib_MakeEdge(Curve, first, last);
     MW.Add(E);
   }
   TopAbs_Orientation Orien       = TopAbs_FORWARD;

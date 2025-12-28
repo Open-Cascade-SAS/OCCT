@@ -35,7 +35,7 @@ RWStepShape_RWEdgeBasedWireframeShapeRepresentation::
 
 void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,
-  const int                                                           num,
+  const int                                         num,
   occ::handle<Interface_Check>&                                       ach,
   const occ::handle<StepShape_EdgeBasedWireframeShapeRepresentation>& ent) const
 {
@@ -49,13 +49,12 @@ void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::ReadStep(
   data->ReadString(num, 1, "representation.name", ach, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                                                                        sub2 = 0;
+  int                             sub2 = 0;
   if (data->ReadSubList(num, 2, "representation.items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aRepresentation_Items =
-      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepRepr_RepresentationItem> anIt0;
@@ -84,7 +83,7 @@ void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::WriteStep(
-  StepData_StepWriter&                                                SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepShape_EdgeBasedWireframeShapeRepresentation>& ent) const
 {
 
@@ -95,8 +94,7 @@ void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::WriteStep(
   SW.OpenSub();
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -108,15 +106,14 @@ void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::WriteStep(
 
 void RWStepShape_RWEdgeBasedWireframeShapeRepresentation::Share(
   const occ::handle<StepShape_EdgeBasedWireframeShapeRepresentation>& ent,
-  Interface_EntityIterator&                                           iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

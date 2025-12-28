@@ -55,11 +55,11 @@ public:
   Standard_EXPORT occ::handle<StepVisual_SurfaceStyleBoundary> SurfaceStyleBoundary() const;
 
   //! returns Value as a SurfaceStyleParameterLine (Null if another type)
-  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleParameterLine> SurfaceStyleParameterLine()
-    const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleParameterLine> SurfaceStyleParameterLine() const;
 
   //! returns Value as a SurfaceStyleRendering (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRendering> SurfaceStyleRendering() const;
+
 };
 
 #endif // _StepVisual_SurfaceStyleElementSelect_HeaderFile

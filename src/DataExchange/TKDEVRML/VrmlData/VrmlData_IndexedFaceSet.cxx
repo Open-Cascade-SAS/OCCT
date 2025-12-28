@@ -33,6 +33,7 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet, VrmlData_Faceted)
 
@@ -46,7 +47,7 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet, VrmlData_Faceted)
 VrmlData_ErrorStatus VrmlData_Faceted::readData(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus(VrmlData_EmptyData);
-  bool                 aBool;
+  bool     aBool;
   if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "ccw"))
   {
     if (OK(aStatus, ReadBoolean(theBuffer, aBool)))
@@ -98,7 +99,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
   NCollection_Map<int>                        mapPolyId;
   NCollection_List<NCollection_Sequence<int>> aPolygons;
   NCollection_List<gp_Dir>                    aNorms;
-  int                                         i = 0;
+  int                            i = 0;
   for (; i < (int)myNbPolygons; i++)
   {
     const int* arrIndice = myArrPolygons[i];
@@ -177,7 +178,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
     NCollection_Sequence<int>& aPolygon = itP.ChangeValue();
     for (int in = 1; in <= aPolygon.Length(); in++)
     {
-      int newIdx               = mapIdId.Find(aPolygon.Value(in));
+      int newIdx  = mapIdId.Find(aPolygon.Value(in));
       aPolygon.ChangeValue(in) = newIdx;
     }
   }
@@ -252,7 +253,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
             const int* anArrNodes;
             Polygon(i, anArrNodes);
             const int* arrIndice;
-            int        nbn = IndiceNormals(i, arrIndice);
+            int                     nbn = IndiceNormals(i, arrIndice);
             for (int j = 0; j < nbn; j++)
             {
               const gp_XYZ& aNormal = myNormals->Normal(arrIndice[j]);
@@ -275,8 +276,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedFaceSet::TShape()
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_IndexedFaceSet::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_IndexedFaceSet::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_IndexedFaceSet> aResult =
     occ::down_cast<VrmlData_IndexedFaceSet>(VrmlData_Node::Clone(theOther));
@@ -488,7 +488,8 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Write(const char* thePrefix) const
 
 //=================================================================================================
 
-Quantity_Color VrmlData_IndexedFaceSet::GetColor(const int /*iFace*/, const int /*iVertex*/)
+Quantity_Color VrmlData_IndexedFaceSet::GetColor(const int /*iFace*/,
+                                                 const int /*iVertex*/)
 {
   // TODO
   return Quantity_NOC_BLACK;

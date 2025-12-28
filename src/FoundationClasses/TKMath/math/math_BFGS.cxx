@@ -112,10 +112,10 @@ public:
 // purpose  : Compute the appropriate initial value of scale factor to apply
 //           to the direction to approach to the minimum of the function
 //=============================================================================
-static bool ComputeInitScale(const double       theF0,
-                             const math_Vector& theDir,
-                             const math_Vector& theGr,
-                             double&            theScale)
+static bool ComputeInitScale(const double theF0,
+                                         const math_Vector&  theDir,
+                                         const math_Vector&  theGr,
+                                         double&      theScale)
 {
   const double dy1 = theGr * theDir;
   if (std::abs(dy1) < RealSmall())
@@ -123,7 +123,7 @@ static bool ComputeInitScale(const double       theF0,
 
   const double aHnr1 = theDir.Norm2();
   const double alfa  = 0.7 * (-theF0) / dy1;
-  theScale           = 0.015 / std::sqrt(aHnr1);
+  theScale                  = 0.015 / std::sqrt(aHnr1);
   if (theScale > alfa)
     theScale = alfa;
 
@@ -138,11 +138,11 @@ static bool ComputeInitScale(const double       theF0,
 // return   : True if found, False if point is out of bounds.
 //=============================================================================
 static bool ComputeMinMaxScale(const math_Vector& thePoint,
-                               const math_Vector& theDir,
-                               const math_Vector& theLeft,
-                               const math_Vector& theRight,
-                               double&            theMinScale,
-                               double&            theMaxScale)
+                                           const math_Vector& theDir,
+                                           const math_Vector& theLeft,
+                                           const math_Vector& theRight,
+                                           double&     theMinScale,
+                                           double&     theMaxScale)
 {
   for (int anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
   {
@@ -195,14 +195,14 @@ static bool ComputeMinMaxScale(const math_Vector& thePoint,
 //           are known.
 //=============================================================================
 static bool MinimizeDirection(math_Vector&       P,
-                              double             F0,
-                              math_Vector&       Gr,
-                              math_Vector&       Dir,
-                              double&            Result,
-                              DirFunction&       F,
-                              bool               isBounds,
-                              const math_Vector& theLeft,
-                              const math_Vector& theRight)
+                                          double      F0,
+                                          math_Vector&       Gr,
+                                          math_Vector&       Dir,
+                                          double&     Result,
+                                          DirFunction&       F,
+                                          bool   isBounds,
+                                          const math_Vector& theLeft,
+                                          const math_Vector& theRight)
 {
   double lambda;
   if (!ComputeInitScale(F0, Dir, Gr, lambda))
@@ -258,14 +258,14 @@ static bool MinimizeDirection(math_Vector&       P,
     Bracket.Values(ax, xx, bx);
     Bracket.FunctionValues(Fax, Fxx, Fbx);
 
-    int               niter = 100;
-    double            tol   = 1.e-03;
+    int  niter = 100;
+    double     tol   = 1.e-03;
     math_BrentMinimum Sol(tol, Fxx, niter, 1.e-08);
     Sol.Perform(F, ax, xx, bx);
     if (Sol.IsDone())
     {
       double Scale = Sol.Location();
-      Result       = Sol.Minimum();
+      Result              = Sol.Minimum();
       Dir.Multiply(Scale);
       P.Add(Dir);
       return true;
@@ -305,9 +305,9 @@ static bool MinimizeDirection(math_Vector&       P,
 void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vector& StartingPoint)
 {
   const int n    = TheLocation.Length();
-  bool      Good = true;
+  bool       Good = true;
   int       j, i;
-  double    fae, fad, fac;
+  double          fae, fad, fac;
 
   math_Vector xi(1, n), dg(1, n), hdg(1, n);
   math_Matrix hessin(1, n, 1, n);
@@ -335,16 +335,16 @@ void math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F, const math_Vect
 
   for (nbiter = 1; nbiter <= Itermax; nbiter++)
   {
-    TheMinimum        = PreviousMinimum;
+    TheMinimum                    = PreviousMinimum;
     const bool IsGood = MinimizeDirection(TheLocation,
-                                          TheMinimum,
-                                          TheGradient,
-                                          xi,
-                                          TheMinimum,
-                                          F_Dir,
-                                          myIsBoundsDefined,
-                                          myLeft,
-                                          myRight);
+                                                      TheMinimum,
+                                                      TheGradient,
+                                                      xi,
+                                                      TheMinimum,
+                                                      F_Dir,
+                                                      myIsBoundsDefined,
+                                                      myLeft,
+                                                      myRight);
 
     if (IsSolutionReached(F))
     {
@@ -424,10 +424,10 @@ bool math_BFGS::IsSolutionReached(math_MultipleVarFunctionWithGradient&) const
 
 //=================================================================================================
 
-math_BFGS::math_BFGS(const int    NbVariables,
-                     const double Tolerance,
-                     const int    NbIterations,
-                     const double ZEPS)
+math_BFGS::math_BFGS(const int NbVariables,
+                     const double    Tolerance,
+                     const int NbIterations,
+                     const double    ZEPS)
     : TheStatus(math_OK),
       TheLocation(1, NbVariables),
       TheGradient(1, NbVariables),

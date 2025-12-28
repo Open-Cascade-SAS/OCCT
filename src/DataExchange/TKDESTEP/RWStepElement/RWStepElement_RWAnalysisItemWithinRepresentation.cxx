@@ -33,7 +33,7 @@ RWStepElement_RWAnalysisItemWithinRepresentation::RWStepElement_RWAnalysisItemWi
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                      data,
-  const int                                                        num,
+  const int                                      num,
   occ::handle<Interface_Check>&                                    ach,
   const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent) const
 {
@@ -62,7 +62,7 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                        SW,
   const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepElement_RWAnalysisItemWithinRepresentation::WriteStep(
 
 void RWStepElement_RWAnalysisItemWithinRepresentation::Share(
   const occ::handle<StepElement_AnalysisItemWithinRepresentation>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                   iter) const
 {
 
   // Own fields of AnalysisItemWithinRepresentation

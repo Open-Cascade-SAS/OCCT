@@ -62,7 +62,8 @@ public:
 
   //! Returns True if type of <obj> is that defined from CDL
   //! This is the default but it may change according implementation
-  Standard_EXPORT virtual bool IsDynamicType(const occ::handle<Standard_Transient>& obj) const;
+  Standard_EXPORT virtual bool IsDynamicType(
+    const occ::handle<Standard_Transient>& obj) const;
 
   //! Returns the count of DISTINCT types under which an entity may
   //! be processed. Each one is candidate to be recognized by
@@ -75,7 +76,7 @@ public:
   //! NbTypes).
   //! By default, returns DynamicType
   Standard_EXPORT occ::handle<Standard_Type> Type(const occ::handle<Standard_Transient>& obj,
-                                                  const int nt = 1) const;
+                                             const int            nt = 1) const;
 
   //! Returns a unique positive CaseNumber for each Recognized Type,
   //! Returns Zero for "<type> not recognized"
@@ -89,8 +90,8 @@ public:
   //! its resources only if it is necessary
   //!
   //! Default does nothing, can be redefined
-  Standard_EXPORT virtual bool GlobalCheck(const Interface_Graph&        G,
-                                           occ::handle<Interface_Check>& ach) const;
+  Standard_EXPORT virtual bool GlobalCheck(const Interface_Graph&   G,
+                                                       occ::handle<Interface_Check>& ach) const;
 
   //! Creates an empty Model of the considered Norm
   Standard_EXPORT virtual occ::handle<Interface_InterfaceModel> NewModel() const = 0;
@@ -109,6 +110,7 @@ public:
     const occ::handle<Standard_Transient>& ent) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Interface_Protocol, Standard_Transient)
+
 };
 
 #endif // _Interface_Protocol_HeaderFile

@@ -34,7 +34,9 @@ BlendFunc_ConstThroatInv::BlendFunc_ConstThroatInv(const occ::handle<Adaptor3d_S
 
 //=================================================================================================
 
-void BlendFunc_ConstThroatInv::Set(const double theThroat, const double, const int Choix)
+void BlendFunc_ConstThroatInv::Set(const double theThroat,
+                                   const double,
+                                   const int Choix)
 {
   // double dis1,dis2;
 
@@ -75,7 +77,8 @@ void BlendFunc_ConstThroatInv::Set(const double theThroat, const double, const i
 
 //=================================================================================================
 
-bool BlendFunc_ConstThroatInv::IsSolution(const math_Vector& Sol, const double Tol)
+bool BlendFunc_ConstThroatInv::IsSolution(const math_Vector&  Sol,
+                                                      const double Tol)
 {
   math_Vector valsol(1, 4);
   Value(Sol, valsol);

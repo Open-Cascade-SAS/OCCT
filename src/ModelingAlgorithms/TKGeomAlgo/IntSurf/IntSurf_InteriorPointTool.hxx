@@ -49,6 +49,7 @@ public:
   //! parametric space of the parametrized surface.This tangent
   //! is associated to the value2d
   static gp_Dir2d Direction2d(const IntSurf_InteriorPoint& PStart);
+
 };
 
 #include <IntSurf_InteriorPointTool.lxx>

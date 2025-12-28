@@ -34,7 +34,11 @@ class TCollection_HAsciiString;
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Basis class for transient objects in OCAF-based models
 
@@ -94,7 +98,8 @@ protected:
   //! to be ensured by implementations and by persistence mechanism.
   //! If the flag theSetName is true (default) the object is assign the default name
   //! that is generated using the father partition object if any.
-  Standard_EXPORT TObj_Object(const TDF_Label& theLabel, const bool theSetName = true);
+  Standard_EXPORT TObj_Object(const TDF_Label&       theLabel,
+                              const bool theSetName = true);
 
   //! The special constructor intended for implementation of persistence
   //! mechanism. See class TObj_Persistence for more details.
@@ -166,8 +171,8 @@ public:
   Standard_EXPORT bool GetName(TCollection_AsciiString& theName) const;
 
   //! Sets name of the object. Returns False if theName is not unique.
-  virtual Standard_EXPORT bool SetName(
-    const occ::handle<TCollection_HExtendedString>& theName) const;
+  virtual Standard_EXPORT bool
+    SetName(const occ::handle<TCollection_HExtendedString>& theName) const;
 
   //! Sets name of the object. Returns False if theName is not unique.
   Standard_EXPORT bool SetName(const occ::handle<TCollection_HAsciiString>& theName) const;
@@ -177,8 +182,7 @@ public:
 
   //! Returns name for copy
   //! default implementation returns the same name
-  virtual occ::handle<TCollection_HExtendedString> GetNameForClone(
-    const occ::handle<TObj_Object>&) const
+  virtual occ::handle<TCollection_HExtendedString> GetNameForClone(const occ::handle<TObj_Object>&) const
   {
     return GetName();
   }
@@ -213,12 +217,13 @@ public:
   //! Removes information on dependent object (back reference).
   //! If theSingleOnly is true only the first back reference is removed in the
   //! case of duplicate items.
-  virtual Standard_EXPORT void RemoveBackReference(const occ::handle<TObj_Object>& theObject,
-                                                   const bool theSingleOnly = true);
+  virtual Standard_EXPORT void RemoveBackReference(
+    const occ::handle<TObj_Object>& theObject,
+    const bool     theSingleOnly = true);
 
   //! Removes all back reference by removing references from other to me.
-  virtual Standard_EXPORT bool RemoveBackReferences(
-    const TObj_DeletingMode theMode = TObj_FreeOnly);
+  virtual Standard_EXPORT bool
+    RemoveBackReferences(const TObj_DeletingMode theMode = TObj_FreeOnly);
 
   //! The default implementation just clear the back references container
   virtual Standard_EXPORT void ClearBackReferences();
@@ -236,7 +241,7 @@ public:
   //! to and a referred label is not a descendant of theRoot.
   //! In this case theBadReference returns the currently referred label.
   virtual Standard_EXPORT bool GetBadReference(const TDF_Label& theRoot,
-                                               TDF_Label&       theBadReference) const;
+                                                           TDF_Label&       theBadReference) const;
 
   //! Make that each reference pointing to a descendant label of
   //! theFromRoot to point to an equivalent label under theToRoot.
@@ -247,14 +252,16 @@ public:
   //! theFromRoot             = 0:3:24
   //! theToRoot               = 0:2
   //! a new referred label    = 0:2:7:2:7
-  virtual Standard_EXPORT bool RelocateReferences(const TDF_Label& theFromRoot,
-                                                  const TDF_Label& theToRoot,
-                                                  const bool       theUpdateBackRefs = true);
+  virtual Standard_EXPORT bool
+    RelocateReferences(const TDF_Label&       theFromRoot,
+                       const TDF_Label&       theToRoot,
+                       const bool theUpdateBackRefs = true);
 
   //! Returns True if the referred object theObject can be deleted
   //! without deletion of this object.
   //! Default implementation does nothing and returns False.
-  virtual Standard_EXPORT bool CanRemoveReference(const occ::handle<TObj_Object>& theObject) const;
+  virtual Standard_EXPORT bool
+    CanRemoveReference(const occ::handle<TObj_Object>& theObject) const;
 
   //! Removes reference to the object by replace reference to NULL object
   virtual Standard_EXPORT void RemoveReference(const occ::handle<TObj_Object>& theObject);
@@ -270,7 +277,8 @@ public:
    */
 
   //! Checks if object can be detached with specified mode
-  virtual Standard_EXPORT bool CanDetach(const TObj_DeletingMode theMode = TObj_FreeOnly);
+  virtual Standard_EXPORT bool
+    CanDetach(const TObj_DeletingMode theMode = TObj_FreeOnly);
 
   //! Deletes the object from the model.
   //! The dependent objects are either deleted or modified when possible
@@ -284,7 +292,7 @@ public:
   //! Finds object on the label and detaches it by calling previous method.
   //! Returns true if there is no object on the label after detaching
   static Standard_EXPORT bool Detach(const TDF_Label&        theLabel,
-                                     const TObj_DeletingMode theMode = TObj_FreeOnly);
+                                                 const TObj_DeletingMode theMode = TObj_FreeOnly);
 
 public:
   /**
@@ -295,9 +303,9 @@ public:
   //! Returns False if no object of type TObj_Object is stored on the
   //! specified label.
   //! If isSuper is true tries to find on the super labels.
-  static Standard_EXPORT bool GetObj(const TDF_Label&          theLabel,
-                                     occ::handle<TObj_Object>& theResult,
-                                     const bool                isSuper = false);
+  static Standard_EXPORT bool GetObj(const TDF_Label&       theLabel,
+                                                 occ::handle<TObj_Object>&   theResult,
+                                                 const bool isSuper = false);
 
   //! Returns the father object, which may be NULL
   //! theType gives type of father object to search
@@ -325,18 +333,16 @@ public:
   //! NOTE: BackReferences not coping.
   //! After cloning all objects it is necessary to call copy references
   //! with the same relocation table
-  virtual Standard_EXPORT occ::handle<TObj_Object> Clone(
-    const TDF_Label&                 theTargetLabel,
-    occ::handle<TDF_RelocationTable> theRelocTable = 0);
+  virtual Standard_EXPORT occ::handle<TObj_Object> Clone(const TDF_Label&            theTargetLabel,
+                                                    occ::handle<TDF_RelocationTable> theRelocTable = 0);
 
   //! Coping the references.
   //! return false is Target object is different type
-  virtual Standard_EXPORT void CopyReferences(
-    const occ::handle<TObj_Object>&         theTargetObject,
-    const occ::handle<TDF_RelocationTable>& theRelocTable);
+  virtual Standard_EXPORT void CopyReferences(const occ::handle<TObj_Object>&         theTargetObject,
+                                              const occ::handle<TDF_RelocationTable>& theRelocTable);
 
   //! Coping the children from source label to the target.
-  virtual Standard_EXPORT void CopyChildren(TDF_Label&                              theTargetLabel,
+  virtual Standard_EXPORT void CopyChildren(TDF_Label&                         theTargetLabel,
                                             const occ::handle<TDF_RelocationTable>& theRelocTable);
 
 public:
@@ -368,8 +374,8 @@ protected:
   virtual Standard_EXPORT bool copyData(const occ::handle<TObj_Object>& theTargetObject);
 
   //! Coping the references from source label to the target.
-  Standard_EXPORT void copyReferences(const TDF_Label&                        theSourceLabel,
-                                      TDF_Label&                              theTargetLabel,
+  Standard_EXPORT void copyReferences(const TDF_Label&                   theSourceLabel,
+                                      TDF_Label&                         theTargetLabel,
                                       const occ::handle<TDF_RelocationTable>& theRelocTable);
 
 public:
@@ -416,52 +422,56 @@ protected:
   //! Data label of the object.
   //! If theRank2 is 0 (default), sub label theRank1 of Data label is returned.
   //! If requested label does not exist, it is created.
-  Standard_EXPORT TDF_Label getDataLabel(const int theRank1, const int theRank2 = 0) const;
+  Standard_EXPORT TDF_Label getDataLabel(const int theRank1,
+                                         const int theRank2 = 0) const;
 
   //! Returns the theRank2-th sub label of the theRank1-th sublabel of the
   //! Reference label of the object.
   //! If theRank2 is 0 (default), sub label theRank1 of Reference label is returned.
   //! If requested label does not exist, it is created.
-  Standard_EXPORT TDF_Label getReferenceLabel(const int theRank1, const int theRank2 = 0) const;
+  Standard_EXPORT TDF_Label getReferenceLabel(const int theRank1,
+                                              const int theRank2 = 0) const;
 
   //! Returns True if there is an attribute having theGUID on the
   //! theRank2-th sublabel of theRank1-th sublabel of the Data
   //! label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed, not
   //! its sublabel
-  Standard_EXPORT bool isDataAttribute(const Standard_GUID& theGUID,
-                                       const int            theRank1,
-                                       const int            theRank2 = 0) const;
+  Standard_EXPORT bool isDataAttribute(const Standard_GUID&   theGUID,
+                                                   const int theRank1,
+                                                   const int theRank2 = 0) const;
 
   //! Returns the real value from theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! Returns 0.0 if no real value is stored on that label.
-  Standard_EXPORT double getReal(const int theRank1, const int theRank2 = 0) const;
+  Standard_EXPORT double getReal(const int theRank1,
+                                        const int theRank2 = 0) const;
 
   //! Sets the real value for theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! Returns True if new value is actually different from previous one
   //! (with specified tolerance)
-  Standard_EXPORT bool setReal(const double theValue,
-                               const int    theRank1,
-                               const int    theRank2     = 0,
-                               const double theTolerance = 0.) const;
+  Standard_EXPORT bool setReal(const double    theValue,
+                                           const int theRank1,
+                                           const int theRank2     = 0,
+                                           const double    theTolerance = 0.) const;
 
   //! Returns the integer value from theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! Returns 0 if no integer value is stored on that label.
-  Standard_EXPORT int getInteger(const int theRank1, const int theRank2 = 0) const;
+  Standard_EXPORT int getInteger(const int theRank1,
+                                              const int theRank2 = 0) const;
 
   //! Sets the integer value for theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! Returns True if new value is actually different from previous one
   Standard_EXPORT bool setInteger(const int theValue,
-                                  const int theRank1,
-                                  const int theRank2 = 0) const;
+                                              const int theRank1,
+                                              const int theRank2 = 0) const;
 
   //! Returns an existing or create a new real array on theRank2-th
   //! sublabel of theRank1-th sublabel of the Data label of the object.
@@ -475,10 +485,10 @@ protected:
   //! WARNING: call setArray() after array contents modification
   //! in order to assure Undo work
   Standard_EXPORT occ::handle<NCollection_HArray1<double>> getRealArray(
-    const int    theLength,
-    const int    theRank1,
-    const int    theRank2        = 0,
-    const double theInitialValue = 0.0) const;
+    const int theLength,
+    const int theRank1,
+    const int theRank2        = 0,
+    const double    theInitialValue = 0.0) const;
 
   //! Returns an existing or create a new integer array on theRank2-th
   //! sublabel of theRank1-th sublabel of the Data label of the object.
@@ -518,32 +528,31 @@ protected:
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! If theArray is null then array attribute if any is removed.
   Standard_EXPORT void setArray(const occ::handle<NCollection_HArray1<double>>& theArray,
-                                const int                                       theRank1,
-                                const int                                       theRank2 = 0);
+                                const int               theRank1,
+                                const int               theRank2 = 0);
 
   //! Store theArray on theRank2-th sublabel of theRank1-th sublabel
   //! of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! If theArray is null then array attribute if any is removed.
   Standard_EXPORT void setArray(const occ::handle<NCollection_HArray1<int>>& theArray,
-                                const int                                    theRank1,
-                                const int                                    theRank2 = 0);
+                                const int                  theRank1,
+                                const int                  theRank2 = 0);
 
   //! Store theArray on theRank2-th sublabel of theRank1-th sublabel
   //! of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   //! If theArray is null then array attribute if any is removed.
-  Standard_EXPORT void setArray(
-    const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& theArray,
-    const int                                                           theRank1,
-    const int                                                           theRank2 = 0);
+  Standard_EXPORT void setArray(const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& theArray,
+                                const int                         theRank1,
+                                const int                         theRank2 = 0);
 
   //! Sets the string value for theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   Standard_EXPORT void setExtString(const occ::handle<TCollection_HExtendedString>& theValue,
-                                    const int                                       theRank1,
-                                    const int theRank2 = 0) const;
+                                    const int                     theRank1,
+                                    const int                     theRank2 = 0) const;
 
   //! Returns the string value from theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
@@ -556,8 +565,8 @@ protected:
   //! sublabel of the Data label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   Standard_EXPORT void setAsciiString(const occ::handle<TCollection_HAsciiString>& theValue,
-                                      const int                                    theRank1,
-                                      const int theRank2 = 0) const;
+                                      const int                  theRank1,
+                                      const int                  theRank2 = 0) const;
 
   //! Returns the string value from theRank2-th sublabel of theRank1-th
   //! sublabel of the Data label of the object.
@@ -570,7 +579,7 @@ protected:
   //! sublabel of the References label of the object.
   //! If theRank2 is 0 (default), label theRank1 is supposed (not its sublabel).
   Standard_EXPORT occ::handle<TObj_Object> getReference(const int theRank1,
-                                                        const int theRank2 = 0) const;
+                                                   const int theRank2 = 0) const;
 
   //! Sets the reference to theObject on theRank2-th sublabel of theRank1-th
   //! sublabel of the References label of the object.
@@ -578,12 +587,12 @@ protected:
   //! Returns True if new value is actually different from previous one
   //! If Object is NULL, reference is deleted
   Standard_EXPORT bool setReference(const occ::handle<TObj_Object>& theObject,
-                                    const int                       theRank1,
-                                    const int                       theRank2 = 0);
+                                                const int     theRank1,
+                                                const int     theRank2 = 0);
 
   //! Adds the reference to theObject on next free sublabel of theRank1-th
   //! sublabel of the References label of the object and returns the Label.
-  Standard_EXPORT TDF_Label addReference(const int                       theRank1,
+  Standard_EXPORT TDF_Label addReference(const int     theRank1,
                                          const occ::handle<TObj_Object>& theObject);
 
 private:
@@ -592,8 +601,7 @@ private:
    */
   TDF_Label myLabel; //!< Label on which object`s data are stored
 
-  occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>
-    myHSeqBackRef; //!< hsequence of back references.
+  occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>> myHSeqBackRef; //!< hsequence of back references.
 
   friend class TObj_TObject;
 

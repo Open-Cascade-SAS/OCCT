@@ -85,11 +85,11 @@ public:
   //! V2 - V1 <= ParametricTolerance.
   Standard_EXPORT GeomConvert_BSplineSurfaceToBezierSurface(
     const occ::handle<Geom_BSplineSurface>& BasisSurface,
-    const double                            U1,
-    const double                            U2,
-    const double                            V1,
-    const double                            V2,
-    const double                            ParametricTolerance);
+    const double                U1,
+    const double                U2,
+    const double                V1,
+    const double                V2,
+    const double                ParametricTolerance);
 
   //! Constructs and returns the Bezier surface of indices
   //! (UIndex, VIndex) to the patch grid computed on the
@@ -114,7 +114,8 @@ public:
   //! of columns in the patch grid computed on the
   //! BSpline surface analyzed by this algorithm (as
   //! returned by the function NbVPatches).
-  Standard_EXPORT occ::handle<Geom_BezierSurface> Patch(const int UIndex, const int VIndex);
+  Standard_EXPORT occ::handle<Geom_BezierSurface> Patch(const int UIndex,
+                                                   const int VIndex);
 
   //! Constructs all the Bezier surfaces whose data is
   //! computed by this algorithm, and loads them into the Surfaces table.

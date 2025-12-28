@@ -45,9 +45,9 @@ occ::handle<TDF_Attribute> XmlMDataXtd_PositionDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                       const occ::handle<TDF_Attribute>& theTarget,
-                                       XmlObjMgt_RRelocationTable&) const
+bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                   const occ::handle<TDF_Attribute>& theTarget,
+                                                   XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TDataXtd_Position> aTPos = occ::down_cast<TDataXtd_Position>(theTarget);
 
@@ -59,8 +59,8 @@ bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&       theSour
     return false;
   }
 
-  gp_Pnt      aPos;
-  double      aValue;
+  gp_Pnt           aPos;
+  double    aValue;
   const char* aValueStr = static_cast<const char*>(aPosStr.GetString());
 
   // X
@@ -109,7 +109,7 @@ bool XmlMDataXtd_PositionDriver::Paste(const XmlObjMgt_Persistent&       theSour
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataXtd_PositionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                       XmlObjMgt_Persistent&             theTarget,
+                                       XmlObjMgt_Persistent&        theTarget,
                                        XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TDataXtd_Position> aTPos = occ::down_cast<TDataXtd_Position>(theSource);

@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(CDM_Reference, Standard_Transient)
 
 CDM_Reference::CDM_Reference(const occ::handle<CDM_Document>& aFromDocument,
                              const occ::handle<CDM_Document>& aToDocument,
-                             const int                        aReferenceIdentifier,
-                             const int                        aToDocumentVersion)
+                             const int      aReferenceIdentifier,
+                             const int      aToDocumentVersion)
     : myToDocument(aToDocument),
       myFromDocument(aFromDocument.operator->()),
       myReferenceIdentifier(aReferenceIdentifier),
@@ -37,10 +37,10 @@ CDM_Reference::CDM_Reference(const occ::handle<CDM_Document>& aFromDocument,
 
 CDM_Reference::CDM_Reference(const occ::handle<CDM_Document>&    aFromDocument,
                              const occ::handle<CDM_MetaData>&    aToDocument,
-                             const int                           aReferenceIdentifier,
+                             const int         aReferenceIdentifier,
                              const occ::handle<CDM_Application>& anApplication,
-                             const int                           aToDocumentVersion,
-                             const bool                          UseStorageConfiguration)
+                             const int         aToDocumentVersion,
+                             const bool         UseStorageConfiguration)
     : myFromDocument(aFromDocument.operator->()),
       myReferenceIdentifier(aReferenceIdentifier),
       myApplication(anApplication),

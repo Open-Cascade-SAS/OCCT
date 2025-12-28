@@ -36,6 +36,7 @@
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 #include <NCollection_Sequence.hxx>
+#include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_Tool.hxx>
 
 #include <TCollection_AsciiString.hxx>
@@ -64,8 +65,8 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_DimTolTool> aDimTolTool = XCAFDoc_DocumentTool::DimTolTool(Doc->Main());
   occ::handle<XCAFDoc_ShapeTool>  aShapeTool  = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
 
-  TCollection_AsciiString         name = argv[2];
-  NCollection_Sequence<TDF_Label> aLabels;
+  TCollection_AsciiString name = argv[2];
+  NCollection_Sequence<TDF_Label>       aLabels;
   if (name.IsEqual("all"))
   {
     aShapeTool->GetShapes(aLabels);
@@ -105,7 +106,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
 
   for (int i = 1; i <= aLabels.Length(); i++)
   {
-    bool                            flag = true;
+    bool  flag = true;
     NCollection_Sequence<TDF_Label> aGDTs;
     aDimTolTool->GetRefDimensionLabels(aLabels.Value(i), aGDTs);
     for (int j = 1; j <= aGDTs.Length(); j++)
@@ -150,7 +151,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
             }
             else if (aDimTolObj->IsDimWithClassOfTolerance())
             {
-              bool                                    isH;
+              bool                        isH;
               XCAFDimTolObjects_DimensionFormVariance aFV;
               XCAFDimTolObjects_DimensionGrade        aG;
               aDimTolObj->GetClassOfTolerance(isH, aFV, aG);
@@ -167,8 +168,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
             aDimTolObj->GetDirection(aD);
             di << ", D (" << aD.X() << ", " << aD.Y() << ", " << aD.Z() << ")";
           }
-          NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aModif =
-            aDimTolObj->GetModifiers();
+          NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aModif = aDimTolObj->GetModifiers();
           if (!aModif.IsEmpty())
           {
             di << ",";
@@ -244,8 +244,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
                << anAx.XDirection().Z() << "), RD (" << anAx.YDirection().X()
                << anAx.YDirection().Y() << anAx.YDirection().Z() << "))";
           }
-          NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> aModif =
-            aDimTolObj->GetModifiers();
+          NCollection_Sequence<XCAFDimTolObjects_GeomToleranceModif> aModif = aDimTolObj->GetModifiers();
           if (!aModif.IsEmpty())
           {
             di << ",";
@@ -283,7 +282,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
             if (aNode->GetChild(k)->Label().FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
             {
               occ::handle<XCAFDimTolObjects_DatumObject> aDatumObj = aDatum->GetObject();
-              TCollection_AsciiString                    anEntry;
+              TCollection_AsciiString               anEntry;
               TDF_Tool::Entry(aNode->GetChild(k)->Label(), anEntry);
               di << "\n \t \t " << anEntry;
               di << " Datum." << i << "." << j << "." << k;
@@ -294,8 +293,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
                 {
                   di << " N \"" << aDimTolObj->GetSemanticName()->String() << "\"";
                 }
-                NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aModif =
-                  aDatumObj->GetModifiers();
+                NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aModif = aDatumObj->GetModifiers();
                 if (!aModif.IsEmpty())
                 {
                   di << ",";
@@ -305,7 +303,7 @@ static int DumpDGTs(Draw_Interpretor& di, int argc, const char** argv)
                   }
                 }
                 XCAFDimTolObjects_DatumModifWithValue aM;
-                double                                aV;
+                double                         aV;
                 aDatumObj->GetModifierWithValue(aM, aV);
                 if (aM != XCAFDimTolObjects_DatumModifWithValue_None)
                 {
@@ -515,7 +513,7 @@ static int DumpNbDGTs(Draw_Interpretor& di, int argc, const char** argv)
 
   for (int i = 1; i <= aLabels.Length(); i++)
   {
-    bool                            isDatum = false;
+    bool  isDatum = false;
     NCollection_Sequence<TDF_Label> aDatL;
     if (aDimTolTool->GetRefDatumLabel(aLabels.Value(i), aDatL))
     {
@@ -747,7 +745,9 @@ static int setDatum(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setDatumPosition(Draw_Interpretor& di, int argc, const char** argv)
+static int setDatumPosition(Draw_Interpretor& di,
+                                         int  argc,
+                                         const char**      argv)
 {
   if (argc < 4)
   {
@@ -788,7 +788,9 @@ static int setDatumPosition(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getDatumPosition(Draw_Interpretor& di, int argc, const char** argv)
+static int getDatumPosition(Draw_Interpretor& di,
+                                         int  argc,
+                                         const char**      argv)
 {
   if (argc < 3)
   {
@@ -861,7 +863,9 @@ static int getDatum(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int addDatumModif(Draw_Interpretor& di, int argc, const char** argv)
+static int addDatumModif(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 4)
   {
@@ -901,7 +905,9 @@ static int addDatumModif(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getDatumModif(Draw_Interpretor& di, int argc, const char** argv)
+static int getDatumModif(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 3)
   {
@@ -928,8 +934,7 @@ static int getDatumModif(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_Datum> aDatum;
   if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
-    NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aS =
-      aDatum->GetObject()->GetModifiers();
+    NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> aS = aDatum->GetObject()->GetModifiers();
     for (int i = 1; i <= aS.Length(); i++)
     {
       if (i > 1)
@@ -1197,7 +1202,9 @@ static int getTypeOfTol(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setTypeOfTolVal(Draw_Interpretor& di, int argc, const char** argv)
+static int setTypeOfTolVal(Draw_Interpretor& di,
+                                        int  argc,
+                                        const char**      argv)
 {
   if (argc < 4)
   {
@@ -1234,7 +1241,9 @@ static int setTypeOfTolVal(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getTypeOfTolVal(Draw_Interpretor& di, int argc, const char** argv)
+static int getTypeOfTolVal(Draw_Interpretor& di,
+                                        int  argc,
+                                        const char**      argv)
 {
   if (argc < 3)
   {
@@ -1510,7 +1519,9 @@ static int getZoneMod(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setZoneModVal(Draw_Interpretor& di, int argc, const char** argv)
+static int setZoneModVal(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 4)
   {
@@ -1544,7 +1555,9 @@ static int setZoneModVal(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getZoneModVal(Draw_Interpretor& di, int argc, const char** argv)
+static int getZoneModVal(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 3)
   {
@@ -2156,7 +2169,9 @@ static int getDimRange(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setDimPlusMinusTol(Draw_Interpretor& di, int argc, const char** argv)
+static int setDimPlusMinusTol(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 5)
   {
@@ -2194,7 +2209,9 @@ static int setDimPlusMinusTol(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getDimPlusMinusTol(Draw_Interpretor& di, int argc, const char** argv)
+static int getDimPlusMinusTol(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 3)
   {
@@ -2227,7 +2244,9 @@ static int getDimPlusMinusTol(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setDimClassTol(Draw_Interpretor& di, int argc, const char** argv)
+static int setDimClassTol(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 6)
   {
@@ -2267,7 +2286,9 @@ static int setDimClassTol(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getDimClassTol(Draw_Interpretor& di, int argc, const char** argv)
+static int getDimClassTol(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 3)
   {
@@ -2294,7 +2315,7 @@ static int getDimClassTol(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_Dimension> aDimension;
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
-    bool                                    h;
+    bool                        h;
     XCAFDimTolObjects_DimensionFormVariance f;
     XCAFDimTolObjects_DimensionGrade        g;
     if (aDimension->GetObject()->GetClassOfTolerance(h, f, g))
@@ -2553,7 +2574,9 @@ static int getDimClassTol(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setDimNbOfDecimalPlaces(Draw_Interpretor& di, int argc, const char** argv)
+static int setDimNbOfDecimalPlaces(Draw_Interpretor& di,
+                                                int  argc,
+                                                const char**      argv)
 {
   if (argc < 5)
   {
@@ -2587,7 +2610,9 @@ static int setDimNbOfDecimalPlaces(Draw_Interpretor& di, int argc, const char** 
   return 0;
 }
 
-static int getDimNbOfDecimalPlaces(Draw_Interpretor& di, int argc, const char** argv)
+static int getDimNbOfDecimalPlaces(Draw_Interpretor& di,
+                                                int  argc,
+                                                const char**      argv)
 {
   if (argc < 3)
   {
@@ -2621,7 +2646,9 @@ static int getDimNbOfDecimalPlaces(Draw_Interpretor& di, int argc, const char** 
   return 0;
 }
 
-static int addDimModifier(Draw_Interpretor& di, int argc, const char** argv)
+static int addDimModifier(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 4)
   {
@@ -2661,7 +2688,9 @@ static int addDimModifier(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getDimModifier(Draw_Interpretor& di, int argc, const char** argv)
+static int getDimModifier(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 3)
   {
@@ -2688,8 +2717,7 @@ static int getDimModifier(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_Dimension> aDimension;
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
-    NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aS =
-      aDimension->GetObject()->GetModifiers();
+    NCollection_Sequence<XCAFDimTolObjects_DimensionModif> aS = aDimension->GetObject()->GetModifiers();
     for (int i = 1; i <= aS.Length(); i++)
     {
       if (i > 1)
@@ -2998,9 +3026,9 @@ static int addDimDescr(Draw_Interpretor& di, int argc, const char** argv)
   occ::handle<XCAFDoc_Dimension> aDimension;
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
-    occ::handle<XCAFDimTolObjects_DimensionObject> anObj = aDimension->GetObject();
-    occ::handle<TCollection_HAsciiString> aDescription   = new TCollection_HAsciiString(argv[3]);
-    occ::handle<TCollection_HAsciiString> aDescrName =
+    occ::handle<XCAFDimTolObjects_DimensionObject> anObj        = aDimension->GetObject();
+    occ::handle<TCollection_HAsciiString>          aDescription = new TCollection_HAsciiString(argv[3]);
+    occ::handle<TCollection_HAsciiString>          aDescrName =
       (argc == 4) ? new TCollection_HAsciiString() : new TCollection_HAsciiString(argv[4]);
     anObj->AddDescription(aDescription, aDescrName);
     aDimension->SetObject(anObj);
@@ -3045,7 +3073,9 @@ static int getDimDescr(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int addGDTPosition(Draw_Interpretor& di, int argc, const char** argv)
+static int addGDTPosition(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 12)
   {
@@ -3103,7 +3133,9 @@ static int addGDTPosition(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getGDTPosition(Draw_Interpretor& di, int argc, const char** argv)
+static int getGDTPosition(Draw_Interpretor& di,
+                                       int  argc,
+                                       const char**      argv)
 {
   if (argc < 3)
   {
@@ -3132,27 +3164,27 @@ static int getGDTPosition(Draw_Interpretor& di, int argc, const char** argv)
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
     occ::handle<XCAFDimTolObjects_DimensionObject> anObj = aDimension->GetObject();
-    aPoint                                               = anObj->GetPointTextAttach();
-    aNormal                                              = anObj->GetPlane().Direction();
-    aDir                                                 = anObj->GetPlane().XDirection();
+    aPoint                                          = anObj->GetPointTextAttach();
+    aNormal                                         = anObj->GetPlane().Direction();
+    aDir                                            = anObj->GetPlane().XDirection();
   }
   // Geometric Tolerance
   occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
   if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
   {
     occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObj = aGeomTolerance->GetObject();
-    aPoint                                                   = anObj->GetPointTextAttach();
-    aNormal                                                  = anObj->GetPlane().Direction();
-    aDir                                                     = anObj->GetPlane().XDirection();
+    aPoint                                              = anObj->GetPointTextAttach();
+    aNormal                                             = anObj->GetPlane().Direction();
+    aDir                                                = anObj->GetPlane().XDirection();
   }
   // Datum
   occ::handle<XCAFDoc_Datum> aDatum;
   if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
     occ::handle<XCAFDimTolObjects_DatumObject> anObj = aDatum->GetObject();
-    aPoint                                           = anObj->GetPointTextAttach();
-    aNormal                                          = anObj->GetPlane().Direction();
-    aDir                                             = anObj->GetPlane().XDirection();
+    aPoint                                      = anObj->GetPointTextAttach();
+    aNormal                                     = anObj->GetPlane().Direction();
+    aDir                                        = anObj->GetPlane().XDirection();
   }
 
   di << "position: " << aPoint.X() << " " << aPoint.Y() << " " << aPoint.Z() << "\n";
@@ -3161,7 +3193,9 @@ static int getGDTPosition(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int addGDTPresentation(Draw_Interpretor& di, int argc, const char** argv)
+static int addGDTPresentation(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 5)
   {
@@ -3184,7 +3218,7 @@ static int addGDTPresentation(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  TopoDS_Shape                          aPresentation = DBRep::Get(argv[3]);
+  TopoDS_Shape                     aPresentation = DBRep::Get(argv[3]);
   occ::handle<TCollection_HAsciiString> aName         = new TCollection_HAsciiString(argv[4]);
   // Dimension
   occ::handle<XCAFDoc_Dimension> aDimension;
@@ -3213,7 +3247,9 @@ static int addGDTPresentation(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int getGDTPresentation(Draw_Interpretor& di, int argc, const char** argv)
+static int getGDTPresentation(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 3)
   {
@@ -3241,28 +3277,30 @@ static int getGDTPresentation(Draw_Interpretor& di, int argc, const char** argv)
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
     occ::handle<XCAFDimTolObjects_DimensionObject> anObj = aDimension->GetObject();
-    aPresentation                                        = anObj->GetPresentation();
+    aPresentation                                   = anObj->GetPresentation();
   }
   // Geometric Tolerance
   occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
   if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
   {
     occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObj = aGeomTolerance->GetObject();
-    aPresentation                                            = anObj->GetPresentation();
+    aPresentation                                       = anObj->GetPresentation();
   }
   // Datum
   occ::handle<XCAFDoc_Datum> aDatum;
   if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
     occ::handle<XCAFDimTolObjects_DatumObject> anObj = aDatum->GetObject();
-    aPresentation                                    = anObj->GetPresentation();
+    aPresentation                               = anObj->GetPresentation();
   }
 
   DBRep::Set(argv[3], aPresentation);
   return 0;
 }
 
-static int addGDTAffectedPlane(Draw_Interpretor& di, int argc, const char** argv)
+static int addGDTAffectedPlane(Draw_Interpretor& di,
+                                            int  argc,
+                                            const char**      argv)
 {
   if (argc != 5)
   {
@@ -3308,7 +3346,9 @@ static int addGDTAffectedPlane(Draw_Interpretor& di, int argc, const char** argv
   return 0;
 }
 
-static int getGDTAffectedPlane(Draw_Interpretor& di, int argc, const char** argv)
+static int getGDTAffectedPlane(Draw_Interpretor& di,
+                                            int  argc,
+                                            const char**      argv)
 {
   if (argc != 4)
   {
@@ -3354,7 +3394,9 @@ static int getGDTAffectedPlane(Draw_Interpretor& di, int argc, const char** argv
   return 0;
 }
 
-static int getGDTSemanticName(Draw_Interpretor& di, int argc, const char** argv)
+static int getGDTSemanticName(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 3)
   {
@@ -3382,21 +3424,21 @@ static int getGDTSemanticName(Draw_Interpretor& di, int argc, const char** argv)
   if (aLabel.FindAttribute(XCAFDoc_Dimension::GetID(), aDimension))
   {
     occ::handle<XCAFDimTolObjects_DimensionObject> anObj = aDimension->GetObject();
-    aSemanticName                                        = anObj->GetSemanticName();
+    aSemanticName                                   = anObj->GetSemanticName();
   }
   // Geometric Tolerance
   occ::handle<XCAFDoc_GeomTolerance> aGeomTolerance;
   if (aLabel.FindAttribute(XCAFDoc_GeomTolerance::GetID(), aGeomTolerance))
   {
     occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObj = aGeomTolerance->GetObject();
-    aSemanticName                                            = anObj->GetSemanticName();
+    aSemanticName                                       = anObj->GetSemanticName();
   }
   // Datum
   occ::handle<XCAFDoc_Datum> aDatum;
   if (aLabel.FindAttribute(XCAFDoc_Datum::GetID(), aDatum))
   {
     occ::handle<XCAFDimTolObjects_DatumObject> anObj = aDatum->GetObject();
-    aSemanticName                                    = anObj->GetSemanticName();
+    aSemanticName                               = anObj->GetSemanticName();
   }
   if (aSemanticName)
   {
@@ -3405,7 +3447,9 @@ static int getGDTSemanticName(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int setGDTSemanticName(Draw_Interpretor& di, int argc, const char** argv)
+static int setGDTSemanticName(Draw_Interpretor& di,
+                                           int  argc,
+                                           const char**      argv)
 {
   if (argc < 3)
   {

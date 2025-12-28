@@ -31,7 +31,7 @@ RWStepDimTol_RWParallelismTolerance::RWStepDimTol_RWParallelismTolerance() {}
 
 void RWStepDimTol_RWParallelismTolerance::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepDimTol_ParallelismTolerance>& ent) const
 {
@@ -65,7 +65,7 @@ void RWStepDimTol_RWParallelismTolerance::ReadStep(
   // Inherited fields of GeometricToleranceWithDatumReference
 
   occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>>
-      aGeometricToleranceWithDatumReference_DatumSystem;
+                   aGeometricToleranceWithDatumReference_DatumSystem;
   int sub5 = 0;
   if (data->ReadSubList(num, 5, "geometric_tolerance_with_datum_reference.datum_system", ach, sub5))
   {
@@ -92,7 +92,7 @@ void RWStepDimTol_RWParallelismTolerance::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWParallelismTolerance::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepDimTol_ParallelismTolerance>& ent) const
 {
 
@@ -122,9 +122,8 @@ void RWStepDimTol_RWParallelismTolerance::WriteStep(
 
 //=================================================================================================
 
-void RWStepDimTol_RWParallelismTolerance::Share(
-  const occ::handle<StepDimTol_ParallelismTolerance>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepDimTol_RWParallelismTolerance::Share(const occ::handle<StepDimTol_ParallelismTolerance>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of GeometricTolerance

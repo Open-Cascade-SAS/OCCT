@@ -21,8 +21,7 @@
 
 //=================================================================================================
 
-TopOpeBRepDS_PointIterator::TopOpeBRepDS_PointIterator(
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+TopOpeBRepDS_PointIterator::TopOpeBRepDS_PointIterator(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
     : TopOpeBRepDS_InterferenceIterator(L)
 {
   Match();
@@ -34,7 +33,7 @@ bool TopOpeBRepDS_PointIterator::MatchInterference(
   const occ::handle<TopOpeBRepDS_Interference>& I) const
 {
   TopOpeBRepDS_Kind GT = I->GeometryType();
-  bool              r  = (GT == TopOpeBRepDS_POINT) || (GT == TopOpeBRepDS_VERTEX);
+  bool  r  = (GT == TopOpeBRepDS_POINT) || (GT == TopOpeBRepDS_VERTEX);
   return r;
 }
 
@@ -50,8 +49,8 @@ int TopOpeBRepDS_PointIterator::Current() const
 TopAbs_Orientation TopOpeBRepDS_PointIterator::Orientation(const TopAbs_State S) const
 {
   occ::handle<TopOpeBRepDS_Interference> I = Value();
-  const TopOpeBRepDS_Transition&         T = I->Transition();
-  TopAbs_Orientation                     o = T.Orientation(S);
+  const TopOpeBRepDS_Transition&    T = I->Transition();
+  TopAbs_Orientation                o = T.Orientation(S);
   return o;
 }
 

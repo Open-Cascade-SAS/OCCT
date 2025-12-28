@@ -28,9 +28,8 @@ StepRepr_ConfigurationDesign::StepRepr_ConfigurationDesign() {}
 
 //=================================================================================================
 
-void StepRepr_ConfigurationDesign::Init(
-  const occ::handle<StepRepr_ConfigurationItem>& aConfiguration,
-  const StepRepr_ConfigurationDesignItem&        aDesign)
+void StepRepr_ConfigurationDesign::Init(const occ::handle<StepRepr_ConfigurationItem>& aConfiguration,
+                                        const StepRepr_ConfigurationDesignItem&   aDesign)
 {
 
   theConfiguration = aConfiguration;

@@ -62,7 +62,7 @@ public:
 
   struct _highlighting
   {
-    bool                  ToHilight; //!< perform dynamic highlighting at specified point
+    bool            ToHilight; //!< perform dynamic highlighting at specified point
     NCollection_Vec2<int> Point;     //!< the new point for dynamic highlighting
 
     _highlighting()
@@ -73,10 +73,10 @@ public:
 
   struct _selection
   {
-    AIS_ViewSelectionTool                       Tool;        //!< perform selection
-    AIS_SelectionScheme                         Scheme;      //!< selection scheme
+    AIS_ViewSelectionTool                 Tool;        //!< perform selection
+    AIS_SelectionScheme                   Scheme;      //!< selection scheme
     NCollection_Sequence<NCollection_Vec2<int>> Points;      //!< the points for selection
-    bool                                        ToApplyTool; //!< apply rubber-band selection tool
+    bool                                  ToApplyTool; //!< apply rubber-band selection tool
 
     _selection()
         : Tool(AIS_ViewSelectionTool_Picking),
@@ -88,9 +88,9 @@ public:
 
   struct _panningParams
   {
-    bool                  ToStart;    //!< start panning
+    bool            ToStart;    //!< start panning
     NCollection_Vec2<int> PointStart; //!< panning start point
-    bool                  ToPan;      //!< perform panning
+    bool            ToPan;      //!< perform panning
     NCollection_Vec2<int> Delta;      //!< panning delta
 
     _panningParams()
@@ -102,11 +102,11 @@ public:
 
   struct _draggingParams
   {
-    bool                  ToStart;    //!< start dragging
-    bool                  ToConfirm;  //!< confirm dragging
-    bool                  ToMove;     //!< perform dragging
-    bool                  ToStop;     //!< stop  dragging
-    bool                  ToAbort;    //!< abort dragging (restore previous position)
+    bool            ToStart;    //!< start dragging
+    bool            ToConfirm;  //!< confirm dragging
+    bool            ToMove;     //!< perform dragging
+    bool            ToStop;     //!< stop  dragging
+    bool            ToAbort;    //!< abort dragging (restore previous position)
     NCollection_Vec2<int> PointStart; //!< drag start point
     NCollection_Vec2<int> PointTo;    //!< drag end point
 
@@ -122,9 +122,9 @@ public:
 
   struct _orbitRotation
   {
-    bool                     ToStart;    //!< start orbit rotation
+    bool            ToStart;    //!< start orbit rotation
     NCollection_Vec2<double> PointStart; //!< orbit rotation start point
-    bool                     ToRotate;   //!< perform orbit rotation
+    bool            ToRotate;   //!< perform orbit rotation
     NCollection_Vec2<double> PointTo;    //!< orbit rotation end point
 
     _orbitRotation()
@@ -136,9 +136,9 @@ public:
 
   struct _viewRotation
   {
-    bool                     ToStart;    //!< start view rotation
+    bool            ToStart;    //!< start view rotation
     NCollection_Vec2<double> PointStart; //!< view rotation start point
-    bool                     ToRotate;   //!< perform view rotation
+    bool            ToRotate;   //!< perform view rotation
     NCollection_Vec2<double> PointTo;    //!< view rotation end point
 
     _viewRotation()
@@ -151,8 +151,8 @@ public:
   struct _zrotateParams
   {
     NCollection_Vec2<int> Point;    //!< Z rotation start point
-    double                Angle;    //!< Z rotation angle
-    bool                  ToRotate; //!< start Z rotation
+    double          Angle;    //!< Z rotation angle
+    bool            ToRotate; //!< start Z rotation
 
     _zrotateParams()
         : Angle(0.0),

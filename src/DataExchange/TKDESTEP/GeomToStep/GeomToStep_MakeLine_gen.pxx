@@ -20,8 +20,8 @@ occ::handle<StepGeom_Vector>         aDir;
 
 GeomToStep_MakeCartesianPoint MkPoint(L.Location(), theLocalFactors.LengthFactor());
 GeomToStep_MakeVector         MkVector(Vec_gen(L.Direction()), theLocalFactors);
-aPnt                                       = MkPoint.Value();
-aDir                                       = MkVector.Value();
+aPnt                                  = MkPoint.Value();
+aDir                                  = MkVector.Value();
 occ::handle<TCollection_HAsciiString> name = new TCollection_HAsciiString("");
 Lin->Init(name, aPnt, aDir);
 theLine = Lin;

@@ -143,10 +143,10 @@ void BRepPrim_Builder::ReverseFace(TopoDS_Face& F) const
 // purpose  : Add a Vertex to an Edge
 //=======================================================================
 
-void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
-                                     const TopoDS_Vertex& V,
-                                     const double         P,
-                                     const bool           direct) const
+void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&           E,
+                                     const TopoDS_Vertex&   V,
+                                     const double    P,
+                                     const bool direct) const
 {
   TopoDS_Vertex VV = V;
   if (!direct)
@@ -162,8 +162,8 @@ void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
 
 void BRepPrim_Builder::AddEdgeVertex(TopoDS_Edge&         E,
                                      const TopoDS_Vertex& V,
-                                     const double         P1,
-                                     const double         P2) const
+                                     const double  P1,
+                                     const double  P2) const
 {
   TopoDS_Vertex VV = V;
   VV.Orientation(TopAbs_FORWARD);
@@ -185,7 +185,9 @@ void BRepPrim_Builder::SetParameters(TopoDS_Edge& E,
 
 //=================================================================================================
 
-void BRepPrim_Builder::AddWireEdge(TopoDS_Wire& W, const TopoDS_Edge& E, const bool direct) const
+void BRepPrim_Builder::AddWireEdge(TopoDS_Wire&           W,
+                                   const TopoDS_Edge&     E,
+                                   const bool direct) const
 {
   TopoDS_Edge EE = E;
   if (!direct)

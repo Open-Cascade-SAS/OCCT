@@ -64,9 +64,9 @@ void TopOpeBRep_FFDumper::Init(const TopOpeBRep_PFacesFiller& PFF)
   myPFF                     = PFF;
   const TopoDS_Face& fpff1  = myPFF->Face(1);
   const TopoDS_Face& fpff2  = myPFF->Face(2);
-  bool               f1diff = (!myF1.IsEqual(fpff1));
-  bool               f2diff = (!myF2.IsEqual(fpff2));
-  bool               init   = f1diff || f2diff;
+  bool   f1diff = (!myF1.IsEqual(fpff1));
+  bool   f2diff = (!myF2.IsEqual(fpff2));
+  bool   init   = f1diff || f2diff;
   if (init)
   {
     myF1 = myPFF->Face(1);
@@ -106,9 +106,9 @@ void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter&)
 #else
 void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& LI)
 {
-  int il          = LI.Index();
-  myLineIndex     = il;
-  int  nl         = myPFF->ChangeFacesIntersector().NbLines();
+  int il         = LI.Index();
+  myLineIndex                 = il;
+  int nl         = myPFF->ChangeFacesIntersector().NbLines();
   bool HasVPonR   = LI.HasVPonR();
   bool IsVClosed  = LI.IsVClosed();
   bool IsPeriodic = LI.IsPeriodic();
@@ -132,7 +132,7 @@ void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& LI)
   if (isrest)
   {
     const TopoDS_Shape& Erest    = LI.Arc();
-    bool                FIisrest = myPFF->ChangeFacesIntersector().IsRestriction(Erest);
+    bool    FIisrest = myPFF->ChangeFacesIntersector().IsRestriction(Erest);
     std::cout << "++++ line restriction";
     if (FIisrest)
     {
@@ -175,7 +175,7 @@ void TopOpeBRep_FFDumper::DumpLine(const TopOpeBRep_LineInter& LI)
   for (; VPI.More(); VPI.Next())
   {
     const TopOpeBRep_VPointInter& VP   = VPI.CurrentVP();
-    bool                          dump = VP.Keep();
+    bool              dump = VP.Keep();
     if (dump)
     {
       DumpVP(VP);
@@ -213,8 +213,8 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP)
   if (!VP.Keep())
     std::cout << " NOT kept";
   std::cout << std::endl;
-  bool          k = VP.Keep();
-  const gp_Pnt& P = VP.Value();
+  bool k = VP.Keep();
+  const gp_Pnt&    P = VP.Value();
   std::cout << PRODINP << "L" << il << "P" << VP.Index();
   if (k)
     std::cout << "K";
@@ -242,16 +242,16 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter&, const int)
 void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP, const int ISI)
 {
   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS  = myPFF->HDataStructure();
-  const TopoDS_Edge&                              E    = TopoDS::Edge(VP.Edge(ISI));
-  double                                          Epar = VP.EdgeParameter(ISI);
-  TopAbs_Orientation                              O    = E.Orientation();
+  const TopoDS_Edge&                         E    = TopoDS::Edge(VP.Edge(ISI));
+  double                              Epar = VP.EdgeParameter(ISI);
+  TopAbs_Orientation                         O    = E.Orientation();
   TopOpeBRep_FFTransitionTool::ProcessLineTransition(VP, ISI, O);
   const TopoDS_Face F      = myPFF->Face(ISI);
-  bool              Closed = TopOpeBRepTool_ShapeTool::Closed(E, F);
-  bool              Degen  = BRep_Tool::Degenerated(E);
-  int               exi    = ExploreIndex(E, ISI);
-  int               dsi    = (HDS->HasShape(E)) ? HDS->Shape(E) : 0;
-  bool              isv    = VP.IsVertex(ISI);
+  bool  Closed = TopOpeBRepTool_ShapeTool::Closed(E, F);
+  bool  Degen  = BRep_Tool::Degenerated(E);
+  int  exi    = ExploreIndex(E, ISI);
+  int  dsi    = (HDS->HasShape(E)) ? HDS->Shape(E) : 0;
+  bool  isv    = VP.IsVertex(ISI);
   if (isv)
     std::cout << "is vertex of " << ISI << std::endl;
   if (Closed)
@@ -277,12 +277,14 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP, const int ISI
 //=================================================================================================
 
 #ifndef OCCT_DEBUG
-int TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape&, const int) const
+int TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape&,
+                                                   const int) const
 {
   return 0;
 }
 #else
-int TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& S, const int ISI) const
+int TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape&    S,
+                                                   const int ISI) const
 {
   int r = 0;
   if (ISI == 1)
@@ -304,8 +306,8 @@ void TopOpeBRep_FFDumper::DumpDSP(const TopOpeBRep_VPointInter&,
 #else
 void TopOpeBRep_FFDumper::DumpDSP(const TopOpeBRep_VPointInter& VP,
                                   const TopOpeBRepDS_Kind       GK,
-                                  const int                     G,
-                                  const bool                    newinDS) const
+                                  const int        G,
+                                  const bool        newinDS) const
 {
   std::cout << "VP " << VP.Index() << " on " << VP.ShapeIndex();
   if (newinDS)
@@ -329,7 +331,7 @@ void TopOpeBRep_FFDumper::DumpDSP(const TopOpeBRep_VPointInter& VP,
   std::cout << " " << G;
 
   const occ::handle<TopOpeBRepDS_HDataStructure>& HDS = myPFF->HDataStructure();
-  double                                          tol = Precision::Confusion();
+  double                              tol = Precision::Confusion();
   if (GK == TopOpeBRepDS_VERTEX)
     tol = BRep_Tool::Tolerance(TopoDS::Vertex(HDS->Shape(G)));
   else if (GK == TopOpeBRepDS_POINT)

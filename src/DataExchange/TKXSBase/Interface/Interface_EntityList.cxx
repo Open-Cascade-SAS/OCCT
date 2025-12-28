@@ -154,7 +154,8 @@ const occ::handle<Standard_Transient>& Interface_EntityList::Value(const int num
   return theval;
 }
 
-void Interface_EntityList::SetValue(const int num, const occ::handle<Standard_Transient>& ent)
+void Interface_EntityList::SetValue(const int            num,
+                                    const occ::handle<Standard_Transient>& ent)
 {
   if (ent.IsNull())
     throw Standard_NullObject("Interface_EntityList SetValue");
@@ -210,11 +211,10 @@ int Interface_EntityList::NbTypedEntities(const occ::handle<Standard_Type>& atyp
   return res;
 }
 
-occ::handle<Standard_Transient> Interface_EntityList::TypedEntity(
-  const occ::handle<Standard_Type>& atype,
-  const int                         num) const
+occ::handle<Standard_Transient> Interface_EntityList::TypedEntity(const occ::handle<Standard_Type>& atype,
+                                                             const int       num) const
 {
-  int                             res = 0;
+  int           res = 0;
   occ::handle<Standard_Transient> entres;
   if (theval.IsNull())
     throw Interface_InterfaceError("Interface EntityList : TypedEntity , none found");

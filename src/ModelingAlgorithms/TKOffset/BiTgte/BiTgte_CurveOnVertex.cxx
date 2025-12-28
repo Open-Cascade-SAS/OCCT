@@ -98,8 +98,8 @@ void BiTgte_CurveOnVertex::Intervals(NCollection_Array1<double>&, const GeomAbs_
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> BiTgte_CurveOnVertex::Trim(const double,
-                                                        const double,
-                                                        const double) const
+                                                   const double,
+                                                   const double) const
 {
   throw Standard_NotImplemented("BiTgte_CurveOnVertex");
 }

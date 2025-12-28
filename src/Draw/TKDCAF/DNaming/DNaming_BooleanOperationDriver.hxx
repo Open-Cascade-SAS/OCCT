@@ -53,7 +53,8 @@ public:
 
   //! Execute the function and push in <log> the impacted
   //! labels (see method SetImpacted).
-  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const override;
+  Standard_EXPORT virtual int Execute(occ::handle<TFunction_Logbook>& theLog) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(DNaming_BooleanOperationDriver, TFunction_Driver)
 
@@ -64,8 +65,9 @@ private:
   Standard_EXPORT void LoadSectionNDS(const TDF_Label&              theResultLabel,
                                       BRepAlgoAPI_BooleanOperation& MS) const;
 
-  Standard_EXPORT bool CheckAndLoad(BRepAlgoAPI_BooleanOperation&          theMkOpe,
-                                    const occ::handle<TFunction_Function>& theFunction) const;
+  Standard_EXPORT bool
+    CheckAndLoad(BRepAlgoAPI_BooleanOperation&     theMkOpe,
+                 const occ::handle<TFunction_Function>& theFunction) const;
 };
 
 #endif // _DNaming_BooleanOperationDriver_HeaderFile

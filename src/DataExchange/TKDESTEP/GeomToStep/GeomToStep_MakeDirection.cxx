@@ -30,9 +30,9 @@
 //=============================================================================
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir& D)
 {
-  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<StepGeom_Direction>    Dir        = new StepGeom_Direction;
   occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 3);
-  double                                   X, Y, Z;
+  double                 X, Y, Z;
 
   D.Coord(X, Y, Z);
   aDirRatios->SetValue(1, X);
@@ -50,9 +50,9 @@ GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir& D)
 
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir2d& D)
 {
-  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  occ::handle<StepGeom_Direction>    Dir        = new StepGeom_Direction;
   occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 2);
-  double                                   X, Y;
+  double                 X, Y;
 
   D.Coord(X, Y);
   aDirRatios->SetValue(1, X);
@@ -69,10 +69,10 @@ GeomToStep_MakeDirection::GeomToStep_MakeDirection(const gp_Dir2d& D)
 
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const occ::handle<Geom_Direction>& Direc)
 {
-  gp_Dir                                   D;
-  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  gp_Dir                        D;
+  occ::handle<StepGeom_Direction>    Dir        = new StepGeom_Direction;
   occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 3);
-  double                                   X, Y, Z;
+  double                 X, Y, Z;
 
   D = Direc->Dir();
   D.Coord(X, Y, Z);
@@ -91,10 +91,10 @@ GeomToStep_MakeDirection::GeomToStep_MakeDirection(const occ::handle<Geom_Direct
 
 GeomToStep_MakeDirection::GeomToStep_MakeDirection(const occ::handle<Geom2d_Direction>& Direc)
 {
-  gp_Dir2d                                 D;
-  occ::handle<StepGeom_Direction>          Dir        = new StepGeom_Direction;
+  gp_Dir2d                      D;
+  occ::handle<StepGeom_Direction>    Dir        = new StepGeom_Direction;
   occ::handle<NCollection_HArray1<double>> aDirRatios = new NCollection_HArray1<double>(1, 2);
-  double                                   X, Y;
+  double                 X, Y;
 
   D = Direc->Dir2d();
   D.Coord(X, Y);

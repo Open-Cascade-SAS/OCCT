@@ -54,10 +54,10 @@ public:
   //! Creates a Windows NT window class and registers it.
   Standard_EXPORT WNT_WClass(
     const TCollection_AsciiString& theClassName,
-    void* const                    theWndProc,
+    void* const         theWndProc,
     const unsigned int             theStyle,
-    const int                      theClassExtra  = 0,
-    const int                      theWindowExtra = 0,
+    const int         theClassExtra  = 0,
+    const int         theWindowExtra = 0,
     const Aspect_Handle            theCursor      = NULL,
     const Aspect_Handle            theIcon        = NULL,
     const TCollection_AsciiString& theMenuName    = TCollection_AsciiString::EmptyString());
@@ -77,7 +77,7 @@ public:
 protected:
   TCollection_AsciiString myClassName;
   Aspect_Handle           myAppInstance;
-  void*                   myWndProc;
+  void*        myWndProc;
 };
 
 #endif // _WIN32

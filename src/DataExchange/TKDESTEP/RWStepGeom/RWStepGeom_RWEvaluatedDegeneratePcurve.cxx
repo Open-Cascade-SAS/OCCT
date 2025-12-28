@@ -24,7 +24,7 @@ RWStepGeom_RWEvaluatedDegeneratePcurve::RWStepGeom_RWEvaluatedDegeneratePcurve()
 
 void RWStepGeom_RWEvaluatedDegeneratePcurve::ReadStep(
   const occ::handle<StepData_StepReaderData>&            data,
-  const int                                              num,
+  const int                            num,
   occ::handle<Interface_Check>&                          ach,
   const occ::handle<StepGeom_EvaluatedDegeneratePcurve>& ent) const
 {
@@ -74,7 +74,7 @@ void RWStepGeom_RWEvaluatedDegeneratePcurve::ReadStep(
 }
 
 void RWStepGeom_RWEvaluatedDegeneratePcurve::WriteStep(
-  StepData_StepWriter&                                   SW,
+  StepData_StepWriter&                              SW,
   const occ::handle<StepGeom_EvaluatedDegeneratePcurve>& ent) const
 {
 
@@ -97,7 +97,7 @@ void RWStepGeom_RWEvaluatedDegeneratePcurve::WriteStep(
 
 void RWStepGeom_RWEvaluatedDegeneratePcurve::Share(
   const occ::handle<StepGeom_EvaluatedDegeneratePcurve>& ent,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                         iter) const
 {
 
   iter.GetOneItem(ent->BasisSurface());

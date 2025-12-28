@@ -24,11 +24,12 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
 
 RWStepShape_RWBrepWithVoids::RWStepShape_RWBrepWithVoids() {}
 
 void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepShape_BrepWithVoids>& ent) const
 {
@@ -53,12 +54,12 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReader
   // --- own field : voids ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
-  occ::handle<StepShape_OrientedClosedShell>                                   anent3;
-  int                                                                          nsub3;
+  occ::handle<StepShape_OrientedClosedShell>          anent3;
+  int                               nsub3;
   if (data->ReadSubList(num, 3, "voids", ach, nsub3))
   {
     int nb3 = data->NbParams(nsub3);
-    aVoids  = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb3);
+    aVoids               = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -77,7 +78,7 @@ void RWStepShape_RWBrepWithVoids::ReadStep(const occ::handle<StepData_StepReader
   ent->Init(aName, aOuter, aVoids);
 }
 
-void RWStepShape_RWBrepWithVoids::WriteStep(StepData_StepWriter&                        SW,
+void RWStepShape_RWBrepWithVoids::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepShape_BrepWithVoids>& ent) const
 {
 
@@ -100,7 +101,7 @@ void RWStepShape_RWBrepWithVoids::WriteStep(StepData_StepWriter&                
 }
 
 void RWStepShape_RWBrepWithVoids::Share(const occ::handle<StepShape_BrepWithVoids>& ent,
-                                        Interface_EntityIterator&                   iter) const
+                                        Interface_EntityIterator&              iter) const
 {
 
   iter.GetOneItem(ent->Outer());

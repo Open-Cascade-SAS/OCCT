@@ -22,7 +22,12 @@
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 static int TheDegree  = 2;
 static int MaxNbKnots = 2;
@@ -30,9 +35,9 @@ static int MaxNbPoles = 3;
 
 //=================================================================================================
 
-Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d& Prb,
-                                                               const double      U1,
-                                                               const double      U2)
+Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&   Prb,
+                                                               const double U1,
+                                                               const double U2)
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
   Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
@@ -54,9 +59,9 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
   weights->ChangeArray1()(2) = 1.;
   weights->ChangeArray1()(3) = 1.;
 
-  gp_Dir2d Ox = Prb.Axis().XDirection();
-  gp_Dir2d Oy = Prb.Axis().YDirection();
-  double   S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
+  gp_Dir2d      Ox = Prb.Axis().XDirection();
+  gp_Dir2d      Oy = Prb.Axis().YDirection();
+  double S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
 
   // poles expressed in the reference mark
   poles->ChangeArray1()(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);

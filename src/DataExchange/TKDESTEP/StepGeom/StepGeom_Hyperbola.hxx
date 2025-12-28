@@ -32,9 +32,9 @@ public:
   Standard_EXPORT StepGeom_Hyperbola();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&               aPosition,
-                            const double                                 aSemiAxis,
-                            const double                                 aSemiImagAxis);
+                            const StepGeom_Axis2Placement&          aPosition,
+                            const double                     aSemiAxis,
+                            const double                     aSemiImagAxis);
 
   Standard_EXPORT void SetSemiAxis(const double aSemiAxis);
 

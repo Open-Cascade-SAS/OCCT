@@ -24,23 +24,23 @@
 IMPLEMENT_STANDARD_RTTIEXT(Interface_GeneralModule, Standard_Transient)
 
 void Interface_GeneralModule::FillShared(const occ::handle<Interface_InterfaceModel>& /*model*/,
-                                         const int                              casenum,
+                                         const int            casenum,
                                          const occ::handle<Standard_Transient>& ent,
-                                         Interface_EntityIterator&              iter) const
+                                         Interface_EntityIterator&         iter) const
 {
   FillSharedCase(casenum, ent, iter);
 } // Par defaut, model ne sert pas
 
-void Interface_GeneralModule::Share(Interface_EntityIterator&              iter,
+void Interface_GeneralModule::Share(Interface_EntityIterator&         iter,
                                     const occ::handle<Standard_Transient>& shared) const
 {
   iter.GetOneItem(shared);
 } // Plus joli d appeler Share
 
 void Interface_GeneralModule::ListImplied(const occ::handle<Interface_InterfaceModel>& /*model*/,
-                                          const int                              casenum,
+                                          const int            casenum,
                                           const occ::handle<Standard_Transient>& ent,
-                                          Interface_EntityIterator&              iter) const
+                                          Interface_EntityIterator&         iter) const
 {
   ListImpliedCase(casenum, ent, iter);
 } // Par defaut, model ne sert pas
@@ -52,24 +52,24 @@ void Interface_GeneralModule::ListImpliedCase(const int /*casenum*/,
 } // Par defaut, pas d Imply
 
 bool Interface_GeneralModule::CanCopy(const int /*CN*/,
-                                      const occ::handle<Standard_Transient>& /*ent*/) const
+                                                  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return false;
 }
 
 bool Interface_GeneralModule::Dispatch(const int,
-                                       const occ::handle<Standard_Transient>& entfrom,
-                                       occ::handle<Standard_Transient>&       entto,
-                                       Interface_CopyTool&) const
+                                                   const occ::handle<Standard_Transient>& entfrom,
+                                                   occ::handle<Standard_Transient>&       entto,
+                                                   Interface_CopyTool&) const
 {
   entto = entfrom;
   return false;
 }
 
 bool Interface_GeneralModule::NewCopiedCase(const int,
-                                            const occ::handle<Standard_Transient>&,
-                                            occ::handle<Standard_Transient>&,
-                                            Interface_CopyTool&) const
+                                                        const occ::handle<Standard_Transient>&,
+                                                        occ::handle<Standard_Transient>&,
+                                                        Interface_CopyTool&) const
 {
   return false;
 }
@@ -88,16 +88,15 @@ void Interface_GeneralModule::WhenDeleteCase(const int /*casenum*/,
 } // by default, does nothing
 
 int Interface_GeneralModule::CategoryNumber(const int,
-                                            const occ::handle<Standard_Transient>&,
-                                            const Interface_ShareTool&) const
+                                                         const occ::handle<Standard_Transient>&,
+                                                         const Interface_ShareTool&) const
 {
   return 0;
 } // by default, not specified
 
-occ::handle<TCollection_HAsciiString> Interface_GeneralModule::Name(
-  const int,
-  const occ::handle<Standard_Transient>&,
-  const Interface_ShareTool&) const
+occ::handle<TCollection_HAsciiString> Interface_GeneralModule::Name(const int,
+                                                               const occ::handle<Standard_Transient>&,
+                                                               const Interface_ShareTool&) const
 {
   occ::handle<TCollection_HAsciiString> str;
   return str;

@@ -105,7 +105,8 @@ public:
 
   //! Returns the cylinder attribute defined by the
   //! topological attribute S and the cylinder G.
-  Standard_EXPORT static bool Cylinder(const occ::handle<TNaming_NamedShape>& S, gp_Cylinder& G);
+  Standard_EXPORT static bool Cylinder(const occ::handle<TNaming_NamedShape>& S,
+                                                   gp_Cylinder&                      G);
 
   //! Returns the GUID for geometry attributes.
   Standard_EXPORT static const Standard_GUID& GetID();

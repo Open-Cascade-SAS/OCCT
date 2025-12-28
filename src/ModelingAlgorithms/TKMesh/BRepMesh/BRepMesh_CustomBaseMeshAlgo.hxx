@@ -40,14 +40,15 @@ protected:
   virtual void generateMesh(const Message_ProgressRange& theRange) override
   {
     const occ::handle<BRepMesh_DataStructureOfDelaun>& aStructure = this->getStructure();
-    const int                                          aNodesNb   = aStructure->NbNodes();
+    const int                        aNodesNb   = aStructure->NbNodes();
 
     buildBaseTriangulation();
 
-    std::pair<int, int> aCellsCount = this->getCellsCount(aStructure->NbNodes());
-    BRepMesh_Delaun     aMesher(aStructure, aCellsCount.first, aCellsCount.second, false);
+    std::pair<int, int> aCellsCount =
+      this->getCellsCount(aStructure->NbNodes());
+    BRepMesh_Delaun aMesher(aStructure, aCellsCount.first, aCellsCount.second, false);
 
-    const int  aNewNodesNb = aStructure->NbNodes();
+    const int aNewNodesNb = aStructure->NbNodes();
     const bool isRemoveAux = aNewNodesNb > aNodesNb;
     if (isRemoveAux)
     {

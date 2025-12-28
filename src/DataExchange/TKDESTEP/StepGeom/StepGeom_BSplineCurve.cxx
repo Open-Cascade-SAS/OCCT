@@ -19,13 +19,12 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_BSplineCurve, StepGeom_BoundedCurve)
 
 StepGeom_BSplineCurve::StepGeom_BSplineCurve() {}
 
-void StepGeom_BSplineCurve::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const int                                                                     aDegree,
-  const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineCurveForm                                               aCurveForm,
-  const StepData_Logical                                                        aClosedCurve,
-  const StepData_Logical                                                        aSelfIntersect)
+void StepGeom_BSplineCurve::Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                                 const int                          aDegree,
+                                 const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
+                                 const StepGeom_BSplineCurveForm                 aCurveForm,
+                                 const StepData_Logical                          aClosedCurve,
+                                 const StepData_Logical                          aSelfIntersect)
 {
   // --- classe own fields ---
   degree            = aDegree;
@@ -53,8 +52,7 @@ void StepGeom_BSplineCurve::SetControlPointsList(
   controlPointsList = aControlPointsList;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineCurve::
-  ControlPointsList() const
+occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> StepGeom_BSplineCurve::ControlPointsList() const
 {
   return controlPointsList;
 }

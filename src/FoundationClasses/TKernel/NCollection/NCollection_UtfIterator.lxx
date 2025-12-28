@@ -44,7 +44,7 @@ template <typename Type>
 inline void NCollection_UtfIterator<Type>::readUTF8()
 {
   // unsigned arithmetic used
-  unsigned char*      aPos         = (unsigned char*)myPosNext;
+  unsigned char* aPos         = (unsigned char*)myPosNext;
   const unsigned char aBytesToRead = UTF8_BYTES_MINUS_ONE[*aPos];
   myCharUtf32                      = 0;
   switch (aBytesToRead)
@@ -142,7 +142,8 @@ inline char* NCollection_UtfIterator<Type>::GetUtf8(char* theBuffer) const
 //=================================================================================================
 
 template <typename Type>
-inline unsigned char* NCollection_UtfIterator<Type>::GetUtf8(unsigned char* theBuffer) const
+inline unsigned char* NCollection_UtfIterator<Type>::GetUtf8(
+  unsigned char* theBuffer) const
 {
   char32_t aChar = myCharUtf32;
   if (myCharUtf32 >= UTF16_SURROGATE_HIGH_START && myCharUtf32 <= UTF16_SURROGATE_LOW_END)
@@ -232,7 +233,8 @@ inline int NCollection_UtfIterator<Type>::AdvanceCodeUnitsUtf16() const
 //=================================================================================================
 
 template <typename Type>
-inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(char16_t* theBuffer) const
+inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(
+  char16_t* theBuffer) const
 {
   if (myCharUtf32 <= UTF32_MAX_BMP) // target is a character <= 0xFFFF
   {
@@ -256,8 +258,10 @@ inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(char16_t* theBuffer) co
   {
     // surrogate pair
     char32_t aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
-    *theBuffer++   = char16_t((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
-    *theBuffer++   = char16_t((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
+    *theBuffer++ =
+      char16_t((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
+    *theBuffer++ =
+      char16_t((aChar & UTF16_SURROGATE_LOW_MASK) + UTF16_SURROGATE_LOW_START);
     return theBuffer;
   }
 }
@@ -265,7 +269,8 @@ inline char16_t* NCollection_UtfIterator<Type>::GetUtf16(char16_t* theBuffer) co
 //=================================================================================================
 
 template <typename Type>
-inline char32_t* NCollection_UtfIterator<Type>::GetUtf32(char32_t* theBuffer) const
+inline char32_t* NCollection_UtfIterator<Type>::GetUtf32(
+  char32_t* theBuffer) const
 {
   *theBuffer++ = myCharUtf32;
   return theBuffer;

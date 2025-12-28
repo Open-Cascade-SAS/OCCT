@@ -69,8 +69,8 @@ public:
   //! Dumps the curve on the stream, if compact is True
   //! use the compact format that can be read back.
   Standard_EXPORT static void PrintCurve(const occ::handle<Geom_Curve>& C,
-                                         Standard_OStream&              OS,
-                                         const bool                     compact = false);
+                                         Standard_OStream&         OS,
+                                         const bool    compact = false);
 
   //! Reads the curve from the stream. The curve is
   //! assumed to have been written with the Print

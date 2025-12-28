@@ -23,7 +23,7 @@ RWStepGeom_RWSurfaceOfRevolution::RWStepGeom_RWSurfaceOfRevolution() {}
 
 void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                                        num,
+  const int                      num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepGeom_SurfaceOfRevolution>& ent) const
 {
@@ -62,7 +62,7 @@ void RWStepGeom_RWSurfaceOfRevolution::ReadStep(
 }
 
 void RWStepGeom_RWSurfaceOfRevolution::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                        SW,
   const occ::handle<StepGeom_SurfaceOfRevolution>& ent) const
 {
 
@@ -80,7 +80,7 @@ void RWStepGeom_RWSurfaceOfRevolution::WriteStep(
 }
 
 void RWStepGeom_RWSurfaceOfRevolution::Share(const occ::handle<StepGeom_SurfaceOfRevolution>& ent,
-                                             Interface_EntityIterator& iter) const
+                                             Interface_EntityIterator&                   iter) const
 {
 
   iter.GetOneItem(ent->SweptCurve());

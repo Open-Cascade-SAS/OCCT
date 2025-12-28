@@ -26,6 +26,7 @@
 #include <StepRepr_PropertyDefinition.hxx>
 #include <STEPSelections_AssemblyExplorer.hxx>
 #include <STEPSelections_AssemblyLink.hxx>
+#include <STEPSelections_AssemblyLink.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
@@ -44,7 +45,7 @@ occ::handle<Standard_Transient> STEPSelections_AssemblyExplorer::FindItemWithNAU
 {
   occ::handle<Standard_Transient>              item;
   occ::handle<StepRepr_ProductDefinitionShape> pds;
-  Interface_EntityIterator                     subs = myGraph.Sharings(nauo);
+  Interface_EntityIterator                subs = myGraph.Sharings(nauo);
   for (subs.Start(); subs.More() && pds.IsNull(); subs.Next())
     if (subs.Value()->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
       pds = occ::down_cast<StepRepr_ProductDefinitionShape>(subs.Value());
@@ -78,8 +79,8 @@ occ::handle<Standard_Transient> STEPSelections_AssemblyExplorer::FindItemWithNAU
   return item;
 }
 
-occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyExplorer::
-  FindSDRWithProduct(const occ::handle<StepBasic_ProductDefinition>& product) const
+occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyExplorer::FindSDRWithProduct(
+  const occ::handle<StepBasic_ProductDefinition>& product) const
 {
   Interface_EntityIterator subs = myGraph.Sharings(product);
   for (subs.Start(); subs.More(); subs.Next())
@@ -100,10 +101,9 @@ occ::handle<StepShape_ShapeDefinitionRepresentation> STEPSelections_AssemblyExpl
 void STEPSelections_AssemblyExplorer::FillListWithGraph(
   const occ::handle<STEPSelections_AssemblyComponent>& cmp)
 {
-  occ::handle<StepShape_ShapeDefinitionRepresentation>                         SDR = cmp->GetSDR();
-  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>> list =
-    cmp->GetList();
-  occ::handle<StepRepr_ProductDefinitionShape> pdsh =
+  occ::handle<StepShape_ShapeDefinitionRepresentation> SDR  = cmp->GetSDR();
+  occ::handle<NCollection_HSequence<occ::handle<STEPSelections_AssemblyLink>>>  list = cmp->GetList();
+  occ::handle<StepRepr_ProductDefinitionShape>         pdsh =
     occ::down_cast<StepRepr_ProductDefinitionShape>(SDR->Definition().PropertyDefinition());
   if (pdsh.IsNull())
     return;
@@ -123,8 +123,7 @@ void STEPSelections_AssemblyExplorer::FillListWithGraph(
         occ::handle<StepBasic_ProductDefinition> pdrComponent = nauo->RelatedProductDefinition();
         if (pdrComponent.IsNull())
           continue;
-        occ::handle<StepShape_ShapeDefinitionRepresentation> subSDR =
-          FindSDRWithProduct(pdrComponent);
+        occ::handle<StepShape_ShapeDefinitionRepresentation> subSDR = FindSDRWithProduct(pdrComponent);
         if (subSDR.IsNull())
           continue;
         int index = myMap.FindIndex(subSDR);
@@ -165,7 +164,7 @@ void STEPSelections_AssemblyExplorer::Init(const Interface_Graph& G)
 
 static const char* GetProductName(const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR)
 {
-  const char*                              str = "";
+  const char*                    str = "";
   occ::handle<StepBasic_Product>           empty;
   occ::handle<StepRepr_PropertyDefinition> PropDf = SDR->Definition().PropertyDefinition();
   if (PropDf.IsNull())
@@ -179,10 +178,10 @@ static const char* GetProductName(const occ::handle<StepShape_ShapeDefinitionRep
   return PDF->OfProduct()->Name()->ToCString();
 }
 
-static void PrintSubAssembly(Standard_OStream&                                    os,
+static void PrintSubAssembly(Standard_OStream&                               os,
                              const occ::handle<STEPSelections_AssemblyComponent>& cmp,
                              const occ::handle<Interface_InterfaceModel>&         Model,
-                             int                                                  level)
+                             int                                level)
 {
   // for ( int j=0; j < level; j++ ) os << "\t";
   os << "SDR: " << Model->StringLabel(cmp->GetSDR())->ToCString() << "\t";

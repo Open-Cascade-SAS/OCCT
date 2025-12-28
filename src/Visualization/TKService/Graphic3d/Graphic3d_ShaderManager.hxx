@@ -110,8 +110,8 @@ protected:
   //! Generate map key for light sources configuration.
   //! @param[in] theLights  list of light sources
   //! @param[in] theHasShadowMap  flag indicating shadow maps usage
-  Standard_EXPORT TCollection_AsciiString
-    genLightKey(const occ::handle<Graphic3d_LightSet>& theLights, const bool theHasShadowMap) const;
+  Standard_EXPORT TCollection_AsciiString genLightKey(const occ::handle<Graphic3d_LightSet>& theLights,
+                                                      const bool theHasShadowMap) const;
 
   //! Prepare standard GLSL program for textured font.
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramFont() const;
@@ -120,7 +120,7 @@ protected:
   //! @param[in] theBits       program bits
   //! @param[in] theIsOutline  draw silhouette
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramUnlit(
-    int  theBits,
+    int theBits,
     bool theIsOutline = false) const;
 
   //! Prepare standard GLSL program with per-vertex lighting.
@@ -128,7 +128,7 @@ protected:
   //! @param[in] theBits    program bits
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramGouraud(
     const occ::handle<Graphic3d_LightSet>& theLights,
-    int                                    theBits) const;
+    int                  theBits) const;
 
   //! Prepare standard GLSL program with per-pixel lighting.
   //! @param[in] theLights  list of light sources
@@ -139,10 +139,10 @@ protected:
   //! @param[in] theNbShadowMaps  number of shadow maps
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramPhong(
     const occ::handle<Graphic3d_LightSet>& theLights,
-    const int                              theBits,
-    const bool                             theIsFlatNormal,
-    const bool                             theIsPBR,
-    const int                              theNbShadowMaps) const;
+    const int            theBits,
+    const bool            theIsFlatNormal,
+    const bool            theIsPBR,
+    const int            theNbShadowMaps) const;
 
   //! Prepare standard GLSL program for bounding box.
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramBoundBox() const;
@@ -157,11 +157,12 @@ protected:
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getColoredQuadProgram() const;
 
   //! Prepare GLSL source for IBL generation used in PBR pipeline.
-  Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getPBREnvBakingProgram(int theIndex) const;
+  Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getPBREnvBakingProgram(
+    int theIndex) const;
 
   //! Prepare standard GLSL program for FBO blit operation.
   Standard_EXPORT occ::handle<Graphic3d_ShaderProgram> getStdProgramFboBlit(
-    int  theNbSamples,
+    int theNbSamples,
     bool theIsFallback_sRGB) const;
 
   //! Prepare standard GLSL program for stereoscopic image.
@@ -190,25 +191,27 @@ protected:
   //! @param[in] theBits  program bits
   //! @param[in] theUsesDerivates  program uses standard derivatives functions or not
   //! @return filtered program bits with unsupported features disabled
-  Standard_EXPORT int defaultGlslVersion(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
-                                         const TCollection_AsciiString&              theName,
-                                         int                                         theBits,
-                                         bool theUsesDerivates = false) const;
+  Standard_EXPORT int
+    defaultGlslVersion(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
+                       const TCollection_AsciiString&         theName,
+                       int                       theBits,
+                       bool                                   theUsesDerivates = false) const;
 
   //! Prepare GLSL version header for OIT composition programs.
   //! @param[in][out] theProgram   program to set version header
   //! @param[in] theName  program id suffix
   //! @param[in] theMsaa  multisampling flag
   Standard_EXPORT void defaultOitGlslVersion(const occ::handle<Graphic3d_ShaderProgram>& theProgram,
-                                             const TCollection_AsciiString&              theName,
-                                             bool theMsaa) const;
+                                             const TCollection_AsciiString&         theName,
+                                             bool                                   theMsaa) const;
 
   //! Prepare standard GLSL program for accessing point sprite alpha.
   Standard_EXPORT TCollection_AsciiString pointSpriteAlphaSrc(int theBits) const;
 
   //! Prepare standard GLSL program for computing point sprite shading.
   Standard_EXPORT TCollection_AsciiString
-    pointSpriteShadingSrc(const TCollection_AsciiString& theBaseColorSrc, int theBits) const;
+    pointSpriteShadingSrc(const TCollection_AsciiString& theBaseColorSrc,
+                          int               theBits) const;
 
   //! Define computeLighting GLSL function depending on current lights configuration
   //! @param[out] theNbLights      number of defined light sources
@@ -219,25 +222,25 @@ protected:
   //! @param[in] theHasTexColor    flag to include color texturing
   //! @param[in] theNbShadowMaps   flag to include shadow map
   Standard_EXPORT TCollection_AsciiString
-    stdComputeLighting(int&                                   theNbLights,
+    stdComputeLighting(int&                 theNbLights,
                        const occ::handle<Graphic3d_LightSet>& theLights,
-                       bool                                   theHasVertColor,
-                       bool                                   theIsPBR,
-                       bool                                   theHasTexColor,
-                       int                                    theNbShadowMaps) const;
+                       bool                  theHasVertColor,
+                       bool                  theIsPBR,
+                       bool                  theHasTexColor,
+                       int                  theNbShadowMaps) const;
 
 protected:
   Aspect_GraphicsLibrary myGapi;        //!< GAPI name
-  NCollection_Vec2<int>  myGapiVersion; //!< GAPI version major/minor number pair
-  bool                   myGlslExtensions[Graphic3d_GlslExtension_NB];
-  bool                   myHasFlatShading;    //!< flag indicating flat shading usage
-  bool                   myToReverseDFdxSign; //!< flag to reverse flat shading normal (workaround)
-  bool                   mySetPointSize;      //!< always set gl_PointSize variable
+  NCollection_Vec2<int>        myGapiVersion; //!< GAPI version major/minor number pair
+  bool       myGlslExtensions[Graphic3d_GlslExtension_NB];
+  bool       myHasFlatShading;    //!< flag indicating flat shading usage
+  bool       myToReverseDFdxSign; //!< flag to reverse flat shading normal (workaround)
+  bool       mySetPointSize;      //!< always set gl_PointSize variable
                                               // clang-format off
   bool myUseRedAlpha;         //!< use RED channel instead of ALPHA (e.g. GAPI supports only GL_RED textures and not GL_ALPHA)
                                               // clang-format on
-  bool myToEmulateDepthClamp;                 //!< emulate depth clamping in GLSL program
-  bool mySRgbState;                           //!< track sRGB state
+  bool myToEmulateDepthClamp;     //!< emulate depth clamping in GLSL program
+  bool mySRgbState;               //!< track sRGB state
 };
 
 #endif // _Graphic3d_ShaderManager_HeaderFile

@@ -44,21 +44,21 @@ public:
   //! function should always be used to compute the deflection value for building discrete
   //! representations of the shape (triangulation, wireframe) to avoid inconsistencies between
   //! different representations of the shape and undesirable visual artifacts.
-  Standard_EXPORT static double GetDeflection(const TopoDS_Shape&              theShape,
-                                              const occ::handle<Prs3d_Drawer>& theDrawer);
+  Standard_EXPORT static double GetDeflection(const TopoDS_Shape&         theShape,
+                                                     const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! Checks whether the shape is properly triangulated for a given display settings.
   //! @param[in] theShape  the shape.
   //! @param[in] theDrawer  the display settings.
-  Standard_EXPORT static bool IsTessellated(const TopoDS_Shape&              theShape,
-                                            const occ::handle<Prs3d_Drawer>& theDrawer);
+  Standard_EXPORT static bool IsTessellated(const TopoDS_Shape&         theShape,
+                                                        const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! Validates triangulation within the shape and performs tessellation if necessary.
   //! @param[in] theShape  the shape.
   //! @param[in] theDrawer  the display settings.
   //! @return true if tessellation was recomputed and false otherwise.
-  Standard_EXPORT static bool Tessellate(const TopoDS_Shape&              theShape,
-                                         const occ::handle<Prs3d_Drawer>& theDrawer);
+  Standard_EXPORT static bool Tessellate(const TopoDS_Shape&         theShape,
+                                                     const occ::handle<Prs3d_Drawer>& theDrawer);
 
   //! If presentation has own deviation coefficient and IsAutoTriangulation() is true,
   //! function will compare actual coefficients with previous values and will clear triangulation on
@@ -68,7 +68,7 @@ public:
   //! @param[in] theDrawer  the display settings
   //! @param[in] theToResetCoeff  updates coefficients in theDrawer to actual state to avoid
   //! redundant recomputations
-  Standard_EXPORT static void ClearOnOwnDeflectionChange(const TopoDS_Shape&              theShape,
+  Standard_EXPORT static void ClearOnOwnDeflectionChange(const TopoDS_Shape&         theShape,
                                                          const occ::handle<Prs3d_Drawer>& theDrawer,
                                                          const bool theToResetCoeff);
 };

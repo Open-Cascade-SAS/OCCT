@@ -28,7 +28,7 @@ const double THE_TOLERANCE = 1e-10;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -41,8 +41,7 @@ TEST(GeomGridEval_ParabolaTest, BasicEvaluation)
 {
   // Parabola in XY plane, Focal=1.0, center at origin
   // Y^2 = 4*F*X => Y^2 = 4X
-  occ::handle<Geom_Parabola> aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  occ::handle<Geom_Parabola> aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
   // By default in OCCT:
   // XAxis is symmetry axis.
@@ -68,8 +67,7 @@ TEST(GeomGridEval_ParabolaTest, BasicEvaluation)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD1)
 {
-  occ::handle<Geom_Parabola> aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  occ::handle<Geom_Parabola> aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
@@ -88,8 +86,7 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD1)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD2)
 {
-  occ::handle<Geom_Parabola> aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  occ::handle<Geom_Parabola> aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);
@@ -109,8 +106,7 @@ TEST(GeomGridEval_ParabolaTest, DerivativeD2)
 
 TEST(GeomGridEval_ParabolaTest, DerivativeD3)
 {
-  occ::handle<Geom_Parabola> aParab =
-    new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
+  occ::handle<Geom_Parabola> aParab = new Geom_Parabola(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   GeomGridEval_Parabola anEval(aParab);
 
   NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 9);

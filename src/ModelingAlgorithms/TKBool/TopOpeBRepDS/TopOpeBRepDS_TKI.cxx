@@ -21,16 +21,13 @@
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_TKI.hxx>
 
 // extras define
-#define MDSdmoiloi                                                                                 \
-  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>
-#define MDSdmiodmoiloi                                                                             \
-  NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
-#define MDShaodmoiloi                                                                              \
-  NCollection_HArray1<                                                                             \
-    NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>
+#define MDSdmoiloi NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>
+#define MDSdmiodmoiloi NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>::Iterator
+#define MDShaodmoiloi NCollection_HArray1<NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>>
 
 //=================================================================================================
 
@@ -50,9 +47,9 @@ void TopOpeBRepDS_TKI::Reset()
     throw Standard_ProgramError("TopOpeBRepDS_TKI : enumeration badly ordered");
     return;
   }
-  int f   = 1;             // first index of table
-  int l   = f + (is - ip); // last index of table
-  mydelta = f - ip;
+  int f = 1;             // first index of table
+  int l = f + (is - ip); // last index of table
+  mydelta            = f - ip;
   // k + mydelta = i in [f,l]; TopOpeBRepDS_POINT,SOLID + mydelta = f,l
   if (myT.IsNull())
     myT = new MDShaodmoiloi(f, l);
@@ -72,15 +69,13 @@ void TopOpeBRepDS_TKI::Clear()
 
 //=================================================================================================
 
-void TopOpeBRepDS_TKI::FillOnGeometry(
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+void TopOpeBRepDS_TKI::FillOnGeometry(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
 {
-  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(L); it.More();
-       it.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(L); it.More(); it.Next())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-    TopOpeBRepDS_Kind                             GT, ST;
-    int                                           G, S;
+    TopOpeBRepDS_Kind                        GT, ST;
+    int                         G, S;
     FDS_data(I, GT, G, ST, S);
     Add(GT, G, I);
   }
@@ -88,15 +83,13 @@ void TopOpeBRepDS_TKI::FillOnGeometry(
 
 //=================================================================================================
 
-void TopOpeBRepDS_TKI::FillOnSupport(
-  const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
+void TopOpeBRepDS_TKI::FillOnSupport(const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& L)
 {
-  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(L); it.More();
-       it.Next())
+  for (NCollection_List<occ::handle<TopOpeBRepDS_Interference>>::Iterator it(L); it.More(); it.Next())
   {
     const occ::handle<TopOpeBRepDS_Interference>& I = it.Value();
-    TopOpeBRepDS_Kind                             GT, ST;
-    int                                           G, S;
+    TopOpeBRepDS_Kind                        GT, ST;
+    int                         G, S;
     FDS_data(I, GT, G, ST, S);
     Add(ST, S, I);
   }
@@ -104,11 +97,12 @@ void TopOpeBRepDS_TKI::FillOnSupport(
 
 //=================================================================================================
 
-bool TopOpeBRepDS_TKI::IsBound(const TopOpeBRepDS_Kind K, const int G) const
+bool TopOpeBRepDS_TKI::IsBound(const TopOpeBRepDS_Kind K,
+                                           const int  G) const
 {
   if (!IsValidKG(K, G))
     return false;
-  int  TI = KindToTableIndex(K);
+  int TI = KindToTableIndex(K);
   bool in = myT->Value(TI).IsBound(G);
   return in;
 }
@@ -117,10 +111,10 @@ bool TopOpeBRepDS_TKI::IsBound(const TopOpeBRepDS_Kind K, const int G) const
 
 const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Interferences(
   const TopOpeBRepDS_Kind K,
-  const int               G) const
+  const int  G) const
 {
   bool in = IsBound(K, G);
-  int  TI = KindToTableIndex(K);
+  int TI = KindToTableIndex(K);
   if (in)
     return myT->Value(TI).Find(G);
   return myEmptyLOI;
@@ -128,12 +122,11 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
 
 //=================================================================================================
 
-NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::ChangeInterferences(
-  const TopOpeBRepDS_Kind K,
-  const int               G)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::ChangeInterferences(const TopOpeBRepDS_Kind K,
+                                                                       const int  G)
 {
   bool in = IsBound(K, G);
-  int  TI = KindToTableIndex(K);
+  int TI = KindToTableIndex(K);
   if (in)
     return myT->ChangeValue(TI).ChangeFind(G);
   return myEmptyLOI;
@@ -141,14 +134,15 @@ NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Chan
 
 //=================================================================================================
 
-bool TopOpeBRepDS_TKI::HasInterferences(const TopOpeBRepDS_Kind K, const int G) const
+bool TopOpeBRepDS_TKI::HasInterferences(const TopOpeBRepDS_Kind K,
+                                                    const int  G) const
 {
   bool has = IsBound(K, G);
   if (has)
   {
     const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& loi = Interferences(K, G);
-    int                                                             l   = loi.Extent();
-    has                                                                 = (l != 0);
+    int                       l   = loi.Extent();
+    has                                        = (l != 0);
   }
   return has;
 }
@@ -164,8 +158,8 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K, const int G)
     return;
   }
 
-  bool                                                     in = IsBound(K, G);
-  int                                                      TI = KindToTableIndex(K);
+  bool                in = IsBound(K, G);
+  int                TI = KindToTableIndex(K);
   NCollection_List<occ::handle<TopOpeBRepDS_Interference>> thelist;
   if (!in)
     myT->ChangeValue(TI).Bind(G, thelist);
@@ -173,8 +167,8 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K, const int G)
 
 //=================================================================================================
 
-void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind                       K,
-                           const int                                     G,
+void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind                  K,
+                           const int                   G,
                            const occ::handle<TopOpeBRepDS_Interference>& HI)
 {
   bool ok = IsValidKG(K, G);
@@ -195,7 +189,7 @@ void TopOpeBRepDS_TKI::DumpTKIIterator(const TCollection_AsciiString& s1,
   while (More())
   {
     TopOpeBRepDS_Kind K;
-    int               G;
+    int  G;
     Value(K, G);
     Next();
   }
@@ -247,9 +241,8 @@ void TopOpeBRepDS_TKI::Next()
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Value(
-  TopOpeBRepDS_Kind& K,
-  int&               G) const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::Value(TopOpeBRepDS_Kind& K,
+                                                               int&  G) const
 {
   if (!More())
     return myEmptyLOI;
@@ -260,9 +253,8 @@ const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI
 
 //=================================================================================================
 
-NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::ChangeValue(
-  TopOpeBRepDS_Kind& K,
-  int&               G)
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_TKI::ChangeValue(TopOpeBRepDS_Kind& K,
+                                                               int&  G)
 {
   if (!More())
     return myEmptyLOI;
@@ -394,7 +386,8 @@ bool TopOpeBRepDS_TKI::IsValidG(const int G) const
 
 //=================================================================================================
 
-bool TopOpeBRepDS_TKI::IsValidKG(const TopOpeBRepDS_Kind K, const int G) const
+bool TopOpeBRepDS_TKI::IsValidKG(const TopOpeBRepDS_Kind K,
+                                             const int  G) const
 {
   bool nok = (!IsValidK(K) || !IsValidG(G));
   return !nok;

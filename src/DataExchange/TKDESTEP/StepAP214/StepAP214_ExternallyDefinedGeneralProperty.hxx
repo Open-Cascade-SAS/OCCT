@@ -35,13 +35,12 @@ public:
   Standard_EXPORT StepAP214_ExternallyDefinedGeneralProperty();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Id,
-    const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Name,
-    const bool                                   hasGeneralProperty_Description,
-    const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Description,
-    const StepBasic_SourceItem&                  aExternallyDefinedItem_ItemId,
-    const occ::handle<StepBasic_ExternalSource>& aExternallyDefinedItem_Source);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Id,
+                            const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Name,
+                            const bool                  hasGeneralProperty_Description,
+                            const occ::handle<TCollection_HAsciiString>& aGeneralProperty_Description,
+                            const StepBasic_SourceItem&             aExternallyDefinedItem_ItemId,
+                            const occ::handle<StepBasic_ExternalSource>& aExternallyDefinedItem_Source);
 
   //! Returns data for supertype ExternallyDefinedItem
   Standard_EXPORT occ::handle<StepBasic_ExternallyDefinedItem> ExternallyDefinedItem() const;

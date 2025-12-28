@@ -41,8 +41,8 @@ public:
   //! - aDirection : the vector specifying the direction of extrusion
   //! default (0,0,1)
   Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>& aCurve,
-                            const double                            aLength,
-                            const gp_XYZ&                           aDirection);
+                            const double                aLength,
+                            const gp_XYZ&                      aDirection);
 
   //! returns the planar curve that is to be translated
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Curve() const;
@@ -60,8 +60,8 @@ public:
 
 private:
   occ::handle<IGESData_IGESEntity> theCurve;
-  double                           theLength;
-  gp_XYZ                           theDirection;
+  double               theLength;
+  gp_XYZ                      theDirection;
 };
 
 #endif // _IGESSolid_SolidOfLinearExtrusion_HeaderFile

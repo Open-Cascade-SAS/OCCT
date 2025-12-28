@@ -32,6 +32,7 @@ public:
   Standard_EXPORT virtual bool Compute(const TopoDS_Edge& anEdge) override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_ClosedEdgeDivide, ShapeUpgrade_EdgeDivide)
+
 };
 
 #endif // _ShapeUpgrade_ClosedEdgeDivide_HeaderFile

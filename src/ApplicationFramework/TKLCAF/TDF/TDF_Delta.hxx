@@ -25,6 +25,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Transient.hxx>
 #include <TDF_Label.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
 class TDF_AttributeDelta;
 
@@ -79,7 +80,8 @@ protected:
   //! Validates <me> at <aBeginTime>. If applied, it
   //! restores the TDF_Data in the state it was at
   //! <anEndTime>. Reserved to TDF_Data.
-  Standard_EXPORT void Validity(const int aBeginTime, const int anEndTime);
+  Standard_EXPORT void Validity(const int aBeginTime,
+                                const int anEndTime);
 
   //! Adds an AttributeDelta to the list. Reserved to
   //! TDF_Data.
@@ -93,10 +95,10 @@ private:
 
   void Apply();
 
-  int                                               myBeginTime;
-  int                                               myEndTime;
-  NCollection_List<occ::handle<TDF_AttributeDelta>> myAttDeltaList;
-  TCollection_ExtendedString                        myName;
+  int           myBeginTime;
+  int           myEndTime;
+  NCollection_List<occ::handle<TDF_AttributeDelta>>     myAttDeltaList;
+  TCollection_ExtendedString myName;
 };
 
 #include <TDF_Delta.lxx>

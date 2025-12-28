@@ -26,6 +26,9 @@
 #include <NCollection_Shared.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <BRepCheck_Status.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <Standard_MemoryUtils.hxx>
 
 #include <mutex>
@@ -62,7 +65,10 @@ public:
 
   Standard_EXPORT void SetParallel(bool theIsParallel);
 
-  bool IsStatusOnShape(const TopoDS_Shape& theShape) const { return myMap.IsBound(theShape); }
+  bool IsStatusOnShape(const TopoDS_Shape& theShape) const
+  {
+    return myMap.IsBound(theShape);
+  }
 
   const NCollection_List<BRepCheck_Status>& StatusOnShape(const TopoDS_Shape& theShape) const
   {
@@ -77,22 +83,17 @@ protected:
   Standard_EXPORT BRepCheck_Result();
 
 protected:
-  TopoDS_Shape myShape;
-  bool         myMin;
-  bool         myBlind;
-  NCollection_DataMap<TopoDS_Shape,
-                      Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>),
-                      TopTools_ShapeMapHasher>
-                                      myMap;
-  mutable std::unique_ptr<std::mutex> myMutex;
+  TopoDS_Shape                         myShape;
+  bool                     myMin;
+  bool                     myBlind;
+  NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>), TopTools_ShapeMapHasher> myMap;
+  mutable std::unique_ptr<std::mutex>  myMutex;
 
 private:
   std::unique_ptr<std::mutex>& GetMutex() { return myMutex; }
 
 private:
-  NCollection_DataMap<TopoDS_Shape,
-                      Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>),
-                      TopTools_ShapeMapHasher>::Iterator myIter;
+  NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<NCollection_List<BRepCheck_Status>>), TopTools_ShapeMapHasher>::Iterator myIter;
 };
 
 #endif // _BRepCheck_Result_HeaderFile

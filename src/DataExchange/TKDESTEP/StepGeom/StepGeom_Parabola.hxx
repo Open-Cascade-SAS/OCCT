@@ -32,8 +32,8 @@ public:
   Standard_EXPORT StepGeom_Parabola();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepGeom_Axis2Placement&               aPosition,
-                            const double                                 aFocalDist);
+                            const StepGeom_Axis2Placement&          aPosition,
+                            const double                     aFocalDist);
 
   Standard_EXPORT void SetFocalDist(const double aFocalDist);
 

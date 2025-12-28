@@ -21,6 +21,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -44,8 +45,8 @@ TopoDS_Shape ShapeExtend_Explorer::CompoundFromSeq(
 //=================================================================================================
 
 static void FillList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                     const TopoDS_Shape&                                     comp,
-                     const bool                                              expcomp)
+                     const TopoDS_Shape&                      comp,
+                     const bool                   expcomp)
 {
   for (TopoDS_Iterator it(comp); it.More(); it.Next())
   {
@@ -60,8 +61,8 @@ static void FillList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& lis
 }
 
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromCompound(
-  const TopoDS_Shape& comp,
-  const bool          expcomp) const
+  const TopoDS_Shape&    comp,
+  const bool expcomp) const
 {
   occ::handle<NCollection_HSequence<TopoDS_Shape>> list = new NCollection_HSequence<TopoDS_Shape>();
   if (comp.IsNull())
@@ -77,10 +78,9 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromCo
 
 //=================================================================================================
 
-void ShapeExtend_Explorer::ListFromSeq(
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
-  NCollection_List<TopoDS_Shape>&                         lisval,
-  const bool                                              clear) const
+void ShapeExtend_Explorer::ListFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
+                                       NCollection_List<TopoDS_Shape>&                    lisval,
+                                       const bool                   clear) const
 {
   if (clear)
     lisval.Clear();
@@ -96,8 +96,7 @@ void ShapeExtend_Explorer::ListFromSeq(
 occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromList(
   const NCollection_List<TopoDS_Shape>& lisval) const
 {
-  occ::handle<NCollection_HSequence<TopoDS_Shape>> seqval =
-    new NCollection_HSequence<TopoDS_Shape>();
+  occ::handle<NCollection_HSequence<TopoDS_Shape>>  seqval = new NCollection_HSequence<TopoDS_Shape>();
   NCollection_List<TopoDS_Shape>::Iterator it;
   for (it.Initialize(lisval); it.More(); it.Next())
     seqval->Append(it.Value());
@@ -106,8 +105,8 @@ occ::handle<NCollection_HSequence<TopoDS_Shape>> ShapeExtend_Explorer::SeqFromLi
 
 //=================================================================================================
 
-TopAbs_ShapeEnum ShapeExtend_Explorer::ShapeType(const TopoDS_Shape& shape,
-                                                 const bool          compound) const
+TopAbs_ShapeEnum ShapeExtend_Explorer::ShapeType(const TopoDS_Shape&    shape,
+                                                 const bool compound) const
 {
   if (shape.IsNull())
     return TopAbs_SHAPE;
@@ -144,14 +143,14 @@ TopAbs_ShapeEnum ShapeExtend_Explorer::ShapeType(const TopoDS_Shape& shape,
 
 TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
                                                   const TopAbs_ShapeEnum type,
-                                                  const bool             explore,
-                                                  const bool             compound) const
+                                                  const bool explore,
+                                                  const bool compound) const
 {
   if (shape.IsNull())
     return shape;
   TopAbs_ShapeEnum typ = shape.ShapeType();
   TopoDS_Shape     sh, sh0;
-  int              nb = 0;
+  int nb = 0;
 
   //  Compound : on le prend, soit tel quel, soit son contenu
   if (typ == TopAbs_COMPOUND || typ == TopAbs_COMPSOLID)
@@ -258,16 +257,15 @@ TopoDS_Shape ShapeExtend_Explorer::SortedCompound(const TopoDS_Shape&    shape,
 
 //=================================================================================================
 
-void ShapeExtend_Explorer::DispatchList(
-  const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       vertices,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       edges,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       faces,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       shells,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       solids,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compsols,
-  occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const
+void ShapeExtend_Explorer::DispatchList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       vertices,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       edges,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       faces,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       shells,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       solids,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compsols,
+                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const
 {
   if (list.IsNull())
     return;

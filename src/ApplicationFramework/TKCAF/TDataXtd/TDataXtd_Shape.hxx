@@ -40,7 +40,7 @@ public:
   //! Create or update associated NamedShape attribute. the
   //! Shape attribute is returned.
   Standard_EXPORT static occ::handle<TDataXtd_Shape> Set(const TDF_Label&    label,
-                                                         const TopoDS_Shape& shape);
+                                                    const TopoDS_Shape& shape);
 
   //! the Shape from associated NamedShape attribute
   //! is returned.
@@ -59,6 +59,7 @@ public:
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
+
 };
 
 #endif // _TDataXtd_Shape_HeaderFile

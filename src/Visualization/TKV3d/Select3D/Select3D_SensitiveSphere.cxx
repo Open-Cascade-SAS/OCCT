@@ -19,10 +19,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSphere, Select3D_SensitiveEntity)
 
 //=================================================================================================
 
-Select3D_SensitiveSphere::Select3D_SensitiveSphere(
-  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-  const gp_Pnt&                             theCenter,
-  const double                              theRadius)
+Select3D_SensitiveSphere::Select3D_SensitiveSphere(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                                   const gp_Pnt&                        theCenter,
+                                                   const double                  theRadius)
     : Select3D_SensitiveEntity(theOwnerId),
       myCenter(theCenter),
       myLastDetectedPoint(RealLast(), RealLast(), RealLast()),
@@ -33,7 +32,7 @@ Select3D_SensitiveSphere::Select3D_SensitiveSphere(
 //=================================================================================================
 
 bool Select3D_SensitiveSphere::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                       SelectBasics_PickResult&             thePickResult)
+                                                   SelectBasics_PickResult& thePickResult)
 {
   myLastDetectedPoint = gp_Pnt(RealLast(), RealLast(), RealLast());
   if (theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point)
@@ -70,11 +69,9 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveSphere::GetConnected()
 
 Select3D_BndBox3d Select3D_SensitiveSphere::BoundingBox()
 {
-  const NCollection_Vec3<double> aMinPnt = NCollection_Vec3<double>(myCenter.X() - myRadius,
-                                                                    myCenter.Y() - myRadius,
-                                                                    myCenter.Z() - myRadius);
-  const NCollection_Vec3<double> aMaxPnt = NCollection_Vec3<double>(myCenter.X() + myRadius,
-                                                                    myCenter.Y() + myRadius,
-                                                                    myCenter.Z() + myRadius);
+  const NCollection_Vec3<double> aMinPnt =
+    NCollection_Vec3<double>(myCenter.X() - myRadius, myCenter.Y() - myRadius, myCenter.Z() - myRadius);
+  const NCollection_Vec3<double> aMaxPnt =
+    NCollection_Vec3<double>(myCenter.X() + myRadius, myCenter.Y() + myRadius, myCenter.Z() + myRadius);
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }

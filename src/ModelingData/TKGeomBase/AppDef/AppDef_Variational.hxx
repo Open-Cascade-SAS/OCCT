@@ -29,6 +29,7 @@
 #include <GeomAbs_Shape.hxx>
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <Standard_OStream.hxx>
+#include <NCollection_Array1.hxx>
 #include <math_Vector.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <PLib_HermitJacobi.hxx>
@@ -60,17 +61,17 @@ public:
   //! Limitation : The MultiLine from AppDef has to be composed by
   //! only one Line ( Dimension 2 or 3).
   Standard_EXPORT AppDef_Variational(
-    const AppDef_MultiLine&                                                SSP,
-    const int                                                              FirstPoint,
-    const int                                                              LastPoint,
+    const AppDef_MultiLine&                               SSP,
+    const int                                FirstPoint,
+    const int                                LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    const int                                                              MaxDegree   = 14,
-    const int                                                              MaxSegment  = 100,
-    const GeomAbs_Shape                                                    Continuity  = GeomAbs_C2,
-    const bool                                                             WithMinMax  = false,
-    const bool                                                             WithCutting = true,
-    const double                                                           Tolerance   = 1.0,
-    const int                                                              NbIterations = 2);
+    const int                                MaxDegree    = 14,
+    const int                                MaxSegment   = 100,
+    const GeomAbs_Shape                                   Continuity   = GeomAbs_C2,
+    const bool                                WithMinMax   = false,
+    const bool                                WithCutting  = true,
+    const double                                   Tolerance    = 1.0,
+    const int                                NbIterations = 2);
 
   //! Makes the approximation with the current fields.
   Standard_EXPORT void Approximate();
@@ -125,7 +126,9 @@ public:
 
   //! returns the Weights (as percent) associed to the criterium used in
   //! the optimization.
-  Standard_EXPORT void CriteriumWeight(double& Percent1, double& Percent2, double& Percent3) const;
+  Standard_EXPORT void CriteriumWeight(double& Percent1,
+                                       double& Percent2,
+                                       double& Percent3) const;
 
   //! returns the Maximum Degree used in the approximation
   Standard_EXPORT int MaxDegree() const;
@@ -158,8 +161,8 @@ public:
   //! Define the constraints to approximate
   //! If this value is incompatible with the others fields
   //! this method modify nothing and returns false
-  Standard_EXPORT bool SetConstraints(
-    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& aConstrainst);
+  Standard_EXPORT bool
+    SetConstraints(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& aConstrainst);
 
   //! Defines the parameters used by the approximations.
   Standard_EXPORT void SetParameters(const occ::handle<NCollection_HArray1<double>>& param);
@@ -206,7 +209,8 @@ public:
   //! weights are updated.
   //! if Percent < 0
   //! if Order < 1 or Order > 3
-  Standard_EXPORT void SetCriteriumWeight(const int Order, const double Percent);
+  Standard_EXPORT void SetCriteriumWeight(const int Order,
+                                          const double    Percent);
 
   //! define the tolerance used in the approximation.
   Standard_EXPORT void SetTolerance(const double Tol);
@@ -217,43 +221,43 @@ public:
 
 private:
   Standard_EXPORT void TheMotor(occ::handle<AppDef_SmoothCriterion>& J,
-                                const double                         WQuadratic,
-                                const double                         WQuality,
+                                const double             WQuadratic,
+                                const double             WQuality,
                                 occ::handle<FEmTool_Curve>&          TheCurve,
-                                NCollection_Array1<double>&          Ecarts);
+                                NCollection_Array1<double>&           Ecarts);
 
   Standard_EXPORT void Adjusting(occ::handle<AppDef_SmoothCriterion>& J,
-                                 double&                              WQuadratic,
-                                 double&                              WQuality,
+                                 double&                  WQuadratic,
+                                 double&                  WQuality,
                                  occ::handle<FEmTool_Curve>&          TheCurve,
-                                 NCollection_Array1<double>&          Ecarts);
+                                 NCollection_Array1<double>&           Ecarts);
 
   Standard_EXPORT void Optimization(occ::handle<AppDef_SmoothCriterion>& J,
-                                    FEmTool_Assembly&                    A,
-                                    const bool                           ToAssemble,
-                                    const double                         EpsDeg,
+                                    FEmTool_Assembly&               A,
+                                    const bool          ToAssemble,
+                                    const double             EpsDeg,
                                     occ::handle<FEmTool_Curve>&          Curve,
-                                    const NCollection_Array1<double>&    Parameters) const;
+                                    const NCollection_Array1<double>&     Parameters) const;
 
   Standard_EXPORT void Project(const occ::handle<FEmTool_Curve>& C,
-                               const NCollection_Array1<double>& Ti,
-                               NCollection_Array1<double>&       ProjTi,
-                               NCollection_Array1<double>&       Distance,
-                               int&                              NumPoints,
-                               double&                           MaxErr,
-                               double&                           QuaErr,
-                               double&                           AveErr,
-                               const int                         NbIterations = 2) const;
+                               const NCollection_Array1<double>&  Ti,
+                               NCollection_Array1<double>&        ProjTi,
+                               NCollection_Array1<double>&        Distance,
+                               int&            NumPoints,
+                               double&               MaxErr,
+                               double&               QuaErr,
+                               double&               AveErr,
+                               const int       NbIterations = 2) const;
 
   Standard_EXPORT void ACR(occ::handle<FEmTool_Curve>& Curve,
-                           NCollection_Array1<double>& Ti,
-                           const int                   Decima) const;
+                           NCollection_Array1<double>&  Ti,
+                           const int Decima) const;
 
   Standard_EXPORT void SplitCurve(const occ::handle<FEmTool_Curve>& InCurve,
-                                  const NCollection_Array1<double>& Ti,
-                                  const double                      CurveTol,
+                                  const NCollection_Array1<double>&  Ti,
+                                  const double          CurveTol,
                                   occ::handle<FEmTool_Curve>&       OutCurve,
-                                  bool&                             iscut) const;
+                                  bool&            iscut) const;
 
   Standard_EXPORT void Init();
 
@@ -268,63 +272,63 @@ private:
 
   Standard_EXPORT void EstTangent(const int ipnt, math_Vector& VTang) const;
 
-  Standard_EXPORT void EstSecnd(const int          ipnt,
-                                const math_Vector& VTang1,
-                                const math_Vector& VTang2,
-                                const double       Length,
-                                math_Vector&       VScnd) const;
+  Standard_EXPORT void EstSecnd(const int ipnt,
+                                const math_Vector&     VTang1,
+                                const math_Vector&     VTang2,
+                                const double    Length,
+                                math_Vector&           VScnd) const;
 
-  Standard_EXPORT void InitCutting(const PLib_HermitJacobi&    aBase,
-                                   const double                CurvTol,
-                                   occ::handle<FEmTool_Curve>& aCurve) const;
+  Standard_EXPORT void InitCutting(const PLib_HermitJacobi& aBase,
+                                   const double      CurvTol,
+                                   occ::handle<FEmTool_Curve>&   aCurve) const;
 
   Standard_EXPORT void AssemblingConstraints(const occ::handle<FEmTool_Curve>& Curve,
-                                             const NCollection_Array1<double>& Parameters,
-                                             const double                      CBLONG,
-                                             FEmTool_Assembly&                 A) const;
+                                             const NCollection_Array1<double>&  Parameters,
+                                             const double          CBLONG,
+                                             FEmTool_Assembly&            A) const;
 
-  Standard_EXPORT bool InitTthetaF(const int                     ndimen,
-                                   const AppParCurves_Constraint typcon,
-                                   const int                     begin,
-                                   const int                     jndex);
+  Standard_EXPORT bool InitTthetaF(const int        ndimen,
+                                               const AppParCurves_Constraint typcon,
+                                               const int        begin,
+                                               const int        jndex);
 
-  AppDef_MultiLine                                                mySSP;
-  int                                                             myNbP3d;
-  int                                                             myNbP2d;
-  int                                                             myDimension;
-  int                                                             myFirstPoint;
-  int                                                             myLastPoint;
-  int                                                             myNbPoints;
-  occ::handle<NCollection_HArray1<double>>                        myTabPoints;
+  AppDef_MultiLine                               mySSP;
+  int                               myNbP3d;
+  int                               myNbP2d;
+  int                               myDimension;
+  int                               myFirstPoint;
+  int                               myLastPoint;
+  int                               myNbPoints;
+  occ::handle<NCollection_HArray1<double>>                  myTabPoints;
   occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> myConstraints;
-  int                                                             myNbConstraints;
-  occ::handle<NCollection_HArray1<double>>                        myTabConstraints;
-  int                                                             myNbPassPoints;
-  int                                                             myNbTangPoints;
-  int                                                             myNbCurvPoints;
-  occ::handle<NCollection_HArray1<int>>                           myTypConstraints;
-  occ::handle<NCollection_HArray1<double>>                        myTtheta;
-  occ::handle<NCollection_HArray1<double>>                        myTfthet;
-  int                                                             myMaxDegree;
-  int                                                             myMaxSegment;
-  int                                                             myNbIterations;
-  double                                                          myTolerance;
-  GeomAbs_Shape                                                   myContinuity;
-  int                                                             myNivCont;
-  bool                                                            myWithMinMax;
-  bool                                                            myWithCutting;
-  double                                                          myPercent[3];
-  double                                                          myCriterium[4];
-  occ::handle<AppDef_SmoothCriterion>                             mySmoothCriterion;
-  occ::handle<NCollection_HArray1<double>>                        myParameters;
-  occ::handle<NCollection_HArray1<double>>                        myKnots;
-  AppParCurves_MultiBSpCurve                                      myMBSpCurve;
-  double                                                          myMaxError;
-  int                                                             myMaxErrorIndex;
-  double                                                          myAverageError;
-  bool                                                            myIsCreated;
-  bool                                                            myIsDone;
-  bool                                                            myIsOverConstr;
+  int                               myNbConstraints;
+  occ::handle<NCollection_HArray1<double>>                  myTabConstraints;
+  int                               myNbPassPoints;
+  int                               myNbTangPoints;
+  int                               myNbCurvPoints;
+  occ::handle<NCollection_HArray1<int>>               myTypConstraints;
+  occ::handle<NCollection_HArray1<double>>                  myTtheta;
+  occ::handle<NCollection_HArray1<double>>                  myTfthet;
+  int                               myMaxDegree;
+  int                               myMaxSegment;
+  int                               myNbIterations;
+  double                                  myTolerance;
+  GeomAbs_Shape                                  myContinuity;
+  int                               myNivCont;
+  bool                               myWithMinMax;
+  bool                               myWithCutting;
+  double                                  myPercent[3];
+  double                                  myCriterium[4];
+  occ::handle<AppDef_SmoothCriterion>                 mySmoothCriterion;
+  occ::handle<NCollection_HArray1<double>>                  myParameters;
+  occ::handle<NCollection_HArray1<double>>                  myKnots;
+  AppParCurves_MultiBSpCurve                     myMBSpCurve;
+  double                                  myMaxError;
+  int                               myMaxErrorIndex;
+  double                                  myAverageError;
+  bool                               myIsCreated;
+  bool                               myIsDone;
+  bool                               myIsOverConstr;
 };
 
 #endif // _AppDef_Variational_HeaderFile

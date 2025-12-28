@@ -30,9 +30,9 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_CaseData, Standard_Transient)
 
-static NCollection_DataMap<TCollection_AsciiString, int>                             defch;
+static NCollection_DataMap<TCollection_AsciiString, int>           defch;
 static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>> defms;
-static bool                                                                          stachr = false;
+static bool stachr = false;
 
 // static OSD_Timer chrono;
 //  because mess of dynamic link & perf, only create the static on 1st usage
@@ -118,11 +118,11 @@ void MoniTool_CaseData::SetReplace(const int num)
 }
 
 void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
-                                const int                              kind,
-                                const char*                            name)
+                                const int            kind,
+                                const char*            name)
 {
   TCollection_AsciiString aname(name);
-  int                     subs = thesubst;
+  int        subs = thesubst;
 
   //  SetChange (calculate position from Name)
   if (thesubst < 0)
@@ -149,7 +149,7 @@ void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
 }
 
 void MoniTool_CaseData::AddRaised(const occ::handle<Standard_Failure>& theException,
-                                  const char*                          name)
+                                  const char*          name)
 {
   AddData(theException, 1, name);
 }
@@ -174,18 +174,22 @@ void MoniTool_CaseData::AddReal(const double val, const char* name)
   AddData(new Geom2d_CartesianPoint(val, 0.), 8, name);
 }
 
-void MoniTool_CaseData::AddReals(const double v1, const double v2, const char* name)
+void MoniTool_CaseData::AddReals(const double    v1,
+                                 const double    v2,
+                                 const char* name)
 {
   AddData(new Geom2d_CartesianPoint(v1, v2), 7, name);
 }
 
-void MoniTool_CaseData::AddCPU(const double lastCPU, const double curCPU, const char* name)
+void MoniTool_CaseData::AddCPU(const double    lastCPU,
+                               const double    curCPU,
+                               const char* name)
 {
   double cpu = curCPU;
   if (cpu == 0.)
   {
-    double sec;
-    int    i1, i2;
+    double    sec;
+    int i1, i2;
     chrono().Show(sec, i1, i2, cpu);
   }
   cpu = cpu - lastCPU;
@@ -199,21 +203,21 @@ double MoniTool_CaseData::GetCPU() const
     chrono().Start();
     stachr = true;
   }
-  double sec, cpu;
-  int    i1, i2;
+  double    sec, cpu;
+  int i1, i2;
   chrono().Show(sec, i1, i2, cpu);
   return cpu;
 }
 
 bool MoniTool_CaseData::LargeCPU(const double maxCPU,
-                                 const double lastCPU,
-                                 const double curCPU) const
+                                             const double lastCPU,
+                                             const double curCPU) const
 {
   double cpu = curCPU;
   if (cpu == 0.)
   {
-    double sec;
-    int    i1, i2;
+    double    sec;
+    int i1, i2;
     chrono().Show(sec, i1, i2, cpu);
   }
   cpu = cpu - lastCPU;
@@ -225,7 +229,8 @@ void MoniTool_CaseData::AddGeom(const occ::handle<Standard_Transient>& val, cons
   AddData(val, 3, name);
 }
 
-void MoniTool_CaseData::AddEntity(const occ::handle<Standard_Transient>& val, const char* name)
+void MoniTool_CaseData::AddEntity(const occ::handle<Standard_Transient>& val,
+                                  const char*            name)
 {
   AddData(val, 2, name);
 }
@@ -270,9 +275,9 @@ occ::handle<Standard_Transient> MoniTool_CaseData::Data(const int nd) const
   return thedata(nd);
 }
 
-bool MoniTool_CaseData::GetData(const int                         nd,
-                                const occ::handle<Standard_Type>& type,
-                                occ::handle<Standard_Transient>&  val) const
+bool MoniTool_CaseData::GetData(const int       nd,
+                                            const occ::handle<Standard_Type>& type,
+                                            occ::handle<Standard_Transient>&  val) const
 {
   if (type.IsNull())
     return false;
@@ -386,7 +391,7 @@ int MoniTool_CaseData::NameNum(const char* name) const
 
 TopoDS_Shape MoniTool_CaseData::Shape(const int nd) const
 {
-  TopoDS_Shape               sh;
+  TopoDS_Shape          sh;
   occ::handle<TopoDS_HShape> hs = occ::down_cast<TopoDS_HShape>(Data(nd));
   if (!hs.IsNull())
     sh = hs->Shape();
@@ -411,7 +416,9 @@ bool MoniTool_CaseData::XY(const int nd, gp_XY& val) const
   return true;
 }
 
-bool MoniTool_CaseData::Reals(const int nd, double& v1, double& v2) const
+bool MoniTool_CaseData::Reals(const int nd,
+                                          double&         v1,
+                                          double&         v2) const
 {
   occ::handle<Geom2d_CartesianPoint> p = occ::down_cast<Geom2d_CartesianPoint>(Data(nd));
   if (p.IsNull())
@@ -446,7 +453,7 @@ bool MoniTool_CaseData::Integer(const int nd, int& val) const
   if (thekind(nd) != 11)
     return false;
   double rval = p->X();
-  val         = (int)rval;
+  val                = (int)rval;
   return true;
 }
 

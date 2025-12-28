@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepVisual_PresentationView();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_PresentationView, StepVisual_PresentationRepresentation)
+
 };
 
 #endif // _StepVisual_PresentationView_HeaderFile

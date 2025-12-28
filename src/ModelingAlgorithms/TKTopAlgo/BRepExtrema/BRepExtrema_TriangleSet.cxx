@@ -29,8 +29,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 {
   // Set default builder - linear BVH (LBVH)
-  myBuilder =
-    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault, BVH_Constants_MaxTreeDepth);
+  myBuilder = new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault,
+                                                      BVH_Constants_MaxTreeDepth);
 }
 
 //=======================================================================
@@ -40,8 +40,8 @@ BRepExtrema_TriangleSet::BRepExtrema_TriangleSet()
 BRepExtrema_TriangleSet::BRepExtrema_TriangleSet(const NCollection_Vector<TopoDS_Shape>& theFaces)
 {
   // Set default builder - linear BVH (LBVH)
-  myBuilder =
-    new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault, BVH_Constants_MaxTreeDepth);
+  myBuilder = new BVH_LinearBuilder<double, 3>(BVH_Constants_LeafNodeSizeDefault,
+                                                      BVH_Constants_MaxTreeDepth);
 
   Init(theFaces);
 }
@@ -85,7 +85,8 @@ BVH_Box<double, 3> BRepExtrema_TriangleSet::Box(const int theIndex) const
 // function : Center
 // purpose  : Returns centroid position along specified axis
 //=======================================================================
-double BRepExtrema_TriangleSet::Center(const int theIndex, const int theAxis) const
+double BRepExtrema_TriangleSet::Center(const int theIndex,
+                                              const int theAxis) const
 {
   const BVH_Vec4i& aTriangle = myTriangles[theIndex];
 
@@ -113,7 +114,8 @@ double BRepExtrema_TriangleSet::Center(const int theIndex, const int theAxis) co
 // function : Swap
 // purpose  : Swaps indices of two specified triangles
 //=======================================================================
-void BRepExtrema_TriangleSet::Swap(const int theIndex1, const int theIndex2)
+void BRepExtrema_TriangleSet::Swap(const int theIndex1,
+                                   const int theIndex2)
 {
   std::swap(myTriangles[theIndex1], myTriangles[theIndex2]);
 
@@ -179,10 +181,10 @@ int BRepExtrema_TriangleSet::GetTrgIdxInShape(const int theIndex) const
 // function : GetVertices
 // purpose  : Returns vertices of the given triangle
 //=======================================================================
-void BRepExtrema_TriangleSet::GetVertices(const int  theIndex,
-                                          BVH_Vec3d& theVertex1,
-                                          BVH_Vec3d& theVertex2,
-                                          BVH_Vec3d& theVertex3) const
+void BRepExtrema_TriangleSet::GetVertices(const int theIndex,
+                                          BVH_Vec3d&             theVertex1,
+                                          BVH_Vec3d&             theVertex2,
+                                          BVH_Vec3d&             theVertex3) const
 {
   BVH_Vec4i aTriangle = myTriangles[theIndex];
 
@@ -195,8 +197,9 @@ void BRepExtrema_TriangleSet::GetVertices(const int  theIndex,
 // function : GetVertices
 // purpose  : Returns vertices of the given triangle
 //=======================================================================
-void BRepExtrema_TriangleSet::GetVtxIndices(const int                theIndex,
-                                            NCollection_Array1<int>& theVtxIndices) const
+void BRepExtrema_TriangleSet::GetVtxIndices(
+  const int                theIndex,
+  NCollection_Array1<int>& theVtxIndices) const
 {
   BVH_Vec4i aTriangle = myTriangles[theIndex];
 
@@ -247,7 +250,9 @@ bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theSh
 
   MarkDirty(); // needs BVH rebuilding
 
-  Standard_ASSERT_RETURN(!BVH().IsNull(), "Error: Failed to build BVH for primitive set", false);
+  Standard_ASSERT_RETURN(!BVH().IsNull(),
+                         "Error: Failed to build BVH for primitive set",
+                         false);
 
   return true;
 }
@@ -256,7 +261,8 @@ bool BRepExtrema_TriangleSet::Init(const NCollection_Vector<TopoDS_Shape>& theSh
 // function : initFace
 // purpose  : Initializes triangle set
 //=======================================================================
-bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int theIndex)
+bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face&     theFace,
+                                                   const int theIndex)
 {
   TopLoc_Location aLocation;
 
@@ -291,7 +297,8 @@ bool BRepExtrema_TriangleSet::initFace(const TopoDS_Face& theFace, const int the
 // function : initEdge
 // purpose  : Initializes triangle set
 //=======================================================================
-bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge& theEdge, const int theIndex)
+bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge&     theEdge,
+                                                   const int theIndex)
 {
   TopLoc_Location aLocation;
 
@@ -319,8 +326,8 @@ bool BRepExtrema_TriangleSet::initEdge(const TopoDS_Edge& theEdge, const int the
 //=================================================================================================
 
 void BRepExtrema_TriangleSet::initNodes(const NCollection_Array1<gp_Pnt>& theNodes,
-                                        const gp_Trsf&                    theTrsf,
-                                        const int                         theIndex)
+                                        const gp_Trsf&            theTrsf,
+                                        const int    theIndex)
 {
   for (int aVertIdx = 1; aVertIdx <= theNodes.Size(); ++aVertIdx)
   {

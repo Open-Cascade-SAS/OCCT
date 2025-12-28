@@ -67,9 +67,9 @@ Geom_OffsetCurve::Geom_OffsetCurve(const Geom_OffsetCurve& theOther)
 //==================================================================================================
 
 Geom_OffsetCurve::Geom_OffsetCurve(const occ::handle<Geom_Curve>& theCurve,
-                                   const double                   theOffset,
-                                   const gp_Dir&                  theDir,
-                                   const bool                     isTheNotCheckC0)
+                                   const double       theOffset,
+                                   const gp_Dir&             theDir,
+                                   const bool    isTheNotCheckC0)
     : direction(theDir),
       offsetValue(theOffset)
 {
@@ -128,11 +128,12 @@ double Geom_OffsetCurve::Period() const
 
 //==================================================================================================
 
-void Geom_OffsetCurve::SetBasisCurve(const occ::handle<Geom_Curve>& C, const bool isNotCheckC0)
+void Geom_OffsetCurve::SetBasisCurve(const occ::handle<Geom_Curve>& C,
+                                     const bool    isNotCheckC0)
 {
-  const double            aUf = C->FirstParameter(), aUl = C->LastParameter();
+  const double       aUf = C->FirstParameter(), aUl = C->LastParameter();
   occ::handle<Geom_Curve> aCheckingCurve = occ::down_cast<Geom_Curve>(C->Copy());
-  bool                    isTrimmed      = false;
+  bool               isTrimmed      = false;
 
   while (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))
          || aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
@@ -140,15 +141,15 @@ void Geom_OffsetCurve::SetBasisCurve(const occ::handle<Geom_Curve>& C, const boo
     if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
       occ::handle<Geom_TrimmedCurve> aTrimC = occ::down_cast<Geom_TrimmedCurve>(aCheckingCurve);
-      aCheckingCurve                        = aTrimC->BasisCurve();
-      isTrimmed                             = true;
+      aCheckingCurve                   = aTrimC->BasisCurve();
+      isTrimmed                        = true;
     }
 
     if (aCheckingCurve->IsKind(STANDARD_TYPE(Geom_OffsetCurve)))
     {
       occ::handle<Geom_OffsetCurve> aOC = occ::down_cast<Geom_OffsetCurve>(aCheckingCurve);
-      aCheckingCurve                    = aOC->BasisCurve();
-      double PrevOff                    = aOC->Offset();
+      aCheckingCurve               = aOC->BasisCurve();
+      double PrevOff               = aOC->Offset();
       gp_Vec V1(aOC->Direction());
       gp_Vec V2(direction);
       gp_Vec Vdir(PrevOff * V1 + offsetValue * V2);
@@ -265,7 +266,10 @@ void Geom_OffsetCurve::D1(const double theU, gp_Pnt& theP, gp_Vec& theV1) const
 
 //==================================================================================================
 
-void Geom_OffsetCurve::D2(const double theU, gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2) const
+void Geom_OffsetCurve::D2(const double theU,
+                          gp_Pnt&             theP,
+                          gp_Vec&             theV1,
+                          gp_Vec&             theV2) const
 {
   if (!Geom_OffsetCurveUtils::EvaluateD2(theU,
                                          basisCurve.get(),
@@ -282,10 +286,10 @@ void Geom_OffsetCurve::D2(const double theU, gp_Pnt& theP, gp_Vec& theV1, gp_Vec
 //==================================================================================================
 
 void Geom_OffsetCurve::D3(const double theU,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theV1,
-                          gp_Vec&      theV2,
-                          gp_Vec&      theV3) const
+                          gp_Pnt&             theP,
+                          gp_Vec&             theV1,
+                          gp_Vec&             theV2,
+                          gp_Vec&             theV3) const
 {
   if (!Geom_OffsetCurveUtils::EvaluateD3(theU,
                                          basisCurve.get(),

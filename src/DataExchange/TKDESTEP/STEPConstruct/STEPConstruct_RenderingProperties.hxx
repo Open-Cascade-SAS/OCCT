@@ -64,14 +64,13 @@ public:
   //! Constructor from XCAFDoc_VisMaterial.
   //! Creates rendering properties using material properties from the OCCT material.
   //! @param[in] theMaterial visualization material properties
-  Standard_EXPORT STEPConstruct_RenderingProperties(
-    const occ::handle<XCAFDoc_VisMaterial>& theMaterial);
+  Standard_EXPORT STEPConstruct_RenderingProperties(const occ::handle<XCAFDoc_VisMaterial>& theMaterial);
 
   //! Constructor from surface color, transparency, and rendering method.
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   Standard_EXPORT STEPConstruct_RenderingProperties(const Quantity_Color& theSurfaceColor,
-                                                    const double          theTransparency = 0.0);
+                                                    const double   theTransparency = 0.0);
 
   //! Initializes from STEP rendering properties entity.
   //! Extracts color, transparency, and other properties from the STEP entity.
@@ -87,7 +86,7 @@ public:
   //! @param[in] theColor STEP color entity
   //! @param[in] theTransparency transparency value
   Standard_EXPORT void Init(const occ::handle<StepVisual_Colour>& theColor,
-                            const double                          theTransparency);
+                            const double              theTransparency);
 
   //! Initializes from XCAFDoc_VisMaterialCommon.
   //! @param[in] theMaterial common visualization material properties
@@ -101,7 +100,7 @@ public:
   //! @param[in] theSurfaceColor surface color
   //! @param[in] theTransparency transparency value
   Standard_EXPORT void Init(const Quantity_Color& theSurfaceColor,
-                            const double          theTransparency = 0.0);
+                            const double   theTransparency = 0.0);
 
   //! Sets ambient reflectance value
   //! @param[in] theAmbientReflectance ambient reflectance value
@@ -120,22 +119,22 @@ public:
   //! @param[in] theSpecularExponent specular exponent value
   //! @param[in] theSpecularColour specular color
   Standard_EXPORT void SetAmbientDiffuseAndSpecularReflectance(
-    const double          theAmbientReflectance,
-    const double          theDiffuseReflectance,
-    const double          theSpecularReflectance,
-    const double          theSpecularExponent,
+    const double   theAmbientReflectance,
+    const double   theDiffuseReflectance,
+    const double   theSpecularReflectance,
+    const double   theSpecularExponent,
     const Quantity_Color& theSpecularColour);
 
   //! Creates and returns rendering properties entity
   //! @return created rendering properties entity
-  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>
-                  CreateRenderingProperties() const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> CreateRenderingProperties()
+    const;
 
   // Creates and returns rendering properties entity with the specified color
   //! @param[in] theRenderColour color to be used for rendering
   //! @return created rendering properties entity
-  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties>
-    CreateRenderingProperties(const occ::handle<StepVisual_Colour>& theRenderColour) const;
+  Standard_EXPORT occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> CreateRenderingProperties(
+    const occ::handle<StepVisual_Colour>& theRenderColour) const;
 
   //! Creates and returns XCAF material entity
   //! @return created XCAF material entity
@@ -217,7 +216,7 @@ public:
 
 private:
   Quantity_Color mySurfaceColor; //!< Surface colour used for rendering
-  double         myTransparency; //!< Transparency value (0.0 - opaque, 1.0 - fully transparent)
+  double  myTransparency; //!< Transparency value (0.0 - opaque, 1.0 - fully transparent)
   StepVisual_ShadingSurfaceMethod myRenderingMethod; //!< Rendering method used for shading
   bool myIsDefined; //!< Flag indicating if rendering properties are defined
 

@@ -28,12 +28,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_CircArraySubfigure, IGESData_IGESEntity)
 IGESDraw_CircArraySubfigure::IGESDraw_CircArraySubfigure() {}
 
 void IGESDraw_CircArraySubfigure::Init(const occ::handle<IGESData_IGESEntity>&      aBase,
-                                       const int                                    aNumLocs,
-                                       const gp_XYZ&                                aCenter,
-                                       const double                                 aRadius,
-                                       const double                                 aStAngle,
-                                       const double                                 aDelAngle,
-                                       const int                                    aFlag,
+                                       const int                  aNumLocs,
+                                       const gp_XYZ&                           aCenter,
+                                       const double                     aRadius,
+                                       const double                     aStAngle,
+                                       const double                     aDelAngle,
+                                       const int                  aFlag,
                                        const occ::handle<NCollection_HArray1<int>>& allNumPos)
 {
   if (!allNumPos.IsNull())

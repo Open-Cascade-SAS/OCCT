@@ -38,9 +38,8 @@ public:
 
   //! Attach a texture image.
   //! Resets the active FBO to 0.
-  Standard_EXPORT void AttachDepthTexture(
-    const occ::handle<OpenGl_Context>& theCtx,
-    const occ::handle<OpenGl_Texture>& theDepthStencilTexture);
+  Standard_EXPORT void AttachDepthTexture(const occ::handle<OpenGl_Context>& theCtx,
+                                          const occ::handle<OpenGl_Texture>& theDepthStencilTexture);
 
   //! Detach a texture image.
   //! Resets the active FBO to 0.

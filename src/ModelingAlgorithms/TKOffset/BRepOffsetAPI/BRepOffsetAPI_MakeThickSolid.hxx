@@ -58,7 +58,7 @@ public:
   //! intersections are not computed during offset creation.
   //! Non-closed shell or face is expected as input.
   Standard_EXPORT void MakeThickSolidBySimple(const TopoDS_Shape& theS,
-                                              const double        theOffsetValue);
+                                              const double theOffsetValue);
 
   //! Constructs a hollowed solid from
   //! the solid S by removing the set of faces ClosingFaces from S, where:
@@ -101,16 +101,16 @@ public:
   //! MakeOffsetShape algorithm, the warnings are the same as for
   //! MakeOffsetShape.
   Standard_EXPORT void MakeThickSolidByJoin(
-    const TopoDS_Shape&                   S,
-    const NCollection_List<TopoDS_Shape>& ClosingFaces,
-    const double                          Offset,
-    const double                          Tol,
-    const BRepOffset_Mode                 Mode           = BRepOffset_Skin,
-    const bool                            Intersection   = false,
-    const bool                            SelfInter      = false,
-    const GeomAbs_JoinType                Join           = GeomAbs_Arc,
-    const bool                            RemoveIntEdges = false,
-    const Message_ProgressRange&          theRange       = Message_ProgressRange());
+    const TopoDS_Shape&          S,
+    const NCollection_List<TopoDS_Shape>&  ClosingFaces,
+    const double          Offset,
+    const double          Tol,
+    const BRepOffset_Mode        Mode           = BRepOffset_Skin,
+    const bool       Intersection   = false,
+    const bool       SelfInter      = false,
+    const GeomAbs_JoinType       Join           = GeomAbs_Arc,
+    const bool       RemoveIntEdges = false,
+    const Message_ProgressRange& theRange       = Message_ProgressRange());
 
   // Does nothing.
   Standard_EXPORT virtual void Build(
@@ -118,8 +118,8 @@ public:
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
+    override;
 };
 
 #endif // _BRepOffsetAPI_MakeThickSolid_HeaderFile

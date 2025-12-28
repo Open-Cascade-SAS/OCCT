@@ -33,12 +33,12 @@ public:
   Standard_EXPORT Draw_Marker3D(const gp_Pnt&          P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const int              ISize = 5);
+                                const int ISize = 5);
 
   Standard_EXPORT Draw_Marker3D(const gp_Pnt&          P,
                                 const Draw_MarkerShape T,
                                 const Draw_Color&      C,
-                                const double           RSize);
+                                const double    RSize);
 
   //! myPos field
   Standard_EXPORT gp_Pnt& ChangePos();
@@ -47,8 +47,9 @@ public:
 
   //! Returns always false
   Standard_EXPORT virtual bool PickReject(const double X,
-                                          const double Y,
-                                          const double Prec) const override;
+                                                      const double Y,
+                                                      const double Prec) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Marker3D, Draw_Drawable3D)
 
@@ -56,9 +57,9 @@ private:
   gp_Pnt           myPos;
   Draw_Color       myCol;
   Draw_MarkerShape myTyp;
-  int              mySiz;
-  double           myRSiz;
-  bool             myIsRSiz;
+  int mySiz;
+  double    myRSiz;
+  bool myIsRSiz;
 };
 
 #endif // _Draw_Marker3D_HeaderFile

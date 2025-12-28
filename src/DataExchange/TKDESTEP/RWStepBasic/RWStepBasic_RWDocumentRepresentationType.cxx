@@ -30,7 +30,7 @@ RWStepBasic_RWDocumentRepresentationType::RWStepBasic_RWDocumentRepresentationTy
 
 void RWStepBasic_RWDocumentRepresentationType::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_DocumentRepresentationType>& ent) const
 {
@@ -58,7 +58,7 @@ void RWStepBasic_RWDocumentRepresentationType::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWDocumentRepresentationType::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_DocumentRepresentationType>& ent) const
 {
 
@@ -73,7 +73,7 @@ void RWStepBasic_RWDocumentRepresentationType::WriteStep(
 
 void RWStepBasic_RWDocumentRepresentationType::Share(
   const occ::handle<StepBasic_DocumentRepresentationType>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   // Own fields of DocumentRepresentationType

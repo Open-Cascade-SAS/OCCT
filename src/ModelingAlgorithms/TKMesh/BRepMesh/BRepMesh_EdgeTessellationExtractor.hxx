@@ -43,16 +43,17 @@ public:
   //! @param thePoint tessellation point.
   //! @return True in case of valid result, false elewhere.
   Standard_EXPORT virtual bool Value(const int theIndex,
-                                     gp_Pnt&   thePoint,
-                                     double&   theParameter) const override;
+                                                 gp_Pnt&                thePoint,
+                                                 double&         theParameter) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 
 private:
   BRepMesh_EdgeParameterProvider<occ::handle<NCollection_HArray1<double>>> myProvider;
-  const Poly_Triangulation*                                                myTriangulation;
-  const NCollection_Array1<int>*                                           myIndices;
-  TopLoc_Location                                                          myLoc;
+  const Poly_Triangulation*                                     myTriangulation;
+  const NCollection_Array1<int>*                                myIndices;
+  TopLoc_Location                                               myLoc;
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepDimTol_ToleranceZoneForm.hxx>
+#include <StepDimTol_ToleranceZoneTarget.hxx>
 
 class TCollection_HAsciiString;
 
@@ -42,12 +43,12 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                            theName,
-    const occ::handle<TCollection_HAsciiString>&                            theDescription,
-    const occ::handle<StepRepr_ProductDefinitionShape>&                     theOfShape,
-    const StepData_Logical                                                  theProductDefinitional,
+    const occ::handle<TCollection_HAsciiString>&                theName,
+    const occ::handle<TCollection_HAsciiString>&                theDescription,
+    const occ::handle<StepRepr_ProductDefinitionShape>&         theOfShape,
+    const StepData_Logical                                 theProductDefinitional,
     const occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>>& theDefiningTolerance,
-    const occ::handle<StepDimTol_ToleranceZoneForm>&                        theForm);
+    const occ::handle<StepDimTol_ToleranceZoneForm>&            theForm);
 
   //! Returns field DefiningTolerance
   inline occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>> DefiningTolerance() const
@@ -75,7 +76,7 @@ public:
   }
 
   //! Sets Defining Tolerance with given number
-  inline void SetDefiningToleranceValue(const int                             theNum,
+  inline void SetDefiningToleranceValue(const int                theNum,
                                         const StepDimTol_ToleranceZoneTarget& theItem)
   {
     myDefiningTolerance->SetValue(theNum, theItem);
@@ -85,15 +86,12 @@ public:
   inline occ::handle<StepDimTol_ToleranceZoneForm> Form() { return myForm; }
 
   //! Set field Form
-  inline void SetForm(const occ::handle<StepDimTol_ToleranceZoneForm>& theForm)
-  {
-    myForm = theForm;
-  }
+  inline void SetForm(const occ::handle<StepDimTol_ToleranceZoneForm>& theForm) { myForm = theForm; }
 
   DEFINE_STANDARD_RTTIEXT(StepDimTol_ToleranceZone, StepRepr_ShapeAspect)
 
 private:
   occ::handle<NCollection_HArray1<StepDimTol_ToleranceZoneTarget>> myDefiningTolerance;
-  occ::handle<StepDimTol_ToleranceZoneForm>                        myForm;
+  occ::handle<StepDimTol_ToleranceZoneForm>            myForm;
 };
 #endif // _StepDimTol_ToleranceZone_HeaderFile

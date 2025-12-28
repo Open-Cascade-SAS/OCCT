@@ -38,9 +38,10 @@ public:
   //! the attribute manager aDrawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          OffsetPoint,
-                                  const gp_Dir&                          aDirection,
-                                  const double                           aLength);
+                                  const gp_Pnt&                     OffsetPoint,
+                                  const gp_Dir&                     aDirection,
+                                  const double               aLength);
+
 };
 
 #endif // _DsgPrs_TangentPresentation_HeaderFile

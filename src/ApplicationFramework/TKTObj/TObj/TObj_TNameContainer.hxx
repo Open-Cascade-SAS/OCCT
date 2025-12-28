@@ -47,8 +47,7 @@ public:
 public:
   //! Method for create TObj_TNameContainer object
 
-  //! Creates NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> attribute on
-  //! given label if not exist
+  //! Creates NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> attribute on given label if not exist
   static Standard_EXPORT occ::handle<TObj_TNameContainer> Set(const TDF_Label& theLabel);
 
 public:
@@ -56,13 +55,14 @@ public:
 
   //! Records name with label attached
   Standard_EXPORT void RecordName(const occ::handle<TCollection_HExtendedString>& theName,
-                                  const TDF_Label&                                theLabel);
+                                  const TDF_Label&                           theLabel);
 
   //! Remove name from the map
   Standard_EXPORT void RemoveName(const occ::handle<TCollection_HExtendedString>& theName);
 
   //! Return True is theName is registered in the Map
-  Standard_EXPORT bool IsRegistered(const occ::handle<TCollection_HExtendedString>& theName) const;
+  Standard_EXPORT bool
+    IsRegistered(const occ::handle<TCollection_HExtendedString>& theName) const;
 
   //! Remove all names registered in container
   Standard_EXPORT void Clear();
@@ -71,12 +71,10 @@ public:
   //! Methods for setting and obtaining TObj_TNameContainer
 
   //! Sets the NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> object
-  Standard_EXPORT void Set(
-    const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& theElem);
+  Standard_EXPORT void Set(const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& theElem);
 
   //! Returns the NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> object
-  Standard_EXPORT const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>&
-                        Get() const;
+  Standard_EXPORT const NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>& Get() const;
 
 public:
   //! Redefined OCAF abstract methods
@@ -96,8 +94,7 @@ public:
 
 private:
   //! Fields
-  NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label>
-    myMap; //!< The map of the names
+  NCollection_DataMap<occ::handle<TCollection_HExtendedString>, TDF_Label> myMap; //!< The map of the names
 
 public:
   //! CASCADE RTTI

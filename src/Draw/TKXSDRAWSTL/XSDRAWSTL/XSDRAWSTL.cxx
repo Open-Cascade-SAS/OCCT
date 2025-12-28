@@ -50,9 +50,9 @@
 #include <XSDRAWSTL_DataSource3D.hxx>
 #include <XSDRAWSTL_DrawableMesh.hxx>
 
-extern bool VDisplayAISObject(const TCollection_AsciiString&            theName,
-                              const occ::handle<AIS_InteractiveObject>& theAISObj,
-                              bool                                      theReplaceIfExists = true);
+extern bool VDisplayAISObject(const TCollection_AsciiString&       theName,
+                                          const occ::handle<AIS_InteractiveObject>& theAISObj,
+                                          bool theReplaceIfExists = true);
 
 //=================================================================================================
 
@@ -64,16 +64,16 @@ static int writestl(Draw_Interpretor& di, int argc, const char** argv)
   }
   else
   {
-    TopoDS_Shape aShape      = DBRep::Get(argv[1]);
-    bool         isASCIIMode = false;
+    TopoDS_Shape     aShape      = DBRep::Get(argv[1]);
+    bool isASCIIMode = false;
     if (argc == 4)
     {
       isASCIIMode = (Draw::Atoi(argv[3]) == 0);
     }
     StlAPI_Writer aWriter;
-    aWriter.ASCIIMode()                           = isASCIIMode;
+    aWriter.ASCIIMode()                      = isASCIIMode;
     occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di);
-    bool                                isOK = aWriter.Write(aShape, argv[2], aProgress->Start());
+    bool               isOK      = aWriter.Write(aShape, argv[2], aProgress->Start());
     if (!isOK)
       di << "** Error **: Mesh writing has been failed.\n";
   }
@@ -82,7 +82,9 @@ static int writestl(Draw_Interpretor& di, int argc, const char** argv)
 
 //=================================================================================================
 
-static int readstl(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+static int readstl(Draw_Interpretor& theDI,
+                                int  theArgc,
+                                const char**      theArgv)
 {
   TCollection_AsciiString aShapeName, aFilePath;
   bool                    toCreateCompOfTris = false;
@@ -207,7 +209,9 @@ static int readstl(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
 //=================================================================================================
 
-static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int createmesh(Draw_Interpretor& theDI,
+                                   int  theNbArgs,
+                                   const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -224,7 +228,7 @@ static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
   }
 
   // Progress indicator
-  OSD_Path                            aFile(theArgVec[2]);
+  OSD_Path                       aFile(theArgVec[2]);
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(theDI, 1);
   occ::handle<Poly_Triangulation>     aSTLMesh  = RWStl::ReadFile(aFile, aProgress->Start());
 
@@ -241,7 +245,7 @@ static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
   // Hide all nodes by default
   occ::handle<TColStd_HPackedMapOfInteger> aNodes = new TColStd_HPackedMapOfInteger();
-  const int                                aLen   = aSTLMesh->NbNodes();
+  const int              aLen   = aSTLMesh->NbNodes();
   for (int anIndex = 1; anIndex <= aLen; anIndex++)
     aNodes->ChangeMap().Add(anIndex);
   aMesh->SetHiddenNodes(aNodes);
@@ -260,7 +264,9 @@ static int createmesh(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
 //=================================================================================================
 
-static int create3d(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int create3d(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -288,7 +294,7 @@ static int create3d(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
   // Hide all nodes by default
   occ::handle<TColStd_HPackedMapOfInteger> aNodes = new TColStd_HPackedMapOfInteger();
-  int                                      aLen   = aDS->GetAllNodes().Extent();
+  int                    aLen   = aDS->GetAllNodes().Extent();
   for (int anIndex = 1; anIndex <= aLen; anIndex++)
     aNodes->ChangeMap().Add(anIndex);
   aMesh->SetHiddenNodes(aNodes);
@@ -332,7 +338,10 @@ occ::handle<MeshVS_Mesh> getMesh(const char* theName, Draw_Interpretor& theDI)
 
 //=================================================================================================
 
-static int setcolor(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec, int theParam)
+static int setcolor(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec,
+                                 int  theParam)
 {
   if (theNbArgs < 5)
     theDI << "Wrong number of parameters\n";
@@ -360,21 +369,27 @@ static int setcolor(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int meshcolor(Draw_Interpretor& theInterp, int theNbArgs, const char** theArgVec)
+static int meshcolor(Draw_Interpretor& theInterp,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   return setcolor(theInterp, theNbArgs, theArgVec, MeshVS_DA_InteriorColor);
 }
 
 //=================================================================================================
 
-static int linecolor(Draw_Interpretor& theInterp, int theNbArgs, const char** theArgVec)
+static int linecolor(Draw_Interpretor& theInterp,
+                                  int  theNbArgs,
+                                  const char**      theArgVec)
 {
   return setcolor(theInterp, theNbArgs, theArgVec, MeshVS_DA_EdgeColor);
 }
 
 //=================================================================================================
 
-static int meshmat(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshmat(Draw_Interpretor& theDI,
+                                int  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 3)
     theDI << "Wrong number of parameters\n";
@@ -409,7 +424,9 @@ static int meshmat(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 
 //=================================================================================================
 
-static int shrink(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int shrink(Draw_Interpretor& theDI,
+                               int  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 3)
     theDI << "Wrong number of parameters\n";
@@ -434,7 +451,9 @@ static int shrink(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec
 
 //=================================================================================================
 
-static int closed(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
+static int closed(Draw_Interpretor& theDI,
+                               int  theArgc,
+                               const char**      theArgv)
 {
   if (theArgc < 3)
   {
@@ -464,7 +483,9 @@ static int closed(Draw_Interpretor& theDI, int theArgc, const char** theArgv)
 
 //=================================================================================================
 
-static int mdisplay(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int mdisplay(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
     theDI << "Wrong number of parameters\n";
@@ -488,7 +509,9 @@ static int mdisplay(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int merase(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int merase(Draw_Interpretor& theDI,
+                               int  theNbArgs,
+                               const char**      theArgVec)
 {
   if (theNbArgs < 2)
     theDI << "Wrong number of parameters\n";
@@ -514,7 +537,9 @@ static int merase(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec
 
 //=================================================================================================
 
-static int hidesel(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int hidesel(Draw_Interpretor& theDI,
+                                int  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -572,7 +597,9 @@ static int hidesel(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 
 //=================================================================================================
 
-static int showonly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int showonly(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -623,7 +650,9 @@ static int showonly(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int showall(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int showall(Draw_Interpretor& theDI,
+                                int  theNbArgs,
+                                const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -654,7 +683,9 @@ static int showall(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVe
 
 //=================================================================================================
 
-static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshcolors(Draw_Interpretor& theDI,
+                                   int  theNbArgs,
+                                   const char**      theArgVec)
 {
   try
   {
@@ -696,7 +727,7 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
           || aMode.IsEqual("nodaltex") || aMode.IsEqual("none"))
       {
         occ::handle<MeshVS_PrsBuilder> aTempBuilder;
-        int                            aReflection = Draw::Atoi(theArgVec[3]);
+        int          aReflection = Draw::Atoi(theArgVec[3]);
 
         for (int aCount = 0; aCount < aMesh->GetBuildersCount(); aCount++)
         {
@@ -711,10 +742,9 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
         if (aMode.IsEqual("elem1") || aMode.IsEqual("elem2"))
         {
-          occ::handle<MeshVS_ElementalColorPrsBuilder> aBuilder =
-            new MeshVS_ElementalColorPrsBuilder(aMesh,
-                                                MeshVS_DMF_ElementalColorDataPrs
-                                                  | MeshVS_DMF_OCCMask);
+          occ::handle<MeshVS_ElementalColorPrsBuilder> aBuilder = new MeshVS_ElementalColorPrsBuilder(
+            aMesh,
+            MeshVS_DMF_ElementalColorDataPrs | MeshVS_DMF_OCCMask);
           // Color
           const TColStd_PackedMapOfInteger& anAllElements =
             aMesh->GetDataSource()->GetAllElements();
@@ -772,7 +802,7 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
           // prepare scale map for mesh - it will be assigned to mesh as texture coordinates
           // make mesh color interpolated from minimum X coord to maximum X coord
           occ::handle<MeshVS_DataSource> aDataSource = aMesh->GetDataSource();
-          double                         aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
+          double             aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ;
 
           // get bounding box for calculations
           aDataSource->GetBoundingBox().Get(aMinX, aMinY, aMinZ, aMaxX, aMaxY, aMaxZ);
@@ -780,9 +810,9 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
           // assign color scale map values (0..1) to nodes
           NCollection_DataMap<int, double> aScaleMap;
-          NCollection_Array1<double>       aCoords(1, 3);
-          int                              aNbNodes;
-          MeshVS_EntityType                aType;
+          NCollection_Array1<double>         aCoords(1, 3);
+          int             aNbNodes;
+          MeshVS_EntityType            aType;
 
           // iterate nodes
           const TColStd_PackedMapOfInteger& anAllNodes = aMesh->GetDataSource()->GetAllNodes();
@@ -833,7 +863,9 @@ static int meshcolors(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
 //=================================================================================================
 
-static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshvectors(Draw_Interpretor& theDI,
+                                    int  theNbArgs,
+                                    const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -864,10 +896,10 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
   TCollection_AsciiString aParam;
   TCollection_AsciiString aMode("none");
-  double                  aMaxlen(1.0);
+  double           aMaxlen(1.0);
   Quantity_Color          aColor(Quantity_NOC_ORANGE);
-  double                  anArrowPart(0.1);
-  bool                    isSimplePrs(false);
+  double           anArrowPart(0.1);
+  bool        isSimplePrs(false);
 
   for (int anIdx = 2; anIdx < theNbArgs; anIdx++)
   {
@@ -919,22 +951,21 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
   if (!aMode.IsEqual("none"))
   {
-    occ::handle<MeshVS_VectorPrsBuilder> aBuilder =
-      new MeshVS_VectorPrsBuilder(aMesh.operator->(),
-                                  aMaxlen,
-                                  aColor,
-                                  MeshVS_DMF_VectorDataPrs,
-                                  0,
-                                  -1,
-                                  MeshVS_BP_Vector,
-                                  isSimplePrs);
+    occ::handle<MeshVS_VectorPrsBuilder> aBuilder = new MeshVS_VectorPrsBuilder(aMesh.operator->(),
+                                                                           aMaxlen,
+                                                                           aColor,
+                                                                           MeshVS_DMF_VectorDataPrs,
+                                                                           0,
+                                                                           -1,
+                                                                           MeshVS_BP_Vector,
+                                                                           isSimplePrs);
 
-    bool                              anIsElement = aMode.IsEqual("elem");
+    bool                  anIsElement = aMode.IsEqual("elem");
     const TColStd_PackedMapOfInteger& anAllIDs    = anIsElement
                                                       ? aMesh->GetDataSource()->GetAllElements()
                                                       : aMesh->GetDataSource()->GetAllNodes();
 
-    int               aNbNodes;
+    int  aNbNodes;
     MeshVS_EntityType aEntType;
 
     NCollection_Array1<double> aCoords(1, 3);
@@ -953,8 +984,11 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
                                                           aCoords.ChangeValue(3));
       }
       else
-        IsValidData =
-          aMesh->GetDataSource()->GetGeom(anIter.Key(), false, aCoords, aNbNodes, aEntType);
+        IsValidData = aMesh->GetDataSource()->GetGeom(anIter.Key(),
+                                                      false,
+                                                      aCoords,
+                                                      aNbNodes,
+                                                      aEntType);
 
       gp_Vec aNorm;
       if (IsValidData)
@@ -983,7 +1017,9 @@ static int meshvectors(Draw_Interpretor& theDI, int theNbArgs, const char** theA
 
 //=================================================================================================
 
-static int meshtext(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshtext(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs < 2)
   {
@@ -1009,7 +1045,7 @@ static int meshtext(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
   // Prepare triangle labels
   NCollection_DataMap<int, TCollection_AsciiString> aLabels;
-  int aLen = aMesh->GetDataSource()->GetAllElements().Extent();
+  int                   aLen = aMesh->GetDataSource()->GetAllElements().Extent();
   for (int anIndex = 1; anIndex <= aLen; anIndex++)
   {
     aLabels.Bind(anIndex, TCollection_AsciiString(anIndex));
@@ -1025,7 +1061,9 @@ static int meshtext(Draw_Interpretor& theDI, int theNbArgs, const char** theArgV
 
 //=================================================================================================
 
-static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshdeform(Draw_Interpretor& theDI,
+                                   int  theNbArgs,
+                                   const char**      theArgVec)
 {
   if (theNbArgs < 3)
   {
@@ -1050,7 +1088,7 @@ static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
   TCollection_AsciiString aParam;
   TCollection_AsciiString aMode("off");
-  double                  aScale(1.0);
+  double           aScale(1.0);
 
   for (int anIdx = 2; anIdx < theNbArgs; anIdx++)
   {
@@ -1083,7 +1121,7 @@ static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
   const TColStd_PackedMapOfInteger& anAllIDs = aMesh->GetDataSource()->GetAllNodes();
 
-  int               aNbNodes;
+  int  aNbNodes;
   MeshVS_EntityType aEntType;
 
   for (TColStd_PackedMapOfInteger::Iterator anIter(anAllIDs); anIter.More(); anIter.Next())
@@ -1110,7 +1148,9 @@ static int meshdeform(Draw_Interpretor& theDI, int theNbArgs, const char** theAr
 
 //=================================================================================================
 
-static int mesh_edge_width(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int mesh_edge_width(Draw_Interpretor& theDI,
+                                        int  theNbArgs,
+                                        const char**      theArgVec)
 {
   try
   {
@@ -1165,7 +1205,9 @@ static int mesh_edge_width(Draw_Interpretor& theDI, int theNbArgs, const char** 
 
 //=================================================================================================
 
-static int meshinfo(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
+static int meshinfo(Draw_Interpretor& theDI,
+                                 int  theNbArgs,
+                                 const char**      theArgVec)
 {
   if (theNbArgs != 2)
   {

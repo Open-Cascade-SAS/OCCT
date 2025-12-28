@@ -202,9 +202,9 @@ public:
       return;
     }
 
-    const int      anOldLen  = mySize;
-    const uint8_t* anOldData = myData;
-    mySize                   = theLength;
+    const int anOldLen  = mySize;
+    const uint8_t*   anOldData = myData;
+    mySize                           = theLength;
     if (!theToCopyData && myDeletable)
     {
       Standard::FreeAligned(myData);
@@ -357,10 +357,10 @@ public:
   }
 
 protected:
-  uint8_t* myData;      //!< data pointer
-  int      myStride;    //!< element size
-  int      mySize;      //!< number of elements
-  bool     myDeletable; //!< flag showing who allocated the array
+  uint8_t*   myData;      //!< data pointer
+  int myStride;    //!< element size
+  int mySize;      //!< number of elements
+  bool myDeletable; //!< flag showing who allocated the array
 };
 
 #endif // _NCollection_AliasedArray_HeaderFile

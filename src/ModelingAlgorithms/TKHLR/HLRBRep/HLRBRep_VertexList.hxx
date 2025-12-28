@@ -34,7 +34,7 @@ class HLRBRep_VertexList
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&                     T,
+  Standard_EXPORT HLRBRep_VertexList(const HLRBRep_EdgeInterferenceTool&           T,
                                      const NCollection_List<HLRAlgo_Interference>::Iterator& I);
 
   //! Returns True when the curve is periodic.
@@ -70,9 +70,9 @@ public:
 
 private:
   NCollection_List<HLRAlgo_Interference>::Iterator myIterator;
-  HLRBRep_EdgeInterferenceTool                     myTool;
-  bool                                             fromEdge;
-  bool                                             fromInterf;
+  HLRBRep_EdgeInterferenceTool           myTool;
+  bool                       fromEdge;
+  bool                       fromInterf;
 };
 
 #endif // _HLRBRep_VertexList_HeaderFile

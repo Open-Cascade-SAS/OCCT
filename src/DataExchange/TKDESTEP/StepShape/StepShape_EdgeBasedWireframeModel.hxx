@@ -34,13 +34,11 @@ public:
   Standard_EXPORT StepShape_EdgeBasedWireframeModel();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>& aEbwmBoundary);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>& aEbwmBoundary);
 
   //! Returns field EbwmBoundary
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>>
-                  EbwmBoundary() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> EbwmBoundary() const;
 
   //! Set field EbwmBoundary
   Standard_EXPORT void SetEbwmBoundary(

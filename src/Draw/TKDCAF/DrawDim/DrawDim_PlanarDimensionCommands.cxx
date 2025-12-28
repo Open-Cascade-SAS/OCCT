@@ -41,7 +41,9 @@
 
 //=================================================================================================
 
-static int DrawDim_DISTANCE(Draw_Interpretor& di, int nb, const char** arg)
+static int DrawDim_DISTANCE(Draw_Interpretor& di,
+                                         int  nb,
+                                         const char**      arg)
 {
   if (nb == 1)
   {
@@ -165,7 +167,7 @@ static int DrawDim_CENTER(Draw_Interpretor& di, int nb, const char** arg)
     TopoDS_Shape aLocalShape = DBRep::Get(arg[2], TopAbs_EDGE);
     TopoDS_Edge  edge        = TopoDS::Edge(aLocalShape);
     //    TopoDS_Edge edge = TopoDS::Edge(DBRep::Get(arg[2],TopAbs_EDGE));
-    double                  f, l;
+    double      f, l;
     occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, f, l);
     if (curve->IsKind(STANDARD_TYPE(Geom_Circle)))
     {
@@ -196,8 +198,8 @@ static int DrawDim_VARIABLES(Draw_Interpretor& di, int n, const char** a)
   if (F.IsNull())
     return 0;
 
-  int                                                    i = 0;
-  TopoDS_Vertex                                          vf, vl;
+  int    i = 0;
+  TopoDS_Vertex       vf, vl;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> M;
   M.Add(F);
   TopExp_Explorer ex(F, TopAbs_EDGE);
@@ -275,10 +277,10 @@ static int DrawDim_GPLACEMENT(Draw_Interpretor& di, int n, const char** a)
   if (n == 4)
   {
     occ::handle<Geom_Geometry> geom        = DrawTrSurf::Get(a[1]);
-    TopoDS_Shape               aLocalShape = DBRep::Get(a[2], TopAbs_FACE);
-    TopoDS_Face                from        = TopoDS::Face(aLocalShape);
-    aLocalShape                            = DBRep::Get(a[3], TopAbs_FACE);
-    TopoDS_Face to                         = TopoDS::Face(aLocalShape);
+    TopoDS_Shape          aLocalShape = DBRep::Get(a[2], TopAbs_FACE);
+    TopoDS_Face           from        = TopoDS::Face(aLocalShape);
+    aLocalShape                       = DBRep::Get(a[3], TopAbs_FACE);
+    TopoDS_Face to                    = TopoDS::Face(aLocalShape);
     //    TopoDS_Face from = TopoDS::Face(DBRep::Get(a[2],TopAbs_FACE));
     //    TopoDS_Face to = TopoDS::Face(DBRep::Get(a[3],TopAbs_FACE));
     if (!geom.IsNull() && !from.IsNull() && !to.IsNull())

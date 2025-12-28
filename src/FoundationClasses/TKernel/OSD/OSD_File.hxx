@@ -76,7 +76,9 @@ public:
   //! Upon successful completion, Read returns the number of
   //! bytes actually read into <NByteRead> and placed into the
   //! Buffer <Buffer>.
-  Standard_EXPORT void ReadLine(TCollection_AsciiString& Buffer, const int NByte, int& NbyteRead);
+  Standard_EXPORT void ReadLine(TCollection_AsciiString& Buffer,
+                                const int   NByte,
+                                int&        NbyteRead);
 
   //! Reads bytes from the data pointed to by the object file
   //! into the buffer <Buffer>.
@@ -100,7 +102,9 @@ public:
   //! may be less than Nbyte if the number of bytes left in the file
   //! is less than Nbyte bytes. For this reason the output
   //! parameter Readbyte will contain the number of read bytes.
-  Standard_EXPORT void Read(void* const Buffer, const int Nbyte, int& Readbyte);
+  Standard_EXPORT void Read(void* const Buffer,
+                            const int Nbyte,
+                            int&      Readbyte);
 
   //! Attempts to write theNbBytes bytes from the AsciiString to the file.
   void Write(const TCollection_AsciiString& theBuffer, const int theNbBytes)
@@ -171,8 +175,8 @@ public:
   //! If meanwhile the file increases returns the next line, otherwise
   //! returns FALSE.
   Standard_EXPORT bool ReadLastLine(TCollection_AsciiString& aLine,
-                                    const int                aDelay,
-                                    const int                aNbTries);
+                                                const int   aDelay,
+                                                const int   aNbTries);
 
   //! find an editor on the system and edit the given file
   Standard_EXPORT bool Edit();
@@ -184,15 +188,15 @@ protected:
 #ifdef _WIN32
   void* myFileHandle;
 #else
-  int   myFileChannel;
+  int myFileChannel;
   void* myFILE;
 #endif
   int myIO;
 
 private:
-  OSD_LockType myLock;
-  OSD_OpenMode myMode;
-  bool         ImperativeFlag;
+  OSD_LockType     myLock;
+  OSD_OpenMode     myMode;
+  bool ImperativeFlag;
 };
 
 #endif // _OSD_File_HeaderFile

@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ReadWriteModule, Interface_ReaderModule)
 
 int StepData_ReadWriteModule::CaseNum(const occ::handle<Interface_FileReaderData>& data,
-                                      const int                                    num) const
+                                                   const int num) const
 {
   DeclareAndCast(StepData_StepReaderData, stepdat, data);
   if (stepdat.IsNull())
@@ -56,16 +56,16 @@ TCollection_AsciiString StepData_ReadWriteModule::ShortType(const int) const
 } // default empty
 
 bool StepData_ReadWriteModule::ComplexType(const int,
-                                           NCollection_Sequence<TCollection_AsciiString>&) const
+                                                       NCollection_Sequence<TCollection_AsciiString>&) const
 {
   return false;
 }
 
 //=================================================================================================
 
-void StepData_ReadWriteModule::Read(const int                                    CN,
+void StepData_ReadWriteModule::Read(const int                  CN,
                                     const occ::handle<Interface_FileReaderData>& data,
-                                    const int                                    num,
+                                    const int                  num,
                                     occ::handle<Interface_Check>&                ach,
                                     const occ::handle<Standard_Transient>&       ent) const
 {

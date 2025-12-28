@@ -102,9 +102,9 @@ protected: //! @name Constructors
                                                const BOPAlgo_PaveFiller& thePF,
                                                const BOPAlgo_Operation   theOperation);
 
-protected:                                    //! @name Fields
+protected:                          //! @name Fields
   NCollection_List<TopoDS_Shape> myTools;     //!< Tool arguments of operation
-  BOPAlgo_Operation              myOperation; //!< Type of Boolean Operation
+  BOPAlgo_Operation    myOperation; //!< Type of Boolean Operation
 };
 
 #endif // _BRepAlgoAPI_BooleanOperation_HeaderFile

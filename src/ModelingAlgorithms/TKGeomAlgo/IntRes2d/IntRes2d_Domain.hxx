@@ -47,37 +47,37 @@ public:
   Standard_EXPORT IntRes2d_Domain();
 
   //! Creates a bounded Domain.
-  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d& Pnt1,
-                                  const double    Par1,
-                                  const double    Tol1,
-                                  const gp_Pnt2d& Pnt2,
-                                  const double    Par2,
-                                  const double    Tol2);
+  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d&     Pnt1,
+                                  const double Par1,
+                                  const double Tol1,
+                                  const gp_Pnt2d&     Pnt2,
+                                  const double Par2,
+                                  const double Tol2);
 
   //! Creates a semi-infinite Domain. If First is set to
   //! True, the given point is the first point of the domain,
   //! otherwise it is the last point.
-  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d& Pnt,
+  Standard_EXPORT IntRes2d_Domain(const gp_Pnt2d&        Pnt,
                                   const double    Par,
                                   const double    Tol,
-                                  const bool      First);
+                                  const bool First);
 
   //! Sets the values for a bounded domain.
-  Standard_EXPORT void SetValues(const gp_Pnt2d& Pnt1,
-                                 const double    Par1,
-                                 const double    Tol1,
-                                 const gp_Pnt2d& Pnt2,
-                                 const double    Par2,
-                                 const double    Tol2);
+  Standard_EXPORT void SetValues(const gp_Pnt2d&     Pnt1,
+                                 const double Par1,
+                                 const double Tol1,
+                                 const gp_Pnt2d&     Pnt2,
+                                 const double Par2,
+                                 const double Tol2);
 
   //! Sets the values for an infinite domain.
   Standard_EXPORT void SetValues();
 
   //! Sets the values for a semi-infinite domain.
-  Standard_EXPORT void SetValues(const gp_Pnt2d& Pnt,
+  Standard_EXPORT void SetValues(const gp_Pnt2d&        Pnt,
                                  const double    Par,
                                  const double    Tol,
-                                 const bool      First);
+                                 const bool First);
 
   //! Defines a closed domain.
   void SetEquivalentParameters(const double zero, const double period);
@@ -130,15 +130,15 @@ public:
   void EquivalentParameters(double& zero, double& zeroplusperiod) const;
 
 private:
-  int      status;
-  double   first_param;
-  double   last_param;
-  double   first_tol;
-  double   last_tol;
-  gp_Pnt2d first_point;
-  gp_Pnt2d last_point;
-  double   periodfirst;
-  double   periodlast;
+  int status;
+  double    first_param;
+  double    last_param;
+  double    first_tol;
+  double    last_tol;
+  gp_Pnt2d         first_point;
+  gp_Pnt2d         last_point;
+  double    periodfirst;
+  double    periodlast;
 };
 
 #include <IntRes2d_Domain.lxx>

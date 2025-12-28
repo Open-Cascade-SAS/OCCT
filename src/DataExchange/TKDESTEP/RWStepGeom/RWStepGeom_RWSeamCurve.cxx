@@ -23,7 +23,7 @@
 RWStepGeom_RWSeamCurve::RWStepGeom_RWSeamCurve() {}
 
 void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                                   num,
+                                      const int                 num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepGeom_SeamCurve>&      ent) const
 {
@@ -48,13 +48,13 @@ void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>
   // --- inherited field : associatedGeometry ---
 
   occ::handle<NCollection_HArray1<StepGeom_PcurveOrSurface>> aAssociatedGeometry;
-  StepGeom_PcurveOrSurface                                   aAssociatedGeometryItem;
-  occ::handle<Standard_Transient>                            assgeomval;
-  int                                                        nsub3;
+  StepGeom_PcurveOrSurface                  aAssociatedGeometryItem;
+  occ::handle<Standard_Transient>                assgeomval;
+  int                          nsub3;
   if (data->ReadSubList(num, 3, "associated_geometry", ach, nsub3))
   {
-    int nb3             = data->NbParams(nsub3);
-    aAssociatedGeometry = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
+    int nb3 = data->NbParams(nsub3);
+    aAssociatedGeometry  = new NCollection_HArray1<StepGeom_PcurveOrSurface>(1, nb3);
     for (int i3 = 1; i3 <= nb3; i3++)
     {
       // szv#4:S4163:12Mar99 `bool stat3 =` not needed
@@ -87,7 +87,7 @@ void RWStepGeom_RWSeamCurve::ReadStep(const occ::handle<StepData_StepReaderData>
   ent->Init(aName, aCurve3d, aAssociatedGeometry, aMasterRepresentation);
 }
 
-void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&                   SW,
+void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&              SW,
                                        const occ::handle<StepGeom_SeamCurve>& ent) const
 {
 
@@ -115,7 +115,7 @@ void RWStepGeom_RWSeamCurve::WriteStep(StepData_StepWriter&                   SW
 }
 
 void RWStepGeom_RWSeamCurve::Share(const occ::handle<StepGeom_SeamCurve>& ent,
-                                   Interface_EntityIterator&              iter) const
+                                   Interface_EntityIterator&         iter) const
 {
 
   iter.GetOneItem(ent->Curve3d());

@@ -72,9 +72,10 @@ public:
 
   //! Returns True for an Entity which is recognized by the Actor,
   //! either the precised one, or the one defined by TransferReader
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium : "Recognized for Transfer [(current actor)]"
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;

@@ -40,7 +40,9 @@ public:
 
   //! Returns the value of the function and the derivative
   //! for the variable <X>.
-  Standard_EXPORT bool Values(const double X, double& F, double& D);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      D);
 
 private:
   occ::handle<Geom2d_Curve> theCurve;

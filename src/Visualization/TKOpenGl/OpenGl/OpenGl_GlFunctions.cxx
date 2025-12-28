@@ -1635,7 +1635,8 @@ bool OpenGl_GlFunctions::debugPrintError(const char* theName)
 
 //=================================================================================================
 
-void OpenGl_GlFunctions::readGlVersion(int& theGlVerMajor, int& theGlVerMinor)
+void OpenGl_GlFunctions::readGlVersion(int& theGlVerMajor,
+                                       int& theGlVerMinor)
 {
   // reset values
   theGlVerMajor = 0;

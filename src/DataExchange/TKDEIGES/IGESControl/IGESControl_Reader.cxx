@@ -54,20 +54,20 @@ IGESControl_Reader::IGESControl_Reader()
   IGESControl_Controller::Init();
   SetWS(new XSControl_WorkSession);
   SetNorm("IGES");
-  int onlyvisible    = Interface_Static::IVal("read.iges.onlyvisible");
-  theReadOnlyVisible = (onlyvisible == 1);
+  int onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
+  theReadOnlyVisible           = (onlyvisible == 1);
 }
 
 //=================================================================================================
 
 IGESControl_Reader::IGESControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
-                                       const bool                                scratch)
+                                       const bool               scratch)
 {
   IGESControl_Controller::Init();
   SetWS(WS, scratch);
   SetNorm("IGES");
-  int onlyvisible    = Interface_Static::IVal("read.iges.onlyvisible");
-  theReadOnlyVisible = (onlyvisible == 1);
+  int onlyvisible = Interface_Static::IVal("read.iges.onlyvisible");
+  theReadOnlyVisible           = (onlyvisible == 1);
 }
 
 //=================================================================================================
@@ -136,7 +136,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
     nbEntities = model->NbEntities();
     nbRoots    = TP->NbRoots();
     // nbResults = TP->NbMapped();
-    Transfer_IteratorOfProcessForTransient            iterTrans = TP->RootResult(true);
+    Transfer_IteratorOfProcessForTransient iterTrans = TP->RootResult(true);
     NCollection_DataMap<TCollection_AsciiString, int> aMapCountResult;
     NCollection_DataMap<TCollection_AsciiString, int> aMapCountMapping;
     for (iterTrans.Start(); iterTrans.More(); iterTrans.Next())
@@ -145,7 +145,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       // Init for dicoCountResult for IFSelect_ResultCount
       if (mode == IFSelect_ResultCount)
       {
-        char                                mess[300];
+        char                           mess[300];
         const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         Sprintf(mess, "\t%s", aBinder->ResultTypeName());
         if (aMapCountResult.IsBound(mess))
@@ -156,7 +156,7 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       // Init for dicoCountMapping for IFSelect_Mapping
       else if (mode == IFSelect_Mapping)
       {
-        char                                mess[300];
+        char                           mess[300];
         const occ::handle<Transfer_Binder>& aBinder = iterTrans.Value();
         DeclareAndCast(IGESData_IGESEntity, igesEnt, iterTrans.Starting());
 
@@ -174,13 +174,13 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       }
     }
 
-    Interface_CheckIterator                           checkIterator = TP->CheckList(false);
-    NCollection_DataMap<TCollection_AsciiString, int> aMapCount;
+    Interface_CheckIterator checkIterator = TP->CheckList(false);
+    NCollection_DataMap<TCollection_AsciiString, int>                   aMapCount;
     NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_HSequence<int>>> aMapList;
     // Init the dicoCount dicoList and nbWarn ,nb Fail.
     for (checkIterator.Start(); checkIterator.More(); checkIterator.Next())
     {
-      char                                mess[300];
+      char                           mess[300];
       const occ::handle<Interface_Check>& aCheck = checkIterator.Value();
       occ::handle<Standard_Transient>     ent    = model->Value(checkIterator.Number());
       DeclareAndCast(IGESData_IGESEntity, igesEnt, ent);
@@ -254,9 +254,9 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
       case IFSelect_ListByItem: {
         Message_Msg msg3030("IGES_3030");
         TF->Send(msg3030, Message_Info);
-        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(aMapCount);
-        NCollection_DataMap<TCollection_AsciiString,
-                            occ::handle<NCollection_HSequence<int>>>::Iterator
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(
+          aMapCount);
+        NCollection_DataMap<TCollection_AsciiString, occ::handle<NCollection_HSequence<int>>>::Iterator
           aMapListIter(aMapList);
         for (; aMapCountIter.More() && aMapListIter.More();
              aMapCountIter.Next(), aMapListIter.Next())
@@ -266,8 +266,8 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
           if (mode == IFSelect_ListByItem)
           {
             const occ::handle<NCollection_HSequence<int>>& entityList = aMapListIter.Value();
-            int                                            length     = entityList->Length();
-            Message_Msg                                    msg3035("IGES_3035");
+            int                          length     = entityList->Length();
+            Message_Msg                               msg3035("IGES_3035");
             TF->Send(msg3035, Message_Info);
             char line[80];
             Sprintf(line, "\t\t\t");
@@ -302,7 +302,8 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
         Message_Msg msg3045("IGES_3045");
         TF->Send(msg3045, Message_Info);
 
-        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapIter(aMapCountResult);
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapIter(
+          aMapCountResult);
         for (; aMapIter.More(); aMapIter.Next())
         {
           TF->SendInfo() << aMapIter.Key() << aMapIter.Value() << std::endl;
@@ -344,7 +345,8 @@ void IGESControl_Reader::PrintTransferInfo(const IFSelect_PrintFail  failsonly,
             }
           }
         }
-        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(aMapCountMapping);
+        NCollection_DataMap<TCollection_AsciiString, int>::Iterator aMapCountIter(
+          aMapCountMapping);
         for (; aMapCountIter.More(); aMapCountIter.Next())
         {
           char mess[80];

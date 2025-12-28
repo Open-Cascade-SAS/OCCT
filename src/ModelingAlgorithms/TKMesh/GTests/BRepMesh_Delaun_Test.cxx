@@ -164,7 +164,7 @@ TEST(BRepMesh_DelaunTest, MeshPlanarFaceWithHole)
   ASSERT_TRUE(anInnerWireMaker.IsDone());
 
   // Create face with hole
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Pln(gp::Origin(), gp::DZ()));
+  occ::handle<Geom_Plane>      aPlane = new Geom_Plane(gp_Pln(gp::Origin(), gp::DZ()));
   BRepBuilderAPI_MakeFace aFaceMaker(aPlane, anOuterWireMaker.Wire());
   aFaceMaker.Add(anInnerWireMaker.Wire());
   ASSERT_TRUE(aFaceMaker.IsDone());
@@ -176,7 +176,7 @@ TEST(BRepMesh_DelaunTest, MeshPlanarFaceWithHole)
   EXPECT_TRUE(aMesher.IsDone()) << "Meshing should succeed";
 
   // Verify triangulation exists
-  TopLoc_Location                       aLoc;
+  TopLoc_Location                  aLoc;
   const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
   ASSERT_FALSE(aTri.IsNull()) << "Triangulation should be created";
   EXPECT_GT(aTri->NbTriangles(), 0) << "Should have triangles";
@@ -195,8 +195,8 @@ TEST(BRepMesh_DelaunTest, MeshBoxAllFaces)
   int aFaceCount = 0;
   for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
   {
-    const TopoDS_Face&                    aFace = TopoDS::Face(anExp.Current());
-    TopLoc_Location                       aLoc;
+    const TopoDS_Face&               aFace = TopoDS::Face(anExp.Current());
+    TopLoc_Location                  aLoc;
     const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
 
     EXPECT_FALSE(aTri.IsNull()) << "Face " << aFaceCount << " should have triangulation";
@@ -222,8 +222,8 @@ TEST(BRepMesh_DelaunTest, MeshCylinderCurvedFaces)
   int aTotalTriangles = 0;
   for (TopExp_Explorer anExp(aCylinder, TopAbs_FACE); anExp.More(); anExp.Next())
   {
-    const TopoDS_Face&                    aFace = TopoDS::Face(anExp.Current());
-    TopLoc_Location                       aLoc;
+    const TopoDS_Face&               aFace = TopoDS::Face(anExp.Current());
+    TopLoc_Location                  aLoc;
     const occ::handle<Poly_Triangulation> aTri = BRep_Tool::Triangulation(aFace, aLoc);
 
     EXPECT_FALSE(aTri.IsNull()) << "Face should have triangulation";

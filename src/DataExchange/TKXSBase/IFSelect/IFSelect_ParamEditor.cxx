@@ -23,7 +23,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ParamEditor, IFSelect_Editor)
 
-IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* label)
+IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax,
+                                           const char* label)
     : IFSelect_Editor(nbmax),
       thelabel(label)
 {
@@ -33,7 +34,7 @@ IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* label)
 }
 
 void IFSelect_ParamEditor::AddValue(const occ::handle<Interface_TypedValue>& val,
-                                    const char*                              shortname)
+                                    const char*              shortname)
 {
   SetNbValues(NbValues() + 1);
   SetValue(NbValues(), val, shortname);
@@ -68,8 +69,8 @@ occ::handle<TCollection_HAsciiString> IFSelect_ParamEditor::StringValue(
 }
 
 bool IFSelect_ParamEditor::Load(const occ::handle<IFSelect_EditForm>& form,
-                                const occ::handle<Standard_Transient>& /*ent*/,
-                                const occ::handle<Interface_InterfaceModel>& /*model*/) const
+                                            const occ::handle<Standard_Transient>& /*ent*/,
+                                            const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
@@ -78,9 +79,10 @@ bool IFSelect_ParamEditor::Load(const occ::handle<IFSelect_EditForm>& form,
   return true;
 }
 
-bool IFSelect_ParamEditor::Apply(const occ::handle<IFSelect_EditForm>& form,
-                                 const occ::handle<Standard_Transient>& /*ent*/,
-                                 const occ::handle<Interface_InterfaceModel>& /*model*/) const
+bool IFSelect_ParamEditor::Apply(
+  const occ::handle<IFSelect_EditForm>& form,
+  const occ::handle<Standard_Transient>& /*ent*/,
+  const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   int i, nb = NbValues();
   for (i = 1; i <= nb; i++)
@@ -92,7 +94,7 @@ bool IFSelect_ParamEditor::Apply(const occ::handle<IFSelect_EditForm>& form,
 
 occ::handle<IFSelect_ParamEditor> IFSelect_ParamEditor::StaticEditor(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
-  const char*                                                                      label)
+  const char*                         label)
 {
   occ::handle<IFSelect_ParamEditor> editor;
   if (list.IsNull())

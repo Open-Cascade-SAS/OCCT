@@ -102,9 +102,9 @@ public:
 
 public:
   //! Main constructor.
-  Standard_EXPORT WNT_HIDSpaceMouse(unsigned long  theProductId,
+  Standard_EXPORT WNT_HIDSpaceMouse(unsigned long        theProductId,
                                     const uint8_t* theData,
-                                    size_t         theSize);
+                                    size_t        theSize);
 
   //! Return the raw value range.
   int16_t RawValueRange() const { return myValueRange; }
@@ -155,10 +155,10 @@ public:
 private:
   //! Translate raw data chunk of 3 int16 values into normalized vec3.
   //! The values are considered within the range [-350; 350], with 0 as neutral state.
-  NCollection_Vec3<double> fromRawVec3(bool&          theIsIdle,
-                                       const uint8_t* theData,
-                                       bool           theIsTrans,
-                                       bool           theIsQuadric) const;
+  NCollection_Vec3<double> fromRawVec3(bool&                theIsIdle,
+                              const uint8_t* theData,
+                              bool                 theIsTrans,
+                              bool                 theIsQuadric) const;
 
   //! Data chunk type.
   enum
@@ -169,10 +169,10 @@ private:
   };
 
 private:
-  const uint8_t*  myData;       //!< RAW data chunk
-  size_t          mySize;       //!< size of RAW data chunk
-  unsigned long   myProductId;  //!< product id
-  mutable int16_t myValueRange; //!< RAW value range
+  const uint8_t* myData;       //!< RAW data chunk
+  size_t        mySize;       //!< size of RAW data chunk
+  unsigned long        myProductId;  //!< product id
+  mutable int16_t      myValueRange; //!< RAW value range
 };
 
 #endif // _WNT_HIDSpaceMouse_Header

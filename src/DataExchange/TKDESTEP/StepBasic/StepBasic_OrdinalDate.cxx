@@ -18,7 +18,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_OrdinalDate, StepBasic_Date)
 
 StepBasic_OrdinalDate::StepBasic_OrdinalDate() {}
 
-void StepBasic_OrdinalDate::Init(const int aYearComponent, const int aDayComponent)
+void StepBasic_OrdinalDate::Init(const int aYearComponent,
+                                 const int aDayComponent)
 {
   // --- classe own fields ---
   dayComponent = aDayComponent;

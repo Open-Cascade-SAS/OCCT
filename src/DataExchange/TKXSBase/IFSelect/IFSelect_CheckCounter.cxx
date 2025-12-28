@@ -45,13 +45,13 @@ occ::handle<MoniTool_SignText> IFSelect_CheckCounter::Signature() const
 
 //=================================================================================================
 
-void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&               list,
+void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&          list,
                                     const occ::handle<Interface_InterfaceModel>& model,
-                                    const bool                                   original,
-                                    const bool                                   failsonly)
+                                    const bool                  original,
+                                    const bool                  failsonly)
 {
-  int  i, nb, num, nbe = (model.IsNull() ? 0 : model->NbEntities());
-  char mess[300];
+  int i, nb, num, nbe = (model.IsNull() ? 0 : model->NbEntities());
+  char             mess[300];
   Sprintf(mess, "Check %s", list.Name());
   SetName(mess);
   for (list.Start(); list.More(); list.Next())
@@ -59,10 +59,10 @@ void IFSelect_CheckCounter::Analyse(const Interface_CheckIterator&              
     num = list.Number();
     occ::handle<Standard_Transient>     ent;
     const occ::handle<Interface_Check>& check = list.Value();
-    ent                                       = check->Entity();
+    ent                                  = check->Entity();
     if (ent.IsNull() && num > 0 && num <= nbe)
       ent = model->Value(num);
-    nb                = check->NbFails();
+    nb                     = check->NbFails();
     const char* tystr = NULL;
     if (!ent.IsNull())
     {

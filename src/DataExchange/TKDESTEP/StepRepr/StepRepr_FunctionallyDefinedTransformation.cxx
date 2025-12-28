@@ -44,8 +44,7 @@ void StepRepr_FunctionallyDefinedTransformation::SetDescription(
   description = aDescription;
 }
 
-occ::handle<TCollection_HAsciiString> StepRepr_FunctionallyDefinedTransformation::Description()
-  const
+occ::handle<TCollection_HAsciiString> StepRepr_FunctionallyDefinedTransformation::Description() const
 {
   return description;
 }

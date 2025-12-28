@@ -58,8 +58,8 @@ occ::handle<StepBasic_ProductDefinitionFormation> StepBasic_ProductOrFormationOr
 
 //=================================================================================================
 
-occ::handle<StepBasic_ProductDefinition> StepBasic_ProductOrFormationOrDefinition::
-  ProductDefinition() const
+occ::handle<StepBasic_ProductDefinition> StepBasic_ProductOrFormationOrDefinition::ProductDefinition()
+  const
 {
   return occ::down_cast<StepBasic_ProductDefinition>(Value());
 }

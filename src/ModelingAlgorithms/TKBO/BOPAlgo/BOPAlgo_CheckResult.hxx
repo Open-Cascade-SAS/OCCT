@@ -22,6 +22,7 @@
 
 #include <TopoDS_Shape.hxx>
 #include <BOPAlgo_CheckStatus.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 //! contains information about faulty shapes and faulty types
@@ -89,15 +90,15 @@ public:
   Standard_EXPORT double GetMaxParameter2() const;
 
 private:
-  TopoDS_Shape                   myShape1;
-  TopoDS_Shape                   myShape2;
-  BOPAlgo_CheckStatus            myStatus;
+  TopoDS_Shape         myShape1;
+  TopoDS_Shape         myShape2;
+  BOPAlgo_CheckStatus  myStatus;
   NCollection_List<TopoDS_Shape> myFaulty1;
   NCollection_List<TopoDS_Shape> myFaulty2;
-  double                         myMaxDist1;
-  double                         myMaxDist2;
-  double                         myMaxPar1;
-  double                         myMaxPar2;
+  double        myMaxDist1;
+  double        myMaxDist2;
+  double        myMaxPar1;
+  double        myMaxPar2;
 };
 
 #endif // _BOPAlgo_CheckResult_HeaderFile

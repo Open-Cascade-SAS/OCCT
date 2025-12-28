@@ -71,7 +71,8 @@ protected:
   }
 
   //! Returns size of cell to be used by acceleration circles grid structure.
-  virtual std::pair<int, int> getCellsCount(const int theVerticesNb) override
+  virtual std::pair<int, int> getCellsCount(
+    const int theVerticesNb) override
   {
     return BRepMesh_GeomTool::CellsCount(this->getDFace()->GetSurface(),
                                          theVerticesNb,
@@ -103,8 +104,8 @@ protected:
 
   //! Inserts nodes into mesh.
   bool insertNodes(const Handle(IMeshData::ListOfPnt2d)& theNodes,
-                   BRepMesh_Delaun&                      theMesher,
-                   const Message_ProgressRange&          theRange)
+                               BRepMesh_Delaun&                      theMesher,
+                               const Message_ProgressRange&          theRange)
   {
     if (theNodes.IsNull() || theNodes->IsEmpty())
     {
@@ -118,8 +119,10 @@ protected:
       const gp_Pnt2d& aPnt2d = aNodesIt.Value();
       if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
       {
-        aVertexIndexes.Append(
-          this->registerNode(this->getRangeSplitter().Point(aPnt2d), aPnt2d, BRepMesh_Free, false));
+        aVertexIndexes.Append(this->registerNode(this->getRangeSplitter().Point(aPnt2d),
+                                                 aPnt2d,
+                                                 BRepMesh_Free,
+                                                 false));
       }
     }
 
@@ -140,7 +143,7 @@ private:
       return false;
     }
 
-    bool                             isAdded = false;
+    bool                 isAdded = false;
     IMeshData::ListOfPnt2d::Iterator aNodesIt(*theNodes);
     for (int aNodeIt = 1; aNodesIt.More(); aNodesIt.Next(), ++aNodeIt)
     {
@@ -148,7 +151,10 @@ private:
       if (this->getClassifier()->Perform(aPnt2d) == TopAbs_IN)
       {
         isAdded = true;
-        this->registerNode(this->getRangeSplitter().Point(aPnt2d), aPnt2d, BRepMesh_Free, false);
+        this->registerNode(this->getRangeSplitter().Point(aPnt2d),
+                           aPnt2d,
+                           BRepMesh_Free,
+                           false);
       }
     }
 

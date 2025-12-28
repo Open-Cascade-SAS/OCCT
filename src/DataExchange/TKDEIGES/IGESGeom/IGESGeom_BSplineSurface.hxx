@@ -26,6 +26,8 @@
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_HArray2.hxx>
 #include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
@@ -59,23 +61,23 @@ public:
   //! - aVmin                : Starting value of V direction
   //! - aVmax                : Ending value of V direction
   //! raises exception if allWeights & allPoles are not of same size.
-  Standard_EXPORT void Init(const int                                       anIndexU,
-                            const int                                       anIndexV,
-                            const int                                       aDegU,
-                            const int                                       aDegV,
-                            const bool                                      aCloseU,
-                            const bool                                      aCloseV,
-                            const bool                                      aPolynom,
-                            const bool                                      aPeriodU,
-                            const bool                                      aPeriodV,
+  Standard_EXPORT void Init(const int               anIndexU,
+                            const int               anIndexV,
+                            const int               aDegU,
+                            const int               aDegV,
+                            const bool               aCloseU,
+                            const bool               aCloseV,
+                            const bool               aPolynom,
+                            const bool               aPeriodU,
+                            const bool               aPeriodV,
                             const occ::handle<NCollection_HArray1<double>>& allKnotsU,
                             const occ::handle<NCollection_HArray1<double>>& allKnotsV,
                             const occ::handle<NCollection_HArray2<double>>& allWeights,
-                            const occ::handle<NCollection_HArray2<gp_XYZ>>& allPoles,
-                            const double                                    aUmin,
-                            const double                                    aUmax,
-                            const double                                    aVmin,
-                            const double                                    aVmax);
+                            const occ::handle<NCollection_HArray2<gp_XYZ>>&   allPoles,
+                            const double                  aUmin,
+                            const double                  aUmax,
+                            const double                  aVmin,
+                            const double                  aVmax);
 
   //! Changes FormNumber (indicates the Shape of the Surface)
   //! Error if not in range [0-9]
@@ -137,18 +139,21 @@ public:
   //! returns the weight referred to by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT double Weight(const int anIndex1, const int anIndex2) const;
+  Standard_EXPORT double Weight(const int anIndex1,
+                                       const int anIndex2) const;
 
   //! returns the control point referenced by anIndex1, anIndex2
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT gp_Pnt Pole(const int anIndex1, const int anIndex2) const;
+  Standard_EXPORT gp_Pnt Pole(const int anIndex1,
+                              const int anIndex2) const;
 
   //! returns the control point referenced by anIndex1, anIndex2
   //! after applying the Transf.Matrix
   //! raises exception if anIndex1 <= 0 or anIndex1 > NbPolesU()
   //! or if anIndex2 <= 0 or anIndex2 > NbPolesV()
-  Standard_EXPORT gp_Pnt TransformedPole(const int anIndex1, const int anIndex2) const;
+  Standard_EXPORT gp_Pnt TransformedPole(const int anIndex1,
+                                         const int anIndex2) const;
 
   //! returns starting value in the U direction
   Standard_EXPORT double UMin() const;
@@ -165,23 +170,23 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGeom_BSplineSurface, IGESData_IGESEntity)
 
 private:
-  int                                      theIndexU;
-  int                                      theIndexV;
-  int                                      theDegreeU;
-  int                                      theDegreeV;
-  bool                                     isClosedU;
-  bool                                     isClosedV;
-  bool                                     isPolynomial;
-  bool                                     isPeriodicU;
-  bool                                     isPeriodicV;
+  int              theIndexU;
+  int              theIndexV;
+  int              theDegreeU;
+  int              theDegreeV;
+  bool              isClosedU;
+  bool              isClosedV;
+  bool              isPolynomial;
+  bool              isPeriodicU;
+  bool              isPeriodicV;
   occ::handle<NCollection_HArray1<double>> theKnotsU;
   occ::handle<NCollection_HArray1<double>> theKnotsV;
   occ::handle<NCollection_HArray2<double>> theWeights;
-  occ::handle<NCollection_HArray2<gp_XYZ>> thePoles;
-  double                                   theUmin;
-  double                                   theUmax;
-  double                                   theVmin;
-  double                                   theVmax;
+  occ::handle<NCollection_HArray2<gp_XYZ>>   thePoles;
+  double                 theUmin;
+  double                 theUmax;
+  double                 theVmin;
+  double                 theVmax;
 };
 
 #endif // _IGESGeom_BSplineSurface_HeaderFile

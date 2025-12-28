@@ -141,6 +141,7 @@ public:
   Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_VectorWithMagnitude, Geom2d_Vector)
+
 };
 
 #endif // _Geom2d_VectorWithMagnitude_HeaderFile

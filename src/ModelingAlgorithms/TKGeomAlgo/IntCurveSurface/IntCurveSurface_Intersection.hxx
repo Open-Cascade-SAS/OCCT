@@ -25,6 +25,7 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 #include <IntCurveSurface_IntersectionSegment.hxx>
+#include <NCollection_Sequence.hxx>
 class IntCurveSurface_IntersectionPoint;
 class IntCurveSurface_IntersectionSegment;
 
@@ -45,7 +46,8 @@ public:
   //! raises NotDone if the computation has failed or if
   //! the computation has not been done
   //! raises OutOfRange if Index is not in the range <1..NbPoints>
-  Standard_EXPORT const IntCurveSurface_IntersectionPoint& Point(const int Index) const;
+  Standard_EXPORT const IntCurveSurface_IntersectionPoint& Point(
+    const int Index) const;
 
   //! returns the number of IntersectionSegment
   //! if IsDone returns True.
@@ -56,7 +58,8 @@ public:
   //! raises NotDone if the computation has failed or if
   //! the computation has not been done
   //! raises OutOfRange if Index is not in the range <1..NbSegment>
-  Standard_EXPORT const IntCurveSurface_IntersectionSegment& Segment(const int Index) const;
+  Standard_EXPORT const IntCurveSurface_IntersectionSegment& Segment(
+    const int Index) const;
 
   //! Returns true if curve is parallel or belongs surface
   //! This case is recognized only for some pairs
@@ -81,8 +84,8 @@ protected:
   //! Append the IntersectionPoints and
   //! IntersectionSegments of <Inter> to <me>.
   Standard_EXPORT void Append(const IntCurveSurface_Intersection& Inter,
-                              const double                        FirstParamOnCurve,
-                              const double                        LastParamOnCurve);
+                              const double                 FirstParamOnCurve,
+                              const double                 LastParamOnCurve);
 
   //! Internal method
   //! Append the IntersectionPoints of <Inter> to <me>
@@ -104,7 +107,7 @@ protected:
   // of analytical curves and surfaces (plane - line, ...)
 
 private:
-  NCollection_Sequence<IntCurveSurface_IntersectionPoint>   lpnt;
+  NCollection_Sequence<IntCurveSurface_IntersectionPoint> lpnt;
   NCollection_Sequence<IntCurveSurface_IntersectionSegment> lseg;
 };
 

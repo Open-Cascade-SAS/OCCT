@@ -50,9 +50,9 @@ public:
 
   //! Builds an empty ShapeSet.
   //! @param theWithTriangles flag to write triangulation data
-  Standard_EXPORT BRepTools_ShapeSet(const BRep_Builder& theBuilder,
-                                     const bool          theWithTriangles = true,
-                                     const bool          theWithNormals   = false);
+  Standard_EXPORT BRepTools_ShapeSet(const BRep_Builder&    theBuilder,
+                                     const bool theWithTriangles = true,
+                                     const bool theWithNormals   = false);
 
   Standard_EXPORT virtual ~BRepTools_ShapeSet();
 
@@ -64,7 +64,10 @@ public:
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
-  void SetWithTriangles(const bool theWithTriangles) { myWithTriangles = theWithTriangles; }
+  void SetWithTriangles(const bool theWithTriangles)
+  {
+    myWithTriangles = theWithTriangles;
+  }
 
   //! Define if shape will be stored triangulation with normals.
   //! Ignored (always written) if face defines only triangulation (no surface).
@@ -108,7 +111,8 @@ public:
   //! Inserts the shape <S2> in the shape <S1>. This
   //! method must be redefined to use the correct
   //! builder.
-  Standard_EXPORT virtual void AddShapes(TopoDS_Shape& S1, const TopoDS_Shape& S2) override;
+  Standard_EXPORT virtual void AddShapes(TopoDS_Shape&       S1,
+                                         const TopoDS_Shape& S2) override;
 
   Standard_EXPORT virtual void Check(const TopAbs_ShapeEnum T, TopoDS_Shape& S) override;
 
@@ -123,7 +127,7 @@ public:
   //! be read back by Read.
   Standard_EXPORT void WritePolygon3D(
     Standard_OStream&            OS,
-    const bool                   Compact     = true,
+    const bool       Compact     = true,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
 
   //! Dumps the 3d polygons
@@ -141,7 +145,7 @@ public:
   //! be read back by Read.
   Standard_EXPORT void WriteTriangulation(
     Standard_OStream&            OS,
-    const bool                   Compact     = true,
+    const bool       Compact     = true,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
 
   //! Dumps the triangulation
@@ -159,7 +163,7 @@ public:
   //! be read back by Read.
   Standard_EXPORT void WritePolygonOnTriangulation(
     Standard_OStream&            OS,
-    const bool                   Compact     = true,
+    const bool       Compact     = true,
     const Message_ProgressRange& theProgress = Message_ProgressRange()) const;
 
   //! Dumps the polygons on triangulation
@@ -167,10 +171,10 @@ public:
   Standard_EXPORT void DumpPolygonOnTriangulation(Standard_OStream& OS) const;
 
 private:
-  BRep_Builder                                            myBuilder;
-  GeomTools_SurfaceSet                                    mySurfaces;
-  GeomTools_CurveSet                                      myCurves;
-  GeomTools_Curve2dSet                                    myCurves2d;
+  BRep_Builder                  myBuilder;
+  GeomTools_SurfaceSet          mySurfaces;
+  GeomTools_CurveSet            myCurves;
+  GeomTools_Curve2dSet          myCurves2d;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> myPolygons2D;
   NCollection_IndexedMap<occ::handle<Standard_Transient>> myPolygons3D;
   NCollection_IndexedDataMap<occ::handle<Poly_Triangulation>,
@@ -179,8 +183,8 @@ private:
                                                                  //!  to save normals for triangulation
   // clang-format on
   NCollection_IndexedMap<occ::handle<Standard_Transient>> myNodes;
-  bool                                                    myWithTriangles;
-  bool                                                    myWithNormals;
+  bool              myWithTriangles;
+  bool              myWithNormals;
 };
 
 #endif // _BRepTools_ShapeSet_HeaderFile

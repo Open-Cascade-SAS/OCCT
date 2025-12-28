@@ -40,17 +40,17 @@ public:
   //! Iterates on the children of the given label. If
   //! <allLevels> option is set to true, it explores not
   //! only the first, but all the sub label levels.
-  Standard_EXPORT TDF_ChildIDIterator(const TDF_Label&     aLabel,
-                                      const Standard_GUID& anID,
-                                      const bool           allLevels = false);
+  Standard_EXPORT TDF_ChildIDIterator(const TDF_Label&       aLabel,
+                                      const Standard_GUID&   anID,
+                                      const bool allLevels = false);
 
   //! Initializes the iteration on the children of the
   //! given label. If <allLevels> option is set to true,
   //! it explores not only the first, but all the sub
   //! label levels.
-  Standard_EXPORT void Initialize(const TDF_Label&     aLabel,
-                                  const Standard_GUID& anID,
-                                  const bool           allLevels = false);
+  Standard_EXPORT void Initialize(const TDF_Label&       aLabel,
+                                  const Standard_GUID&   anID,
+                                  const bool allLevels = false);
 
   //! Returns True if there is a current Item in the
   //! iteration.
@@ -69,8 +69,8 @@ public:
   occ::handle<TDF_Attribute> Value() const;
 
 private:
-  Standard_GUID              myID;
-  TDF_ChildIterator          myItr;
+  Standard_GUID         myID;
+  TDF_ChildIterator     myItr;
   occ::handle<TDF_Attribute> myAtt;
 };
 

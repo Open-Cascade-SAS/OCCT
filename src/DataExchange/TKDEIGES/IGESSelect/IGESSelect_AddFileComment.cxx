@@ -39,8 +39,7 @@ void IGESSelect_AddFileComment::AddLine(const char* line)
   thelist->Append(new TCollection_HAsciiString(line));
 }
 
-void IGESSelect_AddFileComment::AddLines(
-  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& lines)
+void IGESSelect_AddFileComment::AddLines(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& lines)
 {
   thelist->Append(lines);
 }
@@ -55,8 +54,7 @@ const char* IGESSelect_AddFileComment::Line(const int num) const
   return thelist->Value(num)->ToCString();
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-  IGESSelect_AddFileComment::Lines() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESSelect_AddFileComment::Lines() const
 {
   return thelist;
 }
@@ -72,8 +70,8 @@ void IGESSelect_AddFileComment::Perform(IFSelect_ContextWrite&, IGESData_IGESWri
 
 TCollection_AsciiString IGESSelect_AddFileComment::Label() const
 {
-  int  nb = NbLines();
-  char labl[80];
+  int nb = NbLines();
+  char             labl[80];
   Sprintf(labl, "Add %d Comment Lines (Start Section)", nb);
   return TCollection_AsciiString(labl);
 }

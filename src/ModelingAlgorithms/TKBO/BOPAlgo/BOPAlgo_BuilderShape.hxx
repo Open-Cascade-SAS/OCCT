@@ -27,7 +27,9 @@
 
 #include <NCollection_BaseAllocator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 class TopoDS_Shape;
@@ -87,7 +89,10 @@ public: //! @name History methods
   }
 
   //! Returns true if any of the input shapes has been deleted during operation.
-  bool HasDeleted() const { return (myFillHistory && myHistory ? myHistory->HasRemoved() : false); }
+  bool HasDeleted() const
+  {
+    return (myFillHistory && myHistory ? myHistory->HasRemoved() : false);
+  }
 
   //! History Tool
   occ::handle<BRepTools_History> History()
@@ -144,10 +149,9 @@ protected:              //! @name Fields
   TopoDS_Shape myShape; //!< Result of the operation
 
   NCollection_List<TopoDS_Shape> myHistShapes; //!< Storer for the history shapes
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>
-    myMapShape; //!< cached map of all arguments shapes
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  myMapShape;   //!< cached map of all arguments shapes
 
-  bool                           myFillHistory; //!< Controls the history filling
+  bool          myFillHistory; //!< Controls the history filling
   occ::handle<BRepTools_History> myHistory;     //!< History tool
 };
 

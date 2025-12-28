@@ -82,7 +82,10 @@ public:
   //! @code
   //! theA * X + theB * Y + theC * Z + theD = 0.
   //! @endcode
-  void Coefficients(double& theA, double& theB, double& theC, double& theD) const noexcept;
+  void Coefficients(double& theA,
+                    double& theB,
+                    double& theC,
+                    double& theD) const noexcept;
 
   //! Modifies this plane, by redefining its local coordinate system so that
   //! -   its origin and "main Direction" become those of the
@@ -160,7 +163,8 @@ public:
   //! AngularTolerance, and the distance between the origin
   //! of line L and this plane is less than or equal to
   //! theLinearTolerance.
-  bool Contains(const gp_Pnt& theP, const double theLinearTolerance) const noexcept
+  bool Contains(const gp_Pnt&       theP,
+                            const double theLinearTolerance) const noexcept
   {
     return Distance(theP) <= theLinearTolerance;
   }
@@ -173,9 +177,9 @@ public:
   //! theAngularTolerance, and the distance between the origin
   //! of line theL and this plane is less than or equal to
   //! theLinearTolerance.
-  bool Contains(const gp_Lin& theL,
-                const double  theLinearTolerance,
-                const double  theAngularTolerance) const noexcept
+  bool Contains(const gp_Lin&       theL,
+                            const double theLinearTolerance,
+                            const double theAngularTolerance) const noexcept
   {
     return Contains(theL.Location(), theLinearTolerance)
            && pos.Direction().IsNormal(theL.Direction(), theAngularTolerance);
@@ -265,7 +269,8 @@ public:
   }
 
   //! Translates a plane from the point theP1 to the point theP2.
-  [[nodiscard]] constexpr gp_Pln Translated(const gp_Pnt& theP1, const gp_Pnt& theP2) const noexcept
+  [[nodiscard]] constexpr gp_Pln Translated(const gp_Pnt& theP1,
+                                                 const gp_Pnt& theP2) const noexcept
   {
     gp_Pln aPl = *this;
     aPl.pos.Translate(theP1, theP2);
@@ -309,8 +314,8 @@ inline double gp_Pln::Distance(const gp_Pnt& theP) const noexcept
 {
   const gp_Pnt& aLoc = pos.Location();
   const gp_Dir& aDir = pos.Direction();
-  double        aD   = (aDir.X() * (theP.X() - aLoc.X()) + aDir.Y() * (theP.Y() - aLoc.Y())
-               + aDir.Z() * (theP.Z() - aLoc.Z()));
+  double aD   = (aDir.X() * (theP.X() - aLoc.X()) + aDir.Y() * (theP.Y() - aLoc.Y())
+                      + aDir.Z() * (theP.Z() - aLoc.Z()));
   if (aD < 0)
   {
     aD = -aD;

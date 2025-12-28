@@ -33,23 +33,26 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolLabelDisplay::IGESDraw_ToolLabelDisplay() {}
 
 void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDisplay>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                       PR) const
+                                              IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   int nbval;
 
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XYZ>>                               textLocations;
+  occ::handle<NCollection_HArray1<gp_XYZ>>              textLocations;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>   leaderEntities;
-  occ::handle<NCollection_HArray1<int>>                                  labelLevels;
+  occ::handle<NCollection_HArray1<int>>         labelLevels;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     displayedEntities;
 
   // Reading nbval(No. of Label placements)
@@ -63,9 +66,9 @@ void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDi
     displayedEntities = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbval);
 
     occ::handle<IGESData_ViewKindEntity> tempView;
-    gp_XYZ                               tempXYZ;
+    gp_XYZ                          tempXYZ;
     occ::handle<IGESDimen_LeaderArrow>   tempLeaderArrow;
-    int                                  tempLabel;
+    int                tempLabel;
     occ::handle<IGESData_IGESEntity>     tempDisplayedEntity;
 
     for (int i = 1; i <= nbval; i++)
@@ -117,7 +120,7 @@ void IGESDraw_ToolLabelDisplay::ReadOwnParams(const occ::handle<IGESDraw_LabelDi
 }
 
 void IGESDraw_ToolLabelDisplay::WriteOwnParams(const occ::handle<IGESDraw_LabelDisplay>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   int Up = ent->NbLabels();
   IW.Send(Up);
@@ -134,7 +137,7 @@ void IGESDraw_ToolLabelDisplay::WriteOwnParams(const occ::handle<IGESDraw_LabelD
 }
 
 void IGESDraw_ToolLabelDisplay::OwnShared(const occ::handle<IGESDraw_LabelDisplay>& ent,
-                                          Interface_EntityIterator&                 iter) const
+                                          Interface_EntityIterator&            iter) const
 {
   int Up = ent->NbLabels();
   for (int i = 1; i <= Up; i++)
@@ -147,13 +150,13 @@ void IGESDraw_ToolLabelDisplay::OwnShared(const occ::handle<IGESDraw_LabelDispla
 
 void IGESDraw_ToolLabelDisplay::OwnCopy(const occ::handle<IGESDraw_LabelDisplay>& another,
                                         const occ::handle<IGESDraw_LabelDisplay>& ent,
-                                        Interface_CopyTool&                       TC) const
+                                        Interface_CopyTool&                  TC) const
 {
-  int                                                                    nbval;
+  int                         nbval;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XYZ>>                               textLocations;
+  occ::handle<NCollection_HArray1<gp_XYZ>>              textLocations;
   occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>   leaderEntities;
-  occ::handle<NCollection_HArray1<int>>                                  labelLevels;
+  occ::handle<NCollection_HArray1<int>>         labelLevels;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     displayedEntities;
 
   nbval             = another->NbLabels();
@@ -199,9 +202,9 @@ void IGESDraw_ToolLabelDisplay::OwnCheck(const occ::handle<IGESDraw_LabelDisplay
 }
 
 void IGESDraw_ToolLabelDisplay::OwnDump(const occ::handle<IGESDraw_LabelDisplay>& ent,
-                                        const IGESData_IGESDumper&                dumper,
-                                        Standard_OStream&                         S,
-                                        const int                                 level) const
+                                        const IGESData_IGESDumper&           dumper,
+                                        Standard_OStream&                    S,
+                                        const int               level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

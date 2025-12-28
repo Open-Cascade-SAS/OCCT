@@ -45,12 +45,12 @@ occ::handle<TDF_Attribute> BinMDocStd_XLinkDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                   const occ::handle<TDF_Attribute>& theTarget,
-                                   BinObjMgt_RRelocationTable&) const
+bool BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                               const occ::handle<TDF_Attribute>& theTarget,
+                                               BinObjMgt_RRelocationTable&) const
 {
   TCollection_AsciiString aStr;
-  bool                    ok = theSource >> aStr;
+  bool        ok = theSource >> aStr;
   if (ok)
   {
     occ::handle<TDocStd_XLink> anAtt = occ::down_cast<TDocStd_XLink>(theTarget);
@@ -69,7 +69,7 @@ bool BinMDocStd_XLinkDriver::Paste(const BinObjMgt_Persistent&       theSource,
 //=======================================================================
 
 void BinMDocStd_XLinkDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                   BinObjMgt_Persistent&             theTarget,
+                                   BinObjMgt_Persistent&        theTarget,
                                    NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TDocStd_XLink> anAtt = occ::down_cast<TDocStd_XLink>(theSource);

@@ -37,8 +37,7 @@ DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode()
 
 //=================================================================================================
 
-DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(
-  const occ::handle<DEGLTF_ConfigurationNode>& theNode)
+DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(const occ::handle<DEGLTF_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

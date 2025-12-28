@@ -25,8 +25,7 @@ void StepVisual_TextStyleForDefinedFont::Init(const occ::handle<StepVisual_Colou
   textColour = aTextColour;
 }
 
-void StepVisual_TextStyleForDefinedFont::SetTextColour(
-  const occ::handle<StepVisual_Colour>& aTextColour)
+void StepVisual_TextStyleForDefinedFont::SetTextColour(const occ::handle<StepVisual_Colour>& aTextColour)
 {
   textColour = aTextColour;
 }

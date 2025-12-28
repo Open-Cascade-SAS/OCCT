@@ -21,7 +21,7 @@
 //=================================================================================================
 
 float Graphic3d_PBRMaterial::RoughnessFromSpecular(const Quantity_Color& theSpecular,
-                                                   const double          theShiness)
+                                                                const double   theShiness)
 {
   double aRoughnessFactor = 1.0 - theShiness;
   // double aSpecIntens = theSpecular.Light() * theSpecular;
@@ -174,7 +174,7 @@ void Graphic3d_PBRMaterial::SetBSDF(const Graphic3d_BSDF& theBSDF)
 //=================================================================================================
 
 void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theLUT,
-                                           unsigned int                     theNbIntegralSamples)
+                                           unsigned int                theNbIntegralSamples)
 {
   if (theLUT->Format() != Image_Format_RGF)
   {
@@ -188,18 +188,18 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
 
     for (unsigned int x = 0; x < theLUT->SizeX(); ++x)
     {
-      float                   aCosV   = x / float(theLUT->SizeX() - 1);
-      NCollection_Vec3<float> aView   = lutGenView(aCosV);
-      NCollection_Vec2<float> aResult = NCollection_Vec2<float>(0.f);
+      float aCosV   = x / float(theLUT->SizeX() - 1);
+      NCollection_Vec3<float>     aView   = lutGenView(aCosV);
+      NCollection_Vec2<float>     aResult = NCollection_Vec2<float>(0.f);
       for (unsigned int i = 0; i < theNbIntegralSamples; ++i)
       {
         NCollection_Vec2<float> aHammersleyPoint = lutGenHammersley(i, theNbIntegralSamples);
-        NCollection_Vec3<float> aHalf  = lutGenImportanceSample(aHammersleyPoint, aRoughness);
-        NCollection_Vec3<float> aLight = lutGenReflect(aView, aHalf);
+        NCollection_Vec3<float> aHalf            = lutGenImportanceSample(aHammersleyPoint, aRoughness);
+        NCollection_Vec3<float> aLight           = lutGenReflect(aView, aHalf);
         if (aLight.z() >= 0.f)
         {
-          float aCosVH               = aView.Dot(aHalf);
-          float aGeometryFactor      = lutGenGeometryFactor(aLight.z(), aCosV, aRoughness);
+          float aCosVH          = aView.Dot(aHalf);
+          float aGeometryFactor = lutGenGeometryFactor(aLight.z(), aCosV, aRoughness);
           float anIntermediateResult = 1.f - aCosVH;
           anIntermediateResult *= anIntermediateResult;
           anIntermediateResult *= anIntermediateResult;
@@ -218,14 +218,18 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT(const occ::handle<Image_PixMap>& theL
 
 //=================================================================================================
 
-float Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(float theProbability, float theRoughness)
+float Graphic3d_PBRMaterial::SpecIBLMapSamplesFactor(float theProbability,
+                                                                  float theRoughness)
 {
-  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f / float(M_PI);
+  return acosf(lutGenImportanceSampleCosTheta(theProbability, theRoughness)) * 2.f
+         / float(M_PI);
 }
 
 //=================================================================================================
 
-float Graphic3d_PBRMaterial::lutGenGeometryFactor(float theCosL, float theCosV, float theRoughness)
+float Graphic3d_PBRMaterial::lutGenGeometryFactor(float theCosL,
+                                                               float theCosV,
+                                                               float theRoughness)
 {
   float aK = theRoughness * theRoughness * 0.5f;
 
@@ -239,7 +243,7 @@ float Graphic3d_PBRMaterial::lutGenGeometryFactor(float theCosL, float theCosV, 
 //=================================================================================================
 
 NCollection_Vec2<float> Graphic3d_PBRMaterial::lutGenHammersley(unsigned int theNumber,
-                                                                unsigned int theCount)
+                                                       unsigned int theCount)
 {
   float aPhi2 = 0.f;
   for (unsigned int i = 0; i < sizeof(unsigned int) * 8; ++i)
@@ -256,8 +260,9 @@ NCollection_Vec2<float> Graphic3d_PBRMaterial::lutGenHammersley(unsigned int the
 
 //=================================================================================================
 
-float Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(float theHammersleyPointComponent,
-                                                            float theRoughness)
+float Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(
+  float theHammersleyPointComponent,
+  float theRoughness)
 {
   float aQuadRoughness = theRoughness * theRoughness;
   aQuadRoughness *= aQuadRoughness;
@@ -278,11 +283,12 @@ float Graphic3d_PBRMaterial::lutGenImportanceSampleCosTheta(float theHammersleyP
 
 NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenImportanceSample(
   const NCollection_Vec2<float>& theHammerslayPoint,
-  float                          theRoughness)
+  float    theRoughness)
 {
   float aPhi = 2.f * float(M_PI) * theHammerslayPoint.y();
 
-  float aCosTheta = lutGenImportanceSampleCosTheta(theHammerslayPoint.x(), theRoughness);
+  float aCosTheta =
+    lutGenImportanceSampleCosTheta(theHammerslayPoint.x(), theRoughness);
   float aSinTheta = sqrtf(1.f - aCosTheta * aCosTheta);
 
   return NCollection_Vec3<float>(aSinTheta * cosf(aPhi), aSinTheta * sinf(aPhi), aCosTheta);
@@ -297,9 +303,8 @@ NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenView(float theCosV)
 
 //=================================================================================================
 
-NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenReflect(
-  const NCollection_Vec3<float>& theVector,
-  const NCollection_Vec3<float>& theAxis)
+NCollection_Vec3<float> Graphic3d_PBRMaterial::lutGenReflect(const NCollection_Vec3<float>& theVector,
+                                                    const NCollection_Vec3<float>& theAxis)
 {
   return theAxis * theAxis.Dot(theVector) * 2.f - theVector;
 }

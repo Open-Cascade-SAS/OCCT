@@ -21,10 +21,13 @@
 #include <TNaming_Localizer.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <NCollection_Map.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 
 // #define MDTV_DEB_IDF
 #ifdef OCCT_DEBUG_IDF
@@ -79,8 +82,8 @@ TNaming_Identifier::TNaming_Identifier(const TDF_Label&    LabAcces,
 
 //=================================================================================================
 
-TNaming_Identifier::TNaming_Identifier(const TDF_Label&                       LabAcces,
-                                       const TopoDS_Shape&                    S,
+TNaming_Identifier::TNaming_Identifier(const TDF_Label&                  LabAcces,
+                                       const TopoDS_Shape&               S,
                                        const occ::handle<TNaming_NamedShape>& ContextNS,
                                        const bool /*OneOnly*/)
     : myTDFAcces(LabAcces),
@@ -206,8 +209,8 @@ TopoDS_Shape TNaming_Identifier::ShapeArg()
 
 TopoDS_Shape TNaming_Identifier::ShapeContext() const
 {
-  const TopoDS_Shape&             S = myShapeArgs.First();
-  TopoDS_Shape                    SC;
+  const TopoDS_Shape&        S = myShapeArgs.First();
+  TopoDS_Shape               SC;
   occ::handle<TNaming_NamedShape> NS = TNaming_Tool::NamedShape(S, myTDFAcces);
   TNaming_Localizer::FindShapeContext(NS, S, SC); // szy ==> added par. S
   return SC;
@@ -308,12 +311,12 @@ void TNaming_Identifier::GeneratedIdentification(TNaming_Localizer& /*Localizer*
 
 //=================================================================================================
 
-void TNaming_Identifier::Identification(TNaming_Localizer&                     Localizer,
+void TNaming_Identifier::Identification(TNaming_Localizer&                Localizer,
                                         const occ::handle<TNaming_NamedShape>& NS)
 {
 
-  NCollection_Map<occ::handle<TNaming_NamedShape>>       Primitives;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> Shapes;
+  NCollection_Map<occ::handle<TNaming_NamedShape>> Primitives;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>     Shapes;
 
   Localizer.Backward(NS, myShape, Primitives, Shapes);
 

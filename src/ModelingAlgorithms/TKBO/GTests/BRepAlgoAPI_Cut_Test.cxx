@@ -624,112 +624,112 @@ TEST_F(BCutSimpleTest, OffsetRightHalfBoxMinusNurbsBox_E9)
 // Test bcut_simple/F1: NURBS box - rotated rectangular box (sqrt(2) x sqrt(2)/2 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedRectangularBox_F1)
 {
-  TopoDS_Shape aNurbsBox           = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                        = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r               = M_SQRT2;
-  TopoDS_Shape     aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
-  aRectangularBox                  = BOPTest_Utilities::RotateShape(aRectangularBox,
+  TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r    = M_SQRT2;
+  TopoDS_Shape aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
+  aRectangularBox              = BOPTest_Utilities::RotateShape(aRectangularBox,
                                                    gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                                    45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult       = PerformCut(aNurbsBox, aRectangularBox);
+  const TopoDS_Shape aResult   = PerformCut(aNurbsBox, aRectangularBox);
   ValidateResult(aResult, 4.41421);
 }
 
 // Test bcut_simple/F2: rotated rectangular box - NURBS box
 TEST_F(BCutSimpleTest, RotatedRectangularBoxMinusNurbsBox_F2)
 {
-  TopoDS_Shape aNurbsBox           = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                        = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r               = M_SQRT2;
-  TopoDS_Shape     aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
-  aRectangularBox                  = BOPTest_Utilities::RotateShape(aRectangularBox,
+  TopoDS_Shape aNurbsBox       = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                    = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r    = M_SQRT2;
+  TopoDS_Shape aRectangularBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r / 2.0, 1.0);
+  aRectangularBox              = BOPTest_Utilities::RotateShape(aRectangularBox,
                                                    gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                                    45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult       = PerformCut(aRectangularBox, aNurbsBox);
+  const TopoDS_Shape aResult   = PerformCut(aRectangularBox, aNurbsBox);
   ValidateResult(aResult, 5.82843);
 }
 
 // Test bcut_simple/F3: NURBS box - rotated square box (sqrt(2)/2 x sqrt(2)/2 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedSquareBox_F3)
 {
-  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const double r             = sqrt(2.0) / 2.0;
-  TopoDS_Shape aSquareBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r, 1.0);
-  aSquareBox                 = BOPTest_Utilities::RotateShape(aSquareBox,
+  TopoDS_Shape aNurbsBox         = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                      = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  const double r          = sqrt(2.0) / 2.0;
+  TopoDS_Shape        aSquareBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r, 1.0);
+  aSquareBox                     = BOPTest_Utilities::RotateShape(aSquareBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                               45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult = PerformCut(aNurbsBox, aSquareBox);
+  const TopoDS_Shape aResult     = PerformCut(aNurbsBox, aSquareBox);
   ValidateResult(aResult, 5.91421);
 }
 
 // Test bcut_simple/F4: rotated square box - NURBS box
 TEST_F(BCutSimpleTest, RotatedSquareBoxMinusNurbsBox_F4)
 {
-  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  const double r             = sqrt(2.0) / 2.0;
-  TopoDS_Shape aSquareBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r, 1.0);
-  aSquareBox                 = BOPTest_Utilities::RotateShape(aSquareBox,
+  TopoDS_Shape aNurbsBox         = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                      = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  const double r          = sqrt(2.0) / 2.0;
+  TopoDS_Shape        aSquareBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, r, 1.0);
+  aSquareBox                     = BOPTest_Utilities::RotateShape(aSquareBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                               45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult = PerformCut(aSquareBox, aNurbsBox);
+  const TopoDS_Shape aResult     = PerformCut(aSquareBox, aNurbsBox);
   ValidateResult(aResult, 2.91421);
 }
 
 // Test bcut_simple/F5: NURBS box - rotated thin box (sqrt(2) x 0.25 x 1, 45deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedThinBox_F5)
 {
-  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r         = M_SQRT2;
-  TopoDS_Shape     aThinBox  = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
-  aThinBox                   = BOPTest_Utilities::RotateShape(aThinBox,
+  TopoDS_Shape aNurbsBox           = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                        = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r        = M_SQRT2;
+  TopoDS_Shape            aThinBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
+  aThinBox                         = BOPTest_Utilities::RotateShape(aThinBox,
                                             gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                             45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult = PerformCut(aNurbsBox, aThinBox);
+  const TopoDS_Shape aResult       = PerformCut(aNurbsBox, aThinBox);
   ValidateResult(aResult, 7.03921);
 }
 
 // Test bcut_simple/F6: rotated thin box - NURBS box
 TEST_F(BCutSimpleTest, RotatedThinBoxMinusNurbsBox_F6)
 {
-  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r         = M_SQRT2;
-  TopoDS_Shape     aThinBox  = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
-  aThinBox                   = BOPTest_Utilities::RotateShape(aThinBox,
+  TopoDS_Shape aNurbsBox           = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                        = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r        = M_SQRT2;
+  TopoDS_Shape            aThinBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r, 0.25, 1.0);
+  aThinBox                         = BOPTest_Utilities::RotateShape(aThinBox,
                                             gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                             45.0 * M_PI / 180.0);
-  const TopoDS_Shape aResult = PerformCut(aThinBox, aNurbsBox);
+  const TopoDS_Shape aResult       = PerformCut(aThinBox, aNurbsBox);
   ValidateResult(aResult, 1.83211);
 }
 
 // Test bcut_simple/F7: NURBS box - rotated narrow box (sqrt(31)/4 x 0.25 x 1, 34.73deg)
 TEST_F(BCutSimpleTest, NurbsBoxMinusRotatedNarrowBox_F7)
 {
-  TopoDS_Shape aNurbsBox      = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                   = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r          = 5.5677643628300219; // sqrt(31.0)
-  TopoDS_Shape     aNarrowBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
-  aNarrowBox                  = BOPTest_Utilities::RotateShape(aNarrowBox,
+  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r  = 5.5677643628300219; // sqrt(31.0)
+  TopoDS_Shape aNarrowBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
+  aNarrowBox                 = BOPTest_Utilities::RotateShape(aNarrowBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                               34.73 * M_PI / 180.0);
-  const TopoDS_Shape aResult  = PerformCut(aNurbsBox, aNarrowBox);
+  const TopoDS_Shape aResult = PerformCut(aNurbsBox, aNarrowBox);
   ValidateResult(aResult, 7.21677);
 }
 
 // Test bcut_simple/F8: rotated narrow box - NURBS box
 TEST_F(BCutSimpleTest, RotatedNarrowBoxMinusNurbsBox_F8)
 {
-  TopoDS_Shape aNurbsBox      = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
-  aNurbsBox                   = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
-  constexpr double r          = 5.5677643628300219;
-  TopoDS_Shape     aNarrowBox = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
-  aNarrowBox                  = BOPTest_Utilities::RotateShape(aNarrowBox,
+  TopoDS_Shape aNurbsBox     = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), 1.0, 1.0, 1.0);
+  aNurbsBox                  = BOPTest_Utilities::ConvertToNurbs(aNurbsBox);
+  constexpr double r  = 5.5677643628300219;
+  TopoDS_Shape aNarrowBox    = BOPTest_Utilities::CreateBox(gp_Pnt(0, 0, 0), r / 4.0, 0.25, 1.0);
+  aNarrowBox                 = BOPTest_Utilities::RotateShape(aNarrowBox,
                                               gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(gp_Dir::D::Z)),
                                               34.73 * M_PI / 180.0);
-  const TopoDS_Shape aResult  = PerformCut(aNarrowBox, aNurbsBox);
+  const TopoDS_Shape aResult = PerformCut(aNarrowBox, aNurbsBox);
   ValidateResult(aResult, 1.54631);
 }
 

@@ -43,9 +43,9 @@ public:
   Standard_EXPORT TopOpeBRepBuild_WireEdgeClassifier(const TopoDS_Shape&                 F,
                                                      const TopOpeBRepBuild_BlockBuilder& BB);
 
-  Standard_EXPORT virtual TopAbs_State Compare(
-    const occ::handle<TopOpeBRepBuild_Loop>& L1,
-    const occ::handle<TopOpeBRepBuild_Loop>& L2) override;
+  Standard_EXPORT virtual TopAbs_State Compare(const occ::handle<TopOpeBRepBuild_Loop>& L1,
+                                               const occ::handle<TopOpeBRepBuild_Loop>& L2)
+    override;
 
   Standard_EXPORT TopoDS_Shape LoopToShape(const occ::handle<TopOpeBRepBuild_Loop>& L);
 
@@ -74,7 +74,7 @@ public:
   Standard_EXPORT TopAbs_State State() override;
 
 private:
-  bool                            myFirstCompare;
+  bool                myFirstCompare;
   gp_Pnt2d                        myPoint2d;
   BRepClass_Edge                  myBCEdge;
   BRepClass_FacePassiveClassifier myFPC;

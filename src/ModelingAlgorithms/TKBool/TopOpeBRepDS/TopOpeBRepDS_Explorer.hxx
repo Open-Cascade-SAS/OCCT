@@ -37,12 +37,12 @@ public:
   Standard_EXPORT TopOpeBRepDS_Explorer();
 
   Standard_EXPORT TopOpeBRepDS_Explorer(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                                        const TopAbs_ShapeEnum T        = TopAbs_SHAPE,
-                                        const bool             findkeep = true);
+                                        const TopAbs_ShapeEnum                     T = TopAbs_SHAPE,
+                                        const bool findkeep = true);
 
   Standard_EXPORT void Init(const occ::handle<TopOpeBRepDS_HDataStructure>& HDS,
-                            const TopAbs_ShapeEnum                          T        = TopAbs_SHAPE,
-                            const bool                                      findkeep = true);
+                            const TopAbs_ShapeEnum                     T        = TopAbs_SHAPE,
+                            const bool                     findkeep = true);
 
   Standard_EXPORT TopAbs_ShapeEnum Type() const;
 
@@ -64,11 +64,11 @@ private:
   Standard_EXPORT void Find();
 
   occ::handle<TopOpeBRepDS_HDataStructure> myHDS;
-  TopAbs_ShapeEnum                         myT;
-  int                                      myI;
-  int                                      myN;
-  bool                                     myB;
-  bool                                     myFK;
+  TopAbs_ShapeEnum                    myT;
+  int                    myI;
+  int                    myN;
+  bool                    myB;
+  bool                    myFK;
 };
 
 #endif // _TopOpeBRepDS_Explorer_HeaderFile

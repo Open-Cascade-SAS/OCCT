@@ -27,14 +27,16 @@ StepElement_VolumeElementPurpose::StepElement_VolumeElementPurpose() {}
 
 //=================================================================================================
 
-int StepElement_VolumeElementPurpose::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
+int StepElement_VolumeElementPurpose::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
 
 //=================================================================================================
 
-int StepElement_VolumeElementPurpose::CaseMem(const occ::handle<StepData_SelectMember>& ent) const
+int StepElement_VolumeElementPurpose::CaseMem(
+  const occ::handle<StepData_SelectMember>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -83,7 +85,7 @@ StepElement_EnumeratedVolumeElementPurpose StepElement_VolumeElementPurpose::
     new TCollection_HAsciiString("EnumeratedVolumeElementPurpose");
   if (name->IsDifferent(nameitem))
     return StepElement_StressDisplacement;
-  int                                        numit = SelMem->Enum();
+  int                           numit = SelMem->Enum();
   StepElement_EnumeratedVolumeElementPurpose val;
   switch (numit)
   {

@@ -21,7 +21,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SessionDumper, Standard_Transient)
 
 static occ::handle<IFSelect_SessionDumper> thefirst;
-static int                                 cefait = 0;
+static int                            cefait = 0;
 
 // On commence la serie avec celui-la
 
@@ -29,7 +29,7 @@ IFSelect_SessionDumper::IFSelect_SessionDumper()
 {
   if (!cefait)
   {
-    cefait                                = 1;
+    cefait                           = 1;
     occ::handle<IFSelect_BasicDumper> bid = new IFSelect_BasicDumper;
   }
   else

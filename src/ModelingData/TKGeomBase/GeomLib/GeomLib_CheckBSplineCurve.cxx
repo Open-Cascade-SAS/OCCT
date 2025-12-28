@@ -23,7 +23,7 @@
 //=================================================================================================
 
 GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSplineCurve>& Curve,
-                                                     const double Tolerance,
+                                                     const double              Tolerance,
                                                      const double AngularTolerance)
     : myCurve(Curve),
       myDone(false),
@@ -34,8 +34,8 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
       myIndSecondPole(-1),
       myIndPrelastPole(-1)
 {
-  int    ii, num_poles;
-  double tangent_magnitude, value, vector_magnitude;
+  int ii, num_poles;
+  double    tangent_magnitude, value, vector_magnitude;
   num_poles = myCurve->NbPoles();
 
   if ((!myCurve->IsPeriodic()) && num_poles >= 4)
@@ -60,7 +60,7 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
       {
         avector_normalized = a_vector / vector_magnitude;
 
-        gp_Vec CrossProd         = tangent_normalized ^ avector_normalized;
+        gp_Vec        CrossProd         = tangent_normalized ^ avector_normalized;
         double CrossProdSqLength = CrossProd.SquareMagnitude();
         if (CrossProdSqLength > CrossProdSqTol)
           break;
@@ -90,7 +90,7 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
       {
         avector_normalized = a_vector / vector_magnitude;
 
-        gp_Vec CrossProd         = tangent_normalized ^ avector_normalized;
+        gp_Vec        CrossProd         = tangent_normalized ^ avector_normalized;
         double CrossProdSqLength = CrossProd.SquareMagnitude();
         if (CrossProdSqLength > CrossProdSqTol)
           break;
@@ -113,7 +113,8 @@ GeomLib_CheckBSplineCurve::GeomLib_CheckBSplineCurve(const occ::handle<Geom_BSpl
 
 //=================================================================================================
 
-void GeomLib_CheckBSplineCurve::NeedTangentFix(bool& FirstFlag, bool& LastFlag) const
+void GeomLib_CheckBSplineCurve::NeedTangentFix(bool& FirstFlag,
+                                               bool& LastFlag) const
 {
   FirstFlag = myFixFirstTangent;
   LastFlag  = myFixLastTangent;
@@ -122,7 +123,7 @@ void GeomLib_CheckBSplineCurve::NeedTangentFix(bool& FirstFlag, bool& LastFlag) 
 //=================================================================================================
 
 occ::handle<Geom_BSplineCurve> GeomLib_CheckBSplineCurve::FixedTangent(const bool FirstFlag,
-                                                                       const bool LastFlag)
+                                                                  const bool LastFlag)
 {
   occ::handle<Geom_BSplineCurve> new_curve;
   if ((myFixFirstTangent && FirstFlag) || (myFixLastTangent && LastFlag))
@@ -136,7 +137,8 @@ occ::handle<Geom_BSplineCurve> GeomLib_CheckBSplineCurve::FixedTangent(const boo
 
 //=================================================================================================
 
-void GeomLib_CheckBSplineCurve::FixTangent(const bool FirstFlag, const bool LastFlag)
+void GeomLib_CheckBSplineCurve::FixTangent(const bool FirstFlag,
+                                           const bool LastFlag)
 {
   FixTangentOnCurve(myCurve, FirstFlag, LastFlag);
 }
@@ -144,18 +146,18 @@ void GeomLib_CheckBSplineCurve::FixTangent(const bool FirstFlag, const bool Last
 //=================================================================================================
 
 void GeomLib_CheckBSplineCurve::FixTangentOnCurve(occ::handle<Geom_BSplineCurve>& theCurve,
-                                                  const bool                      FirstFlag,
-                                                  const bool                      LastFlag)
+                                                  const bool     FirstFlag,
+                                                  const bool     LastFlag)
 {
   if (myFixFirstTangent && FirstFlag)
   {
-    gp_XYZ XYZ1      = theCurve->Pole(1).XYZ();
-    gp_XYZ XYZ2      = theCurve->Pole(myIndSecondPole).XYZ();
+    gp_XYZ        XYZ1      = theCurve->Pole(1).XYZ();
+    gp_XYZ        XYZ2      = theCurve->Pole(myIndSecondPole).XYZ();
     double NbSamples = myIndSecondPole - 1;
     for (int i = 2; i < myIndSecondPole; i++)
     {
       double ii = i - 1;
-      gp_Pnt aNewPole((1. - ii / NbSamples) * XYZ1 + ii / NbSamples * XYZ2);
+      gp_Pnt        aNewPole((1. - ii / NbSamples) * XYZ1 + ii / NbSamples * XYZ2);
       theCurve->SetPole(i, aNewPole);
     }
   }
@@ -164,13 +166,13 @@ void GeomLib_CheckBSplineCurve::FixTangentOnCurve(occ::handle<Geom_BSplineCurve>
   {
     int num_poles = theCurve->NbPoles();
 
-    gp_XYZ XYZ1      = theCurve->Pole(num_poles).XYZ();
-    gp_XYZ XYZ2      = theCurve->Pole(myIndPrelastPole).XYZ();
+    gp_XYZ        XYZ1      = theCurve->Pole(num_poles).XYZ();
+    gp_XYZ        XYZ2      = theCurve->Pole(myIndPrelastPole).XYZ();
     double NbSamples = num_poles - myIndPrelastPole;
     for (int i = num_poles - 1; i > myIndPrelastPole; i--)
     {
       double ii = num_poles - i;
-      gp_Pnt aNewPole((1. - ii / NbSamples) * XYZ1 + ii / NbSamples * XYZ2);
+      gp_Pnt        aNewPole((1. - ii / NbSamples) * XYZ1 + ii / NbSamples * XYZ2);
       theCurve->SetPole(i, aNewPole);
     }
   }

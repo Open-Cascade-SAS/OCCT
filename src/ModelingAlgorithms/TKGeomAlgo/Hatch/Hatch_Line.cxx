@@ -35,14 +35,14 @@ Hatch_Line::Hatch_Line(const gp_Lin2d& L, const Hatch_LineForm T)
 
 //=================================================================================================
 
-void Hatch_Line::AddIntersection(const double Par1,
-                                 const bool   Start,
-                                 const int    Index,
-                                 const double Par2,
-                                 const double theToler)
+void Hatch_Line::AddIntersection(const double    Par1,
+                                 const bool Start,
+                                 const int Index,
+                                 const double    Par2,
+                                 const double    theToler)
 {
-  Hatch_Parameter P(Par1, Start, Index, Par2);
-  int             i;
+  Hatch_Parameter  P(Par1, Start, Index, Par2);
+  int i;
   for (i = 1; i <= myInters.Length(); i++)
   {
     double dfIntPar1 = myInters(i).myPar1;

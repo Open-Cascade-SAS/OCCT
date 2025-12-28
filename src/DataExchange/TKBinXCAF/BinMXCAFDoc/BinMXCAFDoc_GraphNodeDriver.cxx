@@ -39,12 +39,12 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_GraphNodeDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                        const occ::handle<TDF_Attribute>& theTarget,
-                                        BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                    const occ::handle<TDF_Attribute>& theTarget,
+                                                    BinObjMgt_RRelocationTable& theRelocTable) const
 {
   occ::handle<XCAFDoc_GraphNode> aT = occ::down_cast<XCAFDoc_GraphNode>(theTarget);
-  int                            anID;
+  int          anID;
 
   // Read Fathers
   if (!(theSource >> anID))
@@ -99,20 +99,19 @@ bool BinMXCAFDoc_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSou
 
 //=================================================================================================
 
-void BinMXCAFDoc_GraphNodeDriver::Paste(
-  const occ::handle<TDF_Attribute>&                        theSource,
-  BinObjMgt_Persistent&                                    theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
+void BinMXCAFDoc_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                        BinObjMgt_Persistent&        theTarget,
+                                        NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   occ::handle<XCAFDoc_GraphNode> aS = occ::down_cast<XCAFDoc_GraphNode>(theSource);
-  int                            i, aNb, anID;
+  int          i, aNb, anID;
 
   // Write fathers
   aNb = aS->NbFathers();
   for (i = 1; i <= aNb; i++)
   {
     occ::handle<XCAFDoc_GraphNode> aNode = aS->GetFather(i);
-    anID                                 = theRelocTable.Add(aNode);
+    anID                            = theRelocTable.Add(aNode);
     theTarget << anID;
   }
   theTarget.PutInteger(-1);
@@ -122,7 +121,7 @@ void BinMXCAFDoc_GraphNodeDriver::Paste(
   for (i = 1; i <= aNb; i++)
   {
     occ::handle<XCAFDoc_GraphNode> aNode = aS->GetChild(i);
-    anID                                 = theRelocTable.Add(aNode);
+    anID                            = theRelocTable.Add(aNode);
     theTarget << anID;
   }
   theTarget.PutInteger(-1);

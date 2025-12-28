@@ -25,7 +25,7 @@
 RWStepGeom_RWSurfacePatch::RWStepGeom_RWSurfacePatch() {}
 
 void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                         const int                                   num,
+                                         const int                 num,
                                          occ::handle<Interface_Check>&               ach,
                                          const occ::handle<StepGeom_SurfacePatch>&   ent) const
 {
@@ -91,7 +91,7 @@ void RWStepGeom_RWSurfacePatch::ReadStep(const occ::handle<StepData_StepReaderDa
   ent->Init(aParentSurface, aUTransition, aVTransition, aUSense, aVSense);
 }
 
-void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                      SW,
+void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                 SW,
                                           const occ::handle<StepGeom_SurfacePatch>& ent) const
 {
 
@@ -117,7 +117,7 @@ void RWStepGeom_RWSurfacePatch::WriteStep(StepData_StepWriter&                  
 }
 
 void RWStepGeom_RWSurfacePatch::Share(const occ::handle<StepGeom_SurfacePatch>& ent,
-                                      Interface_EntityIterator&                 iter) const
+                                      Interface_EntityIterator&            iter) const
 {
 
   iter.GetOneItem(ent->ParentSurface());

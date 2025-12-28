@@ -43,8 +43,8 @@ public:
   //! LineFontDefPattern
   //! - allSegLength : Containing lengths of respective segments
   //! - aPattern     : HAsciiString indicating visible-blank segments
-  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<double>>& allSegLength,
-                            const occ::handle<TCollection_HAsciiString>&    aPattern);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<double>>&    allSegLength,
+                            const occ::handle<TCollection_HAsciiString>& aPattern);
 
   //! returns the number of segments in the visible-blank pattern
   Standard_EXPORT int NbSegments() const;
@@ -72,8 +72,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESGraph_LineFontDefPattern, IGESData_LineFontEntity)
 
 private:
-  occ::handle<NCollection_HArray1<double>> theSegmentLengths;
-  occ::handle<TCollection_HAsciiString>    theDisplayPattern;
+  occ::handle<NCollection_HArray1<double>>    theSegmentLengths;
+  occ::handle<TCollection_HAsciiString> theDisplayPattern;
 };
 
 #endif // _IGESGraph_LineFontDefPattern_HeaderFile

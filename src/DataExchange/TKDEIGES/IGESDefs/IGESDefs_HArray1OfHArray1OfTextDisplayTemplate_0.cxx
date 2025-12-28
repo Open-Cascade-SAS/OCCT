@@ -43,15 +43,14 @@ int IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Length() const
 }
 
 void IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::SetValue(
-  const int                                                                           num,
+  const int                                num,
   const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>& val)
 {
   thelist.SetValue(num, val);
 }
 
-occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>
-  IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::Value(const int num) const
+occ::handle<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>> IGESDefs_HArray1OfHArray1OfTextDisplayTemplate::
+  Value(const int num) const
 {
-  return occ::down_cast<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>(
-    thelist.Value(num));
+  return occ::down_cast<NCollection_HArray1<occ::handle<IGESGraph_TextDisplayTemplate>>>(thelist.Value(num));
 }

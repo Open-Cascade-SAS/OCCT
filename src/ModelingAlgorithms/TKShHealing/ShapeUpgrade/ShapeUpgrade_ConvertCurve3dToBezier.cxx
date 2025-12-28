@@ -27,9 +27,12 @@
 #include <ShapeExtend.hxx>
 #include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>
 #include <Standard_Type.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_ConvertCurve3dToBezier, ShapeUpgrade_SplitCurve3d)
 
@@ -53,8 +56,8 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
   double           Last      = mySplitValues->Value(mySplitValues->Length());
   if (myCurve->IsKind(STANDARD_TYPE(Geom_TrimmedCurve)))
   {
-    occ::handle<Geom_TrimmedCurve>      tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
-    occ::handle<Geom_Curve>             BasCurve = tmp->BasisCurve();
+    occ::handle<Geom_TrimmedCurve>           tmp      = occ::down_cast<Geom_TrimmedCurve>(myCurve);
+    occ::handle<Geom_Curve>                  BasCurve = tmp->BasisCurve();
     ShapeUpgrade_ConvertCurve3dToBezier converter;
     converter.Init(BasCurve, First, Last);
     converter.SetSplitValues(mySplitValues);
@@ -69,7 +72,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
   else if (myCurve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     occ::handle<Geom_BezierCurve> bezier = occ::down_cast<Geom_BezierCurve>(myCurve);
-    myNbCurves                           = mySplitValues->Length() - 1;
+    myNbCurves                      = mySplitValues->Length() - 1;
     mySplitParams->Append(First);
     mySplitParams->Append(Last);
     if (First < precision && Last > 1 - precision)
@@ -89,7 +92,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
   else if (myCurve->IsKind(STANDARD_TYPE(Geom_Line)))
   {
     occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(myCurve);
-    myNbCurves                   = mySplitValues->Length() - 1;
+    myNbCurves              = mySplitValues->Length() - 1;
     mySplitParams->Append(First);
     mySplitParams->Append(Last);
     if (!myLineMode)
@@ -99,8 +102,8 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
       return;
     }
     NCollection_Array1<gp_Pnt> poles(1, 2);
-    poles(1)                             = aLine->Value(First);
-    poles(2)                             = aLine->Value(Last);
+    poles(1)                        = aLine->Value(First);
+    poles(2)                        = aLine->Value(Last);
     occ::handle<Geom_BezierCurve> bezier = new Geom_BezierCurve(poles);
     mySegments->Append(bezier);
     myStatus = ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
@@ -119,7 +122,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
   else
   {
     occ::handle<Geom_BSplineCurve> aBSpline;
-    double                         Shift = 0.;
+    double             Shift = 0.;
     if (myCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
     {
       // clang-format off
@@ -131,7 +134,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
       else
       {
         occ::handle<Geom_TrimmedCurve> t3d = new Geom_TrimmedCurve(myCurve, First, Last);
-        aBSpline = GeomConvert::CurveToBSplineCurve(t3d, Convert_QuasiAngular);
+        aBSpline                      = GeomConvert::CurveToBSplineCurve(t3d, Convert_QuasiAngular);
       }
       Shift = First - aBSpline->FirstParameter();
       First = aBSpline->FirstParameter();
@@ -168,8 +171,8 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
     }
 
     GeomConvert_BSplineCurveToBezierCurve tool(aBSpline, First, Last, precision);
-    int                                   nbArcs = tool.NbArcs();
-    NCollection_Array1<double>            knots(1, nbArcs + 1);
+    int                      nbArcs = tool.NbArcs();
+    NCollection_Array1<double>                  knots(1, nbArcs + 1);
     tool.Knots(knots);
     mySplitParams->Append(First + Shift);
     int j; // svv Jan 10 2000 : porting on DEC
@@ -208,10 +211,10 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Compute()
 void ShapeUpgrade_ConvertCurve3dToBezier::Build(const bool /*Segment*/)
 {
   constexpr double prec = Precision::PConfusion();
-  int              nb   = mySplitValues->Length();
-  myResultingCurves     = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, nb - 1);
-  double prevPar        = 0.;
-  int    j              = 2;
+  int        nb   = mySplitValues->Length();
+  myResultingCurves            = new NCollection_HArray1<occ::handle<Geom_Curve>>(1, nb - 1);
+  double    prevPar     = 0.;
+  int j           = 2;
   for (int i = 2; i <= nb; i++)
   {
     double par = mySplitValues->Value(i);
@@ -225,9 +228,9 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Build(const bool /*Segment*/)
     if (crv->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
     {
       occ::handle<Geom_BezierCurve> bes    = occ::down_cast<Geom_BezierCurve>(crv);
-      double                        uFact  = mySplitParams->Value(j) - mySplitParams->Value(j - 1);
-      double                        pp     = mySplitValues->Value(i - 1);
-      double                        length = (par - pp) / uFact;
+      double            uFact  = mySplitParams->Value(j) - mySplitParams->Value(j - 1);
+      double            pp     = mySplitValues->Value(i - 1);
+      double            length = (par - pp) / uFact;
       bes->Segment(prevPar, prevPar + length);
       prevPar += length;
       myResultingCurves->SetValue(i - 1, bes);
@@ -239,8 +242,7 @@ void ShapeUpgrade_ConvertCurve3dToBezier::Build(const bool /*Segment*/)
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> ShapeUpgrade_ConvertCurve3dToBezier::
-  Segments() const
+occ::handle<NCollection_HSequence<occ::handle<Geom_Curve>>> ShapeUpgrade_ConvertCurve3dToBezier::Segments() const
 {
   return mySegments;
 }

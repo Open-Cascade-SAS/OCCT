@@ -38,16 +38,16 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
 
   Standard_EXPORT static occ::handle<XCAFDoc_DimTol> Set(
-    const TDF_Label&                                label,
-    const int                                       kind,
-    const occ::handle<NCollection_HArray1<double>>& aVal,
-    const occ::handle<TCollection_HAsciiString>&    aName,
-    const occ::handle<TCollection_HAsciiString>&    aDescription);
+    const TDF_Label&                        label,
+    const int                  kind,
+    const occ::handle<NCollection_HArray1<double>>&    aVal,
+    const occ::handle<TCollection_HAsciiString>& aName,
+    const occ::handle<TCollection_HAsciiString>& aDescription);
 
-  Standard_EXPORT void Set(const int                                       kind,
-                           const occ::handle<NCollection_HArray1<double>>& aVal,
-                           const occ::handle<TCollection_HAsciiString>&    aName,
-                           const occ::handle<TCollection_HAsciiString>&    aDescription);
+  Standard_EXPORT void Set(const int                  kind,
+                           const occ::handle<NCollection_HArray1<double>>&    aVal,
+                           const occ::handle<TCollection_HAsciiString>& aName,
+                           const occ::handle<TCollection_HAsciiString>& aDescription);
 
   Standard_EXPORT int GetKind() const;
 
@@ -68,15 +68,15 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_DimTol, TDF_Attribute)
 
 private:
-  int                                      myKind;
-  occ::handle<NCollection_HArray1<double>> myVal;
-  occ::handle<TCollection_HAsciiString>    myName;
-  occ::handle<TCollection_HAsciiString>    myDescription;
+  int                 myKind;
+  occ::handle<NCollection_HArray1<double>>    myVal;
+  occ::handle<TCollection_HAsciiString> myName;
+  occ::handle<TCollection_HAsciiString> myDescription;
 };
 
 #endif // _XCAFDoc_DimTol_HeaderFile

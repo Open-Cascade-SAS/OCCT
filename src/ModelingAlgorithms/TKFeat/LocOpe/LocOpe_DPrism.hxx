@@ -28,9 +28,12 @@
 #include <TopoDS_Edge.hxx>
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class Geom_Curve;
 
 //! Defines a pipe (near from Pipe from BRepFill),
@@ -40,12 +43,14 @@ class LocOpe_DPrism
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT LocOpe_DPrism(const TopoDS_Face& Spine,
-                                const double       Height1,
-                                const double       Height2,
-                                const double       Angle);
+  Standard_EXPORT LocOpe_DPrism(const TopoDS_Face&  Spine,
+                                const double Height1,
+                                const double Height2,
+                                const double Angle);
 
-  Standard_EXPORT LocOpe_DPrism(const TopoDS_Face& Spine, const double Height, const double Angle);
+  Standard_EXPORT LocOpe_DPrism(const TopoDS_Face&  Spine,
+                                const double Height,
+                                const double Angle);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -68,17 +73,17 @@ public:
 private:
   Standard_EXPORT void IntPerf();
 
-  BRepFill_Evolved                              myDPrism;
-  TopoDS_Shape                                  myRes;
-  TopoDS_Face                                   mySpine;
-  TopoDS_Wire                                   myProfile;
-  TopoDS_Edge                                   myProfile1;
-  TopoDS_Edge                                   myProfile2;
-  TopoDS_Edge                                   myProfile3;
-  double                                        myHeight;
-  TopoDS_Shape                                  myFirstShape;
-  TopoDS_Shape                                  myLastShape;
-  NCollection_Sequence<occ::handle<Geom_Curve>> myCurvs;
+  BRepFill_Evolved                   myDPrism;
+  TopoDS_Shape                       myRes;
+  TopoDS_Face                        mySpine;
+  TopoDS_Wire                        myProfile;
+  TopoDS_Edge                        myProfile1;
+  TopoDS_Edge                        myProfile2;
+  TopoDS_Edge                        myProfile3;
+  double                      myHeight;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
+  NCollection_Sequence<occ::handle<Geom_Curve>>           myCurvs;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 

@@ -23,9 +23,12 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <ShapeExtend_Status.hxx>
 
@@ -55,13 +58,11 @@ public:
 
   //! Auxiliary tool for FixSmallEdges which checks for small edges and fills the maps.
   //! Returns True if at least one small edge has been found.
-  Standard_EXPORT bool CheckSmallEdges(
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theSmallEdges,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      theEdgeToFaces,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                            theFaceWithSmall,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMultyEdges);
+  Standard_EXPORT bool
+    CheckSmallEdges(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                theSmallEdges,
+                    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theEdgeToFaces,
+                    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theFaceWithSmall,
+                    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                theMultyEdges);
 
   //! Auxiliary tool for FixSmallEdges which merges small edges.
   //! If theModeDrop is equal to true then small edges,
@@ -70,15 +71,13 @@ public:
   //! theLimitAngle specifies maximum allowed tangency
   //! discontinuity between adjacent edges.
   //! If theLimitAngle is equal to -1, this angle is not taken into account.
-  Standard_EXPORT bool MergeSmallEdges(
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theSmallEdges,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-      theEdgeToFaces,
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                            theFaceWithSmall,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMultyEdges,
-    const bool                                              theModeDrop   = false,
-    const double                                            theLimitAngle = -1);
+  Standard_EXPORT bool
+    MergeSmallEdges(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                theSmallEdges,
+                    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theEdgeToFaces,
+                    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theFaceWithSmall,
+                    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>&                theMultyEdges,
+                    const bool              theModeDrop   = false,
+                    const double                 theLimitAngle = -1);
 
   //! Decodes the status of the last FixWireGaps.
   //! OK - No gaps were found
@@ -111,10 +110,10 @@ protected:
   TopoDS_Shape myShape;
 
 private:
-  bool   myModeDrop;
-  double myLimitAngle;
-  int    myStatusWireGaps;
-  int    myStatusSmallEdges;
+  bool myModeDrop;
+  double    myLimitAngle;
+  int myStatusWireGaps;
+  int myStatusSmallEdges;
 };
 
 #include <ShapeFix_Wireframe.lxx>

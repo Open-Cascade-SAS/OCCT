@@ -32,16 +32,18 @@ public:
   //! Convert and write shape to STL format.
   //! File is written in binary if aAsciiMode is False otherwise it is written in Ascii (by
   //! default).
-  Standard_EXPORT static bool Write(const TopoDS_Shape& theShape,
-                                    const char*         theFile,
-                                    const bool          theAsciiMode = true);
+  Standard_EXPORT static bool Write(
+    const TopoDS_Shape&    theShape,
+    const char* theFile,
+    const bool theAsciiMode = true);
 
   //! Legacy interface.
   //! Read STL file and create a shape composed of triangular faces, one per facet.
   //! This approach is very inefficient, especially for large files.
   //! Consider reading STL file to Poly_Triangulation object instead (see class RWStl).
   Standard_DEPRECATED("This method is very inefficient; see RWStl class for better alternative")
-  Standard_EXPORT static bool Read(TopoDS_Shape& theShape, const char* aFile);
+  Standard_EXPORT static bool Read(TopoDS_Shape&          theShape,
+                                               const char* aFile);
 };
 
 #endif // _StlAPI_HeaderFile

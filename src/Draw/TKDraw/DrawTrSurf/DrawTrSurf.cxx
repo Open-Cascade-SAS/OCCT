@@ -464,8 +464,8 @@ static int transform(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 5)
     return 1;
-  gp_Trsf T;
-  int     i, last = n - 1;
+  gp_Trsf          T;
+  int i, last = n - 1;
   if (!strcmp(a[0], "pscale"))
   {
     double s = Draw::Atof(a[last]);
@@ -554,8 +554,8 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 4)
     return 1;
-  gp_Trsf2d T;
-  int       i, last = n - 1;
+  gp_Trsf2d        T;
+  int i, last = n - 1;
   if (!strcmp(a[0], "2dpscale"))
   {
     double s = Draw::Atof(a[last]);
@@ -632,7 +632,7 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
 
 void DrawTrSurf::Set(const char* theName, const gp_Pnt& thePoint)
 {
-  DrawTrSurf_Params&            aParams = DrawTrSurf::Parameters();
+  DrawTrSurf_Params&       aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Point> aDrawPoint =
     new DrawTrSurf_Point(thePoint, aParams.PntMarker, aParams.PntColor);
   Draw::Set(theName, aDrawPoint);
@@ -642,7 +642,7 @@ void DrawTrSurf::Set(const char* theName, const gp_Pnt& thePoint)
 
 void DrawTrSurf::Set(const char* theName, const gp_Pnt2d& thePoint)
 {
-  DrawTrSurf_Params&            aParams = DrawTrSurf::Parameters();
+  DrawTrSurf_Params&       aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Point> aDrawPoint =
     new DrawTrSurf_Point(thePoint, aParams.PntMarker, aParams.PntColor);
   Draw::Set(theName, aDrawPoint);
@@ -650,14 +650,13 @@ void DrawTrSurf::Set(const char* theName, const gp_Pnt2d& thePoint)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char*                       theName,
+void DrawTrSurf::Set(const char*       theName,
                      const occ::handle<Geom_Geometry>& theGeometry,
-                     const bool                        isSenseMarker)
+                     const bool       isSenseMarker)
 {
-  DrawTrSurf_Params&               aParams = DrawTrSurf::Parameters();
+  DrawTrSurf_Params&          aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Drawable> aDrawable;
-  if (occ::handle<Geom_BezierCurve> aGeomBezierCurve =
-        occ::down_cast<Geom_BezierCurve>(theGeometry))
+  if (occ::handle<Geom_BezierCurve> aGeomBezierCurve = occ::down_cast<Geom_BezierCurve>(theGeometry))
   {
     aDrawable = new DrawTrSurf_BezierCurve(aGeomBezierCurve,
                                            aParams.CurvColor,
@@ -691,8 +690,7 @@ void DrawTrSurf::Set(const char*                       theName,
                                      aParams.DrawMode,
                                      isSenseMarker);
   }
-  else if (occ::handle<Geom_BezierSurface> aBezSurf =
-             occ::down_cast<Geom_BezierSurface>(theGeometry))
+  else if (occ::handle<Geom_BezierSurface> aBezSurf = occ::down_cast<Geom_BezierSurface>(theGeometry))
   {
     aDrawable = new DrawTrSurf_BezierSurface(aBezSurf,
                                              aParams.NbUIsos,
@@ -758,11 +756,11 @@ void DrawTrSurf::Set(const char*                       theName,
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char*                      theName,
+void DrawTrSurf::Set(const char*      theName,
                      const occ::handle<Geom2d_Curve>& theCurve,
-                     const bool                       isSenseMarker)
+                     const bool      isSenseMarker)
 {
-  DrawTrSurf_Params&               aParams = DrawTrSurf::Parameters();
+  DrawTrSurf_Params&          aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Drawable> aDrawable;
   if (occ::handle<Geom2d_BezierCurve> aBezierCurve = occ::down_cast<Geom2d_BezierCurve>(theCurve))
   {
@@ -947,8 +945,7 @@ occ::handle<Geom_Surface> DrawTrSurf::GetSurface(const char*& Name)
 
 occ::handle<Geom_BezierSurface> DrawTrSurf::GetBezierSurface(const char*& Name)
 {
-  occ::handle<DrawTrSurf_BezierSurface> D =
-    occ::down_cast<DrawTrSurf_BezierSurface>(Draw::Get(Name));
+  occ::handle<DrawTrSurf_BezierSurface> D = occ::down_cast<DrawTrSurf_BezierSurface>(Draw::Get(Name));
   if (D.IsNull())
     return occ::handle<Geom_BezierSurface>();
   else
@@ -971,8 +968,7 @@ occ::handle<Geom_BSplineSurface> DrawTrSurf::GetBSplineSurface(const char*& Name
 
 occ::handle<Poly_Triangulation> DrawTrSurf::GetTriangulation(const char*& Name)
 {
-  occ::handle<DrawTrSurf_Triangulation> D =
-    occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(Name));
+  occ::handle<DrawTrSurf_Triangulation> D = occ::down_cast<DrawTrSurf_Triangulation>(Draw::Get(Name));
   if (D.IsNull())
     return occ::handle<Poly_Triangulation>();
   else

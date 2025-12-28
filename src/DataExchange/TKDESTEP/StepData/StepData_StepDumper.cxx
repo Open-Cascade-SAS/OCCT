@@ -31,7 +31,7 @@
 // mode > 0 sets label mode to 2 for enhanced entity labeling
 StepData_StepDumper::StepData_StepDumper(const occ::handle<StepData_StepModel>& amodel,
                                          const occ::handle<StepData_Protocol>&  protocol,
-                                         const int                              mode)
+                                         const int            mode)
     : theslib(protocol),
       thewlib(protocol),
       thewriter(amodel)
@@ -50,11 +50,11 @@ StepData_StepWriter& StepData_StepDumper::StepWriter()
 // level <= 0: basic entity type and identifier information only
 // level == 1: entity identifiers and basic structure
 // level > 1:  complete entity data with all referenced entities
-bool StepData_StepDumper::Dump(Standard_OStream&                      S,
-                               const occ::handle<Standard_Transient>& ent,
-                               const int                              level)
+bool StepData_StepDumper::Dump(Standard_OStream&                 S,
+                                           const occ::handle<Standard_Transient>& ent,
+                                           const int            level)
 {
-  int                     i, nb = themodel->NbEntities();
+  int        i, nb = themodel->NbEntities();
   NCollection_Array1<int> ids(0, nb); // Array to store entity identifiers
   ids.Init(0);
   int num  = themodel->Number(ent);     // Entity number in model
@@ -65,7 +65,7 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
   {
     // Basic output: show entity number and type information only
     occ::handle<StepData_ReadWriteModule> module;
-    int                                   CN;
+    int                 CN;
     if (num > 0)
       S << "#" << num << " = ";
     else
@@ -101,7 +101,7 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
     // Collect entity identifiers
     occ::handle<Standard_Transient>      anent;
     occ::handle<Interface_GeneralModule> module;
-    int                                  CN;
+    int                CN;
     if (theslib.Select(ent, module, CN))
     {
       Interface_EntityIterator iter;
@@ -127,7 +127,7 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
     tab.Init(0);
     tab.SetValue(num, 1);
     occ::handle<Interface_GeneralModule> module;
-    int                                  CN;
+    int                CN;
     if (theslib.Select(ent, module, CN))
     {
       Interface_EntityIterator iter;
@@ -204,8 +204,8 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
     }
     if (nbi < 0)
     { // Display help format instead of individual num:#id entries
-      int  nbl = 0, nbr = 0, nbr0 = 0, nbc = 0;
-      char unid[30];
+      int nbl = 0, nbr = 0, nbr0 = 0, nbc = 0;
+      char             unid[30];
       // Alternative format: "#num	     #ident"
       S << " (proper ident):  num:#ident  num:#ident  ..." << std::endl;
       for (i = 1; i <= nb; i++)
@@ -249,7 +249,9 @@ bool StepData_StepDumper::Dump(Standard_OStream&                      S,
   return true;
 }
 
-bool StepData_StepDumper::Dump(Standard_OStream& S, const int num, const int level)
+bool StepData_StepDumper::Dump(Standard_OStream&      S,
+                                           const int num,
+                                           const int level)
 {
   if (num <= 0 || num > themodel->NbEntities())
     return false;

@@ -114,8 +114,7 @@ public:
   //! Prints attribute information into a string.
   //! @param theAtt an XDE attribute
   //! @return the generated info value
-  Standard_EXPORT static TCollection_AsciiString AttributeInfo(
-    const occ::handle<TDF_Attribute>& theAtt);
+  Standard_EXPORT static TCollection_AsciiString AttributeInfo(const occ::handle<TDF_Attribute>& theAtt);
 };
 
 #endif // _XCAFDoc_HeaderFile

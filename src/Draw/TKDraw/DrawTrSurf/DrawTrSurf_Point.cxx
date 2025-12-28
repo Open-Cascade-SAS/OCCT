@@ -155,7 +155,7 @@ void DrawTrSurf_Point::Save(Standard_OStream& theStream) const
 occ::handle<Draw_Drawable3D> DrawTrSurf_Point::Restore(Standard_IStream& theStream)
 {
   const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
-  int                      is3d    = 0;
+  int         is3d    = 0;
   theStream >> is3d;
   double x, y, z = 0.0;
   if (is3d)

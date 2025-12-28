@@ -59,8 +59,14 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_Edge.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_Face.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
@@ -94,8 +100,8 @@
 #include <stdio.h>
 
 static void ResetPreci(occ::handle<StepData_StepModel>& theStepModel,
-                       const TopoDS_Shape&              S,
-                       double                           maxtol)
+                       const TopoDS_Shape&         S,
+                       double               maxtol)
 {
   //: S4136
   int modetol = theStepModel->InternalParameters.ReadMaxPrecisionMode;
@@ -120,14 +126,14 @@ StepToTopoDS_Builder::StepToTopoDS_Builder()
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ManifoldSolidBrep>& theManifoldSolid,
                                 const occ::handle<Transfer_TransientProcess>&   theTP,
-                                const StepData_Factors&                         theLocalFactors,
-                                const Message_ProgressRange&                    theProgress)
+                                const StepData_Factors&                    theLocalFactors,
+                                const Message_ProgressRange&               theProgress)
 {
   Message_Messenger::StreamBuffer sout       = theTP->Messenger()->SendInfo();
-  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(theTP->Model());
+  occ::handle<StepData_StepModel>      aStepModel = occ::down_cast<StepData_StepModel>(theTP->Model());
   // Initialisation of the Tool
 
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
 
   aTool.Init(aMap, theTP);
@@ -182,12 +188,12 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ManifoldSolidBrep>& 
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   theBRepWithVoids,
                                 const occ::handle<Transfer_TransientProcess>& theTP,
-                                const StepData_Factors&                       theLocalFactors,
-                                const Message_ProgressRange&                  theProgress)
+                                const StepData_Factors&                  theLocalFactors,
+                                const Message_ProgressRange&             theProgress)
 {
   Message_Messenger::StreamBuffer sout = theTP->Messenger()->SendInfo();
   // Initialisation of the Tool
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
 
   aTool.Init(aMap, theTP);
@@ -226,8 +232,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   th
   done     = true;
 
   // Voids
-  for (NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>::Iterator anIt(
-         theBRepWithVoids->Voids()->Array1());
+  for (NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>::Iterator anIt(theBRepWithVoids->Voids()->Array1());
        anIt.More() && aPS.More();
        anIt.Next())
   {
@@ -277,11 +282,11 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_BrepWithVoids>&   th
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrep>&     theFB,
                                 const occ::handle<Transfer_TransientProcess>& theTP,
-                                const StepData_Factors&                       theLocalFactors,
-                                const Message_ProgressRange&                  theProgress)
+                                const StepData_Factors&                  theLocalFactors,
+                                const Message_ProgressRange&             theProgress)
 {
   // Initialisation of the Tool
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
 
   aTool.Init(aMap, theTP);
@@ -326,7 +331,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrepAndBrepWi
                                 const Message_ProgressRange& theProgress)
 {
   // Initialisation of the Tool
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
 
   aTool.Init(aMap, theTP);
@@ -357,8 +362,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrepAndBrepWi
   aBuilder.MakeSolid(aSolid);
   aBuilder.Add(aSolid, aShape);
   Message_ProgressScope aPS(aPSRoot.Next(), NULL, theFBABWV->NbVoids());
-  for (NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>::Iterator anIt(
-         theFBABWV->Voids()->Array1());
+  for (NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>::Iterator anIt(theFBABWV->Voids()->Array1());
        anIt.More() && aPS.More();
        anIt.Next())
   {
@@ -387,26 +391,26 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FacetedBrepAndBrepWi
 
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ShellBasedSurfaceModel>& aSBSM,
                                 const occ::handle<Transfer_TransientProcess>&        TP,
-                                StepToTopoDS_NMTool&                                 NMTool,
-                                const StepData_Factors&      theLocalFactors,
-                                const Message_ProgressRange& theProgress)
+                                StepToTopoDS_NMTool&                            NMTool,
+                                const StepData_Factors&                         theLocalFactors,
+                                const Message_ProgressRange&                    theProgress)
 {
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
   // Initialisation of the Tool
 
-  StepToTopoDS_Tool                                                                       myTool;
+  StepToTopoDS_Tool         myTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
 
   myTool.Init(aMap, TP);
 
   // Start Mapping
 
-  int             Nb = aSBSM->NbSbsmBoundary();
-  StepShape_Shell aShell;
+  int Nb = aSBSM->NbSbsmBoundary();
+  StepShape_Shell  aShell;
   // occ::handle<StepShape_VertexShell> aVertexShell;
   occ::handle<StepShape_OpenShell>   aOpenShell;
   occ::handle<StepShape_ClosedShell> aClosedShell;
-  TopoDS_Compound                    S;
+  TopoDS_Compound               S;
   // TopoDS_Shape Sh;
   TopoDS_Shape Shl;
   BRep_Builder B;
@@ -489,19 +493,18 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_ShellBasedSurfaceMod
 
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_EdgeBasedWireframeModel>& aEBWM,
                                 const occ::handle<Transfer_TransientProcess>&         TP,
-                                const StepData_Factors& theLocalFactors)
+                                const StepData_Factors&                          theLocalFactors)
 {
   myResult.Nullify();
 
-  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> boundary =
-    aEBWM->EbwmBoundary();
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedEdgeSet>>> boundary = aEBWM->EbwmBoundary();
   if (boundary.IsNull() || boundary->Length() < 1)
   {
     TP->AddWarning(aEBWM, "List of boundaries is empty");
     return;
   }
 
-  StepToTopoDS_Tool                                                                       myTool;
+  StepToTopoDS_Tool         myTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   myTool.Init(aMap, TP);
 
@@ -563,19 +566,18 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_EdgeBasedWireframeMo
 
 void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceModel>& aFBSM,
                                 const occ::handle<Transfer_TransientProcess>&       TP,
-                                const StepData_Factors&                             theLocalFactors)
+                                const StepData_Factors&                        theLocalFactors)
 {
   myResult.Nullify();
 
-  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> boundary =
-    aFBSM->FbsmFaces();
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> boundary = aFBSM->FbsmFaces();
   if (boundary.IsNull() || boundary->Length() < 1)
   {
     TP->AddWarning(aFBSM, "List of faces is empty");
     return;
   }
 
-  StepToTopoDS_Tool                                                                       myTool;
+  StepToTopoDS_Tool         myTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   myTool.Init(aMap, TP);
 
@@ -604,8 +606,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceMode
     TopoDS_Shell S;
     for (int j = 1; j <= faces->Length(); j++)
     {
-      occ::handle<StepShape_FaceSurface> fs =
-        occ::down_cast<StepShape_FaceSurface>(faces->Value(j));
+      occ::handle<StepShape_FaceSurface> fs = occ::down_cast<StepShape_FaceSurface>(faces->Value(j));
       myTranFace.Init(fs, myTool, dummyNMTool, theLocalFactors);
       if (!myTranFace.IsDone())
         continue;
@@ -642,8 +643,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_FaceBasedSurfaceMode
 //: GeometricSet
 
 static TopoDS_Face TranslateBoundedSurf(const occ::handle<StepGeom_Surface>& surf,
-                                        const double                         TolDegen,
-                                        const StepData_Factors&              theLocalFactors)
+                                        const double             TolDegen,
+                                        const StepData_Factors&         theLocalFactors)
 {
   TopoDS_Face res;
 
@@ -652,7 +653,7 @@ static TopoDS_Face TranslateBoundedSurf(const occ::handle<StepGeom_Surface>& sur
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface)))
     return res;
 
-  BRepBuilderAPI_MakeFace                     myMkFace;
+  BRepBuilderAPI_MakeFace                myMkFace;
   occ::handle<Geom_RectangularTrimmedSurface> RS =
     occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf);
 
@@ -671,27 +672,27 @@ static TopoDS_Face TranslateBoundedSurf(const occ::handle<StepGeom_Surface>& sur
   return myMkFace.Face();
 }
 
-void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GCS,
-                                const occ::handle<Transfer_TransientProcess>& TP,
-                                const StepData_Factors&                       theLocalFactors,
+void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&           GCS,
+                                const occ::handle<Transfer_TransientProcess>&        TP,
+                                const StepData_Factors&                         theLocalFactors,
                                 const occ::handle<Transfer_ActorOfTransientProcess>& RA,
-                                const bool                                           isManifold,
-                                const Message_ProgressRange&                         theProgress)
+                                const bool                          isManifold,
+                                const Message_ProgressRange&                    theProgress)
 {
   // Start Mapping
   TopoDS_Compound S;
   BRep_Builder    B;
   B.MakeCompound(S);
   TopoDS_Edge           theEdge;
-  int                   i;
-  double                preci  = Precision(); // gka
-  double                maxtol = MaxTol();
-  int                   nbElem = GCS->NbElements();
+  int      i;
+  double         preci  = Precision(); // gka
+  double         maxtol = MaxTol();
+  int      nbElem = GCS->NbElements();
   Message_ProgressScope aPS(theProgress, NULL, nbElem);
   for (i = 1; i <= nbElem && aPS.More(); i++)
   {
-    Message_ProgressRange                  aRange = aPS.Next();
-    StepShape_GeometricSetSelect           aGSS   = GCS->ElementsValue(i);
+    Message_ProgressRange             aRange = aPS.Next();
+    StepShape_GeometricSetSelect      aGSS   = GCS->ElementsValue(i);
     const occ::handle<Standard_Transient>& ent    = aGSS.Value();
 
     TopoDS_Shape res = TransferBRep::ShapeResult(TP, ent);
@@ -765,8 +766,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
     else if (ent->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)))
     {
       occ::handle<StepGeom_CartesianPoint> aPnt = occ::down_cast<StepGeom_CartesianPoint>(ent);
-      occ::handle<Geom_CartesianPoint>     thePnt =
-        StepToGeom::MakeCartesianPoint(aPnt, theLocalFactors);
+      occ::handle<Geom_CartesianPoint> thePnt   = StepToGeom::MakeCartesianPoint(aPnt, theLocalFactors);
       if (!thePnt.IsNull())
       {
         BRepBuilderAPI_MakeVertex myMkVtx(thePnt->Pnt());
@@ -797,9 +797,9 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
       {
         occ::handle<StepGeom_RectangularCompositeSurface> RCS =
           occ::down_cast<StepGeom_RectangularCompositeSurface>(aSurf);
-        int             nbi = RCS->NbSegmentsI();
-        int             nbj = RCS->NbSegmentsJ();
-        TopoDS_Compound C;
+        int nbi = RCS->NbSegmentsI();
+        int nbj = RCS->NbSegmentsJ();
+        TopoDS_Compound  C;
         B.MakeCompound(C);
         for (int ii = 1; ii <= nbi; ii++)
           for (int j = 1; j <= nbj; j++)
@@ -824,7 +824,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
         occ::handle<STEPControl_ActorRead> anActor = occ::down_cast<STEPControl_ActorRead>(RA);
         occ::handle<Transfer_Binder>       binder;
         if (!anActor.IsNull())
-          binder = anActor->TransferShape(GRI, TP, theLocalFactors, isManifold, false, aRange);
+          binder =
+            anActor->TransferShape(GRI, TP, theLocalFactors, isManifold, false, aRange);
         if (!binder.IsNull())
         {
           res = TransferBRep::ShapeResult(binder);
@@ -854,8 +855,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepShape_GeometricSet>&    GC
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
                                 const occ::handle<Transfer_TransientProcess>&   theTP,
-                                const bool                   theReadTessellatedWhenNoBRepOnly,
-                                bool&                        theHasGeom,
+                                const bool       theReadTessellatedWhenNoBRepOnly,
+                                bool&            theHasGeom,
                                 const StepData_Factors&      theLocalFactors,
                                 const Message_ProgressRange& theProgress)
 {
@@ -863,7 +864,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedSolid>& 
   aTranSolid.SetPrecision(Precision());
   aTranSolid.SetMaxTol(MaxTol());
 
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   aTool.Init(aMap, theTP);
 
@@ -896,8 +897,8 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedSolid>& 
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedShell>& theTSh,
                                 const occ::handle<Transfer_TransientProcess>&   theTP,
-                                const bool                   theReadTessellatedWhenNoBRepOnly,
-                                bool&                        theHasGeom,
+                                const bool       theReadTessellatedWhenNoBRepOnly,
+                                bool&            theHasGeom,
                                 const StepData_Factors&      theLocalFactors,
                                 const Message_ProgressRange& theProgress)
 {
@@ -905,7 +906,7 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedShell>& 
   aTranShell.SetPrecision(Precision());
   aTranShell.SetMaxTol(MaxTol());
 
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   aTool.Init(aMap, theTP);
 
@@ -937,15 +938,15 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedShell>& 
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedFace>& theTF,
                                 const occ::handle<Transfer_TransientProcess>&  theTP,
-                                const bool              theReadTessellatedWhenNoBRepOnly,
-                                bool&                   theHasGeom,
+                                const bool  theReadTessellatedWhenNoBRepOnly,
+                                bool&       theHasGeom,
                                 const StepData_Factors& theLocalFactors)
 {
   StepToTopoDS_TranslateFace aTranFace;
   aTranFace.SetPrecision(Precision());
   aTranFace.SetMaxTol(MaxTol());
 
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   aTool.Init(aMap, theTP);
 
@@ -975,14 +976,14 @@ void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedFace>& t
 // ============================================================================
 void StepToTopoDS_Builder::Init(const occ::handle<StepVisual_TessellatedSurfaceSet>& theTSS,
                                 const occ::handle<Transfer_TransientProcess>&        theTP,
-                                bool&                                                theHasGeom,
-                                const StepData_Factors& theLocalFactors)
+                                bool&                               theHasGeom,
+                                const StepData_Factors&                         theLocalFactors)
 {
   StepToTopoDS_TranslateFace aTranFace;
   aTranFace.SetPrecision(Precision());
   aTranFace.SetMaxTol(MaxTol());
 
-  StepToTopoDS_Tool                                                                       aTool;
+  StepToTopoDS_Tool         aTool;
   NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape> aMap;
   aTool.Init(aMap, theTP);
 

@@ -19,13 +19,13 @@ IMPLEMENT_STANDARD_RTTIEXT(StepGeom_RationalBSplineCurve, StepGeom_BSplineCurve)
 StepGeom_RationalBSplineCurve::StepGeom_RationalBSplineCurve() {}
 
 void StepGeom_RationalBSplineCurve::Init(
-  const occ::handle<TCollection_HAsciiString>&                                  aName,
-  const int                                                                     aDegree,
+  const occ::handle<TCollection_HAsciiString>&         aName,
+  const int                          aDegree,
   const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList,
-  const StepGeom_BSplineCurveForm                                               aCurveForm,
-  const StepData_Logical                                                        aClosedCurve,
-  const StepData_Logical                                                        aSelfIntersect,
-  const occ::handle<NCollection_HArray1<double>>&                               aWeightsData)
+  const StepGeom_BSplineCurveForm                 aCurveForm,
+  const StepData_Logical                          aClosedCurve,
+  const StepData_Logical                          aSelfIntersect,
+  const occ::handle<NCollection_HArray1<double>>&            aWeightsData)
 {
   // --- classe own fields ---
   weightsData = aWeightsData;

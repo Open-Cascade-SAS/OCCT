@@ -23,6 +23,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Sequence.hxx>
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>
 class Adaptor3d_Surface;
@@ -51,10 +52,13 @@ public:
   Standard_EXPORT bool Value(const math_Vector& UV, math_Vector& F) override;
 
   //! Calculate Fi'(U,V).
-  Standard_EXPORT bool Derivatives(const math_Vector& UV, math_Matrix& DF) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& UV,
+                                               math_Matrix&       DF) override;
 
   //! Calculate Fi(U,V) and Fi'(U,V).
-  Standard_EXPORT bool Values(const math_Vector& UV, math_Vector& F, math_Matrix& DF) override;
+  Standard_EXPORT bool Values(const math_Vector& UV,
+                                          math_Vector&       F,
+                                          math_Matrix&       DF) override;
 
   //! Save the found extremum.
   Standard_EXPORT virtual int GetStateNumber() override;
@@ -72,19 +76,19 @@ public:
   Standard_EXPORT const Extrema_POnSurf& PointOnS2(const int N) const;
 
 private:
-  const Adaptor3d_Surface*              myS1;
-  const Adaptor3d_Surface*              myS2;
-  gp_Pnt                                myP1;
-  gp_Pnt                                myP2;
-  double                                myU1;
-  double                                myV1;
-  double                                myU2;
-  double                                myV2;
-  NCollection_Sequence<double>          mySqDist;
+  const Adaptor3d_Surface*  myS1;
+  const Adaptor3d_Surface*  myS2;
+  gp_Pnt                    myP1;
+  gp_Pnt                    myP2;
+  double             myU1;
+  double             myV1;
+  double             myU2;
+  double             myV2;
+  NCollection_Sequence<double>    mySqDist;
   NCollection_Sequence<Extrema_POnSurf> myPoint1;
   NCollection_Sequence<Extrema_POnSurf> myPoint2;
-  bool                                  myS1init;
-  bool                                  myS2init;
+  bool          myS1init;
+  bool          myS2init;
 };
 
 #endif // _Extrema_FuncExtSS_HeaderFile

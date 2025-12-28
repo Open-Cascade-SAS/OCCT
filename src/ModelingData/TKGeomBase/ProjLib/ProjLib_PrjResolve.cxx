@@ -25,7 +25,7 @@
 
 ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
                                        const Adaptor3d_Surface& S,
-                                       const int                Fix)
+                                       const int   Fix)
     : myDone(false),
       myFix(Fix)
 {
@@ -39,21 +39,21 @@ ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve&   C,
 // void ProjLib_PrjResolve::Perform(const double t, const double U, const
 // double  V, const gp_Pnt2d& Tol2d, const gp_Pnt2d& Inf, const gp_Pnt2d& Sup, const
 // double FuncTol, const bool StrictInside)
-void ProjLib_PrjResolve::Perform(const double    t,
-                                 const double    U,
-                                 const double    V,
-                                 const gp_Pnt2d& Tol2d,
-                                 const gp_Pnt2d& Inf,
-                                 const gp_Pnt2d& Sup,
-                                 const double    FuncTol,
+void ProjLib_PrjResolve::Perform(const double t,
+                                 const double U,
+                                 const double V,
+                                 const gp_Pnt2d&     Tol2d,
+                                 const gp_Pnt2d&     Inf,
+                                 const gp_Pnt2d&     Sup,
+                                 const double FuncTol,
                                  const bool)
 {
 
-  myDone             = false;
-  double      FixVal = 0.;
-  gp_Pnt2d    ExtInf(0., 0.), ExtSup(0., 0.);
-  double      ExtU = 10 * Tol2d.X(), ExtV = 10 * Tol2d.Y();
-  math_Vector Tol(1, 2), Start(1, 2), BInf(1, 2), BSup(1, 2);
+  myDone               = false;
+  double FixVal = 0.;
+  gp_Pnt2d      ExtInf(0., 0.), ExtSup(0., 0.);
+  double ExtU = 10 * Tol2d.X(), ExtV = 10 * Tol2d.Y();
+  math_Vector   Tol(1, 2), Start(1, 2), BInf(1, 2), BSup(1, 2);
 
   ExtInf.SetCoord(Inf.X() - ExtU, Inf.Y() - ExtV);
   ExtSup.SetCoord(Sup.X() + ExtU, Sup.Y() + ExtV);

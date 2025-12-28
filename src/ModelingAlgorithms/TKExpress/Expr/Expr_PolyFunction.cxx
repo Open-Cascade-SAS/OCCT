@@ -34,9 +34,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_PolyFunction, Expr_PolyExpression)
 
-Expr_PolyFunction::Expr_PolyFunction(
-  const occ::handle<Expr_GeneralFunction>&                       func,
-  const NCollection_Array1<occ::handle<Expr_GeneralExpression>>& exps)
+Expr_PolyFunction::Expr_PolyFunction(const occ::handle<Expr_GeneralFunction>&   func,
+                                     const NCollection_Array1<occ::handle<Expr_GeneralExpression>>& exps)
 {
   for (int i = exps.Lower(); i <= exps.Upper(); i++)
   {
@@ -53,15 +52,15 @@ occ::handle<Expr_GeneralFunction> Expr_PolyFunction::Function() const
 occ::handle<Expr_GeneralExpression> Expr_PolyFunction::ShallowSimplified() const
 {
   bool allval = true;
-  int  max    = NbSubExpressions();
-  int  i;
+  int max    = NbSubExpressions();
+  int i;
   for (i = 1; (i <= max) && allval; i++)
   {
     allval = SubExpression(i)->IsKind(STANDARD_TYPE(Expr_NumericValue));
   }
   if (allval)
   {
-    NCollection_Array1<double>                         tabval(1, max);
+    NCollection_Array1<double>      tabval(1, max);
     NCollection_Array1<occ::handle<Expr_NamedUnknown>> tabvar(1, max);
     for (i = 1; i <= max; i++)
     {
@@ -77,7 +76,7 @@ occ::handle<Expr_GeneralExpression> Expr_PolyFunction::ShallowSimplified() const
 
 occ::handle<Expr_GeneralExpression> Expr_PolyFunction::Copy() const
 {
-  int                                                     max = NbSubExpressions();
+  int               max = NbSubExpressions();
   NCollection_Array1<occ::handle<Expr_GeneralExpression>> vars(1, max);
   for (int i = 1; i <= max; i++)
   {
@@ -102,7 +101,7 @@ bool Expr_PolyFunction::IsIdentical(const occ::handle<Expr_GeneralExpression>& O
   {
     return false;
   }
-  int                                 max = NbSubExpressions();
+  int               max = NbSubExpressions();
   occ::handle<Expr_GeneralExpression> opother;
   for (int i = 1; i <= max; i++)
   {
@@ -138,12 +137,12 @@ bool Expr_PolyFunction::IsLinear() const
 occ::handle<Expr_GeneralExpression> Expr_PolyFunction::Derivative(
   const occ::handle<Expr_NamedUnknown>& X) const
 {
-  occ::handle<Expr_GeneralExpression>                     myop;
-  occ::handle<Expr_NamedUnknown>                          thevar;
-  occ::handle<Expr_GeneralFunction>                       partderfunc;
-  occ::handle<Expr_PolyFunction>                          partder;
-  occ::handle<Expr_Product>                               partprod;
-  int                                                     max = NbSubExpressions();
+  occ::handle<Expr_GeneralExpression> myop;
+  occ::handle<Expr_NamedUnknown>      thevar;
+  occ::handle<Expr_GeneralFunction>   partderfunc;
+  occ::handle<Expr_PolyFunction>      partder;
+  occ::handle<Expr_Product>           partprod;
+  int               max = NbSubExpressions();
   NCollection_Array1<occ::handle<Expr_GeneralExpression>> theops(1, max);
   for (int k = 1; k <= max; k++)
   {
@@ -164,11 +163,11 @@ occ::handle<Expr_GeneralExpression> Expr_PolyFunction::Derivative(
 }
 
 double Expr_PolyFunction::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                   const NCollection_Array1<double>& vals) const
+                                          const NCollection_Array1<double>&      vals) const
 {
-  int                                                max = NbSubExpressions();
+  int          max = NbSubExpressions();
   NCollection_Array1<occ::handle<Expr_NamedUnknown>> varsfunc(1, max);
-  NCollection_Array1<double>                         valsfunc(1, max);
+  NCollection_Array1<double>      valsfunc(1, max);
   for (int i = 1; i <= max; i++)
   {
     varsfunc(i) = myFunction->Variable(i);

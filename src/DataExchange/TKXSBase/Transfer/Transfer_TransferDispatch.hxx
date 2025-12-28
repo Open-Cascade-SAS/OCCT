@@ -51,7 +51,7 @@ public:
   //! A TransferDispatch is created as a CopyTool in which the
   //! Control is set to TransientProcess
   Standard_EXPORT Transfer_TransferDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
-                                            const Interface_GeneralLib&                  lib);
+                                            const Interface_GeneralLib&             lib);
 
   //! Same as above, but Library is defined through a Protocol
   Standard_EXPORT Transfer_TransferDispatch(const occ::handle<Interface_InterfaceModel>& amodel,
@@ -67,9 +67,10 @@ public:
   //! TransferProcess. If this called produces a Null Binder, then
   //! the standard, inherited Copy is called
   Standard_EXPORT virtual bool Copy(const occ::handle<Standard_Transient>& entfrom,
-                                    occ::handle<Standard_Transient>&       entto,
-                                    const bool                             mapped,
-                                    const bool                             errstat) override;
+                                                occ::handle<Standard_Transient>&       entto,
+                                                const bool            mapped,
+                                                const bool errstat) override;
+
 };
 
 #endif // _Transfer_TransferDispatch_HeaderFile

@@ -33,7 +33,7 @@ public:
   Standard_EXPORT StepBasic_UncertaintyMeasureWithUnit();
 
   Standard_EXPORT void Init(const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-                            const StepBasic_Unit&                            aUnitComponent,
+                            const StepBasic_Unit&                       aUnitComponent,
                             const occ::handle<TCollection_HAsciiString>&     aName,
                             const occ::handle<TCollection_HAsciiString>&     aDescription);
 

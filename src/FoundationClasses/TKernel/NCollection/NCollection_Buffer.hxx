@@ -30,8 +30,8 @@ public:
   //! @param theSize  buffer size
   //! @param theData  buffer data allocated by theAlloc
   NCollection_Buffer(const occ::handle<NCollection_BaseAllocator>& theAlloc,
-                     const size_t                                  theSize = 0,
-                     uint8_t*                                      theData = NULL)
+                     const size_t                      theSize = 0,
+                     uint8_t*                           theData = NULL)
       : myData(NULL),
         mySize(0),
         myAllocator(theAlloc)
@@ -112,8 +112,8 @@ public:
   }
 
 protected:
-  uint8_t*                               myData;      //!< data pointer
-  size_t                                 mySize;      //!< buffer length in bytes
+  uint8_t*                    myData;      //!< data pointer
+  size_t                     mySize;      //!< buffer length in bytes
   occ::handle<NCollection_BaseAllocator> myAllocator; //!< buffer allocator
 
 public:

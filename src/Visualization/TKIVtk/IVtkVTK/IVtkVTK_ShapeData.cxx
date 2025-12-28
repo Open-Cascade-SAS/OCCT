@@ -95,16 +95,15 @@ void IVtkVTK_ShapeData::InsertLine(const IVtk_IdType   theShapeID,
 
 //=================================================================================================
 
-void IVtkVTK_ShapeData::InsertLine(const IVtk_IdType                     theShapeID,
+void IVtkVTK_ShapeData::InsertLine(const IVtk_IdType       theShapeID,
                                    const NCollection_List<IVtk_PointId>* thePointIds,
-                                   const IVtk_MeshType                   theMeshType)
+                                   const IVtk_MeshType     theMeshType)
 {
   if (!thePointIds->IsEmpty())
   {
     vtkSmartPointer<vtkIdList> anIdList = vtkSmartPointer<vtkIdList>::New();
     // Fill the vtk id list by ids from NCollection_List<IVtk_PointId>.
-    NCollection_List<IVtk_PointId>::Iterator anIterOfIds =
-      NCollection_List<IVtk_PointId>::Iterator(*thePointIds);
+    NCollection_List<IVtk_PointId>::Iterator anIterOfIds = NCollection_List<IVtk_PointId>::Iterator(*thePointIds);
     anIdList->Allocate(thePointIds->Extent());
     for (; anIterOfIds.More(); anIterOfIds.Next())
     {

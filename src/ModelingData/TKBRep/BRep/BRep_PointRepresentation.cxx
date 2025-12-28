@@ -55,7 +55,7 @@ bool BRep_PointRepresentation::IsPointOnSurface() const
 //=================================================================================================
 
 bool BRep_PointRepresentation::IsPointOnCurve(const occ::handle<Geom_Curve>&,
-                                              const TopLoc_Location&) const
+                                                          const TopLoc_Location&) const
 {
   return false;
 }
@@ -63,8 +63,8 @@ bool BRep_PointRepresentation::IsPointOnCurve(const occ::handle<Geom_Curve>&,
 //=================================================================================================
 
 bool BRep_PointRepresentation::IsPointOnCurveOnSurface(const occ::handle<Geom2d_Curve>&,
-                                                       const occ::handle<Geom_Surface>&,
-                                                       const TopLoc_Location&) const
+                                                                   const occ::handle<Geom_Surface>&,
+                                                                   const TopLoc_Location&) const
 {
   return false;
 }
@@ -72,7 +72,7 @@ bool BRep_PointRepresentation::IsPointOnCurveOnSurface(const occ::handle<Geom2d_
 //=================================================================================================
 
 bool BRep_PointRepresentation::IsPointOnSurface(const occ::handle<Geom_Surface>&,
-                                                const TopLoc_Location&) const
+                                                            const TopLoc_Location&) const
 {
   return false;
 }
@@ -135,7 +135,8 @@ void BRep_PointRepresentation::Surface(const occ::handle<Geom_Surface>&)
 
 //=================================================================================================
 
-void BRep_PointRepresentation::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void BRep_PointRepresentation::DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

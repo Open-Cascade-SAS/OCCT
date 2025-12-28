@@ -23,6 +23,7 @@
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -30,8 +31,8 @@
 IMPLEMENT_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 
 static void Analyse(const NCollection_Array2<gp_Pnt>& array2,
-                    int&                              theNbSamplesU,
-                    int&                              theNbSamplesV);
+                    int&         theNbSamplesU,
+                    int&         theNbSamplesV);
 
 //=================================================================================================
 
@@ -78,23 +79,23 @@ void IntTools_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& theSur
 void IntTools_TopolTool::ComputeSamplePoints()
 {
   double uinf, usup, vinf, vsup;
-  uinf                   = myS->FirstUParameter();
-  usup                   = myS->LastUParameter();
-  vinf                   = myS->FirstVParameter();
-  vsup                   = myS->LastVParameter();
+  uinf                                = myS->FirstUParameter();
+  usup                                = myS->LastUParameter();
+  vinf                                = myS->FirstVParameter();
+  vsup                                = myS->LastVParameter();
   const int aMaxNbSample = 50;
 
   if (usup < uinf)
   {
     double temp = uinf;
-    uinf        = usup;
-    usup        = temp;
+    uinf               = usup;
+    usup               = temp;
   }
   if (vsup < vinf)
   {
     double temp = vinf;
-    vinf        = vsup;
-    vsup        = temp;
+    vinf               = vsup;
+    vsup               = temp;
   }
   bool isbiguinf, isbigusup, isbigvinf, isbigvsup;
   isbiguinf = Precision::IsNegativeInfinite(uinf);
@@ -132,7 +133,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
   myU0 = uinf;
   myV0 = vinf;
 
-  int                 nbsu = 0, nbsv = 0;
+  int    nbsu = 0, nbsv = 0;
   GeomAbs_SurfaceType typS = myS->GetType();
 
   switch (typS)
@@ -210,8 +211,8 @@ void IntTools_TopolTool::ComputeSamplePoints()
     break;
     case GeomAbs_Sphere:
     case GeomAbs_Torus: {
-      gp_Circ aCircle;
-      double  aRadius1, aRadius2;
+      gp_Circ       aCircle;
+      double aRadius1, aRadius2;
 
       if (typS == GeomAbs_Torus)
       {
@@ -396,10 +397,10 @@ void IntTools_TopolTool::SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d
     {
       ComputeSamplePoints();
     }
-    int    iv = 1 + Index / myNbSmplU;
-    int    iu = 1 + Index - (iv - 1) * myNbSmplU;
-    double u  = myU0 + iu * myDU;
-    double v  = myV0 + iv * myDV;
+    int iv = 1 + Index / myNbSmplU;
+    int iu = 1 + Index - (iv - 1) * myNbSmplU;
+    double    u  = myU0 + iu * myDU;
+    double    v  = myV0 + iv * myDV;
     P2d.SetCoord(u, v);
     P3d = myS->Value(u, v);
   }
@@ -409,9 +410,11 @@ void IntTools_TopolTool::SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d
 
 //=================================================================================================
 
-void Analyse(const NCollection_Array2<gp_Pnt>& array2, int& theNbSamplesU, int& theNbSamplesV)
+void Analyse(const NCollection_Array2<gp_Pnt>& array2,
+             int&         theNbSamplesU,
+             int&         theNbSamplesV)
 {
-  gp_Vec    Vi, Vip1;
+  gp_Vec                 Vi, Vip1;
   int       sh, nbch, i, j;
   const int nbup = array2.UpperRow() - array2.LowerRow() + 1;
   const int nbvp = array2.UpperCol() - array2.LowerCol() + 1;
@@ -440,7 +443,7 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2, int& theNbSamplesU, int& 
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
         double pd = Vi.Dot(Vip1);
-        Vi        = Vip1;
+        Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
           if (pd > 0)
@@ -491,7 +494,7 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2, int& theNbSamplesU, int& 
                       Cx.Y() - Bx.Y() - Bx.Y() + Ax.Y(),
                       Cx.Z() - Bx.Z() - Bx.Z() + Ax.Z());
         double pd = Vi.Dot(Vip1);
-        Vi        = Vip1;
+        Vi               = Vip1;
         if (pd > 1.0e-7 || pd < -1.0e-7)
         {
           if (pd > 0)
@@ -522,7 +525,9 @@ void Analyse(const NCollection_Array2<gp_Pnt>& array2, int& theNbSamplesU, int& 
 // Modified IFV
 //=================================================================================================
 
-void IntTools_TopolTool::SamplePnts(const double theDefl, const int theNUmin, const int theNVmin)
+void IntTools_TopolTool::SamplePnts(const double    theDefl,
+                                    const int theNUmin,
+                                    const int theNVmin)
 {
   Adaptor3d_TopolTool::SamplePnts(theDefl, theNUmin, theNVmin);
 

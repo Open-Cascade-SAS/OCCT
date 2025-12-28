@@ -39,10 +39,10 @@ GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline()
 //=================================================================================================
 
 GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>& Points,
-                                                 const int                         DegMin,
-                                                 const int                         DegMax,
-                                                 const GeomAbs_Shape               Continuity,
-                                                 const double                      Tol3D)
+                                                 const int    DegMin,
+                                                 const int    DegMax,
+                                                 const GeomAbs_Shape       Continuity,
+                                                 const double       Tol3D)
 {
   myIsDone = false;
   Init(Points, DegMin, DegMax, Continuity, Tol3D);
@@ -50,12 +50,12 @@ GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt
 
 //=================================================================================================
 
-GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>& Points,
-                                                 const Approx_ParametrizationType  ParType,
-                                                 const int                         DegMin,
-                                                 const int                         DegMax,
-                                                 const GeomAbs_Shape               Continuity,
-                                                 const double                      Tol3D)
+GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>&        Points,
+                                                 const Approx_ParametrizationType ParType,
+                                                 const int           DegMin,
+                                                 const int           DegMax,
+                                                 const GeomAbs_Shape              Continuity,
+                                                 const double              Tol3D)
 {
   myIsDone = false;
   Init(Points, ParType, DegMin, DegMax, Continuity, Tol3D);
@@ -63,12 +63,12 @@ GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt
 
 //=================================================================================================
 
-GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>& Points,
+GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>&   Points,
                                                  const NCollection_Array1<double>& Params,
-                                                 const int                         DegMin,
-                                                 const int                         DegMax,
-                                                 const GeomAbs_Shape               Continuity,
-                                                 const double                      Tol3D)
+                                                 const int      DegMin,
+                                                 const int      DegMax,
+                                                 const GeomAbs_Shape         Continuity,
+                                                 const double         Tol3D)
 {
   myIsDone = false;
   Init(Points, Params, DegMin, DegMax, Continuity, Tol3D);
@@ -77,12 +77,12 @@ GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt
 //=================================================================================================
 
 GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt>& Points,
-                                                 const double                      W1,
-                                                 const double                      W2,
-                                                 const double                      W3,
-                                                 const int                         DegMax,
-                                                 const GeomAbs_Shape               Continuity,
-                                                 const double                      Tol3D)
+                                                 const double       W1,
+                                                 const double       W2,
+                                                 const double       W3,
+                                                 const int    DegMax,
+                                                 const GeomAbs_Shape       Continuity,
+                                                 const double       Tol3D)
 {
   myIsDone = false;
   Init(Points, W1, W2, W3, DegMax, Continuity, Tol3D);
@@ -91,10 +91,10 @@ GeomAPI_PointsToBSpline::GeomAPI_PointsToBSpline(const NCollection_Array1<gp_Pnt
 //=================================================================================================
 
 void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
-                                   const int                         DegMin,
-                                   const int                         DegMax,
-                                   const GeomAbs_Shape               Continuity,
-                                   const double                      Tol3D)
+                                   const int    DegMin,
+                                   const int    DegMax,
+                                   const GeomAbs_Shape       Continuity,
+                                   const double       Tol3D)
 {
   myIsDone = false;
   Init(Points, Approx_ChordLength, DegMin, DegMax, Continuity, Tol3D);
@@ -102,21 +102,22 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
-                                   const Approx_ParametrizationType  ParType,
-                                   const int                         DegMin,
-                                   const int                         DegMax,
-                                   const GeomAbs_Shape               Continuity,
-                                   const double                      Tol3D)
+void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>&        Points,
+                                   const Approx_ParametrizationType ParType,
+                                   const int           DegMin,
+                                   const int           DegMax,
+                                   const GeomAbs_Shape              Continuity,
+                                   const double              Tol3D)
 {
   double Tol2D = 0.; // dummy argument for BSplineCompute.
 
-  int  nbit       = 2;
+  int nbit       = 2;
   bool UseSquares = false;
   if (Tol3D <= 1.e-3)
     UseSquares = true;
 
-  AppDef_BSplineCompute TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
+  AppDef_BSplineCompute
+    TheComputer(DegMin, DegMax, Tol3D, Tol2D, nbit, true, ParType, UseSquares);
 
   switch (Continuity)
   {
@@ -153,19 +154,19 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
 
 //=================================================================================================
 
-void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
+void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>&   Points,
                                    const NCollection_Array1<double>& Params,
-                                   const int                         DegMin,
-                                   const int                         DegMax,
-                                   const GeomAbs_Shape               Continuity,
-                                   const double                      Tol3D)
+                                   const int      DegMin,
+                                   const int      DegMax,
+                                   const GeomAbs_Shape         Continuity,
+                                   const double         Tol3D)
 {
   if (Params.Length() != Points.Length())
     throw Standard_OutOfRange("GeomAPI_PointsToBSpline::Init() - invalid input");
 
-  double      Tol2D = 0.; // dummy argument for BSplineCompute.
-  int         Nbp   = Params.Length();
-  math_Vector theParams(1, Nbp);
+  double    Tol2D = 0.; // dummy argument for BSplineCompute.
+  int Nbp   = Params.Length();
+  math_Vector      theParams(1, Nbp);
   theParams(1)   = 0.;
   theParams(Nbp) = 1.;
 
@@ -176,8 +177,14 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
     theParams(i) = (Params(i) - Uf) / Ul;
   }
 
-  AppDef_BSplineCompute
-    TheComputer(DegMin, DegMax, Tol3D, Tol2D, 0, true, Approx_IsoParametric, true);
+  AppDef_BSplineCompute TheComputer(DegMin,
+                                    DegMax,
+                                    Tol3D,
+                                    Tol2D,
+                                    0,
+                                    true,
+                                    Approx_IsoParametric,
+                                    true);
 
   TheComputer.SetParameters(theParams);
 
@@ -205,7 +212,7 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
 
   AppParCurves_MultiBSpCurve TheCurve = TheComputer.Value();
 
-  NCollection_Array1<gp_Pnt> Poles(1, TheCurve.NbPoles());
+  NCollection_Array1<gp_Pnt>   Poles(1, TheCurve.NbPoles());
   NCollection_Array1<double> Knots(TheCurve.Knots().Lower(), TheCurve.Knots().Upper());
 
   TheCurve.Curve(1, Poles);
@@ -219,12 +226,12 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
 //=================================================================================================
 
 void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
-                                   const double                      W1,
-                                   const double                      W2,
-                                   const double                      W3,
-                                   const int                         DegMax,
-                                   const GeomAbs_Shape               Continuity,
-                                   const double                      Tol3D)
+                                   const double       W1,
+                                   const double       W2,
+                                   const double       W3,
+                                   const int    DegMax,
+                                   const GeomAbs_Shape       Continuity,
+                                   const double       Tol3D)
 {
   int NbPoint = Points.Length(), i;
 
@@ -255,7 +262,7 @@ void GeomAPI_PointsToBSpline::Init(const NCollection_Array1<gp_Pnt>& Points,
   AppDef_Variational Variation(multL, 1, NbPoint, TABofCC);
 
   //===================================
-  int  theMaxSegments = 1000;
+  int theMaxSegments = 1000;
   bool theWithMinMax  = false;
   //===================================
 

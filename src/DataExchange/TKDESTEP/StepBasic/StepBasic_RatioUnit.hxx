@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepBasic_RatioUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_RatioUnit, StepBasic_NamedUnit)
+
 };
 
 #endif // _StepBasic_RatioUnit_HeaderFile

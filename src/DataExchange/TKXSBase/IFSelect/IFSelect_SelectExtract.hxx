@@ -49,8 +49,8 @@ public:
   //! Returns the list of selected entities. Works by calling the
   //! method Sort on each input Entity : the Entity is kept as
   //! output if Sort returns the same value as Direct status
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(
-    const Interface_Graph& G) const override;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
+    override;
 
   //! Returns True for an Entity if it satisfies the Sort criterium
   //! It receives :
@@ -60,17 +60,18 @@ public:
   //! Hence, the Entity to check is "model->Value(num)" (but an
   //! InterfaceModel allows other checks)
   //! This method is specific to each class of SelectExtract
-  Standard_EXPORT virtual bool Sort(const int                                    rank,
-                                    const occ::handle<Standard_Transient>&       ent,
-                                    const occ::handle<Interface_InterfaceModel>& model) const = 0;
+  Standard_EXPORT virtual bool Sort(
+    const int                  rank,
+    const occ::handle<Standard_Transient>&       ent,
+    const occ::handle<Interface_InterfaceModel>& model) const = 0;
 
   //! Works as Sort but works on the Graph
   //! Default directly calls Sort, but it can be redefined
   //! If SortInGraph is redefined, Sort should be defined even if
   //! not called (to avoid deferred methods in a final class)
-  Standard_EXPORT virtual bool SortInGraph(const int                              rank,
-                                           const occ::handle<Standard_Transient>& ent,
-                                           const Interface_Graph&                 G) const;
+  Standard_EXPORT virtual bool SortInGraph(const int            rank,
+                                                       const occ::handle<Standard_Transient>& ent,
+                                                       const Interface_Graph&            G) const;
 
   //! Returns a text saying "Picked" or "Removed", plus the
   //! specific criterium returned by ExtractLabel (see below)

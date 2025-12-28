@@ -33,8 +33,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&  aName,
                             const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                            const double                                  aRadius,
-                            const double                                  aSemiAngle);
+                            const double                      aRadius,
+                            const double                      aSemiAngle);
 
   Standard_EXPORT void SetRadius(const double aRadius);
 

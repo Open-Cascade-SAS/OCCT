@@ -72,17 +72,17 @@ public:
   void Print();
 
 private:
-  double mydeflectionmax;
-  bool   mydefdef;
+  double    mydeflectionmax;
+  bool mydefdef;
 
-  double mypasUVmax;
-  bool   mypasdef;
+  double    mypasUVmax;
+  bool mypasdef;
 
-  int  mynbpointsmax;
+  int mynbpointsmax;
   bool mynbpdef;
 
   bool myonetrue;
-  char myname[100];
+  char             myname[100];
 };
 
 TopOpeBRep_ALWL::TopOpeBRep_ALWL(const char* name, const bool b)

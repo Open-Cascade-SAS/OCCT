@@ -39,7 +39,8 @@ int IGESBasic_ExternalReferenceFile::NbListEntries() const
   return theNames->Length();
 }
 
-occ::handle<TCollection_HAsciiString> IGESBasic_ExternalReferenceFile::Name(const int Index) const
+occ::handle<TCollection_HAsciiString> IGESBasic_ExternalReferenceFile::Name(
+  const int Index) const
 {
   return theNames->Value(Index);
 }

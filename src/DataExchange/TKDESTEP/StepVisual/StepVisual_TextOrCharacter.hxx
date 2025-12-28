@@ -51,6 +51,7 @@ public:
 
   //! returns Value as a TextLiteral (Null if another type)
   Standard_EXPORT occ::handle<StepVisual_TextLiteral> TextLiteral() const;
+
 };
 
 #endif // _StepVisual_TextOrCharacter_HeaderFile

@@ -100,7 +100,7 @@ occ::handle<VrmlConverter_IsoAspect> VrmlConverter_Drawer::UIsoAspect()
   if (myUIsoAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myUIsoAspect                 = new VrmlConverter_IsoAspect(m, false, 1);
+    myUIsoAspect            = new VrmlConverter_IsoAspect(m, false, 1);
   }
   return myUIsoAspect;
 }
@@ -115,7 +115,7 @@ occ::handle<VrmlConverter_IsoAspect> VrmlConverter_Drawer::VIsoAspect()
   if (myVIsoAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myVIsoAspect                 = new VrmlConverter_IsoAspect(m, false, 1);
+    myVIsoAspect            = new VrmlConverter_IsoAspect(m, false, 1);
   }
   return myVIsoAspect;
 }
@@ -130,13 +130,12 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::FreeBoundaryAspect()
   if (myFreeBoundaryAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myFreeBoundaryAspect         = new VrmlConverter_LineAspect(m, false);
+    myFreeBoundaryAspect    = new VrmlConverter_LineAspect(m, false);
   }
   return myFreeBoundaryAspect;
 }
 
-void VrmlConverter_Drawer::SetFreeBoundaryAspect(
-  const occ::handle<VrmlConverter_LineAspect>& anAspect)
+void VrmlConverter_Drawer::SetFreeBoundaryAspect(const occ::handle<VrmlConverter_LineAspect>& anAspect)
 {
   myFreeBoundaryAspect = anAspect;
 }
@@ -156,7 +155,7 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::WireAspect()
   if (myWireAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myWireAspect                 = new VrmlConverter_LineAspect(m, false);
+    myWireAspect            = new VrmlConverter_LineAspect(m, false);
   }
   return myWireAspect;
 }
@@ -181,13 +180,12 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::UnFreeBoundaryAspect
   if (myUnFreeBoundaryAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myUnFreeBoundaryAspect       = new VrmlConverter_LineAspect(m, false);
+    myUnFreeBoundaryAspect  = new VrmlConverter_LineAspect(m, false);
   }
   return myUnFreeBoundaryAspect;
 }
 
-void VrmlConverter_Drawer::SetUnFreeBoundaryAspect(
-  const occ::handle<VrmlConverter_LineAspect>& anAspect)
+void VrmlConverter_Drawer::SetUnFreeBoundaryAspect(const occ::handle<VrmlConverter_LineAspect>& anAspect)
 {
   myUnFreeBoundaryAspect = anAspect;
 }
@@ -207,7 +205,7 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::LineAspect()
   if (myLineAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myLineAspect                 = new VrmlConverter_LineAspect(m, false);
+    myLineAspect            = new VrmlConverter_LineAspect(m, false);
   }
   return myLineAspect;
 }
@@ -222,7 +220,7 @@ occ::handle<VrmlConverter_PointAspect> VrmlConverter_Drawer::PointAspect()
   if (myPointAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myPointAspect                = new VrmlConverter_PointAspect(m, false);
+    myPointAspect           = new VrmlConverter_PointAspect(m, false);
   }
   return myPointAspect;
 }
@@ -241,8 +239,7 @@ occ::handle<VrmlConverter_ShadingAspect> VrmlConverter_Drawer::ShadingAspect()
   return myShadingAspect;
 }
 
-void VrmlConverter_Drawer::SetShadingAspect(
-  const occ::handle<VrmlConverter_ShadingAspect>& anAspect)
+void VrmlConverter_Drawer::SetShadingAspect(const occ::handle<VrmlConverter_ShadingAspect>& anAspect)
 {
   myShadingAspect = anAspect;
 }
@@ -267,13 +264,12 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::HiddenLineAspect()
   if (myHiddenLineAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    myHiddenLineAspect           = new VrmlConverter_LineAspect(m, false);
+    myHiddenLineAspect      = new VrmlConverter_LineAspect(m, false);
   }
   return myHiddenLineAspect;
 }
 
-void VrmlConverter_Drawer::SetHiddenLineAspect(
-  const occ::handle<VrmlConverter_LineAspect>& anAspect)
+void VrmlConverter_Drawer::SetHiddenLineAspect(const occ::handle<VrmlConverter_LineAspect>& anAspect)
 {
   myHiddenLineAspect = anAspect;
 }
@@ -283,7 +279,7 @@ occ::handle<VrmlConverter_LineAspect> VrmlConverter_Drawer::SeenLineAspect()
   if (mySeenLineAspect.IsNull())
   {
     occ::handle<Vrml_Material> m = new Vrml_Material;
-    mySeenLineAspect             = new VrmlConverter_LineAspect(m, false);
+    mySeenLineAspect        = new VrmlConverter_LineAspect(m, false);
   }
   return mySeenLineAspect;
 }

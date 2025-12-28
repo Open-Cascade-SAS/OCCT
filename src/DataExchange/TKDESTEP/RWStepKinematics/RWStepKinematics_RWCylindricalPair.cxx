@@ -33,7 +33,7 @@ RWStepKinematics_RWCylindricalPair::RWStepKinematics_RWCylindricalPair() {}
 
 void RWStepKinematics_RWCylindricalPair::ReadStep(
   const occ::handle<StepData_StepReaderData>&        theData,
-  const int                                          theNum,
+  const int                        theNum,
   occ::handle<Interface_Check>&                      theArch,
   const occ::handle<StepKinematics_CylindricalPair>& theEnt) const
 {
@@ -56,7 +56,7 @@ void RWStepKinematics_RWCylindricalPair::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                                  hasItemDefinedTransformation_Description = true;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -160,7 +160,7 @@ void RWStepKinematics_RWCylindricalPair::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWCylindricalPair::WriteStep(
-  StepData_StepWriter&                               theSW,
+  StepData_StepWriter&                          theSW,
   const occ::handle<StepKinematics_CylindricalPair>& theEnt) const
 {
 
@@ -204,9 +204,8 @@ void RWStepKinematics_RWCylindricalPair::WriteStep(
 
 //=================================================================================================
 
-void RWStepKinematics_RWCylindricalPair::Share(
-  const occ::handle<StepKinematics_CylindricalPair>& theEnt,
-  Interface_EntityIterator&                          iter) const
+void RWStepKinematics_RWCylindricalPair::Share(const occ::handle<StepKinematics_CylindricalPair>& theEnt,
+                                               Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem

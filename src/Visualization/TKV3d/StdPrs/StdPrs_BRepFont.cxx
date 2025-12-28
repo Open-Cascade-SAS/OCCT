@@ -44,7 +44,10 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 
 #ifdef HAVE_FREETYPE
   #include <ft2build.h>
@@ -68,9 +71,9 @@ inline double getScale(const double theSize)
 
 #ifdef HAVE_FREETYPE
 //! Auxiliary method to convert FT_Vector to gp_XY
-static gp_XY readFTVec(const FT_Vector& theVec,
-                       const double     theScaleUnits,
-                       const double     theWidthScaling = 1.0)
+static gp_XY readFTVec(const FT_Vector&    theVec,
+                       const double theScaleUnits,
+                       const double theWidthScaling = 1.0)
 {
   return gp_XY(theScaleUnits * double(theVec.x) * theWidthScaling / 64.0,
                theScaleUnits * double(theVec.y) / 64.0);
@@ -90,8 +93,8 @@ static TopAbs_State classifyWW(const TopoDS_Wire& theW1,
   BRepTopAdaptor_FClass2d aClass2d(aF, ::Precision::PConfusion());
   for (TopoDS_Iterator anEdgeIter(theW2); anEdgeIter.More(); anEdgeIter.Next())
   {
-    const TopoDS_Edge&        anEdge  = TopoDS::Edge(anEdgeIter.Value());
-    double                    aPFirst = 0.0, aPLast = 0.0;
+    const TopoDS_Edge&   anEdge  = TopoDS::Edge(anEdgeIter.Value());
+    double        aPFirst = 0.0, aPLast = 0.0;
     occ::handle<Geom2d_Curve> aCurve2d = BRep_Tool::CurveOnSurface(anEdge, theF, aPFirst, aPLast);
     if (aCurve2d.IsNull())
     {
@@ -134,8 +137,8 @@ StdPrs_BRepFont::StdPrs_BRepFont()
 
 void StdPrs_BRepFont::init()
 {
-  mySurface                                   = new Geom_Plane(gp_Pln(gp::XOY()));
-  myCurve2dAdaptor                            = new Geom2dAdaptor_Curve();
+  mySurface                              = new Geom_Plane(gp_Pln(gp::XOY()));
+  myCurve2dAdaptor                       = new Geom2dAdaptor_Curve();
   occ::handle<Adaptor3d_Surface> aSurfAdaptor = new GeomAdaptor_Surface(mySurface);
   myCurvOnSurf.Load(aSurfAdaptor);
 }
@@ -143,8 +146,8 @@ void StdPrs_BRepFont::init()
 //=================================================================================================
 
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
-                                 const double              theSize,
-                                 const int                 theFaceId)
+                                 const double       theSize,
+                                 const int    theFaceId)
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
       myIsCompositeCurve(false),
@@ -166,7 +169,7 @@ StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontPath,
 
 StdPrs_BRepFont::StdPrs_BRepFont(const NCollection_String& theFontName,
                                  const Font_FontAspect     theFontAspect,
-                                 const double              theSize,
+                                 const double       theSize,
                                  const Font_StrictLevel    theStrictLevel)
     : myPrecision(Precision::Confusion()),
       myScaleUnits(1.0),
@@ -195,11 +198,10 @@ void StdPrs_BRepFont::Release()
 
 //=================================================================================================
 
-occ::handle<StdPrs_BRepFont> StdPrs_BRepFont::FindAndCreate(
-  const TCollection_AsciiString& theFontName,
-  const Font_FontAspect          theFontAspect,
-  const double                   theSize,
-  const Font_StrictLevel         theStrictLevel)
+occ::handle<StdPrs_BRepFont> StdPrs_BRepFont::FindAndCreate(const TCollection_AsciiString& theFontName,
+                                                       const Font_FontAspect          theFontAspect,
+                                                       const double            theSize,
+                                                       const Font_StrictLevel theStrictLevel)
 {
   occ::handle<StdPrs_BRepFont> aFont = new StdPrs_BRepFont();
 
@@ -223,8 +225,8 @@ void StdPrs_BRepFont::SetCompositeCurveMode(const bool theToConcatenate)
 //=================================================================================================
 
 bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
-                           const double              theSize,
-                           const int                 theFaceId)
+                           const double       theSize,
+                           const int    theFaceId)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -240,7 +242,7 @@ bool StdPrs_BRepFont::Init(const NCollection_String& theFontPath,
 
 bool StdPrs_BRepFont::FindAndInit(const TCollection_AsciiString& theFontName,
                                   const Font_FontAspect          theFontAspect,
-                                  const double                   theSize,
+                                  const double            theSize,
                                   const Font_StrictLevel         theStrictLevel)
 {
   if (theSize <= myPrecision * 100.0)
@@ -269,7 +271,7 @@ TopoDS_Shape StdPrs_BRepFont::RenderGlyph(const char32_t& theChar)
 //=================================================================================================
 
 bool StdPrs_BRepFont::to3d(const occ::handle<Geom2d_Curve>& theCurve2d,
-                           const GeomAbs_Shape              theContinuity,
+                           const GeomAbs_Shape         theContinuity,
                            occ::handle<Geom_Curve>&         theCurve3d)
 {
   double aMaxDeviation   = 0.0;
@@ -291,14 +293,14 @@ bool StdPrs_BRepFont::to3d(const occ::handle<Geom2d_Curve>& theCurve2d,
 //=================================================================================================
 
 bool StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWires,
-                                 TopoDS_Shape&                            theRes)
+                                             TopoDS_Shape&                            theRes)
 {
 #ifdef HAVE_FREETYPE
   // classify wires
   NCollection_DataMap<TopoDS_Shape, NCollection_Sequence<TopoDS_Wire>, TopTools_ShapeMapHasher>
-                                                                  aMapOutInts;
+                                 aMapOutInts;
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMapNbOuts;
-  TopoDS_Face                                                     aF;
+  TopoDS_Face                    aF;
   myBuilder.MakeFace(aF, mySurface, myPrecision);
   int aWireIter1Index = 1;
   for (NCollection_Sequence<TopoDS_Wire>::Iterator aWireIter1(theWires); aWireIter1.More();
@@ -341,9 +343,7 @@ bool StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWir
   }
 
   // check out wires and remove "not out" wires from maps
-  for (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator anOutIter(
-         aMapNbOuts);
-       anOutIter.More();
+  for (NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>::Iterator anOutIter(aMapNbOuts); anOutIter.More();
        anOutIter.Next())
   {
     const int aTmp = anOutIter.Value() % 2;
@@ -356,21 +356,21 @@ bool StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWir
 
   // create faces for out wires
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> anUsedShapes;
-  TopoDS_Compound                                        aFaceComp;
+  TopoDS_Compound     aFaceComp;
   myBuilder.MakeCompound(aFaceComp);
   for (; !aMapOutInts.IsEmpty();)
   {
     // find out wire with max number of outs
-    TopoDS_Shape aW;
-    int          aMaxNbOuts = -1;
+    TopoDS_Shape     aW;
+    int aMaxNbOuts = -1;
     for (NCollection_DataMap<TopoDS_Shape,
                              NCollection_Sequence<TopoDS_Wire>,
                              TopTools_ShapeMapHasher>::Iterator itMOI(aMapOutInts);
          itMOI.More();
          itMOI.Next())
     {
-      const TopoDS_Shape& aKey    = itMOI.Key();
-      const int           aNbOuts = aMapNbOuts.Find(aKey);
+      const TopoDS_Shape&    aKey    = itMOI.Key();
+      const int aNbOuts = aMapNbOuts.Find(aKey);
       if (aNbOuts > aMaxNbOuts)
       {
         aMaxNbOuts = aNbOuts;
@@ -425,7 +425,8 @@ bool StdPrs_BRepFont::buildFaces(const NCollection_Sequence<TopoDS_Wire>& theWir
 
 //=================================================================================================
 
-bool StdPrs_BRepFont::renderGlyph(const char32_t theChar, TopoDS_Shape& theShape)
+bool StdPrs_BRepFont::renderGlyph(const char32_t theChar,
+                                              TopoDS_Shape&            theShape)
 {
   theShape.Nullify();
 #ifdef HAVE_FREETYPE
@@ -491,7 +492,7 @@ bool StdPrs_BRepFont::renderGlyph(const char32_t theChar, TopoDS_Shape& theShape
           continue;
         }
 
-        const gp_XY  aDirVec = aPntCurr - aPntLine1;
+        const gp_XY         aDirVec = aPntCurr - aPntLine1;
         const double aLen    = aDirVec.Modulus();
         if (aLen <= myPrecision)
         {
@@ -509,8 +510,7 @@ bool StdPrs_BRepFont::renderGlyph(const char32_t theChar, TopoDS_Shape& theShape
         else
         {
           occ::handle<Geom_Curve>  aCurve3d;
-          occ::handle<Geom2d_Line> aCurve2d =
-            new Geom2d_Line(gp_Pnt2d(aPntLine1), gp_Dir2d(aDirVec));
+          occ::handle<Geom2d_Line> aCurve2d = new Geom2d_Line(gp_Pnt2d(aPntLine1), gp_Dir2d(aDirVec));
           if (to3d(aCurve2d, GeomAbs_C1, aCurve3d))
           {
             TopoDS_Edge anEdge = BRepLib_MakeEdge(aCurve3d, 0.0, aLen);

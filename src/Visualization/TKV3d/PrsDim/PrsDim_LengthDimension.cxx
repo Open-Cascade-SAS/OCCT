@@ -163,8 +163,8 @@ void PrsDim_LengthDimension::SetMeasuredGeometry(const TopoDS_Face& theFace,
 void PrsDim_LengthDimension::SetMeasuredShapes(const TopoDS_Shape& theFirstShape,
                                                const TopoDS_Shape& theSecondShape)
 {
-  gp_Pln aComputedPlane;
-  bool   isPlaneReturned = false;
+  gp_Pln           aComputedPlane;
+  bool isPlaneReturned = false;
 
   myFirstShape  = theFirstShape;
   mySecondShape = theSecondShape;
@@ -263,7 +263,7 @@ double PrsDim_LengthDimension::ComputeValue() const
 
 void PrsDim_LengthDimension::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                      const occ::handle<Prs3d_Presentation>& thePresentation,
-                                     const int                              theMode)
+                                     const int            theMode)
 {
   mySelectionGeom.Clear(theMode);
 
@@ -295,7 +295,8 @@ void PrsDim_LengthDimension::ComputeFlyoutLinePoints(const gp_Pnt& theFirstPoint
   gp_Ax1 aPlaneNormal = GetPlane().Axis();
   gp_Vec aFlyoutNormalizedDir(aPlaneNormal.Direction() ^ myDirection);
   aFlyoutNormalizedDir.Normalize();
-  double aTargetProjectedToFlyout = gp_Vec(theFirstPoint, theSecondPoint).Dot(aFlyoutNormalizedDir);
+  double aTargetProjectedToFlyout =
+    gp_Vec(theFirstPoint, theSecondPoint).Dot(aFlyoutNormalizedDir);
 
   gp_Dir aFlyoutVector = aFlyoutNormalizedDir;
   // create lines for layouts
@@ -326,7 +327,7 @@ void PrsDim_LengthDimension::ComputeFlyoutSelection(
 //=================================================================================================
 
 bool PrsDim_LengthDimension::IsValidPoints(const gp_Pnt& theFirstPoint,
-                                           const gp_Pnt& theSecondPoint) const
+                                                       const gp_Pnt& theSecondPoint) const
 {
   return theFirstPoint.Distance(theSecondPoint) > Precision::Confusion();
 }
@@ -336,13 +337,13 @@ bool PrsDim_LengthDimension::IsValidPoints(const gp_Pnt& theFirstPoint,
 // purpose  : Initialization of dimension between two linear edges
 //=======================================================================
 bool PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
-                                                const TopoDS_Edge& theSecondEdge,
-                                                gp_Dir&            theDirAttach)
+                                                            const TopoDS_Edge& theSecondEdge,
+                                                            gp_Dir&            theDirAttach)
 {
   occ::handle<Geom_Curve> aFirstCurve, aSecondCurve;
-  gp_Pnt                  aPoint11, aPoint12, aPoint21, aPoint22;
-  bool                    isFirstInfinite  = false;
-  bool                    isSecondInfinite = false;
+  gp_Pnt             aPoint11, aPoint12, aPoint21, aPoint22;
+  bool   isFirstInfinite  = false;
+  bool   isSecondInfinite = false;
   if (!PrsDim::ComputeGeometry(theFirstEdge,
                                theSecondEdge,
                                aFirstCurve,
@@ -438,11 +439,11 @@ bool PrsDim_LengthDimension::InitTwoEdgesLength(const TopoDS_Edge& theFirstEdge,
 // purpose  : for first edge and second vertex shapes
 //=======================================================================
 bool PrsDim_LengthDimension::InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
-                                                  const TopoDS_Vertex& theVertex,
-                                                  gp_Dir&              theEdgeDir,
-                                                  bool                 isInfinite)
+                                                              const TopoDS_Vertex& theVertex,
+                                                              gp_Dir&              theEdgeDir,
+                                                              bool     isInfinite)
 {
-  gp_Pnt                  anEdgePoint1, anEdgePoint2;
+  gp_Pnt             anEdgePoint1, anEdgePoint2;
   occ::handle<Geom_Curve> aCurve;
   if (!PrsDim::ComputeGeometry(theEdge, aCurve, anEdgePoint1, anEdgePoint2, isInfinite))
   {
@@ -489,8 +490,8 @@ bool PrsDim_LengthDimension::InitEdgeVertexLength(const TopoDS_Edge&   theEdge,
 //=================================================================================================
 
 bool PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& theEdge,
-                                                const TopoDS_Face& theFace,
-                                                gp_Dir&            theEdgeDir)
+                                                            const TopoDS_Face& theFace,
+                                                            gp_Dir&            theEdgeDir)
 {
   theEdgeDir = gp::DX();
 
@@ -505,16 +506,18 @@ bool PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& theEdge,
 
   // Take direction for dimension line (will be orthogonalized later) parallel to edge
   BRepAdaptor_Curve aCurveAdaptor(theEdge);
-  double            aParam;
+  double     aParam;
   if (aDistAdaptor.SupportOnShape1(1).ShapeType() == TopAbs_EDGE)
   {
     aDistAdaptor.ParOnEdgeS1(1, aParam);
   }
   else
   {
-    double aD1 = aCurveAdaptor.Value(aCurveAdaptor.FirstParameter()).SquareDistance(myFirstPoint);
-    double aD2 = aCurveAdaptor.Value(aCurveAdaptor.LastParameter()).SquareDistance(myFirstPoint);
-    aParam     = (aD1 < aD2 ? aCurveAdaptor.FirstParameter() : aCurveAdaptor.LastParameter());
+    double aD1 =
+      aCurveAdaptor.Value(aCurveAdaptor.FirstParameter()).SquareDistance(myFirstPoint);
+    double aD2 =
+      aCurveAdaptor.Value(aCurveAdaptor.LastParameter()).SquareDistance(myFirstPoint);
+    aParam = (aD1 < aD2 ? aCurveAdaptor.FirstParameter() : aCurveAdaptor.LastParameter());
   }
   gp_Pnt aP;
   gp_Vec aV;
@@ -541,22 +544,22 @@ bool PrsDim_LengthDimension::InitEdgeFaceLength(const TopoDS_Edge& theEdge,
 //           will be attached
 //=======================================================================
 bool PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape& theFirstShape,
-                                                 const TopoDS_Shape& theSecondShape,
-                                                 gp_Pln&             theComputedPlane,
-                                                 bool&               theIsPlaneComputed)
+                                                             const TopoDS_Shape& theSecondShape,
+                                                             gp_Pln&             theComputedPlane,
+                                                             bool&   theIsPlaneComputed)
 {
   theIsPlaneComputed = false;
-  gp_Dir aDirAttach;
-  bool   isInfinite = false;
-  bool   isSuccess  = false;
+  gp_Dir           aDirAttach;
+  bool isInfinite = false;
+  bool isSuccess  = false;
   switch (theFirstShape.ShapeType())
   {
     case TopAbs_FACE: {
       // Initialization for face
-      gp_Pln                    aFirstPlane;
+      gp_Pln               aFirstPlane;
       occ::handle<Geom_Surface> aFirstSurface;
-      PrsDim_KindOfSurface      aFirstSurfKind;
-      double                    aFirstOffset;
+      PrsDim_KindOfSurface aFirstSurfKind;
+      double        aFirstOffset;
 
       TopoDS_Face aFirstFace = TopoDS::Face(theFirstShape);
 
@@ -570,10 +573,10 @@ bool PrsDim_LengthDimension::InitTwoShapesPoints(const TopoDS_Shape& theFirstSha
       {
         // Initialization for face
         myGeometryType = GeometryType_Faces;
-        gp_Pln                    aSecondPlane;
+        gp_Pln               aSecondPlane;
         occ::handle<Geom_Surface> aSecondSurface;
-        PrsDim_KindOfSurface      aSecondSurfKind;
-        double                    aSecondOffset;
+        PrsDim_KindOfSurface aSecondSurfKind;
+        double        aSecondOffset;
 
         TopoDS_Face aSecondFace = TopoDS::Face(theSecondShape);
 
@@ -782,8 +785,8 @@ bool PrsDim_LengthDimension::InitOneShapePoints(const TopoDS_Shape& theShape)
   TopoDS_Edge anEdge = TopoDS::Edge(theShape);
 
   BRepAdaptor_Curve aBrepCurve(anEdge);
-  double            aFirst = aBrepCurve.FirstParameter();
-  double            aLast  = aBrepCurve.LastParameter();
+  double     aFirst = aBrepCurve.FirstParameter();
+  double     aLast  = aBrepCurve.LastParameter();
 
   if (aBrepCurve.GetType() != GeomAbs_Line)
   {
@@ -832,7 +835,8 @@ void PrsDim_LengthDimension::SetTextPosition(const gp_Pnt& theTextPos)
 
 //=================================================================================================
 
-void PrsDim_LengthDimension::SetDirection(const gp_Dir& theDirection, const bool theUseDirection)
+void PrsDim_LengthDimension::SetDirection(const gp_Dir&          theDirection,
+                                          const bool theUseDirection)
 {
   myHasCustomDirection = theUseDirection;
   if (myHasCustomDirection)

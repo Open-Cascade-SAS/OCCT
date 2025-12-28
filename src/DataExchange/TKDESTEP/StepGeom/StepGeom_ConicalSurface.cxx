@@ -21,8 +21,8 @@ StepGeom_ConicalSurface::StepGeom_ConicalSurface() {}
 
 void StepGeom_ConicalSurface::Init(const occ::handle<TCollection_HAsciiString>&  aName,
                                    const occ::handle<StepGeom_Axis2Placement3d>& aPosition,
-                                   const double                                  aRadius,
-                                   const double                                  aSemiAngle)
+                                   const double                      aRadius,
+                                   const double                      aSemiAngle)
 {
   // --- classe own fields ---
   radius    = aRadius;

@@ -29,11 +29,11 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRTest_DrawableEdgeTool, Draw_Drawable3D)
 //=================================================================================================
 
 HLRTest_DrawableEdgeTool::HLRTest_DrawableEdgeTool(const occ::handle<HLRBRep_Algo>& Alg,
-                                                   const bool                       Visible,
-                                                   const bool                       IsoLine,
-                                                   const bool                       Rg1Line,
-                                                   const bool                       RgNLine,
-                                                   const int                        ViewId)
+                                                   const bool      Visible,
+                                                   const bool      IsoLine,
+                                                   const bool      Rg1Line,
+                                                   const bool      RgNLine,
+                                                   const int      ViewId)
     : myAlgo(Alg),
       myVisible(Visible),
       myIsoLine(IsoLine),
@@ -67,11 +67,11 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const int typ) cons
     //    double sta,end;
     //    float tolsta,tolend;
     //    int ie,v1,v2,e1,e2,f1,f2;
-    int               ie, e2;
-    int               iCB = 1;
-    int               nCB = myAlgo->NbShapes();
-    int               ne  = DS->NbEdges();
-    int               nf  = DS->NbFaces();
+    int  ie, e2;
+    int  iCB = 1;
+    int  nCB = myAlgo->NbShapes();
+    int  ne  = DS->NbEdges();
+    int  nf  = DS->NbFaces();
     HLRBRep_EdgeData* ed  = &(DS->EDataArray().ChangeValue(0));
     ed++;
     e2 = 0;
@@ -110,19 +110,19 @@ void HLRTest_DrawableEdgeTool::InternalDraw(Draw_Display& D, const int typ) cons
 
 //=================================================================================================
 
-void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&              D,
-                                        const int                  typ,
-                                        const int                  nCB,
-                                        const int                  iface,
-                                        int&                       e2,
-                                        int&                       iCB,
-                                        occ::handle<HLRBRep_Data>& DS) const
+void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&          D,
+                                        const int typ,
+                                        const int nCB,
+                                        const int iface,
+                                        int&      e2,
+                                        int&      iCB,
+                                        occ::handle<HLRBRep_Data>&  DS) const
 {
   HLRBRep_FaceIterator Itf;
 
   for (Itf.InitEdge(DS->FDataArray().ChangeValue(iface)); Itf.MoreEdge(); Itf.NextEdge())
   {
-    int               ie  = Itf.Edge();
+    int  ie  = Itf.Edge();
     HLRBRep_EdgeData& edf = DS->EDataArray().ChangeValue(ie);
     if (!edf.Used())
     {
@@ -145,23 +145,23 @@ void HLRTest_DrawableEdgeTool::DrawFace(Draw_Display&              D,
 
 //=================================================================================================
 
-void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
-                                        const bool        inFace,
-                                        const int         typ,
-                                        const int         nCB,
-                                        const int         ie,
-                                        int&              e2,
-                                        int&              iCB,
-                                        HLRBRep_EdgeData& ed) const
+void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&          D,
+                                        const bool inFace,
+                                        const int typ,
+                                        const int nCB,
+                                        const int ie,
+                                        int&      e2,
+                                        int&      iCB,
+                                        HLRBRep_EdgeData&      ed) const
 {
   bool todraw = true;
   if (!inFace && ((!myRg1Line && ed.Rg1Line()) || (!myRgNLine && ed.RgNLine())))
     todraw = false;
   if (todraw)
   {
-    double               sta, end;
-    float                tolsta, tolend;
-    int                  v1, v2, e1, f1, f2;
+    double        sta, end;
+    float   tolsta, tolend;
+    int     v1, v2, e1, f1, f2;
     HLRAlgo_EdgeIterator It;
     if (myVisible)
     {
@@ -188,8 +188,8 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
         D.MoveTo(ec.Value3D(sta));
         if (ec.GetType() != GeomAbs_Line)
         {
-          int    nbPnt = 100;
-          double step  = (end - sta) / (nbPnt + 1);
+          int nbPnt = 100;
+          double    step  = (end - sta) / (nbPnt + 1);
 
           for (int i = 1; i <= nbPnt; i++)
           {
@@ -225,8 +225,8 @@ void HLRTest_DrawableEdgeTool::DrawEdge(Draw_Display&     D,
         D.MoveTo(ec.Value3D(sta));
         if (ec.GetType() != GeomAbs_Line)
         {
-          int    nbPnt = 100;
-          double step  = (end - sta) / (nbPnt + 1);
+          int nbPnt = 100;
+          double    step  = (end - sta) / (nbPnt + 1);
 
           for (int i = 1; i <= nbPnt; i++)
           {

@@ -24,10 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangle, Select3D_SensitiveEntity)
 
 Select3D_SensitiveTriangle::Select3D_SensitiveTriangle(
   const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-  const gp_Pnt&                             thePnt0,
-  const gp_Pnt&                             thePnt1,
-  const gp_Pnt&                             thePnt2,
-  const Select3D_TypeOfSensitivity          theType)
+  const gp_Pnt&                        thePnt0,
+  const gp_Pnt&                        thePnt1,
+  const gp_Pnt&                        thePnt2,
+  const Select3D_TypeOfSensitivity     theType)
     : Select3D_SensitiveEntity(theOwnerId),
       mySensType(theType)
 {
@@ -43,7 +43,7 @@ Select3D_SensitiveTriangle::Select3D_SensitiveTriangle(
 //           current selecting volume
 //==================================================
 bool Select3D_SensitiveTriangle::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                         SelectBasics_PickResult&             thePickResult)
+                                                     SelectBasics_PickResult& thePickResult)
 {
   if (!theMgr.IsOverlapAllowed())
   {
@@ -86,18 +86,19 @@ Select3D_BndBox3d Select3D_SensitiveTriangle::BoundingBox()
 {
   const NCollection_Vec3<double> aMinPnt =
     NCollection_Vec3<double>(std::min(myPoints[0].X(), std::min(myPoints[1].X(), myPoints[2].X())),
-                             std::min(myPoints[0].Y(), std::min(myPoints[1].Y(), myPoints[2].Y())),
-                             std::min(myPoints[0].Z(), std::min(myPoints[1].Z(), myPoints[2].Z())));
+                   std::min(myPoints[0].Y(), std::min(myPoints[1].Y(), myPoints[2].Y())),
+                   std::min(myPoints[0].Z(), std::min(myPoints[1].Z(), myPoints[2].Z())));
   const NCollection_Vec3<double> aMaxPnt =
     NCollection_Vec3<double>(std::max(myPoints[0].X(), std::max(myPoints[1].X(), myPoints[2].X())),
-                             std::max(myPoints[0].Y(), std::max(myPoints[1].Y(), myPoints[2].Y())),
-                             std::max(myPoints[0].Z(), std::max(myPoints[1].Z(), myPoints[2].Z())));
+                   std::max(myPoints[0].Y(), std::max(myPoints[1].Y(), myPoints[2].Y())),
+                   std::max(myPoints[0].Z(), std::max(myPoints[1].Z(), myPoints[2].Z())));
   return Select3D_BndBox3d(aMinPnt, aMaxPnt);
 }
 
 //=================================================================================================
 
-void Select3D_SensitiveTriangle::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Select3D_SensitiveTriangle::DumpJson(Standard_OStream& theOStream,
+                                          int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveEntity)

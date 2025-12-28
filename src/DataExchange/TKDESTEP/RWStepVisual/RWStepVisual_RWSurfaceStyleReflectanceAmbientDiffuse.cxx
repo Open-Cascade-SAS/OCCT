@@ -29,7 +29,7 @@ RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
   const occ::handle<StepData_StepReaderData>&                          theData,
-  const int                                                            theNum,
+  const int                                          theNum,
   occ::handle<Interface_Check>&                                        theAch,
   const occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuse>& theEnt) const
 {
@@ -52,7 +52,7 @@ void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWSurfaceStyleReflectanceAmbientDiffuse::WriteStep(
-  StepData_StepWriter&                                                 theSW,
+  StepData_StepWriter&                                            theSW,
   const occ::handle<StepVisual_SurfaceStyleReflectanceAmbientDiffuse>& theEnt) const
 {
   // Inherited fields of SurfaceStyleReflectanceAmbient

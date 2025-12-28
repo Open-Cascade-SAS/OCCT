@@ -51,8 +51,7 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture(std::mutex& theMutex, int thePlan
 
 //=================================================================================================
 
-occ::handle<Image_PixMap> Graphic3d_MediaTexture::GetImage(
-  const occ::handle<Image_SupportedFormats>&)
+occ::handle<Image_PixMap> Graphic3d_MediaTexture::GetImage(const occ::handle<Image_SupportedFormats>&)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
 

@@ -74,7 +74,7 @@ public: //! @name Performing the operation
   Standard_EXPORT virtual void Build(
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
-protected:                                //! @name Fields
+protected:                      //! @name Fields
   NCollection_List<TopoDS_Shape> myTools; //!< Tool arguments of the operation
 };
 

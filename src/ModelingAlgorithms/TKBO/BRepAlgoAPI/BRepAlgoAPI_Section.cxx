@@ -37,10 +37,13 @@
 static TopoDS_Shape MakeShape(const occ::handle<Geom_Surface>&);
 
 static bool HasAncestorFaces(const BOPAlgo_PPaveFiller&,
-                             const TopoDS_Shape&,
-                             TopoDS_Shape&,
-                             TopoDS_Shape&);
-static bool HasAncestorFace(const BOPAlgo_PPaveFiller&, int, const TopoDS_Shape&, TopoDS_Shape&);
+                                         const TopoDS_Shape&,
+                                         TopoDS_Shape&,
+                                         TopoDS_Shape&);
+static bool HasAncestorFace(const BOPAlgo_PPaveFiller&,
+                                        int,
+                                        const TopoDS_Shape&,
+                                        TopoDS_Shape&);
 
 //
 //=================================================================================================
@@ -61,9 +64,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const BOPAlgo_PaveFiller& aPF)
 
 //=================================================================================================
 
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh1,
-                                         const TopoDS_Shape& Sh2,
-                                         const bool          PerformNow)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh1,
+                                         const TopoDS_Shape&    Sh2,
+                                         const bool PerformNow)
     : BRepAlgoAPI_BooleanOperation(Sh1, Sh2, BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -74,7 +77,7 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh1,
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&       aS1,
                                          const TopoDS_Shape&       aS2,
                                          const BOPAlgo_PaveFiller& aDSF,
-                                         const bool                PerformNow)
+                                         const bool    PerformNow)
     : BRepAlgoAPI_BooleanOperation(aS1, aS2, aDSF, BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -82,9 +85,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&       aS1,
 
 //=================================================================================================
 
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh,
-                                         const gp_Pln&       Pl,
-                                         const bool          PerformNow)
+BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh,
+                                         const gp_Pln&          Pl,
+                                         const bool PerformNow)
     : BRepAlgoAPI_BooleanOperation(Sh, MakeShape(new Geom_Plane(Pl)), BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -92,9 +95,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh,
 
 //=================================================================================================
 
-BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&              Sh,
+BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&         Sh,
                                          const occ::handle<Geom_Surface>& Sf,
-                                         const bool                       PerformNow)
+                                         const bool      PerformNow)
     : BRepAlgoAPI_BooleanOperation(Sh, MakeShape(Sf), BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -103,8 +106,8 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&              Sh,
 //=================================================================================================
 
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf,
-                                         const TopoDS_Shape&              Sh,
-                                         const bool                       PerformNow)
+                                         const TopoDS_Shape&         Sh,
+                                         const bool      PerformNow)
     : BRepAlgoAPI_BooleanOperation(MakeShape(Sf), Sh, BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -114,7 +117,7 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf,
 
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const occ::handle<Geom_Surface>& Sf1,
                                          const occ::handle<Geom_Surface>& Sf2,
-                                         const bool                       PerformNow)
+                                         const bool      PerformNow)
     : BRepAlgoAPI_BooleanOperation(MakeShape(Sf1), MakeShape(Sf2), BOPAlgo_SECTION)
 {
   Init(PerformNow);
@@ -221,7 +224,8 @@ void BRepAlgoAPI_Section::Build(const Message_ProgressRange& theRange)
 
 //=================================================================================================
 
-bool BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& aE, TopoDS_Shape& aF) const
+bool BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& aE,
+                                                         TopoDS_Shape&       aF) const
 {
   bool bRes;
   //
@@ -231,7 +235,8 @@ bool BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& aE, TopoDS_Shap
 
 //=================================================================================================
 
-bool BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& aE, TopoDS_Shape& aF) const
+bool BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& aE,
+                                                         TopoDS_Shape&       aF) const
 {
   bool bRes;
   //
@@ -242,9 +247,9 @@ bool BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& aE, TopoDS_Shap
 //=================================================================================================
 
 bool HasAncestorFace(const BOPAlgo_PPaveFiller& pPF,
-                     int                        aIndex,
-                     const TopoDS_Shape&        aE,
-                     TopoDS_Shape&              aF)
+                                 int           aIndex,
+                                 const TopoDS_Shape&        aE,
+                                 TopoDS_Shape&              aF)
 {
   bool bRes;
   //
@@ -273,15 +278,15 @@ bool HasAncestorFace(const BOPAlgo_PPaveFiller& pPF,
 //=================================================================================================
 
 bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
-                      const TopoDS_Shape&        aEx,
-                      TopoDS_Shape&              aF1,
-                      TopoDS_Shape&              aF2)
+                                  const TopoDS_Shape&        aEx,
+                                  TopoDS_Shape&              aF1,
+                                  TopoDS_Shape&              aF2)
 {
 
-  int                                                      aNbFF, i, j, nE, nF1, nF2, aNbVC;
+  int                    aNbFF, i, j, nE, nF1, nF2, aNbVC;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   //
-  const BOPDS_PDS&                    pDS  = pPF->PDS();
+  const BOPDS_PDS&        pDS  = pPF->PDS();
   NCollection_Vector<BOPDS_InterfFF>& aFFs = pDS->InterfFF();
   //
   // section edges
@@ -292,7 +297,7 @@ bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
     aFFi.Indices(nF1, nF2);
     //
     const NCollection_Vector<BOPDS_Curve>& aVC = aFFi.Curves();
-    aNbVC                                      = aVC.Length();
+    aNbVC                          = aVC.Length();
     for (j = 0; j < aNbVC; j++)
     {
       const BOPDS_Curve& aBC = aVC(j);
@@ -303,7 +308,7 @@ bool HasAncestorFaces(const BOPAlgo_PPaveFiller& pPF,
       for (; aItLPB.More(); aItLPB.Next())
       {
         const occ::handle<BOPDS_PaveBlock>& aPB = aItLPB.Value();
-        nE                                      = aPB->Edge();
+        nE                                 = aPB->Edge();
         if (nE < 0)
         {
           continue;

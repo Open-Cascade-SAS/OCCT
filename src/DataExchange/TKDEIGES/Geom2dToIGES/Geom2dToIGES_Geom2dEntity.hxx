@@ -51,7 +51,7 @@ public:
 
 private:
   occ::handle<IGESData_IGESModel> TheModel;
-  double                          TheUnitFactor;
+  double              TheUnitFactor;
 };
 
 #endif // _Geom2dToIGES_Geom2dEntity_HeaderFile

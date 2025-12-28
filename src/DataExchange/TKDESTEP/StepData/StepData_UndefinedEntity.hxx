@@ -72,7 +72,7 @@ public:
   //! reads data from StepReaderData (i.e. from file), by filling
   //! StepType and parameters stored in the UndefinedContent
   Standard_EXPORT void ReadRecord(const occ::handle<StepData_StepReaderData>& SR,
-                                  const int                                   num,
+                                  const int                 num,
                                   occ::handle<Interface_Check>&               ach);
 
   //! write data to StepWriter, taken from UndefinedContent
@@ -80,7 +80,7 @@ public:
 
   //! reads another UndefinedEntity from StepData
   Standard_EXPORT void GetFromAnother(const occ::handle<StepData_UndefinedEntity>& other,
-                                      Interface_CopyTool&                          TC);
+                                      Interface_CopyTool&                     TC);
 
   //! Fills the list of shared entities
   Standard_EXPORT void FillShared(Interface_EntityIterator& list) const;
@@ -90,7 +90,7 @@ public:
 private:
   occ::handle<TCollection_HAsciiString>   thetype;
   occ::handle<Interface_UndefinedContent> thecont;
-  bool                                    thesub;
+  bool                   thesub;
   occ::handle<StepData_UndefinedEntity>   thenext;
 };
 

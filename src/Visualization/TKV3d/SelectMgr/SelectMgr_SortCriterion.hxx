@@ -28,18 +28,18 @@ class SelectMgr_SortCriterion
 {
 public:
   occ::handle<Select3D_SensitiveEntity> Entity; //!< detected entity
-  gp_Pnt                                Point;  //!< 3D point
-  NCollection_Vec3<float>               Normal; //!< surface normal or 0 vector if undefined
-  double                                Depth;  //!< distance from the view plane to the entity
-                                                // clang-format off
+  gp_Pnt                           Point;  //!< 3D point
+  NCollection_Vec3<float>                   Normal; //!< surface normal or 0 vector if undefined
+  double                    Depth;  //!< distance from the view plane to the entity
+                                           // clang-format off
   double      MinDist;           //!< distance from the clicked point to the entity on the view plane
   double      Tolerance;         //!< tolerance used for selecting candidates
   int   SelectionPriority; //!< selection priority
   int   DisplayPriority;   //!< display priority
   int   ZLayerPosition;    //!< ZLayer rendering order index, stronger than a depth
   int   NbOwnerMatches;    //!< overall number of entities collected for the same owner
-                                                // clang-format on
-  bool IsPreferPriority; //!< flag to signal comparison to be done over priority
+                                           // clang-format on
+  bool IsPreferPriority;       //!< flag to signal comparison to be done over priority
 
 public:
   DEFINE_STANDARD_ALLOC

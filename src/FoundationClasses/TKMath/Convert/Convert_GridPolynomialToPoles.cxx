@@ -27,12 +27,12 @@
 #include <StdFail_NotDone.hxx>
 
 Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
-  const int                                       MaxUDegree,
-  const int                                       MaxVDegree,
-  const occ::handle<NCollection_HArray1<int>>&    NumCoeffPerSurface,
-  const occ::handle<NCollection_HArray1<double>>& Coefficients,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals)
+  const int                  MaxUDegree,
+  const int                  MaxVDegree,
+  const occ::handle<NCollection_HArray1<int>>& NumCoeffPerSurface,
+  const occ::handle<NCollection_HArray1<double>>&    Coefficients,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialUIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialVIntervals)
     : myDone(false)
 {
   // Les Controles
@@ -72,25 +72,25 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
 }
 
 Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
-  const int                                       NbUSurfaces,
-  const int                                       NbVSurfaces,
-  const int                                       UContinuity,
-  const int                                       VContinuity,
-  const int                                       MaxUDegree,
-  const int                                       MaxVDegree,
-  const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
-  const occ::handle<NCollection_HArray1<double>>& Coefficients,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
-  const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
-  const occ::handle<NCollection_HArray1<double>>& TrueVIntervals)
+  const int                  NbUSurfaces,
+  const int                  NbVSurfaces,
+  const int                  UContinuity,
+  const int                  VContinuity,
+  const int                  MaxUDegree,
+  const int                  MaxVDegree,
+  const occ::handle<NCollection_HArray2<int>>& NumCoeffPerSurface,
+  const occ::handle<NCollection_HArray1<double>>&    Coefficients,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialUIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialVIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    TrueUIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    TrueVIntervals)
     : myDone(false)
 {
   int ii;
   int RealUDegree = std::max(MaxUDegree, 2 * UContinuity + 1);
   int RealVDegree = std::max(MaxVDegree, 2 * VContinuity + 1);
-  myUDegree       = 0;
-  myVDegree       = 0;
+  myUDegree                    = 0;
+  myVDegree                    = 0;
 
   // Les controles
   if ((NumCoeffPerSurface->LowerRow() != 1)
@@ -134,16 +134,16 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
 }
 
 void Convert_GridPolynomialToPoles::Perform(
-  const int                                       UContinuity,
-  const int                                       VContinuity,
-  const int                                       MaxUDegree,
-  const int                                       MaxVDegree,
-  const occ::handle<NCollection_HArray2<int>>&    NumCoeffPerSurface,
-  const occ::handle<NCollection_HArray1<double>>& Coefficients,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
-  const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
-  const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
-  const occ::handle<NCollection_HArray1<double>>& TrueVIntervals)
+  const int                  UContinuity,
+  const int                  VContinuity,
+  const int                  MaxUDegree,
+  const int                  MaxVDegree,
+  const occ::handle<NCollection_HArray2<int>>& NumCoeffPerSurface,
+  const occ::handle<NCollection_HArray1<double>>&    Coefficients,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialUIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    PolynomialVIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    TrueUIntervals,
+  const occ::handle<NCollection_HArray1<double>>&    TrueVIntervals)
 {
   // (1) Construction des Tables monodimensionnelles ----------------------------
   occ::handle<NCollection_HArray1<double>> UParameters, VParameters;
@@ -158,17 +158,17 @@ void Convert_GridPolynomialToPoles::Perform(
 
   // (2) Digitalisation -------------------------------------------------------
 
-  int    ii, jj, Uindex = 0, Vindex = 0;
-  int    Patch_Indice = 0;
-  double NValue, UValue, VValue;
-  int    dimension = 3 * (myVDegree + 1);
-  int    SizPatch  = 3 * (MaxUDegree + 1) * (MaxVDegree + 1);
+  int ii, jj, Uindex = 0, Vindex = 0;
+  int Patch_Indice = 0;
+  double    NValue, UValue, VValue;
+  int dimension = 3 * (myVDegree + 1);
+  int SizPatch  = 3 * (MaxUDegree + 1) * (MaxVDegree + 1);
   myPoles = new (NCollection_HArray2<gp_Pnt>)(1, UParameters->Length(), 1, VParameters->Length());
 
   NCollection_Array1<double> Patch(1, (myUDegree + 1) * dimension);
   NCollection_Array1<double> Point(1, 3);
-  double*                    Coeffs = (double*)&Patch.ChangeValue(1);
-  double*                    Digit  = (double*)&Point.ChangeValue(1);
+  double*       Coeffs = (double*)&Patch.ChangeValue(1);
+  double*       Digit  = (double*)&Point.ChangeValue(1);
 
   for (ii = 1, Uindex = 1; ii <= UParameters->Length(); ii++)
   {
@@ -245,20 +245,19 @@ void Convert_GridPolynomialToPoles::Perform(
   myDone = (InversionProblem == 0);
 }
 
-void Convert_GridPolynomialToPoles::BuildArray(
-  const int                                       Degree,
-  const occ::handle<NCollection_HArray1<double>>& Knots,
-  const int                                       Continuity,
-  occ::handle<NCollection_HArray1<double>>&       FlatKnots,
-  occ::handle<NCollection_HArray1<int>>&          Mults,
-  occ::handle<NCollection_HArray1<double>>&       Parameters) const
+void Convert_GridPolynomialToPoles::BuildArray(const int               Degree,
+                                               const occ::handle<NCollection_HArray1<double>>& Knots,
+                                               const int               Continuity,
+                                               occ::handle<NCollection_HArray1<double>>&       FlatKnots,
+                                               occ::handle<NCollection_HArray1<int>>&    Mults,
+                                               occ::handle<NCollection_HArray1<double>>& Parameters) const
 {
   int NumCurves = Knots->Length() - 1;
 
   // Calcul des Multiplicites
   int ii;
   int multiplicities = Degree - Continuity;
-  Mults              = new (NCollection_HArray1<int>)(1, Knots->Length());
+  Mults                           = new (NCollection_HArray1<int>)(1, Knots->Length());
 
   for (ii = 2; ii < Knots->Length(); ii++)
   {
@@ -269,7 +268,7 @@ void Convert_GridPolynomialToPoles::BuildArray(
 
   // Calcul des Noeuds Plats
   int num_flat_knots = multiplicities * (NumCurves - 1) + 2 * Degree + 2;
-  FlatKnots          = new NCollection_HArray1<double>(1, num_flat_knots);
+  FlatKnots                       = new NCollection_HArray1<double>(1, num_flat_knots);
 
   BSplCLib::KnotSequence(Knots->Array1(),
                          Mults->Array1(),

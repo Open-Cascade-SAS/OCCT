@@ -40,8 +40,8 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_EqualRadiusRelation, PrsDim_Relation)
 
 //=================================================================================================
 
-PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&             aFirstEdge,
-                                                       const TopoDS_Edge&             aSecondEdge,
+PrsDim_EqualRadiusRelation::PrsDim_EqualRadiusRelation(const TopoDS_Edge&        aFirstEdge,
+                                                       const TopoDS_Edge&        aSecondEdge,
                                                        const occ::handle<Geom_Plane>& aPlane)
     : PrsDim_Relation()
 {
@@ -59,12 +59,12 @@ void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationMa
   BRepAdaptor_Curve FirstCurve(TopoDS::Edge(myFShape)), SecondCurve(TopoDS::Edge(mySShape));
 
   double FirstPar1 = FirstCurve.FirstParameter(), LastPar1 = FirstCurve.LastParameter(),
-         FirstPar2 = SecondCurve.FirstParameter(), LastPar2 = SecondCurve.LastParameter();
+                FirstPar2 = SecondCurve.FirstParameter(), LastPar2 = SecondCurve.LastParameter();
 
   occ::handle<Geom_Curve> FirstProjCurve  = FirstCurve.Curve().Curve(),
-                          SecondProjCurve = SecondCurve.Curve().Curve();
-  gp_Pnt FirstPoint1, LastPoint1, FirstPoint2, LastPoint2;
-  bool   isFirstOnPlane, isSecondOnPlane;
+                     SecondProjCurve = SecondCurve.Curve().Curve();
+  gp_Pnt           FirstPoint1, LastPoint1, FirstPoint2, LastPoint2;
+  bool isFirstOnPlane, isSecondOnPlane;
 
   PrsDim::ComputeGeomCurve(FirstProjCurve,
                            FirstPar1,
@@ -168,9 +168,8 @@ void PrsDim_EqualRadiusRelation::Compute(const occ::handle<PrsMgr_PresentationMa
 
 //=================================================================================================
 
-void PrsDim_EqualRadiusRelation::ComputeSelection(
-  const occ::handle<SelectMgr_Selection>& aSelection,
-  const int)
+void PrsDim_EqualRadiusRelation::ComputeSelection(const occ::handle<SelectMgr_Selection>& aSelection,
+                                                  const int)
 {
   occ::handle<SelectMgr_EntityOwner>     own = new SelectMgr_EntityOwner(this, 7);
   occ::handle<Select3D_SensitiveSegment> seg;
@@ -193,12 +192,12 @@ void PrsDim_EqualRadiusRelation::ComputeSelection(
   double SmallDist = .001;
   // Should be changed as the domain of small lines could be changed.
   occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                     Middle.X() - SmallDist,
-                                                                     Middle.Y() - SmallDist,
-                                                                     Middle.Z() - SmallDist,
-                                                                     Middle.X() + SmallDist,
-                                                                     Middle.Y() + SmallDist,
-                                                                     Middle.Z() + SmallDist);
+                                                                Middle.X() - SmallDist,
+                                                                Middle.Y() - SmallDist,
+                                                                Middle.Z() - SmallDist,
+                                                                Middle.X() + SmallDist,
+                                                                Middle.Y() + SmallDist,
+                                                                Middle.Z() + SmallDist);
   aSelection->Add(box);
 }
 
@@ -221,16 +220,16 @@ void PrsDim_EqualRadiusRelation::ComputeRadiusPosition()
 
   if (aDist1 < aDist2)
   {
-    double       Rad1 = myFirstPoint.Distance(myFirstCenter);
-    const gp_Dir aNewDir1(aPosition.XYZ() - myFirstCenter.XYZ());
-    const gp_Vec aTVec(aNewDir1.XYZ() * Rad1);
+    double Rad1 = myFirstPoint.Distance(myFirstCenter);
+    const gp_Dir  aNewDir1(aPosition.XYZ() - myFirstCenter.XYZ());
+    const gp_Vec  aTVec(aNewDir1.XYZ() * Rad1);
     myFirstPoint = myFirstCenter.Translated(aTVec);
   }
   else
   {
-    double       Rad2 = mySecondPoint.Distance(mySecondCenter);
-    const gp_Dir aNewDir2(aPosition.XYZ() - mySecondCenter.XYZ());
-    gp_Vec       aTVec(aNewDir2.XYZ() * Rad2);
+    double Rad2 = mySecondPoint.Distance(mySecondCenter);
+    const gp_Dir  aNewDir2(aPosition.XYZ() - mySecondCenter.XYZ());
+    gp_Vec        aTVec(aNewDir2.XYZ() * Rad2);
     mySecondPoint = mySecondCenter.Translated(aTVec);
   }
 }

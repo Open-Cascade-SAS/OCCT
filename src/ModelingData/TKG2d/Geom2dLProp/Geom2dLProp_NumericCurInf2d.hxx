@@ -42,16 +42,16 @@ public:
   //! Computes the locals extremas of curvature.
   //! in the interval of parameters [UMin,UMax].
   Standard_EXPORT void PerformCurExt(const occ::handle<Geom2d_Curve>& C,
-                                     const double                     UMin,
-                                     const double                     UMax,
-                                     LProp_CurAndInf&                 Result);
+                                     const double         UMin,
+                                     const double         UMax,
+                                     LProp_CurAndInf&            Result);
 
   //! Computes the inflections in the interval of
   //! parameters [UMin,UMax].
   Standard_EXPORT void PerformInf(const occ::handle<Geom2d_Curve>& C,
-                                  const double                     UMin,
-                                  const double                     UMax,
-                                  LProp_CurAndInf&                 Result);
+                                  const double         UMin,
+                                  const double         UMax,
+                                  LProp_CurAndInf&            Result);
 
   //! True if the solutions are found.
   Standard_EXPORT bool IsDone() const;

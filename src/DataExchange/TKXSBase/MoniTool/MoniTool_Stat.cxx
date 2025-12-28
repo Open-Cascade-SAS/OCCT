@@ -91,9 +91,9 @@ double MoniTool_Stat::Percent(const int fromlev) const
 {
   if (fromlev > thelev)
     return 0;
-  double r1, r2, r3;
-  int    tot  = thetot->Value(fromlev);
-  int    done = thedone->Value(fromlev);
+  double    r1, r2, r3;
+  int tot  = thetot->Value(fromlev);
+  int done = thedone->Value(fromlev);
   if (done >= tot)
     return 100.;
   if (fromlev == thelev)
@@ -103,9 +103,9 @@ double MoniTool_Stat::Percent(const int fromlev) const
     return (r2 * 100) / r1;
   }
   int cur = thecurr->Value(fromlev);
-  r1      = tot;
-  r2      = done;
-  r3      = 0;
+  r1                   = tot;
+  r2                   = done;
+  r3                   = 0;
   if (cur > 0)
   {
     r3 = cur;

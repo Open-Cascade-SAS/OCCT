@@ -43,6 +43,7 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <gce_MakePln.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Gauss.hxx>
@@ -54,6 +55,10 @@
 #ifdef OCCT_DEBUG
   #include <Geom_BSplineCurve.hxx>
   #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+  #include <NCollection_Array1.hxx>
+  #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
   #ifdef DRAW
     #include <Draw.hxx>
     #include <DrawTrSurf_BSplineCurve.hxx>
@@ -62,29 +67,29 @@
   #include <stdio.h>
 
 static bool sectioncalculee;
-static int  IndexOfSection   = 0;
-static int  IndexOfRejection = 0;
-static int  nbcomputedsection;
+static int IndexOfSection   = 0;
+static int IndexOfRejection = 0;
+static int nbcomputedsection;
 extern bool Blend_GettraceDRAWSECT();
 extern bool Blend_GetcontextNOTESTDEFL();
 
 // Pour debug : visualisation de la section
 static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
                      const occ::handle<Adaptor3d_Surface>& surf2,
-                     const math_Vector&                    sol,
-                     const double                          param,
-                     Blend_Function&                       Func,
-                     const Blend_Status                    State)
+                     const math_Vector&               sol,
+                     const double              param,
+                     Blend_Function&                  Func,
+                     const Blend_Status               State)
 {
   //  if(!sectioncalculee) return;
-  Blend_Point BP(Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2)),
+  Blend_Point      BP(Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2)),
                  Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4)),
                  param,
                  sol(1),
                  sol(2),
                  sol(3),
                  sol(4));
-  int         hp, hk, hd, hp2d;
+  int hp, hk, hd, hp2d;
   Func.GetShape(hp, hk, hd, hp2d);
   NCollection_Array1<double> TK(1, hk);
   Func.Knots(TK);
@@ -92,7 +97,7 @@ static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
   Func.Mults(TMul);
   NCollection_Array1<gp_Pnt>   TP(1, hp);
   NCollection_Array1<gp_Pnt2d> TP2d(1, hp2d);
-  NCollection_Array1<double>   TW(1, hp);
+  NCollection_Array1<double> TW(1, hp);
   Func.Section(BP, TP, TP2d, TW);
   occ::handle<Geom_BSplineCurve> sect = new Geom_BSplineCurve(TP, TW, TK, TMul, hd);
 
@@ -123,9 +128,9 @@ static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
 
 static void Drawsect(const occ::handle<Adaptor3d_Surface>& surf1,
                      const occ::handle<Adaptor3d_Surface>& surf2,
-                     const math_Vector&                    sol,
-                     const double                          param,
-                     Blend_Function&                       Func)
+                     const math_Vector&               sol,
+                     const double              param,
+                     Blend_Function&                  Func)
 {
   Drawsect(surf1, surf2, sol, param, Func, Blend_OK);
 }
@@ -172,8 +177,8 @@ void BRepBlend_Walking::AddSingularPoint(const Blend_Point& P)
   }
   else
   {
-    int    ii, jj;
-    double tp = P.Parameter(), ti = jalons.First().Parameter();
+    int ii, jj;
+    double    tp = P.Parameter(), ti = jalons.First().Parameter();
     for (jj = 1, ii = 1; ii <= jalons.Length() && tp > ti; ii++)
     {
       jj = ii;
@@ -186,20 +191,20 @@ void BRepBlend_Walking::AddSingularPoint(const Blend_Point& P)
   }
 }
 
-void BRepBlend_Walking::Perform(Blend_Function&    Func,
-                                Blend_FuncInv&     FuncInv,
-                                const double       Pdep,
-                                const double       Pmax,
-                                const double       MaxStep,
-                                const double       Tol3d,
-                                const double       TolGuide,
-                                const math_Vector& ParDep,
-                                const double       Fleche,
-                                const bool         Appro)
+void BRepBlend_Walking::Perform(Blend_Function&        Func,
+                                Blend_FuncInv&         FuncInv,
+                                const double    Pdep,
+                                const double    Pmax,
+                                const double    MaxStep,
+                                const double    Tol3d,
+                                const double    TolGuide,
+                                const math_Vector&     ParDep,
+                                const double    Fleche,
+                                const bool Appro)
 {
-  done               = false;
-  iscomplete         = false;
-  comptra            = false;
+  done                           = false;
+  iscomplete                     = false;
+  comptra                        = false;
   bool doextremities = 1;
   if (line.IsNull())
     line = new BRepBlend_Line();
@@ -308,13 +313,13 @@ void BRepBlend_Walking::Perform(Blend_Function&    Func,
   done = true;
 }
 
-bool BRepBlend_Walking::PerformFirstSection(Blend_Function& Func,
-                                            const double    Pdep,
-                                            math_Vector&    ParDep,
-                                            const double    Tol3d,
-                                            const double    TolGuide,
-                                            TopAbs_State&   Pos1,
-                                            TopAbs_State&   Pos2)
+bool BRepBlend_Walking::PerformFirstSection(Blend_Function&     Func,
+                                                        const double Pdep,
+                                                        math_Vector&        ParDep,
+                                                        const double Tol3d,
+                                                        const double TolGuide,
+                                                        TopAbs_State&       Pos1,
+                                                        TopAbs_State&       Pos2)
 {
   iscomplete = false;
   comptra    = false;
@@ -357,25 +362,25 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function& Func,
   return true;
 }
 
-bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
-                                            Blend_FuncInv&     FuncInv,
-                                            const double       Pdep,
-                                            const double       Pmax,
-                                            const math_Vector& ParDep,
-                                            const double       Tol3d,
-                                            const double       TolGuide,
-                                            const bool         RecOnS1,
-                                            const bool         RecOnS2,
-                                            double&            Psol,
-                                            math_Vector&       ParSol)
+bool BRepBlend_Walking::PerformFirstSection(Blend_Function&        Func,
+                                                        Blend_FuncInv&         FuncInv,
+                                                        const double    Pdep,
+                                                        const double    Pmax,
+                                                        const math_Vector&     ParDep,
+                                                        const double    Tol3d,
+                                                        const double    TolGuide,
+                                                        const bool RecOnS1,
+                                                        const bool RecOnS2,
+                                                        double&         Psol,
+                                                        math_Vector&           ParSol)
 
 {
   iscomplete = false;
   comptra    = false;
   line       = new BRepBlend_Line();
 
-  double w1, w2, extrapol;
-  bool   recad1, recad2;
+  double    w1, w2, extrapol;
+  bool recad1, recad2;
 
   tolpoint3d = Tol3d;
   tolgui     = std::abs(TolGuide);
@@ -394,15 +399,15 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
   param = Pdep;
   Func.Set(param);
 
-  math_Vector                    tolerance(1, 4), infbound(1, 4), supbound(1, 4);
-  math_Vector                    solrst1(1, 4), solrst2(1, 4);
-  BRepBlend_Extremity            Ext1, Ext2;
-  int                            Index1 = 0, Index2 = 0, nbarc;
-  bool                           Isvtx1 = false, Isvtx2 = false;
+  math_Vector               tolerance(1, 4), infbound(1, 4), supbound(1, 4);
+  math_Vector               solrst1(1, 4), solrst2(1, 4);
+  BRepBlend_Extremity       Ext1, Ext2;
+  int          Index1 = 0, Index2 = 0, nbarc;
+  bool          Isvtx1 = false, Isvtx2 = false;
   occ::handle<Adaptor3d_HVertex> Vtx1, Vtx2;
-  gp_Pnt2d                       p2d;
-  double                         CorrectedU = 0., CorrectedV = 0.;
-  gp_Pnt                         CorrectedPnt;
+  gp_Pnt2d                  p2d;
+  double             CorrectedU = 0., CorrectedV = 0.;
+  gp_Pnt                    CorrectedPnt;
 
   Func.GetTolerance(tolerance, tolpoint3d);
   Func.GetBounds(infbound, supbound);
@@ -424,7 +429,8 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
     w1 = solrst1(2);
   }
 
-  recad2 = RecOnS2 && Recadre(FuncInv, false, sol, solrst2, Index2, Isvtx2, Vtx2, extrapol);
+  recad2 =
+    RecOnS2 && Recadre(FuncInv, false, sol, solrst2, Index2, Isvtx2, Vtx2, extrapol);
   if (recad2)
   {
     w2 = solrst2(2);
@@ -608,7 +614,9 @@ bool BRepBlend_Walking::PerformFirstSection(Blend_Function&    Func,
   return true;
 }
 
-bool BRepBlend_Walking::Continu(Blend_Function& Func, Blend_FuncInv& FuncInv, const double P)
+bool BRepBlend_Walking::Continu(Blend_Function&     Func,
+                                            Blend_FuncInv&      FuncInv,
+                                            const double P)
 {
   if (!done)
   {
@@ -636,10 +644,10 @@ bool BRepBlend_Walking::Continu(Blend_Function& Func, Blend_FuncInv& FuncInv, co
   return true;
 }
 
-bool BRepBlend_Walking::Continu(Blend_Function& Func,
-                                Blend_FuncInv&  FuncInv,
-                                const double    P,
-                                const bool      OnS1)
+bool BRepBlend_Walking::Continu(Blend_Function&        Func,
+                                            Blend_FuncInv&         FuncInv,
+                                            const double    P,
+                                            const bool OnS1)
 {
   if (!done)
   {
@@ -668,7 +676,7 @@ bool BRepBlend_Walking::Continu(Blend_Function& Func,
   }
 
   int length = line->NbPoints();
-  param      = previousP.Parameter();
+  param                   = previousP.Parameter();
   previousP.ParametersOnS1(sol(1), sol(2));
   previousP.ParametersOnS2(sol(3), sol(4));
 
@@ -706,7 +714,9 @@ bool BRepBlend_Walking::Continu(Blend_Function& Func,
   return true;
 }
 
-bool BRepBlend_Walking::Complete(Blend_Function& Func, Blend_FuncInv& FuncInv, const double Pmin)
+bool BRepBlend_Walking::Complete(Blend_Function&     Func,
+                                             Blend_FuncInv&      FuncInv,
+                                             const double Pmin)
 {
   if (!done)
   {
@@ -758,11 +768,11 @@ void BRepBlend_Walking::Check(const bool C)
   check = C;
 }
 
-Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
-                                          const Blend_Status State,
-                                          const bool         TestDefl,
-                                          const bool         TestSolu,
-                                          const bool         TestLengthStep)
+Blend_Status BRepBlend_Walking::TestArret(Blend_Function&        Function,
+                                          const Blend_Status     State,
+                                          const bool TestDefl,
+                                          const bool TestSolu,
+                                          const bool TestLengthStep)
 
 // On regarde si le point donne est solution.
 // Si c est le cas,
@@ -786,8 +796,8 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
   Blend_Status      State1, State2;
   IntSurf_TypeTrans tras1, tras2;
   Blend_Point       curpoint;
-  bool              loctwist1 = false, loctwist2 = false;
-  double            tolsolu = tolpoint3d;
+  bool  loctwist1 = false, loctwist2 = false;
+  double     tolsolu = tolpoint3d;
 
   if (!TestSolu)
     tolsolu *= 1000; // Ca doit toujours etre bon
@@ -797,8 +807,8 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
     sectioncalculee = 1;
 #endif
     bool curpointistangent = Function.IsTangencyPoint();
-    pt1                    = Function.PointOnS1();
-    pt2                    = Function.PointOnS2();
+    pt1                                = Function.PointOnS1();
+    pt2                                = Function.PointOnS2();
     if (curpointistangent)
     {
       curpoint.SetValue(pt1, pt2, param, sol(1), sol(2), sol(3), sol(4));
@@ -832,8 +842,8 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
       {
         // On verifie juste que le pas n'est pas trop grand
         // (Cas des prolongements foireux)
-        double      curparamu, curparamv, prevparamu, prevparamv;
-        math_Vector inf(1, 4), sup(1, 4);
+        double curparamu, curparamv, prevparamu, prevparamv;
+        math_Vector   inf(1, 4), sup(1, 4);
         Function.GetBounds(inf, sup);
         sup -= inf;
         sup *= 0.05; // Pas max : 5% du domaine
@@ -939,7 +949,8 @@ Blend_Status BRepBlend_Walking::TestArret(Blend_Function&    Function,
   }
 }
 
-Blend_Status BRepBlend_Walking::CheckDeflection(const bool OnFirst, const Blend_Point& CurPoint)
+Blend_Status BRepBlend_Walking::CheckDeflection(const bool OnFirst,
+                                                const Blend_Point&     CurPoint)
 {
   // regle par tests dans U4 correspond a 11.478 d
   const double CosRef3D = 0.98;
@@ -952,17 +963,17 @@ Blend_Status BRepBlend_Walking::CheckDeflection(const bool OnFirst, const Blend_
   double Du, Dv, Duv;
   double tolu, tolv;
 
-  gp_Pnt   Psurf;
-  gp_Vec   Tgsurf;
-  gp_Vec2d Tgonsurf;
-  double   curparamu, curparamv;
-  bool     curpointistangent = CurPoint.IsTangencyPoint();
+  gp_Pnt           Psurf;
+  gp_Vec           Tgsurf;
+  gp_Vec2d         Tgonsurf;
+  double    curparamu, curparamv;
+  bool curpointistangent = CurPoint.IsTangencyPoint();
 
-  gp_Pnt   prevP;
-  gp_Vec   prevTg;
-  gp_Vec2d previousd2d;
-  double   prevparamu, prevparamv;
-  bool     prevpointistangent = previousP.IsTangencyPoint();
+  gp_Pnt           prevP;
+  gp_Vec           prevTg;
+  gp_Vec2d         previousd2d;
+  double    prevparamu, prevparamv;
+  bool prevpointistangent = previousP.IsTangencyPoint();
 
   if (OnFirst)
   {
@@ -1109,18 +1120,18 @@ Blend_Status BRepBlend_Walking::CheckDeflection(const bool OnFirst, const Blend_
   return Blend_OK;
 }
 
-int BRepBlend_Walking::ArcToRecadre(const bool         OnFirst,
-                                    const math_Vector& theSol,
-                                    const int          PrevIndex,
-                                    gp_Pnt2d&          lastpt2d,
-                                    gp_Pnt2d&          pt2d,
-                                    double&            ponarc)
+int BRepBlend_Walking::ArcToRecadre(const bool OnFirst,
+                                                 const math_Vector&     theSol,
+                                                 const int PrevIndex,
+                                                 gp_Pnt2d&              lastpt2d,
+                                                 gp_Pnt2d&              pt2d,
+                                                 double&         ponarc)
 {
-  int                              IndexSol = 0, nbarc = 0;
-  bool                             ok      = false;
-  bool                             byinter = (line->NbPoints() != 0), okinter = 0;
-  double                           distmin = RealLast();
-  double                           uprev = 0., vprev = 0., prm = 0., dist = 0.;
+  int            IndexSol = 0, nbarc = 0;
+  bool            ok      = false;
+  bool            byinter = (line->NbPoints() != 0), okinter = 0;
+  double               distmin = RealLast();
+  double               uprev = 0., vprev = 0., prm = 0., dist = 0.;
   occ::handle<Adaptor3d_TopolTool> Iter;
 
   if (OnFirst)
@@ -1177,24 +1188,24 @@ int BRepBlend_Walking::ArcToRecadre(const bool         OnFirst,
   return IndexSol;
 }
 
-bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
-                                const bool                      OnFirst,
-                                const math_Vector&              theSol,
-                                math_Vector&                    solrst,
-                                int&                            Indexsol,
-                                bool&                           IsVtx,
-                                occ::handle<Adaptor3d_HVertex>& Vtx,
-                                const double                    Extrap)
+bool BRepBlend_Walking::Recadre(Blend_FuncInv&             FuncInv,
+                                            const bool     OnFirst,
+                                            const math_Vector&         theSol,
+                                            math_Vector&               solrst,
+                                            int&          Indexsol,
+                                            bool&          IsVtx,
+                                            occ::handle<Adaptor3d_HVertex>& Vtx,
+                                            const double        Extrap)
 
 {
   bool jalons_Trouve = false;
   bool recadre       = true, ok;
   bool byinter       = (line->NbPoints() != 0);
-  int  LeJalon       = 0;
+  int LeJalon       = 0;
 
-  int      nbarc;
-  double   dist, prm, pmin, vtol;
-  gp_Pnt2d pt2d, lastpt2d;
+  int nbarc;
+  double    dist, prm, pmin, vtol;
+  gp_Pnt2d         pt2d, lastpt2d;
 
   math_Vector toler(1, 4), infb(1, 4), supb(1, 4), valsol(1, 4);
 
@@ -1261,9 +1272,9 @@ bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
     // Verifie que le recadrage n'est pas un jalons
     if (jalons.Length() != 0)
     {
-      double t1, t2, t;
-      bool   Cherche = true;
-      int    ii;
+      double    t1, t2, t;
+      bool Cherche = true;
+      int ii;
       if (lastParam < param)
       {
         t1 = lastParam;
@@ -1290,8 +1301,8 @@ bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
     if (!jalons_Trouve)
     {
       // Initialisation par Interpolation
-      double   lambda, u, v;
-      gp_Pnt2d Pnt, Pnt1, Pnt2; //,  POnC;
+      double lambda, u, v;
+      gp_Pnt2d      Pnt, Pnt1, Pnt2; //,  POnC;
       thecur->D0(pmin, Pnt);
       if (OnFirst)
       {
@@ -1335,11 +1346,11 @@ bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
 
   if (jalons_Trouve)
   { // On recupere le jalon
-    Blend_Point MonJalon;
-    bool        periodic;
-    double      uperiod = 0, vperiod = 0;
-    gp_Pnt2d    Pnt;
-    double      distaux;
+    Blend_Point      MonJalon;
+    bool periodic;
+    double    uperiod = 0, vperiod = 0;
+    gp_Pnt2d         Pnt;
+    double    distaux;
     MonJalon  = jalons.Value(LeJalon);
     solrst(2) = MonJalon.Parameter();
     if (OnFirst)
@@ -1510,7 +1521,7 @@ bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
       if (std::abs(BRepBlend_BlendTool::Parameter(Vtx, thearc) - solrst(1)) <= vtol)
       {
         IsVtx = true; // On est dans la boule du vertex ou
-                      // le vertex est dans la "boule" du recadrage
+                               // le vertex est dans la "boule" du recadrage
       }
       else
       {
@@ -1527,15 +1538,15 @@ bool BRepBlend_Walking::Recadre(Blend_FuncInv&                  FuncInv,
   return false;
 }
 
-void BRepBlend_Walking::Transition(const bool                            OnFirst,
+void BRepBlend_Walking::Transition(const bool           OnFirst,
                                    const occ::handle<Adaptor2d_Curve2d>& A,
-                                   const double                          Param,
-                                   IntSurf_Transition&                   TLine,
-                                   IntSurf_Transition&                   TArc)
+                                   const double              Param,
+                                   IntSurf_Transition&              TLine,
+                                   IntSurf_Transition&              TArc)
 {
-  bool        computetranstionaveclacorde = 0;
-  gp_Vec      tgline;
-  Blend_Point prevprev;
+  bool computetranstionaveclacorde = 0;
+  gp_Vec           tgline;
+  Blend_Point      prevprev;
 
   if (previousP.IsTangencyPoint())
   {
@@ -1589,7 +1600,7 @@ void BRepBlend_Walking::Transition(const bool                            OnFirst
       surf = surf1;
     else
       surf = surf2;
-    int                        iu, iv;
+    int   iu, iv;
     NCollection_Array2<gp_Vec> Der(0, 2, 0, 2);
     Adaptor3d_HSurfaceTool::D2(surf,
                                p2d.X(),
@@ -1626,15 +1637,15 @@ void BRepBlend_Walking::Transition(const bool                            OnFirst
   IntSurf::MakeTransition(tgline, tgrst, normale, TLine, TArc);
 }
 
-void BRepBlend_Walking::MakeExtremity(BRepBlend_Extremity&                  Extrem,
-                                      const bool                            OnFirst,
-                                      const int                             Index,
-                                      const double                          Param,
-                                      const bool                            IsVtx,
+void BRepBlend_Walking::MakeExtremity(BRepBlend_Extremity&             Extrem,
+                                      const bool           OnFirst,
+                                      const int           Index,
+                                      const double              Param,
+                                      const bool           IsVtx,
                                       const occ::handle<Adaptor3d_HVertex>& Vtx)
 {
-  IntSurf_Transition               Tline, Tarc;
-  int                              nbarc;
+  IntSurf_Transition          Tline, Tarc;
+  int            nbarc;
   occ::handle<Adaptor3d_TopolTool> Iter;
 
   if (OnFirst)
@@ -1667,13 +1678,13 @@ void BRepBlend_Walking::MakeExtremity(BRepBlend_Extremity&                  Extr
     Extrem.SetVertex(Vtx);
 }
 
-void BRepBlend_Walking::MakeSingularExtremity(BRepBlend_Extremity&                  Extrem,
-                                              const bool                            OnFirst,
+void BRepBlend_Walking::MakeSingularExtremity(BRepBlend_Extremity&             Extrem,
+                                              const bool           OnFirst,
                                               const occ::handle<Adaptor3d_HVertex>& Vtx)
 {
-  IntSurf_Transition               Tline, Tarc;
+  IntSurf_Transition          Tline, Tarc;
   occ::handle<Adaptor3d_TopolTool> Iter;
-  double                           prm;
+  double               prm;
 
   if (OnFirst)
   {
@@ -1732,14 +1743,14 @@ static void RecadreIfPeriodic(double&      NewU,
   }
 }
 
-static void evalpinit(math_Vector&       parinit,
-                      const Blend_Point& previousP,
-                      const double       parprec,
-                      const double       param,
-                      const math_Vector& infbound,
-                      const math_Vector& supbound,
-                      const bool         classonS1,
-                      const bool         classonS2)
+static void evalpinit(math_Vector&           parinit,
+                      const Blend_Point&     previousP,
+                      const double    parprec,
+                      const double    param,
+                      const math_Vector&     infbound,
+                      const math_Vector&     supbound,
+                      const bool classonS1,
+                      const bool classonS2)
 {
   if (previousP.IsTangencyPoint())
   {
@@ -1748,9 +1759,9 @@ static void evalpinit(math_Vector&       parinit,
   }
   else
   {
-    double u1, v1, u2, v2;
-    double du1, dv1, du2, dv2;
-    bool   Inside = true;
+    double    u1, v1, u2, v2;
+    double    du1, dv1, du2, dv2;
+    bool Inside = true;
     previousP.ParametersOnS1(u1, v1);
     previousP.ParametersOnS2(u2, v2);
     previousP.Tangent2dOnS1().Coord(du1, dv1);
@@ -1790,14 +1801,14 @@ static void evalpinit(math_Vector&       parinit,
   }
 }
 
-void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
-                                        Blend_FuncInv&  FuncInv,
-                                        const double    Bound)
+void BRepBlend_Walking::InternalPerform(Blend_Function&     Func,
+                                        Blend_FuncInv&      FuncInv,
+                                        const double Bound)
 {
   double Cosi = 0., Cosi2 = 0.;
 
-  double stepw = pasmax;
-  int    nbp   = line->NbPoints();
+  double    stepw = pasmax;
+  int nbp   = line->NbPoints();
   if (nbp >= 2)
   { // On reprend le dernier step s'il n est pas trop petit.
     if (sens < 0.)
@@ -1811,8 +1822,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
     stepw = std::max(stepw, 100. * tolgui);
   }
   double parprec = param;
-  gp_Vec TgOnGuide, PrevTgOnGuide;
-  gp_Pnt PtOnGuide;
+  gp_Vec        TgOnGuide, PrevTgOnGuide;
+  gp_Pnt        PtOnGuide;
   hguide->D1(parprec, PtOnGuide, TgOnGuide);
   PrevTgOnGuide = TgOnGuide;
 
@@ -1820,17 +1831,17 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
   {
     return;
   }
-  Blend_Status                   State = Blend_OnRst12;
-  TopAbs_State                   situ1 = TopAbs_IN, situ2 = TopAbs_IN;
-  double                         w1, w2;
-  int                            Index1 = 0, Index2 = 0, nbarc;
-  bool                           Arrive, recad1, recad2, control;
-  bool                           Isvtx1 = false, Isvtx2 = false, echecrecad;
-  gp_Pnt2d                       p2d;
-  math_Vector                    tolerance(1, 4), infbound(1, 4), supbound(1, 4), parinit(1, 4);
-  math_Vector                    solrst1(1, 4), solrst2(1, 4);
+  Blend_Status              State = Blend_OnRst12;
+  TopAbs_State              situ1 = TopAbs_IN, situ2 = TopAbs_IN;
+  double             w1, w2;
+  int          Index1 = 0, Index2 = 0, nbarc;
+  bool          Arrive, recad1, recad2, control;
+  bool          Isvtx1 = false, Isvtx2 = false, echecrecad;
+  gp_Pnt2d                  p2d;
+  math_Vector               tolerance(1, 4), infbound(1, 4), supbound(1, 4), parinit(1, 4);
+  math_Vector               solrst1(1, 4), solrst2(1, 4);
   occ::handle<Adaptor3d_HVertex> Vtx1, Vtx2;
-  BRepBlend_Extremity            Ext1, Ext2;
+  BRepBlend_Extremity       Ext1, Ext2;
 
   // IntSurf_Transition Tline,Tarc;
 
@@ -2045,20 +2056,20 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           State = Blend_OnRst12;
           param = (w1 + w2) / 2;
           gp_Pnt Pnt1, Pnt2;
-          p2d                     = BRepBlend_HCurve2dTool::Value(recdomain1->Value(), solrst1(1));
-          sol(1)                  = p2d.X();
-          sol(2)                  = p2d.Y();
-          Pnt1                    = Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2));
-          p2d                     = BRepBlend_HCurve2dTool::Value(recdomain2->Value(), solrst2(1));
-          sol(3)                  = p2d.X();
-          sol(4)                  = p2d.Y();
-          Pnt2                    = Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4));
-          const double    TolProd = 1.e-5;
-          double          SavedParams[2];
-          bool            SameDirs[2] = {false, false};
-          ChFiDS_ElSpine& theElSpine  = *hguide;
-          SavedParams[0]              = theElSpine.GetSavedFirstParameter();
-          SavedParams[1]              = theElSpine.GetSavedLastParameter();
+          p2d    = BRepBlend_HCurve2dTool::Value(recdomain1->Value(), solrst1(1));
+          sol(1) = p2d.X();
+          sol(2) = p2d.Y();
+          Pnt1   = Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2));
+          p2d    = BRepBlend_HCurve2dTool::Value(recdomain2->Value(), solrst2(1));
+          sol(3) = p2d.X();
+          sol(4) = p2d.Y();
+          Pnt2   = Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4));
+          const double TolProd = 1.e-5;
+          double       SavedParams[2];
+          bool    SameDirs[2] = {false, false};
+          ChFiDS_ElSpine&     theElSpine  = *hguide;
+          SavedParams[0]                  = theElSpine.GetSavedFirstParameter();
+          SavedParams[1]                  = theElSpine.GetSavedLastParameter();
           for (int ind = 0; ind < 2; ind++)
           {
             if (!Precision::IsInfinite(SavedParams[ind]))
@@ -2079,9 +2090,9 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
               gce_MakePln PlaneBuilder(Pnt0, Pnt1, Pnt2);
               if (!PlaneBuilder.IsDone())
                 continue;
-              gp_Pln thePlane = PlaneBuilder.Value();
-              gp_Dir DirPlane = thePlane.Axis().Direction();
-              gp_Vec theProd  = Dir0 ^ DirPlane;
+              gp_Pln        thePlane = PlaneBuilder.Value();
+              gp_Dir        DirPlane = thePlane.Axis().Direction();
+              gp_Vec        theProd  = Dir0 ^ DirPlane;
               double ProdMod  = theProd.Magnitude();
               if (ProdMod <= TolProd)
                 SameDirs[ind] = true;
@@ -2098,9 +2109,9 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           else if (SameDirs[1])
             theParam = SavedParams[1];
 
-          double NewU, NewV, NewParam;
-          gp_Pnt NewPnt;
-          bool   Corrected =
+          double    NewU, NewV, NewParam;
+          gp_Pnt           NewPnt;
+          bool Corrected =
             CorrectExtremityOnOneRst(1, sol(3), sol(4), param, Pnt1, NewU, NewV, NewPnt, NewParam);
           if (Corrected)
           {
@@ -2123,23 +2134,23 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
             nbarc++;
             recdomain1->Next();
           }
-          p2d                = BRepBlend_HCurve2dTool::Value(recdomain1->Value(), solrst1(1));
-          sol(1)             = p2d.X();
-          sol(2)             = p2d.Y();
-          sol(3)             = solrst1(3);
-          sol(4)             = solrst1(4);
-          gp_Pnt thePntOnRst = Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2));
-          double NewU, NewV, NewParam;
-          gp_Pnt NewPnt;
-          bool   Corrected = CorrectExtremityOnOneRst(1,
-                                                    sol(3),
-                                                    sol(4),
-                                                    param,
-                                                    thePntOnRst,
-                                                    NewU,
-                                                    NewV,
-                                                    NewPnt,
-                                                    NewParam);
+          p2d    = BRepBlend_HCurve2dTool::Value(recdomain1->Value(), solrst1(1));
+          sol(1) = p2d.X();
+          sol(2) = p2d.Y();
+          sol(3) = solrst1(3);
+          sol(4) = solrst1(4);
+          gp_Pnt           thePntOnRst = Adaptor3d_HSurfaceTool::Value(surf1, sol(1), sol(2));
+          double    NewU, NewV, NewParam;
+          gp_Pnt           NewPnt;
+          bool Corrected = CorrectExtremityOnOneRst(1,
+                                                                sol(3),
+                                                                sol(4),
+                                                                param,
+                                                                thePntOnRst,
+                                                                NewU,
+                                                                NewV,
+                                                                NewPnt,
+                                                                NewParam);
           if (Corrected)
           {
             param  = NewParam;
@@ -2160,23 +2171,23 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
             nbarc++;
             recdomain2->Next();
           }
-          p2d                = BRepBlend_HCurve2dTool::Value(recdomain2->Value(), solrst2(1));
-          sol(1)             = solrst2(3);
-          sol(2)             = solrst2(4);
-          sol(3)             = p2d.X();
-          sol(4)             = p2d.Y();
-          gp_Pnt thePntOnRst = Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4));
-          double NewU, NewV, NewParam;
-          gp_Pnt NewPnt;
-          bool   Corrected = CorrectExtremityOnOneRst(2,
-                                                    sol(1),
-                                                    sol(2),
-                                                    param,
-                                                    thePntOnRst,
-                                                    NewU,
-                                                    NewV,
-                                                    NewPnt,
-                                                    NewParam);
+          p2d    = BRepBlend_HCurve2dTool::Value(recdomain2->Value(), solrst2(1));
+          sol(1) = solrst2(3);
+          sol(2) = solrst2(4);
+          sol(3) = p2d.X();
+          sol(4) = p2d.Y();
+          gp_Pnt           thePntOnRst = Adaptor3d_HSurfaceTool::Value(surf2, sol(3), sol(4));
+          double    NewU, NewV, NewParam;
+          gp_Pnt           NewPnt;
+          bool Corrected = CorrectExtremityOnOneRst(2,
+                                                                sol(1),
+                                                                sol(2),
+                                                                param,
+                                                                thePntOnRst,
+                                                                NewU,
+                                                                NewV,
+                                                                NewPnt,
+                                                                NewParam);
           if (Corrected)
           {
             param  = NewParam;
@@ -2197,7 +2208,11 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
         {
           Func.Set(param);
           // Il vaut mieux un pas non orthodoxe que pas de recadrage!! PMN
-          State = TestArret(Func, State, (testdefl && (std::abs(stepw) > 3 * tolgui)), false, true);
+          State = TestArret(Func,
+                            State,
+                            (testdefl && (std::abs(stepw) > 3 * tolgui)),
+                            false,
+                            true);
         }
         else
         {
@@ -2240,8 +2255,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           line->Prepend(previousP);
         }
 #ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
+        int nbpts = line->NbPoints();
+        char             name[100];
         Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
         Sprintf(name, "p1_%d", nbpts);
@@ -2316,8 +2331,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           line->Prepend(previousP);
         }
 #ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
+        int nbpts = line->NbPoints();
+        char             name[100];
         Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
         Sprintf(name, "p1_%d", nbpts);
@@ -2363,8 +2378,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           line->Prepend(previousP);
         }
 #ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
+        int nbpts = line->NbPoints();
+        char             name[100];
         Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
         Sprintf(name, "p1_%d", nbpts);
@@ -2399,8 +2414,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           line->Prepend(previousP);
         }
 #ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
+        int nbpts = line->NbPoints();
+        char             name[100];
         Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
         Sprintf(name, "p1_%d", nbpts);
@@ -2435,8 +2450,8 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
           line->Prepend(previousP);
         }
 #ifdef DRAW
-        int  nbpts = line->NbPoints();
-        char name[100];
+        int nbpts = line->NbPoints();
+        char             name[100];
         Sprintf(name, "pg%d", nbpts);
         DrawTrSurf::Set(name, PtOnGuide);
         Sprintf(name, "p1_%d", nbpts);
@@ -2500,15 +2515,15 @@ void BRepBlend_Walking::InternalPerform(Blend_Function& Func,
   }
 }
 
-bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
-                                                 const double  theU,
-                                                 const double  theV,
-                                                 const double  theParam,
-                                                 const gp_Pnt& thePntOnRst,
-                                                 double&       NewU,
-                                                 double&       NewV,
-                                                 gp_Pnt&       NewPoint,
-                                                 double&       NewParam) const
+bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int IndexOfRst,
+                                                             const double    theU,
+                                                             const double    theV,
+                                                             const double    theParam,
+                                                             const gp_Pnt&          thePntOnRst,
+                                                             double&         NewU,
+                                                             double&         NewV,
+                                                             gp_Pnt&                NewPoint,
+                                                             double&         NewParam) const
 {
   const double TolAng = 0.001; // bug OCC25701
 
@@ -2523,11 +2538,11 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
   // Correct point on surface 2
   // First we find right <param>
   double Ends[2];
-  Ends[0]                = BRepBlend_HCurve2dTool::FirstParameter(DomainOfRst->Value());
-  Ends[1]                = BRepBlend_HCurve2dTool::LastParameter(DomainOfRst->Value());
+  Ends[0]                       = BRepBlend_HCurve2dTool::FirstParameter(DomainOfRst->Value());
+  Ends[1]                       = BRepBlend_HCurve2dTool::LastParameter(DomainOfRst->Value());
   double GlobalMinSqDist = Precision::Infinite();
   double ParamOnGuide    = 0;
-  gp_Pnt PointOnGuide;
+  gp_Pnt        PointOnGuide;
   for (int k = 0; k < 2; k++)
   {
     gp_Pnt2d      P2dOnEnd = BRepBlend_HCurve2dTool::Value(DomainOfRst->Value(), Ends[k]);
@@ -2535,8 +2550,8 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
     Extrema_ExtPC projoncurv(PntOnEnd, theElSpine);
     if (!projoncurv.IsDone())
       continue;
-    double MinSqDist = Precision::Infinite();
-    int    imin      = 0;
+    double    MinSqDist = Precision::Infinite();
+    int imin      = 0;
     for (int ind = 1; ind <= projoncurv.NbExt(); ind++)
     {
       double aSqDist = projoncurv.SquareDistance(ind);
@@ -2569,7 +2584,7 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
   {
     const gp_Ax1& anAx1   = theElSpine.VertexWithTangent(ind);
     gp_Pnt        aPnt    = anAx1.Location();
-    double        aSqDist = PointOnGuide.SquareDistance(aPnt);
+    double aSqDist = PointOnGuide.SquareDistance(aPnt);
     if (aSqDist < GlobalMinSqDist)
     {
       GlobalMinSqDist = aSqDist;
@@ -2584,8 +2599,8 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
   gce_MakePln PlaneBuilder(thePntOnRst, OldPonGuide, PntOnSurf2);
   if (!PlaneBuilder.IsDone())
     return false;
-  gp_Pln OldPlane = PlaneBuilder.Value();
-  gp_Dir OldDir   = OldPlane.Axis().Direction();
+  gp_Pln        OldPlane = PlaneBuilder.Value();
+  gp_Dir        OldDir   = OldPlane.Axis().Direction();
   double Angle    = OldDir.Angle(Dir0);
   if (Angle > M_PI / 2)
     Angle = M_PI - Angle;
@@ -2618,8 +2633,8 @@ bool BRepBlend_Walking::CorrectExtremityOnOneRst(const int     IndexOfRst,
                            Extrema_ExtFlag_MIN);
   if (projonsurf.IsDone())
   {
-    double MinSqDist = Precision::Infinite();
-    int    imin      = 0;
+    double    MinSqDist = Precision::Infinite();
+    int imin      = 0;
     for (int ind = 1; ind <= projonsurf.NbExt(); ind++)
     {
       double aSqDist = projonsurf.SquareDistance(ind);

@@ -24,16 +24,22 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
 namespace
 {
 // Helper function for comparing directions with tolerance
-void checkDirEqual(const gp_Dir& theDir1, const gp_Dir& theDir2, const double theTolerance = 1e-10)
+void checkDirEqual(const gp_Dir&       theDir1,
+                   const gp_Dir&       theDir2,
+                   const double theTolerance = 1e-10)
 {
   EXPECT_NEAR(theDir1.X(), theDir2.X(), theTolerance) << "X components differ";
   EXPECT_NEAR(theDir1.Y(), theDir2.Y(), theTolerance) << "Y components differ";
@@ -41,7 +47,9 @@ void checkDirEqual(const gp_Dir& theDir1, const gp_Dir& theDir2, const double th
 }
 
 // Helper function for comparing vectors with tolerance
-void checkVecEqual(const gp_Vec& theVec1, const gp_Vec& theVec2, const double theTolerance = 1e-10)
+void checkVecEqual(const gp_Vec&       theVec1,
+                   const gp_Vec&       theVec2,
+                   const double theTolerance = 1e-10)
 {
   EXPECT_NEAR(theVec1.X(), theVec2.X(), theTolerance) << "X components differ";
   EXPECT_NEAR(theVec1.Y(), theVec2.Y(), theTolerance) << "Y components differ";

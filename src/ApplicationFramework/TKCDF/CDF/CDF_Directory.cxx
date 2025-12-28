@@ -17,6 +17,7 @@
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
 #include <CDM_Document.hxx>
+#include <CDM_Document.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>

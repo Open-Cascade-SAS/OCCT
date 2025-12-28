@@ -34,8 +34,8 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-                            const int                                    aAxis,
-                            const double                                 aAngle);
+                            const int                  aAxis,
+                            const double                     aAngle);
 
   //! Returns field Axis
   Standard_EXPORT int Axis() const;
@@ -53,8 +53,8 @@ public:
                           StepFEA_FeaRepresentationItem)
 
 private:
-  int    theAxis;
-  double theAngle;
+  int theAxis;
+  double    theAngle;
 };
 
 #endif // _StepFEA_ConstantSurface3dElementCoordinateSystem_HeaderFile

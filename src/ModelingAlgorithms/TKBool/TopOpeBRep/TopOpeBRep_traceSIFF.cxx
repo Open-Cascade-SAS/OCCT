@@ -73,7 +73,7 @@ const TCollection_AsciiString& TopOpeBRep_traceSIFF::File() const
 bool TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s, Standard_OStream& OS)
 {
   const char* cs = myfilename.ToCString();
-  myopen         = true;
+  myopen              = true;
   if (!myfilebuf.open(cs, std::ios::out))
   {
     myopen = false;

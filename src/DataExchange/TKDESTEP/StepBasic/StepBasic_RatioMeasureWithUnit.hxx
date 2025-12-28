@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepBasic_RatioMeasureWithUnit();
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_RatioMeasureWithUnit, StepBasic_MeasureWithUnit)
+
 };
 
 #endif // _StepBasic_RatioMeasureWithUnit_HeaderFile

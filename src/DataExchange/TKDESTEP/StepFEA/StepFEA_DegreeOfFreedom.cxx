@@ -82,7 +82,7 @@ StepFEA_EnumeratedDegreeOfFreedom StepFEA_DegreeOfFreedom::EnumeratedDegreeOfFre
     new TCollection_HAsciiString("ENUMERATED_DEGREE_OF_FREEDOM");
   if (name->IsDifferent(nameitem))
     return StepFEA_XTranslation;
-  int                               numit = SelMem->Enum();
+  int                  numit = SelMem->Enum();
   StepFEA_EnumeratedDegreeOfFreedom val;
   switch (numit)
   {
@@ -120,8 +120,7 @@ void StepFEA_DegreeOfFreedom::SetApplicationDefinedDegreeOfFreedom(
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> StepFEA_DegreeOfFreedom::ApplicationDefinedDegreeOfFreedom()
-  const
+occ::handle<TCollection_HAsciiString> StepFEA_DegreeOfFreedom::ApplicationDefinedDegreeOfFreedom() const
 {
   occ::handle<StepFEA_DegreeOfFreedomMember> SelMem =
     occ::down_cast<StepFEA_DegreeOfFreedomMember>(Value());

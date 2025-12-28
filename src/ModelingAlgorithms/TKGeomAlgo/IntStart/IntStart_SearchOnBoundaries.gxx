@@ -74,17 +74,17 @@ static void FindVertex(const TheArc&,
                        IntStart_SequenceOfPathPoint&,
                        const double);
 
-static void BoundedArc(const TheArc&                    A,
-                       const occ::handle<TheTopolTool>& Domain,
-                       const double                     Pdeb,
-                       const double                     Pfin,
-                       TheFunction&                     Func,
-                       IntStart_SequenceOfPathPoint&    pnt,
-                       IntStart_SequenceOfSegment&      seg,
-                       const double                     TolBoundary,
-                       const double                     TolTangency,
-                       bool&                            Arcsol,
-                       const bool                       RecheckOnRegularity);
+static void BoundedArc(const TheArc&                 A,
+                       const occ::handle<TheTopolTool>&   Domain,
+                       const double           Pdeb,
+                       const double           Pfin,
+                       TheFunction&                  Func,
+                       IntStart_SequenceOfPathPoint& pnt,
+                       IntStart_SequenceOfSegment&   seg,
+                       const double           TolBoundary,
+                       const double           TolTangency,
+                       bool&             Arcsol,
+                       const bool        RecheckOnRegularity);
 
 static void PointProcess(const gp_Pnt&,
                          const double,
@@ -94,11 +94,11 @@ static void PointProcess(const gp_Pnt&,
                          const double,
                          int&);
 
-static int TreatLC(const TheArc&                    A,
-                   const occ::handle<TheTopolTool>& aDomain,
-                   const IntSurf_Quadric&           aQuadric,
-                   const double                     TolBoundary,
-                   IntStart_SequenceOfPathPoint&    pnt);
+static int TreatLC(const TheArc&                 A,
+                                const occ::handle<TheTopolTool>&   aDomain,
+                                const IntSurf_Quadric&        aQuadric,
+                                const double           TolBoundary,
+                                IntStart_SequenceOfPathPoint& pnt);
 
 static bool IsRegularity(const TheArc& A, const occ::handle<TheTopolTool>& aDomain);
 
@@ -128,19 +128,19 @@ private:
 
 //=================================================================================================
 
-void FindVertex(const TheArc&                    A,
-                const occ::handle<TheTopolTool>& Domain,
-                TheFunction&                     Func,
-                IntStart_SequenceOfPathPoint&    pnt,
-                const double                     Toler)
+void FindVertex(const TheArc&                 A,
+                const occ::handle<TheTopolTool>&   Domain,
+                TheFunction&                  Func,
+                IntStart_SequenceOfPathPoint& pnt,
+                const double           Toler)
 {
 
   // Find the vertex of the arc A restriction solutions. It stores
   // Vertex in the list solutions pnt.
 
-  TheVertex vtx;
+  TheVertex        vtx;
   double    param, valf;
-  int       itemp;
+  int itemp;
 
   Domain->Initialize(A);
   Domain->InitVertexIterator();
@@ -180,8 +180,8 @@ bool IsDegenerated(const IntSurf_Quadric& theQuadric)
   GeomAbs_SurfaceType TypeQuad = theQuadric.TypeQuadric();
   if (TypeQuad == GeomAbs_Cone)
   {
-    gp_Cone aCone      = theQuadric.Cone();
-    double  aSemiAngle = std::abs(aCone.SemiAngle());
+    gp_Cone       aCone      = theQuadric.Cone();
+    double aSemiAngle = std::abs(aCone.SemiAngle());
     if (aSemiAngle < 0.02 || aSemiAngle > 1.55)
       return true;
   }
@@ -222,21 +222,21 @@ public:
   double& ChangeValue() { return myValue; }
 
 private:
-  int    myMathIndex;
-  double myValue;
+  int myMathIndex;
+  double    myValue;
 };
 
-static void BoundedArc(const TheArc&                    A,
-                       const occ::handle<TheTopolTool>& Domain,
-                       const double                     Pdeb,
-                       const double                     Pfin,
-                       TheFunction&                     Func,
-                       IntStart_SequenceOfPathPoint&    pnt,
-                       IntStart_SequenceOfSegment&      seg,
-                       const double                     TolBoundary,
-                       const double                     TolTangency,
-                       bool&                            Arcsol,
-                       const bool                       RecheckOnRegularity)
+static void BoundedArc(const TheArc&                 A,
+                       const occ::handle<TheTopolTool>&   Domain,
+                       const double           Pdeb,
+                       const double           Pfin,
+                       TheFunction&                  Func,
+                       IntStart_SequenceOfPathPoint& pnt,
+                       IntStart_SequenceOfSegment&   seg,
+                       const double           TolBoundary,
+                       const double           TolTangency,
+                       bool&             Arcsol,
+                       const bool        RecheckOnRegularity)
 {
   // Recherche des points solutions et des bouts d arc solution sur un arc donne.
   // On utilise la fonction math_FunctionAllRoots. Ne convient donc que pour
@@ -245,9 +245,9 @@ static void BoundedArc(const TheArc&                    A,
 
   int i, Nbi = 0, Nbp = 0;
 
-  gp_Pnt ptdeb, ptfin;
-  double pardeb = 0., parfin = 0.;
-  int    ideb, ifin, range, ranged, rangef;
+  gp_Pnt           ptdeb, ptfin;
+  double    pardeb = 0., parfin = 0.;
+  int ideb, ifin, range, ranged, rangef;
 
   // Creer l echantillonage (math_FunctionSample ou classe heritant)
   // Appel a math_FunctionAllRoots
@@ -290,8 +290,8 @@ static void BoundedArc(const TheArc&                    A,
   double para = 0, dist, maxdist;
 
   //-------------------------------------------------------------- REJECTIONS le 15 oct 98
-  bool   Rejection = true;
-  double maxdr, maxr, minr, ur, dur;
+  bool Rejection = true;
+  double    maxdr, maxr, minr, ur, dur;
   minr  = RealLast();
   maxr  = -minr;
   maxdr = -minr;
@@ -340,8 +340,8 @@ static void BoundedArc(const TheArc&                    A,
     GeomAbs_SurfaceType    TypeQuad = aQuadric.TypeQuadric();
     GeomAbs_CurveType      TypeConS = GeomAbs_OtherCurve;
 
-    IntCurveSurface_HInter       IntCS;
-    bool                         IsIntCSdone = false;
+    IntCurveSurface_HInter IntCS;
+    bool       IsIntCSdone = false;
     NCollection_Sequence<double> Params;
 
     std::unique_ptr<math_FunctionAllRoots> pSol;
@@ -375,7 +375,7 @@ static void BoundedArc(const TheArc&                    A,
     {
       // Exact solution
       occ::handle<Adaptor3d_Surface> aSurf = Func.Surface();
-      Adaptor3d_CurveOnSurface       ConS(A, aSurf);
+      Adaptor3d_CurveOnSurface  ConS(A, aSurf);
       TypeConS = ConS.GetType();
 #ifdef OCCT_DEBUG
       occ::handle<Geom_Curve> CurveConS;
@@ -493,7 +493,7 @@ static void BoundedArc(const TheArc&                    A,
     {
       // double theTol = Domain->MaxTolerance(A);
       // theTol += theTol;
-      double                theTol = 5.e-4;
+      double         theTol = 5.e-4;
       math_FunctionAllRoots SolAgain(Func,
                                      Echant,
                                      EpsX,
@@ -509,10 +509,10 @@ static void BoundedArc(const TheArc&                    A,
 
       if (Nbi_again > 0)
       {
-        int    NbSamples     = 10;
-        double delta         = (Pfin - Pdeb) / NbSamples;
-        double GlobalTol     = theTol * 10;
-        bool   SolOnBoundary = true;
+        int NbSamples     = 10;
+        double    delta         = (Pfin - Pdeb) / NbSamples;
+        double    GlobalTol     = theTol * 10;
+        bool SolOnBoundary = true;
         for (i = 0; i <= NbSamples; i++)
         {
           double aParam = Pdeb + i * delta;
@@ -599,7 +599,7 @@ static void BoundedArc(const TheArc&                    A,
         for (i = 1; i < Nbp; i++)
         {
           double parap1 = aSI(i + 1).Value();
-          para          = aSI(i).Value();
+          para                 = aSI(i).Value();
 
           double param = (para + parap1) * 0.5;
           double yf    = 0.0;
@@ -607,8 +607,8 @@ static void BoundedArc(const TheArc&                    A,
           double yl    = 0.0;
           if (Func.Value(param, ym) && std::abs(ym) < maxdist)
           {
-            double sm    = std::copysign(1., ym);
-            bool   aTang = Func.Value(para, yf) && Func.Value(parap1, yl);
+            double    sm    = std::copysign(1., ym);
+            bool aTang = Func.Value(para, yf) && Func.Value(parap1, yl);
             if (aTang)
             {
               // Line can be tangent surface if all distances less then maxdist
@@ -641,10 +641,10 @@ static void BoundedArc(const TheArc&                    A,
               double aVal    = RealLast();
               double aValMax = 0.;
               // int aNbNodes = 23;
-              double aDelta = (parap1 - para) / (aNbNodes + 1.);
-              int    ii;
-              double aCurPar;
-              double aCurVal;
+              double    aDelta = (parap1 - para) / (aNbNodes + 1.);
+              int ii;
+              double    aCurPar;
+              double    aCurVal;
 
               for (ii = 0; ii <= aNbNodes + 1; ii++)
               {
@@ -801,7 +801,10 @@ static void BoundedArc(const TheArc&                    A,
 
 // - PROVISIONAL - TEMPORARY - NOT GOOD - NYI - TO DO
 // - Temporary - temporary - not good - nyi - to do
-void ComputeBoundsfromInfinite(TheFunction& Func, double& PDeb, double& PFin, int& NbEchant)
+void ComputeBoundsfromInfinite(TheFunction&      Func,
+                               double&    PDeb,
+                               double&    PFin,
+                               int& NbEchant)
 {
 
   // - We are looking for parameters for start and end of the arc (2d curve)
@@ -830,7 +833,7 @@ void ComputeBoundsfromInfinite(TheFunction& Func, double& PDeb, double& PFin, in
   if (dDist)
   {
     U0 -= dU * Dist0 / dDist;
-    PDeb = PFin = U0;
+    PDeb = PFin        = U0;
     double Umin = U0 - 1e5;
     Func.Value(Umin, Dist0);
     Func.Value(Umin + dU, Dist1);
@@ -877,13 +880,13 @@ void ComputeBoundsfromInfinite(TheFunction& Func, double& PDeb, double& PFin, in
 
 //=================================================================================================
 
-void PointProcess(const gp_Pnt&                    Pt,
-                  const double                     Para,
-                  const TheArc&                    A,
-                  const occ::handle<TheTopolTool>& Domain,
-                  IntStart_SequenceOfPathPoint&    pnt,
-                  const double                     Tol,
-                  int&                             Range)
+void PointProcess(const gp_Pnt&                 Pt,
+                  const double           Para,
+                  const TheArc&                 A,
+                  const occ::handle<TheTopolTool>&   Domain,
+                  IntStart_SequenceOfPathPoint& pnt,
+                  const double           Tol,
+                  int&             Range)
 {
 
   // Check to see if a solution point is coincident with a vertex.
@@ -891,11 +894,11 @@ void PointProcess(const gp_Pnt&                    Pt,
   // Start. It then returns the position of this point in the list pnt.
   // Otherwise, add the point in the list.
 
-  int    k;
-  bool   found, goon;
-  double dist, toler;
+  int k;
+  bool found, goon;
+  double    dist, toler;
 
-  int                   Nbsol = pnt.Length();
+  int      Nbsol = pnt.Length();
   TheVertex             vtx;
   IntStart_ThePathPoint ptsol;
 
@@ -1017,11 +1020,11 @@ bool IsRegularity(const TheArc& /*A*/, const occ::handle<TheTopolTool>& aDomain)
 
 //=================================================================================================
 
-int TreatLC(const TheArc&                    A,
-            const occ::handle<TheTopolTool>& aDomain,
-            const IntSurf_Quadric&           aQuadric,
-            const double                     TolBoundary,
-            IntStart_SequenceOfPathPoint&    pnt)
+int TreatLC(const TheArc&                 A,
+                         const occ::handle<TheTopolTool>&   aDomain,
+                         const IntSurf_Quadric&        aQuadric,
+                         const double           TolBoundary,
+                         IntStart_SequenceOfPathPoint& pnt)
 {
   int anExitCode = 1, aNbExt;
 
@@ -1055,14 +1058,14 @@ int TreatLC(const TheArc&                    A,
     return anExitCode;
   }
 
-  double                  f, l, U1f, U1l, U2f, U2l, UEgde, TOL, aDist, aR, aRRel, Tol;
+  double      f, l, U1f, U1l, U2f, U2l, UEgde, TOL, aDist, aR, aRRel, Tol;
   occ::handle<Geom_Curve> aCEdge = BRep_Tool::Curve(*anE, f, l);
 
-  gp_Cylinder            aCyl  = aQuadric.Cylinder();
-  const gp_Ax1&          anAx1 = aCyl.Axis();
-  gp_Lin                 aLin(anAx1);
+  gp_Cylinder       aCyl  = aQuadric.Cylinder();
+  const gp_Ax1&     anAx1 = aCyl.Axis();
+  gp_Lin            aLin(anAx1);
   occ::handle<Geom_Line> aCAxis = new Geom_Line(aLin);
-  aR                            = aCyl.Radius();
+  aR                       = aCyl.Radius();
 
   U1f = aCAxis->FirstParameter();
   U1l = aCAxis->LastParameter();
@@ -1132,21 +1135,21 @@ IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries()
 
 //=================================================================================================
 
-void IntStart_SearchOnBoundaries::Perform(TheFunction&                     Func,
+void IntStart_SearchOnBoundaries::Perform(TheFunction&                Func,
                                           const occ::handle<TheTopolTool>& Domain,
-                                          const double                     TolBoundary,
-                                          const double                     TolTangency,
-                                          const bool                       RecheckOnRegularity)
+                                          const double         TolBoundary,
+                                          const double         TolTangency,
+                                          const bool      RecheckOnRegularity)
 {
 
   done = false;
   spnt.Clear();
   sseg.Clear();
 
-  bool   Arcsol;
-  double PDeb, PFin, prm, tol;
-  int    i, nbknown, nbfound, index;
-  gp_Pnt pt;
+  bool Arcsol;
+  double    PDeb, PFin, prm, tol;
+  int i, nbknown, nbfound, index;
+  gp_Pnt           pt;
 
   Domain->Init();
 

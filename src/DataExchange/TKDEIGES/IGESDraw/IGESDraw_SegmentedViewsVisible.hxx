@@ -22,9 +22,19 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESGraph_Color.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_LineFontEntity.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <IGESData_ViewKindEntity.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 class IGESGraph_Color;
 class IGESData_LineFontEntity;
@@ -54,16 +64,14 @@ public:
   //! allDisplayFlags, allColorValues, allColorDefinitions,
   //! allLineFontValues, allLineFontDefinitions and allLineWeights
   //! are not same.
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
-    const occ::handle<NCollection_HArray1<double>>&                       allBreakpointParameters,
-    const occ::handle<NCollection_HArray1<int>>&                          allDisplayFlags,
-    const occ::handle<NCollection_HArray1<int>>&                          allColorValues,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>& allColorDefinitions,
-    const occ::handle<NCollection_HArray1<int>>&                          allLineFontValues,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>&
-                                                 allLineFontDefinitions,
-    const occ::handle<NCollection_HArray1<int>>& allLineWeights);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>& allViews,
+                            const occ::handle<NCollection_HArray1<double>>&            allBreakpointParameters,
+                            const occ::handle<NCollection_HArray1<int>>&         allDisplayFlags,
+                            const occ::handle<NCollection_HArray1<int>>&         allColorValues,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>&         allColorDefinitions,
+                            const occ::handle<NCollection_HArray1<int>>&         allLineFontValues,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>>& allLineFontDefinitions,
+                            const occ::handle<NCollection_HArray1<int>>&          allLineWeights);
 
   //! Returns False (for a complex view)
   Standard_EXPORT bool IsSingle() const override;
@@ -78,7 +86,8 @@ public:
   //! returns the View entity indicated by ViewIndex
   //! raises an exception if ViewIndex <= 0 or
   //! ViewIndex > NbSegmentBlocks()
-  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int ViewIndex) const override;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int ViewIndex) const
+    override;
 
   //! returns the parameter of the breakpoint indicated by
   //! BreakpointIndex
@@ -132,14 +141,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_SegmentedViewsVisible, IGESData_ViewKindEntity)
 
 private:
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> theViews;
-  occ::handle<NCollection_HArray1<double>>                               theBreakpointParameters;
-  occ::handle<NCollection_HArray1<int>>                                  theDisplayFlags;
-  occ::handle<NCollection_HArray1<int>>                                  theColorValues;
-  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>         theColorDefinitions;
-  occ::handle<NCollection_HArray1<int>>                                  theLineFontValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>>  theViews;
+  occ::handle<NCollection_HArray1<double>>             theBreakpointParameters;
+  occ::handle<NCollection_HArray1<int>>          theDisplayFlags;
+  occ::handle<NCollection_HArray1<int>>          theColorValues;
+  occ::handle<NCollection_HArray1<occ::handle<IGESGraph_Color>>>          theColorDefinitions;
+  occ::handle<NCollection_HArray1<int>>          theLineFontValues;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_LineFontEntity>>> theLineFontDefinitions;
-  occ::handle<NCollection_HArray1<int>>                                  theLineWeights;
+  occ::handle<NCollection_HArray1<int>>          theLineWeights;
 };
 
 #endif // _IGESDraw_SegmentedViewsVisible_HeaderFile

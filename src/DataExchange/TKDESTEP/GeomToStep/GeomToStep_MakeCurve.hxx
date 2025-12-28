@@ -37,11 +37,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeCurve(
     const occ::handle<Geom_Curve>& C,
-    const StepData_Factors&        theLocalFactors = StepData_Factors());
+    const StepData_Factors&   theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeCurve(
     const occ::handle<Geom2d_Curve>& C,
-    const StepData_Factors&          theLocalFactors = StepData_Factors());
+    const StepData_Factors&     theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Curve>& Value() const;
 

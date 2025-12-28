@@ -52,7 +52,7 @@ void IGESGeom_ToolCircularArc::ReadOwnParams(const occ::handle<IGESGeom_Circular
   //=====================================
 
   double aZT;
-  gp_XY  aCenter, aStart, anEnd;
+  gp_XY         aCenter, aStart, anEnd;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   // MGE 28/07/98
@@ -77,7 +77,7 @@ void IGESGeom_ToolCircularArc::ReadOwnParams(const occ::handle<IGESGeom_Circular
 }
 
 void IGESGeom_ToolCircularArc::WriteOwnParams(const occ::handle<IGESGeom_CircularArc>& ent,
-                                              IGESData_IGESWriter&                     IW) const
+                                              IGESData_IGESWriter&                IW) const
 {
   IW.Send(ent->ZPlane());
   IW.Send(ent->Center().X());
@@ -139,8 +139,8 @@ void IGESGeom_ToolCircularArc::OwnCheck(const occ::handle<IGESGeom_CircularArc>&
 
 void IGESGeom_ToolCircularArc::OwnDump(const occ::handle<IGESGeom_CircularArc>& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       Standard_OStream& S,
-                                       const int         level) const
+                                       Standard_OStream&      S,
+                                       const int level) const
 {
   S << "CircularArc from IGESGeom]\n"
     << "Z-Plane Displacement : " << ent->ZPlane() << "\n"

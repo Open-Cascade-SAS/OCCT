@@ -24,6 +24,7 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;
@@ -53,14 +54,14 @@ public:
   //! then if <expcomp> is True, if a sub-shape is a Compound, it
   //! is not put to the list but its sub-shapes are (recursive)
   Standard_EXPORT occ::handle<NCollection_HSequence<TopoDS_Shape>> SeqFromCompound(
-    const TopoDS_Shape& comp,
-    const bool          expcomp) const;
+    const TopoDS_Shape&    comp,
+    const bool expcomp) const;
 
   //! Converts a Sequence of Shapes to a List of Shapes
   //! <clear> if True (D), commands the list to start from scratch
   //! else, the list is cumulated
   Standard_EXPORT void ListFromSeq(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& seqval,
-                                   NCollection_List<TopoDS_Shape>&                         lisval,
+                                   NCollection_List<TopoDS_Shape>&                    lisval,
                                    const bool clear = true) const;
 
   //! Converts a List of Shapes to a Sequence of Shapes
@@ -72,7 +73,8 @@ public:
   //! its items. If all are of the same type, returns this type.
   //! Else, returns COMPOUND. If it is empty, returns SHAPE
   //! For a Null Shape, returns SHAPE
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape& shape, const bool compound) const;
+  Standard_EXPORT TopAbs_ShapeEnum ShapeType(const TopoDS_Shape&    shape,
+                                             const bool compound) const;
 
   //! Builds a COMPOUND from the given shape.
   //! It explores the shape level by level, according to the
@@ -87,23 +89,23 @@ public:
   //! items directly contained in a Compound
   Standard_EXPORT TopoDS_Shape SortedCompound(const TopoDS_Shape&    shape,
                                               const TopAbs_ShapeEnum type,
-                                              const bool             explore,
-                                              const bool             compound) const;
+                                              const bool explore,
+                                              const bool compound) const;
 
   //! Dispatches starting list of shapes according to their type,
   //! to the appropriate resulting lists
   //! For each of these lists, if it is null, it is firstly created
   //! else, new items are appended to the already existing ones
-  Standard_EXPORT void DispatchList(
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       vertices,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       edges,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       faces,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       shells,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       solids,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compsols,
-    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const;
+  Standard_EXPORT void DispatchList(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       vertices,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       edges,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       wires,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       faces,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       shells,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       solids,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compsols,
+                                    occ::handle<NCollection_HSequence<TopoDS_Shape>>&       compounds) const;
+
 };
 
 #endif // _ShapeExtend_Explorer_HeaderFile

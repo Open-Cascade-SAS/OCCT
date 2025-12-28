@@ -42,7 +42,9 @@ static void CopyString(occ::handle<TCollection_HAsciiString>& astr)
   astr = S;
 }
 
-static void MakeHollerith(const occ::handle<TCollection_HAsciiString>& astr, char* text, int& lt)
+static void MakeHollerith(const occ::handle<TCollection_HAsciiString>& astr,
+                          char*                                   text,
+                          int&                       lt)
 {
   lt      = 0;
   text[0] = '\0';
@@ -154,11 +156,11 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
 
   for (int i = 1; i <= nbp; i++)
   {
-    int                                   intval  = 0;
-    double                                realval = 0.0;
+    int                 intval  = 0;
+    double                    realval = 0.0;
     occ::handle<TCollection_HAsciiString> strval; // doit repartir a null
     // char message[80]; //szv#4:S4163:12Mar99 unused
-    const char*         val = params->Param(i).CValue();
+    const char*    val = params->Param(i).CValue();
     Interface_ParamType fpt = params->Param(i).ParamType();
     if (fpt == Interface_ParamVoid)
       continue;
@@ -175,8 +177,8 @@ void IGESData_GlobalSection::Init(const occ::handle<Interface_ParamSet>& params,
     // if the param is a Real
     else if (fpt == Interface_ParamReal || fpt == Interface_ParamEnum)
     {
-      char text[50];
-      int  k, j = 0;
+      char             text[50];
+      int k, j = 0;
       for (k = 0; k < 50; k++)
       {
         if (val[k] == 'D' || val[k] == 'd')
@@ -377,13 +379,13 @@ void IGESData_GlobalSection::CopyRefs()
 
 occ::handle<Interface_ParamSet> IGESData_GlobalSection::Params() const
 {
-  char vide[1];
-  char uncar[2];
-  char nombre[1024];
-  char text[200];
-  int  lt;
-  vide[0] = uncar[1] = nombre[0]      = '\0';
-  uncar[0]                            = ',';
+  char             vide[1];
+  char             uncar[2];
+  char             nombre[1024];
+  char             text[200];
+  int lt;
+  vide[0] = uncar[1] = nombre[0] = '\0';
+  uncar[0]                       = ',';
   occ::handle<Interface_ParamSet> res = new Interface_ParamSet(26); // gka 19.01.99
   if (theSeparator == ',')
     res->Append(vide, 0, Interface_ParamVoid, 0);
@@ -694,9 +696,9 @@ void IGESData_GlobalSection::SetLastChangeDate()
 {
   if (HasLastChangeDate())
     return;
-  int           mois, jour, annee, heure, minute, seconde, millisec, microsec;
-  OSD_Process   system;
-  Quantity_Date ladate = system.SystemDate();
+  int mois, jour, annee, heure, minute, seconde, millisec, microsec;
+  OSD_Process      system;
+  Quantity_Date    ladate = system.SystemDate();
   ladate.Values(mois, jour, annee, heure, minute, seconde, millisec, microsec);
   if (annee < 2000)
     // #65 rln 12.02.99 S4151 (explicitly force YYMMDD.HHMMSS before Y2000)
@@ -722,28 +724,29 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::ApplicationProtoco
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(const int annee,
-                                                                            const int mois,
-                                                                            const int jour,
-                                                                            const int heure,
-                                                                            const int minute,
-                                                                            const int seconde,
-                                                                            const int mode)
+occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(
+  const int annee,
+  const int mois,
+  const int jour,
+  const int heure,
+  const int minute,
+  const int seconde,
+  const int mode)
 {
   //  0 : IGES annee a l ancienne 00-99    -1 IGES annee complete    1 lisible
-  char madate[60];
-  int  moi = mois, jou = jour, anne = annee;
-  int  heur = heure, minut = minute, second = seconde;
+  char             madate[60];
+  int moi = mois, jou = jour, anne = annee;
+  int heur = heure, minut = minute, second = seconde;
   if (annee == 0)
   {
-    int           millisec, microsec;
-    OSD_Process   system;
-    Quantity_Date ladate = system.SystemDate();
+    int millisec, microsec;
+    OSD_Process      system;
+    Quantity_Date    ladate = system.SystemDate();
     ladate.Values(moi, jou, anne, heur, minut, second, millisec, microsec);
   }
   if (mode == 0 || mode == -1)
   {
-    int  an      = anne % 100;
+    int an      = anne % 100;
     bool dizaine = (an >= 10);
     if (!dizaine)
       an += 10;
@@ -770,7 +773,7 @@ occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(cons
 
 occ::handle<TCollection_HAsciiString> IGESData_GlobalSection::NewDateString(
   const occ::handle<TCollection_HAsciiString>& date,
-  const int                                    mode)
+  const int                  mode)
 {
   int anne, moi, jou, heur, minut, second;
   if (date.IsNull())
@@ -961,8 +964,7 @@ void IGESData_GlobalSection::SetLastChangeDate(const occ::handle<TCollection_HAs
   theLastChangeDate = TranslatedFromHollerith(val);
 }
 
-void IGESData_GlobalSection::SetApplicationProtocol(
-  const occ::handle<TCollection_HAsciiString>& val)
+void IGESData_GlobalSection::SetApplicationProtocol(const occ::handle<TCollection_HAsciiString>& val)
 {
   theAppliProtocol = TranslatedFromHollerith(val);
 }

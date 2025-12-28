@@ -48,7 +48,8 @@ public:
 
   //! Open specified file.
   //! Passing an empty path would close current input.
-  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath, bool theToWait);
+  Standard_EXPORT void OpenInput(const TCollection_AsciiString& thePath,
+                                 bool               theToWait);
 
   //! Return player context; it can be NULL until first OpenInput().
   const occ::handle<Media_PlayerContext>& PlayerContext() const { return myPlayerCtx; }
@@ -94,15 +95,15 @@ protected:
   occ::handle<Media_Frame>             myFramePair[2];     //!< front/back frames pair
   occ::handle<Graphic3d_ShaderProgram> myShaderYUV;        //!< shader program for YUV  texture set
   occ::handle<Graphic3d_ShaderProgram> myShaderYUVJ;       //!< shader program for YUVJ texture set
-  std::mutex                           myMutex;            //!< mutex for accessing frames
-  TCollection_AsciiString              myInput;            //!< input media
-  CallbackOnUpdate_t                   myCallbackFunction; //!< callback function
-  void*                                myCallbackUserPtr;  //!< callback data
-  NCollection_Vec2<int>                myFrameSize;        //!< front frame size
-  double                               myProgress;         //!< playback progress in seconds
-  double                               myDuration;         //!< stream duration
-  int                                  myFront;            //!< index of front texture
-  bool                                 myToPresentFrame;   //!< flag
+  std::mutex                      myMutex;            //!< mutex for accessing frames
+  TCollection_AsciiString         myInput;            //!< input media
+  CallbackOnUpdate_t              myCallbackFunction; //!< callback function
+  void*                           myCallbackUserPtr;  //!< callback data
+  NCollection_Vec2<int>                 myFrameSize;        //!< front frame size
+  double                   myProgress;         //!< playback progress in seconds
+  double                   myDuration;         //!< stream duration
+  int                myFront;            //!< index of front texture
+  bool                myToPresentFrame;   //!< flag
   // clang-format off
   bool                myIsPlanarYUV;       //!< front frame contains planar YUV data or native texture format
   bool                myIsFullRangeYUV;    //!< front frame defines full-range or reduced-range YUV

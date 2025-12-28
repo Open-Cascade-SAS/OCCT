@@ -27,10 +27,15 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir2d.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Contap_TheIWLineOfTheIWalking.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntSurf_InteriorPoint.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Sequence.hxx>
 #include <IntWalk_StatusDeflection.hxx>
 #include <Bnd_Range.hxx>
 
@@ -57,10 +62,10 @@ public:
   //! theToFillHoles is the flag defining whether possible holes
   //! between resulting curves are filled or not
   //! in case of Contap walking theToFillHoles is True
-  Standard_EXPORT Contap_TheIWalking(const double Epsilon,
-                                     const double Deflection,
-                                     const double Step,
-                                     const bool   theToFillHoles = false);
+  Standard_EXPORT Contap_TheIWalking(const double    Epsilon,
+                                     const double    Deflection,
+                                     const double    Step,
+                                     const bool theToFillHoles = false);
 
   //! Deflection is the maximum deflection admitted between two
   //! consecutive points on a resulting polyline.
@@ -68,23 +73,25 @@ public:
   //! consecutive points (in 2d space).
   //! Epsilon is the tolerance beyond which 2 points
   //! are confused
-  void SetTolerance(const double Epsilon, const double Deflection, const double Step);
+  void SetTolerance(const double Epsilon,
+                    const double Deflection,
+                    const double Step);
 
   //! Searches a set of polylines starting on a point of Pnts1
   //! or Pnts2.
   //! Each point on a resulting polyline verifies F(u,v)=0
   Standard_EXPORT void Perform(const NCollection_Sequence<IntSurf_PathPoint>&     Pnts1,
                                const NCollection_Sequence<IntSurf_InteriorPoint>& Pnts2,
-                               Contap_SurfFunction&                               Func,
-                               const occ::handle<Adaptor3d_Surface>&              S,
-                               const bool                                         Reversed = false);
+                               Contap_SurfFunction&                   Func,
+                               const occ::handle<Adaptor3d_Surface>&       S,
+                               const bool                 Reversed = false);
 
   //! Searches a set of polylines starting on a point of Pnts1.
   //! Each point on a resulting polyline verifies F(u,v)=0
   Standard_EXPORT void Perform(const NCollection_Sequence<IntSurf_PathPoint>& Pnts1,
-                               Contap_SurfFunction&                           Func,
-                               const occ::handle<Adaptor3d_Surface>&          S,
-                               const bool                                     Reversed = false);
+                               Contap_SurfFunction&               Func,
+                               const occ::handle<Adaptor3d_Surface>&   S,
+                               const bool             Reversed = false);
 
   //! Returns true if the calculus was successful.
   bool IsDone() const;
@@ -110,120 +117,122 @@ public:
   const IntSurf_PathPoint& SinglePnt(const int Index) const;
 
 protected:
-  Standard_EXPORT bool Cadrage(math_Vector& BornInf,
-                               math_Vector& BornSup,
-                               math_Vector& UVap,
-                               double&      Step,
-                               const int    StepSign) const;
+  Standard_EXPORT bool Cadrage(math_Vector&           BornInf,
+                                           math_Vector&           BornSup,
+                                           math_Vector&           UVap,
+                                           double&         Step,
+                                           const int StepSign) const;
 
   Standard_EXPORT bool TestArretPassage(const NCollection_Sequence<double>& Umult,
-                                        const NCollection_Sequence<double>& Vmult,
-                                        Contap_SurfFunction&                Section,
-                                        math_Vector&                        UV,
-                                        int&                                Irang);
+                                                    const NCollection_Sequence<double>& Vmult,
+                                                    Contap_SurfFunction&          Section,
+                                                    math_Vector&                  UV,
+                                                    int&             Irang);
 
   Standard_EXPORT bool TestArretPassage(const NCollection_Sequence<double>& Umult,
-                                        const NCollection_Sequence<double>& Vmult,
-                                        const math_Vector&                  UV,
-                                        const int                           Index,
-                                        int&                                Irang);
+                                                    const NCollection_Sequence<double>& Vmult,
+                                                    const math_Vector&            UV,
+                                                    const int        Index,
+                                                    int&             Irang);
 
   Standard_EXPORT bool TestArretAjout(Contap_SurfFunction& Section,
-                                      math_Vector&         UV,
-                                      int&                 Irang,
-                                      IntSurf_PntOn2S&     PSol);
+                                                  math_Vector&         UV,
+                                                  int&    Irang,
+                                                  IntSurf_PntOn2S&     PSol);
 
-  Standard_EXPORT void FillPntsInHoles(Contap_SurfFunction&                         Section,
-                                       NCollection_Sequence<int>&                   CopySeqAlone,
+  Standard_EXPORT void FillPntsInHoles(Contap_SurfFunction&             Section,
+                                       NCollection_Sequence<int>&       CopySeqAlone,
                                        NCollection_Sequence<IntSurf_InteriorPoint>& PntsInHoles);
 
-  Standard_EXPORT void TestArretCadre(const NCollection_Sequence<double>&               Umult,
-                                      const NCollection_Sequence<double>&               Vmult,
+  Standard_EXPORT void TestArretCadre(const NCollection_Sequence<double>&                Umult,
+                                      const NCollection_Sequence<double>&                Vmult,
                                       const occ::handle<Contap_TheIWLineOfTheIWalking>& Line,
-                                      Contap_SurfFunction&                              Section,
-                                      math_Vector&                                      UV,
-                                      int&                                              Irang);
+                                      Contap_SurfFunction&                         Section,
+                                      math_Vector&                                 UV,
+                                      int&                            Irang);
 
   Standard_EXPORT IntWalk_StatusDeflection
     TestDeflection(Contap_SurfFunction&           Section,
-                   const bool                     Finished,
+                   const bool         Finished,
                    const math_Vector&             UV,
                    const IntWalk_StatusDeflection StatusPrecedent,
-                   int&                           NbDivision,
-                   double&                        Step,
-                   const int                      StepSign);
+                   int&              NbDivision,
+                   double&                 Step,
+                   const int         StepSign);
 
-  Standard_EXPORT void ComputeOpenLine(const NCollection_Sequence<double>&            Umult,
-                                       const NCollection_Sequence<double>&            Vmult,
+  Standard_EXPORT void ComputeOpenLine(const NCollection_Sequence<double>&      Umult,
+                                       const NCollection_Sequence<double>&      Vmult,
                                        const NCollection_Sequence<IntSurf_PathPoint>& Pnts1,
-                                       Contap_SurfFunction&                           Section,
-                                       bool&                                          Rajout);
+                                       Contap_SurfFunction&               Section,
+                                       bool&                  Rajout);
 
-  Standard_EXPORT void OpenLine(const int                                         N,
-                                const IntSurf_PntOn2S&                            Psol,
-                                const NCollection_Sequence<IntSurf_PathPoint>&    Pnts1,
-                                Contap_SurfFunction&                              Section,
+  Standard_EXPORT void OpenLine(const int                       N,
+                                const IntSurf_PntOn2S&                       Psol,
+                                const NCollection_Sequence<IntSurf_PathPoint>&           Pnts1,
+                                Contap_SurfFunction&                         Section,
                                 const occ::handle<Contap_TheIWLineOfTheIWalking>& Line);
 
-  Standard_EXPORT bool IsValidEndPoint(const int IndOfPoint, const int IndOfLine);
+  Standard_EXPORT bool IsValidEndPoint(const int IndOfPoint,
+                                                   const int IndOfLine);
 
   Standard_EXPORT void RemoveTwoEndPoints(const int IndOfPoint);
 
-  Standard_EXPORT bool IsPointOnLine(const gp_Pnt2d& theP2d, const int Irang);
+  Standard_EXPORT bool IsPointOnLine(const gp_Pnt2d&        theP2d,
+                                                 const int Irang);
 
-  Standard_EXPORT void ComputeCloseLine(const NCollection_Sequence<double>&                Umult,
-                                        const NCollection_Sequence<double>&                Vmult,
+  Standard_EXPORT void ComputeCloseLine(const NCollection_Sequence<double>&          Umult,
+                                        const NCollection_Sequence<double>&          Vmult,
                                         const NCollection_Sequence<IntSurf_PathPoint>&     Pnts1,
                                         const NCollection_Sequence<IntSurf_InteriorPoint>& Pnts2,
-                                        Contap_SurfFunction&                               Section,
-                                        bool&                                              Rajout);
+                                        Contap_SurfFunction&                   Section,
+                                        bool&                      Rajout);
 
   Standard_EXPORT void AddPointInCurrentLine(
-    const int                                         N,
-    const IntSurf_PathPoint&                          PathPnt,
+    const int                       N,
+    const IntSurf_PathPoint&                     PathPnt,
     const occ::handle<Contap_TheIWLineOfTheIWalking>& CurrentLine) const;
 
-  Standard_EXPORT void MakeWalkingPoint(const int            Case,
-                                        const double         U,
-                                        const double         V,
-                                        Contap_SurfFunction& Section,
-                                        IntSurf_PntOn2S&     Psol);
+  Standard_EXPORT void MakeWalkingPoint(const int Case,
+                                        const double    U,
+                                        const double    V,
+                                        Contap_SurfFunction&   Section,
+                                        IntSurf_PntOn2S&       Psol);
 
   //! Clears up internal containers
   Standard_EXPORT void Clear();
 
   //! Returns TRUE if thePOn2S is in one of existing lines.
   Standard_EXPORT bool IsPointOnLine(const IntSurf_PntOn2S& thePOn2S,
-                                     const math_Vector&     theInfBounds,
-                                     const math_Vector&     theSupBounds,
-                                     math_FunctionSetRoot&  theSolver,
-                                     Contap_SurfFunction&   theFunc);
+                                                 const math_Vector&     theInfBounds,
+                                                 const math_Vector&     theSupBounds,
+                                                 math_FunctionSetRoot&  theSolver,
+                                                 Contap_SurfFunction&   theFunc);
 
 private:
-  bool                                            done;
-  NCollection_Sequence<IntSurf_PathPoint>         seqSingle;
-  double                                          fleche;
-  double                                          pas;
-  math_Vector                                     tolerance;
-  double                                          epsilon;
-  bool                                            reversed;
-  IntWalk_VectorOfWalkingData                     wd1;
-  IntWalk_VectorOfWalkingData                     wd2;
-  IntWalk_VectorOfInteger                         nbMultiplicities;
-  Bnd_Range                                       mySRangeU; // Estimated U-range for section curve
-  Bnd_Range                                       mySRangeV; // Estimated V-range for section curve
-  double                                          Um;
-  double                                          UM;
-  double                                          Vm;
-  double                                          VM;
-  IntSurf_PntOn2S                                 previousPoint;
-  gp_Vec                                          previousd3d;
-  gp_Dir2d                                        previousd2d;
-  NCollection_Sequence<int>                       seqAjout;
-  NCollection_Sequence<int>                       seqAlone;
+  bool                      done;
+  NCollection_Sequence<IntSurf_PathPoint>           seqSingle;
+  double                         fleche;
+  double                         pas;
+  math_Vector                           tolerance;
+  double                         epsilon;
+  bool                      reversed;
+  IntWalk_VectorOfWalkingData           wd1;
+  IntWalk_VectorOfWalkingData           wd2;
+  IntWalk_VectorOfInteger               nbMultiplicities;
+  Bnd_Range                             mySRangeU; // Estimated U-range for section curve
+  Bnd_Range                             mySRangeV; // Estimated V-range for section curve
+  double                         Um;
+  double                         UM;
+  double                         Vm;
+  double                         VM;
+  IntSurf_PntOn2S                       previousPoint;
+  gp_Vec                                previousd3d;
+  gp_Dir2d                              previousd2d;
+  NCollection_Sequence<int>             seqAjout;
+  NCollection_Sequence<int>             seqAlone;
   NCollection_DataMap<int, NCollection_List<int>> PointLineLine;
-  NCollection_Sequence<occ::handle<Contap_TheIWLineOfTheIWalking>> lines;
-  bool                                                             ToFillHoles;
+  NCollection_Sequence<occ::handle<Contap_TheIWLineOfTheIWalking>>  lines;
+  bool                      ToFillHoles;
 };
 
 #define ThePointOfPath IntSurf_PathPoint
@@ -247,8 +256,7 @@ private:
 #define IntWalk_TheIWLine Contap_TheIWLineOfTheIWalking
 #define IntWalk_TheIWLine_hxx <Contap_TheIWLineOfTheIWalking.hxx>
 #define IntWalk_SequenceOfIWLine NCollection_Sequence<occ::handle<Contap_TheIWLineOfTheIWalking>>
-#define IntWalk_SequenceOfIWLine_hxx                                                               \
-  <NCollection_Sequence<occ::handle<Contap_TheIWLineOfTheIWalking>>.hxx>
+#define IntWalk_SequenceOfIWLine_hxx <NCollection_Sequence<occ::handle<Contap_TheIWLineOfTheIWalking>>.hxx>
 #define Handle_IntWalk_TheIWLine occ::handle<Contap_TheIWLineOfTheIWalking>
 #define IntWalk_IWalking Contap_TheIWalking
 #define IntWalk_IWalking_hxx <Contap_TheIWalking.hxx>

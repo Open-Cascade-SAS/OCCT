@@ -48,9 +48,9 @@ occ::handle<TDF_Attribute> BinMFunction_GraphNodeDriver::NewEmpty() const
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
 
-bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         BinObjMgt_RRelocationTable&) const
+bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
+                                                     BinObjMgt_RRelocationTable&) const
 {
   occ::handle<TFunction_GraphNode> GN = occ::down_cast<TFunction_GraphNode>(theTarget);
 
@@ -93,10 +93,9 @@ bool BinMFunction_GraphNodeDriver::Paste(const BinObjMgt_Persistent&       theSo
 // purpose  : transient -> persistent (store)
 //=======================================================================
 
-void BinMFunction_GraphNodeDriver::Paste(
-  const occ::handle<TDF_Attribute>& theSource,
-  BinObjMgt_Persistent&             theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
+void BinMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                         BinObjMgt_Persistent&        theTarget,
+                                         NCollection_IndexedMap<occ::handle<Standard_Transient>>&) const
 {
   occ::handle<TFunction_GraphNode> GN = occ::down_cast<TFunction_GraphNode>(theSource);
 
@@ -111,7 +110,7 @@ void BinMFunction_GraphNodeDriver::Paste(
   int nb = GN->GetPrevious().Extent();
   if (nb)
   {
-    NCollection_Array1<int>        aSourceArray(1, nb);
+    NCollection_Array1<int>           aSourceArray(1, nb);
     NCollection_Map<int>::Iterator itr(GN->GetPrevious());
     for (int i = 1; itr.More(); itr.Next(), i++)
     {
@@ -125,7 +124,7 @@ void BinMFunction_GraphNodeDriver::Paste(
   nb = GN->GetNext().Extent();
   if (nb)
   {
-    NCollection_Array1<int>        aSourceArray(1, nb);
+    NCollection_Array1<int>           aSourceArray(1, nb);
     NCollection_Map<int>::Iterator itr(GN->GetNext());
     for (int i = 1; itr.More(); itr.Next(), i++)
     {

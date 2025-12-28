@@ -49,9 +49,10 @@ public:
   //! aShape and aPriority are stored in this framework. If
   //! more than one owner are detected during dynamic
   //! selection, the one with the highest priority is the one stored.
-  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape& aShape,
-                                      const int           aPriority              = 0,
-                                      const bool          ComesFromDecomposition = false);
+  Standard_EXPORT StdSelect_BRepOwner(
+    const TopoDS_Shape&    aShape,
+    const int aPriority              = 0,
+    const bool ComesFromDecomposition = false);
 
   //! Constructs an owner specification framework defined
   //! by the shape aShape, the selectable object theOrigin
@@ -60,9 +61,9 @@ public:
   //! framework. If more than one owner are detected
   //! during dynamic selection, the one with the highest
   //! priority is the one stored.
-  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape&                            aShape,
+  Standard_EXPORT StdSelect_BRepOwner(const TopoDS_Shape&                       aShape,
                                       const occ::handle<SelectMgr_SelectableObject>& theOrigin,
-                                      const int                                      aPriority = 0,
+                                      const int                    aPriority = 0,
                                       const bool FromDecomposition = false);
 
   //! returns False if no shape was set
@@ -94,13 +95,13 @@ public:
 
   //! Returns true if an object with the selection mode
   //! aMode is highlighted in the presentation manager aPM.
-  Standard_EXPORT virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& aPM,
-                                           const int aMode = 0) const override;
+  Standard_EXPORT virtual bool IsHilighted(
+    const occ::handle<PrsMgr_PresentationManager>& aPM,
+    const int                    aMode = 0) const override;
 
-  Standard_EXPORT virtual void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePM,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode) override;
+  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePM,
+                                                const occ::handle<Prs3d_Drawer>&               theStyle,
+                                                const int theMode) override;
 
   //! Removes highlighting from the type of shape
   //! identified the selection mode aMode in the presentation manager aPM.
@@ -119,16 +120,16 @@ public:
   Standard_EXPORT virtual void UpdateHighlightTrsf(
     const occ::handle<V3d_Viewer>&                 theViewer,
     const occ::handle<PrsMgr_PresentationManager>& theManager,
-    const int                                      theDispMode) override;
+    const int                    theDispMode) override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
-  TopoDS_Shape                 myShape;
+  TopoDS_Shape            myShape;
   occ::handle<StdSelect_Shape> myPrsSh;
-  int                          myCurMode;
+  int        myCurMode;
 };
 
 #endif // _StdSelect_BRepOwner_HeaderFile

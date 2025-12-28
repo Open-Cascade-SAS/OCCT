@@ -26,13 +26,13 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Plane, IGESData_IGESEntity)
 
 IGESGeom_Plane::IGESGeom_Plane() {}
 
-void IGESGeom_Plane::Init(const double                            A,
-                          const double                            B,
-                          const double                            C,
-                          const double                            D,
+void IGESGeom_Plane::Init(const double                A,
+                          const double                B,
+                          const double                C,
+                          const double                D,
                           const occ::handle<IGESData_IGESEntity>& aCurve,
-                          const gp_XYZ&                           attach,
-                          const double                            aSize)
+                          const gp_XYZ&                      attach,
+                          const double                aSize)
 {
   theA      = A;
   theB      = B;
@@ -55,7 +55,10 @@ void IGESGeom_Plane::SetFormNumber(const int form)
   InitTypeAndForm(108, fn);
 }
 
-void IGESGeom_Plane::Equation(double& A, double& B, double& C, double& D) const
+void IGESGeom_Plane::Equation(double& A,
+                              double& B,
+                              double& C,
+                              double& D) const
 {
   A = theA;
   B = theB;
@@ -106,7 +109,10 @@ double IGESGeom_Plane::SymbolSize() const
   return theSize;
 }
 
-void IGESGeom_Plane::TransformedEquation(double& A, double& B, double& C, double& D) const
+void IGESGeom_Plane::TransformedEquation(double& A,
+                                         double& B,
+                                         double& C,
+                                         double& D) const
 {
   // eqn of plane AX + BY + CZ = D
 

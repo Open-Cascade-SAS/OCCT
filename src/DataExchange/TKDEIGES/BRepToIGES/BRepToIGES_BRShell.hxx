@@ -61,6 +61,7 @@ public:
   Standard_EXPORT occ::handle<IGESData_IGESEntity> TransferFace(
     const TopoDS_Face&           start,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
+
 };
 
 #endif // _BRepToIGES_BRShell_HeaderFile

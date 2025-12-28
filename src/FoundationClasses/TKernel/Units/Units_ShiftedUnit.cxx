@@ -27,10 +27,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Units_ShiftedUnit, Units_Unit)
 
 //=================================================================================================
 
-Units_ShiftedUnit::Units_ShiftedUnit(const char*                        aname,
-                                     const char*                        asymbol,
-                                     const double                       avalue,
-                                     const double                       amove,
+Units_ShiftedUnit::Units_ShiftedUnit(const char*        aname,
+                                     const char*        asymbol,
+                                     const double           avalue,
+                                     const double           amove,
                                      const occ::handle<Units_Quantity>& aquantity)
     : Units_Unit(aname, asymbol, avalue, aquantity)
 {
@@ -85,7 +85,7 @@ occ::handle<Units_Token> Units_ShiftedUnit::Token() const
 //			     const int alevel) const
 void Units_ShiftedUnit::Dump(const int, const int) const
 {
-  int                     index;
+  int        index;
   TCollection_AsciiString string;
 
   //  int i;

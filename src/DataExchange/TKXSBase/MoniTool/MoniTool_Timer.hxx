@@ -80,10 +80,7 @@ public:
   static void Stop(const char* name);
 
   //! Returns map of timers
-  Standard_EXPORT static NCollection_DataMap<const char*,
-                                             occ::handle<MoniTool_Timer>,
-                                             Standard_CStringHasher>&
-    Dictionary();
+  Standard_EXPORT static NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& Dictionary();
 
   //! Clears map of timers
   Standard_EXPORT static void ClearTimers();
@@ -113,10 +110,10 @@ private:
   //! side effects of operations with current one
   Standard_EXPORT void AmendStop();
 
-  OSD_Timer                   myTimer;
-  int                         myCount;
-  int                         myNesting;
-  double                      myAmend;
+  OSD_Timer              myTimer;
+  int       myCount;
+  int       myNesting;
+  double          myAmend;
   occ::handle<MoniTool_Timer> myPrev;
   occ::handle<MoniTool_Timer> myNext;
 };

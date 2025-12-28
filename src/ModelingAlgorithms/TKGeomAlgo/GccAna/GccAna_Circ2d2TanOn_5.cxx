@@ -36,10 +36,10 @@
 //   L1 with OnLine and the radius the distance between Point1 and the point   +
 //   calculated above.                                                   +
 //=========================================================================
-GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d& Point1,
-                                         const gp_Pnt2d& Point2,
-                                         const gp_Lin2d& OnLine,
-                                         const double    Tolerance)
+GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d&     Point1,
+                                         const gp_Pnt2d&     Point2,
+                                         const gp_Lin2d&     OnLine,
+                                         const double Tolerance)
     : cirsol(1, 2),
       qualifier1(1, 2),
       qualifier2(1, 2),
@@ -59,8 +59,8 @@ GccAna_Circ2d2TanOn::GccAna_Circ2d2TanOn(const gp_Pnt2d& Point1,
   WellDone = false;
   NbrSol   = 0;
 
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   dist = Point1.Distance(Point2);
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double dist = Point1.Distance(Point2);
   if (dist < std::abs(Tolerance))
   {
     WellDone = true;

@@ -52,9 +52,10 @@ public:
 
 protected:
   //! Performs processing of edges of the given model.
-  Standard_EXPORT virtual bool performInternal(const occ::handle<IMeshData_Model>& theModel,
-                                               const IMeshTools_Parameters&        theParameters,
-                                               const Message_ProgressRange& theRange) override;
+  Standard_EXPORT virtual bool performInternal(
+    const occ::handle<IMeshData_Model>& theModel,
+    const IMeshTools_Parameters&   theParameters,
+    const Message_ProgressRange&   theRange) override;
 
 private:
   //! Checks existing discretization of the face and updates data model.
@@ -79,16 +80,16 @@ private:
   //! identify closest point in case of single vertex shared between both
   //! ends of edge (degenerative edge)
   bool connectClosestPoints(const IMeshData::IPCurveHandle& thePrevDEdge,
-                            const IMeshData::IPCurveHandle& theCurrDEdge,
-                            const IMeshData::IPCurveHandle& theNextDEdge) const;
+                                        const IMeshData::IPCurveHandle& theCurrDEdge,
+                                        const IMeshData::IPCurveHandle& theNextDEdge) const;
 
   //! Chooses the most closest point to reference one from the given pair.
   //! Returns square distance between reference point and closest one as
   //! well as pointer to closest point.
   double closestPoint(gp_Pnt2d&  theRefPnt,
-                      gp_Pnt2d&  theFristPnt,
-                      gp_Pnt2d&  theSecondPnt,
-                      gp_Pnt2d*& theClosestPnt) const
+                             gp_Pnt2d&  theFristPnt,
+                             gp_Pnt2d&  theSecondPnt,
+                             gp_Pnt2d*& theClosestPnt) const
   {
     // Find the most closest end-points.
     const double aSqDist1 = theRefPnt.SquareDistance(theFristPnt);
@@ -107,15 +108,17 @@ private:
   //! Returns square distance between reference point and closest one as
   //! well as pointer to closest point.
   double closestPoints(gp_Pnt2d&  theFirstPnt1,
-                       gp_Pnt2d&  theSecondPnt1,
-                       gp_Pnt2d&  theFirstPnt2,
-                       gp_Pnt2d&  theSecondPnt2,
-                       gp_Pnt2d*& theClosestPnt1,
-                       gp_Pnt2d*& theClosestPnt2) const
+                              gp_Pnt2d&  theSecondPnt1,
+                              gp_Pnt2d&  theFirstPnt2,
+                              gp_Pnt2d&  theSecondPnt2,
+                              gp_Pnt2d*& theClosestPnt1,
+                              gp_Pnt2d*& theClosestPnt2) const
   {
-    gp_Pnt2d *   aCurrPrevUV1 = NULL, *aCurrPrevUV2 = NULL;
-    const double aSqDist1 = closestPoint(theFirstPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV1);
-    const double aSqDist2 = closestPoint(theSecondPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV2);
+    gp_Pnt2d *          aCurrPrevUV1 = NULL, *aCurrPrevUV2 = NULL;
+    const double aSqDist1 =
+      closestPoint(theFirstPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV1);
+    const double aSqDist2 =
+      closestPoint(theSecondPnt1, theFirstPnt2, theSecondPnt2, aCurrPrevUV2);
     if (aSqDist1 - aSqDist2 < gp::Resolution())
     {
       theClosestPnt1 = &theFirstPnt1;
@@ -155,13 +158,16 @@ private:
   void fixFaceBoundaries(const IMeshData::IFaceHandle& theDFace) const;
 
   //! Returns True if check can be done in parallel.
-  bool isParallel() const { return (myParameters.InParallel && myModel->FacesNb() > 1); }
+  bool isParallel() const
+  {
+    return (myParameters.InParallel && myModel->FacesNb() > 1);
+  }
 
   //! Collects unique edges to be updated from face map. Clears data stored in face map.
   bool popEdgesToUpdate(IMeshData::MapOfIEdgePtr& theEdgesToUpdate);
 
 private:
-  occ::handle<IMeshData_Model>                     myModel;
+  occ::handle<IMeshData_Model>                          myModel;
   IMeshTools_Parameters                            myParameters;
   Handle(IMeshData::DMapOfIFacePtrsMapOfIEdgePtrs) myFaceIntersectingEdges;
 };

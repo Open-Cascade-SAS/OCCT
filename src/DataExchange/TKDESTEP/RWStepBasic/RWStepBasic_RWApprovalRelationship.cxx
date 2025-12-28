@@ -24,7 +24,7 @@ RWStepBasic_RWApprovalRelationship::RWStepBasic_RWApprovalRelationship() {}
 
 void RWStepBasic_RWApprovalRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&        data,
-  const int                                          num,
+  const int                        num,
   occ::handle<Interface_Check>&                      ach,
   const occ::handle<StepBasic_ApprovalRelationship>& ent) const
 {
@@ -76,7 +76,7 @@ void RWStepBasic_RWApprovalRelationship::ReadStep(
 }
 
 void RWStepBasic_RWApprovalRelationship::WriteStep(
-  StepData_StepWriter&                               SW,
+  StepData_StepWriter&                          SW,
   const occ::handle<StepBasic_ApprovalRelationship>& ent) const
 {
 
@@ -97,9 +97,8 @@ void RWStepBasic_RWApprovalRelationship::WriteStep(
   SW.Send(ent->RelatedApproval());
 }
 
-void RWStepBasic_RWApprovalRelationship::Share(
-  const occ::handle<StepBasic_ApprovalRelationship>& ent,
-  Interface_EntityIterator&                          iter) const
+void RWStepBasic_RWApprovalRelationship::Share(const occ::handle<StepBasic_ApprovalRelationship>& ent,
+                                               Interface_EntityIterator& iter) const
 {
 
   iter.GetOneItem(ent->RelatingApproval());

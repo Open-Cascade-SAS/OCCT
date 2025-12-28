@@ -30,7 +30,7 @@ IGESSelect_IGESName::IGESSelect_IGESName()
 }
 
 const char* IGESSelect_IGESName::Value(const occ::handle<Standard_Transient>& ent,
-                                       const occ::handle<Interface_InterfaceModel>& /*model*/) const
+                                            const occ::handle<Interface_InterfaceModel>& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity, igesent, ent);
   if (igesent.IsNull())

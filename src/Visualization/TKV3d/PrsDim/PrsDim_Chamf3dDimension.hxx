@@ -33,7 +33,7 @@ public:
   //! This object is defined by the shape aFShape, the
   //! dimension aVal and the text aText.
   Standard_EXPORT PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                          const double                      aVal,
+                                          const double               aVal,
                                           const TCollection_ExtendedString& aText);
 
   //! Constructs a display object for 3D chamfers.
@@ -42,14 +42,17 @@ public:
   //! the chamfer aPosition, the type of arrow aSymbolPrs
   //! with the size anArrowSize.
   Standard_EXPORT PrsDim_Chamf3dDimension(const TopoDS_Shape&               aFShape,
-                                          const double                      aVal,
+                                          const double               aVal,
                                           const TCollection_ExtendedString& aText,
                                           const gp_Pnt&                     aPosition,
                                           const DsgPrs_ArrowSide            aSymbolPrs,
-                                          const double                      anArrowSize = 0.0);
+                                          const double               anArrowSize = 0.0);
 
   //! Indicates that we are concerned with a 3d length.
-  virtual PrsDim_KindOfDimension KindOfDimension() const override { return PrsDim_KOD_LENGTH; }
+  virtual PrsDim_KindOfDimension KindOfDimension() const override
+  {
+    return PrsDim_KOD_LENGTH;
+  }
 
   //! Returns true if the 3d chamfer dimension is movable.
   virtual bool IsMovable() const override { return true; }

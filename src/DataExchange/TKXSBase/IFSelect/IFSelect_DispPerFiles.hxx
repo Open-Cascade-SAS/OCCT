@@ -55,7 +55,9 @@ public:
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   //! Returns True, maximum count is given as CountValue
-  Standard_EXPORT virtual bool LimitedMax(const int nbent, int& max) const override;
+  Standard_EXPORT virtual bool LimitedMax(const int nbent,
+                                                      int&      max) const
+    override;
 
   //! Computes the list of produced Packets. It defines Packets in
   //! order to have <Count> Packets, except if the input count of

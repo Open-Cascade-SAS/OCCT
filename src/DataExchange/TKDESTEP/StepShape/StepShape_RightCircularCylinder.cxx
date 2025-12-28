@@ -21,8 +21,8 @@ StepShape_RightCircularCylinder::StepShape_RightCircularCylinder() {}
 
 void StepShape_RightCircularCylinder::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                            const occ::handle<StepGeom_Axis1Placement>&  aPosition,
-                                           const double                                 aHeight,
-                                           const double                                 aRadius)
+                                           const double                     aHeight,
+                                           const double                     aRadius)
 {
   // --- classe own fields ---
   position = aPosition;
@@ -32,8 +32,7 @@ void StepShape_RightCircularCylinder::Init(const occ::handle<TCollection_HAsciiS
   StepRepr_RepresentationItem::Init(aName);
 }
 
-void StepShape_RightCircularCylinder::SetPosition(
-  const occ::handle<StepGeom_Axis1Placement>& aPosition)
+void StepShape_RightCircularCylinder::SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition)
 {
   position = aPosition;
 }

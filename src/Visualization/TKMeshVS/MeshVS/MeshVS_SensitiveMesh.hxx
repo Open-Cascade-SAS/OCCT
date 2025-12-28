@@ -26,7 +26,7 @@ class MeshVS_SensitiveMesh : public Select3D_SensitiveEntity
 {
 public:
   Standard_EXPORT MeshVS_SensitiveMesh(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                       const int                                 theMode = 0);
+                                       const int               theMode = 0);
 
   Standard_EXPORT int GetMode() const;
 
@@ -34,7 +34,7 @@ public:
 
   //! Checks whether sensitive overlaps current selecting volume.
   virtual bool Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                       SelectBasics_PickResult&             thePickResult) override
+                                   SelectBasics_PickResult& thePickResult) override
   {
     (void)theMgr;
     (void)thePickResult;
@@ -53,7 +53,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(MeshVS_SensitiveMesh, Select3D_SensitiveEntity)
 
 private:
-  int               myMode;
+  int  myMode;
   Select3D_BndBox3d myBndBox;
 };
 

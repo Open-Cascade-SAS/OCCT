@@ -27,6 +27,8 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Shape;
 
 //! Encapsulation of IndexedDataMapOfShapeListOfShape.
@@ -48,18 +50,17 @@ public:
 
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& FindFromKey(const TopoDS_Shape& S) const;
 
-  const NCollection_List<TopoDS_Shape>& operator()(const TopoDS_Shape& S) const
-  {
-    return FindFromKey(S);
-  }
+  const NCollection_List<TopoDS_Shape>& operator()(const TopoDS_Shape& S) const { return FindFromKey(S); }
 
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& FindFromIndex(const int I) const;
 
-  const NCollection_List<TopoDS_Shape>& operator()(const int I) const { return FindFromIndex(I); }
+  const NCollection_List<TopoDS_Shape>& operator()(const int I) const
+  {
+    return FindFromIndex(I);
+  }
 
 private:
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 
 #endif // _ChFiDS_Map_HeaderFile

@@ -38,10 +38,10 @@ public:
   /**
    * Constructor
    */
-  inline VrmlData_Texture(const VrmlData_Scene& theScene,
-                          const char*           theName,
-                          const bool            theRepeatS = false,
-                          const bool            theRepeatT = false)
+  inline VrmlData_Texture(const VrmlData_Scene&  theScene,
+                          const char*            theName,
+                          const bool theRepeatS = false,
+                          const bool theRepeatT = false)
       : VrmlData_Node(theScene, theName),
         myRepeatS(theRepeatS),
         myRepeatT(theRepeatT)

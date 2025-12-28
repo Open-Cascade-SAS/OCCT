@@ -43,15 +43,13 @@ public:
   //! the curve C and the surface S.
   //! Warning
   //! Use function IsDone to verify that the intersections are computed successfully.
-  Standard_EXPORT GeomAPI_IntCS(const occ::handle<Geom_Curve>&   C,
-                                const occ::handle<Geom_Surface>& S);
+  Standard_EXPORT GeomAPI_IntCS(const occ::handle<Geom_Curve>& C, const occ::handle<Geom_Surface>& S);
 
   //! This function Initializes an algorithm with the curve C and the
   //! surface S and computes the intersections between C and S.
   //! Warning
   //! Use function IsDone to verify that the intersections are computed successfully.
-  Standard_EXPORT void Perform(const occ::handle<Geom_Curve>&   C,
-                               const occ::handle<Geom_Surface>& S);
+  Standard_EXPORT void Perform(const occ::handle<Geom_Curve>& C, const occ::handle<Geom_Surface>& S);
 
   //! Returns true if the intersections are successfully computed.
   Standard_EXPORT bool IsDone() const;
@@ -74,7 +72,10 @@ public:
   //! StdFail_NotDone if intersection algorithm fails or is not initialized.
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of computed intersection points.
-  Standard_EXPORT void Parameters(const int Index, double& U, double& V, double& W) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U,
+                                  double&         V,
+                                  double&         W) const;
 
   //! Returns the number of computed
   //! intersection segments in case of tangential intersection.
@@ -99,14 +100,14 @@ public:
   //! Standard_OutOfRange if Index is not in the range [ 1,NbSegments ],
   //! where NbSegments is the number of computed intersection segments.
   Standard_EXPORT void Parameters(const int Index,
-                                  double&   U1,
-                                  double&   V1,
-                                  double&   U2,
-                                  double&   V2) const;
+                                  double&         U1,
+                                  double&         V1,
+                                  double&         U2,
+                                  double&         V2) const;
 
 private:
-  occ::handle<Geom_Curve> myCurve;
-  IntCurveSurface_HInter  myIntCS;
+  occ::handle<Geom_Curve>     myCurve;
+  IntCurveSurface_HInter myIntCS;
 };
 
 #endif // _GeomAPI_IntCS_HeaderFile

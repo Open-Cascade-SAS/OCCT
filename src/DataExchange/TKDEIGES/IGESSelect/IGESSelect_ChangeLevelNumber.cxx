@@ -62,7 +62,7 @@ void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
                                               const occ::handle<IGESData_IGESModel>&,
                                               Interface_CopyTool&) const
 {
-  int  oldl  = 0;
+  int oldl  = 0;
   bool yaold = HasOldNumber();
   if (yaold)
     oldl = theold->Value();
@@ -93,8 +93,8 @@ void IGESSelect_ChangeLevelNumber::Performing(IFSelect_ContextModif& ctx,
 
 TCollection_AsciiString IGESSelect_ChangeLevelNumber::Label() const
 {
-  char labl[100];
-  int  oldl  = 0;
+  char             labl[100];
+  int oldl  = 0;
   bool yaold = HasOldNumber();
   if (yaold)
     oldl = theold->Value();

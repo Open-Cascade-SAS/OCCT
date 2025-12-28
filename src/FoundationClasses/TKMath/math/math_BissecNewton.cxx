@@ -36,14 +36,14 @@ math_BissecNewton::~math_BissecNewton() {}
 //=================================================================================================
 
 void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
-                                const double                 Bound1,
-                                const double                 Bound2,
-                                const int                    NbIterations)
+                                const double          Bound1,
+                                const double          Bound2,
+                                const int       NbIterations)
 {
-  bool   GOOD;
-  int    j;
-  double dxold, fh, fl;
-  double temp, xh, xl;
+  bool GOOD;
+  int j;
+  double    dxold, fh, fl;
+  double    temp, xh, xl;
 
   GOOD = F.Values(Bound1, fl, df);
   if (!GOOD)

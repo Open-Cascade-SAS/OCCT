@@ -42,7 +42,7 @@ public:
 
   //! Create the projection of a point <P> on a surface
   //! <Surface>
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const occ::handle<Geom_Surface>& Surface,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
@@ -51,76 +51,76 @@ public:
   //! Create the projection of a point <P> on a surface
   //! <Surface>. The solution are computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const occ::handle<Geom_Surface>& Surface,
-                                             const double                     Tolerance,
+                                             const double         Tolerance,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const occ::handle<Geom_Surface>& Surface,
-                                             const double                     Umin,
-                                             const double                     Usup,
-                                             const double                     Vmin,
-                                             const double                     Vsup,
-                                             const double                     Tolerance,
+                                             const double         Umin,
+                                             const double         Usup,
+                                             const double         Vmin,
+                                             const double         Vsup,
+                                             const double         Tolerance,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
   //! Init the projection of a point <P> on a surface
   //! <Surface>
-  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&                    P,
+  Standard_EXPORT GeomAPI_ProjectPointOnSurf(const gp_Pnt&               P,
                                              const occ::handle<Geom_Surface>& Surface,
-                                             const double                     Umin,
-                                             const double                     Usup,
-                                             const double                     Vmin,
-                                             const double                     Vsup,
+                                             const double         Umin,
+                                             const double         Usup,
+                                             const double         Vmin,
+                                             const double         Vsup,
                                              const Extrema_ExtAlgo Algo = Extrema_ExtAlgo_Grad);
 
-  Standard_EXPORT void Init(const gp_Pnt&                    P,
+  Standard_EXPORT void Init(const gp_Pnt&               P,
                             const occ::handle<Geom_Surface>& Surface,
-                            const double                     Tolerance,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const double         Tolerance,
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
   //! Init the projection of a point <P> on a surface
   //! <Surface>. The solution are computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
-  Standard_EXPORT void Init(const gp_Pnt&                    P,
+  Standard_EXPORT void Init(const gp_Pnt&               P,
                             const occ::handle<Geom_Surface>& Surface,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
-  Standard_EXPORT void Init(const gp_Pnt&                    P,
+  Standard_EXPORT void Init(const gp_Pnt&               P,
                             const occ::handle<Geom_Surface>& Surface,
-                            const double                     Umin,
-                            const double                     Usup,
-                            const double                     Vmin,
-                            const double                     Vsup,
-                            const double                     Tolerance,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const double         Umin,
+                            const double         Usup,
+                            const double         Vmin,
+                            const double         Vsup,
+                            const double         Tolerance,
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
   //! Init the projection for many points on a surface
   //! <Surface>. The solutions will be computed in the domain
   //! [Umin,Usup] [Vmin,Vsup] of the surface.
-  Standard_EXPORT void Init(const gp_Pnt&                    P,
+  Standard_EXPORT void Init(const gp_Pnt&               P,
                             const occ::handle<Geom_Surface>& Surface,
-                            const double                     Umin,
-                            const double                     Usup,
-                            const double                     Vmin,
-                            const double                     Vsup,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const double         Umin,
+                            const double         Usup,
+                            const double         Vmin,
+                            const double         Vsup,
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& Surface,
-                            const double                     Umin,
-                            const double                     Usup,
-                            const double                     Vmin,
-                            const double                     Vsup,
-                            const double                     Tolerance,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const double         Umin,
+                            const double         Usup,
+                            const double         Vmin,
+                            const double         Vsup,
+                            const double         Tolerance,
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& Surface,
-                            const double                     Umin,
-                            const double                     Usup,
-                            const double                     Vmin,
-                            const double                     Vsup,
-                            const Extrema_ExtAlgo            Algo = Extrema_ExtAlgo_Grad);
+                            const double         Umin,
+                            const double         Usup,
+                            const double         Vmin,
+                            const double         Vsup,
+                            const Extrema_ExtAlgo       Algo = Extrema_ExtAlgo_Grad);
 
   //! Sets the Extrema search algorithm - Grad or Tree.
   //! By default the Extrema is initialized with Grad algorithm.
@@ -138,7 +138,7 @@ public:
   //! Returns the number of computed orthogonal projection points.
   //! Note: if projection fails, NbPoints returns 0.
   Standard_EXPORT int NbPoints() const;
-  Standard_EXPORT     operator int() const;
+  Standard_EXPORT                  operator int() const;
 
   //! Returns the orthogonal projection
   //! on the surface. Index is a number of a computed point.
@@ -153,7 +153,9 @@ public:
   //! Exceptions
   //! Standard_OutOfRange if Index is not in the range [ 1,NbPoints ], where
   //! NbPoints is the number of solution points.
-  Standard_EXPORT void Parameters(const int Index, double& U, double& V) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U,
+                                  double&         V) const;
 
   //! Computes the distance between the
   //! point and its orthogonal projection on the surface. Index is a number
@@ -181,7 +183,7 @@ public:
   //! Exceptions
   //! StdFail_NotDone if projection fails.
   Standard_EXPORT double LowerDistance() const;
-  Standard_EXPORT        operator double() const;
+  Standard_EXPORT               operator double() const;
 
   //! return the algorithmic object from Extrema
   const Extrema_ExtPS& Extrema() const;
@@ -189,8 +191,8 @@ public:
 private:
   Standard_EXPORT void Init();
 
-  bool                myIsDone;
-  int                 myIndex;
+  bool    myIsDone;
+  int    myIndex;
   Extrema_ExtPS       myExtPS;
   GeomAdaptor_Surface myGeomAdaptor;
 };

@@ -36,7 +36,7 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleParameterLine();
 
   Standard_EXPORT void Init(
-    const occ::handle<StepVisual_CurveStyle>&                                aStyleOfParameterLines,
+    const occ::handle<StepVisual_CurveStyle>&                    aStyleOfParameterLines,
     const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts);
 
   Standard_EXPORT void SetStyleOfParameterLines(
@@ -47,17 +47,17 @@ public:
   Standard_EXPORT void SetDirectionCounts(
     const occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>& aDirectionCounts);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>>
-                  DirectionCounts() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> DirectionCounts() const;
 
-  Standard_EXPORT StepVisual_DirectionCountSelect DirectionCountsValue(const int num) const;
+  Standard_EXPORT StepVisual_DirectionCountSelect
+    DirectionCountsValue(const int num) const;
 
   Standard_EXPORT int NbDirectionCounts() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine, Standard_Transient)
 
 private:
-  occ::handle<StepVisual_CurveStyle>                                styleOfParameterLines;
+  occ::handle<StepVisual_CurveStyle>                    styleOfParameterLines;
   occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> directionCounts;
 };
 

@@ -23,9 +23,12 @@
 
 #include <TopoDS_Shape.hxx>
 #include <gp_Vec.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 #include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 class Geom_Curve;
@@ -62,14 +65,14 @@ public:
 private:
   Standard_EXPORT void IntPerf();
 
-  TopoDS_Shape myBase;
-  gp_Vec       myVec;
-  gp_Vec       myTra;
-  bool         myIsTrans;
-  bool         myDone;
-  TopoDS_Shape myRes;
-  TopoDS_Shape myFirstShape;
-  TopoDS_Shape myLastShape;
+  TopoDS_Shape                       myBase;
+  gp_Vec                             myVec;
+  gp_Vec                             myTra;
+  bool                   myIsTrans;
+  bool                   myDone;
+  TopoDS_Shape                       myRes;
+  TopoDS_Shape                       myFirstShape;
+  TopoDS_Shape                       myLastShape;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
 };
 

@@ -52,9 +52,9 @@ public:
   //!
   //! init gives an initial value. If it is not given, the
   //! TypedValue begins as "not set", its value is empty
-  Standard_EXPORT Interface_TypedValue(const char*               name,
+  Standard_EXPORT Interface_TypedValue(const char*    name,
                                        const Interface_ParamType type = Interface_ParamText,
-                                       const char*               init = "");
+                                       const char*    init = "");
 
   //! Returns the type
   //! I.E. calls ValueType then makes correspondence between
@@ -71,16 +71,16 @@ public:
   DEFINE_STANDARD_RTTIEXT(Interface_TypedValue, MoniTool_TypedValue)
 
 private:
-  TCollection_AsciiString                                   thename;
-  TCollection_AsciiString                                   thedef;
-  TCollection_AsciiString                                   thelabel;
-  occ::handle<Standard_Type>                                theotyp;
-  TCollection_AsciiString                                   theunidef;
-  occ::handle<NCollection_HArray1<TCollection_AsciiString>> theenums;
-  NCollection_DataMap<TCollection_AsciiString, int>         theeadds;
-  TCollection_AsciiString                                   thesatisn;
-  occ::handle<TCollection_HAsciiString>                     thehval;
-  occ::handle<Standard_Transient>                           theoval;
+  TCollection_AsciiString                                        thename;
+  TCollection_AsciiString                                        thedef;
+  TCollection_AsciiString                                        thelabel;
+  occ::handle<Standard_Type>                                          theotyp;
+  TCollection_AsciiString                                        theunidef;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>>                           theenums;
+  NCollection_DataMap<TCollection_AsciiString, int> theeadds;
+  TCollection_AsciiString                                        thesatisn;
+  occ::handle<TCollection_HAsciiString>                               thehval;
+  occ::handle<Standard_Transient>                                     theoval;
 };
 
 #endif // _Interface_TypedValue_HeaderFile

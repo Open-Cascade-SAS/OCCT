@@ -30,7 +30,7 @@ RWStepShape_RWDimensionalSizeWithPath::RWStepShape_RWDimensionalSizeWithPath() {
 
 void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                                             num,
+  const int                           num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepShape_DimensionalSizeWithPath>& ent) const
 {
@@ -63,7 +63,7 @@ void RWStepShape_RWDimensionalSizeWithPath::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalSizeWithPath::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepShape_DimensionalSizeWithPath>& ent) const
 {
 
@@ -82,7 +82,7 @@ void RWStepShape_RWDimensionalSizeWithPath::WriteStep(
 
 void RWStepShape_RWDimensionalSizeWithPath::Share(
   const occ::handle<StepShape_DimensionalSizeWithPath>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                        iter) const
 {
 
   // Inherited fields of DimensionalSize

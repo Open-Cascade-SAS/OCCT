@@ -26,7 +26,7 @@ void StepData_ECDescr::Add(const occ::handle<StepData_ESDescr>& member)
 {
   if (member.IsNull())
     return;
-  const char*             name = member->TypeName();
+  const char*        name = member->TypeName();
   TCollection_AsciiString nam(name);
   for (int i = NbMembers(); i > 0; i--)
   {
@@ -52,9 +52,8 @@ occ::handle<StepData_ESDescr> StepData_ECDescr::Member(const int num) const
 
 occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_ECDescr::TypeList() const
 {
-  occ::handle<NCollection_HSequence<TCollection_AsciiString>> tl =
-    new NCollection_HSequence<TCollection_AsciiString>();
-  int i, nb = NbMembers();
+  occ::handle<NCollection_HSequence<TCollection_AsciiString>> tl = new NCollection_HSequence<TCollection_AsciiString>();
+  int                       i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     TCollection_AsciiString nam(Member(i)->TypeName());
@@ -83,7 +82,7 @@ bool StepData_ECDescr::IsComplex() const
 occ::handle<StepData_Described> StepData_ECDescr::NewEntity() const
 {
   occ::handle<StepData_Plex> ent = new StepData_Plex(this);
-  int                        i, nb = NbMembers();
+  int      i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<StepData_ESDescr> member = Member(i);

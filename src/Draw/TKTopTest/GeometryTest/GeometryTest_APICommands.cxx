@@ -35,6 +35,8 @@
 #include <Message.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
 #include <stdio.h>
@@ -45,13 +47,13 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-static void showProjSolution(Draw_Interpretor& di,
-                             const int         i,
-                             const gp_Pnt&     P,
-                             const gp_Pnt&     P1,
-                             const double      U,
-                             const double      V,
-                             const bool        isSurface)
+static void showProjSolution(Draw_Interpretor&      di,
+                             const int i,
+                             const gp_Pnt&          P,
+                             const gp_Pnt&          P1,
+                             const double    U,
+                             const double    V,
+                             const bool isSurface)
 {
   char name[100];
   Sprintf(name, "%s%d", "ext_", i);
@@ -91,7 +93,7 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
 
   occ::handle<Geom_Curve>   GC = DrawTrSurf::GetCurve(a[1]);
   occ::handle<Geom_Surface> GS;
-  Extrema_ExtAlgo           aProjAlgo = Extrema_ExtAlgo_Grad;
+  Extrema_ExtAlgo      aProjAlgo = Extrema_ExtAlgo_Grad;
 
   if (n == 6 && a[5][0] == 't')
     aProjAlgo = Extrema_ExtAlgo_Tree;
@@ -136,7 +138,7 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
       }
 
       const Extrema_POnSurf& aP = aProjector.Point();
-      double                 UU, VV;
+      double          UU, VV;
       aP.Parameter(UU, VV);
       showProjSolution(di, 1, P, aP.Value(), UU, VV, true);
     }
@@ -153,7 +155,7 @@ static int proj(Draw_Interpretor& di, int n, const char** a)
 
     for (int i = 1; i <= proj.NbPoints(); i++)
     {
-      gp_Pnt P1 = proj.Point(i);
+      gp_Pnt        P1 = proj.Point(i);
       double UU = proj.Parameter(i);
       showProjSolution(di, i, P, P1, UU, UU, false);
     }
@@ -170,7 +172,7 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
     return 1;
 
   occ::handle<Geom_Curve> GC;
-  int                     Nb = Draw::Atoi(a[2]);
+  int   Nb = Draw::Atoi(a[2]);
 
   NCollection_Array1<gp_Pnt> Points(1, Nb);
 
@@ -183,8 +185,8 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
       return 1;
 
     double U, U1, U2;
-    U1           = GC->FirstParameter();
-    U2           = GC->LastParameter();
+    U1                  = GC->FirstParameter();
+    U2                  = GC->LastParameter();
     double Delta = (U2 - U1) / (Nb - 1);
     for (int i = 1; i <= Nb; i++)
     {
@@ -215,12 +217,12 @@ static int appro(Draw_Interpretor& di, int n, const char** a)
     }
   }
   dout.Flush();
-  int    Dmin  = 3;
-  int    Dmax  = 8;
-  double Tol3d = 1.e-3;
+  int Dmin  = 3;
+  int Dmax  = 8;
+  double    Tol3d = 1.e-3;
 
   occ::handle<Geom_BSplineCurve> TheCurve;
-  GeomAPI_PointsToBSpline        aPointToBSpline(Points, Dmin, Dmax, GeomAbs_C2, Tol3d);
+  GeomAPI_PointsToBSpline   aPointToBSpline(Points, Dmin, Dmax, GeomAbs_C2, Tol3d);
   TheCurve = aPointToBSpline.Curve();
 
   DrawTrSurf::Set(a[1], TheCurve);
@@ -236,9 +238,9 @@ static int grilapp(Draw_Interpretor& di, int n, const char** a)
   if (n < 12)
     return 1;
 
-  int                        i, j;
-  int                        Nu = Draw::Atoi(a[2]);
-  int                        Nv = Draw::Atoi(a[3]);
+  int     i, j;
+  int     Nu = Draw::Atoi(a[2]);
+  int     Nv = Draw::Atoi(a[3]);
   NCollection_Array2<double> ZPoints(1, Nu, 1, Nv);
 
   double X0 = Draw::Atof(a[4]);
@@ -273,12 +275,12 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
   if (n < 5)
     return 1;
 
-  int                        i, j;
-  int                        Nu = Draw::Atoi(a[2]);
-  int                        Nv = Draw::Atoi(a[3]);
+  int   i, j;
+  int   Nu = Draw::Atoi(a[2]);
+  int   Nv = Draw::Atoi(a[3]);
   NCollection_Array2<gp_Pnt> Points(1, Nu, 1, Nv);
-  bool                       IsPeriodic = false;
-  bool                       RemoveLast = false;
+  bool   IsPeriodic = false;
+  bool   RemoveLast = false;
 
   if (n >= 5 && n <= 6)
   {
@@ -331,8 +333,8 @@ static int surfapp(Draw_Interpretor& di, int n, const char** a)
       }
     }
   }
-  char name[100];
-  int  Count = 1;
+  char             name[100];
+  int Count = 1;
   for (j = 1; j <= Nv; j++)
   {
     for (i = 1; i <= Nu; i++)
@@ -381,9 +383,9 @@ static int surfint(Draw_Interpretor& di, int n, const char** a)
   occ::handle<Geom_Surface> Surf = DrawTrSurf::GetSurface(a[2]);
   if (Surf.IsNull())
     return 1;
-  int                        i, j;
-  int                        Nu = Draw::Atoi(a[3]);
-  int                        Nv = Draw::Atoi(a[4]);
+  int   i, j;
+  int   Nu = Draw::Atoi(a[3]);
+  int   Nv = Draw::Atoi(a[4]);
   NCollection_Array2<gp_Pnt> Points(1, Nu, 1, Nv);
 
   double U, V, U1, V1, U2, V2;
@@ -398,8 +400,8 @@ static int surfint(Draw_Interpretor& di, int n, const char** a)
     }
   }
 
-  char name[100];
-  int  Count = 1;
+  char             name[100];
+  int Count = 1;
   for (j = 1; j <= Nv; j++)
   {
     for (i = 1; i <= Nu; i++)
@@ -474,8 +476,8 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
   occ::handle<Geom_Curve>   GC1, GC2;
   occ::handle<Geom_Surface> GS1, GS2;
 
-  bool   isInfinitySolutions = false;
-  double aMinDist            = RealLast();
+  bool isInfinitySolutions = false;
+  double    aMinDist            = RealLast();
 
   double U1f, U1l, U2f, U2l, V1f = 0., V1l = 0., V2f = 0., V2l = 0.;
 
@@ -508,7 +510,7 @@ static int extrema(Draw_Interpretor& di, int n, const char** a)
     U2l = GC2->LastParameter();
   }
 
-  NCollection_Vector<gp_Pnt> aPnts1, aPnts2;
+  NCollection_Vector<gp_Pnt>        aPnts1, aPnts2;
   NCollection_Vector<double> aPrms[4];
   if (!GC1.IsNull() && !GC2.IsNull())
   {

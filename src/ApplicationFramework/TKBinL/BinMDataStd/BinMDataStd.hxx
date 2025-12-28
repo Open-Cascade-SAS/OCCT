@@ -38,14 +38,14 @@ public:
 
   template <class T>
   static void SetAttributeID(const BinObjMgt_Persistent& theSource,
-                             const occ::handle<T>&       anAtt,
-                             const int                   aDocFormatVersion)
+                             const occ::handle<T>&            anAtt,
+                             const int      aDocFormatVersion)
   {
     bool ok = true;
     if (aDocFormatVersion >= TDocStd_FormatVersion_VERSION_10)
     { // process user defined guid
-      const int&    aPos = theSource.Position();
-      Standard_GUID aGuid;
+      const int& aPos = theSource.Position();
+      Standard_GUID           aGuid;
       ok = theSource >> aGuid;
       if (!ok)
       {

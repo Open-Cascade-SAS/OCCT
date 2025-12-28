@@ -31,14 +31,21 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
 #include <NCollection_Array1.hxx>
 
 static AppParCurves_Constraint FirstConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                                              FirstPoint)
+  const int                                FirstPoint)
 {
-  int                           i, myindex;
-  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int              i, myindex;
+  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -57,10 +64,10 @@ static AppParCurves_Constraint FirstConstraint(
 
 static AppParCurves_Constraint LastConstraint(
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  const int                                                              LastPoint)
+  const int                                LastPoint)
 {
-  int                           i, myindex;
-  int                           low = TheConstraints->Lower(), upp = TheConstraints->Upper();
+  int              i, myindex;
+  int              low = TheConstraints->Lower(), upp = TheConstraints->Upper();
   AppParCurves_ConstraintCouple mycouple;
   AppParCurves_Constraint       Cons = AppParCurves_NoConstraint;
 
@@ -78,17 +85,17 @@ static AppParCurves_Constraint LastConstraint(
 }
 
 AppParCurves_BSpGradient::AppParCurves_BSpGradient(
-  const MultiLine&                                                       SSP,
-  const int                                                              FirstPoint,
-  const int                                                              LastPoint,
+  const MultiLine&                                      SSP,
+  const int                                FirstPoint,
+  const int                                LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  math_Vector&                                                           Parameters,
-  const NCollection_Array1<double>&                                      Knots,
-  const NCollection_Array1<int>&                                         Mults,
-  const int                                                              Deg,
-  const double                                                           Tol3d,
-  const double                                                           Tol2d,
-  const int                                                              NbIterations)
+  math_Vector&                                          Parameters,
+  const NCollection_Array1<double>&                           Knots,
+  const NCollection_Array1<int>&                        Mults,
+  const int                                Deg,
+  const double                                   Tol3d,
+  const double                                   Tol2d,
+  const int                                NbIterations)
     : ParError(FirstPoint, LastPoint, 0.0),
       mylambda1(0.0),
       mylambda2(0.0),
@@ -108,19 +115,19 @@ AppParCurves_BSpGradient::AppParCurves_BSpGradient(
 }
 
 AppParCurves_BSpGradient::AppParCurves_BSpGradient(
-  const MultiLine&                                                       SSP,
-  const int                                                              FirstPoint,
-  const int                                                              LastPoint,
+  const MultiLine&                                      SSP,
+  const int                                FirstPoint,
+  const int                                LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  math_Vector&                                                           Parameters,
-  const NCollection_Array1<double>&                                      Knots,
-  const NCollection_Array1<int>&                                         Mults,
-  const int                                                              Deg,
-  const double                                                           Tol3d,
-  const double                                                           Tol2d,
-  const int                                                              NbIterations,
-  const double                                                           lambda1,
-  const double                                                           lambda2)
+  math_Vector&                                          Parameters,
+  const NCollection_Array1<double>&                           Knots,
+  const NCollection_Array1<int>&                        Mults,
+  const int                                Deg,
+  const double                                   Tol3d,
+  const double                                   Tol2d,
+  const int                                NbIterations,
+  const double                                   lambda1,
+  const double                                   lambda2)
     : ParError(FirstPoint, LastPoint, 0.0),
       mylambda1(lambda1),
       mylambda2(lambda2),
@@ -140,26 +147,26 @@ AppParCurves_BSpGradient::AppParCurves_BSpGradient(
 }
 
 void AppParCurves_BSpGradient::Perform(
-  const MultiLine&                                                       SSP,
-  const int                                                              FirstPoint,
-  const int                                                              LastPoint,
+  const MultiLine&                                      SSP,
+  const int                                FirstPoint,
+  const int                                LastPoint,
   const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-  math_Vector&                                                           Parameters,
-  const NCollection_Array1<double>&                                      Knots,
-  const NCollection_Array1<int>&                                         Mults,
-  const int                                                              Deg,
-  const double                                                           Tol3d,
-  const double                                                           Tol2d,
-  const int                                                              NbIterations)
+  math_Vector&                                          Parameters,
+  const NCollection_Array1<double>&                           Knots,
+  const NCollection_Array1<int>&                        Mults,
+  const int                                Deg,
+  const double                                   Tol3d,
+  const double                                   Tol2d,
+  const int                                NbIterations)
 {
 
   //  bool grad = true;
-  int    i, j, k, i2, l;
-  double UF, DU, Fval = 0.0, FU, DFU;
-  int    nbP3d   = ToolLine::NbP3d(SSP);
-  int    nbP2d   = ToolLine::NbP2d(SSP);
-  int    mynbP3d = nbP3d, mynbP2d = nbP2d;
-  int    nbP = nbP3d + nbP2d;
+  int i, j, k, i2, l;
+  double    UF, DU, Fval = 0.0, FU, DFU;
+  int nbP3d   = ToolLine::NbP3d(SSP);
+  int nbP2d   = ToolLine::NbP2d(SSP);
+  int mynbP3d = nbP3d, mynbP2d = nbP2d;
+  int nbP = nbP3d + nbP2d;
   //  gp_Pnt Pt, P1, P2;
   gp_Pnt Pt;
   //  gp_Pnt2d Pt2d, P12d, P22d;
@@ -260,8 +267,8 @@ void AppParCurves_BSpGradient::Perform(
     const math_Matrix&        A     = MyF.FunctionMatrix();
     const math_Matrix&        DA    = MyF.DerivativeFunctionMatrix();
     const math_IntegerVector& Index = MyF.Index();
-    double                    aa, da, a, b, c, d, e, f, px, py, pz;
-    int                       indexdeb, indexfin;
+    double             aa, da, a, b, c, d, e, f, px, py, pz;
+    int          indexdeb, indexfin;
 
     for (j = FirstPoint + 1; j <= LastPoint - 1; j++)
     {
@@ -354,7 +361,7 @@ void AppParCurves_BSpGradient::Perform(
   {
     // NbIterations de gradient conjugue:
     // =================================
-    double                        Eps = 1.e-07;
+    double                 Eps = 1.e-07;
     AppParCurves_BSpGradient_BFGS FResol(MyF, Parameters, Tol3d, Tol2d, Eps, NbIterations);
   }
 

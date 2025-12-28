@@ -23,7 +23,7 @@ StepShape_RevolvedAreaSolid::StepShape_RevolvedAreaSolid() {}
 void StepShape_RevolvedAreaSolid::Init(const occ::handle<TCollection_HAsciiString>&     aName,
                                        const occ::handle<StepGeom_CurveBoundedSurface>& aSweptArea,
                                        const occ::handle<StepGeom_Axis1Placement>&      aAxis,
-                                       const double                                     aAngle)
+                                       const double                         aAngle)
 {
   // --- classe own fields ---
   axis  = aAxis;

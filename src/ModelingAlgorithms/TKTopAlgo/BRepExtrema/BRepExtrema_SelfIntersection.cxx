@@ -29,7 +29,7 @@ BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const double theToler
 //=================================================================================================
 
 BRepExtrema_SelfIntersection::BRepExtrema_SelfIntersection(const TopoDS_Shape& theShape,
-                                                           const double        theTolerance)
+                                                           const double theTolerance)
     : myTolerance(theTolerance)
 {
   LoadShape(theShape);
@@ -69,11 +69,11 @@ namespace
 // function : ccw
 // purpose  : Check if triple is in counterclockwise order
 // =======================================================================
-bool ccw(const BVH_Vec3d& theVertex0,
-         const BVH_Vec3d& theVertex1,
-         const BVH_Vec3d& theVertex2,
-         const int        theX,
-         const int        theY)
+bool ccw(const BVH_Vec3d&       theVertex0,
+                     const BVH_Vec3d&       theVertex1,
+                     const BVH_Vec3d&       theVertex2,
+                     const int theX,
+                     const int theY)
 {
   const double aSum =
     (theVertex1[theX] - theVertex0[theX]) * (theVertex1[theY] + theVertex0[theY])
@@ -87,11 +87,11 @@ bool ccw(const BVH_Vec3d& theVertex0,
 // function : rayInsideAngle
 // purpose  : Check the given ray is inside the angle
 // =======================================================================
-bool rayInsideAngle(const BVH_Vec3d& theDirec,
-                    const BVH_Vec3d& theEdge0,
-                    const BVH_Vec3d& theEdge1,
-                    const int        theX,
-                    const int        theY)
+bool rayInsideAngle(const BVH_Vec3d&       theDirec,
+                                const BVH_Vec3d&       theEdge0,
+                                const BVH_Vec3d&       theEdge1,
+                                const int theX,
+                                const int theY)
 {
   const bool aCCW = ccw(ZERO_VEC, theEdge0, theEdge1, theX, theY);
 
@@ -101,7 +101,9 @@ bool rayInsideAngle(const BVH_Vec3d& theDirec,
 
 //=================================================================================================
 
-void getProjectionAxes(const BVH_Vec3d& theNorm, int& theAxisX, int& theAxisY)
+void getProjectionAxes(const BVH_Vec3d&  theNorm,
+                       int& theAxisX,
+                       int& theAxisY)
 {
   if (fabs(theNorm[0]) > fabs(theNorm[1]))
   {
@@ -157,7 +159,8 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
   {
     getProjectionAxes(aTrng0Normal, anX, anY);
 
-    const bool aPosOutTrgn0 = !rayInsideAngle(aCrossLine, aTrng0Edges[0], aTrng0Edges[1], anX, anY);
+    const bool aPosOutTrgn0 =
+      !rayInsideAngle(aCrossLine, aTrng0Edges[0], aTrng0Edges[1], anX, anY);
     const bool aNegOutTrgn0 =
       !rayInsideAngle(-aCrossLine, aTrng0Edges[0], aTrng0Edges[1], anX, anY);
 
@@ -171,7 +174,8 @@ BRepExtrema_ElementFilter::FilterResult BRepExtrema_SelfIntersection::isRegularS
 
     getProjectionAxes(aTrng1Normal, anX, anY);
 
-    const bool aPosOutTrgn1 = !rayInsideAngle(aCrossLine, aTrng1Edges[0], aTrng1Edges[1], anX, anY);
+    const bool aPosOutTrgn1 =
+      !rayInsideAngle(aCrossLine, aTrng1Edges[0], aTrng1Edges[1], anX, anY);
     const bool aNegOutTrgn1 =
       !rayInsideAngle(-aCrossLine, aTrng1Edges[0], aTrng1Edges[1], anX, anY);
 

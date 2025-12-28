@@ -26,11 +26,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_ConeFrustum, IGESData_IGESEntity)
 
 IGESSolid_ConeFrustum::IGESSolid_ConeFrustum() {}
 
-void IGESSolid_ConeFrustum::Init(const double  Ht,
-                                 const double  R1,
-                                 const double  R2,
-                                 const gp_XYZ& Center,
-                                 const gp_XYZ& anAxis)
+void IGESSolid_ConeFrustum::Init(const double Ht,
+                                 const double R1,
+                                 const double R2,
+                                 const gp_XYZ&       Center,
+                                 const gp_XYZ&       anAxis)
 {
   theHeight     = Ht;
   theR1         = R1;

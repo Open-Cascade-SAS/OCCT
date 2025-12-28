@@ -121,8 +121,7 @@ void Geom_Direction::Cross(const occ::handle<Geom_Vector>& Other)
   gpVec = V;
 }
 
-void Geom_Direction::CrossCross(const occ::handle<Geom_Vector>& V1,
-                                const occ::handle<Geom_Vector>& V2)
+void Geom_Direction::CrossCross(const occ::handle<Geom_Vector>& V1, const occ::handle<Geom_Vector>& V2)
 {
 
   gp_Dir V(gpVec.CrossCrossed(V1->Vec(), V2->Vec()));
@@ -137,7 +136,7 @@ occ::handle<Geom_Vector> Geom_Direction::Crossed(const occ::handle<Geom_Vector>&
 }
 
 occ::handle<Geom_Vector> Geom_Direction::CrossCrossed(const occ::handle<Geom_Vector>& V1,
-                                                      const occ::handle<Geom_Vector>& V2) const
+                                                 const occ::handle<Geom_Vector>& V2) const
 {
 
   gp_Dir V(gpVec.CrossCrossed(V1->Vec(), V2->Vec()));

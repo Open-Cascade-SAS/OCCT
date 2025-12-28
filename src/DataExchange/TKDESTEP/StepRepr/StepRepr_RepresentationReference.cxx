@@ -50,8 +50,8 @@ void StepRepr_RepresentationReference::SetId(const occ::handle<TCollection_HAsci
 
 //=================================================================================================
 
-occ::handle<StepRepr_RepresentationContextReference> StepRepr_RepresentationReference::
-  ContextOfItems() const
+occ::handle<StepRepr_RepresentationContextReference> StepRepr_RepresentationReference::ContextOfItems()
+  const
 {
   return myContextOfItems;
 }

@@ -46,7 +46,7 @@ private:
   Standard_EXPORT void Perform(const occ::handle<Expr_GeneralExpression>& exp);
 
   NCollection_IndexedMap<occ::handle<Expr_NamedUnknown>> myMap;
-  int                                                    myCurrent;
+  int       myCurrent;
 };
 
 #endif // _Expr_UnknownIterator_HeaderFile

@@ -32,7 +32,7 @@ RWObj_CafReader::RWObj_CafReader()
 void RWObj_CafReader::BindNamedShape(const TopoDS_Shape&            theShape,
                                      const TCollection_AsciiString& theName,
                                      const RWObj_Material*          theMaterial,
-                                     const bool                     theIsRootShape)
+                                     const bool         theIsRootShape)
 {
   if (theShape.IsNull())
   {
@@ -89,9 +89,9 @@ occ::handle<RWObj_TriangulationReader> RWObj_CafReader::createReaderContext()
 //=================================================================================================
 
 bool RWObj_CafReader::performMesh(std::istream&                  theStream,
-                                  const TCollection_AsciiString& theFile,
-                                  const Message_ProgressRange&   theProgress,
-                                  const bool                     theToProbe)
+                                              const TCollection_AsciiString& theFile,
+                                              const Message_ProgressRange&   theProgress,
+                                              const bool         theToProbe)
 {
   occ::handle<RWObj_TriangulationReader> aCtx = createReaderContext();
   aCtx->SetSinglePrecision(myIsSinglePrecision);

@@ -31,7 +31,7 @@ public:
   //! Returns a Organization
   Standard_EXPORT StepBasic_Organization();
 
-  Standard_EXPORT void Init(const bool                                   hasAid,
+  Standard_EXPORT void Init(const bool                  hasAid,
                             const occ::handle<TCollection_HAsciiString>& aId,
                             const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<TCollection_HAsciiString>& aDescription);
@@ -58,7 +58,7 @@ private:
   occ::handle<TCollection_HAsciiString> id;
   occ::handle<TCollection_HAsciiString> name;
   occ::handle<TCollection_HAsciiString> description;
-  bool                                  hasId;
+  bool                 hasId;
 };
 
 #endif // _StepBasic_Organization_HeaderFile

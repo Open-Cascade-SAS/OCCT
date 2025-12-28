@@ -75,7 +75,7 @@ public:
   //! <datatype> = 1 : Common Z is computed as average of all Z
   //! <datatype> = 1 or 2 : Vectors are ignored
   Standard_EXPORT occ::handle<IGESGeom_CopiousData> MakeCopiousData(
-    const int  datatype,
+    const int datatype,
     const bool polyline = false) const;
 
   //! Returns the Position in which the method EvalXYZ will
@@ -113,7 +113,10 @@ public:
   //! Returns the transformed coordinates.
   //! For a 2D definition, X,Y will then be used to define a XY and
   //! Z will be regarded as a Z Displacement (can be ignored)
-  Standard_EXPORT void EvalXYZ(const gp_XYZ& val, double& X, double& Y, double& Z) const;
+  Standard_EXPORT void EvalXYZ(const gp_XYZ&  val,
+                               double& X,
+                               double& Y,
+                               double& Z) const;
 
   //! Returns the IGES Transformation which corresponds to the
   //! Position. Even if it is an Identity : IsIdentity should be
@@ -126,7 +129,7 @@ public:
 private:
   occ::handle<NCollection_HSequence<gp_XYZ>> theXYZ;
   occ::handle<NCollection_HSequence<gp_XYZ>> theVec;
-  gp_Trsf                                    thepos;
+  gp_Trsf                       thepos;
 };
 
 #endif // _IGESConvGeom_GeomBuilder_HeaderFile

@@ -46,8 +46,8 @@ void StepKinematics_KinematicPair::Init(
 
 //=================================================================================================
 
-occ::handle<StepRepr_ItemDefinedTransformation> StepKinematics_KinematicPair::
-  ItemDefinedTransformation() const
+occ::handle<StepRepr_ItemDefinedTransformation> StepKinematics_KinematicPair::ItemDefinedTransformation()
+  const
 {
   return myItemDefinedTransformation;
 }
@@ -69,8 +69,7 @@ occ::handle<StepKinematics_KinematicJoint> StepKinematics_KinematicPair::Joint()
 
 //=================================================================================================
 
-void StepKinematics_KinematicPair::SetJoint(
-  const occ::handle<StepKinematics_KinematicJoint>& theJoint)
+void StepKinematics_KinematicPair::SetJoint(const occ::handle<StepKinematics_KinematicJoint>& theJoint)
 {
   myJoint = theJoint;
 }

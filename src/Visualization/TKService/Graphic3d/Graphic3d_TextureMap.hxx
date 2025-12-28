@@ -69,8 +69,8 @@ protected:
   Standard_EXPORT Graphic3d_TextureMap(const TCollection_AsciiString& theFileName,
                                        const Graphic3d_TypeOfTexture  theType);
 
-  Standard_EXPORT Graphic3d_TextureMap(const occ::handle<Image_PixMap>& thePixMap,
-                                       const Graphic3d_TypeOfTexture    theType);
+  Standard_EXPORT Graphic3d_TextureMap(const occ::handle<Image_PixMap>&   thePixMap,
+                                       const Graphic3d_TypeOfTexture theType);
 };
 
 #endif // _Graphic3d_TextureMap_HeaderFile

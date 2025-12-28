@@ -25,7 +25,7 @@ RWStepVisual_RWPresentationStyleByContext::RWStepVisual_RWPresentationStyleByCon
 
 void RWStepVisual_RWPresentationStyleByContext::ReadStep(
   const occ::handle<StepData_StepReaderData>&               data,
-  const int                                                 num,
+  const int                               num,
   occ::handle<Interface_Check>&                             ach,
   const occ::handle<StepVisual_PresentationStyleByContext>& ent) const
 {
@@ -38,12 +38,12 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
   // --- inherited field : styles ---
 
   occ::handle<NCollection_HArray1<StepVisual_PresentationStyleSelect>> aStyles;
-  StepVisual_PresentationStyleSelect                                   aStylesItem;
-  int                                                                  nsub1;
+  StepVisual_PresentationStyleSelect                  aStylesItem;
+  int                                    nsub1;
   if (data->ReadSubList(num, 1, "styles", ach, nsub1))
   {
     int nb1 = data->NbParams(nsub1);
-    aStyles = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
+    aStyles              = new NCollection_HArray1<StepVisual_PresentationStyleSelect>(1, nb1);
     for (int i1 = 1; i1 <= nb1; i1++)
     {
       Interface_ParamType aType = data->ParamType(nsub1, i1);
@@ -55,7 +55,7 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
       {
         occ::handle<StepData_SelectMember> aMember;
         data->ReadMember(nsub1, i1, "null_style", ach, aMember);
-        const char*                             anEnumText = aMember->EnumText();
+        const char*                   anEnumText = aMember->EnumText();
         occ::handle<StepVisual_NullStyleMember> aNullStyle = new StepVisual_NullStyleMember();
         aNullStyle->SetEnumText(0, anEnumText);
         aStylesItem.SetValue(aNullStyle);
@@ -76,7 +76,7 @@ void RWStepVisual_RWPresentationStyleByContext::ReadStep(
 }
 
 void RWStepVisual_RWPresentationStyleByContext::WriteStep(
-  StepData_StepWriter&                                      SW,
+  StepData_StepWriter&                                 SW,
   const occ::handle<StepVisual_PresentationStyleByContext>& ent) const
 {
 
@@ -104,7 +104,7 @@ void RWStepVisual_RWPresentationStyleByContext::WriteStep(
 
 void RWStepVisual_RWPresentationStyleByContext::Share(
   const occ::handle<StepVisual_PresentationStyleByContext>& ent,
-  Interface_EntityIterator&                                 iter) const
+  Interface_EntityIterator&                            iter) const
 {
 
   int nbElem1 = ent->NbStyles();

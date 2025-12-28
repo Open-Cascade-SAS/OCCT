@@ -104,7 +104,10 @@ protected:
     }
 
     //! Returns number of primitives in the given child.
-    int NbPrims(const int theChild) const { return Ranges[theChild].Size(); }
+    int NbPrims(const int theChild) const
+    {
+      return Ranges[theChild].Size();
+    }
 
     //! Checks if the parameters is initialized.
     bool IsValid() const { return Ranges[0].IsValid() && Ranges[1].IsValid(); }
@@ -144,15 +147,16 @@ protected:
 
 protected:
   //! Performs splitting of the given BVH node.
-  virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(BVH_Set<T, N>*  theSet,
-                                                                    BVH_Tree<T, N>* theBVH,
-                                                                    const int theNode) const = 0;
+  virtual typename BVH_QueueBuilder<T, N>::BVH_ChildNodes buildNode(
+    BVH_Set<T, N>*         theSet,
+    BVH_Tree<T, N>*        theBVH,
+    const int theNode) const = 0;
 
   //! Processes child nodes of the split BVH node.
-  virtual void addChildren(BVH_Tree<T, N>*       theBVH,
-                           BVH_BuildQueue&       theBuildQueue,
-                           const int             theNode,
-                           const BVH_ChildNodes& theSubNodes) const;
+  virtual void addChildren(BVH_Tree<T, N>*        theBVH,
+                           BVH_BuildQueue&        theBuildQueue,
+                           const int theNode,
+                           const BVH_ChildNodes&  theSubNodes) const;
 
 protected:
   int myNumOfThreads; //!< Number of threads used to build BVH
@@ -164,7 +168,7 @@ template <class T, int N>
 void BVH_QueueBuilder<T, N>::addChildren(
   BVH_Tree<T, N>*                                        theBVH,
   BVH_BuildQueue&                                        theBuildQueue,
-  const int                                              theNode,
+  const int                                 theNode,
   const typename BVH_QueueBuilder<T, N>::BVH_ChildNodes& theSubNodes) const
 {
   int aChildren[] = {-1, -1};
@@ -198,8 +202,9 @@ void BVH_QueueBuilder<T, N>::addChildren(
       aChildIndex;
 
     // Check to see if the child node must be split
-    const bool isLeaf = theSubNodes.NbPrims(anIdx) <= BVH_Builder<T, N>::myLeafNodeSize
-                        || theBVH->Level(aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
+    const bool isLeaf =
+      theSubNodes.NbPrims(anIdx) <= BVH_Builder<T, N>::myLeafNodeSize
+      || theBVH->Level(aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
 
     if (!isLeaf)
     {

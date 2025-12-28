@@ -37,13 +37,12 @@
 
 IGESSolid_ToolSelectedComponent::IGESSolid_ToolSelectedComponent() {}
 
-void IGESSolid_ToolSelectedComponent::ReadOwnParams(
-  const occ::handle<IGESSolid_SelectedComponent>& ent,
-  const occ::handle<IGESData_IGESReaderData>&     IR,
-  IGESData_ParamReader&                           PR) const
+void IGESSolid_ToolSelectedComponent::ReadOwnParams(const occ::handle<IGESSolid_SelectedComponent>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
+                                                    IGESData_ParamReader& PR) const
 {
   occ::handle<IGESSolid_BooleanTree> tempEntity;
-  gp_XYZ                             tempSelectPoint;
+  gp_XYZ                        tempSelectPoint;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   PR.ReadEntity(IR,
@@ -60,9 +59,8 @@ void IGESSolid_ToolSelectedComponent::ReadOwnParams(
   ent->Init(tempEntity, tempSelectPoint);
 }
 
-void IGESSolid_ToolSelectedComponent::WriteOwnParams(
-  const occ::handle<IGESSolid_SelectedComponent>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESSolid_ToolSelectedComponent::WriteOwnParams(const occ::handle<IGESSolid_SelectedComponent>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Component());
   IW.Send(ent->SelectPoint().X());
@@ -76,10 +74,9 @@ void IGESSolid_ToolSelectedComponent::OwnShared(const occ::handle<IGESSolid_Sele
   iter.GetOneItem(ent->Component());
 }
 
-void IGESSolid_ToolSelectedComponent::OwnCopy(
-  const occ::handle<IGESSolid_SelectedComponent>& another,
-  const occ::handle<IGESSolid_SelectedComponent>& ent,
-  Interface_CopyTool&                             TC) const
+void IGESSolid_ToolSelectedComponent::OwnCopy(const occ::handle<IGESSolid_SelectedComponent>& another,
+                                              const occ::handle<IGESSolid_SelectedComponent>& ent,
+                                              Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESSolid_BooleanTree, tempEntity, TC.Transferred(another->Component()));
   gp_XYZ tempSelectPoint = another->SelectPoint().XYZ();
@@ -102,17 +99,16 @@ IGESData_DirChecker IGESSolid_ToolSelectedComponent::DirChecker(
   return DC;
 }
 
-void IGESSolid_ToolSelectedComponent::OwnCheck(
-  const occ::handle<IGESSolid_SelectedComponent>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESSolid_ToolSelectedComponent::OwnCheck(const occ::handle<IGESSolid_SelectedComponent>& /* ent */,
+                                               const Interface_ShareTool&,
+                                               occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESSolid_ToolSelectedComponent::OwnDump(const occ::handle<IGESSolid_SelectedComponent>& ent,
-                                              const IGESData_IGESDumper& dumper,
-                                              Standard_OStream&          S,
-                                              const int                  level) const
+                                              const IGESData_IGESDumper&                 dumper,
+                                              Standard_OStream&                          S,
+                                              const int level) const
 {
   S << "IGESSolid_SelectedComponent\n";
 

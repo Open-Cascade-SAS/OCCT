@@ -81,19 +81,20 @@ occ::handle<TDF_Attribute> XmlMDataXtd_ConstraintDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMDataXtd_ConstraintDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataXtd_Constraint> aC     = occ::down_cast<TDataXtd_Constraint>(theTarget);
-  const XmlObjMgt_Element&         anElem = theSource;
+  const XmlObjMgt_Element&    anElem = theSource;
 
-  int                        aNb;
+  int           aNb;
   TCollection_ExtendedString aMsgString;
 
   // value
   occ::handle<TDataStd_Real> aTValue;
-  XmlObjMgt_DOMString        aDOMStr = anElem.getAttribute(::ValueString());
+  XmlObjMgt_DOMString   aDOMStr = anElem.getAttribute(::ValueString());
   if (aDOMStr != NULL)
   {
     if (!aDOMStr.GetInteger(aNb))
@@ -201,11 +202,11 @@ bool XmlMDataXtd_ConstraintDriver::Paste(const XmlObjMgt_Persistent&       theSo
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMDataXtd_ConstraintDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         XmlObjMgt_Persistent&             theTarget,
-                                         XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                         XmlObjMgt_Persistent&        theTarget,
+                                         XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   occ::handle<TDataXtd_Constraint> aC     = occ::down_cast<TDataXtd_Constraint>(theSource);
-  XmlObjMgt_Element&               anElem = theTarget;
+  XmlObjMgt_Element&          anElem = theTarget;
 
   int aNb;
 
@@ -229,7 +230,7 @@ void XmlMDataXtd_ConstraintDriver::Paste(const occ::handle<TDF_Attribute>& theSo
     for (int i = 1; i <= NbGeom; i++)
     {
       occ::handle<TNaming_NamedShape> aG = aC->GetGeometry(i);
-      aNb                                = 0;
+      aNb                           = 0;
       if (!aG.IsNull())
       {
         aNb = theRelocTable.FindIndex(aG);

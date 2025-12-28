@@ -26,10 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_NodalConstraint, IGESData_IGESEntity)
 
 IGESAppli_NodalConstraint::IGESAppli_NodalConstraint() {}
 
-void IGESAppli_NodalConstraint::Init(
-  const int                                                                  aType,
-  const occ::handle<IGESAppli_Node>&                                         aNode,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>>& allTabData)
+void IGESAppli_NodalConstraint::Init(const int                       aType,
+                                     const occ::handle<IGESAppli_Node>&                aNode,
+                                     const occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>>& allTabData)
 {
   if (allTabData->Lower() != 1)
     throw Standard_DimensionMismatch("IGESAppli_NodalConstraint : Init");
@@ -54,7 +53,8 @@ occ::handle<IGESAppli_Node> IGESAppli_NodalConstraint::NodeEntity() const
   return theNode;
 }
 
-occ::handle<IGESDefs_TabularData> IGESAppli_NodalConstraint::TabularData(const int Index) const
+occ::handle<IGESDefs_TabularData> IGESAppli_NodalConstraint::TabularData(
+  const int Index) const
 {
   return theTabularDataProps->Value(Index);
 }

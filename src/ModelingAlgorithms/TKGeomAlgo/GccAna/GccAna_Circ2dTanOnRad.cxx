@@ -55,8 +55,8 @@ typedef math_DirectPolynomialRoots Roots;
 
 GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualified1,
                                              const gp_Lin2d&             OnLine,
-                                             const double                Radius,
-                                             const double                Tolerance)
+                                             const double         Radius,
+                                             const double         Tolerance)
     : cirsol(1, 4),
       qualifier1(1, 4),
       TheSame1(1, 4),
@@ -68,10 +68,10 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
 {
 
   TheSame1.Init(0);
-  gp_Dir2d dirx(gp_Dir2d::D::X);
-  double   Tol = std::abs(Tolerance);
-  WellDone     = false;
-  NbrSol       = 0;
+  gp_Dir2d      dirx(gp_Dir2d::D::X);
+  double Tol = std::abs(Tolerance);
+  WellDone          = false;
+  NbrSol            = 0;
   if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || Qualified1.IsOutside()
         || Qualified1.IsUnqualified()))
   {
@@ -79,7 +79,7 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
     return;
   }
   NCollection_Array1<double> Coef(1, 2);
-  gp_Circ2d                  C1 = Qualified1.Qualified();
+  gp_Circ2d            C1 = Qualified1.Qualified();
 
   if (Radius < 0.0)
   {
@@ -87,20 +87,20 @@ GccAna_Circ2dTanOnRad::GccAna_Circ2dTanOnRad(const GccEnt_QualifiedCirc& Qualifi
   }
   else
   {
-    int      nbsol = 0;
-    int      signe = 0;
-    gp_Pnt2d Center;
-    double   xc;
-    double   yc;
-    double   R1    = C1.Radius();
-    double   dist  = OnLine.Distance(C1.Location());
-    double   xdir  = (OnLine.Direction()).X();
-    double   ydir  = (OnLine.Direction()).Y();
-    double   lxloc = (OnLine.Location()).X();
-    double   lyloc = (OnLine.Location()).Y();
-    gp_Pnt2d center1(C1.Location());
-    double   x1 = center1.X();
-    double   y1 = center1.Y();
+    int nbsol = 0;
+    int signe = 0;
+    gp_Pnt2d         Center;
+    double    xc;
+    double    yc;
+    double    R1    = C1.Radius();
+    double    dist  = OnLine.Distance(C1.Location());
+    double    xdir  = (OnLine.Direction()).X();
+    double    ydir  = (OnLine.Direction()).Y();
+    double    lxloc = (OnLine.Location()).X();
+    double    lyloc = (OnLine.Location()).Y();
+    gp_Pnt2d         center1(C1.Location());
+    double    x1 = center1.X();
+    double    y1 = center1.Y();
     if (Qualified1.IsEnclosed())
     {
       //   ============================
@@ -338,7 +338,8 @@ gp_Circ2d GccAna_Circ2dTanOnRad::ThisSolution(const int Index) const
   return cirsol(Index);
 }
 
-void GccAna_Circ2dTanOnRad::WhichQualifier(const int Index, GccEnt_Position& Qualif1) const
+void GccAna_Circ2dTanOnRad::WhichQualifier(const int Index,
+                                           GccEnt_Position&       Qualif1) const
 {
   if (!WellDone)
   {
@@ -355,9 +356,9 @@ void GccAna_Circ2dTanOnRad::WhichQualifier(const int Index, GccEnt_Position& Qua
 }
 
 void GccAna_Circ2dTanOnRad::Tangency1(const int Index,
-                                      double&   ParSol,
-                                      double&   ParArg,
-                                      gp_Pnt2d& PntSol) const
+                                      double&         ParSol,
+                                      double&         ParArg,
+                                      gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {
@@ -375,7 +376,9 @@ void GccAna_Circ2dTanOnRad::Tangency1(const int Index,
   }
 }
 
-void GccAna_Circ2dTanOnRad::CenterOn3(const int Index, double& ParArg, gp_Pnt2d& PntSol) const
+void GccAna_Circ2dTanOnRad::CenterOn3(const int Index,
+                                      double&         ParArg,
+                                      gp_Pnt2d&              PntSol) const
 {
   if (!WellDone)
   {

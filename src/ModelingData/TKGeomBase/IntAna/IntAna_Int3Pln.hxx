@@ -53,9 +53,9 @@ public:
   const gp_Pnt& Value() const;
 
 private:
-  bool   done;
-  bool   empt;
-  gp_Pnt pnt;
+  bool done;
+  bool empt;
+  gp_Pnt           pnt;
 };
 
 #include <IntAna_Int3Pln.lxx>

@@ -30,6 +30,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ShapeRepresentationRelationship,
                           StepRepr_RepresentationRelationship)
+
 };
 
 #endif // _StepRepr_ShapeRepresentationRelationship_HeaderFile

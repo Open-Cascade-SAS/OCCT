@@ -74,6 +74,7 @@
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_NullObject.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
@@ -85,9 +86,17 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
@@ -96,10 +105,11 @@
 // purpose  : pins the u-parameter of surface close to U-knot
 //           to this U-knot
 //=======================================================================
-static double PreciseUpar(const double anUpar, const occ::handle<Geom_BSplineSurface>& aSurface)
+static double PreciseUpar(const double                anUpar,
+                                 const occ::handle<Geom_BSplineSurface>& aSurface)
 {
   constexpr double Tol = Precision::PConfusion();
-  int              i1, i2;
+  int        i1, i2;
 
   aSurface->LocateU(anUpar, Tol, i1, i2);
   double U1 = aSurface->UKnot(i1);
@@ -116,10 +126,12 @@ static double PreciseUpar(const double anUpar, const occ::handle<Geom_BSplineSur
 // purpose  : Construct a plane of filling if exists
 //=======================================================================
 
-static bool PerformPlan(const TopoDS_Wire& W, const double presPln, TopoDS_Face& theFace)
+static bool PerformPlan(const TopoDS_Wire&  W,
+                                    const double presPln,
+                                    TopoDS_Face&        theFace)
 {
-  bool            isDegen = true;
-  TopoDS_Iterator iter(W);
+  bool isDegen = true;
+  TopoDS_Iterator  iter(W);
   for (; iter.More(); iter.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
@@ -163,8 +175,7 @@ static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell
   TopoDS_Shape       anEdge = Explo.Current();
   TopAbs_Orientation Or1    = anEdge.Orientation();
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    EFmap;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> EFmap;
   TopExp::MapShapesAndAncestors(aShell, TopAbs_EDGE, TopAbs_FACE, EFmap);
 
   const TopoDS_Shape& AdjacentFace = EFmap.FindFromKey(anEdge).First();
@@ -184,17 +195,17 @@ static bool IsSameOriented(const TopoDS_Shape& aFace, const TopoDS_Shape& aShell
 
 //=================================================================================================
 
-static TopoDS_Solid MakeSolid(TopoDS_Shell&      shell,
-                              const TopoDS_Wire& wire1,
-                              const TopoDS_Wire& wire2,
-                              const double       presPln,
-                              TopoDS_Face&       face1,
-                              TopoDS_Face&       face2)
+static TopoDS_Solid MakeSolid(TopoDS_Shell&       shell,
+                              const TopoDS_Wire&  wire1,
+                              const TopoDS_Wire&  wire2,
+                              const double presPln,
+                              TopoDS_Face&        face1,
+                              TopoDS_Face&        face2)
 {
   if (shell.IsNull())
     throw StdFail_NotDone("Thrusections is not build");
-  bool         B = shell.Closed();
-  BRep_Builder BB;
+  bool B = shell.Closed();
+  BRep_Builder     BB;
 
   if (!B)
   {
@@ -241,9 +252,9 @@ static TopoDS_Solid MakeSolid(TopoDS_Shell&      shell,
 
 //=================================================================================================
 
-BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const bool   isSolid,
-                                                       const bool   ruled,
-                                                       const double pres3d)
+BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const bool isSolid,
+                                                       const bool ruled,
+                                                       const double    pres3d)
     : myNbEdgesInSection(0),
       myIsSolid(isSolid),
       myIsRuled(ruled),
@@ -266,7 +277,9 @@ BRepOffsetAPI_ThruSections::BRepOffsetAPI_ThruSections(const bool   isSolid,
 
 //=================================================================================================
 
-void BRepOffsetAPI_ThruSections::Init(const bool isSolid, const bool ruled, const double pres3d)
+void BRepOffsetAPI_ThruSections::Init(const bool isSolid,
+                                      const bool ruled,
+                                      const double    pres3d)
 {
   myIsSolid      = isSolid;
   myIsRuled      = ruled;
@@ -327,8 +340,8 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
   myStatus = BRepFill_ThruSectionErrorStatus_Done;
   myBFGenerator.Nullify();
   // Check set of section for right configuration of punctual sections
-  int             i;
-  TopExp_Explorer explo;
+  int i;
+  TopExp_Explorer  explo;
   for (i = 2; i <= myWires.Length() - 1; i++)
   {
     bool wdeg = true;
@@ -371,8 +384,7 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
     // use BRepFill_CompatibleWires
     NCollection_Sequence<TopoDS_Shape> WorkingSections;
     WorkingSections.Clear();
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-      WorkingMap;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> WorkingMap;
     WorkingMap.Clear();
 
     // Calculate the working sections
@@ -397,18 +409,18 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
         for (; itw.More(); itw.Next())
         {
           const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
-          int                aSign  = 1;
+          int   aSign  = 1;
           TopoDS_Vertex      Vfirst, Vlast;
           TopExp::Vertices(anEdge, Vfirst, Vlast);
           const NCollection_List<TopoDS_Shape>& aNewEdges = Georges.GeneratedShapes(anEdge);
-          NCollection_List<int>                 IList;
-          aWorkingSection                                     = TopoDS::Wire(WorkingSections(ii));
-          int                                      NbNewEdges = aNewEdges.Extent();
+          NCollection_List<int>       IList;
+          aWorkingSection                               = TopoDS::Wire(WorkingSections(ii));
+          int                   NbNewEdges = aNewEdges.Extent();
           NCollection_List<TopoDS_Shape>::Iterator itl(aNewEdges);
           for (int kk = 1; itl.More(); itl.Next(), kk++)
           {
             const TopoDS_Edge&     aNewEdge = TopoDS::Edge(itl.Value());
-            int                    inde     = 1;
+            int       inde     = 1;
             BRepTools_WireExplorer wexp(aWorkingSection);
             for (; wexp.More(); wexp.Next(), inde++)
             {
@@ -450,8 +462,8 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
     TopoDS_Edge anEdge;
     for (int ii = 1; ii <= myWires.Length(); ii++)
     {
-      TopExp_Explorer Explo(myWires(ii), TopAbs_EDGE);
-      int             inde = 1;
+      TopExp_Explorer  Explo(myWires(ii), TopAbs_EDGE);
+      int inde = 1;
       for (; Explo.More(); Explo.Next(), inde++)
       {
         anEdge = TopoDS::Edge(Explo.Current());
@@ -511,8 +523,8 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
 
 void BRepOffsetAPI_ThruSections::CreateRuled()
 {
-  int nbSects   = myWires.Length();
-  myBFGenerator = new BRepFill_Generator();
+  int nbSects = myWires.Length();
+  myBFGenerator            = new BRepFill_Generator();
   myBFGenerator->SetMutableInput(IsMutableInput());
   //  for (int i=1; i<=nbSects; i++) {
   int i;
@@ -575,14 +587,12 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
   }
 
   // history
-  BRepTools_WireExplorer anExp1, anExp2;
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    M;
+  BRepTools_WireExplorer                    anExp1, anExp2;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> M;
   TopExp::MapShapesAndAncestors(shell, TopAbs_EDGE, TopAbs_FACE, M);
   NCollection_List<TopoDS_Shape>::Iterator it;
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    MV;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> MV;
   TopExp::MapShapesAndAncestors(shell, TopAbs_VERTEX, TopAbs_FACE, MV);
 
   for (i = 1; i <= nbSects - 1; i++)
@@ -601,8 +611,8 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
 
       const TopoDS_Shape& edge1  = anExp1.Current();
       const TopoDS_Shape& edge2  = anExp2.Current();
-      bool                degen1 = BRep_Tool::Degenerated(anExp1.Current());
-      bool                degen2 = BRep_Tool::Degenerated(anExp2.Current());
+      bool    degen1 = BRep_Tool::Degenerated(anExp1.Current());
+      bool    degen2 = BRep_Tool::Degenerated(anExp2.Current());
 
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> MapFaces;
       if (degen2)
@@ -668,7 +678,7 @@ void BRepOffsetAPI_ThruSections::CreateRuled()
 void BRepOffsetAPI_ThruSections::CreateSmoothed()
 {
   // initialisation
-  int                    nbSects = myWires.Length();
+  int       nbSects = myWires.Length();
   BRepTools_WireExplorer anExp;
 
   bool w1Point = true;
@@ -708,9 +718,9 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   }
 
   // recover the shapes
-  bool                             uClosed = true;
+  bool       uClosed = true;
   NCollection_Array1<TopoDS_Shape> shapes(1, nbSects * nbEdges);
-  int                              nb = 0, i, j;
+  int       nb = 0, i, j;
 
   for (i = 1; i <= nbSects; i++)
   {
@@ -745,10 +755,10 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   }
 
   // create the new surface
-  TopoDS_Shell                     shell;
-  TopoDS_Face                      face;
-  TopoDS_Wire                      W;
-  TopoDS_Edge                      edge, edge1, edge2, edge3, edge4, couture;
+  TopoDS_Shell           shell;
+  TopoDS_Face            face;
+  TopoDS_Wire            W;
+  TopoDS_Edge            edge, edge1, edge2, edge3, edge4, couture;
   NCollection_Array1<TopoDS_Shape> vcouture(1, nbEdges);
 
   BRep_Builder B;
@@ -762,7 +772,7 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   TopLoc_Location loc;
   TopoDS_Vertex   v1f, v1l, v2f, v2l;
 
-  int                        nbPnts = 21;
+  int   nbPnts = 21;
   NCollection_Array2<gp_Pnt> points(1, nbPnts, 1, nbSects);
 
   // concatenate each section to get a total surface that will be segmented
@@ -1001,7 +1011,7 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
   Done();
 
   NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher> aVertexToleranceMap;
-  TopExp_Explorer aTopExplorer(myShape, TopAbs_EDGE);
+  TopExp_Explorer             aTopExplorer(myShape, TopAbs_EDGE);
   while (aTopExplorer.More())
   {
     const TopoDS_Edge& aCurEdge = TopoDS::Edge(aTopExplorer.Current());
@@ -1045,13 +1055,12 @@ void BRepOffsetAPI_ThruSections::CreateSmoothed()
 
   if (!myMutableInput)
   {
-    BRepTools_ReShape                                                            aReshaper;
-    NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>::Iterator aMapIterator(
-      aVertexToleranceMap);
+    BRepTools_ReShape                            aReshaper;
+    NCollection_DataMap<TopoDS_Shape, double, TopTools_ShapeMapHasher>::Iterator aMapIterator(aVertexToleranceMap);
     for (; aMapIterator.More(); aMapIterator.Next())
     {
       const TopoDS_Vertex& aVertex       = TopoDS::Vertex(aMapIterator.Key());
-      double               aNewTolerance = aMapIterator.Value();
+      double        aNewTolerance = aMapIterator.Value();
       if (BRep_Tool::Tolerance(aVertex) < aNewTolerance)
       {
         TopoDS_Vertex aNnewVertex = TopoDS::Vertex(aVertex.EmptyCopied());
@@ -1085,7 +1094,7 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
     aMults(2) = 2;
 
     NCollection_Array1<gp_Pnt> aPoles(1, 2);
-    TopoDS_Vertex              vf, vl;
+    TopoDS_Vertex      vf, vl;
     TopExp::Vertices(theEdge, vl, vf);
     aPoles(1) = BRep_Tool::Pnt(vf);
     aPoles(2) = BRep_Tool::Pnt(vl);
@@ -1095,8 +1104,8 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
   else
   {
     // get the curve of the edge
-    TopLoc_Location         aLoc;
-    double                  aFirst, aLast;
+    TopLoc_Location    aLoc;
+    double      aFirst, aLast;
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(theEdge, aLoc, aFirst, aLast);
     if (aCurve.IsNull())
     {
@@ -1112,7 +1121,7 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
     if (aTrimCurve->BasisCurve()->IsKind(STANDARD_TYPE(Geom_Conic)))
     {
       const occ::handle<Geom_Curve>& aCurveTrimmed = aTrimCurve; // to avoid ambiguity
-      GeomConvert_ApproxCurve anAppr(aCurveTrimmed, Precision::Confusion(), GeomAbs_C1, 16, 14);
+      GeomConvert_ApproxCurve   anAppr(aCurveTrimmed, Precision::Confusion(), GeomAbs_C1, 16, 14);
       if (anAppr.HasResult())
         aBSCurve = anAppr.Curve();
     }
@@ -1143,16 +1152,16 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
 
 occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
   const NCollection_Array1<TopoDS_Shape>& shapes,
-  const int                               NbSects,
-  const int                               NbEdges,
-  const bool                              w1Point,
-  const bool                              w2Point,
-  const bool                              vClosed) const
+  const int        NbSects,
+  const int        NbEdges,
+  const bool        w1Point,
+  const bool        w2Point,
+  const bool        vClosed) const
 {
-  int           i, j, jdeb = 1, jfin = NbSects;
-  TopoDS_Vertex vf, vl;
+  int i, j, jdeb = 1, jfin = NbSects;
+  TopoDS_Vertex    vf, vl;
 
-  GeomFill_SectionGenerator        section;
+  GeomFill_SectionGenerator   section;
   occ::handle<Geom_BSplineSurface> surface;
   occ::handle<Geom_BSplineCurve>   BS, BS1;
   occ::handle<Geom_TrimmedCurve>   curvTrim;
@@ -1169,8 +1178,8 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
     Bounds(1) = 0.;
     Bounds(2) = 1.;
     NCollection_Array1<int> Mult(1, 2);
-    Mult(1)                                = 2;
-    Mult(2)                                = 2;
+    Mult(1)                           = 2;
+    Mult(2)                           = 2;
     occ::handle<Geom_BSplineCurve> BSPoint = new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
     section.AddCurve(BSPoint);
   }
@@ -1192,7 +1201,7 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
     else
     {
       // read the first edge to initialise CompBS;
-      TopoDS_Edge                    aPrevEdge = TopoDS::Edge(shapes((j - 1) * NbEdges + 1));
+      TopoDS_Edge               aPrevEdge = TopoDS::Edge(shapes((j - 1) * NbEdges + 1));
       occ::handle<Geom_BSplineCurve> curvBS    = EdgeToBSpline(aPrevEdge);
       if (curvBS.IsNull())
       {
@@ -1205,8 +1214,8 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
       for (i = 2; i <= NbEdges; i++)
       {
         // read the edge
-        TopoDS_Edge aNextEdge = TopoDS::Edge(shapes((j - 1) * NbEdges + i));
-        double      aTolV     = Precision::Confusion();
+        TopoDS_Edge   aNextEdge = TopoDS::Edge(shapes((j - 1) * NbEdges + i));
+        double aTolV     = Precision::Confusion();
         TopExp::Vertices(aNextEdge, vf, vl);
         aTolV  = std::max(aTolV, BRep_Tool::Tolerance(vf));
         aTolV  = std::max(aTolV, BRep_Tool::Tolerance(vl));
@@ -1244,8 +1253,8 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
     Bounds(1) = 0.;
     Bounds(2) = 1.;
     NCollection_Array1<int> Mult(1, 2);
-    Mult(1)                                = 2;
-    Mult(2)                                = 2;
+    Mult(1)                           = 2;
+    Mult(2)                           = 2;
     occ::handle<Geom_BSplineCurve> BSPoint = new Geom_BSplineCurve(Extremities, Bounds, Mult, 1);
     section.AddCurve(BSPoint);
   }
@@ -1257,7 +1266,7 @@ occ::handle<Geom_BSplineSurface> BRepOffsetAPI_ThruSections::TotalSurf(
   if (myPres3d <= 1.e-3)
     nbIt = 0;
 
-  int  degmin = 2, degmax = std::max(myDegMax, degmin);
+  int degmin = 2, degmax = std::max(myDegMax, degmin);
   bool SpApprox = true;
 
   GeomFill_AppSurf anApprox(degmin, degmax, myPres3d, myPres3d, nbIt);
@@ -1310,7 +1319,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
   myGenerated.Clear();
 
   NCollection_Sequence<TopoDS_Shape> AllFaces;
-  TopExp_Explorer                    Explo(myShape, TopAbs_FACE);
+  TopExp_Explorer          Explo(myShape, TopAbs_FACE);
   for (; Explo.More(); Explo.Next())
     AllFaces.Append(Explo.Current());
 
@@ -1352,10 +1361,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
     if (!myVertexIndex.IsBound(S))
       return myGenerated;
 
-    NCollection_IndexedDataMap<TopoDS_Shape,
-                               NCollection_List<TopoDS_Shape>,
-                               TopTools_ShapeMapHasher>
-      VEmap;
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> VEmap;
 
     bool IsDegen[2] = {false, false};
     if (myDegen1 || myDegen2)
@@ -1388,13 +1394,13 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
       // we return the whole bunch of longitudinal edges
       TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> Emap;
-      TopoDS_Shape                                                  aNewShape = S;
+      TopoDS_Shape               aNewShape = S;
       if ((myIsRuled || !myMutableInput) && !myBFGenerator.IsNull())
       {
         aNewShape = myBFGenerator->ResultShape(S);
       }
 
-      const NCollection_List<TopoDS_Shape>&    anEdgeList = VEmap.FindFromKey(aNewShape);
+      const NCollection_List<TopoDS_Shape>&        anEdgeList = VEmap.FindFromKey(aNewShape);
       NCollection_List<TopoDS_Shape>::Iterator aListIterator(anEdgeList);
       for (; aListIterator.More(); aListIterator.Next())
       {
@@ -1421,12 +1427,12 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
           int i, k;
           for (i = 2, k = myWires.Length() - 1; i < myWires.Length(); i++, k--)
           {
-            int           IndOfSec = (IsDegen[0]) ? i : k;
-            TopoDS_Vertex aVertex =
+            int IndOfSec = (IsDegen[0]) ? i : k;
+            TopoDS_Vertex    aVertex =
               (IsDegen[0]) ? TopExp::LastVertex(anEdge) : TopExp::FirstVertex(anEdge);
             const NCollection_List<TopoDS_Shape>& EElist = VEmap.FindFromKey(aVertex);
-            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> EmapOfSection;
-            TopoDS_Shape aWireSection = myWires(IndOfSec);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>  EmapOfSection;
+            TopoDS_Shape                aWireSection = myWires(IndOfSec);
             if ((myIsRuled || !myMutableInput) && !myBFGenerator.IsNull())
             {
               aWireSection = myBFGenerator->ResultShape(aWireSection);
@@ -1449,7 +1455,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
 
     int Eindex = myVertexIndex(S);
     int Vindex = (Eindex > 0) ? 0 : 1;
-    Eindex     = std::abs(Eindex);
+    Eindex                  = std::abs(Eindex);
 
     // Find the first longitudinal edge
     TopoDS_Face FirstFace = TopoDS::Face(AllFaces(Eindex));
@@ -1508,7 +1514,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
         else
           FirstVertex = VV[0];
       }
-      const NCollection_List<TopoDS_Shape>&    Elist = VEmap.FindFromKey(FirstVertex);
+      const NCollection_List<TopoDS_Shape>&        Elist = VEmap.FindFromKey(FirstVertex);
       NCollection_List<TopoDS_Shape>::Iterator itl(Elist);
       TopAbs_Orientation anEdgeOr = (Vindex == 0) ? TopAbs_REVERSED : TopAbs_FORWARD;
       for (; itl.More(); itl.Next())
@@ -1524,7 +1530,7 @@ const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_ThruSections::Generated(cons
       // Find the chain of longitudinal edges from first to last
       for (int i = 2; i < myWires.Length(); i++)
       {
-        FirstVertex                                  = TopExp::LastVertex(anEdge);
+        FirstVertex                        = TopExp::LastVertex(anEdge);
         const NCollection_List<TopoDS_Shape>& Elist1 = VEmap.FindFromKey(FirstVertex);
         TopoDS_Edge FirstEdge = (anEdge.IsSame(Elist1.First())) ? TopoDS::Edge(Elist1.Last())
                                                                 : TopoDS::Edge(Elist1.First());
@@ -1564,7 +1570,9 @@ TopoDS_Shape BRepOffsetAPI_ThruSections::GeneratedFace(const TopoDS_Shape& edge)
 //           the  optimization.
 //=======================================================================
 //
-void BRepOffsetAPI_ThruSections::CriteriumWeight(double& W1, double& W2, double& W3) const
+void BRepOffsetAPI_ThruSections::CriteriumWeight(double& W1,
+                                                 double& W2,
+                                                 double& W3) const
 {
   W1 = myCritWeights[0];
   W2 = myCritWeights[1];

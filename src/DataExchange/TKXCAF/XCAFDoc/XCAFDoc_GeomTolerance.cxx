@@ -253,8 +253,7 @@ void XCAFDoc_GeomTolerance::SetObject(
 
 occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObject() const
 {
-  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObj =
-    new XCAFDimTolObjects_GeomToleranceObject();
+  occ::handle<XCAFDimTolObjects_GeomToleranceObject> anObj = new XCAFDimTolObjects_GeomToleranceObject();
 
   occ::handle<TDataStd_Name>            aSemanticNameAttr;
   occ::handle<TCollection_HAsciiString> aSemanticName;
@@ -383,7 +382,7 @@ occ::handle<XCAFDimTolObjects_GeomToleranceObject> XCAFDoc_GeomTolerance::GetObj
   }
 
   occ::handle<TNaming_NamedShape> aNS;
-  TDF_Label                       aLPres = Label().FindChild(ChildLab_Presentation);
+  TDF_Label                  aLPres = Label().FindChild(ChildLab_Presentation);
   if (aLPres.FindAttribute(TNaming_NamedShape::GetID(), aNS))
   {
 

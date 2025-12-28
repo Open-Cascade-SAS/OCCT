@@ -23,7 +23,6 @@
 #include <Message_ProgressRange.hxx>
 
 class ShapeProcess_Context;
-
 //! Abstract Operator class providing a tool to
 //! perform an operation on Context
 class ShapeProcess_Operator : public Standard_Transient
@@ -34,9 +33,10 @@ public:
   //! changes in the context
   Standard_EXPORT virtual bool Perform(
     const occ::handle<ShapeProcess_Context>& context,
-    const Message_ProgressRange&             theProgress = Message_ProgressRange()) = 0;
+    const Message_ProgressRange&        theProgress = Message_ProgressRange()) = 0;
 
   DEFINE_STANDARD_RTTIEXT(ShapeProcess_Operator, Standard_Transient)
+
 };
 
 #endif // _ShapeProcess_Operator_HeaderFile

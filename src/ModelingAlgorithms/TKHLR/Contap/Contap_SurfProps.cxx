@@ -23,10 +23,10 @@
 //=================================================================================================
 
 void Contap_SurfProps::Normale(const occ::handle<Adaptor3d_Surface>& S,
-                               const double                          U,
-                               const double                          V,
-                               gp_Pnt&                               P,
-                               gp_Vec&                               Norm)
+                               const double              U,
+                               const double              V,
+                               gp_Pnt&                          P,
+                               gp_Vec&                          Norm)
 {
 
   GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
@@ -71,7 +71,7 @@ void Contap_SurfProps::Normale(const occ::handle<Adaptor3d_Surface>& S,
 
     case GeomAbs_Cone: {
       gp_Cone co(Adaptor3d_HSurfaceTool::Cone(S));
-      P            = ElSLib::Value(U, V, co);
+      P                   = ElSLib::Value(U, V, co);
       double Angle = co.SemiAngle();
       double Sina  = sin(Angle);
       double Cosa  = cos(Angle);
@@ -129,12 +129,12 @@ void Contap_SurfProps::Normale(const occ::handle<Adaptor3d_Surface>& S,
 //=================================================================================================
 
 void Contap_SurfProps::DerivAndNorm(const occ::handle<Adaptor3d_Surface>& S,
-                                    const double                          U,
-                                    const double                          V,
-                                    gp_Pnt&                               P,
-                                    gp_Vec&                               d1u,
-                                    gp_Vec&                               d1v,
-                                    gp_Vec&                               Norm)
+                                    const double              U,
+                                    const double              V,
+                                    gp_Pnt&                          P,
+                                    gp_Vec&                          d1u,
+                                    gp_Vec&                          d1v,
+                                    gp_Vec&                          Norm)
 {
 
   GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
@@ -234,12 +234,12 @@ void Contap_SurfProps::DerivAndNorm(const occ::handle<Adaptor3d_Surface>& S,
 //=================================================================================================
 
 void Contap_SurfProps::NormAndDn(const occ::handle<Adaptor3d_Surface>& S,
-                                 const double                          U,
-                                 const double                          V,
-                                 gp_Pnt&                               P,
-                                 gp_Vec&                               Norm,
-                                 gp_Vec&                               Dnu,
-                                 gp_Vec&                               Dnv)
+                                 const double              U,
+                                 const double              V,
+                                 gp_Pnt&                          P,
+                                 gp_Vec&                          Norm,
+                                 gp_Vec&                          Dnu,
+                                 gp_Vec&                          Dnv)
 {
 
   GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(S);
@@ -260,7 +260,7 @@ void Contap_SurfProps::NormAndDn(const occ::handle<Adaptor3d_Surface>& S,
     case GeomAbs_Sphere: {
       gp_Sphere sp(Adaptor3d_HSurfaceTool::Sphere(S));
       ElSLib::D1(U, V, sp, P, Dnu, Dnv);
-      Norm       = gp_Vec(sp.Location(), P);
+      Norm              = gp_Vec(sp.Location(), P);
       double Rad = sp.Radius();
       if (!sp.Direct())
       {
@@ -289,7 +289,7 @@ void Contap_SurfProps::NormAndDn(const occ::handle<Adaptor3d_Surface>& S,
     case GeomAbs_Cone: {
 
       gp_Cone co(Adaptor3d_HSurfaceTool::Cone(S));
-      P            = ElSLib::Value(U, V, co);
+      P                   = ElSLib::Value(U, V, co);
       double Angle = co.SemiAngle();
       double Sina  = std::sin(Angle);
       double Cosa  = std::cos(Angle);

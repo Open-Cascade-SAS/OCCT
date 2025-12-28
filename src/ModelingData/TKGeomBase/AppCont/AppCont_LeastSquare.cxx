@@ -28,17 +28,17 @@
 //=================================================================================================
 
 void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       theSSP,
-                                               const double                  theU,
-                                               const double                  theU0,
-                                               const double                  theU1,
+                                               const double           theU,
+                                               const double           theU0,
+                                               const double           theU1,
                                                NCollection_Array1<gp_Pnt2d>& theFix2d,
                                                NCollection_Array1<gp_Pnt>&   theFix)
 {
-  int                          aMaxIter = 15;
+  int             aMaxIter = 15;
   NCollection_Array1<gp_Pnt>   aTabP(1, std::max(myNbP, 1)), aPrevP(1, std::max(myNbP, 1));
   NCollection_Array1<gp_Pnt2d> aTabP2d(1, std::max(myNbP2d, 1)), aPrevP2d(1, std::max(myNbP2d, 1));
-  double                       aMult       = ((theU - theU0) > (theU1 - theU)) ? 1.0 : -1.0;
-  double                       aStartParam = theU, aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
+  double                aMult       = ((theU - theU0) > (theU1 - theU)) ? 1.0 : -1.0;
+  double                aStartParam = theU, aCurrParam, aPrevDist = 1.0, aCurrDist = 1.0;
 
   double du  = -(theU1 - theU0) / 2.0 * aMult;
   double eps = Epsilon(1.);
@@ -84,12 +84,12 @@ void AppCont_LeastSquare::FixSingleBorderPoint(const AppCont_Function&       the
 //=================================================================================================
 
 AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
-                                         const double                  U0,
-                                         const double                  U1,
+                                         const double           U0,
+                                         const double           U1,
                                          const AppParCurves_Constraint FirstCons,
                                          const AppParCurves_Constraint LastCons,
-                                         const int                     Deg,
-                                         const int                     myNbPoints)
+                                         const int        Deg,
+                                         const int        myNbPoints)
     : mySCU(Deg + 1),
       myPoints(1, myNbPoints, 1, 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints()),
       myPoles(1, Deg + 1, 1, 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints(), 0.0),
@@ -99,15 +99,15 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 {
   myDone  = false;
   myDegre = Deg;
-  int    i, j, k, c, i2;
-  int    classe = Deg + 1, cl1 = Deg;
-  double U, dU, Coeff, Coeff2;
-  double IBij, IBPij;
+  int i, j, k, c, i2;
+  int classe = Deg + 1, cl1 = Deg;
+  double    U, dU, Coeff, Coeff2;
+  double    IBij, IBPij;
 
-  int                     FirstP = 1, LastP = myNbPoints;
-  int                     nbcol = 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints();
+  int        FirstP = 1, LastP = myNbPoints;
+  int        nbcol = 3 * SSP.GetNbOf3dPoints() + 2 * SSP.GetNbOf2dPoints();
   math_Matrix             B(1, classe, 1, nbcol, 0.0);
-  int                     bdeb = 1, bfin = classe;
+  int        bdeb = 1, bfin = classe;
   AppParCurves_Constraint myFirstC = FirstCons, myLastC = LastCons;
   SSP.GetNumberOfPoints(myNbP, myNbP2d);
 
@@ -190,9 +190,9 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
         && std::abs(myPoints(2, aDimIdx) - myPoints(3, aDimIdx))
              < myPerInfo(aDimIdx).myPeriod / 2.01)
     {
-      double aPeriodMult   = (myPoints(1, aDimIdx) < myPoints(2, aDimIdx)) ? 1.0 : -1.0;
-      double aNewParam     = myPoints(1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
-      myPoints(1, aDimIdx) = aNewParam;
+      double aPeriodMult = (myPoints(1, aDimIdx) < myPoints(2, aDimIdx)) ? 1.0 : -1.0;
+      double aNewParam   = myPoints(1, aDimIdx) + aPeriodMult * myPerInfo(aDimIdx).myPeriod;
+      myPoints(1, aDimIdx)      = aNewParam;
     }
   }
   for (int aPntIdx = 1; aPntIdx < myNbPoints; aPntIdx++)
@@ -325,7 +325,8 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
             && std::abs(myPoles(classe, aDimIdx) - myPoints(myNbPoints, aDimIdx))
                  > myPerInfo(aDimIdx).myPeriod / 2.01)
         {
-          double aMult = myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
+          double aMult =
+            myPoles(classe, aDimIdx) < myPoints(myNbPoints, aDimIdx) ? 1.0 : -1.0;
           myPoles(classe, aDimIdx) += aMult * myPerInfo(aDimIdx).myPeriod;
         }
       }
@@ -495,10 +496,10 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 const AppParCurves_MultiCurve& AppCont_LeastSquare::Value()
 {
 
-  int      i, j, j2;
-  gp_Pnt   Pt;
-  gp_Pnt2d Pt2d;
-  int      ideb = 1, ifin = myDegre + 1;
+  int i, j, j2;
+  gp_Pnt           Pt;
+  gp_Pnt2d         Pt2d;
+  int ideb = 1, ifin = myDegre + 1;
 
   // On met le resultat dans les curves correspondantes
   for (i = ideb; i <= ifin; i++)
@@ -524,11 +525,13 @@ const AppParCurves_MultiCurve& AppCont_LeastSquare::Value()
 
 //=================================================================================================
 
-void AppCont_LeastSquare::Error(double& F, double& MaxE3d, double& MaxE2d) const
+void AppCont_LeastSquare::Error(double& F,
+                                double& MaxE3d,
+                                double& MaxE2d) const
 {
-  int    i, j, k, c, i2, classe = myDegre + 1;
-  double Coeff, err3d = 0.0, err2d = 0.0;
-  int    ncol = myPoints.UpperCol() - myPoints.LowerCol() + 1;
+  int i, j, k, c, i2, classe = myDegre + 1;
+  double    Coeff, err3d = 0.0, err2d = 0.0;
+  int ncol = myPoints.UpperCol() - myPoints.LowerCol() + 1;
 
   math_Matrix MyPoints(1, myNbdiscret, 1, ncol);
   MyPoints = myPoints;

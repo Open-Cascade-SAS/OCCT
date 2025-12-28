@@ -36,12 +36,11 @@ public:
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
     const StepVisual_ShadingSurfaceMethod theSurfaceStyleRendering_RenderingMethod,
-    const occ::handle<StepVisual_Colour>& theSurfaceStyleRendering_SurfaceColour,
+    const occ::handle<StepVisual_Colour>&      theSurfaceStyleRendering_SurfaceColour,
     const occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>& theProperties);
 
   //! Returns field Properties
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>
-                  Properties() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>> Properties() const;
   //! Sets field Properties
   Standard_EXPORT void SetProperties(
     const occ::handle<NCollection_HArray1<StepVisual_RenderingPropertiesSelect>>& theProperties);

@@ -44,11 +44,11 @@ public:
   //! ends of the length. The text aText labels the diameter.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const TCollection_ExtendedString&      aText,
-                                  const gp_Pnt&                          AttachmentPoint,
-                                  const gp_Circ&                         aCircle,
-                                  const DsgPrs_ArrowSide                 ArrowSide,
-                                  const bool                             IsDiamSymbol);
+                                  const TCollection_ExtendedString& aText,
+                                  const gp_Pnt&                     AttachmentPoint,
+                                  const gp_Circ&                    aCircle,
+                                  const DsgPrs_ArrowSide            ArrowSide,
+                                  const bool            IsDiamSymbol);
 
   //! Draws the diameter of the arc anArc displayed in the
   //! presentation aPresentation and with attributes
@@ -61,13 +61,14 @@ public:
   //! first and last points of the arc. The text aText labels the diameter.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const TCollection_ExtendedString&      aText,
-                                  const gp_Pnt&                          AttachmentPoint,
-                                  const gp_Circ&                         aCircle,
-                                  const double                           uFirst,
-                                  const double                           uLast,
-                                  const DsgPrs_ArrowSide                 ArrowSide,
-                                  const bool                             IsDiamSymbol);
+                                  const TCollection_ExtendedString& aText,
+                                  const gp_Pnt&                     AttachmentPoint,
+                                  const gp_Circ&                    aCircle,
+                                  const double               uFirst,
+                                  const double               uLast,
+                                  const DsgPrs_ArrowSide            ArrowSide,
+                                  const bool            IsDiamSymbol);
+
 };
 
 #endif // _DsgPrs_DiameterPresentation_HeaderFile

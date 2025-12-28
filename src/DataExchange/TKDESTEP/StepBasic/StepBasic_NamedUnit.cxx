@@ -25,8 +25,7 @@ void StepBasic_NamedUnit::Init(const occ::handle<StepBasic_DimensionalExponents>
   dimensions = aDimensions;
 }
 
-void StepBasic_NamedUnit::SetDimensions(
-  const occ::handle<StepBasic_DimensionalExponents>& aDimensions)
+void StepBasic_NamedUnit::SetDimensions(const occ::handle<StepBasic_DimensionalExponents>& aDimensions)
 {
   dimensions = aDimensions;
 }

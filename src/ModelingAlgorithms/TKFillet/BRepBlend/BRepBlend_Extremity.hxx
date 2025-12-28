@@ -40,48 +40,48 @@ public:
   Standard_EXPORT BRepBlend_Extremity();
 
   //! Creates an extremity on a surface
-  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt& P,
-                                      const double  U,
-                                      const double  V,
-                                      const double  Param,
-                                      const double  Tol);
+  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&       P,
+                                      const double U,
+                                      const double V,
+                                      const double Param,
+                                      const double Tol);
 
   //! Creates an extremity on a surface. This extremity matches
   //! the vertex <Vtx>.
-  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&                         P,
-                                      const double                          U,
-                                      const double                          V,
-                                      const double                          Param,
-                                      const double                          Tol,
+  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&                    P,
+                                      const double              U,
+                                      const double              V,
+                                      const double              Param,
+                                      const double              Tol,
                                       const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   //! Creates an extremity on a curve
-  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt& P,
-                                      const double  W,
-                                      const double  Param,
-                                      const double  Tol);
+  Standard_EXPORT BRepBlend_Extremity(const gp_Pnt&       P,
+                                      const double W,
+                                      const double Param,
+                                      const double Tol);
 
   //! Set the values for an extremity on a surface.
-  Standard_EXPORT void SetValue(const gp_Pnt& P,
-                                const double  U,
-                                const double  V,
-                                const double  Param,
-                                const double  Tol);
+  Standard_EXPORT void SetValue(const gp_Pnt&       P,
+                                const double U,
+                                const double V,
+                                const double Param,
+                                const double Tol);
 
   //! Set the values for an extremity on a surface.This
   //! extremity matches the vertex <Vtx>.
-  Standard_EXPORT void SetValue(const gp_Pnt&                         P,
-                                const double                          U,
-                                const double                          V,
-                                const double                          Param,
-                                const double                          Tol,
+  Standard_EXPORT void SetValue(const gp_Pnt&                    P,
+                                const double              U,
+                                const double              V,
+                                const double              Param,
+                                const double              Tol,
                                 const occ::handle<Adaptor3d_HVertex>& Vtx);
 
   //! Set the values for an extremity on curve.
-  Standard_EXPORT void SetValue(const gp_Pnt& P,
-                                const double  W,
-                                const double  Param,
-                                const double  Tol);
+  Standard_EXPORT void SetValue(const gp_Pnt&       P,
+                                const double W,
+                                const double Param,
+                                const double Tol);
 
   //! This method returns the value of the point in 3d space.
   const gp_Pnt& Value() const;
@@ -107,9 +107,9 @@ public:
   //! Sets the values of a point which is on the arc
   //! A, at parameter Param.
   Standard_EXPORT void AddArc(const occ::handle<Adaptor2d_Curve2d>& A,
-                              const double                          Param,
-                              const IntSurf_Transition&             TLine,
-                              const IntSurf_Transition&             TArc);
+                              const double              Param,
+                              const IntSurf_Transition&        TLine,
+                              const IntSurf_Transition&        TArc);
 
   //! This method returns the parameters of the point
   //! on the concerned surface.
@@ -138,16 +138,16 @@ public:
   double ParameterOnGuide() const;
 
 private:
-  occ::handle<Adaptor3d_HVertex>             vtx;
+  occ::handle<Adaptor3d_HVertex>      vtx;
   NCollection_Sequence<BRepBlend_PointOnRst> seqpt;
-  gp_Pnt                                     pt;
-  gp_Vec                                     tang;
-  double                                     param;
-  double                                     u;
-  double                                     v;
-  double                                     tol;
-  bool                                       isvtx;
-  bool                                       hastang;
+  gp_Pnt                         pt;
+  gp_Vec                         tang;
+  double                  param;
+  double                  u;
+  double                  v;
+  double                  tol;
+  bool               isvtx;
+  bool               hastang;
 };
 
 #include <BRepBlend_Extremity.lxx>

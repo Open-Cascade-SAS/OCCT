@@ -80,9 +80,9 @@ int props(Draw_Interpretor& di, int n, const char** a)
 
   GProp_GProps G;
 
-  bool   onlyClosed = false;
-  double eps        = 1.0;
-  bool   witheps    = false;
+  bool onlyClosed = false;
+  double    eps        = 1.0;
+  bool witheps    = false;
   if ((n > 2 && *a[2] == 'c') || (n > 3 && *a[3] == 'c'))
     onlyClosed = true;
   if (n > 2 && *a[2] != 'c' && n != 5)
@@ -124,7 +124,7 @@ int props(Draw_Interpretor& di, int n, const char** a)
   }
 
   GProp_PrincipalProps Pr = G.PrincipalProperties();
-  double               Ix, Iy, Iz;
+  double        Ix, Iy, Iz;
   Pr.Moments(Ix, Iy, Iz);
 
   if (!isFullMode)
@@ -225,19 +225,19 @@ int vpropsgk(Draw_Interpretor& di, int n, const char** a)
   if (S.IsNull())
     return 0;
 
-  GProp_GProps G;
-  bool         SkipShared = false;
+  GProp_GProps     G;
+  bool SkipShared = false;
   if (n >= 2 && strcmp(a[n - 1], "-skip") == 0)
   {
     SkipShared = true;
     --n;
   }
 
-  bool   onlyClosed = false;
-  bool   isUseSpan  = false;
-  bool   CGFlag     = false;
-  bool   IFlag      = false;
-  double eps        = 1.e-3;
+  bool onlyClosed = false;
+  bool isUseSpan  = false;
+  bool CGFlag     = false;
+  bool IFlag      = false;
+  double    eps        = 1.e-3;
   // double    aDefaultTol = 1.e-3;
   int mode = 0;
 
@@ -263,7 +263,7 @@ int vpropsgk(Draw_Interpretor& di, int n, const char** a)
   // aChrono.Stop();
 
   Standard_SStream aSStream0;
-  int              anOutWidth = 24;
+  int anOutWidth = 24;
 
   aSStream0.precision(15);
   aSStream0 << "\n\n";

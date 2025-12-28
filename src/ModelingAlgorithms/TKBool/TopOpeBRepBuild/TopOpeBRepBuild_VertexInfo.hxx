@@ -24,6 +24,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Integer.hxx>
 
@@ -71,15 +72,15 @@ public:
   Standard_EXPORT void Prepare(const NCollection_List<TopoDS_Shape>& aL);
 
 private:
-  TopoDS_Vertex                        myVertex;
-  TopoDS_Edge                          myCurrent;
-  TopoDS_Edge                          myCurrentIn;
-  bool                                 mySmart;
+  TopoDS_Vertex                      myVertex;
+  TopoDS_Edge                        myCurrent;
+  TopoDS_Edge                        myCurrentIn;
+  bool                   mySmart;
   NCollection_IndexedMap<TopoDS_Shape> myEdgesIn;
   NCollection_IndexedMap<TopoDS_Shape> myEdgesOut;
   NCollection_IndexedMap<TopoDS_Shape> myLocalEdgesOut;
-  NCollection_List<TopoDS_Shape>       myEdgesPassed;
-  int                                  myFoundOut;
+  NCollection_List<TopoDS_Shape>               myEdgesPassed;
+  int                   myFoundOut;
 };
 
 #endif // _TopOpeBRepBuild_VertexInfo_HeaderFile

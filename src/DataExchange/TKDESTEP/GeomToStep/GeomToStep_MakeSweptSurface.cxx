@@ -37,15 +37,14 @@ GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface(const occ::handle<Geom_
   done = true;
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)))
   {
-    occ::handle<Geom_SurfaceOfLinearExtrusion> Sur =
-      occ::down_cast<Geom_SurfaceOfLinearExtrusion>(S);
+    occ::handle<Geom_SurfaceOfLinearExtrusion> Sur = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(S);
     GeomToStep_MakeSurfaceOfLinearExtrusion MkLinear(Sur, theLocalFactors);
     theSweptSurface = MkLinear.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)))
   {
-    occ::handle<Geom_SurfaceOfRevolution> Sur = occ::down_cast<Geom_SurfaceOfRevolution>(S);
-    GeomToStep_MakeSurfaceOfRevolution    MkRevol(Sur, theLocalFactors);
+    occ::handle<Geom_SurfaceOfRevolution>   Sur = occ::down_cast<Geom_SurfaceOfRevolution>(S);
+    GeomToStep_MakeSurfaceOfRevolution MkRevol(Sur, theLocalFactors);
     theSweptSurface = MkRevol.Value();
   }
   else

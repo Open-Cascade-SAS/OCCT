@@ -41,8 +41,8 @@ public:
   Standard_EXPORT virtual void Initialize() override;
 
   //! Initializes me by surface
-  Standard_EXPORT virtual void Initialize(
-    const occ::handle<Adaptor3d_Surface>& theSurface) override;
+  Standard_EXPORT virtual void Initialize(const occ::handle<Adaptor3d_Surface>& theSurface)
+    override;
 
   Standard_EXPORT virtual void ComputeSamplePoints() override;
 
@@ -59,7 +59,9 @@ public:
   //! and a corresponded 3d point
   //! for given index.
   //! The index should be from 1 to NbSamples()
-  Standard_EXPORT virtual void SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d) override;
+  Standard_EXPORT virtual void SamplePoint(const int Index,
+                                           gp_Pnt2d&              P2d,
+                                           gp_Pnt&                P3d) override;
 
   //! compute the sample-points for the intersections algorithms
   //! by adaptive algorithm for BSpline surfaces. For other surfaces algorithm
@@ -67,19 +69,19 @@ public:
   //! and V sample parameters;
   //! theDefl is a required deflection
   //! theNUmin, theNVmin are minimal nb points for U and V.
-  Standard_EXPORT virtual void SamplePnts(const double theDefl,
-                                          const int    theNUmin,
-                                          const int    theNVmin) override;
+  Standard_EXPORT virtual void SamplePnts(const double    theDefl,
+                                          const int theNUmin,
+                                          const int theNVmin) override;
 
   DEFINE_STANDARD_RTTIEXT(IntTools_TopolTool, Adaptor3d_TopolTool)
 
 private:
-  int    myNbSmplU;
-  int    myNbSmplV;
-  double myU0;
-  double myV0;
-  double myDU;
-  double myDV;
+  int myNbSmplU;
+  int myNbSmplV;
+  double    myU0;
+  double    myV0;
+  double    myDU;
+  double    myDV;
 };
 
 #endif // _IntTools_TopolTool_HeaderFile

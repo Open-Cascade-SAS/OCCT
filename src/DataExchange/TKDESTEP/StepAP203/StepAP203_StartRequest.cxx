@@ -28,8 +28,7 @@ StepAP203_StartRequest::StepAP203_StartRequest() {}
 //=================================================================================================
 
 void StepAP203_StartRequest::Init(
-  const occ::handle<StepBasic_VersionedActionRequest>&
-    aActionRequestAssignment_AssignedActionRequest,
+  const occ::handle<StepBasic_VersionedActionRequest>&    aActionRequestAssignment_AssignedActionRequest,
   const occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>>& aItems)
 {
   StepBasic_ActionRequestAssignment::Init(aActionRequestAssignment_AssignedActionRequest);
@@ -46,8 +45,7 @@ occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>> StepAP203_StartRequ
 
 //=================================================================================================
 
-void StepAP203_StartRequest::SetItems(
-  const occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>>& aItems)
+void StepAP203_StartRequest::SetItems(const occ::handle<NCollection_HArray1<StepAP203_StartRequestItem>>& aItems)
 {
   theItems = aItems;
 }

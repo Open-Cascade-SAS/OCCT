@@ -25,7 +25,7 @@
 static TCollection_AsciiString ExprIntrp_thestring;
 
 bool ExprIntrp::Parse(const occ::handle<ExprIntrp_Generator>& gen,
-                      const TCollection_AsciiString&          str)
+                                  const TCollection_AsciiString&     str)
 {
   ExprIntrp_Recept.SetMaster(gen);
   if (str.Length() == 0)

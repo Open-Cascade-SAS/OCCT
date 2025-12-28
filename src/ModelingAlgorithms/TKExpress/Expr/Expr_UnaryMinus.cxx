@@ -67,38 +67,36 @@ bool Expr_UnaryMinus::IsLinear() const
   return myexp->IsLinear();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_UnaryMinus::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_UnaryMinus::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   occ::handle<Expr_GeneralExpression> myder = Operand();
-  myder                                     = myder->Derivative(X);
+  myder                                = myder->Derivative(X);
   occ::handle<Expr_UnaryMinus> resu         = -myder;
   return resu->ShallowSimplified();
 }
 
-occ::handle<Expr_GeneralExpression> Expr_UnaryMinus::NDerivative(
-  const occ::handle<Expr_NamedUnknown>& X,
-  const int                             N) const
+occ::handle<Expr_GeneralExpression> Expr_UnaryMinus::NDerivative(const occ::handle<Expr_NamedUnknown>& X,
+                                                            const int N) const
 {
   if (N <= 0)
   {
     throw Standard_OutOfRange();
   }
   occ::handle<Expr_GeneralExpression> myder = Operand();
-  myder                                     = myder->NDerivative(X, N);
+  myder                                = myder->NDerivative(X, N);
   occ::handle<Expr_UnaryMinus> resu         = -myder;
   return resu->ShallowSimplified();
 }
 
 double Expr_UnaryMinus::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                                 const NCollection_Array1<double>& vals) const
+                                        const NCollection_Array1<double>&      vals) const
 {
   return -Operand()->Evaluate(vars, vals);
 }
 
 TCollection_AsciiString Expr_UnaryMinus::String() const
 {
-  TCollection_AsciiString             str;
+  TCollection_AsciiString        str;
   occ::handle<Expr_GeneralExpression> op = Operand();
   if (op->NbSubExpressions() > 1)
   {

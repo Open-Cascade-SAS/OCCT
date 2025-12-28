@@ -102,8 +102,7 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const occ::handle<Geom2
     // UPDATE FMA 1-04-96
     if (C->IsPeriodic())
     {
-      occ::handle<Geom2d_BSplineCurve> newBspli =
-        occ::down_cast<Geom2d_BSplineCurve>(Bspli->Copy());
+      occ::handle<Geom2d_BSplineCurve> newBspli = occ::down_cast<Geom2d_BSplineCurve>(Bspli->Copy());
       newBspli->SetNotPeriodic();
       Bspli = newBspli;
     }
@@ -121,8 +120,8 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve(const occ::handle<Geom2
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)))
   {
-    occ::handle<Geom2d_BezierCurve>      Cur   = occ::down_cast<Geom2d_BezierCurve>(C);
-    occ::handle<Geom2d_BSplineCurve>     Bspli = Geom2dConvert::CurveToBSplineCurve(Cur);
+    occ::handle<Geom2d_BezierCurve>           Cur   = occ::down_cast<Geom2d_BezierCurve>(C);
+    occ::handle<Geom2d_BSplineCurve>          Bspli = Geom2dConvert::CurveToBSplineCurve(Cur);
     GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
     theBoundedCurve = MkBSplineC.Value();
   }

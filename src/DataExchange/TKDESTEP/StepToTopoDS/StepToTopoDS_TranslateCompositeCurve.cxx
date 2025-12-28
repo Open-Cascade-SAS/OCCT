@@ -53,7 +53,7 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve()
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve(
   const occ::handle<StepGeom_CompositeCurve>&   CC,
   const occ::handle<Transfer_TransientProcess>& TP,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   Init(CC, TP, theLocalFactors);
 }
@@ -65,16 +65,17 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve(
   const occ::handle<Transfer_TransientProcess>& TP,
   const occ::handle<StepGeom_Surface>&          S,
   const occ::handle<Geom_Surface>&              Surf,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   Init(CC, TP, S, Surf, theLocalFactors);
 }
 
 //=================================================================================================
 
-bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
-                                                const occ::handle<Transfer_TransientProcess>& TP,
-                                                const StepData_Factors& theLocalFactors)
+bool StepToTopoDS_TranslateCompositeCurve::Init(
+  const occ::handle<StepGeom_CompositeCurve>&   CC,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const StepData_Factors&                  theLocalFactors)
 {
   occ::handle<StepGeom_Surface> S;
   occ::handle<Geom_Surface>     Surf;
@@ -83,11 +84,12 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
 
 //=================================================================================================
 
-bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_CompositeCurve>&   CC,
-                                                const occ::handle<Transfer_TransientProcess>& TP,
-                                                const occ::handle<StepGeom_Surface>&          S,
-                                                const occ::handle<Geom_Surface>&              Surf,
-                                                const StepData_Factors& theLocalFactors)
+bool StepToTopoDS_TranslateCompositeCurve::Init(
+  const occ::handle<StepGeom_CompositeCurve>&   CC,
+  const occ::handle<Transfer_TransientProcess>& TP,
+  const occ::handle<StepGeom_Surface>&          S,
+  const occ::handle<Geom_Surface>&              Surf,
+  const StepData_Factors&                  theLocalFactors)
 {
   myWire.Nullify();
   myInfiniteSegment = false;
@@ -107,7 +109,7 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
   }
 
   occ::handle<ShapeExtend_WireData> sbwd = new ShapeExtend_WireData;
-  int                               nbs  = CC->NbSegments();
+  int             nbs  = CC->NbSegments();
   for (int i = 1; i <= nbs; i++)
   {
     occ::handle<StepGeom_CompositeCurveSegment> ccs = CC->SegmentsValue(i);
@@ -165,8 +167,8 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
         { // find proper pcurve
           for (int j = 1; j <= sc->NbAssociatedGeometry(); j++)
           {
-            StepGeom_PcurveOrSurface     PCorS = sc->AssociatedGeometryValue(j);
-            occ::handle<StepGeom_Pcurve> pc    = PCorS.Pcurve();
+            StepGeom_PcurveOrSurface PCorS = sc->AssociatedGeometryValue(j);
+            occ::handle<StepGeom_Pcurve>  pc    = PCorS.Pcurve();
             if (pc.IsNull() || pc->BasisSurface() != S)
               continue;
             pcurve = pc;
@@ -226,7 +228,7 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
       {
         OCC_CATCH_SIGNALS
         StepToTopoDS_TranslateEdge TrE;
-        occ::handle<Geom2d_Curve>  c2d = TrE.MakePCurve(pcurve, Surf, theLocalFactors);
+        occ::handle<Geom2d_Curve>       c2d = TrE.MakePCurve(pcurve, Surf, theLocalFactors);
         if (!c2d.IsNull())
         {
           if (edge.IsNull())
@@ -282,7 +284,7 @@ bool StepToTopoDS_TranslateCompositeCurve::Init(const occ::handle<StepGeom_Compo
   }
 
   // connect wire; all other fixes are left for caller
-  double                     preci = Precision();
+  double         preci = Precision();
   occ::handle<ShapeFix_Wire> sfw   = new ShapeFix_Wire;
   sfw->Load(sbwd);
   sfw->SetPrecision(preci);

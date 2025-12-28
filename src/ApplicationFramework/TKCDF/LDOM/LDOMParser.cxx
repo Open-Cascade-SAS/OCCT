@@ -54,7 +54,7 @@ inline
   ReadRecord(LDOM_XmlReader&   aReader,
              Standard_IStream& theIStream,
              LDOM_OSStream&    aData,
-             bool&             theDocStart)
+             bool& theDocStart)
 {
 #ifdef LDOM_PARSER_TRACE
   static aCounter = 0;
@@ -138,7 +138,9 @@ LDOM_OSStream::BOMType LDOMParser::GetBOM() const
 
 //=================================================================================================
 
-bool LDOMParser::parse(std::istream& anInput, const bool theTagPerStep, const bool theWithoutRoot)
+bool LDOMParser::parse(std::istream&          anInput,
+                                   const bool theTagPerStep,
+                                   const bool theWithoutRoot)
 {
   // Open the DOM Document
   myDocument = new LDOM_MemManager(20000);
@@ -176,7 +178,8 @@ bool LDOMParser::parse(const char* const aFileName)
 // purpose  : parse the whole document (abstracted from the XML source)
 //=======================================================================
 
-bool LDOMParser::ParseDocument(std::istream& theIStream, const bool theWithoutRoot)
+bool LDOMParser::ParseDocument(std::istream&          theIStream,
+                                           const bool theWithoutRoot)
 {
   bool isError   = false;
   bool isElement = false;
@@ -291,9 +294,10 @@ bool LDOMParser::ParseDocument(std::istream& theIStream, const bool theWithoutRo
 // purpose  : parse one element, given the type of its XML presentation
 //=======================================================================
 
-bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
+bool LDOMParser::ParseElement(Standard_IStream& theIStream,
+                                          bool& theDocStart)
 {
-  bool                     isError    = false;
+  bool         isError    = false;
   const LDOM_BasicElement* aParent    = &myReader->GetElement();
   const LDOM_BasicNode*    aLastChild = NULL;
   for (;;)
@@ -335,7 +339,7 @@ bool LDOMParser::ParseElement(Standard_IStream& theIStream, bool& theDocStart)
         break;
       case LDOM_XmlReader::XML_END_ELEMENT: {
         const char* aParentName = static_cast<const char*>(aParent->GetTagName());
-        aTextStr                = (char*)myCurrentData.str();
+        aTextStr                     = (char*)myCurrentData.str();
         if (strcmp(aTextStr, aParentName) != 0)
         {
           myError = "Expected end tag \'";

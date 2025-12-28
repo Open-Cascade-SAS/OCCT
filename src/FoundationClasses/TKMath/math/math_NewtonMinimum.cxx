@@ -31,9 +31,9 @@
 //=================================================================================================
 
 math_NewtonMinimum::math_NewtonMinimum(const math_MultipleVarFunctionWithHessian& theFunction,
-                                       const double                               theTolerance,
-                                       const int                                  theNbIterations,
-                                       const double                               theConvexity,
+                                       const double                        theTolerance,
+                                       const int                     theNbIterations,
+                                       const double                        theConvexity,
                                        const bool theWithSingularity)
     : TheStatus(math_NotBracketed),
       TheLocation(1, theFunction.NbVariables()),
@@ -83,9 +83,9 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
   math_Vector* precedent = &Point1;
   math_Vector* suivant   = &Point2;
 
-  bool   Ok     = true;
-  int    NbConv = 0, ii, Nreduction;
-  double VPrecedent, VItere;
+  bool Ok     = true;
+  int NbConv = 0, ii, Nreduction;
+  double    VPrecedent, VItere;
 
   Done      = true;
   TheStatus = math_OK;
@@ -154,7 +154,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     {
       // Project point on bounds or nullify TheStep coords if point lies on boundary.
 
-      *suivant     = *precedent - TheStep;
+      *suivant            = *precedent - TheStep;
       double aMult = RealLast();
       for (int anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
       {
@@ -165,13 +165,13 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
         if (suivant->Value(anIdx) < myLeft(anIdx))
         {
           double aValue = std::abs(precedent->Value(anIdx) - myLeft(anIdx)) / anAbsStep;
-          aMult         = std::min(aValue, aMult);
+          aMult                = std::min(aValue, aMult);
         }
 
         if (suivant->Value(anIdx) > myRight(anIdx))
         {
           double aValue = std::abs(precedent->Value(anIdx) - myRight(anIdx)) / anAbsStep;
-          aMult         = std::min(aValue, aMult);
+          aMult                = std::min(aValue, aMult);
         }
       }
 

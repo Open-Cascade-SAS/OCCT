@@ -20,7 +20,7 @@ AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple()
 {
 }
 
-AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple(const int                     TheIndex,
+AppParCurves_ConstraintCouple::AppParCurves_ConstraintCouple(const int        TheIndex,
                                                              const AppParCurves_Constraint Cons)
 {
   myIndex      = TheIndex;

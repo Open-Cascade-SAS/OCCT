@@ -22,9 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class LocOpe_GeneratedShape;
 class TopoDS_Face;
 
@@ -60,11 +63,10 @@ public:
 
 private:
   TopoDS_Shape                       myShape;
-  occ::handle<LocOpe_GeneratedShape> myGen;
-  bool                               myDone;
+  occ::handle<LocOpe_GeneratedShape>      myGen;
+  bool                   myDone;
   TopoDS_Shape                       myRes;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    myModShapes;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myModShapes;
 };
 
 #include <LocOpe_Generator.lxx>

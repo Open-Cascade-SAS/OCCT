@@ -25,6 +25,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 class gp_Pnt;
 
 //! defines IGES Sectioned Area, Type <230> Form <0>,
@@ -45,13 +46,12 @@ class IGESDimen_SectionedArea : public IGESData_IGESEntity
 public:
   Standard_EXPORT IGESDimen_SectionedArea();
 
-  Standard_EXPORT void Init(
-    const occ::handle<IGESData_IGESEntity>&                                   aCurve,
-    const int                                                                 aPattern,
-    const gp_XYZ&                                                             aPoint,
-    const double                                                              aDistance,
-    const double                                                              anAngle,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands);
+  Standard_EXPORT void Init(const occ::handle<IGESData_IGESEntity>&          aCurve,
+                            const int                      aPattern,
+                            const gp_XYZ&                               aPoint,
+                            const double                         aDistance,
+                            const double                         anAngle,
+                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& someIslands);
 
   //! Sets the cross hatches to be inverted or not,
   //! according value of <mode> (corresponds to FormNumber)
@@ -92,11 +92,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDimen_SectionedArea, IGESData_IGESEntity)
 
 private:
-  occ::handle<IGESData_IGESEntity>                                   theExteriorCurve;
-  int                                                                thePattern;
-  gp_XYZ                                                             thePassingPoint;
-  double                                                             theDistance;
-  double                                                             theAngle;
+  occ::handle<IGESData_IGESEntity>          theExteriorCurve;
+  int                     thePattern;
+  gp_XYZ                               thePassingPoint;
+  double                        theDistance;
+  double                        theAngle;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> theIslandCurves;
 };
 

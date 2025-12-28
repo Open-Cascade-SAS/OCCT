@@ -35,6 +35,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <MoniTool_Macros.hxx>
 #include <Message_ProgressScope.hxx>
@@ -107,7 +108,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferShell(
 //=============================================================================
 
 occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_Face& start,
-                                                                   const Message_ProgressRange&)
+                                                              const Message_ProgressRange&)
 {
   occ::handle<IGESData_IGESEntity> res;
 
@@ -127,8 +128,8 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
     aCopy.Perform(aFace);
 
     // create face with redirected surface
-    BRep_Builder              B;
-    TopLoc_Location           aLoc;
+    BRep_Builder         B;
+    TopLoc_Location      aLoc;
     occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(start, aLoc);
     while (aSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     {
@@ -138,7 +139,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
         occ::down_cast<Geom_RectangularTrimmedSurface>(aSurf);
       aSurf = aTrimmedSurf->BasisSurface();
     }
-    aSurf       = aSurf->UReversed();
+    aSurf              = aSurf->UReversed();
     double aTol = BRep_Tool::Tolerance(start);
     B.MakeFace(aFace, aSurf, aLoc, aTol);
     // set specifics flags of a Face
@@ -173,9 +174,9 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
     // mirror pcurves
     double U1, U2, V1, V2;
     aSurf->Bounds(U1, U2, V1, V2);
-    double    aCenter = 0.5 * (U1 + U2);
-    gp_Trsf2d T;
-    gp_Ax2d   axis(gp_Pnt2d(aCenter, V1), gp_Dir2d(gp_Dir2d::D::Y));
+    double aCenter = 0.5 * (U1 + U2);
+    gp_Trsf2d     T;
+    gp_Ax2d       axis(gp_Pnt2d(aCenter, V1), gp_Dir2d(gp_Dir2d::D::Y));
     T.SetMirror(axis);
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap(101, new NCollection_IncAllocator);
     for (ex.Init(start, TopAbs_EDGE); ex.More(); ex.Next())
@@ -186,7 +187,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
       if (!aMap.Add(aCopyEdge))
         // seam edge has been already updated
         continue;
-      double                    f, l;
+      double        f, l;
       occ::handle<Geom2d_Curve> aCurve1, aCurve2;
       aCurve1 =
         BRep_Tool::CurveOnSurface(aCopyEdge, TopoDS::Face(aCopy.ModifiedShape(start)), f, l);
@@ -234,7 +235,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
   }
 
   // int Nb = 0; //szv#4:S4163:12Mar99 unused
-  double                           Length = 1.;
+  double               Length = 1.;
   occ::handle<IGESData_IGESEntity> ISurf;
 
   // returns the face surface
@@ -261,14 +262,14 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
   // returns the wires of the face
   // -----------------------------
 
-  BRepToIGES_BRWire                BW(*this);
-  int                              Imode   = 0;
-  int                              Iprefer = 0;
+  BRepToIGES_BRWire           BW(*this);
+  int            Imode   = 0;
+  int            Iprefer = 0;
   occ::handle<IGESData_IGESEntity> ICurve2d;
 
   // outer wire
   //: n3  TopoDS_Wire Outer = BRepTools::OuterWire(myface);
-  TopoDS_Wire                          Outer  = ShapeAlgo::AlgoContainer()->OuterWire(aFace); //: n3
+  TopoDS_Wire                     Outer  = ShapeAlgo::AlgoContainer()->OuterWire(aFace); //: n3
   occ::handle<IGESGeom_CurveOnSurface> IOuter = new IGESGeom_CurveOnSurface;
   if (!Outer.IsNull())
   {
@@ -284,13 +285,12 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
   }
 
   // inners wires
-  TopExp_Explorer                                                     Ex;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  TopExp_Explorer                      Ex;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq = new NCollection_HSequence<occ::handle<Standard_Transient>>();
 
   for (Ex.Init(aFace, TopAbs_WIRE); Ex.More(); Ex.Next())
   {
-    TopoDS_Wire                          W     = TopoDS::Wire(Ex.Current());
+    TopoDS_Wire                     W     = TopoDS::Wire(Ex.Current());
     occ::handle<IGESGeom_CurveOnSurface> Curve = new IGESGeom_CurveOnSurface;
     if (W.IsNull())
     {
@@ -315,7 +315,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
   // all inners edges not in a wire
   for (Ex.Init(aFace, TopAbs_EDGE, TopAbs_WIRE); Ex.More(); Ex.Next())
   {
-    TopoDS_Edge                          E     = TopoDS::Edge(Ex.Current());
+    TopoDS_Edge                     E     = TopoDS::Edge(Ex.Current());
     occ::handle<IGESGeom_CurveOnSurface> Curve = new IGESGeom_CurveOnSurface;
     if (E.IsNull())
     {
@@ -338,15 +338,14 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell ::TransferFace(const TopoDS_
     }
   }
 
-  int                                                                    nbent = Seq->Length();
+  int                         nbent = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>> Tab;
   if (nbent >= 1)
   {
     Tab = new NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>(1, nbent);
     for (int itab = 1; itab <= nbent; itab++)
     {
-      occ::handle<IGESGeom_CurveOnSurface> item =
-        GetCasted(IGESGeom_CurveOnSurface, Seq->Value(itab));
+      occ::handle<IGESGeom_CurveOnSurface> item = GetCasted(IGESGeom_CurveOnSurface, Seq->Value(itab));
       Tab->SetValue(itab, item);
     }
   }
@@ -386,11 +385,10 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
   if (start.IsNull())
     return res;
 
-  TopExp_Explorer                                                     Ex;
-  occ::handle<IGESBasic_Group>                                        IGroup = new IGESBasic_Group;
-  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq =
-    new NCollection_HSequence<occ::handle<Standard_Transient>>();
-  occ::handle<IGESData_IGESEntity> IFace;
+  TopExp_Explorer                      Ex;
+  occ::handle<IGESBasic_Group>              IGroup = new IGESBasic_Group;
+  occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Seq    = new NCollection_HSequence<occ::handle<Standard_Transient>>();
+  occ::handle<IGESData_IGESEntity>          IFace;
 
   int nbshapes = 0;
   for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
@@ -412,7 +410,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BRShell::TransferShell(
     }
   }
 
-  int                                                                nbfaces = Seq->Length();
+  int                     nbfaces = Seq->Length();
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> Tab;
   if (nbfaces >= 1)
   {

@@ -33,7 +33,7 @@
 GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec&           V,
                                              const StepData_Factors& theLocalFactors)
 {
-  gp_Dir D       = gp_Dir(V);
+  gp_Dir        D       = gp_Dir(V);
   double lFactor = theLocalFactors.LengthFactor();
 #include "GeomToStep_MakeVector_gen.pxx"
 }
@@ -46,8 +46,9 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec2d&         V,
                                              const StepData_Factors& theLocalFactors)
 {
   (void)theLocalFactors;
-  gp_Dir2d D       = gp_Dir2d(V);
-  double   lFactor = 1.;
+  gp_Dir2d      D       = gp_Dir2d(V);
+  double lFactor = 1.;
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================
@@ -55,12 +56,13 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const gp_Vec2d&         V,
 //=============================================================================
 
 GeomToStep_MakeVector::GeomToStep_MakeVector(const occ::handle<Geom_Vector>& GVector,
-                                             const StepData_Factors&         theLocalFactors)
+                                             const StepData_Factors&    theLocalFactors)
 {
   gp_Vec V;
-  V              = GVector->Vec();
-  gp_Dir D       = gp_Dir(V);
+  V                     = GVector->Vec();
+  gp_Dir        D       = gp_Dir(V);
   double lFactor = theLocalFactors.LengthFactor();
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================
@@ -68,13 +70,14 @@ GeomToStep_MakeVector::GeomToStep_MakeVector(const occ::handle<Geom_Vector>& GVe
 //=============================================================================
 
 GeomToStep_MakeVector::GeomToStep_MakeVector(const occ::handle<Geom2d_Vector>& GVector,
-                                             const StepData_Factors&           theLocalFactors)
+                                             const StepData_Factors&      theLocalFactors)
 {
   (void)theLocalFactors;
   gp_Vec2d V;
-  V                = GVector->Vec2d();
-  gp_Dir2d D       = gp_Dir2d(V);
-  double   lFactor = 1.;
+  V                     = GVector->Vec2d();
+  gp_Dir2d      D       = gp_Dir2d(V);
+  double lFactor = 1.;
+#include "GeomToStep_MakeVector_gen.pxx"
 }
 
 //=============================================================================

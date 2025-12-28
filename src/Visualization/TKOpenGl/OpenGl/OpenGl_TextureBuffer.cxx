@@ -84,9 +84,9 @@ bool OpenGl_TextureBuffer::Create(const occ::handle<OpenGl_Context>& theGlCtx)
 //=================================================================================================
 
 bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                                const unsigned int                 theComponentsNb,
-                                const int                          theElemsNb,
-                                const float*                       theData)
+                                const unsigned int            theComponentsNb,
+                                const int        theElemsNb,
+                                const float*                  theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -133,9 +133,9 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
 //=================================================================================================
 
 bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                                const unsigned int                 theComponentsNb,
-                                const int                          theElemsNb,
-                                const unsigned int*                theData)
+                                const unsigned int            theComponentsNb,
+                                const int        theElemsNb,
+                                const unsigned int*           theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -182,9 +182,9 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
 //=================================================================================================
 
 bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                                const unsigned int                 theComponentsNb,
-                                const int                          theElemsNb,
-                                const unsigned short*              theData)
+                                const unsigned int            theComponentsNb,
+                                const int        theElemsNb,
+                                const unsigned short*         theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -227,9 +227,9 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
 //=================================================================================================
 
 bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                                const unsigned int                 theComponentsNb,
-                                const int                          theElemsNb,
-                                const uint8_t*                     theData)
+                                const unsigned int            theComponentsNb,
+                                const int        theElemsNb,
+                                const uint8_t*          theData)
 {
   if (theGlCtx->arbTBO == NULL)
   {
@@ -272,7 +272,7 @@ bool OpenGl_TextureBuffer::Init(const occ::handle<OpenGl_Context>& theGlCtx,
 //=================================================================================================
 
 void OpenGl_TextureBuffer::BindTexture(const occ::handle<OpenGl_Context>& theGlCtx,
-                                       const Graphic3d_TextureUnit        theTextureUnit) const
+                                       const Graphic3d_TextureUnit   theTextureUnit) const
 {
   theGlCtx->core20fwd->glActiveTexture(GL_TEXTURE0 + theTextureUnit);
   theGlCtx->core20fwd->glBindTexture(GetTarget(), myTextureId);
@@ -281,7 +281,7 @@ void OpenGl_TextureBuffer::BindTexture(const occ::handle<OpenGl_Context>& theGlC
 //=================================================================================================
 
 void OpenGl_TextureBuffer::UnbindTexture(const occ::handle<OpenGl_Context>& theGlCtx,
-                                         const Graphic3d_TextureUnit        theTextureUnit) const
+                                         const Graphic3d_TextureUnit   theTextureUnit) const
 {
   theGlCtx->core20fwd->glActiveTexture(GL_TEXTURE0 + theTextureUnit);
   theGlCtx->core20fwd->glBindTexture(GetTarget(), NO_TEXTURE);

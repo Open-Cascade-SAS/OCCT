@@ -107,7 +107,8 @@ public:
   //! @param theLoc the new local coordinate system.
   //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
   //! @return the located shape.
-  TopoDS_Shape Located(const TopLoc_Location& theLoc, const bool theRaiseExc = false) const
+  TopoDS_Shape Located(const TopLoc_Location& theLoc,
+                       const bool theRaiseExc = false) const
   {
     TopoDS_Shape aShape(*this);
     aShape.Location(theLoc, theRaiseExc);
@@ -204,7 +205,8 @@ public:
   //! @param thePosition the transformation to apply.
   //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
   //! @return the moved shape.
-  TopoDS_Shape Moved(const TopLoc_Location& thePosition, const bool theRaiseExc = false) const
+  TopoDS_Shape Moved(const TopLoc_Location& thePosition,
+                     const bool theRaiseExc = false) const
   {
     TopoDS_Shape aShape(*this);
     aShape.Move(thePosition, theRaiseExc);
@@ -260,7 +262,10 @@ public:
   //! Returns True if two shapes are partners, i.e. if
   //! they share the same TShape. Locations and
   //! Orientations may differ.
-  bool IsPartner(const TopoDS_Shape& theOther) const { return (myTShape == theOther.myTShape); }
+  bool IsPartner(const TopoDS_Shape& theOther) const
+  {
+    return (myTShape == theOther.myTShape);
+  }
 
   //! Returns True if two shapes are same, i.e. if they
   //! share the same TShape with the same Locations.
@@ -322,8 +327,8 @@ protected:
 
 private:
   occ::handle<TopoDS_TShape> myTShape;
-  TopLoc_Location            myLocation;
-  TopAbs_Orientation         myOrient;
+  TopLoc_Location       myLocation;
+  TopAbs_Orientation    myOrient;
 };
 
 namespace std

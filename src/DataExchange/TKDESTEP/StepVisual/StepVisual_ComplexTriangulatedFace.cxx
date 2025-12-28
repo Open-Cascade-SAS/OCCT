@@ -25,13 +25,13 @@ StepVisual_ComplexTriangulatedFace::StepVisual_ComplexTriangulatedFace() {}
 //=================================================================================================
 
 void StepVisual_ComplexTriangulatedFace::Init(
-  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedFace_Coordinates,
-  const int                                       theTessellatedFace_Pnmax,
-  const occ::handle<NCollection_HArray2<double>>& theTessellatedFace_Normals,
-  const bool                                      theHasTessellatedFace_GeometricLink,
-  const StepVisual_FaceOrSurface&                 theTessellatedFace_GeometricLink,
-  const occ::handle<NCollection_HArray1<int>>&    thePnindex,
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theTessellatedFace_Coordinates,
+  const int                    theTessellatedFace_Pnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theTessellatedFace_Normals,
+  const bool                    theHasTessellatedFace_GeometricLink,
+  const StepVisual_FaceOrSurface&           theTessellatedFace_GeometricLink,
+  const occ::handle<NCollection_HArray1<int>>&   thePnindex,
   const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleStrips,
   const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& theTriangleFans)
 {
@@ -77,15 +77,15 @@ int StepVisual_ComplexTriangulatedFace::NbPnindex() const
 
 //=================================================================================================
 
-int StepVisual_ComplexTriangulatedFace::PnindexValue(const int theNum) const
+int StepVisual_ComplexTriangulatedFace::PnindexValue(
+  const int theNum) const
 {
   return myPnindex->Value(theNum);
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>
-  StepVisual_ComplexTriangulatedFace::TriangleStrips() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> StepVisual_ComplexTriangulatedFace::TriangleStrips() const
 {
   return myTriangleStrips;
 }
@@ -111,8 +111,7 @@ int StepVisual_ComplexTriangulatedFace::NbTriangleStrips() const
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>
-  StepVisual_ComplexTriangulatedFace::TriangleFans() const
+occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> StepVisual_ComplexTriangulatedFace::TriangleFans() const
 {
   return myTriangleFans;
 }

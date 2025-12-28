@@ -41,11 +41,17 @@ public:
 
   //! Defines the texture projection plane for texture coordinate S
   //! default is <1.0, 0.0, 0.0, 0.0>
-  Standard_EXPORT void SetPlaneS(const float A, const float B, const float C, const float D);
+  Standard_EXPORT void SetPlaneS(const float A,
+                                 const float B,
+                                 const float C,
+                                 const float D);
 
   //! Defines the texture projection plane for texture coordinate T
   //! default is <0.0, 1.0, 0.0, 0.0>
-  Standard_EXPORT void SetPlaneT(const float A, const float B, const float C, const float D);
+  Standard_EXPORT void SetPlaneT(const float A,
+                                 const float B,
+                                 const float C,
+                                 const float D);
 
   //! Defines the texture projection plane for both S and T texture coordinate
   //! default is NOTP_XY meaning:
@@ -89,10 +95,16 @@ public:
   Standard_EXPORT Graphic3d_NameOfTexturePlane Plane() const;
 
   //! Returns the current texture plane S equation
-  Standard_EXPORT void PlaneS(float& A, float& B, float& C, float& D) const;
+  Standard_EXPORT void PlaneS(float& A,
+                              float& B,
+                              float& C,
+                              float& D) const;
 
   //! Returns the current texture plane T equation
-  Standard_EXPORT void PlaneT(float& A, float& B, float& C, float& D) const;
+  Standard_EXPORT void PlaneT(float& A,
+                              float& B,
+                              float& C,
+                              float& D) const;
 
   //! Returns the current texture S translation value
   Standard_EXPORT void TranslateS(float& theVal) const;

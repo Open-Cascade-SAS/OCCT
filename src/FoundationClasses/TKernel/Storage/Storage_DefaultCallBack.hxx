@@ -24,7 +24,6 @@
 class Standard_Persistent;
 class Storage_Schema;
 class Storage_BaseDriver;
-
 class Storage_DefaultCallBack : public Storage_CallBack
 {
 public:

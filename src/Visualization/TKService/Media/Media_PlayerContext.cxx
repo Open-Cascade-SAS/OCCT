@@ -102,9 +102,8 @@ Media_PlayerContext::~Media_PlayerContext()
 
 //=================================================================================================
 
-occ::handle<Media_Frame> Media_PlayerContext::DumpFirstFrame(
-  const TCollection_AsciiString& theSrcVideo,
-  TCollection_AsciiString&       theMediaInfo)
+occ::handle<Media_Frame> Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVideo,
+                                                        TCollection_AsciiString&       theMediaInfo)
 {
   theMediaInfo.Clear();
   occ::handle<Media_FormatContext> aFormatCtx = new Media_FormatContext();
@@ -181,7 +180,7 @@ bool Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVi
   }
 
   occ::handle<Image_AlienPixMap> aPixMap   = new Image_AlienPixMap();
-  int                            aResSizeX = aFrame->SizeX(), aResSizeY = aFrame->SizeY();
+  int                       aResSizeX = aFrame->SizeX(), aResSizeY = aFrame->SizeY();
   if (theMaxSize > 0)
   {
     if (aResSizeX > aResSizeY)
@@ -222,7 +221,8 @@ bool Media_PlayerContext::DumpFirstFrame(const TCollection_AsciiString& theSrcVi
 
 //=================================================================================================
 
-void Media_PlayerContext::SetInput(const TCollection_AsciiString& theInputPath, bool theToWait)
+void Media_PlayerContext::SetInput(const TCollection_AsciiString& theInputPath,
+                                   bool               theToWait)
 {
   {
     std::lock_guard<std::mutex> aLock(myMutex);
@@ -242,7 +242,9 @@ void Media_PlayerContext::SetInput(const TCollection_AsciiString& theInputPath, 
 
 //=================================================================================================
 
-void Media_PlayerContext::PlaybackState(bool& theIsPaused, double& theProgress, double& theDuration)
+void Media_PlayerContext::PlaybackState(bool& theIsPaused,
+                                        double&    theProgress,
+                                        double&    theDuration)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
   theIsPaused = !myTimer.IsStarted();
@@ -252,7 +254,9 @@ void Media_PlayerContext::PlaybackState(bool& theIsPaused, double& theProgress, 
 
 //=================================================================================================
 
-void Media_PlayerContext::PlayPause(bool& theIsPaused, double& theProgress, double& theDuration)
+void Media_PlayerContext::PlayPause(bool& theIsPaused,
+                                    double&    theProgress,
+                                    double&    theDuration)
 {
   std::lock_guard<std::mutex> aLock(myMutex);
   theProgress = myTimer.ElapsedTime();
@@ -305,7 +309,7 @@ void Media_PlayerContext::pushPlayEvent(Media_PlayerEvent thePlayEvent)
 
 //=================================================================================================
 
-bool Media_PlayerContext::popPlayEvent(Media_PlayerEvent&                      thePlayEvent,
+bool Media_PlayerContext::popPlayEvent(Media_PlayerEvent&                 thePlayEvent,
                                        const occ::handle<Media_FormatContext>& theFormatCtx,
                                        const occ::handle<Media_CodecContext>&  theVideoCtx,
                                        const occ::handle<Media_Frame>&         theFrame)
@@ -395,7 +399,7 @@ bool Media_PlayerContext::receiveFrame(const occ::handle<Media_Frame>&        th
 
   const NCollection_Vec2<int> aSize   = myFrameTmp->Size();
   const NCollection_Vec2<int> aSizeUV = myFrameTmp->Size() / 2;
-  AVFrame*                    aFrame  = theFrame->ChangeFrame();
+  AVFrame*              aFrame  = theFrame->ChangeFrame();
   if (myToForceRgb)
   {
     if (myBufferPools[0].IsNull())
@@ -495,7 +499,7 @@ void Media_PlayerContext::doThreadLoop()
   OSD::SetThreadLocalSignal(OSD_SignalMode_Set, false);
 
   occ::handle<Media_Frame> aFrame;
-  bool                     wasSeeked = false;
+  bool                wasSeeked = false;
   for (;;)
   {
     myWakeEvent.Wait();
@@ -553,7 +557,7 @@ void Media_PlayerContext::doThreadLoop()
     }
 
     occ::handle<Media_Packet> aPacket    = new Media_Packet();
-    Media_PlayerEvent         aPlayEvent = Media_PlayerEvent_NONE;
+    Media_PlayerEvent    aPlayEvent = Media_PlayerEvent_NONE;
     {
       std::lock_guard<std::mutex> aLock(myMutex);
       myTimer.Stop();

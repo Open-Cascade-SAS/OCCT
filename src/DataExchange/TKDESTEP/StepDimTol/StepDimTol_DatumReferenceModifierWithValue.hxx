@@ -33,7 +33,7 @@ public:
   Standard_EXPORT StepDimTol_DatumReferenceModifierWithValue();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const StepDimTol_DatumReferenceModifierType&        theModifierType,
+  Standard_EXPORT void Init(const StepDimTol_DatumReferenceModifierType&   theModifierType,
                             const occ::handle<StepBasic_LengthMeasureWithUnit>& theModifierValue);
 
   //! Returns field ModifierType
@@ -57,7 +57,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepDimTol_DatumReferenceModifierWithValue, Standard_Transient)
 
 private:
-  StepDimTol_DatumReferenceModifierType        myModifierType;
+  StepDimTol_DatumReferenceModifierType   myModifierType;
   occ::handle<StepBasic_LengthMeasureWithUnit> myModifierValue;
 };
 #endif // _StepDimTol_DatumReferenceModifierWithValue_HeaderFile

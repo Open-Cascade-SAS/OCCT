@@ -50,7 +50,7 @@ public:
 
 private:
   occ::handle<BRepTools_History> myHistory;
-  bool                           myFillHistory;
+  bool          myFillHistory;
 };
 
 //=================================================================================================

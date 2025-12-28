@@ -54,7 +54,7 @@ public:
 
   //! Returns a total area of 2d wire
   Standard_EXPORT static double TotCross2D(const occ::handle<ShapeExtend_WireData>& sewd,
-                                           const TopoDS_Face&                       aFace);
+                                                  const TopoDS_Face&                  aFace);
 
   //! Returns a total area of 3d wire
   Standard_EXPORT static double ContourArea(const TopoDS_Wire& theWire);
@@ -67,8 +67,8 @@ public:
   //! This shift will be the divisible by Period.
   //! Intended for adjusting parameters on periodic surfaces.
   Standard_EXPORT static double AdjustByPeriod(const double Val,
-                                               const double ToVal,
-                                               const double Period);
+                                                      const double ToVal,
+                                                      const double Period);
 
   //! Returns a shift required to move point
   //! <Val> to the range [ValMin,ValMax].
@@ -76,8 +76,8 @@ public:
   //! with Period = ValMax - ValMin.
   //! Intended for adjusting parameters on periodic surfaces.
   Standard_EXPORT static double AdjustToPeriod(const double Val,
-                                               const double ValMin,
-                                               const double ValMax);
+                                                      const double ValMin,
+                                                      const double ValMax);
 
   //! Finds the start and end vertices of the shape
   //! Shape can be of the following type:
@@ -94,10 +94,10 @@ public:
 
   //! Computes exact UV bounds of all wires on the face
   Standard_EXPORT static void GetFaceUVBounds(const TopoDS_Face& F,
-                                              double&            Umin,
-                                              double&            Umax,
-                                              double&            Vmin,
-                                              double&            Vmax);
+                                              double&     Umin,
+                                              double&     Umax,
+                                              double&     Vmin,
+                                              double&     Vmax);
 };
 
 #endif // _ShapeAnalysis_HeaderFile

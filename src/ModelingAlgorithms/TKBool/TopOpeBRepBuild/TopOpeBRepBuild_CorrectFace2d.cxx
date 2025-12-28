@@ -38,10 +38,14 @@
 #include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_CorrectFace2d.hxx>
 #include <TopOpeBRepBuild_Tools2d.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 //=================================================================================================
@@ -55,9 +59,9 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
 //=================================================================================================
 
 TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d(
-  const TopoDS_Face&                                                               aFace,
-  const NCollection_IndexedMap<TopoDS_Shape>&                                      anAvoidMap,
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
+  const TopoDS_Face&                        aFace,
+  const NCollection_IndexedMap<TopoDS_Shape>& anAvoidMap,
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&      aMap)
 {
   myFace        = aFace;
   myAvoidMap    = anAvoidMap;
@@ -68,16 +72,14 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d(
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::SetMapOfTrans2dInfo(
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
+void TopOpeBRepBuild_CorrectFace2d::SetMapOfTrans2dInfo(NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aMap)
 {
   myMap = (void*)&aMap;
 }
 
 //=================================================================================================
 
-NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&
-  TopOpeBRepBuild_CorrectFace2d::MapOfTrans2dInfo()
+NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& TopOpeBRepBuild_CorrectFace2d::MapOfTrans2dInfo()
 {
   return *(NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
 }
@@ -113,18 +115,17 @@ const TopoDS_Face& TopOpeBRepBuild_CorrectFace2d::CorrectedFace() const
 //=================================================================================================
 
 void TopOpeBRepBuild_CorrectFace2d::BuildCopyData(
-  const TopoDS_Face&                          aFace,
+  const TopoDS_Face&                        aFace,
   const NCollection_IndexedMap<TopoDS_Shape>& anAvoidMap,
-  TopoDS_Face&                                aCopyFace,
+  TopoDS_Face&                              aCopyFace,
   NCollection_IndexedMap<TopoDS_Shape>&       aCopyAvoidMap,
-  const bool                                  aNeedToUsePMap)
+  const bool                    aNeedToUsePMap)
 {
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> EdMap;
 
   BRep_Builder BB;
 
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap = (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
   //
   // 1. Copy myFace =>> myCopyFace
   TopoDS_Shape aLocalShape = aFace.EmptyCopied();
@@ -227,7 +228,7 @@ void TopOpeBRepBuild_CorrectFace2d::CheckFace()
 {
   //
   // I. Is the surface periodic
-  TopLoc_Location           aLocF;
+  TopLoc_Location      aLocF;
   occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(myCopyFace, aLocF);
   if (!(Surf->IsUPeriodic() || Surf->IsVPeriodic()))
   {
@@ -248,8 +249,8 @@ void TopOpeBRepBuild_CorrectFace2d::CheckFace()
   //
   // II. Has each wire at least one "licit" edge
   NCollection_IndexedMap<TopoDS_Shape> aVoidWires;
-  int                                  i, aNbVoidWires, anEdgeExists = 0, priz;
-  TopExp_Explorer                      aFExp, aWExp;
+  int                   i, aNbVoidWires, anEdgeExists = 0, priz;
+  TopExp_Explorer                    aFExp, aWExp;
   aFExp.Init(myCopyFace, TopAbs_WIRE);
   for (; aFExp.More(); aFExp.Next())
   {
@@ -308,7 +309,7 @@ void TopOpeBRepBuild_CorrectFace2d::CheckFace()
 
   //
   // VI. Check connectability wires in 2d
-  TopoDS_Face                          aCopyFace;
+  TopoDS_Face                        aCopyFace;
   NCollection_IndexedMap<TopoDS_Shape> aCopyAvoidMap;
 
   // Coping data
@@ -336,9 +337,9 @@ void TopOpeBRepBuild_CorrectFace2d::CheckFace()
 //=================================================================================================
 
 int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
-  TopoDS_Face&                                aCopyFace,
+  TopoDS_Face&                              aCopyFace,
   const NCollection_IndexedMap<TopoDS_Shape>& aCopyAvoidMap,
-  const bool                                  aTryFlag)
+  const bool                    aTryFlag)
 {
   BRep_Builder BB;
   //
@@ -349,12 +350,12 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
     return priz;
   //
   // 2. Define the First Edge on the Wire from aCopyAvoidMap
-  int    i, aNbEdges = 0, aNbAvoidEdgesOnWire;
-  double aDMax = 0, aR;
+  int i, aNbEdges = 0, aNbAvoidEdgesOnWire;
+  double    aDMax = 0, aR;
 
-  TopExp_Explorer                      aWExp;
-  TopoDS_Edge                          aFEdge;
-  TopoDS_Shape                         aFirstEdge;
+  TopExp_Explorer                    aWExp;
+  TopoDS_Edge                        aFEdge;
+  TopoDS_Shape                       aFirstEdge;
   NCollection_IndexedMap<TopoDS_Shape> anAvoidMap;
 
   aWExp.Init(myCurrentWire, TopAbs_EDGE);
@@ -420,9 +421,9 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
   //
   //  5. Connect Edges
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdMap;
-  gp_Pnt2d                                                      PF, PL, PA, PB, PA1, PB1;
-  occ::handle<Geom2d_Curve>                                     aTrCF, aTrCR, aTrC;
-  double aD, aDTolerance = Precision::Confusion();
+  gp_Pnt2d                   PF, PL, PA, PB, PA1, PB1;
+  occ::handle<Geom2d_Curve>       aTrCF, aTrCR, aTrC;
+  double              aD, aDTolerance = Precision::Confusion();
 
   NCollection_Sequence<TopoDS_Shape> aSeqEdges;
 
@@ -461,8 +462,8 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
     double V = aTrV.Y();
 
     BRepAdaptor_Surface BAS(aCopyFace);
-    bool                UP = BAS.IsUPeriodic();
-    bool                VP = BAS.IsVPeriodic();
+    bool    UP = BAS.IsUPeriodic();
+    bool    VP = BAS.IsVPeriodic();
 
     bool nonPU = (fabs(U) < 1e-7) ? true : false;
     bool nonPV = (fabs(V) < 1e-7) ? true : false;
@@ -470,13 +471,13 @@ int TopOpeBRepBuild_CorrectFace2d::ConnectWire(
     if (!nonPU && UP)
     {
       double dU = fmod(fabs(U), 2 * M_PI);
-      nonPU     = (dU > 1e-7 && (2 * M_PI - dU > 1e-7)) ? true : false;
+      nonPU            = (dU > 1e-7 && (2 * M_PI - dU > 1e-7)) ? true : false;
     }
 
     if (!nonPV && VP)
     {
       double dV = fmod(fabs(V), 2 * M_PI);
-      nonPV     = (dV > 1e-7 && (2 * M_PI - dV > 1e-7)) ? true : false;
+      nonPV            = (dV > 1e-7 && (2 * M_PI - dV > 1e-7)) ? true : false;
     }
 
     //    printf("(fmod(fabs(U), 2*M_PI) =%lf\n", (fmod(fabs(U), 2*M_PI)));
@@ -578,8 +579,8 @@ void TopOpeBRepBuild_CorrectFace2d::Perform()
 
   //
   // 2. Make all wires connected
-  int             priz;
-  TopExp_Explorer aFExp;
+  int priz;
+  TopExp_Explorer  aFExp;
 
   aFExp.Init(myCopyFace, TopAbs_WIRE);
   for (; aFExp.More(); aFExp.Next())
@@ -640,7 +641,7 @@ int TopOpeBRepBuild_CorrectFace2d::MakeRightWire()
   // Begin modified by NIZNHY-PKV Tue Apr 25 12:04:45 2000
   // from path we obtained list in reverse order, so to have right wire
   // we need to reverse it
-  NCollection_List<TopoDS_Shape>           aFL;
+  NCollection_List<TopoDS_Shape>               aFL;
   NCollection_List<TopoDS_Shape>::Iterator lit(aL);
   for (; lit.More(); lit.Next())
     aFL.Prepend(lit.Value());
@@ -657,7 +658,7 @@ void TopOpeBRepBuild_CorrectFace2d::GetP2dFL(const TopoDS_Face& aF,
                                              gp_Pnt2d&          P2dF,
                                              gp_Pnt2d&          P2dL)
 {
-  double                          aFirst, aLast;
+  double              aFirst, aLast;
   const occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(anEdge, aF, aFirst, aLast);
   C2d->D0(aFirst, P2dF);
   C2d->D0(aLast, P2dL);
@@ -672,13 +673,13 @@ void TopOpeBRepBuild_CorrectFace2d::GetP2dFL(const TopoDS_Face& aF,
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::MakeHeadList(const TopoDS_Shape&             aFirstEdge,
+void TopOpeBRepBuild_CorrectFace2d::MakeHeadList(const TopoDS_Shape&   aFirstEdge,
                                                  NCollection_List<TopoDS_Shape>& HeadList) const
 {
-  TopoDS_Shape                             aFE = aFirstEdge;
-  NCollection_List<TopoDS_Shape>           aTailList;
+  TopoDS_Shape                       aFE = aFirstEdge;
+  NCollection_List<TopoDS_Shape>               aTailList;
   NCollection_List<TopoDS_Shape>::Iterator anIt;
-  int                                      aFlag = 0;
+  int                   aFlag = 0;
 
   anIt.Initialize(myOrderedWireList);
   for (; anIt.More(); anIt.Next())
@@ -706,12 +707,12 @@ void TopOpeBRepBuild_CorrectFace2d::MakeHeadList(const TopoDS_Shape&            
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::CheckList(const TopoDS_Face&              aFace,
+void TopOpeBRepBuild_CorrectFace2d::CheckList(const TopoDS_Face&    aFace,
                                               NCollection_List<TopoDS_Shape>& HeadList)
 {
-  TopAbs_Orientation                       r1;
-  double                                   aDTolerance = Precision::Confusion();
-  NCollection_Sequence<TopoDS_Shape>       aSeq;
+  TopAbs_Orientation                 r1;
+  double                      aDTolerance = Precision::Confusion();
+  NCollection_Sequence<TopoDS_Shape>           aSeq;
   NCollection_List<TopoDS_Shape>::Iterator anIt(HeadList);
   for (; anIt.More(); anIt.Next())
   {
@@ -730,8 +731,8 @@ void TopOpeBRepBuild_CorrectFace2d::CheckList(const TopoDS_Face&              aF
     // we consider that no necessity to reverse
     // the list (aFirstCheck=true) .
 
-    double   aD;
-    gp_Pnt2d PF, PL, PA, PB;
+    double aD;
+    gp_Pnt2d      PF, PL, PA, PB;
 
     TopoDS_Edge aFstEdge = TopoDS::Edge(aSeq(1));
     GetP2dFL(aFace, aFstEdge, PA, PB);
@@ -808,15 +809,15 @@ void TopOpeBRepBuild_CorrectFace2d::CheckList(const TopoDS_Face&              aF
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::TranslateCurve2d(const TopoDS_Edge&         anE,
-                                                     const TopoDS_Face&         aFace,
-                                                     const gp_Vec2d&            aTrV,
+void TopOpeBRepBuild_CorrectFace2d::TranslateCurve2d(const TopoDS_Edge&    anE,
+                                                     const TopoDS_Face&    aFace,
+                                                     const gp_Vec2d&       aTrV,
                                                      occ::handle<Geom2d_Curve>& aC2DOut)
 {
-  double                    aFirst, aLast;
+  double        aFirst, aLast;
   occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(anE, aFace, aFirst, aLast);
   occ::handle<Geom2d_Curve> aTrC;
-  aTrC                                    = occ::down_cast<Geom2d_Curve>(C2d->Copy());
+  aTrC                               = occ::down_cast<Geom2d_Curve>(C2d->Copy());
   occ::handle<Geom2d_TrimmedCurve> newC2D = new Geom2d_TrimmedCurve(aTrC, aFirst, aLast);
   newC2D->Translate(aTrV);
   aC2DOut = newC2D;
@@ -826,7 +827,7 @@ void TopOpeBRepBuild_CorrectFace2d::TranslateCurve2d(const TopoDS_Edge&         
 
 int TopOpeBRepBuild_CorrectFace2d::OuterWire(TopoDS_Wire& anOuterWire) const
 {
-  TopLoc_Location           Loc;
+  TopLoc_Location      Loc;
   occ::handle<Geom_Surface> Surf = BRep_Tool::Surface(TopoDS::Face(myCorrectedFace), Loc);
 
   TopExp_Explorer ex(myCorrectedFace, TopAbs_WIRE);
@@ -859,7 +860,7 @@ void TopOpeBRepBuild_CorrectFace2d::BndBoxWire(const TopoDS_Wire& aWire, Bnd_Box
   for (; aWEx.More(); aWEx.Next())
   {
     const TopoDS_Edge&  anEdge = TopoDS::Edge(aWEx.Current());
-    double              aTolE  = BRep_Tool::Tolerance(anEdge);
+    double       aTolE  = BRep_Tool::Tolerance(anEdge);
     BRepAdaptor_Curve2d aBAC2d(anEdge, myCorrectedFace);
     BndLib_Add2dCurve::Add(aBAC2d, aTolE, aB2d);
   }
@@ -873,10 +874,10 @@ void TopOpeBRepBuild_CorrectFace2d::MoveWire2d(TopoDS_Wire& aWire, const gp_Vec2
   if (aTrV.Magnitude() < Precision::Confusion())
     return;
 
-  int                                                           i, aNbEdges;
-  NCollection_Sequence<TopoDS_Shape>                            aSeqEdges;
+  int           i, aNbEdges;
+  NCollection_Sequence<TopoDS_Shape>   aSeqEdges;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdMap;
-  occ::handle<Geom2d_Curve>                                     aTrCF, aTrCR, aTrC;
+  occ::handle<Geom2d_Curve>       aTrCF, aTrCR, aTrC;
 
   TopExp_Explorer aWExp;
 
@@ -937,10 +938,10 @@ void TopOpeBRepBuild_CorrectFace2d::MoveWire2d(TopoDS_Wire& aWire, const gp_Vec2
 
 void TopOpeBRepBuild_CorrectFace2d::MoveWires2d(TopoDS_Wire& anOuterWire)
 {
-  Bnd_Box2d B2d, B2dOuterWire;
+  Bnd_Box2d        B2d, B2dOuterWire;
   double    OuterU1, OuterV1, OuterU2, OuterV2, x, a, TwoPI;
-  int       b, k;
-  gp_Vec2d  aTrV;
+  int b, k;
+  gp_Vec2d         aTrV;
 
   TwoPI = 2. * M_PI;
 
@@ -987,15 +988,14 @@ void TopOpeBRepBuild_CorrectFace2d::MoveWires2d(TopoDS_Wire& anOuterWire)
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&               ECopy,
+void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&          ECopy,
                                                const occ::handle<Geom2d_Curve>& C,
-                                               const TopoDS_Face&               F,
-                                               const double                     Tol)
+                                               const TopoDS_Face&          F,
+                                               const double         Tol)
 {
   BRep_Builder BB;
 
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap = (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
 
   // E is the Original Edge from Original Face.
   if (myEdMapInversed.Contains(ECopy))
@@ -1032,16 +1032,15 @@ void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&               
 
 //=================================================================================================
 
-void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&               ECopy,
+void TopOpeBRepBuild_CorrectFace2d::UpdateEdge(const TopoDS_Edge&          ECopy,
                                                const occ::handle<Geom2d_Curve>& C1,
                                                const occ::handle<Geom2d_Curve>& C2,
-                                               const TopoDS_Face&               F,
-                                               const double                     Tol)
+                                               const TopoDS_Face&          F,
+                                               const double         Tol)
 {
   BRep_Builder BB;
 
-  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap =
-    (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
+  NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>* pMap = (NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>*)myMap;
 
   // E is the Original Edge from Original Face.
   if (myEdMapInversed.Contains(ECopy))

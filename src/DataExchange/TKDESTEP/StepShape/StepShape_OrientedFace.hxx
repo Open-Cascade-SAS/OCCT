@@ -38,7 +38,7 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepShape_Face>&           aFaceElement,
-                            const bool                                   aOrientation);
+                            const bool                  aOrientation);
 
   Standard_EXPORT void SetFaceElement(const occ::handle<StepShape_Face>& aFaceElement);
 
@@ -48,14 +48,13 @@ public:
 
   Standard_EXPORT bool Orientation() const;
 
-  Standard_EXPORT virtual void SetBounds(
-    const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds) override;
+  Standard_EXPORT virtual void SetBounds(const occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>& aBounds)
+    override;
 
-  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>>
-    Bounds() const override;
+  Standard_EXPORT virtual occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> Bounds() const override;
 
-  Standard_EXPORT virtual occ::handle<StepShape_FaceBound> BoundsValue(
-    const int num) const override;
+  Standard_EXPORT virtual occ::handle<StepShape_FaceBound> BoundsValue(const int num) const
+    override;
 
   Standard_EXPORT virtual int NbBounds() const override;
 
@@ -63,7 +62,7 @@ public:
 
 private:
   occ::handle<StepShape_Face> faceElement;
-  bool                        orientation;
+  bool       orientation;
 };
 
 #endif // _StepShape_OrientedFace_HeaderFile

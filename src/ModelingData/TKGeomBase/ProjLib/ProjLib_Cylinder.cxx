@@ -77,7 +77,7 @@ void ProjLib_Cylinder::Init(const gp_Cylinder& Cyl)
 
 static gp_Pnt2d EvalPnt2d(const gp_Pnt& P, const gp_Cylinder& Cy)
 {
-  gp_Vec OP(Cy.Location(), P);
+  gp_Vec        OP(Cy.Location(), P);
   double X = OP.Dot(gp_Vec(Cy.Position().XDirection()));
   double Y = OP.Dot(gp_Vec(Cy.Position().YDirection()));
   double Z = OP.Dot(gp_Vec(Cy.Position().Direction()));
@@ -112,7 +112,7 @@ void ProjLib_Cylinder::Project(const gp_Lin& L)
     P2d.SetX(P2d.X() + 2 * M_PI);
   }
   double Signe = L.Direction().Dot(myCylinder.Position().Direction());
-  Signe        = (Signe > 0.) ? 1. : -1.;
+  Signe               = (Signe > 0.) ? 1. : -1.;
   gp_Dir2d D2d(0., Signe);
 
   myLin  = gp_Lin2d(P2d, D2d);
@@ -137,7 +137,7 @@ void ProjLib_Cylinder::Project(const gp_Circ& C)
 
   double U = aCylPos.XDirection().AngleWithRef(aCircPos.XDirection(), ZCyl);
 
-  gp_Vec OP(myCylinder.Location(), C.Location());
+  gp_Vec        OP(myCylinder.Location(), C.Location());
   double V = OP.Dot(gp_Vec(aCylPos.Direction()));
 
   gp_Pnt2d P2d1(U, V);

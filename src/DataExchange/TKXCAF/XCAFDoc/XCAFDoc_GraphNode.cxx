@@ -69,7 +69,7 @@ occ::handle<XCAFDoc_GraphNode> XCAFDoc_GraphNode::Set(const TDF_Label& L)
 //=======================================================================
 
 occ::handle<XCAFDoc_GraphNode> XCAFDoc_GraphNode::Set(const TDF_Label&     L,
-                                                      const Standard_GUID& explicitID)
+                                                 const Standard_GUID& explicitID)
 {
   occ::handle<XCAFDoc_GraphNode> GN;
   if (!L.FindAttribute(explicitID, GN))
@@ -283,9 +283,9 @@ const Standard_GUID& XCAFDoc_GraphNode::ID() const
 void XCAFDoc_GraphNode::Restore(const occ::handle<TDF_Attribute>& other)
 {
   occ::handle<XCAFDoc_GraphNode> F = occ::down_cast<XCAFDoc_GraphNode>(other);
-  myFathers                        = F->myFathers;
-  myChildren                       = F->myChildren;
-  myGraphID                        = F->myGraphID;
+  myFathers                   = F->myFathers;
+  myChildren                  = F->myChildren;
+  myGraphID                   = F->myGraphID;
 }
 
 //=================================================================================================
@@ -295,7 +295,7 @@ void XCAFDoc_GraphNode::Paste(const occ::handle<TDF_Attribute>&       into,
 {
   occ::handle<XCAFDoc_GraphNode> intof = occ::down_cast<XCAFDoc_GraphNode>(into);
   occ::handle<XCAFDoc_GraphNode> func;
-  int                            i = 1;
+  int          i = 1;
   for (; i <= NbFathers(); i++)
   {
     if (!RT->HasRelocation(myFathers(i), func) && RT->AfterRelocate())
@@ -336,7 +336,7 @@ occ::handle<TDF_Attribute> XCAFDoc_GraphNode::NewEmpty() const
 
 void XCAFDoc_GraphNode::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {
-  int                            i;
+  int          i;
   occ::handle<XCAFDoc_GraphNode> fct;
   for (i = 1; i <= NbChildren(); i++)
   {
@@ -409,16 +409,14 @@ void XCAFDoc_GraphNode::DumpJson(Standard_OStream& theOStream, int theDepth) con
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, TDF_Attribute)
 
-  for (NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>::Iterator anIteratorFather(myFathers);
-       anIteratorFather.More();
+  for (NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>::Iterator anIteratorFather(myFathers); anIteratorFather.More();
        anIteratorFather.Next())
   {
     const occ::handle<XCAFDoc_GraphNode>& aFather = anIteratorFather.Value();
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, aFather)
   }
 
-  for (NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>::Iterator anIteratorChild(myChildren);
-       anIteratorChild.More();
+  for (NCollection_Sequence<occ::handle<XCAFDoc_GraphNode>>::Iterator anIteratorChild(myChildren); anIteratorChild.More();
        anIteratorChild.Next())
   {
     const occ::handle<XCAFDoc_GraphNode>& aChild = anIteratorChild.Value();

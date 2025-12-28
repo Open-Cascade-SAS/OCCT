@@ -25,10 +25,10 @@ extern bool GLOBAL_faces2d;
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&                   FOR,
-                                              const TopOpeBRepBuild_GTopo&          G,
-                                              const NCollection_List<TopoDS_Shape>& LSclass,
-                                              TopOpeBRepBuild_WireEdgeSet&          WES)
+void TopOpeBRepBuild_Builder::GFillONPartsWES(const TopoDS_Shape&          FOR,
+                                              const TopOpeBRepBuild_GTopo& G,
+                                              const NCollection_List<TopoDS_Shape>&  LSclass,
+                                              TopOpeBRepBuild_WireEdgeSet& WES)
 {
   TopOpeBRepBuild_BuilderON BON;
   if (GLOBAL_faces2d)

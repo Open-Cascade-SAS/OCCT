@@ -24,15 +24,19 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <NCollection_List.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <NCollection_List.hxx>
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_WFSurface.hxx>
 
 static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
-                       const double                          aLimit,
-                       double&                               UFirst,
-                       double&                               ULast,
-                       double&                               VFirst,
-                       double&                               VLast)
+                       const double              aLimit,
+                       double&                   UFirst,
+                       double&                   ULast,
+                       double&                   VFirst,
+                       double&                   VLast)
 {
   UFirst = surf->FirstUParameter();
   ULast  = surf->LastUParameter();
@@ -46,7 +50,7 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
 
   if (UfirstInf || UlastInf)
   {
-    gp_Pnt P1, P2;
+    gp_Pnt        P1, P2;
     double v;
     if (VfirstInf && VlastInf)
       v = 0;
@@ -94,7 +98,7 @@ static void FindLimits(const occ::handle<Adaptor3d_Surface>& surf,
 
   if (VfirstInf || VlastInf)
   {
-    gp_Pnt P1, P2;
+    gp_Pnt        P1, P2;
     double u = (UFirst + ULast) / 2;
 
     double delta = aLimit * 2;

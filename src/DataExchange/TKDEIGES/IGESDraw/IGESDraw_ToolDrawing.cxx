@@ -37,18 +37,21 @@
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
+#include <gp_XY.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IGESDraw_ToolDrawing::IGESDraw_ToolDrawing() {}
 
 void IGESDraw_ToolDrawing::ReadOwnParams(const occ::handle<IGESDraw_Drawing>&        ent,
                                          const occ::handle<IGESData_IGESReaderData>& IR,
-                                         IGESData_ParamReader&                       PR) const
+                                         IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   int nbval;
 
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   // Reading nbval(No. of View pointers)
@@ -59,7 +62,7 @@ void IGESDraw_ToolDrawing::ReadOwnParams(const occ::handle<IGESDraw_Drawing>&   
     viewOrigins = new NCollection_HArray1<gp_XY>(1, nbval);
 
     occ::handle<IGESData_ViewKindEntity> tempView;
-    gp_XY                                tempXY;
+    gp_XY                           tempXY;
 
     for (int i = 1; i <= nbval; i++)
     {
@@ -116,7 +119,7 @@ void IGESDraw_ToolDrawing::ReadOwnParams(const occ::handle<IGESDraw_Drawing>&   
 }
 
 void IGESDraw_ToolDrawing::WriteOwnParams(const occ::handle<IGESDraw_Drawing>& ent,
-                                          IGESData_IGESWriter&                 IW) const
+                                          IGESData_IGESWriter&            IW) const
 {
   int Up = ent->NbViews();
   IW.Send(Up);
@@ -135,7 +138,7 @@ void IGESDraw_ToolDrawing::WriteOwnParams(const occ::handle<IGESDraw_Drawing>& e
 }
 
 void IGESDraw_ToolDrawing::OwnShared(const occ::handle<IGESDraw_Drawing>& ent,
-                                     Interface_EntityIterator&            iter) const
+                                     Interface_EntityIterator&       iter) const
 {
   int Up = ent->NbViews();
   int i; // svv Jan 10 2000 : porting on DEC
@@ -149,12 +152,12 @@ void IGESDraw_ToolDrawing::OwnShared(const occ::handle<IGESDraw_Drawing>& ent,
 
 void IGESDraw_ToolDrawing::OwnCopy(const occ::handle<IGESDraw_Drawing>& another,
                                    const occ::handle<IGESDraw_Drawing>& ent,
-                                   Interface_CopyTool&                  TC) const
+                                   Interface_CopyTool&             TC) const
 {
-  int                                                                    nbanot;
-  int                                                                    nbval;
+  int                         nbanot;
+  int                         nbval;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     annotations;
 
   nbanot = another->NbAnnotations();
@@ -201,7 +204,7 @@ bool IGESDraw_ToolDrawing::OwnCorrect(const occ::handle<IGESDraw_Drawing>& ent) 
   if (nbtrue == nb)
     return false;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> views;
-  occ::handle<NCollection_HArray1<gp_XY>>                                viewOrigins;
+  occ::handle<NCollection_HArray1<gp_XY>>               viewOrigins;
   if (nbtrue > 0)
   {
     views       = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, nbtrue);
@@ -221,9 +224,8 @@ bool IGESDraw_ToolDrawing::OwnCorrect(const occ::handle<IGESDraw_Drawing>& ent) 
   }
 
   //  Don't forget the annotations ...
-  int                                                                nbanot = ent->NbAnnotations();
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> annotations =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
+  int                     nbanot      = ent->NbAnnotations();
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> annotations = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nbanot);
   for (i = 1; i <= nbanot; i++)
     annotations->SetValue(i, ent->Annotation(i));
 
@@ -231,8 +233,7 @@ bool IGESDraw_ToolDrawing::OwnCorrect(const occ::handle<IGESDraw_Drawing>& ent) 
   return true;
 }
 
-IGESData_DirChecker IGESDraw_ToolDrawing::DirChecker(
-  const occ::handle<IGESDraw_Drawing>& /*ent*/) const
+IGESData_DirChecker IGESDraw_ToolDrawing::DirChecker(const occ::handle<IGESDraw_Drawing>& /*ent*/) const
 {
   IGESData_DirChecker DC(404, 0);
   DC.Structure(IGESData_DefVoid);
@@ -251,7 +252,7 @@ void IGESDraw_ToolDrawing::OwnCheck(const occ::handle<IGESDraw_Drawing>& ent,
                                     occ::handle<Interface_Check>& ach) const
 {
   bool ianul = false;
-  int  i, nb = ent->NbViews();
+  int i, nb = ent->NbViews();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<IGESData_ViewKindEntity> tempView = ent->ViewItem(i);
@@ -282,9 +283,9 @@ void IGESDraw_ToolDrawing::OwnCheck(const occ::handle<IGESDraw_Drawing>& ent,
 }
 
 void IGESDraw_ToolDrawing::OwnDump(const occ::handle<IGESDraw_Drawing>& ent,
-                                   const IGESData_IGESDumper&           dumper,
-                                   Standard_OStream&                    S,
-                                   const int                            level) const
+                                   const IGESData_IGESDumper&      dumper,
+                                   Standard_OStream&               S,
+                                   const int          level) const
 {
   int sublevel = (level <= 4) ? 0 : 1;
 

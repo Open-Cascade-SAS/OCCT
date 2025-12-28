@@ -46,12 +46,12 @@ public:
   Standard_EXPORT void InitStandardDrivers();
 
   //! Returns true if the driver has been added successfully to the driver table.
-  Standard_EXPORT bool AddDriver(const Standard_GUID&               guid,
-                                 const occ::handle<TPrsStd_Driver>& driver);
+  Standard_EXPORT bool AddDriver(const Standard_GUID&          guid,
+                                             const occ::handle<TPrsStd_Driver>& driver);
 
   //! Returns true if the driver was found.
-  Standard_EXPORT bool FindDriver(const Standard_GUID&         guid,
-                                  occ::handle<TPrsStd_Driver>& driver) const;
+  Standard_EXPORT bool FindDriver(const Standard_GUID&    guid,
+                                              occ::handle<TPrsStd_Driver>& driver) const;
 
   //! Removes a driver with the given GUID.
   //! Returns true if the driver has been removed successfully.

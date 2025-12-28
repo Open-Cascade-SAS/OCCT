@@ -34,14 +34,14 @@ int StepVisual_PresentationSizeAssignmentSelect::CaseNum(
   return 0;
 }
 
-occ::handle<StepVisual_PresentationView> StepVisual_PresentationSizeAssignmentSelect::
-  PresentationView() const
+occ::handle<StepVisual_PresentationView> StepVisual_PresentationSizeAssignmentSelect::PresentationView()
+  const
 {
   return GetCasted(StepVisual_PresentationView, Value());
 }
 
-occ::handle<StepVisual_PresentationArea> StepVisual_PresentationSizeAssignmentSelect::
-  PresentationArea() const
+occ::handle<StepVisual_PresentationArea> StepVisual_PresentationSizeAssignmentSelect::PresentationArea()
+  const
 {
   return GetCasted(StepVisual_PresentationArea, Value());
 }

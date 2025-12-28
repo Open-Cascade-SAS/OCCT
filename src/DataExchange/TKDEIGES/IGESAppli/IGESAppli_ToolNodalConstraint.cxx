@@ -28,6 +28,7 @@
 #include <IGESDefs_TabularData.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESDefs_TabularData.hxx>
 #include <Interface_Check.hxx>
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
@@ -39,12 +40,12 @@ IGESAppli_ToolNodalConstraint::IGESAppli_ToolNodalConstraint() {}
 
 void IGESAppli_ToolNodalConstraint::ReadOwnParams(const occ::handle<IGESAppli_NodalConstraint>& ent,
                                                   const occ::handle<IGESData_IGESReaderData>&   IR,
-                                                  IGESData_ParamReader& PR) const
+                                                  IGESData_ParamReader&                    PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
-  int                                                                 num, i;
-  int                                                                 tempType;
-  occ::handle<IGESAppli_Node>                                         tempNode;
+  int                      num, i;
+  int                      tempType;
+  occ::handle<IGESAppli_Node>                tempNode;
   occ::handle<NCollection_HArray1<occ::handle<IGESDefs_TabularData>>> tempTabularDataProps;
   if (!PR.ReadInteger(PR.Current(), "Number of cases", num))
     num = 0;
@@ -72,9 +73,8 @@ void IGESAppli_ToolNodalConstraint::ReadOwnParams(const occ::handle<IGESAppli_No
   ent->Init(tempType, tempNode, tempTabularDataProps);
 }
 
-void IGESAppli_ToolNodalConstraint::WriteOwnParams(
-  const occ::handle<IGESAppli_NodalConstraint>& ent,
-  IGESData_IGESWriter&                          IW) const
+void IGESAppli_ToolNodalConstraint::WriteOwnParams(const occ::handle<IGESAppli_NodalConstraint>& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   int i, num;
   IW.Send(ent->NbCases());
@@ -85,7 +85,7 @@ void IGESAppli_ToolNodalConstraint::WriteOwnParams(
 }
 
 void IGESAppli_ToolNodalConstraint::OwnShared(const occ::handle<IGESAppli_NodalConstraint>& ent,
-                                              Interface_EntityIterator& iter) const
+                                              Interface_EntityIterator&                iter) const
 {
   int i, num;
   iter.GetOneItem(ent->NodeEntity());
@@ -95,7 +95,7 @@ void IGESAppli_ToolNodalConstraint::OwnShared(const occ::handle<IGESAppli_NodalC
 
 void IGESAppli_ToolNodalConstraint::OwnCopy(const occ::handle<IGESAppli_NodalConstraint>& another,
                                             const occ::handle<IGESAppli_NodalConstraint>& ent,
-                                            Interface_CopyTool&                           TC) const
+                                            Interface_CopyTool&                      TC) const
 {
   int num      = another->NbCases();
   int tempType = another->Type();
@@ -132,9 +132,9 @@ void IGESAppli_ToolNodalConstraint::OwnCheck(const occ::handle<IGESAppli_NodalCo
 }
 
 void IGESAppli_ToolNodalConstraint::OwnDump(const occ::handle<IGESAppli_NodalConstraint>& ent,
-                                            const IGESData_IGESDumper&                    dumper,
-                                            Standard_OStream&                             S,
-                                            const int level) const
+                                            const IGESData_IGESDumper&               dumper,
+                                            Standard_OStream&                        S,
+                                            const int                   level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
   S << "IGESAppli_NodalConstraint\n";

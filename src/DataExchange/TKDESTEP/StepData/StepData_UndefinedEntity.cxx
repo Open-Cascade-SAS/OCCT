@@ -65,20 +65,20 @@ const char* StepData_UndefinedEntity::StepType() const
 }
 
 void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderData>& SR,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach)
 {
-  thetype = new TCollection_HAsciiString(SR->RecordType(num));
-  int nb  = SR->NbParams(num);
+  thetype             = new TCollection_HAsciiString(SR->RecordType(num));
+  int nb = SR->NbParams(num);
 
   thecont->Reservate(nb, 4);
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient>       anent;
     occ::handle<TCollection_HAsciiString> hval;
-    const char*                           val    = SR->ParamCValue(num, i);
-    Interface_ParamType                   partyp = SR->ParamType(num, i);
-    int                                   nume   = 0;
+    const char*                 val    = SR->ParamCValue(num, i);
+    Interface_ParamType              partyp = SR->ParamType(num, i);
+    int                 nume   = 0;
     if (partyp == Interface_ParamIdent)
     {
       nume = SR->ParamNumber(num, i);
@@ -98,9 +98,9 @@ void StepData_UndefinedEntity::ReadRecord(const occ::handle<StepData_StepReaderD
     }
     else if (partyp == Interface_ParamSub)
     {
-      nume                                      = SR->ParamNumber(num, i);
+      nume                                 = SR->ParamNumber(num, i);
       occ::handle<StepData_UndefinedEntity> und = new StepData_UndefinedEntity(true);
-      anent                                     = und;
+      anent                                = und;
       und->ReadRecord(SR, nume, ach);
     }
     else if (partyp == Interface_ParamText)
@@ -141,7 +141,7 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
 {
   if (!IsSub())
     SW.StartEntity(TCollection_AsciiString(StepType()));
-  int                             nb = thecont->NbParams();
+  int           nb = thecont->NbParams();
   occ::handle<Standard_Transient> anent;
   for (int i = 1; i <= nb; i++)
   {
@@ -172,7 +172,7 @@ void StepData_UndefinedEntity::WriteParams(StepData_StepWriter& SW) const
 }
 
 void StepData_UndefinedEntity::GetFromAnother(const occ::handle<StepData_UndefinedEntity>& another,
-                                              Interface_CopyTool&                          TC)
+                                              Interface_CopyTool&                     TC)
 {
   //  DeclareAndCast(StepData_UndefinedEntity,another,other);
   thetype = new TCollection_HAsciiString(another->StepType());

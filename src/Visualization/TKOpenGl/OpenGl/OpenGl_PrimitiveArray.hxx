@@ -42,8 +42,8 @@ public:
   Standard_EXPORT OpenGl_PrimitiveArray(const OpenGl_GraphicDriver* theDriver);
 
   //! Default constructor
-  Standard_EXPORT OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*               theDriver,
-                                        const Graphic3d_TypeOfPrimitiveArray      theType,
+  Standard_EXPORT OpenGl_PrimitiveArray(const OpenGl_GraphicDriver*          theDriver,
+                                        const Graphic3d_TypeOfPrimitiveArray theType,
                                         const occ::handle<Graphic3d_IndexBuffer>& theIndices,
                                         const occ::handle<Graphic3d_Buffer>&      theAttribs,
                                         const occ::handle<Graphic3d_BoundBuffer>& theBounds);
@@ -52,8 +52,8 @@ public:
   Standard_EXPORT virtual ~OpenGl_PrimitiveArray();
 
   //! Render primitives to the window
-  Standard_EXPORT virtual void Render(
-    const occ::handle<OpenGl_Workspace>& theWorkspace) const override;
+  Standard_EXPORT virtual void Render(const occ::handle<OpenGl_Workspace>& theWorkspace) const
+    override;
 
   //! Release OpenGL resources (VBOs)
   Standard_EXPORT virtual void Release(OpenGl_Context* theContext) override;
@@ -94,7 +94,7 @@ public:
 
   //! Initialize indices, attributes and bounds with new data.
   Standard_EXPORT void InitBuffers(const occ::handle<OpenGl_Context>&        theContext,
-                                   const Graphic3d_TypeOfPrimitiveArray      theType,
+                                   const Graphic3d_TypeOfPrimitiveArray theType,
                                    const occ::handle<Graphic3d_IndexBuffer>& theIndices,
                                    const occ::handle<Graphic3d_Buffer>&      theAttribs,
                                    const occ::handle<Graphic3d_BoundBuffer>& theBounds);
@@ -108,14 +108,14 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   //! VBO initialization procedures
   //! @param theCtx        bound GL context
   //! @param theToKeepData when true, myAttribs will not be nullified after VBO creation
   Standard_EXPORT bool buildVBO(const occ::handle<OpenGl_Context>& theCtx,
-                                const bool                         theToKeepData) const;
+                                            const bool        theToKeepData) const;
 
   //! Patch VBO sub-date within invalidated range.
   Standard_EXPORT void updateVBO(const occ::handle<OpenGl_Context>& theCtx) const;
@@ -129,8 +129,8 @@ private:
 
   //! Main procedure to draw array
   void drawArray(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                 const NCollection_Vec4<float>*       theFaceColors,
-                 const bool                           theHasVertColor) const;
+                 const NCollection_Vec4<float>*           theFaceColors,
+                 const bool          theHasVertColor) const;
 
   //! Auxiliary procedures
   void drawEdges(const occ::handle<OpenGl_Workspace>& theWorkspace) const;
@@ -152,9 +152,9 @@ protected:
   mutable occ::handle<Graphic3d_IndexBuffer> myIndices;
   mutable occ::handle<Graphic3d_Buffer>      myAttribs;
   mutable occ::handle<Graphic3d_BoundBuffer> myBounds;
-  short                                      myDrawMode;
-  mutable bool                               myIsFillType;
-  mutable bool                               myIsVboInit;
+  short                                 myDrawMode;
+  mutable bool              myIsFillType;
+  mutable bool              myIsVboInit;
 
   size_t myUID; //!< Unique ID of primitive array.
 

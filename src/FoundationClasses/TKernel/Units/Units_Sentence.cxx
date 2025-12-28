@@ -20,14 +20,15 @@
 #include <Units_Sentence.hxx>
 #include <Units_ShiftedToken.hxx>
 #include <Units_Token.hxx>
+#include <Units_Token.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
 static occ::handle<Units_Token> CreateTokenForNumber(const char* str)
 {
   TCollection_AsciiString tstr    = str[0];
-  bool                    IsPoint = false;
-  size_t                  len     = strlen(str);
+  bool        IsPoint = false;
+  size_t           len     = strlen(str);
   for (size_t in = 1; in < len; in++)
   {
     if (str[in] == '0' || str[in] == '1' || str[in] == '2' || str[in] == '3' || str[in] == '4'
@@ -48,14 +49,15 @@ static occ::handle<Units_Token> CreateTokenForNumber(const char* str)
 
 //=================================================================================================
 
-Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const char* astring)
+Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
+                               const char*       astring)
 {
-  int                      index;
-  size_t                   i, limchain;
+  int    index;
+  size_t       i, limchain;
   occ::handle<Units_Token> token;
   occ::handle<Units_Token> referencetoken;
 
-  thesequenceoftokens = new NCollection_HSequence<occ::handle<Units_Token>>();
+  thesequenceoftokens                     = new NCollection_HSequence<occ::handle<Units_Token>>();
   occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> lstlexicon = alexicon->Sequence();
   if (lstlexicon.IsNull())
     throw Units_NoSuchType("BAD LEXICON descriptor");
@@ -68,7 +70,7 @@ Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const
   TCollection_AsciiString PrevWord;
   while (i < limchain)
   {
-    bool                    IsFound  = false;
+    bool        IsFound  = false;
     TCollection_AsciiString LastWord = "";
     for (index = 1; index <= lstlexicon->Length(); index++)
     {
@@ -134,10 +136,10 @@ Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const
 
 void Units_Sentence::SetConstants()
 {
-  int                      index;
-  double                   value;
-  occ::handle<Units_Token> token;
-  TCollection_AsciiString  string;
+  int        index;
+  double           value;
+  occ::handle<Units_Token>     token;
+  TCollection_AsciiString string;
 
   for (index = 1; index <= thesequenceoftokens->Length(); index++)
   {
@@ -157,8 +159,7 @@ void Units_Sentence::SetConstants()
 
 //=================================================================================================
 
-static occ::handle<Units_Token> CalculateLocal(
-  const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& aSeq)
+static occ::handle<Units_Token> CalculateLocal(const occ::handle<NCollection_HSequence<occ::handle<Units_Token>>>& aSeq)
 {
   // std::cout<<std::endl;
   // for(int index=1; index<=aSeq->Length(); index++) {
@@ -167,7 +168,7 @@ static occ::handle<Units_Token> CalculateLocal(
   // }
   // std::cout<<std::endl;
   occ::handle<Units_Token> tok1, tok2;
-  int                      i, j;
+  int    i, j;
 
   if (aSeq->Length() == 1)
   {
@@ -201,9 +202,8 @@ static occ::handle<Units_Token> CalculateLocal(
     {
       if (aSeq->Value(i)->Word() == "(")
       {
-        occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> TmpSeq =
-          new NCollection_HSequence<occ::handle<Units_Token>>;
-        int NbBrackets = 1;
+        occ::handle<NCollection_HSequence<occ::handle<Units_Token>>> TmpSeq     = new NCollection_HSequence<occ::handle<Units_Token>>;
+        int             NbBrackets = 1;
         for (j = i + 1; j <= aSeq->Length(); j++)
         {
           if (aSeq->Value(j)->Word() == ")")

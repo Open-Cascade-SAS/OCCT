@@ -21,10 +21,15 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Edge;
 class TopoDS_Vertex;
 class TopoDS_Wire;
@@ -72,8 +77,7 @@ public:
   //! fact a list of faces. The face <F> is considered
   //! with its topological orientation in the original
   //! shape. <W> is considered with its orientation.
-  Standard_EXPORT const NCollection_List<TopoDS_Shape>& LeftOf(const TopoDS_Wire& W,
-                                                               const TopoDS_Face& F);
+  Standard_EXPORT const NCollection_List<TopoDS_Shape>& LeftOf(const TopoDS_Wire& W, const TopoDS_Face& F);
 
 private:
   Standard_EXPORT bool AddOpenWire(const TopoDS_Wire& W, const TopoDS_Face& F);
@@ -84,11 +88,11 @@ private:
 
   Standard_EXPORT bool Rebuild(const TopoDS_Shape& S);
 
-  bool         myDone;
-  TopoDS_Shape myShape;
+  bool                   myDone;
+  TopoDS_Shape                       myShape;
   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myMap;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                                     myDblE;
-  NCollection_List<TopoDS_Shape>                                                             myLeft;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                myDblE;
+  NCollection_List<TopoDS_Shape>               myLeft;
 };
 
 #include <LocOpe_SplitShape.lxx>

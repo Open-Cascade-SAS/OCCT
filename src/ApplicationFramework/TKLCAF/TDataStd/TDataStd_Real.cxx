@@ -40,8 +40,8 @@ const Standard_GUID& TDataStd_Real::GetID()
 // purpose  : Implements Set functionality
 //=======================================================================
 static occ::handle<TDataStd_Real> SetAttr(const TDF_Label&     label,
-                                          const double         V,
-                                          const Standard_GUID& theGuid)
+                                     const double  V,
+                                     const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_Real> A;
   if (!label.FindAttribute(theGuid, A))
@@ -67,8 +67,8 @@ occ::handle<TDataStd_Real> TDataStd_Real::Set(const TDF_Label& L, const double V
 //=======================================================================
 
 occ::handle<TDataStd_Real> TDataStd_Real::Set(const TDF_Label&     L,
-                                              const Standard_GUID& theGuid,
-                                              const double         V)
+                                         const Standard_GUID& theGuid,
+                                         const double  V)
 {
   return SetAttr(L, V, theGuid);
 }
@@ -172,7 +172,7 @@ occ::handle<TDF_Attribute> TDataStd_Real::NewEmpty() const
 
 void TDataStd_Real::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  occ::handle<TDataStd_Real> R                      = occ::down_cast<TDataStd_Real>(With);
+  occ::handle<TDataStd_Real> R                           = occ::down_cast<TDataStd_Real>(With);
   myValue                                           = R->Get();
   Standard_DISABLE_DEPRECATION_WARNINGS myDimension = R->GetDimension();
   Standard_ENABLE_DEPRECATION_WARNINGS  myID        = R->ID();
@@ -196,7 +196,7 @@ Standard_OStream& TDataStd_Real::Dump(Standard_OStream& anOS) const
   anOS << "Real ";
   Standard_DISABLE_DEPRECATION_WARNINGS TDataStd::Print(GetDimension(), anOS);
   Standard_ENABLE_DEPRECATION_WARNINGS  anOS << myValue;
-  char                                  sguid[Standard_GUID_SIZE_ALLOC];
+  char                    sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
   return anOS;

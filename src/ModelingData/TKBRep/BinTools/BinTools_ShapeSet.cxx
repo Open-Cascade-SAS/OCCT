@@ -26,6 +26,7 @@
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
+#include <BRep_PointRepresentation.hxx>
 #include <BRep_Polygon3D.hxx>
 #include <BRep_PolygonOnTriangulation.hxx>
 #include <BRep_TEdge.hxx>
@@ -38,6 +39,8 @@
 #include <Poly_Triangulation.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopoDS.hxx>
@@ -131,7 +134,7 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
   if (S.ShapeType() == TopAbs_VERTEX)
   {
 
-    occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(S.TShape());
+    occ::handle<BRep_TVertex>                         TV = occ::down_cast<BRep_TVertex>(S.TShape());
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itrp(TV->Points());
 
     while (itrp.More())
@@ -162,7 +165,7 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
   {
 
     // Add the curve geometry
-    occ::handle<BRep_TEdge> TE = occ::down_cast<BRep_TEdge>(S.TShape());
+    occ::handle<BRep_TEdge>                           TE = occ::down_cast<BRep_TEdge>(S.TShape());
     NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc(TE->Curves());
 
     while (itrc.More())
@@ -232,7 +235,7 @@ void BinTools_ShapeSet::AddShape(const TopoDS_Shape& S)
   {
 
     // Add the surface geometry
-    bool                    needNormals(IsWithNormals());
+    bool   needNormals(IsWithNormals());
     occ::handle<BRep_TFace> TF = occ::down_cast<BRep_TFace>(S.TShape());
     if (!TF->Surface().IsNull())
     {
@@ -304,7 +307,7 @@ void BinTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange&
   // write the shapes
   //-----------------------------------------
 
-  int                   i, nbShapes = myShapes.Extent();
+  int      i, nbShapes = myShapes.Extent();
   Message_ProgressScope aPSinner(aPS.Next(), "Writing shapes", nbShapes);
   OS << "\nTShapes " << nbShapes << "\n";
 
@@ -348,7 +351,7 @@ void BinTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   Clear();
 
   // Check the version
-  char vers[101];
+  char             vers[101];
   bool anIsSetFormat = false;
   do
   {
@@ -443,7 +446,7 @@ void BinTools_ShapeSet::Write(const TopoDS_Shape& S, Standard_OStream& OS)
 void BinTools_ShapeSet::ReadFlagsAndSubs(TopoDS_Shape&          S,
                                          const TopAbs_ShapeEnum T,
                                          Standard_IStream&      IS,
-                                         const int              nbShapes)
+                                         const int nbShapes)
 {
   // Set the flags
   bool aFree, aMod, aChecked, anOrient, aClosed, anInf, aConv;
@@ -487,7 +490,9 @@ void BinTools_ShapeSet::ReadFlagsAndSubs(TopoDS_Shape&          S,
 
 //=================================================================================================
 
-void BinTools_ShapeSet::ReadSubs(TopoDS_Shape& S, Standard_IStream& IS, const int nbshapes)
+void BinTools_ShapeSet::ReadSubs(TopoDS_Shape&          S,
+                                 Standard_IStream&      IS,
+                                 const int nbshapes)
 {
   char aChar = '\0';
   IS >> aChar;
@@ -556,7 +561,7 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
 #ifdef OCCT_DEBUG_POS
       std::streamoff aPos;
 #endif
-      occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(S.TShape());
+      occ::handle<BRep_TVertex>                         TV = occ::down_cast<BRep_TVertex>(S.TShape());
       NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itrp(TV->Points());
       while (itrp.More())
       {
@@ -617,7 +622,7 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
       aVal = (TE->Degenerated()) ? true : false;
       BinTools::PutBool(OS, aVal);
 
-      double                                                            first, last;
+      double                                first, last;
       NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itrc = TE->Curves();
       while (itrc.More())
       {
@@ -734,7 +739,7 @@ void BinTools_ShapeSet::WriteShape(const TopoDS_Shape& S, Standard_OStream& OS) 
     {
 
       occ::handle<BRep_TFace> TF = occ::down_cast<BRep_TFace>(S.TShape());
-      const TopoDS_Face&      F  = TopoDS::Face(S);
+      const TopoDS_Face& F  = TopoDS::Face(S);
 
       // Write the surface geometry
       bool aNatRes = BRep_Tool::NaturalRestriction(F);
@@ -773,12 +778,12 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
 {
   // Read the geometry
 
-  int           val, c, pc, pc2 = 0, s, s2, l, l2, t, pt, pt2 = 0;
-  double        tol, X, Y, Z, first, last, p1 = 0., p2;
-  double        PfX, PfY, PlX, PlY;
-  gp_Pnt2d      aPf, aPl;
-  bool          closed, bval;
-  GeomAbs_Shape reg = GeomAbs_C0;
+  int val, c, pc, pc2 = 0, s, s2, l, l2, t, pt, pt2 = 0;
+  double    tol, X, Y, Z, first, last, p1 = 0., p2;
+  double    PfX, PfY, PlX, PlY;
+  gp_Pnt2d         aPf, aPl;
+  bool closed, bval;
+  GeomAbs_Shape    reg = GeomAbs_C0;
   try
   {
     OCC_CATCH_SIGNALS
@@ -802,7 +807,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
         occ::handle<BRep_TVertex> TV = occ::down_cast<BRep_TVertex>(V.TShape());
 
         NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr = TV->ChangePoints();
-        TopLoc_Location                                          L;
+        TopLoc_Location                 L;
         do
         {
           if (FormatNb() == BinTools_FormatVersion_VERSION_3)
@@ -838,7 +843,7 @@ void BinTools_ShapeSet::ReadShape(const TopAbs_ShapeEnum T, Standard_IStream& IS
               if (myCurves.Curve(c).IsNull())
                 break;
               occ::handle<BRep_PointOnCurve> POC = new BRep_PointOnCurve(p1, myCurves.Curve(c), L);
-              PR                                 = POC;
+              PR                            = POC;
             }
             break;
 
@@ -1202,7 +1207,7 @@ void BinTools_ShapeSet::WritePolygonOnTriangulation(Standard_OStream&           
     for (int aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
       const occ::handle<Poly_PolygonOnTriangulation>& aPoly  = myNodes.FindKey(aPolIter);
-      const NCollection_Array1<int>&                  aNodes = aPoly->Nodes();
+      const NCollection_Array1<int>&             aNodes = aPoly->Nodes();
       BinTools::PutInteger(OS, aNodes.Length());
       for (int aNodeIter = 1; aNodeIter <= aNodes.Length(); ++aNodeIter)
       {
@@ -1277,8 +1282,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation(Standard_IStream&            
       BinTools::GetBool(IS, hasParameters);
       if (hasParameters)
       {
-        occ::handle<NCollection_HArray1<double>> aParams =
-          new NCollection_HArray1<double>(1, aNbNodes);
+        occ::handle<NCollection_HArray1<double>> aParams = new NCollection_HArray1<double>(1, aNbNodes);
         for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
         {
           BinTools::GetReal(IS, aParams->ChangeValue(aNodeIter));
@@ -1318,7 +1322,7 @@ void BinTools_ShapeSet::WritePolygon3D(Standard_OStream&            OS,
       BinTools::PutReal(OS, aPoly->Deflection());
 
       // write the nodes
-      const int                         aNbNodes = aPoly->NbNodes();
+      const int    aNbNodes = aPoly->NbNodes();
       const NCollection_Array1<gp_Pnt>& aNodes   = aPoly->Nodes();
       for (int aNodeIter = 1; aNodeIter <= aNbNodes; ++aNodeIter)
       {
@@ -1369,9 +1373,9 @@ void BinTools_ShapeSet::ReadPolygon3D(Standard_IStream& IS, const Message_Progre
     Message_ProgressScope aPS(theRange, "Reading polygones 3D", aNbPol);
     for (int aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
-      int    aNbNodes      = 0;
-      bool   hasParameters = false;
-      double aDefl         = 0.0;
+      int aNbNodes      = 0;
+      bool hasParameters = false;
+      double    aDefl         = 0.0;
       BinTools::GetInteger(IS, aNbNodes);
       BinTools::GetBool(IS, hasParameters);
       BinTools::GetReal(IS, aDefl);
@@ -1419,14 +1423,15 @@ void BinTools_ShapeSet::WriteTriangulation(Standard_OStream&            OS,
   {
     OCC_CATCH_SIGNALS
     Message_ProgressScope aPS(theRange, "Writing triangulation", aNbTriangulations);
-    for (int aTriangulationIter = 1; aTriangulationIter <= aNbTriangulations && aPS.More();
+    for (int aTriangulationIter = 1;
+         aTriangulationIter <= aNbTriangulations && aPS.More();
          ++aTriangulationIter, aPS.Next())
     {
       const occ::handle<Poly_Triangulation>& aTriangulation =
         myTriangulations.FindKey(aTriangulationIter);
-      bool      NeedToWriteNormals = myTriangulations.FindFromIndex(aTriangulationIter);
-      const int aNbNodes           = aTriangulation->NbNodes();
-      const int aNbTriangles       = aTriangulation->NbTriangles();
+      bool NeedToWriteNormals = myTriangulations.FindFromIndex(aTriangulationIter);
+      const int aNbNodes     = aTriangulation->NbNodes();
+      const int aNbTriangles = aTriangulation->NbTriangles();
       BinTools::PutInteger(OS, aNbNodes);
       BinTools::PutInteger(OS, aNbTriangles);
       BinTools::PutBool(OS, aTriangulation->HasUVNodes() ? 1 : 0);
@@ -1508,13 +1513,14 @@ void BinTools_ShapeSet::ReadTriangulation(Standard_IStream&            IS,
   {
     OCC_CATCH_SIGNALS
     Message_ProgressScope aPS(theRange, "Reading triangulation", aNbTriangulations);
-    for (int aTriangulationIter = 1; aTriangulationIter <= aNbTriangulations && aPS.More();
+    for (int aTriangulationIter = 1;
+         aTriangulationIter <= aNbTriangulations && aPS.More();
          ++aTriangulationIter, aPS.Next())
     {
-      int    aNbNodes = 0, aNbTriangles = 0;
-      bool   hasUV      = false;
-      bool   hasNormals = false;
-      double aDefl      = 0.0;
+      int aNbNodes = 0, aNbTriangles = 0;
+      bool hasUV      = false;
+      bool hasNormals = false;
+      double    aDefl      = 0.0;
       BinTools::GetInteger(IS, aNbNodes);
       BinTools::GetInteger(IS, aNbTriangles);
       BinTools::GetBool(IS, hasUV);

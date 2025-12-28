@@ -59,38 +59,38 @@ public:
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int                 theComponentsNb,
-                            const int                          theElemsNb,
-                            const float*                       theData);
+                            const unsigned int            theComponentsNb,
+                            const int        theElemsNb,
+                            const float*                  theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int                 theComponentsNb,
-                            const int                          theElemsNb,
-                            const unsigned int*                theData);
+                            const unsigned int            theComponentsNb,
+                            const int        theElemsNb,
+                            const unsigned int*           theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int                 theComponentsNb,
-                            const int                          theElemsNb,
-                            const unsigned short*              theData);
+                            const unsigned int            theComponentsNb,
+                            const int        theElemsNb,
+                            const unsigned short*         theData);
 
   //! Perform TBO initialization with specified data.
   //! Existing data will be deleted.
   Standard_EXPORT bool Init(const occ::handle<OpenGl_Context>& theGlCtx,
-                            const unsigned int                 theComponentsNb,
-                            const int                          theElemsNb,
-                            const uint8_t*                     theData);
+                            const unsigned int            theComponentsNb,
+                            const int        theElemsNb,
+                            const uint8_t*          theData);
 
   //! Bind TBO to specified Texture Unit.
   Standard_EXPORT void BindTexture(const occ::handle<OpenGl_Context>& theGlCtx,
-                                   const Graphic3d_TextureUnit        theTextureUnit) const;
+                                   const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Unbind TBO.
   Standard_EXPORT void UnbindTexture(const occ::handle<OpenGl_Context>& theGlCtx,
-                                     const Graphic3d_TextureUnit        theTextureUnit) const;
+                                     const Graphic3d_TextureUnit   theTextureUnit) const;
 
   //! Returns name of TBO.
   unsigned int TextureId() const { return myTextureId; }

@@ -30,6 +30,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_DocumentProductEquivalence,
                           StepBasic_DocumentProductAssociation)
+
 };
 
 #endif // _StepBasic_DocumentProductEquivalence_HeaderFile

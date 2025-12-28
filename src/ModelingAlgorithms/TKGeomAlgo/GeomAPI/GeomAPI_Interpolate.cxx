@@ -24,16 +24,22 @@
 #include <StdFail_NotDone.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 //=================================================================================================
 
-static bool CheckPoints(const NCollection_Array1<gp_Pnt>& PointArray, const double Tolerance)
+static bool CheckPoints(const NCollection_Array1<gp_Pnt>& PointArray,
+                                    const double       Tolerance)
 {
-  int    ii;
-  double tolerance_squared = Tolerance * Tolerance, distance_squared;
-  bool   result            = true;
+  int ii;
+  double    tolerance_squared = Tolerance * Tolerance, distance_squared;
+  bool result            = true;
   for (ii = PointArray.Lower(); result && ii < PointArray.Upper(); ii++)
   {
     distance_squared = PointArray.Value(ii).SquareDistance(PointArray.Value(ii + 1));
@@ -44,14 +50,14 @@ static bool CheckPoints(const NCollection_Array1<gp_Pnt>& PointArray, const doub
 
 //=================================================================================================
 
-static bool CheckTangents(const NCollection_Array1<gp_Vec>& Tangents,
-                          const NCollection_Array1<bool>&   TangentFlags,
-                          const double                      Tolerance)
+static bool CheckTangents(const NCollection_Array1<gp_Vec>&      Tangents,
+                                      const NCollection_Array1<bool>& TangentFlags,
+                                      const double            Tolerance)
 {
-  int    ii, index;
-  double tolerance_squared = Tolerance * Tolerance, distance_squared;
-  bool   result            = true;
-  index                    = TangentFlags.Lower();
+  int ii, index;
+  double    tolerance_squared = Tolerance * Tolerance, distance_squared;
+  bool result            = true;
+  index                              = TangentFlags.Lower();
   for (ii = Tangents.Lower(); result && ii <= Tangents.Upper(); ii++)
   {
     if (TangentFlags.Value(index))
@@ -68,9 +74,9 @@ static bool CheckTangents(const NCollection_Array1<gp_Vec>& Tangents,
 
 static bool CheckParameters(const NCollection_Array1<double>& Parameters)
 {
-  int    ii;
-  double distance;
-  bool   result = true;
+  int ii;
+  double    distance;
+  bool result = true;
   for (ii = Parameters.Lower(); result && ii < Parameters.Upper(); ii++)
   {
     distance = Parameters.Value(ii + 1) - Parameters.Value(ii);
@@ -81,13 +87,13 @@ static bool CheckParameters(const NCollection_Array1<double>& Parameters)
 
 //=================================================================================================
 
-static void BuildParameters(const bool                                PeriodicFlag,
-                            const NCollection_Array1<gp_Pnt>&         PointsArray,
+static void BuildParameters(const bool         PeriodicFlag,
+                            const NCollection_Array1<gp_Pnt>&      PointsArray,
                             occ::handle<NCollection_HArray1<double>>& ParametersPtr)
 {
-  int    ii, index;
-  double distance;
-  int    num_parameters = PointsArray.Length();
+  int ii, index;
+  double    distance;
+  int num_parameters = PointsArray.Length();
   if (PeriodicFlag)
   {
     num_parameters += 1;
@@ -111,13 +117,13 @@ static void BuildParameters(const bool                                PeriodicFl
 
 //=================================================================================================
 
-static void BuildPeriodicTangent(const NCollection_Array1<gp_Pnt>& PointsArray,
-                                 NCollection_Array1<gp_Vec>&       TangentsArray,
-                                 NCollection_Array1<bool>&         TangentFlags,
+static void BuildPeriodicTangent(const NCollection_Array1<gp_Pnt>&   PointsArray,
+                                 NCollection_Array1<gp_Vec>&         TangentsArray,
+                                 NCollection_Array1<bool>&    TangentFlags,
                                  const NCollection_Array1<double>& ParametersArray)
 {
-  int     ii, degree;
-  double *point_array, *parameter_array, eval_result[2][3];
+  int ii, degree;
+  double *  point_array, *parameter_array, eval_result[2][3];
 
   gp_Vec a_vector;
 
@@ -153,13 +159,13 @@ static void BuildPeriodicTangent(const NCollection_Array1<gp_Pnt>& PointsArray,
 
 //=================================================================================================
 
-static void BuildTangents(const NCollection_Array1<gp_Pnt>& PointsArray,
-                          NCollection_Array1<gp_Vec>&       TangentsArray,
-                          NCollection_Array1<bool>&         TangentFlags,
+static void BuildTangents(const NCollection_Array1<gp_Pnt>&   PointsArray,
+                          NCollection_Array1<gp_Vec>&         TangentsArray,
+                          NCollection_Array1<bool>&    TangentFlags,
                           const NCollection_Array1<double>& ParametersArray)
 {
-  int     ii, degree;
-  double *point_array, *parameter_array,
+  int ii, degree;
+  double *  point_array, *parameter_array,
 
     eval_result[2][3];
   gp_Vec a_vector;
@@ -218,10 +224,10 @@ static void BuildTangents(const NCollection_Array1<gp_Pnt>& PointsArray,
 // the size of the derivative of the lagrange interpolation
 //
 //=======================================================================
-static void ScaleTangents(const NCollection_Array1<gp_Pnt>& PointsArray,
-                          NCollection_Array1<gp_Vec>&       TangentsArray,
-                          const NCollection_Array1<bool>&   TangentFlags,
-                          const NCollection_Array1<double>& ParametersArray)
+static void ScaleTangents(const NCollection_Array1<gp_Pnt>&      PointsArray,
+                          NCollection_Array1<gp_Vec>&            TangentsArray,
+                          const NCollection_Array1<bool>& TangentFlags,
+                          const NCollection_Array1<double>&    ParametersArray)
 {
   int ii, jj, degree = 0, index, num_points;
 
@@ -280,18 +286,18 @@ static void ScaleTangents(const NCollection_Array1<gp_Pnt>& PointsArray,
 //=================================================================================================
 
 GeomAPI_Interpolate::GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt>>& PointsPtr,
-                                         const bool   PeriodicFlag,
-                                         const double Tolerance)
+                                         const bool             PeriodicFlag,
+                                         const double                Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
       myIsDone(false),
       myPeriodic(PeriodicFlag),
       myTangentRequest(false)
 {
-  int  ii;
-  bool result    = CheckPoints(PointsPtr->Array1(), Tolerance);
-  myTangents     = new NCollection_HArray1<gp_Vec>(myPoints->Lower(), myPoints->Upper());
-  myTangentFlags = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
+  int ii;
+  bool result = CheckPoints(PointsPtr->Array1(), Tolerance);
+  myTangents              = new NCollection_HArray1<gp_Vec>(myPoints->Lower(), myPoints->Upper());
+  myTangentFlags          = new NCollection_HArray1<bool>(myPoints->Lower(), myPoints->Upper());
 
   if (!result)
   {
@@ -307,11 +313,10 @@ GeomAPI_Interpolate::GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<g
 
 //=================================================================================================
 
-GeomAPI_Interpolate::GeomAPI_Interpolate(
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& PointsPtr,
-  const occ::handle<NCollection_HArray1<double>>& ParametersPtr,
-  const bool                                      PeriodicFlag,
-  const double                                    Tolerance)
+GeomAPI_Interpolate::GeomAPI_Interpolate(const occ::handle<NCollection_HArray1<gp_Pnt>>&   PointsPtr,
+                                         const occ::handle<NCollection_HArray1<double>>& ParametersPtr,
+                                         const bool               PeriodicFlag,
+                                         const double                  Tolerance)
     : myTolerance(Tolerance),
       myPoints(PointsPtr),
       myIsDone(false),
@@ -352,13 +357,13 @@ GeomAPI_Interpolate::GeomAPI_Interpolate(
 
 //=================================================================================================
 
-void GeomAPI_Interpolate::Load(const NCollection_Array1<gp_Vec>&             Tangents,
+void GeomAPI_Interpolate::Load(const NCollection_Array1<gp_Vec>&               Tangents,
                                const occ::handle<NCollection_HArray1<bool>>& TangentFlagsPtr,
-                               const bool                                    Scale)
+                               const bool                  Scale)
 
 {
   bool result;
-  int  ii;
+  int ii;
   myTangentRequest = true;
   myTangentFlags   = TangentFlagsPtr;
   if (Tangents.Length() != myPoints->Length() || TangentFlagsPtr->Length() != myPoints->Length())
@@ -390,9 +395,9 @@ void GeomAPI_Interpolate::Load(const NCollection_Array1<gp_Vec>&             Tan
 
 //=================================================================================================
 
-void GeomAPI_Interpolate::Load(const gp_Vec& InitialTangent,
-                               const gp_Vec& FinalTangent,
-                               const bool    Scale)
+void GeomAPI_Interpolate::Load(const gp_Vec&          InitialTangent,
+                               const gp_Vec&          FinalTangent,
+                               const bool Scale)
 {
   bool result;
   myTangentRequest = true;
@@ -479,11 +484,11 @@ void GeomAPI_Interpolate::PerformPeriodic()
         }
       }
 
-    NCollection_Array1<double> parameters(1, num_poles);
-    NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
-    NCollection_Array1<int>    mults(1, num_distinct_knots);
-    NCollection_Array1<int>    contact_order_array(1, num_poles);
-    NCollection_Array1<gp_Pnt> poles(1, num_poles);
+    NCollection_Array1<double>    parameters(1, num_poles);
+    NCollection_Array1<double>    flatknots(1, num_poles + degree + 1);
+    NCollection_Array1<int> mults(1, num_distinct_knots);
+    NCollection_Array1<int> contact_order_array(1, num_poles);
+    NCollection_Array1<gp_Pnt>      poles(1, num_poles);
 
     for (ii = 1; ii <= half_order; ii++)
     {
@@ -612,8 +617,8 @@ void GeomAPI_Interpolate::PerformPeriodic()
 
 void GeomAPI_Interpolate::PerformNonPeriodic()
 {
-  int degree, ii, jj, index, index1, index2, index3, mult_index, inversion_problem, num_points,
-    num_distinct_knots, num_poles;
+  int degree, ii, jj, index, index1, index2, index3, mult_index, inversion_problem,
+    num_points, num_distinct_knots, num_poles;
 
   gp_Pnt a_point;
 
@@ -641,12 +646,12 @@ void GeomAPI_Interpolate::PerformNonPeriodic()
       }
   }
 
-  NCollection_Array1<double> parameters(1, num_poles);
-  NCollection_Array1<double> flatknots(1, num_poles + degree + 1);
-  NCollection_Array1<int>    mults(1, num_distinct_knots);
-  NCollection_Array1<double> knots(1, num_distinct_knots);
-  NCollection_Array1<int>    contact_order_array(1, num_poles);
-  NCollection_Array1<gp_Pnt> poles(1, num_poles);
+  NCollection_Array1<double>    parameters(1, num_poles);
+  NCollection_Array1<double>    flatknots(1, num_poles + degree + 1);
+  NCollection_Array1<int> mults(1, num_distinct_knots);
+  NCollection_Array1<double>    knots(1, num_distinct_knots);
+  NCollection_Array1<int> contact_order_array(1, num_poles);
+  NCollection_Array1<gp_Pnt>      poles(1, num_poles);
 
   for (ii = 1; ii <= degree + 1; ii++)
   {

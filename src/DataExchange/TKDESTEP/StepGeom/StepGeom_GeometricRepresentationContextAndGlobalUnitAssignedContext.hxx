@@ -44,29 +44,28 @@ public:
     const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext,
     const occ::handle<StepRepr_GlobalUnitAssignedContext>&      aGlobalUnitAssignedContext);
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
-    const occ::handle<TCollection_HAsciiString>& aContextType,
-    const int                                    aCoordinateSpaceDimension,
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&     aContextIdentifier,
+                            const occ::handle<TCollection_HAsciiString>&     aContextType,
+                            const int                      aCoordinateSpaceDimension,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
   Standard_EXPORT void SetGeometricRepresentationContext(
     const occ::handle<StepGeom_GeometricRepresentationContext>& aGeometricRepresentationContext);
 
-  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext>
-                  GeometricRepresentationContext() const;
+  Standard_EXPORT occ::handle<StepGeom_GeometricRepresentationContext> GeometricRepresentationContext()
+    const;
 
   Standard_EXPORT void SetGlobalUnitAssignedContext(
     const occ::handle<StepRepr_GlobalUnitAssignedContext>& aGlobalUnitAssignedContext);
 
   Standard_EXPORT occ::handle<StepRepr_GlobalUnitAssignedContext> GlobalUnitAssignedContext() const;
 
-  Standard_EXPORT void SetCoordinateSpaceDimension(const int aCoordinateSpaceDimension);
+  Standard_EXPORT void SetCoordinateSpaceDimension(
+    const int aCoordinateSpaceDimension);
 
   Standard_EXPORT int CoordinateSpaceDimension() const;
 
-  Standard_EXPORT void SetUnits(
-    const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
+  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>>& aUnits);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepBasic_NamedUnit>>> Units() const;
 

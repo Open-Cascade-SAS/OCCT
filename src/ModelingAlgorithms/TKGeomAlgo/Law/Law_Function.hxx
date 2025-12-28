@@ -40,8 +40,7 @@ public:
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters,
   //! i.e. T.Length() > NbIntervals()
-  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T,
-                                         const GeomAbs_Shape         S) const = 0;
+  Standard_EXPORT virtual void Intervals(NCollection_Array1<double>& T, const GeomAbs_Shape S) const = 0;
 
   //! Returns the value of the function at the point of parameter X.
   Standard_EXPORT virtual double Value(const double X) = 0;
@@ -52,7 +51,10 @@ public:
 
   //! Returns the value, first and second derivatives
   //! at parameter X.
-  Standard_EXPORT virtual void D2(const double X, double& F, double& D, double& D2) = 0;
+  Standard_EXPORT virtual void D2(const double X,
+                                  double&      F,
+                                  double&      D,
+                                  double&      D2) = 0;
 
   //! Returns a law equivalent of <me> between
   //! parameters <First> and <Last>. <Tol> is used to
@@ -61,13 +63,14 @@ public:
   //! in these values <First> and <Last> if
   //! the Law is not Cn.
   Standard_EXPORT virtual occ::handle<Law_Function> Trim(const double PFirst,
-                                                         const double PLast,
-                                                         const double Tol) const = 0;
+                                                    const double PLast,
+                                                    const double Tol) const = 0;
 
   //! Returns the parametric bounds of the function.
   Standard_EXPORT virtual void Bounds(double& PFirst, double& PLast) = 0;
 
   DEFINE_STANDARD_RTTIEXT(Law_Function, Standard_Transient)
+
 };
 
 #endif // _Law_Function_HeaderFile

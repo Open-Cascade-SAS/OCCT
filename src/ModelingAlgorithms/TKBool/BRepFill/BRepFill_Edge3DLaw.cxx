@@ -23,28 +23,31 @@
 #include <GeomFill_LocationLaw.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <GeomFill_LocationLaw.hxx>
 #include <Standard_Type.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepFill_Edge3DLaw, BRepFill_LocationLaw)
 
-BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire&                       Path,
+BRepFill_Edge3DLaw::BRepFill_Edge3DLaw(const TopoDS_Wire&                  Path,
                                        const occ::handle<GeomFill_LocationLaw>& Law)
 {
   Init(Path);
 
-  int                    ipath;
+  int       ipath;
   TopAbs_Orientation     Or;
   BRepTools_WireExplorer wexp;
   // Class BRep_Tool without fields and without Constructor :
   //  BRep_Tool B;
-  TopoDS_Edge                    E;
+  TopoDS_Edge               E;
   occ::handle<Geom_Curve>        C;
   occ::handle<GeomAdaptor_Curve> AC;
-  double                         First, Last;
+  double             First, Last;
 
   for (ipath = 0, wexp.Init(myPath); wexp.More(); wexp.Next())
   {

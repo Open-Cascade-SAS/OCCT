@@ -49,7 +49,9 @@ public:
   //! for the variable X.
   //! It returns True if the computation is successfully done,
   //! False otherwise.
-  Standard_EXPORT bool Values(const double X, double& F, double& Deriv);
+  Standard_EXPORT bool Values(const double X,
+                                          double&      F,
+                                          double&      Deriv);
 
 private:
   Geom2dAdaptor_Curve TheCurv;

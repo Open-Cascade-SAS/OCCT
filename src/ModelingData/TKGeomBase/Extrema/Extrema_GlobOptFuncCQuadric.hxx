@@ -32,16 +32,16 @@ public:
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C);
 
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C,
-                                              const double           theTf,
-                                              const double           theTl);
+                                              const double    theTf,
+                                              const double    theTl);
 
   Standard_EXPORT Extrema_GlobOptFuncCQuadric(const Adaptor3d_Curve* C, const Adaptor3d_Surface* S);
 
   Standard_EXPORT void LoadQuad(const Adaptor3d_Surface* S,
-                                const double             theUf,
-                                const double             theUl,
-                                const double             theVf,
-                                const double             theVl);
+                                const double      theUf,
+                                const double      theUl,
+                                const double      theVf,
+                                const double      theVl);
 
   Standard_EXPORT virtual int NbVariables() const;
 

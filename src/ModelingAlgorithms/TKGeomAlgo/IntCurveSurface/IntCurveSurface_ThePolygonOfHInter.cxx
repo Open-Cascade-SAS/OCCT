@@ -27,7 +27,7 @@
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
-  const int                           NbPnt)
+  const int         NbPnt)
     : ThePnts(1, (NbPnt < 5) ? 5 : NbPnt),
       ClosedPolygon(false)
 {
@@ -41,9 +41,9 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
-  const double                        U1,
-  const double                        U2,
-  const int                           NbPnt)
+  const double            U1,
+  const double            U2,
+  const int         NbPnt)
     : ThePnts(1, (NbPnt < 5) ? 5 : NbPnt),
       ClosedPolygon(false),
       Binf(U1),
@@ -57,7 +57,7 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
-  const NCollection_Array1<double>&   Upars)
+  const NCollection_Array1<double>&    Upars)
     : ThePnts(1, Upars.Length()),
       ClosedPolygon(false),
       Binf(Upars(Upars.Lower())),
@@ -71,21 +71,21 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
 
 void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>& Curve)
 {
-  IntCurveSurface_PolygonUtils::InitUniform<occ::handle<Adaptor3d_Curve>,
-                                            IntCurveSurface_TheHCurveTool>(Curve,
-                                                                           Binf,
-                                                                           Bsup,
-                                                                           NbPntIn,
-                                                                           ThePnts,
-                                                                           TheBnd,
-                                                                           TheDeflection);
+  IntCurveSurface_PolygonUtils::InitUniform<occ::handle<Adaptor3d_Curve>, IntCurveSurface_TheHCurveTool>(
+    Curve,
+    Binf,
+    Bsup,
+    NbPntIn,
+    ThePnts,
+    TheBnd,
+    TheDeflection);
   ClosedPolygon = false;
 }
 
 //==================================================================================================
 
 void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>& Curve,
-                                              const NCollection_Array1<double>&   Upars)
+                                              const NCollection_Array1<double>&    Upars)
 {
   IntCurveSurface_PolygonUtils::InitWithParams<occ::handle<Adaptor3d_Curve>,
                                                IntCurveSurface_TheHCurveTool>(Curve,
@@ -100,8 +100,9 @@ void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>
 
 //==================================================================================================
 
-double IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(const int    Index,
-                                                              const double ParamOnLine) const
+double IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(
+  const int Index,
+  const double    ParamOnLine) const
 {
   return IntCurveSurface_PolygonUtils::ApproxParamOnCurve(Index,
                                                           ParamOnLine,

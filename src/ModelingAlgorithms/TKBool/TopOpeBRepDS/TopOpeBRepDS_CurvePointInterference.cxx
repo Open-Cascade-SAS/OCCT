@@ -24,10 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_CurvePointInterference, TopOpeBRepDS_Int
 TopOpeBRepDS_CurvePointInterference::TopOpeBRepDS_CurvePointInterference(
   const TopOpeBRepDS_Transition& T,
   const TopOpeBRepDS_Kind        ST,
-  const int                      S,
+  const int         S,
   const TopOpeBRepDS_Kind        GT,
-  const int                      G,
-  const double                   P)
+  const int         G,
+  const double            P)
     : TopOpeBRepDS_Interference(T, ST, S, GT, G),
       myParam(P)
 {

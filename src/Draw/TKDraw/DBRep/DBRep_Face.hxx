@@ -23,7 +23,9 @@
 #include <Draw_Color.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Integer.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Standard_Real.hxx>
 
@@ -41,13 +43,17 @@ public:
 
   int NbIsos() const;
 
-  void Iso(const int             I,
-           const GeomAbs_IsoType T,
-           const double          Par,
-           const double          T1,
-           const double          T2);
+  void Iso(const int I,
+           const GeomAbs_IsoType  T,
+           const double    Par,
+           const double    T1,
+           const double    T2);
 
-  void GetIso(const int I, GeomAbs_IsoType& T, double& Par, double& T1, double& T2) const;
+  void GetIso(const int I,
+              GeomAbs_IsoType&       T,
+              double&         Par,
+              double&         T1,
+              double&         T2) const;
 
   const Draw_Color& Color() const;
 
@@ -56,10 +62,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(DBRep_Face, Standard_Transient)
 
 private:
-  TopoDS_Face                myFace;
-  Draw_Color                 myColor;
-  NCollection_Array1<int>    myTypes;
-  NCollection_Array1<double> myParams;
+  TopoDS_Face             myFace;
+  Draw_Color              myColor;
+  NCollection_Array1<int> myTypes;
+  NCollection_Array1<double>    myParams;
 };
 
 #include <DBRep_Face.lxx>

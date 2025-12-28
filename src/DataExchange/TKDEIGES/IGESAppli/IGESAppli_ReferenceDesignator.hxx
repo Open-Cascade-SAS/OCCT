@@ -38,7 +38,7 @@ public:
   //! ReferenceDesignator
   //! - nbPropVal : Number of property values = 1
   //! - aText     : Reference designator text
-  Standard_EXPORT void Init(const int                                    nbPropVal,
+  Standard_EXPORT void Init(const int                  nbPropVal,
                             const occ::handle<TCollection_HAsciiString>& aText);
 
   //! returns the number of property values
@@ -51,7 +51,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_ReferenceDesignator, IGESData_IGESEntity)
 
 private:
-  int                                   theNbPropertyValues;
+  int                 theNbPropertyValues;
   occ::handle<TCollection_HAsciiString> theRefDesigText;
 };
 

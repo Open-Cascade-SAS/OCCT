@@ -54,7 +54,7 @@ public:
   //! Sets the root alert. Starts collects alert metrics if active.
   //! @param theAlert an alert
   Standard_EXPORT void SetRootAlert(const occ::handle<Message_AlertExtended>& theAlert,
-                                    const bool                                isRequiredToStart);
+                                    const bool               isRequiredToStart);
 
   //! Adds new alert on the level. Stops the last alert metric, appends the alert and starts the
   //! alert metrics collecting. Sets root alert beforehand this method using, if the root is NULL,
@@ -62,8 +62,8 @@ public:
   //! @param theGravity an alert gravity
   //! @param theAlert an alert
   //! @return true if alert is added
-  Standard_EXPORT bool AddAlert(const Message_Gravity             theGravity,
-                                const occ::handle<Message_Alert>& theAlert);
+  Standard_EXPORT bool AddAlert(const Message_Gravity        theGravity,
+                                            const occ::handle<Message_Alert>& theAlert);
 
 private:
   //! Remove the current level from the report. It stops metric collecting for the last and the root

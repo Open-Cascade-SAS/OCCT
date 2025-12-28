@@ -17,13 +17,15 @@
 
 //  Convenience methods, avoiding having to know SessionFile, which is a
 //  Tool not intended for export (in particular, not a Handle)
-bool IFSelect::SaveSession(const occ::handle<IFSelect_WorkSession>& WS, const char* file)
+bool IFSelect::SaveSession(const occ::handle<IFSelect_WorkSession>& WS,
+                                       const char*              file)
 {
   IFSelect_SessionFile sesfile(WS, file);
   return sesfile.IsDone();
 }
 
-bool IFSelect::RestoreSession(const occ::handle<IFSelect_WorkSession>& WS, const char* file)
+bool IFSelect::RestoreSession(const occ::handle<IFSelect_WorkSession>& WS,
+                                          const char*              file)
 {
   IFSelect_SessionFile sesfile(WS);
   return (sesfile.Read(file) == 0);

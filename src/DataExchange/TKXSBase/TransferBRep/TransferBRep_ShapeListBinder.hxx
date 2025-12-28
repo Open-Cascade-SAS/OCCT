@@ -46,8 +46,7 @@ class TransferBRep_ShapeListBinder : public Transfer_Binder
 public:
   Standard_EXPORT TransferBRep_ShapeListBinder();
 
-  Standard_EXPORT TransferBRep_ShapeListBinder(
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list);
+  Standard_EXPORT TransferBRep_ShapeListBinder(const occ::handle<NCollection_HSequence<TopoDS_Shape>>& list);
 
   Standard_EXPORT virtual bool IsMultiple() const override;
 

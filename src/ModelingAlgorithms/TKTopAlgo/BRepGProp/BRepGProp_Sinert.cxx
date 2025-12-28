@@ -45,9 +45,9 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
 
 //=================================================================================================
 
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& theSurface,
-                                   const gp_Pnt&   theLocation,
-                                   const double    theEps)
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
+                                   const gp_Pnt&       theLocation,
+                                   const double theEps)
 {
   SetLocation(theLocation);
   Perform(theSurface, theEps);
@@ -55,10 +55,10 @@ BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& theSurface,
 
 //=================================================================================================
 
-BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&   theSurface,
-                                   BRepGProp_Domain& theDomain,
-                                   const gp_Pnt&     theLocation,
-                                   const double      theEps)
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face&     theSurface,
+                                   BRepGProp_Domain&   theDomain,
+                                   const gp_Pnt&       theLocation,
+                                   const double theEps)
 {
   SetLocation(theLocation);
   Perform(theSurface, theDomain, theEps);
@@ -101,9 +101,9 @@ double BRepGProp_Sinert::Perform(BRepGProp_Face& theSurface, const double theEps
 
 //=================================================================================================
 
-double BRepGProp_Sinert::Perform(BRepGProp_Face&   theSurface,
-                                 BRepGProp_Domain& theDomain,
-                                 const double      theEps)
+double BRepGProp_Sinert::Perform(BRepGProp_Face&     theSurface,
+                                        BRepGProp_Domain&   theDomain,
+                                        const double theEps)
 {
   BRepGProp_Gauss aGauss(BRepGProp_Gauss::Sinert);
   return myEpsilon = aGauss.Compute(theSurface, theDomain, loc, theEps, dim, g, inertia);

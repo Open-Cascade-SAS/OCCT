@@ -27,10 +27,9 @@ StepRepr_DataEnvironment::StepRepr_DataEnvironment() {}
 //=================================================================================================
 
 void StepRepr_DataEnvironment::Init(
-  const occ::handle<TCollection_HAsciiString>& aName,
-  const occ::handle<TCollection_HAsciiString>& aDescription,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>&
-    aElements)
+  const occ::handle<TCollection_HAsciiString>&                           aName,
+  const occ::handle<TCollection_HAsciiString>&                           aDescription,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements)
 {
 
   theName = aName;
@@ -63,16 +62,15 @@ occ::handle<TCollection_HAsciiString> StepRepr_DataEnvironment::Description() co
 
 //=================================================================================================
 
-void StepRepr_DataEnvironment::SetDescription(
-  const occ::handle<TCollection_HAsciiString>& aDescription)
+void StepRepr_DataEnvironment::SetDescription(const occ::handle<TCollection_HAsciiString>& aDescription)
 {
   theDescription = aDescription;
 }
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>
-  StepRepr_DataEnvironment::Elements() const
+occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> StepRepr_DataEnvironment::Elements()
+  const
 {
   return theElements;
 }
@@ -80,8 +78,7 @@ occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresent
 //=================================================================================================
 
 void StepRepr_DataEnvironment::SetElements(
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>&
-    aElements)
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements)
 {
   theElements = aElements;
 }

@@ -44,13 +44,13 @@ void IGESDraw_ToolPerspectiveView::ReadOwnParams(const occ::handle<IGESDraw_Pers
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  gp_XY  tempTopLeft, tempBottomRight;
-  double tempLeft, tempRight, tempTop, tempBottom;
-  gp_XYZ tempCenterOfProjection, tempViewUpVector;
-  gp_XYZ tempViewNormalVector, tempViewReferencePoint;
-  int    tempViewNumber, tempDepthClip;
-  double tempScaleFactor, tempViewPlaneDistance;
-  double tempBackPlaneDistance, tempFrontPlaneDistance;
+  gp_XY            tempTopLeft, tempBottomRight;
+  double    tempLeft, tempRight, tempTop, tempBottom;
+  gp_XYZ           tempCenterOfProjection, tempViewUpVector;
+  gp_XYZ           tempViewNormalVector, tempViewReferencePoint;
+  int tempViewNumber, tempDepthClip;
+  double    tempScaleFactor, tempViewPlaneDistance;
+  double    tempBackPlaneDistance, tempFrontPlaneDistance;
 
   // szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber);
@@ -102,7 +102,7 @@ void IGESDraw_ToolPerspectiveView::ReadOwnParams(const occ::handle<IGESDraw_Pers
 }
 
 void IGESDraw_ToolPerspectiveView::WriteOwnParams(const occ::handle<IGESDraw_PerspectiveView>& ent,
-                                                  IGESData_IGESWriter& IW) const
+                                                  IGESData_IGESWriter&                    IW) const
 {
   IW.Send(ent->ViewNumber());
   IW.Send(ent->ScaleFactor());
@@ -181,8 +181,8 @@ void IGESDraw_ToolPerspectiveView::OwnCheck(const occ::handle<IGESDraw_Perspecti
 
 void IGESDraw_ToolPerspectiveView::OwnDump(const occ::handle<IGESDraw_PerspectiveView>& ent,
                                            const IGESData_IGESDumper& /*dumper*/,
-                                           Standard_OStream& S,
-                                           const int         level) const
+                                           Standard_OStream&      S,
+                                           const int level) const
 {
   S << "IGESDraw_PerspectiveView\n"
     << "View Number  : " << ent->ViewNumber() << "  "

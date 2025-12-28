@@ -74,18 +74,19 @@ public:
   }
 
   //! Update mouse scroll event.
-  Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta) override;
+  Standard_EXPORT virtual bool UpdateMouseScroll(const Aspect_ScrollDelta& theDelta)
+    override;
 
   //! Handle mouse button click event.
   Standard_EXPORT virtual bool UpdateMouseClick(const NCollection_Vec2<int>& thePoint,
-                                                Aspect_VKeyMouse             theButton,
-                                                Aspect_VKeyFlags             theModifiers,
+                                                Aspect_VKeyMouse       theButton,
+                                                Aspect_VKeyFlags       theModifiers,
                                                 bool theIsDoubleClick) override;
 
   //! Handle mouse button press/release event.
   Standard_EXPORT virtual bool UpdateMouseButtons(const NCollection_Vec2<int>& thePoint,
-                                                  Aspect_VKeyMouse             theButtons,
-                                                  Aspect_VKeyFlags             theModifiers,
+                                                  Aspect_VKeyMouse       theButtons,
+                                                  Aspect_VKeyFlags       theModifiers,
                                                   bool theIsEmulated) override;
 
   //! Release key.
@@ -115,8 +116,9 @@ public:
   //! Callback called on Selection of another (sub)view.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void OnSubviewChanged(const occ::handle<AIS_InteractiveContext>& theCtx,
-                                                const occ::handle<V3d_View>& theOldView,
-                                                const occ::handle<V3d_View>& theNewView) override;
+                                                const occ::handle<V3d_View>&               theOldView,
+                                                const occ::handle<V3d_View>&               theNewView)
+    override;
 
 protected:
   //! Register hot-keys for specified Action.
@@ -168,8 +170,8 @@ private:
   // clang-format on
 
   TCollection_AsciiString myPickPntArgVec[3];
-  bool                    myToPickPnt;
-  bool                    myIsTmpContRedraw;
+  bool        myToPickPnt;
+  bool        myIsTmpContRedraw;
 
   unsigned int myNbUpdateRequests; //!< counter for unhandled update requests
 };

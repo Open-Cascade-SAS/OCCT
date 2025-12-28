@@ -22,7 +22,7 @@ IFGraph_AllShared::IFGraph_AllShared(const Interface_Graph& agraph)
 {
 }
 
-IFGraph_AllShared::IFGraph_AllShared(const Interface_Graph&                 agraph,
+IFGraph_AllShared::IFGraph_AllShared(const Interface_Graph&            agraph,
                                      const occ::handle<Standard_Transient>& ent)
     : thegraph(agraph)
 {

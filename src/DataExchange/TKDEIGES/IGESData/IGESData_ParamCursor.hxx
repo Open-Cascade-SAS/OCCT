@@ -64,7 +64,9 @@ public:
   //! instance, a Parameter comprises one Integer, or one Entity ...
   //! Size gives the complete size of each Item if it is complex.
   //! To be used ONLY IF it is constant
-  Standard_EXPORT IGESData_ParamCursor(const int num, const int nb, const int size = 1);
+  Standard_EXPORT IGESData_ParamCursor(const int num,
+                                       const int nb,
+                                       const int size = 1);
 
   //! Defines the size of a term to read in the item : this commands
   //! ParamReader to read "size" parameters for each item, then
@@ -82,7 +84,8 @@ public:
   //! If it is False, SetAdvance must be called directly if necessary
   //!
   //! Error if a SetTerm overpasses the size of the Item
-  Standard_EXPORT void SetTerm(const int size, const bool autoadv = true);
+  Standard_EXPORT void SetTerm(const int size,
+                               const bool autoadv = true);
 
   //! Defines a term of one Parameter (very current case)
   Standard_EXPORT void SetOne(const bool autoadv = true);
@@ -120,12 +123,12 @@ public:
   bool Advance() const;
 
 private:
-  int  thestart;
-  int  thelimit;
-  int  thecount;
-  int  theisize;
-  int  theoffst;
-  int  thetsize;
+  int thestart;
+  int thelimit;
+  int thecount;
+  int theisize;
+  int theoffst;
+  int thetsize;
   bool theadv;
 };
 

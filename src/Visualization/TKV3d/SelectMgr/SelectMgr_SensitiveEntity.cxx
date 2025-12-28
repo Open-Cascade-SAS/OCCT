@@ -42,7 +42,8 @@ void SelectMgr_SensitiveEntity::Clear()
 
 //=================================================================================================
 
-void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void SelectMgr_SensitiveEntity::DumpJson(Standard_OStream& theOStream,
+                                         int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

@@ -21,7 +21,8 @@ inline int& ShapeUpgrade_ShapeDivideArea::NbParts()
   return myNbParts;
 }
 
-inline void ShapeUpgrade_ShapeDivideArea::SetSplittingByNumber(const bool theIsSplittingByNumber)
+inline void ShapeUpgrade_ShapeDivideArea::SetSplittingByNumber(
+  const bool theIsSplittingByNumber)
 {
   myIsSplittingByNumber = theIsSplittingByNumber;
   if (myIsSplittingByNumber)

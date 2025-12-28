@@ -34,18 +34,18 @@ class XmlMXCAFDoc_LocationDriver : public XmlMDF_ADriver
 {
 
 public:
-  Standard_EXPORT XmlMXCAFDoc_LocationDriver(
-    const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT XmlMXCAFDoc_LocationDriver(const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT bool Paste(const XmlObjMgt_Persistent&       Source,
-                             const occ::handle<TDF_Attribute>& Target,
-                             XmlObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT bool
+    Paste(const XmlObjMgt_Persistent&  Source,
+          const occ::handle<TDF_Attribute>& Target,
+          XmlObjMgt_RRelocationTable&  RelocTable) const override;
 
   Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>& Source,
-                             XmlObjMgt_Persistent&             Target,
-                             XmlObjMgt_SRelocationTable&       RelocTable) const override;
+                             XmlObjMgt_Persistent&        Target,
+                             XmlObjMgt_SRelocationTable&  RelocTable) const override;
 
   //! Translate a non storable Location to a storable Location.
   Standard_EXPORT void Translate(const TopLoc_Location&      theLoc,
@@ -54,8 +54,8 @@ public:
 
   //! Translate a storable Location to a non storable Location.
   Standard_EXPORT bool Translate(const XmlObjMgt_Element&    theParent,
-                                 TopLoc_Location&            theLoc,
-                                 XmlObjMgt_RRelocationTable& theMap) const;
+                                             TopLoc_Location&            theLoc,
+                                             XmlObjMgt_RRelocationTable& theMap) const;
 
   void SetSharedLocations(const TopTools_LocationSetPtr& theLocations);
 

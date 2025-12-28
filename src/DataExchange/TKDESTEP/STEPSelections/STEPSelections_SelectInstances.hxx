@@ -33,12 +33,14 @@ class STEPSelections_SelectInstances : public IFSelect_SelectExplore
 public:
   Standard_EXPORT STEPSelections_SelectInstances();
 
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium : "Instances"
   Standard_EXPORT TCollection_AsciiString ExploreLabel() const override;
@@ -47,6 +49,7 @@ public:
 
 protected:
   Standard_EXPORT virtual bool HasUniqueResult() const override;
+
 };
 
 #endif // _STEPSelections_SelectInstances_HeaderFile

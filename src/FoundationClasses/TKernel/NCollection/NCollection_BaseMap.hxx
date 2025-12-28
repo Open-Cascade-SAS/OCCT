@@ -127,9 +127,9 @@ public:
 
   protected:
     // ---------- PRIVATE FIELDS ------------
-    int                    myNbBuckets; //!< Total buckets in the map
+    int       myNbBuckets; //!< Total buckets in the map
     NCollection_ListNode** myBuckets;   //!< Location in memory
-    int                    myBucket;    //!< Current bucket
+    int       myBucket;    //!< Current bucket
     NCollection_ListNode*  myNode;      //!< Current node
   };
 
@@ -155,8 +155,8 @@ protected:
   // -------- PROTECTED METHODS -----------
 
   //! Constructor
-  NCollection_BaseMap(const int                                     NbBuckets,
-                      const bool                                    single,
+  NCollection_BaseMap(const int                   NbBuckets,
+                      const bool                   single,
                       const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator()
                                           : theAllocator),
@@ -187,14 +187,14 @@ protected:
   virtual ~NCollection_BaseMap() {}
 
   //! BeginResize
-  Standard_EXPORT bool BeginResize(const int               NbBuckets,
-                                   int&                    NewBuckets,
-                                   NCollection_ListNode**& data1,
-                                   NCollection_ListNode**& data2) const;
+  Standard_EXPORT bool BeginResize(const int  NbBuckets,
+                                               int&       NewBuckets,
+                                               NCollection_ListNode**& data1,
+                                               NCollection_ListNode**& data2) const;
 
   //! EndResize
-  Standard_EXPORT void EndResize(const int              NbBuckets,
-                                 const int              NewBuckets,
+  Standard_EXPORT void EndResize(const int NbBuckets,
+                                 const int NewBuckets,
                                  NCollection_ListNode** data1,
                                  NCollection_ListNode** data2) noexcept;
 
@@ -208,7 +208,8 @@ protected:
   int Decrement() noexcept { return --mySize; }
 
   //! Destroy
-  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
+  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
+                               bool       doReleaseMemory = true);
 
   //! NextPrimeForMap
   Standard_EXPORT int NextPrimeForMap(const int N) const noexcept;
@@ -235,13 +236,13 @@ protected:
 protected:
   // --------- PROTECTED FIELDS -----------
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_ListNode**                 myData1;
-  NCollection_ListNode**                 myData2;
+  NCollection_ListNode**            myData1;
+  NCollection_ListNode**            myData2;
 
 private:
   // ---------- PRIVATE FIELDS ------------
-  int        myNbBuckets;
-  int        mySize;
+  int       myNbBuckets;
+  int       mySize;
   const bool isDouble;
 
   // ---------- FRIEND CLASSES ------------

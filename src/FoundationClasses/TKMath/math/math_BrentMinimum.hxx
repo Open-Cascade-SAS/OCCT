@@ -35,17 +35,17 @@ public:
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
-  Standard_EXPORT math_BrentMinimum(const double TolX,
-                                    const int    NbIterations = 100,
-                                    const double ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BrentMinimum(const double    TolX,
+                                    const int NbIterations = 100,
+                                    const double    ZEPS         = 1.0e-12);
 
   //! This constructor should be used in a sub-class to initialize
   //! correctly all the fields of this class.
   //! It has to be used if F(Bx) is known.
-  Standard_EXPORT math_BrentMinimum(const double TolX,
-                                    const double Fbx,
-                                    const int    NbIterations = 100,
-                                    const double ZEPS         = 1.0e-12);
+  Standard_EXPORT math_BrentMinimum(const double    TolX,
+                                    const double    Fbx,
+                                    const int NbIterations = 100,
+                                    const double    ZEPS         = 1.0e-12);
 
   //! Destructor
   Standard_EXPORT virtual ~math_BrentMinimum();
@@ -54,7 +54,10 @@ public:
   //! bracketing triplet of abscissas Ax, Bx, Cx (such that Bx is
   //! between Ax and Cx, F(Bx) is less than both F(Bx) and F(Cx))
   //! The solution is found when: abs(Xi - Xi-1) <= TolX * abs(Xi) + ZEPS;
-  Standard_EXPORT void Perform(math_Function& F, const double Ax, const double Bx, const double Cx);
+  Standard_EXPORT void Perform(math_Function&      F,
+                               const double Ax,
+                               const double Bx,
+                               const double Cx);
 
   //! This method is called at the end of each iteration to check if the
   //! solution is found.
@@ -95,8 +98,8 @@ protected:
 
 private:
   bool Done;
-  int  iter;
-  int  Itermax;
+  int iter;
+  int Itermax;
   bool myF;
 };
 

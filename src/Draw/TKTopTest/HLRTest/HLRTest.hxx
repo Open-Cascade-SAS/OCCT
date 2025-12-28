@@ -41,7 +41,8 @@ public:
 
   //! Get a projector variable
   //! Returns false if the variable is not a projector
-  Standard_EXPORT static bool GetProjector(const char*& Name, HLRAlgo_Projector& P);
+  Standard_EXPORT static bool GetProjector(const char*&  Name,
+                                                       HLRAlgo_Projector& P);
 
   //! Set a OutLiner Variable
   Standard_EXPORT static void Set(const char* Name, const TopoDS_Shape& S);

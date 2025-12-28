@@ -34,18 +34,17 @@ public:
   //! Returns a Person
   Standard_EXPORT StepBasic_Person();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                                   aId,
-    const bool                                                                     hasAlastName,
-    const occ::handle<TCollection_HAsciiString>&                                   aLastName,
-    const bool                                                                     hasAfirstName,
-    const occ::handle<TCollection_HAsciiString>&                                   aFirstName,
-    const bool                                                                     hasAmiddleNames,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames,
-    const bool                                                                     hasAprefixTitles,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles,
-    const bool                                                                     hasAsuffixTitles,
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aId,
+                            const bool                         hasAlastName,
+                            const occ::handle<TCollection_HAsciiString>&        aLastName,
+                            const bool                         hasAfirstName,
+                            const occ::handle<TCollection_HAsciiString>&        aFirstName,
+                            const bool                         hasAmiddleNames,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames,
+                            const bool                         hasAprefixTitles,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aPrefixTitles,
+                            const bool                         hasAsuffixTitles,
+                            const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aSuffixTitles);
 
   Standard_EXPORT void SetId(const occ::handle<TCollection_HAsciiString>& aId);
 
@@ -67,17 +66,16 @@ public:
 
   Standard_EXPORT bool HasFirstName() const;
 
-  Standard_EXPORT void SetMiddleNames(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames);
+  Standard_EXPORT void SetMiddleNames(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aMiddleNames);
 
   Standard_EXPORT void UnSetMiddleNames();
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  MiddleNames() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> MiddleNames() const;
 
   Standard_EXPORT bool HasMiddleNames() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> MiddleNamesValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> MiddleNamesValue(
+    const int num) const;
 
   Standard_EXPORT int NbMiddleNames() const;
 
@@ -86,12 +84,12 @@ public:
 
   Standard_EXPORT void UnSetPrefixTitles();
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  PrefixTitles() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> PrefixTitles() const;
 
   Standard_EXPORT bool HasPrefixTitles() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> PrefixTitlesValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> PrefixTitlesValue(
+    const int num) const;
 
   Standard_EXPORT int NbPrefixTitles() const;
 
@@ -100,29 +98,29 @@ public:
 
   Standard_EXPORT void UnSetSuffixTitles();
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  SuffixTitles() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> SuffixTitles() const;
 
   Standard_EXPORT bool HasSuffixTitles() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> SuffixTitlesValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> SuffixTitlesValue(
+    const int num) const;
 
   Standard_EXPORT int NbSuffixTitles() const;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_Person, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString>                                   id;
-  occ::handle<TCollection_HAsciiString>                                   lastName;
-  occ::handle<TCollection_HAsciiString>                                   firstName;
+  occ::handle<TCollection_HAsciiString>        id;
+  occ::handle<TCollection_HAsciiString>        lastName;
+  occ::handle<TCollection_HAsciiString>        firstName;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> middleNames;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> prefixTitles;
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> suffixTitles;
-  bool                                                                    hasLastName;
-  bool                                                                    hasFirstName;
-  bool                                                                    hasMiddleNames;
-  bool                                                                    hasPrefixTitles;
-  bool                                                                    hasSuffixTitles;
+  bool                        hasLastName;
+  bool                        hasFirstName;
+  bool                        hasMiddleNames;
+  bool                        hasPrefixTitles;
+  bool                        hasSuffixTitles;
 };
 
 #endif // _StepBasic_Person_HeaderFile

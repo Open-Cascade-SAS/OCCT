@@ -136,7 +136,8 @@ VrmlData_ErrorStatus VrmlData_Node::readBrace(VrmlData_InBuffer& theBuffer)
 
 //=================================================================================================
 
-VrmlData_ErrorStatus VrmlData_Node::ReadBoolean(VrmlData_InBuffer& theBuffer, bool& theResult)
+VrmlData_ErrorStatus VrmlData_Node::ReadBoolean(VrmlData_InBuffer& theBuffer,
+                                                bool&  theResult)
 {
   VrmlData_ErrorStatus aStatus;
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -207,7 +208,7 @@ VrmlData_ErrorStatus VrmlData_Node::ReadMultiString(
   NCollection_List<TCollection_AsciiString>& theResult)
 {
   VrmlData_ErrorStatus aStatus;
-  bool                 isBracketed(false);
+  bool     isBracketed(false);
   // Read the list of URL
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
@@ -246,12 +247,12 @@ VrmlData_ErrorStatus VrmlData_Node::ReadMultiString(
 
 //=================================================================================================
 
-VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&                theBuffer,
+VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&           theBuffer,
                                              occ::handle<VrmlData_Node>&       theNode,
                                              const occ::handle<Standard_Type>& theType)
 {
   occ::handle<VrmlData_Node> aNode;
-  VrmlData_ErrorStatus       aStatus;
+  VrmlData_ErrorStatus  aStatus;
   // First line of a new node should identify this node type
   if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {
@@ -284,8 +285,7 @@ VrmlData_ErrorStatus VrmlData_Node::ReadNode(VrmlData_InBuffer&                t
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_ShapeNode> aResult =
     occ::down_cast<VrmlData_ShapeNode>(VrmlData_Node::Clone(theOther));
@@ -301,7 +301,8 @@ occ::handle<VrmlData_Node> VrmlData_ShapeNode::Clone(
     // Create a dummy node to pass the different Scene instance to methods Clone
     const occ::handle<VrmlData_UnknownNode> aDummyNode = new VrmlData_UnknownNode(aResult->Scene());
     if (myAppearance.IsNull() == false)
-      aResult->SetAppearance(occ::down_cast<VrmlData_Appearance>(myAppearance->Clone(aDummyNode)));
+      aResult->SetAppearance(
+        occ::down_cast<VrmlData_Appearance>(myAppearance->Clone(aDummyNode)));
     if (myGeometry.IsNull() == false)
       aResult->SetGeometry(occ::down_cast<VrmlData_Geometry>(myGeometry->Clone(aDummyNode)));
   }
@@ -377,7 +378,7 @@ bool VrmlData_ShapeNode::IsDefault() const
 VrmlData_ErrorStatus VrmlData_UnknownNode::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
-  int                  aLevelCounter(0);
+  int     aLevelCounter(0);
   // This loop searches for any opening brace.
   // Such brace increments the level counter. A closing brace decrements
   // the counter. The loop terminates when the counter becomes negative.
@@ -411,8 +412,7 @@ bool VrmlData_UnknownNode::IsDefault() const
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_Appearance::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_Appearance::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_Appearance> aResult =
     occ::down_cast<VrmlData_Appearance>(VrmlData_Node::Clone(theOther));
@@ -515,11 +515,11 @@ bool VrmlData_Appearance::IsDefault() const
 
 //=================================================================================================
 
-VrmlData_ImageTexture::VrmlData_ImageTexture(const VrmlData_Scene& theScene,
-                                             const char*           theName,
-                                             const char*           theURL,
-                                             const bool            theRepS,
-                                             const bool            theRepT)
+VrmlData_ImageTexture::VrmlData_ImageTexture(const VrmlData_Scene&  theScene,
+                                             const char*            theName,
+                                             const char*            theURL,
+                                             const bool theRepS,
+                                             const bool theRepT)
     : VrmlData_Texture(theScene, theName, theRepS, theRepT),
       myURL(theScene.Allocator())
 {
@@ -528,8 +528,7 @@ VrmlData_ImageTexture::VrmlData_ImageTexture(const VrmlData_Scene& theScene,
 
 //=================================================================================================
 
-occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_ImageTexture> aResult =
     occ::down_cast<VrmlData_ImageTexture>(VrmlData_Node::Clone(theOther));
@@ -544,7 +543,7 @@ occ::handle<VrmlData_Node> VrmlData_ImageTexture::Clone(
 VrmlData_ErrorStatus VrmlData_ImageTexture::Read(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  bool                 aRepeatS(true), aRepeatT(true);
+  bool     aRepeatS(true), aRepeatT(true);
   myURL.Clear();
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
   {

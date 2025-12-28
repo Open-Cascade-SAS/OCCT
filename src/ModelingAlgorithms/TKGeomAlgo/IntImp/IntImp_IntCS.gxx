@@ -23,12 +23,12 @@
 #include <math_FunctionSetRoot.hxx>
 #include <Precision.hxx>
 
-IntImp_IntCS::IntImp_IntCS(const double       U,
-                           const double       V,
-                           const double       W,
-                           const TheFunction& F,
-                           const double       TolTangency,
-                           const double       MarginCoef)
+IntImp_IntCS::IntImp_IntCS(const double U,
+                           const double V,
+                           const double W,
+                           const TheFunction&  F,
+                           const double TolTangency,
+                           const double MarginCoef)
     : done(true),
       empty(true),
       myFunction(F),
@@ -42,7 +42,7 @@ IntImp_IntCS::IntImp_IntCS(const double       U,
     tol = 1e-13;
   }
   math_FunctionSetRoot Rsnld(myFunction);
-  double               u0, u1, v0, v1, w0, w1;
+  double        u0, u1, v0, v1, w0, w1;
   const ThePSurface&   S = myFunction.AuxillarSurface();
   const TheCurve&      C = myFunction.AuxillarCurve();
 
@@ -85,20 +85,20 @@ IntImp_IntCS::IntImp_IntCS(const TheFunction& F, const double TolTangency)
 {
 }
 
-void IntImp_IntCS::Perform(const double          U,
-                           const double          V,
-                           const double          W,
+void IntImp_IntCS::Perform(const double   U,
+                           const double   V,
+                           const double   W,
                            math_FunctionSetRoot& Rsnld,
-                           const double          u0,
-                           const double          u1,
-                           const double          v0,
-                           const double          v1,
-                           const double          w0,
-                           const double          w1)
+                           const double   u0,
+                           const double   u1,
+                           const double   v0,
+                           const double   v1,
+                           const double   w0,
+                           const double   w1)
 {
   done = true;
-  double      BornInfBuf[3], BornSupBuf[3], ToleranceBuf[3], UVapBuf[3];
-  math_Vector BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
+  double BornInfBuf[3], BornSupBuf[3], ToleranceBuf[3], UVapBuf[3];
+  math_Vector   BornInf(BornInfBuf, 1, 3), BornSup(BornSupBuf, 1, 3), Tolerance(ToleranceBuf, 1, 3),
     UVap(UVapBuf, 1, 3);
   UVap(1)              = U;
   UVap(2)              = V;
@@ -119,7 +119,7 @@ void IntImp_IntCS::Perform(const double          U,
   Tolerance(3) = TheCurveTool::Resolution(C, Precision::Confusion());
   Rsnld.SetTolerance(Tolerance);
   int autretentative = 0;
-  done               = false;
+  done                            = false;
   do
   {
     if (autretentative == 1)

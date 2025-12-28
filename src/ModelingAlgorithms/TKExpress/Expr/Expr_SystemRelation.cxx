@@ -36,7 +36,7 @@ void Expr_SystemRelation::Add(const occ::handle<Expr_GeneralRelation>& relation)
 
 void Expr_SystemRelation::Remove(const occ::handle<Expr_GeneralRelation>& relation)
 {
-  int  position    = 0;
+  int position    = 0;
   bool alreadyHere = false;
 
   for (int i = 1; i <= myRelations.Length() && !alreadyHere; i++)
@@ -118,9 +118,9 @@ bool Expr_SystemRelation::IsSatisfied() const
 
 occ::handle<Expr_GeneralRelation> Expr_SystemRelation::Simplified() const
 {
-  int                               len = myRelations.Length();
+  int             len = myRelations.Length();
   occ::handle<Expr_GeneralRelation> rel;
-  rel                                     = myRelations(1);
+  rel                                = myRelations(1);
   occ::handle<Expr_SystemRelation> result = new Expr_SystemRelation(rel->Simplified());
   for (int i = 2; i <= len; i++)
   {
@@ -133,7 +133,7 @@ occ::handle<Expr_GeneralRelation> Expr_SystemRelation::Simplified() const
 
 void Expr_SystemRelation::Simplify()
 {
-  int                               len = myRelations.Length();
+  int             len = myRelations.Length();
   occ::handle<Expr_GeneralRelation> rel;
   for (int i = 1; i <= len; i++)
   {
@@ -145,7 +145,7 @@ void Expr_SystemRelation::Simplify()
 occ::handle<Expr_GeneralRelation> Expr_SystemRelation::Copy() const
 {
   occ::handle<Expr_SystemRelation> cop = new Expr_SystemRelation(myRelations(1)->Copy());
-  int                              len = myRelations.Length();
+  int            len = myRelations.Length();
   for (int i = 2; i <= len; i++)
   {
     cop->Add(myRelations(i)->Copy());
@@ -155,8 +155,8 @@ occ::handle<Expr_GeneralRelation> Expr_SystemRelation::Copy() const
 
 int Expr_SystemRelation::NbOfSingleRelations() const
 {
-  int                               nbsing = 0;
-  int                               nbrel  = myRelations.Length();
+  int             nbsing = 0;
+  int             nbrel  = myRelations.Length();
   occ::handle<Expr_GeneralRelation> subrel;
   for (int i = 1; i <= nbrel; i++)
   {
@@ -168,9 +168,9 @@ int Expr_SystemRelation::NbOfSingleRelations() const
 
 TCollection_AsciiString Expr_SystemRelation::String() const
 {
-  int                               nbrel = myRelations.Length();
+  int             nbrel = myRelations.Length();
   occ::handle<Expr_GeneralRelation> subrel;
-  TCollection_AsciiString           res;
+  TCollection_AsciiString      res;
   for (int i = 1; i <= nbrel; i++)
   {
     res += myRelations(i)->String();

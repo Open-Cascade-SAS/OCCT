@@ -31,12 +31,12 @@ public:
   Standard_EXPORT DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurve>& C);
 
   Standard_EXPORT DrawTrSurf_BezierCurve(const occ::handle<Geom_BezierCurve>& C,
-                                         const Draw_Color&                    CurvColor,
-                                         const Draw_Color&                    PolesColor,
-                                         const bool                           ShowPoles,
-                                         const int                            Discret,
-                                         const double                         Deflection,
-                                         const int                            DrawMode);
+                                         const Draw_Color&               CurvColor,
+                                         const Draw_Color&               PolesColor,
+                                         const bool          ShowPoles,
+                                         const int          Discret,
+                                         const double             Deflection,
+                                         const int          DrawMode);
 
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
@@ -49,11 +49,11 @@ public:
   //! than <Prec> from <X,Y>. If no pole is found index is
   //! set to 0, else index is always greater than the input
   //! value of index.
-  Standard_EXPORT void FindPole(const double        X,
-                                const double        Y,
+  Standard_EXPORT void FindPole(const double X,
+                                const double Y,
                                 const Draw_Display& D,
-                                const double        Prec,
-                                int&                Index) const;
+                                const double Prec,
+                                int&   Index) const;
 
   void SetPolesColor(const Draw_Color& theColor) { polesLook = theColor; }
 
@@ -63,8 +63,8 @@ public:
   Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const override;
 
 private:
-  bool       drawPoles;
-  Draw_Color polesLook;
+  bool drawPoles;
+  Draw_Color       polesLook;
 };
 
 #endif // _DrawTrSurf_BezierCurve_HeaderFile

@@ -55,11 +55,11 @@ public:
   //!
   //! In addition, if points in theSPnt lies at least in one of the line in theSlin,
   //! this point will be deleted.
-  Standard_EXPORT static void JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
-                                         NCollection_Sequence<IntPatch_Point>&             theSPnt,
-                                         occ::handle<Adaptor3d_Surface>                    theS1,
-                                         occ::handle<Adaptor3d_Surface>                    theS2,
-                                         const double theTol3D);
+  Standard_EXPORT static void JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>&  theSlin,
+                                         NCollection_Sequence<IntPatch_Point>& theSPnt,
+                                         occ::handle<Adaptor3d_Surface> theS1,
+                                         occ::handle<Adaptor3d_Surface> theS2,
+                                         const double       theTol3D);
 
   //! Extends every line from theSlin (if it is possible) to be started/finished
   //! in strictly determined point (in the place of joint of two lines).
@@ -73,14 +73,14 @@ public:
   //!               <U-period of 2nd surface>, <V-period of 2nd surface>}.
   //! theListOfCriticalPoints must contain 3D-points where joining is disabled.
   Standard_EXPORT static void ExtendTwoWLines(
-    NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
-    const occ::handle<Adaptor3d_Surface>&             theS1,
-    const occ::handle<Adaptor3d_Surface>&             theS2,
-    const double                                      theToler3D,
-    const double* const                               theArrPeriods,
-    const Bnd_Box2d&                                  theBoxS1,
-    const Bnd_Box2d&                                  theBoxS2,
-    const NCollection_List<gp_Pnt>&                   theListOfCriticalPoints);
+    NCollection_Sequence<occ::handle<IntPatch_Line>>&         theSlin,
+    const occ::handle<Adaptor3d_Surface>& theS1,
+    const occ::handle<Adaptor3d_Surface>& theS2,
+    const double              theToler3D,
+    const double* const       theArrPeriods,
+    const Bnd_Box2d&                 theBoxS1,
+    const Bnd_Box2d&                 theBoxS2,
+    const NCollection_List<gp_Pnt>&  theListOfCriticalPoints);
 
   //! Max angle to concatenate two WLines to avoid result with C0-continuity
   static const double myMaxConcatAngle;

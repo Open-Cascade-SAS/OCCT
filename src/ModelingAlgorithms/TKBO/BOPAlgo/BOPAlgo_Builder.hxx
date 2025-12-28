@@ -34,6 +34,13 @@
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class IntTools_Context;
@@ -184,12 +191,12 @@ public: //! @name BOPs on open solids
   //! @param theTools       - The group of Tools for BOP;
   //! @param theToolsState  - State for tools faces to pass into result;
   //! @param theReport      - The alternative report to avoid pollution of the main one.
-  Standard_EXPORT virtual void BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
-                                        const TopAbs_State                    theObjState,
-                                        const NCollection_List<TopoDS_Shape>& theTools,
-                                        const TopAbs_State                    theToolsState,
-                                        const Message_ProgressRange&          theRange,
-                                        occ::handle<Message_Report>           theReport = NULL);
+  Standard_EXPORT virtual void BuildBOP(const NCollection_List<TopoDS_Shape>&  theObjects,
+                                        const TopAbs_State           theObjState,
+                                        const NCollection_List<TopoDS_Shape>&  theTools,
+                                        const TopAbs_State           theToolsState,
+                                        const Message_ProgressRange& theRange,
+                                        occ::handle<Message_Report>       theReport = NULL);
 
   //! Builds the result of Boolean operation of given type
   //! basing on the result of Builder operation (GF or any other).
@@ -211,11 +218,11 @@ public: //! @name BOPs on open solids
   //! @param theOperation - The BOP type;
   //! @param theRange     - The parameter to progressIndicator
   //! @param theReport    - The alternative report to avoid pollution of the global one.
-  void BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
-                const NCollection_List<TopoDS_Shape>& theTools,
-                const BOPAlgo_Operation               theOperation,
-                const Message_ProgressRange&          theRange,
-                occ::handle<Message_Report>           theReport = NULL)
+  void BuildBOP(const NCollection_List<TopoDS_Shape>&  theObjects,
+                const NCollection_List<TopoDS_Shape>&  theTools,
+                const BOPAlgo_Operation      theOperation,
+                const Message_ProgressRange& theRange,
+                occ::handle<Message_Report>       theReport = NULL)
   {
     TopAbs_State anObjState, aToolsState;
     switch (theOperation)
@@ -270,36 +277,23 @@ protected: //! @name History methods
   //! The General Fuse operation does not perform any other modification than splitting the input
   //! shapes basing on their intersection information. This information is contained in myImages
   //! map. Thus, here the method returns only splits (if any) contained in this map.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(
-    const TopoDS_Shape& theS);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>* LocModified(const TopoDS_Shape& theS);
 
   //! Returns the list of shapes generated from the shape theS.
   //! Similarly to *LocModified* must be redefined for specific operations,
   //! obtaining Generated elements differently.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& LocGenerated(
-    const TopoDS_Shape& theS);
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& LocGenerated(const TopoDS_Shape& theS);
 
 public: //! @name Images/Origins
   //! Returns the map of images.
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    Images() const
-  {
-    return myImages;
-  }
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Images() const { return myImages; }
 
   //! Returns the map of origins.
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    Origins() const
-  {
-    return myOrigins;
-  }
+  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& Origins() const { return myOrigins; }
 
   //! Returns the map of Same Domain (SD) shapes - coinciding shapes
   //! from different arguments.
-  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapesSD() const
-  {
-    return myShapesSD;
-  }
+  const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& ShapesSD() const { return myShapesSD; }
 
 protected: //! @name Analyze progress of the operation
   //! List of operations to be supported by the Progress Indicator
@@ -372,8 +366,8 @@ protected:
   Standard_EXPORT NbShapes getNbShapes() const;
 
   //! Filling steps for constant operations
-  Standard_EXPORT void fillPIConstants(const double     theWhole,
-                                       BOPAlgo_PISteps& theSteps) const override;
+  Standard_EXPORT void fillPIConstants(const double theWhole,
+                                       BOPAlgo_PISteps&    theSteps) const override;
 
   //! Filling steps for all other operations
   Standard_EXPORT void fillPISteps(BOPAlgo_PISteps& theSteps) const override;
@@ -454,20 +448,18 @@ protected: //! @name Fill Images of SOLIDS
 
   //! Builds the draft solid by rebuilding the shells of the solid
   //! with the splits of faces.
-  Standard_EXPORT void BuildDraftSolid(const TopoDS_Shape&             theSolid,
-                                       TopoDS_Shape&                   theDraftSolid,
+  Standard_EXPORT void BuildDraftSolid(const TopoDS_Shape&   theSolid,
+                                       TopoDS_Shape&         theDraftSolid,
                                        NCollection_List<TopoDS_Shape>& theLIF);
 
   //! Finds faces located inside each solid.
-  Standard_EXPORT virtual void FillIn3DParts(
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
-    const Message_ProgressRange&                                              theRange);
+  Standard_EXPORT virtual void FillIn3DParts(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+                                             const Message_ProgressRange&  theRange);
 
   //! Builds the splits of the solids using their draft versions
   //! and faces located inside.
-  Standard_EXPORT void BuildSplitSolids(
-    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
-    const Message_ProgressRange&                                              theRange);
+  Standard_EXPORT void BuildSplitSolids(NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theDraftSolids,
+                                        const Message_ProgressRange&  theRange);
 
   //! Classifies the vertices and edges from the arguments relatively
   //! splits of solids and makes them INTERNAL for solids.
@@ -478,9 +470,7 @@ protected: //! @name Fill Images of COMPOUNDS
   Standard_EXPORT void FillImagesCompounds(const Message_ProgressRange& theRange);
 
   //! Builds the image of the given compound.
-  Standard_EXPORT void FillImagesCompound(
-    const TopoDS_Shape&                                     theS,
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMF);
+  Standard_EXPORT void FillImagesCompound(const TopoDS_Shape& theS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMF);
 
 protected: //! @name Post treatment
   //! Post treatment of the result of the operation.
@@ -488,7 +478,7 @@ protected: //! @name Post treatment
   //! and updates the tolerances to make them valid.
   Standard_EXPORT virtual void PostTreat(const Message_ProgressRange& theRange);
 
-protected:                                    //! @name Fields
+protected:                          //! @name Fields
   NCollection_List<TopoDS_Shape> myArguments; //!< Arguments of the operation
   // clang-format off
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> myMapFence;               //!< Fence map providing the uniqueness of the shapes in the list of arguments

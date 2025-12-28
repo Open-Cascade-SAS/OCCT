@@ -117,8 +117,8 @@ bool ChFi2d_ChamferAPI::Perform()
 }
 
 // Returns the result (chamfer edge, modified edge1, modified edge2).
-TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge& theEdge1,
-                                      TopoDS_Edge& theEdge2,
+TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge&        theEdge1,
+                                      TopoDS_Edge&        theEdge2,
                                       const double theLength1,
                                       const double theLength2)
 {
@@ -129,9 +129,9 @@ TopoDS_Edge ChFi2d_ChamferAPI::Result(TopoDS_Edge& theEdge1,
     return aResult;
 
   double aCommon1 = (myCommonStart1 ? myStart1 : myEnd1)
-                    + (((myStart1 > myEnd1) ^ myCommonStart1) ? theLength1 : -theLength1);
+                           + (((myStart1 > myEnd1) ^ myCommonStart1) ? theLength1 : -theLength1);
   double aCommon2 = (myCommonStart2 ? myStart2 : myEnd2)
-                    + (((myStart2 > myEnd2) ^ myCommonStart2) ? theLength2 : -theLength2);
+                           + (((myStart2 > myEnd2) ^ myCommonStart2) ? theLength2 : -theLength2);
 
   // make chamfer edge
   GC_MakeLine             aML(myCurve1->Value(aCommon1), myCurve2->Value(aCommon2));

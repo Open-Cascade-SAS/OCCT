@@ -53,7 +53,8 @@ public:
   //! Note: the constructed framework can be reused to
   //! convert other shapes. You specify these with the
   //! function Perform.
-  Standard_EXPORT BRepBuilderAPI_NurbsConvert(const TopoDS_Shape& S, const bool Copy = false);
+  Standard_EXPORT BRepBuilderAPI_NurbsConvert(const TopoDS_Shape&    S,
+                                              const bool Copy = false);
 
   //! Builds a new shape by converting the geometry of the
   //! shape S into NURBS geometry.
@@ -81,7 +82,7 @@ private:
   Standard_EXPORT void CorrectVertexTol();
 
   NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myVtxToReplace;
-  BRepTools_ReShape                                                        mySubs;
+  BRepTools_ReShape            mySubs;
 };
 
 #endif // _BRepBuilderAPI_NurbsConvert_HeaderFile

@@ -31,6 +31,15 @@
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Vec2d.hxx>
+#include <NCollection_Array1.hxx>
 
 class Law_Function;
 class math_Matrix;
@@ -67,13 +76,16 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) override;
 
   //! returns the values <F> of the functions and the derivatives
   //! <D> for the variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Values(const math_Vector& X, math_Vector& F, math_Matrix& D) override;
+  Standard_EXPORT bool Values(const math_Vector& X,
+                                          math_Vector&       F,
+                                          math_Matrix&       D) override;
 
   Standard_EXPORT void Set(const occ::handle<Adaptor3d_Surface>& SurfRef1,
                            const occ::handle<Adaptor2d_Curve2d>& RstRef1,
@@ -88,11 +100,14 @@ public:
   //! function is not Cn.
   Standard_EXPORT void Set(const double First, const double Last) override;
 
-  Standard_EXPORT void GetTolerance(math_Vector& Tolerance, const double Tol) const override;
+  Standard_EXPORT void GetTolerance(math_Vector&        Tolerance,
+                                    const double Tol) const override;
 
-  Standard_EXPORT void GetBounds(math_Vector& InfBound, math_Vector& SupBound) const override;
+  Standard_EXPORT void GetBounds(math_Vector& InfBound,
+                                 math_Vector& SupBound) const override;
 
-  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
+  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
+                                              const double Tol) override;
 
   //! Returns the minimal Distance between two
   //! extremities of calculated sections.
@@ -142,17 +157,17 @@ public:
   //! Gives the center of circle defined by PtRst1, PtRst2 and
   //! radius ray.
   Standard_EXPORT bool CenterCircleRst1Rst2(const gp_Pnt& PtRst1,
-                                            const gp_Pnt& PtRst2,
-                                            const gp_Vec& np,
-                                            gp_Pnt&       Center,
-                                            gp_Vec&       VdMed) const;
+                                                        const gp_Pnt& PtRst2,
+                                                        const gp_Vec& np,
+                                                        gp_Pnt&       Center,
+                                                        gp_Vec&       VdMed) const;
 
   Standard_EXPORT void Section(const double Param,
                                const double U,
                                const double V,
                                double&      Pdeb,
                                double&      Pfin,
-                               gp_Circ&     C);
+                               gp_Circ&            C);
 
   //! Returns if the section is rational
   Standard_EXPORT bool IsRational() const override;
@@ -173,9 +188,12 @@ public:
   //! The array must provide enough room to accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals(NCollection_Array1<double>& T,
-                                 const GeomAbs_Shape         S) const override;
+                                 const GeomAbs_Shape   S) const override;
 
-  Standard_EXPORT void GetShape(int& NbPoles, int& NbKnots, int& Degree, int& NbPoles2d) override;
+  Standard_EXPORT void GetShape(int& NbPoles,
+                                int& NbKnots,
+                                int& Degree,
+                                int& NbPoles2d) override;
 
   //! Returns the tolerance to reach in approximation
   //! to respect
@@ -185,86 +203,86 @@ public:
   Standard_EXPORT void GetTolerance(const double BoundTol,
                                     const double SurfTol,
                                     const double AngleTol,
-                                    math_Vector& Tol3d,
-                                    math_Vector& Tol1D) const override;
+                                    math_Vector&        Tol3d,
+                                    math_Vector&        Tol1D) const override;
 
   Standard_EXPORT void Knots(NCollection_Array1<double>& TKnots) override;
 
   Standard_EXPORT void Mults(NCollection_Array1<int>& TMults) override;
 
   //! Used for the first and last section
-  Standard_EXPORT bool Section(const Blend_Point&            P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                               NCollection_Array1<double>&   Weigths,
-                               NCollection_Array1<double>&   DWeigths) override;
+  Standard_EXPORT bool Section(const Blend_Point&    P,
+                                           NCollection_Array1<gp_Pnt>&   Poles,
+                                           NCollection_Array1<gp_Vec>&   DPoles,
+                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                           NCollection_Array1<double>& Weigths,
+                                           NCollection_Array1<double>& DWeigths) override;
 
-  Standard_EXPORT void Section(const Blend_Point&            P,
+  Standard_EXPORT void Section(const Blend_Point&    P,
                                NCollection_Array1<gp_Pnt>&   Poles,
                                NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<double>&   Weigths) override;
+                               NCollection_Array1<double>& Weigths) override;
 
   //! Used for the first and last section
   //! The method returns true if the derivatives
   //! are computed, otherwise it returns false.
-  Standard_EXPORT bool Section(const Blend_Point&            P,
-                               NCollection_Array1<gp_Pnt>&   Poles,
-                               NCollection_Array1<gp_Vec>&   DPoles,
-                               NCollection_Array1<gp_Vec>&   D2Poles,
-                               NCollection_Array1<gp_Pnt2d>& Poles2d,
-                               NCollection_Array1<gp_Vec2d>& DPoles2d,
-                               NCollection_Array1<gp_Vec2d>& D2Poles2d,
-                               NCollection_Array1<double>&   Weigths,
-                               NCollection_Array1<double>&   DWeigths,
-                               NCollection_Array1<double>&   D2Weigths) override;
+  Standard_EXPORT bool Section(const Blend_Point&    P,
+                                           NCollection_Array1<gp_Pnt>&   Poles,
+                                           NCollection_Array1<gp_Vec>&   DPoles,
+                                           NCollection_Array1<gp_Vec>&   D2Poles,
+                                           NCollection_Array1<gp_Pnt2d>& Poles2d,
+                                           NCollection_Array1<gp_Vec2d>& DPoles2d,
+                                           NCollection_Array1<gp_Vec2d>& D2Poles2d,
+                                           NCollection_Array1<double>& Weigths,
+                                           NCollection_Array1<double>& DWeigths,
+                                           NCollection_Array1<double>& D2Weigths) override;
 
-  Standard_EXPORT void Resolution(const int    IC2d,
-                                  const double Tol,
-                                  double&      TolU,
-                                  double&      TolV) const override;
+  Standard_EXPORT void Resolution(const int IC2d,
+                                  const double    Tol,
+                                  double&         TolU,
+                                  double&         TolV) const override;
 
 private:
-  occ::handle<Adaptor3d_Surface> surf1;
-  occ::handle<Adaptor3d_Surface> surf2;
-  occ::handle<Adaptor2d_Curve2d> rst1;
-  occ::handle<Adaptor2d_Curve2d> rst2;
-  Adaptor3d_CurveOnSurface       cons1;
-  Adaptor3d_CurveOnSurface       cons2;
-  occ::handle<Adaptor3d_Curve>   guide;
-  occ::handle<Adaptor3d_Curve>   tguide;
-  gp_Pnt                         ptrst1;
-  gp_Pnt                         ptrst2;
-  gp_Pnt2d                       pt2drst1;
-  gp_Pnt2d                       pt2drst2;
-  double                         prmrst1;
-  double                         prmrst2;
-  bool                           istangent;
-  gp_Vec                         tgrst1;
-  gp_Vec2d                       tg2drst1;
-  gp_Vec                         tgrst2;
-  gp_Vec2d                       tg2drst2;
-  double                         ray;
-  double                         dray;
-  int                            choix;
-  gp_Pnt                         ptgui;
-  gp_Vec                         d1gui;
-  gp_Vec                         d2gui;
-  gp_Vec                         nplan;
-  double                         normtg;
-  double                         theD;
-  occ::handle<Adaptor3d_Surface> surfref1;
-  occ::handle<Adaptor2d_Curve2d> rstref1;
-  occ::handle<Adaptor3d_Surface> surfref2;
-  occ::handle<Adaptor2d_Curve2d> rstref2;
-  double                         maxang;
-  double                         minang;
-  double                         distmin;
-  BlendFunc_SectionShape         mySShape;
-  Convert_ParameterisationType   myTConv;
-  occ::handle<Law_Function>      tevol;
-  occ::handle<Law_Function>      fevol;
+  occ::handle<Adaptor3d_Surface>    surf1;
+  occ::handle<Adaptor3d_Surface>    surf2;
+  occ::handle<Adaptor2d_Curve2d>    rst1;
+  occ::handle<Adaptor2d_Curve2d>    rst2;
+  Adaptor3d_CurveOnSurface     cons1;
+  Adaptor3d_CurveOnSurface     cons2;
+  occ::handle<Adaptor3d_Curve>      guide;
+  occ::handle<Adaptor3d_Curve>      tguide;
+  gp_Pnt                       ptrst1;
+  gp_Pnt                       ptrst2;
+  gp_Pnt2d                     pt2drst1;
+  gp_Pnt2d                     pt2drst2;
+  double                prmrst1;
+  double                prmrst2;
+  bool             istangent;
+  gp_Vec                       tgrst1;
+  gp_Vec2d                     tg2drst1;
+  gp_Vec                       tgrst2;
+  gp_Vec2d                     tg2drst2;
+  double                ray;
+  double                dray;
+  int             choix;
+  gp_Pnt                       ptgui;
+  gp_Vec                       d1gui;
+  gp_Vec                       d2gui;
+  gp_Vec                       nplan;
+  double                normtg;
+  double                theD;
+  occ::handle<Adaptor3d_Surface>    surfref1;
+  occ::handle<Adaptor2d_Curve2d>    rstref1;
+  occ::handle<Adaptor3d_Surface>    surfref2;
+  occ::handle<Adaptor2d_Curve2d>    rstref2;
+  double                maxang;
+  double                minang;
+  double                distmin;
+  BlendFunc_SectionShape       mySShape;
+  Convert_ParameterisationType myTConv;
+  occ::handle<Law_Function>         tevol;
+  occ::handle<Law_Function>         fevol;
 };
 
 #endif // _BRepBlend_RstRstEvolRad_HeaderFile

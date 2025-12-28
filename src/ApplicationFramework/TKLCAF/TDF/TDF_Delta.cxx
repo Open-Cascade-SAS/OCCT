@@ -23,6 +23,9 @@
 #include <Standard_Type.hxx>
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_Delta.hxx>
+#include <TDF_AttributeDelta.hxx>
+#include <NCollection_List.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_List.hxx>
 #include <TDF_Label.hxx>
 #include <NCollection_Map.hxx>
@@ -73,7 +76,7 @@ void TDF_Delta::BeforeOrAfterApply(const bool before) const
   occ::handle<TDF_Attribute>      att;
 
   bool noDeadLock = true;
-  int  nbAD       = ADlist.Extent();
+  int nbAD       = ADlist.Extent();
   bool next;
   while (noDeadLock && (nbAD != 0))
   {
@@ -172,8 +175,7 @@ void TDF_Delta::Labels(NCollection_List<TDF_Label>& aLabelList) const
   if (myAttDeltaList.Extent() > 0)
     std::cout << "New added as modified label(s) ";
 #endif
-  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator it2(myAttDeltaList); it2.More();
-       it2.Next())
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator it2(myAttDeltaList); it2.More(); it2.Next())
   {
 #ifdef OCCT_DEBUG_DELTA
     const TDF_Label& lab1 = it2.Value()->Label();
@@ -226,8 +228,7 @@ void TDF_Delta::DumpJson(Standard_OStream& theOStream, int theDepth) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myBeginTime)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myEndTime)
 
-  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anAttDeltaListIt(myAttDeltaList);
-       anAttDeltaListIt.More();
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anAttDeltaListIt(myAttDeltaList); anAttDeltaListIt.More();
        anAttDeltaListIt.Next())
   {
     const occ::handle<TDF_AttributeDelta>& anAttDeltaList = anAttDeltaListIt.Value();

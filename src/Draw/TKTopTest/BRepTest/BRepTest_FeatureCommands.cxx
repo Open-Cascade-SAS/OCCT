@@ -117,12 +117,12 @@ static bool pidef  = false;
 static bool lfdef  = false;
 static bool rfdef  = false;
 
-static double                    tesp       = 1.0e-4;
-static double                    t3d        = 1.e-4;
-static double                    t2d        = 1.e-5;
-static double                    ta         = 1.e-2;
-static double                    fl         = 1.e-3;
-static double                    tapp_angle = 1.e-2;
+static double             tesp       = 1.0e-4;
+static double             t3d        = 1.e-4;
+static double             t2d        = 1.e-5;
+static double             ta         = 1.e-2;
+static double             fl         = 1.e-3;
+static double             tapp_angle = 1.e-2;
 static GeomAbs_Shape             blend_cont = GeomAbs_C1;
 static BRepFilletAPI_MakeFillet* Rakk       = 0;
 
@@ -178,7 +178,7 @@ static int Loc(Draw_Interpretor& theCommands, int narg, const char** a)
   // BLoc.Perform(T,LF,Fuse);
   // BLoc.BuildPartsOfTool();
   NCollection_List<TopoDS_Shape> parts;
-  BRepFeat_Builder               BLoc;
+  BRepFeat_Builder     BLoc;
   BLoc.Init(S, T);
   BLoc.SetOperation(Fuse);
   // BRepFeat_LocalOperation BLoc;
@@ -359,7 +359,9 @@ static int HOLE4(Draw_Interpretor& theCommands, int narg, const char** a)
   return 1;
 }
 
-static int CONTROL(Draw_Interpretor& theCommands, int narg, const char** a)
+static int CONTROL(Draw_Interpretor& theCommands,
+                                int  narg,
+                                const char**      a)
 {
   if (narg >= 2)
   {
@@ -438,8 +440,8 @@ static int PRW(Draw_Interpretor& theCommands, int narg, const char** a)
   BRepFeat_MakePrism thePFace;
   gp_Vec             V;
   TopoDS_Shape       FFrom, FUntil;
-  int                borne;
-  bool               fuse;
+  int   borne;
+  bool   fuse;
   if (a[1][0] == 'f' || a[1][0] == 'F')
   {
     fuse = true;
@@ -515,7 +517,7 @@ static int PRW(Draw_Interpretor& theCommands, int narg, const char** a)
   }
   Spls.Build();
 
-  TopoDS_Shape                          ToPrism;
+  TopoDS_Shape                ToPrism;
   const NCollection_List<TopoDS_Shape>& lleft = Spls.DirectLeft();
   if (lleft.Extent() == 1)
   {
@@ -555,7 +557,7 @@ static int PRW(Draw_Interpretor& theCommands, int narg, const char** a)
     LocOpe_FindEdgesInFace FEIF;
     for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
     {
-      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      const TopoDS_Face&   fac = TopoDS::Face(exp.Current());
       occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
       if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
@@ -639,10 +641,10 @@ static int PRF(Draw_Interpretor& theCommands, int narg, const char** a)
     return 1;
   TopoDS_Shape       S = DBRep::Get(a[3]);
   BRepFeat_MakePrism thePFace;
-  int                borne;
+  int   borne;
   gp_Vec             V;
   TopoDS_Shape       FFrom, FUntil;
-  bool               fuse;
+  bool   fuse;
   if (a[1][0] == 'f' || a[1][0] == 'F')
   {
     fuse = true;
@@ -747,7 +749,7 @@ static int PRF(Draw_Interpretor& theCommands, int narg, const char** a)
     LocOpe_FindEdgesInFace FEIF;
     for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
     {
-      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      const TopoDS_Face&   fac = TopoDS::Face(exp.Current());
       occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
       if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
@@ -845,10 +847,10 @@ static int SPLS(Draw_Interpretor&, int narg, const char** a)
     return 1;
   }
   BRepFeat_SplitShape Spls(S);
-  bool                pick = false;
+  bool    pick = false;
   TopoDS_Shape        EF;
-  double              u, v;
-  int                 i = 3;
+  double       u, v;
+  int    i = 3;
 
   for (newnarg = 3; newnarg < narg; newnarg++)
   {
@@ -862,7 +864,7 @@ static int SPLS(Draw_Interpretor&, int narg, const char** a)
   {
     return 1;
   }
-  bool                               isSplittingEdges = false;
+  bool         isSplittingEdges = false;
   NCollection_Sequence<TopoDS_Shape> aSplitEdges;
   if (i < newnarg)
   {
@@ -903,8 +905,8 @@ static int SPLS(Draw_Interpretor&, int narg, const char** a)
 
       while (i < newnarg)
       {
-        TopoDS_Shape W;
-        bool         rever = false;
+        TopoDS_Shape     W;
+        bool rever = false;
         if (a[i][0] == '-')
         {
           if (a[i][1] == '\0')
@@ -1033,8 +1035,8 @@ int thickshell(Draw_Interpretor& theCommands, int n, const char** a)
       JT = GeomAbs_Tangent;
   }
 
-  bool   Inter = false; // true;
-  double Tol   = Precision::Confusion();
+  bool Inter = false; // true;
+  double    Tol   = Precision::Confusion();
   if (n > 5)
     Tol = Draw::Atof(a[5]);
 
@@ -1057,7 +1059,9 @@ int thickshell(Draw_Interpretor& theCommands, int n, const char** a)
 
 //=================================================================================================
 
-static int mkoffsetshape(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int mkoffsetshape(Draw_Interpretor& theDI,
+                                      int  theArgNb,
+                                      const char**      theArgVec)
 {
   if (theArgNb < 4)
   {
@@ -1069,7 +1073,7 @@ static int mkoffsetshape(Draw_Interpretor& theDI, int theArgNb, const char** the
     theDI << "Shape is null";
     return 1;
   }
-  double                        anOffVal = Draw::Atof(theArgVec[3]);
+  double                 anOffVal = Draw::Atof(theArgVec[3]);
   BRepOffsetAPI_MakeOffsetShape aMaker;
   if (theArgNb == 4)
   {
@@ -1137,8 +1141,8 @@ int offsetshape(Draw_Interpretor& theCommands, int n, const char** a)
   if (S.IsNull())
     return 1;
 
-  double           Of    = Draw::Atof(a[3]);
-  bool             Inter = (!strcmp(a[0], "offsetcompshape"));
+  double    Of    = Draw::Atof(a[3]);
+  bool Inter = (!strcmp(a[0], "offsetcompshape"));
   GeomAbs_JoinType JT    = GeomAbs_Arc;
   if (!strcmp(a[0], "offsetinter"))
   {
@@ -1147,8 +1151,8 @@ int offsetshape(Draw_Interpretor& theCommands, int n, const char** a)
   }
 
   BRepOffset_MakeOffset B;
-  int                   IB  = 4;
-  double                Tol = Precision::Confusion();
+  int      IB  = 4;
+  double         Tol = Precision::Confusion();
   if (n > 4)
   {
     TopoDS_Shape SF = DBRep::Get(a[4], TopAbs_FACE);
@@ -1192,12 +1196,12 @@ int offsetshape(Draw_Interpretor& theCommands, int n, const char** a)
 }
 
 static BRepOffset_MakeOffset TheOffset;
-static double                TheRadius;
-static bool                  theYaBouchon;
-static double                TheTolerance   = Precision::Confusion();
-static bool                  TheInter       = false;
+static double         TheRadius;
+static bool      theYaBouchon;
+static double         TheTolerance   = Precision::Confusion();
+static bool      TheInter       = false;
 static GeomAbs_JoinType      TheJoin        = GeomAbs_Arc;
-static bool                  RemoveIntEdges = false;
+static bool      RemoveIntEdges = false;
 
 int offsetparameter(Draw_Interpretor& di, int n, const char** a)
 {
@@ -1272,11 +1276,18 @@ int offsetload(Draw_Interpretor&, int n, const char** a)
     return 1;
 
   double Of = Draw::Atof(a[2]);
-  TheRadius = Of;
+  TheRadius        = Of;
   //  bool Inter = true;
 
-  TheOffset
-    .Initialize(S, Of, TheTolerance, BRepOffset_Skin, TheInter, 0, TheJoin, false, RemoveIntEdges);
+  TheOffset.Initialize(S,
+                       Of,
+                       TheTolerance,
+                       BRepOffset_Skin,
+                       TheInter,
+                       0,
+                       TheJoin,
+                       false,
+                       RemoveIntEdges);
   //------------------------------------------
   // recuperation et chargement des bouchons.
   //----------------------------------------
@@ -1318,7 +1329,9 @@ int offsetonface(Draw_Interpretor&, int n, const char** a)
 
 //=================================================================================================
 
-int offsetperform(Draw_Interpretor& theCommands, int theNArg, const char** a)
+int offsetperform(Draw_Interpretor& theCommands,
+                               int  theNArg,
+                               const char**      a)
 {
   if (theNArg < 2)
     return 1;
@@ -1360,10 +1373,10 @@ static int ROW(Draw_Interpretor& theCommands, int narg, const char** a)
   BRepFeat_MakeRevol theRFace;
   gp_Dir             D;
   gp_Pnt             Or;
-  double             Angle = 0;
+  double      Angle = 0;
   TopoDS_Shape       FFrom, FUntil;
-  int                i, borne;
-  bool               fuse;
+  int   i, borne;
+  bool   fuse;
 
   if (a[1][0] == 'f' || a[1][0] == 'F')
   {
@@ -1436,7 +1449,7 @@ static int ROW(Draw_Interpretor& theCommands, int narg, const char** a)
   }
   Spls.Build();
 
-  TopoDS_Shape                          ToRotate;
+  TopoDS_Shape                ToRotate;
   const NCollection_List<TopoDS_Shape>& lleft = Spls.DirectLeft();
   if (lleft.Extent() == 1)
   {
@@ -1474,7 +1487,7 @@ static int ROW(Draw_Interpretor& theCommands, int narg, const char** a)
     LocOpe_FindEdgesInFace FEIF;
     for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
     {
-      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      const TopoDS_Face&   fac = TopoDS::Face(exp.Current());
       occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
       if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
@@ -1544,10 +1557,10 @@ static int ROF(Draw_Interpretor& theCommands, int narg, const char** a)
   BRepFeat_MakeRevol theRFace;
   gp_Dir             D;
   gp_Pnt             Or;
-  double             Angle = 0;
+  double      Angle = 0;
   TopoDS_Shape       FFrom, FUntil;
-  int                i, borne;
-  bool               fuse;
+  int   i, borne;
+  bool   fuse;
 
   if (a[1][0] == 'f' || a[1][0] == 'F')
   {
@@ -1647,7 +1660,7 @@ static int ROF(Draw_Interpretor& theCommands, int narg, const char** a)
     LocOpe_FindEdgesInFace FEIF;
     for (exp.Init(S, TopAbs_FACE); exp.More(); exp.Next())
     {
-      const TopoDS_Face&        fac = TopoDS::Face(exp.Current());
+      const TopoDS_Face&   fac = TopoDS::Face(exp.Current());
       occ::handle<Geom_Surface> Su  = BRep_Tool::Surface(fac);
       if (Su->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
       {
@@ -1723,7 +1736,7 @@ static int GLU(Draw_Interpretor&, int narg, const char** a)
 
   LocOpe_FindEdges fined;
 
-  int  i     = 4;
+  int i     = 4;
   bool first = true;
   while (i < narg)
   {
@@ -1812,7 +1825,7 @@ static int DEFIN(Draw_Interpretor& theCommands, int narg, const char** a)
   int Ifuse  = Draw::Atoi(a[narg - 2]);
   int Imodif = Draw::Atoi(a[narg - 1]);
 
-  int  Fuse   = Ifuse;
+  int Fuse   = Ifuse;
   bool Modify = (Imodif != 0);
 
   TopoDS_Shape Pbase;
@@ -1851,7 +1864,7 @@ static int DEFIN(Draw_Interpretor& theCommands, int narg, const char** a)
       return 1;
     }
     occ::handle<Geom_Surface> s = DrawTrSurf::GetSurface(a[3]);
-    P                           = occ::down_cast<Geom_Plane>(s);
+    P                      = occ::down_cast<Geom_Plane>(s);
     if (P.IsNull())
     {
       theCommands << "null plane to transform";
@@ -1878,12 +1891,12 @@ static int DEFIN(Draw_Interpretor& theCommands, int narg, const char** a)
     {
       rfdef = true;
       gp_Pnt Or(X, Y, Z);
-      X         = Draw::Atof(a[7]);
-      Y         = Draw::Atof(a[8]);
-      Z         = Draw::Atof(a[9]);
+      X                = Draw::Atof(a[7]);
+      Y                = Draw::Atof(a[8]);
+      Z                = Draw::Atof(a[9]);
       double H1 = Draw::Atof(a[10]);
       double H2 = Draw::Atof(a[11]);
-      gp_Ax1 ax1(Or, gp_Dir(X, Y, Z));
+      gp_Ax1        ax1(Or, gp_Dir(X, Y, Z));
       getRevolutionForm().Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
       if (!getRevolutionForm().IsDone())
       {
@@ -1936,10 +1949,10 @@ static int DEFIN(Draw_Interpretor& theCommands, int narg, const char** a)
         return 1;
       }
       double Angle = Draw::Atof(a[4]) * M_PI / 360;
-      dprdef       = true;
-      theSbase     = Sbase;
-      thePbase     = Pbase;
-      theSkface    = Skface;
+      dprdef              = true;
+      theSbase            = Sbase;
+      thePbase            = Pbase;
+      theSkface           = Skface;
       getDPrism().Init(Sbase, TopoDS::Face(Pbase), Skface, Angle, Fuse, Modify);
     }
     else
@@ -2070,7 +2083,7 @@ static int PERF(Draw_Interpretor& theCommands, int narg, const char** a)
   }
 
   NCollection_List<TopoDS_Shape> anArgs;
-  int                            Kas;
+  int     Kas;
   if (!strcasecmp("PRISM", a[1]))
   {
     Kas = 1;
@@ -2182,8 +2195,8 @@ static int PERF(Draw_Interpretor& theCommands, int narg, const char** a)
     }
     else if (narg == 5)
     {
-      double       Val    = Draw::Atof(a[3]);
-      TopoDS_Shape FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
+      double Val    = Draw::Atof(a[3]);
+      TopoDS_Shape  FUntil = DBRep::Get(a[4], TopAbs_SHAPE);
       if (Kas == 1)
       {
         getPrism().PerformUntilHeight(FUntil, Val);
@@ -2532,7 +2545,7 @@ static int BOSS(Draw_Interpretor& theCommands, int narg, const char** a)
     theLatEdges = getDPrism().LatEdges();
 
     NCollection_List<TopoDS_Shape>::Iterator it;
-    BRep_Builder                             B;
+    BRep_Builder                       B;
 
     B.MakeCompound(TopoDS::Compound(theShapeTop));
     it.Initialize(theTopEdges);
@@ -2581,10 +2594,10 @@ static int BOSS(Draw_Interpretor& theCommands, int narg, const char** a)
     Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
     Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
     Rakk->SetContinuity(blend_cont, tapp_angle);
-    double       Rad;
-    TopoDS_Shape S;
-    TopoDS_Edge  E;
-    int          nbedge = 0;
+    double    Rad;
+    TopoDS_Shape     S;
+    TopoDS_Edge      E;
+    int nbedge = 0;
 
     if (Kas == 2)
     {
@@ -2675,7 +2688,9 @@ static int BOSS(Draw_Interpretor& theCommands, int narg, const char** a)
 // function : ComputeSimpleOffset
 // purpose  : Computes simple offset.
 //=============================================================================
-static int ComputeSimpleOffset(Draw_Interpretor& theCommands, int narg, const char** a)
+static int ComputeSimpleOffset(Draw_Interpretor& theCommands,
+                                            int  narg,
+                                            const char**      a)
 {
   if (narg < 4)
   {
@@ -2697,9 +2712,9 @@ static int ComputeSimpleOffset(Draw_Interpretor& theCommands, int narg, const ch
     return 0;
   }
 
-  bool   makeSolid = (narg > 4 && !strcasecmp(a[4], "solid"));
-  int    iTolArg   = (makeSolid ? 5 : 4);
-  double aTol      = (narg > iTolArg ? Draw::Atof(a[iTolArg]) : Precision::Confusion());
+  bool makeSolid = (narg > 4 && !strcasecmp(a[4], "solid"));
+  int              iTolArg   = (makeSolid ? 5 : 4);
+  double    aTol      = (narg > iTolArg ? Draw::Atof(a[iTolArg]) : Precision::Confusion());
 
   BRepOffset_MakeSimpleOffset aMaker(aShape, anOffsetValue);
   aMaker.SetTolerance(aTol);

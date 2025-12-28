@@ -91,13 +91,19 @@ public:
   bool ToSkipDegenerates() const { return myToSkipDegenerateTris; }
 
   //! Sets flag to skip degenerated triangles during mesh loading (only indexes will be checked).
-  void SetToSkipDegenerates(const bool theToSkip) { myToSkipDegenerateTris = theToSkip; }
+  void SetToSkipDegenerates(const bool theToSkip)
+  {
+    myToSkipDegenerateTris = theToSkip;
+  }
 
   //! Returns TRUE if additional debug information should be print.
   bool ToPrintDebugMessages() const { return myToPrintDebugMessages; }
 
   //! Sets flag to print debug information.
-  void SetToPrintDebugMessages(const bool theToPrint) { myToPrintDebugMessages = theToPrint; }
+  void SetToPrintDebugMessages(const bool theToPrint)
+  {
+    myToPrintDebugMessages = theToPrint;
+  }
 
   //! Starts and reset internal object that accumulates nodes/triangles statistic during data
   //! reading.
@@ -159,8 +165,8 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theToCopyData  copy old nodes into new array
   //! @return TRUE in case of success operation
   virtual bool setNbPositionNodes(const occ::handle<Poly_Triangulation>& theMesh,
-                                  int                                    theNbNodes,
-                                  bool theToCopyData = false) const
+                                  int                  theNbNodes,
+                                  bool                  theToCopyData = false) const
   {
     if (theNbNodes <= 0)
     {
@@ -175,8 +181,8 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theIndex  node index starting from 1
   //! @param[in] thePnt  node position
   virtual void setNodePosition(const occ::handle<Poly_Triangulation>& theMesh,
-                               int                                    theIndex,
-                               const gp_Pnt&                          thePnt) const
+                               int                  theIndex,
+                               const gp_Pnt&                     thePnt) const
   {
     theMesh->SetNode(theIndex, thePnt);
   }
@@ -185,7 +191,8 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theNbNodes  nodes number
   //! @return TRUE in case of success operation
-  virtual bool setNbUVNodes(const occ::handle<Poly_Triangulation>& theMesh, int theNbNodes) const
+  virtual bool setNbUVNodes(const occ::handle<Poly_Triangulation>& theMesh,
+                            int                  theNbNodes) const
   {
     if (theNbNodes <= 0 || theMesh->NbNodes() != theNbNodes)
     {
@@ -200,8 +207,8 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theIndex  node index starting from 1
   //! @param[in] theUV  node UV coordinates
   virtual void setNodeUV(const occ::handle<Poly_Triangulation>& theMesh,
-                         int                                    theIndex,
-                         const gp_Pnt2d&                        theUV) const
+                         int                  theIndex,
+                         const gp_Pnt2d&                   theUV) const
   {
     theMesh->SetUVNode(theIndex, theUV);
   }
@@ -211,7 +218,7 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theNbNodes  nodes number
   //! @return TRUE in case of success operation
   virtual bool setNbNormalNodes(const occ::handle<Poly_Triangulation>& theMesh,
-                                int                                    theNbNodes) const
+                                int                  theNbNodes) const
   {
     if (theNbNodes <= 0 || theMesh->NbNodes() != theNbNodes)
     {
@@ -226,8 +233,8 @@ protected: //! @name interface for filling triangulation data
   //! @param theIndex  node index starting from 1
   //! @param theNormal node normal vector
   virtual void setNodeNormal(const occ::handle<Poly_Triangulation>& theMesh,
-                             int                                    theIndex,
-                             const NCollection_Vec3<float>&         theNormal) const
+                             int                  theIndex,
+                             const NCollection_Vec3<float>&                   theNormal) const
   {
     theMesh->SetNormal(theIndex, theNormal);
   }
@@ -238,8 +245,8 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theToCopyData  copy old triangles into new array
   //! @return TRUE in case of success operation
   virtual bool setNbTriangles(const occ::handle<Poly_Triangulation>& theMesh,
-                              int                                    theNbTris,
-                              bool                                   theToCopyData = false) const
+                              int                  theNbTris,
+                              bool                  theToCopyData = false) const
   {
     if (theNbTris >= 1)
     {
@@ -257,8 +264,8 @@ protected: //! @name interface for filling triangulation data
   //!        -1 if triangle is degenerated and should be skipped,
   //!         1 in case of success operation.
   virtual int setTriangle(const occ::handle<Poly_Triangulation>& theMesh,
-                          int                                    theIndex,
-                          const Poly_Triangle&                   theTriangle) const
+                                       int                  theIndex,
+                                       const Poly_Triangle&              theTriangle) const
   {
     if (theTriangle.Value(1) < 1 || theTriangle.Value(1) > theMesh->NbNodes()
         || theTriangle.Value(2) < 1 || theTriangle.Value(2) > theMesh->NbNodes()
@@ -283,7 +290,7 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theToCopyData  copy old edges into new array
   //! @return TRUE in case of success operation
   Standard_EXPORT virtual bool setNbEdges(const occ::handle<Poly_Triangulation>& theMesh,
-                                          const int                              theNbEdges,
+                                          const int            theNbEdges,
                                           const bool theToCopyData = false) const;
 
   //! Adds edge element.
@@ -293,8 +300,8 @@ protected: //! @name interface for filling triangulation data
   //! @return 0 if node indexes are out of range,
   //!         1 in case of success operation.
   Standard_EXPORT virtual int setEdge(const occ::handle<Poly_Triangulation>& theMesh,
-                                      const int                              theIndex,
-                                      const int                              theEdge) const;
+                                                   const int            theIndex,
+                                                   const int            theEdge) const;
 
 protected:
   RWMesh_CoordinateSystemConverter myCoordSysConverter; //!< coordinate system converter

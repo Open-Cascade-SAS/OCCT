@@ -128,21 +128,25 @@ public:
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2) const override;
 
   //! V2 and V3 are vectors with null magnitude for a line.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Pnt2d&           P,
+                          gp_Vec2d&           V1,
+                          gp_Vec2d&           V2,
+                          gp_Vec2d&           V3) const override;
 
   //! For the point of parameter U of this line, computes
   //! the vector corresponding to the Nth derivative.
   //! Note: if N is greater than or equal to 2, the result is a
   //! vector with null magnitude.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double    U,
+                              const int N) const override;
 
   //! Applies the transformation T to this line.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
@@ -151,8 +155,9 @@ public:
   //! T for the point of parameter U on this line.
   //! For a line, the returned value is equal to U multiplied
   //! by the scale factor of transformation T.
-  Standard_EXPORT virtual double TransformedParameter(const double     U,
-                                                      const gp_Trsf2d& T) const override;
+  Standard_EXPORT virtual double TransformedParameter(const double U,
+                                                             const gp_Trsf2d&    T) const
+    override;
 
   //! Returns the coefficient required to compute the
   //! parametric transformation of this line when
@@ -161,14 +166,15 @@ public:
   //! and the parameter of the transformed point on the
   //! new line transformed by T.
   //! For a line, the returned value is the scale factor of the transformation T.
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf2d& T) const override;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf2d& T) const
+    override;
 
   //! Creates a new object, which is a copy of this line.
   Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Line, Geom2d_Curve)
 

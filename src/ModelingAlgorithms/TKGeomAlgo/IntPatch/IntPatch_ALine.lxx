@@ -61,8 +61,7 @@ inline bool IntPatch_ALine::D1(const double U, gp_Pnt& P, gp_Vec& Du)
   return curv.D1u(U, P, Du); // D1u leve l exception DomainError
 }
 
-inline void IntPatch_ALine::FindParameter(const gp_Pnt&             theP,
-                                          NCollection_List<double>& theParams) const
+inline void IntPatch_ALine::FindParameter(const gp_Pnt& theP, NCollection_List<double>& theParams) const
 {
   curv.FindParameter(theP, theParams);
 }

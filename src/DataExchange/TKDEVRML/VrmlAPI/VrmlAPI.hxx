@@ -32,9 +32,9 @@ public:
   //! With help of this class user can change parameters of writing.
   //! Converts the shape aShape to VRML format of the passed version and writes it
   //! to the file identified by aFileName using default parameters.
-  Standard_EXPORT static bool Write(const TopoDS_Shape& aShape,
-                                    const char*         aFileName,
-                                    const int           aVersion = 2);
+  Standard_EXPORT static bool Write(const TopoDS_Shape&    aShape,
+                                                const char* aFileName,
+                                                const int aVersion = 2);
 };
 
 #endif // _VrmlAPI_HeaderFile

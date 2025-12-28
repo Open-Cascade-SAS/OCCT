@@ -33,8 +33,7 @@ int StepDimTol_DatumOrCommonDatum::CaseNum(const occ::handle<Standard_Transient>
     return 0;
   if (ent->IsKind(STANDARD_TYPE(StepDimTol_Datum)))
     return 1;
-  if (ent->IsKind(
-        STANDARD_TYPE(NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>)))
+  if (ent->IsKind(STANDARD_TYPE(NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>)))
     return 2;
   return 0;
 }
@@ -44,8 +43,8 @@ occ::handle<StepDimTol_Datum> StepDimTol_DatumOrCommonDatum::Datum() const
   return GetCasted(StepDimTol_Datum, Value());
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>>
-  StepDimTol_DatumOrCommonDatum::CommonDatumList() const
+occ::handle<NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>> StepDimTol_DatumOrCommonDatum::CommonDatumList()
+  const
 {
   return GetCasted(NCollection_HArray1<occ::handle<StepDimTol_DatumReferenceElement>>, Value());
 }

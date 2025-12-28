@@ -40,13 +40,15 @@ public:
 
   Standard_EXPORT virtual const char* EnumText() const override;
 
-  Standard_EXPORT virtual void SetEnumText(const int val, const char* text) override;
+  Standard_EXPORT virtual void SetEnumText(const int val,
+                                           const char* text) override;
 
   Standard_EXPORT void SetValue(const StepVisual_MarkerType val);
 
   Standard_EXPORT StepVisual_MarkerType Value() const;
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_MarkerMember, StepData_SelectInt)
+
 };
 
 #endif // _StepVisual_MarkerMember_HeaderFile

@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -52,21 +53,25 @@ public:
   //! One flag is defined, n0 0
   //! <resflags> prepares allocation for <resflags> more flags
   //! Flags values start at false
-  Standard_EXPORT Interface_BitMap(const int nbitems, const int resflags = 0);
+  Standard_EXPORT Interface_BitMap(const int nbitems,
+                                   const int resflags = 0);
 
   //! Initialize empty bit by <nbitems> items
   //! One flag is defined, n0 0
   //! <resflags> prepares allocation for <resflags> more flags
   //! Flags values start at false
-  Standard_EXPORT void Initialize(const int nbitems, const int resflags = 0);
+  Standard_EXPORT void Initialize(const int nbitems,
+                                  const int resflags = 0);
 
   //! Creates a BitMap from another one
   //! if <copied> is True, copies data
   //! else, data are not copied, only the header object is
-  Standard_EXPORT Interface_BitMap(const Interface_BitMap& other, const bool copied = false);
+  Standard_EXPORT Interface_BitMap(const Interface_BitMap& other,
+                                   const bool  copied = false);
 
   //! Initialize a BitMap from another one
-  Standard_EXPORT void Initialize(const Interface_BitMap& other, const bool copied = false);
+  Standard_EXPORT void Initialize(const Interface_BitMap& other,
+                                  const bool  copied = false);
 
   //! Reservates for a count of more flags
   Standard_EXPORT void Reservate(const int moreflags);
@@ -93,7 +98,8 @@ public:
   //! name can be empty (to erase the name of a flag)
   //! Returns True if done, false if : num is out of range, or
   //! name non-empty already set to another flag
-  Standard_EXPORT bool SetFlagName(const int num, const char* name);
+  Standard_EXPORT bool SetFlagName(const int num,
+                                               const char* name);
 
   //! Returns the count of flags (flag 0 not included)
   Standard_EXPORT int NbFlags() const;
@@ -110,10 +116,13 @@ public:
   //! Returns the value (true/false) of a flag, from :
   //! - the number of the item
   //! - the flag number, by default 0
-  Standard_EXPORT bool Value(const int item, const int flag = 0) const;
+  Standard_EXPORT bool Value(const int item,
+                                         const int flag = 0) const;
 
   //! Sets a new value for a flag
-  Standard_EXPORT void SetValue(const int item, const bool val, const int flag = 0) const;
+  Standard_EXPORT void SetValue(const int item,
+                                const bool val,
+                                const int flag = 0) const;
 
   //! Sets a flag to True
   Standard_EXPORT void SetTrue(const int item, const int flag = 0) const;
@@ -123,11 +132,13 @@ public:
 
   //! Returns the former value for a flag and sets it to True
   //! (before : value returned; after : True)
-  Standard_EXPORT bool CTrue(const int item, const int flag = 0) const;
+  Standard_EXPORT bool CTrue(const int item,
+                                         const int flag = 0) const;
 
   //! Returns the former value for a flag and sets it to False
   //! (before : value returned; after : False)
-  Standard_EXPORT bool CFalse(const int item, const int flag = 0) const;
+  Standard_EXPORT bool CFalse(const int item,
+                                          const int flag = 0) const;
 
   //! Initialises all the values of Flag Number <flag> to a given
   //! value <val>
@@ -137,10 +148,10 @@ public:
   Standard_EXPORT void Clear();
 
 private:
-  int                                                         thenbitems;
-  int                                                         thenbwords;
-  int                                                         thenbflags;
-  occ::handle<NCollection_HArray1<int>>                       theflags;
+  int                       thenbitems;
+  int                       thenbwords;
+  int                       thenbflags;
+  occ::handle<NCollection_HArray1<int>>       theflags;
   occ::handle<NCollection_HSequence<TCollection_AsciiString>> thenames;
 };
 

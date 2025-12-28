@@ -27,7 +27,7 @@ RWStepGeom_RWReparametrisedCompositeCurveSegment::RWStepGeom_RWReparametrisedCom
 
 void RWStepGeom_RWReparametrisedCompositeCurveSegment::ReadStep(
   const occ::handle<StepData_StepReaderData>&                      data,
-  const int                                                        num,
+  const int                                      num,
   occ::handle<Interface_Check>&                                    ach,
   const occ::handle<StepGeom_ReparametrisedCompositeCurveSegment>& ent) const
 {
@@ -75,7 +75,7 @@ void RWStepGeom_RWReparametrisedCompositeCurveSegment::ReadStep(
 }
 
 void RWStepGeom_RWReparametrisedCompositeCurveSegment::WriteStep(
-  StepData_StepWriter&                                             SW,
+  StepData_StepWriter&                                        SW,
   const occ::handle<StepGeom_ReparametrisedCompositeCurveSegment>& ent) const
 {
 
@@ -98,7 +98,7 @@ void RWStepGeom_RWReparametrisedCompositeCurveSegment::WriteStep(
 
 void RWStepGeom_RWReparametrisedCompositeCurveSegment::Share(
   const occ::handle<StepGeom_ReparametrisedCompositeCurveSegment>& ent,
-  Interface_EntityIterator&                                        iter) const
+  Interface_EntityIterator&                                   iter) const
 {
 
   iter.GetOneItem(ent->ParentCurve());

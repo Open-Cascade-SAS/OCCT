@@ -44,13 +44,13 @@ public:
 
   Standard_EXPORT Vrml_SpotLight();
 
-  Standard_EXPORT Vrml_SpotLight(const bool            aOnOff,
-                                 const double          aIntensity,
-                                 const Quantity_Color& aColor,
-                                 const gp_Vec&         aLocation,
-                                 const gp_Vec&         aDirection,
-                                 const double          aDropOffRate,
-                                 const double          aCutOffAngle);
+  Standard_EXPORT Vrml_SpotLight(const bool aOnOff,
+                                 const double    aIntensity,
+                                 const Quantity_Color&  aColor,
+                                 const gp_Vec&          aLocation,
+                                 const gp_Vec&          aDirection,
+                                 const double    aDropOffRate,
+                                 const double    aCutOffAngle);
 
   Standard_EXPORT void SetOnOff(const bool anOnOff);
 
@@ -83,13 +83,13 @@ public:
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 private:
-  bool           myOnOff;
-  double         myIntensity;
-  Quantity_Color myColor;
-  gp_Vec         myLocation;
-  gp_Vec         myDirection;
-  double         myDropOffRate;
-  double         myCutOffAngle;
+  bool myOnOff;
+  double    myIntensity;
+  Quantity_Color   myColor;
+  gp_Vec           myLocation;
+  gp_Vec           myDirection;
+  double    myDropOffRate;
+  double    myCutOffAngle;
 };
 
 #endif // _Vrml_SpotLight_HeaderFile

@@ -18,11 +18,10 @@
 
 RWStepBasic_RWProductCategory::RWStepBasic_RWProductCategory() {}
 
-void RWStepBasic_RWProductCategory::ReadStep(
-  const occ::handle<StepData_StepReaderData>&   data,
-  const int                                     num,
-  occ::handle<Interface_Check>&                 ach,
-  const occ::handle<StepBasic_ProductCategory>& ent) const
+void RWStepBasic_RWProductCategory::ReadStep(const occ::handle<StepData_StepReaderData>&   data,
+                                             const int                   num,
+                                             occ::handle<Interface_Check>&                 ach,
+                                             const occ::handle<StepBasic_ProductCategory>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -39,7 +38,7 @@ void RWStepBasic_RWProductCategory::ReadStep(
   // --- own field : description ---
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                                  hasAdescription = true;
+  bool                 hasAdescription = true;
   if (data->IsParamDefined(num, 2))
   {
     // szv#4:S4163:12Mar99 `bool stat2 =` not needed
@@ -56,9 +55,8 @@ void RWStepBasic_RWProductCategory::ReadStep(
   ent->Init(aName, hasAdescription, aDescription);
 }
 
-void RWStepBasic_RWProductCategory::WriteStep(
-  StepData_StepWriter&                          SW,
-  const occ::handle<StepBasic_ProductCategory>& ent) const
+void RWStepBasic_RWProductCategory::WriteStep(StepData_StepWriter&                     SW,
+                                              const occ::handle<StepBasic_ProductCategory>& ent) const
 {
 
   // --- own field : name ---

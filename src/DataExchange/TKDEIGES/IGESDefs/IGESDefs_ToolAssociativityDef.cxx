@@ -37,17 +37,16 @@
 
 IGESDefs_ToolAssociativityDef::IGESDefs_ToolAssociativityDef() {}
 
-void IGESDefs_ToolAssociativityDef::ReadOwnParams(
-  const occ::handle<IGESDefs_AssociativityDef>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESDefs_ToolAssociativityDef::ReadOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
+                                                  const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                  IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 moved down
   occ::handle<NCollection_HArray1<int>>            requirements;
   occ::handle<NCollection_HArray1<int>>            orders;
   occ::handle<NCollection_HArray1<int>>            numItems;
   occ::handle<IGESBasic_HArray1OfHArray1OfInteger> items;
-  int                                              nbval;
+  int                            nbval;
 
   bool st = PR.ReadInteger(PR.Current(), "No. of Class definitions", nbval);
   if (st && nbval > 0)
@@ -63,9 +62,9 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(
   if (!requirements.IsNull())
     for (int i = 1; i <= nbval; i++)
     {
-      int                                   requirement;
-      int                                   order;
-      int                                   numItem;
+      int                 requirement;
+      int                 order;
+      int                 numItem;
       occ::handle<NCollection_HArray1<int>> item;
 
       // st = PR.ReadInteger(PR.Current(), "Back Pointer Requirement", requirement);
@@ -100,9 +99,8 @@ void IGESDefs_ToolAssociativityDef::ReadOwnParams(
   ent->Init(requirements, orders, numItems, items);
 }
 
-void IGESDefs_ToolAssociativityDef::WriteOwnParams(
-  const occ::handle<IGESDefs_AssociativityDef>& ent,
-  IGESData_IGESWriter&                          IW) const
+void IGESDefs_ToolAssociativityDef::WriteOwnParams(const occ::handle<IGESDefs_AssociativityDef>& ent,
+                                                   IGESData_IGESWriter& IW) const
 {
   int upper = ent->NbClassDefs();
   IW.Send(upper);
@@ -117,9 +115,8 @@ void IGESDefs_ToolAssociativityDef::WriteOwnParams(
   }
 }
 
-void IGESDefs_ToolAssociativityDef::OwnShared(
-  const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
-  Interface_EntityIterator& /* iter */) const
+void IGESDefs_ToolAssociativityDef::OwnShared(const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
+                                              Interface_EntityIterator& /* iter */) const
 {
 }
 
@@ -177,17 +174,16 @@ IGESData_DirChecker IGESDefs_ToolAssociativityDef::DirChecker(
   return DC;
 }
 
-void IGESDefs_ToolAssociativityDef::OwnCheck(
-  const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESDefs_ToolAssociativityDef::OwnCheck(const occ::handle<IGESDefs_AssociativityDef>& /* ent */,
+                                             const Interface_ShareTool&,
+                                             occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESDefs_ToolAssociativityDef::OwnDump(const occ::handle<IGESDefs_AssociativityDef>& ent,
                                             const IGESData_IGESDumper& /* dumper */,
-                                            Standard_OStream& S,
-                                            const int         level) const
+                                            Standard_OStream&      S,
+                                            const int level) const
 {
   S << "IGESDefs_AssociativityDef\n"
     << "Number of Class Definitions : " << ent->NbClassDefs() << "\n"

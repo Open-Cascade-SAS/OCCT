@@ -29,31 +29,31 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_NewGeneralNote, IGESData_IGESEntity)
 IGESDimen_NewGeneralNote::IGESDimen_NewGeneralNote() {}
 
 void IGESDimen_NewGeneralNote::Init(
-  const double                                    width,
-  const double                                    height,
-  const int                                       justifyCode,
-  const gp_XYZ&                                   areaLoc,
-  const double                                    areaRotationAngle,
-  const gp_XYZ&                                   baseLinePos,
-  const double                                    normalInterlineSpace,
-  const occ::handle<NCollection_HArray1<int>>&    charDisplays,
-  const occ::handle<NCollection_HArray1<double>>& charWidths,
-  const occ::handle<NCollection_HArray1<double>>& charHeights,
-  const occ::handle<NCollection_HArray1<double>>& interCharSpc,
-  const occ::handle<NCollection_HArray1<double>>& interLineSpc,
-  const occ::handle<NCollection_HArray1<int>>&    fontStyles,
-  const occ::handle<NCollection_HArray1<double>>& charAngles,
+  const double                            width,
+  const double                            height,
+  const int                         justifyCode,
+  const gp_XYZ&                                  areaLoc,
+  const double                            areaRotationAngle,
+  const gp_XYZ&                                  baseLinePos,
+  const double                            normalInterlineSpace,
+  const occ::handle<NCollection_HArray1<int>>&        charDisplays,
+  const occ::handle<NCollection_HArray1<double>>&           charWidths,
+  const occ::handle<NCollection_HArray1<double>>&           charHeights,
+  const occ::handle<NCollection_HArray1<double>>&           interCharSpc,
+  const occ::handle<NCollection_HArray1<double>>&           interLineSpc,
+  const occ::handle<NCollection_HArray1<int>>&        fontStyles,
+  const occ::handle<NCollection_HArray1<double>>&           charAngles,
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& controlCodeStrings,
-  const occ::handle<NCollection_HArray1<int>>&                                   nbChars,
-  const occ::handle<NCollection_HArray1<double>>&                                boxWidths,
-  const occ::handle<NCollection_HArray1<double>>&                                boxHeights,
-  const occ::handle<NCollection_HArray1<int>>&                                   charSetCodes,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&      charSetEntities,
-  const occ::handle<NCollection_HArray1<double>>&                                slAngles,
-  const occ::handle<NCollection_HArray1<double>>&                                rotAngles,
-  const occ::handle<NCollection_HArray1<int>>&                                   mirrorFlags,
-  const occ::handle<NCollection_HArray1<int>>&                                   rotateFlags,
-  const occ::handle<NCollection_HArray1<gp_XYZ>>&                                startPoints,
+  const occ::handle<NCollection_HArray1<int>>&        nbChars,
+  const occ::handle<NCollection_HArray1<double>>&           boxWidths,
+  const occ::handle<NCollection_HArray1<double>>&           boxHeights,
+  const occ::handle<NCollection_HArray1<int>>&        charSetCodes,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&    charSetEntities,
+  const occ::handle<NCollection_HArray1<double>>&           slAngles,
+  const occ::handle<NCollection_HArray1<double>>&           rotAngles,
+  const occ::handle<NCollection_HArray1<int>>&        mirrorFlags,
+  const occ::handle<NCollection_HArray1<int>>&        rotateFlags,
+  const occ::handle<NCollection_HArray1<gp_XYZ>>&             startPoints,
   const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& texts)
 {
   int num = nbChars->Length();
@@ -246,7 +246,8 @@ int IGESDimen_NewGeneralNote::CharSetCode(const int Index) const
   return theCharSetCodes->Value(Index);
 }
 
-occ::handle<IGESData_IGESEntity> IGESDimen_NewGeneralNote::CharSetEntity(const int Index) const
+occ::handle<IGESData_IGESEntity> IGESDimen_NewGeneralNote::CharSetEntity(
+  const int Index) const
 {
   return theCharSetEntities->Value(Index);
 }

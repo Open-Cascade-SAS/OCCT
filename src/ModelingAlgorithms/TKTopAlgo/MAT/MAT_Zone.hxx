@@ -62,11 +62,11 @@ public:
 
 private:
   Standard_EXPORT occ::handle<MAT_Node> NodeForTurn(const occ::handle<MAT_Arc>&      anArc,
-                                                    const occ::handle<MAT_BasicElt>& aBasicElt,
-                                                    const MAT_Side                   aSide) const;
+                                               const occ::handle<MAT_BasicElt>& aBasicElt,
+                                               const MAT_Side              aSide) const;
 
   NCollection_Sequence<occ::handle<MAT_Arc>> frontier;
-  bool                                       limited;
+  bool  limited;
 };
 
 #endif // _MAT_Zone_HeaderFile

@@ -43,6 +43,7 @@
 #include <LocOpe_CSIntersector.hxx>
 #include <LocOpe_PntFace.hxx>
 #include <Precision.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -51,6 +52,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -71,12 +73,12 @@ void BRepFeat::SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp
 void BRepFeat::Barycenter(const TopoDS_Shape& S, gp_Pnt& B)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
-  TopExp_Explorer                                        exp(S, TopAbs_EDGE);
-  TopLoc_Location                                        Loc;
-  occ::handle<Geom_Curve>                                C;
-  double                                                 f, l, prm;
-  gp_XYZ                                                 Bar(0., 0., 0.);
-  int                                                    i, nbp = 0;
+  TopExp_Explorer     exp(S, TopAbs_EDGE);
+  TopLoc_Location     Loc;
+  occ::handle<Geom_Curve>  C;
+  double       f, l, prm;
+  gp_XYZ              Bar(0., 0., 0.);
+  int    i, nbp = 0;
 
   for (; exp.More(); exp.Next())
   {
@@ -119,13 +121,13 @@ void BRepFeat::Barycenter(const TopoDS_Shape& S, gp_Pnt& B)
 double BRepFeat::ParametricBarycenter(const TopoDS_Shape& S, const occ::handle<Geom_Curve>& CC)
 {
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
-  TopExp_Explorer                                        exp(S, TopAbs_EDGE);
-  TopLoc_Location                                        Loc;
-  occ::handle<Geom_Curve>                                C;
-  double                                                 f, l, prm;
-  int                                                    i, nbp = 0;
-  GeomAdaptor_Curve                                      TheCurve(CC);
-  Extrema_ExtPC                                          extpc;
+  TopExp_Explorer     exp(S, TopAbs_EDGE);
+  TopLoc_Location     Loc;
+  occ::handle<Geom_Curve>  C;
+  double       f, l, prm;
+  int    i, nbp = 0;
+  GeomAdaptor_Curve   TheCurve(CC);
+  Extrema_ExtPC       extpc;
   extpc.Initialize(TheCurve, CC->FirstParameter(), CC->LastParameter());
   double parbar = 0;
 
@@ -148,8 +150,8 @@ double BRepFeat::ParametricBarycenter(const TopoDS_Shape& S, const occ::handle<G
         extpc.Perform(pone);
         if (extpc.IsDone() && extpc.NbExt() >= 1)
         {
-          double Dist2Min = extpc.SquareDistance(1);
-          int    kmin     = 1;
+          double    Dist2Min = extpc.SquareDistance(1);
+          int kmin     = 1;
           for (int k = 2; k <= extpc.NbExt(); k++)
           {
             double Dist2 = extpc.SquareDistance(k);
@@ -199,16 +201,16 @@ double BRepFeat::ParametricBarycenter(const TopoDS_Shape& S, const occ::handle<G
 // purpose  : Calcul du barycentre "parametrique" shape sur une courbe
 //=======================================================================
 
-void BRepFeat::ParametricMinMax(const TopoDS_Shape&            S,
+void BRepFeat::ParametricMinMax(const TopoDS_Shape&       S,
                                 const occ::handle<Geom_Curve>& CC,
-                                double&                        prmin,
-                                double&                        prmax,
-                                double&                        prbmin,
-                                double&                        prbmax,
-                                bool&                          flag,
-                                const bool                     theOri)
+                                double&            prmin,
+                                double&            prmax,
+                                double&            prbmin,
+                                double&            prbmax,
+                                bool&         flag,
+                                const bool    theOri)
 {
-  LocOpe_CSIntersector                          ASI(S);
+  LocOpe_CSIntersector     ASI(S);
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   scur.Append(CC);
   ASI.Perform(scur);
@@ -243,12 +245,12 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape&            S,
   }
 
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
-  TopExp_Explorer                                        exp(S, TopAbs_EDGE);
-  TopLoc_Location                                        Loc;
-  occ::handle<Geom_Curve>                                C;
-  double                                                 f, l, prm;
+  TopExp_Explorer     exp(S, TopAbs_EDGE);
+  TopLoc_Location     Loc;
+  occ::handle<Geom_Curve>  C;
+  double       f, l, prm;
   //  int i, nbp= 0;
-  int               i;
+  int  i;
   GeomAdaptor_Curve TheCurve(CC);
   Extrema_ExtPC     extpc;
   extpc.Initialize(TheCurve, CC->FirstParameter(), CC->LastParameter());
@@ -273,8 +275,8 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape&            S,
         extpc.Perform(pone);
         if (extpc.IsDone() && extpc.NbExt() >= 1)
         {
-          double Dist2Min = extpc.SquareDistance(1);
-          int    kmin     = 1;
+          double    Dist2Min = extpc.SquareDistance(1);
+          int kmin     = 1;
           for (int k = 2; k <= extpc.NbExt(); k++)
           {
             double Dist2 = extpc.SquareDistance(k);
@@ -307,8 +309,8 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape&            S,
       extpc.Perform(pone);
       if (extpc.IsDone() && extpc.NbExt() >= 1)
       {
-        double Dist2Min = extpc.SquareDistance(1);
-        int    kmin     = 1;
+        double    Dist2Min = extpc.SquareDistance(1);
+        int kmin     = 1;
         for (int k = 2; k <= extpc.NbExt(); k++)
         {
           double Dist2 = extpc.SquareDistance(k);
@@ -336,7 +338,7 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape&            S,
 
 static bool IsIn(BRepTopAdaptor_FClass2d& FC, const Geom2dAdaptor_Curve& AC)
 {
-  constexpr double              Def = 100 * Precision::Confusion();
+  constexpr double       Def = 100 * Precision::Confusion();
   GCPnts_QuasiUniformDeflection QU(AC, Def);
 
   for (int i = 1; i <= QU.NbPoints(); i++)
@@ -358,22 +360,22 @@ static bool IsIn(BRepTopAdaptor_FClass2d& FC, const Geom2dAdaptor_Curve& AC)
 // Recadre en U.
 //---------------
 
-static void PutInBoundsU(double                     umin,
-                         double                     umax,
-                         double                     eps,
-                         double                     period,
-                         double                     f,
-                         double                     l,
+static void PutInBoundsU(double         umin,
+                         double         umax,
+                         double         eps,
+                         double         period,
+                         double         f,
+                         double         l,
                          occ::handle<Geom2d_Curve>& C2d)
 {
-  gp_Pnt2d Pf   = C2d->Value(f);
-  gp_Pnt2d Pl   = C2d->Value(l);
-  gp_Pnt2d Pm   = C2d->Value(0.34 * f + 0.66 * l);
-  double   minC = std::min(Pf.X(), Pl.X());
-  minC          = std::min(minC, Pm.X());
-  double maxC   = std::max(Pf.X(), Pl.X());
-  maxC          = std::max(maxC, Pm.X());
-  double du     = 0.;
+  gp_Pnt2d      Pf   = C2d->Value(f);
+  gp_Pnt2d      Pl   = C2d->Value(l);
+  gp_Pnt2d      Pm   = C2d->Value(0.34 * f + 0.66 * l);
+  double minC = std::min(Pf.X(), Pl.X());
+  minC               = std::min(minC, Pm.X());
+  double maxC = std::max(Pf.X(), Pl.X());
+  maxC               = std::max(maxC, Pm.X());
+  double du   = 0.;
   if (minC < umin - eps)
   {
     du = (int((umin - minC) / period) + 1) * period;
@@ -412,22 +414,22 @@ static void PutInBoundsU(double                     umin,
 // Recadre en V.
 //---------------
 
-static void PutInBoundsV(double                     vmin,
-                         double                     vmax,
-                         double                     eps,
-                         double                     period,
-                         double                     f,
-                         double                     l,
+static void PutInBoundsV(double         vmin,
+                         double         vmax,
+                         double         eps,
+                         double         period,
+                         double         f,
+                         double         l,
                          occ::handle<Geom2d_Curve>& C2d)
 {
-  gp_Pnt2d Pf   = C2d->Value(f);
-  gp_Pnt2d Pl   = C2d->Value(l);
-  gp_Pnt2d Pm   = C2d->Value(0.34 * f + 0.66 * l);
-  double   minC = std::min(Pf.Y(), Pl.Y());
-  minC          = std::min(minC, Pm.Y());
-  double maxC   = std::max(Pf.Y(), Pl.Y());
-  maxC          = std::max(maxC, Pm.Y());
-  double dv     = 0.;
+  gp_Pnt2d      Pf   = C2d->Value(f);
+  gp_Pnt2d      Pl   = C2d->Value(l);
+  gp_Pnt2d      Pm   = C2d->Value(0.34 * f + 0.66 * l);
+  double minC = std::min(Pf.Y(), Pl.Y());
+  minC               = std::min(minC, Pm.Y());
+  double maxC = std::max(Pf.Y(), Pl.Y());
+  maxC               = std::max(maxC, Pm.Y());
+  double dv   = 0.;
   if (minC < vmin - eps)
   {
     dv = (int((vmin - minC) / period) + 1) * period;
@@ -465,9 +467,9 @@ bool BRepFeat::IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2)
   TopExp_Explorer exp;
   exp.Init(F1, TopAbs_EDGE);
 
-  double                    umin, umax, vmin, vmax, uperiod = 0, vperiod = 0;
-  int                       flagu = 0, flagv = 0;
-  TopLoc_Location           L; // Recup S avec la location pour eviter la copie.
+  double        umin, umax, vmin, vmax, uperiod = 0, vperiod = 0;
+  int     flagu = 0, flagv = 0;
+  TopLoc_Location      L; // Recup S avec la location pour eviter la copie.
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(F2);
   //  double periodu, periodv;
   BRepTools::UVBounds(F2, umin, umax, vmin, vmax);
@@ -489,10 +491,10 @@ bool BRepFeat::IsInside(const TopoDS_Face& F1, const TopoDS_Face& F2)
   //                                Precision::Confusion());
   for (; exp.More(); exp.Next())
   {
-    double                    f1, l1;
+    double        f1, l1;
     occ::handle<Geom_Curve>   C0 = BRep_Tool::Curve(TopoDS::Edge(exp.Current()), f1, l1);
     occ::handle<Geom2d_Curve> C  = GeomProjLib::Curve2d(C0, f1, l1, S);
-    TopoDS_Edge               E  = TopoDS::Edge(exp.Current());
+    TopoDS_Edge          E  = TopoDS::Edge(exp.Current());
     if (flagu == 1 || flagv == 1)
     {
       double eps = BRep_Tool::Tolerance(E);
@@ -531,7 +533,7 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   occ::handle<Geom_RectangularTrimmedSurface> str;
   if (styp == STANDARD_TYPE(Geom_Plane))
   {
-    gp_Pln aPln = occ::down_cast<Geom_Plane>(s)->Pln();
+    gp_Pln        aPln = occ::down_cast<Geom_Plane>(s)->Pln();
     double u, v, umin = RealLast(), umax = -umin, vmin = RealLast(), vmax = -vmin;
     for (int i = 0; i < 2; i++)
     {
@@ -556,12 +558,13 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
     umax += diam;
     vmin -= diam;
     vmax += diam;
-    str = new Geom_RectangularTrimmedSurface(s, umin, umax, vmin, vmax, true, true);
+    str =
+      new Geom_RectangularTrimmedSurface(s, umin, umax, vmin, vmax, true, true);
   }
   else if (styp == STANDARD_TYPE(Geom_CylindricalSurface))
   {
-    gp_Cylinder aCyl = occ::down_cast<Geom_CylindricalSurface>(s)->Cylinder();
-    double      u, v, vmin = RealLast(), vmax = -vmin;
+    gp_Cylinder   aCyl = occ::down_cast<Geom_CylindricalSurface>(s)->Cylinder();
+    double u, v, vmin = RealLast(), vmax = -vmin;
     for (int i = 0; i < 2; i++)
     {
       for (int j = 0; j < 2; j++)
@@ -583,8 +586,8 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase, TopoDS_Face& FUntil)
   }
   else if (styp == STANDARD_TYPE(Geom_ConicalSurface))
   {
-    gp_Cone aCon = occ::down_cast<Geom_ConicalSurface>(s)->Cone();
-    double  u, v, vmin = RealLast(), vmax = -vmin;
+    gp_Cone       aCon = occ::down_cast<Geom_ConicalSurface>(s)->Cone();
+    double u, v, vmin = RealLast(), vmax = -vmin;
     for (int i = 0; i < 2; i++)
     {
       for (int j = 0; j < 2; j++)

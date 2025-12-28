@@ -22,12 +22,12 @@ StepVisual_TriangulatedSurfaceSet::StepVisual_TriangulatedSurfaceSet() {}
 //=================================================================================================
 
 void StepVisual_TriangulatedSurfaceSet::Init(
-  const occ::handle<TCollection_HAsciiString>&    theRepresentationItemName,
-  const occ::handle<StepVisual_CoordinatesList>&  theTessellatedSurfaceSetCoordinates,
-  const int                                       theTessellatedSurfaceSetPnmax,
-  const occ::handle<NCollection_HArray2<double>>& theTessellatedSurfaceSetNormals,
-  const occ::handle<NCollection_HArray1<int>>&    thePnindex,
-  const occ::handle<NCollection_HArray2<int>>&    theTriangles)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItemName,
+  const occ::handle<StepVisual_CoordinatesList>& theTessellatedSurfaceSetCoordinates,
+  const int                    theTessellatedSurfaceSetPnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theTessellatedSurfaceSetNormals,
+  const occ::handle<NCollection_HArray1<int>>&   thePnindex,
+  const occ::handle<NCollection_HArray2<int>>&   theTriangles)
 {
   StepVisual_TessellatedSurfaceSet::Init(theRepresentationItemName,
                                          theTessellatedSurfaceSetCoordinates,
@@ -50,7 +50,8 @@ int StepVisual_TriangulatedSurfaceSet::NbPnindex() const
 
 //=================================================================================================
 
-int StepVisual_TriangulatedSurfaceSet::PnindexValue(const int theNum) const
+int StepVisual_TriangulatedSurfaceSet::PnindexValue(
+  const int theNum) const
 {
   return myPnindex->Value(theNum);
 }

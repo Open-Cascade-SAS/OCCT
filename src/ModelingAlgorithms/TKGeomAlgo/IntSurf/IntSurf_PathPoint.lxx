@@ -92,7 +92,9 @@ inline int IntSurf_PathPoint::Multiplicity() const
   return (sequv->Length() - 1);
 }
 
-inline void IntSurf_PathPoint::Parameters(const int Index, double& U, double& V) const
+inline void IntSurf_PathPoint::Parameters(const int Index,
+                                          double&         U,
+                                          double&         V) const
 {
   gp_XY uv(sequv->Value(Index + 1));
   U = uv.X();

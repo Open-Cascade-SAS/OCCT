@@ -29,7 +29,7 @@ void StepElement_UniformSurfaceSection::Init(
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_Offset,
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMass,
   const StepElement_MeasureOrUnspecifiedValue& aSurfaceSection_NonStructuralMassOffset,
-  const double                                 aThickness,
+  const double                          aThickness,
   const StepElement_MeasureOrUnspecifiedValue& aBendingThickness,
   const StepElement_MeasureOrUnspecifiedValue& aShearThickness)
 {

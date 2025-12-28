@@ -141,7 +141,7 @@
 
 occ::handle<Geom_Axis1Placement> StepToGeom::MakeAxis1Placement(
   const occ::handle<StepGeom_Axis1Placement>& SA,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   occ::handle<Geom_CartesianPoint> P = MakeCartesianPoint(SA->Location(), theLocalFactors);
   if (!P.IsNull())
@@ -166,7 +166,7 @@ occ::handle<Geom_Axis1Placement> StepToGeom::MakeAxis1Placement(
 
 occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
   const occ::handle<StepGeom_Axis2Placement3d>& SA,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   occ::handle<Geom_CartesianPoint> P = MakeCartesianPoint(SA->Location(), theLocalFactors);
   if (!P.IsNull())
@@ -183,8 +183,8 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
         Ngp = D->Dir();
     }
 
-    gp_Ax2 gpAx2;
-    bool   isDefaultDirectionUsed = true;
+    gp_Ax2           gpAx2;
+    bool isDefaultDirectionUsed = true;
     if (SA->HasRefDirection())
     {
       occ::handle<Geom_Direction> D = MakeDirection(SA->RefDirection());
@@ -222,14 +222,14 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
   double anAxisY = -cos(theSP->Gamma()) * sin(theSP->Alpha());
   double anAxisZ = cos(theSP->Alpha());
   double aDirX   = cos(theSP->Gamma()) * cos(theSP->Beta())
-                 - sin(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
+                        - sin(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
   double aDirY = sin(theSP->Gamma()) * cos(theSP->Beta())
-                 + cos(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
-  double       aDirZ = sin(theSP->Alpha()) * sin(theSP->Beta());
-  const gp_Pnt Pgp(aLocX, aLocY, aLocZ);
-  const gp_Dir Ngp(anAsisX, anAxisY, anAxisZ);
-  const gp_Dir Vxgp(aDirX, aDirY, aDirZ);
-  gp_Ax2       gpAx2 = gp_Ax2(Pgp, Ngp, Vxgp);
+                        + cos(theSP->Gamma()) * cos(theSP->Alpha()) * sin(theSP->Beta());
+  double aDirZ = sin(theSP->Alpha()) * sin(theSP->Beta());
+  const gp_Pnt  Pgp(aLocX, aLocY, aLocZ);
+  const gp_Dir  Ngp(anAsisX, anAxisY, anAxisZ);
+  const gp_Dir  Vxgp(aDirX, aDirY, aDirZ);
+  gp_Ax2        gpAx2 = gp_Ax2(Pgp, Ngp, Vxgp);
   return new Geom_Axis2Placement(gpAx2);
 }
 
@@ -239,7 +239,7 @@ occ::handle<Geom_Axis2Placement> StepToGeom::MakeAxis2Placement(
 
 occ::handle<Geom2d_AxisPlacement> StepToGeom::MakeAxisPlacement(
   const occ::handle<StepGeom_Axis2Placement2d>& SA,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   occ::handle<Geom2d_CartesianPoint> P = MakeCartesianPoint2d(SA->Location(), theLocalFactors);
   if (!P.IsNull())
@@ -263,9 +263,8 @@ occ::handle<Geom2d_AxisPlacement> StepToGeom::MakeAxisPlacement(
 // Creation d' une BoundedCurve de Geom a partir d' une BoundedCurve de Step
 //=============================================================================
 
-occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
-  const occ::handle<StepGeom_BoundedCurve>& SC,
-  const StepData_Factors&                   theLocalFactors)
+occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(const occ::handle<StepGeom_BoundedCurve>& SC,
+                                                       const StepData_Factors& theLocalFactors)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
   {
@@ -287,7 +286,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BezierCurve)))
   {
     const occ::handle<StepGeom_BezierCurve> BzC     = occ::down_cast<StepGeom_BezierCurve>(SC);
-    int                                     aDegree = BzC->Degree();
+    int                   aDegree = BzC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
       return 0;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
@@ -297,8 +296,8 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     BSPL->SetClosedCurve(BzC->ClosedCurve());
     BSPL->SetSelfIntersect(BzC->SelfIntersect());
     // Compute Knots and KnotsMultiplicity
-    const occ::handle<NCollection_HArray1<int>>    Kmult = new NCollection_HArray1<int>(1, 2);
-    const occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(1, 2);
+    const occ::handle<NCollection_HArray1<int>> Kmult = new NCollection_HArray1<int>(1, 2);
+    const occ::handle<NCollection_HArray1<double>>    Knots = new NCollection_HArray1<double>(1, 2);
     Kmult->SetValue(1, BzC->Degree() + 1);
     Kmult->SetValue(2, BzC->Degree() + 1);
     Knots->SetValue(1, 0.);
@@ -312,7 +311,7 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
   if (SC->IsKind(STANDARD_TYPE(StepGeom_UniformCurve)))
   {
     const occ::handle<StepGeom_UniformCurve> UC      = occ::down_cast<StepGeom_UniformCurve>(SC);
-    int                                      aDegree = UC->Degree();
+    int                    aDegree = UC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
       return 0;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
@@ -323,9 +322,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     BSPL->SetSelfIntersect(UC->SelfIntersect());
 
     // Compute Knots and KnotsMultiplicity
-    const int nbK = BSPL->NbControlPointsList() + BSPL->Degree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    Kmult = new NCollection_HArray1<int>(1, nbK);
-    const occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(1, nbK);
+    const int                 nbK   = BSPL->NbControlPointsList() + BSPL->Degree() + 1;
+    const occ::handle<NCollection_HArray1<int>> Kmult = new NCollection_HArray1<int>(1, nbK);
+    const occ::handle<NCollection_HArray1<double>>    Knots = new NCollection_HArray1<double>(1, nbK);
     for (int iUC = 1; iUC <= nbK; iUC++)
     {
       Kmult->SetValue(iUC, 1);
@@ -339,9 +338,8 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
 
   if (SC->IsKind(STANDARD_TYPE(StepGeom_QuasiUniformCurve)))
   {
-    const occ::handle<StepGeom_QuasiUniformCurve> QUC =
-      occ::down_cast<StepGeom_QuasiUniformCurve>(SC);
-    int aDegree = QUC->Degree();
+    const occ::handle<StepGeom_QuasiUniformCurve> QUC = occ::down_cast<StepGeom_QuasiUniformCurve>(SC);
+    int                         aDegree = QUC->Degree();
     if (aDegree < 1 || aDegree > Geom_BSplineCurve::MaxDegree())
       return 0;
     const occ::handle<StepGeom_BSplineCurveWithKnots> BSPL = new StepGeom_BSplineCurveWithKnots;
@@ -352,9 +350,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
     BSPL->SetSelfIntersect(QUC->SelfIntersect());
 
     // Compute Knots and KnotsMultiplicity
-    const int nbK = BSPL->NbControlPointsList() - BSPL->Degree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    Kmult = new NCollection_HArray1<int>(1, nbK);
-    const occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(1, nbK);
+    const int                 nbK   = BSPL->NbControlPointsList() - BSPL->Degree() + 1;
+    const occ::handle<NCollection_HArray1<int>> Kmult = new NCollection_HArray1<int>(1, nbK);
+    const occ::handle<NCollection_HArray1<double>>    Knots = new NCollection_HArray1<double>(1, nbK);
     for (int iQUC = 1; iQUC <= nbK; iQUC++)
     {
       Kmult->SetValue(iQUC, 1);
@@ -379,9 +377,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
     // Compute Knots and KnotsMultiplicity
-    const int                                      nbK   = RUC->NbControlPointsList() + aDegree + 1;
-    const occ::handle<NCollection_HArray1<int>>    Kmult = new NCollection_HArray1<int>(1, nbK);
-    const occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(1, nbK);
+    const int                 nbK   = RUC->NbControlPointsList() + aDegree + 1;
+    const occ::handle<NCollection_HArray1<int>> Kmult = new NCollection_HArray1<int>(1, nbK);
+    const occ::handle<NCollection_HArray1<double>>    Knots = new NCollection_HArray1<double>(1, nbK);
     for (int iUC = 1; iUC <= nbK; iUC++)
     {
       Kmult->SetValue(iUC, 1);
@@ -414,9 +412,9 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
       new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 
     // Compute Knots and KnotsMultiplicity
-    const int                                      nbK = RQUC->NbControlPointsList() - aDegree + 1;
-    const occ::handle<NCollection_HArray1<int>>    Kmult = new NCollection_HArray1<int>(1, nbK);
-    const occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(1, nbK);
+    const int                 nbK   = RQUC->NbControlPointsList() - aDegree + 1;
+    const occ::handle<NCollection_HArray1<int>> Kmult = new NCollection_HArray1<int>(1, nbK);
+    const occ::handle<NCollection_HArray1<double>>    Knots = new NCollection_HArray1<double>(1, nbK);
     for (int iRQUC = 1; iRQUC <= nbK; iRQUC++)
     {
       Kmult->SetValue(iRQUC, 1);
@@ -451,9 +449,8 @@ occ::handle<Geom_BoundedCurve> StepToGeom::MakeBoundedCurve(
 // Creation d' une BoundedCurve de Geom a partir d' une BoundedCurve de Step
 //=============================================================================
 
-occ::handle<Geom2d_BoundedCurve> StepToGeom::MakeBoundedCurve2d(
-  const occ::handle<StepGeom_BoundedCurve>& SC,
-  const StepData_Factors&                   theLocalFactors)
+occ::handle<Geom2d_BoundedCurve> StepToGeom::MakeBoundedCurve2d(const occ::handle<StepGeom_BoundedCurve>& SC,
+                                                           const StepData_Factors& theLocalFactors)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
   {
@@ -463,7 +460,8 @@ occ::handle<Geom2d_BoundedCurve> StepToGeom::MakeBoundedCurve2d(
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnots)))
   {
-    return MakeBSplineCurve2d(occ::down_cast<StepGeom_BSplineCurveWithKnots>(SC), theLocalFactors);
+    return MakeBSplineCurve2d(occ::down_cast<StepGeom_BSplineCurveWithKnots>(SC),
+                              theLocalFactors);
   }
   if (SC->IsKind(STANDARD_TYPE(StepGeom_TrimmedCurve)))
   {
@@ -482,7 +480,7 @@ occ::handle<Geom2d_BoundedCurve> StepToGeom::MakeBoundedCurve2d(
 
 occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
   const occ::handle<StepGeom_BoundedSurface>& SS,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)))
   {
@@ -516,10 +514,10 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
     BSPL->SetSelfIntersect(BzS->SelfIntersect());
 
     // Compute Knots and KnotsMultiplicity
-    const occ::handle<NCollection_HArray1<int>>    UKmult = new NCollection_HArray1<int>(1, 2);
-    const occ::handle<NCollection_HArray1<int>>    VKmult = new NCollection_HArray1<int>(1, 2);
-    const occ::handle<NCollection_HArray1<double>> UKnots = new NCollection_HArray1<double>(1, 2);
-    const occ::handle<NCollection_HArray1<double>> VKnots = new NCollection_HArray1<double>(1, 2);
+    const occ::handle<NCollection_HArray1<int>> UKmult = new NCollection_HArray1<int>(1, 2);
+    const occ::handle<NCollection_HArray1<int>> VKmult = new NCollection_HArray1<int>(1, 2);
+    const occ::handle<NCollection_HArray1<double>>    UKnots = new NCollection_HArray1<double>(1, 2);
+    const occ::handle<NCollection_HArray1<double>>    VKnots = new NCollection_HArray1<double>(1, 2);
     UKmult->SetValue(1, BzS->UDegree() + 1);
     UKmult->SetValue(2, BzS->UDegree() + 1);
     VKmult->SetValue(1, BzS->VDegree() + 1);
@@ -550,9 +548,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for U Direction
     const int nbKU = BSPL->NbControlPointsListI() + BSPL->UDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    UKmult = new NCollection_HArray1<int>(1, nbKU);
-    const occ::handle<NCollection_HArray1<double>> UKnots =
-      new NCollection_HArray1<double>(1, nbKU);
+    const occ::handle<NCollection_HArray1<int>> UKmult = new NCollection_HArray1<int>(1, nbKU);
+    const occ::handle<NCollection_HArray1<double>>    UKnots = new NCollection_HArray1<double>(1, nbKU);
     for (int iU = 1; iU <= nbKU; iU++)
     {
       UKmult->SetValue(iU, 1);
@@ -563,9 +560,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for V Direction
     const int nbKV = BSPL->NbControlPointsListJ() + BSPL->VDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    VKmult = new NCollection_HArray1<int>(1, nbKV);
-    const occ::handle<NCollection_HArray1<double>> VKnots =
-      new NCollection_HArray1<double>(1, nbKV);
+    const occ::handle<NCollection_HArray1<int>> VKmult = new NCollection_HArray1<int>(1, nbKV);
+    const occ::handle<NCollection_HArray1<double>>    VKnots = new NCollection_HArray1<double>(1, nbKV);
     for (int iV = 1; iV <= nbKV; iV++)
     {
       VKmult->SetValue(iV, 1);
@@ -592,9 +588,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for U Direction
     const int nbKU = BSPL->NbControlPointsListI() - BSPL->UDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    UKmult = new NCollection_HArray1<int>(1, nbKU);
-    const occ::handle<NCollection_HArray1<double>> UKnots =
-      new NCollection_HArray1<double>(1, nbKU);
+    const occ::handle<NCollection_HArray1<int>> UKmult = new NCollection_HArray1<int>(1, nbKU);
+    const occ::handle<NCollection_HArray1<double>>    UKnots = new NCollection_HArray1<double>(1, nbKU);
     for (int iU = 1; iU <= nbKU; iU++)
     {
       UKmult->SetValue(iU, 1);
@@ -607,9 +602,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for V Direction
     const int nbKV = BSPL->NbControlPointsListJ() - BSPL->VDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    VKmult = new NCollection_HArray1<int>(1, nbKV);
-    const occ::handle<NCollection_HArray1<double>> VKnots =
-      new NCollection_HArray1<double>(1, nbKV);
+    const occ::handle<NCollection_HArray1<int>> VKmult = new NCollection_HArray1<int>(1, nbKV);
+    const occ::handle<NCollection_HArray1<double>>    VKnots = new NCollection_HArray1<double>(1, nbKV);
     for (int iV = 1; iV <= nbKV; iV++)
     {
       VKmult->SetValue(iV, 1);
@@ -631,10 +625,9 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
       new StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface;
 
     // Compute Knots and KnotsMultiplicity for U Direction
-    const int nbKU = RUS->NbControlPointsListI() + RUS->UDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    UKmult = new NCollection_HArray1<int>(1, nbKU);
-    const occ::handle<NCollection_HArray1<double>> UKnots =
-      new NCollection_HArray1<double>(1, nbKU);
+    const int                 nbKU = RUS->NbControlPointsListI() + RUS->UDegree() + 1;
+    const occ::handle<NCollection_HArray1<int>> UKmult = new NCollection_HArray1<int>(1, nbKU);
+    const occ::handle<NCollection_HArray1<double>>    UKnots = new NCollection_HArray1<double>(1, nbKU);
     for (int iU = 1; iU <= nbKU; iU++)
     {
       UKmult->SetValue(iU, 1);
@@ -642,10 +635,9 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
     }
 
     // Compute Knots and KnotsMultiplicity for V Direction
-    const int nbKV = RUS->NbControlPointsListJ() + RUS->VDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    VKmult = new NCollection_HArray1<int>(1, nbKV);
-    const occ::handle<NCollection_HArray1<double>> VKnots =
-      new NCollection_HArray1<double>(1, nbKV);
+    const int                 nbKV = RUS->NbControlPointsListJ() + RUS->VDegree() + 1;
+    const occ::handle<NCollection_HArray1<int>> VKmult = new NCollection_HArray1<int>(1, nbKV);
+    const occ::handle<NCollection_HArray1<double>>    VKnots = new NCollection_HArray1<double>(1, nbKV);
     for (int iV = 1; iV <= nbKV; iV++)
     {
       VKmult->SetValue(iV, 1);
@@ -680,9 +672,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for U Direction
     const int nbKU = RQUS->NbControlPointsListI() - RQUS->UDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    UKmult = new NCollection_HArray1<int>(1, nbKU);
-    const occ::handle<NCollection_HArray1<double>> UKnots =
-      new NCollection_HArray1<double>(1, nbKU);
+    const occ::handle<NCollection_HArray1<int>> UKmult = new NCollection_HArray1<int>(1, nbKU);
+    const occ::handle<NCollection_HArray1<double>>    UKnots = new NCollection_HArray1<double>(1, nbKU);
     for (int iU = 1; iU <= nbKU; iU++)
     {
       UKmult->SetValue(iU, 1);
@@ -693,9 +684,8 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 
     // Compute Knots and KnotsMultiplicity for V Direction
     const int nbKV = RQUS->NbControlPointsListJ() - RQUS->VDegree() + 1;
-    const occ::handle<NCollection_HArray1<int>>    VKmult = new NCollection_HArray1<int>(1, nbKV);
-    const occ::handle<NCollection_HArray1<double>> VKnots =
-      new NCollection_HArray1<double>(1, nbKV);
+    const occ::handle<NCollection_HArray1<int>> VKmult = new NCollection_HArray1<int>(1, nbKV);
+    const occ::handle<NCollection_HArray1<double>>    VKnots = new NCollection_HArray1<double>(1, nbKV);
     for (int iV = 1; iV <= nbKV; iV++)
     {
       VKmult->SetValue(iV, 1);
@@ -732,10 +722,10 @@ occ::handle<Geom_BoundedSurface> StepToGeom::MakeBoundedSurface(
 template <class TPntArray, class TCartesianPoint, class TGpPnt, class TBSplineCurve>
 occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   const occ::handle<StepGeom_BSplineCurve>& theStepGeom_BSplineCurve,
-  const StepData_Factors&                   theLocalFactors,
+  const StepData_Factors&              theLocalFactors,
   TGpPnt (TCartesianPoint::*thePntGetterFunction)() const,
   occ::handle<TCartesianPoint> (*thePointMakerFunction)(const occ::handle<StepGeom_CartesianPoint>&,
-                                                        const StepData_Factors&))
+                                                   const StepData_Factors&))
 {
   occ::handle<StepGeom_BSplineCurveWithKnots> aBSplineCurveWithKnots;
   occ::handle<StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve>
@@ -762,8 +752,8 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   const occ::handle<NCollection_HArray1<double>>& aKnots = aBSplineCurveWithKnots->Knots();
 
   // Count number of unique knots
-  int    NbUniqueKnots = 0;
-  double lastKnot      = RealFirst();
+  int NbUniqueKnots = 0;
+  double    lastKnot      = RealFirst();
   for (int i = 1; i <= NbKnots; ++i)
   {
     if (aKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
@@ -776,8 +766,8 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
   {
     return 0;
   }
-  NCollection_Array1<double> aUniqueKnots(1, NbUniqueKnots);
-  NCollection_Array1<int>    aUniqueKnotMultiplicities(1, NbUniqueKnots);
+  NCollection_Array1<double>    aUniqueKnots(1, NbUniqueKnots);
+  NCollection_Array1<int> aUniqueKnotMultiplicities(1, NbUniqueKnots);
   lastKnot = aKnots->Value(1);
   aUniqueKnots.SetValue(1, aKnots->Value(1));
   aUniqueKnotMultiplicities.SetValue(1, aKnotMultiplicities->Value(1));
@@ -822,15 +812,18 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
 
   const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList =
     aBSplineCurveWithKnots->ControlPointsList();
-  int aSummaryMuultypisityDifference = aFirstMuultypisityDifference + aLastMuultypisityDifference;
-  int NbUniquePoles                  = NbPoles - aSummaryMuultypisityDifference;
+  int aSummaryMuultypisityDifference =
+    aFirstMuultypisityDifference + aLastMuultypisityDifference;
+  int NbUniquePoles = NbPoles - aSummaryMuultypisityDifference;
   if (NbUniquePoles <= 0)
   {
     return 0;
   }
   TPntArray Poles(1, NbPoles - aSummaryMuultypisityDifference);
 
-  for (int i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+  for (int i = 1 + aFirstMuultypisityDifference;
+       i <= NbPoles - aLastMuultypisityDifference;
+       ++i)
   {
     occ::handle<TCartesianPoint> aPoint =
       (*thePointMakerFunction)(aControlPointsList->Value(i), theLocalFactors);
@@ -876,7 +869,9 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
     const occ::handle<NCollection_HArray1<double>>& aWeights =
       aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
     NCollection_Array1<double> aUniqueWeights(1, NbPoles - aSummaryMuultypisityDifference);
-    for (int i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+    for (int i = 1 + aFirstMuultypisityDifference;
+         i <= NbPoles - aLastMuultypisityDifference;
+         ++i)
       aUniqueWeights.SetValue(i - aFirstMuultypisityDifference, aWeights->Value(i));
     aBSplineCurve = new TBSplineCurve(Poles,
                                       aUniqueWeights,
@@ -907,15 +902,13 @@ occ::handle<TBSplineCurve> MakeBSplineCurveCommon(
 
 occ::handle<Geom_BSplineCurve> StepToGeom::MakeBSplineCurve(
   const occ::handle<StepGeom_BSplineCurve>& theStepGeom_BSplineCurve,
-  const StepData_Factors&                   theLocalFactors)
+  const StepData_Factors&              theLocalFactors)
 {
-  return MakeBSplineCurveCommon<NCollection_Array1<gp_Pnt>,
-                                Geom_CartesianPoint,
-                                gp_Pnt,
-                                Geom_BSplineCurve>(theStepGeom_BSplineCurve,
-                                                   theLocalFactors,
-                                                   &Geom_CartesianPoint::Pnt,
-                                                   &MakeCartesianPoint);
+  return MakeBSplineCurveCommon<NCollection_Array1<gp_Pnt>, Geom_CartesianPoint, gp_Pnt, Geom_BSplineCurve>(
+    theStepGeom_BSplineCurve,
+    theLocalFactors,
+    &Geom_CartesianPoint::Pnt,
+    &MakeCartesianPoint);
 }
 
 //=============================================================================
@@ -925,7 +918,7 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakeBSplineCurve(
 
 occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeBSplineCurve2d(
   const occ::handle<StepGeom_BSplineCurve>& theStepGeom_BSplineCurve,
-  const StepData_Factors&                   theLocalFactors)
+  const StepData_Factors&              theLocalFactors)
 {
   return MakeBSplineCurveCommon<NCollection_Array1<gp_Pnt2d>,
                                 Geom2d_CartesianPoint,
@@ -943,9 +936,9 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeBSplineCurve2d(
 
 occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
   const occ::handle<StepGeom_BSplineSurface>& SS,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
-  int                                                                    i, j;
+  int                                                  i, j;
   occ::handle<StepGeom_BSplineSurfaceWithKnots>                          BS;
   occ::handle<StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface> BSR;
 
@@ -957,13 +950,12 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
   else
     BS = occ::down_cast<StepGeom_BSplineSurfaceWithKnots>(SS);
 
-  const int UDeg    = BS->UDegree();
-  const int VDeg    = BS->VDegree();
-  const int NUPoles = BS->NbControlPointsListI();
-  const int NVPoles = BS->NbControlPointsListJ();
-  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList =
-    BS->ControlPointsList();
-  NCollection_Array2<gp_Pnt> Poles(1, NUPoles, 1, NVPoles);
+  const int                          UDeg               = BS->UDegree();
+  const int                          VDeg               = BS->VDegree();
+  const int                          NUPoles            = BS->NbControlPointsListI();
+  const int                          NVPoles            = BS->NbControlPointsListJ();
+  const occ::handle<NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>>& aControlPointsList = BS->ControlPointsList();
+  NCollection_Array2<gp_Pnt>                              Poles(1, NUPoles, 1, NVPoles);
   for (i = 1; i <= NUPoles; i++)
   {
     for (j = 1; j <= NVPoles; j++)
@@ -976,13 +968,13 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
         return 0;
     }
   }
-  const int                                       NUKnots          = BS->NbUMultiplicities();
-  const occ::handle<NCollection_HArray1<int>>&    aUMultiplicities = BS->UMultiplicities();
-  const occ::handle<NCollection_HArray1<double>>& aUKnots          = BS->UKnots();
+  const int                  NUKnots          = BS->NbUMultiplicities();
+  const occ::handle<NCollection_HArray1<int>>& aUMultiplicities = BS->UMultiplicities();
+  const occ::handle<NCollection_HArray1<double>>&    aUKnots          = BS->UKnots();
 
   // count number of unique uknots
-  double lastKnot      = RealFirst();
-  int    NUKnotsUnique = 0;
+  double    lastKnot      = RealFirst();
+  int NUKnotsUnique = 0;
   for (i = 1; i <= NUKnots; i++)
   {
     if (aUKnots->Value(i) - lastKnot > Epsilon(std::abs(lastKnot)))
@@ -993,10 +985,10 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
   }
 
   // set umultiplicities and uknots
-  NCollection_Array1<int>    UMult(1, NUKnotsUnique);
-  NCollection_Array1<double> KUn(1, NUKnotsUnique);
-  int                        pos = 1;
-  lastKnot                       = aUKnots->Value(1);
+  NCollection_Array1<int> UMult(1, NUKnotsUnique);
+  NCollection_Array1<double>    KUn(1, NUKnotsUnique);
+  int        pos = 1;
+  lastKnot                    = aUKnots->Value(1);
   KUn.SetValue(1, aUKnots->Value(1));
   UMult.SetValue(1, aUMultiplicities->Value(1));
   for (i = 2; i <= NUKnots; i++)
@@ -1015,12 +1007,12 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
       UMult.SetValue(pos, curMult + aUMultiplicities->Value(i));
     }
   }
-  const int                                       NVKnots          = BS->NbVMultiplicities();
-  const occ::handle<NCollection_HArray1<int>>&    aVMultiplicities = BS->VMultiplicities();
-  const occ::handle<NCollection_HArray1<double>>& aVKnots          = BS->VKnots();
+  const int                  NVKnots          = BS->NbVMultiplicities();
+  const occ::handle<NCollection_HArray1<int>>& aVMultiplicities = BS->VMultiplicities();
+  const occ::handle<NCollection_HArray1<double>>&    aVKnots          = BS->VKnots();
 
   // count number of unique vknots
-  lastKnot          = RealFirst();
+  lastKnot                       = RealFirst();
   int NVKnotsUnique = 0;
   for (i = 1; i <= NVKnots; i++)
   {
@@ -1032,8 +1024,8 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
   }
 
   // set vmultiplicities and vknots
-  NCollection_Array1<int>    VMult(1, NVKnotsUnique);
-  NCollection_Array1<double> KVn(1, NVKnotsUnique);
+  NCollection_Array1<int> VMult(1, NVKnotsUnique);
+  NCollection_Array1<double>    KVn(1, NVKnotsUnique);
   pos      = 1;
   lastKnot = aVKnots->Value(1);
   KVn.SetValue(1, aVKnots->Value(1));
@@ -1100,7 +1092,7 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
   if (SS->IsKind(STANDARD_TYPE(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)))
   {
     const occ::handle<NCollection_HArray2<double>>& aWeight = BSR->WeightsData();
-    NCollection_Array2<double>                      W(1, NUPoles, 1, NVPoles);
+    NCollection_Array2<double>                 W(1, NUPoles, 1, NVPoles);
     for (i = 1; i <= NUPoles; i++)
     {
       for (j = 1; j <= NVPoles; j++)
@@ -1138,7 +1130,7 @@ occ::handle<Geom_BSplineSurface> StepToGeom::MakeBSplineSurface(
 
 occ::handle<Geom_CartesianPoint> StepToGeom::MakeCartesianPoint(
   const occ::handle<StepGeom_CartesianPoint>& SP,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   if (!SP.IsNull() && SP->NbCoordinates() == 3)
   {
@@ -1158,7 +1150,7 @@ occ::handle<Geom_CartesianPoint> StepToGeom::MakeCartesianPoint(
 
 occ::handle<Geom2d_CartesianPoint> StepToGeom::MakeCartesianPoint2d(
   const occ::handle<StepGeom_CartesianPoint>& SP,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   (void)theLocalFactors;
   if (SP->NbCoordinates() == 2)
@@ -1175,7 +1167,7 @@ occ::handle<Geom2d_CartesianPoint> StepToGeom::MakeCartesianPoint2d(
 //=============================================================================
 
 occ::handle<Geom_Circle> StepToGeom::MakeCircle(const occ::handle<StepGeom_Circle>& SC,
-                                                const StepData_Factors&             theLocalFactors)
+                                           const StepData_Factors&        theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 2)
@@ -1196,7 +1188,7 @@ occ::handle<Geom_Circle> StepToGeom::MakeCircle(const occ::handle<StepGeom_Circl
 //=============================================================================
 
 occ::handle<Geom2d_Circle> StepToGeom::MakeCircle2d(const occ::handle<StepGeom_Circle>& SC,
-                                                    const StepData_Factors& theLocalFactors)
+                                               const StepData_Factors&        theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 1)
@@ -1217,7 +1209,7 @@ occ::handle<Geom2d_Circle> StepToGeom::MakeCircle2d(const occ::handle<StepGeom_C
 //=============================================================================
 
 occ::handle<Geom_Conic> StepToGeom::MakeConic(const occ::handle<StepGeom_Conic>& SC,
-                                              const StepData_Factors&            theLocalFactors)
+                                         const StepData_Factors&       theLocalFactors)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Circle)))
   {
@@ -1244,7 +1236,7 @@ occ::handle<Geom_Conic> StepToGeom::MakeConic(const occ::handle<StepGeom_Conic>&
 //=============================================================================
 
 occ::handle<Geom2d_Conic> StepToGeom::MakeConic2d(const occ::handle<StepGeom_Conic>& SC,
-                                                  const StepData_Factors& theLocalFactors)
+                                             const StepData_Factors&       theLocalFactors)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Circle)))
   {
@@ -1273,7 +1265,7 @@ occ::handle<Geom2d_Conic> StepToGeom::MakeConic2d(const occ::handle<StepGeom_Con
 
 occ::handle<Geom_ConicalSurface> StepToGeom::MakeConicalSurface(
   const occ::handle<StepGeom_ConicalSurface>& SS,
-  const StepData_Factors&                     theLocalFactors)
+  const StepData_Factors&                theLocalFactors)
 {
   occ::handle<Geom_Axis2Placement> A = MakeAxis2Placement(SS->Position(), theLocalFactors);
   if (!A.IsNull())
@@ -1292,7 +1284,7 @@ occ::handle<Geom_ConicalSurface> StepToGeom::MakeConicalSurface(
 //=============================================================================
 
 occ::handle<Geom_Curve> StepToGeom::MakeCurve(const occ::handle<StepGeom_Curve>& SC,
-                                              const StepData_Factors&            theLocalFactors)
+                                         const StepData_Factors&       theLocalFactors)
 {
   if (SC.IsNull())
   {
@@ -1365,7 +1357,7 @@ occ::handle<Geom_Curve> StepToGeom::MakeCurve(const occ::handle<StepGeom_Curve>&
 //=============================================================================
 
 occ::handle<Geom2d_Curve> StepToGeom::MakeCurve2d(const occ::handle<StepGeom_Curve>& SC,
-                                                  const StepData_Factors& theLocalFactors)
+                                             const StepData_Factors&       theLocalFactors)
 {
   if (SC->IsKind(STANDARD_TYPE(StepGeom_Line)))
   {
@@ -1410,7 +1402,7 @@ occ::handle<Geom2d_Curve> StepToGeom::MakeCurve2d(const occ::handle<StepGeom_Cur
 
 occ::handle<Geom_CylindricalSurface> StepToGeom::MakeCylindricalSurface(
   const occ::handle<StepGeom_CylindricalSurface>& SS,
-  const StepData_Factors&                         theLocalFactors)
+  const StepData_Factors&                    theLocalFactors)
 {
   occ::handle<Geom_Axis2Placement> A = MakeAxis2Placement(SS->Position(), theLocalFactors);
   if (!A.IsNull())
@@ -1471,7 +1463,7 @@ occ::handle<Geom2d_Direction> StepToGeom::MakeDirection2d(const occ::handle<Step
 
 occ::handle<Geom_ElementarySurface> StepToGeom::MakeElementarySurface(
   const occ::handle<StepGeom_ElementarySurface>& SS,
-  const StepData_Factors&                        theLocalFactors)
+  const StepData_Factors&                   theLocalFactors)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_Plane)))
   {
@@ -1479,7 +1471,8 @@ occ::handle<Geom_ElementarySurface> StepToGeom::MakeElementarySurface(
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_CylindricalSurface)))
   {
-    return MakeCylindricalSurface(occ::down_cast<StepGeom_CylindricalSurface>(SS), theLocalFactors);
+    return MakeCylindricalSurface(occ::down_cast<StepGeom_CylindricalSurface>(SS),
+                                  theLocalFactors);
   }
   if (SS->IsKind(STANDARD_TYPE(StepGeom_ConicalSurface)))
   {
@@ -1501,7 +1494,7 @@ occ::handle<Geom_ElementarySurface> StepToGeom::MakeElementarySurface(
 //=============================================================================
 
 occ::handle<Geom_Ellipse> StepToGeom::MakeEllipse(const occ::handle<StepGeom_Ellipse>& SC,
-                                                  const StepData_Factors& theLocalFactors)
+                                             const StepData_Factors&         theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 2)
@@ -1511,7 +1504,7 @@ occ::handle<Geom_Ellipse> StepToGeom::MakeEllipse(const occ::handle<StepGeom_Ell
                          theLocalFactors);
     if (!A1.IsNull())
     {
-      gp_Ax2       A(A1->Ax2());
+      gp_Ax2              A(A1->Ax2());
       const double LF     = theLocalFactors.LengthFactor();
       const double majorR = SC->SemiAxis1() * LF;
       const double minorR = SC->SemiAxis2() * LF;
@@ -1535,7 +1528,7 @@ occ::handle<Geom_Ellipse> StepToGeom::MakeEllipse(const occ::handle<StepGeom_Ell
 //=============================================================================
 
 occ::handle<Geom2d_Ellipse> StepToGeom::MakeEllipse2d(const occ::handle<StepGeom_Ellipse>& SC,
-                                                      const StepData_Factors& theLocalFactors)
+                                                 const StepData_Factors&         theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 1)
@@ -1545,7 +1538,7 @@ occ::handle<Geom2d_Ellipse> StepToGeom::MakeEllipse2d(const occ::handle<StepGeom
                         theLocalFactors);
     if (!A1.IsNull())
     {
-      gp_Ax22d     A(A1->Ax2d());
+      gp_Ax22d            A(A1->Ax2d());
       const double majorR = SC->SemiAxis1();
       const double minorR = SC->SemiAxis2();
       if (majorR - minorR >= 0.)
@@ -1568,7 +1561,7 @@ occ::handle<Geom2d_Ellipse> StepToGeom::MakeEllipse2d(const occ::handle<StepGeom
 //=============================================================================
 
 occ::handle<Geom_Hyperbola> StepToGeom::MakeHyperbola(const occ::handle<StepGeom_Hyperbola>& SC,
-                                                      const StepData_Factors& theLocalFactors)
+                                                 const StepData_Factors&           theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 2)
@@ -1578,7 +1571,7 @@ occ::handle<Geom_Hyperbola> StepToGeom::MakeHyperbola(const occ::handle<StepGeom
                          theLocalFactors);
     if (!A1.IsNull())
     {
-      const gp_Ax2 A(A1->Ax2());
+      const gp_Ax2        A(A1->Ax2());
       const double LF = theLocalFactors.LengthFactor();
       return new Geom_Hyperbola(A, SC->SemiAxis() * LF, SC->SemiImagAxis() * LF);
     }
@@ -1591,7 +1584,7 @@ occ::handle<Geom_Hyperbola> StepToGeom::MakeHyperbola(const occ::handle<StepGeom
 //=============================================================================
 
 occ::handle<Geom2d_Hyperbola> StepToGeom::MakeHyperbola2d(const occ::handle<StepGeom_Hyperbola>& SC,
-                                                          const StepData_Factors& theLocalFactors)
+                                                     const StepData_Factors& theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 1)
@@ -1613,7 +1606,7 @@ occ::handle<Geom2d_Hyperbola> StepToGeom::MakeHyperbola2d(const occ::handle<Step
 //=============================================================================
 
 occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC,
-                                            const StepData_Factors&           theLocalFactors)
+                                       const StepData_Factors&      theLocalFactors)
 {
   occ::handle<Geom_CartesianPoint> P = MakeCartesianPoint(SC->Pnt(), theLocalFactors);
   if (!P.IsNull())
@@ -1636,7 +1629,7 @@ occ::handle<Geom_Line> StepToGeom::MakeLine(const occ::handle<StepGeom_Line>& SC
 //=============================================================================
 
 occ::handle<Geom2d_Line> StepToGeom::MakeLine2d(const occ::handle<StepGeom_Line>& SC,
-                                                const StepData_Factors&           theLocalFactors)
+                                           const StepData_Factors&      theLocalFactors)
 {
   occ::handle<Geom2d_CartesianPoint> P = MakeCartesianPoint2d(SC->Pnt(), theLocalFactors);
   if (!P.IsNull())
@@ -1657,7 +1650,7 @@ occ::handle<Geom2d_Line> StepToGeom::MakeLine2d(const occ::handle<StepGeom_Line>
 //=============================================================================
 
 occ::handle<Geom_Parabola> StepToGeom::MakeParabola(const occ::handle<StepGeom_Parabola>& SC,
-                                                    const StepData_Factors& theLocalFactors)
+                                               const StepData_Factors&          theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 2)
@@ -1678,7 +1671,7 @@ occ::handle<Geom_Parabola> StepToGeom::MakeParabola(const occ::handle<StepGeom_P
 //=============================================================================
 
 occ::handle<Geom2d_Parabola> StepToGeom::MakeParabola2d(const occ::handle<StepGeom_Parabola>& SC,
-                                                        const StepData_Factors& theLocalFactors)
+                                                   const StepData_Factors&          theLocalFactors)
 {
   const StepGeom_Axis2Placement AxisSelect = SC->Position();
   if (AxisSelect.CaseNum(AxisSelect.Value()) == 1)
@@ -1700,7 +1693,7 @@ occ::handle<Geom2d_Parabola> StepToGeom::MakeParabola2d(const occ::handle<StepGe
 //=============================================================================
 
 occ::handle<Geom_Plane> StepToGeom::MakePlane(const occ::handle<StepGeom_Plane>& SP,
-                                              const StepData_Factors&            theLocalFactors)
+                                         const StepData_Factors&       theLocalFactors)
 {
   occ::handle<Geom_Axis2Placement> A = MakeAxis2Placement(SP->Position(), theLocalFactors);
   if (!A.IsNull())
@@ -1713,7 +1706,7 @@ occ::handle<Geom_Plane> StepToGeom::MakePlane(const occ::handle<StepGeom_Plane>&
 //=================================================================================================
 
 occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGeom_Polyline>& SPL,
-                                                        const StepData_Factors& theLocalFactors)
+                                                   const StepData_Factors&          theLocalFactors)
 {
   if (SPL.IsNull())
     return occ::handle<Geom_BSplineCurve>();
@@ -1721,9 +1714,9 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
   const int nbp = SPL->NbPoints();
   if (nbp > 1)
   {
-    NCollection_Array1<gp_Pnt> Poles(1, nbp);
-    NCollection_Array1<double> Knots(1, nbp);
-    NCollection_Array1<int>    Mults(1, nbp);
+    NCollection_Array1<gp_Pnt>      Poles(1, nbp);
+    NCollection_Array1<double>    Knots(1, nbp);
+    NCollection_Array1<int> Mults(1, nbp);
 
     for (int i = 1; i <= nbp; i++)
     {
@@ -1745,9 +1738,8 @@ occ::handle<Geom_BSplineCurve> StepToGeom::MakePolyline(const occ::handle<StepGe
 
 //=================================================================================================
 
-occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
-  const occ::handle<StepGeom_Polyline>& SPL,
-  const StepData_Factors&               theLocalFactors)
+occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(const occ::handle<StepGeom_Polyline>& SPL,
+                                                       const StepData_Factors& theLocalFactors)
 {
   if (SPL.IsNull())
     return occ::handle<Geom2d_BSplineCurve>();
@@ -1755,14 +1747,13 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
   const int nbp = SPL->NbPoints();
   if (nbp > 1)
   {
-    NCollection_Array1<gp_Pnt2d> Poles(1, nbp);
-    NCollection_Array1<double>   Knots(1, nbp);
-    NCollection_Array1<int>      Mults(1, nbp);
+    NCollection_Array1<gp_Pnt2d>    Poles(1, nbp);
+    NCollection_Array1<double>    Knots(1, nbp);
+    NCollection_Array1<int> Mults(1, nbp);
 
     for (int i = 1; i <= nbp; i++)
     {
-      occ::handle<Geom2d_CartesianPoint> P =
-        MakeCartesianPoint2d(SPL->PointsValue(i), theLocalFactors);
+      occ::handle<Geom2d_CartesianPoint> P = MakeCartesianPoint2d(SPL->PointsValue(i), theLocalFactors);
       if (!P.IsNull())
         Poles.SetValue(i, P->Pnt2d());
       else
@@ -1785,7 +1776,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakePolyline2d(
 
 occ::handle<Geom_RectangularTrimmedSurface> StepToGeom::MakeRectangularTrimmedSurface(
   const occ::handle<StepGeom_RectangularTrimmedSurface>& SS,
-  const StepData_Factors&                                theLocalFactors)
+  const StepData_Factors&                           theLocalFactors)
 {
   occ::handle<Geom_Surface> theBasis = MakeSurface(SS->BasisSurface(), theLocalFactors);
   if (!theBasis.IsNull())
@@ -1818,8 +1809,8 @@ occ::handle<Geom_RectangularTrimmedSurface> StepToGeom::MakeRectangularTrimmedSu
     else if (theBasis->IsKind(STANDARD_TYPE(Geom_ConicalSurface)))
     {
       const occ::handle<Geom_ConicalSurface> conicS = occ::down_cast<Geom_ConicalSurface>(theBasis);
-      uFact                                         = AngleFact;
-      vFact                                         = LengthFact / std::cos(conicS->SemiAngle());
+      uFact                                    = AngleFact;
+      vFact                                    = LengthFact / std::cos(conicS->SemiAngle());
     }
     else if (theBasis->IsKind(STANDARD_TYPE(Geom_Plane)))
     {
@@ -1843,7 +1834,7 @@ occ::handle<Geom_RectangularTrimmedSurface> StepToGeom::MakeRectangularTrimmedSu
 
 occ::handle<Geom_SphericalSurface> StepToGeom::MakeSphericalSurface(
   const occ::handle<StepGeom_SphericalSurface>& SS,
-  const StepData_Factors&                       theLocalFactors)
+  const StepData_Factors&                  theLocalFactors)
 {
   occ::handle<Geom_Axis2Placement> A = MakeAxis2Placement(SS->Position(), theLocalFactors);
   if (!A.IsNull())
@@ -1858,7 +1849,7 @@ occ::handle<Geom_SphericalSurface> StepToGeom::MakeSphericalSurface(
 //=============================================================================
 
 occ::handle<Geom_Surface> StepToGeom::MakeSurface(const occ::handle<StepGeom_Surface>& SS,
-                                                  const StepData_Factors& theLocalFactors)
+                                             const StepData_Factors&         theLocalFactors)
 {
   // sln 01.10.2001 BUC61003. If entry shell is NULL do nothing
   if (SS.IsNull())
@@ -1956,7 +1947,7 @@ occ::handle<Geom_Surface> StepToGeom::MakeSurface(const occ::handle<StepGeom_Sur
 
 occ::handle<Geom_SurfaceOfLinearExtrusion> StepToGeom::MakeSurfaceOfLinearExtrusion(
   const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& SS,
-  const StepData_Factors&                               theLocalFactors)
+  const StepData_Factors&                          theLocalFactors)
 {
   occ::handle<Geom_Curve> C = MakeCurve(SS->SweptCurve(), theLocalFactors);
   if (!C.IsNull())
@@ -1967,7 +1958,7 @@ occ::handle<Geom_SurfaceOfLinearExtrusion> StepToGeom::MakeSurfaceOfLinearExtrus
       MakeVectorWithMagnitude(SS->ExtrusionAxis(), theLocalFactors);
     if (!V.IsNull())
     {
-      const gp_Dir           D(V->Vec());
+      const gp_Dir      D(V->Vec());
       occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(C);
       if (!aLine.IsNull() && aLine->Lin().Direction().IsParallel(D, Precision::Angular()))
         return occ::handle<Geom_SurfaceOfLinearExtrusion>();
@@ -1984,7 +1975,7 @@ occ::handle<Geom_SurfaceOfLinearExtrusion> StepToGeom::MakeSurfaceOfLinearExtrus
 
 occ::handle<Geom_SurfaceOfRevolution> StepToGeom::MakeSurfaceOfRevolution(
   const occ::handle<StepGeom_SurfaceOfRevolution>& SS,
-  const StepData_Factors&                          theLocalFactors)
+  const StepData_Factors&                     theLocalFactors)
 {
   occ::handle<Geom_Curve> C = MakeCurve(SS->SweptCurve(), theLocalFactors);
   if (!C.IsNull())
@@ -1997,8 +1988,8 @@ occ::handle<Geom_SurfaceOfRevolution> StepToGeom::MakeSurfaceOfRevolution(
       if (C->IsKind(STANDARD_TYPE(Geom_Circle)) || C->IsKind(STANDARD_TYPE(Geom_Ellipse)))
       {
         const occ::handle<Geom_Conic> conic = occ::down_cast<Geom_Conic>(C);
-        const gp_Pnt                  pc    = conic->Location();
-        const gp_Lin                  rl(A);
+        const gp_Pnt             pc    = conic->Location();
+        const gp_Lin             rl(A);
         if (rl.Distance(pc) < Precision::Confusion())
         { // pc lies on A2
           const gp_Dir dirline = A.Direction();
@@ -2027,9 +2018,8 @@ occ::handle<Geom_SurfaceOfRevolution> StepToGeom::MakeSurfaceOfRevolution(
 // SweptSurface de Geom
 //=============================================================================
 
-occ::handle<Geom_SweptSurface> StepToGeom::MakeSweptSurface(
-  const occ::handle<StepGeom_SweptSurface>& SS,
-  const StepData_Factors&                   theLocalFactors)
+occ::handle<Geom_SweptSurface> StepToGeom::MakeSweptSurface(const occ::handle<StepGeom_SweptSurface>& SS,
+                                                       const StepData_Factors& theLocalFactors)
 {
   if (SS->IsKind(STANDARD_TYPE(StepGeom_SurfaceOfLinearExtrusion)))
   {
@@ -2051,7 +2041,7 @@ occ::handle<Geom_SweptSurface> StepToGeom::MakeSweptSurface(
 
 occ::handle<Geom_ToroidalSurface> StepToGeom::MakeToroidalSurface(
   const occ::handle<StepGeom_ToroidalSurface>& SS,
-  const StepData_Factors&                      theLocalFactors)
+  const StepData_Factors&                 theLocalFactors)
 {
   occ::handle<Geom_Axis2Placement> A = MakeAxis2Placement(SS->Position(), theLocalFactors);
   if (!A.IsNull())
@@ -2068,12 +2058,11 @@ occ::handle<Geom_ToroidalSurface> StepToGeom::MakeToroidalSurface(
 
 bool StepToGeom::MakeTransformation2d(
   const occ::handle<StepGeom_CartesianTransformationOperator2d>& SCTO,
-  gp_Trsf2d&                                                     CT,
-  const StepData_Factors&                                        theLocalFactors)
+  gp_Trsf2d&                                                CT,
+  const StepData_Factors&                                   theLocalFactors)
 {
   //  NB : on ne s interesse ici qu au deplacement rigide
-  occ::handle<Geom2d_CartesianPoint> CP =
-    MakeCartesianPoint2d(SCTO->LocalOrigin(), theLocalFactors);
+  occ::handle<Geom2d_CartesianPoint> CP = MakeCartesianPoint2d(SCTO->LocalOrigin(), theLocalFactors);
   if (!CP.IsNull())
   {
     gp_Dir2d D1(gp_Dir2d::D::X);
@@ -2098,8 +2087,8 @@ bool StepToGeom::MakeTransformation2d(
 
 bool StepToGeom::MakeTransformation3d(
   const occ::handle<StepGeom_CartesianTransformationOperator3d>& SCTO,
-  gp_Trsf&                                                       CT,
-  const StepData_Factors&                                        theLocalFactors)
+  gp_Trsf&                                                  CT,
+  const StepData_Factors&                                   theLocalFactors)
 {
   occ::handle<Geom_CartesianPoint> CP = MakeCartesianPoint(SCTO->LocalOrigin(), theLocalFactors);
   if (!CP.IsNull())
@@ -2108,7 +2097,7 @@ bool StepToGeom::MakeTransformation3d(
 
     // sln 23.10.2001. CTS23496: If problems with creation of direction occur default direction is
     // used
-    gp_Dir                                D1(gp_Dir::D::X);
+    gp_Dir                           D1(gp_Dir::D::X);
     const occ::handle<StepGeom_Direction> A1 = SCTO->Axis1();
     if (!A1.IsNull())
     {
@@ -2117,7 +2106,7 @@ bool StepToGeom::MakeTransformation3d(
         D1 = D->Dir();
     }
 
-    gp_Dir                                D2(gp_Dir::D::Y);
+    gp_Dir                           D2(gp_Dir::D::Y);
     const occ::handle<StepGeom_Direction> A2 = SCTO->Axis2();
     if (!A2.IsNull())
     {
@@ -2126,8 +2115,8 @@ bool StepToGeom::MakeTransformation3d(
         D2 = D->Dir();
     }
 
-    bool                                  isDefaultDirectionUsed = true;
-    gp_Dir                                D3;
+    bool                 isDefaultDirectionUsed = true;
+    gp_Dir                           D3;
     const occ::handle<StepGeom_Direction> A3 = SCTO->Axis3();
     if (!A3.IsNull())
     {
@@ -2158,17 +2147,17 @@ bool StepToGeom::MakeTransformation3d(
 // ----------------------------------------------------------------
 //: o6 abv 18 Feb 99: parameter Factor added
 //: p3 abv 23 Feb 99: parameter Shift added
-static bool ExtractParameter(const occ::handle<Geom_Curve>& aGeomCurve,
-                             const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& TS,
-                             const int                                                        nbSel,
-                             const int               MasterRep,
-                             const double            Factor,
-                             const double            Shift,
-                             double&                 aParam,
-                             const StepData_Factors& theLocalFactors)
+static bool ExtractParameter(const occ::handle<Geom_Curve>&                       aGeomCurve,
+                                         const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& TS,
+                                         const int                          nbSel,
+                                         const int                          MasterRep,
+                                         const double                             Factor,
+                                         const double                             Shift,
+                                         double&                                  aParam,
+                                         const StepData_Factors& theLocalFactors)
 {
   occ::handle<StepGeom_CartesianPoint> aPoint;
-  int                                  i;
+  int                i;
   //: S4136  double precBrep = BRepAPI::Precision();
   for (i = 1; i <= nbSel; i++)
   {
@@ -2260,9 +2249,8 @@ static bool ExtractParameter(const occ::handle<Geom_Curve>& aGeomCurve,
 // Creation d' une Trimmed Curve de Geom a partir d' une Trimmed Curve de Step
 //=============================================================================
 
-occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
-  const occ::handle<StepGeom_TrimmedCurve>& SC,
-  const StepData_Factors&                   theLocalFactors)
+occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(const occ::handle<StepGeom_TrimmedCurve>& SC,
+                                                       const StepData_Factors& theLocalFactors)
 {
   const occ::handle<StepGeom_Curve> theSTEPCurve = SC->BasisCurve();
   occ::handle<Geom_Curve>           theCurve     = MakeCurve(theSTEPCurve, theLocalFactors);
@@ -2271,8 +2259,8 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
 
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel1 = SC->Trim1();
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel2 = SC->Trim2();
-  const int                                                        nbSel1      = SC->NbTrim1();
-  const int                                                        nbSel2      = SC->NbTrim2();
+  const int                          nbSel1      = SC->NbTrim1();
+  const int                          nbSel2      = SC->NbTrim2();
 
   int MasterRep;
   switch (SC->MasterRepresentation())
@@ -2355,10 +2343,10 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
     }
   }
 
-  double                               trim1 = 0.;
-  double                               trim2 = 0.;
+  double                   trim1 = 0.;
+  double                   trim2 = 0.;
   occ::handle<StepGeom_CartesianPoint> TrimCP1, TrimCP2;
-  const bool                           FoundParam1 =
+  const bool          FoundParam1 =
     ExtractParameter(theCurve, theTrimSel1, nbSel1, MasterRep, fact, shift, trim1, theLocalFactors);
   const bool FoundParam2 =
     ExtractParameter(theCurve, theTrimSel2, nbSel2, MasterRep, fact, shift, trim2, theLocalFactors);
@@ -2418,9 +2406,8 @@ occ::handle<Geom_TrimmedCurve> StepToGeom::MakeTrimmedCurve(
 //=============================================================================
 // Shall be completed to treat trimming with points
 
-occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
-  const occ::handle<StepGeom_TrimmedCurve>& SC,
-  const StepData_Factors&                   theLocalFactors)
+occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(const occ::handle<StepGeom_TrimmedCurve>& SC,
+                                                           const StepData_Factors& theLocalFactors)
 {
   const occ::handle<StepGeom_Curve> BasisCurve   = SC->BasisCurve();
   occ::handle<Geom2d_Curve>         theGeomBasis = MakeCurve2d(BasisCurve, theLocalFactors);
@@ -2434,8 +2421,8 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
 
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel1 = SC->Trim1();
   const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& theTrimSel2 = SC->Trim2();
-  const int                                                        nbSel1      = SC->NbTrim1();
-  const int                                                        nbSel2      = SC->NbTrim2();
+  const int                          nbSel1      = SC->NbTrim1();
+  const int                          nbSel2      = SC->NbTrim2();
   if ((nbSel1 == 1) && (nbSel2 == 1) && (theTrimSel1->Value(1).CaseMember() > 0)
       && (theTrimSel2->Value(1).CaseMember() > 0))
   {
@@ -2446,7 +2433,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
     if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Line)))
     {
       const occ::handle<StepGeom_Line> theLine = occ::down_cast<StepGeom_Line>(BasisCurve);
-      fact                                     = theLine->Dir()->Magnitude();
+      fact                                = theLine->Dir()->Magnitude();
     }
     else if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Circle))
              || BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Ellipse)))
@@ -2482,7 +2469,7 @@ occ::handle<Geom2d_BSplineCurve> StepToGeom::MakeTrimmedCurve2d(
 
 occ::handle<Geom_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude(
   const occ::handle<StepGeom_Vector>& SV,
-  const StepData_Factors&             theLocalFactors)
+  const StepData_Factors&        theLocalFactors)
 {
   // sln 22.10.2001. CTS23496: Vector is not created if direction have not been successfully created
   occ::handle<Geom_Direction> D = MakeDirection(SV->Orientation());
@@ -2517,7 +2504,7 @@ occ::handle<Geom2d_VectorWithMagnitude> StepToGeom::MakeVectorWithMagnitude2d(
 //=============================================================================
 
 occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
-  const StepKinematics_SpatialRotation&                  SR,
+  const StepKinematics_SpatialRotation&             SR,
   const occ::handle<StepRepr_GlobalUnitAssignedContext>& theCntxt)
 {
   // If rotation is already a ypr_rotation, return it immediately
@@ -2549,9 +2536,9 @@ occ::handle<NCollection_HArray1<double>> StepToGeom::MakeYprRotation(
     anYPRRotation->SetValue(3, 0.);
     return anYPRRotation;
   }
-  double                                                 dx = anAxis->X();
-  double                                                 dy = anAxis->Y();
-  double                                                 dz = anAxis->Z();
+  double                                     dx = anAxis->X();
+  double                                     dy = anAxis->Y();
+  double                                     dz = anAxis->Z();
   NCollection_Sequence<occ::handle<StepBasic_NamedUnit>> aPaUnits;
   for (int anInd = 1; anInd <= theCntxt->Units()->Length(); ++anInd)
   {

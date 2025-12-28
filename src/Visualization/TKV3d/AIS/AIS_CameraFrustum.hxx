@@ -51,7 +51,8 @@ public:
   Standard_EXPORT virtual void UnsetTransparency() override;
 
   //! Return true if specified display mode is supported.
-  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const override;
+  Standard_EXPORT virtual bool AcceptDisplayMode(const int theMode) const
+    override;
 
 protected:
   //! Computes presentation of camera frustum.
@@ -60,9 +61,8 @@ protected:
                                        const int theMode) override;
 
   //! Compute selection.
-  Standard_EXPORT virtual void ComputeSelection(
-    const occ::handle<SelectMgr_Selection>& theSelection,
-    const int                               theMode) override;
+  Standard_EXPORT virtual void ComputeSelection(const occ::handle<SelectMgr_Selection>& theSelection,
+                                                const int theMode) override;
 
 private:
   //! Fills triangles primitive array for camera frustum filling.
@@ -72,9 +72,9 @@ private:
   void fillBorders();
 
 protected:
-  NCollection_Array1<NCollection_Vec3<double>> myPoints; //!< Array of points
-  occ::handle<Graphic3d_ArrayOfTriangles> myTriangles;   //!< Triangles for camera frustum filling
-  occ::handle<Graphic3d_ArrayOfSegments>  myBorders;     //!< Segments for camera frustum borders
+  NCollection_Array1<NCollection_Vec3<double>> myPoints;    //!< Array of points
+  occ::handle<Graphic3d_ArrayOfTriangles>  myTriangles; //!< Triangles for camera frustum filling
+  occ::handle<Graphic3d_ArrayOfSegments>   myBorders;   //!< Segments for camera frustum borders
 };
 
 #endif // _AIS_CameraFrustum_HeaderFile

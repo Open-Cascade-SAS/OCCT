@@ -30,7 +30,9 @@
 #include <NCollection_DataMap.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -67,7 +69,7 @@ void BOPAlgo_Builder::FillImagesVertices(const Message_ProgressRange& theRange)
 
 void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
 {
-  int                   i, aNbS = myDS->NbSourceShapes();
+  int      i, aNbS = myDS->NbSourceShapes();
   Message_ProgressScope aPS(theRange, "Filling splits of edges", aNbS);
   for (i = 0; i < aNbS; ++i, aPS.Next())
   {
@@ -83,7 +85,7 @@ void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
       continue;
     }
     //
-    const TopoDS_Shape&                                   aE   = aSI.Shape();
+    const TopoDS_Shape&          aE   = aSI.Shape();
     const NCollection_List<occ::handle<BOPDS_PaveBlock>>& aLPB = myDS->PaveBlocks(i);
     //
     // Fill the images of the edge from the list of its pave blocks.
@@ -97,7 +99,7 @@ void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
       const occ::handle<BOPDS_PaveBlock>& aPB  = aItPB.Value();
       occ::handle<BOPDS_PaveBlock>        aPBR = myDS->RealPaveBlock(aPB);
       //
-      int                 nSpR = aPBR->Edge();
+      int    nSpR = aPBR->Edge();
       const TopoDS_Shape& aSpR = myDS->Shape(nSpR);
       pLS->Append(aSpR);
       //
@@ -110,7 +112,7 @@ void BOPAlgo_Builder::FillImagesEdges(const Message_ProgressRange& theRange)
       //
       if (myDS->IsCommonBlockOnEdge(aPB))
       {
-        int                 nSp = aPB->Edge();
+        int    nSp = aPB->Edge();
         const TopoDS_Shape& aSp = myDS->Shape(nSp);
         myShapesSD.Bind(aSp, aSpR);
       }
@@ -163,7 +165,7 @@ void BOPAlgo_Builder::BuildResult(const TopAbs_ShapeEnum theType)
 void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum       theType,
                                            const Message_ProgressRange& theRange)
 {
-  int                                                    i, aNbS;
+  int    i, aNbS;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFP(100, myAllocator);
   //
   aNbS = myDS->NbSourceShapes();
@@ -187,7 +189,7 @@ void BOPAlgo_Builder::FillImagesContainers(const TopAbs_ShapeEnum       theType,
 
 void BOPAlgo_Builder::FillImagesCompounds(const Message_ProgressRange& theRange)
 {
-  int                                                    i, aNbS;
+  int    i, aNbS;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFP(100, myAllocator);
   //
   aNbS = myDS->NbSourceShapes();
@@ -215,7 +217,7 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
   TopoDS_Iterator aIt(theS);
   for (; aIt.More(); aIt.Next())
   {
-    const TopoDS_Shape&                   aSS   = aIt.Value();
+    const TopoDS_Shape&         aSS   = aIt.Value();
     const NCollection_List<TopoDS_Shape>* pLFIm = myImages.Seek(aSS);
     if (pLFIm && ((pLFIm->Extent() != 1) || !pLFIm->First().IsSame(aSS)))
       break;
@@ -236,7 +238,7 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
   aIt.Initialize(theS);
   for (; aIt.More(); aIt.Next())
   {
-    const TopoDS_Shape&                   aSS    = aIt.Value();
+    const TopoDS_Shape&         aSS    = aIt.Value();
     const NCollection_List<TopoDS_Shape>* pLSSIm = myImages.Seek(aSS);
 
     if (!pLSSIm)
@@ -266,14 +268,12 @@ void BOPAlgo_Builder::FillImagesContainer(const TopoDS_Shape& theS, const TopAbs
 
 //=================================================================================================
 
-void BOPAlgo_Builder::FillImagesCompound(
-  const TopoDS_Shape&                                     theS,
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMFP)
+void BOPAlgo_Builder::FillImagesCompound(const TopoDS_Shape& theS, NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMFP)
 {
-  bool                                     bInterferred;
-  TopAbs_Orientation                       aOrX;
-  TopoDS_Iterator                          aIt;
-  BRep_Builder                             aBB;
+  bool                   bInterferred;
+  TopAbs_Orientation                 aOrX;
+  TopoDS_Iterator                    aIt;
+  BRep_Builder                       aBB;
   NCollection_List<TopoDS_Shape>::Iterator aItIm;
   //
   if (!theMFP.Add(theS))

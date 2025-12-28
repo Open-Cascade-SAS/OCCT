@@ -70,10 +70,10 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
 private:
-  int                   myFreeCount;
-  int                   myLength;
-  int                   myLowerBound;
-  int                   myUpperBound;
+  int      myFreeCount;
+  int      myLength;
+  int      myLowerBound;
+  int      myUpperBound;
   NCollection_List<int> myFreeIds;
 };
 

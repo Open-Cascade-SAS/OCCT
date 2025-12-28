@@ -23,9 +23,12 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
@@ -33,15 +36,14 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_C0RegularityFilter, SelectMgr_Filter)
 
 AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
 {
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    SubShapes;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> SubShapes;
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, SubShapes);
   bool Ok;
   for (int i = 1; i <= SubShapes.Extent(); i++)
   {
     Ok = false;
     NCollection_List<TopoDS_Shape>::Iterator it(SubShapes(i));
-    TopoDS_Face                              Face1, Face2;
+    TopoDS_Face                        Face1, Face2;
     if (it.More())
     {
       Face1 = TopoDS::Face(it.Value());

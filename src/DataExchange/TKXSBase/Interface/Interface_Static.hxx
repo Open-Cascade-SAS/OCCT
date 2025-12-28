@@ -66,15 +66,15 @@ public:
   //!
   //! init gives an initial value. If it is not given, the Static
   //! begin as "not set", its value is empty
-  Standard_EXPORT Interface_Static(const char*               family,
-                                   const char*               name,
+  Standard_EXPORT Interface_Static(const char*    family,
+                                   const char*    name,
                                    const Interface_ParamType type = Interface_ParamText,
-                                   const char*               init = "");
+                                   const char*    init = "");
 
   //! Creates a new Static with same definition as another one
   //! (value is copied, except for Entity : it remains null)
-  Standard_EXPORT Interface_Static(const char*                          family,
-                                   const char*                          name,
+  Standard_EXPORT Interface_Static(const char*          family,
+                                   const char*          name,
                                    const occ::handle<Interface_Static>& other);
 
   //! Writes the properties of a
@@ -111,20 +111,20 @@ public:
   //! If this name is already taken, does nothing and returns False
   //! Else, creates it and returns True
   //! For additional definitions, get the Static then edit it
-  Standard_EXPORT static bool Init(const char*               family,
-                                   const char*               name,
-                                   const Interface_ParamType type,
-                                   const char*               init = "");
+  Standard_EXPORT static bool Init(const char*    family,
+                                               const char*    name,
+                                               const Interface_ParamType type,
+                                               const char*    init = "");
 
   //! As Init with ParamType, but type is given as a character
   //! This allows a simpler call
   //! Types : 'i' Integer, 'r' Real, 't' Text, 'e' Enum, 'o' Object
   //! '=' for same definition as, <init> gives the initial Static
   //! Returns False if <type> does not match this list
-  Standard_EXPORT static bool Init(const char* family,
-                                   const char* name,
-                                   const char  type,
-                                   const char* init = "");
+  Standard_EXPORT static bool Init(const char*   family,
+                                               const char*   name,
+                                               const char type,
+                                               const char*   init = "");
 
   //! Returns a Static from its name. Null Handle if not present
   Standard_EXPORT static occ::handle<Interface_Static> Static(const char* name);
@@ -150,7 +150,8 @@ public:
   //! imax : maximum integer value
   //! enum nn (nn : value of an integer) : enum value for nn
   //! unit : unit definition for a real
-  Standard_EXPORT static const char* CDef(const char* name, const char* part);
+  Standard_EXPORT static const char* CDef(const char* name,
+                                               const char* part);
 
   //! Returns a part of the definition of a Static, as an Integer
   //! The part is designated by its name, as a CString
@@ -165,13 +166,15 @@ public:
   //! ecount : count of enum values (starting from estart)
   //! ematch : exact match status
   //! eval val : case determined from a string
-  Standard_EXPORT static int IDef(const char* name, const char* part);
+  Standard_EXPORT static int IDef(const char* name,
+                                               const char* part);
 
   //! Returns True if <name> is present AND set
   //! <proper> True (D) : considers this item only
   //! <proper> False    : if not set and attached to a wild-card,
   //! considers this wild-card
-  Standard_EXPORT static bool IsSet(const char* name, const bool proper = true);
+  Standard_EXPORT static bool IsSet(const char* name,
+                                                const bool proper = true);
 
   //! Returns the value of the
   //! parameter identified by the string name.
@@ -203,7 +206,8 @@ public:
   //! Interface_Static::SetCVal
   //! ("write.step.schema","AP203")
   //! This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.
-  Standard_EXPORT static bool SetCVal(const char* name, const char* val);
+  Standard_EXPORT static bool SetCVal(const char* name,
+                                                  const char* val);
 
   //! Modifies the value of the
   //! parameter identified by name. The modification is specified
@@ -213,13 +217,15 @@ public:
   //! Interface_Static::SetIVal
   //! ("write.step.schema", 3)
   //! This syntax specifies a switch from the default STEP 214 mode to STEP 203 mode.S
-  Standard_EXPORT static bool SetIVal(const char* name, const int val);
+  Standard_EXPORT static bool SetIVal(const char* name,
+                                                  const int val);
 
   //! Modifies the value of a
   //! translation parameter. false is returned if the
   //! parameter does not exist. The modification is specified
   //! by the real number value val.
-  Standard_EXPORT static bool SetRVal(const char* name, const double val);
+  Standard_EXPORT static bool SetRVal(const char* name,
+                                                  const double    val);
 
   //! Sets a Static to be "uptodate"
   //! Returns False if <name> is not present
@@ -246,8 +252,9 @@ public:
   //!
   //! This allows for instance to set new values after having loaded
   //! or reloaded a resource, then to update them as required
-  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-    Items(const int mode = 0, const char* criter = "");
+  Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Items(
+    const int mode   = 0,
+    const char* criter = "");
 
   //! Initializes all standard static parameters, which can be used
   //! by every function. statics specific of a norm or a function
@@ -261,26 +268,26 @@ public:
   DEFINE_STANDARD_RTTIEXT(Interface_Static, Interface_TypedValue)
 
 private:
-  TCollection_AsciiString                                   thefamily;
-  TCollection_AsciiString                                   thename;
-  TCollection_AsciiString                                   thelabel;
-  Interface_ParamType                                       thetype;
-  occ::handle<Standard_Type>                                theotyp;
-  occ::handle<Interface_Static>                             thewild;
-  int                                                       thelims;
-  int                                                       theintlow;
-  int                                                       theintup;
-  double                                                    therealow;
-  double                                                    therealup;
-  TCollection_AsciiString                                   theunidef;
-  occ::handle<NCollection_HArray1<TCollection_AsciiString>> theenums;
-  NCollection_DataMap<TCollection_AsciiString, int>         theeadds;
-  Interface_StaticSatisfies                                 thesatisf;
-  TCollection_AsciiString                                   thesatisn;
-  bool                                                      theupdate;
-  int                                                       theival;
-  occ::handle<TCollection_HAsciiString>                     thehval;
-  occ::handle<Standard_Transient>                           theoval;
+  TCollection_AsciiString                                        thefamily;
+  TCollection_AsciiString                                        thename;
+  TCollection_AsciiString                                        thelabel;
+  Interface_ParamType                                            thetype;
+  occ::handle<Standard_Type>                                          theotyp;
+  occ::handle<Interface_Static>                                       thewild;
+  int                                               thelims;
+  int                                               theintlow;
+  int                                               theintup;
+  double                                                  therealow;
+  double                                                  therealup;
+  TCollection_AsciiString                                        theunidef;
+  occ::handle<NCollection_HArray1<TCollection_AsciiString>>                           theenums;
+  NCollection_DataMap<TCollection_AsciiString, int> theeadds;
+  Interface_StaticSatisfies                                      thesatisf;
+  TCollection_AsciiString                                        thesatisn;
+  bool                                               theupdate;
+  int                                               theival;
+  occ::handle<TCollection_HAsciiString>                               thehval;
+  occ::handle<Standard_Transient>                                     theoval;
 };
 
 #endif // _Interface_Static_HeaderFile

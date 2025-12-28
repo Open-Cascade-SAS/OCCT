@@ -65,16 +65,15 @@
 // #define DEBUG
 //=================================================================================================
 
-static void DecodeMakeEdgeError(
-  const BRepLib_MakeEdge&                ME,
-  const occ::handle<Standard_Transient>& orig,
-  const occ::handle<Geom_Curve>&         myCurve,
-  const TopoDS_Vertex&                   V1,
-  const TopoDS_Vertex&                   V2,
-  const double&                          U1,
-  const double&                          U2,
-  StepToTopoDS_Tool&                     aTool,
-  const occ::handle<StepShape_TopologicalRepresentationItem>& /*tobind*/)
+static void DecodeMakeEdgeError(const BRepLib_MakeEdge&           ME,
+                                const occ::handle<Standard_Transient>& orig,
+                                const occ::handle<Geom_Curve>&         myCurve,
+                                const TopoDS_Vertex&              V1,
+                                const TopoDS_Vertex&              V2,
+                                const double&              U1,
+                                const double&              U2,
+                                StepToTopoDS_Tool&                aTool,
+                                const occ::handle<StepShape_TopologicalRepresentationItem>& /*tobind*/)
 {
   (void)U1, (void)U2; // avoid compiler warning
 
@@ -101,8 +100,11 @@ static void DecodeMakeEdgeError(
       TP->AddFail(orig, " Point with infinite Parameter");
       break;
     case (BRepLib_DifferentsPointAndParameter):
-      if (!ShapeConstruct_Curve()
-             .AdjustCurve(myCurve, BRep_Tool::Pnt(V1), BRep_Tool::Pnt(V2), true, true))
+      if (!ShapeConstruct_Curve().AdjustCurve(myCurve,
+                                              BRep_Tool::Pnt(V1),
+                                              BRep_Tool::Pnt(V2),
+                                              true,
+                                              true))
         TP->AddFail(orig, " Different Points and Parameters");
       else
         TP->AddWarning(orig, "Different Points and Parameters, adjusted");
@@ -134,8 +136,8 @@ static void DecodeMakeEdgeError(
 //=================================================================================================
 
 static occ::handle<Geom_Curve> MakeCurve(const occ::handle<StepGeom_Curve>&            C1,
-                                         const occ::handle<Transfer_TransientProcess>& TP,
-                                         const StepData_Factors& theLocalFactors)
+                                    const occ::handle<Transfer_TransientProcess>& TP,
+                                    const StepData_Factors&                  theLocalFactors)
 {
   occ::handle<Geom_Curve> C2 = occ::down_cast<Geom_Curve>(TP->FindTransient(C1));
   if (!C2.IsNull())
@@ -147,10 +149,10 @@ static occ::handle<Geom_Curve> MakeCurve(const occ::handle<StepGeom_Curve>&     
 }
 
 static TopoDS_Edge MakeEdge(const occ::handle<Geom_Curve>& C3D,
-                            const TopoDS_Vertex&           V1,
-                            const TopoDS_Vertex&           V2,
-                            const double                   U1,
-                            const double                   U2)
+                            const TopoDS_Vertex&      V1,
+                            const TopoDS_Vertex&      V2,
+                            const double       U1,
+                            const double       U2)
 {
   BRep_Builder B;
   TopoDS_Edge  E;
@@ -179,8 +181,8 @@ StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge()
 // ============================================================================
 
 StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge(const occ::handle<StepShape_Edge>& E,
-                                                       StepToTopoDS_Tool&                 T,
-                                                       StepToTopoDS_NMTool&               NMTool,
+                                                       StepToTopoDS_Tool&            T,
+                                                       StepToTopoDS_NMTool&          NMTool,
                                                        const StepData_Factors& theLocalFactors)
 {
   Init(E, T, NMTool, theLocalFactors);
@@ -194,9 +196,9 @@ StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge(const occ::handle<StepSha
 // ============================================================================
 
 void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
-                                      StepToTopoDS_Tool&                 aTool,
-                                      StepToTopoDS_NMTool&               NMTool,
-                                      const StepData_Factors&            theLocalFactors)
+                                      StepToTopoDS_Tool&            aTool,
+                                      StepToTopoDS_NMTool&          NMTool,
+                                      const StepData_Factors&       theLocalFactors)
 {
   occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
 
@@ -265,7 +267,7 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
     done    = false;
     return;
   }
-  TopoDS_Edge                   E;
+  TopoDS_Edge              E;
   occ::handle<StepShape_Vertex> Vstart, Vend;
 
   // -----------------------------------------------------------
@@ -365,9 +367,9 @@ void StepToTopoDS_TranslateEdge::Init(const occ::handle<StepShape_Edge>& aEdge,
 // auxiliary function
 //: e6 abv 16 Apr 98: ProSTEP TR8, r0601_sy.stp, #14907
 static void GetCartesianPoints(const occ::handle<StepShape_EdgeCurve>& EC,
-                               gp_Pnt&                                 P1,
-                               gp_Pnt&                                 P2,
-                               const StepData_Factors&                 theLocalFactors)
+                               gp_Pnt&                            P1,
+                               gp_Pnt&                            P2,
+                               const StepData_Factors&            theLocalFactors)
 {
   for (int i = 1; i <= 2; i++)
   {
@@ -379,7 +381,7 @@ static void GetCartesianPoints(const occ::handle<StepShape_EdgeCurve>& EC,
     const occ::handle<StepGeom_CartesianPoint> P =
       occ::down_cast<StepGeom_CartesianPoint>(VP->VertexGeometry());
     occ::handle<Geom_CartesianPoint> CP = StepToGeom::MakeCartesianPoint(P, theLocalFactors);
-    (i == 1 ? P1 : P2)                  = CP->Pnt();
+    (i == 1 ? P1 : P2)             = CP->Pnt();
   }
 }
 
@@ -391,12 +393,12 @@ static void GetCartesianPoints(const occ::handle<StepShape_EdgeCurve>& EC,
 void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const occ::handle<StepGeom_Curve>&      C3D,
                                                  const occ::handle<StepShape_EdgeCurve>& EC,
                                                  const occ::handle<StepShape_Vertex>&    Vend,
-                                                 const double                            preci,
-                                                 TopoDS_Edge&                            E,
-                                                 TopoDS_Vertex&                          V1,
-                                                 TopoDS_Vertex&                          V2,
-                                                 StepToTopoDS_Tool&                      aTool,
-                                                 const StepData_Factors& theLocalFactors)
+                                                 const double                preci,
+                                                 TopoDS_Edge&                       E,
+                                                 TopoDS_Vertex&                     V1,
+                                                 TopoDS_Vertex&                     V2,
+                                                 StepToTopoDS_Tool&                 aTool,
+                                                 const StepData_Factors&            theLocalFactors)
 {
   occ::handle<Transfer_TransientProcess> TP = aTool.TransientProcess();
   occ::handle<Geom_Curve>                C1 = MakeCurve(C3D, TP, theLocalFactors);
@@ -409,11 +411,11 @@ void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const occ::handle<StepGeom_Curv
   }
   // -- Statistics -- -> No Warning message
   aTool.AddContinuity(C1);
-  BRep_Builder B;
-  double       temp1, temp2, U1, U2;
-  gp_Pnt       pproj;
-  gp_Pnt       pv1 = BRep_Tool::Pnt(V1);
-  gp_Pnt       pv2 = BRep_Tool::Pnt(V2);
+  BRep_Builder  B;
+  double temp1, temp2, U1, U2;
+  gp_Pnt        pproj;
+  gp_Pnt        pv1 = BRep_Tool::Pnt(V1);
+  gp_Pnt        pv2 = BRep_Tool::Pnt(V2);
 
   //: e6 abv
   gp_Pnt pnt1 = pv1, pnt2 = pv2;
@@ -441,8 +443,8 @@ void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const occ::handle<StepGeom_Curv
         && C1->IsKind(STANDARD_TYPE(Geom_Line)))
     {
       occ::handle<Geom_Line> aLine    = occ::down_cast<Geom_Line>(C1);
-      gp_Lin                 aLin     = aLine->Lin();
-      gp_Pnt                 anOrigin = pnt1.XYZ() - aLin.Position().Direction().XYZ() * U1;
+      gp_Lin            aLin     = aLine->Lin();
+      gp_Pnt            anOrigin = pnt1.XYZ() - aLin.Position().Direction().XYZ() * U1;
       aLin.SetLocation(anOrigin);
       C1 = new Geom_Line(aLin);
 
@@ -535,7 +537,7 @@ void StepToTopoDS_TranslateEdge::MakeFromCurve3D(const occ::handle<StepGeom_Curv
 occ::handle<Geom2d_Curve> StepToTopoDS_TranslateEdge::MakePCurve(
   const occ::handle<StepGeom_Pcurve>& PCU,
   const occ::handle<Geom_Surface>&    ConvSurf,
-  const StepData_Factors&             theLocalFactors) const
+  const StepData_Factors&        theLocalFactors) const
 {
   occ::handle<Geom2d_Curve>                              C2d;
   const occ::handle<StepRepr_DefinitionalRepresentation> DRI = PCU->ReferenceToCurve();

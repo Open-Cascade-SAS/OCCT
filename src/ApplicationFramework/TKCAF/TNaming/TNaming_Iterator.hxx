@@ -82,8 +82,8 @@ public:
   friend class TNaming_OldShapeIterator;
 
 private:
-  TNaming_PtrNode myNode;
-  int             myTrans;
+  TNaming_PtrNode  myNode;
+  int myTrans;
 };
 
 #include <TNaming_Iterator.lxx>

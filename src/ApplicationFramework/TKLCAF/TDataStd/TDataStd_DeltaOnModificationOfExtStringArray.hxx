@@ -22,6 +22,9 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
 #include <TDF_DeltaOnModification.hxx>
 class TDataStd_ExtStringArray;
 
@@ -41,10 +44,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfExtStringArray, TDF_DeltaOnModification)
 
 private:
-  occ::handle<NCollection_HArray1<int>>                        myIndxes;
+  occ::handle<NCollection_HArray1<int>>        myIndxes;
   occ::handle<NCollection_HArray1<TCollection_ExtendedString>> myValues;
-  int                                                          myUp1;
-  int                                                          myUp2;
+  int                        myUp1;
+  int                        myUp2;
 };
 
 #endif // _TDataStd_DeltaOnModificationOfExtStringArray_HeaderFile

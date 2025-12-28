@@ -122,7 +122,10 @@ public:
   constexpr double Radius() const noexcept { return radius; }
 
   //! Computes the volume of the sphere
-  constexpr double Volume() const noexcept { return (4.0 * M_PI * radius * radius * radius) / 3.0; }
+  constexpr double Volume() const noexcept
+  {
+    return (4.0 * M_PI * radius * radius * radius) / 3.0;
+  }
 
   //! Returns the axis X of the sphere.
   constexpr gp_Ax1 XAxis() const noexcept { return gp_Ax1(pos.Location(), pos.XDirection()); }
@@ -191,7 +194,7 @@ public:
 
   //! Translates a sphere from the point theP1 to the point theP2.
   [[nodiscard]] constexpr gp_Sphere Translated(const gp_Pnt& theP1,
-                                               const gp_Pnt& theP2) const noexcept
+                                                    const gp_Pnt& theP2) const noexcept
   {
     gp_Sphere aC = *this;
     aC.pos.Translate(theP1, theP2);
@@ -199,7 +202,7 @@ public:
   }
 
 private:
-  gp_Ax3 pos;
+  gp_Ax3        pos;
   double radius;
 };
 

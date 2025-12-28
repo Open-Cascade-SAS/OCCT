@@ -31,7 +31,10 @@ struct StdLPersistent_Collection::byteConverter
 {
   byteConverter(const occ::handle<TDF_Data>&) {}
 
-  uint8_t operator()(int theValue) const { return static_cast<uint8_t>(theValue); }
+  uint8_t operator()(int theValue) const
+  {
+    return static_cast<uint8_t>(theValue);
+  }
 };
 
 struct StdLPersistent_Collection::boolConverter
@@ -45,8 +48,7 @@ struct StdLPersistent_Collection::stringConverter
 {
   stringConverter(const occ::handle<TDF_Data>&) {}
 
-  const TCollection_ExtendedString& operator()(
-    const occ::handle<StdObjMgt_Persistent>& theValue) const
+  const TCollection_ExtendedString& operator()(const occ::handle<StdObjMgt_Persistent>& theValue) const
   {
     if (theValue.IsNull())
       return TCollection_ExtendedString::EmptyString();

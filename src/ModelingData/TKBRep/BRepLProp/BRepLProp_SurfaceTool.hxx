@@ -33,15 +33,15 @@ public:
   //! Computes the point <P> of parameter <U> and <V> on the
   //! Surface <S>.
   Standard_EXPORT static void Value(const BRepAdaptor_Surface& S,
-                                    const double               U,
-                                    const double               V,
+                                    const double        U,
+                                    const double        V,
                                     gp_Pnt&                    P);
 
   //! Computes the point <P> and first derivative <D1*> of
   //! parameter <U> and <V> on the Surface <S>.
   Standard_EXPORT static void D1(const BRepAdaptor_Surface& S,
-                                 const double               U,
-                                 const double               V,
+                                 const double        U,
+                                 const double        V,
                                  gp_Pnt&                    P,
                                  gp_Vec&                    D1U,
                                  gp_Vec&                    D1V);
@@ -49,8 +49,8 @@ public:
   //! Computes the point <P>, the first derivative <D1*> and second
   //! derivative <D2*> of parameter <U> and <V> on the Surface <S>.
   Standard_EXPORT static void D2(const BRepAdaptor_Surface& S,
-                                 const double               U,
-                                 const double               V,
+                                 const double        U,
+                                 const double        V,
                                  gp_Pnt&                    P,
                                  gp_Vec&                    D1U,
                                  gp_Vec&                    D1V,
@@ -59,10 +59,10 @@ public:
                                  gp_Vec&                    DUV);
 
   Standard_EXPORT static gp_Vec DN(const BRepAdaptor_Surface& S,
-                                   const double               U,
-                                   const double               V,
-                                   const int                  IU,
-                                   const int                  IV);
+                                   const double        U,
+                                   const double        V,
+                                   const int     IU,
+                                   const int     IV);
 
   //! returns the order of continuity of the Surface <S>.
   //! returns 1 : first derivative only is computable
@@ -71,10 +71,11 @@ public:
 
   //! returns the bounds of the Surface.
   Standard_EXPORT static void Bounds(const BRepAdaptor_Surface& S,
-                                     double&                    U1,
-                                     double&                    V1,
-                                     double&                    U2,
-                                     double&                    V2);
+                                     double&             U1,
+                                     double&             V1,
+                                     double&             U2,
+                                     double&             V2);
+
 };
 
 #endif // _BRepLProp_SurfaceTool_HeaderFile

@@ -65,10 +65,11 @@ static const Standard_GUID& GetDocumentToolRefID()
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_DocumentTool> XCAFDoc_DocumentTool::Set(const TDF_Label& L, const bool IsAcces)
+occ::handle<XCAFDoc_DocumentTool> XCAFDoc_DocumentTool::Set(const TDF_Label&       L,
+                                                       const bool IsAcces)
 {
   occ::handle<XCAFDoc_DocumentTool> A;
-  TDF_Label                         aL = DocLabel(L);
+  TDF_Label                    aL = DocLabel(L);
   if (!aL.FindAttribute(XCAFDoc_DocumentTool::GetID(), A))
   {
     if (!IsAcces)
@@ -94,8 +95,8 @@ occ::handle<XCAFDoc_DocumentTool> XCAFDoc_DocumentTool::Set(const TDF_Label& L, 
 
 TDF_Label XCAFDoc_DocumentTool::DocLabel(const TDF_Label& acces)
 {
-  TDF_Label                      DocL, RootL = acces.Root();
-  const Standard_GUID&           aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 DocL, RootL = acces.Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   occ::handle<TDataStd_TreeNode> aRootNode, aLabNode;
 
   if (RootL.FindAttribute(aRefGuid, aRootNode))
@@ -234,8 +235,7 @@ bool XCAFDoc_DocumentTool::CheckColorTool(const TDF_Label& theAcces)
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_VisMaterialTool> XCAFDoc_DocumentTool::VisMaterialTool(
-  const TDF_Label& theLabel)
+occ::handle<XCAFDoc_VisMaterialTool> XCAFDoc_DocumentTool::VisMaterialTool(const TDF_Label& theLabel)
 {
   return XCAFDoc_VisMaterialTool::Set(VisMaterialLabel(theLabel));
 }
@@ -330,8 +330,7 @@ bool XCAFDoc_DocumentTool::CheckViewTool(const TDF_Label& theAcces)
 
 //=================================================================================================
 
-occ::handle<XCAFDoc_ClippingPlaneTool> XCAFDoc_DocumentTool::ClippingPlaneTool(
-  const TDF_Label& acces)
+occ::handle<XCAFDoc_ClippingPlaneTool> XCAFDoc_DocumentTool::ClippingPlaneTool(const TDF_Label& acces)
 {
   return XCAFDoc_ClippingPlaneTool::Set(ClippingPlanesLabel(acces));
 }
@@ -370,8 +369,8 @@ bool XCAFDoc_DocumentTool::CheckNotesTool(const TDF_Label& theAcces)
 //=================================================================================================
 
 bool XCAFDoc_DocumentTool::GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                         double&                              theResult,
-                                         const UnitsMethods_LengthUnit        theBaseUnit)
+                                                     double&                  theResult,
+                                                     const UnitsMethods_LengthUnit   theBaseUnit)
 {
   if (theDoc.IsNull())
   {
@@ -390,7 +389,7 @@ bool XCAFDoc_DocumentTool::GetLengthUnit(const occ::handle<TDocStd_Document>& th
 //=================================================================================================
 
 bool XCAFDoc_DocumentTool::GetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                         double&                              theResult)
+                                                     double&                  theResult)
 {
   if (theDoc.IsNull())
   {
@@ -408,12 +407,12 @@ bool XCAFDoc_DocumentTool::GetLengthUnit(const occ::handle<TDocStd_Document>& th
 //=================================================================================================
 
 void XCAFDoc_DocumentTool::SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                         const double                         theUnitValue,
-                                         const UnitsMethods_LengthUnit        theBaseUnit)
+                                         const double             theUnitValue,
+                                         const UnitsMethods_LengthUnit   theBaseUnit)
 {
   // Sets length unit info
   TCollection_AsciiString aUnitName = UnitsMethods::DumpLengthUnit(theUnitValue, theBaseUnit);
-  const double            aScaleFactor =
+  const double     aScaleFactor =
     theUnitValue * UnitsMethods::GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Meter);
   XCAFDoc_LengthUnit::Set(theDoc->Main().Root(), aUnitName, aScaleFactor);
 }
@@ -421,7 +420,7 @@ void XCAFDoc_DocumentTool::SetLengthUnit(const occ::handle<TDocStd_Document>& th
 //=================================================================================================
 
 void XCAFDoc_DocumentTool::SetLengthUnit(const occ::handle<TDocStd_Document>& theDoc,
-                                         const double                         theUnitValue)
+                                         const double             theUnitValue)
 {
   // Sets length unit info
   TCollection_AsciiString aUnitName =
@@ -448,8 +447,8 @@ bool XCAFDoc_DocumentTool::AfterRetrieval(const bool /* forceIt */)
 
 void XCAFDoc_DocumentTool::Init() const
 {
-  TDF_Label                      DocL = Label(), RootL = DocL.Root();
-  const Standard_GUID&           aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 DocL = Label(), RootL = DocL.Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   occ::handle<TDataStd_TreeNode> aRootNode, aLabNode;
 
   if (!RootL.FindAttribute(aRefGuid, aRootNode))
@@ -465,8 +464,8 @@ void XCAFDoc_DocumentTool::Init() const
 
 bool XCAFDoc_DocumentTool::IsXCAFDocument(const occ::handle<TDocStd_Document>& D)
 {
-  TDF_Label                      RootL    = D->Main().Root();
-  const Standard_GUID&           aRefGuid = GetDocumentToolRefID();
+  TDF_Label                 RootL    = D->Main().Root();
+  const Standard_GUID&      aRefGuid = GetDocumentToolRefID();
   occ::handle<TDataStd_TreeNode> aRootNode;
   return RootL.FindAttribute(aRefGuid, aRootNode);
 }

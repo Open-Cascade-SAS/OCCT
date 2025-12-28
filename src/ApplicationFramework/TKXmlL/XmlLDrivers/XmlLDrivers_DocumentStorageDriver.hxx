@@ -40,14 +40,14 @@ public:
   Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
 
   Standard_EXPORT virtual void Write(
-    const occ::handle<CDM_Document>&  theDocument,
+    const occ::handle<CDM_Document>&       theDocument,
     const TCollection_ExtendedString& theFileName,
     const Message_ProgressRange&      theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual void Write(
-    const occ::handle<CDM_Document>& theDocument,
-    Standard_OStream&                theOStream,
-    const Message_ProgressRange&     theRange = Message_ProgressRange()) override;
+    const occ::handle<CDM_Document>&  theDocument,
+    Standard_OStream&            theOStream,
+    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
   Standard_EXPORT virtual occ::handle<XmlMDF_ADriverTable> AttributeDrivers(
     const occ::handle<Message_Messenger>& theMsgDriver);
@@ -56,14 +56,14 @@ public:
 
 protected:
   Standard_EXPORT virtual bool WriteToDomDocument(
-    const occ::handle<CDM_Document>& theDocument,
-    XmlObjMgt_Element&               thePDoc,
-    const Message_ProgressRange&     theRange = Message_ProgressRange());
+    const occ::handle<CDM_Document>&  theDocument,
+    XmlObjMgt_Element&           thePDoc,
+    const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Standard_EXPORT virtual int MakeDocument(
-    const occ::handle<CDM_Document>& theDocument,
-    XmlObjMgt_Element&               thePDoc,
-    const Message_ProgressRange&     theRange = Message_ProgressRange());
+    const occ::handle<CDM_Document>&  theDocument,
+    XmlObjMgt_Element&           thePDoc,
+    const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Standard_EXPORT void AddNamespace(const TCollection_AsciiString& thePrefix,
                                     const TCollection_AsciiString& theURI);
@@ -74,12 +74,12 @@ protected:
     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   occ::handle<XmlMDF_ADriverTable> myDrivers;
-  XmlObjMgt_SRelocationTable       myRelocTable;
+  XmlObjMgt_SRelocationTable  myRelocTable;
 
 private:
   NCollection_Sequence<XmlLDrivers_NamespaceDef> mySeqOfNS;
-  TCollection_ExtendedString                     myCopyright;
-  TCollection_ExtendedString                     myFileName;
+  TCollection_ExtendedString         myCopyright;
+  TCollection_ExtendedString         myFileName;
 };
 
 #endif // _XmlLDrivers_DocumentStorageDriver_HeaderFile

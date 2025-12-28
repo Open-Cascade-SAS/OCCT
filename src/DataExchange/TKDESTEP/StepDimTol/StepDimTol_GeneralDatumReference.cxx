@@ -28,12 +28,12 @@ StepDimTol_GeneralDatumReference::StepDimTol_GeneralDatumReference() {}
 //=================================================================================================
 
 void StepDimTol_GeneralDatumReference::Init(
-  const occ::handle<TCollection_HAsciiString>&                               theName,
-  const occ::handle<TCollection_HAsciiString>&                               theDescription,
-  const occ::handle<StepRepr_ProductDefinitionShape>&                        theOfShape,
-  const StepData_Logical                                                     theProductDefinitional,
-  const StepDimTol_DatumOrCommonDatum&                                       theBase,
-  const bool                                                                 theHasModifiers,
+  const occ::handle<TCollection_HAsciiString>&                   theName,
+  const occ::handle<TCollection_HAsciiString>&                   theDescription,
+  const occ::handle<StepRepr_ProductDefinitionShape>&            theOfShape,
+  const StepData_Logical                                    theProductDefinitional,
+  const StepDimTol_DatumOrCommonDatum&                      theBase,
+  const bool                                    theHasModifiers,
   const occ::handle<NCollection_HArray1<StepDimTol_DatumReferenceModifier>>& theModifiers)
 {
   StepRepr_ShapeAspect::Init(theName, theDescription, theOfShape, theProductDefinitional);

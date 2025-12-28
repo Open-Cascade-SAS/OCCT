@@ -31,8 +31,7 @@ IMPLEMENT_DOMSTRING(ExtString, "string")
 
 //=================================================================================================
 
-XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(
-  const occ::handle<Message_Messenger>& theMsgDriver)
+XmlMFunction_ScopeDriver::XmlMFunction_ScopeDriver(const occ::handle<Message_Messenger>& theMsgDriver)
     : XmlMDF_ADriver(theMsgDriver, NULL)
 {
 }
@@ -48,15 +47,15 @@ occ::handle<TDF_Attribute> XmlMFunction_ScopeDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     XmlObjMgt_RRelocationTable&) const
+bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
+                                                 XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TFunction_Scope> S = occ::down_cast<TFunction_Scope>(theTarget);
-  NCollection_List<int>        IDs;
-  NCollection_List<TDF_Label>  Labels;
+  NCollection_List<int>   IDs;
+  NCollection_List<TDF_Label>           Labels;
 
-  int                      aFirstInd, aLastInd, aValue, ind, nbIDs = 0, nbLabels = 0;
+  int         aFirstInd, aLastInd, aValue, ind, nbIDs = 0, nbLabels = 0;
   const XmlObjMgt_Element& anElement = theSource;
 
   // IDs
@@ -91,8 +90,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
   }
   else
   {
-    const char* aValueStr =
-      static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstInd; ind <= aLastInd; ind++)
     {
@@ -197,9 +195,9 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
   }
 
   // Set IDs & Labels into the Scope attribute
-  int                                   freeID = 0;
-  NCollection_List<int>::Iterator       itri(IDs);
-  NCollection_List<TDF_Label>::Iterator itrl(Labels);
+  int                                 freeID = 0;
+  NCollection_List<int>::Iterator itri(IDs);
+  NCollection_List<TDF_Label>::Iterator         itrl(Labels);
   for (; itri.More(); itri.Next(), itrl.Next())
   {
     int ID = itri.Value();
@@ -218,7 +216,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMFunction_ScopeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                     XmlObjMgt_Persistent&             theTarget,
+                                     XmlObjMgt_Persistent&        theTarget,
                                      XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TFunction_Scope> S = occ::down_cast<TFunction_Scope>(theSource);
@@ -228,7 +226,7 @@ void XmlMFunction_ScopeDriver::Paste(const occ::handle<TDF_Attribute>& theSource
 
   theTarget.Element().setAttribute(::LastIDIndex(), S->GetFunctions().Extent());
 
-  TCollection_AsciiString                         aValueStr;
+  TCollection_AsciiString                              aValueStr;
   NCollection_DoubleMap<int, TDF_Label>::Iterator itrd(S->GetFunctions());
   for (; itrd.More(); itrd.Next())
   {

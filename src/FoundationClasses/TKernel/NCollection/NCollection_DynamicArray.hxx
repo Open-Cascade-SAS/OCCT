@@ -106,7 +106,7 @@ public: //! @name public methods
   }
 
   // Constructor taking an allocator
-  explicit NCollection_DynamicArray(const int                                     theIncrement,
+  explicit NCollection_DynamicArray(const int                   theIncrement,
                                     const occ::handle<NCollection_BaseAllocator>& theAllocator)
       : myContainer(),
         myAlloc(allocator_type(theAllocator)),
@@ -116,7 +116,8 @@ public: //! @name public methods
   }
 
   // Constructor taking an allocator
-  explicit NCollection_DynamicArray(const int theIncrement, const allocator_type& theAllocator)
+  explicit NCollection_DynamicArray(const int theIncrement,
+                                    const allocator_type&  theAllocator)
       : myContainer(),
         myAlloc(theAllocator),
         myInternalSize(theIncrement),
@@ -261,10 +262,16 @@ public: //! @name public methods
   }
 
   //! Operator() - query the const value
-  const_reference operator()(const int theIndex) const noexcept { return Value(theIndex); }
+  const_reference operator()(const int theIndex) const noexcept
+  {
+    return Value(theIndex);
+  }
 
   //! Operator[] - query the const value
-  const_reference operator[](const int theIndex) const noexcept { return Value(theIndex); }
+  const_reference operator[](const int theIndex) const noexcept
+  {
+    return Value(theIndex);
+  }
 
   //! Operator[] - query the const value
   const_reference operator[](const size_t theIndex) const noexcept { return at(theIndex); }
@@ -295,7 +302,10 @@ public: //! @name public methods
   //! Operator[] - query the value
   reference operator[](const size_t theIndex) noexcept { return at(theIndex); }
 
-  reference ChangeValue(const int theIndex) noexcept { return at(static_cast<int>(theIndex)); }
+  reference ChangeValue(const int theIndex) noexcept
+  {
+    return at(static_cast<int>(theIndex));
+  }
 
   //! SetValue () - set or append a value
   reference SetValue(const int theIndex, const TheItemType& theValue)

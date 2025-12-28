@@ -21,7 +21,7 @@ StepGeom_GeometricRepresentationContext::StepGeom_GeometricRepresentationContext
 void StepGeom_GeometricRepresentationContext::Init(
   const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
   const occ::handle<TCollection_HAsciiString>& aContextType,
-  const int                                    aCoordinateSpaceDimension)
+  const int                  aCoordinateSpaceDimension)
 {
   // --- classe own fields ---
   coordinateSpaceDimension = aCoordinateSpaceDimension;

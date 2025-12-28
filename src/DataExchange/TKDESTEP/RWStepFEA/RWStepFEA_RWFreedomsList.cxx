@@ -32,7 +32,7 @@ RWStepFEA_RWFreedomsList::RWStepFEA_RWFreedomsList() {}
 //=================================================================================================
 
 void RWStepFEA_RWFreedomsList::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                        const int                                   num,
+                                        const int                 num,
                                         occ::handle<Interface_Check>&               ach,
                                         const occ::handle<StepFEA_FreedomsList>&    ent) const
 {
@@ -43,12 +43,12 @@ void RWStepFEA_RWFreedomsList::ReadStep(const occ::handle<StepData_StepReaderDat
   // Own fields of FreedomsList
 
   occ::handle<NCollection_HArray1<StepFEA_DegreeOfFreedom>> aFreedoms;
-  int                                                       sub1 = 0;
+  int                         sub1 = 0;
   if (data->ReadSubList(num, 1, "freedoms", ach, sub1))
   {
-    int nb0   = data->NbParams(sub1);
-    aFreedoms = new NCollection_HArray1<StepFEA_DegreeOfFreedom>(1, nb0);
-    int num2  = sub1;
+    int nb0  = data->NbParams(sub1);
+    aFreedoms             = new NCollection_HArray1<StepFEA_DegreeOfFreedom>(1, nb0);
+    int num2 = sub1;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepFEA_DegreeOfFreedom anIt0;
@@ -63,7 +63,7 @@ void RWStepFEA_RWFreedomsList::ReadStep(const occ::handle<StepData_StepReaderDat
 
 //=================================================================================================
 
-void RWStepFEA_RWFreedomsList::WriteStep(StepData_StepWriter&                     SW,
+void RWStepFEA_RWFreedomsList::WriteStep(StepData_StepWriter&                SW,
                                          const occ::handle<StepFEA_FreedomsList>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepFEA_RWFreedomsList::WriteStep(StepData_StepWriter&                   
 //=================================================================================================
 
 void RWStepFEA_RWFreedomsList::Share(const occ::handle<StepFEA_FreedomsList>& ent,
-                                     Interface_EntityIterator&                iter) const
+                                     Interface_EntityIterator&           iter) const
 {
 
   // Own fields of FreedomsList

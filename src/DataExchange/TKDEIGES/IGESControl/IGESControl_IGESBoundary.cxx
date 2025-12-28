@@ -63,9 +63,9 @@ void IGESControl_IGESBoundary::Check(const bool result,
                                      const bool aokCurve3d,
                                      const bool aokCurve2d)
 {
-  bool   Result    = result;
-  bool   okCurve3d = aokCurve3d, okCurve2d = aokCurve2d;
-  double maxtol = myCS.GetMaxTol();
+  bool Result    = result;
+  bool okCurve3d = aokCurve3d, okCurve2d = aokCurve2d;
+  double    maxtol = myCS.GetMaxTol();
 
   if (Result && checkclosure)
   {
@@ -118,13 +118,13 @@ void IGESControl_IGESBoundary::Check(const bool result,
 //           connected.
 //=======================================================================
 static bool Connect(const occ::handle<ShapeAnalysis_Wire>&   theSAW,
-                    const occ::handle<ShapeExtend_WireData>& theWD,
-                    const occ::handle<ShapeExtend_WireData>& theNextWD,
-                    const bool                               theConnectNextWD,
-                    const double                             theMaxTol,
-                    double&                                  theDistMin,
-                    bool&                                    theReverseWD,
-                    bool&                                    theReverseNextWD)
+                                const occ::handle<ShapeExtend_WireData>& theWD,
+                                const occ::handle<ShapeExtend_WireData>& theNextWD,
+                                const bool              theConnectNextWD,
+                                const double                 theMaxTol,
+                                double&                      theDistMin,
+                                bool&                   theReverseWD,
+                                bool&                   theReverseNextWD)
 {
   theSAW->Load(theWD);
   if (theConnectNextWD)
@@ -141,17 +141,17 @@ static bool Connect(const occ::handle<ShapeAnalysis_Wire>&   theSAW,
 //=================================================================================================
 
 bool IGESControl_IGESBoundary::Transfer(
-  bool&                                                                     okCurve,
-  bool&                                                                     okCurve3d,
-  bool&                                                                     okCurve2d,
-  const occ::handle<IGESData_IGESEntity>&                                   icurve3d,
-  const occ::handle<ShapeExtend_WireData>&                                  scurve3d,
-  const bool                                                                usescurve,
-  const bool                                                                toreverse3d,
+  bool&                           okCurve,
+  bool&                           okCurve3d,
+  bool&                           okCurve2d,
+  const occ::handle<IGESData_IGESEntity>&          icurve3d,
+  const occ::handle<ShapeExtend_WireData>&         scurve3d,
+  const bool                      usescurve,
+  const bool                      toreverse3d,
   const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-  const bool                                                                toreverse2d,
-  const int                                                                 number,
-  occ::handle<ShapeExtend_WireData>&                                        Gsewd)
+  const bool                      toreverse2d,
+  const int                      number,
+  occ::handle<ShapeExtend_WireData>&               Gsewd)
 {
   Gsewd = new ShapeExtend_WireData; // local translation (for mysewd)
   // clang-format off
@@ -159,11 +159,12 @@ bool IGESControl_IGESBoundary::Transfer(
   occ::handle<ShapeExtend_WireData> Gsewd2d = new ShapeExtend_WireData;//local translation (for mysewd2d)
   // clang-format on
 
-  bool   revsewd, revnextsewd;
-  double distmin, precision = myCS.GetEpsGeom() * myCS.GetUnitFactor(), maxtol = myCS.GetMaxTol();
+  bool revsewd, revnextsewd;
+  double    distmin, precision = myCS.GetEpsGeom() * myCS.GetUnitFactor(),
+                         maxtol = myCS.GetMaxTol();
 
   occ::handle<ShapeAnalysis_Wire> saw = new ShapeAnalysis_Wire, saw3d = new ShapeAnalysis_Wire,
-                                  saw2d = new ShapeAnalysis_Wire;
+                             saw2d = new ShapeAnalysis_Wire;
   saw->Load(Gsewd);
   saw->SetPrecision(precision);
   saw3d->Load(Gsewd3d);
@@ -171,9 +172,10 @@ bool IGESControl_IGESBoundary::Transfer(
   saw2d->Load(Gsewd2d);
   saw2d->SetPrecision(precision);
 
-  bool GTranslate3d = true, GTranslate2d = true, Preferred3d = true, Preferred2d = true;
+  bool GTranslate3d = true, GTranslate2d = true,
+                   Preferred3d = true, Preferred2d = true;
 
-  int                                                                 len3d = 0, len2d = 0;
+  int                     len3d = 0, len2d = 0;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> seq3d, seq2d;
   if (usescurve)
     len3d = scurve3d->NbEdges();
@@ -282,7 +284,7 @@ bool IGESControl_IGESBoundary::Transfer(
           LTranslate3d = false;
       }
       bool bad3d = TC.BadCase(); //: 27
-      okCurve3d  = okCurve3d
+      okCurve3d              = okCurve3d
                   && ShapeAlgo::AlgoContainer()
                        ->ConnectNextWire(saw3d, Lsewd3d, maxtol, distmin, revsewd, revnextsewd);
 
@@ -353,8 +355,8 @@ bool IGESControl_IGESBoundary::Transfer(
             BRep_Tool::Range(edge3d, first, last);
             // pdn 08.04.99 S4135 optimizing in computation of SPTol
             // choosing tolerance according to Approx_SameParameter: 50 * 22
-            double       SPTol = std::min(precision, std::abs(last - first) / 1000);
-            BRep_Builder B;
+            double SPTol = std::min(precision, std::abs(last - first) / 1000);
+            BRep_Builder  B;
             B.SameParameter(edge3d, false);
             sfe->FixSameParameter(edge3d, SPTol);
           }
@@ -434,7 +436,7 @@ bool IGESControl_IGESBoundary::Transfer(
         }
         occ::handle<ShapeFix_Wire> sfw3 = new ShapeFix_Wire(Gsewd3d->Wire(), myface, precision);
         sfw3->Perform();
-        TopoDS_Wire                w3   = sfw3->Wire();
+        TopoDS_Wire           w3   = sfw3->Wire();
         occ::handle<ShapeFix_Wire> sfw2 = new ShapeFix_Wire(Gsewd2d->Wire(), myface, precision);
         sfw2->Perform();
         TopoDS_Wire                  w2 = sfw2->Wire();

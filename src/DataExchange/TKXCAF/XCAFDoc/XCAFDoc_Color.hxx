@@ -35,22 +35,21 @@ public:
 
   Standard_EXPORT static const Standard_GUID& GetID();
 
-  Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label&      label,
-                                                        const Quantity_Color& C);
+  Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label& label, const Quantity_Color& C);
 
   Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label&          label,
-                                                        const Quantity_ColorRGBA& C);
+                                                   const Quantity_ColorRGBA& C);
 
   Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label&           label,
-                                                        const Quantity_NameOfColor C);
+                                                   const Quantity_NameOfColor C);
 
   //! Find, or create, a Color attribute and set it's value
   //! the Color attribute is returned.
-  Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label& label,
-                                                        const double     R,
-                                                        const double     G,
-                                                        const double     B,
-                                                        const double     alpha = 1.0);
+  Standard_EXPORT static occ::handle<XCAFDoc_Color> Set(const TDF_Label&    label,
+                                                   const double R,
+                                                   const double G,
+                                                   const double B,
+                                                   const double alpha = 1.0);
 
   Standard_EXPORT void Set(const Quantity_Color& C);
 
@@ -84,7 +83,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_Color, TDF_Attribute)
 

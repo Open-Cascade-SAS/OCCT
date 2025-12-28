@@ -25,7 +25,14 @@
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Integer.hxx>
+#include <MAT2d_Connexion.hxx>
+#include <NCollection_DataMap.hxx>
+#include <MAT2d_Connexion.hxx>
+#include <NCollection_Sequence.hxx>
+#include <Standard_Integer.hxx>
 #include <Geom2d_Geometry.hxx>
+#include <NCollection_Sequence.hxx>
 class MAT2d_Connexion;
 
 //! MiniPath computes a path to link all the lines in
@@ -52,10 +59,9 @@ public:
   //! the path starts on the line of index <IndStart>
   //! <Sense> = True if the Circuit turns in the
   //! trigonometric sense.
-  Standard_EXPORT void Perform(
-    const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-    const int                                                                       IndStart,
-    const bool                                                                      Sense);
+  Standard_EXPORT void Perform(const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
+                               const int                    IndStart,
+                               const bool                    Sense);
 
   //! Run on the set of connexions to compute the path.
   //! the path is an exploration of the tree which contains
@@ -81,8 +87,7 @@ public:
 
   //! Returns the connexions which start on line
   //! designed by <Index>.
-  Standard_EXPORT NCollection_Sequence<occ::handle<MAT2d_Connexion>>& ConnexionsFrom(
-    const int Index);
+  Standard_EXPORT NCollection_Sequence<occ::handle<MAT2d_Connexion>>& ConnexionsFrom(const int Index);
 
   //! Returns <True> if the line designed by <Index> is
   //! the root.
@@ -96,22 +101,22 @@ private:
   //! Add a connexion to the path.
   Standard_EXPORT void Append(const occ::handle<MAT2d_Connexion>& Connexion);
 
-  Standard_EXPORT void ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>>& aPath,
-                                 const occ::handle<MAT2d_Connexion>&                 aConnexion);
+  Standard_EXPORT void ExploSons(NCollection_Sequence<occ::handle<MAT2d_Connexion>>&     aPath,
+                                 const occ::handle<MAT2d_Connexion>& aConnexion);
 
   //! Returns the connexion which realises the minimum of
   //! distance between the lines of index <L1> and <L2> in
   //! <aFigure>. The connexion is oriented from <L1> to <L2>.
   Standard_EXPORT occ::handle<MAT2d_Connexion> MinimumL1L2(
     const NCollection_Sequence<NCollection_Sequence<occ::handle<Geom2d_Geometry>>>& Figure,
-    const int                                                                       L1,
-    const int                                                                       L2) const;
+    const int                    L1,
+    const int                    L2) const;
 
   NCollection_DataMap<int, NCollection_Sequence<occ::handle<MAT2d_Connexion>>> theConnexions;
-  NCollection_DataMap<int, occ::handle<MAT2d_Connexion>>                       theFather;
-  NCollection_Sequence<occ::handle<MAT2d_Connexion>>                           thePath;
-  double                                                                       theDirection;
-  int                                                                          indStart;
+  NCollection_DataMap<int, occ::handle<MAT2d_Connexion>>           theFather;
+  NCollection_Sequence<occ::handle<MAT2d_Connexion>>                 thePath;
+  double                             theDirection;
+  int                          indStart;
 };
 
 #endif // _MAT2d_MiniPath_HeaderFile

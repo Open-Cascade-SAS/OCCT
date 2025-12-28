@@ -49,8 +49,8 @@ public:
   //! @param[in] theName   name to find
   //! @param[out] theMat   found material
   //! @return FALSE if name was unrecognized
-  Standard_EXPORT static bool MaterialFromName(const char*               theName,
-                                               Graphic3d_NameOfMaterial& theMat);
+  Standard_EXPORT static bool MaterialFromName(const char*    theName,
+                                                           Graphic3d_NameOfMaterial& theMat);
 
   //! Returns the material for specified name or Graphic3d_NameOfMaterial_DEFAULT if name is
   //! unknown.
@@ -205,10 +205,16 @@ public:
   Standard_EXPORT void SetMaterialType(const Graphic3d_TypeOfMaterial theType);
 
   //! Returns TRUE if this material differs from specified one.
-  bool IsDifferent(const Graphic3d_MaterialAspect& theOther) const { return !IsEqual(theOther); }
+  bool IsDifferent(const Graphic3d_MaterialAspect& theOther) const
+  {
+    return !IsEqual(theOther);
+  }
 
   //! Returns TRUE if this material differs from specified one.
-  bool operator!=(const Graphic3d_MaterialAspect& theOther) const { return IsDifferent(theOther); }
+  bool operator!=(const Graphic3d_MaterialAspect& theOther) const
+  {
+    return IsDifferent(theOther);
+  }
 
   //! Returns TRUE if this material is identical to specified one.
   bool IsEqual(const Graphic3d_MaterialAspect& theOther) const
@@ -223,7 +229,10 @@ public:
   }
 
   //! Returns TRUE if this material is identical to specified one.
-  bool operator==(const Graphic3d_MaterialAspect& theOther) const { return IsEqual(theOther); }
+  bool operator==(const Graphic3d_MaterialAspect& theOther) const
+  {
+    return IsEqual(theOther);
+  }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -277,9 +286,9 @@ private:
   Graphic3d_PBRMaterial   myPBRMaterial;
   TCollection_AsciiString myStringName;
   Quantity_Color          myColors[Graphic3d_TypeOfReflection_NB];
-  float                   myTransparencyCoef;
-  float                   myRefractionIndex;
-  float                   myShininess;
+  float      myTransparencyCoef;
+  float      myRefractionIndex;
+  float      myShininess;
 
   Graphic3d_TypeOfMaterial myMaterialType;
   Graphic3d_NameOfMaterial myMaterialName;

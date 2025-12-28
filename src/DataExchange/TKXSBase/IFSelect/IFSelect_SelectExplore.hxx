@@ -56,7 +56,8 @@ public:
   //! taken for output, or to explore. If the maximum level has not
   //! yet been attained, or if no max level is specified, entities
   //! to be explored are themselves used as if they were input
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Analyses and, if required, Explores an entity, as follows :
   //! The explored list starts as empty, it has to be filled by this
@@ -69,10 +70,10 @@ public:
   //! of this list is considered :
   //! If maximum level is attained, it is taken for result
   //! Else (or no max), each of its entity will be itself explored
-  Standard_EXPORT virtual bool Explore(const int                              level,
-                                       const occ::handle<Standard_Transient>& ent,
-                                       const Interface_Graph&                 G,
-                                       Interface_EntityIterator&              explored) const = 0;
+  Standard_EXPORT virtual bool Explore(const int            level,
+                                                   const occ::handle<Standard_Transient>& ent,
+                                                   const Interface_Graph&            G,
+                                                   Interface_EntityIterator& explored) const = 0;
 
   //! Returns a text saying "(Recursive)" or "(Level nn)" plus
   //! specific criterium returned by ExploreLabel (see below)

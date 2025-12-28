@@ -37,13 +37,13 @@ public:
 
   Standard_EXPORT StepToTopoDS_TranslateVertexLoop(
     const occ::handle<StepShape_VertexLoop>& VL,
-    StepToTopoDS_Tool&                       T,
-    StepToTopoDS_NMTool&                     NMTool,
-    const StepData_Factors&                  theLocalFactors = StepData_Factors());
+    StepToTopoDS_Tool&                  T,
+    StepToTopoDS_NMTool&                NMTool,
+    const StepData_Factors&             theLocalFactors = StepData_Factors());
 
   Standard_EXPORT void Init(const occ::handle<StepShape_VertexLoop>& VL,
-                            StepToTopoDS_Tool&                       T,
-                            StepToTopoDS_NMTool&                     NMTool,
+                            StepToTopoDS_Tool&                  T,
+                            StepToTopoDS_NMTool&                NMTool,
                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const TopoDS_Shape& Value() const;

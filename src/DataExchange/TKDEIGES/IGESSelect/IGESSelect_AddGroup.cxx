@@ -16,6 +16,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <IGESSelect_AddGroup.hxx>
 #include <Interface_Check.hxx>
@@ -32,7 +33,7 @@ IGESSelect_AddGroup::IGESSelect_AddGroup()
 {
 }
 
-void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&            ctx,
                                      const occ::handle<IGESData_IGESModel>& target,
                                      Interface_CopyTool& /*TC*/) const
 {
@@ -42,7 +43,7 @@ void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&                 ctx,
     return;
   }
   Interface_EntityIterator list = ctx.SelectedResult();
-  int                      i = 0, nb = list.NbEntities();
+  int         i = 0, nb = list.NbEntities();
   if (nb == 0)
   {
     ctx.CCheck(0)->AddWarning("Add Group : No entity selected");
@@ -53,8 +54,7 @@ void IGESSelect_AddGroup::Performing(IFSelect_ContextModif&                 ctx,
     ctx.CCheck(0)->AddWarning("Add Group : ONE entity selected");
     return;
   }
-  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arr =
-    new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
+  occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> arr = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, nb);
   for (ctx.Start(); ctx.More(); ctx.Next())
   {
     DeclareAndCast(IGESData_IGESEntity, ent, ctx.ValueResult());

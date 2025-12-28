@@ -114,9 +114,9 @@ public:
     construct(0, mySize);
   }
 
-  explicit NCollection_Array1(const allocator_type& theAlloc,
-                              const int             theLower,
-                              const int             theUpper)
+  explicit NCollection_Array1(const allocator_type&  theAlloc,
+                              const int theLower,
+                              const int theUpper)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(nullptr),
@@ -132,10 +132,10 @@ public:
     construct(0, mySize);
   }
 
-  explicit NCollection_Array1(const_reference theBegin,
-                              const int       theLower,
-                              const int       theUpper,
-                              const bool      theUseBuffer = true)
+  explicit NCollection_Array1(const_reference        theBegin,
+                              const int theLower,
+                              const int theUpper,
+                              const bool             theUseBuffer = true)
       : myLowerBound(theLower),
         mySize(theUpper - theLower + 1),
         myPointer(theUseBuffer ? const_cast<pointer>(&theBegin) : nullptr),
@@ -340,7 +340,9 @@ public:
   //! @param theLower new lower bound of array
   //! @param theUpper new upper bound of array
   //! @param theToCopyData flag to copy existing data into new array
-  void Resize(const int theLower, const int theUpper, const bool theToCopyData)
+  void Resize(const int theLower,
+              const int theUpper,
+              const bool theToCopyData)
   {
     Standard_RangeError_Raise_if(theUpper < theLower, "NCollection_Array1::Resize");
     const size_t aNewSize     = static_cast<size_t>(theUpper - theLower + 1);
@@ -451,11 +453,11 @@ protected:
   }
 
   // ---------- PROTECTED FIELDS -----------
-  int            myLowerBound;
-  size_t         mySize;
-  pointer        myPointer = nullptr;
-  bool           myIsOwner = false;
-  allocator_type myAllocator;
+  int myLowerBound;
+  size_t           mySize;
+  pointer          myPointer = nullptr;
+  bool             myIsOwner = false;
+  allocator_type   myAllocator;
 };
 
 #endif

@@ -53,7 +53,7 @@ public:
                                         const occ::handle<Geom_BezierCurve>& C2,
                                         const occ::handle<Geom_BezierCurve>& C3,
                                         const occ::handle<Geom_BezierCurve>& C4,
-                                        const GeomFill_FillingStyle          Type);
+                                        const GeomFill_FillingStyle     Type);
 
   //! Constructs a framework for building a Bezier surface
   //! from the three contiguous Bezier curves, C1, C2 and C3
@@ -61,27 +61,27 @@ public:
   Standard_EXPORT GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>& C1,
                                         const occ::handle<Geom_BezierCurve>& C2,
                                         const occ::handle<Geom_BezierCurve>& C3,
-                                        const GeomFill_FillingStyle          Type);
+                                        const GeomFill_FillingStyle     Type);
 
   //! Constructs a framework for building a Bezier surface
   //! from the two contiguous Bezier curves, C1 and C2
   //! Raises Standard_ConstructionError if the curves are not contiguous.
   Standard_EXPORT GeomFill_BezierCurves(const occ::handle<Geom_BezierCurve>& C1,
                                         const occ::handle<Geom_BezierCurve>& C2,
-                                        const GeomFill_FillingStyle          Type);
+                                        const GeomFill_FillingStyle     Type);
 
   //! if the curves cannot be joined
   Standard_EXPORT void Init(const occ::handle<Geom_BezierCurve>& C1,
                             const occ::handle<Geom_BezierCurve>& C2,
                             const occ::handle<Geom_BezierCurve>& C3,
                             const occ::handle<Geom_BezierCurve>& C4,
-                            const GeomFill_FillingStyle          Type);
+                            const GeomFill_FillingStyle     Type);
 
   //! if the curves cannot be joined
   Standard_EXPORT void Init(const occ::handle<Geom_BezierCurve>& C1,
                             const occ::handle<Geom_BezierCurve>& C2,
                             const occ::handle<Geom_BezierCurve>& C3,
-                            const GeomFill_FillingStyle          Type);
+                            const GeomFill_FillingStyle     Type);
 
   //! Initializes or reinitializes this algorithm with two, three,
   //! or four curves - C1, C2, C3, and C4 - and Type, one
@@ -94,7 +94,7 @@ public:
   //! Standard_ConstructionError if the curves are not contiguous.
   Standard_EXPORT void Init(const occ::handle<Geom_BezierCurve>& C1,
                             const occ::handle<Geom_BezierCurve>& C2,
-                            const GeomFill_FillingStyle          Type);
+                            const GeomFill_FillingStyle     Type);
 
   //! Returns the Bezier surface resulting from the
   //! computation performed by this algorithm.

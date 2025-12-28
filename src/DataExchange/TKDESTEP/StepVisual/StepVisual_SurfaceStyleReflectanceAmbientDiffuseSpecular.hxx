@@ -26,10 +26,10 @@ public:
   Standard_EXPORT StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(const double                          theAmbientReflectance,
-                            const double                          theDiffuseReflectance,
-                            const double                          theSpecularReflectance,
-                            const double                          theSpecularExponent,
+  Standard_EXPORT void Init(const double              theAmbientReflectance,
+                            const double              theDiffuseReflectance,
+                            const double              theSpecularReflectance,
+                            const double              theSpecularExponent,
                             const occ::handle<StepVisual_Colour>& theSpecularColour);
 
   //! Returns field SpecularReflectance
@@ -54,8 +54,8 @@ public:
                           StepVisual_SurfaceStyleReflectanceAmbientDiffuse)
 
 private:
-  double                         mySpecularReflectance;
-  double                         mySpecularExponent;
+  double             mySpecularReflectance;
+  double             mySpecularExponent;
   occ::handle<StepVisual_Colour> mySpecularColour;
 };
 #endif // _StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular_HeaderFile_

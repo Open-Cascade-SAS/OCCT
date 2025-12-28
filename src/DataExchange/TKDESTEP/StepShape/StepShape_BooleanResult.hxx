@@ -32,9 +32,9 @@ public:
   Standard_EXPORT StepShape_BooleanResult();
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const StepShape_BooleanOperator              aOperator,
-                            const StepShape_BooleanOperand&              aFirstOperand,
-                            const StepShape_BooleanOperand&              aSecondOperand);
+                            const StepShape_BooleanOperator         aOperator,
+                            const StepShape_BooleanOperand&         aFirstOperand,
+                            const StepShape_BooleanOperand&         aSecondOperand);
 
   Standard_EXPORT void SetOperator(const StepShape_BooleanOperator aOperator);
 

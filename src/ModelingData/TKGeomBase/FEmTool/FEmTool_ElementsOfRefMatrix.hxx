@@ -38,7 +38,8 @@ class FEmTool_ElementsOfRefMatrix : public math_FunctionSet
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase, const int DerOrder);
+  Standard_EXPORT FEmTool_ElementsOfRefMatrix(const PLib_HermitJacobi& TheBase,
+                                              const int   DerOrder);
 
   //! returns the number of variables of the function.
   //! It is supposed that NbVariables = 1.
@@ -58,8 +59,8 @@ public:
 
 private:
   PLib_HermitJacobi myBase;
-  int               myDerOrder;
-  int               myNbEquations;
+  int  myDerOrder;
+  int  myNbEquations;
 };
 
 #endif // _FEmTool_ElementsOfRefMatrix_HeaderFile

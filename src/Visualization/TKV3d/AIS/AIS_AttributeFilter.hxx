@@ -88,15 +88,16 @@ public:
   //! If the Interactive Object returns true
   //! when detected by the Local Context selector through
   //! the mouse, the object is kept; if not, it is rejected.
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const override;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_AttributeFilter, SelectMgr_Filter)
 
 private:
   Quantity_NameOfColor myCol;
-  double               myWid;
-  bool                 hasC;
-  bool                 hasW;
+  double        myWid;
+  bool     hasC;
+  bool     hasW;
 };
 
 #endif // _AIS_AttributeFilter_HeaderFile

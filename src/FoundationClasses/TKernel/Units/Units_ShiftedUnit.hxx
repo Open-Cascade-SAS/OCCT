@@ -43,10 +43,10 @@ public:
   //! For example Celsius degree of temperature is an
   //! instance of ShiftedUnit with <avalue> equal to 1.
   //! and <amove> equal to 273.15.
-  Standard_EXPORT Units_ShiftedUnit(const char*                        aname,
-                                    const char*                        asymbol,
-                                    const double                       avalue,
-                                    const double                       amove,
+  Standard_EXPORT Units_ShiftedUnit(const char*        aname,
+                                    const char*        asymbol,
+                                    const double           avalue,
+                                    const double           amove,
                                     const occ::handle<Units_Quantity>& aquantity);
 
   //! Creates and returns a unit. <aname> is the name of
@@ -67,7 +67,8 @@ public:
   //! This redefined method returns a ShiftedToken object.
   Standard_EXPORT virtual occ::handle<Units_Token> Token() const override;
 
-  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const override;
+  Standard_EXPORT virtual void Dump(const int ashift,
+                                    const int alevel) const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedUnit, Units_Unit)
 

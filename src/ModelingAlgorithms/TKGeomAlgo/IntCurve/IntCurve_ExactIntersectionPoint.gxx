@@ -22,9 +22,9 @@
 //======================================================================
 //===
 //======================================================================
-IntCurve_ExactIntersectionPoint::IntCurve_ExactIntersectionPoint(const TheCurve& C1,
-                                                                 const TheCurve& C2,
-                                                                 const double    Tol)
+IntCurve_ExactIntersectionPoint::IntCurve_ExactIntersectionPoint(const TheCurve&     C1,
+                                                                 const TheCurve&     C2,
+                                                                 const double Tol)
     : done(false),
       nbroots(0),
       myTol(Tol * Tol),
@@ -44,10 +44,10 @@ IntCurve_ExactIntersectionPoint::IntCurve_ExactIntersectionPoint(const TheCurve&
 
 void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1,
                                               const IntCurve_ThePolygon2d& Poly2,
-                                              int&                         NumSegOn1,
-                                              int&                         NumSegOn2,
-                                              double&                      ParamOnSeg1,
-                                              double&                      ParamOnSeg2)
+                                              int&            NumSegOn1,
+                                              int&            NumSegOn2,
+                                              double&               ParamOnSeg1,
+                                              double&               ParamOnSeg2)
 {
   //----------------------------------------------------------------------
   //-- On prend comme bornes de recherches  :
@@ -108,9 +108,9 @@ void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1
     // if(DeflectionOn2 > Poly1.BeginOfSeg(NumSegOn1).Distance(Poly1.EndOfSeg(NumSegOn1))) {
     {
       //-- On risque de donner des bornes sur la courbe 1 trop etroites.
-      int    diff         = 1;
-      double AnBinfVector = BInfVector.Value(1);
-      double AnBsupVector = BSupVector.Value(1);
+      int diff         = 1;
+      double    AnBinfVector = BInfVector.Value(1);
+      double    AnBsupVector = BSupVector.Value(1);
       //---------------- On elargit les bornes par la gauche --------------------
       do
       {
@@ -141,7 +141,8 @@ void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1
             diff                = 0;
           }
           else
-            BSupVector.Value(1) = Poly1.ApproxParamOnCurve(NumSegOn1 + 1 + diff, (double)0.0);
+            BSupVector.Value(1) =
+              Poly1.ApproxParamOnCurve(NumSegOn1 + 1 + diff, (double)0.0);
           IntCurve_ExactIntersectionPoint::MathPerform();
           //-- le 18 nov 97
           if (diff > 3)
@@ -154,9 +155,9 @@ void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1
     if (nbroots == 0)
     {
       //-- On risque de donner des bornes sur la courbe 1 trop etroites.
-      int    diff         = 1;
-      double AnBinfVector = BInfVector.Value(2);
-      double AnBsupVector = BSupVector.Value(2);
+      int diff         = 1;
+      double    AnBinfVector = BInfVector.Value(2);
+      double    AnBsupVector = BSupVector.Value(2);
       //---------------- On elargit les bornes par la gauche --------------------
       do
       {
@@ -187,7 +188,8 @@ void IntCurve_ExactIntersectionPoint::Perform(const IntCurve_ThePolygon2d& Poly1
             diff                = 0;
           }
           else
-            BSupVector.Value(2) = Poly2.ApproxParamOnCurve(NumSegOn2 + 1 + diff, (double)0.0);
+            BSupVector.Value(2) =
+              Poly2.ApproxParamOnCurve(NumSegOn2 + 1 + diff, (double)0.0);
           IntCurve_ExactIntersectionPoint::MathPerform();
           //-- le 18 nov 97
           if (diff > 3)

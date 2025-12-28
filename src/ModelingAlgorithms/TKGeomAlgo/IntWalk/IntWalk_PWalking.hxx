@@ -54,10 +54,10 @@ public:
   //! Epsilon is SquareTolerance of points confusion.
   Standard_EXPORT IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
                                    const occ::handle<Adaptor3d_Surface>& Caro2,
-                                   const double                          TolTangency,
-                                   const double                          Epsilon,
-                                   const double                          Deflection,
-                                   const double                          Increment);
+                                   const double              TolTangency,
+                                   const double              Epsilon,
+                                   const double              Deflection,
+                                   const double              Increment);
 
   //! Returns the intersection line containing the exact
   //! point Poin. This line is a polygonal line.
@@ -74,14 +74,14 @@ public:
   //! Epsilon is SquareTolerance of points confusion.
   Standard_EXPORT IntWalk_PWalking(const occ::handle<Adaptor3d_Surface>& Caro1,
                                    const occ::handle<Adaptor3d_Surface>& Caro2,
-                                   const double                          TolTangency,
-                                   const double                          Epsilon,
-                                   const double                          Deflection,
-                                   const double                          Increment,
-                                   const double                          U1,
-                                   const double                          V1,
-                                   const double                          U2,
-                                   const double                          V2);
+                                   const double              TolTangency,
+                                   const double              Epsilon,
+                                   const double              Deflection,
+                                   const double              Increment,
+                                   const double              U1,
+                                   const double              V1,
+                                   const double              U2,
+                                   const double              V2);
 
   //! calculate the line of intersection
   Standard_EXPORT void Perform(const NCollection_Array1<double>& ParDep);
@@ -92,18 +92,18 @@ public:
   //! previous method, the initial steps are calculated
   //! starting from min and max uv of faces).
   Standard_EXPORT void Perform(const NCollection_Array1<double>& ParDep,
-                               const double                      u1min,
-                               const double                      v1min,
-                               const double                      u2min,
-                               const double                      v2min,
-                               const double                      u1max,
-                               const double                      v1max,
-                               const double                      u2max,
-                               const double                      v2max);
+                               const double         u1min,
+                               const double         v1min,
+                               const double         u2min,
+                               const double         v2min,
+                               const double         u1max,
+                               const double         v1max,
+                               const double         u2max,
+                               const double         v2max);
 
   //! calculate the first point of a line of intersection
   Standard_EXPORT bool PerformFirstPoint(const NCollection_Array1<double>& ParDep,
-                                         IntSurf_PntOn2S&                  FirstPoint);
+                                                     IntSurf_PntOn2S&            FirstPoint);
 
   //! Returns true if the calculus was successful.
   bool IsDone() const;
@@ -138,13 +138,13 @@ public:
   Standard_EXPORT IntWalk_StatusDeflection TestDeflection(const IntImp_ConstIsoparametric ChoixIso,
                                                           const IntWalk_StatusDeflection theStatus);
 
-  Standard_EXPORT bool TestArret(const bool                  DejaReparti,
-                                 NCollection_Array1<double>& Param,
-                                 IntImp_ConstIsoparametric&  ChoixIso);
+  Standard_EXPORT bool TestArret(const bool     DejaReparti,
+                                             NCollection_Array1<double>&      Param,
+                                             IntImp_ConstIsoparametric& ChoixIso);
 
-  Standard_EXPORT void RepartirOuDiviser(bool&                      DejaReparti,
+  Standard_EXPORT void RepartirOuDiviser(bool&          DejaReparti,
                                          IntImp_ConstIsoparametric& ChoixIso,
-                                         bool&                      Arrive);
+                                         bool&          Arrive);
 
   //! Inserts thePOn2S in the end of line
   void AddAPoint(const IntSurf_PntOn2S& thePOn2S);
@@ -172,11 +172,11 @@ public:
   }
 
   Standard_EXPORT bool PutToBoundary(const occ::handle<Adaptor3d_Surface>& theASurf1,
-                                     const occ::handle<Adaptor3d_Surface>& theASurf2);
+                                                 const occ::handle<Adaptor3d_Surface>& theASurf2);
 
   Standard_EXPORT bool SeekAdditionalPoints(const occ::handle<Adaptor3d_Surface>& theASurf1,
-                                            const occ::handle<Adaptor3d_Surface>& theASurf2,
-                                            const int                             theMinNbPoints);
+                                                        const occ::handle<Adaptor3d_Surface>& theASurf2,
+                                                        const int theMinNbPoints);
 
   double MaxStep(int theIndex)
   {
@@ -195,21 +195,23 @@ protected:
   //! Arrays theInit (initial point to be precise) and theStep0 (steps-array) must contain
   //! four items and must be filled strictly in following order:
   //! {U-parameter on S1, V-parameter on S1, U-parameter on S2, V-parameter on S2}
-  Standard_EXPORT bool DistanceMinimizeByGradient(const occ::handle<Adaptor3d_Surface>& theASurf1,
-                                                  const occ::handle<Adaptor3d_Surface>& theASurf2,
-                                                  NCollection_Array1<double>&           theInit,
-                                                  const double* theStep0 = 0);
+  Standard_EXPORT bool
+    DistanceMinimizeByGradient(const occ::handle<Adaptor3d_Surface>& theASurf1,
+                               const occ::handle<Adaptor3d_Surface>& theASurf2,
+                               NCollection_Array1<double>&            theInit,
+                               const double*             theStep0 = 0);
 
   //! Finds the point on theASurf which is the nearest point to theP0.
   //! theU0 and theV0 must be initialized (before calling the method) by initial
   //! parameters on theASurf. Their values are changed while algorithm being launched.
   //! Array theStep0 (steps-array) must contain two items and must be filled strictly in following
   //! order: {U-parameter, V-parameter}
-  Standard_EXPORT bool DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Surface>& theASurf,
-                                                 const gp_Pnt&                         theP0,
-                                                 double&                               theU0,
-                                                 double&                               theV0,
-                                                 const double* theStep0 = 0);
+  Standard_EXPORT bool
+    DistanceMinimizeByExtrema(const occ::handle<Adaptor3d_Surface>& theASurf,
+                              const gp_Pnt&                    theP0,
+                              double&                   theU0,
+                              double&                   theV0,
+                              const double*             theStep0 = 0);
 
   //! Searches an intersection point which lies on the some surface boundary.
   //! Found point (in case of successful result) is added in the line.
@@ -223,28 +225,30 @@ protected:
   //!   Returns TRUE in case of success adding (i.e. can return FALSE even after
   //!   removing some points).
   Standard_EXPORT bool SeekPointOnBoundary(const occ::handle<Adaptor3d_Surface>& theASurf1,
-                                           const occ::handle<Adaptor3d_Surface>& theASurf2,
-                                           const double                          theU1,
-                                           const double                          theV1,
-                                           const double                          theU2,
-                                           const double                          theV2,
-                                           const bool                            isTheFirst);
+                                                       const occ::handle<Adaptor3d_Surface>& theASurf2,
+                                                       const double              theU1,
+                                                       const double              theV1,
+                                                       const double              theU2,
+                                                       const double              theV2,
+                                                       const bool           isTheFirst);
 
   // Method to handle single singular point. Sub-method in SeekPointOnBoundary.
-  Standard_EXPORT bool HandleSingleSingularPoint(const occ::handle<Adaptor3d_Surface>& theASurf1,
-                                                 const occ::handle<Adaptor3d_Surface>& theASurf2,
-                                                 const double                          the3DTol,
-                                                 NCollection_Array1<double>&           thePnt);
+  Standard_EXPORT bool
+    HandleSingleSingularPoint(const occ::handle<Adaptor3d_Surface>& theASurf1,
+                              const occ::handle<Adaptor3d_Surface>& theASurf2,
+                              const double              the3DTol,
+                              NCollection_Array1<double>&            thePnt);
 
-  Standard_EXPORT bool ExtendLineInCommonZone(const IntImp_ConstIsoparametric theChoixIso,
-                                              const bool                      theDirectionFlag);
+  Standard_EXPORT bool
+    ExtendLineInCommonZone(const IntImp_ConstIsoparametric theChoixIso,
+                           const bool          theDirectionFlag);
 
 private:
-  bool                          done;
+  bool         done;
   occ::handle<IntSurf_LineOn2S> line;
-  bool                          close;
-  bool                          tgfirst;
-  bool                          tglast;
+  bool         close;
+  bool         tgfirst;
+  bool         tglast;
 
   //! Index of point on the surface boundary.
   //! It is used for transition computation
@@ -253,38 +257,38 @@ private:
   //! Tangent to WLine in the point with index myTangentIdx
   gp_Dir tgdir;
 
-  double                    fleche;
-  double                    pasMax;
-  double                    tolconf;
-  double                    myTolTang;
-  double                    pasuv[4];
-  double                    myStepMin[4];
-  double                    pasSav[4];
-  double                    pasInit[4];
-  double                    Um1;
-  double                    UM1;
-  double                    Vm1;
-  double                    VM1;
-  double                    Um2;
-  double                    UM2;
-  double                    Vm2;
-  double                    VM2;
-  double                    ResoU1;
-  double                    ResoU2;
-  double                    ResoV1;
-  double                    ResoV2;
-  int                       sensCheminement;
+  double             fleche;
+  double             pasMax;
+  double             tolconf;
+  double             myTolTang;
+  double             pasuv[4];
+  double             myStepMin[4];
+  double             pasSav[4];
+  double             pasInit[4];
+  double             Um1;
+  double             UM1;
+  double             Vm1;
+  double             VM1;
+  double             Um2;
+  double             UM2;
+  double             Vm2;
+  double             VM2;
+  double             ResoU1;
+  double             ResoU2;
+  double             ResoV1;
+  double             ResoV2;
+  int          sensCheminement;
   IntImp_ConstIsoparametric choixIsoSav;
   IntSurf_PntOn2S           previousPoint;
-  bool                      previoustg;
+  bool          previoustg;
   gp_Dir                    previousd;
   gp_Dir2d                  previousd1;
   gp_Dir2d                  previousd2;
   gp_Dir2d                  firstd1;
   gp_Dir2d                  firstd2;
   IntWalk_TheInt2S          myIntersectionOn2S;
-  int                       STATIC_BLOCAGE_SUR_PAS_TROP_GRAND;
-  int                       STATIC_PRECEDENT_INFLEXION;
+  int          STATIC_BLOCAGE_SUR_PAS_TROP_GRAND;
+  int          STATIC_PRECEDENT_INFLEXION;
 };
 
 #include <IntWalk_PWalking.lxx>

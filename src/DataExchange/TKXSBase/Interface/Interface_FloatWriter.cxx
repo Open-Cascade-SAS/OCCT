@@ -31,7 +31,9 @@ void Interface_FloatWriter::SetFormat(const char* form, const bool reset)
   thezerosup            = false;
 }
 
-void Interface_FloatWriter::SetFormatForRange(const char* form, const double R1, const double R2)
+void Interface_FloatWriter::SetFormatForRange(const char* form,
+                                              const double    R1,
+                                              const double    R2)
 {
   strcpy(therangeform, form);
   therange1 = R1;
@@ -62,7 +64,10 @@ void Interface_FloatWriter::SetDefaults(const int chars)
   thezerosup = true;
 }
 
-void Interface_FloatWriter::Options(bool& zerosup, bool& range, double& R1, double& R2) const
+void Interface_FloatWriter::Options(bool& zerosup,
+                                    bool& range,
+                                    double&    R1,
+                                    double&    R2) const
 {
   zerosup = thezerosup;
   range   = (therange2 >= therange1 && therange1 >= 0.);
@@ -84,7 +89,8 @@ const char* Interface_FloatWriter::FormatForRange() const
 
 //  ########################################################################
 
-int Interface_FloatWriter::Write(const double val, const char* text) const
+int Interface_FloatWriter::Write(const double    val,
+                                              const char* text) const
 {
   const char* mainform  = static_cast<const char*>(themainform);
   const char* rangeform = static_cast<const char*>(therangeform);
@@ -93,18 +99,18 @@ int Interface_FloatWriter::Write(const double val, const char* text) const
 
 //=================================================================================================
 
-int Interface_FloatWriter::Convert(const double val,
-                                   const char*  text,
-                                   const bool   zsup,
-                                   const double R1,
-                                   const double R2,
-                                   const char*  mainform,
-                                   const char*  rangeform)
+int Interface_FloatWriter::Convert(const double    val,
+                                                const char* text,
+                                                const bool zsup,
+                                                const double    R1,
+                                                const double    R2,
+                                                const char* mainform,
+                                                const char* rangeform)
 {
   //    Float value, purged of trailing "0000" and "E+00"
   const int anMasSize = 5; // change 6 to 5: index 5 is not used below
-  char      lxp[anMasSize], *pText;
-  int       i0 = 0, j0 = 0;
+  char                   lxp[anMasSize], *pText;
+  int                    i0 = 0, j0 = 0;
 
   for (int i = 0; i < anMasSize; ++i)
     lxp[i] = '\0';

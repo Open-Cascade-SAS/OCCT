@@ -64,7 +64,7 @@ public:
   //! transferred entities (no filter active)
   Standard_EXPORT IFSelect_ContextModif(const Interface_Graph&    graph,
                                         const Interface_CopyTool& TC,
-                                        const char*               filename = "");
+                                        const char*    filename = "");
 
   //! Prepares a ContextModif with these information :
   //! - the graph established from original model (target passed
@@ -75,7 +75,8 @@ public:
   //!
   //! Such a ContextModif is considered to be applied on all
   //! transferred entities (no filter active)
-  Standard_EXPORT IFSelect_ContextModif(const Interface_Graph& graph, const char* filename = "");
+  Standard_EXPORT IFSelect_ContextModif(const Interface_Graph& graph,
+                                        const char* filename = "");
 
   //! This method requires ContextModif to be applied with a filter.
   //! If a ModelModifier is defined with a Selection criterium,
@@ -128,7 +129,7 @@ public:
   //! the result is in <res>. Returns False else
   //! (direct call to the map)
   Standard_EXPORT bool Search(const occ::handle<Standard_Transient>& ent,
-                              occ::handle<Standard_Transient>&       res) const;
+                                          occ::handle<Standard_Transient>&       res) const;
 
   //! Returns the list of original selected items.
   //! See also the iteration
@@ -182,15 +183,15 @@ public:
   //! If <start> is not an Entity from the original model (e.g. the
   //! model itself) this message is added to Global Check.
   Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
-                                  const char*                            mess,
-                                  const char*                            orig = "");
+                                  const char*            mess,
+                                  const char*            orig = "");
 
   //! Adds a Fail Message for an Entity from the original Model
   //! If <start> is not an Entity from the original model (e.g. the
   //! model itself) this message is added to Global Check.
   Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start,
-                               const char*                            mess,
-                               const char*                            orig = "");
+                               const char*            mess,
+                               const char*            orig = "");
 
   //! Returns a Check given an Entity number (in the original Model)
   //! by default a Global Check. Creates it the first time.
@@ -207,15 +208,15 @@ public:
   Standard_EXPORT Interface_CheckIterator CheckList() const;
 
 private:
-  Interface_Graph                    thegraf;
+  Interface_Graph               thegraf;
   occ::handle<Interface_Protocol>    theprot;
   occ::handle<Interface_CopyControl> themap;
-  TCollection_AsciiString            thefile;
-  TCollection_AsciiString            thelist;
-  Interface_CheckIterator            thechek;
-  bool                               thesel;
-  int                                thecurr;
-  int                                thecurt;
+  TCollection_AsciiString       thefile;
+  TCollection_AsciiString       thelist;
+  Interface_CheckIterator       thechek;
+  bool              thesel;
+  int              thecurr;
+  int              thecurt;
 };
 
 #endif // _IFSelect_ContextModif_HeaderFile

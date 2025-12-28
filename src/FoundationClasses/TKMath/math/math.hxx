@@ -47,9 +47,9 @@ public:
   //! computed.
   //! Returns true if Index is positive, Points' and Weights'
   //! length is equal to Index, Points and Weights are successfully computed.
-  Standard_EXPORT static bool OrderedGaussPointsAndWeights(const int    Index,
-                                                           math_Vector& Points,
-                                                           math_Vector& Weights);
+  Standard_EXPORT static bool OrderedGaussPointsAndWeights(const int Index,
+                                                                       math_Vector& Points,
+                                                                       math_Vector& Weights);
 
   //! Returns a vector of Kronrod points and a vector of their
   //! weights for Gauss-Kronrod computation method.
@@ -64,9 +64,9 @@ public:
   //! if Index is odd, it is equal to the size of Points and Weights
   //! and the computation of Points and Weights is performed successfully.
   //! Otherwise this method returns false.
-  Standard_EXPORT static bool KronrodPointsAndWeights(const int    Index,
-                                                      math_Vector& Points,
-                                                      math_Vector& Weights);
+  Standard_EXPORT static bool KronrodPointsAndWeights(const int Index,
+                                                                  math_Vector&           Points,
+                                                                  math_Vector&           Weights);
 };
 
 #endif // _math_HeaderFile

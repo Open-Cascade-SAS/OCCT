@@ -33,22 +33,20 @@ class CDM_MetaData : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-    const TCollection_ExtendedString&                                           aFolder,
-    const TCollection_ExtendedString&                                           aName,
-    const TCollection_ExtendedString&                                           aPath,
-    const TCollection_ExtendedString&                                           aFileName,
-    const bool                                                                  ReadOnly);
+  Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+                                                     const TCollection_ExtendedString& aFolder,
+                                                     const TCollection_ExtendedString& aName,
+                                                     const TCollection_ExtendedString& aPath,
+                                                     const TCollection_ExtendedString& aFileName,
+                                                     const bool            ReadOnly);
 
-  Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(
-    NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
-    const TCollection_ExtendedString&                                           aFolder,
-    const TCollection_ExtendedString&                                           aName,
-    const TCollection_ExtendedString&                                           aPath,
-    const TCollection_ExtendedString&                                           aVersion,
-    const TCollection_ExtendedString&                                           aFileName,
-    const bool                                                                  ReadOnly);
+  Standard_EXPORT static occ::handle<CDM_MetaData> LookUp(NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& theLookUpTable,
+                                                     const TCollection_ExtendedString& aFolder,
+                                                     const TCollection_ExtendedString& aName,
+                                                     const TCollection_ExtendedString& aPath,
+                                                     const TCollection_ExtendedString& aVersion,
+                                                     const TCollection_ExtendedString& aFileName,
+                                                     const bool            ReadOnly);
 
   Standard_EXPORT bool IsRetrieved() const;
 
@@ -106,30 +104,30 @@ private:
                const TCollection_ExtendedString& aName,
                const TCollection_ExtendedString& aPath,
                const TCollection_ExtendedString& aFileName,
-               const bool                        ReadOnly);
+               const bool            ReadOnly);
 
   CDM_MetaData(const TCollection_ExtendedString& aFolder,
                const TCollection_ExtendedString& aName,
                const TCollection_ExtendedString& aPath,
                const TCollection_ExtendedString& aVersion,
                const TCollection_ExtendedString& aFileName,
-               const bool                        ReadOnly);
+               const bool            ReadOnly);
 
   void SetDocument(const occ::handle<CDM_Document>& aDocument);
 
   int DocumentVersion(const occ::handle<CDM_Application>& anApplication);
 
 private:
-  bool                       myIsRetrieved;
+  bool           myIsRetrieved;
   CDM_DocumentPointer        myDocument;
   TCollection_ExtendedString myFolder;
   TCollection_ExtendedString myName;
   TCollection_ExtendedString myVersion;
-  bool                       myHasVersion;
+  bool           myHasVersion;
   TCollection_ExtendedString myFileName;
   TCollection_ExtendedString myPath;
-  int                        myDocumentVersion;
-  bool                       myIsReadOnly;
+  int           myDocumentVersion;
+  bool           myIsReadOnly;
 };
 
 #endif // _CDM_MetaData_HeaderFile

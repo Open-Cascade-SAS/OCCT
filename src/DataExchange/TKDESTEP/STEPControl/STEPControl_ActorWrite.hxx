@@ -43,38 +43,39 @@ class STEPControl_ActorWrite : public Transfer_ActorOfFinderProcess
 public:
   Standard_EXPORT STEPControl_ActorWrite();
 
-  Standard_EXPORT virtual bool Recognize(const occ::handle<Transfer_Finder>& start) override;
+  Standard_EXPORT virtual bool Recognize(const occ::handle<Transfer_Finder>& start)
+    override;
 
   Standard_EXPORT virtual occ::handle<Transfer_Binder> Transfer(
     const occ::handle<Transfer_Finder>&        start,
     const occ::handle<Transfer_FinderProcess>& FP,
-    const Message_ProgressRange&               theProgress = Message_ProgressRange()) override;
+    const Message_ProgressRange&          theProgress = Message_ProgressRange()) override;
 
   Standard_EXPORT occ::handle<Transfer_Binder> TransferSubShape(
     const occ::handle<Transfer_Finder>&                         start,
     const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR,
     occ::handle<StepGeom_GeometricRepresentationItem>&          AX1,
     const occ::handle<Transfer_FinderProcess>&                  FP,
-    const StepData_Factors&                                 theLocalFactors = StepData_Factors(),
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = NULL,
-    const bool                                              isManifold      = true,
-    const Message_ProgressRange&                            theProgress = Message_ProgressRange());
+    const StepData_Factors&                                theLocalFactors = StepData_Factors(),
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>&               shapeGroup      = NULL,
+    const bool                                 isManifold      = true,
+    const Message_ProgressRange&                           theProgress = Message_ProgressRange());
 
   Standard_EXPORT occ::handle<Transfer_Binder> TransferShape(
     const occ::handle<Transfer_Finder>&                         start,
     const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR,
     const occ::handle<Transfer_FinderProcess>&                  FP,
-    const StepData_Factors&                                 theLocalFactors = StepData_Factors(),
-    const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup      = NULL,
-    const bool                                              isManifold      = true,
-    const Message_ProgressRange&                            theProgress = Message_ProgressRange());
+    const StepData_Factors&                                theLocalFactors = StepData_Factors(),
+    const occ::handle<NCollection_HSequence<TopoDS_Shape>>&               shapeGroup      = NULL,
+    const bool                                 isManifold      = true,
+    const Message_ProgressRange&                           theProgress = Message_ProgressRange());
 
   Standard_EXPORT occ::handle<Transfer_Binder> TransferCompound(
     const occ::handle<Transfer_Finder>&                         start,
     const occ::handle<StepShape_ShapeDefinitionRepresentation>& SDR,
     const occ::handle<Transfer_FinderProcess>&                  FP,
-    const StepData_Factors&      theLocalFactors = StepData_Factors(),
-    const Message_ProgressRange& theProgress     = Message_ProgressRange());
+    const StepData_Factors&                                theLocalFactors = StepData_Factors(),
+    const Message_ProgressRange&                           theProgress = Message_ProgressRange());
 
   Standard_EXPORT void SetMode(const STEPControl_StepModelType M);
 
@@ -92,7 +93,7 @@ public:
   //! the shape itself
   //! NOTE: this method can modify shape
   Standard_EXPORT virtual bool IsAssembly(const occ::handle<StepData_StepModel>& theModel,
-                                          TopoDS_Shape&                          S) const;
+                                                      TopoDS_Shape&                     S) const;
 
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorWrite, Transfer_ActorOfFinderProcess)
 
@@ -104,8 +105,8 @@ private:
   //! (ssv; 13.11.2010)
   Standard_EXPORT occ::handle<StepShape_NonManifoldSurfaceShapeRepresentation> getNMSSRForGroup(
     const occ::handle<NCollection_HSequence<TopoDS_Shape>>& shapeGroup,
-    const occ::handle<Transfer_FinderProcess>&              FP,
-    bool&                                                   isNMSSRCreated) const;
+    const occ::handle<Transfer_FinderProcess>&    FP,
+    bool&                        isNMSSRCreated) const;
 
   //! bind already written shared faces to STEP entity for non-manifold
   Standard_EXPORT void mergeInfoForNM(const occ::handle<Transfer_FinderProcess>& theFP,
@@ -115,12 +116,12 @@ private:
   //! @param[in] theShape shape to iterate, checked for compound type and sub shapes vertex type
   //! @param[out] theVertices sequence of found vertices via recursively iterate of shape
   //! @return TRUE if one or more vertex was found and all shapes were compound or vertex
-  bool separateShapeToSoloVertex(const TopoDS_Shape&                 theShape,
-                                 NCollection_Sequence<TopoDS_Shape>& theVertices);
+  bool separateShapeToSoloVertex(const TopoDS_Shape&       theShape,
+                                             NCollection_Sequence<TopoDS_Shape>& theVertices);
 
 private:
-  int                       mygroup;
-  double                    mytoler;
+  int          mygroup;
+  double             mytoler;
   STEPConstruct_ContextTool myContext;
 };
 

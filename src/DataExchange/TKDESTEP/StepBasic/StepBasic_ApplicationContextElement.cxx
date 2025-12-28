@@ -28,8 +28,7 @@ void StepBasic_ApplicationContextElement::Init(
   frameOfReference = aFrameOfReference;
 }
 
-void StepBasic_ApplicationContextElement::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_ApplicationContextElement::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }
@@ -45,8 +44,7 @@ void StepBasic_ApplicationContextElement::SetFrameOfReference(
   frameOfReference = aFrameOfReference;
 }
 
-occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationContextElement::FrameOfReference()
-  const
+occ::handle<StepBasic_ApplicationContext> StepBasic_ApplicationContextElement::FrameOfReference() const
 {
   return frameOfReference;
 }

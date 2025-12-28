@@ -35,11 +35,10 @@ class Vrml_IndexedFaceSet : public Standard_Transient
 {
 
 public:
-  Standard_EXPORT Vrml_IndexedFaceSet(
-    const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
-    const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
-    const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
-    const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex);
+  Standard_EXPORT Vrml_IndexedFaceSet(const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
+                                      const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
+                                      const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
+                                      const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex);
 
   Standard_EXPORT Vrml_IndexedFaceSet();
 
@@ -47,8 +46,7 @@ public:
 
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> CoordIndex() const;
 
-  Standard_EXPORT void SetMaterialIndex(
-    const occ::handle<NCollection_HArray1<int>>& aMaterialIndex);
+  Standard_EXPORT void SetMaterialIndex(const occ::handle<NCollection_HArray1<int>>& aMaterialIndex);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<int>> MaterialIndex() const;
 

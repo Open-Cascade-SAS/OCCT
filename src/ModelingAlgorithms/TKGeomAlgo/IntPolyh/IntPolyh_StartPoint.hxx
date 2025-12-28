@@ -28,20 +28,20 @@ public:
 
   Standard_EXPORT IntPolyh_StartPoint();
 
-  Standard_EXPORT IntPolyh_StartPoint(const double xx,
-                                      const double yy,
-                                      const double zz,
-                                      const double uu1,
-                                      const double vv1,
-                                      const double uu2,
-                                      const double vv2,
-                                      const int    T1,
-                                      const int    E1,
-                                      const double LAM1,
-                                      const int    T2,
-                                      const int    E2,
-                                      const double LAM2,
-                                      const int    List);
+  Standard_EXPORT IntPolyh_StartPoint(const double    xx,
+                                      const double    yy,
+                                      const double    zz,
+                                      const double    uu1,
+                                      const double    vv1,
+                                      const double    uu2,
+                                      const double    vv2,
+                                      const int T1,
+                                      const int E1,
+                                      const double    LAM1,
+                                      const int T2,
+                                      const int E2,
+                                      const double    LAM2,
+                                      const int List);
 
   Standard_EXPORT double X() const;
 
@@ -74,11 +74,13 @@ public:
   Standard_EXPORT int ChainList() const;
 
   Standard_EXPORT int GetEdgePoints(const IntPolyh_Triangle& Triangle,
-                                    int&                     FirstEdgePoint,
-                                    int&                     SecondEdgePoint,
-                                    int&                     LastPoint) const;
+                                                 int&        FirstEdgePoint,
+                                                 int&        SecondEdgePoint,
+                                                 int&        LastPoint) const;
 
-  Standard_EXPORT void SetXYZ(const double XX, const double YY, const double ZZ);
+  Standard_EXPORT void SetXYZ(const double XX,
+                              const double YY,
+                              const double ZZ);
 
   Standard_EXPORT void SetUV1(const double UU1, const double VV1);
 
@@ -105,21 +107,21 @@ public:
   Standard_EXPORT void Dump(const int i) const;
 
 private:
-  double x;
-  double y;
-  double z;
-  double u1;
-  double v1;
-  double u2;
-  double v2;
-  double lambda1;
-  double lambda2;
-  double angle;
-  int    t1;
-  int    e1;
-  int    t2;
-  int    e2;
-  int    chainlist;
+  double    x;
+  double    y;
+  double    z;
+  double    u1;
+  double    v1;
+  double    u2;
+  double    v2;
+  double    lambda1;
+  double    lambda2;
+  double    angle;
+  int t1;
+  int e1;
+  int t2;
+  int e2;
+  int chainlist;
 };
 
 #endif // _IntPolyh_StartPoint_HeaderFile

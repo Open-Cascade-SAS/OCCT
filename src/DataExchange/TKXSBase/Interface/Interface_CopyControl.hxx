@@ -45,9 +45,10 @@ public:
   //! If Found, returns True and fills <res>
   //! Else, returns False and nullifies <res>
   Standard_EXPORT virtual bool Search(const occ::handle<Standard_Transient>& ent,
-                                      occ::handle<Standard_Transient>&       res) const = 0;
+                                                  occ::handle<Standard_Transient>&       res) const = 0;
 
   DEFINE_STANDARD_RTTIEXT(Interface_CopyControl, Standard_Transient)
+
 };
 
 #endif // _Interface_CopyControl_HeaderFile

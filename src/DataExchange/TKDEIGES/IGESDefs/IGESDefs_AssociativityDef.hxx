@@ -24,6 +24,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <Standard_Integer.hxx>
 class IGESBasic_HArray1OfHArray1OfInteger;
 
 //! defines IGES Associativity Definition Entity, Type <302>
@@ -80,7 +81,8 @@ public:
   //! raises exception if
   //! ClassNum <= 0 or ClassNum > NbClassDefs()
   //! ItemNum <= 0 or ItemNum > NbItemsPerClass(ClassNum)
-  Standard_EXPORT int Item(const int ClassNum, const int ItemNum) const;
+  Standard_EXPORT int Item(const int ClassNum,
+                                        const int ItemNum) const;
 
   DEFINE_STANDARD_RTTIEXT(IGESDefs_AssociativityDef, IGESData_IGESEntity)
 

@@ -24,10 +24,10 @@
 
 void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
                             const occ::handle<Geom_Surface>& S2,
-                            const double                     Tol,
-                            const bool                       Approx,
-                            const bool                       ApproxS1,
-                            const bool                       ApproxS2)
+                            const double         Tol,
+                            const bool      Approx,
+                            const bool      ApproxS1,
+                            const bool      ApproxS2)
 {
   myHS1 = new GeomAdaptor_Surface(S1);
   if (S1 == S2)
@@ -43,14 +43,14 @@ void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
 //=======================================================================
 void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
                             const occ::handle<Geom_Surface>& S2,
-                            const double                     Tol,
-                            const double                     U1,
-                            const double                     V1,
-                            const double                     U2,
-                            const double                     V2,
-                            const bool                       Approx,
-                            const bool                       ApproxS1,
-                            const bool                       ApproxS2)
+                            const double         Tol,
+                            const double         U1,
+                            const double         V1,
+                            const double         U2,
+                            const double         V2,
+                            const bool      Approx,
+                            const bool      ApproxS1,
+                            const bool      ApproxS2)
 {
   myHS1 = new GeomAdaptor_Surface(S1);
   if (S1 == S2)
@@ -62,15 +62,15 @@ void GeomInt_IntSS::Perform(const occ::handle<Geom_Surface>& S1,
 
 //=================================================================================================
 
-void GeomInt_IntSS::InternalPerform(const double Tol,
-                                    const bool   Approx,
-                                    const bool   ApproxS1,
-                                    const bool   ApproxS2,
-                                    const bool   useStart,
-                                    const double U1,
-                                    const double V1,
-                                    const double U2,
-                                    const double V2)
+void GeomInt_IntSS::InternalPerform(const double    Tol,
+                                    const bool Approx,
+                                    const bool ApproxS1,
+                                    const bool ApproxS2,
+                                    const bool useStart,
+                                    const double    U1,
+                                    const double    V1,
+                                    const double    U2,
+                                    const double    V2)
 {
   myTolReached2d = myTolReached3d = 0.0;
   myNbrestr                       = 0;
@@ -175,7 +175,7 @@ const occ::handle<Geom_Curve>& GeomInt_IntSS::Boundary(const int Index) const
 gp_Pnt2d GeomInt_IntSS::Pnt2d(const int Index, const bool OnFirst) const
 {
   const IntPatch_Point& thept = myIntersector.Point(Index);
-  double                U, V;
+  double         U, V;
   if (OnFirst)
     thept.ParametersOnS1(U, V);
   else

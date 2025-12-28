@@ -25,6 +25,7 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 
 class LocOpe_WiresOnShape;
@@ -103,8 +104,8 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& Right() const;
 
   //! Builds the cut and the resulting faces and edges as well.
-  Standard_EXPORT void Build(
-    const Message_ProgressRange& theRange = Message_ProgressRange()) override;
+  Standard_EXPORT void Build(const Message_ProgressRange& theRange = Message_ProgressRange())
+    override;
 
   //! Returns true if the shape has been deleted.
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
@@ -113,7 +114,7 @@ public:
   Standard_EXPORT const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& F) override;
 
 private:
-  LocOpe_Spliter                   mySShape;
+  LocOpe_Spliter              mySShape;
   occ::handle<LocOpe_WiresOnShape> myWOnShape;
 
   mutable NCollection_List<TopoDS_Shape> myRight;

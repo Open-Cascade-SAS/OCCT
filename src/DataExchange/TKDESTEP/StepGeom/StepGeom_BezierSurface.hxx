@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepGeom_BezierSurface();
 
   DEFINE_STANDARD_RTTIEXT(StepGeom_BezierSurface, StepGeom_BSplineSurface)
+
 };
 
 #endif // _StepGeom_BezierSurface_HeaderFile

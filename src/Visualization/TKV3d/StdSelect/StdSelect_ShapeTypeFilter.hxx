@@ -33,9 +33,11 @@ public:
   //! Returns the type of shape selected by the filter.
   TopAbs_ShapeEnum Type() const { return myType; }
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const
+    override;
 
-  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const override;
+  Standard_EXPORT virtual bool ActsOn(const TopAbs_ShapeEnum aStandardMode) const
+    override;
 
 private:
   TopAbs_ShapeEnum myType;

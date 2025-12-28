@@ -42,7 +42,7 @@ public:
 
   //! Finds or creates a list of boolean values attribute with explicit user defined <guid>.
   Standard_EXPORT static occ::handle<TDataStd_BooleanList> Set(const TDF_Label&     label,
-                                                               const Standard_GUID& theGuid);
+                                                          const Standard_GUID& theGuid);
 
   Standard_EXPORT TDataStd_BooleanList();
 
@@ -66,11 +66,13 @@ public:
 
   //! Inserts the <value> before the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertBefore(const int index, const bool before_value);
+  Standard_EXPORT bool InsertBefore(const int index,
+                                                const bool before_value);
 
   //! Inserts the <value> after the <index> position.
   //! The indices start with 1 .. Extent().
-  Standard_EXPORT bool InsertAfter(const int index, const bool after_value);
+  Standard_EXPORT bool InsertAfter(const int index,
+                                               const bool after_value);
 
   //! Removes a value at <index> position.
   Standard_EXPORT bool Remove(const int index);
@@ -94,13 +96,13 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_BooleanList, TDF_Attribute)
 
 private:
   NCollection_List<uint8_t> myList;
-  Standard_GUID             myID;
+  Standard_GUID       myID;
 };
 
 #endif // _TDataStd_BooleanList_HeaderFile

@@ -21,9 +21,9 @@ StepShape_RightCircularCone::StepShape_RightCircularCone() {}
 
 void StepShape_RightCircularCone::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                        const occ::handle<StepGeom_Axis1Placement>&  aPosition,
-                                       const double                                 aHeight,
-                                       const double                                 aRadius,
-                                       const double                                 aSemiAngle)
+                                       const double                     aHeight,
+                                       const double                     aRadius,
+                                       const double                     aSemiAngle)
 {
   // --- classe own fields ---
   position  = aPosition;

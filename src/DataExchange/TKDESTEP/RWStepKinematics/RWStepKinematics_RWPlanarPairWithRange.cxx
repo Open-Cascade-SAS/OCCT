@@ -34,7 +34,7 @@ RWStepKinematics_RWPlanarPairWithRange::RWStepKinematics_RWPlanarPairWithRange()
 
 void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
   const occ::handle<StepData_StepReaderData>&            theData,
-  const int                                              theNum,
+  const int                            theNum,
   occ::handle<Interface_Check>&                          theArch,
   const occ::handle<StepKinematics_PlanarPairWithRange>& theEnt) const
 {
@@ -57,7 +57,7 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
                       aItemDefinedTransformation_Name);
 
   occ::handle<TCollection_HAsciiString> aItemDefinedTransformation_Description;
-  bool                                  hasItemDefinedTransformation_Description = true;
+  bool                 hasItemDefinedTransformation_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -144,8 +144,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
 
   // Own fields of PlanarPairWithRange
 
-  double aLowerLimitActualRotation;
-  bool   hasLowerLimitActualRotation = true;
+  double    aLowerLimitActualRotation;
+  bool hasLowerLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 13))
   {
     theData->ReadReal(theNum,
@@ -160,8 +160,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
     aLowerLimitActualRotation   = 0;
   }
 
-  double aUpperLimitActualRotation;
-  bool   hasUpperLimitActualRotation = true;
+  double    aUpperLimitActualRotation;
+  bool hasUpperLimitActualRotation = true;
   if (theData->IsParamDefined(theNum, 14))
   {
     theData->ReadReal(theNum,
@@ -176,8 +176,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
     aUpperLimitActualRotation   = 0;
   }
 
-  double aLowerLimitActualTranslationX;
-  bool   hasLowerLimitActualTranslationX = true;
+  double    aLowerLimitActualTranslationX;
+  bool hasLowerLimitActualTranslationX = true;
   if (theData->IsParamDefined(theNum, 15))
   {
     theData->ReadReal(theNum,
@@ -192,8 +192,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
     aLowerLimitActualTranslationX   = 0;
   }
 
-  double aUpperLimitActualTranslationX;
-  bool   hasUpperLimitActualTranslationX = true;
+  double    aUpperLimitActualTranslationX;
+  bool hasUpperLimitActualTranslationX = true;
   if (theData->IsParamDefined(theNum, 16))
   {
     theData->ReadReal(theNum,
@@ -208,8 +208,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
     aUpperLimitActualTranslationX   = 0;
   }
 
-  double aLowerLimitActualTranslationY;
-  bool   hasLowerLimitActualTranslationY = true;
+  double    aLowerLimitActualTranslationY;
+  bool hasLowerLimitActualTranslationY = true;
   if (theData->IsParamDefined(theNum, 17))
   {
     theData->ReadReal(theNum,
@@ -224,8 +224,8 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
     aLowerLimitActualTranslationY   = 0;
   }
 
-  double aUpperLimitActualTranslationY;
-  bool   hasUpperLimitActualTranslationY = true;
+  double    aUpperLimitActualTranslationY;
+  bool hasUpperLimitActualTranslationY = true;
   if (theData->IsParamDefined(theNum, 18))
   {
     theData->ReadReal(theNum,
@@ -271,7 +271,7 @@ void RWStepKinematics_RWPlanarPairWithRange::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPlanarPairWithRange::WriteStep(
-  StepData_StepWriter&                                   theSW,
+  StepData_StepWriter&                              theSW,
   const occ::handle<StepKinematics_PlanarPairWithRange>& theEnt) const
 {
 
@@ -361,7 +361,7 @@ void RWStepKinematics_RWPlanarPairWithRange::WriteStep(
 
 void RWStepKinematics_RWPlanarPairWithRange::Share(
   const occ::handle<StepKinematics_PlanarPairWithRange>& theEnt,
-  Interface_EntityIterator&                              iter) const
+  Interface_EntityIterator&                         iter) const
 {
 
   // Inherited fields of RepresentationItem

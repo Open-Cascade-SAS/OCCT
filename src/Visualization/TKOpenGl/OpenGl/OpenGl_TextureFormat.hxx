@@ -37,16 +37,15 @@ public:
   //! @param[in] theIsColorMap  flag indicating color nature of image (to select sRGB texture)
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindFormat(const occ::handle<OpenGl_Context>& theCtx,
-                                                         Image_Format theFormat,
-                                                         bool         theIsColorMap);
+                                                         Image_Format                  theFormat,
+                                                         bool theIsColorMap);
 
   //! Find texture format suitable to specified internal (sized) texture format.
   //! @param[in] theCtx  OpenGL context defining supported texture formats
   //! @param[in] theSizedFormat  sized (internal) texture format (example: GL_RGBA8)
   //! @return found format or invalid format
-  Standard_EXPORT static OpenGl_TextureFormat FindSizedFormat(
-    const occ::handle<OpenGl_Context>& theCtx,
-    GLint                              theSizedFormat);
+  Standard_EXPORT static OpenGl_TextureFormat FindSizedFormat(const occ::handle<OpenGl_Context>& theCtx,
+                                                              GLint theSizedFormat);
 
   //! Find texture format suitable to specified compressed texture format.
   //! @param[in] theCtx  OpenGL context defining supported texture formats
@@ -54,8 +53,8 @@ public:
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindCompressedFormat(
     const occ::handle<OpenGl_Context>& theCtx,
-    Image_CompressedFormat             theFormat,
-    bool                               theIsColorMap);
+    Image_CompressedFormat        theFormat,
+    bool                          theIsColorMap);
 
   //! Format pixel format enumeration.
   Standard_EXPORT static TCollection_AsciiString FormatFormat(GLint theInternalFormat);

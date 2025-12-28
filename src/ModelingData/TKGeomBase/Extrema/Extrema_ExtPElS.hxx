@@ -88,10 +88,10 @@ public:
   Standard_EXPORT const Extrema_POnSurf& Point(const int N) const;
 
 private:
-  bool            myDone;
-  int             myNbExt;
-  double          mySqDist[4];
-  Extrema_POnSurf myPoint[4];
+  bool myDone;
+  int myNbExt;
+  double    mySqDist[4];
+  Extrema_POnSurf  myPoint[4];
 };
 
 #endif // _Extrema_ExtPElS_HeaderFile

@@ -45,14 +45,14 @@ public:
   //! case of Error on Writing. <file> gives the name of the File
   //! to be produced (this avoids to export the class SessionFile).
   Standard_EXPORT static bool SaveSession(const occ::handle<IFSelect_WorkSession>& WS,
-                                          const char*                              file);
+                                                      const char*              file);
 
   //! Restore the state of a WorkSession from IFSelect, by using a
   //! SessionFile from IFSelect. Returns True if Done, False in
   //! case of Error on Writing. <file> gives the name of the File
   //! to be used (this avoids to export the class SessionFile).
   Standard_EXPORT static bool RestoreSession(const occ::handle<IFSelect_WorkSession>& WS,
-                                             const char*                              file);
+                                                         const char*              file);
 };
 
 #endif // _IFSelect_HeaderFile

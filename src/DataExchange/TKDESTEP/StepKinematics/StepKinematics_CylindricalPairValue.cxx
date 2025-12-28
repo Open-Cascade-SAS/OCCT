@@ -27,8 +27,8 @@ StepKinematics_CylindricalPairValue::StepKinematics_CylindricalPairValue() {}
 void StepKinematics_CylindricalPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                                     theActualTranslation,
-  const double                                     theActualRotation)
+  const double                         theActualTranslation,
+  const double                         theActualRotation)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -46,7 +46,8 @@ double StepKinematics_CylindricalPairValue::ActualTranslation() const
 
 //=================================================================================================
 
-void StepKinematics_CylindricalPairValue::SetActualTranslation(const double theActualTranslation)
+void StepKinematics_CylindricalPairValue::SetActualTranslation(
+  const double theActualTranslation)
 {
   myActualTranslation = theActualTranslation;
 }

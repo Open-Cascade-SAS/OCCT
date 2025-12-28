@@ -21,6 +21,7 @@
 #include <TDF_IDFilter.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_List.hxx>
+#include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
 
 // To avoid too much resizing actions, et 23 est un nombre premier.

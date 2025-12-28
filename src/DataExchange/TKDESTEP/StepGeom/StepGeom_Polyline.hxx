@@ -35,15 +35,12 @@ public:
   //! Returns a Polyline
   Standard_EXPORT StepGeom_Polyline();
 
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>&                                  aName,
-    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPoints);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPoints);
 
-  Standard_EXPORT void SetPoints(
-    const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPoints);
+  Standard_EXPORT void SetPoints(const occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>>& aPoints);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Points()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>> Points() const;
 
   Standard_EXPORT occ::handle<StepGeom_CartesianPoint> PointsValue(const int num) const;
 

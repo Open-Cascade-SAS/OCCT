@@ -21,6 +21,7 @@
 #include <Poly_Polygon3D.hxx>
 #include <NCollection_Array1.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Wire.hxx>
 #include <VrmlData_Color.hxx>
@@ -35,7 +36,8 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedLineSet, VrmlData_Geometry)
 
 //=================================================================================================
 
-Quantity_Color VrmlData_IndexedLineSet::GetColor(const int /*iFace*/, const int /*iVertex*/)
+Quantity_Color VrmlData_IndexedLineSet::GetColor(const int /*iFace*/,
+                                                 const int /*iVertex*/)
 {
   // TODO
   return Quantity_NOC_BLACK;
@@ -53,26 +55,26 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
     myTShape.Nullify();
   else if (myIsModified)
   {
-    int           i;
-    BRep_Builder  aBuilder;
-    const gp_XYZ* arrNodes = myCoords->Values();
+    int i;
+    BRep_Builder     aBuilder;
+    const gp_XYZ*    arrNodes = myCoords->Values();
 
     // Create the Wire
     TopoDS_Wire aWire;
     aBuilder.MakeWire(aWire);
     for (i = 0; i < (int)myNbPolygons; i++)
     {
-      const int*                 arrIndice;
-      const int                  nNodes = Polygon(i, arrIndice);
-      NCollection_Array1<gp_Pnt> arrPoint(1, nNodes);
-      NCollection_Array1<double> arrParam(1, nNodes);
+      const int* arrIndice;
+      const int  nNodes = Polygon(i, arrIndice);
+      NCollection_Array1<gp_Pnt>      arrPoint(1, nNodes);
+      NCollection_Array1<double>    arrParam(1, nNodes);
       for (int j = 0; j < nNodes; j++)
       {
         arrPoint(j + 1).SetXYZ(arrNodes[arrIndice[j]]);
         arrParam(j + 1) = j;
       }
       const occ::handle<Poly_Polygon3D> aPolyPolygon = new Poly_Polygon3D(arrPoint, arrParam);
-      TopoDS_Edge                       anEdge;
+      TopoDS_Edge                  anEdge;
       aBuilder.MakeEdge(anEdge, aPolyPolygon);
       aBuilder.Add(aWire, anEdge);
     }
@@ -86,8 +88,7 @@ const occ::handle<TopoDS_TShape>& VrmlData_IndexedLineSet::TShape()
 // purpose  : Create a copy of this node
 //=======================================================================
 
-occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(
-  const occ::handle<VrmlData_Node>& theOther) const
+occ::handle<VrmlData_Node> VrmlData_IndexedLineSet::Clone(const occ::handle<VrmlData_Node>& theOther) const
 {
   occ::handle<VrmlData_IndexedLineSet> aResult =
     occ::down_cast<VrmlData_IndexedLineSet>(VrmlData_Node::Clone(theOther));

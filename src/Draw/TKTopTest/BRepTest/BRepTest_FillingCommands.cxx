@@ -59,6 +59,7 @@
 #include <gp_XY.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_XYZ.hxx>
+#include <NCollection_Sequence.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
 
@@ -76,27 +77,27 @@
   #include <Geom_Line.hxx>
 #endif
 
-const int    defDegree      = 3;
-const int    defNbPtsOnCur  = 10;
-const int    defNbIter      = 3;
-const bool   defAnisotropie = false;
-const double defTol2d       = 0.00001;
-const double defTol3d       = 0.0001;
-const double defTolAng      = 0.01;
-const double defTolCurv     = 0.1;
-const int    defMaxDeg      = 8;
-const int    defMaxSegments = 9;
+const int defDegree      = 3;
+const int defNbPtsOnCur  = 10;
+const int defNbIter      = 3;
+const bool defAnisotropie = false;
+const double    defTol2d       = 0.00001;
+const double    defTol3d       = 0.0001;
+const double    defTolAng      = 0.01;
+const double    defTolCurv     = 0.1;
+const int defMaxDeg      = 8;
+const int defMaxSegments = 9;
 
-int    Degree      = defDegree;
-int    NbPtsOnCur  = defNbPtsOnCur;
-int    NbIter      = defNbIter;
-bool   Anisotropie = defAnisotropie;
-double Tol2d       = defTol2d;
-double Tol3d       = defTol3d;
-double TolAng      = defTolAng;
-double TolCurv     = defTolCurv;
-int    MaxDeg      = defMaxDeg;
-int    MaxSegments = defMaxSegments;
+int Degree      = defDegree;
+int NbPtsOnCur  = defNbPtsOnCur;
+int NbIter      = defNbIter;
+bool Anisotropie = defAnisotropie;
+double    Tol2d       = defTol2d;
+double    Tol3d       = defTol3d;
+double    TolAng      = defTolAng;
+double    TolCurv     = defTolCurv;
+int MaxDeg      = defMaxDeg;
+int MaxSegments = defMaxSegments;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  commande plate : resultat face sur surface plate
@@ -106,12 +107,11 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 8)
     return 1;
-  int                                                            NbCurFront = Draw::Atoi(a[3]);
-  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts =
-    new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
-  occ::handle<NCollection_HArray1<int>> Tang     = new NCollection_HArray1<int>(1, NbCurFront);
-  occ::handle<NCollection_HArray1<int>> NbPtsCur = new NCollection_HArray1<int>(1, NbCurFront);
-  BRep_Builder                          B;
+  int                  NbCurFront = Draw::Atoi(a[3]);
+  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts     = new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  Tang       = new NCollection_HArray1<int>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  NbPtsCur   = new NCollection_HArray1<int>(1, NbCurFront);
+  BRep_Builder                      B;
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
 
@@ -135,7 +135,7 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
     S->Initialize(F);
     occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
     C->Initialize(E, F);
-    Adaptor3d_CurveOnSurface              ConS(C, S);
+    Adaptor3d_CurveOnSurface         ConS(C, S);
     occ::handle<Adaptor3d_CurveOnSurface> HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i, HConS);
     occ::handle<GeomPlate_CurveConstraint> Cont =
@@ -157,8 +157,8 @@ static int plate(Draw_Interpretor& di, int n, const char** a)
   BRepBuilderAPI_MakeWire MW;
   for (i = 1; i <= NbCurFront; i++)
   {
-    int         iInOrder = Henri.Order()->Value(i);
-    TopoDS_Edge E;
+    int iInOrder = Henri.Order()->Value(i);
+    TopoDS_Edge      E;
     if (Henri.Sense()->Value(iInOrder) == 1)
     {
       BRepBuilderAPI_MakeEdge ME(Henri.Curves2d()->Value(iInOrder),
@@ -250,7 +250,7 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
       S->Initialize(F);
       occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
       C->Initialize(E, F);
-      Adaptor3d_CurveOnSurface               ConS(C, S);
+      Adaptor3d_CurveOnSurface          ConS(C, S);
       occ::handle<Adaptor3d_CurveOnSurface>  HConS = new Adaptor3d_CurveOnSurface(ConS);
       occ::handle<GeomPlate_CurveConstraint> Cont  = new BRepFill_CurveConstraint(HConS, Conti);
       Henri.Add(Cont);
@@ -265,7 +265,7 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
 
     if (DrawTrSurf::GetPoint(a[Indice], P1))
     {
-      Conti                                        = 0;
+      Conti                                   = 0;
       occ::handle<GeomPlate_PointConstraint> PCont = new GeomPlate_PointConstraint(P1, 0);
       Henri.Add(PCont);
       Indice++;
@@ -300,13 +300,13 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
     di << "Error: UserBreak\n";
     return 0;
   }
-  int    nbcarreau = 9;
-  int    degmax    = 8;
-  double seuil;
+  int nbcarreau = 9;
+  int degmax    = 8;
+  double    seuil;
 
   occ::handle<GeomPlate_Surface> gpPlate = Henri.Surface();
-  NCollection_Sequence<gp_XY>    S2d;
-  NCollection_Sequence<gp_XYZ>   S3d;
+  NCollection_Sequence<gp_XY>       S2d;
+  NCollection_Sequence<gp_XYZ>      S3d;
   S2d.Clear();
   S3d.Clear();
   Henri.Disc2dContour(4, S2d);
@@ -314,7 +314,7 @@ static int gplate(Draw_Interpretor& di, int n, const char** a)
   seuil = std::max(0.0001, 10 * Henri.G0Error());
   GeomPlate_PlateG0Criterion critere(S2d, S3d, seuil);
   GeomPlate_MakeApprox       Mapp(gpPlate, critere, 0.0001, nbcarreau, degmax);
-  occ::handle<Geom_Surface>  Surf(Mapp.Surface());
+  occ::handle<Geom_Surface>       Surf(Mapp.Surface());
 
   double Umin, Umax, Vmin, Vmax;
 
@@ -334,12 +334,11 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
 {
   if (n < 9)
     return 1;
-  int                                                            NbMedium   = Draw::Atoi(a[2]);
-  int                                                            NbCurFront = Draw::Atoi(a[3]);
-  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts =
-    new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
-  occ::handle<NCollection_HArray1<int>> Tang     = new NCollection_HArray1<int>(1, NbCurFront);
-  occ::handle<NCollection_HArray1<int>> NbPtsCur = new NCollection_HArray1<int>(1, NbCurFront);
+  int                  NbMedium   = Draw::Atoi(a[2]);
+  int                  NbCurFront = Draw::Atoi(a[3]);
+  occ::handle<NCollection_HArray1<occ::handle<Adaptor3d_Curve>>> Fronts     = new NCollection_HArray1<occ::handle<Adaptor3d_Curve>>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  Tang       = new NCollection_HArray1<int>(1, NbCurFront);
+  occ::handle<NCollection_HArray1<int>>  NbPtsCur   = new NCollection_HArray1<int>(1, NbCurFront);
 
   GeomPlate_BuildPlateSurface Henri(3, 15, 2);
 
@@ -363,7 +362,7 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
     S->Initialize(F);
     occ::handle<BRepAdaptor_Curve2d> C = new BRepAdaptor_Curve2d();
     C->Initialize(E, F);
-    Adaptor3d_CurveOnSurface              ConS(C, S);
+    Adaptor3d_CurveOnSurface         ConS(C, S);
     occ::handle<Adaptor3d_CurveOnSurface> HConS = new Adaptor3d_CurveOnSurface(ConS);
     Fronts->SetValue(i, HConS);
     occ::handle<GeomPlate_CurveConstraint> Cont =
@@ -383,10 +382,10 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
   // std::cout<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<std::endl;
   di << " dist. max = " << dmax << " ; angle max = " << anmax << "\n";
 
-  Tol3d                                      = Draw::Atof(a[3 * NbCurFront + 4]);
-  int                              Nbmax     = Draw::Atoi(a[3 * NbCurFront + 5]);
-  int                              degmax    = Draw::Atoi(a[3 * NbCurFront + 6]);
-  int                              CritOrder = Draw::Atoi(a[3 * NbCurFront + 7]);
+  Tol3d                                 = Draw::Atof(a[3 * NbCurFront + 4]);
+  int            Nbmax     = Draw::Atoi(a[3 * NbCurFront + 5]);
+  int            degmax    = Draw::Atoi(a[3 * NbCurFront + 6]);
+  int            CritOrder = Draw::Atoi(a[3 * NbCurFront + 7]);
   occ::handle<GeomPlate_Surface>   surf      = Henri.Surface();
   occ::handle<Geom_BSplineSurface> support;
 
@@ -426,8 +425,8 @@ static int approxplate(Draw_Interpretor& di, int n, const char** a)
   BRep_Builder            B;
   for (i = 1; i <= NbCurFront; i++)
   {
-    int         iInOrder = Henri.Order()->Value(i);
-    TopoDS_Edge E;
+    int iInOrder = Henri.Order()->Value(i);
+    TopoDS_Edge      E;
     if (Henri.Sense()->Value(iInOrder) == 1)
     {
       BRepBuilderAPI_MakeEdge ME(Henri.Curves2d()->Value(iInOrder),
@@ -496,11 +495,11 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
   if (!InitFace.IsNull())
     MakeFilling.LoadInitSurface(InitFace);
 
-  int                            i = (InitFace.IsNull()) ? 5 : 6, k;
-  TopoDS_Edge                    E;
-  TopoDS_Face                    F;
-  gp_Pnt                         Point;
-  int                            Order;
+  int     i = (InitFace.IsNull()) ? 5 : 6, k;
+  TopoDS_Edge          E;
+  TopoDS_Face          F;
+  gp_Pnt               Point;
+  int     Order;
   NCollection_List<TopoDS_Shape> ListForHistory;
   for (k = 1; k <= NbBounds; k++)
   {
@@ -585,7 +584,7 @@ static int filling(Draw_Interpretor& di, int n, const char** a)
   }
 
   double dmax = MakeFilling.G0Error(), angmax = MakeFilling.G1Error(),
-         curvmax = MakeFilling.G2Error();
+                curvmax = MakeFilling.G2Error();
   di << " dist. max = " << dmax << " ; angle max = " << angmax << " ; diffcurv max = " << curvmax
      << "\n";
 

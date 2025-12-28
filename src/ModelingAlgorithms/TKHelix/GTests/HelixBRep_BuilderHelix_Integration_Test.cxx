@@ -21,6 +21,7 @@
 #include <gp_Ax3.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
@@ -58,8 +59,8 @@ protected:
 
   // Helper method to validate helix wire properties
   void ValidateHelixWire(const TopoDS_Wire& theWire,
-                         double             theExpectedLength,
-                         double             theTolerance = 0.05) const
+                         double      theExpectedLength,
+                         double      theTolerance = 0.05) const
   {
     EXPECT_FALSE(theWire.IsNull());
     EXPECT_EQ(theWire.ShapeType(), TopAbs_WIRE);
@@ -76,7 +77,7 @@ protected:
     }
   }
 
-  gp_Ax3 myAxis;
+  gp_Ax3        myAxis;
   double myTolerance;
 };
 
@@ -107,8 +108,8 @@ TEST_F(HelixBRepTest, TCL_Test_A1_PureCylindricalHelix)
   EXPECT_EQ(aHelixWire.ShapeType(), TopAbs_WIRE);
 
   // Calculate expected helix length
-  double aCircumference  = M_PI * 100.0; // D1 = 100
-  double aTurns          = 100.0 / 20.0; // Height/Pitch for number of turns mode (20 = 100/5)
+  double aCircumference = M_PI * 100.0; // D1 = 100
+  double aTurns         = 100.0 / 20.0; // Height/Pitch for number of turns mode (20 = 100/5)
   double aExpectedLength = aTurns * sqrt(aCircumference * aCircumference + 20.0 * 20.0);
 
   ValidateHelixWire(TopoDS::Wire(aHelixWire), aExpectedLength);
@@ -278,9 +279,9 @@ TEST_F(HelixBRepTest, ErrorConditions_InvalidDimensions)
   HelixBRep_BuilderHelix aBuilder;
 
   // Test mismatched array dimensions
-  NCollection_Array1<double> aDiams(1, 3);   // 3 elements = 2 parts
-  NCollection_Array1<double> aHeights(1, 1); // 1 element - should cause error (need 2 for 2 parts)
-  NCollection_Array1<double> aPitches(1, 1); // 1 element - should cause error (need 2 for 2 parts)
+  NCollection_Array1<double>    aDiams(1, 3);     // 3 elements = 2 parts
+  NCollection_Array1<double>    aHeights(1, 1);   // 1 element - should cause error (need 2 for 2 parts)
+  NCollection_Array1<double>    aPitches(1, 1);   // 1 element - should cause error (need 2 for 2 parts)
   NCollection_Array1<bool> aIsPitches(1, 1); // 1 element - should cause error (need 2 for 2 parts)
 
   aDiams(1)     = 100.0;
@@ -347,9 +348,9 @@ TEST_F(HelixBRepTest, ParameterValidation)
 {
   HelixBRep_BuilderHelix aBuilder;
 
-  NCollection_Array1<double> aHeights(1, 1);
-  NCollection_Array1<double> aPitches(1, 1);
-  NCollection_Array1<bool>   aIsPitches(1, 1);
+  NCollection_Array1<double>    aHeights(1, 1);
+  NCollection_Array1<double>    aPitches(1, 1);
+  NCollection_Array1<bool> aIsPitches(1, 1);
 
   // Test very small height - should cause error during Perform()
   aHeights(1)   = 1.e-8;

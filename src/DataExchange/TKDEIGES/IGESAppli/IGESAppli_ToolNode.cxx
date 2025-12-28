@@ -37,9 +37,9 @@ IGESAppli_ToolNode::IGESAppli_ToolNode() {}
 
 void IGESAppli_ToolNode::ReadOwnParams(const occ::handle<IGESAppli_Node>&          ent,
                                        const occ::handle<IGESData_IGESReaderData>& IR,
-                                       IGESData_ParamReader&                       PR) const
+                                       IGESData_ParamReader&                  PR) const
 {
-  gp_XYZ                                     tempCoordinates;
+  gp_XYZ                                tempCoordinates;
   occ::handle<IGESGeom_TransformationMatrix> tempSystem;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -59,7 +59,7 @@ void IGESAppli_ToolNode::ReadOwnParams(const occ::handle<IGESAppli_Node>&       
 }
 
 void IGESAppli_ToolNode::WriteOwnParams(const occ::handle<IGESAppli_Node>& ent,
-                                        IGESData_IGESWriter&               IW) const
+                                        IGESData_IGESWriter&          IW) const
 {
   IW.Send(ent->Coord().X());
   IW.Send(ent->Coord().Y());
@@ -68,14 +68,14 @@ void IGESAppli_ToolNode::WriteOwnParams(const occ::handle<IGESAppli_Node>& ent,
 }
 
 void IGESAppli_ToolNode::OwnShared(const occ::handle<IGESAppli_Node>& ent,
-                                   Interface_EntityIterator&          iter) const
+                                   Interface_EntityIterator&     iter) const
 {
   iter.GetOneItem(ent->System());
 }
 
 void IGESAppli_ToolNode::OwnCopy(const occ::handle<IGESAppli_Node>& another,
                                  const occ::handle<IGESAppli_Node>& ent,
-                                 Interface_CopyTool&                TC) const
+                                 Interface_CopyTool&           TC) const
 {
   gp_XYZ aCoord = (another->Coord()).XYZ();
   DeclareAndCast(IGESGeom_TransformationMatrix, aSystem, TC.Transferred(another->System()));
@@ -108,9 +108,9 @@ void IGESAppli_ToolNode::OwnCheck(const occ::handle<IGESAppli_Node>& ent,
 }
 
 void IGESAppli_ToolNode::OwnDump(const occ::handle<IGESAppli_Node>& ent,
-                                 const IGESData_IGESDumper&         dumper,
-                                 Standard_OStream&                  S,
-                                 const int                          level) const
+                                 const IGESData_IGESDumper&    dumper,
+                                 Standard_OStream&             S,
+                                 const int        level) const
 {
   S << "IGESAppli_Node\n";
   S << " Nodal Coords : 1st " << ent->Coord().X() << "  2nd : " << ent->Coord().Y()

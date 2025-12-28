@@ -37,7 +37,7 @@ ShapeBuild_ReShape::ShapeBuild_ReShape() {}
 
 TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
                                        const TopAbs_ShapeEnum until,
-                                       const int              buildmode)
+                                       const int buildmode)
 {
   if (shape.IsNull())
     return shape;
@@ -58,7 +58,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
     for (TopoDS_Iterator it(shape); it.More(); it.Next())
     {
       const TopoDS_Shape& sh   = it.Value();
-      int                 stat = Status(sh, newsh, false);
+      int    stat = Status(sh, newsh, false);
       if (stat != 0)
         modif = 1;
       if (stat >= 0)
@@ -200,7 +200,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
   TopAbs_Orientation orient = shape.Orientation(); // JR/Hp: or -> orient
   result.Orientation(TopAbs_FORWARD);              // protect against INTERNAL or EXTERNAL shapes
   bool modif     = false;
-  int  locStatus = myStatus;
+  int locStatus = myStatus;
 
   // apply recorded modifications to subshapes
   for (TopoDS_Iterator it(shape, false); it.More(); it.Next())
@@ -257,7 +257,9 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_S
 
 //=================================================================================================
 
-int ShapeBuild_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, const bool last)
+int ShapeBuild_ReShape::Status(const TopoDS_Shape&    ashape,
+                                            TopoDS_Shape&          newsh,
+                                            const bool last)
 {
   return BRepTools_ReShape::Status(ashape, newsh, last);
 }

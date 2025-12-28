@@ -63,6 +63,9 @@
 #include <LocOpe_RevolutionForm.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Sequence.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -71,9 +74,12 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 #ifdef OCCT_DEBUG
 extern bool BRepFeat_GettraceFEAT();
@@ -82,30 +88,25 @@ extern bool BRepFeat_GettraceFEATRIB();
 
 static void MajMap(const TopoDS_Shape&, // base
                    const LocOpe_RevolutionForm&,
-                   NCollection_DataMap<TopoDS_Shape,
-                                       NCollection_List<TopoDS_Shape>,
-                                       TopTools_ShapeMapHasher>&, // myMap
-                   TopoDS_Shape&,                                 // myFShape
-                   TopoDS_Shape&);                                // myLShape
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&, // myMap
+                   TopoDS_Shape&,                       // myFShape
+                   TopoDS_Shape&);                      // myLShape
 
-static void SetGluedFaces(
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    theSlmap,
-  LocOpe_RevolutionForm&,
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    SlidingMap,
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&);
+static void SetGluedFaces(const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theSlmap,
+                          LocOpe_RevolutionForm&,
+                          const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& SlidingMap,
+                          NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&);
 
 //=================================================================================================
 
-void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
-                                       const TopoDS_Wire&             W,
+void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&       Sbase,
+                                       const TopoDS_Wire&        W,
                                        const occ::handle<Geom_Plane>& Plane,
-                                       const gp_Ax1&                  Axis,
-                                       const double                   H1,
-                                       const double                   H2,
-                                       const int                      Mode,
-                                       bool&                          Modify)
+                                       const gp_Ax1&             Axis,
+                                       const double       H1,
+                                       const double       H2,
+                                       const int    Mode,
+                                       bool&         Modify)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEAT();
@@ -119,11 +120,11 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   //        = 1 if it is intended to try to make sliding
   bool Sliding = Modify;
 
-  myAxe                       = Axis;
+  myAxe                  = Axis;
   occ::handle<Geom_Line> Line = new Geom_Line(Axis);
-  double                 LineFirst, LineLast;
+  double     LineFirst, LineLast;
 
-  LocOpe_CSIntersector                          ASI(Sbase);
+  LocOpe_CSIntersector     ASI(Sbase);
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   scur.Clear();
   scur.Append(Line);
@@ -142,17 +143,17 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   occ::handle<Geom2d_Curve> ln2d = GeomAPI::To2d(Line, Plane->Pln());
 
   TopExp_Explorer exx;
-  double          Rad = RealLast();
+  double   Rad = RealLast();
 
   exx.Init(W, TopAbs_EDGE);
   for (; exx.More(); exx.Next())
   {
     const TopoDS_Edge&          e = TopoDS::Edge(exx.Current());
-    double                      f, l;
-    occ::handle<Geom_Curve>     c   = BRep_Tool::Curve(e, f, l);
-    occ::handle<Geom2d_Curve>   c2d = GeomAPI::To2d(c, Plane->Pln());
+    double               f, l;
+    occ::handle<Geom_Curve>          c   = BRep_Tool::Curve(e, f, l);
+    occ::handle<Geom2d_Curve>        c2d = GeomAPI::To2d(c, Plane->Pln());
     Geom2dAPI_ExtremaCurveCurve extr(ln2d, c2d, LineFirst, LineLast, f, l);
-    double                      L = RealLast();
+    double               L = RealLast();
     if (extr.NbExtrema() >= 1)
     {
       L = extr.LowerDistance();
@@ -250,9 +251,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
 
   TopoDS_Shape U;
   U.Nullify();
-  gp_Pnt FirstCorner, LastCorner;
+  gp_Pnt        FirstCorner, LastCorner;
   double bnd = HeightMax(mySbase, U, FirstCorner, LastCorner);
-  myBnd      = bnd;
+  myBnd             = bnd;
 
   BRepPrimAPI_MakeBox Bndbox(FirstCorner, LastCorner);
   TopoDS_Solid        BndBox = Bndbox.Solid();
@@ -274,29 +275,29 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   TopoDS_Face   FirstFace, LastFace;
   TopoDS_Vertex FirstVertex, LastVertex;
 
-  bool        OnFirstFace   = false;
-  bool        OnLastFace    = false;
-  bool        PtOnFirstEdge = false;
-  bool        PtOnLastEdge  = false;
-  TopoDS_Edge OnFirstEdge, OnLastEdge;
+  bool OnFirstFace   = false;
+  bool OnLastFace    = false;
+  bool PtOnFirstEdge = false;
+  bool PtOnLastEdge  = false;
+  TopoDS_Edge      OnFirstEdge, OnLastEdge;
   OnFirstEdge.Nullify();
   OnLastEdge.Nullify();
 
   bool Data = ExtremeFaces(RevolRib,
-                           myBnd,
-                           myPln,
-                           FirstEdge,
-                           LastEdge,
-                           FirstFace,
-                           LastFace,
-                           FirstVertex,
-                           LastVertex,
-                           OnFirstFace,
-                           OnLastFace,
-                           PtOnFirstEdge,
-                           PtOnLastEdge,
-                           OnFirstEdge,
-                           OnLastEdge);
+                                       myBnd,
+                                       myPln,
+                                       FirstEdge,
+                                       LastEdge,
+                                       FirstFace,
+                                       LastFace,
+                                       FirstVertex,
+                                       LastVertex,
+                                       OnFirstFace,
+                                       OnLastFace,
+                                       PtOnFirstEdge,
+                                       PtOnLastEdge,
+                                       OnFirstEdge,
+                                       OnLastEdge);
 
   if (!Data)
   {
@@ -361,7 +362,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
   // If make a control between Surface and segment 2 points limited
   // -> too expensive - to improve
   // gp_Pnt FirstCenter, LastCenter;
-  gp_Circ                 FirstCircle, LastCircle;
+  gp_Circ            FirstCircle, LastCircle;
   occ::handle<Geom_Curve> FirstCrv, LastCrv;
 
   if (Sliding)
@@ -378,7 +379,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       return;
     }
     double FirstRayon  = proj.Distance(1);
-    gp_Pnt FirstCenter = proj.Point(1);
+    gp_Pnt        FirstCenter = proj.Point(1);
 
     GeomAPI_ProjectPointOnCurve proj1(myLastPnt, Line);
     if (proj.NbPoints() < 1)
@@ -392,7 +393,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       return;
     }
     double LastRayon  = proj1.Distance(1);
-    gp_Pnt LastCenter = proj1.Point(1);
+    gp_Pnt        LastCenter = proj1.Point(1);
 
     gp_Vec  axv(myAxe.Direction());
     gp_Ax2  ax2(FirstCenter, axv);
@@ -436,9 +437,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       else
       {
         occ::handle<Geom_Circle> C1   = occ::down_cast<Geom_Circle>(FirstCrv);
-        gp_Circ                  Circ = C1->Circ();
-        FirstCircle                   = Circ;
-        gp_Ax1 circax                 = FirstCircle.Axis();
+        gp_Circ             Circ = C1->Circ();
+        FirstCircle              = Circ;
+        gp_Ax1 circax            = FirstCircle.Axis();
         if (!circax.IsCoaxial(myAxe, Precision::Confusion(), Precision::Confusion()))
           Sliding = false;
         else
@@ -463,9 +464,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       else
       {
         occ::handle<Geom_Circle> C1   = occ::down_cast<Geom_Circle>(LastCrv);
-        gp_Circ                  Circ = C1->Circ();
-        LastCircle                    = Circ;
-        gp_Ax1 circax                 = LastCircle.Axis();
+        gp_Circ             Circ = C1->Circ();
+        LastCircle               = Circ;
+        gp_Ax1 circax            = LastCircle.Axis();
         if (!circax.IsCoaxial(myAxe, Precision::Confusion(), Precision::Confusion()))
           Sliding = false;
         else
@@ -496,8 +497,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     if (trc)
       std::cout << " still Sliding" << std::endl;
 #endif
-    TopoDS_Face Prof;
-    bool        ProfileOK;
+    TopoDS_Face      Prof;
+    bool ProfileOK;
     ProfileOK = SlidingProfile(Prof,
                                RevolRib,
                                myTol,
@@ -529,7 +530,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     // ---Propagation on faces of the initial shape
     // to find the faces concerned by the rib
     bool falseside = true;
-    Sliding        = Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
+    Sliding                    = Propagate(SliList, Prof, myFirstPnt, myLastPnt, falseside);
     // Control if there is everything required to have the material at the proper side
     if (falseside == false)
     {
@@ -567,16 +568,16 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       }
       if (E.IsSame(FirstEdge))
       {
-        double                  f, l;
+        double      f, l;
         occ::handle<Geom_Curve> cc = BRep_Tool::Curve(E, f, l);
-        gp_Pnt                  pt;
+        gp_Pnt             pt;
         if (!FirstEdge.IsSame(LastEdge))
         {
           pt = BRep_Tool::Pnt(TopExp::LastVertex(E, true));
         }
         else
         {
-          pt          = myLastPnt;
+          pt                 = myLastPnt;
           double fpar = IntPar(cc, myFirstPnt);
           double lpar = IntPar(cc, pt);
           if (fpar > lpar)
@@ -630,7 +631,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         if (!E.IsSame(LastEdge))
         {
           occ::handle<Geom_Curve> ccc = BRep_Tool::Curve(E, f, l);
-          TopoDS_Vertex           v1, v2;
+          TopoDS_Vertex      v1, v2;
           if (!thePreviousEdge.IsNull())
           {
             v1 = TopExp::LastVertex(thePreviousEdge, true);
@@ -657,9 +658,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
         else
         {
           occ::handle<Geom_Curve> cc = BRep_Tool::Curve(E, f, l);
-          gp_Pnt                  pf = BRep_Tool::Pnt(TopExp::FirstVertex(E, true));
-          gp_Pnt                  pl = myLastPnt;
-          TopoDS_Edge             ee;
+          gp_Pnt             pf = BRep_Tool::Pnt(TopExp::FirstVertex(E, true));
+          gp_Pnt             pl = myLastPnt;
+          TopoDS_Edge        ee;
           if (thePreviousEdge.IsNull())
           {
             BRepLib_MakeEdge e(cc, pf, pl);
@@ -687,27 +688,27 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     }
 
     NCollection_List<TopoDS_Shape>::Iterator it(myListOfEdges);
-    bool                                     FirstOK = false;
-    bool                                     LastOK  = false;
+    bool                   FirstOK = false;
+    bool                   LastOK  = false;
 
-    gp_Pnt                         theLastPnt = myLastPnt;
-    int                            sens       = 0;
-    TopoDS_Edge                    theEdge, theLEdge, theFEdge;
-    int                            counter1 = counter;
+    gp_Pnt               theLastPnt = myLastPnt;
+    int     sens       = 0;
+    TopoDS_Edge          theEdge, theLEdge, theFEdge;
+    int     counter1 = counter;
     NCollection_List<TopoDS_Shape> NewListOfEdges;
     NewListOfEdges.Clear();
     while (!FirstOK)
     {
-      const TopoDS_Edge&             edg = TopoDS::Edge(it.Value());
-      gp_Pnt                         fp, lp;
-      double                         f, l;
+      const TopoDS_Edge&        edg = TopoDS::Edge(it.Value());
+      gp_Pnt                    fp, lp;
+      double             f, l;
       occ::handle<Geom_Curve>        ccc = BRep_Tool::Curve(edg, f, l);
       occ::handle<Geom_TrimmedCurve> cc  = new Geom_TrimmedCurve(ccc, f, l);
       if (edg.Orientation() == TopAbs_REVERSED)
         cc->Reverse();
 
-      fp          = cc->Value(cc->FirstParameter());
-      lp          = cc->Value(cc->LastParameter());
+      fp                 = cc->Value(cc->FirstParameter());
+      lp                 = cc->Value(cc->LastParameter());
       double dist = fp.Distance(theLastPnt);
       if (dist <= myTol)
       {
@@ -738,9 +739,9 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
 
       if (LastOK)
       {
-        TopoDS_Edge eeee;
-        double      fpar = cc->FirstParameter();
-        double      lpar = cc->LastParameter();
+        TopoDS_Edge   eeee;
+        double fpar = cc->FirstParameter();
+        double lpar = cc->LastParameter();
         if (!FirstOK)
         {
           if (thePreviousEdge.IsNull())
@@ -809,16 +810,14 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       sens = 0;
     }
 
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-      SlidMap;
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> SlidMap;
     SlidMap.Clear();
 
     if (Sliding && counter1 > counter)
     {
-      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-        Iterator      itm;
-      TopExp_Explorer EX2(w, TopAbs_EDGE);
-      int             ii = 0;
+      NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm;
+      TopExp_Explorer                                     EX2(w, TopAbs_EDGE);
+      int                                    ii = 0;
       for (; EX2.More(); EX2.Next())
       {
         const TopoDS_Edge& E = TopoDS::Edge(EX2.Current());
@@ -836,8 +835,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
               itm.Initialize(mySlface);
               for (; itm.More(); itm.Next())
               {
-                const TopoDS_Face&                       fac  = TopoDS::Face(itm.Key());
-                const NCollection_List<TopoDS_Shape>&    ledg = itm.Value();
+                const TopoDS_Face&                 fac  = TopoDS::Face(itm.Key());
+                const NCollection_List<TopoDS_Shape>&        ledg = itm.Value();
                 NCollection_List<TopoDS_Shape>::Iterator itedg(ledg);
                 // int iiii = 0;
                 for (; itedg.More(); itedg.Next())
@@ -905,7 +904,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       TopoDS_Vertex      v1 = TopExp::FirstVertex(e, true);
       TopoDS_Vertex      v2 = TopExp::LastVertex(e, true);
 
-      double                  f, l; //, t;
+      double      f, l; //, t;
       occ::handle<Geom_Curve> ln = BRep_Tool::Curve(e, f, l);
       //      occ::handle<Geom_Curve> lln = BRep_Tool::Curve(e, f, l);
       //      occ::handle<Geom_Curve> ln;
@@ -917,7 +916,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
       //      }
       //      else ln = lln;
 
-      occ::handle<Geom2d_Curve> l2d = GeomAPI::To2d(ln, Plane->Pln());
+      occ::handle<Geom2d_Curve>      l2d = GeomAPI::To2d(ln, Plane->Pln());
       Geom2dAPI_InterCurveCurve intcc(l2d, ln2d, Precision::Confusion());
       TopoDS_Vertex             VV;
       VV.Nullify();
@@ -971,7 +970,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
     TopoDS_Face      NewBndFace = TopoDS::Face(newbndface.Shape());
 
     BRepTopAdaptor_FClass2d Cl(NewBndFace, Precision::Confusion());
-    double                  paru, parv;
+    double           paru, parv;
     ElSLib::Parameters(myPln->Pln(), CheckPnt, paru, parv);
     gp_Pnt2d checkpnt2d(paru, parv);
     if (Cl.Perform(checkpnt2d, true) == TopAbs_OUT)
@@ -995,8 +994,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape&            Sbase,
 
     BndFace = NewBndFace;
 
-    TopoDS_Face Prof;
-    bool        ProfileOK;
+    TopoDS_Face      Prof;
+    bool ProfileOK;
     ProfileOK = NoSlidingProfile(Prof,
                                  RevolRib,
                                  myTol,
@@ -1161,9 +1160,8 @@ void BRepFeat_MakeRevolutionForm::Perform()
     T.SetRotation(myAxe, -myAngle2);
     BRepBuilderAPI_Transform trsf(T);
     trsf.Perform(myPbase, false);
-    TopoDS_Face Pbase = TopoDS::Face(trsf.Shape());
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-      Iterator iter(myLFMap);
+    TopoDS_Face                                         Pbase = TopoDS::Face(trsf.Shape());
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator iter(myLFMap);
     for (; iter.More(); iter.Next())
     {
       const TopoDS_Shape& e1 = iter.Value().First();
@@ -1181,8 +1179,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
       }
     }
 
-    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-      Iterator iter1(mySlface);
+    NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator iter1(mySlface);
     for (; iter1.More(); iter1.Next())
     {
       const TopoDS_Shape& e1 = iter1.Value().First();
@@ -1234,7 +1231,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
   LocOpe_CSIntersector ASI1(f1);
   LocOpe_CSIntersector ASI2(f2);
 
-  occ::handle<Geom_Line>                        normale = new Geom_Line(Pt, vec1);
+  occ::handle<Geom_Line>        normale = new Geom_Line(Pt, vec1);
   NCollection_Sequence<occ::handle<Geom_Curve>> scur;
   scur.Append(normale);
 
@@ -1269,13 +1266,11 @@ void BRepFeat_MakeRevolutionForm::Perform()
 
   BRepAlgoAPI_Cut trP(VraiForm, Comp);
   // coupe de la nervure par deux plans parallels
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    SlidingMap;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> SlidingMap;
 
   // management of descendants
 
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator it1;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator it1;
   it1.Initialize(myMap);
   for (; it1.More(); it1.Next())
   {
@@ -1292,13 +1287,13 @@ void BRepFeat_MakeRevolutionForm::Perform()
       if (thew.IsSame(myFShape))
       {
         const NCollection_List<TopoDS_Shape>& desfaces = trP.Modified(f2);
-        myMap(myFShape)                                = desfaces;
+        myMap(myFShape)                      = desfaces;
         continue;
       }
       else if (thew.IsSame(myLShape))
       {
         const NCollection_List<TopoDS_Shape>& desfaces = trP.Modified(f1);
-        myMap(myLShape)                                = desfaces;
+        myMap(myLShape)                      = desfaces;
         continue;
       }
       if (fac.IsSame(sh))
@@ -1320,7 +1315,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
   exx.Init(VraiForm, TopAbs_FACE);
   for (; exx.More(); exx.Next())
   {
-    const TopoDS_Face&             fac = TopoDS::Face(exx.Current());
+    const TopoDS_Face&   fac = TopoDS::Face(exx.Current());
     NCollection_List<TopoDS_Shape> thelist;
     SlidingMap.Bind(fac, thelist);
     if (trP.IsDeleted(fac))
@@ -1388,10 +1383,10 @@ void BRepFeat_MakeRevolutionForm::Perform()
 //=======================================================================
 
 bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliList,
-                                            const TopoDS_Face&              fac,
-                                            const gp_Pnt&                   Firstpnt,
-                                            const gp_Pnt&                   Lastpnt,
-                                            bool&                           falseside)
+                                                        const TopoDS_Face&    fac,
+                                                        const gp_Pnt&         Firstpnt,
+                                                        const gp_Pnt&         Lastpnt,
+                                                        bool&     falseside)
 {
 #ifdef OCCT_DEBUG
   bool trc = BRepFeat_GettraceFEATRIB();
@@ -1401,20 +1396,20 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
   gp_Pnt Firstpoint = Firstpnt;
   gp_Pnt Lastpoint  = Lastpnt;
 
-  bool        result = true;
-  TopoDS_Face CurrentFace, saveFace;
+  bool result = true;
+  TopoDS_Face      CurrentFace, saveFace;
   CurrentFace = TopoDS::Face(SliList.First());
   saveFace    = CurrentFace;
   //  BRepBuilderAPI_MakeFace fac(myPln);
-  bool                LastOK = false, FirstOK = false;
+  bool    LastOK = false, FirstOK = false;
   TopoDS_Vertex       v1, v2, v3, v4, Vert;
   BRepAlgoAPI_Section sect(fac, CurrentFace, false);
   sect.Approximation(true);
   sect.Build();
-  TopExp_Explorer Ex;
-  TopoDS_Edge     e, e1;
-  gp_Pnt          FP, LP;
-  int             ii = 0;
+  TopExp_Explorer  Ex;
+  TopoDS_Edge      e, e1;
+  gp_Pnt           FP, LP;
+  int ii = 0;
   for (Ex.Init(sect.Shape(), TopAbs_EDGE); Ex.More(); Ex.Next())
   {
     ii++;
@@ -1603,8 +1598,7 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     }
   }
 
-  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-    mapedges;
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> mapedges;
   TopExp::MapShapesAndAncestors(mySbase, TopAbs_EDGE, TopAbs_FACE, mapedges);
   TopExp_Explorer ex;
   TopoDS_Edge     FirstEdge;
@@ -1642,8 +1636,8 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
 
       if (projF.IsDone() && projF.NbExt() >= 1)
       {
-        double dist2min = RealLast();
-        int    index    = 0;
+        double    dist2min = RealLast();
+        int index    = 0;
         for (int sol = 1; sol <= projF.NbExt(); sol++)
         {
           if (projF.SquareDistance(sol) <= dist2min)
@@ -1663,7 +1657,7 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
       }
     }
 
-    const NCollection_List<TopoDS_Shape>&    L = mapedges.FindFromKey(FirstEdge);
+    const NCollection_List<TopoDS_Shape>&        L = mapedges.FindFromKey(FirstEdge);
     NCollection_List<TopoDS_Shape>::Iterator It(L);
 
     for (; It.More(); It.Next())
@@ -1701,9 +1695,9 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
     else
       return false;
 
-    Vert        = TopExp::FirstVertex(edg1, true);
-    gp_Pnt PP   = BRep_Tool::Pnt(Vert);
-    FP          = BRep_Tool::Pnt(v1);
+    Vert               = TopExp::FirstVertex(edg1, true);
+    gp_Pnt PP          = BRep_Tool::Pnt(Vert);
+    FP                 = BRep_Tool::Pnt(v1);
     double tol  = BRep_Tool::Tolerance(edg1);
     double tol1 = BRep_Tool::Tolerance(v1);
     if (tol1 > tol)
@@ -1762,8 +1756,8 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
 
       if (projF.IsDone() && projF.NbExt() >= 1)
       {
-        double dist2min = RealLast();
-        int    index    = 0;
+        double    dist2min = RealLast();
+        int index    = 0;
         for (int sol = 1; sol <= projF.NbExt(); sol++)
         {
           if (projF.SquareDistance(sol) <= dist2min)
@@ -1783,7 +1777,7 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
       }
     }
 
-    const NCollection_List<TopoDS_Shape>&    L = mapedges.FindFromKey(FirstEdge);
+    const NCollection_List<TopoDS_Shape>&        L = mapedges.FindFromKey(FirstEdge);
     NCollection_List<TopoDS_Shape>::Iterator It(L);
 
     for (; It.More(); It.Next())
@@ -1853,13 +1847,11 @@ bool BRepFeat_MakeRevolutionForm::Propagate(NCollection_List<TopoDS_Shape>& SliL
 // purpose  : management of descendants
 //=======================================================================
 
-static void MajMap(
-  const TopoDS_Shape&          theB,
-  const LocOpe_RevolutionForm& theP,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                theMap,    // myMap
-  TopoDS_Shape& theFShape, // myFShape
-  TopoDS_Shape& theLShape) // myLShape
+static void MajMap(const TopoDS_Shape&                 theB,
+                   const LocOpe_RevolutionForm&        theP,
+                   NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theMap,    // myMap
+                   TopoDS_Shape&                       theFShape, // myFShape
+                   TopoDS_Shape&                       theLShape)                       // myLShape
 {
   TopExp_Explorer exp(theP.FirstShape(), TopAbs_WIRE);
   if (exp.More())
@@ -1903,23 +1895,19 @@ static void MajMap(
 // purpose  : managemnet of sliding faces
 //=======================================================================
 
-static void SetGluedFaces(
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                         theSlmap,
-  LocOpe_RevolutionForm& thePrism,
-  const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-                                                                            SlidingMap,
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& theMap)
+static void SetGluedFaces(const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& theSlmap,
+                          LocOpe_RevolutionForm&                    thePrism,
+                          const NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& SlidingMap,
+                          NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&             theMap)
 {
   // Slidings
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-    Iterator itm(theSlmap);
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator itm(theSlmap);
   if (!theSlmap.IsEmpty())
   {
     for (; itm.More(); itm.Next())
     {
-      const TopoDS_Face&                       fac  = TopoDS::Face(itm.Key());
-      const NCollection_List<TopoDS_Shape>&    ledg = itm.Value();
+      const TopoDS_Face&                 fac  = TopoDS::Face(itm.Key());
+      const NCollection_List<TopoDS_Shape>&        ledg = itm.Value();
       NCollection_List<TopoDS_Shape>::Iterator it;
       for (it.Initialize(ledg); it.More(); it.Next())
       {
@@ -1930,11 +1918,10 @@ static void SetGluedFaces(
           std::cout << "Pb SetGluedFace" << std::endl;
 #endif
         }
-        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::
-          Iterator iterm(SlidingMap);
+        NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>::Iterator iterm(SlidingMap);
         for (; iterm.More(); iterm.Next())
         {
-          const TopoDS_Face&                    ff     = TopoDS::Face(iterm.Key());
+          const TopoDS_Face&          ff     = TopoDS::Face(iterm.Key());
           const NCollection_List<TopoDS_Shape>& lfaces = iterm.Value();
           if (lfaces.IsEmpty())
             continue;

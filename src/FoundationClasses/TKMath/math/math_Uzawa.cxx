@@ -36,12 +36,12 @@
 #include <Standard_DimensionError.hxx>
 #include <StdFail_NotDone.hxx>
 
-math_Uzawa::math_Uzawa(const math_Matrix& Cont,
-                       const math_Vector& Secont,
-                       const math_Vector& StartingPoint,
-                       const double       EpsLix,
-                       const double       EpsLic,
-                       const int          NbIterations)
+math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
+                       const math_Vector&     Secont,
+                       const math_Vector&     StartingPoint,
+                       const double    EpsLix,
+                       const double    EpsLic,
+                       const int NbIterations)
     : Resul(1, Cont.ColNumber()),
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
@@ -54,14 +54,14 @@ math_Uzawa::math_Uzawa(const math_Matrix& Cont,
   Perform(Cont, Secont, StartingPoint, Cont.RowNumber(), 0, EpsLix, EpsLic, NbIterations);
 }
 
-math_Uzawa::math_Uzawa(const math_Matrix& Cont,
-                       const math_Vector& Secont,
-                       const math_Vector& StartingPoint,
-                       const int          Nce,
-                       const int          Nci,
-                       const double       EpsLix,
-                       const double       EpsLic,
-                       const int          NbIterations)
+math_Uzawa::math_Uzawa(const math_Matrix&     Cont,
+                       const math_Vector&     Secont,
+                       const math_Vector&     StartingPoint,
+                       const int Nce,
+                       const int Nci,
+                       const double    EpsLix,
+                       const double    EpsLic,
+                       const int NbIterations)
     : Resul(1, Cont.ColNumber()),
       Erruza(1, Cont.ColNumber()),
       Errinit(1, Cont.ColNumber()),
@@ -74,22 +74,22 @@ math_Uzawa::math_Uzawa(const math_Matrix& Cont,
   Perform(Cont, Secont, StartingPoint, Nce, Nci, EpsLix, EpsLic, NbIterations);
 }
 
-void math_Uzawa::Perform(const math_Matrix& Cont,
-                         const math_Vector& Secont,
-                         const math_Vector& StartingPoint,
-                         const int          Nce,
-                         const int          Nci,
-                         const double       EpsLix,
-                         const double       EpsLic,
-                         const int          NbIterations)
+void math_Uzawa::Perform(const math_Matrix&     Cont,
+                         const math_Vector&     Secont,
+                         const math_Vector&     StartingPoint,
+                         const int Nce,
+                         const int Nci,
+                         const double    EpsLix,
+                         const double    EpsLic,
+                         const int NbIterations)
 {
 
-  int    i, j, k;
-  double scale;
-  double Normat, Normli, Xian, Xmax = 0, Xmuian;
-  double Rho, Err, Err1, ErrMax = 0, Coef = 1. / std::sqrt(2.);
-  int    Nlig = Cont.RowNumber();
-  int    Ncol = Cont.ColNumber();
+  int i, j, k;
+  double    scale;
+  double    Normat, Normli, Xian, Xmax = 0, Xmuian;
+  double    Rho, Err, Err1, ErrMax = 0, Coef = 1. / std::sqrt(2.);
+  int Nlig = Cont.RowNumber();
+  int Ncol = Cont.ColNumber();
 
   Standard_DimensionError_Raise_if((Secont.Length() != Nlig) || ((Nce + Nci) != Nlig), " ");
 

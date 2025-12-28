@@ -97,11 +97,13 @@ public:
 
   //! returns one of the four vertices whether First is true
   //! or wrong and OnS equals 1 or 2.
-  Standard_EXPORT const ChFiDS_CommonPoint& Vertex(const bool First, const int OnS) const;
+  Standard_EXPORT const ChFiDS_CommonPoint& Vertex(const bool First,
+                                                   const int OnS) const;
 
   //! returns one of the four vertices whether First is true
   //! or wrong and OnS equals 1 or 2.
-  Standard_EXPORT ChFiDS_CommonPoint& ChangeVertex(const bool First, const int OnS);
+  Standard_EXPORT ChFiDS_CommonPoint& ChangeVertex(const bool First,
+                                                   const int OnS);
 
   bool IsOnCurve(const int OnS) const;
 
@@ -129,7 +131,8 @@ public:
 
   Standard_EXPORT void ResetSimul();
 
-  Standard_EXPORT gp_Pnt2d Get2dPoints(const bool First, const int OnS) const;
+  Standard_EXPORT gp_Pnt2d Get2dPoints(const bool First,
+                                       const int OnS) const;
 
   Standard_EXPORT void Get2dPoints(gp_Pnt2d& P2df1,
                                    gp_Pnt2d& P2dl1,
@@ -152,31 +155,31 @@ public:
   DEFINE_STANDARD_RTTIEXT(ChFiDS_SurfData, Standard_Transient)
 
 private:
-  ChFiDS_CommonPoint              pfirstOnS1;
-  ChFiDS_CommonPoint              plastOnS1;
-  ChFiDS_CommonPoint              pfirstOnS2;
-  ChFiDS_CommonPoint              plastOnS2;
-  ChFiDS_FaceInterference         intf1;
-  ChFiDS_FaceInterference         intf2;
-  gp_Pnt2d                        p2df1;
-  gp_Pnt2d                        p2dl1;
-  gp_Pnt2d                        p2df2;
-  gp_Pnt2d                        p2dl2;
-  double                          ufspine;
-  double                          ulspine;
-  double                          myfirstextend;
-  double                          mylastextend;
+  ChFiDS_CommonPoint         pfirstOnS1;
+  ChFiDS_CommonPoint         plastOnS1;
+  ChFiDS_CommonPoint         pfirstOnS2;
+  ChFiDS_CommonPoint         plastOnS2;
+  ChFiDS_FaceInterference    intf1;
+  ChFiDS_FaceInterference    intf2;
+  gp_Pnt2d                   p2df1;
+  gp_Pnt2d                   p2dl1;
+  gp_Pnt2d                   p2df2;
+  gp_Pnt2d                   p2dl2;
+  double              ufspine;
+  double              ulspine;
+  double              myfirstextend;
+  double              mylastextend;
   occ::handle<Standard_Transient> simul;
-  int                             indexOfS1;
-  int                             indexOfC1;
-  int                             indexOfS2;
-  int                             indexOfC2;
-  int                             indexOfConge;
-  bool                            isoncurv1;
-  bool                            isoncurv2;
-  bool                            twistons1;
-  bool                            twistons2;
-  TopAbs_Orientation              orientation;
+  int           indexOfS1;
+  int           indexOfC1;
+  int           indexOfS2;
+  int           indexOfC2;
+  int           indexOfConge;
+  bool           isoncurv1;
+  bool           isoncurv2;
+  bool           twistons1;
+  bool           twistons2;
+  TopAbs_Orientation         orientation;
 };
 
 #include <ChFiDS_SurfData.lxx>

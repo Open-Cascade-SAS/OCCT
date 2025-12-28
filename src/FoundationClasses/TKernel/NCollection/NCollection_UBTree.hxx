@@ -175,9 +175,9 @@ public:
      *   allocator providing memory to the new child nodes, provided by the
      *   calling Tree instance.
      */
-    void Gemmate(const TheBndType&                             theNewBnd,
-                 const TheObjType&                             theObj,
-                 const TheBndType&                             theBnd,
+    void Gemmate(const TheBndType&                        theNewBnd,
+                 const TheObjType&                        theObj,
+                 const TheBndType&                        theBnd,
                  const occ::handle<NCollection_BaseAllocator>& theAlloc)
     {
       // TreeNode *children = new TreeNode [2];
@@ -205,11 +205,11 @@ public:
     {
       if (!IsLeaf())
       {
-        TreeNode* oldChildren = myChildren;
+        TreeNode*              oldChildren = myChildren;
         const int iopp        = 1 - i;
-        myBnd                 = oldChildren[iopp].myBnd;
-        myObject              = oldChildren[iopp].myObject;
-        myChildren            = oldChildren[iopp].myChildren;
+        myBnd                              = oldChildren[iopp].myBnd;
+        myObject                           = oldChildren[iopp].myObject;
+        myChildren                         = oldChildren[iopp].myChildren;
         if (!IsLeaf())
         {
           myChildren[0].myParent = this;
@@ -369,8 +369,8 @@ private:
 
   // ---------- PRIVATE FIELDS ----------
 
-  TreeNode*                              myRoot;     ///< root of the tree
-  TreeNode*                              myLastNode; ///< the last added node
+  TreeNode*                         myRoot;     ///< root of the tree
+  TreeNode*                         myLastNode; ///< the last added node
   occ::handle<NCollection_BaseAllocator> myAlloc;    ///< Allocator for TreeNode
 };
 
@@ -382,7 +382,7 @@ private:
 
 template <class TheObjType, class TheBndType>
 bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
-                                                     const TheBndType& theBnd)
+                                                                 const TheBndType& theBnd)
 {
   if (IsEmpty())
   {
@@ -392,8 +392,8 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
     return true;
   }
 
-  TreeNode* pBranch       = myRoot;
-  bool      isOutOfBranch = pBranch->Bnd().IsOut(theBnd);
+  TreeNode*        pBranch       = myRoot;
+  bool isOutOfBranch = pBranch->Bnd().IsOut(theBnd);
 
   for (;;)
   {
@@ -414,8 +414,9 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
     // Select the best child branch to accept the object:
     // 1. First check if one branch is out and another one is not.
     // 2. Else select the child having the least union with theBnd
-    int  iBest   = 0;
-    bool isOut[] = {pBranch->Child(0).Bnd().IsOut(theBnd), pBranch->Child(1).Bnd().IsOut(theBnd)};
+    int iBest   = 0;
+    bool isOut[] = {pBranch->Child(0).Bnd().IsOut(theBnd),
+                                pBranch->Child(1).Bnd().IsOut(theBnd)};
     if (isOut[0] != isOut[1])
       iBest = (isOut[0] ? 1 : 0);
     else
@@ -445,7 +446,7 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
 
 template <class TheObjType, class TheBndType>
 int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch,
-                                                       Selector&       theSelector) const
+                                                                    Selector& theSelector) const
 {
   // Try to reject the branch by bounding box
   if (theSelector.Reject(theBranch.Bnd()))
@@ -490,7 +491,7 @@ int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch
     {                                                                                              \
     }                                                                                              \
     /* Empty constructor */                                                                        \
-    _HUBTREE(const occ::handle<NCollection_BaseAllocator>& theAlloc)                               \
+    _HUBTREE(const occ::handle<NCollection_BaseAllocator>& theAlloc)                                    \
         : myTree(new UBTree(theAlloc))                                                             \
     {                                                                                              \
     }                                                                                              \
@@ -498,12 +499,12 @@ int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch
                                                                                                    \
     /* Access to the methods of UBTree */                                                          \
                                                                                                    \
-    bool Add(const _OBJTYPE& theObj, const _BNDTYPE& theBnd)                                       \
+    bool Add(const _OBJTYPE& theObj, const _BNDTYPE& theBnd)                           \
     {                                                                                              \
       return ChangeTree().Add(theObj, theBnd);                                                     \
     }                                                                                              \
                                                                                                    \
-    int Select(UBTree::Selector& theSelector) const                                                \
+    int Select(UBTree::Selector& theSelector) const                                   \
     {                                                                                              \
       return Tree().Select(theSelector);                                                           \
     }                                                                                              \
@@ -513,7 +514,7 @@ int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch
       ChangeTree().Clear();                                                                        \
     }                                                                                              \
                                                                                                    \
-    bool IsEmpty() const noexcept                                                                  \
+    bool IsEmpty() const noexcept                                                      \
     {                                                                                              \
       return Tree().IsEmpty();                                                                     \
     }                                                                                              \

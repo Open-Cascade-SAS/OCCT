@@ -49,8 +49,7 @@ public:
   //! another type)
   Standard_EXPORT occ::handle<StepShape_HalfSpaceSolid> HalfSpaceSolid() const;
 
-  Standard_EXPORT void SetHalfSpaceSolid(
-    const occ::handle<StepShape_HalfSpaceSolid>& aHalfSpaceSolid);
+  Standard_EXPORT void SetHalfSpaceSolid(const occ::handle<StepShape_HalfSpaceSolid>& aHalfSpaceSolid);
 
   //! returns Value as a CsgPrimitive (Null if another
   //! type)
@@ -68,9 +67,9 @@ public:
 private:
   occ::handle<StepShape_SolidModel>     theSolidModel;
   occ::handle<StepShape_HalfSpaceSolid> theHalfSpaceSolid;
-  StepShape_CsgPrimitive                theCsgPrimitive;
+  StepShape_CsgPrimitive           theCsgPrimitive;
   occ::handle<StepShape_BooleanResult>  theBooleanResult;
-  int                                   theTypeOfContent;
+  int                 theTypeOfContent;
 };
 
 #endif // _StepShape_BooleanOperand_HeaderFile

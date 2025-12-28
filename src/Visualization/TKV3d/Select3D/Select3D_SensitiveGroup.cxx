@@ -20,9 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveGroup, Select3D_SensitiveSet)
 
 //=================================================================================================
 
-Select3D_SensitiveGroup::Select3D_SensitiveGroup(
-  const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
-  const bool                                theIsMustMatchAll)
+Select3D_SensitiveGroup::Select3D_SensitiveGroup(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                                 const bool theIsMustMatchAll)
     : Select3D_SensitiveSet(theOwnerId),
       myMustMatchAll(theIsMustMatchAll),
       myToCheckOverlapAll(false),
@@ -32,22 +31,19 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup(
 
 //=================================================================================================
 
-Select3D_SensitiveGroup::Select3D_SensitiveGroup(
-  const occ::handle<SelectMgr_EntityOwner>&                    theOwnerId,
-  NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities,
-  const bool                                                   theIsMustMatchAll)
+Select3D_SensitiveGroup::Select3D_SensitiveGroup(const occ::handle<SelectMgr_EntityOwner>& theOwnerId,
+                                                 NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>&             theEntities,
+                                                 const bool theIsMustMatchAll)
     : Select3D_SensitiveSet(theOwnerId),
       myEntities(std::max(1, theEntities.Size())),
       myMustMatchAll(theIsMustMatchAll),
       myToCheckOverlapAll(false),
       myCenter(0.0, 0.0, 0.0)
 {
-  for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator anIter(theEntities);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator anIter(theEntities); anIter.More(); anIter.Next())
   {
     const occ::handle<Select3D_SensitiveEntity>& anEntity    = anIter.Value();
-    const int                                    aPrevExtent = myEntities.Extent();
+    const int                  aPrevExtent = myEntities.Extent();
     if (myEntities.Add(anEntity) <= aPrevExtent)
     {
       continue;
@@ -67,8 +63,7 @@ Select3D_SensitiveGroup::Select3D_SensitiveGroup(
 // function : Add
 // purpose  : No control of entities inside
 //=======================================================================
-void Select3D_SensitiveGroup::Add(
-  NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities)
+void Select3D_SensitiveGroup::Add(NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>& theEntities)
 {
   if (theEntities.IsEmpty())
   {
@@ -77,12 +72,10 @@ void Select3D_SensitiveGroup::Add(
 
   gp_Pnt aCent(0.0, 0.0, 0.0);
   myEntities.ReSize(myEntities.Extent() + theEntities.Size());
-  for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator anIter(theEntities);
-       anIter.More();
-       anIter.Next())
+  for (NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>>::Iterator anIter(theEntities); anIter.More(); anIter.Next())
   {
     const occ::handle<Select3D_SensitiveEntity>& anEntity    = anIter.Value();
-    const int                                    aPrevExtent = myEntities.Extent();
+    const int                  aPrevExtent = myEntities.Extent();
     if (myEntities.Add(anEntity) <= aPrevExtent)
     {
       continue;
@@ -139,7 +132,8 @@ void Select3D_SensitiveGroup::Remove(const occ::handle<Select3D_SensitiveEntity>
 
 //=================================================================================================
 
-bool Select3D_SensitiveGroup::IsIn(const occ::handle<Select3D_SensitiveEntity>& theSensitive) const
+bool Select3D_SensitiveGroup::IsIn(
+  const occ::handle<Select3D_SensitiveEntity>& theSensitive) const
 {
   return myEntities.Contains(theSensitive);
 }
@@ -170,9 +164,7 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveGroup::GetConnected()
   occ::handle<Select3D_SensitiveGroup> aNewEntity =
     new Select3D_SensitiveGroup(myOwnerId, myMustMatchAll);
   NCollection_Sequence<occ::handle<Select3D_SensitiveEntity>> aConnectedEnt;
-  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(
-         myEntities);
-       anEntityIter.More();
+  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(myEntities); anEntityIter.More();
        anEntityIter.Next())
   {
     aConnectedEnt.Append(anEntityIter.Value()->GetConnected());
@@ -184,7 +176,7 @@ occ::handle<Select3D_SensitiveEntity> Select3D_SensitiveGroup::GetConnected()
 //=================================================================================================
 
 bool Select3D_SensitiveGroup::Matches(SelectBasics_SelectingVolumeManager& theMgr,
-                                      SelectBasics_PickResult&             thePickResult)
+                                                  SelectBasics_PickResult& thePickResult)
 {
   const bool toMatchAll =
     theMgr.GetActiveSelectionType() != SelectMgr_SelectionType_Point && myMustMatchAll;
@@ -196,10 +188,8 @@ bool Select3D_SensitiveGroup::Matches(SelectBasics_SelectingVolumeManager& theMg
   }
 
   SelectBasics_PickResult aPickResult;
-  bool                    isFailed = false;
-  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(
-         myEntities);
-       anEntityIter.More();
+  bool        isFailed = false;
+  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(myEntities); anEntityIter.More();
        anEntityIter.Next())
   {
     const occ::handle<Select3D_SensitiveEntity>& aChild = anEntityIter.Value();
@@ -233,9 +223,7 @@ bool Select3D_SensitiveGroup::Matches(SelectBasics_SelectingVolumeManager& theMg
 void Select3D_SensitiveGroup::Set(const occ::handle<SelectMgr_EntityOwner>& theOwnerId)
 {
   Select3D_SensitiveEntity::Set(theOwnerId);
-  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(
-         myEntities);
-       anEntityIter.More();
+  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(myEntities); anEntityIter.More();
        anEntityIter.Next())
   {
     anEntityIter.Value()->Set(theOwnerId);
@@ -254,9 +242,7 @@ Select3D_BndBox3d Select3D_SensitiveGroup::BoundingBox()
 
   // do not apply the transformation because sensitives AABBs
   // are already transformed
-  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(
-         myEntities);
-       anEntityIter.More();
+  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anEntityIter(myEntities); anEntityIter.More();
        anEntityIter.Next())
   {
     myBndBox.Combine(anEntityIter.Value()->BoundingBox());
@@ -290,10 +276,11 @@ Select3D_BndBox3d Select3D_SensitiveGroup::Box(const int theIdx) const
 // purpose  : Returns geometry center of sensitive entity with index
 //            theIdx in the vector along the given axis theAxis
 //=======================================================================
-double Select3D_SensitiveGroup::Center(const int theIdx, const int theAxis) const
+double Select3D_SensitiveGroup::Center(const int theIdx,
+                                              const int theAxis) const
 {
-  const int    anElemIdx = myBVHPrimIndexes.Value(theIdx);
-  const gp_Pnt aCenter   = myEntities.FindKey(anElemIdx)->CenterOfGeometry();
+  const int anElemIdx = myBVHPrimIndexes.Value(theIdx);
+  const gp_Pnt           aCenter   = myEntities.FindKey(anElemIdx)->CenterOfGeometry();
   return theAxis == 0 ? aCenter.X() : (theAxis == 1 ? aCenter.Y() : aCenter.Z());
 }
 
@@ -324,10 +311,11 @@ int Select3D_SensitiveGroup::Size() const
 // purpose  : Checks whether the entity with index theIdx overlaps the
 //            current selecting volume
 // =======================================================================
-bool Select3D_SensitiveGroup::overlapsElement(SelectBasics_PickResult&             thePickResult,
-                                              SelectBasics_SelectingVolumeManager& theMgr,
-                                              int                                  theElemIdx,
-                                              bool)
+bool Select3D_SensitiveGroup::overlapsElement(
+  SelectBasics_PickResult&             thePickResult,
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool)
 {
   const int aSensitiveIdx = myBVHPrimIndexes.Value(theElemIdx);
   if (myEntities.FindKey(aSensitiveIdx)->Matches(theMgr, thePickResult))
@@ -340,9 +328,10 @@ bool Select3D_SensitiveGroup::overlapsElement(SelectBasics_PickResult&          
 
 //=================================================================================================
 
-bool Select3D_SensitiveGroup::elementIsInside(SelectBasics_SelectingVolumeManager& theMgr,
-                                              int                                  theElemIdx,
-                                              bool                                 theIsFullInside)
+bool Select3D_SensitiveGroup::elementIsInside(
+  SelectBasics_SelectingVolumeManager& theMgr,
+  int                     theElemIdx,
+  bool                     theIsFullInside)
 {
   SelectBasics_PickResult aDummy;
   return overlapsElement(aDummy, theMgr, theElemIdx, theIsFullInside);
@@ -360,14 +349,13 @@ double Select3D_SensitiveGroup::distanceToCOG(SelectBasics_SelectingVolumeManage
 
 //=================================================================================================
 
-void Select3D_SensitiveGroup::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Select3D_SensitiveGroup::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Select3D_SensitiveSet)
 
-  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(
-         myEntities);
-       anIterator.More();
+  for (NCollection_IndexedMap<occ::handle<Select3D_SensitiveEntity>>::Iterator anIterator(myEntities); anIterator.More();
        anIterator.Next())
   {
     const occ::handle<Select3D_SensitiveEntity>& anEntity = anIterator.Value();

@@ -46,8 +46,8 @@ public:
   //! default Null for unparametrised surface
   Standard_EXPORT void Init(const occ::handle<IGESGeom_Point>&     aCenter,
                             const occ::handle<IGESGeom_Direction>& anAxis,
-                            const double                           majRadius,
-                            const double                           minRadius,
+                            const double               majRadius,
+                            const double               minRadius,
                             const occ::handle<IGESGeom_Direction>& Refdir);
 
   //! returns the center point coordinates of the surface
@@ -78,8 +78,8 @@ public:
 private:
   occ::handle<IGESGeom_Point>     theCenter;
   occ::handle<IGESGeom_Direction> theAxis;
-  double                          theMajorRadius;
-  double                          theMinorRadius;
+  double              theMajorRadius;
+  double              theMinorRadius;
   occ::handle<IGESGeom_Direction> theRefDir;
 };
 

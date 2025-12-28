@@ -37,6 +37,7 @@ public:
   Standard_EXPORT virtual gp_GTrsf Value() const = 0;
 
   DEFINE_STANDARD_RTTIEXT(IGESData_TransfEntity, IGESData_IGESEntity)
+
 };
 
 #endif // _IGESData_TransfEntity_HeaderFile

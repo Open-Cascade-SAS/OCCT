@@ -35,16 +35,18 @@ public:
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       Source,
-                                     const occ::handle<TDF_Attribute>& Target,
-                                     BinObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  Source,
+                                                 const occ::handle<TDF_Attribute>& Target,
+                                                 BinObjMgt_RRelocationTable&  RelocTable) const
+    override;
 
-  Standard_EXPORT virtual void Paste(
-    const occ::handle<TDF_Attribute>&                        Source,
-    BinObjMgt_Persistent&                                    Target,
-    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& Source,
+                                     BinObjMgt_Persistent&        Target,
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_IntegerDriver, BinMDF_ADriver)
+
 };
 
 #endif // _BinMDataStd_IntegerDriver_HeaderFile

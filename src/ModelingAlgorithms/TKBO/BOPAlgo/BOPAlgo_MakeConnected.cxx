@@ -169,12 +169,11 @@ void BOPAlgo_MakeConnected::FillOrigins()
     // Get Modified & Generated shapes
     for (int j = 0; j < 2; ++j)
     {
-      const NCollection_List<TopoDS_Shape>& aLH =
-        !j ? myHistory->Modified(aS) : myHistory->Generated(aS);
+      const NCollection_List<TopoDS_Shape>& aLH = !j ? myHistory->Modified(aS) : myHistory->Generated(aS);
       NCollection_List<TopoDS_Shape>::Iterator itLH(aLH);
       for (; itLH.More(); itLH.Next())
       {
-        const TopoDS_Shape&             aHS  = itLH.Value();
+        const TopoDS_Shape&   aHS  = itLH.Value();
         NCollection_List<TopoDS_Shape>* pLOr = myOrigins.ChangeSeek(aHS);
         if (!pLOr)
           pLOr = myOrigins.Bound(aHS, NCollection_List<TopoDS_Shape>());
@@ -194,8 +193,8 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
   myMaterials.Clear();
 
   // Extract all non-compound shapes from the result
-  NCollection_List<TopoDS_Shape>                         aLShapes;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
+  NCollection_List<TopoDS_Shape> aLShapes;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aMFence;
   BOPTools_AlgoTools::TreatCompound(myShape, aLShapes, &aMFence);
 
   if (aLShapes.IsEmpty())
@@ -216,14 +215,14 @@ void BOPAlgo_MakeConnected::AssociateMaterials()
   NCollection_List<TopoDS_Shape>::Iterator itLS(aLShapes);
   for (; itLS.More(); itLS.Next())
   {
-    const TopoDS_Shape&                   aS   = itLS.Value();
+    const TopoDS_Shape&         aS   = itLS.Value();
     const NCollection_List<TopoDS_Shape>& aLOr = GetOrigins(aS);
-    const TopoDS_Shape&                   aSOr = aLOr.IsEmpty() ? aS : aLOr.First();
+    const TopoDS_Shape&         aSOr = aLOr.IsEmpty() ? aS : aLOr.First();
 
     TopExp_Explorer anExp(aS, anElemType);
     for (; anExp.More(); anExp.Next())
     {
-      const TopoDS_Shape&             anElement = anExp.Current();
+      const TopoDS_Shape&   anElement = anExp.Current();
       NCollection_List<TopoDS_Shape>* pLM       = myMaterials.ChangeSeek(anElement);
       if (!pLM)
         pLM = myMaterials.Bound(anElement, NCollection_List<TopoDS_Shape>());
@@ -286,7 +285,8 @@ void BOPAlgo_MakeConnected::MakePeriodic(const BOPAlgo_MakePeriodic::Periodicity
 // function : RepeatShape
 // purpose  : Repeats the shape in the given direction given number of times
 //=======================================================================
-void BOPAlgo_MakeConnected::RepeatShape(const int theDirectionID, const int theTimes)
+void BOPAlgo_MakeConnected::RepeatShape(const int theDirectionID,
+                                        const int theTimes)
 {
   if (HasErrors())
     return;

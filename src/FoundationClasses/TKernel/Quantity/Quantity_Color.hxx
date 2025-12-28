@@ -53,9 +53,9 @@ public:
 
   //! Creates a color according to the definition system theType.
   //! Throws exception if values are out of range.
-  Standard_EXPORT Quantity_Color(const double               theC1,
-                                 const double               theC2,
-                                 const double               theC3,
+  Standard_EXPORT Quantity_Color(const double        theC1,
+                                 const double        theC2,
+                                 const double        theC3,
                                  const Quantity_TypeOfColor theType);
 
   //! Define color from linear RGB values.
@@ -78,16 +78,16 @@ public:
 
   //! Returns in theC1, theC2 and theC3 the components of this color
   //! according to the color system definition theType.
-  Standard_EXPORT void Values(double&                    theC1,
-                              double&                    theC2,
-                              double&                    theC3,
+  Standard_EXPORT void Values(double&             theC1,
+                              double&             theC2,
+                              double&             theC3,
                               const Quantity_TypeOfColor theType) const;
 
   //! Updates a color according to the mode specified by theType.
   //! Throws exception if values are out of range.
-  Standard_EXPORT void SetValues(const double               theC1,
-                                 const double               theC2,
-                                 const double               theC3,
+  Standard_EXPORT void SetValues(const double        theC1,
+                                 const double        theC2,
+                                 const double        theC3,
                                  const Quantity_TypeOfColor theType);
 
   //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
@@ -128,7 +128,10 @@ public:
   }
 
   //! Alias to IsDifferent().
-  bool operator!=(const Quantity_Color& theOther) const noexcept { return IsDifferent(theOther); }
+  bool operator!=(const Quantity_Color& theOther) const noexcept
+  {
+    return IsDifferent(theOther);
+  }
 
   //! Returns TRUE if the distance between two colors is no greater than Epsilon().
   bool IsEqual(const Quantity_Color& theOther) const noexcept
@@ -137,19 +140,25 @@ public:
   }
 
   //! Alias to IsEqual().
-  bool operator==(const Quantity_Color& theOther) const noexcept { return IsEqual(theOther); }
+  bool operator==(const Quantity_Color& theOther) const noexcept
+  {
+    return IsEqual(theOther);
+  }
 
   //! Returns the distance between two colors. It's a value between 0 and the square root of 3 (the
   //! black/white distance).
   double Distance(const Quantity_Color& theColor) const noexcept
   {
-    return (NCollection_Vec3<double>(myRgb) - NCollection_Vec3<double>(theColor.myRgb)).Modulus();
+    return (NCollection_Vec3<double>(myRgb)
+            - NCollection_Vec3<double>(theColor.myRgb))
+      .Modulus();
   }
 
   //! Returns the square of distance between two colors.
   double SquareDistance(const Quantity_Color& theColor) const noexcept
   {
-    return (NCollection_Vec3<double>(myRgb) - NCollection_Vec3<double>(theColor.myRgb))
+    return (NCollection_Vec3<double>(myRgb)
+            - NCollection_Vec3<double>(theColor.myRgb))
       .SquareModulus();
   }
 
@@ -158,7 +167,9 @@ public:
   //! The calculation is with respect to this color.
   //! If <DC> is positive then <me> is more contrasty.
   //! If <DI> is positive then <me> is more intense.
-  Standard_EXPORT void Delta(const Quantity_Color& theColor, double& DC, double& DI) const;
+  Standard_EXPORT void Delta(const Quantity_Color& theColor,
+                             double&        DC,
+                             double&        DI) const;
 
   //! Returns the value of the perceptual difference between this color
   //! and @p theOther, computed using the CIEDE2000 formula.
@@ -169,7 +180,9 @@ public:
 
 public:
   //! Returns the color from Quantity_NameOfColor enumeration nearest to specified RGB values.
-  static Quantity_NameOfColor Name(const double theR, const double theG, const double theB)
+  static Quantity_NameOfColor Name(const double theR,
+                                   const double theG,
+                                   const double theB)
   {
     const Quantity_Color aColor(theR, theG, theB, Quantity_TOC_RGB);
     return aColor.Name();
@@ -181,14 +194,15 @@ public:
   //! Finds color from predefined names.
   //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
   //! Returns FALSE if name is unknown.
-  Standard_EXPORT static bool ColorFromName(const char*           theName,
-                                            Quantity_NameOfColor& theColor) noexcept;
+  Standard_EXPORT static bool ColorFromName(const char* theName,
+                                                        Quantity_NameOfColor&  theColor) noexcept;
 
   //! Finds color from predefined names.
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
-  static bool ColorFromName(const char* theColorNameString, Quantity_Color& theColor) noexcept
+  static bool ColorFromName(const char* theColorNameString,
+                                        Quantity_Color&        theColor) noexcept
   {
     Quantity_NameOfColor aColorName = Quantity_NOC_BLACK;
     if (!ColorFromName(theColorNameString, aColorName))
@@ -207,15 +221,18 @@ public:
   //! @param theHexColorString the string to be parsed
   //! @param theColor a color that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
-  Standard_EXPORT static bool ColorFromHex(const char* theHexColorString, Quantity_Color& theColor);
+  Standard_EXPORT static bool ColorFromHex(const char* theHexColorString,
+                                           Quantity_Color&        theColor);
 
   //! Returns hex sRGB string in format "#FFAAFF".
   static TCollection_AsciiString ColorToHex(const Quantity_Color& theColor,
                                             const bool            theToPrefixHash = true) noexcept
   {
-    NCollection_Vec3<float> anSRgb = Convert_LinearRGB_To_sRGB((NCollection_Vec3<float>)theColor);
-    NCollection_Vec3<int>   anSRgbInt(anSRgb * 255.0f + NCollection_Vec3<float>(0.5f));
-    char                    aBuff[10];
+    NCollection_Vec3<float> anSRgb =
+      Convert_LinearRGB_To_sRGB((NCollection_Vec3<float>)theColor);
+    NCollection_Vec3<int> anSRgbInt(anSRgb * 255.0f
+                                                 + NCollection_Vec3<float>(0.5f));
+    char                               aBuff[10];
     Sprintf(aBuff,
             theToPrefixHash ? "#%02X%02X%02X" : "%02X%02X%02X",
             anSRgbInt.r(),
@@ -269,11 +286,13 @@ public:
   //! as would be usually expected for RGB color packed into 4 bytes.
   //! @param[in] theColor  color to convert
   //! @param[out] theARGB  result color encoded as integer
-  static constexpr void Color2argb(const Quantity_Color& theColor, int& theARGB) noexcept
+  static constexpr void Color2argb(const Quantity_Color& theColor,
+                                   int&     theARGB) noexcept
   {
-    const NCollection_Vec3<int> aColor(static_cast<int>(255.0f * theColor.myRgb.r() + 0.5f),
-                                       static_cast<int>(255.0f * theColor.myRgb.g() + 0.5f),
-                                       static_cast<int>(255.0f * theColor.myRgb.b() + 0.5f));
+    const NCollection_Vec3<int> aColor(
+      static_cast<int>(255.0f * theColor.myRgb.r() + 0.5f),
+      static_cast<int>(255.0f * theColor.myRgb.g() + 0.5f),
+      static_cast<int>(255.0f * theColor.myRgb.b() + 0.5f));
     theARGB = (((aColor.r() & 0xff) << 16) | ((aColor.g() & 0xff) << 8) | (aColor.b() & 0xff));
   }
 
@@ -282,9 +301,10 @@ public:
   //! as would be usually expected to preserve higher (for human eye) color precision in 4 bytes.
   static void Argb2color(const int theARGB, Quantity_Color& theColor) noexcept
   {
-    const NCollection_Vec3<double> aColor(static_cast<double>((theARGB & 0xff0000) >> 16),
-                                          static_cast<double>((theARGB & 0x00ff00) >> 8),
-                                          static_cast<double>((theARGB & 0x0000ff)));
+    const NCollection_Vec3<double> aColor(
+      static_cast<double>((theARGB & 0xff0000) >> 16),
+      static_cast<double>((theARGB & 0x00ff00) >> 8),
+      static_cast<double>((theARGB & 0x0000ff)));
     theColor.SetValues(aColor.r() / 255.0,
                        aColor.g() / 255.0,
                        aColor.b() / 255.0,
@@ -412,7 +432,8 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   //! Returns the values of a predefined color according to the mode.

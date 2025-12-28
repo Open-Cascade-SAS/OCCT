@@ -23,6 +23,8 @@
 
 #include <Geom2dHatch_Element.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Geom2dHatch_Element.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 class Geom2dHatch_Element;
@@ -84,12 +86,12 @@ public:
   Standard_EXPORT void CurrentEdge(Geom2dAdaptor_Curve& E, TopAbs_Orientation& Or) const;
 
 private:
-  NCollection_DataMap<int, Geom2dHatch_Element>           myMap;
+  NCollection_DataMap<int, Geom2dHatch_Element>                  myMap;
   NCollection_DataMap<int, Geom2dHatch_Element>::Iterator Iter;
-  int                                                     NumWire;
-  int                                                     NumEdge;
-  int                                                     myCurEdge;
-  double                                                  myCurEdgePar;
+  int                           NumWire;
+  int                           NumEdge;
+  int                           myCurEdge;
+  double                              myCurEdgePar;
 };
 
 #endif // _Geom2dHatch_Elements_HeaderFile

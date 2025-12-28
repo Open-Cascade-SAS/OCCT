@@ -44,7 +44,7 @@ public:
   //! tolerance Tol on the solid S.
   Standard_EXPORT BRepClass3d_SolidClassifier(const TopoDS_Shape& S,
                                               const gp_Pnt&       P,
-                                              const double        Tol);
+                                              const double Tol);
 
   //! Classify the point P with the
   //! tolerance Tol on the solid S.
@@ -60,9 +60,9 @@ public:
   ~BRepClass3d_SolidClassifier() { Destroy(); }
 
 private:
-  bool                      aSolidLoaded;
+  bool          aSolidLoaded;
   BRepClass3d_SolidExplorer explorer;
-  bool                      isaholeinspace;
+  bool          isaholeinspace;
 };
 
 #endif // _BRepClass3d_SolidClassifier_HeaderFile

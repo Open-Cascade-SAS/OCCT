@@ -175,7 +175,7 @@ TEST_F(GeomAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
 {
   // Test loading with null curve
   occ::handle<Geom_Curve> aNullCurve;
-  GeomAdaptor_Curve       anAdaptor;
+  GeomAdaptor_Curve  anAdaptor;
 
   EXPECT_THROW(anAdaptor.Load(aNullCurve, 0.0, 10.0), Standard_NullObject);
 }

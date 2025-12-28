@@ -21,8 +21,7 @@ StdObjMgt_WriteData::StdObjMgt_WriteData(const occ::handle<Storage_BaseDriver>& 
 {
 }
 
-void StdObjMgt_WriteData::WritePersistentObject(
-  const occ::handle<StdObjMgt_Persistent>& thePersistent)
+void StdObjMgt_WriteData::WritePersistentObject(const occ::handle<StdObjMgt_Persistent>& thePersistent)
 {
   if (thePersistent)
   {
@@ -52,7 +51,7 @@ StdObjMgt_WriteData& operator<<(StdObjMgt_WriteData& theWriteData, const Standar
 
   int      a32b;
   char16_t a16b[3];
-  char     a8b[6];
+  char    a8b[6];
 
   // see Standard_GUID::Standard_GUID(const Standard_UUID& aWntGuid)
   a32b    = anUUID.Data1;

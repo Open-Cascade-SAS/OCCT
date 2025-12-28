@@ -91,9 +91,9 @@ public:
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
   //! @param theArrayFlags array flags
-  Graphic3d_ArrayOfPolygons(int                  theMaxVertexs,
-                            int                  theMaxBounds,
-                            int                  theMaxEdges,
+  Graphic3d_ArrayOfPolygons(int     theMaxVertexs,
+                            int     theMaxBounds,
+                            int     theMaxEdges,
                             Graphic3d_ArrayFlags theArrayFlags)
       : Graphic3d_ArrayOfPrimitives(Graphic3d_TOPA_POLYGONS,
                                     theMaxVertexs,
@@ -107,9 +107,9 @@ public:
   //! @param theMaxVertexs defines the maximum allowed vertex number in the array
   //! @param theMaxBounds  defines the maximum allowed bound  number in the array
   //! @param theMaxEdges   defines the maximum allowed edge   number in the array
-  Graphic3d_ArrayOfPolygons(const int  theMaxVertexs,
-                            const int  theMaxBounds   = 0,
-                            const int  theMaxEdges    = 0,
+  Graphic3d_ArrayOfPolygons(const int theMaxVertexs,
+                            const int theMaxBounds   = 0,
+                            const int theMaxEdges    = 0,
                             const bool theHasVNormals = false,
                             const bool theHasVColors  = false,
                             const bool theHasBColors  = false,

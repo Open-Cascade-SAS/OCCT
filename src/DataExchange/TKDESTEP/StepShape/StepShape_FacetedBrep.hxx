@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_FacetedBrep();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FacetedBrep, StepShape_ManifoldSolidBrep)
+
 };
 
 #endif // _StepShape_FacetedBrep_HeaderFile

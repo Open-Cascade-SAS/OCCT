@@ -25,6 +25,9 @@
 #include <NCollection_DataMap.hxx>
 #include <SelectMgr_Filter.hxx>
 #include <AIS_KindOfInteractive.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 class SelectMgr_EntityOwner;
 
 //! A framework to reject or to accept only objects of
@@ -53,26 +56,29 @@ public:
   //! All the AIS objects of <TypeToExclude>
   //! Will be rejected by the IsOk Method.
   Standard_EXPORT AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclude,
-                                      const bool                  ExclusionFlagOn = true);
+                                      const bool      ExclusionFlagOn = true);
 
   //! Constructs an exclusion filter object defined by the
   //! enumeration value TypeToExclude, the signature
   //! SignatureInType, and the flag setting ExclusionFlagOn.
   //! By default, the flag is set to true.
   Standard_EXPORT AIS_ExclusionFilter(const AIS_KindOfInteractive TypeToExclude,
-                                      const int                   SignatureInType,
-                                      const bool                  ExclusionFlagOn = true);
+                                      const int      SignatureInType,
+                                      const bool      ExclusionFlagOn = true);
 
-  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const override;
+  Standard_EXPORT virtual bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anObj) const
+    override;
 
   //! Adds the type TypeToExclude to the list of types.
   Standard_EXPORT bool Add(const AIS_KindOfInteractive TypeToExclude);
 
-  Standard_EXPORT bool Add(const AIS_KindOfInteractive TypeToExclude, const int SignatureInType);
+  Standard_EXPORT bool Add(const AIS_KindOfInteractive TypeToExclude,
+                                       const int      SignatureInType);
 
   Standard_EXPORT bool Remove(const AIS_KindOfInteractive TypeToExclude);
 
-  Standard_EXPORT bool Remove(const AIS_KindOfInteractive TypeToExclude, const int SignatureInType);
+  Standard_EXPORT bool Remove(const AIS_KindOfInteractive TypeToExclude,
+                                          const int      SignatureInType);
 
   Standard_EXPORT void Clear();
 
@@ -90,9 +96,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(AIS_ExclusionFilter, SelectMgr_Filter)
 
 private:
-  Standard_EXPORT bool IsSignatureIn(const AIS_KindOfInteractive aType, const int aSignature) const;
+  Standard_EXPORT bool IsSignatureIn(const AIS_KindOfInteractive aType,
+                                                 const int      aSignature) const;
 
-  bool                                            myIsExclusionFlagOn;
+  bool                      myIsExclusionFlagOn;
   NCollection_DataMap<int, NCollection_List<int>> myStoredTypes;
 };
 

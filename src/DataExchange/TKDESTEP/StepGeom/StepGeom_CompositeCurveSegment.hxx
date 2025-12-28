@@ -31,8 +31,8 @@ public:
   //! Returns a CompositeCurveSegment
   Standard_EXPORT StepGeom_CompositeCurveSegment();
 
-  Standard_EXPORT void Init(const StepGeom_TransitionCode      aTransition,
-                            const bool                         aSameSense,
+  Standard_EXPORT void Init(const StepGeom_TransitionCode aTransition,
+                            const bool        aSameSense,
                             const occ::handle<StepGeom_Curve>& aParentCurve);
 
   Standard_EXPORT void SetTransition(const StepGeom_TransitionCode aTransition);
@@ -50,9 +50,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_CompositeCurveSegment, Standard_Transient)
 
 private:
-  StepGeom_TransitionCode     transition;
-  bool                        sameSense;
-  occ::handle<StepGeom_Curve> parentCurve;
+  StepGeom_TransitionCode transition;
+  bool        sameSense;
+  occ::handle<StepGeom_Curve>  parentCurve;
 };
 
 #endif // _StepGeom_CompositeCurveSegment_HeaderFile

@@ -38,12 +38,14 @@ public:
 
   //! Returns the list of selected entities : the Roots of the Model
   //! (note that this result assures naturally uniqueness)
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns a text defining the criterium : "Model Roots"
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_SelectModelRoots, IFSelect_SelectBase)
+
 };
 
 #endif // _IFSelect_SelectModelRoots_HeaderFile

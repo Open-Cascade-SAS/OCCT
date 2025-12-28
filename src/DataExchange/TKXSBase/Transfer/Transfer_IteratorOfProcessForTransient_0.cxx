@@ -22,6 +22,7 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_ActorOfProcessForTransient.hxx>
+#include <Transfer_Binder.hxx>
 
 //=================================================================================================
 
@@ -57,16 +58,15 @@ void Transfer_IteratorOfProcessForTransient::Add(const occ::handle<Transfer_Bind
 
 void Transfer_IteratorOfProcessForTransient::Filter(
   const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-  const bool                                                                 keep)
+  const bool                      keep)
 {
   if (list.IsNull() || thestarts.IsNull())
     return;
   int i, j, nb = thestarts->Length();
   if (nb == 0)
     return;
-  occ::handle<Transfer_Binder>                                                              factice;
-  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Transfer_Binder>> amap(
-    nb);
+  occ::handle<Transfer_Binder>                   factice;
+  NCollection_IndexedDataMap<occ::handle<Standard_Transient>, occ::handle<Transfer_Binder>> amap(nb);
   for (i = 1; i <= nb; i++)
   {
     j = amap.Add(thestarts->Value(i), factice);

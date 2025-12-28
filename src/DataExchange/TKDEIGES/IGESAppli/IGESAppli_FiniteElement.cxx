@@ -27,10 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FiniteElement, IGESData_IGESEntity)
 
 IGESAppli_FiniteElement::IGESAppli_FiniteElement() {}
 
-void IGESAppli_FiniteElement::Init(
-  const int                                                            aType,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>& allNodes,
-  const occ::handle<TCollection_HAsciiString>&                         aName)
+void IGESAppli_FiniteElement::Init(const int                  aType,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESAppli_Node>>>&  allNodes,
+                                   const occ::handle<TCollection_HAsciiString>& aName)
 {
   if (allNodes->Lower() != 1)
     throw Standard_DimensionMismatch("IGESAppli_FiniteElement : Init");

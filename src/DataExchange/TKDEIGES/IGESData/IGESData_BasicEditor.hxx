@@ -135,11 +135,11 @@ public:
   Standard_EXPORT static int GetFlagByValue(const double theValue);
 
 private:
-  bool                            theunit;
+  bool           theunit;
   occ::handle<IGESData_Protocol>  theproto;
   occ::handle<IGESData_IGESModel> themodel;
-  Interface_GeneralLib            theglib;
-  IGESData_SpecificLib            theslib;
+  Interface_GeneralLib       theglib;
+  IGESData_SpecificLib       theslib;
 };
 
 #endif // _IGESData_BasicEditor_HeaderFile

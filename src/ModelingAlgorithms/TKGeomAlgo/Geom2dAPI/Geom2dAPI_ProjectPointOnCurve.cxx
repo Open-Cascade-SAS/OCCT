@@ -30,7 +30,7 @@ Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve()
 
 //=================================================================================================
 
-Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&                  P,
+Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
                                                              const occ::handle<Geom2d_Curve>& Curve)
 {
   Init(P, Curve);
@@ -38,10 +38,10 @@ Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&    
 
 //=================================================================================================
 
-Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&                  P,
+Geom2dAPI_ProjectPointOnCurve::Geom2dAPI_ProjectPointOnCurve(const gp_Pnt2d&             P,
                                                              const occ::handle<Geom2d_Curve>& Curve,
-                                                             const double                     Umin,
-                                                             const double                     Usup)
+                                                             const double         Umin,
+                                                             const double         Usup)
 {
   Init(P, Curve, Umin, Usup);
 }
@@ -55,10 +55,10 @@ void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d& P, const occ::handle<Ge
 
 //=================================================================================================
 
-void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&                  P,
+void Geom2dAPI_ProjectPointOnCurve::Init(const gp_Pnt2d&             P,
                                          const occ::handle<Geom2d_Curve>& Curve,
-                                         const double                     Umin,
-                                         const double                     Usup)
+                                         const double         Umin,
+                                         const double         Usup)
 {
   myC.Load(Curve, Umin, Usup);
 

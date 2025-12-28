@@ -204,7 +204,10 @@ void Geom_SurfaceOfRevolution::SetLocation(const Pnt& P)
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double& V2) const
+void Geom_SurfaceOfRevolution::Bounds(double& U1,
+                                      double& U2,
+                                      double& V1,
+                                      double& V2) const
 {
 
   U1 = 0.0;
@@ -222,7 +225,11 @@ void Geom_SurfaceOfRevolution::D0(const double U, const double V, Pnt& P) const
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
+void Geom_SurfaceOfRevolution::D1(const double U,
+                                  const double V,
+                                  Pnt&                P,
+                                  Vec&                D1U,
+                                  Vec&                D1V) const
 {
   Geom_RevolutionUtils::D1(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V);
 }
@@ -231,12 +238,12 @@ void Geom_SurfaceOfRevolution::D1(const double U, const double V, Pnt& P, Vec& D
 
 void Geom_SurfaceOfRevolution::D2(const double U,
                                   const double V,
-                                  Pnt&         P,
-                                  Vec&         D1U,
-                                  Vec&         D1V,
-                                  Vec&         D2U,
-                                  Vec&         D2V,
-                                  Vec&         D2UV) const
+                                  Pnt&                P,
+                                  Vec&                D1U,
+                                  Vec&                D1V,
+                                  Vec&                D2U,
+                                  Vec&                D2V,
+                                  Vec&                D2UV) const
 {
   Geom_RevolutionUtils::D2(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V, D2U, D2V, D2UV);
 }
@@ -245,16 +252,16 @@ void Geom_SurfaceOfRevolution::D2(const double U,
 
 void Geom_SurfaceOfRevolution::D3(const double U,
                                   const double V,
-                                  Pnt&         P,
-                                  Vec&         D1U,
-                                  Vec&         D1V,
-                                  Vec&         D2U,
-                                  Vec&         D2V,
-                                  Vec&         D2UV,
-                                  Vec&         D3U,
-                                  Vec&         D3V,
-                                  Vec&         D3UUV,
-                                  Vec&         D3UVV) const
+                                  Pnt&                P,
+                                  Vec&                D1U,
+                                  Vec&                D1V,
+                                  Vec&                D2U,
+                                  Vec&                D2V,
+                                  Vec&                D2UV,
+                                  Vec&                D3U,
+                                  Vec&                D3V,
+                                  Vec&                D3UUV,
+                                  Vec&                D3UVV) const
 {
   Geom_RevolutionUtils::D3(U,
                            V,
@@ -274,7 +281,10 @@ void Geom_SurfaceOfRevolution::D3(const double U,
 
 //=================================================================================================
 
-Vec Geom_SurfaceOfRevolution::DN(const double U, const double V, const int Nu, const int Nv) const
+Vec Geom_SurfaceOfRevolution::DN(const double    U,
+                                 const double    V,
+                                 const int Nu,
+                                 const int Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
   return Geom_RevolutionUtils::DN(U, V, *basisCurve, gp_Ax1(loc, direction), Nu, Nv);
@@ -294,7 +304,7 @@ occ::handle<Geom_Curve> Geom_SurfaceOfRevolution::UIso(const double U) const
 {
 
   occ::handle<Geom_Curve> C       = occ::down_cast<Geom_Curve>(basisCurve->Copy());
-  Ax1                     RotAxis = Ax1(loc, direction);
+  Ax1                RotAxis = Ax1(loc, direction);
   C->Rotate(RotAxis, U);
   return C;
 }
@@ -305,9 +315,9 @@ occ::handle<Geom_Curve> Geom_SurfaceOfRevolution::VIso(const double V) const
 {
 
   occ::handle<Geom_Circle> Circ;
-  Pnt                      Pc = basisCurve->Value(V);
-  gp_Lin                   L1(loc, direction);
-  double                   Rad = L1.Distance(Pc);
+  Pnt                 Pc = basisCurve->Value(V);
+  gp_Lin              L1(loc, direction);
+  double       Rad = L1.Distance(Pc);
 
   Ax2 Rep;
   if (Rad > gp::Resolution())
@@ -344,7 +354,9 @@ void Geom_SurfaceOfRevolution::Transform(const Trsf& T)
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::TransformParameters(double&, double& V, const gp_Trsf& T) const
+void Geom_SurfaceOfRevolution::TransformParameters(double&,
+                                                   double& V,
+                                                   const gp_Trsf& T) const
 {
   V = basisCurve->TransformedParameter(V, T);
 }
@@ -361,7 +373,8 @@ gp_GTrsf2d Geom_SurfaceOfRevolution::ParametricTransformation(const gp_Trsf& T) 
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Geom_SurfaceOfRevolution::DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_SweptSurface)

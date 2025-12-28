@@ -235,7 +235,7 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOM_Node& theNod
       // Output any attributes of this element
       const LDOM_Element& anElemToWrite = (const LDOM_Element&)theNode;
       LDOM_NodeList       aListAtt      = anElemToWrite.GetAttributesList();
-      int                 aListInd      = aListAtt.getLength();
+      int    aListInd      = aListAtt.getLength();
 
       while (aListInd--)
       {
@@ -360,8 +360,8 @@ void LDOM_XmlWriter::Write(Standard_OStream& theOStream, const LDOMBasicString& 
       const char* aStr = theString.GetString();
       if (aStr)
       {
-        int   aLen;
-        char* encStr = LDOM_CharReference::Encode(aStr, aLen, false);
+        int aLen;
+        char*            encStr = LDOM_CharReference::Encode(aStr, aLen, false);
         if (aLen > 0)
         {
           theOStream.write(encStr, aLen);

@@ -38,10 +38,10 @@ public:
 
   Standard_EXPORT Vrml_DirectionalLight();
 
-  Standard_EXPORT Vrml_DirectionalLight(const bool            aOnOff,
-                                        const double          aIntensity,
-                                        const Quantity_Color& aColor,
-                                        const gp_Vec&         aDirection);
+  Standard_EXPORT Vrml_DirectionalLight(const bool aOnOff,
+                                        const double    aIntensity,
+                                        const Quantity_Color&  aColor,
+                                        const gp_Vec&          aDirection);
 
   Standard_EXPORT void SetOnOff(const bool aOnOff);
 
@@ -62,10 +62,10 @@ public:
   Standard_EXPORT Standard_OStream& Print(Standard_OStream& anOStream) const;
 
 private:
-  bool           myOnOff;
-  double         myIntensity;
-  Quantity_Color myColor;
-  gp_Vec         myDirection;
+  bool myOnOff;
+  double    myIntensity;
+  Quantity_Color   myColor;
+  gp_Vec           myDirection;
 };
 
 #endif // _Vrml_DirectionalLight_HeaderFile

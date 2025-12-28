@@ -37,8 +37,8 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Pnt& P2, const
   TheError = Cir.Status();
   if (TheError == gce_Done)
   {
-    double  Alpha1, Alpha3; //,Alpha2
-    gp_Circ C(Cir.Value());
+    double Alpha1, Alpha3; //,Alpha2
+    gp_Circ       C(Cir.Value());
     // modified by NIZNHY-PKV Thu Mar  3 10:53:02 2005f
     // Alpha1 is always =0.
     // Alpha1 = ElCLib::Parameter(C,P1);
@@ -55,7 +55,7 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Pnt& P2, const
     // modified by NIZNHY-PKV Thu Mar  3 10:53:04 2005t
 
     occ::handle<Geom_Circle> Circ = new Geom_Circle(C);
-    TheArc                        = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, sense);
+    TheArc                   = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, sense);
   }
 }
 
@@ -77,7 +77,7 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
                Dir1);
     gp_Dir d(dbid ^ Daxe);
     gp_Lin norm(P1, d);
-    double Tol = 0.000000001;
+    double  Tol = 0.000000001;
     Extrema_ExtElC distmin(bis, norm, Tol);
     if (!distmin.IsDone())
     {
@@ -92,10 +92,10 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
       }
       else
       {
-        double          TheDist = RealLast();
-        gp_Pnt          pInt, pon1, pon2;
-        int             i = 1;
-        Extrema_POnCurv Pon1, Pon2;
+        double    TheDist = RealLast();
+        gp_Pnt           pInt, pon1, pon2;
+        int i = 1;
+        Extrema_POnCurv  Pon1, Pon2;
         while (i <= nbext)
         {
           if (distmin.SquareDistance(i) < TheDist)
@@ -108,12 +108,12 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
           }
           i++;
         }
-        double Rad                      = (pInt.Distance(P1) + pInt.Distance(P2)) / 2.;
-        cir                             = gp_Circ(gp_Ax2(pInt, Daxe, d), Rad);
-        double                   Alpha1 = ElCLib::Parameter(cir, P1);
-        double                   Alpha3 = ElCLib::Parameter(cir, P2);
+        double Rad          = (pInt.Distance(P1) + pInt.Distance(P2)) / 2.;
+        cir                        = gp_Circ(gp_Ax2(pInt, Daxe, d), Rad);
+        double       Alpha1 = ElCLib::Parameter(cir, P1);
+        double       Alpha3 = ElCLib::Parameter(cir, P2);
         occ::handle<Geom_Circle> Circ   = new Geom_Circle(cir);
-        TheArc                          = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, true);
+        TheArc                     = new Geom_TrimmedCurve(Circ, Alpha1, Alpha3, true);
       }
     }
   }
@@ -121,41 +121,41 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
 
 //=================================================================================================
 
-GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                       const gp_Pnt&  P1,
-                                       const gp_Pnt&  P2,
-                                       const bool     Sense)
+GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                       const gp_Pnt&          P1,
+                                       const gp_Pnt&          P2,
+                                       const bool Sense)
 {
-  double                   Alpha1 = ElCLib::Parameter(Circ, P1);
-  double                   Alpha2 = ElCLib::Parameter(Circ, P2);
+  double       Alpha1 = ElCLib::Parameter(Circ, P1);
+  double       Alpha2 = ElCLib::Parameter(Circ, P2);
   occ::handle<Geom_Circle> C      = new Geom_Circle(Circ);
-  TheArc                          = new Geom_TrimmedCurve(C, Alpha1, Alpha2, Sense);
-  TheError                        = gce_Done;
-}
-
-//=================================================================================================
-
-GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                       const gp_Pnt&  P,
-                                       const double   Alpha,
-                                       const bool     Sense)
-{
-  double                   Alphafirst = ElCLib::Parameter(Circ, P);
-  occ::handle<Geom_Circle> C          = new Geom_Circle(Circ);
-  TheArc                              = new Geom_TrimmedCurve(C, Alphafirst, Alpha, Sense);
-  TheError                            = gce_Done;
-}
-
-//=================================================================================================
-
-GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                       const double   Alpha1,
-                                       const double   Alpha2,
-                                       const bool     Sense)
-{
-  occ::handle<Geom_Circle> C = new Geom_Circle(Circ);
   TheArc                     = new Geom_TrimmedCurve(C, Alpha1, Alpha2, Sense);
   TheError                   = gce_Done;
+}
+
+//=================================================================================================
+
+GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                       const gp_Pnt&          P,
+                                       const double    Alpha,
+                                       const bool Sense)
+{
+  double       Alphafirst = ElCLib::Parameter(Circ, P);
+  occ::handle<Geom_Circle> C          = new Geom_Circle(Circ);
+  TheArc                         = new Geom_TrimmedCurve(C, Alphafirst, Alpha, Sense);
+  TheError                       = gce_Done;
+}
+
+//=================================================================================================
+
+GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Circ&         Circ,
+                                       const double    Alpha1,
+                                       const double    Alpha2,
+                                       const bool Sense)
+{
+  occ::handle<Geom_Circle> C = new Geom_Circle(Circ);
+  TheArc                = new Geom_TrimmedCurve(C, Alpha1, Alpha2, Sense);
+  TheError              = gce_Done;
 }
 
 //=================================================================================================

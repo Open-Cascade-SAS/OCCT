@@ -46,8 +46,7 @@ void HLRAlgo_PolyData::HTData(const occ::handle<NCollection_HArray1<HLRAlgo_Tria
 
 //=================================================================================================
 
-void HLRAlgo_PolyData::HPHDat(
-  const occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>>& HPHDat)
+void HLRAlgo_PolyData::HPHDat(const occ::handle<NCollection_HArray1<HLRAlgo_PolyHidingData>>& HPHDat)
 {
   myHPHDat = HPHDat;
 }
@@ -56,9 +55,9 @@ void HLRAlgo_PolyData::HPHDat(
 
 void HLRAlgo_PolyData::UpdateGlobalMinMax(Bnd_Box& theBox)
 {
-  const NCollection_Array1<gp_XYZ>&               Nodes = myHNodes->Array1();
+  const NCollection_Array1<gp_XYZ>&    Nodes = myHNodes->Array1();
   const NCollection_Array1<HLRAlgo_TriangleData>& TData = myHTData->Array1();
-  const int                                       nbT   = TData.Upper();
+  const int       nbT   = TData.Upper();
 
   for (int i = 1; i <= nbT; i++)
   {
@@ -80,21 +79,21 @@ void HLRAlgo_PolyData::UpdateGlobalMinMax(Bnd_Box& theBox)
 void HLRAlgo_PolyData::HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
                                       Triangle&                       theTriangle,
                                       HLRAlgo_BiPoint::IndicesT&      theIndices,
-                                      const bool                      HidingShell,
+                                      const bool          HidingShell,
                                       HLRAlgo_EdgeStatus&             status)
 {
   if (((myFaceIndices.Max - theIndices.MinSeg) & 0x80100200) == 0
       && ((theIndices.MaxSeg - myFaceIndices.Min) & 0x80100000) == 0)
   {
-    NCollection_Array1<HLRAlgo_PolyHidingData>&     PHDat = myHPHDat->ChangeArray1();
+    NCollection_Array1<HLRAlgo_PolyHidingData>&       PHDat = myHPHDat->ChangeArray1();
     const NCollection_Array1<HLRAlgo_TriangleData>& TData = myHTData->Array1();
-    double                                          d1, d2;
-    bool                                            NotConnex    = false;
-    bool                                            isCrossing   = false;
-    bool                                            toHideBefore = false;
-    int                                             TFlag        = 0;
-    int                                             h, h2 = PHDat.Upper();
-    HLRAlgo_PolyHidingData*                         PH = &(PHDat(1));
+    double                d1, d2;
+    bool             NotConnex    = false;
+    bool             isCrossing   = false;
+    bool             toHideBefore = false;
+    int             TFlag        = 0;
+    int             h, h2 = PHDat.Upper();
+    HLRAlgo_PolyHidingData*      PH = &(PHDat(1));
 
     for (h = 1; h <= h2; h++)
     {
@@ -140,17 +139,17 @@ void HLRAlgo_PolyData::HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
           {
             if (d2 < -theTriangle.Tolerance)
             {
-              theTriangle.Param                       = d1 / (d1 - d2);
-              toHideBefore                            = false;
-              isCrossing                              = true;
-              TFlag                                   = aTriangle.Flags;
+              theTriangle.Param               = d1 / (d1 - d2);
+              toHideBefore                    = false;
+              isCrossing                      = true;
+              TFlag                           = aTriangle.Flags;
               const NCollection_Array1<gp_XYZ>& Nodes = myHNodes->Array1();
-              const gp_XYZ&                     P1    = Nodes(aTriangle.Node1);
-              const gp_XYZ&                     P2    = Nodes(aTriangle.Node2);
-              const gp_XYZ&                     P3    = Nodes(aTriangle.Node3);
-              theTriangle.V1                          = gp_XY(P1.X(), P1.Y());
-              theTriangle.V2                          = gp_XY(P2.X(), P2.Y());
-              theTriangle.V3                          = gp_XY(P3.X(), P3.Y());
+              const gp_XYZ&             P1    = Nodes(aTriangle.Node1);
+              const gp_XYZ&             P2    = Nodes(aTriangle.Node2);
+              const gp_XYZ&             P3    = Nodes(aTriangle.Node3);
+              theTriangle.V1                  = gp_XY(P1.X(), P1.Y());
+              theTriangle.V2                  = gp_XY(P2.X(), P2.Y());
+              theTriangle.V3                  = gp_XY(P3.X(), P3.Y());
               hideByOneTriangle(thePoints, theTriangle, isCrossing, toHideBefore, TFlag, status);
             }
           }
@@ -158,44 +157,44 @@ void HLRAlgo_PolyData::HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
           {
             if (d2 > theTriangle.Tolerance)
             {
-              theTriangle.Param                       = d1 / (d1 - d2);
-              toHideBefore                            = true;
-              isCrossing                              = true;
-              TFlag                                   = aTriangle.Flags;
+              theTriangle.Param               = d1 / (d1 - d2);
+              toHideBefore                    = true;
+              isCrossing                      = true;
+              TFlag                           = aTriangle.Flags;
               const NCollection_Array1<gp_XYZ>& Nodes = myHNodes->Array1();
-              const gp_XYZ&                     P1    = Nodes(aTriangle.Node1);
-              const gp_XYZ&                     P2    = Nodes(aTriangle.Node2);
-              const gp_XYZ&                     P3    = Nodes(aTriangle.Node3);
-              theTriangle.V1                          = gp_XY(P1.X(), P1.Y());
-              theTriangle.V2                          = gp_XY(P2.X(), P2.Y());
-              theTriangle.V3                          = gp_XY(P3.X(), P3.Y());
+              const gp_XYZ&             P1    = Nodes(aTriangle.Node1);
+              const gp_XYZ&             P2    = Nodes(aTriangle.Node2);
+              const gp_XYZ&             P3    = Nodes(aTriangle.Node3);
+              theTriangle.V1                  = gp_XY(P1.X(), P1.Y());
+              theTriangle.V2                  = gp_XY(P2.X(), P2.Y());
+              theTriangle.V3                  = gp_XY(P3.X(), P3.Y());
               hideByOneTriangle(thePoints, theTriangle, isCrossing, toHideBefore, TFlag, status);
             }
             else
             {
-              isCrossing                              = false;
-              TFlag                                   = aTriangle.Flags;
+              isCrossing                      = false;
+              TFlag                           = aTriangle.Flags;
               const NCollection_Array1<gp_XYZ>& Nodes = myHNodes->Array1();
-              const gp_XYZ&                     P1    = Nodes(aTriangle.Node1);
-              const gp_XYZ&                     P2    = Nodes(aTriangle.Node2);
-              const gp_XYZ&                     P3    = Nodes(aTriangle.Node3);
-              theTriangle.V1                          = gp_XY(P1.X(), P1.Y());
-              theTriangle.V2                          = gp_XY(P2.X(), P2.Y());
-              theTriangle.V3                          = gp_XY(P3.X(), P3.Y());
+              const gp_XYZ&             P1    = Nodes(aTriangle.Node1);
+              const gp_XYZ&             P2    = Nodes(aTriangle.Node2);
+              const gp_XYZ&             P3    = Nodes(aTriangle.Node3);
+              theTriangle.V1                  = gp_XY(P1.X(), P1.Y());
+              theTriangle.V2                  = gp_XY(P2.X(), P2.Y());
+              theTriangle.V3                  = gp_XY(P3.X(), P3.Y());
               hideByOneTriangle(thePoints, theTriangle, isCrossing, toHideBefore, TFlag, status);
             }
           }
           else if (d2 < -theTriangle.Tolerance)
           {
-            isCrossing                              = false;
-            TFlag                                   = aTriangle.Flags;
+            isCrossing                      = false;
+            TFlag                           = aTriangle.Flags;
             const NCollection_Array1<gp_XYZ>& Nodes = myHNodes->Array1();
-            const gp_XYZ&                     P1    = Nodes(aTriangle.Node1);
-            const gp_XYZ&                     P2    = Nodes(aTriangle.Node2);
-            const gp_XYZ&                     P3    = Nodes(aTriangle.Node3);
-            theTriangle.V1                          = gp_XY(P1.X(), P1.Y());
-            theTriangle.V2                          = gp_XY(P2.X(), P2.Y());
-            theTriangle.V3                          = gp_XY(P3.X(), P3.Y());
+            const gp_XYZ&             P1    = Nodes(aTriangle.Node1);
+            const gp_XYZ&             P2    = Nodes(aTriangle.Node2);
+            const gp_XYZ&             P3    = Nodes(aTriangle.Node3);
+            theTriangle.V1                  = gp_XY(P1.X(), P1.Y());
+            theTriangle.V2                  = gp_XY(P2.X(), P2.Y());
+            theTriangle.V3                  = gp_XY(P3.X(), P3.Y());
             hideByOneTriangle(thePoints, theTriangle, isCrossing, toHideBefore, TFlag, status);
           }
         }
@@ -209,25 +208,25 @@ void HLRAlgo_PolyData::HideByPolyData(const HLRAlgo_BiPoint::PointsT& thePoints,
 
 void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoints,
                                          Triangle&                       theTriangle,
-                                         const bool                      Crossing,
-                                         const bool                      HideBefore,
-                                         const int                       TrFlags,
+                                         const bool          Crossing,
+                                         const bool          HideBefore,
+                                         const int          TrFlags,
                                          HLRAlgo_EdgeStatus&             status)
 {
-  bool   CrosSeg = false;
-  int    n1      = 0;
-  double pd1 = 0., pd2 = 0.;
-  int    nn1 = 0, nn2 = 0;
-  double pend = 1., psta = 0., pp = 0., pdp = 0.;
-  int    npi    = -1;
-  bool   o[]    = {false, false};
-  bool   m[]    = {false, false};
-  double p[]    = {0., 0.};
-  int    npiRej = 0;
+  bool CrosSeg = false;
+  int n1      = 0;
+  double    pd1 = 0., pd2 = 0.;
+  int nn1 = 0, nn2 = 0;
+  double    pend = 1., psta = 0., pp = 0., pdp = 0.;
+  int npi    = -1;
+  bool o[]    = {false, false};
+  bool m[]    = {false, false};
+  double    p[]    = {0., 0.};
+  int npiRej = 0;
 
   {
-    const gp_XY  aD   = theTriangle.V2 - theTriangle.V1;
-    const gp_XY  aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
+    const gp_XY         aD   = theTriangle.V2 - theTriangle.V1;
+    const gp_XY         aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
     const double aDot = aA * theTriangle.V1;
     const double d1   = aA * thePoints.PntP12D() - aDot;
     const double d2   = aA * thePoints.PntP22D() - aDot;
@@ -431,8 +430,8 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
   }
 
   {
-    const gp_XY  aD   = theTriangle.V3 - theTriangle.V2;
-    const gp_XY  aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
+    const gp_XY         aD   = theTriangle.V3 - theTriangle.V2;
+    const gp_XY         aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
     const double aDot = aA * theTriangle.V2;
     const double d1   = aA * thePoints.PntP12D() - aDot;
     const double d2   = aA * thePoints.PntP22D() - aDot;
@@ -635,8 +634,8 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
   }
 
   {
-    const gp_XY  aD   = theTriangle.V1 - theTriangle.V3;
-    const gp_XY  aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
+    const gp_XY         aD   = theTriangle.V1 - theTriangle.V3;
+    const gp_XY         aA   = (1 / aD.Modulus()) * gp_XY(-aD.Y(), aD.X());
     const double aDot = aA * theTriangle.V3;
     const double d1   = aA * thePoints.PntP12D() - aDot;
     const double d2   = aA * thePoints.PntP22D() - aDot;
@@ -904,5 +903,10 @@ void HLRAlgo_PolyData::hideByOneTriangle(const HLRAlgo_BiPoint::PointsT& thePoin
   if (total)
     status.HideAll();
   else
-    status.Hide(psta, (float)theTriangle.TolParam, pend, (float)theTriangle.TolParam, false, false);
+    status.Hide(psta,
+                (float)theTriangle.TolParam,
+                pend,
+                (float)theTriangle.TolParam,
+                false,
+                false);
 }

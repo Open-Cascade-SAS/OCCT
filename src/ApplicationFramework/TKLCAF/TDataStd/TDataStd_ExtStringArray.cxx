@@ -40,11 +40,11 @@ const Standard_GUID& TDataStd_ExtStringArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-occ::handle<TDataStd_ExtStringArray> SetAttr(const TDF_Label&     label,
-                                             const int            lower,
-                                             const int            upper,
-                                             const bool           isDelta,
-                                             const Standard_GUID& theGuid)
+occ::handle<TDataStd_ExtStringArray> SetAttr(const TDF_Label&       label,
+                                        const int lower,
+                                        const int upper,
+                                        const bool isDelta,
+                                        const Standard_GUID&   theGuid)
 {
   occ::handle<TDataStd_ExtStringArray> A;
   if (!label.FindAttribute(theGuid, A))
@@ -81,10 +81,10 @@ void TDataStd_ExtStringArray::Init(const int lower, const int upper)
 
 //=================================================================================================
 
-occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Label& label,
-                                                                  const int        lower,
-                                                                  const int        upper,
-                                                                  const bool       isDelta)
+occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Label&       label,
+                                                             const int lower,
+                                                             const int upper,
+                                                             const bool isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
@@ -95,11 +95,11 @@ occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Labe
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 
-occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Label&     label,
-                                                                  const Standard_GUID& theGuid,
-                                                                  const int            lower,
-                                                                  const int            upper,
-                                                                  const bool           isDelta)
+occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Label&       label,
+                                                             const Standard_GUID&   theGuid,
+                                                             const int lower,
+                                                             const int upper,
+                                                             const bool isDelta)
 
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
@@ -107,7 +107,8 @@ occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Labe
 
 //=================================================================================================
 
-void TDataStd_ExtStringArray::SetValue(const int index, const TCollection_ExtendedString& value)
+void TDataStd_ExtStringArray::SetValue(const int            index,
+                                       const TCollection_ExtendedString& value)
 {
   if (myValue.IsNull())
     return;
@@ -163,18 +164,17 @@ int TDataStd_ExtStringArray::Length(void) const
 //         : that holds <newArray>
 //=======================================================================
 
-void TDataStd_ExtStringArray::ChangeArray(
-  const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& newArray,
-  const bool                                                          isCheckItems)
+void TDataStd_ExtStringArray::ChangeArray(const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& newArray,
+                                          const bool isCheckItems)
 {
-  int  aLower    = newArray->Lower();
-  int  anUpper   = newArray->Upper();
+  int aLower    = newArray->Lower();
+  int anUpper   = newArray->Upper();
   bool aDimEqual = false;
-  int  i;
+  int i;
 
   if (Lower() == aLower && Upper() == anUpper)
   {
-    aDimEqual    = true;
+    aDimEqual                = true;
     bool isEqual = true;
     if (isCheckItems)
     {
@@ -237,7 +237,7 @@ occ::handle<TDF_Attribute> TDataStd_ExtStringArray::NewEmpty() const
 
 void TDataStd_ExtStringArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  int                                  i, lower, upper;
+  int                i, lower, upper;
   occ::handle<TDataStd_ExtStringArray> anArray = occ::down_cast<TDataStd_ExtStringArray>(With);
   if (!anArray->myValue.IsNull())
   {
@@ -305,7 +305,8 @@ occ::handle<TDF_DeltaOnModification> TDataStd_ExtStringArray::DeltaOnModificatio
 
 //=================================================================================================
 
-void TDataStd_ExtStringArray::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void TDataStd_ExtStringArray::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -316,8 +317,7 @@ void TDataStd_ExtStringArray::DumpJson(Standard_OStream& theOStream, int theDept
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Lower())
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myValue->Upper())
 
-    for (NCollection_Array1<TCollection_ExtendedString>::Iterator aValueIt(myValue->Array1());
-         aValueIt.More();
+    for (NCollection_Array1<TCollection_ExtendedString>::Iterator aValueIt(myValue->Array1()); aValueIt.More();
          aValueIt.Next())
     {
       const TCollection_ExtendedString& aValue = aValueIt.Value();

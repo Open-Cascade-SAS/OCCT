@@ -32,10 +32,12 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
+  virtual bool RejectNode(const BVH_VecNt&,
+                                      const BVH_VecNt&,
+                                      double& theMetric) const override
   {
-    theMetric = 0.0; // All nodes have same metric
-    return false;    // Never reject
+    theMetric = 0.0;       // All nodes have same metric
+    return false; // Never reject
   }
 
   virtual bool Accept(const int, const double&) override
@@ -63,8 +65,8 @@ public:
   }
 
   virtual bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+                                      const BVH_VecNt& theMax,
+                                      double&   theMetric) const override
   {
     // Reject if box doesn't intersect with selection box
     theMetric = 0.0;
@@ -83,7 +85,7 @@ public:
 
 private:
   BVH_Box<double, 3> myBox;
-  mutable int        myAcceptedCount;
+  mutable int  myAcceptedCount;
 };
 
 //! Traverse with distance-based metric and early termination
@@ -100,15 +102,16 @@ public:
   }
 
   virtual bool RejectNode(const BVH_VecNt& theMin,
-                          const BVH_VecNt& theMax,
-                          double&          theMetric) const override
+                                      const BVH_VecNt& theMax,
+                                      double&   theMetric) const override
   {
     // Compute squared distance from point to box
     theMetric = PointBoxSquareDistance(myPoint, theMin, theMax);
     return theMetric > myMaxDistSq;
   }
 
-  virtual bool Accept(const int theIndex, const double& theMetric) override
+  virtual bool Accept(const int theIndex,
+                                  const double&   theMetric) override
   {
     ++myAcceptedCount;
     if (theMetric < myMinDistSq)
@@ -119,7 +122,8 @@ public:
     return true;
   }
 
-  virtual bool IsMetricBetter(const double& theLeft, const double& theRight) const override
+  virtual bool IsMetricBetter(const double& theLeft,
+                                          const double& theRight) const override
   {
     return theLeft < theRight; // Closer is better
   }
@@ -137,8 +141,8 @@ public:
 
 private:
   static double PointBoxSquareDistance(const BVH_Vec3d& thePoint,
-                                       const BVH_Vec3d& theMin,
-                                       const BVH_Vec3d& theMax)
+                                              const BVH_Vec3d& theMin,
+                                              const BVH_Vec3d& theMax)
   {
     double aDist = 0.0;
     for (int i = 0; i < 3; ++i)
@@ -157,11 +161,11 @@ private:
     return aDist;
   }
 
-  BVH_Vec3d myPoint;
+  BVH_Vec3d        myPoint;
   double    myMaxDistSq;
   double    myMinDistSq;
-  int       myAcceptedCount;
-  int       myClosestIndex;
+  int myAcceptedCount;
+  int myClosestIndex;
 };
 
 //! Traverse with early stopping after finding N elements
@@ -174,7 +178,9 @@ public:
   {
   }
 
-  virtual bool RejectNode(const BVH_VecNt&, const BVH_VecNt&, double& theMetric) const override
+  virtual bool RejectNode(const BVH_VecNt&,
+                                      const BVH_VecNt&,
+                                      double& theMetric) const override
   {
     theMetric = 0.0;
     return false;
@@ -209,10 +215,10 @@ public:
   }
 
   virtual bool RejectNode(const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          const BVH_VecNt&,
-                          double& theMetric) const override
+                                      const BVH_VecNt&,
+                                      const BVH_VecNt&,
+                                      const BVH_VecNt&,
+                                      double& theMetric) const override
   {
     theMetric = 0.0;
     return false; // Never reject
@@ -241,16 +247,16 @@ public:
   }
 
   virtual bool RejectNode(const BVH_VecNt& theMin1,
-                          const BVH_VecNt& theMax1,
-                          const BVH_VecNt& theMin2,
-                          const BVH_VecNt& theMax2,
-                          double&          theMetric) const override
+                                      const BVH_VecNt& theMax1,
+                                      const BVH_VecNt& theMin2,
+                                      const BVH_VecNt& theMax2,
+                                      double&   theMetric) const override
   {
     ++myRejectCount;
     theMetric = 0.0;
     // Reject if boxes don't overlap
     BVH_Box<double, 3> aBox1(theMin1, theMax1);
-    bool               isOut = aBox1.IsOut(theMin2, theMax2);
+    bool          isOut = aBox1.IsOut(theMin2, theMax2);
     return isOut;
   }
 
@@ -277,7 +283,8 @@ private:
 // =======================================================================================
 
 //! Creates a simple triangulation for testing
-opencascade::handle<BVH_Tree<double, 3>> CreateSimpleTriangulationBVH(int theNumTriangles)
+opencascade::handle<BVH_Tree<double, 3>> CreateSimpleTriangulationBVH(
+  int theNumTriangles)
 {
   BVH_Triangulation<double, 3> aTriangulation;
 
@@ -287,7 +294,8 @@ opencascade::handle<BVH_Tree<double, 3>> CreateSimpleTriangulationBVH(int theNum
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 2.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   opencascade::handle<BVH_Tree<double, 3>> aBVH = new BVH_Tree<double, 3>;
@@ -306,7 +314,7 @@ TEST(BVH_TraverseTest, CountAllElements)
   opencascade::handle<BVH_Tree<double, 3>> aBVH = CreateSimpleTriangulationBVH(10);
 
   BVH_CountAllElements aSelector;
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 10);
   EXPECT_EQ(aSelector.AcceptedCount(), 10);
@@ -317,7 +325,7 @@ TEST(BVH_TraverseTest, EmptyTree)
   opencascade::handle<BVH_Tree<double, 3>> aBVH = new BVH_Tree<double, 3>;
 
   BVH_CountAllElements aSelector;
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -327,7 +335,7 @@ TEST(BVH_TraverseTest, NullTree)
   opencascade::handle<BVH_Tree<double, 3>> aBVH;
 
   BVH_CountAllElements aSelector;
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -338,8 +346,8 @@ TEST(BVH_TraverseTest, BoxSelection)
 
   // Select elements in the first half
   BVH_Box<double, 3> aBox(BVH_Vec3d(0.0, 0.0, -1.0), BVH_Vec3d(10.0, 2.0, 1.0));
-  BVH_BoxSelector    aSelector(aBox);
-  int                aCount = aSelector.Select(aBVH);
+  BVH_BoxSelector           aSelector(aBox);
+  int          aCount = aSelector.Select(aBVH);
 
   // Should select approximately half of the elements
   EXPECT_GT(aCount, 0);
@@ -352,8 +360,8 @@ TEST(BVH_TraverseTest, EmptyBoxSelection)
 
   // Select with box that doesn't intersect any elements
   BVH_Box<double, 3> aBox(BVH_Vec3d(100.0, 100.0, 100.0), BVH_Vec3d(200.0, 200.0, 200.0));
-  BVH_BoxSelector    aSelector(aBox);
-  int                aCount = aSelector.Select(aBVH);
+  BVH_BoxSelector           aSelector(aBox);
+  int          aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -364,8 +372,8 @@ TEST(BVH_TraverseTest, FullBoxSelection)
 
   // Select with box that contains all elements
   BVH_Box<double, 3> aBox(BVH_Vec3d(-100.0, -100.0, -100.0), BVH_Vec3d(100.0, 100.0, 100.0));
-  BVH_BoxSelector    aSelector(aBox);
-  int                aCount = aSelector.Select(aBVH);
+  BVH_BoxSelector           aSelector(aBox);
+  int          aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 10);
 }
@@ -376,9 +384,9 @@ TEST(BVH_TraverseTest, DistanceBasedSelection)
 
   // Find elements near a point
   BVH_Vec3d            aPoint(5.0, 0.5, 0.0);
-  double               aMaxDist = 5.0;
+  double        aMaxDist = 5.0;
   BVH_DistanceSelector aSelector(aPoint, aMaxDist);
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_GT(aCount, 0);
   EXPECT_LE(aCount, 10);
@@ -392,7 +400,7 @@ TEST(BVH_TraverseTest, EarlyTermination)
 
   // Stop after finding 5 elements
   BVH_LimitedSelector aSelector(5);
-  int                 aCount = aSelector.Select(aBVH);
+  int    aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 5);
   EXPECT_EQ(aSelector.AcceptedCount(), 5);
@@ -403,7 +411,7 @@ TEST(BVH_TraverseTest, LargeDataSet)
   opencascade::handle<BVH_Tree<double, 3>> aBVH = CreateSimpleTriangulationBVH(1000);
 
   BVH_CountAllElements aSelector;
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 1000);
 }
@@ -414,9 +422,9 @@ TEST(BVH_TraverseTest, MetricBasedPruning)
 
   // Very restrictive distance should result in few acceptances
   BVH_Vec3d            aPoint(1000.0, 1000.0, 1000.0); // Far away
-  double               aMaxDist = 1.0;                 // Small radius
+  double        aMaxDist = 1.0;                 // Small radius
   BVH_DistanceSelector aSelector(aPoint, aMaxDist);
-  int                  aCount = aSelector.Select(aBVH);
+  int     aCount = aSelector.Select(aBVH);
 
   EXPECT_EQ(aCount, 0); // Nothing should be within range
 }
@@ -447,7 +455,8 @@ TEST(BVH_PairTraverseTest, TriangulationBoxVerification)
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri1.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri1.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   for (int i = 0; i < 3; ++i)
@@ -456,7 +465,8 @@ TEST(BVH_PairTraverseTest, TriangulationBoxVerification)
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri2.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri2.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   // Mark as dirty to force bounding box computation
@@ -494,7 +504,8 @@ TEST(BVH_PairTraverseTest, BVHRootBoxVerification)
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri1.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri1.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   for (int i = 0; i < 3; ++i)
@@ -503,7 +514,8 @@ TEST(BVH_PairTraverseTest, BVHRootBoxVerification)
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri2.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri2.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   aTri1.MarkDirty();
@@ -548,7 +560,7 @@ TEST(BVH_PairTraverseTest, CountAllPairs)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2 = CreateSimpleTriangulationBVH(5);
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 25); // 5 x 5 pairs
 }
@@ -559,7 +571,7 @@ TEST(BVH_PairTraverseTest, EmptyFirstTree)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2 = CreateSimpleTriangulationBVH(5);
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -570,7 +582,7 @@ TEST(BVH_PairTraverseTest, EmptySecondTree)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2 = new BVH_Tree<double, 3>;
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -581,7 +593,7 @@ TEST(BVH_PairTraverseTest, NullTrees)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2;
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 0);
 }
@@ -591,7 +603,7 @@ TEST(BVH_PairTraverseTest, OverlapDetection_SameTrees)
   opencascade::handle<BVH_Tree<double, 3>> aBVH = CreateSimpleTriangulationBVH(10);
 
   BVH_OverlapDetector aSelector;
-  int                 aCount = aSelector.Select(aBVH, aBVH);
+  int    aCount = aSelector.Select(aBVH, aBVH);
 
   // Self-overlap: all 10 elements overlap with themselves
   EXPECT_GE(aCount, 10);
@@ -609,7 +621,8 @@ TEST(BVH_PairTraverseTest, OverlapDetection_NonOverlapping)
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri1.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri1.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri1.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   // Second triangulation at x=100..105 (far away)
@@ -619,7 +632,8 @@ TEST(BVH_PairTraverseTest, OverlapDetection_NonOverlapping)
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTri2.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTri2.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTri2.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   // Mark as dirty to force bounding box computation
@@ -634,7 +648,7 @@ TEST(BVH_PairTraverseTest, OverlapDetection_NonOverlapping)
   aBuilder.Build(&aTri2, aBVH2.get(), aTri2.Box());
 
   BVH_OverlapDetector aSelector;
-  int                 aCount = aSelector.Select(aBVH1, aBVH2);
+  int    aCount = aSelector.Select(aBVH1, aBVH2);
 
   // Debug: Check how many times RejectNode was called
   // If it's 0, RejectNode is not being called at all
@@ -652,7 +666,7 @@ TEST(BVH_PairTraverseTest, AsymmetricPairs)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2 = CreateSimpleTriangulationBVH(7);
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 21); // 3 x 7 pairs
 }
@@ -663,7 +677,7 @@ TEST(BVH_PairTraverseTest, LargeDataSets)
   opencascade::handle<BVH_Tree<double, 3>> aBVH2 = CreateSimpleTriangulationBVH(50);
 
   BVH_CountAllPairs aSelector;
-  int               aCount = aSelector.Select(aBVH1, aBVH2);
+  int  aCount = aSelector.Select(aBVH1, aBVH2);
 
   EXPECT_EQ(aCount, 2500); // 50 x 50 pairs
 }

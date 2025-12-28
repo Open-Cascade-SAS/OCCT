@@ -32,10 +32,10 @@ public:
   Standard_EXPORT StepGeom_SurfacePatch();
 
   Standard_EXPORT void Init(const occ::handle<StepGeom_BoundedSurface>& aParentSurface,
-                            const StepGeom_TransitionCode               aUTransition,
-                            const StepGeom_TransitionCode               aVTransition,
-                            const bool                                  aUSense,
-                            const bool                                  aVSense);
+                            const StepGeom_TransitionCode          aUTransition,
+                            const StepGeom_TransitionCode          aVTransition,
+                            const bool                 aUSense,
+                            const bool                 aVSense);
 
   Standard_EXPORT void SetParentSurface(const occ::handle<StepGeom_BoundedSurface>& aParentSurface);
 
@@ -61,10 +61,10 @@ public:
 
 private:
   occ::handle<StepGeom_BoundedSurface> parentSurface;
-  StepGeom_TransitionCode              uTransition;
-  StepGeom_TransitionCode              vTransition;
-  bool                                 uSense;
-  bool                                 vSense;
+  StepGeom_TransitionCode         uTransition;
+  StepGeom_TransitionCode         vTransition;
+  bool                uSense;
+  bool                vSense;
 };
 
 #endif // _StepGeom_SurfacePatch_HeaderFile

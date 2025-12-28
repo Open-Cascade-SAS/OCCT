@@ -35,7 +35,8 @@ void Message_AttributeStream::SetStream(const Standard_SStream& theStream)
 
 //=================================================================================================
 
-void Message_AttributeStream::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Message_AttributeStream::DumpJson(Standard_OStream& theOStream,
+                                       int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Message_Attribute)

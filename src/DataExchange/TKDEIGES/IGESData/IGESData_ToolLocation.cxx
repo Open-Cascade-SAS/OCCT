@@ -61,7 +61,7 @@ void IGESData_ToolLocation::Load()
     if (ent->IsKind(STANDARD_TYPE(IGESData_SingleParentEntity)))
     {
       DeclareAndCast(IGESData_SingleParentEntity, assoc, ent);
-      int                              nbc    = assoc->NbChildren();
+      int            nbc    = assoc->NbChildren();
       occ::handle<IGESData_IGESEntity> parent = assoc->SingleParent();
       for (int j = 1; j <= nbc; j++)
         SetParentAssoc(parent, assoc->Child(j));
@@ -114,12 +114,12 @@ void IGESData_ToolLocation::ResetDependences(const occ::handle<IGESData_IGESEnti
 
 void IGESData_ToolLocation::SetOwnAsDependent(const occ::handle<IGESData_IGESEntity>& ent)
 {
-  int                                  CN;
+  int                CN;
   occ::handle<Interface_GeneralModule> gmodule;
   if (!thelib.Select(ent, gmodule, CN))
     return;
   occ::handle<IGESData_GeneralModule> module = occ::down_cast<IGESData_GeneralModule>(gmodule);
-  Interface_EntityIterator            list;
+  Interface_EntityIterator       list;
   module->OwnSharedCase(CN, ent, list);
   // Remark : strictly speaking, we should ignore the referenced entities
   // whose SubordinateStatus is 0 or 2 ...
@@ -136,7 +136,8 @@ bool IGESData_ToolLocation::IsTransf(const occ::handle<IGESData_IGESEntity>& ent
   return ent->IsKind(STANDARD_TYPE(IGESData_TransfEntity));
 }
 
-bool IGESData_ToolLocation::IsAssociativity(const occ::handle<IGESData_IGESEntity>& ent) const
+bool IGESData_ToolLocation::IsAssociativity(
+  const occ::handle<IGESData_IGESEntity>& ent) const
 {
   return (ent->TypeNumber() == TYPEFORASSOC);
 }
@@ -181,7 +182,7 @@ occ::handle<IGESData_IGESEntity> IGESData_ToolLocation::Parent(
   const occ::handle<IGESData_IGESEntity>& ent) const
 {
   occ::handle<IGESData_IGESEntity> parent;
-  int                              num = themodel->Number(ent);
+  int            num = themodel->Number(ent);
   if (num == 0)
     return parent;
   if (therefs(num) < 0 || theassocs(num) < 0)
@@ -212,7 +213,7 @@ bool IGESData_ToolLocation::HasParentByAssociativity(
 
 gp_GTrsf IGESData_ToolLocation::ParentLocation(const occ::handle<IGESData_IGESEntity>& ent) const
 {
-  gp_GTrsf                         locat; // by default, identity
+  gp_GTrsf                    locat; // by default, identity
   occ::handle<IGESData_IGESEntity> parent = Parent(ent);
   // Definition recursive
   if (!parent.IsNull())
@@ -233,10 +234,10 @@ bool IGESData_ToolLocation::AnalyseLocation(const gp_GTrsf& loc, gp_Trsf& result
   return ConvertLocation(theprec, loc, result);
 }
 
-bool IGESData_ToolLocation::ConvertLocation(const double    prec,
-                                            const gp_GTrsf& loc,
-                                            gp_Trsf&        result,
-                                            const double    unit)
+bool IGESData_ToolLocation::ConvertLocation(const double prec,
+                                                        const gp_GTrsf&     loc,
+                                                        gp_Trsf&            result,
+                                                        const double unit)
 {
   if (result.Form() != gp_Identity)
     result = gp_Trsf(); // Identity forced at start

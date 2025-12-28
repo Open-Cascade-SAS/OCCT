@@ -35,7 +35,8 @@ public:
 
 protected:
   //! Returns size of cell to be used by acceleration circles grid structure.
-  virtual std::pair<int, int> getCellsCount(const int /*theVerticesNb*/)
+  virtual std::pair<int, int> getCellsCount(
+    const int /*theVerticesNb*/)
   {
     return std::pair<int, int>(-1, -1);
   }

@@ -47,7 +47,7 @@ protected:
   TopoDS_Shape MakeSphere(double radius) { return BRepPrimAPI_MakeSphere(radius).Shape(); }
 
   occ::handle<TDF_Data> myData;
-  TDF_Label             myRoot;
+  TDF_Label        myRoot;
 };
 
 // Test TNaming_Tool::GetShape with primitive evolution
@@ -256,8 +256,8 @@ TEST_F(TNaming_ToolTest, Label_RetrieveLabel)
   aBuilder.Generated(aBox);
 
   // Test Label retrieval
-  int       aTransDef       = 0;
-  TDF_Label aRetrievedLabel = TNaming_Tool::Label(aLabel, aBox, aTransDef);
+  int aTransDef       = 0;
+  TDF_Label        aRetrievedLabel = TNaming_Tool::Label(aLabel, aBox, aTransDef);
 
   EXPECT_FALSE(aRetrievedLabel.IsNull());
   EXPECT_TRUE(aRetrievedLabel.IsEqual(aLabel));
@@ -406,7 +406,7 @@ TEST_F(TNaming_ToolTest, NamedShape_MissingUsedShapes)
 {
   // Create a new TDF document without UsedShapes
   occ::handle<TDF_Data> aDataWithoutUS = new TDF_Data();
-  TDF_Label             aRootWithoutUS = aDataWithoutUS->Root();
+  TDF_Label        aRootWithoutUS = aDataWithoutUS->Root();
 
   // Create a box shape
   TopoDS_Shape aBox = MakeBox(10.0, 20.0, 30.0);

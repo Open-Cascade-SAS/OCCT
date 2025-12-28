@@ -59,25 +59,25 @@ ShapeAnalysis_Edge::ShapeAnalysis_Edge()
 //=================================================================================================
 
 bool ShapeAnalysis_Edge::BoundUV(const TopoDS_Edge& edge,
-                                 const TopoDS_Face& face,
-                                 gp_Pnt2d&          first,
-                                 gp_Pnt2d&          last) const
+                                             const TopoDS_Face& face,
+                                             gp_Pnt2d&          first,
+                                             gp_Pnt2d&          last) const
 {
-  TopLoc_Location                 L;
+  TopLoc_Location            L;
   const occ::handle<Geom_Surface> S = BRep_Tool::Surface(face, L);
   return BoundUV(edge, S, L, first, last);
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::BoundUV(const TopoDS_Edge&               edge,
-                                 const occ::handle<Geom_Surface>& surface,
-                                 const TopLoc_Location&           location,
-                                 gp_Pnt2d&                        first,
-                                 gp_Pnt2d&                        last) const
+bool ShapeAnalysis_Edge::BoundUV(const TopoDS_Edge&          edge,
+                                             const occ::handle<Geom_Surface>& surface,
+                                             const TopLoc_Location&      location,
+                                             gp_Pnt2d&                   first,
+                                             gp_Pnt2d&                   last) const
 {
   occ::handle<Geom2d_Curve> c2d;
-  double                    uf, ul;
+  double        uf, ul;
   if (!PCurve(edge, surface, location, c2d, uf, ul))
     return false;
   first = c2d->Value(uf);
@@ -89,18 +89,18 @@ bool ShapeAnalysis_Edge::BoundUV(const TopoDS_Edge&               edge,
 
 bool ShapeAnalysis_Edge::HasCurve3d(const TopoDS_Edge& edge) const
 {
-  double                  cf, cl;
+  double      cf, cl;
   occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, cf, cl);
   return !c3d.IsNull();
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::Curve3d(const TopoDS_Edge&       edge,
-                                 occ::handle<Geom_Curve>& C3d,
-                                 double&                  cf,
-                                 double&                  cl,
-                                 const bool               orient) const
+bool ShapeAnalysis_Edge::Curve3d(const TopoDS_Edge&     edge,
+                                             occ::handle<Geom_Curve>&    C3d,
+                                             double&         cf,
+                                             double&         cl,
+                                             const bool orient) const
 {
   TopLoc_Location L;
   C3d = BRep_Tool::Curve(edge, L, cf, cl);
@@ -115,8 +115,8 @@ bool ShapeAnalysis_Edge::Curve3d(const TopoDS_Edge&       edge,
     if (edge.Orientation() == TopAbs_REVERSED)
     {
       double tmp = cf;
-      cf         = cl;
-      cl         = tmp;
+      cf                = cl;
+      cl                = tmp;
     }
   }
   return !C3d.IsNull();
@@ -126,7 +126,7 @@ bool ShapeAnalysis_Edge::Curve3d(const TopoDS_Edge&       edge,
 
 bool ShapeAnalysis_Edge::IsClosed3d(const TopoDS_Edge& edge) const
 {
-  double                  cf, cl;
+  double      cf, cl;
   occ::handle<Geom_Curve> c3d = BRep_Tool::Curve(edge, cf, cl);
   if (c3d.IsNull())
     return false;
@@ -137,21 +137,22 @@ bool ShapeAnalysis_Edge::IsClosed3d(const TopoDS_Edge& edge) const
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::HasPCurve(const TopoDS_Edge& edge, const TopoDS_Face& face) const
+bool ShapeAnalysis_Edge::HasPCurve(const TopoDS_Edge& edge,
+                                               const TopoDS_Face& face) const
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return HasPCurve(edge, S, L);
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::HasPCurve(const TopoDS_Edge&               edge,
-                                   const occ::handle<Geom_Surface>& surface,
-                                   const TopLoc_Location&           location) const
+bool ShapeAnalysis_Edge::HasPCurve(const TopoDS_Edge&          edge,
+                                               const occ::handle<Geom_Surface>& surface,
+                                               const TopLoc_Location&      location) const
 {
   // try { //szv#4:S4163:12Mar99 waste try
-  double                    cf, cl;
+  double        cf, cl;
   occ::handle<Geom2d_Curve> c2d = BRep_Tool::CurveOnSurface(edge, surface, location, cf, cl);
   return !c2d.IsNull();
   /* }
@@ -162,12 +163,12 @@ bool ShapeAnalysis_Edge::HasPCurve(const TopoDS_Edge&               edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::PCurve(const TopoDS_Edge&         edge,
-                                const TopoDS_Face&         face,
-                                occ::handle<Geom2d_Curve>& C2d,
-                                double&                    cf,
-                                double&                    cl,
-                                const bool                 orient) const
+bool ShapeAnalysis_Edge::PCurve(const TopoDS_Edge&     edge,
+                                            const TopoDS_Face&     face,
+                                            occ::handle<Geom2d_Curve>&  C2d,
+                                            double&         cf,
+                                            double&         cl,
+                                            const bool orient) const
 {
   //: abv 20.05.02: take into account face orientation
   // COMMENTED BACK - NEEDS MORE CHANGES IN ALL SHAPEHEALING
@@ -176,27 +177,27 @@ bool ShapeAnalysis_Edge::PCurve(const TopoDS_Edge&         edge,
   //     double tmp = cf; cf = cl; cl = tmp;
   //   }
   //   return !C2d.IsNull();
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return PCurve(edge, S, L, C2d, cf, cl, orient);
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::PCurve(const TopoDS_Edge&               edge,
-                                const occ::handle<Geom_Surface>& surface,
-                                const TopLoc_Location&           location,
-                                occ::handle<Geom2d_Curve>&       C2d,
-                                double&                          cf,
-                                double&                          cl,
-                                const bool                       orient) const
+bool ShapeAnalysis_Edge::PCurve(const TopoDS_Edge&          edge,
+                                            const occ::handle<Geom_Surface>& surface,
+                                            const TopLoc_Location&      location,
+                                            occ::handle<Geom2d_Curve>&       C2d,
+                                            double&              cf,
+                                            double&              cl,
+                                            const bool      orient) const
 {
   C2d = BRep_Tool::CurveOnSurface(edge, surface, location, cf, cl);
   if (orient && edge.Orientation() == TopAbs_REVERSED)
   {
     double tmp = cf;
-    cf         = cl;
-    cl         = tmp;
+    cf                = cl;
+    cl                = tmp;
   }
   return !C2d.IsNull();
 }
@@ -210,9 +211,9 @@ bool ShapeAnalysis_Edge::IsSeam(const TopoDS_Edge& edge, const TopoDS_Face& face
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::IsSeam(const TopoDS_Edge&               edge,
-                                const occ::handle<Geom_Surface>& surface,
-                                const TopLoc_Location&           location) const
+bool ShapeAnalysis_Edge::IsSeam(const TopoDS_Edge&          edge,
+                                            const occ::handle<Geom_Surface>& surface,
+                                            const TopLoc_Location&      location) const
 {
   return BRep_Tool::IsClosed(edge, surface, location);
 }
@@ -260,29 +261,31 @@ bool ShapeAnalysis_Edge::Status(const ShapeExtend_Status Status) const
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::GetEndTangent2d(const TopoDS_Edge& edge,
-                                         const TopoDS_Face& face,
-                                         const bool   atend1, /* skl : change "atend" to "atend1" */
-                                         gp_Pnt2d&    pnt,
-                                         gp_Vec2d&    v,
-                                         const double dparam) const
+bool ShapeAnalysis_Edge::GetEndTangent2d(
+  const TopoDS_Edge&     edge,
+  const TopoDS_Face&     face,
+  const bool atend1, /* skl : change "atend" to "atend1" */
+  gp_Pnt2d&              pnt,
+  gp_Vec2d&              v,
+  const double    dparam) const
 {
-  TopLoc_Location                 L;
+  TopLoc_Location            L;
   const occ::handle<Geom_Surface> S = BRep_Tool::Surface(face, L);
   return GetEndTangent2d(edge, S, L, atend1, pnt, v, dparam);
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::GetEndTangent2d(const TopoDS_Edge&               edge,
-                                         const occ::handle<Geom_Surface>& S,
-                                         const TopLoc_Location&           L,
-                                         const bool   atend2, /* skl : change "atend" to "atend2" */
-                                         gp_Pnt2d&    pnt,
-                                         gp_Vec2d&    v,
-                                         const double dparam) const
+bool ShapeAnalysis_Edge::GetEndTangent2d(
+  const TopoDS_Edge&          edge,
+  const occ::handle<Geom_Surface>& S,
+  const TopLoc_Location&      L,
+  const bool      atend2, /* skl : change "atend" to "atend2" */
+  gp_Pnt2d&                   pnt,
+  gp_Vec2d&                   v,
+  const double         dparam) const
 {
-  double                    cf, cl;
+  double        cf, cl;
   occ::handle<Geom2d_Curve> c2d;
   if (!PCurve(edge, S, L, c2d, cf, cl))
   {
@@ -293,8 +296,8 @@ bool ShapeAnalysis_Edge::GetEndTangent2d(const TopoDS_Edge&               edge,
 
   if (dpnew > Precision::Confusion())
   {
-    gp_Pnt2d ptmp;
-    double   par1, par2, delta = (cl - cf) * dpnew;
+    gp_Pnt2d      ptmp;
+    double par1, par2, delta = (cl - cf) * dpnew;
     if (std::abs(delta) < Precision::PConfusion())
     {
       dpnew = 0.0;
@@ -357,18 +360,19 @@ bool ShapeAnalysis_Edge::GetEndTangent2d(const TopoDS_Edge&               edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge& edge, const TopoDS_Face& face)
+bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge& edge,
+                                                            const TopoDS_Face& face)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   return CheckCurve3dWithPCurve(edge, S, L);
 }
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&               edge,
-                                                const occ::handle<Geom_Surface>& surface,
-                                                const TopLoc_Location&           location)
+bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&          edge,
+                                                            const occ::handle<Geom_Surface>& surface,
+                                                            const TopLoc_Location&      location)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -376,7 +380,7 @@ bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&              
     return false;
 
   occ::handle<Geom2d_Curve> c2d;
-  double                    f2d, l2d; // szv#4:S4163:12Mar99 moved down f3d, l3d
+  double        f2d, l2d; // szv#4:S4163:12Mar99 moved down f3d, l3d
   if (!PCurve(edge, surface, location, c2d, f2d, l2d, false))
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL1);
@@ -384,7 +388,7 @@ bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&              
   }
 
   occ::handle<Geom_Curve> c3d;      // szv#4:S4163:12Mar99 moved
-  double                  f3d, l3d; // szv#4:S4163:12Mar99 moved
+  double      f3d, l3d; // szv#4:S4163:12Mar99 moved
   if (!Curve3d(edge, c3d, f3d, l3d, false))
   {
     myStatus |= ShapeExtend::EncodeStatus(ShapeExtend_FAIL2);
@@ -412,12 +416,12 @@ bool ShapeAnalysis_Edge::CheckCurve3dWithPCurve(const TopoDS_Edge&              
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckPoints(const gp_Pnt& P1A,
-                                     const gp_Pnt& P1B,
-                                     const gp_Pnt& P2A,
-                                     const gp_Pnt& P2B,
-                                     const double  preci1,
-                                     const double  preci2)
+bool ShapeAnalysis_Edge::CheckPoints(const gp_Pnt&       P1A,
+                                                 const gp_Pnt&       P1B,
+                                                 const gp_Pnt&       P2A,
+                                                 const gp_Pnt&       P2B,
+                                                 const double preci1,
+                                                 const double preci2)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (P1A.SquareDistance(P2A) <= preci1 * preci1 && P1B.SquareDistance(P2B) <= preci2 * preci2)
@@ -429,9 +433,9 @@ bool ShapeAnalysis_Edge::CheckPoints(const gp_Pnt& P1A,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge& edge,
-                                                  const double       preci,
-                                                  const int          vtx)
+bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge&     edge,
+                                                              const double    preci,
+                                                              const int vtx)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -440,7 +444,7 @@ bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge& edge,
   gp_Pnt        p1v = BRep_Tool::Pnt(V1);
   gp_Pnt        p2v = BRep_Tool::Pnt(V2);
 
-  double                  cf, cl;
+  double      cf, cl;
   occ::handle<Geom_Curve> c3d;
   if (!Curve3d(edge, c3d, cf, cl))
   {
@@ -472,12 +476,12 @@ bool ShapeAnalysis_Edge::CheckVerticesWithCurve3d(const TopoDS_Edge& edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge& edge,
-                                                 const TopoDS_Face& face,
-                                                 const double       preci,
-                                                 const int          vtx)
+bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&     edge,
+                                                             const TopoDS_Face&     face,
+                                                             const double    preci,
+                                                             const int vtx)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
   // clang-format off
   return CheckVerticesWithPCurve (edge, S, L, preci, vtx); //szv#4:S4163:12Mar99 `vtx,preci` wrong parameters order
@@ -486,11 +490,11 @@ bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge& edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&               edge,
-                                                 const occ::handle<Geom_Surface>& surf,
-                                                 const TopLoc_Location&           loc,
-                                                 const double                     preci,
-                                                 const int                        vtx)
+bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&          edge,
+                                                             const occ::handle<Geom_Surface>& surf,
+                                                             const TopLoc_Location&      loc,
+                                                             const double         preci,
+                                                             const int      vtx)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -499,7 +503,7 @@ bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&             
   gp_Pnt        p1v = BRep_Tool::Pnt(V1);
   gp_Pnt        p2v = BRep_Tool::Pnt(V2);
 
-  double                    cf, cl;
+  double        cf, cl;
   occ::handle<Geom2d_Curve> c2d;
   if (!PCurve(edge, surf, loc, c2d, cf, cl))
   {
@@ -535,11 +539,11 @@ bool ShapeAnalysis_Edge::CheckVerticesWithPCurve(const TopoDS_Edge&             
 
 //=================================================================================================
 
-static int CheckVertexTolerance(const TopoDS_Edge& edge,
-                                const TopoDS_Face& face,
-                                const bool         checkAll,
-                                double&            toler1,
-                                double&            toler2)
+static int CheckVertexTolerance(const TopoDS_Edge&     edge,
+                                             const TopoDS_Face&     face,
+                                             const bool checkAll,
+                                             double&         toler1,
+                                             double&         toler2)
 {
   int Status = ShapeExtend::EncodeStatus(ShapeExtend_OK);
 
@@ -554,10 +558,10 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
 
   double old1 = BRep_Tool::Tolerance(V1);
   double old2 = BRep_Tool::Tolerance(V2);
-  gp_Pnt pnt1 = BRep_Tool::Pnt(V1);
-  gp_Pnt pnt2 = BRep_Tool::Pnt(V2);
+  gp_Pnt        pnt1 = BRep_Tool::Pnt(V1);
+  gp_Pnt        pnt2 = BRep_Tool::Pnt(V2);
 
-  double                  a, b;
+  double      a, b;
   occ::handle<Geom_Curve> c3d;
   if (!sae.Curve3d(edge, c3d, a, b, true))
   {
@@ -575,16 +579,14 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
   if (checkAll)
   {
     occ::handle<BRep_TEdge>& TE = *((occ::handle<BRep_TEdge>*)&edge.TShape());
-    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
-         itcr.More();
-         itcr.Next())
+    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves()); itcr.More(); itcr.Next())
     {
       occ::handle<BRep_GCurve> GC = occ::down_cast<BRep_GCurve>(itcr.Value());
       if (GC.IsNull() || !GC->IsCurveOnSurface())
         continue;
       occ::handle<Geom2d_Curve> pcurve;
       occ::handle<Geom_Surface> S = GC->Surface();
-      TopLoc_Location           L = edge.Location() * GC->Location();
+      TopLoc_Location      L = edge.Location() * GC->Location();
       sae.PCurve(edge, S, L, pcurve, a, b, true);
       gp_Pnt2d p1 = pcurve->Value(a);
       gp_Pnt2d p2 = pcurve->Value(b);
@@ -599,7 +601,7 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
   else if (!face.IsNull())
   {
     occ::handle<Geom2d_Curve>        pcurve;
-    TopLoc_Location                  L;
+    TopLoc_Location             L;
     const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(face, L);
     if (sae.PCurve(edge, S, L, pcurve, a, b, true))
     {
@@ -617,8 +619,8 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
   //: o8 abv 19 Feb 99: CTS18541.stp #18559: coeff 1.0001 added
   // szv 18 Aug 99: edge tolerance is taken in consideration
   double tole = BRep_Tool::Tolerance(edge);
-  toler1      = std::max(1.0000001 * std::sqrt(toler1), tole);
-  toler2      = std::max(1.0000001 * std::sqrt(toler2), tole);
+  toler1             = std::max(1.0000001 * std::sqrt(toler1), tole);
+  toler2             = std::max(1.0000001 * std::sqrt(toler2), tole);
   if (toler1 > old1)
     Status |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
   if (toler2 > old2)
@@ -630,9 +632,9 @@ static int CheckVertexTolerance(const TopoDS_Edge& edge,
 //=================================================================================================
 
 bool ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edge,
-                                              const TopoDS_Face& face,
-                                              double&            toler1,
-                                              double&            toler2)
+                                                          const TopoDS_Face& face,
+                                                          double&     toler1,
+                                                          double&     toler2)
 {
   myStatus = ::CheckVertexTolerance(edge, face, false, toler1, toler2);
   return Status(ShapeExtend_DONE);
@@ -641,8 +643,8 @@ bool ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edge,
 //=================================================================================================
 
 bool ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edge,
-                                              double&            toler1,
-                                              double&            toler2)
+                                                          double&     toler1,
+                                                          double&     toler2)
 {
   TopoDS_Face F;
   myStatus = ::CheckVertexTolerance(edge, F, true, toler1, toler2);
@@ -651,9 +653,9 @@ bool ShapeAnalysis_Edge::CheckVertexTolerance(const TopoDS_Edge& edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
-                                            double&            maxdev,
-                                            const int          NbControl)
+bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge&     edge,
+                                                        double&         maxdev,
+                                                        const int NbControl)
 {
   TopoDS_Face anEmptyFace;
   return CheckSameParameter(edge, anEmptyFace, maxdev, NbControl);
@@ -661,10 +663,10 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
-                                            const TopoDS_Face& face,
-                                            double&            maxdev,
-                                            const int          NbControl)
+bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge&     edge,
+                                                        const TopoDS_Face&     face,
+                                                        double&         maxdev,
+                                                        const int NbControl)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (BRep_Tool::Degenerated(edge))
@@ -674,11 +676,11 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
 
   // Get same parameter flag
   occ::handle<BRep_TEdge>& TE            = *((occ::handle<BRep_TEdge>*)&edge.TShape());
-  bool                     SameParameter = TE->SameParameter();
+  bool    SameParameter = TE->SameParameter();
 
   // Get 3D curve of the edge
-  double                  aFirst, aLast;
-  TopLoc_Location         aCurveLoc;
+  double      aFirst, aLast;
+  TopLoc_Location    aCurveLoc;
   occ::handle<Geom_Curve> aC3D = BRep_Tool::Curve(edge, aCurveLoc, aFirst, aLast);
   if (aC3D.IsNull())
   {
@@ -698,20 +700,20 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
   occ::handle<GeomAdaptor_Curve> aGAC = new GeomAdaptor_Curve(aC3D, aFirst, aLast);
 
   occ::handle<Geom_Surface> aFaceSurf;
-  TopLoc_Location           aFaceLoc;
+  TopLoc_Location      aFaceLoc;
   if (!face.IsNull())
     aFaceSurf = BRep_Tool::Surface(face, aFaceLoc);
 
   bool IsPCurveFound = false;
-  int  i             = 1;
+  int i             = 1;
 
   // Iterate on all curve representations
   for (;;)
   {
     occ::handle<Geom2d_Curve> aPC;
     occ::handle<Geom_Surface> aS;
-    TopLoc_Location           aLoc;
-    double                    f, l;
+    TopLoc_Location      aLoc;
+    double        f, l;
 
     BRep_Tool::CurveOnSurface(edge, aPC, aS, aLoc, f, l, i);
 
@@ -756,7 +758,7 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
   // check the deviation for the projection of the 3d curve on plane
   if (!IsPCurveFound && !aFaceSurf.IsNull())
   {
-    double                    f, l;
+    double        f, l;
     occ::handle<Geom2d_Curve> aPC = BRep_Tool::CurveOnPlane(edge, aFaceSurf, aFaceLoc, f, l);
     if (!aPC.IsNull())
     {
@@ -789,12 +791,12 @@ bool ShapeAnalysis_Edge::CheckSameParameter(const TopoDS_Edge& edge,
 
 //=================================================================================================
 
-static bool IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
-                               const TopoDS_Edge& theSecEdge,
-                               const double&      theTolerance,
-                               const double&      theStep,
-                               const double&      theStartLength,
-                               const double&      theEndLength)
+static bool IsOverlapPartEdges(const TopoDS_Edge&   theFirstEdge,
+                                           const TopoDS_Edge&   theSecEdge,
+                                           const double& theTolerance,
+                                           const double& theStep,
+                                           const double& theStartLength,
+                                           const double& theEndLength)
 {
   NCollection_Sequence<int> aSeqIntervals;
   BRepAdaptor_Curve         aAdCurve1(theFirstEdge);
@@ -835,23 +837,23 @@ static bool IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
-                                          const TopoDS_Edge& theEdge2,
-                                          double&            theTolOverlap,
-                                          const double       theDomainDist)
+bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge&  theEdge1,
+                                                      const TopoDS_Edge&  theEdge2,
+                                                      double&      theTolOverlap,
+                                                      const double theDomainDist)
 {
-  bool              isOverlap = false;
+  bool  isOverlap = false;
   BRepAdaptor_Curve aAdCurve1(theEdge1);
-  double            aLength1 = GCPnts_AbscissaPoint::Length(aAdCurve1);
+  double     aLength1 = GCPnts_AbscissaPoint::Length(aAdCurve1);
   BRepAdaptor_Curve aAdCurve2(theEdge2);
-  double            aLength2   = GCPnts_AbscissaPoint::Length(aAdCurve2);
+  double     aLength2   = GCPnts_AbscissaPoint::Length(aAdCurve2);
   TopoDS_Edge       aFirstEdge = (aLength1 >= aLength2 ? theEdge2 : theEdge1);
   TopoDS_Edge       aSecEdge   = (aLength1 >= aLength2 ? theEdge1 : theEdge2);
-  double            aLength    = std::min(aLength1, aLength2);
+  double     aLength    = std::min(aLength1, aLength2);
 
   // check overalpping between edges on whole edges
   double aStep = std::min(aLength1, aLength2) / 2;
-  isOverlap    = IsOverlapPartEdges(aFirstEdge,
+  isOverlap           = IsOverlapPartEdges(aFirstEdge,
                                  aSecEdge,
                                  theTolOverlap,
                                  aStep,
@@ -871,7 +873,7 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
   double aDomainTol =
     (theDomainDist > std::min(aLength1, aLength2) ? std::min(aLength1, aLength2) : theDomainDist);
   BRepExtrema_DistShapeShape aMinDist(aFirstEdge, aSecEdge, theTolOverlap);
-  double                     aresTol = theTolOverlap;
+  double              aresTol = theTolOverlap;
   if (aMinDist.IsDone())
   {
     aresTol = aMinDist.Value();
@@ -881,7 +883,7 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
     for (int i = 1; i <= NbSol && !isOverlap; i++)
     {
       BRepExtrema_SupportType aType1 = aMinDist.SupportTypeShape1(i);
-      double                  aEndLength, aStartLength, aLengthP;
+      double           aEndLength, aStartLength, aLengthP;
       if (aType1 == BRepExtrema_IsVertex)
       {
         TopoDS_Shape  aSupportShape1 = aMinDist.SupportOnShape1(i);
@@ -928,13 +930,13 @@ bool ShapeAnalysis_Edge::CheckOverlapping(const TopoDS_Edge& theEdge1,
 
 //=================================================================================================
 
-bool ShapeAnalysis_Edge::CheckPCurveRange(const double                     theFirst,
-                                          const double                     theLast,
-                                          const occ::handle<Geom2d_Curve>& thePC)
+bool ShapeAnalysis_Edge::CheckPCurveRange(const double         theFirst,
+                                                      const double         theLast,
+                                                      const occ::handle<Geom2d_Curve>& thePC)
 {
   constexpr double eps        = Precision::PConfusion();
-  bool             isValid    = true;
-  bool             IsPeriodic = thePC->IsPeriodic();
+  bool        isValid    = true;
+  bool        IsPeriodic = thePC->IsPeriodic();
   double           aPeriod    = RealLast();
   if (IsPeriodic)
   {
@@ -944,9 +946,9 @@ bool ShapeAnalysis_Edge::CheckPCurveRange(const double                     theFi
   if (thePC->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
     const occ::handle<Geom2d_Curve>& aC = occ::down_cast<Geom2d_TrimmedCurve>(thePC)->BasisCurve();
-    fp                                  = aC->FirstParameter();
-    lp                                  = aC->LastParameter();
-    IsPeriodic                          = aC->IsPeriodic();
+    fp                             = aC->FirstParameter();
+    lp                             = aC->LastParameter();
+    IsPeriodic                     = aC->IsPeriodic();
     if (IsPeriodic)
     {
       aPeriod = aC->Period();

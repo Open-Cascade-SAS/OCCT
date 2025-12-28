@@ -50,7 +50,9 @@ public:
   //! equal to the rowrange of A.
   //! Exception DimensionError is raised if the range of X is not
   //! equal to the colrange of A.
-  Standard_EXPORT void Solve(const math_Vector& B, math_Vector& X, const double Eps = 1.0e-6);
+  Standard_EXPORT void Solve(const math_Vector&  B,
+                             math_Vector&        X,
+                             const double Eps = 1.0e-6);
 
   //! Computes the inverse Inv of matrix A such as A * Inverse = Identity.
   //! Exceptions
@@ -64,11 +66,11 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool        Done;
-  math_Matrix U;
-  math_Matrix V;
-  math_Vector Diag;
-  int         RowA;
+  bool Done;
+  math_Matrix      U;
+  math_Matrix      V;
+  math_Vector      Diag;
+  int RowA;
 };
 
 #include <math_SVD.lxx>

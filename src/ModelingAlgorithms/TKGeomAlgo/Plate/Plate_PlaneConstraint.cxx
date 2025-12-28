@@ -19,10 +19,10 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_PlaneConstraint.hxx>
 
-Plate_PlaneConstraint::Plate_PlaneConstraint(const gp_XY&  point2d,
-                                             const gp_Pln& pln,
-                                             const int     iu,
-                                             const int     iv)
+Plate_PlaneConstraint::Plate_PlaneConstraint(const gp_XY&           point2d,
+                                             const gp_Pln&          pln,
+                                             const int iu,
+                                             const int iv)
     : myLSC(1, 1)
 {
   gp_XYZ point = pln.Location().XYZ();

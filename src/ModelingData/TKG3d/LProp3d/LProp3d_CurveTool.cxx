@@ -29,9 +29,9 @@ void LProp3d_CurveTool::Value(const occ::handle<Adaptor3d_Curve>& C, const doubl
 //=================================================================================================
 
 void LProp3d_CurveTool::D1(const occ::handle<Adaptor3d_Curve>& C,
-                           const double                        U,
-                           gp_Pnt&                             P,
-                           gp_Vec&                             V1)
+                           const double            U,
+                           gp_Pnt&                        P,
+                           gp_Vec&                        V1)
 {
   C->D1(U, P, V1);
 }
@@ -39,10 +39,10 @@ void LProp3d_CurveTool::D1(const occ::handle<Adaptor3d_Curve>& C,
 //=================================================================================================
 
 void LProp3d_CurveTool::D2(const occ::handle<Adaptor3d_Curve>& C,
-                           const double                        U,
-                           gp_Pnt&                             P,
-                           gp_Vec&                             V1,
-                           gp_Vec&                             V2)
+                           const double            U,
+                           gp_Pnt&                        P,
+                           gp_Vec&                        V1,
+                           gp_Vec&                        V2)
 {
   C->D2(U, P, V1, V2);
 }
@@ -50,11 +50,11 @@ void LProp3d_CurveTool::D2(const occ::handle<Adaptor3d_Curve>& C,
 //=================================================================================================
 
 void LProp3d_CurveTool::D3(const occ::handle<Adaptor3d_Curve>& C,
-                           const double                        U,
-                           gp_Pnt&                             P,
-                           gp_Vec&                             V1,
-                           gp_Vec&                             V2,
-                           gp_Vec&                             V3)
+                           const double            U,
+                           gp_Pnt&                        P,
+                           gp_Vec&                        V1,
+                           gp_Vec&                        V2,
+                           gp_Vec&                        V3)
 {
   C->D3(U, P, V1, V2, V3);
 }

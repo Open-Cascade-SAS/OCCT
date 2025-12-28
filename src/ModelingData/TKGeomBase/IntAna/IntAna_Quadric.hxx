@@ -79,32 +79,32 @@ public:
   //! Returns the coefficients of the polynomial equation
   //! ( written in the natural coordinates system )
   //! in the local coordinates system defined by Axis
-  Standard_EXPORT void NewCoefficients(double&       xCXX,
-                                       double&       xCYY,
-                                       double&       xCZZ,
-                                       double&       xCXY,
-                                       double&       xCXZ,
-                                       double&       xCYZ,
-                                       double&       xCX,
-                                       double&       xCY,
-                                       double&       xCZ,
-                                       double&       xCCte,
-                                       const gp_Ax3& Axis) const;
+  Standard_EXPORT void NewCoefficients(double& xCXX,
+                                       double& xCYY,
+                                       double& xCZZ,
+                                       double& xCXY,
+                                       double& xCXZ,
+                                       double& xCYZ,
+                                       double& xCX,
+                                       double& xCY,
+                                       double& xCZ,
+                                       double& xCCte,
+                                       const gp_Ax3&  Axis) const;
 
   //! Returns the list of special points (with singularities)
   const NCollection_List<gp_Pnt>& SpecialPoints() const { return mySpecialPoints; }
 
 private:
-  double                   CXX;
-  double                   CYY;
-  double                   CZZ;
-  double                   CXY;
-  double                   CXZ;
-  double                   CYZ;
-  double                   CX;
-  double                   CY;
-  double                   CZ;
-  double                   CCte;
+  double            CXX;
+  double            CYY;
+  double            CZZ;
+  double            CXY;
+  double            CXZ;
+  double            CYZ;
+  double            CX;
+  double            CY;
+  double            CZ;
+  double            CCte;
   NCollection_List<gp_Pnt> mySpecialPoints;
 };
 

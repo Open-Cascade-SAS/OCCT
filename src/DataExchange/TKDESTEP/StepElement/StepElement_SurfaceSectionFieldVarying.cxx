@@ -27,7 +27,7 @@ StepElement_SurfaceSectionFieldVarying::StepElement_SurfaceSectionFieldVarying()
 
 void StepElement_SurfaceSectionFieldVarying::Init(
   const occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>>& aDefinitions,
-  const bool aAdditionalNodeValues)
+  const bool                             aAdditionalNodeValues)
 {
   // StepElement_SurfaceSectionField::Init();
 
@@ -38,8 +38,8 @@ void StepElement_SurfaceSectionFieldVarying::Init(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>>
-  StepElement_SurfaceSectionFieldVarying::Definitions() const
+occ::handle<NCollection_HArray1<occ::handle<StepElement_SurfaceSection>>> StepElement_SurfaceSectionFieldVarying::Definitions()
+  const
 {
   return theDefinitions;
 }

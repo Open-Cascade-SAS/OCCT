@@ -21,7 +21,7 @@
 RWStepShape_RWOrientedPath::RWStepShape_RWOrientedPath() {}
 
 void RWStepShape_RWOrientedPath::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_OrientedPath>&  ent) const
 {
@@ -59,7 +59,7 @@ void RWStepShape_RWOrientedPath::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aPathElement, aOrientation);
 }
 
-void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                       SW,
+void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<StepShape_OrientedPath>& ent) const
 {
 
@@ -81,7 +81,7 @@ void RWStepShape_RWOrientedPath::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWOrientedPath::Share(const occ::handle<StepShape_OrientedPath>& ent,
-                                       Interface_EntityIterator&                  iter) const
+                                       Interface_EntityIterator&             iter) const
 {
 
   iter.GetOneItem(ent->PathElement());

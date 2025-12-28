@@ -26,6 +26,11 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Units_Unit.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_HSequence.hxx>
 class Units_UnitsSystem;
 class Units_UnitsDictionary;
 class TCollection_AsciiString;
@@ -52,13 +57,13 @@ public:
   //! the UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
   Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                                 const char*                           aquantity);
+                                 const char*           aquantity);
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsDictionary <aunitsdictionary> and positioned
   //! at the quantity <aquantity>.
   Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                                 const char*                               aquantity);
+                                 const char*               aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsSystem <aunitssystem>.
@@ -72,13 +77,13 @@ public:
   //! UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
   Standard_EXPORT void Init(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                            const char*                           aquantity);
+                            const char*           aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsDictionary <aunitsdictionary> and positioned at
   //! the quantity <aquantity>.
   Standard_EXPORT void Init(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                            const char*                               aquantity);
+                            const char*               aquantity);
 
   //! Returns True if there is another Quantity to explore,
   //! False otherwise.
@@ -109,11 +114,11 @@ public:
   Standard_EXPORT bool IsActive() const;
 
 private:
-  int                                                             thecurrentquantity{};
-  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> thequantitiessequence;
-  int                                                             thecurrentunit{};
-  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>     theunitssequence;
-  occ::handle<NCollection_HSequence<int>>                         theactiveunitssequence;
+  int                   thecurrentquantity{};
+  occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>   thequantitiessequence;
+  int                   thecurrentunit{};
+  occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>        theunitssequence;
+  occ::handle<NCollection_HSequence<int>> theactiveunitssequence;
 };
 
 #endif // _Units_Explorer_HeaderFile

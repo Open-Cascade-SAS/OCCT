@@ -37,6 +37,7 @@ public:
   Standard_EXPORT virtual bool SetName(const char* name) override;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_SizeMember, StepData_SelectReal)
+
 };
 
 #endif // _StepBasic_SizeMember_HeaderFile

@@ -71,8 +71,7 @@ void BinDrivers::DefineFormat(const occ::handle<TDocStd_Application>& theApp)
 
 //=================================================================================================
 
-occ::handle<BinMDF_ADriverTable> BinDrivers::AttributeDrivers(
-  const occ::handle<Message_Messenger>& aMsgDrv)
+occ::handle<BinMDF_ADriverTable> BinDrivers::AttributeDrivers(const occ::handle<Message_Messenger>& aMsgDrv)
 {
   occ::handle<BinMDF_ADriverTable> aTable = new BinMDF_ADriverTable;
 

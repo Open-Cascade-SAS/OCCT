@@ -38,7 +38,8 @@ void Prs3d_PresentationShadow::CalculateBoundBox()
 
 //=================================================================================================
 
-void Prs3d_PresentationShadow::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void Prs3d_PresentationShadow::DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Structure)

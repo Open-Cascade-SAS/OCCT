@@ -118,7 +118,7 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (aPS.UserBreak())
       return;
 
-    int                  anIdx[3];
+    int     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
@@ -126,9 +126,9 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (anIdx[0] == anIdx[1] || anIdx[0] == anIdx[2] || anIdx[1] == anIdx[2])
       continue;
 
-    const gp_Pnt aP1 = myMesh->Node(anIdx[0]);
-    const gp_Pnt aP2 = myMesh->Node(anIdx[1]);
-    const gp_Pnt aP3 = myMesh->Node(anIdx[2]);
+    const gp_Pnt        aP1 = myMesh->Node(anIdx[0]);
+    const gp_Pnt        aP2 = myMesh->Node(anIdx[1]);
+    const gp_Pnt        aP3 = myMesh->Node(anIdx[2]);
     const double aD1 = aP1.SquareDistance(aP2);
     const double aD2 = aP1.SquareDistance(aP3);
     const double aD3 = aP2.SquareDistance(aP3);
@@ -179,13 +179,13 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     if (aPS.UserBreak())
       return;
 
-    int                  anIdx[3];
+    int     anIdx[3];
     const Poly_Triangle& aTriangle = myMesh->Triangle(i);
     aTriangle.Get(anIdx[0], anIdx[1], anIdx[2]);
 
-    const Edge aMeshEdge1(anIdx[0], anIdx[1]);
-    const Edge aMeshEdge2(anIdx[1], anIdx[2]);
-    const Edge aMeshEdge3(anIdx[2], anIdx[0]);
+    const Edge             aMeshEdge1(anIdx[0], anIdx[1]);
+    const Edge             aMeshEdge2(anIdx[1], anIdx[2]);
+    const Edge             aMeshEdge3(anIdx[2], anIdx[0]);
     const bool isReversed1 = anIdx[1] < anIdx[0];
     const bool isReversed2 = anIdx[2] < anIdx[1];
     const bool isReversed3 = anIdx[0] < anIdx[2];
@@ -193,8 +193,8 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
     // Edges can be skipped in case of mesh defects - topologically or geometrically
     // degenerated triangles.
     const bool aHasAllEdges = anEdgeToTEgeMap.Contains(aMeshEdge1)
-                              && anEdgeToTEgeMap.Contains(aMeshEdge2)
-                              && anEdgeToTEgeMap.Contains(aMeshEdge3);
+                                          && anEdgeToTEgeMap.Contains(aMeshEdge2)
+                                          && anEdgeToTEgeMap.Contains(aMeshEdge3);
     if (!aHasAllEdges)
       continue;
 

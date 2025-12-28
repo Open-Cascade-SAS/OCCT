@@ -29,11 +29,14 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepShape_OpenShell.hxx>
+#include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepVisual_TessellatedStructuredItem.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -57,25 +60,25 @@
 //=============================================================================
 
 TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
-  const TopoDS_Solid&                        aSolid,
+  const TopoDS_Solid&                   aSolid,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   done = false;
-  TopoDS_Iterator                                                                             It;
+  TopoDS_Iterator                  It;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
-  NCollection_Sequence<occ::handle<Standard_Transient>>                                       S;
-  TopoDS_Shell aOutShell;
+  NCollection_Sequence<occ::handle<Standard_Transient>>      S;
+  TopoDS_Shell                     aOutShell;
 
-  occ::handle<StepShape_TopologicalRepresentationItem>                         aItem;
-  occ::handle<StepShape_ClosedShell>                                           aOuter, aCShell;
-  occ::handle<StepShape_OrientedClosedShell>                                   aOCShell;
-  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>> aVoids;
-  NCollection_Sequence<occ::handle<Standard_Transient>>                        aTessShells;
+  occ::handle<StepShape_TopologicalRepresentationItem> aItem;
+  occ::handle<StepShape_ClosedShell>                   aOuter, aCShell;
+  occ::handle<StepShape_OrientedClosedShell>           aOCShell;
+  occ::handle<NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>>  aVoids;
+  NCollection_Sequence<occ::handle<Standard_Transient>>                     aTessShells;
 
   occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-  const int                       aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
+  const int     aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
 
   try
   {
@@ -180,7 +183,7 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
   if (N >= 1)
   {
     occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
-    aVoids = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, N);
+    aVoids                                 = new NCollection_HArray1<occ::handle<StepShape_OrientedClosedShell>>(1, N);
     for (int i = 1; i <= N; i++)
     {
       aOCShell = new StepShape_OrientedClosedShell;
@@ -188,7 +191,8 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
       //           TRUE.
       //           Shall check the TopoDS_Shell orientation.
       // => if the Shell is reversed, shall create an OrientedShell.
-      aOCShell->Init(aName, occ::down_cast<StepShape_ClosedShell>(S.Value(i)),
+      aOCShell->Init(aName,
+                     occ::down_cast<StepShape_ClosedShell>(S.Value(i)),
                      false); //: e0
       //: e0			 true);
       aVoids->SetValue(i, aOCShell);
@@ -204,10 +208,8 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
   {
     occ::handle<StepVisual_TessellatedSolid> aTessSolid = new StepVisual_TessellatedSolid();
     occ::handle<TCollection_HAsciiString>    aTessName  = new TCollection_HAsciiString("");
-    int                                      aNbItems   = 0;
-    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells);
-         anIt.More();
-         anIt.Next())
+    int                    aNbItems   = 0;
+    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
     {
       occ::handle<StepVisual_TessellatedShell> aTessShell =
         occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
@@ -216,9 +218,7 @@ TopoDSToStep_MakeBrepWithVoids::TopoDSToStep_MakeBrepWithVoids(
     occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
       new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, aNbItems);
     int j = 1;
-    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells);
-         anIt.More();
-         anIt.Next())
+    for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next())
     {
       occ::handle<StepVisual_TessellatedShell> aTessShell =
         occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
@@ -250,8 +250,7 @@ const occ::handle<StepShape_BrepWithVoids>& TopoDSToStep_MakeBrepWithVoids::Valu
 // Purpose : Returns TessellatedItem as the optional result
 // ============================================================================
 
-const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeBrepWithVoids::TessellatedValue()
-  const
+const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeBrepWithVoids::TessellatedValue() const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeBrepWithVoids::TessellatedValue() - no result");
   return theTessellatedItem;

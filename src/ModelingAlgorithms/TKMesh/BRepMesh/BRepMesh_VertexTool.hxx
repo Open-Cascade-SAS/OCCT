@@ -83,7 +83,8 @@ public:
   //! @param isForceAdd adds the given node to structure without
   //! checking on coincidence with other nodes.
   //! @return index of the node in the structure.
-  Standard_EXPORT int Add(const BRepMesh_Vertex& theVertex, const bool isForceAdd);
+  Standard_EXPORT int Add(const BRepMesh_Vertex& theVertex,
+                                       const bool isForceAdd);
 
   //! Deletes vertex with the given index from the tool.
   Standard_EXPORT void DeleteVertex(const int theIndex);
@@ -95,7 +96,10 @@ public:
   Handle(IMeshData::VectorOfVertex)& ChangeVertices() { return mySelector.ChangeVertices(); }
 
   //! Returns vertex by the given index.
-  const BRepMesh_Vertex& FindKey(const int theIndex) { return mySelector.GetVertex(theIndex); }
+  const BRepMesh_Vertex& FindKey(const int theIndex)
+  {
+    return mySelector.GetVertex(theIndex);
+  }
 
   //! Returns index of the given vertex.
   int FindIndex(const BRepMesh_Vertex& theVertex)
@@ -114,7 +118,8 @@ public:
   //! Substitutes vertex with the given by the given vertex with attributes.
   //! @param theIndex index of vertex to be substituted.
   //! @param theVertex replacement vertex.
-  Standard_EXPORT void Substitute(const int theIndex, const BRepMesh_Vertex& theVertex);
+  Standard_EXPORT void Substitute(const int theIndex,
+                                  const BRepMesh_Vertex& theVertex);
 
   //! Remove last node from the structure.
   void RemoveLast() { DeleteVertex(Extent()); }
@@ -146,9 +151,9 @@ private:
 
 private:
   occ::handle<NCollection_IncAllocator> myAllocator;
-  IMeshData::VertexCellFilter           myCellFilter;
-  BRepMesh_VertexInspector              mySelector;
-  double                                myTolerance[2];
+  IMeshData::VertexCellFilter      myCellFilter;
+  BRepMesh_VertexInspector         mySelector;
+  double                    myTolerance[2];
 };
 
 #endif

@@ -27,10 +27,10 @@ StepVisual_TessellatedConnectingEdge::StepVisual_TessellatedConnectingEdge() {}
 void StepVisual_TessellatedConnectingEdge::Init(
   const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
   const occ::handle<StepVisual_CoordinatesList>& theTessellatedEdge_Coordinates,
-  const bool                                     theHasTessellatedEdge_GeometricLink,
-  const StepVisual_EdgeOrCurve&                  theTessellatedEdge_GeometricLink,
+  const bool                    theHasTessellatedEdge_GeometricLink,
+  const StepVisual_EdgeOrCurve&             theTessellatedEdge_GeometricLink,
   const occ::handle<NCollection_HArray1<int>>&   theTessellatedEdge_LineStrip,
-  const StepData_Logical                         theSmooth,
+  const StepData_Logical                    theSmooth,
   const occ::handle<StepVisual_TessellatedFace>& theFace1,
   const occ::handle<StepVisual_TessellatedFace>& theFace2,
   const occ::handle<NCollection_HArray1<int>>&   theLineStripFace1,
@@ -125,7 +125,8 @@ int StepVisual_TessellatedConnectingEdge::NbLineStripFace1() const
 
 //=================================================================================================
 
-int StepVisual_TessellatedConnectingEdge::LineStripFace1Value(const int theNum) const
+int StepVisual_TessellatedConnectingEdge::LineStripFace1Value(
+  const int theNum) const
 {
   return myLineStripFace1->Value(theNum);
 }
@@ -158,7 +159,8 @@ int StepVisual_TessellatedConnectingEdge::NbLineStripFace2() const
 
 //=================================================================================================
 
-int StepVisual_TessellatedConnectingEdge::LineStripFace2Value(const int theNum) const
+int StepVisual_TessellatedConnectingEdge::LineStripFace2Value(
+  const int theNum) const
 {
   return myLineStripFace2->Value(theNum);
 }

@@ -124,9 +124,9 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
   // NOTE: not optimized: subshape can be processed twice (second time - no modif)
   if (myShape.ShapeType() == TopAbs_COMPOUND)
   {
-    int             locStatus = myStatus;
-    TopoDS_Compound C;
-    BRep_Builder    B;
+    int locStatus = myStatus;
+    TopoDS_Compound  C;
+    BRep_Builder     B;
     B.MakeCompound(C);
     TopoDS_Shape savShape = myShape;
     for (TopoDS_Iterator it(savShape, false); it.More(); it.Next())

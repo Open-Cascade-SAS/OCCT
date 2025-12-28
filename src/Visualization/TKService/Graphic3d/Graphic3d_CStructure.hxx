@@ -179,7 +179,10 @@ public:
   bool BndBoxClipCheck() const { return myBndBoxClipCheck; }
 
   //! Enable/disable check of object's bounding box clipping before drawing of object.
-  void SetBndBoxClipCheck(bool theBndBoxClipCheck) { myBndBoxClipCheck = theBndBoxClipCheck; }
+  void SetBndBoxClipCheck(bool theBndBoxClipCheck)
+  {
+    myBndBoxClipCheck = theBndBoxClipCheck;
+  }
 
   //! Checks if the structure should be included into BVH tree or not.
   bool IsAlwaysRendered() const
@@ -212,8 +215,7 @@ public:
     const occ::handle<Graphic3d_StructureManager>& theManager) const = 0;
 
   //! Create new group within this structure
-  virtual occ::handle<Graphic3d_Group> NewGroup(
-    const occ::handle<Graphic3d_Structure>& theStruct) = 0;
+  virtual occ::handle<Graphic3d_Group> NewGroup(const occ::handle<Graphic3d_Structure>& theStruct) = 0;
 
   //! Remove group from this structure
   virtual void RemoveGroup(const occ::handle<Graphic3d_Group>& theGroup) = 0;
@@ -222,7 +224,8 @@ public:
   virtual void updateLayerTransformation() {}
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 public:
   occ::handle<Graphic3d_ViewAffinity> ViewAffinity; //!< view affinity mask
@@ -232,12 +235,12 @@ protected:
   Standard_EXPORT Graphic3d_CStructure(const occ::handle<Graphic3d_StructureManager>& theManager);
 
 protected:
-  occ::handle<Graphic3d_GraphicDriver>               myGraphicDriver;
-  NCollection_Sequence<occ::handle<Graphic3d_Group>> myGroups;
-  Graphic3d_BndBox3d                                 myBndBox;
-  occ::handle<TopLoc_Datum3D>                        myTrsf;
-  occ::handle<Graphic3d_TransformPers>               myTrsfPers;
-  occ::handle<Graphic3d_SequenceOfHClipPlane>        myClipPlanes;
+  occ::handle<Graphic3d_GraphicDriver>        myGraphicDriver;
+  NCollection_Sequence<occ::handle<Graphic3d_Group>>              myGroups;
+  Graphic3d_BndBox3d                     myBndBox;
+  occ::handle<TopLoc_Datum3D>                 myTrsf;
+  occ::handle<Graphic3d_TransformPers>        myTrsfPers;
+  occ::handle<Graphic3d_SequenceOfHClipPlane> myClipPlanes;
   // clang-format off
   occ::handle<Graphic3d_PresentationAttributes> myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 

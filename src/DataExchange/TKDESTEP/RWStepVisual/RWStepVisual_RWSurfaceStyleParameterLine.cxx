@@ -24,7 +24,7 @@ RWStepVisual_RWSurfaceStyleParameterLine::RWStepVisual_RWSurfaceStyleParameterLi
 
 void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepVisual_SurfaceStyleParameterLine>& ent) const
 {
@@ -51,25 +51,32 @@ void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
   // Par consequent, on doit trouver dans le fichier :
   //     ... , (U_DIRECTION_COUNT(10), V_DIRECTION_COUNT(1)) );
 
-  int                     numr, numpr;
+  int        numr, numpr;
   TCollection_AsciiString UType("U_DIRECTION_COUNT");
   TCollection_AsciiString VType("V_DIRECTION_COUNT");
   TCollection_AsciiString TrueType;
 
   occ::handle<NCollection_HArray1<StepVisual_DirectionCountSelect>> aDirectionCounts;
-  int                                                               aDirectionCountsItem;
-  StepVisual_DirectionCountSelect                                   aDirectionCountSelect;
+  int                                 aDirectionCountsItem;
+  StepVisual_DirectionCountSelect                  aDirectionCountSelect;
 
   int nsub2;
   if (data->ReadSubList(num, 2, "direction_counts", ach, nsub2))
   {
-    int nb2          = data->NbParams(nsub2);
-    aDirectionCounts = new NCollection_HArray1<StepVisual_DirectionCountSelect>(1, nb2);
+    int nb2 = data->NbParams(nsub2);
+    aDirectionCounts     = new NCollection_HArray1<StepVisual_DirectionCountSelect>(1, nb2);
     for (int i2 = 1; i2 <= nb2; i2++)
     {
       // looks for true type :
       // szv#4:S4163:12Mar99 `bool statUV =` not needed
-      if (data->ReadTypedParam(nsub2, i2, true, "direction_count", ach, numr, numpr, TrueType))
+      if (data->ReadTypedParam(nsub2,
+                               i2,
+                               true,
+                               "direction_count",
+                               ach,
+                               numr,
+                               numpr,
+                               TrueType))
       {
         // szv#4:S4163:12Mar99 `bool stat1 =` not needed
         if (data->ReadInteger(numr, numpr, "direction_counts", ach, aDirectionCountsItem))
@@ -107,7 +114,7 @@ void RWStepVisual_RWSurfaceStyleParameterLine::ReadStep(
 }
 
 void RWStepVisual_RWSurfaceStyleParameterLine::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepVisual_SurfaceStyleParameterLine>& ent) const
 {
 
@@ -123,7 +130,7 @@ void RWStepVisual_RWSurfaceStyleParameterLine::WriteStep(
 
 void RWStepVisual_RWSurfaceStyleParameterLine::Share(
   const occ::handle<StepVisual_SurfaceStyleParameterLine>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->StyleOfParameterLines());

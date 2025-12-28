@@ -187,21 +187,21 @@ protected:
                                      HLRBRep_Surface* theSurface);
 
 private:
-  Standard_EXPORT void DoSurface(HLRBRep_Surface*            theSurface,
-                                 const double                theU0,
-                                 const double                theU1,
-                                 const double                theV0,
-                                 const double                theV1,
+  Standard_EXPORT void DoSurface(HLRBRep_Surface*    theSurface,
+                                 const double        theU0,
+                                 const double        theU1,
+                                 const double        theV0,
+                                 const double        theV1,
                                  NCollection_Array2<gp_Pnt>& thePntsOnSurface,
-                                 Bnd_Box&                    theBoxSurface,
-                                 double&                     theGap);
+                                 Bnd_Box&            theBoxSurface,
+                                 double&             theGap);
 
-  Standard_EXPORT void DoNewBounds(HLRBRep_Surface*                  theSurface,
-                                   const double                      theU0,
-                                   const double                      theU1,
-                                   const double                      theV0,
-                                   const double                      theV1,
-                                   const NCollection_Array2<gp_Pnt>& thePntsOnSurface,
+  Standard_EXPORT void DoNewBounds(HLRBRep_Surface*            theSurface,
+                                   const double                theU0,
+                                   const double                theU1,
+                                   const double                theV0,
+                                   const double                theV1,
+                                   const NCollection_Array2<gp_Pnt>&   thePntsOnSurface,
                                    const NCollection_Array1<double>& theX,
                                    const NCollection_Array1<double>& theY,
                                    const NCollection_Array1<double>& theZ,

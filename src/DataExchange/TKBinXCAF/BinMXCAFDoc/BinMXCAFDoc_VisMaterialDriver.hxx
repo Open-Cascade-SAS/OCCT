@@ -44,15 +44,16 @@ public:
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
   //! Paste attribute from persistence into document.
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       theSource,
-                                     const occ::handle<TDF_Attribute>& theTarget,
-                                     BinObjMgt_RRelocationTable& theRelocTable) const override;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  theSource,
+                                                 const occ::handle<TDF_Attribute>& theTarget,
+                                                 BinObjMgt_RRelocationTable&  theRelocTable) const
+    override;
 
   //! Paste attribute from document into persistence.
-  Standard_EXPORT virtual void Paste(
-    const occ::handle<TDF_Attribute>&                        theSource,
-    BinObjMgt_Persistent&                                    theTarget,
-    NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const override;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& theSource,
+                                     BinObjMgt_Persistent&        theTarget,
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
+    override;
 };
 
 #endif // _BinMXCAFDoc_VisMaterialDriver_HeaderFile

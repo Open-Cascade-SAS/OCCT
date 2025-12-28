@@ -43,10 +43,10 @@ public:
 
   //! Returns an empty hatcher.
   Standard_EXPORT Geom2dHatch_Hatcher(const Geom2dHatch_Intersector& Intersector,
-                                      const double                   Confusion2d,
-                                      const double                   Confusion3d,
-                                      const bool                     KeepPnt = false,
-                                      const bool                     KeepSeg = false);
+                                      const double            Confusion2d,
+                                      const double            Confusion3d,
+                                      const bool         KeepPnt = false,
+                                      const bool         KeepSeg = false);
 
   //! Sets the associated intersector.
   Standard_EXPORT void Intersector(const Geom2dHatch_Intersector& Intersector);
@@ -92,12 +92,13 @@ public:
   const Geom2dAdaptor_Curve& ElementCurve(const int IndE) const;
 
   //! Adds an element to the hatcher and returns its index.
-  Standard_EXPORT int AddElement(const Geom2dAdaptor_Curve& Curve,
-                                 const TopAbs_Orientation   Orientation = TopAbs_FORWARD);
+  Standard_EXPORT int
+    AddElement(const Geom2dAdaptor_Curve& Curve,
+               const TopAbs_Orientation   Orientation = TopAbs_FORWARD);
 
   //! Adds an element to the hatcher and returns its index.
   int AddElement(const occ::handle<Geom2d_Curve>& Curve,
-                 const TopAbs_Orientation         Orientation = TopAbs_FORWARD)
+                              const TopAbs_Orientation    Orientation = TopAbs_FORWARD)
   {
     Geom2dAdaptor_Curve aGAC(Curve);
     return AddElement(aGAC, Orientation);
@@ -127,7 +128,8 @@ public:
 
   //! Returns the IndP-th intersection point of the
   //! IndH-th hatching.
-  const HatchGen_PointOnHatching& Point(const int IndH, const int IndP) const;
+  const HatchGen_PointOnHatching& Point(const int IndH,
+                                        const int IndP) const;
 
   //! Trims all the hatchings of the hatcher by all the
   //! elements of the hatcher.
@@ -172,7 +174,8 @@ public:
   int NbDomains(const int IndH) const;
 
   //! Returns the IDom-th domain of the IndH-th hatching.
-  Standard_EXPORT const HatchGen_Domain& Domain(const int IndH, const int IDom) const;
+  Standard_EXPORT const HatchGen_Domain& Domain(const int IndH,
+                                                const int IDom) const;
 
   //! Dump the hatcher.
   Standard_EXPORT void Dump() const;
@@ -193,15 +196,15 @@ private:
   //! states and segment extremities flags) of the point.
   Standard_EXPORT bool GlobalTransition(HatchGen_PointOnHatching& Point);
 
-  Geom2dHatch_Intersector                        myIntersector;
-  double                                         myConfusion2d;
-  double                                         myConfusion3d;
-  bool                                           myKeepPoints;
-  bool                                           myKeepSegments;
-  int                                            myNbElements;
-  Geom2dHatch_Elements                           myElements;
-  int                                            myNbHatchings;
-  NCollection_DataMap<int, Geom2dHatch_Hatching> myHatchings;
+  Geom2dHatch_Intersector myIntersector;
+  double           myConfusion2d;
+  double           myConfusion3d;
+  bool        myKeepPoints;
+  bool        myKeepSegments;
+  int        myNbElements;
+  Geom2dHatch_Elements    myElements;
+  int        myNbHatchings;
+  NCollection_DataMap<int, Geom2dHatch_Hatching>   myHatchings;
 };
 
 #include <Geom2dHatch_Hatcher.lxx>

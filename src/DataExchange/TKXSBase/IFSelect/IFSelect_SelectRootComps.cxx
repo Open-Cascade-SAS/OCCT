@@ -67,8 +67,8 @@ bool IFSelect_SelectRootComps::HasUniqueResult() const
 }
 
 bool IFSelect_SelectRootComps::Sort(const int,
-                                    const occ::handle<Standard_Transient>&,
-                                    const occ::handle<Interface_InterfaceModel>&) const
+                                                const occ::handle<Standard_Transient>&,
+                                                const occ::handle<Interface_InterfaceModel>&) const
 {
   return true;
 }

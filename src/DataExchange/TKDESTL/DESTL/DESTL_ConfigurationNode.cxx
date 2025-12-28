@@ -38,8 +38,7 @@ DESTL_ConfigurationNode::DESTL_ConfigurationNode()
 
 //=================================================================================================
 
-DESTL_ConfigurationNode::DESTL_ConfigurationNode(
-  const occ::handle<DESTL_ConfigurationNode>& theNode)
+DESTL_ConfigurationNode::DESTL_ConfigurationNode(const occ::handle<DESTL_ConfigurationNode>& theNode)
     : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;

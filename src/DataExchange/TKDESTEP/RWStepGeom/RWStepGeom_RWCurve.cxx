@@ -19,7 +19,7 @@
 RWStepGeom_RWCurve::RWStepGeom_RWCurve() {}
 
 void RWStepGeom_RWCurve::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                  const int                                   num,
+                                  const int                 num,
                                   occ::handle<Interface_Check>&               ach,
                                   const occ::handle<StepGeom_Curve>&          ent) const
 {
@@ -40,8 +40,7 @@ void RWStepGeom_RWCurve::ReadStep(const occ::handle<StepData_StepReaderData>& da
   ent->Init(aName);
 }
 
-void RWStepGeom_RWCurve::WriteStep(StepData_StepWriter&               SW,
-                                   const occ::handle<StepGeom_Curve>& ent) const
+void RWStepGeom_RWCurve::WriteStep(StepData_StepWriter& SW, const occ::handle<StepGeom_Curve>& ent) const
 {
 
   // --- inherited field name ---

@@ -53,7 +53,7 @@ private:
   bool addWire(const TopoDS_Wire& theWire, const IMeshData::IFaceHandle& theDFace);
 
 private:
-  occ::handle<IMeshData_Model>  myModel;
+  occ::handle<IMeshData_Model>       myModel;
   IMeshData::DMapOfShapeInteger myDEdgeMap;
 };
 

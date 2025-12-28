@@ -112,7 +112,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
     if (aStatus == true)
     {
       // Put model in a new attribute on root label
-      TDF_Label                aLabel = aDoc->Main();
+      TDF_Label           aLabel = aDoc->Main();
       occ::handle<TObj_TModel> anAtr  = new TObj_TModel;
       aLabel.AddAttribute(anAtr);
       anAtr->Set(me);
@@ -130,8 +130,8 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
     {
       // Check for validity of the model read:
       // if it had wrong type, it has not been not properly restored
-      TDF_Label aLabel  = GetLabel();
-      bool      isValid = !aLabel.IsNull() && !aDoc.IsNull();
+      TDF_Label        aLabel  = GetLabel();
+      bool isValid = !aLabel.IsNull() && !aDoc.IsNull();
       {
         try
         {
@@ -202,7 +202,7 @@ bool TObj_Model::Load(const TCollection_ExtendedString& theFile)
 bool TObj_Model::Load(Standard_IStream& theIStream)
 {
   occ::handle<TDocStd_Document>       aDoc;
-  bool                                aStatus = true, isFileLoaded = false;
+  bool               aStatus = true, isFileLoaded = false;
   const occ::handle<TObj_Application> anApplication = GetApplication();
 
   // Current model
@@ -217,8 +217,8 @@ bool TObj_Model::Load(Standard_IStream& theIStream)
   {
     // Check for validity of the model read:
     // if it had wrong type, it has not been not properly restored
-    TDF_Label aLabel  = GetLabel();
-    bool      isValid = (!aLabel.IsNull() && !aDoc.IsNull());
+    TDF_Label        aLabel  = GetLabel();
+    bool isValid = (!aLabel.IsNull() && !aDoc.IsNull());
     try
     {
       isValid = (isValid && aLabel.Data() == aDoc->GetData());
@@ -249,7 +249,7 @@ bool TObj_Model::Load(Standard_IStream& theIStream)
     if (aStatus)
     {
       // Put model in a new attribute on root label
-      TDF_Label                aLabel = aDoc->Main();
+      TDF_Label           aLabel = aDoc->Main();
       occ::handle<TObj_TModel> anAtr  = new TObj_TModel;
       aLabel.AddAttribute(anAtr);
       anAtr->Set(me);
@@ -444,7 +444,7 @@ occ::handle<TObj_Model> TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
 
   occ::handle<TDocStd_Document> aDoc;
   occ::handle<TDF_Data>         aData  = theLabel.Data();
-  TDF_Label                     aRootL = aData->Root();
+  TDF_Label                aRootL = aData->Root();
   if (aRootL.IsNull())
     return aModel;
   occ::handle<TDocStd_Owner> aDocOwnerAtt;
@@ -454,7 +454,7 @@ occ::handle<TObj_Model> TObj_Model::GetDocumentModel(const TDF_Label& theLabel)
   if (aDoc.IsNull())
     return aModel;
 
-  TDF_Label                aLabel = aDoc->Main();
+  TDF_Label           aLabel = aDoc->Main();
   occ::handle<TObj_TModel> anAttr;
   if (aLabel.FindAttribute(TObj_TModel::GetID(), anAttr))
     aModel = anAttr->Model();
@@ -482,9 +482,8 @@ occ::handle<TObj_ObjectIterator> TObj_Model::GetChildren() const
 
 //=================================================================================================
 
-occ::handle<TObj_Object> TObj_Model::FindObject(
-  const occ::handle<TCollection_HExtendedString>& theName,
-  const occ::handle<TObj_TNameContainer>&         theDictionary) const
+occ::handle<TObj_Object> TObj_Model::FindObject(const occ::handle<TCollection_HExtendedString>& theName,
+                                           const occ::handle<TObj_TNameContainer>& theDictionary) const
 {
   occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
@@ -531,8 +530,9 @@ void TObj_Model::SetNewName(const occ::handle<TObj_Object>& theObject)
 
 //=================================================================================================
 
-bool TObj_Model::IsRegisteredName(const occ::handle<TCollection_HExtendedString>& theName,
-                                  const occ::handle<TObj_TNameContainer>& theDictionary) const
+bool TObj_Model::IsRegisteredName(
+  const occ::handle<TCollection_HExtendedString>& theName,
+  const occ::handle<TObj_TNameContainer>&         theDictionary) const
 {
   occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
   if (aDictionary.IsNull())
@@ -546,7 +546,7 @@ bool TObj_Model::IsRegisteredName(const occ::handle<TCollection_HExtendedString>
 //=================================================================================================
 
 void TObj_Model::RegisterName(const occ::handle<TCollection_HExtendedString>& theName,
-                              const TDF_Label&                                theLabel,
+                              const TDF_Label&                           theLabel,
                               const occ::handle<TObj_TNameContainer>&         theDictionary) const
 {
   occ::handle<TObj_TNameContainer> aDictionary = theDictionary;
@@ -575,7 +575,7 @@ void TObj_Model::UnRegisterName(const occ::handle<TCollection_HExtendedString>& 
 occ::handle<TObj_TNameContainer> TObj_Model::GetDictionary() const
 {
   occ::handle<TObj_TNameContainer> A;
-  TDF_Label                        aLabel = GetLabel();
+  TDF_Label                   aLabel = GetLabel();
   if (!aLabel.IsNull())
     aLabel.FindAttribute(TObj_TNameContainer::GetID(), A);
   return A;
@@ -583,8 +583,8 @@ occ::handle<TObj_TNameContainer> TObj_Model::GetDictionary() const
 
 //=================================================================================================
 
-occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label& theLabel,
-                                                     const bool       theHidden) const
+occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label&       theLabel,
+                                                const bool theHidden) const
 {
   occ::handle<TObj_Partition> aPartition;
   if (theLabel.IsNull())
@@ -607,16 +607,16 @@ occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label& theLabel,
 //=================================================================================================
 
 occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label&                  theLabel,
-                                                     const int                         theIndex,
-                                                     const TCollection_ExtendedString& theName,
-                                                     const bool theHidden) const
+                                                const int            theIndex,
+                                                const TCollection_ExtendedString& theName,
+                                                const bool            theHidden) const
 {
   occ::handle<TObj_Partition> aPartition;
   if (theLabel.IsNull())
     return aPartition;
 
-  TDF_Label aLabel = theLabel.FindChild(theIndex, false);
-  bool      isNew  = false;
+  TDF_Label        aLabel = theLabel.FindChild(theIndex, false);
+  bool isNew  = false;
   // defining is partition new
   if (aLabel.IsNull())
   {
@@ -634,9 +634,9 @@ occ::handle<TObj_Partition> TObj_Model::getPartition(const TDF_Label&           
 
 //=================================================================================================
 
-occ::handle<TObj_Partition> TObj_Model::getPartition(const int                         theIndex,
-                                                     const TCollection_ExtendedString& theName,
-                                                     const bool theHidden) const
+occ::handle<TObj_Partition> TObj_Model::getPartition(const int            theIndex,
+                                                const TCollection_ExtendedString& theName,
+                                                const bool            theHidden) const
 {
   return getPartition(GetMainPartition()->GetChildLabel(), theIndex, theName, theHidden);
 }
@@ -722,7 +722,7 @@ void TObj_Model::updateBackReferences(const occ::handle<TObj_Object>& theObject)
 occ::handle<TDocStd_Document> TObj_Model::GetDocument() const
 {
   occ::handle<TDocStd_Document> D;
-  TDF_Label                     aLabel = GetLabel();
+  TDF_Label                aLabel = GetLabel();
   if (!aLabel.IsNull())
     D = TDocStd_Document::Get(aLabel);
   return D;
@@ -861,7 +861,7 @@ TDF_Label TObj_Model::GetDataLabel() const
 //=================================================================================================
 
 bool TObj_Model::Paste(occ::handle<TObj_Model>          theModel,
-                       occ::handle<TDF_RelocationTable> theRelocTable)
+                                   occ::handle<TDF_RelocationTable> theRelocTable)
 {
   if (theModel.IsNull())
     return false;

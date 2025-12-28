@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepVisual_Colour();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_Colour, Standard_Transient)
+
 };
 
 #endif // _StepVisual_Colour_HeaderFile

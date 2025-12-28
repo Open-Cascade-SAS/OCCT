@@ -43,12 +43,12 @@ public:
   //! True  = is plating
   //! - aLayer       : Lower numbered layer
   //! - anotherLayer : Higher numbered layer
-  Standard_EXPORT void Init(const int    nbPropVal,
-                            const double aSize,
-                            const double anotherSize,
-                            const int    aPlating,
-                            const int    aLayer,
-                            const int    anotherLayer);
+  Standard_EXPORT void Init(const int nbPropVal,
+                            const double    aSize,
+                            const double    anotherSize,
+                            const int aPlating,
+                            const int aLayer,
+                            const int anotherLayer);
 
   //! is always 5
   Standard_EXPORT int NbPropertyValues() const;
@@ -72,12 +72,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESAppli_DrilledHole, IGESData_IGESEntity)
 
 private:
-  int    theNbPropertyValues;
-  double theDrillDiaSize;
-  double theFinishDiaSize;
-  int    thePlatingFlag;
-  int    theNbLowerLayer;
-  int    theNbHigherLayer;
+  int theNbPropertyValues;
+  double    theDrillDiaSize;
+  double    theFinishDiaSize;
+  int thePlatingFlag;
+  int theNbLowerLayer;
+  int theNbHigherLayer;
 };
 
 #endif // _IGESAppli_DrilledHole_HeaderFile

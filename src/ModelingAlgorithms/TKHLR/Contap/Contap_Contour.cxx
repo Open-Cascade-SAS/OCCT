@@ -85,7 +85,7 @@ Contap_Contour::Contap_Contour(const gp_Pnt& Eye)
 
 Contap_Contour::Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Vec&                           Direction)
+                               const gp_Vec&                      Direction)
     :
 
       done(false),
@@ -96,8 +96,8 @@ Contap_Contour::Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
 
 Contap_Contour::Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Vec&                           Direction,
-                               const double                            Angle)
+                               const gp_Vec&                      Direction,
+                               const double                Angle)
     :
 
       done(false),
@@ -108,7 +108,7 @@ Contap_Contour::Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
 
 Contap_Contour::Contap_Contour(const occ::handle<Adaptor3d_Surface>&   Surf,
                                const occ::handle<Adaptor3d_TopolTool>& Domain,
-                               const gp_Pnt&                           Eye)
+                               const gp_Pnt&                      Eye)
     :
 
       done(false),
@@ -172,7 +172,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
 
 void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                              const occ::handle<Adaptor3d_TopolTool>& Domain,
-                             const gp_Vec&                           Direction)
+                             const gp_Vec&                      Direction)
 
 {
   Init(Direction);
@@ -181,8 +181,8 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
 
 void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                              const occ::handle<Adaptor3d_TopolTool>& Domain,
-                             const gp_Vec&                           Direction,
-                             const double                            Angle)
+                             const gp_Vec&                      Direction,
+                             const double                Angle)
 
 {
   Init(Direction, Angle);
@@ -191,7 +191,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
 
 void Contap_Contour::Perform(const occ::handle<Adaptor3d_Surface>&   Surf,
                              const occ::handle<Adaptor3d_TopolTool>& Domain,
-                             const gp_Pnt&                           Eye)
+                             const gp_Pnt&                      Eye)
 
 {
   Init(Eye);
@@ -228,7 +228,7 @@ static void ProcessSegments(const Contap_TheSearch&,
 
 static void Recadre(const occ::handle<Adaptor3d_Surface>& myHS1, double& u1, double& v1)
 {
-  double              f, l, lmf;
+  double       f, l, lmf;
   GeomAbs_SurfaceType typs1 = myHS1->GetType();
 
   bool myHS1IsUPeriodic, myHS1IsVPeriodic;
@@ -280,21 +280,21 @@ static void Recadre(const occ::handle<Adaptor3d_Surface>& myHS1, double& u1, dou
   }
 }
 
-static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
+static void LineConstructor(NCollection_Sequence<Contap_Line>&          slin,
                             const occ::handle<Adaptor3d_TopolTool>& Domain,
-                            Contap_Line&                            L,
+                            Contap_Line&                       L,
                             const occ::handle<Adaptor3d_Surface>&   Surf)
 {
 
   //-- ------------------------------------------------------------
   //-- on decoupe la ligne en portions  entre 2 vertex
   constexpr double Tol  = Precision::PConfusion();
-  Contap_IType     typl = L.TypeContour();
+  Contap_IType            typl = L.TypeContour();
   //-- std::cout<<"\n ----------- Ligne Constructor "<<std::endl;
   if (typl == Contap_Walking)
   {
-    double u1, v1, u2, v2;
-    int    nbvtx = L.NbVertex();
+    double    u1, v1, u2, v2;
+    int nbvtx = L.NbVertex();
     //-- std::cout<<" WLine -> "<<nbvtx<<" vtx"<<std::endl;
     for (int i = 1; i < nbvtx; i++)
     {
@@ -302,7 +302,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
       int lastp  = (int)L.Vertex(i + 1).ParameterOnLine();
       if (firstp != lastp)
       {
-        int                    pmid = (firstp + lastp) / 2; //-- entiers
+        int       pmid = (firstp + lastp) / 2; //-- entiers
         const IntSurf_PntOn2S& Pmid = L.Point(pmid);
         Pmid.Parameters(u1, v1, u2, v2);
         Recadre(Surf, u2, v2);
@@ -341,8 +341,8 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
   }
   else if (typl == Contap_Lin)
   {
-    double u2, v2; // u1,v1;
-    int    nbvtx = L.NbVertex();
+    double    u2, v2; // u1,v1;
+    int nbvtx = L.NbVertex();
     //-- std::cout<<" Lin -> "<<nbvtx<<" vtx"<<std::endl;
     for (int i = 1; i < nbvtx; i++)
     {
@@ -351,7 +351,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
       if (firstp != lastp)
       {
         double pmid = (firstp + lastp) * 0.5;
-        gp_Pnt Pmid = ElCLib::Value(pmid, L.Line());
+        gp_Pnt        Pmid = ElCLib::Value(pmid, L.Line());
         if (Adaptor3d_HSurfaceTool::GetType(Surf) == GeomAbs_Cylinder)
         {
           ElSLib::Parameters(Adaptor3d_HSurfaceTool::Cylinder(Surf), Pmid, u2, v2);
@@ -389,8 +389,8 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
   }
   else if (typl == Contap_Circle)
   {
-    double u2, v2; // u1,v1,
-    int    nbvtx = L.NbVertex();
+    double    u2, v2; // u1,v1,
+    int nbvtx = L.NbVertex();
     //-- std::cout<<" Circ -> "<<nbvtx<<" vtx"<<std::endl;
     bool novtx = true;
     if (nbvtx)
@@ -406,7 +406,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
       if (std::abs(firstp - lastp) > 0.000000001)
       {
         double pmid = (firstp + lastp) * 0.5;
-        gp_Pnt Pmid = ElCLib::Value(pmid, L.Circle());
+        gp_Pnt        Pmid = ElCLib::Value(pmid, L.Circle());
         if (Adaptor3d_HSurfaceTool::GetType(Surf) == GeomAbs_Cylinder)
         {
           ElSLib::Parameters(Adaptor3d_HSurfaceTool::Cylinder(Surf), Pmid, u2, v2);
@@ -455,7 +455,7 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
       if (std::abs(firstp - lastp) > 0.0000000001)
       {
         double pmid = (firstp + lastp) * 0.5;
-        gp_Pnt Pmid = ElCLib::Value(pmid, L.Circle());
+        gp_Pnt        Pmid = ElCLib::Value(pmid, L.Circle());
         if (Adaptor3d_HSurfaceTool::GetType(Surf) == GeomAbs_Cylinder)
         {
           ElSLib::Parameters(Adaptor3d_HSurfaceTool::Cylinder(Surf), Pmid, u2, v2);
@@ -506,17 +506,17 @@ static void LineConstructor(NCollection_Sequence<Contap_Line>&      slin,
 
 //-- --------------------------------------------------------------------------------
 
-static void KeepInsidePoints(const Contap_TheSearchInside&                solins,
-                             const Contap_TheSearch&                      solrst,
-                             Contap_SurfFunction&                         Func,
+static void KeepInsidePoints(const Contap_TheSearchInside&    solins,
+                             const Contap_TheSearch&          solrst,
+                             Contap_SurfFunction&             Func,
                              NCollection_Sequence<IntSurf_InteriorPoint>& seqpins)
 
 {
-  int                                   Nba = solrst.NbSegments();
-  int                                   Nbp, indp, inda;
-  double                                U, V, paramproj;
-  gp_Pnt2d                              toproj, Ptproj;
-  bool                                  projok, tokeep;
+  int                 Nba = solrst.NbSegments();
+  int                 Nbp, indp, inda;
+  double                    U, V, paramproj;
+  gp_Pnt2d                         toproj, Ptproj;
+  bool                 projok, tokeep;
   const occ::handle<Adaptor3d_Surface>& Surf = Func.Surface();
 
   Nbp = solins.NbPoints();
@@ -547,21 +547,21 @@ static void KeepInsidePoints(const Contap_TheSearchInside&                solins
   }
 }
 
-static void ComputeTangency(const Contap_TheSearch&                  solrst,
-                            const occ::handle<Adaptor3d_TopolTool>&  Domain,
-                            Contap_SurfFunction&                     Func,
-                            NCollection_Sequence<IntSurf_PathPoint>& seqpdep,
-                            NCollection_Array1<int>&                 Destination)
+static void ComputeTangency(const Contap_TheSearch&            solrst,
+                            const occ::handle<Adaptor3d_TopolTool>& Domain,
+                            Contap_SurfFunction&               Func,
+                            NCollection_Sequence<IntSurf_PathPoint>&       seqpdep,
+                            NCollection_Array1<int>&           Destination)
 {
 
   int i, k;
   int NbPoints  = solrst.NbPoints();
   int seqlength = 0;
 
-  double             theparam, test;
-  bool               fairpt;
+  double      theparam, test;
+  bool   fairpt;
   TopAbs_Orientation arcorien, vtxorien;
-  bool               ispassing;
+  bool   ispassing;
 
   math_Vector X(1, 2);
   math_Vector F(1, 1);
@@ -572,7 +572,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
   gp_Vec2d tg2drst;
   gp_Pnt2d pt2d;
 
-  IntSurf_PathPoint                     PPoint;
+  IntSurf_PathPoint                PPoint;
   const occ::handle<Adaptor3d_Surface>& Surf = Func.Surface();
 
   for (i = 1; i <= NbPoints; i++)
@@ -582,7 +582,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
     {
 
       const Contap_ThePathPointOfTheSearch& PStart = solrst.Point(i);
-      const occ::handle<Adaptor2d_Curve2d>& thearc = PStart.Arc();
+      const occ::handle<Adaptor2d_Curve2d>&      thearc = PStart.Arc();
       theparam                                     = PStart.Parameter();
       gp_Pnt2d Ptoproj                             = Contap_HCurve2dTool::Value(thearc, theparam);
       //-- lbr le 15 mai 97
@@ -593,8 +593,8 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
            restriction++)
       {
         const occ::handle<Adaptor2d_Curve2d>& thearcsol = solrst.Segment(restriction).Curve();
-        double                                paramproj;
-        gp_Pnt2d                              pproj;
+        double                    paramproj;
+        gp_Pnt2d                         pproj;
         bool projok = Contap_HContTool::Project(thearcsol, Ptoproj, paramproj, pproj);
         if (projok)
         {
@@ -637,8 +637,8 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
                   if (Domain->Identical(vtx, vtx2))
                   {
                     const occ::handle<Adaptor2d_Curve2d>& thearc2 = PStart2.Arc();
-                    theparam                                      = PStart2.Parameter();
-                    arcorien                                      = Domain->Orientation(thearc2);
+                    theparam                                 = PStart2.Parameter();
+                    arcorien                                 = Domain->Orientation(thearc2);
                     ispassing =
                       ispassing && (arcorien == TopAbs_INTERNAL || arcorien == TopAbs_EXTERNAL);
 
@@ -703,7 +703,7 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
             { // traiter la transition complexe
               gp_Dir bidnorm(1., 1., 1.);
 
-              bool                     tobeverified = false;
+              bool         tobeverified = false;
               TopAbs_Orientation       LocTrans;
               TopTrans_CurveTransition comptrans;
               comptrans.Reset(vectg, bidnorm, 0.);
@@ -711,8 +711,8 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
               {
                 // pour essai
                 const occ::handle<Adaptor3d_HVertex>& vtx = PStart.Vertex();
-                vtxorien                                  = Domain->Orientation(vtx);
-                test                                      = test / (vectg.Magnitude());
+                vtxorien                             = Domain->Orientation(vtx);
+                test                                 = test / (vectg.Magnitude());
                 test = test / ((normale.Crossed(tg3drst)).Magnitude());
 
                 if (std::abs(test) <= tole)
@@ -751,8 +751,8 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
                     if (Domain->Identical(PStart.Vertex(), vtx2))
                     {
                       const occ::handle<Adaptor2d_Curve2d>& thearc2 = PStart2.Arc();
-                      theparam                                      = PStart2.Parameter();
-                      arcorien                                      = Domain->Orientation(thearc2);
+                      theparam                                 = PStart2.Parameter();
+                      arcorien                                 = Domain->Orientation(thearc2);
 
                       Contap_HCurve2dTool::D1(thearc2, theparam, pt2d, tg2drst);
                       X(1) = pt2d.X();
@@ -835,9 +835,9 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
                 {
                   if (Destination(k) == seqlength + 1)
                   {
-                    theparam                                      = solrst.Point(k).Parameter();
+                    theparam                                 = solrst.Point(k).Parameter();
                     const occ::handle<Adaptor2d_Curve2d>& thearc2 = solrst.Point(k).Arc();
-                    arcorien                                      = Domain->Orientation(thearc2);
+                    arcorien                                 = Domain->Orientation(thearc2);
 
                     if (arcorien == TopAbs_FORWARD || arcorien == TopAbs_REVERSED)
                     {
@@ -886,8 +886,8 @@ static void ComputeTangency(const Contap_TheSearch&                  solrst,
 }
 
 IntSurf_TypeTrans ComputeTransitionOnLine(Contap_SurfFunction& SFunc,
-                                          const double         u,
-                                          const double         v,
+                                          const double  u,
+                                          const double  v,
                                           const gp_Vec&        tgline)
 {
   gp_Vec d1u, d1v;
@@ -921,9 +921,9 @@ IntSurf_TypeTrans ComputeTransitionOnLine(Contap_SurfFunction& SFunc,
   //--  pour le contour apparent                       --
   //-----------------------------------------------------
 
-  double      v1, v2;
-  math_Vector X(1, 2);
-  math_Matrix Df(1, 1, 1, 2);
+  double v1, v2;
+  math_Vector   X(1, 2);
+  math_Matrix   Df(1, 1, 1, 2);
   X(1) = u;
   X(2) = v;
   SFunc.Derivatives(X, Df);
@@ -950,10 +950,10 @@ IntSurf_TypeTrans ComputeTransitionOnLine(Contap_SurfFunction& SFunc,
   return (IntSurf_In);
 }
 
-void ProcessSegments(const Contap_TheSearch&                 solrst,
-                     NCollection_Sequence<Contap_Line>&      slin,
-                     const double                            TolArc,
-                     Contap_SurfFunction&                    SFunc,
+void ProcessSegments(const Contap_TheSearch&            solrst,
+                     NCollection_Sequence<Contap_Line>&          slin,
+                     const double                TolArc,
+                     Contap_SurfFunction&               SFunc,
                      const occ::handle<Adaptor3d_TopolTool>& Domain)
 
 {
@@ -962,13 +962,13 @@ void ProcessSegments(const Contap_TheSearch&                 solrst,
   int Nblines, Nbpts;
 
   occ::handle<Adaptor2d_Curve2d> arcRef;
-  Contap_Point                   ptvtx;
+  Contap_Point              ptvtx;
 
   Contap_ThePathPointOfTheSearch PStartf, PStartl;
 
-  bool        dofirst, dolast, procf, procl;
-  double      paramf = 0., paraml = 0., U;
-  Contap_Line theline;
+  bool dofirst, dolast, procf, procl;
+  double    paramf = 0., paraml = 0., U;
+  Contap_Line      theline;
 
   gp_Vec tgline; //,norm1,norm2;
   gp_Pnt valpt;
@@ -1113,8 +1113,8 @@ void ProcessSegments(const Contap_TheSearch&                 solrst,
 }
 
 void ComputeInternalPointsOnRstr(Contap_Line&         Line,
-                                 const double         Paramf,
-                                 const double         Paraml,
+                                 const double  Paramf,
+                                 const double  Paraml,
                                  Contap_SurfFunction& SFunc)
 {
   // On recherche les points ou la tangente a la ligne de contour et
@@ -1122,13 +1122,13 @@ void ComputeInternalPointsOnRstr(Contap_Line&         Line,
   // 1ere etape : recherche de changement de signe.
   // 2eme etape : localisation de la solution par dichotomie
 
-  int      indexinf, indexsup, i;
-  gp_Vec   tgt, vecref, vectest, vtestb, vecregard, d1u, d1v;
-  gp_Pnt   pcour;
-  gp_Pnt2d p2d;
-  gp_Vec2d d2d;
-  bool     found, ok = false, toutvu, solution;
-  double   paramp = 0., paraminf, paramsup, toler;
+  int indexinf, indexsup, i;
+  gp_Vec           tgt, vecref, vectest, vtestb, vecregard, d1u, d1v;
+  gp_Pnt           pcour;
+  gp_Pnt2d         p2d;
+  gp_Vec2d         d2d;
+  bool found, ok = false, toutvu, solution;
+  double    paramp = 0., paraminf, paramsup, toler;
 
   if (Line.TypeContour() != Contap_Restriction)
   {
@@ -1138,13 +1138,13 @@ void ComputeInternalPointsOnRstr(Contap_Line&         Line,
   const occ::handle<Adaptor2d_Curve2d>& thearc = Line.Arc();
 
   const occ::handle<Adaptor3d_Surface>& Surf = SFunc.Surface();
-  Contap_TFunction                      TypeFunc(SFunc.FunctionType());
+  Contap_TFunction                 TypeFunc(SFunc.FunctionType());
 
   int Nbpnts = Contap_HContTool::NbSamplesOnArc(thearc);
-  indexinf   = 1;
-  vecregard  = SFunc.Direction();
-  toler      = Contap_HCurve2dTool::Resolution(thearc, Precision::Confusion());
-  found      = false;
+  indexinf                = 1;
+  vecregard               = SFunc.Direction();
+  toler                   = Contap_HCurve2dTool::Resolution(thearc, Precision::Confusion());
+  found                   = false;
 
   do
   {
@@ -1280,8 +1280,8 @@ void ComputeInternalPointsOnRstr(Contap_Line&         Line,
 
 void ComputeInternalPoints(Contap_Line&         Line,
                            Contap_SurfFunction& SFunc,
-                           const double         ureso,
-                           const double         vreso)
+                           const double  ureso,
+                           const double  vreso)
 
 {
   // On recherche les points ou la tangente a la ligne de contour et
@@ -1289,11 +1289,11 @@ void ComputeInternalPoints(Contap_Line&         Line,
   // 1ere etape : recheche de changement de signe.
   // 2eme etape : localisation de la solution par simili dichotomie
 
-  int    indexinf, indexsup, index;
-  gp_Vec tgt, vecref, vectest, vtestb, vecregard;
+  int indexinf, indexsup, index;
+  gp_Vec           tgt, vecref, vectest, vtestb, vecregard;
   // gp_Pnt pprec,pcour;
-  bool   found, ok = false, toutvu, solution;
-  double paramp = 0., U, V;
+  bool found, ok = false, toutvu, solution;
+  double    paramp = 0., U, V;
 
   math_Vector XInf(1, 2), XSup(1, 2), X(1, 2), F(1, 1);
   math_Matrix DF(1, 1, 1, 2);
@@ -1304,9 +1304,9 @@ void ComputeInternalPoints(Contap_Line&         Line,
     return;
   }
 
-  int                                   Nbpnts = Line.NbPnts();
+  int                 Nbpnts = Line.NbPnts();
   const occ::handle<Adaptor3d_Surface>& Surf   = SFunc.Surface();
-  Contap_TFunction                      TypeFunc(SFunc.FunctionType());
+  Contap_TFunction                 TypeFunc(SFunc.FunctionType());
 
   // clang-format off
   toler(1) = ureso; //-- Trop long !!! Adaptor3d_HSurfaceTool::UResolution(Surf,SFunc.Tolerance());
@@ -1388,8 +1388,8 @@ void ComputeInternalPoints(Contap_Line&         Line,
           // Selecting the middle point between XInf and XSup leads situation, where X values almost
           // do not change. To prevent this situation, select shifted point instead of middle.
           const double aCoef = 2. / 3.;
-          X(1)               = XInf(1) + aCoef * (XSup(1) - XInf(1));
-          X(2)               = XInf(2) + aCoef * (XSup(2) - XInf(2));
+          X(1)                      = XInf(1) + aCoef * (XSup(1) - XInf(1));
+          X(2)                      = XInf(2) + aCoef * (XSup(2) - XInf(2));
           rsnld.Perform(SFunc, X, infb, supb);
 
           if (!rsnld.IsDone())
@@ -1539,15 +1539,15 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
   done = false;
   slin.Clear();
 
-  int                i, j, k, Nbvt1, Nbvt2, ivt1, ivt2;
-  int                NbPointRst, NbPointIns;
-  int                Nblines, Nbpts, indfirst, indlast;
-  double             U, V;
+  int   i, j, k, Nbvt1, Nbvt2, ivt1, ivt2;
+  int   NbPointRst, NbPointIns;
+  int   Nblines, Nbpts, indfirst, indlast;
+  double      U, V;
   gp_Pnt2d           pt2d;
   gp_Vec2d           d2d;
   gp_Pnt             ptonsurf;
   gp_Vec             d1u, d1v, normale, tgtrst, tgline;
-  double             currentparam;
+  double      currentparam;
   IntSurf_Transition TLine, TArc;
 
   Contap_Line                    theline;
@@ -1571,8 +1571,8 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
   //-- le 23 janvier 98 0.05 -> 0.01
 
   //-- ******************************************************************************** Janvier 98
-  Bnd_Box B1;
-  bool    Box1OK = true;
+  Bnd_Box          B1;
+  bool Box1OK = true;
 
   double Uinf = Surf->FirstUParameter();
   double Vinf = Surf->FirstVParameter();
@@ -1629,7 +1629,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
 
   NbPointRst = solrst.NbPoints();
   NCollection_Sequence<IntSurf_PathPoint> seqpdep;
-  NCollection_Array1<int>                 Destination(1, NbPointRst + 1);
+  NCollection_Array1<int>     Destination(1, NbPointRst + 1);
   Destination.Init(0);
   if (NbPointRst != 0)
   {
@@ -1684,7 +1684,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
   if (seqpdep.Length() != 0 || seqpins.Length() != 0)
   {
 
-    bool               theToFillHoles = true;
+    bool   theToFillHoles = true;
     Contap_TheIWalking iwalk(Preci, Fleche, Pas, theToFillHoles);
     iwalk.Perform(seqpdep, seqpins, mySFunc, Surf);
     if (!iwalk.IsDone())
@@ -1695,9 +1695,9 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
     Nblines = iwalk.NbLines();
     for (j = 1; j <= Nblines; j++)
     {
-      IntSurf_TypeTrans                                 TypeTransOnS = IntSurf_Undecided;
+      IntSurf_TypeTrans                            TypeTransOnS = IntSurf_Undecided;
       const occ::handle<Contap_TheIWLineOfTheIWalking>& iwline       = iwalk.Value(j);
-      Nbpts                                                          = iwline->NbPoints();
+      Nbpts                                                     = iwline->NbPoints();
       theline.SetLineOn2S(iwline->Line());
 
       // jag 941018 On calcule une seule fois la transition
@@ -1716,7 +1716,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
       {
         indfirst                         = iwline->FirstPointIndex();
         const IntSurf_PathPoint& PPoint  = seqpdep(indfirst);
-        int                      themult = PPoint.Multiplicity();
+        int         themult = PPoint.Multiplicity();
         for (i = NbPointRst; i >= 1; i--)
         {
           if (Destination(i) == indfirst)
@@ -1726,7 +1726,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
             ptdeb.SetParameter(1.0);
 
             const Contap_ThePathPointOfTheSearch& PStart     = solrst.Point(i);
-            const occ::handle<Adaptor2d_Curve2d>& currentarc = PStart.Arc();
+            const occ::handle<Adaptor2d_Curve2d>&      currentarc = PStart.Arc();
             currentparam                                     = PStart.Parameter();
             if (!iwline->IsTangentAtBegining())
             {
@@ -1768,7 +1768,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
       {
         indlast                          = iwline->LastPointIndex();
         const IntSurf_PathPoint& PPoint  = seqpdep(indlast);
-        int                      themult = PPoint.Multiplicity();
+        int         themult = PPoint.Multiplicity();
         for (i = NbPointRst; i >= 1; i--)
         {
           if (Destination(i) == indlast)
@@ -1777,7 +1777,7 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
             ptfin.SetValue(PPoint.Value(), U, V);
             ptfin.SetParameter((double)(Nbpts));
             const Contap_ThePathPointOfTheSearch& PStart     = solrst.Point(i);
-            const occ::handle<Adaptor2d_Curve2d>& currentarc = PStart.Arc();
+            const occ::handle<Adaptor2d_Curve2d>&      currentarc = PStart.Arc();
             currentparam                                     = PStart.Parameter();
 
             if (!iwline->IsTangentAtEnd())
@@ -1884,15 +1884,15 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
           {
             double Up, Vp;
             ptvt.Parameters(Up, Vp);
-            gp_Pnt2d toproj(Up, Vp);
-            bool     projok;
+            gp_Pnt2d         toproj(Up, Vp);
+            bool projok;
             for (k = 1; k <= Nblines; k++)
             {
               if (slin(k).TypeContour() == Contap_Restriction)
               {
                 const occ::handle<Adaptor2d_Curve2d>& thearc = slin(k).Arc();
-                double                                paramproj;
-                gp_Pnt2d                              Ptproj;
+                double                    paramproj;
+                gp_Pnt2d                         Ptproj;
                 projok = Contap_HContTool::Project(thearc, toproj, paramproj, Ptproj);
 
                 if (projok)
@@ -1959,17 +1959,17 @@ void Contap_Contour::Perform(const occ::handle<Adaptor3d_TopolTool>& Domain)
   done = true;
 }
 
-static bool FindLine(Contap_Line&                          Line,
-                     const occ::handle<Adaptor3d_Surface>& Surf,
-                     const gp_Pnt2d&                       Pt2d,
-                     gp_Pnt&                               Ptref,
-                     double&                               Paramin,
-                     gp_Vec&                               Tgmin,
-                     gp_Vec&                               Norm)
+static bool FindLine(Contap_Line&                     Line,
+                                 const occ::handle<Adaptor3d_Surface>& Surf,
+                                 const gp_Pnt2d&                  Pt2d,
+                                 gp_Pnt&                          Ptref,
+                                 double&                   Paramin,
+                                 gp_Vec&                          Tgmin,
+                                 gp_Vec&                          Norm)
 {
   //  int i;
-  gp_Pnt pt, ptmin;
-  gp_Vec tg;
+  gp_Pnt        pt, ptmin;
+  gp_Vec        tg;
   double para, dist;
   double dismin = RealLast();
 
@@ -2006,9 +2006,9 @@ static bool FindLine(Contap_Line&                          Line,
   }
 }
 
-static void PutPointsOnLine(const Contap_TheSearch&               solrst,
+static void PutPointsOnLine(const Contap_TheSearch&          solrst,
                             const occ::handle<Adaptor3d_Surface>& Surf,
-                            NCollection_Sequence<Contap_Line>&    slin)
+                            NCollection_Sequence<Contap_Line>&        slin)
 
 {
   int i, l; //,index;
@@ -2017,13 +2017,13 @@ static void PutPointsOnLine(const Contap_TheSearch&               solrst,
   double theparam;
 
   IntSurf_Transition TLine, TArc;
-  bool               goon;
+  bool   goon;
 
   gp_Pnt2d pt2d;
   gp_Vec2d d2d;
 
-  gp_Pnt ptonsurf;
-  gp_Vec vectg, normale, tgtrst;
+  gp_Pnt        ptonsurf;
+  gp_Vec        vectg, normale, tgtrst;
   double paramlin = 0.0;
 
   int nbLin = slin.Length();
@@ -2034,7 +2034,7 @@ static void PutPointsOnLine(const Contap_TheSearch&               solrst,
     {
 
       const Contap_ThePathPointOfTheSearch& PStart = solrst.Point(i);
-      const occ::handle<Adaptor2d_Curve2d>& thearc = PStart.Arc();
+      const occ::handle<Adaptor2d_Curve2d>&      thearc = PStart.Arc();
       theparam                                     = PStart.Parameter();
 
       Contap_HCurve2dTool::D1(thearc, theparam, pt2d, d2d);
@@ -2094,9 +2094,9 @@ static void PutPointsOnLine(const Contap_TheSearch&               solrst,
 IntSurf_TypeTrans ComputeTransitionOngpLine(Contap_SurfFunction& SFunc, const gp_Lin& L)
 {
   const occ::handle<Adaptor3d_Surface>& Surf = SFunc.Surface();
-  GeomAbs_SurfaceType                   typS = Adaptor3d_HSurfaceTool::GetType(Surf);
-  gp_Pnt                                P;
-  gp_Vec                                T;
+  GeomAbs_SurfaceType              typS = Adaptor3d_HSurfaceTool::GetType(Surf);
+  gp_Pnt                           P;
+  gp_Vec                           T;
   ElCLib::D1(0.0, L, P, T);
   double u = 0., v = 0.;
   switch (typS)
@@ -2122,9 +2122,9 @@ IntSurf_TypeTrans ComputeTransitionOngpLine(Contap_SurfFunction& SFunc, const gp
 IntSurf_TypeTrans ComputeTransitionOngpCircle(Contap_SurfFunction& SFunc, const gp_Circ& C)
 {
   const occ::handle<Adaptor3d_Surface>& Surf = SFunc.Surface();
-  GeomAbs_SurfaceType                   typS = Adaptor3d_HSurfaceTool::GetType(Surf);
-  gp_Pnt                                P;
-  gp_Vec                                T;
+  GeomAbs_SurfaceType              typS = Adaptor3d_HSurfaceTool::GetType(Surf);
+  gp_Pnt                           P;
+  gp_Vec                           T;
   ElCLib::D1(0.0, C, P, T);
   double u = 0., v = 0.;
   switch (typS)
@@ -2158,11 +2158,11 @@ void Contap_Contour::PerformAna(const occ::handle<Adaptor3d_TopolTool>& Domain)
   int nbCont, nbPointRst, i;
   // gp_Circ cirsol;
   // gp_Lin linsol;
-  Contap_ContAna                        contana;
-  Contap_Line                           theline;
+  Contap_ContAna                   contana;
+  Contap_Line                      theline;
   const occ::handle<Adaptor3d_Surface>& Surf = mySFunc.Surface();
-  Contap_TFunction                      TypeFunc(mySFunc.FunctionType());
-  bool                                  PerformSolRst = true;
+  Contap_TFunction                 TypeFunc(mySFunc.FunctionType());
+  bool                 PerformSolRst = true;
 
   GeomAbs_SurfaceType typS = Adaptor3d_HSurfaceTool::GetType(Surf);
 
@@ -2193,7 +2193,7 @@ void Contap_Contour::PerformAna(const occ::handle<Adaptor3d_TopolTool>& Domain)
         }
         break;
         case Contap_DraftStd: {
-          gp_Dir Dirpln(pl.Axis().Direction());
+          gp_Dir        Dirpln(pl.Axis().Direction());
           double Sina = std::sin(mySFunc.Angle());
           if (std::abs(mySFunc.Direction().Dot(Dirpln) + Sina) > // voir SurfFunction
               Precision::Angular())
@@ -2358,7 +2358,7 @@ void Contap_Contour::PerformAna(const occ::handle<Adaptor3d_TopolTool>& Domain)
 
     //-- lbr
     // bool oneremov;
-    int                       nblinto = slin.Length();
+    int          nblinto = slin.Length();
     NCollection_Sequence<int> SeqToDestroy;
 
     //-- std::cout<<" Construct Contour_3   nblin = "<<nblinto<<std::endl;

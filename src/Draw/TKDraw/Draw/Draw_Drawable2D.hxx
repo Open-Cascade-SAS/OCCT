@@ -30,6 +30,7 @@ public:
   Standard_EXPORT virtual bool Is3D() const override;
 
   DEFINE_STANDARD_RTTIEXT(Draw_Drawable2D, Draw_Drawable3D)
+
 };
 
 #endif // _Draw_Drawable2D_HeaderFile

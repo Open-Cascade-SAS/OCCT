@@ -73,8 +73,8 @@ struct Graphic3d_BufferRange
 
     const int aStart = (std::min)(Start, theRange.Start);
     const int aLast  = (std::max)(Upper(), theRange.Upper());
-    Start            = aStart;
-    Length           = aLast - aStart + 1;
+    Start                         = aStart;
+    Length                        = aLast - aStart + 1;
   }
 };
 

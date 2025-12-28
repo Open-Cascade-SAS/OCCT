@@ -55,12 +55,13 @@ typedef enum
 //           theDirName may be represented as list: "/dirA/dirB /dirA/dirC"
 //=======================================================================
 
-bool Message_MsgFile::Load(const char* theDirName, const char* theFileName)
+bool Message_MsgFile::Load(const char* theDirName,
+                                       const char* theFileName)
 {
   if (!theDirName || !theFileName)
     return false;
 
-  bool                    ret = true;
+  bool        ret = true;
   TCollection_AsciiString aDirList(theDirName);
   //  Try to load from all consecutive directories in list
   for (int i = 1;; i++)
@@ -104,12 +105,12 @@ struct TCollection_String<char16_t>
 
 template <class CharType>
 static inline bool getString(CharType*&                  thePtr,
-                             TCollection_ExtendedString& theString,
-                             int&                        theLeftSpaces)
+                                         TCollection_ExtendedString& theString,
+                                         int&           theLeftSpaces)
 {
-  CharType* anEndPtr = thePtr;
-  CharType* aPtr;
-  int       aLeftSpaces;
+  CharType*        anEndPtr = thePtr;
+  CharType*        aPtr;
+  int aLeftSpaces;
 
   do
   {
@@ -165,7 +166,7 @@ static inline bool loadFile(_Char* theBuffer)
   TCollection_ExtendedString aMessage, aString;
   LoadingState               aState         = MsgFile_WaitingKeyword;
   _Char*                     sCurrentString = theBuffer;
-  int                        aLeftSpaces = 0, aFirstLeftSpaces = 0;
+  int           aLeftSpaces = 0, aFirstLeftSpaces = 0;
 
   //    Take strings one-by-one; comments already screened
   while (::getString(sCurrentString, aString, aLeftSpaces))
@@ -251,16 +252,17 @@ bool Message_MsgFile::LoadFile(const char* theFileName)
   if (!anMsgFile)
     return false;
 
-  const int          aFileSize = GetFileSize(anMsgFile);
-  NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
+  const int aFileSize = GetFileSize(anMsgFile);
+  NCollection_Buffer     aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aFileSize <= 0 || !aBuffer.Allocate(aFileSize + 2))
   {
     fclose(anMsgFile);
     return false;
   }
 
-  char*     anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
-  const int nbRead      = static_cast<int>(fread(anMsgBuffer, 1, aFileSize, anMsgFile));
+  char*                  anMsgBuffer = reinterpret_cast<char*>(aBuffer.ChangeData());
+  const int nbRead =
+    static_cast<int>(fread(anMsgBuffer, 1, aFileSize, anMsgFile));
 
   fclose(anMsgFile);
   if (nbRead != aFileSize)
@@ -274,7 +276,8 @@ bool Message_MsgFile::LoadFile(const char* theFileName)
   bool isBigEndian    = (anMsgBuffer[0] == '\xfe' && anMsgBuffer[1] == '\xff');
   if (isLittleEndian || isBigEndian)
   {
-    char16_t* aUnicodeBuffer = reinterpret_cast<char16_t*>(&anMsgBuffer[2]);
+    char16_t* aUnicodeBuffer =
+      reinterpret_cast<char16_t*>(&anMsgBuffer[2]);
     // Convert Unicode representation to order adopted on current platform
 #if defined(__sparc) && defined(__sun)
     if (isLittleEndian)
@@ -283,7 +286,8 @@ bool Message_MsgFile::LoadFile(const char* theFileName)
 #endif
     {
       // Reverse the bytes throughout the buffer
-      const char16_t* const anEnd = reinterpret_cast<const char16_t*>(&anMsgBuffer[aFileSize]);
+      const char16_t* const anEnd =
+        reinterpret_cast<const char16_t*>(&anMsgBuffer[aFileSize]);
 
       for (char16_t* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
       {
@@ -300,8 +304,8 @@ bool Message_MsgFile::LoadFile(const char* theFileName)
 //=================================================================================================
 
 bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
-                                  const char* theFileName,
-                                  const char* theLangExt)
+                                              const char* theFileName,
+                                              const char* theLangExt)
 {
   TCollection_AsciiString aLangExt(theLangExt != NULL ? theLangExt : "");
   if (aLangExt.IsEmpty())
@@ -340,9 +344,10 @@ bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
 
 //=================================================================================================
 
-bool Message_MsgFile::LoadFromString(const char* theContent, const int theLength)
+bool Message_MsgFile::LoadFromString(const char* theContent,
+                                                 const int theLength)
 {
-  int                aStringSize = theLength >= 0 ? theLength : (int)strlen(theContent);
+  int aStringSize = theLength >= 0 ? theLength : (int)strlen(theContent);
   NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aStringSize <= 0 || !aBuffer.Allocate(aStringSize + 2))
   {
@@ -362,7 +367,7 @@ bool Message_MsgFile::LoadFromString(const char* theContent, const int theLength
 //           already exists in the table
 //=======================================================================
 bool Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKeyword,
-                             const TCollection_ExtendedString& theMessage)
+                                         const TCollection_ExtendedString& theMessage)
 {
   Message_DataMapOfExtendedString& aDataMap = ::msgsDataMap();
 

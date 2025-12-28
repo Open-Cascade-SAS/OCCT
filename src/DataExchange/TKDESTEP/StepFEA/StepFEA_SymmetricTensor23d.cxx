@@ -27,7 +27,8 @@ StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d() {}
 
 //=================================================================================================
 
-int StepFEA_SymmetricTensor23d::CaseNum(const occ::handle<Standard_Transient>& /*ent*/) const
+int StepFEA_SymmetricTensor23d::CaseNum(
+  const occ::handle<Standard_Transient>& /*ent*/) const
 {
   return 0;
 }
@@ -104,8 +105,7 @@ void StepFEA_SymmetricTensor23d::SetOrthotropicSymmetricTensor23d(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::OrthotropicSymmetricTensor23d()
-  const
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::OrthotropicSymmetricTensor23d() const
 {
   occ::handle<StepFEA_SymmetricTensor23dMember> SelMem =
     occ::down_cast<StepFEA_SymmetricTensor23dMember>(Value());
@@ -138,8 +138,7 @@ void StepFEA_SymmetricTensor23d::SetAnisotropicSymmetricTensor23d(
 
 //=================================================================================================
 
-occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::AnisotropicSymmetricTensor23d()
-  const
+occ::handle<NCollection_HArray1<double>> StepFEA_SymmetricTensor23d::AnisotropicSymmetricTensor23d() const
 {
   occ::handle<StepFEA_SymmetricTensor23dMember> SelMem =
     occ::down_cast<StepFEA_SymmetricTensor23dMember>(Value());

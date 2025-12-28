@@ -23,8 +23,8 @@ VrmlConverter_IsoAspect::VrmlConverter_IsoAspect()
 }
 
 VrmlConverter_IsoAspect::VrmlConverter_IsoAspect(const occ::handle<Vrml_Material>& aMaterial,
-                                                 const bool                        OnOff,
-                                                 const int                         aNumber)
+                                                 const bool       OnOff,
+                                                 const int       aNumber)
     : VrmlConverter_LineAspect(aMaterial, OnOff)
 {
   myNumber = aNumber;

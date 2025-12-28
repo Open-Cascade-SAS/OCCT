@@ -47,10 +47,10 @@ Contap_SurfFunction::Contap_SurfFunction()
 void Contap_SurfFunction::Set(const occ::handle<Adaptor3d_Surface>& S)
 {
   mySurf = S;
-  int    i;
-  int    nbs = Contap_HContTool::NbSamplePoints(S);
-  double U, V;
-  gp_Vec norm;
+  int i;
+  int nbs = Contap_HContTool::NbSamplePoints(S);
+  double    U, V;
+  gp_Vec           norm;
   if (nbs > 0)
   {
     myMean = 0.;
@@ -155,7 +155,9 @@ bool Contap_SurfFunction::Derivatives(const math_Vector& X, math_Matrix& Grad)
   return true;
 }
 
-bool Contap_SurfFunction::Values(const math_Vector& X, math_Vector& F, math_Matrix& Grad)
+bool Contap_SurfFunction::Values(const math_Vector& X,
+                                             math_Vector&       F,
+                                             math_Matrix&       Grad)
 {
   //  gp_Vec d2u,d2v,d2uv;
 
@@ -259,7 +261,7 @@ bool Contap_SurfFunction::IsTangent()
       }
       derived = true;
     }
-    tangent  = false;
+    tangent         = false;
     double D = std::sqrt(Fpu * Fpu + Fpv * Fpv);
 
     if (D <= gp::Resolution())

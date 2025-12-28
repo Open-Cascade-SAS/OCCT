@@ -34,7 +34,9 @@
 //=======================================================================
 // function : NewDirectory (DF, entry )
 //=======================================================================
-static int DDataStd_NewDirectory(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_NewDirectory(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb != 3)
   {
@@ -53,7 +55,9 @@ static int DDataStd_NewDirectory(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : AddDirectory (DF, entry )
 //=======================================================================
-static int DDataStd_AddDirectory(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_AddDirectory(Draw_Interpretor& di,
+                                              int  nb,
+                                              const char**      arg)
 {
   if (nb != 3)
   {
@@ -73,7 +77,7 @@ static int DDataStd_AddDirectory(Draw_Interpretor& di, int nb, const char** arg)
   if (TDataStd_Directory::Find(label, A))
   {
     occ::handle<TDataStd_Directory> Dir = TDataStd_Directory::AddDirectory(A);
-    TCollection_AsciiString         entry;
+    TCollection_AsciiString    entry;
     TDF_Tool::Entry(Dir->Label(), entry);
     di << entry.ToCString() << " "; // return a label to draw
     return 0;
@@ -85,7 +89,9 @@ static int DDataStd_AddDirectory(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : MakeObjectLabel (DF, entry )
 //=======================================================================
-static int DDataStd_MakeObjectLabel(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_MakeObjectLabel(Draw_Interpretor& di,
+                                                 int  nb,
+                                                 const char**      arg)
 {
   if (nb != 3)
   {
@@ -118,7 +124,9 @@ static int DDataStd_MakeObjectLabel(Draw_Interpretor& di, int nb, const char** a
 // purpose  : NewNoteBook (DF, entry)
 //=======================================================================
 
-static int DDataStd_NewNoteBook(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_NewNoteBook(Draw_Interpretor& di,
+                                             int  nb,
+                                             const char**      arg)
 {
   if (nb == 3)
   {
@@ -137,7 +145,9 @@ static int DDataStd_NewNoteBook(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : NewShape (DF, entry,  [in_shape] )
 //=======================================================================
-static int DDataStd_NewShape(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_NewShape(Draw_Interpretor& di,
+                                          int  nb,
+                                          const char**      arg)
 {
   // di << "nb = " <<nb   << "\n";
   if (nb < 3)
@@ -168,7 +178,9 @@ static int DDataStd_NewShape(Draw_Interpretor& di, int nb, const char** arg)
 //=======================================================================
 // function : GetShape2 (DF, entry, out_shape )
 //=======================================================================
-static int DDataStd_GetShape2(Draw_Interpretor& di, int nb, const char** arg)
+static int DDataStd_GetShape2(Draw_Interpretor& di,
+                                           int  nb,
+                                           const char**      arg)
 {
   if (nb < 4)
   {

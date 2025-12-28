@@ -27,8 +27,8 @@ StepKinematics_UniversalPairValue::StepKinematics_UniversalPairValue() {}
 void StepKinematics_UniversalPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                                     theFirstRotationAngle,
-  const double                                     theSecondRotationAngle)
+  const double                         theFirstRotationAngle,
+  const double                         theSecondRotationAngle)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 
@@ -46,7 +46,8 @@ double StepKinematics_UniversalPairValue::FirstRotationAngle() const
 
 //=================================================================================================
 
-void StepKinematics_UniversalPairValue::SetFirstRotationAngle(const double theFirstRotationAngle)
+void StepKinematics_UniversalPairValue::SetFirstRotationAngle(
+  const double theFirstRotationAngle)
 {
   myFirstRotationAngle = theFirstRotationAngle;
 }
@@ -60,7 +61,8 @@ double StepKinematics_UniversalPairValue::SecondRotationAngle() const
 
 //=================================================================================================
 
-void StepKinematics_UniversalPairValue::SetSecondRotationAngle(const double theSecondRotationAngle)
+void StepKinematics_UniversalPairValue::SetSecondRotationAngle(
+  const double theSecondRotationAngle)
 {
   mySecondRotationAngle = theSecondRotationAngle;
 }

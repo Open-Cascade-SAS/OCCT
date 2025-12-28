@@ -40,11 +40,11 @@ const Standard_GUID& TDataStd_RealArray::GetID()
 // function : SetAttr
 // purpose  : Implements Set functionality
 //=======================================================================
-static occ::handle<TDataStd_RealArray> SetAttr(const TDF_Label&     label,
-                                               const int            lower,
-                                               const int            upper,
-                                               const bool           isDelta,
-                                               const Standard_GUID& theGuid)
+static occ::handle<TDataStd_RealArray> SetAttr(const TDF_Label&       label,
+                                          const int lower,
+                                          const int upper,
+                                          const bool isDelta,
+                                          const Standard_GUID&   theGuid)
 {
   occ::handle<TDataStd_RealArray> A;
   if (!label.FindAttribute(theGuid, A))
@@ -81,10 +81,10 @@ void TDataStd_RealArray::Init(const int lower, const int upper)
 
 //=================================================================================================
 
-occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label& label,
-                                                        const int        lower,
-                                                        const int        upper,
-                                                        const bool       isDelta)
+occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label&       label,
+                                                   const int lower,
+                                                   const int upper,
+                                                   const bool isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
@@ -94,11 +94,11 @@ occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label& label,
 // purpose  : Set user defined attribute with specific ID
 //=======================================================================
 
-occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label&     label,
-                                                        const Standard_GUID& theGuid,
-                                                        const int            lower,
-                                                        const int            upper,
-                                                        const bool           isDelta)
+occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label&       label,
+                                                   const Standard_GUID&   theGuid,
+                                                   const int lower,
+                                                   const int upper,
+                                                   const bool isDelta)
 {
   return SetAttr(label, lower, upper, isDelta, theGuid);
 }
@@ -160,18 +160,18 @@ int TDataStd_RealArray::Length(void) const
 //=======================================================================
 
 void TDataStd_RealArray::ChangeArray(const occ::handle<NCollection_HArray1<double>>& newArray,
-                                     const bool                                      isCheckItems)
+                                     const bool               isCheckItems)
 {
-  int  aLower    = newArray->Lower();
-  int  anUpper   = newArray->Upper();
+  int aLower    = newArray->Lower();
+  int anUpper   = newArray->Upper();
   bool aDimEqual = false;
-  int  i;
+  int i;
 
   if (!myValue.IsNull())
   {
     if (Lower() == aLower && Upper() == anUpper)
     {
-      aDimEqual    = true;
+      aDimEqual                = true;
       bool isEqual = true;
       if (isCheckItems)
       {
@@ -234,7 +234,7 @@ occ::handle<TDF_Attribute> TDataStd_RealArray::NewEmpty() const
 
 void TDataStd_RealArray::Restore(const occ::handle<TDF_Attribute>& With)
 {
-  int                             i, lower, upper;
+  int           i, lower, upper;
   occ::handle<TDataStd_RealArray> anArray = occ::down_cast<TDataStd_RealArray>(With);
   if (!anArray->myValue.IsNull())
   {
@@ -294,7 +294,8 @@ occ::handle<TDF_DeltaOnModification> TDataStd_RealArray::DeltaOnModification(
   const occ::handle<TDF_Attribute>& OldAtt) const
 {
   if (myIsDelta)
-    return new TDataStd_DeltaOnModificationOfRealArray(occ::down_cast<TDataStd_RealArray>(OldAtt));
+    return new TDataStd_DeltaOnModificationOfRealArray(
+      occ::down_cast<TDataStd_RealArray>(OldAtt));
   else
     return new TDF_DefaultDeltaOnModification(OldAtt);
 }

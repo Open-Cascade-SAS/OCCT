@@ -16,6 +16,7 @@
 
 #include <TopOpeBRepDS_GeometryData.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 
 //=================================================================================================
@@ -47,16 +48,14 @@ void TopOpeBRepDS_GeometryData::Assign(const TopOpeBRepDS_GeometryData& Other)
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::
-  Interferences() const
+const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::Interferences() const
 {
   return myInterferences;
 }
 
 //=================================================================================================
 
-NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::
-  ChangeInterferences()
+NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& TopOpeBRepDS_GeometryData::ChangeInterferences()
 {
   return myInterferences;
 }

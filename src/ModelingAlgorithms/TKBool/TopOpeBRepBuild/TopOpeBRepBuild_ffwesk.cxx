@@ -44,11 +44,11 @@ bool TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1, const TopoDS_Shape&
 
 //=================================================================================================
 
-void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape>& LS1,
-                                             const NCollection_List<TopoDS_Shape>& LS2,
-                                             const TopOpeBRepBuild_GTopo&          G1,
-                                             TopOpeBRepBuild_WireEdgeSet&          WES,
-                                             const int                             Kfill)
+void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape>&  LS1,
+                                             const NCollection_List<TopoDS_Shape>&  LS2,
+                                             const TopOpeBRepBuild_GTopo& G1,
+                                             TopOpeBRepBuild_WireEdgeSet& WES,
+                                             const int       Kfill)
 {
   if (LS1.IsEmpty())
     return;
@@ -63,7 +63,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
   int iF1 =
 #endif
     BDS.Shape(F1);
-  int                iref = BDS.SameDomainRef(F1);
+  int   iref = BDS.SameDomainRef(F1);
   TopAbs_Orientation oref = BDS.Shape(iref).Orientation();
 
 #ifdef OCCT_DEBUG
@@ -76,10 +76,10 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     debffwesk(iF1);
 #endif
 
-  TopAbs_State                             TB;
-  TopOpeBRepBuild_GTopo                    G;
+  TopAbs_State                       TB;
+  TopOpeBRepBuild_GTopo              G;
   NCollection_List<TopoDS_Shape>::Iterator it;
-  bool                                     gistoreverse1;
+  bool                   gistoreverse1;
 
   G             = G1;
   gistoreverse1 = G.IsToReverse1();
@@ -107,8 +107,8 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S       = it.Value();
-    int                 iS      = myDataStructure->Shape(S);
-    bool                tomerge = !IsMerged(S, TB);
+    int    iS      = myDataStructure->Shape(S);
+    bool    tomerge = !IsMerged(S, TB);
     if (!tomerge)
       continue;
 
@@ -131,9 +131,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:36 2002 End
     TopAbs_Orientation  oS   = BDS.Shape(iS).Orientation();
     TopOpeBRepDS_Config conf = BDS.SameDomainOri(S);
-    bool                b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
-    bool                b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
-    bool                b    = b1 || b2;
+    bool    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
+    bool    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
+    bool    b    = b1 || b2;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:40:01 2002 Begin
     //     if (b) {
     //       rev = true;
@@ -195,8 +195,8 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
   for (; it.More(); it.Next())
   {
     const TopoDS_Shape& S       = it.Value();
-    int                 iS      = myDataStructure->Shape(S);
-    bool                tomerge = !IsMerged(S, TB);
+    int    iS      = myDataStructure->Shape(S);
+    bool    tomerge = !IsMerged(S, TB);
     if (!tomerge)
       continue;
 
@@ -211,9 +211,9 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const NCollection_List<TopoDS_Shape
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:38:30 2002 End
     TopAbs_Orientation  oS   = BDS.Shape(iS).Orientation();
     TopOpeBRepDS_Config conf = BDS.SameDomainOri(S);
-    bool                b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
-    bool                b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
-    bool                b    = b1 || b2;
+    bool    b1   = (conf == TopOpeBRepDS_DIFFORIENTED && (oS == oref));
+    bool    b2   = (conf == TopOpeBRepDS_SAMEORIENTED && (oS != oref));
+    bool    b    = b1 || b2;
     //  Modified by Sergey KHROMOV - Sat Apr 27 14:39:04 2002 Begin
     //     if (b) {
     //       rev = true;

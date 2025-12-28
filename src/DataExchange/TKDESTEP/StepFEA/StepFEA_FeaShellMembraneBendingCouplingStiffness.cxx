@@ -32,7 +32,7 @@ StepFEA_FeaShellMembraneBendingCouplingStiffness::StepFEA_FeaShellMembraneBendin
 
 void StepFEA_FeaShellMembraneBendingCouplingStiffness::Init(
   const occ::handle<TCollection_HAsciiString>& aRepresentationItem_Name,
-  const StepFEA_SymmetricTensor42d&            aFeaConstants)
+  const StepFEA_SymmetricTensor42d&       aFeaConstants)
 {
   StepFEA_FeaMaterialPropertyRepresentationItem::Init(aRepresentationItem_Name);
 

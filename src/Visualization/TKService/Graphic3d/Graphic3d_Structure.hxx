@@ -60,7 +60,10 @@ public:
   //! The structure itself is conserved.
   //! The transformation and the attributes of <me> are conserved.
   //! The childs of <me> are conserved.
-  virtual void Clear(const bool WithDestruction = true) { clear(WithDestruction); }
+  virtual void Clear(const bool WithDestruction = true)
+  {
+    clear(WithDestruction);
+  }
 
   //! Suppresses the structure <me>.
   //! It will be erased at the next screen update.
@@ -213,10 +216,7 @@ public:
   Standard_EXPORT void ReCompute(const occ::handle<Graphic3d_DataStructureManager>& aProjector);
 
   //! Returns the groups sequence included in this structure.
-  const NCollection_Sequence<occ::handle<Graphic3d_Group>>& Groups() const
-  {
-    return myCStructure->Groups();
-  }
+  const NCollection_Sequence<occ::handle<Graphic3d_Group>>& Groups() const { return myCStructure->Groups(); }
 
   //! Returns the current number of groups in this structure.
   int NumberOfGroups() const { return myCStructure->Groups().Length(); }
@@ -244,7 +244,10 @@ public:
   bool IsDeleted() const { return myCStructure.IsNull(); }
 
   //! Returns the display indicator for this structure.
-  virtual bool IsDisplayed() const { return !myCStructure.IsNull() && myCStructure->stick != 0; }
+  virtual bool IsDisplayed() const
+  {
+    return !myCStructure.IsNull() && myCStructure->stick != 0;
+  }
 
   //! Returns true if the structure <me> is empty.
   //! Warning: A structure is empty if :
@@ -270,7 +273,10 @@ public:
   }
 
   //! Returns the visibility indicator for this structure.
-  bool IsVisible() const { return !myCStructure.IsNull() && myCStructure->visible != 0; }
+  bool IsVisible() const
+  {
+    return !myCStructure.IsNull() && myCStructure->visible != 0;
+  }
 
   //! Returns the coordinates of the boundary box of the structure <me>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, the method returns actual graphical
@@ -281,7 +287,8 @@ public:
   //! not taking into account infinite helper elements).
   //! Warning: If the structure <me> is empty then the empty box is returned,
   //! If the structure <me> is infinite then the whole box is returned.
-  Standard_EXPORT Bnd_Box MinMaxValues(const bool theToIgnoreInfiniteFlag = false) const;
+  Standard_EXPORT Bnd_Box
+    MinMaxValues(const bool theToIgnoreInfiniteFlag = false) const;
 
   //! Returns the visualisation mode for the structure <me>.
   Graphic3d_TypeOfStructure Visual() const { return myVisual; }
@@ -300,8 +307,8 @@ public:
   //! <AStructure2> and if the
   //! TypeOfConnection == TOC_ANCESTOR
   Standard_EXPORT static bool AcceptConnection(Graphic3d_Structure*       theStructure1,
-                                               Graphic3d_Structure*       theStructure2,
-                                               Graphic3d_TypeOfConnection theType);
+                                                           Graphic3d_Structure*       theStructure2,
+                                                           Graphic3d_TypeOfConnection theType);
 
   //! Returns the group of structures to which <me> is connected.
   Standard_EXPORT void Ancestors(NCollection_Map<occ::handle<Graphic3d_Structure>>& SG) const;
@@ -316,7 +323,7 @@ public:
   //! contains a cycle and <WithCheck> is true;
   Standard_EXPORT void Connect(Graphic3d_Structure*       theStructure,
                                Graphic3d_TypeOfConnection theType,
-                               bool                       theWithCheck = false);
+                               bool           theWithCheck = false);
 
   Standard_DEPRECATED("Deprecated short-cut")
   void Connect(const occ::handle<Graphic3d_Structure>& thePrs)
@@ -366,20 +373,19 @@ public:
   //! Hidden parts stored in this structure are valid if:
   //! 1) the owner is defined.
   //! 2) they are not invalid.
-  bool HLRValidation() const { return myOwner != NULL && myCStructure->HLRValidation != 0; }
+  bool HLRValidation() const
+  {
+    return myOwner != NULL && myCStructure->HLRValidation != 0;
+  }
 
   //! Return local transformation.
-  const occ::handle<TopLoc_Datum3D>& Transformation() const
-  {
-    return myCStructure->Transformation();
-  }
+  const occ::handle<TopLoc_Datum3D>& Transformation() const { return myCStructure->Transformation(); }
 
   //! Modifies the current local transformation
   Standard_EXPORT void SetTransformation(const occ::handle<TopLoc_Datum3D>& theTrsf);
 
   //! Modifies the current transform persistence (pan, zoom or rotate)
-  Standard_EXPORT void SetTransformPersistence(
-    const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
+  Standard_EXPORT void SetTransformPersistence(const occ::handle<Graphic3d_TransformPers>& theTrsfPers);
 
   //! @return transform persistence of the presentable object.
   const occ::handle<Graphic3d_TransformPers>& TransformPersistence() const
@@ -437,7 +443,7 @@ public:
   //! Prints information about the network associated
   //! with the structure <AStructure>.
   Standard_EXPORT static void PrintNetwork(const occ::handle<Graphic3d_Structure>& AStructure,
-                                           const Graphic3d_TypeOfConnection        AType);
+                                           const Graphic3d_TypeOfConnection   AType);
 
   //! Suppress the structure in the list of descendants or in the list of ancestors.
   Standard_EXPORT void Remove(Graphic3d_Structure*             thePtr,
@@ -458,7 +464,8 @@ public:
   const occ::handle<Graphic3d_CStructure>& CStructure() const { return myCStructure; }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 protected:
   //! Appends new descendant structure.
@@ -488,12 +495,14 @@ private:
   Standard_EXPORT Graphic3d_BndBox4f minMaxCoord() const;
 
   //! Gets untransformed bounding box from structure.
-  Standard_EXPORT void getBox(Graphic3d_BndBox3d& theBox,
-                              const bool          theToIgnoreInfiniteFlag = false) const;
+  Standard_EXPORT void getBox(
+    Graphic3d_BndBox3d&    theBox,
+    const bool theToIgnoreInfiniteFlag = false) const;
 
   //! Adds transformed (with myCStructure->Transformation) bounding box of structure to theBox.
-  Standard_EXPORT void addTransformed(Graphic3d_BndBox3d& theBox,
-                                      const bool          theToIgnoreInfiniteFlag = false) const;
+  Standard_EXPORT void addTransformed(
+    Graphic3d_BndBox3d&    theBox,
+    const bool theToIgnoreInfiniteFlag = false) const;
 
   //! Returns the manager to which <me> is associated.
   Standard_EXPORT occ::handle<Graphic3d_StructureManager> StructureManager() const;
@@ -504,10 +513,10 @@ private:
 
 protected:
   Graphic3d_StructureManager*                  myStructureManager;
-  occ::handle<Graphic3d_CStructure>            myCStructure;
+  occ::handle<Graphic3d_CStructure>                 myCStructure;
   NCollection_IndexedMap<Graphic3d_Structure*> myAncestors;
   NCollection_IndexedMap<Graphic3d_Structure*> myDescendants;
-  void*                                        myOwner;
+  void*                             myOwner;
   Graphic3d_TypeOfStructure                    myVisual;
   Graphic3d_TypeOfStructure                    myComputeVisual;
 };

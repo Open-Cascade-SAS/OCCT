@@ -32,8 +32,8 @@ TPrsStd_AxisDriver::TPrsStd_AxisDriver() {}
 
 //=================================================================================================
 
-bool TPrsStd_AxisDriver::Update(const TDF_Label&                    aLabel,
-                                occ::handle<AIS_InteractiveObject>& anAISObject)
+bool TPrsStd_AxisDriver::Update(const TDF_Label&               aLabel,
+                                            occ::handle<AIS_InteractiveObject>& anAISObject)
 {
 
   occ::handle<TDataXtd_Axis> apAxis;
@@ -42,7 +42,7 @@ bool TPrsStd_AxisDriver::Update(const TDF_Label&                    aLabel,
     return false;
   }
 
-  gp_Lin                          lin;
+  gp_Lin                     lin;
   occ::handle<TNaming_NamedShape> NS;
   if (aLabel.FindAttribute(TNaming_NamedShape::GetID(), NS))
   {

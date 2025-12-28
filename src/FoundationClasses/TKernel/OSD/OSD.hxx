@@ -80,7 +80,8 @@ public:
   //! block that has to catch this kind of exceptions.
   //!
   //! Refer to documentation of Standard_ErrorHandler.hxx for details.
-  Standard_EXPORT static void SetSignal(OSD_SignalMode theSignalMode, bool theFloatingSignal);
+  Standard_EXPORT static void SetSignal(OSD_SignalMode   theSignalMode,
+                                        bool theFloatingSignal);
 
   //! Sets signal and FPE handlers.
   //! Short-cut for OSD::SetSignal (OSD_SignalMode_Set, theFloatingSignal).
@@ -93,8 +94,8 @@ public:
   //! This includes _set_se_translator() on Windows platform, and SetFloatingSignal().
   //! The main purpose of this method is initializing handlers for newly created threads
   //! without overriding global handlers (set by application or by OSD::SetSignal()).
-  Standard_EXPORT static void SetThreadLocalSignal(OSD_SignalMode theSignalMode,
-                                                   bool           theFloatingSignal);
+  Standard_EXPORT static void SetThreadLocalSignal(OSD_SignalMode   theSignalMode,
+                                                   bool theFloatingSignal);
 
   //! Enables / disables generation of C signal on floating point exceptions (FPE).
   //! This call does NOT register a handler for signal raised in case of FPE -
@@ -119,13 +120,15 @@ public:
   //! Converts aReal into aCstring in exponential format with a period as decimal point,
   //! no thousand separator and no grouping of digits.
   //! The conversion is independent from the current locale
-  Standard_EXPORT static bool RealToCString(const double aReal, Standard_PCharacter& aString);
+  Standard_EXPORT static bool RealToCString(const double  aReal,
+                                                        Standard_PCharacter& aString);
 
   //! Converts aCstring representing a real with a period as decimal point,
   //! no thousand separator and no grouping of digits into aReal.
   //!
   //! The conversion is independent from the current locale.
-  Standard_EXPORT static bool CStringToReal(const char* aString, double& aReal);
+  Standard_EXPORT static bool CStringToReal(const char* aString,
+                                                        double&         aReal);
 
   //! since Windows NT does not support 'SIGINT' signal like UNIX,
   //! then this method checks whether Ctrl-Break keystroke was or

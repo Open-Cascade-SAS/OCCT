@@ -46,9 +46,9 @@ public:
   /**
    * Constructor.
    */
-  inline VrmlData_IndexedLineSet(const VrmlData_Scene& theScene,
-                                 const char*           theName,
-                                 const bool            isColorPerVertex = true)
+  inline VrmlData_IndexedLineSet(const VrmlData_Scene&  theScene,
+                                 const char*            theName,
+                                 const bool isColorPerVertex = true)
       : VrmlData_Geometry(theScene, theName),
         myArrPolygons(0L),
         myArrColorInd(0L),
@@ -66,10 +66,7 @@ public:
   /**
    * Set the nodes
    */
-  inline void SetCoordinates(const occ::handle<VrmlData_Coordinate>& theCoord)
-  {
-    myCoords = theCoord;
-  }
+  inline void SetCoordinates(const occ::handle<VrmlData_Coordinate>& theCoord) { myCoords = theCoord; }
 
   /**
    * Query the Colors.
@@ -101,7 +98,8 @@ public:
    * @return
    *   number of vertice in the polygon - the dimension of outIndice array
    */
-  inline int Polygon(const int iPolygon, const int*& outIndice)
+  inline int Polygon(const int   iPolygon,
+                                  const int*& outIndice)
   {
     return *(outIndice = myArrPolygons[iPolygon])++;
   }
@@ -142,7 +140,8 @@ public:
    * @return
    *   Color value (RGB); if the color is indefinite then returns (0., 0., 0.)
    */
-  Standard_EXPORT Quantity_Color GetColor(const int iFace, const int iVertex);
+  Standard_EXPORT Quantity_Color GetColor(const int iFace,
+                                          const int iVertex);
 
   /**
    * Set the colors array of indice
@@ -172,8 +171,8 @@ public:
    * If the parameter is null, a new copied node is created. Otherwise new node
    * is not created, but rather the given one is modified.
    */
-  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(
-    const occ::handle<VrmlData_Node>& theOther) const override;
+  Standard_EXPORT virtual occ::handle<VrmlData_Node> Clone(const occ::handle<VrmlData_Node>& theOther) const
+    override;
 
   /**
    * Read the Node from input stream.
@@ -194,11 +193,11 @@ private:
   // ---------- PRIVATE FIELDS ----------
   occ::handle<VrmlData_Coordinate> myCoords;
   occ::handle<VrmlData_Color>      myColors;
-  const int**                      myArrPolygons;
-  const int**                      myArrColorInd;
-  size_t                           myNbPolygons;
-  size_t                           myNbColors;
-  bool                             myColorPerVertex;
+  const int**    myArrPolygons;
+  const int**    myArrColorInd;
+  size_t               myNbPolygons;
+  size_t               myNbColors;
+  bool            myColorPerVertex;
 
 public:
   // Declaration of CASCADE RTTI

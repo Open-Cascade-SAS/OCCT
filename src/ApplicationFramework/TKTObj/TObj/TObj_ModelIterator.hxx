@@ -62,9 +62,8 @@ protected:
   /**
    * Fields
    */
-  occ::handle<TObj_Object> myObject; //!< Current object
-  NCollection_Sequence<occ::handle<TObj_ObjectIterator>>
-    myIterSeq; //!< Sequence of iterators in model
+  occ::handle<TObj_Object>     myObject;  //!< Current object
+  NCollection_Sequence<occ::handle<TObj_ObjectIterator>> myIterSeq; //!< Sequence of iterators in model
 
 public:
   //! CASCADE RTTI

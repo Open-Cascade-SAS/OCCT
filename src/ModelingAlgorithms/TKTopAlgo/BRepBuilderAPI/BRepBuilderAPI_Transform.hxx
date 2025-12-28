@@ -57,10 +57,10 @@ public:
   //! duplication of <theShape>.
   //! If <theCopyMesh> is true, the triangulation will be copied,
   //! and the copy will be assigned to the result shape.
-  Standard_EXPORT BRepBuilderAPI_Transform(const TopoDS_Shape& theShape,
-                                           const gp_Trsf&      theTrsf,
-                                           const bool          theCopyGeom = false,
-                                           const bool          theCopyMesh = false);
+  Standard_EXPORT BRepBuilderAPI_Transform(const TopoDS_Shape&    theShape,
+                                           const gp_Trsf&         theTrsf,
+                                           const bool theCopyGeom = false,
+                                           const bool theCopyMesh = false);
 
   //! Applies the geometric transformation defined at the
   //! time of construction of this framework to the shape S.
@@ -76,22 +76,22 @@ public:
   //! Note: this framework can be reused to apply the same
   //! geometric transformation to other shapes. You only
   //! need to specify them by calling the function Perform again.
-  Standard_EXPORT void Perform(const TopoDS_Shape& theShape,
-                               const bool          theCopyGeom = false,
-                               const bool          theCopyMesh = false);
+  Standard_EXPORT void Perform(const TopoDS_Shape&    theShape,
+                               const bool theCopyGeom = false,
+                               const bool theCopyMesh = false);
 
   //! Returns the modified shape corresponding to <S>.
   Standard_EXPORT virtual TopoDS_Shape ModifiedShape(const TopoDS_Shape& S) const override;
 
   //! Returns the list of shapes modified from the shape
   //! <S>.
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Modified(const TopoDS_Shape& S)
+    override;
 
 private:
-  gp_Trsf         myTrsf;
-  TopLoc_Location myLocation;
-  bool            myUseModif;
+  gp_Trsf          myTrsf;
+  TopLoc_Location  myLocation;
+  bool myUseModif;
 };
 
 #endif // _BRepBuilderAPI_Transform_HeaderFile

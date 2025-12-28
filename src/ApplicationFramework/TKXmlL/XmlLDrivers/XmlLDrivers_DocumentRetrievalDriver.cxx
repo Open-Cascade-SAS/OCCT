@@ -90,7 +90,7 @@ static TCollection_AsciiString GetDirFromFile(const TCollection_ExtendedString& 
 {
   TCollection_AsciiString theCFile = UTL::CString(aFileName);
   TCollection_AsciiString theDirectory;
-  int                     i = theCFile.SearchFromEnd("/");
+  int        i = theCFile.SearchFromEnd("/");
 #ifdef _WIN32
   //    if(i==-1) i=theCFile.SearchFromEnd("\\");
   if (theCFile.SearchFromEnd("\\") > i)
@@ -114,7 +114,7 @@ static TCollection_AsciiString AbsolutePath(const TCollection_AsciiString& aDirP
     return aRelFilePath;
 
   TCollection_AsciiString DirPath = aDirPath, RelFilePath = aRelFilePath;
-  int                     i, len;
+  int        i, len;
 
 #ifdef _WIN32
   if (DirPath.Search(":") != 2 && (DirPath.Search("\\") != 1 || DirPath.Value(2) != '\\'))
@@ -160,11 +160,11 @@ XmlLDrivers_DocumentRetrievalDriver::XmlLDrivers_DocumentRetrievalDriver()
 
 //=================================================================================================
 
-void XmlLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString&     theFileName,
-                                               const occ::handle<CDM_Document>&      theNewDocument,
-                                               const occ::handle<CDM_Application>&   theApplication,
-                                               const occ::handle<PCDM_ReaderFilter>& theFilter,
-                                               const Message_ProgressRange&          theRange)
+void XmlLDrivers_DocumentRetrievalDriver::Read(const TCollection_ExtendedString& theFileName,
+                                               const occ::handle<CDM_Document>&       theNewDocument,
+                                               const occ::handle<CDM_Application>&    theApplication,
+                                               const occ::handle<PCDM_ReaderFilter>&  theFilter,
+                                               const Message_ProgressRange&      theRange)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myFileName     = theFileName;
@@ -228,10 +228,10 @@ void XmlLDrivers_DocumentRetrievalDriver::Read(Standard_IStream& theIStream,
 //=======================================================================
 
 void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
-  const XmlObjMgt_Element&            theElement,
+  const XmlObjMgt_Element&       theElement,
   const occ::handle<CDM_Document>&    theNewDocument,
   const occ::handle<CDM_Application>& theApplication,
-  const Message_ProgressRange&        theRange)
+  const Message_ProgressRange&   theRange)
 {
   const occ::handle<Message_Messenger> aMsgDriver = theApplication->MessageDriver();
   // 1. Read info // to be done
@@ -291,7 +291,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
             {
               OCC_CATCH_SIGNALS
               TCollection_AsciiString anInf(anInfo, '?');
-              int                     aRefCounter = anInf.Token(" ", 2).IntegerValue();
+              int        aRefCounter = anInf.Token(" ", 2).IntegerValue();
               theNewDocument->SetReferenceCounter(aRefCounter);
             }
             catch (Standard_Failure const&)
@@ -311,7 +311,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
               OCC_CATCH_SIGNALS
 
               TCollection_AsciiString anInf(anInfo, '?');
-              int                     aModCounter = anInf.Token(" ", 2).IntegerValue();
+              int        aModCounter = anInf.Token(" ", 2).IntegerValue();
               theNewDocument->SetModifications(aModCounter);
             }
             catch (Standard_Failure const&)
@@ -331,9 +331,9 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
             if (pos != -1)
             {
               // Parce RefId, DocumentVersion and FileName
-              int                        aRefId;
+              int           aRefId;
               TCollection_ExtendedString aFileName;
-              int                        aDocumentVersion;
+              int           aDocumentVersion;
 
               TCollection_ExtendedString aRest = anInfo.Split(pos);
               aRefId                           = UTL::IntegerValue(anInfo);
@@ -373,14 +373,14 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
               TCollection_ExtendedString f(aPath);
 #ifndef _WIN32
 
-              int                        i = f.SearchFromEnd("/");
+              int           i = f.SearchFromEnd("/");
               TCollection_ExtendedString n = f.Split(i);
               f.Trunc(f.Length() - 1);
               theFolder = f;
               theName   = n;
 #else
               OSD_Path                   p = UTL::Path(f);
-              char16_t                   chr;
+              char16_t      chr;
               TCollection_ExtendedString dir, dirRet, name;
 
               dir = UTL::Disk(p);
@@ -455,8 +455,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
   // 2. Read Shapes section
   if (myDrivers.IsNull())
     myDrivers = AttributeDrivers(aMsgDriver);
-  const occ::handle<XmlMDF_ADriver> aNSDriver =
-    ReadShapeSection(theElement, aMsgDriver, aPS.Next());
+  const occ::handle<XmlMDF_ADriver> aNSDriver = ReadShapeSection(theElement, aMsgDriver, aPS.Next());
   if (!aNSDriver.IsNull())
     ::take_time(0, " +++++ Fin reading Shapes :    ", aMsgDriver);
 
@@ -508,16 +507,17 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument(
 
 //=================================================================================================
 
-bool XmlLDrivers_DocumentRetrievalDriver::MakeDocument(const XmlObjMgt_Element&         theElement,
-                                                       const occ::handle<CDM_Document>& theTDoc,
-                                                       const Message_ProgressRange&     theRange)
+bool XmlLDrivers_DocumentRetrievalDriver::MakeDocument(
+  const XmlObjMgt_Element&     theElement,
+  const occ::handle<CDM_Document>&  theTDoc,
+  const Message_ProgressRange& theRange)
 {
-  bool                          aResult = false;
+  bool         aResult = false;
   occ::handle<TDocStd_Document> TDOC    = occ::down_cast<TDocStd_Document>(theTDoc);
   if (!TDOC.IsNull())
   {
     occ::handle<TDF_Data> aTDF = new TDF_Data();
-    aResult = XmlMDF::FromTo(theElement, aTDF, myRelocTable, myDrivers, theRange);
+    aResult               = XmlMDF::FromTo(theElement, aTDF, myRelocTable, myDrivers, theRange);
     if (aResult)
     {
       TDOC->SetData(aTDF);
@@ -550,8 +550,8 @@ extern "C" int ftime(struct timeb* tp);
   #endif
 extern struct timeb tmbuf0;
 
-static void take_time(const int                             isReset,
-                      const char*                           aHeader,
+static void take_time(const int           isReset,
+                      const char*                      aHeader,
                       const occ::handle<Message_Messenger>& aMessageDriver)
 {
   struct timeb tmbuf;

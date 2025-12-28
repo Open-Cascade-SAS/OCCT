@@ -40,7 +40,7 @@ void IGESSolid_ToolBlock::ReadOwnParams(const occ::handle<IGESSolid_Block>& ent,
                                         const occ::handle<IGESData_IGESReaderData>& /* IR */,
                                         IGESData_ParamReader& PR) const
 {
-  gp_XYZ tempSize, tempCorner, tempXAxis, tempZAxis;
+  gp_XYZ        tempSize, tempCorner, tempXAxis, tempZAxis;
   double tempreal;
   // bool st; //szv#4:S4163:12Mar99 not needed
 
@@ -148,7 +148,7 @@ void IGESSolid_ToolBlock::ReadOwnParams(const occ::handle<IGESSolid_Block>& ent,
 }
 
 void IGESSolid_ToolBlock::WriteOwnParams(const occ::handle<IGESSolid_Block>& ent,
-                                         IGESData_IGESWriter&                IW) const
+                                         IGESData_IGESWriter&           IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -179,8 +179,7 @@ void IGESSolid_ToolBlock::OwnCopy(const occ::handle<IGESSolid_Block>& another,
             another->ZAxis().XYZ());
 }
 
-IGESData_DirChecker IGESSolid_ToolBlock::DirChecker(
-  const occ::handle<IGESSolid_Block>& /* ent */) const
+IGESData_DirChecker IGESSolid_ToolBlock::DirChecker(const occ::handle<IGESSolid_Block>& /* ent */) const
 {
   IGESData_DirChecker DC(150, 0);
   DC.Structure(IGESData_DefVoid);
@@ -205,8 +204,8 @@ void IGESSolid_ToolBlock::OwnCheck(const occ::handle<IGESSolid_Block>& ent,
 
 void IGESSolid_ToolBlock::OwnDump(const occ::handle<IGESSolid_Block>& ent,
                                   const IGESData_IGESDumper& /* dumper */,
-                                  Standard_OStream& S,
-                                  const int         level) const
+                                  Standard_OStream&      S,
+                                  const int level) const
 {
   S << "IGESSolid_Block\n"
     << "Size   : ";

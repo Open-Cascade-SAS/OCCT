@@ -28,10 +28,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Flash, IGESData_IGESEntity)
 
 IGESGeom_Flash::IGESGeom_Flash() {}
 
-void IGESGeom_Flash::Init(const gp_XY&                            aPoint,
-                          const double                            aDim1,
-                          const double                            aDim2,
-                          const double                            aRotation,
+void IGESGeom_Flash::Init(const gp_XY&                       aPoint,
+                          const double                aDim1,
+                          const double                aDim2,
+                          const double                aRotation,
                           const occ::handle<IGESData_IGESEntity>& aReference)
 {
   thePoint     = aPoint;

@@ -22,10 +22,9 @@
 
 //=================================================================================================
 
-inline Units_Quantity::Units_Quantity(
-  const char*                                                        aname,
-  const occ::handle<Units_Dimensions>&                               adimensions,
-  const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence)
+inline Units_Quantity::Units_Quantity(const char*             aname,
+                                      const occ::handle<Units_Dimensions>&    adimensions,
+                                      const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence)
 {
   thename          = new TCollection_HAsciiString(aname);
   thedimensions    = adimensions;

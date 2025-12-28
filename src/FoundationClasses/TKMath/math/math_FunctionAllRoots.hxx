@@ -24,6 +24,7 @@
 #include <Standard_Boolean.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_OStream.hxx>
 class math_FunctionWithDerivative;
 class math_FunctionSample;
@@ -48,9 +49,9 @@ public:
   //! calculated using the FunctionRoots algorithm.
   Standard_EXPORT math_FunctionAllRoots(math_FunctionWithDerivative& F,
                                         const math_FunctionSample&   S,
-                                        const double                 EpsX,
-                                        const double                 EpsF,
-                                        const double                 EpsNul);
+                                        const double          EpsX,
+                                        const double          EpsF,
+                                        const double          EpsNul);
 
   //! Returns True if the computation has been done successfully.
   bool IsDone() const;
@@ -68,7 +69,9 @@ public:
   //! returns the State Number associated to the interval Index.
   //! An exception is raised if IsDone returns False;
   //! An exception is raised if Index<=0 or Index >Nbintervals.
-  void GetIntervalState(const int Index, int& IFirst, int& ILast) const;
+  void GetIntervalState(const int Index,
+                        int&      IFirst,
+                        int&      ILast) const;
 
   //! returns the number of points where the function is Null.
   //! An exception is raised if IsDone returns False.
@@ -89,13 +92,13 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool                         done;
-  NCollection_Sequence<double> pdeb;
-  NCollection_Sequence<double> pfin;
-  NCollection_Sequence<double> piso;
-  NCollection_Sequence<int>    ideb;
-  NCollection_Sequence<int>    ifin;
-  NCollection_Sequence<int>    iiso;
+  bool          done;
+  NCollection_Sequence<double>    pdeb;
+  NCollection_Sequence<double>    pfin;
+  NCollection_Sequence<double>    piso;
+  NCollection_Sequence<int> ideb;
+  NCollection_Sequence<int> ifin;
+  NCollection_Sequence<int> iiso;
 };
 
 #include <math_FunctionAllRoots.lxx>

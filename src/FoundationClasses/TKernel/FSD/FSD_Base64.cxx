@@ -16,10 +16,10 @@
 // =======================================================================
 // function : Encode
 // =======================================================================
-size_t FSD_Base64::Encode(char*          theEncodedStr,
-                          const size_t   theStrLen,
-                          const uint8_t* theData,
-                          const size_t   theDataLen)
+size_t FSD_Base64::Encode(char*                theEncodedStr,
+                                 const size_t  theStrLen,
+                                 const uint8_t* theData,
+                                 const size_t  theDataLen)
 {
   static const char aBase64Chars[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -76,9 +76,10 @@ size_t FSD_Base64::Encode(char*          theEncodedStr,
 // =======================================================================
 // function : Encode
 // =======================================================================
-TCollection_AsciiString FSD_Base64::Encode(const uint8_t* theData, const size_t theDataLen)
+TCollection_AsciiString FSD_Base64::Encode(const uint8_t* theData,
+                                           const size_t  theDataLen)
 {
-  size_t                  aStrLen = Encode(NULL, 0, theData, theDataLen);
+  size_t           aStrLen = Encode(NULL, 0, theData, theDataLen);
   TCollection_AsciiString aStr((int)aStrLen, 0);
   Encode(const_cast<char*>(aStr.ToCString()), aStrLen, theData, theDataLen);
   return aStr;
@@ -87,10 +88,10 @@ TCollection_AsciiString FSD_Base64::Encode(const uint8_t* theData, const size_t 
 // =======================================================================
 // function : Decode
 // =======================================================================
-size_t FSD_Base64::Decode(uint8_t*     theDecodedData,
-                          const size_t theDataLen,
-                          const char*  theEncodedStr,
-                          const size_t theStrLen)
+size_t FSD_Base64::Decode(uint8_t*      theDecodedData,
+                                 const size_t theDataLen,
+                                 const char*    theEncodedStr,
+                                 const size_t theStrLen)
 {
   static const uint8_t aBase64Codes[256] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -105,7 +106,7 @@ size_t FSD_Base64::Decode(uint8_t*     theDecodedData,
   }
 
   // Calculate pad bytes and number of bytes without pad
-  uint32_t     aPad(theStrLen % 4 || theEncodedStr[theStrLen - 1] == '=');
+  uint32_t            aPad(theStrLen % 4 || theEncodedStr[theStrLen - 1] == '=');
   const size_t aNbIter = ((theStrLen + 3) / 4 - aPad) * 4;
   if (theStrLen > aNbIter + 2 && theEncodedStr[aNbIter + 2] != '=')
   {
@@ -154,10 +155,10 @@ size_t FSD_Base64::Decode(uint8_t*     theDecodedData,
 // =======================================================================
 // function : Decode
 // =======================================================================
-occ::handle<NCollection_Buffer> FSD_Base64::Decode(const char*  theEncodedStr,
-                                                   const size_t theStrLen)
+occ::handle<NCollection_Buffer> FSD_Base64::Decode(const char*    theEncodedStr,
+                                              const size_t theStrLen)
 {
-  const size_t                    aDataSize = Decode(NULL, 0, theEncodedStr, theStrLen);
+  const size_t        aDataSize = Decode(NULL, 0, theEncodedStr, theStrLen);
   occ::handle<NCollection_Buffer> aBuf =
     new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator());
   if (aDataSize == 0)

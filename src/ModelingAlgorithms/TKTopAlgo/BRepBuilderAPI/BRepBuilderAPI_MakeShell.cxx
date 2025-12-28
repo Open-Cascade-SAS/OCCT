@@ -25,7 +25,7 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell() {}
 //=================================================================================================
 
 BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
-                                                   const bool                       Segment)
+                                                   const bool      Segment)
     : myMakeShell(S, Segment)
 {
   if (myMakeShell.IsDone())
@@ -38,11 +38,11 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surfac
 //=================================================================================================
 
 BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surface>& S,
-                                                   const double                     UMin,
-                                                   const double                     UMax,
-                                                   const double                     VMin,
-                                                   const double                     VMax,
-                                                   const bool                       Segment)
+                                                   const double         UMin,
+                                                   const double         UMax,
+                                                   const double         VMin,
+                                                   const double         VMax,
+                                                   const bool      Segment)
     : myMakeShell(S, UMin, UMax, VMin, VMax, Segment)
 {
   if (myMakeShell.IsDone())
@@ -55,11 +55,11 @@ BRepBuilderAPI_MakeShell::BRepBuilderAPI_MakeShell(const occ::handle<Geom_Surfac
 //=================================================================================================
 
 void BRepBuilderAPI_MakeShell::Init(const occ::handle<Geom_Surface>& S,
-                                    const double                     UMin,
-                                    const double                     UMax,
-                                    const double                     VMin,
-                                    const double                     VMax,
-                                    const bool                       Segment)
+                                    const double         UMin,
+                                    const double         UMax,
+                                    const double         VMin,
+                                    const double         VMax,
+                                    const bool      Segment)
 {
   myMakeShell.Init(S, UMin, UMax, VMin, VMax, Segment);
   if (myMakeShell.IsDone())

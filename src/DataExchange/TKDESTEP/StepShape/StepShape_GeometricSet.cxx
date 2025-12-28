@@ -19,9 +19,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_GeometricSet, StepGeom_GeometricRepresentat
 
 StepShape_GeometricSet::StepShape_GeometricSet() {}
 
-void StepShape_GeometricSet::Init(
-  const occ::handle<TCollection_HAsciiString>&                          aName,
-  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
+void StepShape_GeometricSet::Init(const occ::handle<TCollection_HAsciiString>&              aName,
+                                  const occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>>& aElements)
 {
   // --- classe own fields ---
   elements = aElements;
@@ -35,8 +34,7 @@ void StepShape_GeometricSet::SetElements(
   elements = aElements;
 }
 
-occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> StepShape_GeometricSet::Elements()
-  const
+occ::handle<NCollection_HArray1<StepShape_GeometricSetSelect>> StepShape_GeometricSet::Elements() const
 {
   return elements;
 }

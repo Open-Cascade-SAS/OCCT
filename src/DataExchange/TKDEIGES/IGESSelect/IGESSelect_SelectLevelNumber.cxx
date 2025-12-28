@@ -65,8 +65,8 @@ bool IGESSelect_SelectLevelNumber::Sort(
 
 TCollection_AsciiString IGESSelect_SelectLevelNumber::ExtractLabel() const
 {
-  char labl[50];
-  int  numlev = 0;
+  char             labl[50];
+  int numlev = 0;
   if (!thelevnum.IsNull())
     numlev = thelevnum->Value();
   if (numlev == 0)

@@ -17,9 +17,12 @@
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomGridEval_BSplineSurface.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 
 #include <cmath>
 
@@ -30,7 +33,7 @@ const double THE_TOLERANCE = 1e-10;
 NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, int theNbPoints)
 {
   NCollection_Array1<double> aParams(1, theNbPoints);
-  const double               aStep = (theLast - theFirst) / (theNbPoints - 1);
+  const double         aStep = (theLast - theFirst) / (theNbPoints - 1);
   for (int i = 1; i <= theNbPoints; ++i)
   {
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
@@ -46,10 +49,10 @@ occ::handle<Geom_BSplineSurface> CreateSimpleBSplineSurface()
   aPoles.SetValue(1, 2, gp_Pnt(0, 1, 0));
   aPoles.SetValue(2, 2, gp_Pnt(1, 1, 1)); // Non-planar corner
 
-  NCollection_Array1<double> aUKnots(1, 2);
-  NCollection_Array1<double> aVKnots(1, 2);
-  NCollection_Array1<int>    aUMults(1, 2);
-  NCollection_Array1<int>    aVMults(1, 2);
+  NCollection_Array1<double>    aUKnots(1, 2);
+  NCollection_Array1<double>    aVKnots(1, 2);
+  NCollection_Array1<int> aUMults(1, 2);
+  NCollection_Array1<int> aVMults(1, 2);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 1.0);
@@ -65,7 +68,7 @@ occ::handle<Geom_BSplineSurface> CreateSimpleBSplineSurface()
 
 occ::handle<Geom_BSplineSurface> CreateRationalBSplineSurface()
 {
-  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt>   aPoles(1, 3, 1, 3);
   NCollection_Array2<double> aWeights(1, 3, 1, 3);
 
   for (int i = 1; i <= 3; ++i)
@@ -80,10 +83,10 @@ occ::handle<Geom_BSplineSurface> CreateRationalBSplineSurface()
     }
   }
 
-  NCollection_Array1<double> aUKnots(1, 2);
-  NCollection_Array1<double> aVKnots(1, 2);
-  NCollection_Array1<int>    aUMults(1, 2);
-  NCollection_Array1<int>    aVMults(1, 2);
+  NCollection_Array1<double>    aUKnots(1, 2);
+  NCollection_Array1<double>    aVKnots(1, 2);
+  NCollection_Array1<int> aUMults(1, 2);
+  NCollection_Array1<int> aVMults(1, 2);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 1.0);
@@ -112,10 +115,10 @@ occ::handle<Geom_BSplineSurface> CreateMultiSpanBSplineSurface()
     }
   }
 
-  NCollection_Array1<double> aUKnots(1, 3);
-  NCollection_Array1<double> aVKnots(1, 3);
-  NCollection_Array1<int>    aUMults(1, 3);
-  NCollection_Array1<int>    aVMults(1, 3);
+  NCollection_Array1<double>    aUKnots(1, 3);
+  NCollection_Array1<double>    aVKnots(1, 3);
+  NCollection_Array1<int> aUMults(1, 3);
+  NCollection_Array1<int> aVMults(1, 3);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 0.5);
@@ -238,10 +241,10 @@ TEST(GeomGridEval_BSplineSurfaceTest, HigherDegree)
     }
   }
 
-  NCollection_Array1<double> aUKnots(1, 2);
-  NCollection_Array1<double> aVKnots(1, 2);
-  NCollection_Array1<int>    aUMults(1, 2);
-  NCollection_Array1<int>    aVMults(1, 2);
+  NCollection_Array1<double>    aUKnots(1, 2);
+  NCollection_Array1<double>    aVKnots(1, 2);
+  NCollection_Array1<int> aUMults(1, 2);
+  NCollection_Array1<int> aVMults(1, 2);
 
   aUKnots.SetValue(1, 0.0);
   aUKnots.SetValue(2, 1.0);
@@ -279,7 +282,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, HigherDegree)
 TEST(GeomGridEval_BSplineSurfaceTest, IsolineU_CompareToGeomD0)
 {
   occ::handle<Geom_BSplineSurface> aBSpline = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aBSpline);
+  GeomGridEval_BSplineSurface anEval(aBSpline);
 
   // U-isoline: 1 U param, multiple V params (triggers isoline path)
   NCollection_Array1<double> aUParams(1, 1);
@@ -306,7 +309,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineU_CompareToGeomD0)
 TEST(GeomGridEval_BSplineSurfaceTest, IsolineV_CompareToGeomD0)
 {
   occ::handle<Geom_BSplineSurface> aBSpline = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aBSpline);
+  GeomGridEval_BSplineSurface anEval(aBSpline);
 
   // V-isoline: multiple U params, 1 V param (triggers isoline path)
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 15);
@@ -332,7 +335,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineV_CompareToGeomD0)
 TEST(GeomGridEval_BSplineSurfaceTest, IsolineMultiSpan_CompareToGeomD0)
 {
   occ::handle<Geom_BSplineSurface> aBSpline = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aBSpline);
+  GeomGridEval_BSplineSurface anEval(aBSpline);
 
   // U-isoline on multi-span surface
   NCollection_Array1<double> aUParams(1, 1);
@@ -358,7 +361,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineMultiSpan_CompareToGeomD0)
 TEST(GeomGridEval_BSplineSurfaceTest, IsolineRational_CompareToGeomD0)
 {
   occ::handle<Geom_BSplineSurface> aBSpline = CreateRationalBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aBSpline);
+  GeomGridEval_BSplineSurface anEval(aBSpline);
 
   // V-isoline on rational surface
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 15);
@@ -388,7 +391,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, IsolineRational_CompareToGeomD0)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD1)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -412,7 +415,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD1)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD2)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -439,7 +442,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD2)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD3)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 11);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 11);
@@ -486,7 +489,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeD3)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V0)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -506,7 +509,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V0)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U0V1)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -526,7 +529,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U0V1)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V1)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -546,7 +549,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_U1V1)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_BeyondDegree)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 5);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 5);
@@ -565,7 +568,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_BeyondDegree)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_MultiSpan)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 11);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 11);
@@ -593,7 +596,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_MultiSpan)
 TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateRationalBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 1.0, 7);
   NCollection_Array1<double> aVParams = CreateUniformParams(0.0, 1.0, 7);
@@ -628,7 +631,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, DerivativeDN_RationalSurface)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_BasicEvaluation)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   // Create arbitrary UV pairs
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
@@ -653,7 +656,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_BasicEvaluation)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_MultiSpan)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   // Create UV pairs that span multiple knot spans
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 10);
@@ -681,7 +684,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_MultiSpan)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_Rational)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateRationalBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 7);
   aUVPairs.SetValue(1, gp_Pnt2d(0.0, 0.0));
@@ -705,7 +708,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_Rational)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD1)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
   aUVPairs.SetValue(1, gp_Pnt2d(0.2, 0.3));
@@ -729,7 +732,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD1)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD2)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 5);
   aUVPairs.SetValue(1, gp_Pnt2d(0.1, 0.2));
@@ -757,8 +760,8 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD2)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD3)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
-  GeomAdaptor_Surface              anAdaptor(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
+  GeomAdaptor_Surface         anAdaptor(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 4);
   aUVPairs.SetValue(1, gp_Pnt2d(0.15, 0.25));
@@ -795,7 +798,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeD3)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_DerivativeDN)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 6);
   aUVPairs.SetValue(1, gp_Pnt2d(0.1, 0.1));
@@ -826,7 +829,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_OrderPreservation)
 {
   // Verify that results are returned in original input order regardless of sorting
   occ::handle<Geom_BSplineSurface> aSurf = CreateMultiSpanBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   // Create UV pairs in a specific order that will be reordered during sorting
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 6);
@@ -852,7 +855,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_OrderPreservation)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_EmptyInput)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aEmptyPairs;
 
@@ -863,7 +866,7 @@ TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_EmptyInput)
 TEST(GeomGridEval_BSplineSurfaceTest, UVPairs_SinglePoint)
 {
   occ::handle<Geom_BSplineSurface> aSurf = CreateSimpleBSplineSurface();
-  GeomGridEval_BSplineSurface      anEval(aSurf);
+  GeomGridEval_BSplineSurface anEval(aSurf);
 
   NCollection_Array1<gp_Pnt2d> aUVPairs(1, 1);
   aUVPairs.SetValue(1, gp_Pnt2d(0.5, 0.5));

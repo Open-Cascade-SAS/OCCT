@@ -15,6 +15,7 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 inline bool math_FunctionRoots::IsDone() const
 {

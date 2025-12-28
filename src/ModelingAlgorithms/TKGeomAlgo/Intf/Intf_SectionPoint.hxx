@@ -50,15 +50,25 @@ public:
   //! element.
   Intf_PIType TypeOnSecond() const;
 
-  Standard_EXPORT void InfoFirst(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const;
+  Standard_EXPORT void InfoFirst(Intf_PIType&      Dim,
+                                 int& Add1,
+                                 int& Add2,
+                                 double&    Param) const;
 
   //! Gives the data about the first argument of the Interference.
-  Standard_EXPORT void InfoFirst(Intf_PIType& Dim, int& Addr, double& Param) const;
+  Standard_EXPORT void InfoFirst(Intf_PIType&      Dim,
+                                 int& Addr,
+                                 double&    Param) const;
 
-  Standard_EXPORT void InfoSecond(Intf_PIType& Dim, int& Add1, int& Add2, double& Param) const;
+  Standard_EXPORT void InfoSecond(Intf_PIType&      Dim,
+                                  int& Add1,
+                                  int& Add2,
+                                  double&    Param) const;
 
   //! Gives the data about the second argument of the Interference.
-  Standard_EXPORT void InfoSecond(Intf_PIType& Dim, int& Addr, double& Param) const;
+  Standard_EXPORT void InfoSecond(Intf_PIType&      Dim,
+                                  int& Addr,
+                                  double&    Param) const;
 
   //! Gives the incidence at this section point. The incidence
   //! between the two triangles is given by the cosine. The best
@@ -80,28 +90,28 @@ public:
   //! Builds a SectionPoint with the respective dimensions
   //! (vertex edge or face) of the concerned arguments and their
   //! addresses in the Topological structure.
-  Standard_EXPORT Intf_SectionPoint(const gp_Pnt&     Where,
-                                    const Intf_PIType DimeO,
-                                    const int         AddrO1,
-                                    const int         AddrO2,
-                                    const double      ParamO,
-                                    const Intf_PIType DimeT,
-                                    const int         AddrT1,
-                                    const int         AddrT2,
-                                    const double      ParamT,
-                                    const double      Incid);
+  Standard_EXPORT Intf_SectionPoint(const gp_Pnt&          Where,
+                                    const Intf_PIType      DimeO,
+                                    const int AddrO1,
+                                    const int AddrO2,
+                                    const double    ParamO,
+                                    const Intf_PIType      DimeT,
+                                    const int AddrT1,
+                                    const int AddrT2,
+                                    const double    ParamT,
+                                    const double    Incid);
 
   //! Builds a SectionPoint 2d with the respective dimensions
   //! (vertex or edge) of the concerned arguments and their
   //! addresses in the Topological structure.
-  Standard_EXPORT Intf_SectionPoint(const gp_Pnt2d&   Where,
-                                    const Intf_PIType DimeO,
-                                    const int         AddrO1,
-                                    const double      ParamO,
-                                    const Intf_PIType DimeT,
-                                    const int         AddrT1,
-                                    const double      ParamT,
-                                    const double      Incid);
+  Standard_EXPORT Intf_SectionPoint(const gp_Pnt2d&        Where,
+                                    const Intf_PIType      DimeO,
+                                    const int AddrO1,
+                                    const double    ParamO,
+                                    const Intf_PIType      DimeT,
+                                    const int AddrT1,
+                                    const double    ParamT,
+                                    const double    Incid);
 
   //! Merges two SectionPoints.
   Standard_EXPORT void Merge(Intf_SectionPoint& Other);
@@ -109,16 +119,16 @@ public:
   Standard_EXPORT void Dump(const int Indent) const;
 
 private:
-  gp_Pnt      myPnt;
-  Intf_PIType DimenObje;
-  int         IndexO1;
-  int         IndexO2;
-  double      ParamObje;
-  Intf_PIType DimenTool;
-  int         IndexT1;
-  int         IndexT2;
-  double      ParamTool;
-  double      Incide;
+  gp_Pnt           myPnt;
+  Intf_PIType      DimenObje;
+  int IndexO1;
+  int IndexO2;
+  double    ParamObje;
+  Intf_PIType      DimenTool;
+  int IndexT1;
+  int IndexT2;
+  double    ParamTool;
+  double    Incide;
 };
 
 #include <Intf_SectionPoint.lxx>

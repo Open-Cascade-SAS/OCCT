@@ -162,14 +162,15 @@ void TransferBRep_Reader::TransferRoots(const Message_ProgressRange& theProgress
   EndTransfer();
 }
 
-bool TransferBRep_Reader::Transfer(const int num, const Message_ProgressRange& theProgress)
+bool TransferBRep_Reader::Transfer(const int       num,
+                                               const Message_ProgressRange& theProgress)
 {
   if (!BeginTransfer())
     return false;
   if (num <= 0 || num > theModel->NbEntities())
     return false;
   occ::handle<Standard_Transient> ent = theModel->Value(num);
-  Transfer_TransferOutput         TP(theProc, theModel);
+  Transfer_TransferOutput    TP(theProc, theModel);
 
   if (theProc->TraceLevel() > 1)
   {
@@ -184,16 +185,15 @@ bool TransferBRep_Reader::Transfer(const int num, const Message_ProgressRange& t
   return true;
 }
 
-void TransferBRep_Reader::TransferList(
-  const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-  const Message_ProgressRange&                                               theProgress)
+void TransferBRep_Reader::TransferList(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
+                                       const Message_ProgressRange&                theProgress)
 {
   if (!BeginTransfer())
     return;
   if (list.IsNull())
     return;
   Transfer_TransferOutput         TP(theProc, theModel);
-  int                             i, nb = list->Length();
+  int                i, nb = list->Length();
   Message_Messenger::StreamBuffer sout = theProc->Messenger()->SendInfo();
 
   if (theProc->TraceLevel() > 1)
@@ -201,7 +201,7 @@ void TransferBRep_Reader::TransferList(
   Message_ProgressScope aPS(theProgress, NULL, nb);
   for (i = 1; i <= nb && aPS.More(); i++)
   {
-    Message_ProgressRange           aRange = aPS.Next();
+    Message_ProgressRange      aRange = aPS.Next();
     occ::handle<Standard_Transient> ent    = list->Value(i);
     if (theModel->Number(ent) == 0)
       continue;
@@ -242,8 +242,8 @@ const TopoDS_Shape& TransferBRep_Reader::Shape(const int num) const
 
 TopoDS_Shape TransferBRep_Reader::OneShape() const
 {
-  TopoDS_Shape res;
-  int          nb = theShapes->Length();
+  TopoDS_Shape     res;
+  int nb = theShapes->Length();
   if (nb == 0)
     return res;
   else if (nb == 1)
@@ -271,8 +271,7 @@ int TransferBRep_Reader::NbTransients() const
   return theTransi->Length();
 }
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferBRep_Reader::
-  Transients() const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> TransferBRep_Reader::Transients() const
 {
   return theTransi;
 }

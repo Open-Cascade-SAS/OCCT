@@ -21,6 +21,7 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 
 class Adaptor3d_HSurfaceTool;
 class Bnd_Box;
@@ -30,19 +31,17 @@ class IntCurveSurface_ThePolyhedronOfHInter
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT IntCurveSurface_ThePolyhedronOfHInter(
-    const occ::handle<Adaptor3d_Surface>& Surface,
-    const int                             nbdU,
-    const int                             nbdV,
-    const double                          U1,
-    const double                          V1,
-    const double                          U2,
-    const double                          V2);
+  Standard_EXPORT IntCurveSurface_ThePolyhedronOfHInter(const occ::handle<Adaptor3d_Surface>& Surface,
+                                                        const int           nbdU,
+                                                        const int           nbdV,
+                                                        const double              U1,
+                                                        const double              V1,
+                                                        const double              U2,
+                                                        const double              V2);
 
-  Standard_EXPORT IntCurveSurface_ThePolyhedronOfHInter(
-    const occ::handle<Adaptor3d_Surface>& Surface,
-    const NCollection_Array1<double>&     Upars,
-    const NCollection_Array1<double>&     Vpars);
+  Standard_EXPORT IntCurveSurface_ThePolyhedronOfHInter(const occ::handle<Adaptor3d_Surface>& Surface,
+                                                        const NCollection_Array1<double>&      Upars,
+                                                        const NCollection_Array1<double>&      Vpars);
 
   Standard_EXPORT void Destroy();
 
@@ -66,7 +65,10 @@ public:
 
   //! Give the 3 points of the triangle of address Index in
   //! the double array of triangles.
-  Standard_EXPORT void Triangle(const int Index, int& P1, int& P2, int& P3) const;
+  Standard_EXPORT void Triangle(const int Index,
+                                int&      P1,
+                                int&      P2,
+                                int&      P3) const;
 
   //! Give the address Tricon of the triangle connexe to the
   //! triangle of address Triang by the edge Pivot Pedge and
@@ -75,10 +77,10 @@ public:
   //! value of the triangle in the other side of Pivot on
   //! the free edge. Used to turn around a vertex.
   Standard_EXPORT int TriConnex(const int Triang,
-                                const int Pivot,
-                                const int Pedge,
-                                int&      TriCon,
-                                int&      OtherP) const;
+                                             const int Pivot,
+                                             const int Pedge,
+                                             int&      TriCon,
+                                             int&      OtherP) const;
 
   //! Give the number of point in the double array of
   //! triangles ((nbdu+1)*(nbdv+1)).
@@ -86,14 +88,16 @@ public:
 
   //! Set the value of a field of the double array of
   //! points.
-  Standard_EXPORT void Point(const gp_Pnt& thePnt,
-                             const int     lig,
-                             const int     col,
-                             const double  U,
-                             const double  V);
+  Standard_EXPORT void Point(const gp_Pnt&          thePnt,
+                             const int lig,
+                             const int col,
+                             const double    U,
+                             const double    V);
 
   //! Give the point of index i in the MaTriangle.
-  Standard_EXPORT const gp_Pnt& Point(const int Index, double& U, double& V) const;
+  Standard_EXPORT const gp_Pnt& Point(const int Index,
+                                      double&         U,
+                                      double&         V) const;
 
   //! Give the point of index i in the MaTriangle.
   Standard_EXPORT const gp_Pnt& Point(const int Index) const;
@@ -124,19 +128,23 @@ public:
 
   //! Give the plane equation of the triangle of address Triang.
   Standard_EXPORT void PlaneEquation(const int Triang,
-                                     gp_XYZ&   NormalVector,
-                                     double&   PolarDistance) const;
+                                     gp_XYZ&                NormalVector,
+                                     double&         PolarDistance) const;
 
   //! Give the plane equation of the triangle of address Triang.
-  Standard_EXPORT bool Contain(const int Triang, const gp_Pnt& ThePnt) const;
+  Standard_EXPORT bool Contain(const int Triang,
+                                           const gp_Pnt&          ThePnt) const;
 
-  Standard_EXPORT void Parameters(const int Index, double& U, double& V) const;
+  Standard_EXPORT void Parameters(const int Index,
+                                  double&         U,
+                                  double&         V) const;
 
   //! This method returns true if the edge based on points with
   //! indices Index1 and Index2 represents a boundary edge. It is
   //! necessary to take into account the boundary deflection for
   //! this edge.
-  Standard_EXPORT bool IsOnBound(const int Index1, const int Index2) const;
+  Standard_EXPORT bool IsOnBound(const int Index1,
+                                             const int Index2) const;
 
   //! This method returns a border deflection.
   double GetBorderDeflection() const { return TheBorderDeflection; }
@@ -145,30 +153,30 @@ public:
 
 protected:
   Standard_EXPORT void Init(const occ::handle<Adaptor3d_Surface>& Surface,
-                            const double                          U1,
-                            const double                          V1,
-                            const double                          U2,
-                            const double                          V2);
+                            const double              U1,
+                            const double              V1,
+                            const double              U2,
+                            const double              V2);
 
   Standard_EXPORT void Init(const occ::handle<Adaptor3d_Surface>& Surface,
-                            const NCollection_Array1<double>&     Upars,
-                            const NCollection_Array1<double>&     Vpars);
+                            const NCollection_Array1<double>&      Upars,
+                            const NCollection_Array1<double>&      Vpars);
 
 private:
-  int                                       nbdeltaU;
-  int                                       nbdeltaV;
-  Bnd_Box                                   TheBnd;
+  int         nbdeltaU;
+  int         nbdeltaV;
+  Bnd_Box                  TheBnd;
   occ::handle<NCollection_HArray1<Bnd_Box>> TheComponentsBnd;
-  double                                    TheDeflection;
-  void*                                     C_MyPnts;
-  void*                                     C_MyU;
-  void*                                     C_MyV;
-  bool                                      UMinSingular;
-  bool                                      UMaxSingular;
-  bool                                      VMinSingular;
-  bool                                      VMaxSingular;
-  double                                    TheBorderDeflection;
-  void*                                     C_MyIsOnBounds;
+  double            TheDeflection;
+  void*         C_MyPnts;
+  void*         C_MyU;
+  void*         C_MyV;
+  bool         UMinSingular;
+  bool         UMaxSingular;
+  bool         VMinSingular;
+  bool         VMaxSingular;
+  double            TheBorderDeflection;
+  void*         C_MyIsOnBounds;
 };
 
 #endif // _IntCurveSurface_ThePolyhedronOfHInter_HeaderFile

@@ -55,11 +55,11 @@ void BOPTools_AlgoTools::UpdateVertex(const TopoDS_Vertex& aVF, const TopoDS_Ver
 //=================================================================================================
 
 void BOPTools_AlgoTools::UpdateVertex(const TopoDS_Edge&   aE,
-                                      const double         aT,
+                                      const double  aT,
                                       const TopoDS_Vertex& aV)
 {
   double aTolV, aDist, aFirst, aLast;
-  gp_Pnt aPc;
+  gp_Pnt        aPc;
 
   gp_Pnt aPv = BRep_Tool::Pnt(aV);
   aTolV      = BRep_Tool::Tolerance(aV);
@@ -78,11 +78,11 @@ void BOPTools_AlgoTools::UpdateVertex(const TopoDS_Edge&   aE,
 //=================================================================================================
 
 void BOPTools_AlgoTools::UpdateVertex(const IntTools_Curve& aC,
-                                      const double          aT,
+                                      const double   aT,
                                       const TopoDS_Vertex&  aV)
 {
   double aTolV, aDist;
-  gp_Pnt aPc;
+  gp_Pnt        aPc;
 
   gp_Pnt aPv = BRep_Tool::Pnt(aV);
   aTolV      = BRep_Tool::Tolerance(aV);
@@ -101,9 +101,9 @@ void BOPTools_AlgoTools::UpdateVertex(const IntTools_Curve& aC,
 
 void BOPTools_AlgoTools::MakeSectEdge(const IntTools_Curve& aIC,
                                       const TopoDS_Vertex&  aV1,
-                                      const double          aP1,
+                                      const double   aP1,
                                       const TopoDS_Vertex&  aV2,
-                                      const double          aP2,
+                                      const double   aP2,
                                       TopoDS_Edge&          aNewEdge)
 {
   const occ::handle<Geom_Curve>& aC = aIC.Curve();
@@ -135,9 +135,9 @@ TopoDS_Edge BOPTools_AlgoTools::CopyEdge(const TopoDS_Edge& theEdge)
 
 void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
                                        const TopoDS_Vertex& aV1,
-                                       const double         aP1,
+                                       const double  aP1,
                                        const TopoDS_Vertex& aV2,
-                                       const double         aP2,
+                                       const double  aP2,
                                        TopoDS_Edge&         aNewEdge)
 {
   TopoDS_Edge E = TopoDS::Edge(aE.Oriented(TopAbs_FORWARD));
@@ -186,10 +186,10 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Vertex& aV1,
                                        const TopoDS_Vertex& aV2,
                                        TopoDS_Vertex&       aNewVertex)
 {
-  gp_Pnt aPnt1 = BRep_Tool::Pnt(aV1);
+  gp_Pnt        aPnt1 = BRep_Tool::Pnt(aV1);
   double aTol1 = BRep_Tool::Tolerance(aV1);
 
-  gp_Pnt aPnt2 = BRep_Tool::Pnt(aV2);
+  gp_Pnt        aPnt2 = BRep_Tool::Pnt(aV2);
   double aTol2 = BRep_Tool::Tolerance(aV2);
 
   double aMaxTol, aDist;
@@ -209,9 +209,9 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Vertex& aV1,
 
 //=================================================================================================
 
-void BOPTools_AlgoTools::MakeNewVertex(const gp_Pnt&  aP,
-                                       const double   aTol,
-                                       TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const gp_Pnt&       aP,
+                                       const double aTol,
+                                       TopoDS_Vertex&      aNewVertex)
 {
   BRep_Builder aBB;
   aBB.MakeVertex(aNewVertex, aP, aTol);
@@ -219,14 +219,14 @@ void BOPTools_AlgoTools::MakeNewVertex(const gp_Pnt&  aP,
 
 //=================================================================================================
 
-void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
-                                       const double       aParm1,
-                                       const TopoDS_Edge& aE2,
-                                       const double       aParm2,
-                                       TopoDS_Vertex&     aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge&  aE1,
+                                       const double aParm1,
+                                       const TopoDS_Edge&  aE2,
+                                       const double aParm2,
+                                       TopoDS_Vertex&      aNewVertex)
 {
   double aTol1, aTol2, aMaxTol, aDist;
-  gp_Pnt aPnt1, aPnt2;
+  gp_Pnt        aPnt1, aPnt2;
 
   PointOnEdge(aE1, aParm1, aPnt1);
   PointOnEdge(aE2, aParm2, aPnt2);
@@ -249,13 +249,13 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
 
 //=================================================================================================
 
-void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
-                                       const double       aParm1,
-                                       const TopoDS_Face& aF1,
-                                       TopoDS_Vertex&     aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge&  aE1,
+                                       const double aParm1,
+                                       const TopoDS_Face&  aF1,
+                                       TopoDS_Vertex&      aNewVertex)
 {
   double aTol1, aTol2, aMaxTol;
-  gp_Pnt aPnt;
+  gp_Pnt        aPnt;
 
   PointOnEdge(aE1, aParm1, aPnt);
 
@@ -272,7 +272,7 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
 
 void BOPTools_AlgoTools::PointOnEdge(const TopoDS_Edge& aE, const double aParm, gp_Pnt& aPnt)
 {
-  double                  f, l;
+  double      f, l;
   occ::handle<Geom_Curve> C1 = BRep_Tool::Curve(aE, f, l);
   C1->D0(aParm, aPnt);
 }
@@ -284,8 +284,8 @@ void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge&    aE1,
                                       const IntTools_Range& aSR,
                                       IntTools_Range&       aNewSR)
 {
-  int               i;
-  double            aRes, aTolE1, aTolE2, aTF, aTL, dT;
+  int  i;
+  double     aRes, aTolE1, aTolE2, aTF, aTL, dT;
   BRepAdaptor_Curve aBC;
   GeomAbs_CurveType aCT;
   gp_Pnt            aP;
@@ -364,8 +364,8 @@ void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge&    aE,
                                       const IntTools_Range& aSR,
                                       IntTools_Range&       aNewSR)
 {
-  int               i;
-  double            aRes, aTolF, aTF, aTL, dT;
+  int  i;
+  double     aRes, aTolF, aTF, aTL, dT;
   BRepAdaptor_Curve aBC;
   GeomAbs_CurveType aCT;
   gp_Pnt            aP;
@@ -462,14 +462,16 @@ static int dimension(const TopoDS_Shape& theS)
 
 //=================================================================================================
 
-void BOPTools_AlgoTools::Dimensions(const TopoDS_Shape& theS, int& theDMin, int& theDMax)
+void BOPTools_AlgoTools::Dimensions(const TopoDS_Shape& theS,
+                                    int&   theDMin,
+                                    int&   theDMax)
 {
   theDMin = theDMax = dimension(theS);
   if (theDMax >= 0)
     return;
 
-  NCollection_List<TopoDS_Shape>                         aLS;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMFence;
+  NCollection_List<TopoDS_Shape> aLS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>  aMFence;
   TreatCompound(theS, aLS, &aMFence);
   if (aLS.IsEmpty())
   {
@@ -501,10 +503,9 @@ int BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 
 //=================================================================================================
 
-void BOPTools_AlgoTools::TreatCompound(
-  const TopoDS_Shape&                                     theS,
-  NCollection_List<TopoDS_Shape>&                         theLS,
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theMFence)
+void BOPTools_AlgoTools::TreatCompound(const TopoDS_Shape&   theS,
+                                       NCollection_List<TopoDS_Shape>& theLS,
+                                       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>*  theMFence)
 {
   TopAbs_ShapeEnum aType = theS.ShapeType();
   if (aType != TopAbs_COMPOUND)

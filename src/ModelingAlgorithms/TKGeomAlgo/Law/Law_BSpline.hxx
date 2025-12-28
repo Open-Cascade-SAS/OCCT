@@ -25,7 +25,13 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 
 //! Definition of the 1D B_spline curve.
 //!
@@ -85,20 +91,20 @@ class Law_BSpline : public Standard_Transient
 public:
   //! Creates a non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
-  Standard_EXPORT Law_BSpline(const NCollection_Array1<double>& Poles,
-                              const NCollection_Array1<double>& Knots,
-                              const NCollection_Array1<int>&    Multiplicities,
-                              const int                         Degree,
-                              const bool                        Periodic = false);
+  Standard_EXPORT Law_BSpline(const NCollection_Array1<double>&    Poles,
+                              const NCollection_Array1<double>&    Knots,
+                              const NCollection_Array1<int>& Multiplicities,
+                              const int         Degree,
+                              const bool         Periodic = false);
 
   //! Creates a rational B_spline curve on the basis
   //! <Knots, Multiplicities> of degree <Degree>.
-  Standard_EXPORT Law_BSpline(const NCollection_Array1<double>& Poles,
-                              const NCollection_Array1<double>& Weights,
-                              const NCollection_Array1<double>& Knots,
-                              const NCollection_Array1<int>&    Multiplicities,
-                              const int                         Degree,
-                              const bool                        Periodic = false);
+  Standard_EXPORT Law_BSpline(const NCollection_Array1<double>&    Poles,
+                              const NCollection_Array1<double>&    Weights,
+                              const NCollection_Array1<double>&    Knots,
+                              const NCollection_Array1<int>& Multiplicities,
+                              const int         Degree,
+                              const bool         Periodic = false);
 
   //! Increase the degree to <Degree>. Nothing is done
   //! if <Degree> is lower or equal to the current
@@ -121,7 +127,9 @@ public:
   //! current multiplicity nothing is done. If <M> is
   //! higher than the degree the degree is used.
   //! If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
-  Standard_EXPORT void IncreaseMultiplicity(const int I1, const int I2, const int M);
+  Standard_EXPORT void IncreaseMultiplicity(const int I1,
+                                            const int I2,
+                                            const int M);
 
   //! Increment the multiplicities of the knots in
   //! [I1,I2] by <M>.
@@ -131,7 +139,9 @@ public:
   //! For each knot the resulting multiplicity is
   //! limited to the Degree.
   //! If <I1,I2> are not in [FirstUKnotIndex, LastUKnotIndex]
-  Standard_EXPORT void IncrementMultiplicity(const int I1, const int I2, const int M);
+  Standard_EXPORT void IncrementMultiplicity(const int I1,
+                                             const int I2,
+                                             const int M);
 
   //! Inserts a knot value in the sequence of knots.
   //! If <U> is an existing knot the multiplicity is
@@ -146,10 +156,10 @@ public:
   //!
   //! The tolerance criterion for knots equality is
   //! the max of Epsilon(U) and ParametricTolerance.
-  Standard_EXPORT void InsertKnot(const double U,
-                                  const int    M                   = 1,
-                                  const double ParametricTolerance = 0.0,
-                                  const bool   Add                 = true);
+  Standard_EXPORT void InsertKnot(const double    U,
+                                  const int M                   = 1,
+                                  const double    ParametricTolerance = 0.0,
+                                  const bool Add                 = true);
 
   //! Inserts a set of knots values in the sequence of
   //! knots.
@@ -169,10 +179,10 @@ public:
   //!
   //! The tolerance criterion for knots equality is
   //! the max of Epsilon(U) and ParametricTolerance.
-  Standard_EXPORT void InsertKnots(const NCollection_Array1<double>& Knots,
-                                   const NCollection_Array1<int>&    Mults,
-                                   const double                      ParametricTolerance = 0.0,
-                                   const bool                        Add                 = false);
+  Standard_EXPORT void InsertKnots(const NCollection_Array1<double>&    Knots,
+                                   const NCollection_Array1<int>& Mults,
+                                   const double            ParametricTolerance = 0.0,
+                                   const bool         Add = false);
 
   //! Decrement the knots multiplicity to <M>. If M is
   //! 0 the knot is removed. The Poles sequence is
@@ -194,7 +204,9 @@ public:
   //! BSplineCurve. The knot values are modified. If the BSpline is
   //! NonUniform or Piecewise Bezier an exception Construction error
   //! is raised.
-  Standard_EXPORT bool RemoveKnot(const int Index, const int M, const double Tolerance);
+  Standard_EXPORT bool RemoveKnot(const int Index,
+                                              const int M,
+                                              const double    Tolerance);
 
   //! Changes the direction of parametrization of <me>. The Knot
   //! sequence is modified, the FirstParameter and the
@@ -243,7 +255,9 @@ public:
   //! Raised if M is greater than Degree or lower than the previous
   //! multiplicity of knot of range Index.
   //! Raised if Index < 1 || Index > NbKnots
-  Standard_EXPORT void SetKnot(const int Index, const double K, const int M);
+  Standard_EXPORT void SetKnot(const int Index,
+                               const double    K,
+                               const int M);
 
   //! returns the parameter normalized within
   //! the period if the curve is periodic : otherwise
@@ -281,7 +295,9 @@ public:
   //!
   //! Raised if Index < 1 || Index > NbPoles
   //! Raised if Weight <= 0.0
-  Standard_EXPORT void SetPole(const int Index, const double P, const double Weight);
+  Standard_EXPORT void SetPole(const int Index,
+                               const double    P,
+                               const double    Weight);
 
   //! Changes the weight for the pole of range Index.
   //! If the curve was non rational it can become rational.
@@ -333,9 +349,16 @@ public:
 
   Standard_EXPORT void D1(const double U, double& P, double& V1) const;
 
-  Standard_EXPORT void D2(const double U, double& P, double& V1, double& V2) const;
+  Standard_EXPORT void D2(const double U,
+                          double&      P,
+                          double&      V1,
+                          double&      V2) const;
 
-  Standard_EXPORT void D3(const double U, double& P, double& V1, double& V2, double& V3) const;
+  Standard_EXPORT void D3(const double U,
+                          double&      P,
+                          double&      V1,
+                          double&      V2,
+                          double&      V3) const;
 
   //! The following functions computes the point of parameter U and
   //! the derivatives at this point on the B-spline curve arc
@@ -350,35 +373,40 @@ public:
   //! evaluations are different outside this parametric domain.
   Standard_EXPORT double DN(const double U, const int N) const;
 
-  Standard_EXPORT double LocalValue(const double U, const int FromK1, const int ToK2) const;
+  Standard_EXPORT double LocalValue(const double    U,
+                                           const int FromK1,
+                                           const int ToK2) const;
 
-  Standard_EXPORT void LocalD0(const double U, const int FromK1, const int ToK2, double& P) const;
+  Standard_EXPORT void LocalD0(const double    U,
+                               const int FromK1,
+                               const int ToK2,
+                               double&         P) const;
 
-  Standard_EXPORT void LocalD1(const double U,
-                               const int    FromK1,
-                               const int    ToK2,
-                               double&      P,
-                               double&      V1) const;
+  Standard_EXPORT void LocalD1(const double    U,
+                               const int FromK1,
+                               const int ToK2,
+                               double&         P,
+                               double&         V1) const;
 
-  Standard_EXPORT void LocalD2(const double U,
-                               const int    FromK1,
-                               const int    ToK2,
-                               double&      P,
-                               double&      V1,
-                               double&      V2) const;
+  Standard_EXPORT void LocalD2(const double    U,
+                               const int FromK1,
+                               const int ToK2,
+                               double&         P,
+                               double&         V1,
+                               double&         V2) const;
 
-  Standard_EXPORT void LocalD3(const double U,
-                               const int    FromK1,
-                               const int    ToK2,
-                               double&      P,
-                               double&      V1,
-                               double&      V2,
-                               double&      V3) const;
+  Standard_EXPORT void LocalD3(const double    U,
+                               const int FromK1,
+                               const int ToK2,
+                               double&         P,
+                               double&         V1,
+                               double&         V2,
+                               double&         V3) const;
 
-  Standard_EXPORT double LocalDN(const double U,
-                                 const int    FromK1,
-                                 const int    ToK2,
-                                 const int    N) const;
+  Standard_EXPORT double LocalDN(const double    U,
+                                        const int FromK1,
+                                        const int ToK2,
+                                        const int N) const;
 
   //! Returns the last point of the curve.
   //! Warnings :
@@ -454,11 +482,11 @@ public:
   //! ParametricTolerance is used).
   //! . if I1 < 1 => U < Knots (1) - std::abs(ParametricTolerance)
   //! . if I2 > NbKnots => U > Knots (NbKnots) + std::abs(ParametricTolerance)
-  Standard_EXPORT void LocateU(const double U,
-                               const double ParametricTolerance,
-                               int&         I1,
-                               int&         I2,
-                               const bool   WithKnotRepetition = false) const;
+  Standard_EXPORT void LocateU(const double    U,
+                               const double    ParametricTolerance,
+                               int&      I1,
+                               int&      I2,
+                               const bool WithKnotRepetition = false) const;
 
   //! Returns the multiplicity of the knots of range Index.
   //! Raised if Index < 1 or Index > NbKnots
@@ -515,13 +543,13 @@ public:
   //! and so forth
   //! ErrorStatus != 0 means that there are not enough degree of freedom
   //! with the constrain to deform the curve accordingly
-  Standard_EXPORT void MovePointAndTangent(const double U,
-                                           const double NewValue,
-                                           const double Derivative,
-                                           const double Tolerance,
-                                           const int    StartingCondition,
-                                           const int    EndingCondition,
-                                           int&         ErrorStatus);
+  Standard_EXPORT void MovePointAndTangent(const double    U,
+                                           const double    NewValue,
+                                           const double    Derivative,
+                                           const double    Tolerance,
+                                           const int StartingCondition,
+                                           const int EndingCondition,
+                                           int&      ErrorStatus);
 
   //! given Tolerance3D returns UTolerance
   //! such that if f(t) is the curve we have
@@ -545,16 +573,16 @@ private:
   //! continuity.
   Standard_EXPORT void UpdateKnots();
 
-  bool                                     rational;
-  bool                                     periodic;
-  GeomAbs_BSplKnotDistribution             knotSet;
-  GeomAbs_Shape                            smooth;
-  int                                      deg;
-  occ::handle<NCollection_HArray1<double>> poles;
-  occ::handle<NCollection_HArray1<double>> weights;
-  occ::handle<NCollection_HArray1<double>> flatknots;
-  occ::handle<NCollection_HArray1<double>> knots;
-  occ::handle<NCollection_HArray1<int>>    mults;
+  bool                 rational;
+  bool                 periodic;
+  GeomAbs_BSplKnotDistribution     knotSet;
+  GeomAbs_Shape                    smooth;
+  int                 deg;
+  occ::handle<NCollection_HArray1<double>>    poles;
+  occ::handle<NCollection_HArray1<double>>    weights;
+  occ::handle<NCollection_HArray1<double>>    flatknots;
+  occ::handle<NCollection_HArray1<double>>    knots;
+  occ::handle<NCollection_HArray1<int>> mults;
 };
 
 #endif // _Law_BSpline_HeaderFile

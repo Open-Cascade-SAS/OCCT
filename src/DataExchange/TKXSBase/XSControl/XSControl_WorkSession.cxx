@@ -153,9 +153,9 @@ void XSControl_WorkSession::ClearContext()
 
 //=================================================================================================
 
-bool XSControl_WorkSession::PrintTransferStatus(const int         num,
-                                                const bool        wri,
-                                                Standard_OStream& S) const
+bool XSControl_WorkSession::PrintTransferStatus(const int num,
+                                                            const bool wri,
+                                                            Standard_OStream&      S) const
 {
   const occ::handle<Transfer_FinderProcess>& FP = myTransferWriter->FinderProcess();
   occ::handle<Transfer_TransientProcess>     TP = myTransferReader->TransientProcess();
@@ -263,7 +263,7 @@ bool XSControl_WorkSession::PrintTransferStatus(const int         num,
   if (!binder.IsNull())
   {
     const occ::handle<Interface_Check> ch = binder->Check();
-    int                                i, nbw = ch->NbWarnings(), nbf = ch->NbFails();
+    int              i, nbw = ch->NbWarnings(), nbf = ch->NbFails();
     if (nbw > 0)
     {
       S << " - Warnings : " << nbw << " :\n";
@@ -308,9 +308,8 @@ void XSControl_WorkSession::InitTransferReader(const int mode)
       myTransferReader->SetTransientProcess(TP);
       TP->SetGraph(HGraph());
     }
-    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> lis =
-      myTransferReader->RecordedList();
-    int i, nb = lis->Length();
+    occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> lis = myTransferReader->RecordedList();
+    int                     i, nb = lis->Length();
     for (i = 1; i <= nb; i++)
       TP->SetRoot(lis->Value(i));
   }
@@ -377,9 +376,8 @@ bool XSControl_WorkSession::SetMapReader(const occ::handle<Transfer_TransientPro
 
 //=================================================================================================
 
-occ::handle<Standard_Transient> XSControl_WorkSession::Result(
-  const occ::handle<Standard_Transient>& ent,
-  const int                              mode) const
+occ::handle<Standard_Transient> XSControl_WorkSession::Result(const occ::handle<Standard_Transient>& ent,
+                                                         const int mode) const
 {
   int ouca = (mode % 10);
   int kica = (mode / 10);
@@ -412,7 +410,7 @@ occ::handle<Standard_Transient> XSControl_WorkSession::Result(
 //=================================================================================================
 
 int XSControl_WorkSession::TransferReadOne(const occ::handle<Standard_Transient>& ent,
-                                           const Message_ProgressRange&           theProgress)
+                                                        const Message_ProgressRange& theProgress)
 {
   occ::handle<Interface_InterfaceModel> model = Model();
   if (ent == model)
@@ -440,8 +438,8 @@ int XSControl_WorkSession::TransferReadRoots(const Message_ProgressRange& thePro
 
 occ::handle<Interface_InterfaceModel> XSControl_WorkSession::NewModel()
 {
-  const std::lock_guard<std::mutex>     aLock(GetGlobalMutex());
-  occ::handle<Interface_InterfaceModel> newmod;
+  const std::lock_guard<std::mutex> aLock(GetGlobalMutex());
+  occ::handle<Interface_InterfaceModel>  newmod;
   if (myController.IsNull())
     return newmod;
   newmod = myController->NewModel();
@@ -460,7 +458,7 @@ occ::handle<Interface_InterfaceModel> XSControl_WorkSession::NewModel()
 
 IFSelect_ReturnStatus XSControl_WorkSession::TransferWriteShape(
   const TopoDS_Shape&          shape,
-  const bool                   compgraph,
+  const bool       compgraph,
   const Message_ProgressRange& theProgress)
 {
   const std::lock_guard<std::mutex> aLock(GetGlobalMutex());
@@ -501,7 +499,7 @@ void XSControl_WorkSession::ClearBinders()
   // collect head binders of each chain in the sequence
   NCollection_Sequence<occ::handle<Standard_Transient>> aSeqBnd;
   NCollection_Sequence<occ::handle<Standard_Transient>> aSeqShapes;
-  int                                                   i = 1;
+  int            i = 1;
   for (; i <= FP->NbMapped(); i++)
   {
     occ::handle<Transfer_Binder> bnd = FP->MapItem(i);

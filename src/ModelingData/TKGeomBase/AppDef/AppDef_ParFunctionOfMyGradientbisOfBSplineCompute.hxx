@@ -25,9 +25,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_MultipleVarFunctionWithGradient.hxx>
 #include <AppParCurves_Constraint.hxx>
 class AppDef_MultiLine;
@@ -45,12 +48,12 @@ public:
   //! initializes the fields of the function. The approximating
   //! curve has the desired degree Deg.
   Standard_EXPORT AppDef_ParFunctionOfMyGradientbisOfBSplineCompute(
-    const AppDef_MultiLine&                                                SSP,
-    const int                                                              FirstPoint,
-    const int                                                              LastPoint,
+    const AppDef_MultiLine&                               SSP,
+    const int                                FirstPoint,
+    const int                                LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    const math_Vector&                                                     Parameters,
-    const int                                                              Deg);
+    const math_Vector&                                    Parameters,
+    const int                                Deg);
 
   //! returns the number of variables of the function. It
   //! corresponds to the number of MultiPoints.
@@ -79,7 +82,8 @@ public:
 
   //! returns the distance between the MultiPoint of range
   //! IPoint and the curve CurveIndex.
-  Standard_EXPORT double Error(const int IPoint, const int CurveIndex) const;
+  Standard_EXPORT double Error(const int IPoint,
+                                      const int CurveIndex) const;
 
   //! returns the maximum distance between the points
   //! and the MultiCurve.
@@ -89,13 +93,13 @@ public:
   //! and the MultiCurve.
   Standard_EXPORT double MaxError2d() const;
 
-  Standard_EXPORT AppParCurves_Constraint FirstConstraint(
-    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    const int                                                              FirstPoint) const;
+  Standard_EXPORT AppParCurves_Constraint
+    FirstConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+                    const int                                FirstPoint) const;
 
-  Standard_EXPORT AppParCurves_Constraint LastConstraint(
-    const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    const int                                                              LastPoint) const;
+  Standard_EXPORT AppParCurves_Constraint
+    LastConstraint(const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
+                   const int                                LastPoint) const;
 
 protected:
   //! this method is used each time Value or Gradient is
@@ -103,31 +107,31 @@ protected:
   Standard_EXPORT void Perform(const math_Vector& X);
 
 private:
-  bool                                                            Done;
-  AppDef_MultiLine                                                MyMultiLine;
-  AppParCurves_MultiCurve                                         MyMultiCurve;
-  int                                                             Degre;
-  math_Vector                                                     myParameters;
-  double                                                          FVal;
-  math_Vector                                                     ValGrad_F;
-  math_Matrix                                                     MyF;
-  math_Matrix                                                     PTLX;
-  math_Matrix                                                     PTLY;
-  math_Matrix                                                     PTLZ;
-  math_Matrix                                                     A;
-  math_Matrix                                                     DA;
-  AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute            MyLeastSquare;
-  bool                                                            Contraintes;
-  int                                                             NbP;
-  int                                                             NbCu;
-  int                                                             Adeb;
-  int                                                             Afin;
-  occ::handle<NCollection_HArray1<int>>                           tabdim;
-  double                                                          ERR3d;
-  double                                                          ERR2d;
-  int                                                             FirstP;
-  int                                                             LastP;
-  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>> myConstraints;
+  bool                                     Done;
+  AppDef_MultiLine                                     MyMultiLine;
+  AppParCurves_MultiCurve                              MyMultiCurve;
+  int                                     Degre;
+  math_Vector                                          myParameters;
+  double                                        FVal;
+  math_Vector                                          ValGrad_F;
+  math_Matrix                                          MyF;
+  math_Matrix                                          PTLX;
+  math_Matrix                                          PTLY;
+  math_Matrix                                          PTLZ;
+  math_Matrix                                          A;
+  math_Matrix                                          DA;
+  AppDef_ParLeastSquareOfMyGradientbisOfBSplineCompute MyLeastSquare;
+  bool                                     Contraintes;
+  int                                     NbP;
+  int                                     NbCu;
+  int                                     Adeb;
+  int                                     Afin;
+  occ::handle<NCollection_HArray1<int>>                     tabdim;
+  double                                        ERR3d;
+  double                                        ERR2d;
+  int                                     FirstP;
+  int                                     LastP;
+  occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>       myConstraints;
 };
 
 #endif // _AppDef_ParFunctionOfMyGradientbisOfBSplineCompute_HeaderFile

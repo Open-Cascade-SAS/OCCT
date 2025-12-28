@@ -32,7 +32,7 @@
 
 #ifdef OCCT_DEBUG
 static bool myDebug = 0;
-static int  nbsolve = 0;
+static int nbsolve = 0;
 #endif
 
 class DerivFunction : public math_Function
@@ -45,20 +45,23 @@ public:
   {
   }
 
-  virtual bool Value(const double theX, double& theFval) { return myF->Derivative(theX, theFval); }
+  virtual bool Value(const double theX, double& theFval)
+  {
+    return myF->Derivative(theX, theFval);
+  }
 };
 
-static void AppendRoot(NCollection_Sequence<double>& Sol,
-                       NCollection_Sequence<int>&    NbStateSol,
-                       const double                  X,
-                       math_FunctionWithDerivative&  F,
+static void AppendRoot(NCollection_Sequence<double>&      Sol,
+                       NCollection_Sequence<int>&   NbStateSol,
+                       const double          X,
+                       math_FunctionWithDerivative& F,
                        //			const double K,
                        const double,
                        const double dX)
 {
 
-  int    n = Sol.Length();
-  double t;
+  int n = Sol.Length();
+  double    t;
 #ifdef OCCT_DEBUG
   if (myDebug)
   {
@@ -107,16 +110,16 @@ static void AppendRoot(NCollection_Sequence<double>& Sol,
   }
 }
 
-static void Solve(math_FunctionWithDerivative&  F,
-                  const double                  K,
-                  const double                  x1,
-                  const double                  y1,
-                  const double                  x2,
-                  const double                  y2,
-                  const double                  tol,
-                  const double                  dX,
-                  NCollection_Sequence<double>& Sol,
-                  NCollection_Sequence<int>&    NbStateSol)
+static void Solve(math_FunctionWithDerivative& F,
+                  const double          K,
+                  const double          x1,
+                  const double          y1,
+                  const double          x2,
+                  const double          y2,
+                  const double          tol,
+                  const double          dX,
+                  NCollection_Sequence<double>&      Sol,
+                  NCollection_Sequence<int>&   NbStateSol)
 {
 #ifdef OCCT_DEBUG
   if (myDebug)
@@ -127,9 +130,9 @@ static void Solve(math_FunctionWithDerivative&  F,
   }
 #endif
 
-  int    iter  = 0;
-  double tols2 = 0.5 * tol;
-  double a, b, c, d = 0, e = 0, fa, fb, fc, p, q, r, s, tol1, xm, min1, min2;
+  int iter  = 0;
+  double    tols2 = 0.5 * tol;
+  double    a, b, c, d = 0, e = 0, fa, fb, fc, p, q, r, s, tol1, xm, min1, min2;
   a = x1;
   b = c = x2;
   fa    = y1;
@@ -156,9 +159,9 @@ static void Solve(math_FunctionWithDerivative&  F,
     if (std::abs(xm) < tol1 || fb == 0)
     {
       //-- On tente une iteration de newton
-      double Xp, Yp, Dp;
-      int    itern = 5;
-      bool   Ok;
+      double    Xp, Yp, Dp;
+      int itern = 5;
+      bool Ok;
       Xp = b;
       do
       {
@@ -255,13 +258,13 @@ static void Solve(math_FunctionWithDerivative&  F,
 // #define MATH_FUNCTIONROOTS_CHECK // Check
 
 math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
-                                       const double                 A,
-                                       const double                 B,
-                                       const int                    NbSample,
-                                       const double                 _EpsX,
-                                       const double                 EpsF,
-                                       const double                 EpsNull,
-                                       const double                 K)
+                                       const double          A,
+                                       const double          B,
+                                       const int       NbSample,
+                                       const double          _EpsX,
+                                       const double          EpsF,
+                                       const double          EpsNull,
+                                       const double          K)
 {
 #ifdef OCCT_DEBUG
   if (myDebug)
@@ -278,10 +281,10 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
   NbStateSol.Clear();
 #ifdef MATH_FUNCTIONROOTS_NEWCODE
   {
-    Done      = true;
-    double X0 = A;
-    double XN = B;
-    int    N  = NbSample;
+    Done                = true;
+    double    X0 = A;
+    double    XN = B;
+    int N  = NbSample;
     //-- ------------------------------------------------------------
     //-- Verifications de bas niveau
     if (B < A)
@@ -306,13 +309,13 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     //-- recherche d un intervalle ou F(xi) et F(xj) sont de signes differents
     //-- A .............................................................. B
     //-- X0   X1   X2 ........................................  Xn-1      Xn
-    int                        i;
-    double                     X = X0;
-    bool                       Ok;
-    double                     dx = (XN - X0) / N;
+    int     i;
+    double        X = X0;
+    bool     Ok;
+    double               dx = (XN - X0) / N;
     NCollection_Array1<double> ptrval(0, N);
-    int                        Nvalid = -1;
-    double                     aux    = 0;
+    int     Nvalid = -1;
+    double        aux    = 0;
     for (i = 0; i <= N; i++, X += dx)
     {
       if (X > XN)
@@ -438,12 +441,12 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       //-- On reprend une discretisation plus fine au voisinage de ces extremums
       //--
       //-- Recherche d un minima positif
-      double xm, ym, dym, xm1, xp1;
-      double majdx = 5.0 * dx;
-      bool   Rediscr;
+      double    xm, ym, dym, xm1, xp1;
+      double    majdx = 5.0 * dx;
+      bool Rediscr;
       //      double ptrvalbis[MAXBIS];
       int im1 = 0;
-      ip1     = 2;
+      ip1                  = 2;
       for (i = 1, xm = X0 + dx; i < N; xm += dx, i++, im1++, ip1++)
       {
         Rediscr = false;
@@ -461,7 +464,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             F.Values(xm1, ym, dym);
             ym -= K;
             if (dym < -1e-10 || dym > 1e-10)
-            {                      // normalement dym < 0
+            {                             // normalement dym < 0
               double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
               if (t < majdx && t > -majdx)
               {
@@ -477,7 +480,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               F.Values(xp1, ym, dym);
               ym -= K;
               if (dym < -1e-10 || dym > 1e-10)
-              {                      // normalement dym > 0
+              {                             // normalement dym > 0
                 double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
                 if (t < majdx && t > -majdx)
                 {
@@ -499,7 +502,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             F.Values(xm1, ym, dym);
             ym -= K;
             if (dym > 1e-10 || dym < -1e-10)
-            {                      // normalement dym > 0
+            {                             // normalement dym > 0
               double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
               if (t < majdx && t > -majdx)
               {
@@ -515,7 +518,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
               F.Values(xm1, ym, dym);
               ym -= K;
               if (dym > 1e-10 || dym < -1e-10)
-              {                      // normalement dym < 0
+              {                             // normalement dym < 0
                 double t = ym / dym; //-- t=xm-x* = (ym-0)/dym
                 if (t < majdx && t > -majdx)
                 {
@@ -533,11 +536,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
             x0 = X0;
           if (x3 > XN)
             x3 = XN;
-          double aSolX1 = 0., aSolX2 = 0.;
-          double aVal1 = 0., aVal2 = 0.;
-          double aDer1 = 0., aDer2 = 0.;
-          bool   isSol1 = false;
-          bool   isSol2 = false;
+          double    aSolX1 = 0., aSolX2 = 0.;
+          double    aVal1 = 0., aVal2 = 0.;
+          double    aDer1 = 0., aDer2 = 0.;
+          bool isSol1 = false;
+          bool isSol2 = false;
           //-- ----------------------------------------------------
           //-- Find minimum of the function |F| between x0 and x3
           //-- by searching for the zero of the function derivative
@@ -562,11 +565,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
           //--
           //-- En entree : a=xm-dx  b=xm c=xm+dx
           double x1, x2, f0, f3;
-          double R               = 0.61803399;
-          double C               = 1.0 - R;
-          double tolCR           = NEpsX * 10.0;
-          f0                     = ptrval(im1);
-          f3                     = ptrval(ip1);
+          double R                    = 0.61803399;
+          double C                    = 1.0 - R;
+          double tolCR                = NEpsX * 10.0;
+          f0                                 = ptrval(im1);
+          f3                                 = ptrval(ip1);
           bool recherche_minimum = (f0 > 0.0);
 
           if (std::abs(x3 - xm) > std::abs(x0 - xm))
@@ -725,26 +728,26 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     // The function is considered as null between A and B if
     // abs(F-K) <= EpsNull within this range.
     double EpsX = _EpsX; //-- Cas ou le parametre va de 100000000 a 1000000001
-                         //-- Il ne faut pas EpsX = 0.000...001  car dans ce cas
-                         //-- U + Nn*EpsX     ==     U
-    double Lowr, Upp;
-    double Increment;
-    double Null2;
-    double FLowr, FUpp, DFLowr, DFUpp;
-    double U, Xu;
-    double Fxu, DFxu, FFxu, DFFxu;
-    double Fyu, DFyu, FFyu, DFFyu;
-    bool   Finish;
-    double FFi;
-    int    Nbiter = 30;
-    int    Iter;
-    double Ambda, T;
-    double AA, BB, CC;
-    int    Nn;
-    double Alfa1              = 0, Alfa2;
-    double OldDF              = RealLast();
-    double Standard_Underflow = 1e-32; //-- RealSmall();
-    bool   Ok;
+                                //-- Il ne faut pas EpsX = 0.000...001  car dans ce cas
+                                //-- U + Nn*EpsX     ==     U
+    double    Lowr, Upp;
+    double    Increment;
+    double    Null2;
+    double    FLowr, FUpp, DFLowr, DFUpp;
+    double    U, Xu;
+    double    Fxu, DFxu, FFxu, DFFxu;
+    double    Fyu, DFyu, FFyu, DFFyu;
+    bool Finish;
+    double    FFi;
+    int Nbiter = 30;
+    int Iter;
+    double    Ambda, T;
+    double    AA, BB, CC;
+    int Nn;
+    double    Alfa1              = 0, Alfa2;
+    double    OldDF              = RealLast();
+    double    Standard_Underflow = 1e-32; //-- RealSmall();
+    bool Ok;
 
     Done = false;
 

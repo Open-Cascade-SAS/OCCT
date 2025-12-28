@@ -22,6 +22,7 @@
 #include <Expr_NamedFunction.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Expr_NamedExpression.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Standard_Transient.hxx>
 class Expr_NamedFunction;
 class Expr_NamedExpression;
@@ -44,14 +45,12 @@ public:
   //! Returns NamedExpression with name <name> already
   //! interpreted if it exists. Returns a null handle if
   //! not.
-  Standard_EXPORT occ::handle<Expr_NamedExpression> GetNamed(
-    const TCollection_AsciiString& name) const;
+  Standard_EXPORT occ::handle<Expr_NamedExpression> GetNamed(const TCollection_AsciiString& name) const;
 
   //! Returns NamedFunction with name <name> already
   //! interpreted if it exists. Returns a null handle if
   //! not.
-  Standard_EXPORT occ::handle<Expr_NamedFunction> GetFunction(
-    const TCollection_AsciiString& name) const;
+  Standard_EXPORT occ::handle<Expr_NamedFunction> GetFunction(const TCollection_AsciiString& name) const;
 
   DEFINE_STANDARD_RTTIEXT(ExprIntrp_Generator, Standard_Transient)
 

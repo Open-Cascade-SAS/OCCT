@@ -43,6 +43,7 @@
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
 #include <AIS_SignatureFilter.hxx>
+#include <AIS_InteractiveObject.hxx>
 #include <NCollection_List.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Aspect_Window.hxx>
@@ -68,12 +69,15 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ViewerSelector3d.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_Map.hxx>
 #include <V3d_Viewer.hxx>
 
 #include <stdio.h>
 
 #include <Draw_Interpretor.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <Draw_PluginMacro.hxx>
 
 extern int ViewerMainLoop(int argc, const char** argv);
@@ -101,18 +105,18 @@ Quantity_NameOfColor ViewerTest::GetColorFromName(const char* theName)
 
 //=================================================================================================
 
-int ViewerTest::ParseColor(const int                theArgNb,
-                           const char* const* const theArgVec,
-                           Quantity_ColorRGBA&      theColor)
+int ViewerTest::ParseColor(const int   theArgNb,
+                                        const char* const* const theArgVec,
+                                        Quantity_ColorRGBA&      theColor)
 {
   return Draw::ParseColor(theArgNb, theArgVec, theColor);
 }
 
 //=================================================================================================
 
-int ViewerTest::ParseColor(const int                theArgNb,
-                           const char* const* const theArgVec,
-                           Quantity_Color&          theColor)
+int ViewerTest::ParseColor(const int   theArgNb,
+                                        const char* const* const theArgVec,
+                                        Quantity_Color&          theColor)
 {
   return Draw::ParseColor(theArgNb, theArgVec, theColor);
 }
@@ -141,7 +145,9 @@ void ViewerTest::GetSelectedShapes(NCollection_List<TopoDS_Shape>& theSelectedSh
 
 //=================================================================================================
 
-bool ViewerTest::ParseLineType(const char* theArg, Aspect_TypeOfLine& theType, uint16_t& thePattern)
+bool ViewerTest::ParseLineType(const char*   theArg,
+                                           Aspect_TypeOfLine& theType,
+                                           uint16_t&          thePattern)
 {
   TCollection_AsciiString aTypeStr(theArg);
   aTypeStr.LowerCase();
@@ -207,9 +213,9 @@ bool ViewerTest::ParseLineType(const char* theArg, Aspect_TypeOfLine& theType, u
 
 //=================================================================================================
 
-bool ViewerTest::ParseMarkerType(const char*                theArg,
-                                 Aspect_TypeOfMarker&       theType,
-                                 occ::handle<Image_PixMap>& theImage)
+bool ViewerTest::ParseMarkerType(const char*      theArg,
+                                             Aspect_TypeOfMarker&  theType,
+                                             occ::handle<Image_PixMap>& theImage)
 {
   theImage.Nullify();
   TCollection_AsciiString aTypeStr(theArg);
@@ -281,7 +287,7 @@ bool ViewerTest::ParseMarkerType(const char*                theArg,
   }
   else
   {
-    theType                                = Aspect_TOM_USERDEFINED;
+    theType                           = Aspect_TOM_USERDEFINED;
     occ::handle<Image_AlienPixMap> anImage = new Image_AlienPixMap();
     if (!anImage->Load(theArg))
     {
@@ -302,7 +308,8 @@ bool ViewerTest::ParseMarkerType(const char*                theArg,
 
 //=================================================================================================
 
-bool ViewerTest::ParseShadingModel(const char* theArg, Graphic3d_TypeOfShadingModel& theModel)
+bool ViewerTest::ParseShadingModel(const char*              theArg,
+                                               Graphic3d_TypeOfShadingModel& theModel)
 {
   TCollection_AsciiString aTypeStr(theArg);
   aTypeStr.LowerCase();
@@ -354,9 +361,9 @@ bool ViewerTest::ParseShadingModel(const char* theArg, Graphic3d_TypeOfShadingMo
 
 //=================================================================================================
 
-bool ViewerTest::parseZLayer(const char*         theArg,
-                             bool                theToAllowInteger,
-                             Graphic3d_ZLayerId& theLayer)
+bool ViewerTest::parseZLayer(const char*    theArg,
+                                         bool    theToAllowInteger,
+                                         Graphic3d_ZLayerId& theLayer)
 {
   TCollection_AsciiString aName(theArg);
   aName.LowerCase();
@@ -387,7 +394,7 @@ bool ViewerTest::parseZLayer(const char*         theArg,
   else if (!GetAISContext().IsNull())
   {
     const occ::handle<V3d_Viewer>& aViewer = ViewerTest::GetAISContext()->CurrentViewer();
-    NCollection_Sequence<int>      aLayers;
+    NCollection_Sequence<int> aLayers;
     aViewer->GetAllZLayers(aLayers);
     for (NCollection_Sequence<int>::Iterator aLayeriter(aLayers); aLayeriter.More();
          aLayeriter.Next())
@@ -442,10 +449,10 @@ static const char** GetTypeNames()
 
 static void GetTypeAndSignfromString(const char*            theName,
                                      AIS_KindOfInteractive& theType,
-                                     int&                   theSign)
+                                     int&      theSign)
 {
-  const char** aFullNames = GetTypeNames();
-  int          anIndex    = -1;
+  const char**     aFullNames = GetTypeNames();
+  int anIndex    = -1;
   for (int i = 0; i <= 13 && anIndex == -1; ++i)
   {
     if (strcasecmp(theName, aFullNames[i]) == 0)
@@ -501,12 +508,13 @@ static void GetTypeAndSignfromString(const char*            theName,
 #include <BRep_Tool.hxx>
 
 #include <Draw_Window.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
 
 //==============================================================================
 //  VIEWER OBJECT MANAGEMENT GLOBAL VARIABLES
 //==============================================================================
-Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-                GetMapOfAIS()
+Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& GetMapOfAIS()
 {
   static NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString> TheMap;
   return TheMap;
@@ -514,14 +522,13 @@ Standard_EXPORT NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TColle
 
 //=================================================================================================
 
-bool ViewerTest::Display(const TCollection_AsciiString&            theName,
-                         const occ::handle<AIS_InteractiveObject>& theObject,
-                         const bool                                theToUpdate,
-                         const bool                                theReplaceIfExists)
+bool ViewerTest::Display(const TCollection_AsciiString&       theName,
+                                     const occ::handle<AIS_InteractiveObject>& theObject,
+                                     const bool               theToUpdate,
+                                     const bool               theReplaceIfExists)
 {
-  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap =
-    GetMapOfAIS();
-  occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
+  NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMap = GetMapOfAIS();
+  occ::handle<AIS_InteractiveContext>            aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: AIS context is not available.");
@@ -562,9 +569,10 @@ bool ViewerTest::Display(const TCollection_AsciiString&            theName,
 }
 
 //! Alias for ViewerTest::Display(), compatibility with old code.
-Standard_EXPORT bool VDisplayAISObject(const TCollection_AsciiString&            theName,
-                                       const occ::handle<AIS_InteractiveObject>& theObject,
-                                       bool theReplaceIfExists = true)
+Standard_EXPORT bool
+  VDisplayAISObject(const TCollection_AsciiString&       theName,
+                    const occ::handle<AIS_InteractiveObject>& theObject,
+                    bool                     theReplaceIfExists = true)
 {
   return ViewerTest::Display(theName, theObject, true, theReplaceIfExists);
 }
@@ -639,7 +647,7 @@ occ::handle<ViewerTest_EventManager> ViewerTest::CurrentEventManager()
 //=================================================================================================
 
 static bool getCtxAndView(occ::handle<AIS_InteractiveContext>& theCtx,
-                          occ::handle<V3d_View>&               theView)
+                                      occ::handle<V3d_View>&               theView)
 {
   theCtx  = ViewerTest::GetAISContext();
   theView = ViewerTest::CurrentView();
@@ -663,8 +671,7 @@ void ViewerTest::Clear()
   }
 
   NCollection_Sequence<occ::handle<AIS_InteractiveObject>> aListRemoved;
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anObjIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anObjIter(GetMapOfAIS());
        anObjIter.More();
        anObjIter.Next())
   {
@@ -701,11 +708,11 @@ void ViewerTest::Clear()
 // purpose  : Returns copy Prs3d_IsoAspect with new number of isolines.
 //==============================================================================
 static occ::handle<Prs3d_IsoAspect> CopyIsoAspect(const occ::handle<Prs3d_IsoAspect>& theIsoAspect,
-                                                  const int                           theNbIsos)
+                                             const int         theNbIsos)
 {
   Quantity_Color    aColor = theIsoAspect->Aspect()->Color();
   Aspect_TypeOfLine aType  = theIsoAspect->Aspect()->Type();
-  double            aWidth = theIsoAspect->Aspect()->Width();
+  double     aWidth = theIsoAspect->Aspect()->Width();
 
   occ::handle<Prs3d_IsoAspect> aResult = new Prs3d_IsoAspect(aColor, aType, aWidth, theNbIsos);
 
@@ -735,10 +742,10 @@ static int visos(Draw_Interpretor& di, int argc, const char** argv)
     return 0;
   }
 
-  int  aLastInd  = argc - 1;
+  int aLastInd  = argc - 1;
   bool isChanged = false;
-  int  aNbUIsos  = 0;
-  int  aNbVIsos  = 0;
+  int aNbUIsos  = 0;
+  int aNbVIsos  = 0;
 
   if (aLastInd >= 3)
   {
@@ -779,7 +786,7 @@ static int visos(Draw_Interpretor& di, int argc, const char** argv)
 
   for (i = 1; i <= aLastInd; i++)
   {
-    TCollection_AsciiString            name(argv[i]);
+    TCollection_AsciiString       name(argv[i]);
     occ::handle<AIS_InteractiveObject> aShape;
     GetMapOfAIS().Find2(name, aShape);
     if (aShape.IsNull())
@@ -857,7 +864,7 @@ static int VClearSensi(Draw_Interpretor&, int theArgNb, const char**)
 static int VDir(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   TCollection_AsciiString aMatch;
-  bool                    toFormat = false;
+  bool        toFormat = false;
   for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
@@ -878,8 +885,7 @@ static int VDir(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
   }
 
   TCollection_AsciiString aRes;
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
        anIter.More();
        anIter.Next())
   {
@@ -919,7 +925,9 @@ enum ViewerTest_StereoPair
 // function : VDump
 // purpose  : To dump the active view snapshot to image file
 //==============================================================================
-static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VDump(Draw_Interpretor& theDI,
+                              int  theArgNb,
+                              const char** theArgVec)
 {
   occ::handle<V3d_View> aView = ViewerTest::CurrentView();
   if (theArgNb < 2)
@@ -934,10 +942,10 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
     return 1;
   }
 
-  int                           anArgIter   = 1;
-  const char*                   aFilePath   = theArgVec[anArgIter++];
-  ViewerTest_StereoPair         aStereoPair = ViewerTest_SP_Single;
-  V3d_ImageDumpOptions          aParams;
+  int         anArgIter   = 1;
+  const char*         aFilePath   = theArgVec[anArgIter++];
+  ViewerTest_StereoPair    aStereoPair = ViewerTest_SP_Single;
+  V3d_ImageDumpOptions     aParams;
   occ::handle<Graphic3d_Camera> aCustomCam;
   aParams.BufferType     = Graphic3d_BT_RGB;
   aParams.StereoOptions  = V3d_SDO_MONO;
@@ -981,12 +989,10 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
           Message::SendFail() << "Error: missing light name for shadowmap dump";
           return 1;
         }
-        aParams.BufferType = Graphic3d_BT_ShadowMap;
-        aParams.LightName  = theArgVec[anArgIter];
-        bool isLightFound  = false;
-        for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator aLightIter(
-               aView->ActiveLightIterator());
-             aLightIter.More();
+        aParams.BufferType            = Graphic3d_BT_ShadowMap;
+        aParams.LightName             = theArgVec[anArgIter];
+        bool isLightFound = false;
+        for (NCollection_List<occ::handle<Graphic3d_CLight>>::Iterator aLightIter(aView->ActiveLightIterator()); aLightIter.More();
              aLightIter.Next())
         {
           occ::handle<V3d_Light> aLight = aLightIter.Value();
@@ -1214,7 +1220,7 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       break;
   }
 
-  const bool                    wasImmUpdate = aView->SetImmediateUpdate(false);
+  const bool               wasImmUpdate = aView->SetImmediateUpdate(false);
   occ::handle<Graphic3d_Camera> aCamBack     = aView->Camera();
   if (!aCustomCam.IsNull())
   {
@@ -1233,8 +1239,9 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       {
         if (aParams.BufferType != Graphic3d_BT_ShadowMap)
         {
-          theDI << "Fail: dumped dimensions " << (int)aPixMap.SizeX() << "x" << (int)aPixMap.SizeY()
-                << " are lesser than requested " << aParams.Width << "x" << aParams.Height << "\n";
+          theDI << "Fail: dumped dimensions " << (int)aPixMap.SizeX() << "x"
+                << (int)aPixMap.SizeY() << " are lesser than requested "
+                << aParams.Width << "x" << aParams.Height << "\n";
         }
       }
       break;
@@ -1259,7 +1266,7 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
                            aPixMap.SizeRowBytes());
 
       aParams.StereoOptions = V3d_SDO_LEFT_EYE;
-      bool isOk             = aView->ToPixMap(aPixMapL, aParams);
+      bool isOk = aView->ToPixMap(aPixMapL, aParams);
       aParams.StereoOptions = V3d_SDO_RIGHT_EYE;
       isOk                  = isOk && aView->ToPixMap(aPixMapR, aParams);
       if (!isOk)
@@ -1289,7 +1296,7 @@ static int VDump(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
                            aPixMap.SizeRowBytes());
 
       aParams.StereoOptions = V3d_SDO_LEFT_EYE;
-      bool isOk             = aView->ToPixMap(aPixMapL, aParams);
+      bool isOk = aView->ToPixMap(aPixMapL, aParams);
       aParams.StereoOptions = V3d_SDO_RIGHT_EYE;
       isOk                  = isOk && aView->ToPixMap(aPixMapR, aParams);
       if (!isOk)
@@ -1321,9 +1328,9 @@ enum TypeOfDispOperation
 
 //! Displays,Erase...
 static void VwrTst_DispErase(const occ::handle<AIS_InteractiveObject>& thePrs,
-                             const int                                 theMode,
-                             const TypeOfDispOperation                 theType,
-                             const bool                                theToUpdate)
+                             const int               theMode,
+                             const TypeOfDispOperation            theType,
+                             const bool               theToUpdate)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
   switch (theType)
@@ -1363,9 +1370,9 @@ static int VDispMode(Draw_Interpretor&, int argc, const char** argv)
     return 1;
   }
 
-  TypeOfDispOperation                 aType = TCollection_AsciiString(argv[0]) == "vunsetdispmode"
-                                                ? TypeOfDispOperation_UnsetDispMode
-                                                : TypeOfDispOperation_SetDispMode;
+  TypeOfDispOperation            aType = TCollection_AsciiString(argv[0]) == "vunsetdispmode"
+                                           ? TypeOfDispOperation_UnsetDispMode
+                                           : TypeOfDispOperation_SetDispMode;
   occ::handle<AIS_InteractiveContext> aCtx  = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
   {
@@ -1398,7 +1405,7 @@ static int VDispMode(Draw_Interpretor&, int argc, const char** argv)
     }
     else
     {
-      TCollection_AsciiString            aName = argv[1];
+      TCollection_AsciiString       aName = argv[1];
       occ::handle<AIS_InteractiveObject> aPrs;
       if (GetMapOfAIS().Find2(aName, aPrs) && !aPrs.IsNull())
       {
@@ -1425,7 +1432,7 @@ static int VDispMode(Draw_Interpretor&, int argc, const char** argv)
   else
   {
     occ::handle<AIS_InteractiveObject> aPrs;
-    TCollection_AsciiString            aName(argv[1]);
+    TCollection_AsciiString       aName(argv[1]);
     if (GetMapOfAIS().Find2(aName, aPrs) && !aPrs.IsNull())
     {
       VwrTst_DispErase(aPrs, Draw::Atoi(argv[2]), aType, true);
@@ -1440,7 +1447,7 @@ static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc == 1)
     return 1;
-  int                                        On  = Draw::Atoi(argv[1]);
+  int                      On  = Draw::Atoi(argv[1]);
   const occ::handle<AIS_InteractiveContext>& Ctx = ViewerTest::GetAISContext();
   if (Ctx.IsNull())
   {
@@ -1469,7 +1476,7 @@ static int VSubInt(Draw_Interpretor& di, int argc, const char** argv)
   else
   {
     occ::handle<AIS_InteractiveObject> IO;
-    TCollection_AsciiString            name = argv[2];
+    TCollection_AsciiString       name = argv[2];
     if (GetMapOfAIS().Find2(name, IO) && !IO.IsNull())
     {
       if (On == 1)
@@ -1508,7 +1515,7 @@ public:
   void Init(const NCollection_Sequence<TCollection_AsciiString>& theNames)
   {
     occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
-    mySeq                                    = theNames;
+    mySeq                               = theNames;
     mySelIter.Nullify();
     myCurrent.Nullify();
     myCurrentTrs.Nullify();
@@ -1631,7 +1638,7 @@ private:
   NCollection_Sequence<TCollection_AsciiString>           mySeq;
   NCollection_Sequence<TCollection_AsciiString>::Iterator mySeqIter;
 
-  TCollection_AsciiString            myCurrentName; //!< current item name
+  TCollection_AsciiString       myCurrentName; //!< current item name
   occ::handle<Standard_Transient>    myCurrentTrs;  //!< current item (as transient object)
   occ::handle<AIS_InteractiveObject> myCurrent;     //!< current item
 
@@ -1690,78 +1697,78 @@ struct ViewerTest_AspectsChangeSet
   int ToSetVisibility;
   int Visibility;
 
-  int            ToSetColor;
-  Quantity_Color Color;
-  int            ToSetBackFaceColor;
-  Quantity_Color BackFaceColor;
+  int ToSetColor;
+  Quantity_Color   Color;
+  int ToSetBackFaceColor;
+  Quantity_Color   BackFaceColor;
 
-  int    ToSetLineWidth;
-  double LineWidth;
+  int ToSetLineWidth;
+  double    LineWidth;
 
-  int      ToSetTypeOfLine;
-  uint16_t StippleLinePattern;
-  uint16_t StippleLineFactor;
+  int ToSetTypeOfLine;
+  uint16_t         StippleLinePattern;
+  uint16_t         StippleLineFactor;
 
-  int                       ToSetTypeOfMarker;
-  Aspect_TypeOfMarker       TypeOfMarker;
+  int     ToSetTypeOfMarker;
+  Aspect_TypeOfMarker  TypeOfMarker;
   occ::handle<Image_PixMap> MarkerImage;
 
-  int    ToSetMarkerSize;
-  double MarkerSize;
+  int ToSetMarkerSize;
+  double    MarkerSize;
 
-  int    ToSetTransparency;
-  double Transparency;
+  int ToSetTransparency;
+  double    Transparency;
 
-  int                 ToSetAlphaMode;
+  int    ToSetAlphaMode;
   Graphic3d_AlphaMode AlphaMode;
-  float               AlphaCutoff;
+  float  AlphaCutoff;
 
-  int                             ToSetFaceCulling;
+  int                ToSetFaceCulling;
   Graphic3d_TypeOfBackfacingModel FaceCulling;
 
-  int                      ToSetMaterial;
+  int         ToSetMaterial;
   Graphic3d_NameOfMaterial Material;
   TCollection_AsciiString  MatName;
 
   NCollection_Sequence<TopoDS_Shape> SubShapes;
 
-  int            ToSetShowFreeBoundary;
-  int            ToSetFreeBoundaryWidth;
-  double         FreeBoundaryWidth;
-  int            ToSetFreeBoundaryColor;
-  Quantity_Color FreeBoundaryColor;
+  int ToSetShowFreeBoundary;
+  int ToSetFreeBoundaryWidth;
+  double    FreeBoundaryWidth;
+  int ToSetFreeBoundaryColor;
+  Quantity_Color   FreeBoundaryColor;
 
   int ToEnableIsoOnTriangulation;
 
-  int           ToSetFaceBoundaryDraw;
-  int           ToSetFaceBoundaryUpperContinuity;
-  GeomAbs_Shape FaceBoundaryUpperContinuity;
+  int ToSetFaceBoundaryDraw;
+  int ToSetFaceBoundaryUpperContinuity;
+  GeomAbs_Shape    FaceBoundaryUpperContinuity;
 
-  int            ToSetFaceBoundaryColor;
-  Quantity_Color FaceBoundaryColor;
+  int ToSetFaceBoundaryColor;
+  Quantity_Color   FaceBoundaryColor;
 
-  int    ToSetFaceBoundaryWidth;
-  double FaceBoundaryWidth;
+  int ToSetFaceBoundaryWidth;
+  double    FaceBoundaryWidth;
 
-  int               ToSetTypeOfFaceBoundaryLine;
+  int  ToSetTypeOfFaceBoundaryLine;
   Aspect_TypeOfLine TypeOfFaceBoundaryLine;
 
-  int    ToSetMaxParamValue;
-  double MaxParamValue;
+  int ToSetMaxParamValue;
+  double    MaxParamValue;
 
   int ToSetSensitivity;
   int SelectionMode;
   int Sensitivity;
 
-  int                     ToSetHatch;
-  int                     StdHatchStyle;
+  int        ToSetHatch;
+  int        StdHatchStyle;
   TCollection_AsciiString PathToHatchPattern;
 
-  int                          ToSetShadingModel;
+  int             ToSetShadingModel;
   Graphic3d_TypeOfShadingModel ShadingModel;
   TCollection_AsciiString      ShadingModelName;
 
-  int                  ToSetInterior;
+  int     ToSetInterior;
   Aspect_InteriorStyle InteriorStyle;
 
   int ToSetDrawSilhouette;
@@ -1769,13 +1776,13 @@ struct ViewerTest_AspectsChangeSet
   int ToSetDrawEdges;
   int ToSetQuadEdges;
 
-  int                ToSetEdgeColor;
+  int   ToSetEdgeColor;
   Quantity_ColorRGBA EdgeColor;
 
-  int    ToSetEdgeWidth;
-  double EdgeWidth;
+  int ToSetEdgeWidth;
+  double    EdgeWidth;
 
-  int               ToSetTypeOfEdge;
+  int  ToSetTypeOfEdge;
   Aspect_TypeOfLine TypeOfEdge;
 
   //! Empty constructor
@@ -1926,7 +1933,7 @@ struct ViewerTest_AspectsChangeSet
   //! Apply aspects to specified drawer.
   bool Apply(const occ::handle<Prs3d_Drawer>& theDrawer)
   {
-    bool                             toRecompute = false;
+    bool                        toRecompute = false;
     const occ::handle<Prs3d_Drawer>& aDefDrawer  = ViewerTest::GetAISContext()->DefaultDrawer();
     if (ToSetShowFreeBoundary != 0)
     {
@@ -2205,19 +2212,21 @@ struct ViewerTest_AspectsChangeSet
 
 //=================================================================================================
 
-static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VAspects(Draw_Interpretor& theDI,
+                                 int  theArgNb,
+                                 const char**      theArgVec)
 {
-  TCollection_AsciiString                    aCmdName(theArgVec[0]);
+  TCollection_AsciiString               aCmdName(theArgVec[0]);
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater                     anUpdateTool(aCtx, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater                anUpdateTool(aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
     return 1;
   }
 
-  int                                           anArgIter  = 1;
-  bool                                          isDefaults = false;
+  int                              anArgIter  = 1;
+  bool                              isDefaults = false;
   NCollection_Sequence<TCollection_AsciiString> aNames;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -2253,10 +2262,10 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
   ViewerTest_AspectsChangeSet* aChangeSet = &aChanges.ChangeLast();
 
   // parse syntax of legacy commands
-  bool toParseAliasArgs = false;
+  bool             toParseAliasArgs = false;
   bool toDump           = 0;
   bool toCompactDump    = 0;
-  int  aDumpDepth       = -1;
+  int aDumpDepth       = -1;
   if (aCmdName == "vsetwidth")
   {
     if (aNames.IsEmpty() || !aNames.Last().IsRealValue(true))
@@ -2282,7 +2291,7 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
     aChangeSet->ToSetColor = 1;
 
     Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
-    bool                 isOk   = false;
+    bool     isOk   = false;
     if (Quantity_Color::ColorFromName(aNames.Last().ToCString(), aColor))
     {
       aChangeSet->Color = aColor;
@@ -2303,7 +2312,7 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       };
 
       int aNbParsed = Draw::ParseColor(3, anArgVec, aChangeSet->Color);
-      isOk          = aNbParsed == 3;
+      isOk                       = aNbParsed == 3;
       aNames.Remove(aNames.Length());
       aNames.Remove(aNames.Length());
       aNames.Remove(aNames.Length());
@@ -2625,8 +2634,9 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
              || anArg == "-setfaceboundarycolor" || anArg == "-setboundarycolor"
              || anArg == "-faceboundarycolor" || anArg == "-boundarycolor")
     {
-      Quantity_Color aColor;
-      int aNbParsed = Draw::ParseColor(theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aColor);
+      Quantity_Color   aColor;
+      int aNbParsed =
+        Draw::ParseColor(theArgNb - anArgIter - 1, theArgVec + anArgIter + 1, aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -2865,8 +2875,8 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
              || anArg == "-setfbcolor" || anArg == "-fbcolor")
     {
       int aNbParsed = Draw::ParseColor(theArgNb - anArgIter - 1,
-                                       theArgVec + anArgIter + 1,
-                                       aChangeSet->FreeBoundaryColor);
+                                                    theArgVec + anArgIter + 1,
+                                                    aChangeSet->FreeBoundaryColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -3102,8 +3112,8 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
              || anArg == "-edgescolor")
     {
       int aNbParsed = Draw::ParseColor(theArgNb - anArgIter - 1,
-                                       theArgVec + anArgIter + 1,
-                                       aChangeSet->EdgeColor);
+                                                    theArgVec + anArgIter + 1,
+                                                    aChangeSet->EdgeColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -3267,8 +3277,8 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 
   for (ViewTest_PrsIter aPrsIter(aNames); aPrsIter.More(); aPrsIter.Next())
   {
-    const TCollection_AsciiString&     aName = aPrsIter.CurrentName();
-    occ::handle<AIS_InteractiveObject> aPrs  = aPrsIter.Current();
+    const TCollection_AsciiString& aName = aPrsIter.CurrentName();
+    occ::handle<AIS_InteractiveObject>  aPrs  = aPrsIter.Current();
     if (aPrs.IsNull())
     {
       return 1;
@@ -3276,8 +3286,8 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 
     occ::handle<Prs3d_Drawer>     aDrawer = aPrs->Attributes();
     occ::handle<AIS_ColoredShape> aColoredPrs;
-    bool                          toDisplay   = false;
-    bool                          toRedisplay = false;
+    bool         toDisplay   = false;
+    bool         toRedisplay = false;
     if (aChanges.Length() > 1 || aChangeSet->ToSetVisibility == 1)
     {
       occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(aPrs);
@@ -3310,8 +3320,7 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
       aChangeSet = &aChangesIter.ChangeValue();
       if (aChangeSet->ToSetVisibility == 1)
       {
-        occ::handle<AIS_ColoredDrawer> aColDrawer =
-          aColoredPrs->CustomAspects(aColoredPrs->Shape());
+        occ::handle<AIS_ColoredDrawer> aColDrawer = aColoredPrs->CustomAspects(aColoredPrs->Shape());
         aColDrawer->SetHidden(aChangeSet->Visibility == 0);
       }
       else if (aChangeSet->ToSetMaterial == 1)
@@ -3440,7 +3449,7 @@ static int VAspects(Draw_Interpretor& theDI, int theArgNb, const char** theArgVe
 static int VDonly2(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater                     anUpdateTool(aCtx, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater                anUpdateTool(aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
@@ -3475,7 +3484,7 @@ static int VDonly2(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     // display only specified objects
     for (; anArgIter < theArgNb; ++anArgIter)
     {
-      TCollection_AsciiString            aName = theArgVec[anArgIter];
+      TCollection_AsciiString       aName = theArgVec[anArgIter];
       occ::handle<AIS_InteractiveObject> aShape;
       if (GetMapOfAIS().Find2(aName, aShape) && !aShape.IsNull())
       {
@@ -3486,8 +3495,7 @@ static int VDonly2(Draw_Interpretor&, int theArgNb, const char** theArgVec)
   }
 
   // weed out other objects
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
        anIter.More();
        anIter.Next())
   {
@@ -3515,7 +3523,7 @@ static int VDonly2(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater                     anUpdateTool(aCtx, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater                anUpdateTool(aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
@@ -3566,8 +3574,7 @@ int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   NCollection_List<TCollection_AsciiString> anIONameList;
   if (toRemoveAll)
   {
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
          anIter.More();
          anIter.Next())
     {
@@ -3581,8 +3588,7 @@ int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       const TCollection_AsciiString aName(theArgVec[anArgIter]);
       if (aName.Search("*") != -1)
       {
-        for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                                   TCollection_AsciiString>::Iterator aPrsIter(GetMapOfAIS());
+        for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator aPrsIter(GetMapOfAIS());
              aPrsIter.More();
              aPrsIter.Next())
         {
@@ -3628,8 +3634,7 @@ int VRemove(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   }
   else if (aCtx->NbSelected() > 0)
   {
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
          anIter.More();
          anIter.Next())
     {
@@ -3670,18 +3675,19 @@ int VErase(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx  = ViewerTest::GetAISContext();
   const occ::handle<V3d_View>&               aView = ViewerTest::CurrentView();
-  ViewerTest_AutoUpdater                     anUpdateTool(aCtx, aView);
+  ViewerTest_AutoUpdater                anUpdateTool(aCtx, aView);
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
     return 1;
   }
 
-  const bool toEraseAll = TCollection_AsciiString(theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
+  const bool toEraseAll =
+    TCollection_AsciiString(theArgNb > 0 ? theArgVec[0] : "") == "veraseall";
 
-  int                                           anArgIter     = 1;
-  bool                                          toEraseInView = false;
-  bool                                          toFailOnError = true;
+  int              anArgIter     = 1;
+  bool              toEraseInView = false;
+  bool              toFailOnError = true;
   NCollection_Sequence<TCollection_AsciiString> aNamesOfEraseIO;
   for (; anArgIter < theArgNb; ++anArgIter)
   {
@@ -3714,17 +3720,14 @@ int VErase(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   if (!aNamesOfEraseIO.IsEmpty())
   {
     // Erase named objects
-    NCollection_IndexedDataMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>
-      aPrsList;
-    for (NCollection_Sequence<TCollection_AsciiString>::Iterator anIter(aNamesOfEraseIO);
-         anIter.More();
+    NCollection_IndexedDataMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString> aPrsList;
+    for (NCollection_Sequence<TCollection_AsciiString>::Iterator anIter(aNamesOfEraseIO); anIter.More();
          anIter.Next())
     {
       const TCollection_AsciiString& aName = anIter.Value();
       if (aName.Search("*") != -1)
       {
-        for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                                   TCollection_AsciiString>::Iterator aPrsIter(GetMapOfAIS());
+        for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator aPrsIter(GetMapOfAIS());
              aPrsIter.More();
              aPrsIter.Next())
         {
@@ -3774,8 +3777,7 @@ int VErase(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   else if (!toEraseAll && aCtx->NbSelected() > 0)
   {
     // Erase selected objects
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
          anIter.More();
          anIter.Next())
     {
@@ -3798,8 +3800,7 @@ int VErase(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   else
   {
     // Erase all objects
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
          anIter.More();
          anIter.Next())
     {
@@ -3829,7 +3830,7 @@ static int VDisplayAll(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater                     anUpdateTool(aCtx, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater                anUpdateTool(aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
@@ -3856,16 +3857,14 @@ static int VDisplayAll(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     return 1;
   }
 
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
        anIter.More();
        anIter.Next())
   {
     aCtx->Erase(anIter.Key1(), false);
   }
 
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
        anIter.More();
        anIter.Next())
   {
@@ -3876,8 +3875,8 @@ static int VDisplayAll(Draw_Interpretor&, int theArgNb, const char** theArgVec)
 
 //! Auxiliary method to check if presentation exists
 inline int checkMode(const occ::handle<AIS_InteractiveContext>& theCtx,
-                     const occ::handle<AIS_InteractiveObject>&  theIO,
-                     const int                                  theMode)
+                                  const occ::handle<AIS_InteractiveObject>&  theIO,
+                                  const int                theMode)
 {
   if (theIO.IsNull() || theCtx.IsNull())
   {
@@ -3911,12 +3910,12 @@ enum ViewerTest_BndAction
 };
 
 //! Auxiliary method to print bounding box of presentation
-inline void bndPresentation(Draw_Interpretor&                              theDI,
+inline void bndPresentation(Draw_Interpretor&                         theDI,
                             const occ::handle<PrsMgr_PresentationManager>& theMgr,
                             const occ::handle<AIS_InteractiveObject>&      theObj,
-                            const int                                      theDispMode,
-                            const TCollection_AsciiString&                 theName,
-                            const ViewerTest_BndAction                     theAction,
+                            const int                    theDispMode,
+                            const TCollection_AsciiString&            theName,
+                            const ViewerTest_BndAction                theAction,
                             const occ::handle<Prs3d_Drawer>&               theStyle)
 {
   switch (theAction)
@@ -3931,9 +3930,7 @@ inline void bndPresentation(Draw_Interpretor&                              theDI
     }
     case BndAction_Print: {
       Bnd_Box aBox;
-      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(
-             theObj->Presentations());
-           aPrsIter.More();
+      for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(theObj->Presentations()); aPrsIter.More();
            aPrsIter.Next())
       {
         if (aPrsIter.Value()->Mode() != theDispMode)
@@ -3956,7 +3953,7 @@ inline void bndPresentation(Draw_Interpretor&                              theDI
 int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aCtx = ViewerTest::GetAISContext();
-  ViewerTest_AutoUpdater              anUpdateTool(aCtx, ViewerTest::CurrentView());
+  ViewerTest_AutoUpdater         anUpdateTool(aCtx, ViewerTest::CurrentView());
   if (aCtx.IsNull())
   {
     Message::SendFail("Error: no active view!");
@@ -3964,7 +3961,7 @@ int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   }
 
   ViewerTest_BndAction anAction = BndAction_Show;
-  int                  aMode    = -1;
+  int     aMode    = -1;
 
   occ::handle<Prs3d_Drawer> aStyle;
 
@@ -4013,7 +4010,7 @@ int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
     // has a list of names
     for (; anArgIter < theArgNb; ++anArgIter)
     {
-      TCollection_AsciiString            aName = theArgVec[anArgIter];
+      TCollection_AsciiString       aName = theArgVec[anArgIter];
       occ::handle<AIS_InteractiveObject> anIO;
       if (!GetMapOfAIS().Find2(aName, anIO))
       {
@@ -4037,7 +4034,7 @@ int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
     for (aCtx->InitSelected(); aCtx->MoreSelected(); aCtx->NextSelected())
     {
       occ::handle<AIS_InteractiveObject> anIO = aCtx->SelectedInteractive();
-      aHighlightedMode                        = checkMode(aCtx, anIO, aMode);
+      aHighlightedMode                   = checkMode(aCtx, anIO, aMode);
       if (aHighlightedMode != -1)
       {
         bndPresentation(theDI,
@@ -4053,13 +4050,12 @@ int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   else
   {
     // all objects
-    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>,
-                               TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
+    for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anIter(GetMapOfAIS());
          anIter.More();
          anIter.Next())
     {
       const occ::handle<AIS_InteractiveObject>& anIO = anIter.Key1();
-      aHighlightedMode                               = checkMode(aCtx, anIO, aMode);
+      aHighlightedMode                          = checkMode(aCtx, anIO, aMode);
       if (aHighlightedMode != -1)
       {
         bndPresentation(theDI,
@@ -4077,7 +4073,9 @@ int VBounding(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 
 //=================================================================================================
 
-int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
+int VTexture(Draw_Interpretor& theDi,
+                          int  theArgsNb,
+                          const char**      theArgVec)
 {
   const occ::handle<AIS_InteractiveContext>& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
@@ -4089,9 +4087,9 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
   int  toModulate = -1, toSetSRgb = -1;
   bool toSetFilter = false, toSetAniso = false, toSetTrsfAngle = false, toSetTrsfTrans = false,
        toSetTrsfScale                              = false;
-  float                              aTrsfRotAngle = 0.0f;
-  NCollection_Vec2<float>            aTrsfTrans(0.0f, 0.0f);
-  NCollection_Vec2<float>            aTrsfScale(1.0f, 1.0f);
+  float                 aTrsfRotAngle = 0.0f;
+  NCollection_Vec2<float>                     aTrsfTrans(0.0f, 0.0f);
+  NCollection_Vec2<float>                     aTrsfScale(1.0f, 1.0f);
   Graphic3d_TypeOfTextureFilter      aFilter       = Graphic3d_TOTF_NEAREST;
   Graphic3d_LevelOfTextureAnisotropy anAnisoFilter = Graphic3d_LOTA_OFF;
 
@@ -4117,8 +4115,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
     }
     else if (aTexturedIO.IsNull())
     {
-      const NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>&
-        aMapOfIO = GetMapOfAIS();
+      const NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>& aMapOfIO = GetMapOfAIS();
       if (aMapOfIO.IsBound2(aName))
       {
         aTexturedIO    = aMapOfIO.Find2(aName);
@@ -4325,7 +4322,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
     }
     else if ((aNameCase == "-video") && anArgIter + 1 < theArgsNb)
     {
-      const TCollection_AsciiString          anInput(theArgVec[++anArgIter]);
+      const TCollection_AsciiString     anInput(theArgVec[++anArgIter]);
       occ::handle<Graphic3d_MediaTextureSet> aMedia =
         occ::down_cast<Graphic3d_MediaTextureSet>(aTextureSetOld);
       if (aMedia.IsNull())
@@ -4388,7 +4385,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
     else if (aCommandName == "vtexture"
              && (aTextureVecNew.IsEmpty() || aNameCase.StartsWith("-tex")))
     {
-      int                     aTexIndex = 0;
+      int        aTexIndex = 0;
       TCollection_AsciiString aTexName  = aName;
       if (aNameCase.StartsWith("-tex"))
       {
@@ -4475,7 +4472,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
   if (toSetImage)
   {
     // check if new image set is equal to already set one
-    int                               aNbChanged = 0;
+    int             aNbChanged = 0;
     occ::handle<Graphic3d_TextureSet> aTextureSetNew;
     if (!aTextureVecNew.IsEmpty())
     {
@@ -4675,7 +4672,7 @@ int VTexture(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
 
 //! Auxiliary method to parse transformation persistence flags
 inline bool parseTrsfPersFlag(const TCollection_AsciiString& theFlagString,
-                              Graphic3d_TransModeFlags&      theFlags)
+                                          Graphic3d_TransModeFlags&      theFlags)
 {
   if (theFlagString == "zoom")
   {
@@ -4715,7 +4712,8 @@ inline bool parseTrsfPersFlag(const TCollection_AsciiString& theFlagString,
 
 //=================================================================================================
 
-bool ViewerTest::ParseCorner(const char* theArg, Aspect_TypeOfTriedronPosition& theCorner)
+bool ViewerTest::ParseCorner(const char*               theArg,
+                                         Aspect_TypeOfTriedronPosition& theCorner)
 {
   TCollection_AsciiString aString(theArg);
   aString.LowerCase();
@@ -4793,20 +4791,20 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
   }
 
   // Parse input arguments
-  ViewerTest_AutoUpdater                        anUpdateTool(aCtx, ViewerTest::CurrentView());
-  int                                           isMutable     = -1;
-  Graphic3d_ZLayerId                            aZLayer       = Graphic3d_ZLayerId_UNKNOWN;
-  bool                                          toReDisplay   = false;
-  int                                           isSelectable  = -1;
-  int                                           anObjDispMode = -2;
-  int                                           anObjHighMode = -2;
-  bool                                          toSetTrsfPers = false;
-  bool                                          toEcho        = true;
-  int                                           isAutoTriang  = -1;
-  occ::handle<Graphic3d_TransformPers>          aTrsfPers;
-  NCollection_Sequence<TCollection_AsciiString> aNamesOfDisplayIO;
-  AIS_DisplayStatus                             aDispStatus     = AIS_DS_None;
-  int                                           toDisplayInView = false;
+  ViewerTest_AutoUpdater          anUpdateTool(aCtx, ViewerTest::CurrentView());
+  int                isMutable     = -1;
+  Graphic3d_ZLayerId              aZLayer       = Graphic3d_ZLayerId_UNKNOWN;
+  bool                toReDisplay   = false;
+  int                isSelectable  = -1;
+  int                anObjDispMode = -2;
+  int                anObjHighMode = -2;
+  bool                toSetTrsfPers = false;
+  bool                toEcho        = true;
+  int                isAutoTriang  = -1;
+  occ::handle<Graphic3d_TransformPers> aTrsfPers;
+  NCollection_Sequence<TCollection_AsciiString>   aNamesOfDisplayIO;
+  AIS_DisplayStatus               aDispStatus     = AIS_DS_None;
+  int                toDisplayInView = false;
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
     const TCollection_AsciiString aName     = theArgVec[anArgIter];
@@ -5052,8 +5050,8 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
   // Display interactive objects
   for (int anIter = 1; anIter <= aNamesOfDisplayIO.Length(); ++anIter)
   {
-    const TCollection_AsciiString&     aName = aNamesOfDisplayIO.Value(anIter);
-    occ::handle<AIS_InteractiveObject> aShape;
+    const TCollection_AsciiString& aName = aNamesOfDisplayIO.Value(anIter);
+    occ::handle<AIS_InteractiveObject>  aShape;
     if (!GetMapOfAIS().Find2(aName, aShape))
     {
       // create the AIS_Shape from a name
@@ -5119,8 +5117,7 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
         aCtx->Display(aShape, aDispMode, aSelMode, false, aDispStatus);
         if (toDisplayInView)
         {
-          for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(
-                 aCtx->CurrentViewer()->DefinedViewIterator());
+          for (NCollection_List<occ::handle<V3d_View>>::Iterator aViewIter(aCtx->CurrentViewer()->DefinedViewIterator());
                aViewIter.More();
                aViewIter.Next())
           {
@@ -5160,10 +5157,11 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
     {
       aShape->SetHilightMode(anObjHighMode);
     }
-    int aDispMode = aShape->HasDisplayMode()
-                      ? aShape->DisplayMode()
-                      : (aShape->AcceptDisplayMode(aCtx->DisplayMode()) ? aCtx->DisplayMode() : 0);
-    int aSelMode  = -1;
+    int aDispMode =
+      aShape->HasDisplayMode()
+        ? aShape->DisplayMode()
+        : (aShape->AcceptDisplayMode(aCtx->DisplayMode()) ? aCtx->DisplayMode() : 0);
+    int aSelMode = -1;
     if (isSelectable == 1 || (isSelectable == -1 && aCtx->GetAutoActivateSelection()))
     {
       aSelMode = aShape->GlobalSelectionMode();
@@ -5181,7 +5179,7 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
       }
 
       // update the Shape in the AIS_Shape
-      TopoDS_Shape           aNewShape = DBRep::GetExisting(aName);
+      TopoDS_Shape      aNewShape = DBRep::GetExisting(aName);
       occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(aShape);
       if (!aShapePrs.IsNull())
       {
@@ -5215,7 +5213,9 @@ static int VDisplay2(Draw_Interpretor& theDI, int theArgNb, const char** theArgV
 // function : VNbDisplayed
 // purpose  : Returns number of displayed objects
 //=======================================================================
-static int VNbDisplayed(Draw_Interpretor& theDi, int theArgsNb, const char** theArgVec)
+static int VNbDisplayed(Draw_Interpretor& theDi,
+                                     int  theArgsNb,
+                                     const char**      theArgVec)
 {
   if (theArgsNb != 1)
   {
@@ -5296,7 +5296,7 @@ static int VUpdate(Draw_Interpretor& /*theDi*/, int theArgsNb, const char** theA
 //==============================================================================
 static int VShading(Draw_Interpretor&, int argc, const char** argv)
 {
-  double                             myDevCoef;
+  double                 myDevCoef;
   occ::handle<AIS_InteractiveObject> TheAisIO;
 
   // Verifications
@@ -5333,7 +5333,7 @@ static int VShading(Draw_Interpretor&, int argc, const char** argv)
 //! Auxiliary method to print Interactive Object information
 static void objInfo(const NCollection_Map<occ::handle<AIS_InteractiveObject>>& theDetected,
                     const occ::handle<AIS_InteractiveObject>&                  theObj,
-                    Draw_Interpretor&                                          theDI)
+                    Draw_Interpretor&                                     theDI)
 {
   if (theObj.IsNull())
   {
@@ -5422,7 +5422,8 @@ static void objInfo(const NCollection_Map<occ::handle<AIS_InteractiveObject>>& t
 template <typename T>
 static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI)
 {
-  const bool isGlobalCtx = (theContext->DynamicType() == STANDARD_TYPE(AIS_InteractiveContext));
+  const bool isGlobalCtx =
+    (theContext->DynamicType() == STANDARD_TYPE(AIS_InteractiveContext));
   TCollection_AsciiString aPrevName;
   for (theContext->InitSelected(); theContext->MoreSelected(); theContext->NextSelected())
   {
@@ -5443,9 +5444,9 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
     }
 
     const TCollection_AsciiString aParentName = GetMapOfAIS().Find1(aShapeIO);
-    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aFilter;
-    int                                                    aNumber = 0;
-    const TopoDS_Shape                                     aShape  = aShapeIO->Shape();
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>           aFilter;
+    int              aNumber = 0;
+    const TopoDS_Shape            aShape  = aShapeIO->Shape();
     for (TopExp_Explorer anIter(aShape, aSubShape.ShapeType()); anIter.More(); anIter.Next())
     {
       if (!aFilter.Add(anIter.Current()))
@@ -5505,7 +5506,9 @@ static void printLocalSelectionInfo(const T& theContext, Draw_Interpretor& theDI
 
 //=================================================================================================
 
-static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
+static int VState(Draw_Interpretor& theDI,
+                               int  theArgNb,
+                               const char** theArgVec)
 {
   occ::handle<AIS_InteractiveContext> aCtx = TheAISContext();
   if (aCtx.IsNull())
@@ -5548,7 +5551,7 @@ static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
     SelectMgr_SelectingVolumeManager aMgr = aSelector->GetManager();
     for (int aPickIter = 1; aPickIter <= aSelector->NbPicked(); ++aPickIter)
     {
-      const SelectMgr_SortCriterion&               aPickData = aSelector->PickedData(aPickIter);
+      const SelectMgr_SortCriterion&          aPickData = aSelector->PickedData(aPickIter);
       const occ::handle<Select3D_SensitiveEntity>& anEntity  = aSelector->PickedEntity(aPickIter);
       const occ::handle<SelectMgr_EntityOwner>&    anOwner   = anEntity->OwnerId();
       occ::handle<AIS_InteractiveObject>           anObj =
@@ -5584,15 +5587,13 @@ static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
       theDI << "  " << aName << anInfoStr << " (" << anEntity->DynamicType()->Name() << ")"
             << "\n";
 
-      if (occ::handle<StdSelect_BRepOwner> aBRepOwner =
-            occ::down_cast<StdSelect_BRepOwner>(anOwner))
+      if (occ::handle<StdSelect_BRepOwner> aBRepOwner = occ::down_cast<StdSelect_BRepOwner>(anOwner))
       {
         theDI << "                       Detected Shape: "
               << aBRepOwner->Shape().TShape()->DynamicType()->Name() << "\n";
       }
 
-      if (occ::handle<Select3D_SensitiveWire> aWire =
-            occ::down_cast<Select3D_SensitiveWire>(anEntity))
+      if (occ::handle<Select3D_SensitiveWire> aWire = occ::down_cast<Select3D_SensitiveWire>(anEntity))
       {
         occ::handle<Select3D_SensitiveEntity> aSen = aWire->GetLastDetected();
         theDI << "                       Detected Child: " << aSen->DynamicType()->Name() << "\n";
@@ -5625,7 +5626,7 @@ static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   {
     for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
     {
-      const TCollection_AsciiString      anObjName = theArgVec[anArgIter];
+      const TCollection_AsciiString anObjName = theArgVec[anArgIter];
       occ::handle<AIS_InteractiveObject> anObj;
       if (!GetMapOfAIS().Find2(anObjName, anObj))
       {
@@ -5669,8 +5670,7 @@ static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
   }
 
   theDI << "Neutral-point state:\n";
-  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator
-         anObjIter(GetMapOfAIS());
+  for (NCollection_DoubleMap<occ::handle<AIS_InteractiveObject>, TCollection_AsciiString>::Iterator anObjIter(GetMapOfAIS());
        anObjIter.More();
        anObjIter.Next())
   {
@@ -5695,19 +5695,19 @@ static int VState(Draw_Interpretor& theDI, int theArgNb, const char** theArgVec)
 //           pick objets that are of type <TheType>...
 //=======================================================================
 
-TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum theShapeType, const int theMaxPick)
+TopoDS_Shape ViewerTest::PickShape(const TopAbs_ShapeEnum theShapeType,
+                                   const int theMaxPick)
 {
-  occ::handle<NCollection_HArray1<TopoDS_Shape>> aResArray =
-    new NCollection_HArray1<TopoDS_Shape>(1, 1);
+  occ::handle<NCollection_HArray1<TopoDS_Shape>> aResArray = new NCollection_HArray1<TopoDS_Shape>(1, 1);
   PickShapes(theShapeType, aResArray, theMaxPick);
   return aResArray->First();
 }
 
 //=================================================================================================
 
-bool ViewerTest::PickShapes(const TopAbs_ShapeEnum                          theShapeType,
-                            occ::handle<NCollection_HArray1<TopoDS_Shape>>& theResArray,
-                            const int                                       theMaxPick)
+bool ViewerTest::PickShapes(const TopAbs_ShapeEnum           theShapeType,
+                                        occ::handle<NCollection_HArray1<TopoDS_Shape>>& theResArray,
+                                        const int           theMaxPick)
 {
   const int aNbToReach = theResArray->Length();
   if (aNbToReach > 1)
@@ -5736,9 +5736,7 @@ bool ViewerTest::PickShapes(const TopAbs_ShapeEnum                          theS
   }
 
   const int aSelMode = AIS_Shape::SelectionMode(theShapeType);
-  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(aDispObjects);
-       anObjIter.More();
-       anObjIter.Next())
+  for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(aDispObjects); anObjIter.More(); anObjIter.Next())
   {
     if (occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(anObjIter.Value()))
     {
@@ -5747,10 +5745,10 @@ bool ViewerTest::PickShapes(const TopAbs_ShapeEnum                          theS
   }
 
   // step 2 : wait for the selection...
-  int          aNbPickGood = 0, aNbPickFail = 0;
-  int          argccc  = 5;
-  const char*  bufff[] = {"A", "B", "C", "D", "E"};
-  const char** argvvv  = (const char**)bufff;
+  int aNbPickGood = 0, aNbPickFail = 0;
+  int argccc  = 5;
+  const char*      bufff[] = {"A", "B", "C", "D", "E"};
+  const char**     argvvv  = (const char**)bufff;
   for (; aNbPickGood < aNbToReach && aNbPickFail <= theMaxPick;)
   {
     while (ViewerMainLoop(argccc, argvvv))
@@ -5791,8 +5789,7 @@ bool ViewerTest::PickShapes(const TopAbs_ShapeEnum                          theS
   aCtx->RemoveFilters();
   if (theShapeType != TopAbs_SHAPE)
   {
-    for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(aDispObjects);
-         anObjIter.More();
+    for (NCollection_List<occ::handle<AIS_InteractiveObject>>::Iterator anObjIter(aDispObjects); anObjIter.More();
          anObjIter.Next())
     {
       if (occ::handle<AIS_Shape> aShapePrs = occ::down_cast<AIS_Shape>(anObjIter.Value()))
@@ -5838,7 +5835,7 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
     }
   }
 
-  static int                           THE_NB_SHAPES_OF_TYPE[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+  static int              THE_NB_SHAPES_OF_TYPE[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   static const TCollection_AsciiString THE_NAME_TYPE[8] =
     {"COMPS", "SOL", "SHE", "F", "W", "E", "V", "SHAP"};
 
@@ -5859,8 +5856,8 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
     else
     {
       const int aShapeIndex = ++THE_NB_SHAPES_OF_TYPE[int(aShapeType)];
-      aName =
-        TCollection_AsciiString("Picked_") + THE_NAME_TYPE[int(aShapeType)] + "_" + aShapeIndex;
+      aName = TCollection_AsciiString("Picked_") + THE_NAME_TYPE[int(aShapeType)] + "_"
+              + aShapeIndex;
     }
 
     DBRep::Set(aName.ToCString(), aPickedShape);
@@ -5872,12 +5869,12 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
   {
     TCollection_AsciiString aName(argv[2]);
     aName.LowerCase();
-    const bool                                     isAutoNaming = aName == ".";
-    occ::handle<NCollection_HArray1<TopoDS_Shape>> aPickedArray =
-      new NCollection_HArray1<TopoDS_Shape>(1, aNbToPick);
+    const bool          isAutoNaming = aName == ".";
+    occ::handle<NCollection_HArray1<TopoDS_Shape>> aPickedArray = new NCollection_HArray1<TopoDS_Shape>(1, aNbToPick);
     if (ViewerTest::PickShapes(aShapeType, aPickedArray))
     {
-      for (int aPickedIter = aPickedArray->Lower(); aPickedIter <= aPickedArray->Upper();
+      for (int aPickedIter = aPickedArray->Lower();
+           aPickedIter <= aPickedArray->Upper();
            ++aPickedIter)
       {
         TopoDS_Shape aPickedShape = aPickedArray->Value(aPickedIter);
@@ -5885,8 +5882,8 @@ static int VPickShape(Draw_Interpretor& di, int argc, const char** argv)
         if (!aPickedShape.IsNull() && isAutoNaming)
         {
           const int aShapeIndex = ++THE_NB_SHAPES_OF_TYPE[int(aShapeType)];
-          aName =
-            TCollection_AsciiString("Picked_") + THE_NAME_TYPE[int(aShapeType)] + "_" + aShapeIndex;
+          aName = TCollection_AsciiString("Picked_") + THE_NAME_TYPE[int(aShapeType)]
+                  + "_" + aShapeIndex;
         }
         else
         {
@@ -5996,7 +5993,7 @@ static int VSelFilter(Draw_Interpretor&, int theArgc, const char** theArgv)
 
 static int VPickSelected(Draw_Interpretor&, int theArgNb, const char** theArgs)
 {
-  static int              aCount = 0;
+  static int aCount = 0;
   TCollection_AsciiString aName  = "PickedShape_";
 
   if (theArgNb > 1)
@@ -6020,7 +6017,7 @@ static int VPickSelected(Draw_Interpretor&, int theArgNb, const char** theArgs)
     else
     {
       occ::handle<AIS_InteractiveObject> IO = TheAISContext()->SelectedInteractive();
-      aShape                                = occ::down_cast<AIS_Shape>(IO)->Shape();
+      aShape                           = occ::down_cast<AIS_Shape>(IO)->Shape();
     }
 
     TCollection_AsciiString aCurrentName = aName;
@@ -6048,7 +6045,7 @@ static int VIOTypes(Draw_Interpretor& di, int, const char**)
   //                             1234567890         12345678901234567         123456789
   TCollection_AsciiString Colum[3] = {"Standard Types", "Type Of Object", "Signature"};
   TCollection_AsciiString BlankLine(64, '_');
-  int                     i;
+  int        i;
 
   di << "/n" << BlankLine.ToCString() << "\n";
 
@@ -6155,7 +6152,7 @@ static int VEraseType(Draw_Interpretor&, int argc, const char** argv)
     return 1;
 
   AIS_KindOfInteractive TheType;
-  int                   TheSign(-1);
+  int      TheSign(-1);
   GetTypeAndSignfromString(argv[1], TheType, TheSign);
 
   NCollection_List<occ::handle<AIS_InteractiveObject>> LIO;
@@ -6195,7 +6192,7 @@ static int VDisplayType(Draw_Interpretor&, int argc, const char** argv)
     return 1;
 
   AIS_KindOfInteractive TheType;
-  int                   TheSign(-1);
+  int      TheSign(-1);
   GetTypeAndSignfromString(argv[1], TheType, TheSign);
 
   // en attendant l'amelioration ais pour les dimensions...
@@ -6453,8 +6450,8 @@ static int VBsdf(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVec)
       if (aFresnelType == "schlick")
       {
         NCollection_Vec3<float> aRGB(static_cast<float>(Draw::Atof(aCmd.Arg(aFresnel, 1).c_str())),
-                                     static_cast<float>(Draw::Atof(aCmd.Arg(aFresnel, 2).c_str())),
-                                     static_cast<float>(Draw::Atof(aCmd.Arg(aFresnel, 3).c_str())));
+                            static_cast<float>(Draw::Atof(aCmd.Arg(aFresnel, 2).c_str())),
+                            static_cast<float>(Draw::Atof(aCmd.Arg(aFresnel, 3).c_str())));
 
         aRGB.r() = std::min(std::max(aRGB.r(), 0.f), 1.f);
         aRGB.g() = std::min(std::max(aRGB.g(), 0.f), 1.f);
@@ -6527,7 +6524,9 @@ static int VBsdf(Draw_Interpretor& theDI, int theArgsNb, const char** theArgVec)
 // function : VLoadSelection
 // purpose  : Adds given objects to map of AIS and loads selection primitives for them
 //==============================================================================
-static int VLoadSelection(Draw_Interpretor& /*theDi*/, int theArgNb, const char** theArgVec)
+static int VLoadSelection(Draw_Interpretor& /*theDi*/,
+                                       int theArgNb,
+                                       const char**     theArgVec)
 {
   if (theArgNb < 2)
   {
@@ -6545,7 +6544,7 @@ static int VLoadSelection(Draw_Interpretor& /*theDi*/, int theArgNb, const char*
   // Parse input arguments
   for (int anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    const TCollection_AsciiString      aName = theArgVec[anArgIter];
+    const TCollection_AsciiString aName = theArgVec[anArgIter];
     occ::handle<AIS_InteractiveObject> aShape;
     if (!GetMapOfAIS().Find2(aName, aShape))
     {
@@ -6967,8 +6966,8 @@ nAdjusts parameters of material BSDF:
 // purpose  : Split parameter string to parameter name and parameter value
 //==============================================================================
 bool ViewerTest::SplitParameter(const TCollection_AsciiString& theString,
-                                TCollection_AsciiString&       theName,
-                                TCollection_AsciiString&       theValue)
+                                            TCollection_AsciiString&       theName,
+                                            TCollection_AsciiString&       theValue)
 {
   int aParamNameEnd = theString.FirstLocationInSet("=", 1, theString.Length());
 

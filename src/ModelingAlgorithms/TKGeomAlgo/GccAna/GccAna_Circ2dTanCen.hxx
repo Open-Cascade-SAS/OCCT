@@ -24,7 +24,13 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class GccEnt_QualifiedCirc;
 class gp_Pnt2d;
 class gp_Lin2d;
@@ -57,7 +63,7 @@ public:
   //! centered on a point.
   Standard_EXPORT GccAna_Circ2dTanCen(const GccEnt_QualifiedCirc& Qualified1,
                                       const gp_Pnt2d&             Pcenter,
-                                      const double                Tolerance);
+                                      const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles tangent to a line and
@@ -123,9 +129,9 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions or less than zero.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument.
@@ -136,14 +142,14 @@ public:
   Standard_EXPORT bool IsTheSame1(const int Index) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<int>             TheSame1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    pararg1;
 };
 
 #endif // _GccAna_Circ2dTanCen_HeaderFile

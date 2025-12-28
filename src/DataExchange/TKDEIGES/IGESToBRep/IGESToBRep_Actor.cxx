@@ -134,10 +134,9 @@ bool IGESToBRep_Actor::Recognize(const occ::handle<Standard_Transient>& start)
 
 //=======================================================================
 
-occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(
-  const occ::handle<Standard_Transient>&        start,
-  const occ::handle<Transfer_TransientProcess>& TP,
-  const Message_ProgressRange&                  theProgress)
+occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(const occ::handle<Standard_Transient>&        start,
+                                                   const occ::handle<Transfer_TransientProcess>& TP,
+                                                   const Message_ProgressRange& theProgress)
 {
   DeclareAndCast(IGESData_IGESModel, mymodel, themodel);
   DeclareAndCast(IGESData_IGESEntity, ent, start);
@@ -150,9 +149,9 @@ occ::handle<Transfer_Binder> IGESToBRep_Actor::Transfer(
   TopoDS_Shape shape;
 
   // Call the transfer only if type is OK.
-  int    typnum = ent->TypeNumber();
-  int    fornum = ent->FormNumber();
-  double eps;
+  int typnum = ent->TypeNumber();
+  int fornum = ent->FormNumber();
+  double    eps;
   if (IGESToBRep::IsCurveAndSurface(ent)
       || (typnum == 402 && (fornum == 1 || fornum == 7 || fornum == 14 || fornum == 15))
       || (typnum == 408) || (typnum == 308))

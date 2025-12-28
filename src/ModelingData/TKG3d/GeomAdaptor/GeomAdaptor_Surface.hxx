@@ -49,25 +49,23 @@ public:
   struct ExtrusionData
   {
     occ::handle<Adaptor3d_Curve> BasisCurve; //!< Adaptor for basis curve
-    gp_XYZ                       Direction;  //!< Extrusion direction XYZ (normalized)
+    gp_XYZ                  Direction;  //!< Extrusion direction XYZ (normalized)
   };
 
   //! Internal structure for revolution surface evaluation data.
   struct RevolutionData
   {
     occ::handle<Adaptor3d_Curve> BasisCurve; //!< Adaptor for basis curve
-    gp_Ax1                       Axis;       //!< Revolution axis
+    gp_Ax1                  Axis;       //!< Revolution axis
   };
 
   //! Internal structure for offset surface evaluation data.
   struct OffsetData
   {
-    occ::handle<GeomAdaptor_Surface> BasisAdaptor; //!< Adaptor for basis surface
-    occ::handle<GeomAdaptor_Surface>
-      EquivalentAdaptor; //!< Adaptor for equivalent surface (if exists)
-    occ::handle<Geom_OffsetSurface>
-           OffsetSurface; //!< Original offset surface for osculating queries
-    double Offset = 0.0;  //!< Offset distance
+    occ::handle<GeomAdaptor_Surface> BasisAdaptor;      //!< Adaptor for basis surface
+    occ::handle<GeomAdaptor_Surface> EquivalentAdaptor; //!< Adaptor for equivalent surface (if exists)
+    occ::handle<Geom_OffsetSurface>  OffsetSurface; //!< Original offset surface for osculating queries
+    double                      Offset = 0.0;  //!< Offset distance
   };
 
   //! Internal structure for Bezier surface cache data.
@@ -108,12 +106,12 @@ public:
 
   //! Standard_ConstructionError is raised if UFirst>ULast or VFirst>VLast
   GeomAdaptor_Surface(const occ::handle<Geom_Surface>& theSurf,
-                      const double                     theUFirst,
-                      const double                     theULast,
-                      const double                     theVFirst,
-                      const double                     theVLast,
-                      const double                     theTolU = 0.0,
-                      const double                     theTolV = 0.0)
+                      const double         theUFirst,
+                      const double         theULast,
+                      const double         theVFirst,
+                      const double         theVLast,
+                      const double         theTolU = 0.0,
+                      const double         theTolV = 0.0)
   {
     Load(theSurf, theUFirst, theULast, theVFirst, theVLast, theTolU, theTolV);
   }
@@ -135,12 +133,12 @@ public:
 
   //! Standard_ConstructionError is raised if theUFirst>theULast or theVFirst>theVLast
   void Load(const occ::handle<Geom_Surface>& theSurf,
-            const double                     theUFirst,
-            const double                     theULast,
-            const double                     theVFirst,
-            const double                     theVLast,
-            const double                     theTolU = 0.0,
-            const double                     theTolV = 0.0)
+            const double         theUFirst,
+            const double         theULast,
+            const double         theVFirst,
+            const double         theVLast,
+            const double         theTolU = 0.0,
+            const double         theTolV = 0.0)
   {
     if (theSurf.IsNull())
     {
@@ -169,7 +167,10 @@ public:
   //! @param[out] theU2 maximum U parameter
   //! @param[out] theV1 minimum V parameter
   //! @param[out] theV2 maximum V parameter
-  void Bounds(double& theU1, double& theU2, double& theV1, double& theV2) const
+  void Bounds(double& theU1,
+              double& theU2,
+              double& theV1,
+              double& theV2) const
   {
     theU1 = FirstUParameter();
     theU2 = LastUParameter();
@@ -192,12 +193,12 @@ public:
   //! Returns the intervals with the requested continuity
   //! in the U direction.
   Standard_EXPORT void UIntervals(NCollection_Array1<double>& T,
-                                  const GeomAbs_Shape         S) const override;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns the intervals with the requested continuity
   //! in the V direction.
   Standard_EXPORT void VIntervals(NCollection_Array1<double>& T,
-                                  const GeomAbs_Shape         S) const override;
+                                  const GeomAbs_Shape   S) const override;
 
   //! Returns a surface trimmed in the U direction
   //! equivalent of <me> between
@@ -205,16 +206,16 @@ public:
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Surface> UTrim(const double First,
-                                                       const double Last,
-                                                       const double Tol) const override;
+                                                  const double Last,
+                                                  const double Tol) const override;
 
   //! Returns a surface trimmed in the V direction between
   //! parameters <First> and <Last>. <Tol> is used to
   //! test for 3d points confusion.
   //! If <First> >= <Last>
   Standard_EXPORT occ::handle<Adaptor3d_Surface> VTrim(const double First,
-                                                       const double Last,
-                                                       const double Tol) const override;
+                                                  const double Last,
+                                                  const double Tol) const override;
 
   Standard_EXPORT bool IsUClosed() const override;
 
@@ -229,10 +230,13 @@ public:
   Standard_EXPORT double VPeriod() const override;
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT gp_Pnt Value(const double U, const double V) const override final;
+  Standard_EXPORT gp_Pnt Value(const double U,
+                               const double V) const override final;
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override final;
+  Standard_EXPORT void D0(const double U,
+                          const double V,
+                          gp_Pnt&             P) const override final;
 
   //! Computes the point and the first derivatives on
   //! the surface.
@@ -243,9 +247,9 @@ public:
   //! else the derivatives are computed on the basis surface.
   Standard_EXPORT void D1(const double U,
                           const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override final;
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V) const override final;
 
   //! Computes the point, the first and second derivatives
   //! on the surface.
@@ -256,12 +260,12 @@ public:
   //! else the derivatives are computed on the basis surface.
   Standard_EXPORT void D2(const double U,
                           const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override final;
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V,
+                          gp_Vec&             D2U,
+                          gp_Vec&             D2V,
+                          gp_Vec&             D2UV) const override final;
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
@@ -272,16 +276,16 @@ public:
   //! else the derivatives are computed on the basis surface.
   Standard_EXPORT void D3(const double U,
                           const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override final;
+                          gp_Pnt&             P,
+                          gp_Vec&             D1U,
+                          gp_Vec&             D1V,
+                          gp_Vec&             D2U,
+                          gp_Vec&             D2V,
+                          gp_Vec&             D2UV,
+                          gp_Vec&             D3U,
+                          gp_Vec&             D3V,
+                          gp_Vec&             D3UUV,
+                          gp_Vec&             D3UVV) const override final;
 
   //! Computes the derivative of order Nu in the
   //! direction U and Nv in the direction V at the point P(U, V).
@@ -291,10 +295,10 @@ public:
   //! the derivatives are computed on the current interval.
   //! else the derivatives are computed on the basis surface.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const override final;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const double    V,
+                            const int Nu,
+                            const int Nv) const override final;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.
@@ -369,22 +373,22 @@ private:
                             const int FKIndx,
                             const int LKIndx) const;
 
-  Standard_EXPORT bool IfUVBound(const double U,
-                                 const double V,
-                                 int&         Ideb,
-                                 int&         Ifin,
-                                 int&         IVdeb,
-                                 int&         IVfin,
-                                 const int    USide,
-                                 const int    VSide) const;
+  Standard_EXPORT bool IfUVBound(const double    U,
+                                             const double    V,
+                                             int&      Ideb,
+                                             int&      Ifin,
+                                             int&      IVdeb,
+                                             int&      IVfin,
+                                             const int USide,
+                                             const int VSide) const;
 
   Standard_EXPORT void load(const occ::handle<Geom_Surface>& S,
-                            const double                     UFirst,
-                            const double                     ULast,
-                            const double                     VFirst,
-                            const double                     VLast,
-                            const double                     TolU = 0.0,
-                            const double                     TolV = 0.0);
+                            const double         UFirst,
+                            const double         ULast,
+                            const double         VFirst,
+                            const double         VLast,
+                            const double         TolU = 0.0,
+                            const double         TolV = 0.0);
 
   //! Rebuilds B-spline cache
   //! \param theU first parameter to identify the span for caching
@@ -393,14 +397,14 @@ private:
 
 protected:
   occ::handle<Geom_Surface> mySurface;
-  double                    myUFirst;
-  double                    myULast;
-  double                    myVFirst;
-  double                    myVLast;
-  double                    myTolU;
-  double                    myTolV;
-  GeomAbs_SurfaceType       mySurfaceType;
-  SurfaceDataVariant        mySurfaceData; ///< Surface-specific evaluation data
+  double        myUFirst;
+  double        myULast;
+  double        myVFirst;
+  double        myVLast;
+  double        myTolU;
+  double        myTolV;
+  GeomAbs_SurfaceType  mySurfaceType;
+  SurfaceDataVariant   mySurfaceData; ///< Surface-specific evaluation data
 };
 
 #endif // _GeomAdaptor_Surface_HeaderFile

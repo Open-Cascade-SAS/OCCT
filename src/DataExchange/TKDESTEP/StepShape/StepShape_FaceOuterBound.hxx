@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepShape_FaceOuterBound();
 
   DEFINE_STANDARD_RTTIEXT(StepShape_FaceOuterBound, StepShape_FaceBound)
+
 };
 
 #endif // _StepShape_FaceOuterBound_HeaderFile

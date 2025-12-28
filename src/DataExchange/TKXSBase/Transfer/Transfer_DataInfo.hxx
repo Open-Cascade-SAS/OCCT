@@ -34,12 +34,12 @@ public:
 
   //! Returns the Type attached to an object
   //! Here, the Dynamic Type of a Transient. Null Type if unknown
-  Standard_EXPORT static occ::handle<Standard_Type> Type(
-    const occ::handle<Standard_Transient>& ent);
+  Standard_EXPORT static occ::handle<Standard_Type> Type(const occ::handle<Standard_Transient>& ent);
 
   //! Returns Type Name (string)
   //! Allows to name type of non-handled objects
   Standard_EXPORT static const char* TypeName(const occ::handle<Standard_Transient>& ent);
+
 };
 
 #endif // _Transfer_DataInfo_HeaderFile

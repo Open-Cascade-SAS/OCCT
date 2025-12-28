@@ -34,7 +34,12 @@
 #include <MoniTool_Macros.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Message_Messenger.hxx>
+#include <TCollection_HAsciiString.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
@@ -43,13 +48,13 @@ IGESDefs_ToolAttributeTable::IGESDefs_ToolAttributeTable() {}
 
 void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_AttributeTable>& ent,
                                                 const occ::handle<IGESData_IGESReaderData>& IR,
-                                                IGESData_ParamReader& PR) const
+                                                IGESData_ParamReader&                  PR) const
 {
-  int  nr = 1;
-  int  j;
+  int nr = 1;
+  int j;
   bool st = true;
 
-  occ::handle<IGESDefs_AttributeDef> ab = ent->Definition(); // formerly loaded
+  occ::handle<IGESDefs_AttributeDef>      ab = ent->Definition(); // formerly loaded
   occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>> list2;
   if (ab.IsNull())
   {
@@ -89,8 +94,7 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
         }
         break;
         case 2: {
-          occ::handle<NCollection_HArray1<double>> attrReal =
-            new NCollection_HArray1<double>(1, avc);
+          occ::handle<NCollection_HArray1<double>> attrReal = new NCollection_HArray1<double>(1, avc);
           list2->SetValue(i, k, attrReal);
           double item;
           for (j = 1; j <= avc; j++)
@@ -115,8 +119,7 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
         }
         break;
         case 4: {
-          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> attrEnt =
-            new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
+          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> attrEnt = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
           list2->SetValue(i, k, attrEnt);
           occ::handle<IGESData_IGESEntity> item;
           for (j = 1; j <= avc; j++)
@@ -153,7 +156,7 @@ void IGESDefs_ToolAttributeTable::ReadOwnParams(const occ::handle<IGESDefs_Attri
 }
 
 void IGESDefs_ToolAttributeTable::WriteOwnParams(const occ::handle<IGESDefs_AttributeTable>& ent,
-                                                 IGESData_IGESWriter& IW) const
+                                                 IGESData_IGESWriter&                   IW) const
 {
   occ::handle<IGESDefs_AttributeDef> ab = ent->Definition();
 
@@ -200,11 +203,11 @@ void IGESDefs_ToolAttributeTable::WriteOwnParams(const occ::handle<IGESDefs_Attr
 }
 
 void IGESDefs_ToolAttributeTable::OwnShared(const occ::handle<IGESDefs_AttributeTable>& ent,
-                                            Interface_EntityIterator&                   iter) const
+                                            Interface_EntityIterator&              iter) const
 {
   occ::handle<IGESDefs_AttributeDef> ab = ent->Definition();
-  int                                na = ent->NbAttributes();
-  int                                nr = ent->NbRows();
+  int              na = ent->NbAttributes();
+  int              nr = ent->NbRows();
   for (int k = 1; k <= nr; k++)
   {
     for (int i = 1; i <= na; i++)
@@ -220,14 +223,13 @@ void IGESDefs_ToolAttributeTable::OwnShared(const occ::handle<IGESDefs_Attribute
 
 void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTable>& another,
                                           const occ::handle<IGESDefs_AttributeTable>& ent,
-                                          Interface_CopyTool&                         TC) const
+                                          Interface_CopyTool&                    TC) const
 {
-  int                                                               j  = 1;
-  occ::handle<IGESDefs_AttributeDef>                                ab = another->Definition();
-  int                                                               na = another->NbAttributes();
-  int                                                               nr = another->NbRows();
-  occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>> list2 =
-    new NCollection_HArray2<occ::handle<Standard_Transient>>(1, na, 1, nr);
+  int                   j     = 1;
+  occ::handle<IGESDefs_AttributeDef>      ab    = another->Definition();
+  int                   na    = another->NbAttributes();
+  int                   nr    = another->NbRows();
+  occ::handle<NCollection_HArray2<occ::handle<Standard_Transient>>> list2 = new NCollection_HArray2<occ::handle<Standard_Transient>>(1, na, 1, nr);
   for (int k = 1; k <= nr; k++)
   {
     for (int i = 1; i <= na; i++)
@@ -248,17 +250,14 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
         break;
         case 2: {
           DeclareAndCast(NCollection_HArray1<double>, otherReal, another->AttributeList(i, k));
-          occ::handle<NCollection_HArray1<double>> attrReal =
-            new NCollection_HArray1<double>(1, avc);
+          occ::handle<NCollection_HArray1<double>> attrReal = new NCollection_HArray1<double>(1, avc);
           list2->SetValue(i, k, attrReal);
           for (j = 1; j <= avc; j++)
             attrReal->SetValue(j, otherReal->Value(j));
         }
         break;
         case 3: {
-          DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>,
-                         otherStr,
-                         another->AttributeList(i, k));
+          DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, otherStr, another->AttributeList(i, k));
           occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> attrStr =
             new NCollection_HArray1<occ::handle<TCollection_HAsciiString>>(1, avc);
           list2->SetValue(i, k, attrStr);
@@ -267,11 +266,8 @@ void IGESDefs_ToolAttributeTable::OwnCopy(const occ::handle<IGESDefs_AttributeTa
         }
         break;
         case 4: {
-          DeclareAndCast(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>,
-                         otherEnt,
-                         another->AttributeList(i, k));
-          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> attrEnt =
-            new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
+          DeclareAndCast(NCollection_HArray1<occ::handle<IGESData_IGESEntity>>, otherEnt, another->AttributeList(i, k));
+          occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> attrEnt = new NCollection_HArray1<occ::handle<IGESData_IGESEntity>>(1, avc);
           list2->SetValue(i, k, attrEnt);
           for (j = 1; j <= avc; j++)
             attrEnt->SetValue(j,
@@ -325,9 +321,9 @@ void IGESDefs_ToolAttributeTable::OwnCheck(const occ::handle<IGESDefs_AttributeT
 }
 
 void IGESDefs_ToolAttributeTable::OwnDump(const occ::handle<IGESDefs_AttributeTable>& ent,
-                                          const IGESData_IGESDumper&                  dumper,
-                                          Standard_OStream&                           S,
-                                          const int                                   level) const
+                                          const IGESData_IGESDumper&             dumper,
+                                          Standard_OStream&                      S,
+                                          const int                 level) const
 {
   S << "IGESDefs_AttributeTable\n";
 

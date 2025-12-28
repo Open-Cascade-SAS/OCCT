@@ -33,17 +33,15 @@ public:
   //! Returns a FileDescription
   Standard_EXPORT HeaderSection_FileDescription();
 
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription,
-    const occ::handle<TCollection_HAsciiString>& aImplementationLevel);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription,
+                            const occ::handle<TCollection_HAsciiString>&        aImplementationLevel);
 
-  Standard_EXPORT void SetDescription(
-    const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription);
+  Standard_EXPORT void SetDescription(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& aDescription);
 
-  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>
-                  Description() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> Description() const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> DescriptionValue(const int num) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> DescriptionValue(
+    const int num) const;
 
   Standard_EXPORT int NbDescription() const;
 
@@ -56,7 +54,7 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>> description;
-  occ::handle<TCollection_HAsciiString>                                   implementationLevel;
+  occ::handle<TCollection_HAsciiString>        implementationLevel;
 };
 
 #endif // _HeaderSection_FileDescription_HeaderFile

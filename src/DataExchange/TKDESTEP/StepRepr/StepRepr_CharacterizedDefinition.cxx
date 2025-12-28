@@ -31,7 +31,8 @@ StepRepr_CharacterizedDefinition::StepRepr_CharacterizedDefinition() {}
 
 //=================================================================================================
 
-int StepRepr_CharacterizedDefinition::CaseNum(const occ::handle<Standard_Transient>& ent) const
+int StepRepr_CharacterizedDefinition::CaseNum(
+  const occ::handle<Standard_Transient>& ent) const
 {
   if (ent.IsNull())
     return 0;
@@ -54,8 +55,7 @@ int StepRepr_CharacterizedDefinition::CaseNum(const occ::handle<Standard_Transie
 
 //=================================================================================================
 
-occ::handle<StepBasic_CharacterizedObject> StepRepr_CharacterizedDefinition::CharacterizedObject()
-  const
+occ::handle<StepBasic_CharacterizedObject> StepRepr_CharacterizedDefinition::CharacterizedObject() const
 {
   return occ::down_cast<StepBasic_CharacterizedObject>(Value());
 }
@@ -77,8 +77,8 @@ occ::handle<StepBasic_ProductDefinitionRelationship> StepRepr_CharacterizedDefin
 
 //=================================================================================================
 
-occ::handle<StepRepr_ProductDefinitionShape> StepRepr_CharacterizedDefinition::
-  ProductDefinitionShape() const
+occ::handle<StepRepr_ProductDefinitionShape> StepRepr_CharacterizedDefinition::ProductDefinitionShape()
+  const
 {
   return occ::down_cast<StepRepr_ProductDefinitionShape>(Value());
 }
@@ -92,8 +92,8 @@ occ::handle<StepRepr_ShapeAspect> StepRepr_CharacterizedDefinition::ShapeAspect(
 
 //=================================================================================================
 
-occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_CharacterizedDefinition::
-  ShapeAspectRelationship() const
+occ::handle<StepRepr_ShapeAspectRelationship> StepRepr_CharacterizedDefinition::ShapeAspectRelationship()
+  const
 {
   return occ::down_cast<StepRepr_ShapeAspectRelationship>(Value());
 }

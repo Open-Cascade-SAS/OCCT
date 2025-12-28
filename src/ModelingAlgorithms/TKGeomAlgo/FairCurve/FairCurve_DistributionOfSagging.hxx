@@ -27,6 +27,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
 
 //! Compute the Sagging Distribution
@@ -35,19 +37,19 @@ class FairCurve_DistributionOfSagging : public FairCurve_DistributionOfEnergy
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT FairCurve_DistributionOfSagging(
-    const int                                         BSplOrder,
-    const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
-    const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-    const int                                         DerivativeOrder,
-    const FairCurve_BattenLaw&                        Law,
-    const int                                         NbValAux = 0);
+  Standard_EXPORT FairCurve_DistributionOfSagging(const int               BSplOrder,
+                                                  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
+                                                  const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
+                                                  const int     DerivativeOrder,
+                                                  const FairCurve_BattenLaw& Law,
+                                                  const int     NbValAux = 0);
 
   //! computes the values <F> of the functions for the
   //! variable <X>.
   //! returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT virtual bool Value(const math_Vector& X, math_Vector& F) override;
+  Standard_EXPORT virtual bool Value(const math_Vector& X,
+                                                 math_Vector&       F) override;
 
 private:
   FairCurve_BattenLaw MyLaw;

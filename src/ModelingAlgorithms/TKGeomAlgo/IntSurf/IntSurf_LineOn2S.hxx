@@ -59,7 +59,10 @@ public:
 
   //! Sets the parametric coordinates on one of the surfaces
   //! of the point of range Index in the line.
-  Standard_EXPORT void SetUV(const int Index, const bool OnFirst, const double U, const double V);
+  Standard_EXPORT void SetUV(const int Index,
+                             const bool OnFirst,
+                             const double    U,
+                             const double    V);
 
   void Clear();
 
@@ -82,9 +85,9 @@ public:
 
 private:
   NCollection_Sequence<IntSurf_PntOn2S> mySeq;
-  Bnd_Box2d                             myBuv1;
-  Bnd_Box2d                             myBuv2;
-  Bnd_Box                               myBxyz;
+  Bnd_Box2d                 myBuv1;
+  Bnd_Box2d                 myBuv2;
+  Bnd_Box                   myBxyz;
 };
 
 #include <IntSurf_LineOn2S.lxx>

@@ -78,8 +78,7 @@ inline int BOPDS_FaceInfo::Index() const
 
 //=================================================================================================
 
-inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksIn()
-  const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksIn() const
 {
   return myPaveBlocksIn;
 }
@@ -108,8 +107,7 @@ inline NCollection_Map<int>& BOPDS_FaceInfo::ChangeVerticesIn()
 // On
 //=================================================================================================
 
-inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksOn()
-  const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksOn() const
 {
   return myPaveBlocksOn;
 }
@@ -138,8 +136,7 @@ inline NCollection_Map<int>& BOPDS_FaceInfo::ChangeVerticesOn()
 // Sc
 //=================================================================================================
 
-inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksSc()
-  const
+inline const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& BOPDS_FaceInfo::PaveBlocksSc() const
 {
   return myPaveBlocksSc;
 }

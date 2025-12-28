@@ -35,7 +35,7 @@ public:
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&        aName,
                             const occ::handle<TCollection_HAsciiString>&        aDescription,
                             const occ::handle<StepRepr_ProductDefinitionShape>& aOfShape,
-                            const StepData_Logical aProductDefinitional);
+                            const StepData_Logical                         aProductDefinitional);
 
   Standard_EXPORT void SetName(const occ::handle<TCollection_HAsciiString>& aName);
 
@@ -59,7 +59,7 @@ private:
   occ::handle<TCollection_HAsciiString>        name;
   occ::handle<TCollection_HAsciiString>        description;
   occ::handle<StepRepr_ProductDefinitionShape> ofShape;
-  StepData_Logical                             productDefinitional;
+  StepData_Logical                        productDefinitional;
 };
 
 #endif // _StepRepr_ShapeAspect_HeaderFile

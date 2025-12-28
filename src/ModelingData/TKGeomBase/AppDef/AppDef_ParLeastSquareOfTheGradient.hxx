@@ -26,10 +26,16 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 #include <math_IntegerVector.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 class StdFail_NotDone;
 class Standard_OutOfRange;
 class Standard_DimensionError;
@@ -62,20 +68,20 @@ public:
   //! they are approximated in parallel(so with the same
   //! parameter, only the vector B changes).
   Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&       SSP,
-                                                     const int                     FirstPoint,
-                                                     const int                     LastPoint,
+                                                     const int        FirstPoint,
+                                                     const int        LastPoint,
                                                      const AppParCurves_Constraint FirstCons,
                                                      const AppParCurves_Constraint LastCons,
                                                      const math_Vector&            Parameters,
-                                                     const int                     NbPol);
+                                                     const int        NbPol);
 
   //! Initializes the fields of the object.
   Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&       SSP,
-                                                     const int                     FirstPoint,
-                                                     const int                     LastPoint,
+                                                     const int        FirstPoint,
+                                                     const int        LastPoint,
                                                      const AppParCurves_Constraint FirstCons,
                                                      const AppParCurves_Constraint LastCons,
-                                                     const int                     NbPol);
+                                                     const int        NbPol);
 
   //! given a MultiLine, this algorithm computes the least
   //! square resolution using the Householder-QR method.
@@ -92,54 +98,56 @@ public:
   //! and is also the same for each MultiLine point because
   //! they are approximated in parallel(so with the same
   //! parameter, only the vector B changes).
-  Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&           SSP,
-                                                     const NCollection_Array1<double>& Knots,
-                                                     const NCollection_Array1<int>&    Mults,
-                                                     const int                         FirstPoint,
-                                                     const int                         LastPoint,
-                                                     const AppParCurves_Constraint     FirstCons,
-                                                     const AppParCurves_Constraint     LastCons,
-                                                     const math_Vector&                Parameters,
-                                                     const int                         NbPol);
+  Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&        SSP,
+                                                     const NCollection_Array1<double>&    Knots,
+                                                     const NCollection_Array1<int>& Mults,
+                                                     const int         FirstPoint,
+                                                     const int         LastPoint,
+                                                     const AppParCurves_Constraint  FirstCons,
+                                                     const AppParCurves_Constraint  LastCons,
+                                                     const math_Vector&             Parameters,
+                                                     const int         NbPol);
 
   //! Initializes the fields of the object.
-  Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&           SSP,
-                                                     const NCollection_Array1<double>& Knots,
-                                                     const NCollection_Array1<int>&    Mults,
-                                                     const int                         FirstPoint,
-                                                     const int                         LastPoint,
-                                                     const AppParCurves_Constraint     FirstCons,
-                                                     const AppParCurves_Constraint     LastCons,
-                                                     const int                         NbPol);
+  Standard_EXPORT AppDef_ParLeastSquareOfTheGradient(const AppDef_MultiLine&        SSP,
+                                                     const NCollection_Array1<double>&    Knots,
+                                                     const NCollection_Array1<int>& Mults,
+                                                     const int         FirstPoint,
+                                                     const int         LastPoint,
+                                                     const AppParCurves_Constraint  FirstCons,
+                                                     const AppParCurves_Constraint  LastCons,
+                                                     const int         NbPol);
 
   //! Is used after having initialized the fields.
   //! The case "CurvaturePoint" is not treated in this method.
   Standard_EXPORT void Perform(const math_Vector& Parameters);
 
   //! Is used after having initialized the fields.
-  Standard_EXPORT void Perform(const math_Vector& Parameters, const double l1, const double l2);
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const double l1,
+                               const double l2);
 
   //! Is used after having initialized the fields.
   //! <V1t> is the tangent vector at the first point.
   //! <V2t> is the tangent vector at the last point.
-  Standard_EXPORT void Perform(const math_Vector& Parameters,
-                               const math_Vector& V1t,
-                               const math_Vector& V2t,
-                               const double       l1,
-                               const double       l2);
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const math_Vector&  V1t,
+                               const math_Vector&  V2t,
+                               const double l1,
+                               const double l2);
 
   //! Is used after having initialized the fields.
   //! <V1t> is the tangent vector at the first point.
   //! <V2t> is the tangent vector at the last point.
   //! <V1c> is the tangent vector at the first point.
   //! <V2c> is the tangent vector at the last point.
-  Standard_EXPORT void Perform(const math_Vector& Parameters,
-                               const math_Vector& V1t,
-                               const math_Vector& V2t,
-                               const math_Vector& V1c,
-                               const math_Vector& V2c,
-                               const double       l1,
-                               const double       l2);
+  Standard_EXPORT void Perform(const math_Vector&  Parameters,
+                               const math_Vector&  V1t,
+                               const math_Vector&  V2t,
+                               const math_Vector&  V1c,
+                               const math_Vector&  V2c,
+                               const double l1,
+                               const double l2);
 
   //! returns True if all has been correctly done.
   Standard_EXPORT bool IsDone() const;
@@ -166,7 +174,10 @@ public:
   //! and the approximation curves. F is the sum of the square
   //! distances. Grad is the derivative vector of the
   //! function F.
-  Standard_EXPORT void ErrorGradient(math_Vector& Grad, double& F, double& MaxE3d, double& MaxE2d);
+  Standard_EXPORT void ErrorGradient(math_Vector&   Grad,
+                                     double& F,
+                                     double& MaxE3d,
+                                     double& MaxE2d);
 
   //! returns the distances between the points of the
   //! multiline and the approximation curves.
@@ -199,7 +210,9 @@ public:
 
 protected:
   //! is used by the constructors above.
-  Standard_EXPORT void Init(const AppDef_MultiLine& SSP, const int FirstPoint, const int LastPoint);
+  Standard_EXPORT void Init(const AppDef_MultiLine& SSP,
+                            const int  FirstPoint,
+                            const int  LastPoint);
 
   //! returns the number of second member columns.
   //! Is used internally to initialize the fields.
@@ -207,15 +220,15 @@ protected:
 
   //! returns the first point being fitted.
   Standard_EXPORT int TheFirstPoint(const AppParCurves_Constraint FirstCons,
-                                    const int                     FirstPoint) const;
+                                                 const int        FirstPoint) const;
 
   //! returns the last point being fitted.
   Standard_EXPORT int TheLastPoint(const AppParCurves_Constraint LastCons,
-                                   const int                     LastPoint) const;
+                                                const int        LastPoint) const;
 
   //! Affects the fields in the case of a constraint point.
   Standard_EXPORT void Affect(const AppDef_MultiLine&  SSP,
-                              const int                Index,
+                              const int   Index,
                               AppParCurves_Constraint& Cons,
                               math_Vector&             Vt,
                               math_Vector&             Vc);
@@ -234,41 +247,41 @@ protected:
   Standard_EXPORT void MakeTAA(math_Vector& TheA, math_Matrix& TheB);
 
 private:
-  AppParCurves_Constraint                  FirstConstraint;
-  AppParCurves_Constraint                  LastConstraint;
-  AppParCurves_MultiBSpCurve               SCU;
-  occ::handle<NCollection_HArray1<double>> myknots;
-  occ::handle<NCollection_HArray1<int>>    mymults;
-  math_Matrix                              mypoles;
-  math_Matrix                              A;
-  math_Matrix                              DA;
-  math_Matrix                              B2;
-  math_Matrix                              mypoints;
-  math_Vector                              Vflatknots;
-  math_Vector                              Vec1t;
-  math_Vector                              Vec1c;
-  math_Vector                              Vec2t;
-  math_Vector                              Vec2c;
-  math_Matrix                              theError;
-  math_IntegerVector                       myindex;
-  double                                   lambda1;
-  double                                   lambda2;
-  int                                      FirstP;
-  int                                      LastP;
-  int                                      Nlignes;
-  int                                      Ninc;
-  int                                      NA;
-  int                                      myfirstp;
-  int                                      mylastp;
-  int                                      resinit;
-  int                                      resfin;
-  int                                      nbP2d;
-  int                                      nbP;
-  int                                      nbpoles;
-  int                                      deg;
-  bool                                     done;
-  bool                                     iscalculated;
-  bool                                     isready;
+  AppParCurves_Constraint          FirstConstraint;
+  AppParCurves_Constraint          LastConstraint;
+  AppParCurves_MultiBSpCurve       SCU;
+  occ::handle<NCollection_HArray1<double>>    myknots;
+  occ::handle<NCollection_HArray1<int>> mymults;
+  math_Matrix                      mypoles;
+  math_Matrix                      A;
+  math_Matrix                      DA;
+  math_Matrix                      B2;
+  math_Matrix                      mypoints;
+  math_Vector                      Vflatknots;
+  math_Vector                      Vec1t;
+  math_Vector                      Vec1c;
+  math_Vector                      Vec2t;
+  math_Vector                      Vec2c;
+  math_Matrix                      theError;
+  math_IntegerVector               myindex;
+  double                    lambda1;
+  double                    lambda2;
+  int                 FirstP;
+  int                 LastP;
+  int                 Nlignes;
+  int                 Ninc;
+  int                 NA;
+  int                 myfirstp;
+  int                 mylastp;
+  int                 resinit;
+  int                 resfin;
+  int                 nbP2d;
+  int                 nbP;
+  int                 nbpoles;
+  int                 deg;
+  bool                 done;
+  bool                 iscalculated;
+  bool                 isready;
 };
 
 #endif // _AppDef_ParLeastSquareOfTheGradient_HeaderFile

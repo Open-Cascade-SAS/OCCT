@@ -58,12 +58,13 @@ protected:
 
   Standard_EXPORT void UpdateParam2d(const occ::handle<Geom2d_Curve>& C);
 
-  TopoDS_Face myFace;
-  TopoDS_Edge myEdge;
-  double      myFirstParam;
-  double      myLastParam;
-  bool        myFirstDone;
-  bool        myLastDone;
+  TopoDS_Face      myFace;
+  TopoDS_Edge      myEdge;
+  double    myFirstParam;
+  double    myLastParam;
+  bool myFirstDone;
+  bool myLastDone;
+
 };
 
 #endif // _ShapeFix_EdgeProjAux_HeaderFile

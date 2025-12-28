@@ -35,27 +35,27 @@ public:
   Standard_EXPORT void Init(
     const occ::handle<TCollection_HAsciiString>&      theRepresentationItem_Name,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Name,
-    const bool                                        hasItemDefinedTransformation_Description,
+    const bool                       hasItemDefinedTransformation_Description,
     const occ::handle<TCollection_HAsciiString>&      theItemDefinedTransformation_Description,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem1,
     const occ::handle<StepRepr_RepresentationItem>&   theItemDefinedTransformation_TransformItem2,
     const occ::handle<StepKinematics_KinematicJoint>& theKinematicPair_Joint,
-    const bool                                        theLowOrderKinematicPair_TX,
-    const bool                                        theLowOrderKinematicPair_TY,
-    const bool                                        theLowOrderKinematicPair_TZ,
-    const bool                                        theLowOrderKinematicPair_RX,
-    const bool                                        theLowOrderKinematicPair_RY,
-    const bool                                        theLowOrderKinematicPair_RZ,
-    const bool                                        hasUniversalPair_InputSkewAngle,
-    const double                                      theUniversalPair_InputSkewAngle,
-    const bool                                        hasLowerLimitFirstRotation,
-    const double                                      theLowerLimitFirstRotation,
-    const bool                                        hasUpperLimitFirstRotation,
-    const double                                      theUpperLimitFirstRotation,
-    const bool                                        hasLowerLimitSecondRotation,
-    const double                                      theLowerLimitSecondRotation,
-    const bool                                        hasUpperLimitSecondRotation,
-    const double                                      theUpperLimitSecondRotation);
+    const bool                       theLowOrderKinematicPair_TX,
+    const bool                       theLowOrderKinematicPair_TY,
+    const bool                       theLowOrderKinematicPair_TZ,
+    const bool                       theLowOrderKinematicPair_RX,
+    const bool                       theLowOrderKinematicPair_RY,
+    const bool                       theLowOrderKinematicPair_RZ,
+    const bool                       hasUniversalPair_InputSkewAngle,
+    const double                          theUniversalPair_InputSkewAngle,
+    const bool                       hasLowerLimitFirstRotation,
+    const double                          theLowerLimitFirstRotation,
+    const bool                       hasUpperLimitFirstRotation,
+    const double                          theUpperLimitFirstRotation,
+    const bool                       hasLowerLimitSecondRotation,
+    const double                          theLowerLimitSecondRotation,
+    const bool                       hasUpperLimitSecondRotation,
+    const double                          theUpperLimitSecondRotation);
 
   //! Returns field LowerLimitFirstRotation
   Standard_EXPORT double LowerLimitFirstRotation() const;
@@ -88,13 +88,13 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepKinematics_UniversalPairWithRange, StepKinematics_UniversalPair)
 
 private:
-  double myLowerLimitFirstRotation;   //!< optional
-  double myUpperLimitFirstRotation;   //!< optional
-  double myLowerLimitSecondRotation;  //!< optional
-  double myUpperLimitSecondRotation;  //!< optional
-  bool   defLowerLimitFirstRotation;  //!< flag "is LowerLimitFirstRotation defined"
-  bool   defUpperLimitFirstRotation;  //!< flag "is UpperLimitFirstRotation defined"
-  bool   defLowerLimitSecondRotation; //!< flag "is LowerLimitSecondRotation defined"
-  bool   defUpperLimitSecondRotation; //!< flag "is UpperLimitSecondRotation defined"
+  double    myLowerLimitFirstRotation;   //!< optional
+  double    myUpperLimitFirstRotation;   //!< optional
+  double    myLowerLimitSecondRotation;  //!< optional
+  double    myUpperLimitSecondRotation;  //!< optional
+  bool defLowerLimitFirstRotation;  //!< flag "is LowerLimitFirstRotation defined"
+  bool defUpperLimitFirstRotation;  //!< flag "is UpperLimitFirstRotation defined"
+  bool defLowerLimitSecondRotation; //!< flag "is LowerLimitSecondRotation defined"
+  bool defUpperLimitSecondRotation; //!< flag "is UpperLimitSecondRotation defined"
 };
 #endif // _StepKinematics_UniversalPairWithRange_HeaderFile_

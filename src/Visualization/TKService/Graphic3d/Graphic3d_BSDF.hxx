@@ -19,6 +19,7 @@
 #include <NCollection_Vec3.hxx>
 #include <Standard_TypeDef.hxx>
 #include <NCollection_Vec4.hxx>
+#include <Standard_TypeDef.hxx>
 
 class Graphic3d_PBRMaterial;
 
@@ -52,19 +53,18 @@ public:
   //! Creates Fresnel factor for constant reflection.
   static Graphic3d_Fresnel CreateConstant(const float theReflection)
   {
-    return Graphic3d_Fresnel(Graphic3d_FM_CONSTANT,
-                             NCollection_Vec3<float>(0.f, 1.f, theReflection));
+    return Graphic3d_Fresnel(Graphic3d_FM_CONSTANT, NCollection_Vec3<float>(0.f, 1.f, theReflection));
   }
 
   //! Creates Fresnel factor for physical-based dielectric model.
   static Graphic3d_Fresnel CreateDielectric(float theRefractionIndex)
   {
-    return Graphic3d_Fresnel(Graphic3d_FM_DIELECTRIC,
-                             NCollection_Vec3<float>(0.f, theRefractionIndex, 0.f));
+    return Graphic3d_Fresnel(Graphic3d_FM_DIELECTRIC, NCollection_Vec3<float>(0.f, theRefractionIndex, 0.f));
   }
 
   //! Creates Fresnel factor for physical-based conductor model.
-  static Graphic3d_Fresnel CreateConductor(float theRefractionIndex, float theAbsorptionIndex)
+  static Graphic3d_Fresnel CreateConductor(float theRefractionIndex,
+                                           float theAbsorptionIndex)
   {
     return Graphic3d_Fresnel(Graphic3d_FM_CONDUCTOR,
                              NCollection_Vec3<float>(0.f, theRefractionIndex, theAbsorptionIndex));
@@ -150,26 +150,25 @@ public:
   static Standard_EXPORT Graphic3d_BSDF CreateDiffuse(const NCollection_Vec3<float>& theWeight);
 
   //! Creates BSDF describing polished metallic-like surface.
-  static Standard_EXPORT Graphic3d_BSDF CreateMetallic(const NCollection_Vec3<float>& theWeight,
-                                                       const Graphic3d_Fresnel&       theFresnel,
-                                                       const float                    theRoughness);
+  static Standard_EXPORT Graphic3d_BSDF CreateMetallic(const NCollection_Vec3<float>&    theWeight,
+                                                       const Graphic3d_Fresnel& theFresnel,
+                                                       const float theRoughness);
 
   //! Creates BSDF describing transparent object.
   //! Transparent BSDF models simple transparency without
   //! refraction (the ray passes straight through the surface).
   static Standard_EXPORT Graphic3d_BSDF
-    CreateTransparent(const NCollection_Vec3<float>& theWeight,
-                      const NCollection_Vec3<float>& theAbsorptionColor,
-                      const float                    theAbsorptionCoeff);
+    CreateTransparent(const NCollection_Vec3<float>&    theWeight,
+                      const NCollection_Vec3<float>&    theAbsorptionColor,
+                      const float theAbsorptionCoeff);
 
   //! Creates BSDF describing glass-like object.
   //! Glass-like BSDF mixes refraction and reflection effects at
   //! grazing angles using physically-based Fresnel dielectric model.
-  static Standard_EXPORT Graphic3d_BSDF
-    CreateGlass(const NCollection_Vec3<float>& theWeight,
-                const NCollection_Vec3<float>& theAbsorptionColor,
-                const float                    theAbsorptionCoeff,
-                const float                    theRefractionIndex);
+  static Standard_EXPORT Graphic3d_BSDF CreateGlass(const NCollection_Vec3<float>&    theWeight,
+                                                    const NCollection_Vec3<float>&    theAbsorptionColor,
+                                                    const float theAbsorptionCoeff,
+                                                    const float theRefractionIndex);
 
   //! Creates BSDF from PBR metallic-roughness material.
   static Standard_EXPORT Graphic3d_BSDF

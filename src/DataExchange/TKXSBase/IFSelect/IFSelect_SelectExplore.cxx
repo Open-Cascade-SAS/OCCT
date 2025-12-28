@@ -17,6 +17,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 #include <stdio.h>
@@ -46,11 +47,11 @@ Interface_EntityIterator IFSelect_SelectExplore::RootResult(const Interface_Grap
   //      consider its result.
   //      If last level, we take it entirely. Otherwise, it feeds the input
 
-  int                                                     nb = G.Size();
+  int              nb = G.Size();
   NCollection_IndexedMap<occ::handle<Standard_Transient>> entrees(nb);
   NCollection_IndexedMap<occ::handle<Standard_Transient>> result(nb);
   //  Initialisation
-  int                      i, j, level = 1, ilev = 0;
+  int         i, j, level = 1, ilev = 0;
   Interface_EntityIterator input;
   input = InputResult(G);
   for (input.Start(); input.More(); input.Next())

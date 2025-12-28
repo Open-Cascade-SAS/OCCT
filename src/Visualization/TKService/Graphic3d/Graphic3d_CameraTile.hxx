@@ -18,6 +18,7 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_TypeDef.hxx>
 
 //! Class defines the area (Tile) inside a view.
 class Graphic3d_CameraTile
@@ -48,8 +49,7 @@ public:
   //! Return offset position from lower-left corner.
   NCollection_Vec2<int> OffsetLowerLeft() const
   {
-    return NCollection_Vec2<int>(Offset.x(),
-                                 !IsTopDown ? Offset.y() : TotalSize.y() - Offset.y() - 1);
+    return NCollection_Vec2<int>(Offset.x(), !IsTopDown ? Offset.y() : TotalSize.y() - Offset.y() - 1);
   }
 
   //! Return the copy cropped by total size
@@ -64,10 +64,10 @@ public:
     aTile.Offset.x() = (std::max)(Offset.x(), 0);
     aTile.Offset.y() = (std::max)(Offset.y(), 0);
 
-    const int anX      = (std::min)(Offset.x() + TileSize.x(), TotalSize.x());
-    const int anY      = (std::min)(Offset.y() + TileSize.y(), TotalSize.y());
-    aTile.TileSize.x() = anX - Offset.x();
-    aTile.TileSize.y() = anY - Offset.y();
+    const int anX = (std::min)(Offset.x() + TileSize.x(), TotalSize.x());
+    const int anY = (std::min)(Offset.y() + TileSize.y(), TotalSize.y());
+    aTile.TileSize.x()         = anX - Offset.x();
+    aTile.TileSize.y()         = anY - Offset.y();
     return aTile;
   }
 

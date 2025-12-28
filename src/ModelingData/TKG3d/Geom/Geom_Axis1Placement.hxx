@@ -69,6 +69,7 @@ public:
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Axis1Placement, Geom_AxisPlacement)
+
 };
 
 #endif // _Geom_Axis1Placement_HeaderFile

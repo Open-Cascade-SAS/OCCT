@@ -56,7 +56,8 @@ void IGESGeom_TransformationMatrix::SetFormNumber(const int fm)
   InitTypeAndForm(124, fm);
 }
 
-double IGESGeom_TransformationMatrix::Data(const int I, const int J) const
+double IGESGeom_TransformationMatrix::Data(const int I,
+                                                  const int J) const
 {
   return theData->Value(I, J);
 }

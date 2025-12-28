@@ -85,18 +85,18 @@ public:
 private:
   occ::handle<Adaptor3d_Surface> surf;
   occ::handle<Adaptor3d_Curve>   guide;
-  gp_Pnt                         pts;
-  gp_Pnt2d                       pt2d;
-  double                         dis;
-  double                         normtg;
-  double                         theD;
-  gp_Pnt                         ptgui;
-  gp_Vec                         nplan;
-  gp_Vec                         d1gui;
-  gp_Vec                         d2gui;
-  gp_Vec                         tgs;
-  gp_Vec2d                       tg2d;
-  bool                           istangent;
+  gp_Pnt                    pts;
+  gp_Pnt2d                  pt2d;
+  double             dis;
+  double             normtg;
+  double             theD;
+  gp_Pnt                    ptgui;
+  gp_Vec                    nplan;
+  gp_Vec                    d1gui;
+  gp_Vec                    d2gui;
+  gp_Vec                    tgs;
+  gp_Vec2d                  tg2d;
+  bool          istangent;
 };
 
 #endif // _BlendFunc_Corde_HeaderFile

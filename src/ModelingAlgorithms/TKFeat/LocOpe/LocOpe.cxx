@@ -33,6 +33,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -86,8 +87,8 @@ bool LocOpe::Closed(const TopoDS_Wire& W, const TopoDS_Face& F)
   }
   TopoDS_Edge El = TopoDS::Edge(exp.Current());
 
-  double                    f, l;
-  gp_Pnt2d                  pf, pl;
+  double        f, l;
+  gp_Pnt2d             pf, pl;
   occ::handle<Geom2d_Curve> C2d = BRep_Tool::CurveOnSurface(Ef, F, f, l);
   if (Ef.Orientation() == TopAbs_FORWARD)
   {
@@ -127,11 +128,13 @@ bool LocOpe::Closed(const TopoDS_Edge& E, const TopoDS_Face& F)
 
 //=================================================================================================
 
-bool LocOpe::TgtFaces(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2)
+bool LocOpe::TgtFaces(const TopoDS_Edge& E,
+                                  const TopoDS_Face& F1,
+                                  const TopoDS_Face& F2)
 {
   BRepAdaptor_Surface bs(F1, false);
-  double              u;
-  double              ta = 0.0001;
+  double       u;
+  double       ta = 0.0001;
 
   TopoDS_Edge e = E;
 
@@ -145,9 +148,9 @@ bool LocOpe::TgtFaces(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_
 
   //  Adaptor3d_CurveOnSurface C1(HC2d,HS1);
 
-  bool   rev1 = (F1.Orientation() == TopAbs_REVERSED);
-  bool   rev2 = (F2.Orientation() == TopAbs_REVERSED);
-  double f, l, eps, angmin = M_PI, angmax = -M_PI, ang;
+  bool rev1 = (F1.Orientation() == TopAbs_REVERSED);
+  bool rev2 = (F2.Orientation() == TopAbs_REVERSED);
+  double    f, l, eps, angmin = M_PI, angmax = -M_PI, ang;
   BRep_Tool::Range(e, f, l);
 
   eps = (l - f) / 100.;
@@ -191,11 +194,11 @@ void LocOpe::SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_P
   theSeq.Clear();
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> theMap;
 
-  TopExp_Explorer         exp(theShape, TopAbs_EDGE);
-  TopLoc_Location         Loc;
+  TopExp_Explorer    exp(theShape, TopAbs_EDGE);
+  TopLoc_Location    Loc;
   occ::handle<Geom_Curve> C;
-  double                  f, l, prm;
-  int                     i;
+  double      f, l, prm;
+  int   i;
 
   // Computes points on edge, but does not take the extremities into account
   for (; exp.More(); exp.Next())
@@ -207,8 +210,8 @@ void LocOpe::SampleEdges(const TopoDS_Shape& theShape, NCollection_Sequence<gp_P
     }
     if (!BRep_Tool::Degenerated(edg))
     {
-      C            = BRep_Tool::Curve(edg, Loc, f, l);
-      C            = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
+      C                   = BRep_Tool::Curve(edg, Loc, f, l);
+      C                   = occ::down_cast<Geom_Curve>(C->Transformed(Loc.Transformation()));
       double delta = (l - f) / NECHANT * 0.123456;
       for (i = 1; i < NECHANT; i++)
       {

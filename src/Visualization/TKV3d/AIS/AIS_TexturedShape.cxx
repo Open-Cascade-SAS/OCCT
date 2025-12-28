@@ -90,9 +90,9 @@ void AIS_TexturedShape::SetTexturePixMap(const occ::handle<Image_PixMap>& theTex
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureRepeat(const bool   theToRepeat,
-                                         const double theURepeat,
-                                         const double theVRepeat)
+void AIS_TexturedShape::SetTextureRepeat(const bool theToRepeat,
+                                         const double    theURepeat,
+                                         const double    theVRepeat)
 {
   myToRepeat = theToRepeat;
   myUVRepeat.SetCoord(theURepeat, theVRepeat);
@@ -114,9 +114,9 @@ void AIS_TexturedShape::SetTextureMapOff()
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureOrigin(const bool   theToSetTextureOrigin,
-                                         const double theUOrigin,
-                                         const double theVOrigin)
+void AIS_TexturedShape::SetTextureOrigin(const bool theToSetTextureOrigin,
+                                         const double    theUOrigin,
+                                         const double    theVOrigin)
 {
   myIsCustomOrigin = theToSetTextureOrigin;
   myUVOrigin.SetCoord(theUOrigin, theVOrigin);
@@ -124,9 +124,9 @@ void AIS_TexturedShape::SetTextureOrigin(const bool   theToSetTextureOrigin,
 
 //=================================================================================================
 
-void AIS_TexturedShape::SetTextureScale(const bool   theToSetTextureScale,
-                                        const double theScaleU,
-                                        const double theScaleV)
+void AIS_TexturedShape::SetTextureScale(const bool theToSetTextureScale,
+                                        const double    theScaleU,
+                                        const double    theScaleV)
 {
   myToScale = theToSetTextureScale;
   myUVScale.SetCoord(theScaleU, theScaleV);
@@ -159,9 +159,7 @@ void AIS_TexturedShape::SetColor(const Quantity_Color& theColor)
 {
   AIS_Shape::SetColor(theColor);
 
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
-       aPrsIter.More();
-       aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -182,9 +180,7 @@ void AIS_TexturedShape::UnsetColor()
 void AIS_TexturedShape::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 {
   AIS_Shape::SetMaterial(theMat);
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
-       aPrsIter.More();
-       aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -198,9 +194,7 @@ void AIS_TexturedShape::SetMaterial(const Graphic3d_MaterialAspect& theMat)
 void AIS_TexturedShape::UnsetMaterial()
 {
   AIS_Shape::UnsetMaterial();
-  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations());
-       aPrsIter.More();
-       aPrsIter.Next())
+  for (NCollection_Sequence<occ::handle<PrsMgr_Presentation>>::Iterator aPrsIter(Presentations()); aPrsIter.More(); aPrsIter.Next())
   {
     if (aPrsIter.Value()->Mode() == 3)
     {
@@ -289,8 +283,7 @@ void AIS_TexturedShape::updateAttributes(const occ::handle<Prs3d_Presentation>& 
   }
 
   // Go through all groups to change fill aspect for all primitives
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIt(thePrs->Groups());
-       aGroupIt.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator aGroupIt(thePrs->Groups()); aGroupIt.More();
        aGroupIt.Next())
   {
     const occ::handle<Graphic3d_Group>& aGroup = aGroupIt.Value();
@@ -302,7 +295,7 @@ void AIS_TexturedShape::updateAttributes(const occ::handle<Prs3d_Presentation>& 
 
 void AIS_TexturedShape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
                                 const occ::handle<Prs3d_Presentation>& thePrs,
-                                const int                              theMode)
+                                const int            theMode)
 {
   if (myshape.IsNull() || (myshape.ShapeType() == TopAbs_COMPOUND && myshape.NbChildren() == 0))
   {
@@ -312,8 +305,8 @@ void AIS_TexturedShape::Compute(const occ::handle<PrsMgr_PresentationManager>&,
   if (myshape.ShapeType() >= TopAbs_WIRE && myshape.ShapeType() <= TopAbs_VERTEX)
   {
     // TopAbs_WIRE -> 7, TopAbs_EDGE -> 8, TopAbs_VERTEX -> 9 (Graphic3d_DisplayPriority_Highlight)
-    const int aPrior =
-      (int)Graphic3d_DisplayPriority_Above1 + (int)myshape.ShapeType() - TopAbs_WIRE;
+    const int aPrior = (int)Graphic3d_DisplayPriority_Above1
+                                    + (int)myshape.ShapeType() - TopAbs_WIRE;
     thePrs->SetVisual(Graphic3d_TOS_ALL);
     thePrs->SetDisplayPriority((Graphic3d_DisplayPriority)aPrior);
   }

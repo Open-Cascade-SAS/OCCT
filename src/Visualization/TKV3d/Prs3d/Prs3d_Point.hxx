@@ -26,7 +26,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
 private:
-  Standard_EXPORT static void DrawPoint(const AnyPoint&                    thePoint,
+  Standard_EXPORT static void DrawPoint(const AnyPoint&               thePoint,
                                         const occ::handle<Graphic3d_Group> theGroup)
   {
     double aX, aY, aZ;
@@ -38,7 +38,7 @@ private:
 
 public:
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& thePrs,
-                                  const AnyPoint&                        thePoint,
+                                  const AnyPoint&                   thePoint,
                                   const occ::handle<Prs3d_Drawer>&       theDrawer)
   {
     occ::handle<Graphic3d_Group> aGroup = thePrs->CurrentGroup();
@@ -46,11 +46,11 @@ public:
     DrawPoint(thePoint, aGroup);
   }
 
-  Standard_EXPORT static bool Match(const AnyPoint& thePoint,
-                                    const double    theX,
-                                    const double    theY,
-                                    const double    theZ,
-                                    const double    theDistance)
+  Standard_EXPORT static bool Match(const AnyPoint&     thePoint,
+                                                const double theX,
+                                                const double theY,
+                                                const double theZ,
+                                                const double theDistance)
   {
     double aX, aY, aZ;
     PointTool::Coord(thePoint, aX, aY, aZ);

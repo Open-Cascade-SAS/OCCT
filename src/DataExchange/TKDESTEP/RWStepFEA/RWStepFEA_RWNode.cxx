@@ -26,6 +26,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepRepr_RepresentationContext.hxx>
+#include <StepRepr_RepresentationItem.hxx>
 
 //=================================================================================================
 
@@ -34,7 +35,7 @@ RWStepFEA_RWNode::RWStepFEA_RWNode() {}
 //=================================================================================================
 
 void RWStepFEA_RWNode::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                const int                                   num,
+                                const int                 num,
                                 occ::handle<Interface_Check>&               ach,
                                 const occ::handle<StepFEA_Node>&            ent) const
 {
@@ -48,12 +49,11 @@ void RWStepFEA_RWNode::ReadStep(const occ::handle<StepData_StepReaderData>& data
   data->ReadString(num, 1, "representation.name", ach, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                                                                        sub2 = 0;
+  int                             sub2 = 0;
   if (data->ReadSubList(num, 2, "representation.items", ach, sub2))
   {
-    int nb0 = data->NbParams(sub2);
-    aRepresentation_Items =
-      new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+    int nb0  = data->NbParams(sub2);
+    aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -95,8 +95,7 @@ void RWStepFEA_RWNode::ReadStep(const occ::handle<StepData_StepReaderData>& data
 
 //=================================================================================================
 
-void RWStepFEA_RWNode::WriteStep(StepData_StepWriter&             SW,
-                                 const occ::handle<StepFEA_Node>& ent) const
+void RWStepFEA_RWNode::WriteStep(StepData_StepWriter& SW, const occ::handle<StepFEA_Node>& ent) const
 {
 
   // Inherited fields of Representation
@@ -106,8 +105,7 @@ void RWStepFEA_RWNode::WriteStep(StepData_StepWriter&             SW,
   SW.OpenSub();
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -121,16 +119,14 @@ void RWStepFEA_RWNode::WriteStep(StepData_StepWriter&             SW,
 
 //=================================================================================================
 
-void RWStepFEA_RWNode::Share(const occ::handle<StepFEA_Node>& ent,
-                             Interface_EntityIterator&        iter) const
+void RWStepFEA_RWNode::Share(const occ::handle<StepFEA_Node>& ent, Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

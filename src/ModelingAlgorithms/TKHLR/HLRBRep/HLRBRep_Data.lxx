@@ -114,7 +114,8 @@ inline HLRAlgo_Interference& HLRBRep_Data::Interference()
 
 //=================================================================================================
 
-inline bool HLRBRep_Data::EdgeOfTheHidingFace(const int, const HLRBRep_EdgeData& ED) const
+inline bool HLRBRep_Data::EdgeOfTheHidingFace(const int,
+                                                          const HLRBRep_EdgeData& ED) const
 {
   return ED.HideCount() == myHideCount - 1;
 }

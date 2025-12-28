@@ -113,9 +113,9 @@ public:
   //!
   //! Note that it works thru a Recognizer (method Evaluate) which
   //! has to be memorized before starting
-  Standard_EXPORT virtual bool Recognize(const int                        num,
-                                         occ::handle<Interface_Check>&    ach,
-                                         occ::handle<Standard_Transient>& ent) = 0;
+  Standard_EXPORT virtual bool Recognize(const int      num,
+                                                     occ::handle<Interface_Check>&    ach,
+                                                     occ::handle<Standard_Transient>& ent) = 0;
 
   //! Recognizes a record with the help of Libraries. Can be used
   //! to implement the method Recognize.
@@ -126,11 +126,11 @@ public:
   //! called, gives a result but which is false
   //! <ent> is the result
   //! Returns False if recognition has failed, True else
-  Standard_EXPORT bool RecognizeByLib(const int                        num,
-                                      Interface_GeneralLib&            glib,
-                                      Interface_ReaderLib&             rlib,
-                                      occ::handle<Interface_Check>&    ach,
-                                      occ::handle<Standard_Transient>& ent) const;
+  Standard_EXPORT bool RecognizeByLib(const int      num,
+                                                  Interface_GeneralLib&       glib,
+                                                  Interface_ReaderLib&        rlib,
+                                                  occ::handle<Interface_Check>&    ach,
+                                                  occ::handle<Standard_Transient>& ent) const;
 
   //! Provides an unknown entity, specific to the Interface
   //! called by SetEntities when Recognize has failed (Unknown alone)
@@ -176,9 +176,9 @@ public:
   //!
   //! Returned Value : True if the entity could be loaded, False
   //! else (in case of syntactic fail)
-  Standard_EXPORT virtual bool AnalyseRecord(const int                              num,
-                                             const occ::handle<Standard_Transient>& anent,
-                                             occ::handle<Interface_Check>&          acheck) = 0;
+  Standard_EXPORT virtual bool AnalyseRecord(const int            num,
+                                                         const occ::handle<Standard_Transient>& anent,
+                                                         occ::handle<Interface_Check>& acheck) = 0;
 
   Standard_EXPORT virtual ~Interface_FileReaderTool();
 
@@ -194,14 +194,14 @@ protected:
   Standard_EXPORT Interface_FileReaderTool();
 
 private:
-  occ::handle<Interface_Protocol>                                   theproto;
-  occ::handle<Interface_FileReaderData>                             thereader;
-  occ::handle<Interface_InterfaceModel>                             themodel;
-  occ::handle<Message_Messenger>                                    themessenger;
-  int                                                               thetrace;
-  bool                                                              theerrhand;
-  int                                                               thenbrep0;
-  int                                                               thenbreps;
+  occ::handle<Interface_Protocol>         theproto;
+  occ::handle<Interface_FileReaderData>   thereader;
+  occ::handle<Interface_InterfaceModel>   themodel;
+  occ::handle<Message_Messenger>          themessenger;
+  int                   thetrace;
+  bool                   theerrhand;
+  int                   thenbrep0;
+  int                   thenbreps;
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> thereports;
 };
 

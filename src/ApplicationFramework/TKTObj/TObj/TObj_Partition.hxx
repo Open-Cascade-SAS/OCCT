@@ -43,7 +43,8 @@ protected:
 
   //! Constructor is protected;
   //! static methods are used for creation of this type of objects
-  Standard_EXPORT TObj_Partition(const TDF_Label& theLabel, const bool theSetName = true);
+  Standard_EXPORT TObj_Partition(const TDF_Label&       theLabel,
+                                 const bool theSetName = true);
 
 public:
   /**
@@ -51,8 +52,9 @@ public:
    */
 
   //! Creates a new partition on given label.
-  static Standard_EXPORT occ::handle<TObj_Partition> Create(const TDF_Label& theLabel,
-                                                            const bool       theSetName = true);
+  static Standard_EXPORT occ::handle<TObj_Partition> Create(
+    const TDF_Label&       theLabel,
+    const bool theSetName = true);
 
 public:
   /**
@@ -60,8 +62,8 @@ public:
    */
 
   //! Sets name of the object. partition does not check unique of own name
-  virtual Standard_EXPORT bool SetName(
-    const occ::handle<TCollection_HExtendedString>& theName) const override;
+  virtual Standard_EXPORT bool
+    SetName(const occ::handle<TCollection_HExtendedString>& theName) const override;
 
 public:
   /**
@@ -105,8 +107,7 @@ public:
 
   //! Returns the partition in which object is stored. Null partition
   //! returned if not found
-  static Standard_EXPORT occ::handle<TObj_Partition> GetPartition(
-    const occ::handle<TObj_Object>& theObject);
+  static Standard_EXPORT occ::handle<TObj_Partition> GetPartition(const occ::handle<TObj_Object>& theObject);
 
 public:
   /**
@@ -123,7 +124,8 @@ protected:
 
   //! Coping the data of me to Target object.
   //! return false is Target object is different type
-  Standard_EXPORT virtual bool copyData(const occ::handle<TObj_Object>& theTargetObject) override;
+  Standard_EXPORT virtual bool copyData(const occ::handle<TObj_Object>& theTargetObject)
+    override;
 
 private:
   /**

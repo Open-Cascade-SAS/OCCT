@@ -24,7 +24,11 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <GccEnt_Position.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class gp_Pnt2d;
 class gp_Lin2d;
 class GccEnt_QualifiedCirc;
@@ -99,18 +103,18 @@ public:
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& Pnt) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              Pnt) const;
 
 private:
-  bool                                WellDone;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Lin2d>        linsol;
+  bool        WellDone;
+  int        NbrSol;
+  NCollection_Array1<gp_Lin2d>    linsol;
   NCollection_Array1<GccEnt_Position> qualifier1;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          pararg1;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    pararg1;
 };
 
 #endif // _GccAna_Lin2dTanPar_HeaderFile

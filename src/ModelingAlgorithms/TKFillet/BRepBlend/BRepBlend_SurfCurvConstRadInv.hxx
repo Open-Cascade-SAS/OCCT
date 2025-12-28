@@ -89,8 +89,8 @@ private:
   occ::handle<Adaptor3d_Curve>   curv;
   occ::handle<Adaptor3d_Curve>   guide;
   occ::handle<Adaptor2d_Curve2d> rst;
-  double                         ray;
-  int                            choix;
+  double             ray;
+  int          choix;
 };
 
 #endif // _BRepBlend_SurfCurvConstRadInv_HeaderFile

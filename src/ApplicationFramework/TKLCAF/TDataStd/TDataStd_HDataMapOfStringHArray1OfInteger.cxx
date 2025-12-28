@@ -34,8 +34,7 @@ TDataStd_HDataMapOfStringHArray1OfInteger::TDataStd_HDataMapOfStringHArray1OfInt
 // purpose  : Constructor from already existing map; performs copying
 //=======================================================================
 TDataStd_HDataMapOfStringHArray1OfInteger::TDataStd_HDataMapOfStringHArray1OfInteger(
-  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>&
-    theOther)
+  const NCollection_DataMap<TCollection_ExtendedString, occ::handle<NCollection_HArray1<int>>>& theOther)
 {
   myMap.Assign(theOther);
 }

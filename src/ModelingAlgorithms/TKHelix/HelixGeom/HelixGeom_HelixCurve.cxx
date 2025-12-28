@@ -50,14 +50,14 @@ void HelixGeom_HelixCurve::Load()
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::Load(const double aT1,
-                                const double aT2,
-                                const double aPitch,
-                                const double aRStart,
-                                const double aTaperAngle,
-                                const bool   aIsCW)
+void HelixGeom_HelixCurve::Load(const double    aT1,
+                                const double    aT2,
+                                const double    aPitch,
+                                const double    aRStart,
+                                const double    aTaperAngle,
+                                const bool aIsCW)
 {
-  char   buf[] = {"HelixGeom_HelixCurve::Load"};
+  char          buf[] = {"HelixGeom_HelixCurve::Load"};
   double aTwoPI, aHalfPI;
   // Define angular constants
   aTwoPI  = 2. * M_PI;

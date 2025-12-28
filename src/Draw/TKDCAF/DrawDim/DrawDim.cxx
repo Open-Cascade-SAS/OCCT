@@ -57,7 +57,7 @@ void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const char* aname)
   switch (ashape.ShapeType())
   {
     case TopAbs_EDGE: {
-      double                  f, l, parameter;
+      double      f, l, parameter;
       occ::handle<Geom_Curve> curve = BRep_Tool::Curve(TopoDS::Edge(ashape), f, l);
       if (curve->IsKind(STANDARD_TYPE(Geom_Line)))
       {
@@ -100,9 +100,13 @@ bool DrawDim::Pln(const TopoDS_Face& f, gp_Pln& p)
 
 //=================================================================================================
 
-bool DrawDim::Lin(const TopoDS_Edge& e, gp_Lin& l, bool& infinite, double& first, double& last)
+bool DrawDim::Lin(const TopoDS_Edge& e,
+                              gp_Lin&            l,
+                              bool&  infinite,
+                              double&     first,
+                              double&     last)
 {
-  double                 f1, l1;
+  double     f1, l1;
   occ::handle<Geom_Line> L = occ::down_cast<Geom_Line>(BRep_Tool::Curve(e, f1, l1));
   if (!L.IsNull())
   {
@@ -132,9 +136,12 @@ bool DrawDim::Lin(const TopoDS_Edge& e, gp_Lin& l, bool& infinite, double& first
 
 //=================================================================================================
 
-bool DrawDim::Circ(const TopoDS_Edge& e, gp_Circ& c, double& first, double& last)
+bool DrawDim::Circ(const TopoDS_Edge& e,
+                               gp_Circ&           c,
+                               double&     first,
+                               double&     last)
 {
-  double                   f1, l1;
+  double       f1, l1;
   occ::handle<Geom_Circle> C = occ::down_cast<Geom_Circle>(BRep_Tool::Curve(e, f1, l1));
   if (!C.IsNull())
   {
@@ -150,8 +157,8 @@ bool DrawDim::Circ(const TopoDS_Edge& e, gp_Circ& c, double& first, double& last
 
 gp_Pnt DrawDim::Nearest(const TopoDS_Shape& ashape, const gp_Pnt& apoint)
 {
-  double          dist = RealLast();
-  double          curdist;
+  double   dist = RealLast();
+  double   curdist;
   gp_Pnt          result;
   gp_Pnt          curpnt;
   TopExp_Explorer explo(ashape, TopAbs_VERTEX);

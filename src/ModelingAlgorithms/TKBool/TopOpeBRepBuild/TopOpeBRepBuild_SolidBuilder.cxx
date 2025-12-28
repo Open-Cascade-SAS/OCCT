@@ -26,7 +26,7 @@ TopOpeBRepBuild_SolidBuilder::TopOpeBRepBuild_SolidBuilder() {}
 //=================================================================================================
 
 TopOpeBRepBuild_SolidBuilder::TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_ShellFaceSet& SFS,
-                                                           const bool                    ForceClass)
+                                                           const bool        ForceClass)
 {
   InitSolidBuilder(SFS, ForceClass);
 }
@@ -34,7 +34,7 @@ TopOpeBRepBuild_SolidBuilder::TopOpeBRepBuild_SolidBuilder(TopOpeBRepBuild_Shell
 //=================================================================================================
 
 void TopOpeBRepBuild_SolidBuilder::InitSolidBuilder(TopOpeBRepBuild_ShellFaceSet& SFS,
-                                                    const bool                    ForceClass)
+                                                    const bool        ForceClass)
 {
   MakeLoops(SFS);
   TopOpeBRepBuild_BlockBuilder&       BB = myBlockBuilder;
@@ -94,7 +94,7 @@ void TopOpeBRepBuild_SolidBuilder::NextShell()
 bool TopOpeBRepBuild_SolidBuilder::IsOldShell() const
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = mySolidAreaBuilder.Loop();
-  bool                                     b = L->IsShape();
+  bool                    b = L->IsShape();
   return b;
 }
 
@@ -103,7 +103,7 @@ bool TopOpeBRepBuild_SolidBuilder::IsOldShell() const
 const TopoDS_Shape& TopOpeBRepBuild_SolidBuilder::OldShell() const
 {
   const occ::handle<TopOpeBRepBuild_Loop>& L = mySolidAreaBuilder.Loop();
-  const TopoDS_Shape&                      B = L->Shape();
+  const TopoDS_Shape&                 B = L->Shape();
   return B;
 }
 
@@ -153,8 +153,8 @@ const TopoDS_Shape& TopOpeBRepBuild_SolidBuilder::Face() const
 
 void TopOpeBRepBuild_SolidBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
 {
-  TopOpeBRepBuild_BlockBuilder&                        BB = myBlockBuilder;
-  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>& LL = myLoopSet.ChangeListOfLoop();
+  TopOpeBRepBuild_BlockBuilder& BB = myBlockBuilder;
+  NCollection_List<occ::handle<TopOpeBRepBuild_Loop>>&   LL = myLoopSet.ChangeListOfLoop();
 
   // Build blocks on elements of SS
   BB.MakeBlock(SS);
@@ -168,7 +168,7 @@ void TopOpeBRepBuild_SolidBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
   // Add shapes of SS as shape loops
   for (SS.InitShapes(); SS.MoreShapes(); SS.NextShape())
   {
-    const TopoDS_Shape&               S         = SS.Shape();
+    const TopoDS_Shape&          S         = SS.Shape();
     occ::handle<TopOpeBRepBuild_Loop> ShapeLoop = new TopOpeBRepBuild_Loop(S);
     LL.Append(ShapeLoop);
   }
@@ -176,8 +176,8 @@ void TopOpeBRepBuild_SolidBuilder::MakeLoops(TopOpeBRepBuild_ShapeSet& SS)
   // Add blocks of BB as block loops
   for (BB.InitBlock(); BB.MoreBlock(); BB.NextBlock())
   {
-    TopOpeBRepBuild_BlockIterator     BI        = BB.BlockIterator();
-    occ::handle<TopOpeBRepBuild_Loop> BlockLoop = new TopOpeBRepBuild_Loop(BI);
+    TopOpeBRepBuild_BlockIterator BI        = BB.BlockIterator();
+    occ::handle<TopOpeBRepBuild_Loop>  BlockLoop = new TopOpeBRepBuild_Loop(BI);
     LL.Append(BlockLoop);
   }
 }

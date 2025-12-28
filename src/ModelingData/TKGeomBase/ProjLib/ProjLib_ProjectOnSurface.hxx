@@ -50,8 +50,8 @@ public:
 private:
   occ::handle<Adaptor3d_Curve>   myCurve;
   occ::handle<Adaptor3d_Surface> mySurface;
-  double                         myTolerance;
-  bool                           myIsDone;
+  double             myTolerance;
+  bool          myIsDone;
   occ::handle<Geom_BSplineCurve> myResult;
 };
 

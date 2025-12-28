@@ -29,7 +29,7 @@ RWStepElement_RWUniformSurfaceSection::RWStepElement_RWUniformSurfaceSection() {
 
 void RWStepElement_RWUniformSurfaceSection::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                                             num,
+  const int                           num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepElement_UniformSurfaceSection>& ent) const
 {
@@ -79,7 +79,7 @@ void RWStepElement_RWUniformSurfaceSection::ReadStep(
 //=================================================================================================
 
 void RWStepElement_RWUniformSurfaceSection::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepElement_UniformSurfaceSection>& ent) const
 {
 
@@ -102,9 +102,8 @@ void RWStepElement_RWUniformSurfaceSection::WriteStep(
 
 //=================================================================================================
 
-void RWStepElement_RWUniformSurfaceSection::Share(
-  const occ::handle<StepElement_UniformSurfaceSection>&,
-  Interface_EntityIterator&) const
+void RWStepElement_RWUniformSurfaceSection::Share(const occ::handle<StepElement_UniformSurfaceSection>&,
+                                                  Interface_EntityIterator&) const
 {
 
   // Inherited fields of SurfaceSection

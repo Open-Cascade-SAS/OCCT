@@ -64,8 +64,7 @@ occ::handle<TCollection_HAsciiString> XCAFDimTolObjects_DatumObject::GetSemantic
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DatumObject::SetSemanticName(
-  const occ::handle<TCollection_HAsciiString>& theName)
+void XCAFDimTolObjects_DatumObject::SetSemanticName(const occ::handle<TCollection_HAsciiString>& theName)
 {
   mySemanticName = theName;
 }
@@ -88,8 +87,7 @@ void XCAFDimTolObjects_DatumObject::SetName(const occ::handle<TCollection_HAscii
 
 //=================================================================================================
 
-NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> XCAFDimTolObjects_DatumObject::
-  GetModifiers() const
+NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif> XCAFDimTolObjects_DatumObject::GetModifiers() const
 {
   return myModifiers;
 }
@@ -106,7 +104,7 @@ void XCAFDimTolObjects_DatumObject::SetModifiers(
 
 void XCAFDimTolObjects_DatumObject::SetModifierWithValue(
   const XCAFDimTolObjects_DatumModifWithValue theModifier,
-  const double                                theValue)
+  const double                         theValue)
 {
   myModifierWithValue = theModifier;
   myValueOfModifier   = theValue;
@@ -116,7 +114,7 @@ void XCAFDimTolObjects_DatumObject::SetModifierWithValue(
 
 void XCAFDimTolObjects_DatumObject::GetModifierWithValue(
   XCAFDimTolObjects_DatumModifWithValue& theModifier,
-  double&                                theValue) const
+  double&                         theValue) const
 {
   theModifier = myModifierWithValue;
   theValue    = myValueOfModifier;
@@ -248,7 +246,8 @@ void XCAFDimTolObjects_DatumObject::SetDatumTargetNumber(const int theNumber)
 
 //=================================================================================================
 
-void XCAFDimTolObjects_DatumObject::DumpJson(Standard_OStream& theOStream, int theDepth) const
+void XCAFDimTolObjects_DatumObject::DumpJson(Standard_OStream& theOStream,
+                                             int  theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
@@ -307,8 +306,7 @@ void XCAFDimTolObjects_DatumObject::DumpJson(Standard_OStream& theOStream, int t
     OCCT_DUMP_FIELD_VALUE_STRING(theOStream, aPresentationName)
   }
 
-  for (NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>::Iterator aModifIt(myModifiers);
-       aModifIt.More();
+  for (NCollection_Sequence<XCAFDimTolObjects_DatumSingleModif>::Iterator aModifIt(myModifiers); aModifIt.More();
        aModifIt.Next())
   {
     XCAFDimTolObjects_DatumSingleModif aModifier = aModifIt.Value();

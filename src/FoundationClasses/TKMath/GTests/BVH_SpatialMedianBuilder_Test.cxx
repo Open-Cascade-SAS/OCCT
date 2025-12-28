@@ -20,8 +20,8 @@
 template <class T, int N>
 BVH_Box<T, N> ComputeSetBox(BVH_Set<T, N>* theSet)
 {
-  BVH_Box<T, N> aBox;
-  const int     aSize = theSet->Size();
+  BVH_Box<T, N>          aBox;
+  const int aSize = theSet->Size();
   for (int i = 0; i < aSize; ++i)
   {
     aBox.Combine(theSet->Box(i));
@@ -84,7 +84,7 @@ TEST(BVH_SpatialMedianBuilderTest, BuildSingleTriangle)
 TEST(BVH_SpatialMedianBuilderTest, BuildMultipleTriangles)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 10;
+  const int                           aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -93,7 +93,8 @@ TEST(BVH_SpatialMedianBuilderTest, BuildMultipleTriangles)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTree;
@@ -109,7 +110,7 @@ TEST(BVH_SpatialMedianBuilderTest, BuildMultipleTriangles)
 TEST(BVH_SpatialMedianBuilderTest, LeafNodeSizeRespected)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 20;
+  const int                           aNumTriangles = 20;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -118,10 +119,11 @@ TEST(BVH_SpatialMedianBuilderTest, LeafNodeSizeRespected)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  const int                           aLeafSize = 3;
+  const int                     aLeafSize = 3;
   BVH_Tree<double, 3>                 aTree;
   BVH_SpatialMedianBuilder<double, 3> aBuilder(aLeafSize, 32);
 
@@ -141,7 +143,7 @@ TEST(BVH_SpatialMedianBuilderTest, LeafNodeSizeRespected)
 TEST(BVH_SpatialMedianBuilderTest, MaxDepthRespected)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 100;
+  const int                           aNumTriangles = 100;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -150,10 +152,11 @@ TEST(BVH_SpatialMedianBuilderTest, MaxDepthRespected)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
-  const int                           aMaxDepth = 5;
+  const int                     aMaxDepth = 5;
   BVH_Tree<double, 3>                 aTree;
   BVH_SpatialMedianBuilder<double, 3> aBuilder(1, aMaxDepth);
 
@@ -166,7 +169,7 @@ TEST(BVH_SpatialMedianBuilderTest, MaxDepthRespected)
 TEST(BVH_SpatialMedianBuilderTest, SplitsAtSpatialMedian)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 8;
+  const int                           aNumTriangles = 8;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -175,7 +178,8 @@ TEST(BVH_SpatialMedianBuilderTest, SplitsAtSpatialMedian)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTree;
@@ -208,7 +212,7 @@ TEST(BVH_SpatialMedianBuilderTest, SplitsAtSpatialMedian)
 TEST(BVH_SpatialMedianBuilderTest, Build2D)
 {
   BVH_Triangulation<double, 2> aTriangulation;
-  const int                    aNumTriangles = 10;
+  const int                           aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -217,7 +221,8 @@ TEST(BVH_SpatialMedianBuilderTest, Build2D)
     BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x, 0.0));
     BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 0.5, 1.0));
     BVH::Array<double, 2>::Append(aTriangulation.Vertices, BVH_Vec2d(x + 1.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 2>                 aTree;
@@ -233,7 +238,7 @@ TEST(BVH_SpatialMedianBuilderTest, Build2D)
 TEST(BVH_SpatialMedianBuilderTest, UseMainAxisFlag)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 20;
+  const int                           aNumTriangles = 20;
 
   // Create elongated distribution along X axis
   for (int i = 0; i < aNumTriangles; ++i)
@@ -243,7 +248,8 @@ TEST(BVH_SpatialMedianBuilderTest, UseMainAxisFlag)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTreeMainAxis;
@@ -258,7 +264,7 @@ TEST(BVH_SpatialMedianBuilderTest, UseMainAxisFlag)
 TEST(BVH_SpatialMedianBuilderTest, CompareWithBinnedBuilder)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 50;
+  const int                           aNumTriangles = 50;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
@@ -267,7 +273,8 @@ TEST(BVH_SpatialMedianBuilderTest, CompareWithBinnedBuilder)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, 0.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Box<double, 3> aBox = ComputeSetBox(&aTriangulation);
@@ -290,7 +297,7 @@ TEST(BVH_SpatialMedianBuilderTest, CompareWithBinnedBuilder)
 TEST(BVH_SpatialMedianBuilderTest, ClusteredData)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 30;
+  const int                           aNumTriangles = 30;
 
   // Create two clusters: 15 triangles at x=0, 15 at x=100
   for (int i = 0; i < aNumTriangles; ++i)
@@ -301,7 +308,8 @@ TEST(BVH_SpatialMedianBuilderTest, ClusteredData)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTree;
@@ -318,18 +326,22 @@ TEST(BVH_SpatialMedianBuilderTest, ClusteredData)
 TEST(BVH_SpatialMedianBuilderTest, FloatPrecision)
 {
   BVH_Triangulation<float, 3> aTriangulation;
-  const int                   aNumTriangles = 10;
+  const int                                aNumTriangles = 10;
 
   for (int i = 0; i < aNumTriangles; ++i)
   {
     float x = static_cast<float>(i);
 
-    BVH::Array<float, 3>::Append(aTriangulation.Vertices, NCollection_Vec3<float>(x, 0.0f, 0.0f));
     BVH::Array<float, 3>::Append(aTriangulation.Vertices,
-                                 NCollection_Vec3<float>(x + 0.5f, 1.0f, 0.0f));
-    BVH::Array<float, 3>::Append(aTriangulation.Vertices,
-                                 NCollection_Vec3<float>(x + 1.0f, 0.0f, 0.0f));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+                                              NCollection_Vec3<float>(x, 0.0f, 0.0f));
+    BVH::Array<float, 3>::Append(
+      aTriangulation.Vertices,
+      NCollection_Vec3<float>(x + 0.5f, 1.0f, 0.0f));
+    BVH::Array<float, 3>::Append(
+      aTriangulation.Vertices,
+      NCollection_Vec3<float>(x + 1.0f, 0.0f, 0.0f));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<float, 3>                 aTree;
@@ -344,7 +356,7 @@ TEST(BVH_SpatialMedianBuilderTest, FloatPrecision)
 TEST(BVH_SpatialMedianBuilderTest, IdenticalBoxes)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 10;
+  const int                           aNumTriangles = 10;
 
   // All triangles at the same position
   for (int i = 0; i < aNumTriangles; ++i)
@@ -352,7 +364,8 @@ TEST(BVH_SpatialMedianBuilderTest, IdenticalBoxes)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(1.0, 0.0, 0.0));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(0.0, 1.0, 0.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTree;
@@ -368,7 +381,7 @@ TEST(BVH_SpatialMedianBuilderTest, IdenticalBoxes)
 TEST(BVH_SpatialMedianBuilderTest, LargeDataSet)
 {
   BVH_Triangulation<double, 3> aTriangulation;
-  const int                    aNumTriangles = 500;
+  const int                           aNumTriangles = 500;
 
   // Random-ish distribution
   for (int i = 0; i < aNumTriangles; ++i)
@@ -380,7 +393,8 @@ TEST(BVH_SpatialMedianBuilderTest, LargeDataSet)
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x, y, z));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 0.5, y + 1.0, z));
     BVH::Array<double, 3>::Append(aTriangulation.Vertices, BVH_Vec3d(x + 1.0, y, z + 1.0));
-    BVH::Array<int, 4>::Append(aTriangulation.Elements, BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
+    BVH::Array<int, 4>::Append(aTriangulation.Elements,
+                                            BVH_Vec4i(i * 3, i * 3 + 1, i * 3 + 2, 0));
   }
 
   BVH_Tree<double, 3>                 aTree;

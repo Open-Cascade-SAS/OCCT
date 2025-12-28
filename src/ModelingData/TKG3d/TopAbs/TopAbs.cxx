@@ -24,9 +24,9 @@ static const char* TopAbs_Table_PrintShapeEnum[9] =
   {"COMPOUND", "COMPSOLID", "SOLID", "SHELL", "FACE", "WIRE", "EDGE", "VERTEX", "SHAPE"};
 
 static const char* TopAbs_Table_PrintOrientation[4] = {"FORWARD",
-                                                       "REVERSED",
-                                                       "INTERNAL",
-                                                       "EXTERNAL"};
+                                                            "REVERSED",
+                                                            "INTERNAL",
+                                                            "EXTERNAL"};
 } // namespace
 
 //=================================================================================================
@@ -38,7 +38,8 @@ const char* TopAbs::ShapeTypeToString(TopAbs_ShapeEnum theType)
 
 //=================================================================================================
 
-bool TopAbs::ShapeTypeFromString(const char* theTypeString, TopAbs_ShapeEnum& theType)
+bool TopAbs::ShapeTypeFromString(const char*  theTypeString,
+                                             TopAbs_ShapeEnum& theType)
 {
   TCollection_AsciiString aName(theTypeString);
   aName.UpperCase();
@@ -63,12 +64,13 @@ const char* TopAbs::ShapeOrientationToString(TopAbs_Orientation theOrientation)
 
 //=================================================================================================
 
-bool TopAbs::ShapeOrientationFromString(const char*         theOrientationString,
-                                        TopAbs_Orientation& theOrientation)
+bool TopAbs::ShapeOrientationFromString(const char* theOrientationString,
+                                                    TopAbs_Orientation&    theOrientation)
 {
   TCollection_AsciiString aName(theOrientationString);
   aName.UpperCase();
-  for (int anOrientationIter = 0; anOrientationIter <= TopAbs_EXTERNAL; ++anOrientationIter)
+  for (int anOrientationIter = 0; anOrientationIter <= TopAbs_EXTERNAL;
+       ++anOrientationIter)
   {
     const char* anOrientationName = TopAbs_Table_PrintOrientation[anOrientationIter];
     if (aName == anOrientationName)

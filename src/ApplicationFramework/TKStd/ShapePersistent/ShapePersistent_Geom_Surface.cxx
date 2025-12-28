@@ -113,7 +113,8 @@ occ::handle<Geom_Surface> ShapePersistent_Geom_Surface::pOffset::Import() const
 // Elementary
 //=======================================================================
 template <>
-const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>::PName() const
+const char* ShapePersistent_Geom::subBase_gp<ShapePersistent_Geom::Surface, gp_Ax3>::PName()
+  const
 {
   return "PGeom_ElementarySurface";
 }
@@ -141,7 +142,7 @@ void ShapePersistent_Geom::instance<
 }
 
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_Plane>&                                                           theSurf,
+  const occ::handle<Geom_Plane>&         theSurf,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
@@ -152,8 +153,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
     else
     {
       occ::handle<Plane> aPP = new Plane;
-      aPP->myTransient       = theSurf;
-      aPS                    = aPP;
+      aPP->myTransient  = theSurf;
+      aPS               = aPP;
     }
   }
   return aPS;
@@ -182,8 +183,8 @@ void ShapePersistent_Geom::instance<
 }
 
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_ConicalSurface>&                                                  theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_ConicalSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&  theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -193,8 +194,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
     else
     {
       occ::handle<Conical> aPCon = new Conical;
-      aPCon->myTransient         = theSurf;
-      aPS                        = aPCon;
+      aPCon->myTransient    = theSurf;
+      aPS                   = aPCon;
     }
   }
   return aPS;
@@ -218,14 +219,13 @@ void ShapePersistent_Geom::instance<
   Geom_CylindricalSurface,
   gp_Cylinder>::Write(StdObjMgt_WriteData& theWriteData) const
 {
-  occ::handle<Geom_CylindricalSurface> aMyGeom =
-    occ::down_cast<Geom_CylindricalSurface>(myTransient);
+  occ::handle<Geom_CylindricalSurface> aMyGeom = occ::down_cast<Geom_CylindricalSurface>(myTransient);
   theWriteData << aMyGeom->Cylinder();
 }
 
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_CylindricalSurface>&                                              theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_CylindricalSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&      theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -235,8 +235,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
     else
     {
       occ::handle<Cylindrical> aPCyl = new Cylindrical;
-      aPCyl->myTransient             = theSurf;
-      aPS                            = aPCyl;
+      aPCyl->myTransient        = theSurf;
+      aPS                       = aPCyl;
     }
   }
   return aPS;
@@ -265,8 +265,8 @@ void ShapePersistent_Geom::instance<
 }
 
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_SphericalSurface>&                                                theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_SphericalSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&    theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -276,8 +276,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
     else
     {
       occ::handle<Spherical> aPSph = new Spherical;
-      aPSph->myTransient           = theSurf;
-      aPS                          = aPSph;
+      aPSph->myTransient      = theSurf;
+      aPS                     = aPSph;
     }
   }
   return aPS;
@@ -306,8 +306,8 @@ void ShapePersistent_Geom::instance<
 }
 
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_ToroidalSurface>&                                                 theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_ToroidalSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&   theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -317,8 +317,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
     else
     {
       occ::handle<Toroidal> aPTor = new Toroidal;
-      aPTor->myTransient          = theSurf;
-      aPS                         = aPTor;
+      aPTor->myTransient     = theSurf;
+      aPS                    = aPTor;
     }
   }
   return aPS;
@@ -328,8 +328,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 // LinearExtrusion
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_SurfaceOfLinearExtrusion>&                                        theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&            theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -338,9 +338,9 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<LinearExtrusion> aPLE  = new LinearExtrusion;
-      Handle(pLinearExtrusion)     aPpLE = new pLinearExtrusion;
-      aPpLE->myDirection                 = theSurf->Direction();
+      occ::handle<LinearExtrusion>  aPLE  = new LinearExtrusion;
+      Handle(pLinearExtrusion) aPpLE = new pLinearExtrusion;
+      aPpLE->myDirection             = theSurf->Direction();
       aPpLE->myBasisCurve = ShapePersistent_Geom::Translate(theSurf->BasisCurve(), theMap);
       aPLE->myPersistent  = aPpLE;
       aPS                 = aPLE;
@@ -353,8 +353,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 // Revolution
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_SurfaceOfRevolution>&                                             theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_SurfaceOfRevolution>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&       theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -363,13 +363,13 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<Revolution> aPR  = new Revolution;
-      Handle(pRevolution)     aPpR = new pRevolution;
-      aPpR->myLocation             = theSurf->Location();
-      aPpR->myDirection            = theSurf->Direction();
-      aPpR->myBasisCurve           = ShapePersistent_Geom::Translate(theSurf->BasisCurve(), theMap);
-      aPR->myPersistent            = aPpR;
-      aPS                          = aPR;
+      occ::handle<Revolution>  aPR  = new Revolution;
+      Handle(pRevolution) aPpR = new pRevolution;
+      aPpR->myLocation         = theSurf->Location();
+      aPpR->myDirection        = theSurf->Direction();
+      aPpR->myBasisCurve       = ShapePersistent_Geom::Translate(theSurf->BasisCurve(), theMap);
+      aPR->myPersistent        = aPpR;
+      aPS                      = aPR;
     }
   }
   return aPS;
@@ -379,7 +379,7 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 //
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_BezierSurface>&                                                   theSurf,
+  const occ::handle<Geom_BezierSurface>& theSurf,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
@@ -389,13 +389,12 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<Bezier> aPB  = new Bezier;
-      Handle(pBezier)     aPpB = new pBezier;
-      aPpB->myURational        = theSurf->IsURational();
-      aPpB->myVRational        = theSurf->IsVRational();
-      aPpB->myPoles =
-        StdLPersistent_HArray2::Translate<NCollection_HArray2<gp_Pnt>>("PColgp_HArray2OfPnt",
-                                                                       theSurf->Poles());
+      occ::handle<Bezier>  aPB  = new Bezier;
+      Handle(pBezier) aPpB = new pBezier;
+      aPpB->myURational    = theSurf->IsURational();
+      aPpB->myVRational    = theSurf->IsVRational();
+      aPpB->myPoles = StdLPersistent_HArray2::Translate<NCollection_HArray2<gp_Pnt>>("PColgp_HArray2OfPnt",
+                                                                             theSurf->Poles());
       if (theSurf->IsURational() || theSurf->IsVRational())
       {
         aPpB->myWeights =
@@ -412,8 +411,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 // BSpline
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_BSplineSurface>&                                                  theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_BSplineSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&  theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -422,26 +421,23 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<BSpline> aPBS  = new BSpline;
-      Handle(pBSpline)     aPpBS = new pBSpline;
-      aPpBS->myURational         = theSurf->IsURational();
-      aPpBS->myVRational         = theSurf->IsVRational();
-      aPpBS->myUPeriodic         = theSurf->IsUPeriodic();
-      aPpBS->myVPeriodic         = theSurf->IsVPeriodic();
-      aPpBS->myUSpineDegree      = theSurf->UDegree();
-      aPpBS->myVSpineDegree      = theSurf->VDegree();
-      aPpBS->myPoles =
-        StdLPersistent_HArray2::Translate<NCollection_HArray2<gp_Pnt>>("PColgp_HArray2OfPnt",
-                                                                       theSurf->Poles());
+      occ::handle<BSpline>  aPBS  = new BSpline;
+      Handle(pBSpline) aPpBS = new pBSpline;
+      aPpBS->myURational     = theSurf->IsURational();
+      aPpBS->myVRational     = theSurf->IsVRational();
+      aPpBS->myUPeriodic     = theSurf->IsUPeriodic();
+      aPpBS->myVPeriodic     = theSurf->IsVPeriodic();
+      aPpBS->myUSpineDegree  = theSurf->UDegree();
+      aPpBS->myVSpineDegree  = theSurf->VDegree();
+      aPpBS->myPoles = StdLPersistent_HArray2::Translate<NCollection_HArray2<gp_Pnt>>("PColgp_HArray2OfPnt",
+                                                                              theSurf->Poles());
       if (theSurf->IsURational() || theSurf->IsVRational())
       {
         aPpBS->myWeights =
           StdLPersistent_HArray2::Translate<NCollection_HArray2<double>>(*theSurf->Weights());
       }
-      aPpBS->myUKnots =
-        StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theSurf->UKnots());
-      aPpBS->myVKnots =
-        StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theSurf->VKnots());
+      aPpBS->myUKnots = StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theSurf->UKnots());
+      aPpBS->myVKnots = StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theSurf->VKnots());
       aPpBS->myUMultiplicities =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<int>>(theSurf->UMultiplicities());
       aPpBS->myVMultiplicities =
@@ -458,8 +454,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 // RectangularTrimmed
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_RectangularTrimmedSurface>&                                       theSurf,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  const occ::handle<Geom_RectangularTrimmedSurface>& theSurf,
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&             theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
   if (!theSurf.IsNull())
@@ -468,8 +464,8 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<RectangularTrimmed> aPRT  = new RectangularTrimmed;
-      Handle(pRectangularTrimmed)     aPpRT = new pRectangularTrimmed;
+      occ::handle<RectangularTrimmed>  aPRT  = new RectangularTrimmed;
+      Handle(pRectangularTrimmed) aPpRT = new pRectangularTrimmed;
       theSurf->Bounds(aPpRT->myFirstU, aPpRT->myLastU, aPpRT->myFirstV, aPpRT->myLastV);
       aPpRT->myBasisSurface = ShapePersistent_Geom::Translate(theSurf->BasisSurface(), theMap);
       aPRT->myPersistent    = aPpRT;
@@ -483,7 +479,7 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
 // Offset
 //=======================================================================
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
-  const occ::handle<Geom_OffsetSurface>&                                                   theSurf,
+  const occ::handle<Geom_OffsetSurface>& theSurf,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   Handle(ShapePersistent_Geom::Surface) aPS;
@@ -493,12 +489,12 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       aPS = Handle(ShapePersistent_Geom::Surface)::DownCast(theMap.Find(theSurf));
     else
     {
-      occ::handle<Offset> aPO  = new Offset;
-      Handle(pOffset)     aPpO = new pOffset;
-      aPpO->myOffsetValue      = theSurf->Offset();
-      aPpO->myBasisSurface     = ShapePersistent_Geom::Translate(theSurf->BasisSurface(), theMap);
-      aPO->myPersistent        = aPpO;
-      aPS                      = aPO;
+      occ::handle<Offset>  aPO  = new Offset;
+      Handle(pOffset) aPpO = new pOffset;
+      aPpO->myOffsetValue  = theSurf->Offset();
+      aPpO->myBasisSurface = ShapePersistent_Geom::Translate(theSurf->BasisSurface(), theMap);
+      aPO->myPersistent    = aPpO;
+      aPS                  = aPO;
     }
   }
   return aPS;

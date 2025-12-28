@@ -21,8 +21,10 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
 
@@ -44,13 +46,13 @@ public:
     const Message_ProgressRange& theRange = Message_ProgressRange()) override;
 
 private:
-  TopoDS_Shape                                             myInitialShape;
-  TopoDS_Wire                                              myStartWire;
-  TopoDS_Wire                                              myEndWire;
-  bool                                                     myClosedSection;
-  bool                                                     myClosedRing;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>   myStartWireEdges;
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>   myEndWireEdges;
+  TopoDS_Shape                            myInitialShape;
+  TopoDS_Wire                             myStartWire;
+  TopoDS_Wire                             myEndWire;
+  bool                        myClosedSection;
+  bool                        myClosedRing;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                     myStartWireEdges;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                     myEndWireEdges;
   NCollection_Sequence<NCollection_Sequence<TopoDS_Shape>> myPaths;
 };
 

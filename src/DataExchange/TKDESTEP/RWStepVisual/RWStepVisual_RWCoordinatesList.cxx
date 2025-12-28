@@ -22,6 +22,7 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <gp_XYZ.hxx>
 
 //=================================================================================================
 
@@ -29,11 +30,10 @@ RWStepVisual_RWCoordinatesList::RWStepVisual_RWCoordinatesList() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWCoordinatesList::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepVisual_CoordinatesList>& ent) const
+void RWStepVisual_RWCoordinatesList::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepVisual_CoordinatesList>& ent) const
 {
   // Number of Parameter Control
   if (!data->CheckNbParams(num, 3, ach, "coordinate list"))
@@ -46,7 +46,7 @@ void RWStepVisual_RWCoordinatesList::ReadStep(
   data->ReadInteger(num, 2, "number_points", ach, nbP);
 
   occ::handle<NCollection_HArray1<gp_XYZ>> aPoints; // = new NCollection_HArray1<gp_XYZ>(1, nbP);
-  int                                      nsub2;
+  int            nsub2;
   if (data->ReadSubList(num, 3, "items", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
@@ -55,8 +55,8 @@ void RWStepVisual_RWCoordinatesList::ReadStep(
     aPoints = new NCollection_HArray1<gp_XYZ>(1, nb2);
     for (int i = 1; i <= nb2; i++)
     {
-      gp_XYZ aXYZ(0., 0., 0.);
-      int    nsub3;
+      gp_XYZ           aXYZ(0., 0., 0.);
+      int nsub3;
       if (data->ReadSubList(nsub2, i, "coordinates", ach, nsub3))
       {
         int nb3 = data->NbParams(nsub3);
@@ -85,9 +85,8 @@ void RWStepVisual_RWCoordinatesList::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWCoordinatesList::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepVisual_CoordinatesList>& ent) const
+void RWStepVisual_RWCoordinatesList::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepVisual_CoordinatesList>& ent) const
 {
   // Inherited field : name
   SW.Send(ent->Name());

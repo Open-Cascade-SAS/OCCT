@@ -47,16 +47,16 @@ public:
   //! <IR> detains parameter types and values
   Standard_EXPORT void ReadOwnParams(const occ::handle<IGESBasic_Group>&         ent,
                                      const occ::handle<IGESData_IGESReaderData>& IR,
-                                     IGESData_ParamReader&                       PR) const;
+                                     IGESData_ParamReader&                  PR) const;
 
   //! Writes own parameters to IGESWriter
   Standard_EXPORT void WriteOwnParams(const occ::handle<IGESBasic_Group>& ent,
-                                      IGESData_IGESWriter&                IW) const;
+                                      IGESData_IGESWriter&           IW) const;
 
   //! Lists the Entities shared by a Group <ent>, from
   //! its specific (own) parameters
   Standard_EXPORT void OwnShared(const occ::handle<IGESBasic_Group>& ent,
-                                 Interface_EntityIterator&           iter) const;
+                                 Interface_EntityIterator&      iter) const;
 
   //! Sets automatic unambiguous Correction on a Group
   //! (Null Elements are removed from list)
@@ -67,19 +67,20 @@ public:
 
   //! Performs Specific Semantic Check
   Standard_EXPORT void OwnCheck(const occ::handle<IGESBasic_Group>& ent,
-                                const Interface_ShareTool&          shares,
+                                const Interface_ShareTool&     shares,
                                 occ::handle<Interface_Check>&       ach) const;
 
   //! Copies Specific Parameters
   Standard_EXPORT void OwnCopy(const occ::handle<IGESBasic_Group>& entfrom,
                                const occ::handle<IGESBasic_Group>& entto,
-                               Interface_CopyTool&                 TC) const;
+                               Interface_CopyTool&            TC) const;
 
   //! Dump of Specific Parameters
   Standard_EXPORT void OwnDump(const occ::handle<IGESBasic_Group>& ent,
-                               const IGESData_IGESDumper&          dumper,
-                               Standard_OStream&                   S,
-                               const int                           own) const;
+                               const IGESData_IGESDumper&     dumper,
+                               Standard_OStream&              S,
+                               const int         own) const;
+
 };
 
 #endif // _IGESBasic_ToolGroup_HeaderFile

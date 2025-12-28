@@ -22,6 +22,7 @@
 #include <IGESData_IGESEntity.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <IGESData_IGESEntity.hxx>
 #include <Standard_Integer.hxx>
 class Standard_Transient;
 
@@ -51,8 +52,7 @@ public:
   //! This method is used to set the fields of the class Group
   //! - allEntities : Used to store pointers to members of
   //! the Group.
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allEntities);
 
   //! Sets a Group to be, or not to be Ordered (according mode)
   Standard_EXPORT void SetOrdered(const bool mode);
@@ -84,7 +84,8 @@ public:
   Standard_EXPORT occ::handle<Standard_Transient> Value(const int Index) const;
 
   //! Sets a new value for item <Index>
-  Standard_EXPORT void SetValue(const int Index, const occ::handle<IGESData_IGESEntity>& ent);
+  Standard_EXPORT void SetValue(const int             Index,
+                                const occ::handle<IGESData_IGESEntity>& ent);
 
   DEFINE_STANDARD_RTTIEXT(IGESBasic_Group, IGESData_IGESEntity)
 

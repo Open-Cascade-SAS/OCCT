@@ -28,7 +28,6 @@ public:
   virtual ~TestBase() {}
   DEFINE_STANDARD_RTTI_INLINE(TestBase, Standard_Transient)
 };
-
 class TestDerived : public TestBase
 {
 public:
@@ -37,7 +36,6 @@ public:
   virtual ~TestDerived() {}
   DEFINE_STANDARD_RTTI_INLINE(TestDerived, TestBase)
 };
-
 class TestOther : public Standard_Transient
 {
 public:
@@ -46,7 +44,6 @@ public:
   virtual ~TestOther() {}
   DEFINE_STANDARD_RTTI_INLINE(TestOther, Standard_Transient)
 };
-
 // Test fixture for Handle operations tests
 class HandleOperationsTest : public testing::Test
 {

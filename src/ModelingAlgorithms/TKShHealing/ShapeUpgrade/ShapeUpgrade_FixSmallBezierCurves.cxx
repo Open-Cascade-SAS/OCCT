@@ -33,6 +33,10 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
+#include <Geom2d_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Geom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <TopExp.hxx>
@@ -46,15 +50,15 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallBezierCurves, ShapeUpgrade_FixSm
 ShapeUpgrade_FixSmallBezierCurves::ShapeUpgrade_FixSmallBezierCurves() {}
 
 bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3d,
-                                               occ::handle<Geom2d_Curve>& Curve2d,
-                                               occ::handle<Geom2d_Curve>& Curve2dR,
-                                               double&                    First,
-                                               double&                    Last)
+                                                           occ::handle<Geom2d_Curve>& Curve2d,
+                                                           occ::handle<Geom2d_Curve>& Curve2dR,
+                                                           double&        First,
+                                                           double&        Last)
 {
 
-  ShapeAnalysis_Edge      sae;
+  ShapeAnalysis_Edge sae;
   occ::handle<Geom_Curve> c3d;
-  double                  f, l;
+  double      f, l;
   if (sae.Curve3d(myEdge, c3d, f, l, false))
   {
     if (First < f)
@@ -62,7 +66,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     if (Last > l)
       Last = l;
     occ::handle<Geom_Curve> trc   = new Geom_TrimmedCurve(c3d, First, Last);
-    GeomAbs_Shape           aCont = (GeomAbs_Shape)trc->Continuity();
+    GeomAbs_Shape      aCont = (GeomAbs_Shape)trc->Continuity();
     if (aCont == GeomAbs_C3 || aCont == GeomAbs_CN)
       aCont = GeomAbs_C2;
     try
@@ -99,10 +103,10 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
   if (myFace.IsNull())
     return true;
   occ::handle<Geom2d_Curve> c2d;
-  TopLoc_Location           L;
+  TopLoc_Location      L;
   occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(myFace, L);
-  GeomAdaptor_Surface       ads(aSurf); // = new GeomAdaptor_Surface(aSurf);
-  double prec = std::max(ads.UResolution(Precision()), ads.VResolution(Precision()));
+  GeomAdaptor_Surface  ads(aSurf); // = new GeomAdaptor_Surface(aSurf);
+  double        prec = std::max(ads.UResolution(Precision()), ads.VResolution(Precision()));
   if (sae.PCurve(myEdge, myFace, c2d, f, l, false))
   {
     if (First < f)
@@ -110,7 +114,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
     if (Last > l)
       Last = l;
     occ::handle<Geom2d_Curve> trc2d = new Geom2d_TrimmedCurve(c2d, First, Last);
-    GeomAbs_Shape             aCont = (GeomAbs_Shape)trc2d->Continuity();
+    GeomAbs_Shape        aCont = (GeomAbs_Shape)trc2d->Continuity();
     try
     {
       OCC_CATCH_SIGNALS
@@ -145,7 +149,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
   if (isSeam)
   {
     occ::handle<Geom2d_Curve> c2;
-    double                    f2, l2;
+    double        f2, l2;
     // smh#8
     TopoDS_Shape tmpE = myEdge.Reversed();
     TopoDS_Edge  erev = TopoDS::Edge(tmpE);
@@ -155,7 +159,7 @@ bool ShapeUpgrade_FixSmallBezierCurves::Approx(occ::handle<Geom_Curve>&   Curve3
         First = f;
       if (Last > l)
         Last = l;
-      occ::handle<Geom2d_Curve> trc2d = new Geom2d_TrimmedCurve(c2, First, Last);
+      occ::handle<Geom2d_Curve>      trc2d = new Geom2d_TrimmedCurve(c2, First, Last);
       GeomAbs_Shape             aCont = trc2d->Continuity();
       Geom2dConvert_ApproxCurve AproxCurve2d(trc2d, prec, aCont, 1, 9);
       try

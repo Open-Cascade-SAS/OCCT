@@ -35,13 +35,13 @@
 
 //=================================================================================================
 
-void QADNaming::GetShape(const char*                     LabelName,
-                         const occ::handle<TDF_Data>&    DF,
-                         NCollection_List<TopoDS_Shape>& L)
+void QADNaming::GetShape(const char*  LabelName,
+                         const occ::handle<TDF_Data>& DF,
+                         NCollection_List<TopoDS_Shape>&   L)
 {
   L.Clear();
-  TDF_Label Label;
-  bool      Found = DDF::AddLabel(DF, LabelName, Label);
+  TDF_Label        Label;
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (Found)
   {
     TNaming_Iterator it(Label, DF->Transaction());
@@ -68,9 +68,9 @@ void QADNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& La
 
 TopoDS_Shape QADNaming::CurrentShape(const char* LabelName, const occ::handle<TDF_Data>& DF)
 {
-  TopoDS_Shape S;
-  TDF_Label    Label;
-  bool         Found = DDF::AddLabel(DF, LabelName, Label);
+  TopoDS_Shape     S;
+  TDF_Label        Label;
+  bool Found = DDF::AddLabel(DF, LabelName, Label);
   if (!Found)
   {
     std::cout << "no labels" << std::endl;
@@ -90,9 +90,9 @@ TopoDS_Shape QADNaming::CurrentShape(const char* LabelName, const occ::handle<TD
 
 //=================================================================================================
 
-TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&          Shape,
+TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&     Shape,
                                             const occ::handle<TDF_Data>& DF,
-                                            int&                         theStatus)
+                                            int&       theStatus)
 {
   theStatus = 0;
   // occ::handle<TNaming_UsedShapes> US;
@@ -102,7 +102,7 @@ TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&          Shape,
   {
     return TCollection_AsciiString();
   }
-  int                     Transdef;
+  int        Transdef;
   TDF_Label               Lab = TNaming_Tool::Label(DF->Root(), Shape, Transdef);
   TCollection_AsciiString entry;
   TDF_Tool::Entry(Lab, entry);
@@ -121,7 +121,7 @@ TCollection_AsciiString QADNaming::GetEntry(const TopoDS_Shape&          Shape,
 
 bool QADNaming::Entry(void* const theArguments, TDF_Label& theLabel)
 {
-  const char**          arg = (const char**)theArguments;
+  const char**     arg = (const char**)theArguments;
   occ::handle<TDF_Data> DF;
   if (!DDF::GetDF(arg[1], DF))
   {
@@ -139,7 +139,9 @@ bool QADNaming::Entry(void* const theArguments, TDF_Label& theLabel)
 // function : IsSameShapes
 // purpose  : IsSameShapes DrawShape1 DrawShape2
 //=======================================================================
-static int QADNaming_IsSameShapes(Draw_Interpretor& di, int nb, const char** arg)
+static int QADNaming_IsSameShapes(Draw_Interpretor& di,
+                                               int  nb,
+                                               const char**      arg)
 {
   if (nb == 3)
   {
@@ -158,14 +160,16 @@ static int QADNaming_IsSameShapes(Draw_Interpretor& di, int nb, const char** arg
 // function : CenterOfShape
 // purpose  : CenterOfShape DrawShape
 //=======================================================================
-static int QADNaming_CenterOfShape(Draw_Interpretor& di, int nb, const char** arg)
+static int QADNaming_CenterOfShape(Draw_Interpretor& di,
+                                                int  nb,
+                                                const char**      arg)
 {
   if (nb == 2)
   {
     TopoDS_Shape aShape = DBRep::Get(arg[1]);
     if (aShape.IsNull())
       return 1;
-    double          x = 0, y = 0, z = 0;
+    double   x = 0, y = 0, z = 0;
     float           all = 0;
     TopExp_Explorer anExp(aShape, TopAbs_VERTEX);
     for (; anExp.More(); anExp.Next(), all++)

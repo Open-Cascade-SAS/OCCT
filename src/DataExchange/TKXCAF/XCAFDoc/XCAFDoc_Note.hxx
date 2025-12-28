@@ -61,14 +61,14 @@ public:
 
 public:
   // Overrides TDF_Attribute virtuals
-  Standard_EXPORT void              Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
-  Standard_EXPORT void              Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
-                                          const occ::handle<TDF_RelocationTable>& theRT) const override;
+  Standard_EXPORT void Restore(const occ::handle<TDF_Attribute>& theAttrFrom) override;
+  Standard_EXPORT void Paste(const occ::handle<TDF_Attribute>&       theAttrInto,
+                             const occ::handle<TDF_RelocationTable>& theRT) const override;
   Standard_EXPORT Standard_OStream& Dump(Standard_OStream& theOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 protected:
   //! Creates an empty note.

@@ -30,20 +30,20 @@ class BOPTest_DrawableShape : public DBRep_DrawableShape
 {
 
 public:
-  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape& S,
-                                        const Draw_Color&   FreeCol,
-                                        const Draw_Color&   ConnCol,
-                                        const Draw_Color&   EdgeCol,
-                                        const Draw_Color&   IsosCol,
-                                        const double        size,
-                                        const int           nbisos,
-                                        const int           discret,
-                                        const char*         Text,
-                                        const Draw_Color&   TextColor);
+  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape&    S,
+                                        const Draw_Color&      FreeCol,
+                                        const Draw_Color&      ConnCol,
+                                        const Draw_Color&      EdgeCol,
+                                        const Draw_Color&      IsosCol,
+                                        const double    size,
+                                        const int nbisos,
+                                        const int discret,
+                                        const char* Text,
+                                        const Draw_Color&      TextColor);
 
-  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape& S,
-                                        const char*         Text,
-                                        const Draw_Color&   TextColor);
+  Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape&    S,
+                                        const char* Text,
+                                        const Draw_Color&      TextColor);
 
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const override;
 
@@ -53,7 +53,7 @@ private:
   Standard_EXPORT gp_Pnt Pnt() const;
 
   occ::handle<Draw_Text3D> myText;
-  Draw_Color               myTextColor;
+  Draw_Color          myTextColor;
 };
 
 #endif // _BOPTest_DrawableShape_HeaderFile

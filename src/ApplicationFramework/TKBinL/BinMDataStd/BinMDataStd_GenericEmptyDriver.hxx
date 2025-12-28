@@ -29,23 +29,24 @@ class BinMDataStd_GenericEmptyDriver : public BinMDF_ADriver
 {
 
 public:
-  Standard_EXPORT BinMDataStd_GenericEmptyDriver(
-    const occ::handle<Message_Messenger>& theMessageDriver);
+  Standard_EXPORT BinMDataStd_GenericEmptyDriver(const occ::handle<Message_Messenger>& theMessageDriver);
 
   Standard_EXPORT virtual occ::handle<TDF_Attribute> NewEmpty() const override;
 
   Standard_EXPORT virtual const occ::handle<Standard_Type>& SourceType() const override;
 
-  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&       Source,
-                                     const occ::handle<TDF_Attribute>& Target,
-                                     BinObjMgt_RRelocationTable&       RelocTable) const override;
+  Standard_EXPORT virtual bool Paste(const BinObjMgt_Persistent&  Source,
+                                                 const occ::handle<TDF_Attribute>& Target,
+                                                 BinObjMgt_RRelocationTable&  RelocTable) const
+    override;
 
-  Standard_EXPORT virtual void Paste(
-    const occ::handle<TDF_Attribute>&                        Source,
-    BinObjMgt_Persistent&                                    Target,
-    NCollection_IndexedMap<occ::handle<Standard_Transient>>& RelocTable) const override;
+  Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>& Source,
+                                     BinObjMgt_Persistent&        Target,
+                                     NCollection_IndexedMap<occ::handle<Standard_Transient>>&  RelocTable) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(BinMDataStd_GenericEmptyDriver, BinMDF_ADriver)
+
 };
 
 #endif // _BinMDataStd_GenericEmptyDriver_HeaderFile

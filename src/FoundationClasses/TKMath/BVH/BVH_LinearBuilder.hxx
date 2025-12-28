@@ -55,23 +55,24 @@ protected:
 protected:
   //! Emits hierarchy from sorted Morton codes.
   int emitHierachy(BVH_Tree<T, N>*                            theBVH,
-                   const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
-                   const int                                  theBit,
-                   const int                                  theShift,
-                   const int                                  theStart,
-                   const int                                  theFinal) const;
+                                const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
+                                const int                     theBit,
+                                const int                     theShift,
+                                const int                     theStart,
+                                const int                     theFinal) const;
 
   //! Returns index of the first element which does not compare less than the given one.
   int lowerBound(const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
-                 int                                        theStart,
-                 int                                        theFinal,
-                 int                                        theDigit) const;
+                              int                           theStart,
+                              int                           theFinal,
+                              int                           theDigit) const;
 };
 
 //=================================================================================================
 
 template <class T, int N>
-BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const int theLeafNodeSize, const int theMaxTreeDepth)
+BVH_LinearBuilder<T, N>::BVH_LinearBuilder(const int theLeafNodeSize,
+                                           const int theMaxTreeDepth)
     : BVH_Builder<T, N>(theLeafNodeSize, theMaxTreeDepth)
 {
   //
@@ -92,13 +93,14 @@ BVH_LinearBuilder<T, N>::~BVH_LinearBuilder()
 // purpose  : Returns index of first element greater than the given one
 // =======================================================================
 template <class T, int N>
-int BVH_LinearBuilder<T, N>::lowerBound(const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
-                                        int                                        theStart,
-                                        int                                        theFinal,
-                                        int                                        theDigit) const
+int BVH_LinearBuilder<T, N>::lowerBound(
+  const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
+  int                           theStart,
+  int                           theFinal,
+  int                           theDigit) const
 {
-  int          aNbPrims = theFinal - theStart;
-  unsigned int aBit     = 1U << theDigit;
+  int aNbPrims = theFinal - theStart;
+  unsigned int     aBit     = 1U << theDigit;
   while (aNbPrims > 0)
   {
     const int aStep = aNbPrims / 2;
@@ -124,15 +126,16 @@ template <class T, int N>
 int BVH_LinearBuilder<T, N>::emitHierachy(
   BVH_Tree<T, N>*                            theBVH,
   const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
-  const int                                  theDigit,
-  const int                                  theShift,
-  const int                                  theStart,
-  const int                                  theFinal) const
+  const int                     theDigit,
+  const int                     theShift,
+  const int                     theStart,
+  const int                     theFinal) const
 {
   if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize)
   {
-    const int aPosition = theDigit < 0 ? (theStart + theFinal) / 2
-                                       : lowerBound(theEncodedLinks, theStart, theFinal, theDigit);
+    const int aPosition =
+      theDigit < 0 ? (theStart + theFinal) / 2
+                   : lowerBound(theEncodedLinks, theStart, theFinal, theDigit);
     if (aPosition == theStart || aPosition == theFinal)
     {
       return emitHierachy(theBVH, theEncodedLinks, theDigit - 1, theShift, theStart, theFinal);
@@ -162,7 +165,9 @@ namespace BVH
 {
 //! Calculates bounding boxes (AABBs) for the given BVH tree.
 template <class T, int N>
-int UpdateBounds(BVH_Set<T, N>* theSet, BVH_Tree<T, N>* theTree, const int theNode = 0)
+int UpdateBounds(BVH_Set<T, N>*         theSet,
+                              BVH_Tree<T, N>*        theTree,
+                              const int theNode = 0)
 {
   const BVH_Vec4i aData = theTree->NodeInfoBuffer()[theNode];
   if (aData.x() == 0)
@@ -210,11 +215,11 @@ int UpdateBounds(BVH_Set<T, N>* theSet, BVH_Tree<T, N>* theTree, const int theNo
 template <class T, int N>
 struct BoundData
 {
-  BVH_Set<T, N>*  mySet;    //!< Set of geometric objects
-  BVH_Tree<T, N>* myBVH;    //!< BVH tree built over the set
-  int             myNode;   //!< BVH node to update bounding box
-  int             myLevel;  //!< Level of the processed BVH node
-  int*            myHeight; //!< Height of the processed BVH node
+  BVH_Set<T, N>*    mySet;    //!< Set of geometric objects
+  BVH_Tree<T, N>*   myBVH;    //!< BVH tree built over the set
+  int  myNode;   //!< BVH node to update bounding box
+  int  myLevel;  //!< Level of the processed BVH node
+  int* myHeight; //!< Height of the processed BVH node
 };
 
 //! Task for parallel bounds updating.
@@ -329,7 +334,7 @@ void BVH_LinearBuilder<T, N>::Build(BVH_Set<T, N>*       theSet,
   theBVH->MinPointBuffer().resize(theBVH->NodeInfoBuffer().size());
   theBVH->MaxPointBuffer().resize(theBVH->NodeInfoBuffer().size());
 
-  int                        aHeight    = 0;
+  int           aHeight    = 0;
   BVH::BoundData<T, N>       aBoundData = {theSet, theBVH, 0, 0, &aHeight};
   BVH::UpdateBoundTask<T, N> aBoundTask(this->IsParallel());
   aBoundTask(aBoundData);

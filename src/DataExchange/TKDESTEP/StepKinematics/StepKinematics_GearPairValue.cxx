@@ -27,7 +27,7 @@ StepKinematics_GearPairValue::StepKinematics_GearPairValue() {}
 void StepKinematics_GearPairValue::Init(
   const occ::handle<TCollection_HAsciiString>&     theRepresentationItem_Name,
   const occ::handle<StepKinematics_KinematicPair>& thePairValue_AppliesToPair,
-  const double                                     theActualRotation1)
+  const double                         theActualRotation1)
 {
   StepKinematics_PairValue::Init(theRepresentationItem_Name, thePairValue_AppliesToPair);
 

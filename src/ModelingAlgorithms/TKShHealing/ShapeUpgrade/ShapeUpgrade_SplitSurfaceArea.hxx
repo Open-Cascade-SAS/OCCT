@@ -44,14 +44,15 @@ public:
   //! Only for "Splitting Into Squares" mode
   void SetNumbersUVSplits(const int theNbUsplits, const int theNbVsplits);
 
-  Standard_EXPORT virtual void Compute(const bool Segment = true) override;
+  Standard_EXPORT virtual void Compute(const bool Segment = true)
+    override;
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea, ShapeUpgrade_SplitSurface)
 
 private:
-  int  myNbParts;
-  int  myUnbSplit;
-  int  myVnbSplit;
+  int myNbParts;
+  int myUnbSplit;
+  int myVnbSplit;
   bool myIsSplittingIntoSquares;
 };
 

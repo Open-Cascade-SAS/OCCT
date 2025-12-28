@@ -27,9 +27,8 @@ StepBasic_IdentificationAssignment::StepBasic_IdentificationAssignment() {}
 
 //=================================================================================================
 
-void StepBasic_IdentificationAssignment::Init(
-  const occ::handle<TCollection_HAsciiString>&     aAssignedId,
-  const occ::handle<StepBasic_IdentificationRole>& aRole)
+void StepBasic_IdentificationAssignment::Init(const occ::handle<TCollection_HAsciiString>& aAssignedId,
+                                              const occ::handle<StepBasic_IdentificationRole>& aRole)
 {
 
   theAssignedId = aAssignedId;
@@ -61,8 +60,7 @@ occ::handle<StepBasic_IdentificationRole> StepBasic_IdentificationAssignment::Ro
 
 //=================================================================================================
 
-void StepBasic_IdentificationAssignment::SetRole(
-  const occ::handle<StepBasic_IdentificationRole>& aRole)
+void StepBasic_IdentificationAssignment::SetRole(const occ::handle<StepBasic_IdentificationRole>& aRole)
 {
   theRole = aRole;
 }

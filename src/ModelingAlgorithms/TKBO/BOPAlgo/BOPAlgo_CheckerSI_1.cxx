@@ -98,7 +98,7 @@ public:
     }
 
     double aTol;
-    gp_Pnt aPV;
+    gp_Pnt        aPV;
     //
     BRepClass3d_SolidClassifier& aSC = myContext->SolidClassifier(myZ);
     //
@@ -112,13 +112,13 @@ public:
 
   //
 protected:
-  int                           myIV;
-  int                           myIZ;
-  TopAbs_State                  myState;
-  TopoDS_Vertex                 myV;
-  TopoDS_Solid                  myZ;
+  int         myIV;
+  int         myIZ;
+  TopAbs_State             myState;
+  TopoDS_Vertex            myV;
+  TopoDS_Solid             myZ;
   occ::handle<IntTools_Context> myContext;
-  Message_ProgressRange         myProgressRange;
+  Message_ProgressRange    myProgressRange;
 };
 
 //=======================================================================
@@ -185,9 +185,9 @@ public:
 
   //
 protected:
-  int                   myIE;
-  int                   myIZ;
-  bool                  myHasInterf;
+  int      myIE;
+  int      myIZ;
+  bool      myHasInterf;
   BOPDS_DS*             myDS;
   Message_ProgressRange myProgressRange;
 };
@@ -239,9 +239,9 @@ void BOPAlgo_CheckerSI::PerformVZ(const Message_ProgressRange& theRange)
 {
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
 
-  int                         iSize, nV, nZ, k, aNbVVS;
-  TopAbs_State                aState;
-  NCollection_Map<BOPDS_Pair> aMPK;
+  int iSize, nV, nZ, k, aNbVVS;
+  TopAbs_State     aState;
+  NCollection_Map<BOPDS_Pair>  aMPK;
   //
   myIterator->Initialize(TopAbs_VERTEX, TopAbs_SOLID);
   iSize = myIterator->ExpectedLength();
@@ -340,7 +340,7 @@ void BOPAlgo_CheckerSI::PerformZZ(const Message_ProgressRange& theRange)
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
 
   bool bHasInterf;
-  int  iSize, nZ1, nZ, k, aNbSolidSolid;
+  int iSize, nZ1, nZ, k, aNbSolidSolid;
   //
   myIterator->Initialize(TopAbs_SOLID, TopAbs_SOLID);
   iSize = myIterator->ExpectedLength();
@@ -405,7 +405,7 @@ void BOPAlgo_CheckerSI::PerformSZ(const TopAbs_ShapeEnum       theTS,
   Message_ProgressScope aPSOuter(theRange, NULL, 1);
 
   bool bHasInterf;
-  int  iSize, nS, nZ, k, aNbShapeSolid;
+  int iSize, nS, nZ, k, aNbShapeSolid;
   //
   myIterator->Initialize(theTS, TopAbs_SOLID);
   iSize = myIterator->ExpectedLength();

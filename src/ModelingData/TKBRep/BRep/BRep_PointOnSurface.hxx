@@ -29,15 +29,16 @@ class BRep_PointOnSurface : public BRep_PointsOnSurface
 {
 
 public:
-  Standard_EXPORT BRep_PointOnSurface(const double                     P1,
-                                      const double                     P2,
+  Standard_EXPORT BRep_PointOnSurface(const double         P1,
+                                      const double         P2,
                                       const occ::handle<Geom_Surface>& S,
-                                      const TopLoc_Location&           L);
+                                      const TopLoc_Location&      L);
 
   Standard_EXPORT virtual bool IsPointOnSurface() const override;
 
   Standard_EXPORT virtual bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
-                                                const TopLoc_Location&           L) const override;
+                                                            const TopLoc_Location&      L) const
+    override;
 
   Standard_EXPORT virtual double Parameter2() const override;
 

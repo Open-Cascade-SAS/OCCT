@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepVisual_CameraImage3dWithScale();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_CameraImage3dWithScale, StepVisual_CameraImage)
+
 };
 
 #endif // _StepVisual_CameraImage3dWithScale_HeaderFile

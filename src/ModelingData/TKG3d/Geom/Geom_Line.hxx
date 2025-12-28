@@ -117,19 +117,23 @@ public:
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT void D2(const double U,
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2) const override;
 
   //! V2 and V3 are vectors with null magnitude for a line.
   Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const override;
+                          gp_Pnt&             P,
+                          gp_Vec&             V1,
+                          gp_Vec&             V2,
+                          gp_Vec&             V3) const override;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec DN(const double    U,
+                            const int N) const override;
 
   //! Applies the transformation T to this line.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -144,8 +148,9 @@ public:
   //! me->Value(U).Transformed(T)
   //!
   //! This methods returns <U> * T.ScaleFactor()
-  Standard_EXPORT virtual double TransformedParameter(const double   U,
-                                                      const gp_Trsf& T) const override;
+  Standard_EXPORT virtual double TransformedParameter(const double U,
+                                                             const gp_Trsf&      T) const
+    override;
 
   //! Returns a coefficient to compute the parameter on
   //! the transformed curve for the transform of the
@@ -158,14 +163,15 @@ public:
   //! Value(U).Transformed(T)
   //!
   //! This methods returns T.ScaleFactor()
-  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT virtual double ParametricTransformation(const gp_Trsf& T) const
+    override;
 
   //! Creates a new object which is a copy of this line.
   Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_STANDARD_RTTIEXT(Geom_Line, Geom_Curve)
 

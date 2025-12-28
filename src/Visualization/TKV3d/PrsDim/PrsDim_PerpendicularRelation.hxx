@@ -33,8 +33,8 @@ public:
   //! aPlane is the plane of reference to show and test the
   //! perpendicular relation between two shapes, at least
   //! one of which has a revolved surface.
-  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape&            aFShape,
-                                               const TopoDS_Shape&            aSShape,
+  Standard_EXPORT PrsDim_PerpendicularRelation(const TopoDS_Shape&       aFShape,
+                                               const TopoDS_Shape&       aSShape,
                                                const occ::handle<Geom_Plane>& aPlane);
 
   //! Constructs an object to display constraints of

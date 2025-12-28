@@ -19,13 +19,14 @@
 #include <StepGeom_Surface.hxx>
 #include <StepShape_AdvancedFace.hxx>
 #include <StepShape_FaceBound.hxx>
+#include <StepShape_FaceBound.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 RWStepShape_RWAdvancedFace::RWStepShape_RWAdvancedFace() {}
 
 void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                          const int                                   num,
+                                          const int                 num,
                                           occ::handle<Interface_Check>&               ach,
                                           const occ::handle<StepShape_AdvancedFace>&  ent) const
 {
@@ -44,8 +45,8 @@ void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderD
   // --- inherited field : bounds ---
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_FaceBound>>> aBounds;
-  occ::handle<StepShape_FaceBound>                                   anent2;
-  int                                                                nsub2;
+  occ::handle<StepShape_FaceBound>          anent2;
+  int                     nsub2;
   if (data->ReadSubList(num, 2, "bounds", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
@@ -83,7 +84,7 @@ void RWStepShape_RWAdvancedFace::ReadStep(const occ::handle<StepData_StepReaderD
   ent->Init(aName, aBounds, aFaceGeometry, aSameSense);
 }
 
-void RWStepShape_RWAdvancedFace::WriteStep(StepData_StepWriter&                       SW,
+void RWStepShape_RWAdvancedFace::WriteStep(StepData_StepWriter&                  SW,
                                            const occ::handle<StepShape_AdvancedFace>& ent) const
 {
 
@@ -110,7 +111,7 @@ void RWStepShape_RWAdvancedFace::WriteStep(StepData_StepWriter&                 
 }
 
 void RWStepShape_RWAdvancedFace::Share(const occ::handle<StepShape_AdvancedFace>& ent,
-                                       Interface_EntityIterator&                  iter) const
+                                       Interface_EntityIterator&             iter) const
 {
 
   int nbElem1 = ent->NbBounds();

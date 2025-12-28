@@ -152,8 +152,7 @@ public:
   //! VrmlConverter_WFDeflectionShape
   Standard_EXPORT occ::handle<VrmlConverter_LineAspect> UnFreeBoundaryAspect();
 
-  Standard_EXPORT void SetUnFreeBoundaryAspect(
-    const occ::handle<VrmlConverter_LineAspect>& anAspect);
+  Standard_EXPORT void SetUnFreeBoundaryAspect(const occ::handle<VrmlConverter_LineAspect>& anAspect);
 
   //! enables the drawing the unfree boundaries
   //! By default the unfree boundaries are drawn.
@@ -205,22 +204,22 @@ public:
 private:
   occ::handle<VrmlConverter_IsoAspect>     myUIsoAspect;
   occ::handle<VrmlConverter_IsoAspect>     myVIsoAspect;
-  int                                      myNbPoints;
-  bool                                     myIsoOnPlane;
+  int                    myNbPoints;
+  bool                    myIsoOnPlane;
   occ::handle<VrmlConverter_LineAspect>    myFreeBoundaryAspect;
-  bool                                     myFreeBoundaryDraw;
+  bool                    myFreeBoundaryDraw;
   occ::handle<VrmlConverter_LineAspect>    myUnFreeBoundaryAspect;
-  bool                                     myUnFreeBoundaryDraw;
+  bool                    myUnFreeBoundaryDraw;
   occ::handle<VrmlConverter_LineAspect>    myWireAspect;
-  bool                                     myWireDraw;
+  bool                    myWireDraw;
   occ::handle<VrmlConverter_LineAspect>    myLineAspect;
   occ::handle<VrmlConverter_ShadingAspect> myShadingAspect;
-  double                                   myChordialDeviation;
-  Aspect_TypeOfDeflection                  myTypeOfDeflection;
-  double                                   myMaximalParameterValue;
-  double                                   myDeviationCoefficient;
+  double                       myChordialDeviation;
+  Aspect_TypeOfDeflection             myTypeOfDeflection;
+  double                       myMaximalParameterValue;
+  double                       myDeviationCoefficient;
   occ::handle<VrmlConverter_PointAspect>   myPointAspect;
-  bool                                     myDrawHiddenLine;
+  bool                    myDrawHiddenLine;
   occ::handle<VrmlConverter_LineAspect>    myHiddenLineAspect;
   occ::handle<VrmlConverter_LineAspect>    mySeenLineAspect;
 };

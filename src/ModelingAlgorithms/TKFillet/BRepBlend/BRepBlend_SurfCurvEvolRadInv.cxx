@@ -24,7 +24,7 @@
 BRepBlend_SurfCurvEvolRadInv::BRepBlend_SurfCurvEvolRadInv(const occ::handle<Adaptor3d_Surface>& S,
                                                            const occ::handle<Adaptor3d_Curve>&   C,
                                                            const occ::handle<Adaptor3d_Curve>&   Cg,
-                                                           const occ::handle<Law_Function>& Evol)
+                                                           const occ::handle<Law_Function>&      Evol)
     : surf(S),
       curv(C),
       guide(Cg)
@@ -70,10 +70,10 @@ bool BRepBlend_SurfCurvEvolRadInv::Value(const math_Vector& X, math_Vector& F)
   ray          = sg1 * tevol->Value(X(1));
   gp_Vec nplan = d1gui.Normalized();
   //  double theD = -(nplan.XYZ().Dot(ptgui.XYZ()));
-  gp_XYZ nplanXYZ(nplan.XYZ());
-  gp_XYZ ptguiXYZ(ptgui.XYZ());
+  gp_XYZ        nplanXYZ(nplan.XYZ());
+  gp_XYZ        ptguiXYZ(ptgui.XYZ());
   double theD = nplanXYZ.Dot(ptguiXYZ);
-  theD        = theD * (-1.);
+  theD               = theD * (-1.);
 
   gp_Pnt ptcur    = curv->Value(X(2));
   F(1)            = nplan.XYZ().Dot(ptcur.XYZ()) + theD;
@@ -81,8 +81,8 @@ bool BRepBlend_SurfCurvEvolRadInv::Value(const math_Vector& X, math_Vector& F)
   gp_Pnt   pts;
   gp_Vec   du, dv;
   surf->D1(p2drst.X(), p2drst.Y(), pts, du, dv);
-  F(2)             = nplan.XYZ().Dot(pts.XYZ()) + theD;
-  gp_Vec ns        = du.Crossed(dv);
+  F(2)                    = nplan.XYZ().Dot(pts.XYZ()) + theD;
+  gp_Vec        ns        = du.Crossed(dv);
   double norm      = nplan.Crossed(ns).Magnitude();
   double unsurnorm = 1. / norm;
   ns.SetLinearForm(nplan.Dot(ns), nplan, -1., ns);
@@ -111,8 +111,8 @@ bool BRepBlend_SurfCurvEvolRadInv::Derivatives(const math_Vector& X, math_Matrix
   dnplan.SetLinearForm(-nplan.Dot(d2gui), nplan, d2gui);
   dnplan.Multiply(unsurnormd1gui);
   double dtheD = -nplan.XYZ().Dot(d1gui.XYZ()) - dnplan.XYZ().Dot(ptgui.XYZ());
-  gp_Pnt ptcur;
-  gp_Vec d1cur;
+  gp_Pnt        ptcur;
+  gp_Vec        d1cur;
   curv->D1(X(2), ptcur, d1cur);
   D(1, 1) = dnplan.XYZ().Dot(ptcur.XYZ()) + dtheD;
   D(1, 2) = nplan.XYZ().Dot(d1cur.XYZ());
@@ -175,30 +175,32 @@ bool BRepBlend_SurfCurvEvolRadInv::Derivatives(const math_Vector& X, math_Matrix
 
 //=================================================================================================
 
-bool BRepBlend_SurfCurvEvolRadInv::Values(const math_Vector& X, math_Vector& F, math_Matrix& D)
+bool BRepBlend_SurfCurvEvolRadInv::Values(const math_Vector& X,
+                                                      math_Vector&       F,
+                                                      math_Matrix&       D)
 {
   gp_Pnt ptgui;
   gp_Vec d1gui(0., 0., 0.), d2gui(0., 0., 0.);
   guide->D2(X(1), ptgui, d1gui, d2gui);
   double dray;
   tevol->D1(X(1), ray, dray);
-  ray                   = sg1 * ray;
-  dray                  = sg1 * dray;
+  ray                          = sg1 * ray;
+  dray                         = sg1 * dray;
   double normd1gui      = d1gui.Magnitude();
   double unsurnormd1gui = 1. / normd1gui;
-  gp_Vec nplan          = d1gui.Multiplied(unsurnormd1gui);
+  gp_Vec        nplan          = d1gui.Multiplied(unsurnormd1gui);
   //  double theD = -(nplan.XYZ().Dot(ptgui.XYZ()));
-  gp_XYZ nplanXYZ(nplan.XYZ());
-  gp_XYZ ptcurXYZ(ptgui.XYZ());
+  gp_XYZ        nplanXYZ(nplan.XYZ());
+  gp_XYZ        ptcurXYZ(ptgui.XYZ());
   double theD = nplanXYZ.Dot(ptcurXYZ);
-  theD        = theD * (-1.);
+  theD               = theD * (-1.);
 
   gp_Vec dnplan;
   dnplan.SetLinearForm(-nplan.Dot(d2gui), nplan, d2gui);
   dnplan.Multiply(unsurnormd1gui);
   double dtheD = -nplan.XYZ().Dot(d1gui.XYZ()) - dnplan.XYZ().Dot(ptgui.XYZ());
-  gp_Pnt ptcur;
-  gp_Vec d1cur;
+  gp_Pnt        ptcur;
+  gp_Vec        d1cur;
   curv->D1(X(2), ptcur, d1cur);
   F(1)    = nplan.XYZ().Dot(ptcur.XYZ()) + theD;
   D(1, 1) = dnplan.XYZ().Dot(ptcur.XYZ()) + dtheD;
@@ -270,7 +272,8 @@ void BRepBlend_SurfCurvEvolRadInv::Set(const occ::handle<Adaptor2d_Curve2d>& Rst
 
 //=================================================================================================
 
-void BRepBlend_SurfCurvEvolRadInv::GetTolerance(math_Vector& Tolerance, const double Tol) const
+void BRepBlend_SurfCurvEvolRadInv::GetTolerance(math_Vector&        Tolerance,
+                                                const double Tol) const
 {
   Tolerance(1) = guide->Resolution(Tol);
   Tolerance(2) = curv->Resolution(Tol);
@@ -294,7 +297,8 @@ void BRepBlend_SurfCurvEvolRadInv::GetBounds(math_Vector& InfBound, math_Vector&
 
 //=================================================================================================
 
-bool BRepBlend_SurfCurvEvolRadInv::IsSolution(const math_Vector& Sol, const double Tol)
+bool BRepBlend_SurfCurvEvolRadInv::IsSolution(const math_Vector&  Sol,
+                                                          const double Tol)
 {
   math_Vector valsol(1, 3);
   Value(Sol, valsol);

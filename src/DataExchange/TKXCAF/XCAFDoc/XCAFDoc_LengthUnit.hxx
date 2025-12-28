@@ -38,31 +38,30 @@ public:
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned.
-  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(
-    const TDF_Label&               theLabel,
-    const TCollection_AsciiString& theUnitName,
-    const double                   theUnitValue);
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(const TDF_Label&               theLabel,
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const double theUnitValue);
 
   //! Finds or creates a LengthUnit attribute
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned.
-  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(const TDF_Label& theLabel,
-                                                             const double     theUnitValue);
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(const TDF_Label&    theLabel,
+                                                        const double theUnitValue);
 
   //! Finds, or creates, a LengthUnit attribute with explicit user defined GUID
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
   //! The LengthUnit attribute is returned
-  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(
-    const TDF_Label&               theLabel,
-    const Standard_GUID&           theGUID,
-    const TCollection_AsciiString& theUnitName,
-    const double                   theUnitValue);
+  Standard_EXPORT static occ::handle<XCAFDoc_LengthUnit> Set(const TDF_Label&               theLabel,
+                                                        const Standard_GUID&           theGUID,
+                                                        const TCollection_AsciiString& theUnitName,
+                                                        const double theUnitValue);
 
   //! Creates a LengthUnit attribute
   //! @param theUnitName - name of the unit: mm, m, cm, km, micron, in, min, nin, ft, stat.mile
   //! @param theUnitValue - length scale factor to meter
-  Standard_EXPORT void Set(const TCollection_AsciiString& theUnitName, const double theUnitValue);
+  Standard_EXPORT void Set(const TCollection_AsciiString& theUnitName,
+                           const double            theUnitValue);
 
   //! Length unit description (could be arbitrary text)
   const TCollection_AsciiString& GetUnitName() const { return myUnitName; }
@@ -79,18 +78,19 @@ public:
   Standard_EXPORT virtual void Restore(const occ::handle<TDF_Attribute>& theWith) override;
 
   Standard_EXPORT virtual void Paste(const occ::handle<TDF_Attribute>&       theInto,
-                                     const occ::handle<TDF_RelocationTable>& theRT) const override;
+                                     const occ::handle<TDF_RelocationTable>& theRT) const
+    override;
 
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_LengthUnit, TDF_Attribute)
 
 private:
-  double                  myUnitScaleValue;
+  double           myUnitScaleValue;
   TCollection_AsciiString myUnitName;
 };
 

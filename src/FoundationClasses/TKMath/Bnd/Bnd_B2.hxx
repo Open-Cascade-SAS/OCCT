@@ -92,9 +92,9 @@ public:
 
   //! Check a circle for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
-  bool IsOut(const gp_XY& theCenter,
-             const double theRadius,
-             const bool   isCircleHollow = false) const;
+  bool IsOut(const gp_XY&           theCenter,
+                         const double    theRadius,
+                         const bool isCircleHollow = false) const;
 
   //! Check the given box for the intersection with the current box.
   //! Returns True if there is no intersection between boxes.
@@ -144,7 +144,8 @@ public:
   constexpr const std::array<RealType, 2>& HSize() const noexcept;
 
 protected:
-  static constexpr bool compareDist(const RealType aHSize[2], const RealType aDist[2]) noexcept
+  static constexpr bool compareDist(const RealType aHSize[2],
+                                                const RealType aDist[2]) noexcept
   {
     return (std::abs(aDist[0]) > aHSize[0] || std::abs(aDist[1]) > aHSize[1]);
   }
@@ -325,7 +326,8 @@ constexpr inline bool Bnd_B2<RealType>::IsOut(const gp_XY& thePnt) const noexcep
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox) const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsOut(
+  const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) > theBox.myHSize[0] + myHSize[0]
           || std::abs(theBox.myCenter[1] - myCenter[1]) > theBox.myHSize[1] + myHSize[1]);
@@ -334,7 +336,8 @@ constexpr inline bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox) co
 //=================================================================================================
 
 template <typename RealType>
-constexpr inline bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox) const noexcept
+constexpr inline bool Bnd_B2<RealType>::IsIn(
+  const Bnd_B2<RealType>& theBox) const noexcept
 {
   return (std::abs(theBox.myCenter[0] - myCenter[0]) < theBox.myHSize[0] - myHSize[0]
           && std::abs(theBox.myCenter[1] - myCenter[1]) < theBox.myHSize[1] - myHSize[1]);
@@ -388,9 +391,9 @@ void Bnd_B2<RealType>::Add(const gp_XY& thePnt)
 template <typename RealType>
 bool Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
 {
-  bool           aResult(false);
-  const RealType diffC[2] = {theBox.myCenter[0] - myCenter[0], theBox.myCenter[1] - myCenter[1]};
-  const RealType sumH[2]  = {theBox.myHSize[0] + myHSize[0], theBox.myHSize[1] + myHSize[1]};
+  bool aResult(false);
+  const RealType   diffC[2] = {theBox.myCenter[0] - myCenter[0], theBox.myCenter[1] - myCenter[1]};
+  const RealType   sumH[2]  = {theBox.myHSize[0] + myHSize[0], theBox.myHSize[1] + myHSize[1]};
   // check the condition IsOut
   if (!compareDist(sumH, diffC))
   {
@@ -429,10 +432,10 @@ bool Bnd_B2<RealType>::Limit(const Bnd_B2<RealType>& theBox)
 template <typename RealType>
 Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
 {
-  Bnd_B2<RealType>  aResult;
-  const gp_TrsfForm aForm     = theTrsf.Form();
-  const double      aScale    = theTrsf.ScaleFactor();
-  const double      aScaleAbs = std::abs(aScale);
+  Bnd_B2<RealType>    aResult;
+  const gp_TrsfForm   aForm     = theTrsf.Form();
+  const double aScale    = theTrsf.ScaleFactor();
+  const double aScaleAbs = std::abs(aScale);
   if (aForm == gp_Identity)
     aResult = *this;
   else if (aForm == gp_Translation || aForm == gp_PntMirror || aForm == gp_Scale)
@@ -461,17 +464,18 @@ Bnd_B2<RealType> Bnd_B2<RealType>::Transformed(const gp_Trsf2d& theTrsf) const
 //=================================================================================================
 
 template <typename RealType>
-bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
-                             const double theRadius,
-                             const bool   isCircleHollow) const
+bool Bnd_B2<RealType>::IsOut(const gp_XY&           theCenter,
+                                         const double    theRadius,
+                                         const bool isCircleHollow) const
 {
   bool aResult(true);
   if (!isCircleHollow)
   {
     // vector from the center of the circle to the nearest box face
-    const double aDist[2] = {std::abs(theCenter.X() - double(myCenter[0])) - double(myHSize[0]),
-                             std::abs(theCenter.Y() - double(myCenter[1])) - double(myHSize[1])};
-    double       aD(0.);
+    const double aDist[2] = {
+      std::abs(theCenter.X() - double(myCenter[0])) - double(myHSize[0]),
+      std::abs(theCenter.Y() - double(myCenter[1])) - double(myHSize[1])};
+    double aD(0.);
     if (aDist[0] > 0.)
       aD = aDist[0] * aDist[0];
     if (aDist[1] > 0.)
@@ -481,9 +485,10 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
   else
   {
     const double aDistC[2] = {std::abs(theCenter.X() - double(myCenter[0])),
-                              std::abs(theCenter.Y() - double(myCenter[1]))};
+                                     std::abs(theCenter.Y() - double(myCenter[1]))};
     // vector from the center of the circle to the nearest box face
-    double aDist[2] = {aDistC[0] - double(myHSize[0]), aDistC[1] - double(myHSize[1])};
+    double aDist[2] = {aDistC[0] - double(myHSize[0]),
+                              aDistC[1] - double(myHSize[1])};
     double aD(0.);
     if (aDist[0] > 0.)
       aD = aDist[0] * aDist[0];
@@ -505,12 +510,13 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theCenter,
 //=================================================================================================
 
 template <typename RealType>
-bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const
+bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox,
+                                         const gp_Trsf2d&        theTrsf) const
 {
-  bool              aResult(false);
-  const gp_TrsfForm aForm     = theTrsf.Form();
-  const double      aScale    = theTrsf.ScaleFactor();
-  const double      aScaleAbs = std::abs(aScale);
+  bool    aResult(false);
+  const gp_TrsfForm   aForm     = theTrsf.Form();
+  const double aScale    = theTrsf.ScaleFactor();
+  const double aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
@@ -528,11 +534,12 @@ bool Bnd_B2<RealType>::IsOut(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& th
 
     gp_XY aCenter((double)theBox.myCenter[0], (double)theBox.myCenter[1]);
     theTrsf.Transforms(aCenter);
-    const double aDist[2] = {aCenter.X() - (double)myCenter[0], aCenter.Y() - (double)myCenter[1]};
+    const double aDist[2]   = {aCenter.X() - (double)myCenter[0],
+                                      aCenter.Y() - (double)myCenter[1]};
     const double aMatAbs[4] = {std::abs(aMat[0]),
-                               std::abs(aMat[1]),
-                               std::abs(aMat[2]),
-                               std::abs(aMat[3])};
+                                      std::abs(aMat[1]),
+                                      std::abs(aMat[2]),
+                                      std::abs(aMat[3])};
     if (std::abs(aDist[0])
           > (aScaleAbs * (aMatAbs[0] * theBox.myHSize[0] + aMatAbs[1] * theBox.myHSize[1])
              + (double)myHSize[0])
@@ -581,17 +588,18 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1) const
   if (!IsVoid())
   {
     // Intersect the line containing the segment.
-    const gp_XY  aSegDelta(theP1 - theP0);
+    const gp_XY         aSegDelta(theP1 - theP0);
     const double aProd[3] = {aSegDelta ^ (gp_XY(myCenter[0], myCenter[1]) - theP0),
-                             aSegDelta.X() * double(myHSize[1]),
-                             aSegDelta.Y() * double(myHSize[0])};
+                                    aSegDelta.X() * double(myHSize[1]),
+                                    aSegDelta.Y() * double(myHSize[0])};
     if (std::abs(aProd[0]) < (std::abs(aProd[1]) + std::abs(aProd[2])))
     {
       // Intersection with line detected; check the segment as bounding box
       const gp_XY aHSeg(0.5 * aSegDelta.X(), 0.5 * aSegDelta.Y());
       const gp_XY aHSegAbs(std::abs(aHSeg.X()), std::abs(aHSeg.Y()));
-      aResult = compareDistD(gp_XY((double)myHSize[0], (double)myHSize[1]) + aHSegAbs,
-                             theP0 + aHSeg - gp_XY((double)myCenter[0], (double)myCenter[1]));
+      aResult =
+        compareDistD(gp_XY((double)myHSize[0], (double)myHSize[1]) + aHSegAbs,
+                     theP0 + aHSeg - gp_XY((double)myCenter[0], (double)myCenter[1]));
     }
   }
   return aResult;
@@ -600,12 +608,13 @@ bool Bnd_B2<RealType>::IsOut(const gp_XY& theP0, const gp_XY& theP1) const
 //=================================================================================================
 
 template <typename RealType>
-bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& theTrsf) const
+bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox,
+                                        const gp_Trsf2d&        theTrsf) const
 {
-  bool              aResult(false);
-  const gp_TrsfForm aForm     = theTrsf.Form();
-  const double      aScale    = theTrsf.ScaleFactor();
-  const double      aScaleAbs = std::abs(aScale);
+  bool    aResult(false);
+  const gp_TrsfForm   aForm     = theTrsf.Form();
+  const double aScale    = theTrsf.ScaleFactor();
+  const double aScaleAbs = std::abs(aScale);
   if (aForm == gp_Translation || aForm == gp_Identity || aForm == gp_PntMirror || aForm == gp_Scale)
   {
     aResult =
@@ -620,9 +629,10 @@ bool Bnd_B2<RealType>::IsIn(const Bnd_B2<RealType>& theBox, const gp_Trsf2d& the
     // theBox is rotated, scaled and translated. We apply the reverse
     // translation and scaling then check against the rotated box 'this'
     const double* aMat = &theTrsf.HVectorialPart().Value(1, 1);
-    gp_XY         aCenter((double)theBox.myCenter[0], (double)theBox.myCenter[1]);
+    gp_XY aCenter((double)theBox.myCenter[0], (double)theBox.myCenter[1]);
     theTrsf.Transforms(aCenter);
-    const double aDist[2] = {aCenter.X() - (double)myCenter[0], aCenter.Y() - (double)myCenter[1]};
+    const double aDist[2] = {aCenter.X() - (double)myCenter[0],
+                                    aCenter.Y() - (double)myCenter[1]};
     if ((std::abs(aMat[0] * aDist[0] + aMat[2] * aDist[1])
          < theBox.myHSize[0] * aScaleAbs
              - (std::abs(aMat[0]) * myHSize[0] + std::abs(aMat[2]) * myHSize[1]))

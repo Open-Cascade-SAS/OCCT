@@ -24,7 +24,7 @@ RWStepBasic_RWProductDefinitionFormation::RWStepBasic_RWProductDefinitionFormati
 
 void RWStepBasic_RWProductDefinitionFormation::ReadStep(
   const occ::handle<StepData_StepReaderData>&              data,
-  const int                                                num,
+  const int                              num,
   occ::handle<Interface_Check>&                            ach,
   const occ::handle<StepBasic_ProductDefinitionFormation>& ent) const
 {
@@ -60,7 +60,7 @@ void RWStepBasic_RWProductDefinitionFormation::ReadStep(
 }
 
 void RWStepBasic_RWProductDefinitionFormation::WriteStep(
-  StepData_StepWriter&                                     SW,
+  StepData_StepWriter&                                SW,
   const occ::handle<StepBasic_ProductDefinitionFormation>& ent) const
 {
 
@@ -86,7 +86,7 @@ void RWStepBasic_RWProductDefinitionFormation::WriteStep(
 
 void RWStepBasic_RWProductDefinitionFormation::Share(
   const occ::handle<StepBasic_ProductDefinitionFormation>& ent,
-  Interface_EntityIterator&                                iter) const
+  Interface_EntityIterator&                           iter) const
 {
 
   iter.GetOneItem(ent->OfProduct());

@@ -22,6 +22,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_HArray1.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 
 //=================================================================================================
@@ -32,7 +33,7 @@ RWStepVisual_RWTessellatedShell::RWStepVisual_RWTessellatedShell() {}
 
 void RWStepVisual_RWTessellatedShell::ReadStep(
   const occ::handle<StepData_StepReaderData>&     theData,
-  const int                                       theNum,
+  const int                     theNum,
   occ::handle<Interface_Check>&                   theCheck,
   const occ::handle<StepVisual_TessellatedShell>& theEnt) const
 {
@@ -50,11 +51,11 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
   // Own fields of TessellatedShell
 
   occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> aItems;
-  int                                                                                 sub2 = 0;
+  int                                      sub2 = 0;
   if (theData->ReadSubList(theNum, 2, "items", theCheck, sub2))
   {
     int nb0  = theData->NbParams(sub2);
-    aItems   = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, nb0);
+    aItems                = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, nb0);
     int num2 = sub2;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
@@ -70,7 +71,7 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
   }
 
   occ::handle<StepShape_ConnectedFaceSet> aTopologicalLink;
-  bool                                    hasTopologicalLink = true;
+  bool                   hasTopologicalLink = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadEntity(theNum,
@@ -93,7 +94,7 @@ void RWStepVisual_RWTessellatedShell::ReadStep(
 //=================================================================================================
 
 void RWStepVisual_RWTessellatedShell::WriteStep(
-  StepData_StepWriter&                            theSW,
+  StepData_StepWriter&                       theSW,
   const occ::handle<StepVisual_TessellatedShell>& theEnt) const
 {
 

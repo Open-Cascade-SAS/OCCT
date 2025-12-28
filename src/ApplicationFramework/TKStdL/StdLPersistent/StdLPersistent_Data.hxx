@@ -49,7 +49,7 @@ private:
   class Parser;
 
 private:
-  int                                        myVersion;
+  int                           myVersion;
   Handle(StdLPersistent_HArray1::Integer)    myLabels;
   Handle(StdLPersistent_HArray1::Persistent) myAttributes;
 };

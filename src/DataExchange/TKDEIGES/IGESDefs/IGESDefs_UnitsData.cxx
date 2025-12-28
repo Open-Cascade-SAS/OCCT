@@ -25,10 +25,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_UnitsData, IGESData_IGESEntity)
 
 IGESDefs_UnitsData::IGESDefs_UnitsData() {}
 
-void IGESDefs_UnitsData::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitValues,
-  const occ::handle<NCollection_HArray1<double>>&                                unitScales)
+void IGESDefs_UnitsData::Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitTypes,
+                              const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& unitValues,
+                              const occ::handle<NCollection_HArray1<double>>&           unitScales)
 {
   int length = unitTypes->Length();
   if (unitTypes->Lower() != 1 || (unitValues->Lower() != 1 || unitValues->Length() != length)

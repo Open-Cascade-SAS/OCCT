@@ -28,7 +28,7 @@ StepBasic_RoleAssociation::StepBasic_RoleAssociation() {}
 //=================================================================================================
 
 void StepBasic_RoleAssociation::Init(const occ::handle<StepBasic_ObjectRole>& aRole,
-                                     const StepBasic_RoleSelect&              aItemWithRole)
+                                     const StepBasic_RoleSelect&         aItemWithRole)
 {
 
   theRole = aRole;

@@ -45,9 +45,8 @@ public:
   //! analysed. The sequence of physical quantities
   //! <asequenceofquantities> describes the available
   //! dictionary of units you want to use.
-  Standard_EXPORT Units_UnitSentence(
-    const char*                                                            astring,
-    const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence);
+  Standard_EXPORT Units_UnitSentence(const char*                  astring,
+                                     const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence);
 
   //! Analyzes the sequence of tokens created by the
   //! constructor to find the true significance of each
@@ -57,8 +56,8 @@ public:
   //! For each token which represents a unit, finds in the
   //! sequence of physical quantities all the
   //! characteristics of the unit found.
-  Standard_EXPORT void SetUnits(
-    const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence);
+  Standard_EXPORT void SetUnits(const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence);
+
 };
 
 #endif // _Units_UnitSentence_HeaderFile

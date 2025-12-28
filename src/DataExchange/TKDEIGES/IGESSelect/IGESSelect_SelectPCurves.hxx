@@ -42,10 +42,11 @@ public:
 
   //! Explores an entity, to take its contained PCurves
   //! An independent curve is IGNORED : only faces are explored
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium : "Basic PCurves" or
   //! "Global PCurves"

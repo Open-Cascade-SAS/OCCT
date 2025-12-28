@@ -39,9 +39,9 @@ public:
   //! @param[in] theDisplayType  display mode
   Standard_EXPORT Graphic3d_AspectText3d(
     const Quantity_Color&    theColor,
-    const char*              theFont,
-    double                   theExpansionFactor,
-    double                   theSpace,
+    const char*         theFont,
+    double            theExpansionFactor,
+    double            theSpace,
     Aspect_TypeOfStyleText   theStyle       = Aspect_TOST_NORMAL,
     Aspect_TypeOfDisplayText theDisplayType = Aspect_TODT_NORMAL);
 
@@ -112,7 +112,7 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 };
 
 #endif // _Graphic3d_AspectText3d_HeaderFile

@@ -26,6 +26,8 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Extrema_POnSurf.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Real.hxx>
 
 class gp_Pln;
@@ -95,13 +97,15 @@ public:
 
   //! Returns the points for the Nth resulting distance.
   //! P1 is on the first surface, P2 on the second one.
-  Standard_EXPORT void Points(const int N, Extrema_POnSurf& P1, Extrema_POnSurf& P2) const;
+  Standard_EXPORT void Points(const int N,
+                              Extrema_POnSurf&       P1,
+                              Extrema_POnSurf&       P2) const;
 
 private:
-  bool                                              myDone;
-  bool                                              myIsPar;
-  int                                               myNbExt;
-  occ::handle<NCollection_HArray1<double>>          mySqDist;
+  bool                 myDone;
+  bool                 myIsPar;
+  int                 myNbExt;
+  occ::handle<NCollection_HArray1<double>>    mySqDist;
   occ::handle<NCollection_HArray1<Extrema_POnSurf>> myPOnS1;
   occ::handle<NCollection_HArray1<Extrema_POnSurf>> myPOnS2;
 };

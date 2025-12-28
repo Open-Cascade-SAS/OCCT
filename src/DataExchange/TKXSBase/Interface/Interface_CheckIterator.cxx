@@ -189,8 +189,7 @@ occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(const int num)
 
 //=================================================================================================
 
-occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(
-  const occ::handle<Standard_Transient>& ent)
+occ::handle<Interface_Check>& Interface_CheckIterator::CCheck(const occ::handle<Standard_Transient>& ent)
 {
   int num = -1;
   if (!themod.IsNull())
@@ -233,7 +232,7 @@ bool Interface_CheckIterator::IsEmpty(const bool failsonly) const
 Interface_CheckStatus Interface_CheckIterator::Status() const
 {
   Interface_CheckStatus stat = Interface_CheckOK;
-  int                   i, nb = thelist->Length();
+  int      i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
@@ -250,11 +249,11 @@ Interface_CheckStatus Interface_CheckIterator::Status() const
 bool Interface_CheckIterator::Complies(const Interface_CheckStatus stat) const
 {
   bool res = (stat == Interface_CheckNoFail);
-  int  nb  = thelist->Length();
+  int nb  = thelist->Length();
   for (int i = 1; i <= nb; ++i)
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
-    int                                nbf = ach->NbFails(), nbw = ach->NbWarnings();
+    int              nbf = ach->NbFails(), nbw = ach->NbWarnings();
     switch (stat)
     {
       case Interface_CheckOK: {
@@ -317,8 +316,8 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const Interface_CheckSt
   for (i = 1; i <= nb; i++)
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
-    int                                nbf = ach->NbFails(), nbw = ach->NbWarnings();
-    bool                               prend = false;
+    int              nbf = ach->NbFails(), nbw = ach->NbWarnings();
+    bool              prend = false;
     switch (stat)
     {
       case Interface_CheckOK:
@@ -350,12 +349,12 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const Interface_CheckSt
 
 //=================================================================================================
 
-Interface_CheckIterator Interface_CheckIterator::Extract(const char*                 mess,
-                                                         const int                   incl,
+Interface_CheckIterator Interface_CheckIterator::Extract(const char*      mess,
+                                                         const int      incl,
                                                          const Interface_CheckStatus stat) const
 {
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(mess);
-  Interface_CheckIterator               res;
+  Interface_CheckIterator          res;
   res.SetModel(themod);
   res.SetName(thename.ToCString());
   int i, nb = thelist->Length();
@@ -370,13 +369,13 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const char*            
 
 //=================================================================================================
 
-bool Interface_CheckIterator::Remove(const char*                 mess,
-                                     const int                   incl,
-                                     const Interface_CheckStatus stat)
+bool Interface_CheckIterator::Remove(const char*      mess,
+                                                 const int      incl,
+                                                 const Interface_CheckStatus stat)
 {
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(mess);
-  bool                                  res = false;
-  int                                   i, nb = thelist->Length();
+  bool                 res = false;
+  int                 i, nb = thelist->Length();
   for (i = 1; i <= nb; i++)
   {
     occ::handle<Interface_Check> ach = thelist->ChangeValue(i);
@@ -388,8 +387,9 @@ bool Interface_CheckIterator::Remove(const char*                 mess,
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Interface_CheckIterator::
-  Checkeds(const bool failsonly, const bool global) const
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Interface_CheckIterator::Checkeds(
+  const bool failsonly,
+  const bool global) const
 {
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
   if (themod.IsNull())
@@ -457,18 +457,18 @@ int Interface_CheckIterator::Number() const
 
 //=================================================================================================
 
-void Interface_CheckIterator::Print(Standard_OStream& S,
-                                    const bool        failsonly,
-                                    const int         final) const
+void Interface_CheckIterator::Print(Standard_OStream&      S,
+                                    const bool failsonly,
+                                    const int final) const
 {
   Print(S, themod, failsonly, final);
 }
 
 //=================================================================================================
 
-void Interface_CheckIterator::Print(Standard_OStream&                            S,
+void Interface_CheckIterator::Print(Standard_OStream&                       S,
                                     const occ::handle<Interface_InterfaceModel>& model,
-                                    const bool                                   failsonly,
+                                    const bool                  failsonly,
                                     const int /*final*/) const
 {
   bool titre = false;
@@ -476,20 +476,20 @@ void Interface_CheckIterator::Print(Standard_OStream&                           
     const char* mesnum0 = ":";
     const char* mesnum1 = " (original):";
     const char* mesnum2 = " (computed):";    */
-  int  i, nb = thelist->Length(); //,j; svv #2
+  int i, nb = thelist->Length(); //,j; svv #2
   bool yamod = !model.IsNull();
   for (i = 1; i <= nb; i++)
   {
     const occ::handle<Interface_Check> ach = thelist->Value(i);
-    int                                nbw = 0, nbf = ach->NbFails();
+    int              nbw = 0, nbf = ach->NbFails();
     if (!failsonly)
       nbw = ach->NbWarnings();
     if (nbf + nbw == 0)
       continue;
     occ::handle<Standard_Transient> ent    = ach->Entity();
-    int                             nm0    = thenums->Value(i);
-    bool                            entnul = ent.IsNull();
-    int                             num    = nm0;
+    int           nm0    = thenums->Value(i);
+    bool           entnul = ent.IsNull();
+    int           num    = nm0;
     if (nm0 <= 0 && !entnul && yamod)
       num = model->Number(ent);
     if (nm0 <= 0 && entnul)

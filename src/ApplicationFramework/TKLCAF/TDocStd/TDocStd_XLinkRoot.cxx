@@ -119,8 +119,7 @@ occ::handle<TDF_Attribute> TDocStd_XLinkRoot::BackupCopy() const
 
 //=================================================================================================
 
-void TDocStd_XLinkRoot::Restore(const occ::handle<TDF_Attribute>& /*anAttribute*/) {
-} // Does nothing.
+void TDocStd_XLinkRoot::Restore(const occ::handle<TDF_Attribute>& /*anAttribute*/) {} // Does nothing.
 
 //=================================================================================================
 

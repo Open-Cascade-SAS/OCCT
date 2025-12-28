@@ -74,14 +74,14 @@ private:
 
   Standard_EXPORT int Inters3d(const gp_Parab& theCurve, const Bnd_Box& Domain);
 
-  int    nbSeg;
-  double beginOnCurve[6];
-  double endOnCurve[6];
-  int    bord[12];
-  double xint[12];
-  double yint[12];
-  double zint[12];
-  double parint[12];
+  int nbSeg;
+  double    beginOnCurve[6];
+  double    endOnCurve[6];
+  int bord[12];
+  double    xint[12];
+  double    yint[12];
+  double    zint[12];
+  double    parint[12];
 };
 
 #endif // _Intf_Tool_HeaderFile

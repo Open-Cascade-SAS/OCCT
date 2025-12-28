@@ -34,14 +34,15 @@ TopOpeBRepDS_PointExplorer::TopOpeBRepDS_PointExplorer()
 //=================================================================================================
 
 TopOpeBRepDS_PointExplorer::TopOpeBRepDS_PointExplorer(const TopOpeBRepDS_DataStructure& DS,
-                                                       const bool                        FindKeep)
+                                                       const bool            FindKeep)
 {
   Init(DS, FindKeep);
 }
 
 //=================================================================================================
 
-void TopOpeBRepDS_PointExplorer::Init(const TopOpeBRepDS_DataStructure& DS, const bool FindKeep)
+void TopOpeBRepDS_PointExplorer::Init(const TopOpeBRepDS_DataStructure& DS,
+                                      const bool            FindKeep)
 {
   myIndex    = 1;
   myMax      = DS.NbPoints();

@@ -42,9 +42,9 @@ constexpr gp_Dir THE_DIR_ZMAX{gp_Dir::D::Z};
 
 // Computes minimum squared distance between two 1D intervals
 inline double DistMini2Box(const double theR1Min,
-                           const double theR1Max,
-                           const double theR2Min,
-                           const double theR2Max) noexcept
+                                  const double theR1Max,
+                                  const double theR2Min,
+                                  const double theR2Max) noexcept
 {
   const double aR1 = Square(theR1Min - theR2Max);
   const double aR2 = Square(theR1Max - theR2Min);
@@ -53,9 +53,9 @@ inline double DistMini2Box(const double theR1Min,
 
 // Computes squared distance in one dimension, returns 0 if intervals overlap
 inline double DistanceInDimension(const double theMin1,
-                                  const double theMax1,
-                                  const double theMin2,
-                                  const double theMax2) noexcept
+                                         const double theMax1,
+                                         const double theMin2,
+                                         const double theMax2) noexcept
 {
   // Check if intervals overlap
   if ((theMin1 <= theMin2 && theMin2 <= theMax1) || (theMin2 <= theMin1 && theMin1 <= theMax2))
@@ -65,13 +65,13 @@ inline double DistanceInDimension(const double theMin1,
 
 // Tests if a 2D segment is outside a 2D box
 bool IsSegmentOut(const double theX1,
-                  const double theY1,
-                  const double theX2,
-                  const double theY2,
-                  const double theXs1,
-                  const double theYs1,
-                  const double theXs2,
-                  const double theYs2) noexcept
+                              const double theY1,
+                              const double theX2,
+                              const double theY2,
+                              const double theXs1,
+                              const double theYs1,
+                              const double theXs2,
+                              const double theYs2) noexcept
 {
   constexpr double anEps  = RealSmall();
   const double     aXsMin = std::min(theXs1, theXs2);
@@ -410,8 +410,8 @@ Bnd_Box Bnd_Box::Transformed(const gp_Trsf& T) const
     return aNewBox;
   }
 
-  gp_Dir aDirs[6];
-  int    aNbDirs = 0;
+  gp_Dir           aDirs[6];
+  int aNbDirs = 0;
   if (IsOpenXmin())
   {
     aDirs[aNbDirs++] = THE_DIR_XMIN;
@@ -579,8 +579,8 @@ bool Bnd_Box::IsOut(const gp_Pln& P) const
   {
     double A, B, C, D;
     P.Coefficients(A, B, C, D);
-    double d    = A * (Xmin - Gap) + B * (Ymin - Gap) + C * (Zmin - Gap) + D;
-    bool   plus = d > 0;
+    double    d    = A * (Xmin - Gap) + B * (Ymin - Gap) + C * (Zmin - Gap) + D;
+    bool plus = d > 0;
     if (plus != ((A * (Xmin - Gap) + B * (Ymin - Gap) + C * (Zmax + Gap) + D) > 0))
       return false;
     if (plus != ((A * (Xmin - Gap) + B * (Ymax + Gap) + C * (Zmin - Gap) + D) > 0))
@@ -610,10 +610,10 @@ bool Bnd_Box::IsOut(const gp_Lin& L) const
     return true;
   else
   {
-    double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
-    double parmin, parmax, par1, par2;
-    bool   xToSet, yToSet;
-    double myXmin, myYmin, myZmin, myXmax, myYmax, myZmax;
+    double    xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
+    double    parmin, parmax, par1, par2;
+    bool xToSet, yToSet;
+    double    myXmin, myYmin, myZmin, myXmax, myYmax, myZmax;
     Get(myXmin, myYmin, myZmin, myXmax, myYmax, myZmax);
 
     const double aDirX = std::abs(L.Direction().XYZ().X());
@@ -1076,7 +1076,8 @@ void Bnd_Box::DumpJson(Standard_OStream& theOStream, int) const
 
 //=================================================================================================
 
-bool Bnd_Box::InitFromJson(const Standard_SStream& theSStream, int& theStreamPos)
+bool Bnd_Box::InitFromJson(const Standard_SStream& theSStream,
+                                       int&       theStreamPos)
 {
   int aPos = theStreamPos;
 

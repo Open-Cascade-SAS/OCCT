@@ -132,9 +132,9 @@ void OpenGl_AspectsTextureSet::build(const occ::handle<OpenGl_Context>&     theC
 {
   const occ::handle<Graphic3d_TextureSet>& aNewTextureSet = theAspect->TextureSet();
 
-  const bool hasSprite      = theAspect->IsMarkerSprite();
-  const int  aNbTexturesOld = !myTextures[0].IsNull() ? myTextures[0]->Size() : 0;
-  int        aNbTexturesNew =
+  const bool             hasSprite      = theAspect->IsMarkerSprite();
+  const int aNbTexturesOld = !myTextures[0].IsNull() ? myTextures[0]->Size() : 0;
+  int       aNbTexturesNew =
     !aNewTextureSet.IsNull() && theAspect->ToMapTexture() ? aNewTextureSet->Size() : 0;
   if (hasSprite)
   {
@@ -177,7 +177,7 @@ void OpenGl_AspectsTextureSet::build(const occ::handle<OpenGl_Context>&     theC
   }
 
   int& aTextureSetBits = myTextures[0]->ChangeTextureSetBits();
-  aTextureSetBits      = Graphic3d_TextureSetBits_NONE;
+  aTextureSetBits                   = Graphic3d_TextureSetBits_NONE;
   int aPrevTextureUnit = -1;
   if (theAspect->ToMapTexture())
   {

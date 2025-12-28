@@ -23,9 +23,9 @@
 
 struct IntWalk_WalkingData
 {
-  double ustart;
-  double vstart;
-  int    etat;
+  double    ustart;
+  double    vstart;
+  int etat;
 };
 
 typedef std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData>>

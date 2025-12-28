@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepRepr_NextAssemblyUsageOccurrence();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_NextAssemblyUsageOccurrence, StepRepr_AssemblyComponentUsage)
+
 };
 
 #endif // _StepRepr_NextAssemblyUsageOccurrence_HeaderFile

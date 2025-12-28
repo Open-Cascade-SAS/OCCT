@@ -31,7 +31,8 @@ public:
                                            const occ::handle<Adaptor3d_Surface>& S2,
                                            const occ::handle<Adaptor3d_Curve>&   C);
 
-  Standard_EXPORT bool IsSolution(const math_Vector& Sol, const double Tol) override;
+  Standard_EXPORT bool IsSolution(const math_Vector&  Sol,
+                                              const double Tol) override;
 
   //! computes the values <F> of the Functions for the
   //! variable <X>.
@@ -43,11 +44,14 @@ public:
   //! variable <X>.
   //! Returns True if the computation was done successfully,
   //! False otherwise.
-  Standard_EXPORT bool Derivatives(const math_Vector& X, math_Matrix& D) override;
+  Standard_EXPORT bool Derivatives(const math_Vector& X,
+                                               math_Matrix&       D) override;
 
   using Blend_FuncInv::Set;
 
-  Standard_EXPORT virtual void Set(const double theThroat, const double, const int Choix) override;
+  Standard_EXPORT virtual void Set(const double theThroat,
+                                   const double,
+                                   const int Choix) override;
 
 protected:
   double Throat;
@@ -56,12 +60,12 @@ protected:
   double sign1;
   double sign2;
 
-  gp_Pnt ptgui;
-  gp_Vec nplan;
+  gp_Pnt        ptgui;
+  gp_Vec        nplan;
   double normtg;
   double theD;
-  gp_Vec d1gui;
-  gp_Vec d2gui;
+  gp_Vec        d1gui;
+  gp_Vec        d2gui;
 
   gp_Pnt pts1;
   gp_Pnt pts2;
@@ -69,6 +73,7 @@ protected:
   gp_Vec d1v1;
   gp_Vec d1u2;
   gp_Vec d1v2;
+
 };
 
 #endif // _BlendFunc_ConstThroatInv_HeaderFile

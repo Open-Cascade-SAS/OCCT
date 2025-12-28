@@ -21,11 +21,10 @@
 
 RWStepVisual_RWPresentationSize::RWStepVisual_RWPresentationSize() {}
 
-void RWStepVisual_RWPresentationSize::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepVisual_PresentationSize>& ent) const
+void RWStepVisual_RWPresentationSize::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepVisual_PresentationSize>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -51,7 +50,7 @@ void RWStepVisual_RWPresentationSize::ReadStep(
 }
 
 void RWStepVisual_RWPresentationSize::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepVisual_PresentationSize>& ent) const
 {
 
@@ -65,7 +64,7 @@ void RWStepVisual_RWPresentationSize::WriteStep(
 }
 
 void RWStepVisual_RWPresentationSize::Share(const occ::handle<StepVisual_PresentationSize>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->Unit().Value());

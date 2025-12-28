@@ -29,6 +29,7 @@ public:
   Standard_EXPORT StepRepr_ProductDefinitionShape();
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_ProductDefinitionShape, StepRepr_PropertyDefinition)
+
 };
 
 #endif // _StepRepr_ProductDefinitionShape_HeaderFile

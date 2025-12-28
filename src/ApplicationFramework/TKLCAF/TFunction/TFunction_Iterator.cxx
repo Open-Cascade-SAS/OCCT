@@ -56,9 +56,9 @@ void TFunction_Iterator::Init(const TDF_Label& Access)
   {
     const TDF_Label& L = itrm.Key2();
 
-    TFunction_IFunction              iFunction(L);
+    TFunction_IFunction         iFunction(L);
     occ::handle<TFunction_GraphNode> graphNode = iFunction.GetGraphNode();
-    TFunction_ExecutionStatus        status    = graphNode->GetStatus();
+    TFunction_ExecutionStatus   status    = graphNode->GetStatus();
 
     // Check whether the function is a root function
     if (!graphNode->GetPrevious().IsEmpty())
@@ -164,7 +164,7 @@ bool TFunction_Iterator::More() const
 
 void TFunction_Iterator::Next()
 {
-  NCollection_Map<TDF_Label>            next_current;
+  NCollection_Map<TDF_Label>                next_current;
   NCollection_List<TDF_Label>::Iterator itrl(myCurrent);
   for (; itrl.More(); itrl.Next())
   {
@@ -172,8 +172,8 @@ void TFunction_Iterator::Next()
     TFunction_IFunction iFunction(L);
 
     occ::handle<TFunction_GraphNode> graphNode = iFunction.GetGraphNode();
-    const NCollection_Map<int>&      next      = graphNode->GetNext();
-    TFunction_ExecutionStatus        status    = graphNode->GetStatus();
+    const NCollection_Map<int>& next      = graphNode->GetNext();
+    TFunction_ExecutionStatus   status    = graphNode->GetStatus();
 
     // Consider the execution status
     if (myUsageOfExecutionStatus)
@@ -195,8 +195,8 @@ void TFunction_Iterator::Next()
     NCollection_Map<int>::Iterator itrm(next);
     for (; itrm.More(); itrm.Next())
     {
-      const int        IDnext = itrm.Key();
-      const TDF_Label& Lnext  = myScope->GetFunctions().Find1(IDnext);
+      const int IDnext = itrm.Key();
+      const TDF_Label&       Lnext  = myScope->GetFunctions().Find1(IDnext);
 
       if (myUsageOfExecutionStatus)
       {
@@ -204,22 +204,22 @@ void TFunction_Iterator::Next()
         // all other previous functions of the next functions.
 
         // Check status, it should be "not executed"
-        TFunction_IFunction              iNextFunction(Lnext);
+        TFunction_IFunction         iNextFunction(Lnext);
         occ::handle<TFunction_GraphNode> nextGraphNode = iNextFunction.GetGraphNode();
-        TFunction_ExecutionStatus        next_status   = nextGraphNode->GetStatus();
+        TFunction_ExecutionStatus   next_status   = nextGraphNode->GetStatus();
         if (next_status != TFunction_ES_NotExecuted && next_status != TFunction_ES_Executing)
         {
           continue;
         }
 
         // Check all previous functions: all of them should be "succeeded"
-        bool                           is_prev_succeeded = true;
-        const NCollection_Map<int>&    prevOfNext        = nextGraphNode->GetPrevious();
+        bool                  is_prev_succeeded = true;
+        const NCollection_Map<int>&       prevOfNext        = nextGraphNode->GetPrevious();
         NCollection_Map<int>::Iterator itrp(prevOfNext);
         for (; itrp.More(); itrp.Next())
         {
-          const int        IDprevOfNext = itrp.Key();
-          const TDF_Label& LprevOfNext  = myScope->GetFunctions().Find1(IDprevOfNext);
+          const int      IDprevOfNext = itrp.Key();
+          const TDF_Label&            LprevOfNext  = myScope->GetFunctions().Find1(IDprevOfNext);
           occ::handle<TFunction_GraphNode> GprevOfNext;
           LprevOfNext.FindAttribute(TFunction_GraphNode::GetID(), GprevOfNext);
           TFunction_ExecutionStatus prev_status = GprevOfNext->GetStatus();
@@ -289,12 +289,12 @@ Standard_OStream& TFunction_Iterator::Dump(Standard_OStream& anOS) const
 
   // Memorize the status of each function
   // in order to recover it after iteration.
-  NCollection_DataMap<TDF_Label, int>             saved_status;
-  occ::handle<TFunction_Scope>                    scope = TFunction_Scope::Set(myCurrent.First());
+  NCollection_DataMap<TDF_Label, int>     saved_status;
+  occ::handle<TFunction_Scope> scope = TFunction_Scope::Set(myCurrent.First());
   NCollection_DoubleMap<int, TDF_Label>::Iterator itrd(scope->GetFunctions());
   for (; itrd.More(); itrd.Next())
   {
-    const TDF_Label&                 L = itrd.Key2();
+    const TDF_Label&            L = itrd.Key2();
     occ::handle<TFunction_GraphNode> G;
     if (L.FindAttribute(TFunction_GraphNode::GetID(), G))
     {

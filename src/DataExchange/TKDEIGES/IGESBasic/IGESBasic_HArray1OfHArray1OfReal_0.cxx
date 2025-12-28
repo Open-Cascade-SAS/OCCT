@@ -18,7 +18,8 @@
 
 #include <Standard_Type.hxx>
 
-IGESBasic_HArray1OfHArray1OfReal::IGESBasic_HArray1OfHArray1OfReal(const int low, const int up)
+IGESBasic_HArray1OfHArray1OfReal::IGESBasic_HArray1OfHArray1OfReal(const int low,
+                                                                   const int up)
     : thelist(low, up)
 {
   occ::handle<Standard_Transient> nulo;
@@ -40,7 +41,7 @@ int IGESBasic_HArray1OfHArray1OfReal::Length() const
   return thelist.Length();
 }
 
-void IGESBasic_HArray1OfHArray1OfReal::SetValue(const int                                       num,
+void IGESBasic_HArray1OfHArray1OfReal::SetValue(const int               num,
                                                 const occ::handle<NCollection_HArray1<double>>& val)
 {
   thelist.SetValue(num, val);

@@ -25,10 +25,10 @@ StepVisual_TessellatedSurfaceSet::StepVisual_TessellatedSurfaceSet() {}
 //=================================================================================================
 
 void StepVisual_TessellatedSurfaceSet::Init(
-  const occ::handle<TCollection_HAsciiString>&    theRepresentationItem_Name,
-  const occ::handle<StepVisual_CoordinatesList>&  theCoordinates,
-  const int                                       thePnmax,
-  const occ::handle<NCollection_HArray2<double>>& theNormals)
+  const occ::handle<TCollection_HAsciiString>&   theRepresentationItem_Name,
+  const occ::handle<StepVisual_CoordinatesList>& theCoordinates,
+  const int                    thePnmax,
+  const occ::handle<NCollection_HArray2<double>>&      theNormals)
 {
   StepVisual_TessellatedItem::Init(theRepresentationItem_Name);
 
@@ -77,8 +77,7 @@ occ::handle<NCollection_HArray2<double>> StepVisual_TessellatedSurfaceSet::Norma
 
 //=================================================================================================
 
-void StepVisual_TessellatedSurfaceSet::SetNormals(
-  const occ::handle<NCollection_HArray2<double>>& theNormals)
+void StepVisual_TessellatedSurfaceSet::SetNormals(const occ::handle<NCollection_HArray2<double>>& theNormals)
 {
   myNormals = theNormals;
 }

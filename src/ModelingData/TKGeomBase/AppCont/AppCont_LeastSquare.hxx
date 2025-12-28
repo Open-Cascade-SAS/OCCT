@@ -26,20 +26,20 @@
 
 struct PeriodicityInfo
 {
-  bool   isPeriodic;
-  double myPeriod;
+  bool isPeriodic;
+  double    myPeriod;
 };
 
 class AppCont_LeastSquare
 {
 public:
   Standard_EXPORT AppCont_LeastSquare(const AppCont_Function&       SSP,
-                                      const double                  U0,
-                                      const double                  U1,
+                                      const double           U0,
+                                      const double           U1,
                                       const AppParCurves_Constraint FirstCons,
                                       const AppParCurves_Constraint LastCons,
-                                      const int                     Deg,
-                                      const int                     NbPoints);
+                                      const int        Deg,
+                                      const int        NbPoints);
 
   Standard_EXPORT const AppParCurves_MultiCurve& Value();
 
@@ -50,9 +50,9 @@ public:
 private:
   //! Fix border point evaluation.
   void FixSingleBorderPoint(const AppCont_Function&       theSSP,
-                            const double                  theU,
-                            const double                  theU0,
-                            const double                  theU1,
+                            const double           theU,
+                            const double           theU0,
+                            const double           theU1,
                             NCollection_Array1<gp_Pnt2d>& theFix2d,
                             NCollection_Array1<gp_Pnt>&   theFix);
 
@@ -62,9 +62,9 @@ private:
   math_Vector                         myParam;
   math_Matrix                         myVB;
   NCollection_Array1<PeriodicityInfo> myPerInfo;
-  bool                                myDone;
-  int                                 myDegre;
-  int                                 myNbdiscret, myNbP, myNbP2d;
+  bool                    myDone;
+  int                    myDegre;
+  int                    myNbdiscret, myNbP, myNbP2d;
 };
 
 #endif

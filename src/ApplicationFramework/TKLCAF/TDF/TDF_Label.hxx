@@ -104,7 +104,7 @@ public:
   //! Adds an Attribute to the current label. Raises if
   //! there is already one.
   Standard_EXPORT void AddAttribute(const occ::handle<TDF_Attribute>& anAttribute,
-                                    const bool                        append = true) const;
+                                    const bool       append = true) const;
 
   //! Forgets an Attribute from the current label,
   //! setting its forgotten status true and its valid
@@ -121,7 +121,8 @@ public:
   //! sub-labels if <clearChildren> is set to true. Of
   //! course, this method is compatible with Transaction
   //! & Delta mechanisms.
-  Standard_EXPORT void ForgetAllAttributes(const bool clearChildren = true) const;
+  Standard_EXPORT void ForgetAllAttributes(
+    const bool clearChildren = true) const;
 
   //! Undo Forget action, setting its forgotten status
   //! false and its valid status true. Raises if the
@@ -135,8 +136,8 @@ public:
   //! The method returns True if found, False otherwise.
   //!
   //! A removed attribute cannot be found.
-  Standard_EXPORT bool FindAttribute(const Standard_GUID&        anID,
-                                     occ::handle<TDF_Attribute>& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&   anID,
+                                                 occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Safe variant of FindAttribute() for arbitrary type of argument
   template <class T>
@@ -156,9 +157,9 @@ public:
   //!
   //! A removed attribute cannot be found nor a backuped
   //! attribute of a removed one.
-  Standard_EXPORT bool FindAttribute(const Standard_GUID&        anID,
-                                     const int                   aTransaction,
-                                     occ::handle<TDF_Attribute>& anAttribute) const;
+  Standard_EXPORT bool FindAttribute(const Standard_GUID&   anID,
+                                                 const int aTransaction,
+                                                 occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Returns true if <me> or a DESCENDANT of <me> owns
   //! attributes not yet available in transaction 0. It
@@ -213,7 +214,8 @@ public:
   //! //creating labels 7 and 2 on label 10
   //! TDF_Label lab2 = lab1.FindChild(7);
   //! TDF_Label lab3 = lab1.FindChild(2);
-  Standard_EXPORT TDF_Label FindChild(const int aTag, const bool create = true) const;
+  Standard_EXPORT TDF_Label FindChild(const int aTag,
+                                      const bool create = true) const;
 
   //! Create a new child label of me using automatic
   //! delivery tags provided by TagSource.
@@ -244,8 +246,8 @@ public:
 
   //! Dumps the label on <aStream> and its attributes
   //! rank in <aMap> if their IDs are kept by <IDFilter>.
-  Standard_EXPORT void ExtendedDump(Standard_OStream&                                   anOS,
-                                    const TDF_IDFilter&                                 aFilter,
+  Standard_EXPORT void ExtendedDump(Standard_OStream&        anOS,
+                                    const TDF_IDFilter&      aFilter,
                                     NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap) const;
 
   //! Dumps the label entry.
@@ -265,26 +267,27 @@ private:
 
   //! Adds an Attribute to <toNode>. Raises if there is
   //! already one.
-  Standard_EXPORT void AddToNode(const TDF_LabelNodePtr&           toNode,
+  Standard_EXPORT void AddToNode(const TDF_LabelNodePtr&      toNode,
                                  const occ::handle<TDF_Attribute>& anAttribute,
-                                 const bool                        append) const;
+                                 const bool       append) const;
 
   //! Forgets an Attribute from <fromNode>. Raises if
   //! the attribute is not in the structure.
-  Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&           fromNode,
+  Standard_EXPORT void ForgetFromNode(const TDF_LabelNodePtr&      fromNode,
                                       const occ::handle<TDF_Attribute>& anAttribute) const;
 
   //! Resumes a forgotten Attribute to <toNode>. Raises
   //! if the attribute is not in the structure.
-  Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&           fromNode,
+  Standard_EXPORT void ResumeToNode(const TDF_LabelNodePtr&      fromNode,
                                     const occ::handle<TDF_Attribute>& anAttribute) const;
 
-  Standard_EXPORT TDF_LabelNodePtr FindOrAddChild(const int aTag, const bool create) const;
+  Standard_EXPORT TDF_LabelNodePtr FindOrAddChild(const int aTag,
+                                                  const bool create) const;
 
-  Standard_EXPORT void InternalDump(Standard_OStream&                                   anOS,
-                                    const TDF_IDFilter&                                 aFilter,
+  Standard_EXPORT void InternalDump(Standard_OStream&        anOS,
+                                    const TDF_IDFilter&      aFilter,
                                     NCollection_IndexedMap<occ::handle<TDF_Attribute>>& aMap,
-                                    const bool extended) const;
+                                    const bool   extended) const;
 
   TDF_LabelNodePtr myLabelNode;
 };

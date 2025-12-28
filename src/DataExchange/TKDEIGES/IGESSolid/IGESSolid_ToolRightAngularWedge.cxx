@@ -36,12 +36,11 @@
 
 IGESSolid_ToolRightAngularWedge::IGESSolid_ToolRightAngularWedge() {}
 
-void IGESSolid_ToolRightAngularWedge::ReadOwnParams(
-  const occ::handle<IGESSolid_RightAngularWedge>& ent,
-  const occ::handle<IGESData_IGESReaderData>& /* IR */,
-  IGESData_ParamReader& PR) const
+void IGESSolid_ToolRightAngularWedge::ReadOwnParams(const occ::handle<IGESSolid_RightAngularWedge>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>& /* IR */,
+                                                    IGESData_ParamReader& PR) const
 {
-  gp_XYZ tempSize, tempCorner, tempXAxis, tempZAxis;
+  gp_XYZ        tempSize, tempCorner, tempXAxis, tempZAxis;
   double lowX;
   double tempreal;
   // bool st; //szv#4:S4163:12Mar99 not needed
@@ -151,9 +150,8 @@ void IGESSolid_ToolRightAngularWedge::ReadOwnParams(
     PR.AddWarning("ZAxis poorly unitary, normalized");
 }
 
-void IGESSolid_ToolRightAngularWedge::WriteOwnParams(
-  const occ::handle<IGESSolid_RightAngularWedge>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESSolid_ToolRightAngularWedge::WriteOwnParams(const occ::handle<IGESSolid_RightAngularWedge>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Size().X());
   IW.Send(ent->Size().Y());
@@ -176,10 +174,9 @@ void IGESSolid_ToolRightAngularWedge::OwnShared(
 {
 }
 
-void IGESSolid_ToolRightAngularWedge::OwnCopy(
-  const occ::handle<IGESSolid_RightAngularWedge>& another,
-  const occ::handle<IGESSolid_RightAngularWedge>& ent,
-  Interface_CopyTool& /* TC */) const
+void IGESSolid_ToolRightAngularWedge::OwnCopy(const occ::handle<IGESSolid_RightAngularWedge>& another,
+                                              const occ::handle<IGESSolid_RightAngularWedge>& ent,
+                                              Interface_CopyTool& /* TC */) const
 {
   ent->Init(another->Size(),
             another->XSmallLength(),
@@ -219,8 +216,8 @@ void IGESSolid_ToolRightAngularWedge::OwnCheck(const occ::handle<IGESSolid_Right
 
 void IGESSolid_ToolRightAngularWedge::OwnDump(const occ::handle<IGESSolid_RightAngularWedge>& ent,
                                               const IGESData_IGESDumper& /* dumper */,
-                                              Standard_OStream& S,
-                                              const int         level) const
+                                              Standard_OStream&      S,
+                                              const int level) const
 {
   S << "IGESSolid_RightAngularWedge\n"
     << "Size   : ";

@@ -34,11 +34,11 @@ void BRepOffsetAPI_NormalProjection::Add(const TopoDS_Shape& ToProj)
   myNormalProjector.Add(ToProj);
 }
 
-void BRepOffsetAPI_NormalProjection::SetParams(const double        Tol3D,
-                                               const double        Tol2D,
-                                               const GeomAbs_Shape InternalContinuity,
-                                               const int           MaxDegree,
-                                               const int           MaxSeg)
+void BRepOffsetAPI_NormalProjection::SetParams(const double    Tol3D,
+                                               const double    Tol2D,
+                                               const GeomAbs_Shape    InternalContinuity,
+                                               const int MaxDegree,
+                                               const int MaxSeg)
 {
   myNormalProjector.SetParams(Tol3D, Tol2D, InternalContinuity, MaxDegree, MaxSeg);
 }
@@ -75,8 +75,7 @@ const TopoDS_Shape& BRepOffsetAPI_NormalProjection::Couple(const TopoDS_Edge& E)
   return myNormalProjector.Couple(E);
 }
 
-const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_NormalProjection::Generated(
-  const TopoDS_Shape& S)
+const NCollection_List<TopoDS_Shape>& BRepOffsetAPI_NormalProjection::Generated(const TopoDS_Shape& S)
 {
   return myNormalProjector.Generated(S);
 }

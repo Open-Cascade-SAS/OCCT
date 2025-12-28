@@ -62,11 +62,11 @@ public:
 
   //! output the bounds of interval of index <Index>
   //! used if Type == Composite.
-  static void GetInterval(const HLRBRep_CurvePtr            C,
-                          const int                         Index,
+  static void GetInterval(const HLRBRep_CurvePtr      C,
+                          const int      Index,
                           const NCollection_Array1<double>& Tab,
-                          double&                           U1,
-                          double&                           U2);
+                          double&              U1,
+                          double&              U2);
 
   static bool IsClosed(const HLRBRep_CurvePtr C);
 
@@ -90,14 +90,18 @@ public:
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  static void D2(const HLRBRep_CurvePtr C, const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2);
+  static void D2(const HLRBRep_CurvePtr C,
+                 const double    U,
+                 gp_Pnt2d&              P,
+                 gp_Vec2d&              V1,
+                 gp_Vec2d&              V2);
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
   //! Raised if the continuity of the current interval
   //! is not C3.
   static void D3(const HLRBRep_CurvePtr C,
-                 const double           U,
+                 const double    U,
                  gp_Pnt2d&              P,
                  gp_Vec2d&              V1,
                  gp_Vec2d&              V2,
@@ -140,11 +144,14 @@ public:
 
   static double EpsX(const HLRBRep_CurvePtr C);
 
-  Standard_EXPORT static int NbSamples(const HLRBRep_CurvePtr C, const double U0, const double U1);
+  Standard_EXPORT static int NbSamples(const HLRBRep_CurvePtr C,
+                                                    const double    U0,
+                                                    const double    U1);
 
   Standard_EXPORT static int NbSamples(const HLRBRep_CurvePtr C);
 
   static int Degree(const HLRBRep_CurvePtr C);
+
 };
 
 #include <HLRBRep_CurveTool.lxx>

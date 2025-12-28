@@ -36,11 +36,11 @@ IGESDraw_ToolViewsVisible::IGESDraw_ToolViewsVisible() {}
 
 void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVisible>&   ent,
                                               const occ::handle<IGESData_IGESReaderData>& IR,
-                                              IGESData_ParamReader&                       PR) const
+                                              IGESData_ParamReader&                  PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
-  int tempNbViewsVisible, tempNbDisplayedEntities;
+  int                         tempNbViewsVisible, tempNbDisplayedEntities;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> tempViewEntities;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>     tempDisplayEntity;
 
@@ -52,8 +52,7 @@ void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVi
     if (tempNbViewsVisible <= 0)
       PR.AddFail("Number Of Views Visible : Not Positive");
     else
-      tempViewEntities =
-        new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, tempNbViewsVisible);
+      tempViewEntities = new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, tempNbViewsVisible);
   }
 
   if (PR.DefinedElseSkip())
@@ -114,7 +113,7 @@ void IGESDraw_ToolViewsVisible::ReadOwnParams(const occ::handle<IGESDraw_ViewsVi
 }
 
 void IGESDraw_ToolViewsVisible::WriteOwnParams(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                               IGESData_IGESWriter&                      IW) const
+                                               IGESData_IGESWriter&                 IW) const
 {
   IW.Send(ent->NbViews());
   IW.Send(ent->NbDisplayedEntities());
@@ -129,7 +128,7 @@ void IGESDraw_ToolViewsVisible::WriteOwnParams(const occ::handle<IGESDraw_ViewsV
 }
 
 void IGESDraw_ToolViewsVisible::OwnShared(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                          Interface_EntityIterator&                 iter) const
+                                          Interface_EntityIterator&            iter) const
 {
   int I, up;
   up = ent->NbViews();
@@ -139,7 +138,7 @@ void IGESDraw_ToolViewsVisible::OwnShared(const occ::handle<IGESDraw_ViewsVisibl
 }
 
 void IGESDraw_ToolViewsVisible::OwnImplied(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                           Interface_EntityIterator&                 iter) const
+                                           Interface_EntityIterator&            iter) const
 {
   int I, up;
   up = ent->NbDisplayedEntities();
@@ -149,7 +148,7 @@ void IGESDraw_ToolViewsVisible::OwnImplied(const occ::handle<IGESDraw_ViewsVisib
 
 void IGESDraw_ToolViewsVisible::OwnCopy(const occ::handle<IGESDraw_ViewsVisible>& another,
                                         const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                        Interface_CopyTool&                       TC) const
+                                        Interface_CopyTool&                  TC) const
 {
   occ::handle<NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>> tempViewEntities =
     new NCollection_HArray1<occ::handle<IGESData_ViewKindEntity>>(1, another->NbViews());
@@ -167,15 +166,15 @@ void IGESDraw_ToolViewsVisible::OwnCopy(const occ::handle<IGESDraw_ViewsVisible>
 
 void IGESDraw_ToolViewsVisible::OwnRenew(const occ::handle<IGESDraw_ViewsVisible>& another,
                                          const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                         const Interface_CopyTool&                 TC) const
+                                         const Interface_CopyTool&            TC) const
 {
   Interface_EntityIterator newdisp;
-  int                      I, up;
+  int         I, up;
   up = another->NbDisplayedEntities();
   if (up == 0)
     return;
   occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> tempDisplayEntities;
-  occ::handle<Standard_Transient>                                    anew;
+  occ::handle<Standard_Transient>           anew;
   for (I = 1; I <= up; I++)
   {
     if (TC.Search(another->DisplayedEntity(I), anew))
@@ -215,8 +214,8 @@ void IGESDraw_ToolViewsVisible::OwnCheck(const occ::handle<IGESDraw_ViewsVisible
                                          const Interface_ShareTool&,
                                          occ::handle<Interface_Check>& ach) const
 {
-  int                                         res     = 0;
-  int                                         nb      = ent->NbDisplayedEntities();
+  int                       res     = 0;
+  int                       nb      = ent->NbDisplayedEntities();
   const occ::handle<IGESData_ViewKindEntity>& entcomp = ent;
   for (int i = 1; i <= nb; i++)
   {
@@ -238,9 +237,9 @@ void IGESDraw_ToolViewsVisible::OwnWhenDelete(const occ::handle<IGESDraw_ViewsVi
 }
 
 void IGESDraw_ToolViewsVisible::OwnDump(const occ::handle<IGESDraw_ViewsVisible>& ent,
-                                        const IGESData_IGESDumper&                dumper,
-                                        Standard_OStream&                         S,
-                                        const int                                 level) const
+                                        const IGESData_IGESDumper&           dumper,
+                                        Standard_OStream&                    S,
+                                        const int               level) const
 {
   S << "IGESDraw_ViewsVisible\n"
     << "Views Visible : ";
@@ -251,11 +250,12 @@ void IGESDraw_ToolViewsVisible::OwnDump(const occ::handle<IGESDraw_ViewsVisible>
   S << std::endl;
 }
 
-bool IGESDraw_ToolViewsVisible::OwnCorrect(const occ::handle<IGESDraw_ViewsVisible>& ent) const
+bool IGESDraw_ToolViewsVisible::OwnCorrect(
+  const occ::handle<IGESDraw_ViewsVisible>& ent) const
 {
   //  The displayed entities must reference <ent>. They have priority.
-  bool                                        res     = false;
-  int                                         nb      = ent->NbDisplayedEntities();
+  bool                       res     = false;
+  int                       nb      = ent->NbDisplayedEntities();
   const occ::handle<IGESData_ViewKindEntity>& entcomp = ent;
   for (int i = 1; i <= nb; i++)
   {

@@ -59,7 +59,7 @@ void LocOpe_CurveShapeIntersector::Init(const gp_Circ& C, const TopoDS_Shape& S)
   double Tol = Precision::Confusion();
 
   occ::handle<Geom_Circle> GC = new Geom_Circle(C);
-  GeomAdaptor_Curve        AC(GC, 0., 2. * M_PI);
+  GeomAdaptor_Curve   AC(GC, 0., 2. * M_PI);
 
   BRepIntCurveSurface_Inter theInt;
   theInt.Init(S, AC, Tol);
@@ -70,18 +70,18 @@ void LocOpe_CurveShapeIntersector::Init(const gp_Circ& C, const TopoDS_Shape& S)
 
 //=================================================================================================
 
-bool LocOpe_CurveShapeIntersector::LocalizeAfter(const double        From,
-                                                 TopAbs_Orientation& Or,
-                                                 int&                IndFrom,
-                                                 int&                IndTo) const
+bool LocOpe_CurveShapeIntersector::LocalizeAfter(const double From,
+                                                             TopAbs_Orientation& Or,
+                                                             int&   IndFrom,
+                                                             int&   IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  double Eps = Precision::Confusion();
-  double param, FMEPS = From - Eps;
-  int    i, ifirst, nbpoints = myPoints.Length();
+  double    Eps = Precision::Confusion();
+  double    param, FMEPS = From - Eps;
+  int i, ifirst, nbpoints = myPoints.Length();
   for (ifirst = 1; ifirst <= nbpoints; ifirst++)
   {
     if (myPoints(ifirst).Parameter() >= FMEPS)
@@ -92,8 +92,8 @@ bool LocOpe_CurveShapeIntersector::LocalizeAfter(const double        From,
   bool RetVal = false;
   if (ifirst <= nbpoints)
   {
-    i          = ifirst;
-    IndFrom    = ifirst;
+    i                      = ifirst;
+    IndFrom                = ifirst;
     bool found = false;
     while (!found)
     {
@@ -134,18 +134,18 @@ bool LocOpe_CurveShapeIntersector::LocalizeAfter(const double        From,
 
 //=================================================================================================
 
-bool LocOpe_CurveShapeIntersector::LocalizeBefore(const double        From,
-                                                  TopAbs_Orientation& Or,
-                                                  int&                IndFrom,
-                                                  int&                IndTo) const
+bool LocOpe_CurveShapeIntersector::LocalizeBefore(const double From,
+                                                              TopAbs_Orientation& Or,
+                                                              int&   IndFrom,
+                                                              int&   IndTo) const
 {
   if (!myDone)
   {
     throw StdFail_NotDone();
   }
-  double Eps = Precision::Confusion();
-  double param, FPEPS = From + Eps;
-  int    i, ifirst, nbpoints = myPoints.Length();
+  double    Eps = Precision::Confusion();
+  double    param, FPEPS = From + Eps;
+  int i, ifirst, nbpoints = myPoints.Length();
   for (ifirst = nbpoints; ifirst >= 1; ifirst--)
   {
     if (myPoints(ifirst).Parameter() <= FPEPS)
@@ -156,8 +156,8 @@ bool LocOpe_CurveShapeIntersector::LocalizeBefore(const double        From,
   bool RetVal = false;
   if (ifirst >= 1)
   {
-    i          = ifirst;
-    IndTo      = ifirst;
+    i                      = ifirst;
+    IndTo                  = ifirst;
     bool found = false;
     while (!found)
     {
@@ -198,10 +198,10 @@ bool LocOpe_CurveShapeIntersector::LocalizeBefore(const double        From,
 
 //=================================================================================================
 
-bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int           FromInd,
-                                                 TopAbs_Orientation& Or,
-                                                 int&                IndFrom,
-                                                 int&                IndTo) const
+bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int FromInd,
+                                                             TopAbs_Orientation&    Or,
+                                                             int&      IndFrom,
+                                                             int&      IndTo) const
 {
   if (!myDone)
   {
@@ -213,9 +213,9 @@ bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int           FromInd,
     return false;
   }
 
-  double Eps = Precision::Confusion();
-  double param, FMEPS;
-  int    i, ifirst;
+  double    Eps = Precision::Confusion();
+  double    param, FMEPS;
+  int i, ifirst;
   if (FromInd >= 1)
   {
     FMEPS = myPoints(FromInd).Parameter() - Eps;
@@ -235,8 +235,8 @@ bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int           FromInd,
   bool RetVal = false;
   if (ifirst <= nbpoints)
   {
-    i          = ifirst;
-    IndFrom    = ifirst;
+    i                      = ifirst;
+    IndFrom                = ifirst;
     bool found = false;
     while (!found)
     {
@@ -276,10 +276,10 @@ bool LocOpe_CurveShapeIntersector::LocalizeAfter(const int           FromInd,
 
 //=================================================================================================
 
-bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int           FromInd,
-                                                  TopAbs_Orientation& Or,
-                                                  int&                IndFrom,
-                                                  int&                IndTo) const
+bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int FromInd,
+                                                              TopAbs_Orientation&    Or,
+                                                              int&      IndFrom,
+                                                              int&      IndTo) const
 {
   if (!myDone)
   {
@@ -291,9 +291,9 @@ bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int           FromInd,
     return false;
   }
 
-  double Eps = Precision::Confusion();
-  double param, FPEPS;
-  int    i, ifirst;
+  double    Eps = Precision::Confusion();
+  double    param, FPEPS;
+  int i, ifirst;
   if (FromInd <= nbpoints)
   {
     FPEPS = myPoints(FromInd).Parameter() + Eps;
@@ -313,8 +313,8 @@ bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int           FromInd,
   bool RetVal = false;
   if (ifirst >= 1)
   {
-    i          = ifirst;
-    IndTo      = ifirst;
+    i                      = ifirst;
+    IndTo                  = ifirst;
     bool found = false;
     while (!found)
     {
@@ -354,11 +354,10 @@ bool LocOpe_CurveShapeIntersector::LocalizeBefore(const int           FromInd,
 
 //=================================================================================================
 
-static void Perform(BRepIntCurveSurface_Inter&            theInt,
-                    NCollection_Sequence<LocOpe_PntFace>& thePoints)
+static void Perform(BRepIntCurveSurface_Inter& theInt, NCollection_Sequence<LocOpe_PntFace>& thePoints)
 {
-  double param, paramu, paramv;
-  int    i, nbpoints = 0;
+  double    param, paramu, paramv;
+  int i, nbpoints = 0;
 
   TopAbs_Orientation theor = TopAbs_FORWARD, orface;
 

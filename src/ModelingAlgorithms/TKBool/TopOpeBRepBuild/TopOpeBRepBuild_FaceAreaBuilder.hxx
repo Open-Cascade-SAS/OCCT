@@ -43,13 +43,15 @@ public:
 
   //! Creates a FaceAreaBuilder to build faces on
   //! the (wires,blocks of edge) of <LS>, using the classifier <LC>.
-  Standard_EXPORT TopOpeBRepBuild_FaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
-                                                  TopOpeBRepBuild_LoopClassifier& LC,
-                                                  const bool ForceClass = false);
+  Standard_EXPORT TopOpeBRepBuild_FaceAreaBuilder(
+    TopOpeBRepBuild_LoopSet&        LS,
+    TopOpeBRepBuild_LoopClassifier& LC,
+    const bool          ForceClass = false);
 
   Standard_EXPORT void InitFaceAreaBuilder(TopOpeBRepBuild_LoopSet&        LS,
                                            TopOpeBRepBuild_LoopClassifier& LC,
-                                           const bool                      ForceClass = false);
+                                           const bool ForceClass = false);
+
 };
 
 #endif // _TopOpeBRepBuild_FaceAreaBuilder_HeaderFile

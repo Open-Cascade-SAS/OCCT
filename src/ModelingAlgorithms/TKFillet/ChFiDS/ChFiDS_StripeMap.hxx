@@ -27,6 +27,8 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <Standard_Integer.hxx>
+#include <ChFiDS_Stripe.hxx>
+#include <NCollection_List.hxx>
 class TopoDS_Vertex;
 class ChFiDS_Stripe;
 
@@ -42,31 +44,20 @@ public:
 
   int Extent() const;
 
-  Standard_EXPORT const NCollection_List<occ::handle<ChFiDS_Stripe>>& FindFromKey(
-    const TopoDS_Vertex& V) const;
+  Standard_EXPORT const NCollection_List<occ::handle<ChFiDS_Stripe>>& FindFromKey(const TopoDS_Vertex& V) const;
 
-  const NCollection_List<occ::handle<ChFiDS_Stripe>>& operator()(const TopoDS_Vertex& V) const
-  {
-    return FindFromKey(V);
-  }
+  const NCollection_List<occ::handle<ChFiDS_Stripe>>& operator()(const TopoDS_Vertex& V) const { return FindFromKey(V); }
 
-  Standard_EXPORT const NCollection_List<occ::handle<ChFiDS_Stripe>>& FindFromIndex(
-    const int I) const;
+  Standard_EXPORT const NCollection_List<occ::handle<ChFiDS_Stripe>>& FindFromIndex(const int I) const;
 
-  const NCollection_List<occ::handle<ChFiDS_Stripe>>& operator()(const int I) const
-  {
-    return FindFromIndex(I);
-  }
+  const NCollection_List<occ::handle<ChFiDS_Stripe>>& operator()(const int I) const { return FindFromIndex(I); }
 
   const TopoDS_Vertex& FindKey(const int I) const;
 
   Standard_EXPORT void Clear();
 
 private:
-  NCollection_IndexedDataMap<TopoDS_Vertex,
-                             NCollection_List<occ::handle<ChFiDS_Stripe>>,
-                             TopTools_ShapeMapHasher>
-    mymap;
+  NCollection_IndexedDataMap<TopoDS_Vertex, NCollection_List<occ::handle<ChFiDS_Stripe>>, TopTools_ShapeMapHasher> mymap;
 };
 
 #include <ChFiDS_StripeMap.lxx>

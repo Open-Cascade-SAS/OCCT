@@ -33,8 +33,8 @@ public:
 
   Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
                             const occ::handle<StepGeom_Axis1Placement>&  aPosition,
-                            const double                                 aMajorRadius,
-                            const double                                 aMinorRadius);
+                            const double                     aMajorRadius,
+                            const double                     aMinorRadius);
 
   Standard_EXPORT void SetPosition(const occ::handle<StepGeom_Axis1Placement>& aPosition);
 
@@ -52,8 +52,8 @@ public:
 
 private:
   occ::handle<StepGeom_Axis1Placement> position;
-  double                               majorRadius;
-  double                               minorRadius;
+  double                   majorRadius;
+  double                   minorRadius;
 };
 
 #endif // _StepShape_Torus_HeaderFile

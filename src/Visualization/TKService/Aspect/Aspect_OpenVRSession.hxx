@@ -49,13 +49,14 @@ public:
 
   //! Return transformation from eye to head.
   //! vr::GetEyeToHeadTransform() wrapper.
-  Standard_EXPORT virtual NCollection_Mat4<double> EyeToHeadTransform(
-    Aspect_Eye theEye) const override;
+  Standard_EXPORT virtual NCollection_Mat4<double> EyeToHeadTransform(Aspect_Eye theEye) const
+    override;
 
   //! Return projection matrix.
   Standard_EXPORT virtual NCollection_Mat4<double> ProjectionMatrix(Aspect_Eye theEye,
                                                                     double     theZNear,
-                                                                    double theZFar) const override;
+                                                                    double     theZFar) const
+    override;
 
   //! Return TRUE.
   virtual bool HasProjectionFrustums() const override { return true; }
@@ -77,7 +78,8 @@ public:
                                          Aspect_Eye             theEye) override;
 
   //! Query information.
-  Standard_EXPORT virtual TCollection_AsciiString GetString(InfoString theInfo) const override;
+  Standard_EXPORT virtual TCollection_AsciiString GetString(InfoString theInfo) const
+    override;
 
   //! Return index of tracked device of known role.
   Standard_EXPORT virtual int NamedTrackedDevice(
@@ -96,7 +98,8 @@ public:
     const occ::handle<Aspect_XRAction>& theAction) const override;
 
   //! Set tracking origin.
-  Standard_EXPORT virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin) override;
+  Standard_EXPORT virtual void SetTrackingOrigin(TrackingUniverseOrigin theOrigin)
+    override;
 
 protected:
   //! Find location of default actions manifest file (based on CSF_OCCTResourcePath or CASROOT
@@ -123,13 +126,13 @@ protected:
 
   //! Trigger vibration.
   Standard_EXPORT virtual void triggerHapticVibrationAction(
-    const occ::handle<Aspect_XRAction>& theAction,
-    const Aspect_XRHapticActionData&    theParams) override;
+    const occ::handle<Aspect_XRAction>&   theAction,
+    const Aspect_XRHapticActionData& theParams) override;
 
   //! Return model for displaying device.
   Standard_EXPORT virtual occ::handle<Graphic3d_ArrayOfTriangles> loadRenderModel(
-    int                         theDevice,
-    bool                        theToApplyUnitFactor,
+    int       theDevice,
+    bool       theToApplyUnitFactor,
     occ::handle<Image_Texture>& theTexture) override;
 
 protected:

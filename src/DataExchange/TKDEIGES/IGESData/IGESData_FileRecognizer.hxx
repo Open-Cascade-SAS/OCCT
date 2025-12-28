@@ -34,8 +34,8 @@ public:
   //! In case of Failure, simply Returns False
   //! Works by calling deferred method Eval, and in case of failure,
   //! looks for Added Recognizers to work
-  Standard_EXPORT bool Evaluate(const IGESData_IGESType&          akey,
-                                occ::handle<IGESData_IGESEntity>& res);
+  Standard_EXPORT bool Evaluate(const IGESData_IGESType&     akey,
+                                            occ::handle<IGESData_IGESEntity>& res);
 
   //! Returns result of last recognition (call of Evaluate)
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Result() const;
@@ -69,7 +69,7 @@ protected:
 
 private:
   occ::handle<IGESData_IGESEntity>     theres;
-  bool                                 hasnext;
+  bool                hasnext;
   occ::handle<IGESData_FileRecognizer> thenext;
 };
 

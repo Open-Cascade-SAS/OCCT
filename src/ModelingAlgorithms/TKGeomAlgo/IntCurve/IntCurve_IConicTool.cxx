@@ -186,7 +186,10 @@ void IntCurve_IConicTool::D1(const double X, gp_Pnt2d& Pt, gp_Vec2d& Tan) const
 }
 
 //----------------------------------------------------------------------
-void IntCurve_IConicTool::D2(const double X, gp_Pnt2d& Pt, gp_Vec2d& Tan, gp_Vec2d& Norm) const
+void IntCurve_IConicTool::D2(const double X,
+                             gp_Pnt2d&           Pt,
+                             gp_Vec2d&           Tan,
+                             gp_Vec2d&           Norm) const
 {
 
   switch (type)

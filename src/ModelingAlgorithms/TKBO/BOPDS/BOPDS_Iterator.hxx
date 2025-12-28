@@ -80,8 +80,8 @@ public:
   //! the results to be used
   Standard_EXPORT virtual void Prepare(
     const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
-    const bool                           theCheckOBB   = false,
-    const double                         theFuzzyValue = Precision::Confusion());
+    const bool          theCheckOBB   = false,
+    const double             theFuzzyValue = Precision::Confusion());
 
   //! Updates the tree of Bounding Boxes with increased boxes and
   //! intersects such elements with the tree.
@@ -111,22 +111,20 @@ protected: //! @name Protected methods for bounding boxes intersection
   //! and saves the interfering pairs for further geometrical intersection.
   Standard_EXPORT virtual void Intersect(
     const occ::handle<IntTools_Context>& theCtx        = occ::handle<IntTools_Context>(),
-    const bool                           theCheckOBB   = false,
-    const double                         theFuzzyValue = Precision::Confusion());
+    const bool          theCheckOBB   = false,
+    const double             theFuzzyValue = Precision::Confusion());
 
-protected:                                            //! @name Fields
+protected:                                       //! @name Fields
   occ::handle<NCollection_BaseAllocator> myAllocator; //!< Allocator
-  int                                    myLength;    //!< Length of the intersection vector of
-                                                      //! particular intersection type
-  BOPDS_PDS myDS;                                     //!< Data Structure
-  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
-                                           myLists;       //!< Pairs with interfering bounding boxes
-  NCollection_Vector<BOPDS_Pair>::Iterator myIterator;    //!< Iterator on each interfering type
-  bool                                     myRunParallel; //!< Flag for parallel processing
-  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>
-    myExtLists;  //!< Extra pairs of sub-shapes found after
-                 //! intersection of increased sub-shapes
-  bool myUseExt; //!< Information flag for using the extra lists
+  int                  myLength;    //!< Length of the intersection vector of
+                                                 //! particular intersection type
+  BOPDS_PDS                    myDS;             //!< Data Structure
+  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>   myLists;          //!< Pairs with interfering bounding boxes
+  NCollection_Vector<BOPDS_Pair>::Iterator myIterator;       //!< Iterator on each interfering type
+  bool             myRunParallel;    //!< Flag for parallel processing
+  NCollection_Vector<NCollection_Vector<BOPDS_Pair>>   myExtLists;       //!< Extra pairs of sub-shapes found after
+                                                 //! intersection of increased sub-shapes
+  bool myUseExt;                     //!< Information flag for using the extra lists
 };
 
 #endif // _BOPDS_Iterator_HeaderFile

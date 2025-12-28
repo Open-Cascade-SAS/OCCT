@@ -26,19 +26,18 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGraph_TextFontDef, IGESData_IGESEntity)
 
 IGESGraph_TextFontDef::IGESGraph_TextFontDef() {}
 
-void IGESGraph_TextFontDef::Init(
-  const int                                               aFontCode,
-  const occ::handle<TCollection_HAsciiString>&            aFontName,
-  const int                                               aSupersededFont,
-  const occ::handle<IGESGraph_TextFontDef>&               aSupersededEntity,
-  const int                                               aScale,
-  const occ::handle<NCollection_HArray1<int>>&            allASCIICodes,
-  const occ::handle<NCollection_HArray1<int>>&            allNextCharX,
-  const occ::handle<NCollection_HArray1<int>>&            allNextCharY,
-  const occ::handle<NCollection_HArray1<int>>&            allPenMotions,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allPenFlags,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToX,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToY)
+void IGESGraph_TextFontDef::Init(const int                  aFontCode,
+                                 const occ::handle<TCollection_HAsciiString>& aFontName,
+                                 const int                  aSupersededFont,
+                                 const occ::handle<IGESGraph_TextFontDef>&    aSupersededEntity,
+                                 const int                  aScale,
+                                 const occ::handle<NCollection_HArray1<int>>& allASCIICodes,
+                                 const occ::handle<NCollection_HArray1<int>>& allNextCharX,
+                                 const occ::handle<NCollection_HArray1<int>>& allNextCharY,
+                                 const occ::handle<NCollection_HArray1<int>>& allPenMotions,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allPenFlags,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToX,
+                                 const occ::handle<IGESBasic_HArray1OfHArray1OfInteger>& allMovePenToY)
 {
   int Len = allASCIICodes->Length();
   if (allASCIICodes->Lower() != 1 || (allNextCharX->Lower() != 1 || allNextCharX->Length() != Len)
@@ -104,7 +103,9 @@ int IGESGraph_TextFontDef::ASCIICode(const int Chnum) const
   return (theASCIICodes->Value(Chnum));
 }
 
-void IGESGraph_TextFontDef::NextCharOrigin(const int Chnum, int& NX, int& NY) const
+void IGESGraph_TextFontDef::NextCharOrigin(const int Chnum,
+                                           int&      NX,
+                                           int&      NY) const
 {
   NX = theNextCharOriginX->Value(Chnum);
   NY = theNextCharOriginY->Value(Chnum);
@@ -115,10 +116,11 @@ int IGESGraph_TextFontDef::NbPenMotions(const int Chnum) const
   return (theNbPenMotions->Value(Chnum));
 }
 
-bool IGESGraph_TextFontDef::IsPenUp(const int Chnum, const int Motionnum) const
+bool IGESGraph_TextFontDef::IsPenUp(const int Chnum,
+                                                const int Motionnum) const
 {
   occ::handle<NCollection_HArray1<int>> MotionArr = thePenMotions->Value(Chnum);
-  int                                   PenStatus = MotionArr->Value(Motionnum);
+  int                 PenStatus = MotionArr->Value(Motionnum);
   return (PenStatus == 1);
 }
 

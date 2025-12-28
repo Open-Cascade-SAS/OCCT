@@ -22,8 +22,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepAP214_AutoDesignDateAndPersonAssignment,
 StepAP214_AutoDesignDateAndPersonAssignment::StepAP214_AutoDesignDateAndPersonAssignment() {}
 
 void StepAP214_AutoDesignDateAndPersonAssignment::Init(
-  const occ::handle<StepBasic_PersonAndOrganization>&     aAssignedPersonAndOrganization,
-  const occ::handle<StepBasic_PersonAndOrganizationRole>& aRole,
+  const occ::handle<StepBasic_PersonAndOrganization>&                aAssignedPersonAndOrganization,
+  const occ::handle<StepBasic_PersonAndOrganizationRole>&            aRole,
   const occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>>& aItems)
 {
   // --- classe own fields ---
@@ -38,8 +38,8 @@ void StepAP214_AutoDesignDateAndPersonAssignment::SetItems(
   items = aItems;
 }
 
-occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>>
-  StepAP214_AutoDesignDateAndPersonAssignment::Items() const
+occ::handle<NCollection_HArray1<StepAP214_AutoDesignDateAndPersonItem>> StepAP214_AutoDesignDateAndPersonAssignment::
+  Items() const
 {
   return items;
 }

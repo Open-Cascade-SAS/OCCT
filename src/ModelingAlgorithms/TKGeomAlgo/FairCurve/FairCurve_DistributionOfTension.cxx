@@ -26,14 +26,14 @@
 #include <math_Vector.hxx>
 
 FairCurve_DistributionOfTension::FairCurve_DistributionOfTension(
-  const int                                         BSplOrder,
-  const occ::handle<NCollection_HArray1<double>>&   FlatKnots,
+  const int               BSplOrder,
+  const occ::handle<NCollection_HArray1<double>>& FlatKnots,
   const occ::handle<NCollection_HArray1<gp_Pnt2d>>& Poles,
-  const int                                         DerivativeOrder,
-  const double                                      LengthSliding,
-  const FairCurve_BattenLaw&                        Law,
-  const int                                         NbValAux,
-  const bool                                        Uniform)
+  const int               DerivativeOrder,
+  const double                  LengthSliding,
+  const FairCurve_BattenLaw&           Law,
+  const int               NbValAux,
+  const bool               Uniform)
     : FairCurve_DistributionOfEnergy(BSplOrder, FlatKnots, Poles, DerivativeOrder, NbValAux),
       MyLengthSliding(LengthSliding),
       MyLaw(Law)
@@ -48,12 +48,13 @@ FairCurve_DistributionOfTension::FairCurve_DistributionOfTension(
   }
 }
 
-bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vector& FTension)
+bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam,
+                                                        math_Vector&       FTension)
 {
-  bool  Ok = true;
-  int   ier, ii, jj, kk;
-  gp_XY CPrim(0., 0.);
-  int   LastGradientIndex, FirstNonZero, LastZero;
+  bool Ok = true;
+  int ier, ii, jj, kk;
+  gp_XY            CPrim(0., 0.);
+  int LastGradientIndex, FirstNonZero, LastZero;
 
   // (0.0) initialisations generales
   FTension.Init(0.0);
@@ -102,8 +103,8 @@ bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vect
   if (MyDerivativeOrder >= 1)
   {
     // (2) Evaluation du gradient de la tension locale ----------------------
-    math_Vector GradDifference(1, 2 * MyBSplOrder + MyNbValAux);
-    double      Xaux, Yaux, Facteur;
+    math_Vector   GradDifference(1, 2 * MyBSplOrder + MyNbValAux);
+    double Xaux, Yaux, Facteur;
 
     Xaux    = CPrim.X() / NormeCPrim;
     Yaux    = CPrim.Y() / NormeCPrim;
@@ -138,11 +139,11 @@ bool FairCurve_DistributionOfTension::Value(const math_Vector& TParam, math_Vect
 
       // (3) Evaluation du Hessien de la tension locale ----------------------
 
-      double FacteurX  = Difference * (1 - pow(Xaux, 2)) / NormeCPrim;
-      double FacteurY  = Difference * (1 - pow(Yaux, 2)) / NormeCPrim;
-      double FacteurXY = -Difference * Xaux * Yaux / NormeCPrim;
-      double Produit;
-      int    k1, k2;
+      double    FacteurX  = Difference * (1 - pow(Xaux, 2)) / NormeCPrim;
+      double    FacteurY  = Difference * (1 - pow(Yaux, 2)) / NormeCPrim;
+      double    FacteurXY = -Difference * Xaux * Yaux / NormeCPrim;
+      double    Produit;
+      int k1, k2;
 
       Facteur = 2 * Hauteur / MyLengthSliding;
 

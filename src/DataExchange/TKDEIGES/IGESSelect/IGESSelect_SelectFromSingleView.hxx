@@ -38,12 +38,14 @@ public:
 
   //! Selects the Entities which are attached to the Single View(s)
   //! present in the Input
-  Standard_EXPORT Interface_EntityIterator RootResult(const Interface_Graph& G) const override;
+  Standard_EXPORT Interface_EntityIterator
+    RootResult(const Interface_Graph& G) const override;
 
   //! Returns the label, with is "Entities attached to single View"
   Standard_EXPORT TCollection_AsciiString Label() const override;
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectFromSingleView, IFSelect_SelectDeduct)
+
 };
 
 #endif // _IGESSelect_SelectFromSingleView_HeaderFile

@@ -22,8 +22,7 @@
 // function : Import
 // purpose  : Import transient attribute from the persistent data
 //=======================================================================
-void StdPersistent_Naming::NamedShape::Import(
-  const occ::handle<TNaming_NamedShape>& theAttribute) const
+void StdPersistent_Naming::NamedShape::Import(const occ::handle<TNaming_NamedShape>& theAttribute) const
 {
   theAttribute->SetVersion(myVersion);
 
@@ -137,7 +136,7 @@ void StdPersistent_Naming::Name_1::Write(StdObjMgt_WriteData& theWriteData) cons
 // function : Import
 // purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name_1::Import(TNaming_Name&                theName,
+void StdPersistent_Naming::Name_1::Import(TNaming_Name&           theName,
                                           const occ::handle<TDF_Data>& theDF) const
 {
   Name::Import(theName, theDF);
@@ -169,7 +168,7 @@ void StdPersistent_Naming::Name_2::Write(StdObjMgt_WriteData& theWriteData) cons
 // function : Import
 // purpose  : Import transient object from the persistent data
 //=======================================================================
-void StdPersistent_Naming::Name_2::Import(TNaming_Name&                theName,
+void StdPersistent_Naming::Name_2::Import(TNaming_Name&           theName,
                                           const occ::handle<TDF_Data>& theDF) const
 {
   Name_1::Import(theName, theDF);

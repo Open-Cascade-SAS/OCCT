@@ -45,9 +45,9 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_DatumDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                    const occ::handle<TDF_Attribute>& theTarget,
-                                    XmlObjMgt_RRelocationTable&) const
+bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                const occ::handle<TDF_Attribute>& theTarget,
+                                                XmlObjMgt_RRelocationTable&) const
 {
   XmlObjMgt_DOMString aNameStr = XmlObjMgt::GetStringValue(theSource);
 
@@ -71,10 +71,9 @@ bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&       theSource,
     return false;
   }
 
-  occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString(aNameStr.GetString());
-  occ::handle<TCollection_HAsciiString> aDescr =
-    new TCollection_HAsciiString(aDescrStr.GetString());
-  occ::handle<TCollection_HAsciiString> anId = new TCollection_HAsciiString(anIdStr.GetString());
+  occ::handle<TCollection_HAsciiString> aName  = new TCollection_HAsciiString(aNameStr.GetString());
+  occ::handle<TCollection_HAsciiString> aDescr = new TCollection_HAsciiString(aDescrStr.GetString());
+  occ::handle<TCollection_HAsciiString> anId   = new TCollection_HAsciiString(anIdStr.GetString());
 
   occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theTarget);
   anAtt->Set(aName, aDescr, anId);
@@ -87,7 +86,7 @@ bool XmlMXCAFDoc_DatumDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMXCAFDoc_DatumDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                    XmlObjMgt_Persistent&             theTarget,
+                                    XmlObjMgt_Persistent&        theTarget,
                                     XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<XCAFDoc_Datum> anAtt = occ::down_cast<XCAFDoc_Datum>(theSource);

@@ -31,7 +31,7 @@ RWStepRepr_RWConfigurationDesign::RWStepRepr_RWConfigurationDesign() {}
 
 void RWStepRepr_RWConfigurationDesign::ReadStep(
   const occ::handle<StepData_StepReaderData>&      data,
-  const int                                        num,
+  const int                      num,
   occ::handle<Interface_Check>&                    ach,
   const occ::handle<StepRepr_ConfigurationDesign>& ent) const
 {
@@ -59,7 +59,7 @@ void RWStepRepr_RWConfigurationDesign::ReadStep(
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationDesign::WriteStep(
-  StepData_StepWriter&                             SW,
+  StepData_StepWriter&                        SW,
   const occ::handle<StepRepr_ConfigurationDesign>& ent) const
 {
 
@@ -73,7 +73,7 @@ void RWStepRepr_RWConfigurationDesign::WriteStep(
 //=================================================================================================
 
 void RWStepRepr_RWConfigurationDesign::Share(const occ::handle<StepRepr_ConfigurationDesign>& ent,
-                                             Interface_EntityIterator& iter) const
+                                             Interface_EntityIterator&                   iter) const
 {
 
   // Own fields of ConfigurationDesign

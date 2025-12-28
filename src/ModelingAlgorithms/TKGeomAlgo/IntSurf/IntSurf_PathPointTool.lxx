@@ -22,7 +22,9 @@ inline gp_Pnt IntSurf_PathPointTool::Value3d(const IntSurf_PathPoint& PStart)
   return PStart.Value();
 }
 
-inline void IntSurf_PathPointTool::Value2d(const IntSurf_PathPoint& PStart, double& U, double& V)
+inline void IntSurf_PathPointTool::Value2d(const IntSurf_PathPoint& PStart,
+                                           double&           U,
+                                           double&           V)
 {
   PStart.Value2d(U, V);
 }
@@ -54,9 +56,9 @@ inline int IntSurf_PathPointTool::Multiplicity(const IntSurf_PathPoint& PStart)
 }
 
 inline void IntSurf_PathPointTool::Parameters(const IntSurf_PathPoint& PStart,
-                                              const int                Mult,
-                                              double&                  U,
-                                              double&                  V)
+                                              const int   Mult,
+                                              double&           U,
+                                              double&           V)
 {
   PStart.Parameters(Mult, U, V);
 }

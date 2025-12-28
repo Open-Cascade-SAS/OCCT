@@ -23,8 +23,14 @@
 #include <TopoDS_Shape.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_List.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 class TopoDS_Edge;
 class Adaptor3d_Curve;
@@ -52,11 +58,11 @@ public:
   //! used for approximation.
   //! MaxDeg and MaxSeg are the maximum degree and the maximum
   //! number of segment for BSpline resulting of an approximation.
-  Standard_EXPORT void SetParams(const double        Tol3D,
-                                 const double        Tol2D,
-                                 const GeomAbs_Shape InternalContinuity,
-                                 const int           MaxDegree,
-                                 const int           MaxSeg);
+  Standard_EXPORT void SetParams(const double    Tol3D,
+                                 const double    Tol2D,
+                                 const GeomAbs_Shape    InternalContinuity,
+                                 const int MaxDegree,
+                                 const int MaxSeg);
 
   //! Set the parameters used for computation
   //! in their default values
@@ -100,22 +106,21 @@ public:
   Standard_EXPORT bool BuildWire(NCollection_List<TopoDS_Shape>& Liste) const;
 
 private:
-  TopoDS_Shape                                                             myShape;
-  bool                                                                     myIsDone;
-  double                                                                   myTol3d;
-  double                                                                   myTol2d;
-  double                                                                   myMaxDist;
-  bool                                                                     myWith3d;
-  GeomAbs_Shape                                                            myContinuity;
-  int                                                                      myMaxDegree;
-  int                                                                      myMaxSeg;
-  bool                                                                     myFaceBounds;
-  TopoDS_Shape                                                             myToProj;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myAncestorMap;
-  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> myCorresp;
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-               myDescendants;
-  TopoDS_Shape myRes;
+  TopoDS_Shape                       myShape;
+  bool                   myIsDone;
+  double                      myTol3d;
+  double                      myTol2d;
+  double                      myMaxDist;
+  bool                   myWith3d;
+  GeomAbs_Shape                      myContinuity;
+  int                   myMaxDegree;
+  int                   myMaxSeg;
+  bool                   myFaceBounds;
+  TopoDS_Shape                       myToProj;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myAncestorMap;
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>       myCorresp;
+  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> myDescendants;
+  TopoDS_Shape                       myRes;
 };
 
 #endif // _BRepAlgo_NormalProjection_HeaderFile

@@ -25,10 +25,10 @@
 
 //=================================================================================================
 
-occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&  theGroup,
-                                             const occ::handle<Prs3d_TextAspect>& theAspect,
-                                             const TCollection_ExtendedString&    theText,
-                                             const gp_Pnt& theAttachmentPoint)
+occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&    theGroup,
+                                        const occ::handle<Prs3d_TextAspect>&   theAspect,
+                                        const TCollection_ExtendedString& theText,
+                                        const gp_Pnt&                     theAttachmentPoint)
 {
   theGroup->SetPrimitivesAspect(theAspect->Aspect());
 
@@ -43,11 +43,11 @@ occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&
 
 //=================================================================================================
 
-occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&  theGroup,
-                                             const occ::handle<Prs3d_TextAspect>& theAspect,
-                                             const TCollection_ExtendedString&    theText,
-                                             const gp_Ax2&                        theOrientation,
-                                             const bool                           theHasOwnAnchor)
+occ::handle<Graphic3d_Text> Prs3d_Text::Draw(const occ::handle<Graphic3d_Group>&    theGroup,
+                                        const occ::handle<Prs3d_TextAspect>&   theAspect,
+                                        const TCollection_ExtendedString& theText,
+                                        const gp_Ax2&                     theOrientation,
+                                        const bool            theHasOwnAnchor)
 {
   theGroup->SetPrimitivesAspect(theAspect->Aspect());
 

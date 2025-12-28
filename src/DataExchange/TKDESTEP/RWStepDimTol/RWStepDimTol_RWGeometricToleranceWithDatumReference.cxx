@@ -37,7 +37,7 @@ RWStepDimTol_RWGeometricToleranceWithDatumReference::
 
 void RWStepDimTol_RWGeometricToleranceWithDatumReference::ReadStep(
   const occ::handle<StepData_StepReaderData>&                         data,
-  const int                                                           num,
+  const int                                         num,
   occ::handle<Interface_Check>&                                       ach,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& ent) const
 {
@@ -71,12 +71,12 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::ReadStep(
   // Own fields of GeometricToleranceWithDatumReference
 
   occ::handle<NCollection_HArray1<StepDimTol_DatumSystemOrReference>> aDatumSystem;
-  int                                                                 sub5 = 0;
+  int                                   sub5 = 0;
   if (data->ReadSubList(num, 5, "datum_system", ach, sub5))
   {
-    int nb0      = data->NbParams(sub5);
-    aDatumSystem = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
-    int num2     = sub5;
+    int nb0  = data->NbParams(sub5);
+    aDatumSystem          = new NCollection_HArray1<StepDimTol_DatumSystemOrReference>(1, nb0);
+    int num2 = sub5;
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepDimTol_DatumSystemOrReference anIt0;
@@ -96,7 +96,7 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::ReadStep(
 //=================================================================================================
 
 void RWStepDimTol_RWGeometricToleranceWithDatumReference::WriteStep(
-  StepData_StepWriter&                                                SW,
+  StepData_StepWriter&                                           SW,
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& ent) const
 {
 
@@ -125,7 +125,7 @@ void RWStepDimTol_RWGeometricToleranceWithDatumReference::WriteStep(
 
 void RWStepDimTol_RWGeometricToleranceWithDatumReference::Share(
   const occ::handle<StepDimTol_GeometricToleranceWithDatumReference>& ent,
-  Interface_EntityIterator&                                           iter) const
+  Interface_EntityIterator&                                      iter) const
 {
 
   // Inherited fields of GeometricTolerance

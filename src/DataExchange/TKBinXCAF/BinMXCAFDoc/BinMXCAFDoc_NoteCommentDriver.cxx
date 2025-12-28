@@ -38,9 +38,10 @@ occ::handle<TDF_Attribute> BinMXCAFDoc_NoteCommentDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent&       theSource,
-                                          const occ::handle<TDF_Attribute>& theTarget,
-                                          BinObjMgt_RRelocationTable&       theRelocTable) const
+bool BinMXCAFDoc_NoteCommentDriver::Paste(
+  const BinObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  BinObjMgt_RRelocationTable&  theRelocTable) const
 {
   if (!BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable))
     return false;
@@ -60,10 +61,9 @@ bool BinMXCAFDoc_NoteCommentDriver::Paste(const BinObjMgt_Persistent&       theS
 
 //=================================================================================================
 
-void BinMXCAFDoc_NoteCommentDriver::Paste(
-  const occ::handle<TDF_Attribute>&                        theSource,
-  BinObjMgt_Persistent&                                    theTarget,
-  NCollection_IndexedMap<occ::handle<Standard_Transient>>& theRelocTable) const
+void BinMXCAFDoc_NoteCommentDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
+                                          BinObjMgt_Persistent&        theTarget,
+                                          NCollection_IndexedMap<occ::handle<Standard_Transient>>&  theRelocTable) const
 {
   BinMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -76,7 +76,7 @@ void BinMXCAFDoc_NoteCommentDriver::Paste(
 
 BinMXCAFDoc_NoteCommentDriver::BinMXCAFDoc_NoteCommentDriver(
   const occ::handle<Message_Messenger>& theMsgDriver,
-  const char*                           theName)
+  const char*                 theName)
     : BinMXCAFDoc_NoteDriver(theMsgDriver, theName)
 {
 }

@@ -28,8 +28,8 @@ typedef NCollection_Vec2<float> Vec2f;
 //! Auxiliary function to translate corners by the vector.
 inline void move(NCollection_Vector<Vec2f>& theCorners,
                  const Vec2f&               theMoveVec,
-                 int                        theCharLower,
-                 const int                  theCharUpper)
+                 int           theCharLower,
+                 const int     theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {
@@ -39,9 +39,9 @@ inline void move(NCollection_Vector<Vec2f>& theCorners,
 
 //! Auxiliary function to translate corners in vertical direction.
 inline void moveY(NCollection_Vector<Vec2f>& theCorners,
-                  const float                theMoveVec,
-                  int                        theCharLower,
-                  const int                  theCharUpper)
+                  const float   theMoveVec,
+                  int           theCharLower,
+                  const int     theCharUpper)
 {
   for (; theCharLower <= theCharUpper; ++theCharLower)
   {
@@ -141,7 +141,7 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
     else if (aCharThis == '\t')
     {
       const int aSpacesNum = (myTabSize - (aSymbolsCounter - 1) % myTabSize);
-      anAdvanceX           = theFont.AdvanceX(' ', aCharNext) * float(aSpacesNum);
+      anAdvanceX = theFont.AdvanceX(' ', aCharNext) * float(aSpacesNum);
       aSymbolsCounter += aSpacesNum;
     }
     else
@@ -158,7 +158,8 @@ void Font_TextFormatter::Append(const NCollection_String& theString, Font_FTFont
 
 //=================================================================================================
 
-void Font_TextFormatter::newLine(const int theLastRect, const float theMaxLineWidth)
+void Font_TextFormatter::newLine(const int   theLastRect,
+                                 const float theMaxLineWidth)
 {
   int aFirstCornerId = myRectLineStart;
   int aLastCornerId  = theLastRect;
@@ -170,8 +171,8 @@ void Font_TextFormatter::newLine(const int theLastRect, const float theMaxLineWi
     return;
   }
 
-  float     aXMin = BottomLeft(aFirstCornerId).x();
-  Font_Rect aBndBox;
+  float aXMin = BottomLeft(aFirstCornerId).x();
+  Font_Rect          aBndBox;
   GlyphBoundingBox(aLastCornerId, aBndBox);
   float aXMax = aBndBox.Right;
 
@@ -213,9 +214,9 @@ void Font_TextFormatter::Format()
   myMoveVec.x() = myMoveVec.y() = 0.0f;
 
   // split text into lines and apply horizontal alignment
-  myPenCurrLine = -myAscender;
+  myPenCurrLine              = -myAscender;
   int aRectIter = 0;
-  myNewLineNb   = 0;
+  myNewLineNb                = 0;
 
   float aMaxLineWidth = Wrapping();
   if (HasWrapping())
@@ -245,7 +246,7 @@ void Font_TextFormatter::Format()
   for (Font_TextFormatter::Iterator aFormatterIt(*this); aFormatterIt.More(); aFormatterIt.Next())
   {
     const char32_t aCharThis = aFormatterIt.Symbol();
-    aRectIter                = aFormatterIt.SymbolPosition();
+    aRectIter                          = aFormatterIt.SymbolPosition();
 
     if (aCharThis == '\x0A') // LF (line feed, new line)
     {
@@ -261,7 +262,7 @@ void Font_TextFormatter::Format()
       Font_Rect aBndBox;
       GlyphBoundingBox(aRectIter, aBndBox);
       const float aNextXPos     = aBndBox.Right - BottomLeft(aFirstCornerId).x();
-      bool        isCurWordFits = true;
+      bool         isCurWordFits = true;
       if (myIsWordWrapping && IsSeparatorSymbol(aCharPrev))
       {
         for (Font_TextFormatter::Iterator aWordIt = aFormatterIt; aWordIt.More(); aWordIt.Next())
@@ -315,7 +316,8 @@ void Font_TextFormatter::Format()
 
 //=================================================================================================
 
-bool Font_TextFormatter::GlyphBoundingBox(const int theIndex, Font_Rect& theBndBox) const
+bool Font_TextFormatter::GlyphBoundingBox(const int theIndex,
+                                                      Font_Rect&             theBndBox) const
 {
   if (theIndex < 0 || theIndex >= Corners().Size())
   {
@@ -323,10 +325,10 @@ bool Font_TextFormatter::GlyphBoundingBox(const int theIndex, Font_Rect& theBndB
   }
 
   const NCollection_Vec2<float>& aLeftCorner = BottomLeft(theIndex);
-  theBndBox.Left                             = aLeftCorner.x();
-  theBndBox.Right                            = aLeftCorner.x() + myLastSymbolWidth;
-  theBndBox.Bottom                           = aLeftCorner.y();
-  theBndBox.Top                              = theBndBox.Bottom + myLineSpacing;
+  theBndBox.Left                                          = aLeftCorner.x();
+  theBndBox.Right                                         = aLeftCorner.x() + myLastSymbolWidth;
+  theBndBox.Bottom                                        = aLeftCorner.y();
+  theBndBox.Top                                           = theBndBox.Bottom + myLineSpacing;
   if (theIndex + 1 >= myCorners.Length())
   {
     // the last symbol
@@ -342,7 +344,7 @@ bool Font_TextFormatter::GlyphBoundingBox(const int theIndex, Font_Rect& theBndB
   {
     // the next symbol is on the next row either by '\n' or by wrapping
     float aLineWidth = LineWidth(LineIndex(theIndex));
-    theBndBox.Left   = aLeftCorner.x();
+    theBndBox.Left                = aLeftCorner.x();
     switch (myAlignX)
     {
       case Graphic3d_HTA_LEFT:

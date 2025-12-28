@@ -90,8 +90,7 @@ public:
   Standard_EXPORT virtual occ::handle<StepRepr_MaterialDesignation> MaterialDesignation() const;
 
   //! returns Value as a MechanicalDesignGeometricPresentationRepresentation (Null if another type)
-  Standard_EXPORT virtual occ::handle<
-    StepVisual_MechanicalDesignGeometricPresentationRepresentation>
+  Standard_EXPORT virtual occ::handle<StepVisual_MechanicalDesignGeometricPresentationRepresentation>
     MechanicalDesignGeometricPresentationRepresentation() const;
 
   //! returns Value as a PresentationArea (Null if another type)
@@ -104,8 +103,8 @@ public:
   Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as a ProductDefinitionFormation (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormation>
-    ProductDefinitionFormation() const;
+  Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionFormation> ProductDefinitionFormation()
+    const;
 
   //! returns Value as aProductDefinitionRelationship (Null if another type)
   Standard_EXPORT virtual occ::handle<StepBasic_ProductDefinitionRelationship>
@@ -118,8 +117,7 @@ public:
   Standard_EXPORT virtual occ::handle<StepShape_ShapeRepresentation> ShapeRepresentation() const;
 
   //! returns Value as a SecurityClassification (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepBasic_SecurityClassification> SecurityClassification()
-    const;
+  Standard_EXPORT virtual occ::handle<StepBasic_SecurityClassification> SecurityClassification() const;
 
   //! returns Value as a ConfigurationItem (Null if another type)
   Standard_EXPORT virtual occ::handle<StepRepr_ConfigurationItem> ConfigurationItem() const;
@@ -147,8 +145,8 @@ public:
   Standard_EXPORT virtual occ::handle<StepRepr_Representation> Representation() const;
 
   //! returns Value as a ShapeAspectRelationship (Null if another type)
-  Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship()
-    const;
+  Standard_EXPORT virtual occ::handle<StepRepr_ShapeAspectRelationship> ShapeAspectRelationship() const;
+
 };
 
 #endif // _StepAP214_ApprovalItem_HeaderFile

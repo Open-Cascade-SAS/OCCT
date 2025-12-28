@@ -58,7 +58,8 @@ public: //! @name Setting expected size of the BVH
 
 public: //! @name Adding elements in BVH
   //! Adds the element into BVH
-  virtual void Add(const DataType& theElement, const BVH_Box<NumType, Dimension>& theBox) override
+  virtual void Add(const DataType&                    theElement,
+                   const BVH_Box<NumType, Dimension>& theBox) override
   {
     myIndices.push_back(static_cast<int>(myIndices.size()));
     BVH_BoxSet<NumType, Dimension, DataType>::Add(theElement, theBox);
@@ -83,7 +84,8 @@ public: //! @name Necessary overrides for BVH construction
   }
 
   //! Swaps indices of two specified boxes.
-  virtual void Swap(const int theIndex1, const int theIndex2) override
+  virtual void Swap(const int theIndex1,
+                    const int theIndex2) override
   {
     std::swap(myIndices[theIndex1], myIndices[theIndex2]);
   }

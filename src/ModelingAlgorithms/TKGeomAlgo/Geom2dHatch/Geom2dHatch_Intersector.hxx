@@ -63,18 +63,18 @@ public:
   //! The order is relevant, the first argument is the
   //! segment, the second the Edge.
   Standard_EXPORT void Perform(const gp_Lin2d&            L,
-                               const double               P,
-                               const double               Tol,
+                               const double        P,
+                               const double        Tol,
                                const Geom2dAdaptor_Curve& E);
 
   //! Returns in <T>, <N> and <C> the tangent, normal
   //! and curvature of the edge <E> at parameter value
   //! <U>.
   Standard_EXPORT void LocalGeometry(const Geom2dAdaptor_Curve& E,
-                                     const double               U,
+                                     const double        U,
                                      gp_Dir2d&                  T,
                                      gp_Dir2d&                  N,
-                                     double&                    C) const;
+                                     double&             C) const;
 
 private:
   double myConfusionTolerance;

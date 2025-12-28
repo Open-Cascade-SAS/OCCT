@@ -39,12 +39,12 @@ public:
   Standard_EXPORT Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter(
     const Adaptor2d_Curve2d& C1,
     const Adaptor2d_Curve2d& C2,
-    const double             Tol);
+    const double      Tol);
 
   Standard_EXPORT void Perform(const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& Poly1,
                                const Geom2dInt_ThePolygon2dOfTheIntPCurvePCurveOfGInter& Poly2,
-                               int&                                                      NumSegOn1,
-                               int&                                                      NumSegOn2,
+                               int&                                         NumSegOn1,
+                               int&                                         NumSegOn2,
                                double& ParamOnSeg1,
                                double& ParamOnSeg2);
 
@@ -64,16 +64,16 @@ public:
 private:
   Standard_EXPORT void MathPerform();
 
-  bool                                                        done;
-  int                                                         nbroots;
-  double                                                      myTol;
+  bool                                            done;
+  int                                            nbroots;
+  double                                               myTol;
   Geom2dInt_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfGInter FctDist;
   math_Vector                                                 ToleranceVector;
   math_Vector                                                 BInfVector;
   math_Vector                                                 BSupVector;
   math_Vector                                                 StartingPoint;
   math_Vector                                                 Root;
-  bool                                                        anErrorOccurred;
+  bool                                            anErrorOccurred;
 };
 
 #endif // _Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter_HeaderFile

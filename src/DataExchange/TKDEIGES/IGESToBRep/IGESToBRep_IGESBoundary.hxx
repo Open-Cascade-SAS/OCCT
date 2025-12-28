@@ -54,12 +54,12 @@ public:
   //! <face>, <trans>, <uFact>: as for IGESToBRep_TopoCurve
   //! <filepreference>: preferred representation (2 or 3) given
   //! in the IGES file
-  Standard_EXPORT void Init(const IGESToBRep_CurveAndSurface&       CS,
+  Standard_EXPORT void Init(const IGESToBRep_CurveAndSurface&  CS,
                             const occ::handle<IGESData_IGESEntity>& entity,
-                            const TopoDS_Face&                      face,
-                            const gp_Trsf2d&                        trans,
-                            const double                            uFact,
-                            const int                               filepreference);
+                            const TopoDS_Face&                 face,
+                            const gp_Trsf2d&                   trans,
+                            const double                uFact,
+                            const int             filepreference);
 
   //! Returns the resulting wire
   occ::handle<ShapeExtend_WireData> WireData() const;
@@ -85,14 +85,13 @@ public:
   //! <curves2d>: 1 parameter space curve for 142 or list of
   //! them for current model space curves for 141,
   //! <number>: 1 for 142 and rank number of model space curve for 141.
-  Standard_EXPORT bool Transfer(
-    bool&                                                                     okCurve,
-    bool&                                                                     okCurve3d,
-    bool&                                                                     okCurve2d,
-    const occ::handle<IGESData_IGESEntity>&                                   curve3d,
-    const bool                                                                toreverse3d,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-    const int                                                                 number);
+  Standard_EXPORT bool Transfer(bool&                           okCurve,
+                                            bool&                           okCurve3d,
+                                            bool&                           okCurve2d,
+                                            const occ::handle<IGESData_IGESEntity>&          curve3d,
+                                            const bool                      toreverse3d,
+                                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
+                                            const int                      number);
 
   //! Translates 508 entity.
   //! Returns True if the curve has been successfully translated,
@@ -108,15 +107,14 @@ public:
   //! to its model space curve,
   //! <number>: rank number of edge,
   //! <lsewd>: returns the result of translation of current edge.
-  Standard_EXPORT bool Transfer(
-    bool&                                                                     okCurve,
-    bool&                                                                     okCurve3d,
-    bool&                                                                     okCurve2d,
-    const occ::handle<ShapeExtend_WireData>&                                  curve3d,
-    const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-    const bool                                                                toreverse2d,
-    const int                                                                 number,
-    occ::handle<ShapeExtend_WireData>&                                        lsewd);
+  Standard_EXPORT bool Transfer(bool&                           okCurve,
+                                            bool&                           okCurve3d,
+                                            bool&                           okCurve2d,
+                                            const occ::handle<ShapeExtend_WireData>&         curve3d,
+                                            const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
+                                            const bool                      toreverse2d,
+                                            const int                      number,
+                                            occ::handle<ShapeExtend_WireData>&               lsewd);
 
   //! Checks result of translation of IGES boundary entities
   //! (types 141, 142 or 508).
@@ -136,32 +134,33 @@ public:
 protected:
   //! Methods called by both Transfer methods.
   Standard_EXPORT virtual bool Transfer(
-    bool&                                                                     okCurve,
-    bool&                                                                     okCurve3d,
-    bool&                                                                     okCurve2d,
-    const occ::handle<IGESData_IGESEntity>&                                   icurve3d,
-    const occ::handle<ShapeExtend_WireData>&                                  scurve3d,
-    const bool                                                                usescurve,
-    const bool                                                                toreverse3d,
+    bool&                           okCurve,
+    bool&                           okCurve3d,
+    bool&                           okCurve2d,
+    const occ::handle<IGESData_IGESEntity>&          icurve3d,
+    const occ::handle<ShapeExtend_WireData>&         scurve3d,
+    const bool                      usescurve,
+    const bool                      toreverse3d,
     const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& curves2d,
-    const bool                                                                toreverse2d,
-    const int                                                                 number,
-    occ::handle<ShapeExtend_WireData>&                                        lsewd);
+    const bool                      toreverse2d,
+    const int                      number,
+    occ::handle<ShapeExtend_WireData>&               lsewd);
 
   Standard_EXPORT static void ReverseCurves3d(const occ::handle<ShapeExtend_WireData>& sewd);
 
   Standard_EXPORT static void ReverseCurves2d(const occ::handle<ShapeExtend_WireData>& sewd,
-                                              const TopoDS_Face&                       face);
+                                              const TopoDS_Face&                  face);
 
-  IGESToBRep_CurveAndSurface        myCS;
+  IGESToBRep_CurveAndSurface   myCS;
   occ::handle<IGESData_IGESEntity>  myentity;
   occ::handle<ShapeExtend_WireData> mysewd;
   occ::handle<ShapeExtend_WireData> mysewd3d;
   occ::handle<ShapeExtend_WireData> mysewd2d;
-  TopoDS_Face                       myface;
-  gp_Trsf2d                         mytrsf;
-  double                            myuFact;
-  int                               myfilepreference;
+  TopoDS_Face                  myface;
+  gp_Trsf2d                    mytrsf;
+  double                myuFact;
+  int             myfilepreference;
+
 };
 
 #include <IGESToBRep_IGESBoundary.lxx>

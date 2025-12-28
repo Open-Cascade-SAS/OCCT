@@ -27,9 +27,9 @@ StepShape_ConnectedFaceSubSet::StepShape_ConnectedFaceSubSet() {}
 //=================================================================================================
 
 void StepShape_ConnectedFaceSubSet::Init(
-  const occ::handle<TCollection_HAsciiString>&                         aRepresentationItem_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>& aConnectedFaceSet_CfsFaces,
-  const occ::handle<StepShape_ConnectedFaceSet>&                       aParentFaceSet)
+  const occ::handle<TCollection_HAsciiString>&   aRepresentationItem_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>>&    aConnectedFaceSet_CfsFaces,
+  const occ::handle<StepShape_ConnectedFaceSet>& aParentFaceSet)
 {
   StepShape_ConnectedFaceSet::Init(aRepresentationItem_Name, aConnectedFaceSet_CfsFaces);
 

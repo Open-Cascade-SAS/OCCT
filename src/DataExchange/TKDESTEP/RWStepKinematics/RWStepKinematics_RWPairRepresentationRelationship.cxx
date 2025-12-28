@@ -37,7 +37,7 @@ RWStepKinematics_RWPairRepresentationRelationship::
 
 void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                       theData,
-  const int                                                         theNum,
+  const int                                       theNum,
   occ::handle<Interface_Check>&                                     theArch,
   const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt) const
 {
@@ -60,7 +60,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
                       aRepresentationRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aRepresentationRelationship_Description;
-  bool                                  hasRepresentationRelationship_Description = true;
+  bool                 hasRepresentationRelationship_Description = true;
   if (theData->IsParamDefined(theNum, 3))
   {
     theData->ReadString(theNum,
@@ -111,7 +111,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
-  StepData_StepWriter&                                              theSW,
+  StepData_StepWriter&                                         theSW,
   const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt) const
 {
 
@@ -142,7 +142,7 @@ void RWStepKinematics_RWPairRepresentationRelationship::WriteStep(
 
 void RWStepKinematics_RWPairRepresentationRelationship::Share(
   const occ::handle<StepKinematics_PairRepresentationRelationship>& theEnt,
-  Interface_EntityIterator&                                         iter) const
+  Interface_EntityIterator&                                    iter) const
 {
 
   // Inherited fields of RepresentationItem

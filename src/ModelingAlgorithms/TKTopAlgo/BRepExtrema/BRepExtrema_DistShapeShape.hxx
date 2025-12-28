@@ -18,6 +18,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <BRepExtrema_SolutionElem.hxx>
+#include <BRepExtrema_SolutionElem.hxx>
 #include <BRepExtrema_SupportType.hxx>
 #include <Extrema_ExtAlgo.hxx>
 #include <Extrema_ExtFlag.hxx>
@@ -62,7 +63,7 @@ public:
   Standard_EXPORT BRepExtrema_DistShapeShape(
     const TopoDS_Shape&          Shape1,
     const TopoDS_Shape&          Shape2,
-    const double                 theDeflection,
+    const double          theDeflection,
     const Extrema_ExtFlag        F        = Extrema_ExtFlag_MINMAX,
     const Extrema_ExtAlgo        A        = Extrema_ExtAlgo_Grad,
     const Message_ProgressRange& theRange = Message_ProgressRange());
@@ -82,7 +83,8 @@ public:
   //!          from the minimum one.
   //!          Returns IsDone status.
   //! theRange - the progress indicator of algorithm
-  Standard_EXPORT bool Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
+  Standard_EXPORT bool
+    Perform(const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! True if the minimum distance is found.
   bool IsDone() const { return myIsDone; }
@@ -98,10 +100,16 @@ public:
   bool InnerSolution() const { return myInnerSol; }
 
   //! Returns the Point corresponding to the <N>th solution on the first Shape
-  const gp_Pnt& PointOnShape1(const int N) const { return mySolutionsShape1.Value(N).Point(); }
+  const gp_Pnt& PointOnShape1(const int N) const
+  {
+    return mySolutionsShape1.Value(N).Point();
+  }
 
   //! Returns the Point corresponding to the <N>th solution on the second Shape
-  const gp_Pnt& PointOnShape2(const int N) const { return mySolutionsShape2.Value(N).Point(); }
+  const gp_Pnt& PointOnShape2(const int N) const
+  {
+    return mySolutionsShape2.Value(N).Point();
+  }
 
   //! gives the type of the support where the Nth solution on the first shape is situated:
   //!   IsVertex => the Nth solution on the first shape is a Vertex
@@ -141,11 +149,15 @@ public:
 
   //! gives the corresponding parameters (U,V) if the Nth solution
   //! is situated on an face of the first shape
-  Standard_EXPORT void ParOnFaceS1(const int N, double& u, double& v) const;
+  Standard_EXPORT void ParOnFaceS1(const int N,
+                                   double&         u,
+                                   double&         v) const;
 
   //! gives the corresponding parameters (U,V) if the Nth solution
   //! is situated on an Face of the second shape
-  Standard_EXPORT void ParOnFaceS2(const int N, double& u, double& v) const;
+  Standard_EXPORT void ParOnFaceS2(const int N,
+                                   double&         u,
+                                   double&         v) const;
 
   //! Prints on the stream o information on the current state of the object.
   Standard_EXPORT void Dump(Standard_OStream& o) const;
@@ -168,47 +180,46 @@ public:
 private:
   //! computes the minimum distance between two maps of shapes (Face,Edge,Vertex)
   bool DistanceMapMap(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map1,
-                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map2,
-                      const NCollection_Array1<Bnd_Box>&                                   LBox1,
-                      const NCollection_Array1<Bnd_Box>&                                   LBox2,
-                      const Message_ProgressRange& theRange);
+                                  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& Map2,
+                                  const NCollection_Array1<Bnd_Box>&            LBox1,
+                                  const NCollection_Array1<Bnd_Box>&            LBox2,
+                                  const Message_ProgressRange&      theRange);
 
   //! computes the minimum distance between two maps of vertices
-  bool DistanceVertVert(
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap1,
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap2,
-    const Message_ProgressRange&                                         theRange);
+  bool DistanceVertVert(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap1,
+                                    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap2,
+                                    const Message_ProgressRange&      theRange);
 
-  bool SolidTreatment(const TopoDS_Shape&                                                  theShape,
-                      const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
-                      const Message_ProgressRange& theRange);
+  bool SolidTreatment(const TopoDS_Shape&               theShape,
+                                  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
+                                  const Message_ProgressRange&      theRange);
 
 private:
-  double                                                        myDistRef;
-  bool                                                          myIsDone;
-  NCollection_Sequence<BRepExtrema_SolutionElem>                mySolutionsShape1;
-  NCollection_Sequence<BRepExtrema_SolutionElem>                mySolutionsShape2;
-  bool                                                          myInnerSol;
-  double                                                        myEps;
-  TopoDS_Shape                                                  myShape1;
-  TopoDS_Shape                                                  myShape2;
+  double              myDistRef;
+  bool           myIsDone;
+  NCollection_Sequence<BRepExtrema_SolutionElem>  mySolutionsShape1;
+  NCollection_Sequence<BRepExtrema_SolutionElem>  mySolutionsShape2;
+  bool           myInnerSol;
+  double              myEps;
+  TopoDS_Shape               myShape1;
+  TopoDS_Shape               myShape2;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapV1;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapV2;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapE1;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapE2;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapF1;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myMapF2;
-  bool                                                          myIsInitS1;
-  bool                                                          myIsInitS2;
-  Extrema_ExtFlag                                               myFlag;
-  Extrema_ExtAlgo                                               myAlgo;
-  NCollection_Array1<Bnd_Box>                                   myBV1;
-  NCollection_Array1<Bnd_Box>                                   myBV2;
-  NCollection_Array1<Bnd_Box>                                   myBE1;
-  NCollection_Array1<Bnd_Box>                                   myBE2;
-  NCollection_Array1<Bnd_Box>                                   myBF1;
-  NCollection_Array1<Bnd_Box>                                   myBF2;
-  bool                                                          myIsMultiThread;
+  bool           myIsInitS1;
+  bool           myIsInitS2;
+  Extrema_ExtFlag            myFlag;
+  Extrema_ExtAlgo            myAlgo;
+  NCollection_Array1<Bnd_Box>            myBV1;
+  NCollection_Array1<Bnd_Box>            myBV2;
+  NCollection_Array1<Bnd_Box>            myBE1;
+  NCollection_Array1<Bnd_Box>            myBE2;
+  NCollection_Array1<Bnd_Box>            myBF1;
+  NCollection_Array1<Bnd_Box>            myBF2;
+  bool           myIsMultiThread;
 };
 
 #endif

@@ -18,6 +18,7 @@
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_RenderingPropertiesSelect.hxx>
+#include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbientDiffuseSpecular.hxx>
@@ -81,7 +82,7 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
 
 STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
   const occ::handle<StepVisual_Colour>& theColor,
-  const double                          theTransparency)
+  const double              theTransparency)
     : mySurfaceColor(Quantity_NOC_WHITE),
       myTransparency(0.0),
       myRenderingMethod(StepVisual_ssmNormalShading),
@@ -133,7 +134,7 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
 
 STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
   const Quantity_Color& theSurfaceColor,
-  const double          theTransparency)
+  const double   theTransparency)
     : mySurfaceColor(Quantity_NOC_WHITE),
       myTransparency(0.0),
       myRenderingMethod(StepVisual_ssmNormalShading),
@@ -149,7 +150,8 @@ STEPConstruct_RenderingProperties::STEPConstruct_RenderingProperties(
 
 //=================================================================================================
 
-void STEPConstruct_RenderingProperties::SetAmbientReflectance(const double theAmbientReflectance)
+void STEPConstruct_RenderingProperties::SetAmbientReflectance(
+  const double theAmbientReflectance)
 {
   myAmbientReflectance.first  = theAmbientReflectance;
   myAmbientReflectance.second = true;
@@ -170,10 +172,10 @@ void STEPConstruct_RenderingProperties::SetAmbientAndDiffuseReflectance(
 //=================================================================================================
 
 void STEPConstruct_RenderingProperties::SetAmbientDiffuseAndSpecularReflectance(
-  const double          theAmbientReflectance,
-  const double          theDiffuseReflectance,
-  const double          theSpecularReflectance,
-  const double          theSpecularExponent,
+  const double   theAmbientReflectance,
+  const double   theDiffuseReflectance,
+  const double   theSpecularReflectance,
+  const double   theSpecularExponent,
   const Quantity_Color& theSpecularColour)
 {
   myAmbientReflectance.first   = theAmbientReflectance;
@@ -235,8 +237,7 @@ occ::handle<StepVisual_SurfaceStyleRenderingWithProperties> STEPConstruct_Render
   int aPropIndex = 1;
 
   // Add transparency
-  occ::handle<StepVisual_SurfaceStyleTransparent> aTransparent =
-    new StepVisual_SurfaceStyleTransparent;
+  occ::handle<StepVisual_SurfaceStyleTransparent> aTransparent = new StepVisual_SurfaceStyleTransparent;
   aTransparent->Init(myTransparency);
   aProps->ChangeValue(aPropIndex++).SetValue(aTransparent);
 
@@ -345,7 +346,7 @@ XCAFDoc_VisMaterialCommon STEPConstruct_RenderingProperties::CreateXCAFMaterial(
     // Convert STEP specular exponent to XCAF shininess using fixed scale factor
     const double kScaleFactor = 128.0;
     const double aShininess   = mySpecularExponent.first / kScaleFactor;
-    aMaterial.Shininess       = (float)std::min(1.0, aShininess);
+    aMaterial.Shininess              = (float)std::min(1.0, aShininess);
   }
 
   return aMaterial;
@@ -371,7 +372,7 @@ void STEPConstruct_RenderingProperties::Init(
     return;
   }
 
-  myRenderingMethod                     = theRenderingProperties->RenderingMethod();
+  myRenderingMethod                = theRenderingProperties->RenderingMethod();
   occ::handle<StepVisual_Colour> aColor = theRenderingProperties->SurfaceColour();
 
   // Decode surface color using STEPConstruct_Styles utility
@@ -460,7 +461,7 @@ void STEPConstruct_RenderingProperties::Init(const Quantity_ColorRGBA& theRGBACo
 //=================================================================================================
 
 void STEPConstruct_RenderingProperties::Init(const occ::handle<StepVisual_Colour>& theColor,
-                                             const double                          theTransparency)
+                                             const double              theTransparency)
 {
   mySurfaceColor        = Quantity_NOC_WHITE;
   myTransparency        = theTransparency;
@@ -528,9 +529,10 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
     double aAmbBlue  = theMaterial.AmbientColor.Blue();
 
     // Calculate per-channel ratios
-    const double aRed   = (aDiffRed > Precision::Confusion()) ? aAmbRed / aDiffRed : 0.0;
-    const double aGreen = (aDiffGreen > Precision::Confusion()) ? aAmbGreen / aDiffGreen : 0.0;
-    const double aBlue  = (aDiffBlue > Precision::Confusion()) ? aAmbBlue / aDiffBlue : 0.0;
+    const double aRed = (aDiffRed > Precision::Confusion()) ? aAmbRed / aDiffRed : 0.0;
+    const double aGreen =
+      (aDiffGreen > Precision::Confusion()) ? aAmbGreen / aDiffGreen : 0.0;
+    const double aBlue = (aDiffBlue > Precision::Confusion()) ? aAmbBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
     const double aMin = std::min(aRed, std::min(aGreen, aBlue));
@@ -570,9 +572,10 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
     const double aSpecBlue  = theMaterial.SpecularColor.Blue();
 
     // Calculate per-channel ratios
-    const double aRed   = (aDiffRed > Precision::Confusion()) ? aSpecRed / aDiffRed : 0.0;
-    const double aGreen = (aDiffGreen > Precision::Confusion()) ? aSpecGreen / aDiffGreen : 0.0;
-    const double aBlue  = (aDiffBlue > Precision::Confusion()) ? aSpecBlue / aDiffBlue : 0.0;
+    const double aRed = (aDiffRed > Precision::Confusion()) ? aSpecRed / aDiffRed : 0.0;
+    const double aGreen =
+      (aDiffGreen > Precision::Confusion()) ? aSpecGreen / aDiffGreen : 0.0;
+    const double aBlue = (aDiffBlue > Precision::Confusion()) ? aSpecBlue / aDiffBlue : 0.0;
 
     // Calculate min and max of RGB ratios
     const double aMin = std::min(aRed, std::min(aGreen, aBlue));
@@ -603,9 +606,9 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
       mySpecularColour.second = true;
 
       // Still compute an average reflectance factor for formats that don't support color
-      double aSpecularFactor       = (aSpecRed + aSpecGreen + aSpecBlue) / 3.0;
-      mySpecularReflectance.first  = aSpecularFactor;
-      mySpecularReflectance.second = true;
+      double aSpecularFactor = (aSpecRed + aSpecGreen + aSpecBlue) / 3.0;
+      mySpecularReflectance.first   = aSpecularFactor;
+      mySpecularReflectance.second  = true;
     }
   }
 
@@ -613,8 +616,8 @@ void STEPConstruct_RenderingProperties::Init(const XCAFDoc_VisMaterialCommon& th
   if (theMaterial.Shininess >= 0.0f && std::abs(theMaterial.Shininess - 1.0f) > 0.01f)
   {
     const double kScaleFactor = 128.0;
-    mySpecularExponent.first  = theMaterial.Shininess * kScaleFactor;
-    mySpecularExponent.second = true;
+    mySpecularExponent.first         = theMaterial.Shininess * kScaleFactor;
+    mySpecularExponent.second        = true;
   }
 }
 
@@ -634,7 +637,7 @@ void STEPConstruct_RenderingProperties::Init(const occ::handle<XCAFDoc_VisMateri
 //=================================================================================================
 
 void STEPConstruct_RenderingProperties::Init(const Quantity_Color& theSurfaceColor,
-                                             const double          theTransparency)
+                                             const double   theTransparency)
 {
   mySurfaceColor        = theSurfaceColor;
   myTransparency        = theTransparency;

@@ -64,30 +64,32 @@ public:
 
   Standard_EXPORT virtual void NextVertex() override;
 
-  Standard_EXPORT virtual TopAbs_State Classify(const gp_Pnt2d& P2d,
-                                                const double    Tol,
-                                                const bool      RecadreOnPeriodic = true) override;
+  Standard_EXPORT virtual TopAbs_State Classify(
+    const gp_Pnt2d&        P2d,
+    const double    Tol,
+    const bool RecadreOnPeriodic = true) override;
 
   //! see the code for specifications)
-  Standard_EXPORT virtual bool IsThePointOn(const gp_Pnt2d& P2d,
-                                            const double    Tol,
-                                            const bool      RecadreOnPeriodic = true) override;
+  Standard_EXPORT virtual bool IsThePointOn(
+    const gp_Pnt2d&        P2d,
+    const double    Tol,
+    const bool RecadreOnPeriodic = true) override;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT virtual TopAbs_Orientation Orientation(
-    const occ::handle<Adaptor2d_Curve2d>& C) override;
+  Standard_EXPORT virtual TopAbs_Orientation Orientation(const occ::handle<Adaptor2d_Curve2d>& C)
+    override;
 
   //! If the function returns the orientation of the arc.
   //! If the orientation is FORWARD or REVERSED, the arc is
   //! a "real" limit of the surface.
   //! If the orientation is INTERNAL or EXTERNAL, the arc is
   //! considered as an arc on the surface.
-  Standard_EXPORT virtual TopAbs_Orientation Orientation(
-    const occ::handle<Adaptor3d_HVertex>& C) override;
+  Standard_EXPORT virtual TopAbs_Orientation Orientation(const occ::handle<Adaptor3d_HVertex>& C)
+    override;
 
   Standard_EXPORT void Destroy();
 
@@ -98,10 +100,12 @@ public:
   Standard_EXPORT virtual bool Has3d() const override;
 
   //! returns 3d tolerance of the arc C
-  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor2d_Curve2d>& C) const override;
+  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor2d_Curve2d>& C) const
+    override;
 
   //! returns 3d tolerance of the vertex V
-  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor3d_HVertex>& V) const override;
+  Standard_EXPORT virtual double Tol3d(const occ::handle<Adaptor3d_HVertex>& V) const
+    override;
 
   //! returns 3d point of the vertex V
   Standard_EXPORT virtual gp_Pnt Pnt(const occ::handle<Adaptor3d_HVertex>& V) const override;
@@ -117,23 +121,25 @@ public:
   //! compute the sample-points for the intersections algorithms
   Standard_EXPORT virtual int NbSamples() override;
 
-  Standard_EXPORT virtual void SamplePoint(const int Index, gp_Pnt2d& P2d, gp_Pnt& P3d) override;
+  Standard_EXPORT virtual void SamplePoint(const int Index,
+                                           gp_Pnt2d&              P2d,
+                                           gp_Pnt&                P3d) override;
 
   Standard_EXPORT virtual bool DomainIsInfinite() override;
 
   DEFINE_STANDARD_RTTIEXT(BRepTopAdaptor_TopolTool, Adaptor3d_TopolTool)
 
 private:
-  TopExp_Explorer                                             myVIterator;
-  TopoDS_Face                                                 myFace;
-  void*                                                       myFClass2d;
-  occ::handle<BRepAdaptor_Curve2d>                            myCurve;
-  NCollection_List<occ::handle<Standard_Transient>>           myCurves;
+  TopExp_Explorer                       myVIterator;
+  TopoDS_Face                           myFace;
+  void*                      myFClass2d;
+  occ::handle<BRepAdaptor_Curve2d>           myCurve;
+  NCollection_List<occ::handle<Standard_Transient>>               myCurves;
   NCollection_List<occ::handle<Standard_Transient>>::Iterator myCIterator;
-  double                                                      myU0;
-  double                                                      myV0;
-  double                                                      myDU;
-  double                                                      myDV;
+  double                         myU0;
+  double                         myV0;
+  double                         myDU;
+  double                         myDV;
 };
 
 #endif // _BRepTopAdaptor_TopolTool_HeaderFile

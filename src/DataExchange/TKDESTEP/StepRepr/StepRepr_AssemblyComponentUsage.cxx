@@ -33,13 +33,13 @@ StepRepr_AssemblyComponentUsage::StepRepr_AssemblyComponentUsage()
 void StepRepr_AssemblyComponentUsage::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                                   hasProductDefinitionRelationship_Description,
+  const bool                  hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const occ::handle<StepBasic_ProductDefinition>&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const occ::handle<StepBasic_ProductDefinition>&
-             aProductDefinitionRelationship_RelatedProductDefinition,
-  const bool hasReferenceDesignator,
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const bool                  hasReferenceDesignator,
   const occ::handle<TCollection_HAsciiString>& aReferenceDesignator)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,
@@ -63,13 +63,13 @@ void StepRepr_AssemblyComponentUsage::Init(
 void StepRepr_AssemblyComponentUsage::Init(
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Id,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Name,
-  const bool                                   hasProductDefinitionRelationship_Description,
+  const bool                  hasProductDefinitionRelationship_Description,
   const occ::handle<TCollection_HAsciiString>& aProductDefinitionRelationship_Description,
   const StepBasic_ProductDefinitionOrReference&
     aProductDefinitionRelationship_RelatingProductDefinition,
   const StepBasic_ProductDefinitionOrReference&
-             aProductDefinitionRelationship_RelatedProductDefinition,
-  const bool hasReferenceDesignator,
+                                          aProductDefinitionRelationship_RelatedProductDefinition,
+  const bool                  hasReferenceDesignator,
   const occ::handle<TCollection_HAsciiString>& aReferenceDesignator)
 {
   StepRepr_ProductDefinitionUsage::Init(aProductDefinitionRelationship_Id,

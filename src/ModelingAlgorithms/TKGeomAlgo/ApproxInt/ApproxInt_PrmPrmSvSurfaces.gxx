@@ -41,14 +41,14 @@ ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces(const ThePSurface& Surf1,
 // purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
 //            parameters on the surfaces.
 //=======================================================================
-bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
-                                         double&   v1,
-                                         double&   u2,
-                                         double&   v2,
-                                         gp_Pnt&   P,
-                                         gp_Vec&   Tg,
-                                         gp_Vec2d& Tguv1,
-                                         gp_Vec2d& Tguv2)
+bool ApproxInt_PrmPrmSvSurfaces::Compute(double& u1,
+                                                     double& v1,
+                                                     double& u2,
+                                                     double& v2,
+                                                     gp_Pnt&        P,
+                                                     gp_Vec&        Tg,
+                                                     gp_Vec2d&      Tguv1,
+                                                     gp_Vec2d&      Tguv2)
 {
 
   double tu1 = u1;
@@ -81,13 +81,13 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
         && (MyParOnS2bis.Y() == v2))
     {
 
-      gp_Vec   TV(MyTg);
-      gp_Vec2d TV1(MyTguv1);
-      gp_Vec2d TV2(MyTguv2);
-      gp_Pnt   TP(MyPnt);
-      gp_Pnt2d TP1(MyParOnS1);
-      gp_Pnt2d TP2(MyParOnS2);
-      bool     TB = MyIsTangent;
+      gp_Vec           TV(MyTg);
+      gp_Vec2d         TV1(MyTguv1);
+      gp_Vec2d         TV2(MyTguv2);
+      gp_Pnt           TP(MyPnt);
+      gp_Pnt2d         TP1(MyParOnS1);
+      gp_Pnt2d         TP2(MyParOnS2);
+      bool TB = MyIsTangent;
 
       MyTg        = MyTgbis;
       MyTguv1     = MyTguv1bis;
@@ -111,7 +111,7 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
 
   MyIsTangent = true;
 
-  double                     aParam[4]; // stack vs heap allocation
+  double        aParam[4]; // stack vs heap allocation
   NCollection_Array1<double> Param(aParam[0], 1, 4);
   Param(1) = u1;
   Param(2) = v1;
@@ -173,8 +173,8 @@ bool ApproxInt_PrmPrmSvSurfaces::Compute(double&   u1,
   MyTg = Tg;
 
   double DeltaU, DeltaV;
-  gp_Vec TU, TV;
-  gp_Pnt Pbid;
+  gp_Vec        TU, TV;
+  gp_Pnt        Pbid;
   double TUTV, TgTU, TgTV, TUTU, TVTV, DIS;
   //------------------------------------------------------------
   //-- Calcul de Tguv1
@@ -233,15 +233,15 @@ void ApproxInt_PrmPrmSvSurfaces::Pnt(const double u1,
                                      const double v1,
                                      const double u2,
                                      const double v2,
-                                     gp_Pnt&      P)
+                                     gp_Pnt&             P)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
+  gp_Pnt        aP;
+  gp_Vec        aT;
+  gp_Vec2d      aTS1, aTS2;
+  double tu1 = u1;
+  double tu2 = u2;
+  double tv1 = v1;
+  double tv2 = v2;
   this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
   P = MyPnt;
 }
@@ -251,19 +251,19 @@ void ApproxInt_PrmPrmSvSurfaces::Pnt(const double u1,
 // purpose  :    Computes point on curve and
 //            parameters on the surfaces.
 //=======================================================================
-bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double     u1,
-                                           const double     v1,
-                                           const double     u2,
-                                           const double     v2,
-                                           IntSurf_PntOn2S& Point)
+bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double u1,
+                                                       const double v1,
+                                                       const double u2,
+                                                       const double v2,
+                                                       IntSurf_PntOn2S&    Point)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
+  gp_Pnt        aP;
+  gp_Vec        aT;
+  gp_Vec2d      aTS1, aTS2;
+  double tu1 = u1;
+  double tu2 = u2;
+  double tv1 = v1;
+  double tv2 = v2;
   if (!Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2))
     return false;
 
@@ -274,60 +274,60 @@ bool ApproxInt_PrmPrmSvSurfaces::SeekPoint(const double     u1,
 //=================================================================================================
 
 bool ApproxInt_PrmPrmSvSurfaces::Tangency(const double u1,
-                                          const double v1,
-                                          const double u2,
-                                          const double v2,
-                                          gp_Vec&      T)
+                                                      const double v1,
+                                                      const double u2,
+                                                      const double v2,
+                                                      gp_Vec&             T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTg;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTg;
   return (t);
 }
 
 //=================================================================================================
 
 bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf1(const double u1,
-                                                 const double v1,
-                                                 const double u2,
-                                                 const double v2,
-                                                 gp_Vec2d&    T)
+                                                             const double v1,
+                                                             const double u2,
+                                                             const double v2,
+                                                             gp_Vec2d&           T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTguv1;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv1;
   return (t);
 }
 
 //=================================================================================================
 
 bool ApproxInt_PrmPrmSvSurfaces::TangencyOnSurf2(const double u1,
-                                                 const double v1,
-                                                 const double u2,
-                                                 const double v2,
-                                                 gp_Vec2d&    T)
+                                                             const double v1,
+                                                             const double u2,
+                                                             const double v2,
+                                                             gp_Vec2d&           T)
 {
-  gp_Pnt   aP;
-  gp_Vec   aT;
-  gp_Vec2d aTS1, aTS2;
-  double   tu1 = u1;
-  double   tu2 = u2;
-  double   tv1 = v1;
-  double   tv2 = v2;
-  bool     t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
-  T            = MyTguv2;
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  double    tu1 = u1;
+  double    tu2 = u2;
+  double    tv1 = v1;
+  double    tv2 = v2;
+  bool t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv2;
   return (t);
 }
 

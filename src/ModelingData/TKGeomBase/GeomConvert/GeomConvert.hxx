@@ -27,6 +27,12 @@
 #include <Convert_ParameterisationType.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 class Geom_BSplineCurve;
 class Geom_BSplineSurface;
@@ -81,9 +87,9 @@ public:
   //! [FirstUKnotIndex, LastUKnotIndex]
   Standard_EXPORT static occ::handle<Geom_BSplineCurve> SplitBSplineCurve(
     const occ::handle<Geom_BSplineCurve>& C,
-    const int                             FromK1,
-    const int                             ToK2,
-    const bool                            SameOrientation = true);
+    const int           FromK1,
+    const int           ToK2,
+    const bool           SameOrientation = true);
 
   //! This function computes the segment of B-spline curve between the
   //! parametric values FromU1, ToU2.
@@ -102,10 +108,10 @@ public:
   //! Raised if ParametricTolerance < Resolution from gp.
   Standard_EXPORT static occ::handle<Geom_BSplineCurve> SplitBSplineCurve(
     const occ::handle<Geom_BSplineCurve>& C,
-    const double                          FromU1,
-    const double                          ToU2,
-    const double                          ParametricTolerance,
-    const bool                            SameOrientation = true);
+    const double              FromU1,
+    const double              ToU2,
+    const double              ParametricTolerance,
+    const bool           SameOrientation = true);
 
   //! Computes the B-spline surface patche between the knots values
   //! FromUK1, ToUK2, FromVK1, ToVK2.
@@ -123,12 +129,12 @@ public:
   //! [FirstVKnotIndex, LastVKnotIndex]
   Standard_EXPORT static occ::handle<Geom_BSplineSurface> SplitBSplineSurface(
     const occ::handle<Geom_BSplineSurface>& S,
-    const int                               FromUK1,
-    const int                               ToUK2,
-    const int                               FromVK1,
-    const int                               ToVK2,
-    const bool                              SameUOrientation = true,
-    const bool                              SameVOrientation = true);
+    const int             FromUK1,
+    const int             ToUK2,
+    const int             FromVK1,
+    const int             ToVK2,
+    const bool             SameUOrientation = true,
+    const bool             SameVOrientation = true);
 
   //! This method splits a B-spline surface patche between the
   //! knots values FromK1, ToK2 in one direction.
@@ -144,10 +150,10 @@ public:
   //! considered parametric direction.
   Standard_EXPORT static occ::handle<Geom_BSplineSurface> SplitBSplineSurface(
     const occ::handle<Geom_BSplineSurface>& S,
-    const int                               FromK1,
-    const int                               ToK2,
-    const bool                              USplit,
-    const bool                              SameOrientation = true);
+    const int             FromK1,
+    const int             ToK2,
+    const bool             USplit,
+    const bool             SameOrientation = true);
 
   //! This method computes the B-spline surface patche between the
   //! parametric values FromU1, ToU2, FromV1, ToV2.
@@ -169,13 +175,13 @@ public:
   //! Raised if ParametricTolerance < Resolution.
   Standard_EXPORT static occ::handle<Geom_BSplineSurface> SplitBSplineSurface(
     const occ::handle<Geom_BSplineSurface>& S,
-    const double                            FromU1,
-    const double                            ToU2,
-    const double                            FromV1,
-    const double                            ToV2,
-    const double                            ParametricTolerance,
-    const bool                              SameUOrientation = true,
-    const bool                              SameVOrientation = true);
+    const double                FromU1,
+    const double                ToU2,
+    const double                FromV1,
+    const double                ToV2,
+    const double                ParametricTolerance,
+    const bool             SameUOrientation = true,
+    const bool             SameVOrientation = true);
 
   //! This method splits the B-spline surface S in one direction
   //! between the parametric values FromParam1, ToParam2.
@@ -196,11 +202,11 @@ public:
   //! Raises if Abs (FromParam1 - ToParam2) <= ParametricTolerance.
   Standard_EXPORT static occ::handle<Geom_BSplineSurface> SplitBSplineSurface(
     const occ::handle<Geom_BSplineSurface>& S,
-    const double                            FromParam1,
-    const double                            ToParam2,
-    const bool                              USplit,
-    const double                            ParametricTolerance,
-    const bool                              SameOrientation = true);
+    const double                FromParam1,
+    const double                ToParam2,
+    const bool             USplit,
+    const double                ParametricTolerance,
+    const bool             SameOrientation = true);
 
   //! This function converts a non infinite curve from
   //! Geom into a B-spline curve. C must be an ellipse or a
@@ -268,7 +274,7 @@ public:
   //! trimmed curve (this method of parameterization
   //! cannot be used to convert a quasi-complete circle or ellipse).
   Standard_EXPORT static occ::handle<Geom_BSplineCurve> CurveToBSplineCurve(
-    const occ::handle<Geom_Curve>&     C,
+    const occ::handle<Geom_Curve>&          C,
     const Convert_ParameterisationType Parameterisation = Convert_TgtThetaOver2);
 
   //! This algorithm converts a non infinite surface from Geom
@@ -294,12 +300,11 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatG1(
-    NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-    const NCollection_Array1<double>&                                 ArrayOfToler,
-    occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-    bool&                                                             ClosedFlag,
-    const double                                                      ClosedTolerance);
+  Standard_EXPORT static void ConcatG1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                                       const NCollection_Array1<double>&             ArrayOfToler,
+                                       occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                                       bool&                       ClosedFlag,
+                                       const double                     ClosedTolerance);
 
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
@@ -313,13 +318,12 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatC1(
-    NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-    const NCollection_Array1<double>&                                 ArrayOfToler,
-    occ::handle<NCollection_HArray1<int>>&                            ArrayOfIndices,
-    occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-    bool&                                                             ClosedFlag,
-    const double                                                      ClosedTolerance);
+  Standard_EXPORT static void ConcatC1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                                       const NCollection_Array1<double>&             ArrayOfToler,
+                                       occ::handle<NCollection_HArray1<int>>&       ArrayOfIndices,
+                                       occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                                       bool&                       ClosedFlag,
+                                       const double                     ClosedTolerance);
 
   //! This Method concatenates C1 the ArrayOfCurves as far
   //! as it is possible.
@@ -333,14 +337,13 @@ public:
   //! Otherwise its value is 0.0
   //! ClosedFlag becomes False on the output
   //! if it is impossible to build closed curve.
-  Standard_EXPORT static void ConcatC1(
-    NCollection_Array1<occ::handle<Geom_BSplineCurve>>&               ArrayOfCurves,
-    const NCollection_Array1<double>&                                 ArrayOfToler,
-    occ::handle<NCollection_HArray1<int>>&                            ArrayOfIndices,
-    occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
-    bool&                                                             ClosedFlag,
-    const double                                                      ClosedTolerance,
-    const double                                                      AngularTolerance);
+  Standard_EXPORT static void ConcatC1(NCollection_Array1<occ::handle<Geom_BSplineCurve>>&          ArrayOfCurves,
+                                       const NCollection_Array1<double>&             ArrayOfToler,
+                                       occ::handle<NCollection_HArray1<int>>&       ArrayOfIndices,
+                                       occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& ArrayOfConcatenated,
+                                       bool&                       ClosedFlag,
+                                       const double                     ClosedTolerance,
+                                       const double                     AngularTolerance);
 
   //! This Method reduces as far as it is possible the
   //! multiplicities of the knots of the BSpline BS.(keeping the
@@ -349,17 +352,18 @@ public:
   //! The Angular toleranceis in radians and measures the angle of
   //! the tangents on the left and on the right to decide if the
   //! curve is G1 or not at a given point
-  Standard_EXPORT static void C0BSplineToC1BSplineCurve(occ::handle<Geom_BSplineCurve>& BS,
-                                                        const double                    tolerance,
-                                                        const double AngularTolerance = 1.0e-7);
+  Standard_EXPORT static void C0BSplineToC1BSplineCurve(
+    occ::handle<Geom_BSplineCurve>& BS,
+    const double        tolerance,
+    const double        AngularTolerance = 1.0e-7);
 
   //! This Method reduces as far as it is possible the
   //! multiplicities of the knots of the BSpline BS.(keeping the geometry).
   //! It returns an array of BSpline C1. tolerance is a geometrical tolerance.
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
-    const occ::handle<Geom_BSplineCurve>&                             BS,
+    const occ::handle<Geom_BSplineCurve>&        BS,
     occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
-    const double                                                      tolerance);
+    const double                     tolerance);
 
   //! This Method reduces as far as it is possible the
   //! multiplicities of the knots of the BSpline BS.(keeping the
@@ -369,10 +373,10 @@ public:
   //! the tangents on the left and on the right to decide if the curve
   //! is C1 or not at a given point
   Standard_EXPORT static void C0BSplineToArrayOfC1BSplineCurve(
-    const occ::handle<Geom_BSplineCurve>&                             BS,
+    const occ::handle<Geom_BSplineCurve>&        BS,
     occ::handle<NCollection_HArray1<occ::handle<Geom_BSplineCurve>>>& tabBS,
-    const double                                                      AngularTolerance,
-    const double                                                      tolerance);
+    const double                     AngularTolerance,
+    const double                     tolerance);
 };
 
 #endif // _GeomConvert_HeaderFile

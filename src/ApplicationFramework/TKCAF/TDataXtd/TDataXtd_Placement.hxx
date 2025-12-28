@@ -40,6 +40,7 @@ public:
   Standard_EXPORT virtual Standard_OStream& Dump(Standard_OStream& anOS) const override;
 
   DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Placement, TDataStd_GenericEmpty)
+
 };
 
 #endif // _TDataXtd_Placement_HeaderFile

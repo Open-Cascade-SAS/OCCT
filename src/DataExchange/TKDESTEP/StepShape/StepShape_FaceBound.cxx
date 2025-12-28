@@ -21,7 +21,7 @@ StepShape_FaceBound::StepShape_FaceBound() {}
 
 void StepShape_FaceBound::Init(const occ::handle<TCollection_HAsciiString>& aName,
                                const occ::handle<StepShape_Loop>&           aBound,
-                               const bool                                   aOrientation)
+                               const bool                  aOrientation)
 {
   // --- classe own fields ---
   bound       = aBound;

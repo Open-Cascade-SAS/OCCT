@@ -67,16 +67,16 @@ public:
 
   //! Builds the Revol of base S, axis A and angle D. If C
   //! is true, S is copied.
-  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
-                                        const gp_Ax1&       A,
-                                        const double        D,
-                                        const bool          Copy = false);
+  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                        const gp_Ax1&          A,
+                                        const double    D,
+                                        const bool Copy = false);
 
   //! Builds the Revol of base S, axis A and angle 2*Pi. If
   //! C is true, S is copied.
-  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape& S,
-                                        const gp_Ax1&       A,
-                                        const bool          Copy = false);
+  Standard_EXPORT BRepPrimAPI_MakeRevol(const TopoDS_Shape&    S,
+                                        const gp_Ax1&          A,
+                                        const bool Copy = false);
 
   //! Returns the internal sweeping algorithm.
   Standard_EXPORT const BRepSweep_Revol& Revol() const;
@@ -95,8 +95,8 @@ public:
   //! Returns list of shape generated from shape S
   //! Warning: shape S must be shape of type VERTEX, EDGE, FACE, SOLID.
   //! For shapes of other types method always returns empty list
-  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(
-    const TopoDS_Shape& S) override;
+  Standard_EXPORT virtual const NCollection_List<TopoDS_Shape>& Generated(const TopoDS_Shape& S)
+    override;
 
   //! Returns true if the shape S has been deleted.
   Standard_EXPORT virtual bool IsDeleted(const TopoDS_Shape& S) override;
@@ -121,10 +121,10 @@ protected:
   Standard_EXPORT bool CheckValidity(const TopoDS_Shape& theShape, const gp_Ax1& theA);
 
 private:
-  BRepSweep_Revol                myRevol;
-  NCollection_List<TopoDS_Shape> myDegenerated;
+  BRepSweep_Revol           myRevol;
+  NCollection_List<TopoDS_Shape>      myDegenerated;
   occ::handle<BRepTools_History> myHist;
-  bool                           myIsBuild;
+  bool          myIsBuild;
 };
 
 #endif // _BRepPrimAPI_MakeRevol_HeaderFile

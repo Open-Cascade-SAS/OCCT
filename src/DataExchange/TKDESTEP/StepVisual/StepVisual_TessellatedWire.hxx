@@ -34,15 +34,13 @@ public:
   Standard_EXPORT StepVisual_TessellatedWire();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
-    const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems,
-    const bool                             theHasGeometricModelLink,
-    const StepVisual_PathOrCompositeCurve& theGeometricModelLink);
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& theRepresentationItem_Name,
+                            const occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>>& theItems,
+                            const bool                 theHasGeometricModelLink,
+                            const StepVisual_PathOrCompositeCurve& theGeometricModelLink);
 
   //! Returns field Items
-  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> Items()
-    const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> Items() const;
 
   //! Sets field Items
   Standard_EXPORT void SetItems(
@@ -52,7 +50,8 @@ public:
   Standard_EXPORT int NbItems() const;
 
   //! Returns value of Items by its num
-  Standard_EXPORT const StepVisual_TessellatedEdgeOrVertex& ItemsValue(const int theNum) const;
+  Standard_EXPORT const StepVisual_TessellatedEdgeOrVertex& ItemsValue(
+    const int theNum) const;
 
   //! Returns field GeometricModelLink
   Standard_EXPORT StepVisual_PathOrCompositeCurve GeometricModelLink() const;
@@ -68,8 +67,8 @@ public:
 
 private:
   occ::handle<NCollection_HArray1<StepVisual_TessellatedEdgeOrVertex>> myItems;
-  StepVisual_PathOrCompositeCurve myGeometricModelLink;    //!< optional
-  bool                            myHasGeometricModelLink; //!< flag "is GeometricModelLink defined"
+  StepVisual_PathOrCompositeCurve                     myGeometricModelLink; //!< optional
+  bool myHasGeometricModelLink; //!< flag "is GeometricModelLink defined"
 };
 
 #endif // _StepVisual_TessellatedWire_HeaderFile_

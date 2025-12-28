@@ -43,7 +43,8 @@ public:
   //! Stream is converted to string value.
   //! Default implementation calls first method Send().
   Standard_EXPORT virtual void SendStringStream(const Standard_SStream& theStream,
-                                                const Message_Gravity   theGravity) const override;
+                                                const Message_Gravity   theGravity) const
+    override;
 
   //! Send a string message with specified trace level.
   //! The object is converted to string in format: <object kind> : <object pointer>.
@@ -56,7 +57,7 @@ protected:
   //! Send a string message with specified trace level.
   //! This method must be redefined in descendant.
   Standard_EXPORT virtual void send(const TCollection_AsciiString& theString,
-                                    const Message_Gravity          theGravity) const override;
+                                    const Message_Gravity theGravity) const override;
 
   //! Send an alert with metrics active in the current report
   Standard_EXPORT void sendMetricAlert(const TCollection_AsciiString& theValue,
@@ -64,7 +65,7 @@ protected:
 
 private:
   mutable TCollection_AsciiString myName;
-  occ::handle<Message_Report>     myReport; //!< the report for sending alerts
+  occ::handle<Message_Report>          myReport; //!< the report for sending alerts
 };
 
 #endif // _Message_PrinterToReport_HeaderFile

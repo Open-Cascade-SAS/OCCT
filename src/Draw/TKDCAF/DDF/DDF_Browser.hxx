@@ -82,7 +82,7 @@ public:
   DEFINE_STANDARD_RTTIEXT(DDF_Browser, Draw_Drawable3D)
 
 private:
-  occ::handle<TDF_Data>                              myDF;
+  occ::handle<TDF_Data>        myDF;
   NCollection_IndexedMap<occ::handle<TDF_Attribute>> myAttMap;
 };
 

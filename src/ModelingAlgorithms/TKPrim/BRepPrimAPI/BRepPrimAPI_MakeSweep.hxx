@@ -49,6 +49,7 @@ public:
 
   //! Returns the TopoDS Shape of the top of the sweep.
   Standard_EXPORT virtual TopoDS_Shape LastShape() = 0;
+
 };
 
 #endif // _BRepPrimAPI_MakeSweep_HeaderFile

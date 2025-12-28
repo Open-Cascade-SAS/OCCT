@@ -38,18 +38,18 @@
 #include <TransferBRep_ShapeMapper.hxx>
 
 static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisual_TessellatedItem>>
-  MakeManifoldSolidBrep(const TopoDS_Shell&                        aShell,
+  MakeManifoldSolidBrep(const TopoDS_Shell&                   aShell,
                         const occ::handle<Transfer_FinderProcess>& FP,
-                        const StepData_Factors&                    theLocalFactors,
-                        const Message_ProgressRange&               theProgress)
+                        const StepData_Factors&               theLocalFactors,
+                        const Message_ProgressRange&          theProgress)
 {
   occ::handle<StepShape_ManifoldSolidBrep> theManifoldSolidBrep;
   occ::handle<StepVisual_TessellatedItem>  aTessItem;
 
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
-  occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
+  occ::handle<StepData_StepModel>       aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
   TopoDSToStep_Tool aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
-  const int         aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
+  const int aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
 
   TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
@@ -59,9 +59,8 @@ static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisua
 
   if (StepB.IsDone())
   {
-    aTessItem = StepB.TessellatedValue();
-    occ::handle<StepShape_ClosedShell> aCShell =
-      occ::down_cast<StepShape_ClosedShell>(StepB.Value());
+    aTessItem                             = StepB.TessellatedValue();
+    occ::handle<StepShape_ClosedShell> aCShell = occ::down_cast<StepShape_ClosedShell>(StepB.Value());
     // si OPEN on le force a CLOSED mais que c est une honte !
     if (aCShell.IsNull())
     {
@@ -74,7 +73,7 @@ static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisua
         aCShell->Init(aOShell->Name(), aOShell->CfsFaces());
       }
     }
-    theManifoldSolidBrep                        = new StepShape_ManifoldSolidBrep();
+    theManifoldSolidBrep                   = new StepShape_ManifoldSolidBrep();
     occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
     theManifoldSolidBrep->Init(aName, aCShell);
   }
@@ -87,14 +86,14 @@ static std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisua
 //=============================================================================
 
 TopoDSToStep_MakeManifoldSolidBrep::TopoDSToStep_MakeManifoldSolidBrep(
-  const TopoDS_Shell&                        aShell,
+  const TopoDS_Shell&                   aShell,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
-  std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisual_TessellatedItem>>
-    aResult = MakeManifoldSolidBrep(aShell, FP, theLocalFactors, theProgress);
-  done      = !aResult.first.IsNull() || !aResult.second.IsNull();
+  std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisual_TessellatedItem>> aResult =
+    MakeManifoldSolidBrep(aShell, FP, theLocalFactors, theProgress);
+  done = !aResult.first.IsNull() || !aResult.second.IsNull();
   if (done)
   {
     theManifoldSolidBrep = aResult.first;
@@ -113,17 +112,17 @@ TopoDSToStep_MakeManifoldSolidBrep::TopoDSToStep_MakeManifoldSolidBrep(
 //=============================================================================
 
 TopoDSToStep_MakeManifoldSolidBrep::TopoDSToStep_MakeManifoldSolidBrep(
-  const TopoDS_Solid&                        aSolid,
+  const TopoDS_Solid&                   aSolid,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   TopoDS_Shell aOuterShell = BRepClass3d::OuterShell(aSolid);
   if (!aOuterShell.IsNull())
   {
-    std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisual_TessellatedItem>>
-      aResult = MakeManifoldSolidBrep(aOuterShell, FP, theLocalFactors, theProgress);
-    done      = !aResult.first.IsNull() || !aResult.second.IsNull();
+    std::pair<occ::handle<StepShape_ManifoldSolidBrep>, occ::handle<StepVisual_TessellatedItem>> aResult =
+      MakeManifoldSolidBrep(aOuterShell, FP, theLocalFactors, theProgress);
+    done = !aResult.first.IsNull() || !aResult.second.IsNull();
     if (done)
     {
       theManifoldSolidBrep = aResult.first;
@@ -133,10 +132,8 @@ TopoDSToStep_MakeManifoldSolidBrep::TopoDSToStep_MakeManifoldSolidBrep(
         occ::handle<StepVisual_TessellatedShell> aTessShell =
           occ::down_cast<StepVisual_TessellatedShell>(aResult.second);
         occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
-        occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>>
-          anItems = new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(
-            1,
-            aTessShell->NbItems());
+        occ::handle<NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>> anItems =
+          new NCollection_HArray1<occ::handle<StepVisual_TessellatedStructuredItem>>(1, aTessShell->NbItems());
         for (int i = 1; i <= aTessShell->NbItems(); ++i)
         {
           anItems->SetValue(i, aTessShell->ItemsValue(i));
@@ -175,8 +172,8 @@ const occ::handle<StepShape_ManifoldSolidBrep>& TopoDSToStep_MakeManifoldSolidBr
 // Purpose : Returns TessellatedItem as the optional result
 // ============================================================================
 
-const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeManifoldSolidBrep::
-  TessellatedValue() const
+const occ::handle<StepVisual_TessellatedItem>& TopoDSToStep_MakeManifoldSolidBrep::TessellatedValue()
+  const
 {
   StdFail_NotDone_Raise_if(!done,
                            "TopoDSToStep_MakeManifoldSolidBrep::TessellatedValue() - no result");

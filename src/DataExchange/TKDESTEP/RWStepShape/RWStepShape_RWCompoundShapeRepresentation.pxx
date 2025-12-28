@@ -37,20 +37,19 @@ public:
   Standard_HIDDEN RWStepShape_RWCompoundShapeRepresentation();
 
   //! Reads CompoundShapeRepresentation
-  Standard_HIDDEN void ReadStep(
-    const occ::handle<StepData_StepReaderData>&               data,
-    const int                                                 num,
-    occ::handle<Interface_Check>&                             ach,
-    const occ::handle<StepShape_CompoundShapeRepresentation>& ent) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&               data,
+                                const int                               num,
+                                occ::handle<Interface_Check>&                             ach,
+                                const occ::handle<StepShape_CompoundShapeRepresentation>& ent) const;
 
   //! Writes CompoundShapeRepresentation
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                      SW,
-    const occ::handle<StepShape_CompoundShapeRepresentation>& ent) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                                 SW,
+                                 const occ::handle<StepShape_CompoundShapeRepresentation>& ent) const;
 
   //! Fills data for graph (shared items)
   Standard_HIDDEN void Share(const occ::handle<StepShape_CompoundShapeRepresentation>& ent,
-                             Interface_EntityIterator&                                 iter) const;
+                             Interface_EntityIterator&                            iter) const;
+
 };
 
 #endif // _RWStepShape_RWCompoundShapeRepresentation_HeaderFile

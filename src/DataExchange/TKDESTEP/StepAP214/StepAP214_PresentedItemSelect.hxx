@@ -42,11 +42,12 @@ public:
   Standard_EXPORT int CaseNum(const occ::handle<Standard_Transient>& ent) const;
 
   //! returns Value as a ProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
-                  ProductDefinitionRelationship() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
+    const;
 
   //! returns Value as a ProductDefinition (Null if another type)
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
+
 };
 
 #endif // _StepAP214_PresentedItemSelect_HeaderFile

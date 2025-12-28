@@ -37,19 +37,18 @@ public:
   //! Returns a TrimmedCurve
   Standard_EXPORT StepGeom_TrimmedCurve();
 
-  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>& aName,
-                            const occ::handle<StepGeom_Curve>&           aBasisCurve,
+  Standard_EXPORT void Init(const occ::handle<TCollection_HAsciiString>&         aName,
+                            const occ::handle<StepGeom_Curve>&                   aBasisCurve,
                             const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim1,
                             const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim2,
-                            const bool                        aSenseAgreement,
-                            const StepGeom_TrimmingPreference aMasterRepresentation);
+                            const bool                          aSenseAgreement,
+                            const StepGeom_TrimmingPreference               aMasterRepresentation);
 
   Standard_EXPORT void SetBasisCurve(const occ::handle<StepGeom_Curve>& aBasisCurve);
 
   Standard_EXPORT occ::handle<StepGeom_Curve> BasisCurve() const;
 
-  Standard_EXPORT void SetTrim1(
-    const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim1);
+  Standard_EXPORT void SetTrim1(const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim1);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> Trim1() const;
 
@@ -57,8 +56,7 @@ public:
 
   Standard_EXPORT int NbTrim1() const;
 
-  Standard_EXPORT void SetTrim2(
-    const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim2);
+  Standard_EXPORT void SetTrim2(const occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>>& aTrim2);
 
   Standard_EXPORT occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> Trim2() const;
 
@@ -78,11 +76,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(StepGeom_TrimmedCurve, StepGeom_BoundedCurve)
 
 private:
-  occ::handle<StepGeom_Curve>                               basisCurve;
+  occ::handle<StepGeom_Curve>                   basisCurve;
   occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> trim1;
   occ::handle<NCollection_HArray1<StepGeom_TrimmingSelect>> trim2;
-  bool                                                      senseAgreement;
-  StepGeom_TrimmingPreference                               masterRepresentation;
+  bool                         senseAgreement;
+  StepGeom_TrimmingPreference              masterRepresentation;
 };
 
 #endif // _StepGeom_TrimmedCurve_HeaderFile

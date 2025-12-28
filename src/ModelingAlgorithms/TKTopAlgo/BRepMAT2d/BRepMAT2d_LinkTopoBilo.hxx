@@ -26,6 +26,10 @@
 #include <NCollection_Sequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <MAT_BasicElt.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 class BRepMAT2d_Explorer;
 class BRepMAT2d_BisectingLocus;
@@ -74,17 +78,14 @@ public:
 private:
   Standard_EXPORT void LinkToWire(const TopoDS_Wire&              W,
                                   const BRepMAT2d_Explorer&       Explo,
-                                  const int                       IndexContour,
+                                  const int          IndexContour,
                                   const BRepMAT2d_BisectingLocus& BiLo);
 
-  NCollection_DataMap<TopoDS_Shape,
-                      NCollection_Sequence<occ::handle<MAT_BasicElt>>,
-                      TopTools_ShapeMapHasher>
-                                                               myMap;
-  NCollection_DataMap<occ::handle<MAT_BasicElt>, TopoDS_Shape> myBEShape;
-  TopoDS_Shape                                                 myKey;
-  int                                                          current;
-  bool                                                         isEmpty;
+  NCollection_DataMap<TopoDS_Shape, NCollection_Sequence<occ::handle<MAT_BasicElt>>, TopTools_ShapeMapHasher> myMap;
+  NCollection_DataMap<occ::handle<MAT_BasicElt>, TopoDS_Shape>           myBEShape;
+  TopoDS_Shape                               myKey;
+  int                           current;
+  bool                           isEmpty;
 };
 
 #endif // _BRepMAT2d_LinkTopoBilo_HeaderFile

@@ -42,7 +42,7 @@ unsigned int OpenGl_VertexBuffer::GetTarget() const
 //=================================================================================================
 
 void OpenGl_VertexBuffer::BindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
-                                           const unsigned int                 theAttribLoc) const
+                                           const unsigned int            theAttribLoc) const
 {
   if (!IsValid() || theAttribLoc == GLuint(-1))
   {
@@ -57,7 +57,7 @@ void OpenGl_VertexBuffer::BindVertexAttrib(const occ::handle<OpenGl_Context>& th
 //=================================================================================================
 
 void OpenGl_VertexBuffer::UnbindVertexAttrib(const occ::handle<OpenGl_Context>& theGlCtx,
-                                             const unsigned int                 theAttribLoc) const
+                                             const unsigned int            theAttribLoc) const
 {
   if (!IsValid() || theAttribLoc == GLuint(-1))
   {
@@ -104,12 +104,12 @@ bool OpenGl_VertexBuffer::HasNormalAttribute() const
 
 //=================================================================================================
 
-void OpenGl_VertexBuffer::bindAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                        const Graphic3d_TypeOfAttribute    theAttribute,
-                                        const int                          theNbComp,
-                                        const unsigned int                 theDataType,
-                                        const int                          theStride,
-                                        const void*                        theOffset)
+void OpenGl_VertexBuffer::bindAttribute(const occ::handle<OpenGl_Context>&   theCtx,
+                                        const Graphic3d_TypeOfAttribute theAttribute,
+                                        const int          theNbComp,
+                                        const unsigned int              theDataType,
+                                        const int          theStride,
+                                        const void*                     theOffset)
 {
   if (theCtx->ActiveProgram().IsNull())
   {
@@ -139,8 +139,8 @@ void OpenGl_VertexBuffer::bindAttribute(const occ::handle<OpenGl_Context>& theCt
 
 //=================================================================================================
 
-void OpenGl_VertexBuffer::unbindAttribute(const occ::handle<OpenGl_Context>& theCtx,
-                                          const Graphic3d_TypeOfAttribute    theAttribute)
+void OpenGl_VertexBuffer::unbindAttribute(const occ::handle<OpenGl_Context>&   theCtx,
+                                          const Graphic3d_TypeOfAttribute theAttribute)
 {
   if (theCtx->ActiveProgram().IsNull())
   {
@@ -156,12 +156,12 @@ void OpenGl_VertexBuffer::unbindAttribute(const occ::handle<OpenGl_Context>& the
 
 //=================================================================================================
 
-void OpenGl_VertexBuffer::bindFixed(const occ::handle<OpenGl_Context>& theCtx,
-                                    const Graphic3d_TypeOfAttribute    theMode,
-                                    const int                          theNbComp,
-                                    const unsigned int                 theDataType,
-                                    const int                          theStride,
-                                    const void*                        theOffset)
+void OpenGl_VertexBuffer::bindFixed(const occ::handle<OpenGl_Context>&   theCtx,
+                                    const Graphic3d_TypeOfAttribute theMode,
+                                    const int          theNbComp,
+                                    const unsigned int              theDataType,
+                                    const int          theStride,
+                                    const void*                     theOffset)
 {
   switch (theMode)
   {
@@ -195,8 +195,8 @@ void OpenGl_VertexBuffer::bindFixed(const occ::handle<OpenGl_Context>& theCtx,
 
 //=================================================================================================
 
-void OpenGl_VertexBuffer::unbindFixed(const occ::handle<OpenGl_Context>& theCtx,
-                                      const Graphic3d_TypeOfAttribute    theMode)
+void OpenGl_VertexBuffer::unbindFixed(const occ::handle<OpenGl_Context>&   theCtx,
+                                      const Graphic3d_TypeOfAttribute theMode)
 {
   switch (theMode)
   {

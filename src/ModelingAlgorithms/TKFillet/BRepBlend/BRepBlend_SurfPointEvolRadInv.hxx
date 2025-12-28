@@ -87,11 +87,11 @@ public:
 private:
   occ::handle<Adaptor3d_Surface> surf;
   occ::handle<Adaptor3d_Curve>   curv;
-  gp_Pnt                         point;
-  double                         ray;
-  int                            choix;
+  gp_Pnt                    point;
+  double             ray;
+  int          choix;
   occ::handle<Law_Function>      tevol;
-  double                         sg1;
+  double             sg1;
 };
 
 #endif // _BRepBlend_SurfPointEvolRadInv_HeaderFile

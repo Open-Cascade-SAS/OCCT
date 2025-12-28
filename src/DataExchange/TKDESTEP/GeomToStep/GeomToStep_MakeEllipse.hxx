@@ -43,11 +43,11 @@ public:
 
   Standard_EXPORT GeomToStep_MakeEllipse(
     const occ::handle<Geom_Ellipse>& C,
-    const StepData_Factors&          theLocalFactors = StepData_Factors());
+    const StepData_Factors&     theLocalFactors = StepData_Factors());
 
   Standard_EXPORT GeomToStep_MakeEllipse(
     const occ::handle<Geom2d_Ellipse>& C,
-    const StepData_Factors&            theLocalFactors = StepData_Factors());
+    const StepData_Factors&       theLocalFactors = StepData_Factors());
 
   Standard_EXPORT const occ::handle<StepGeom_Ellipse>& Value() const;
 

@@ -32,6 +32,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepShape_DefinitionalRepresentationAndShapeRepresentation,
                           StepRepr_DefinitionalRepresentation)
+
 };
 
 #endif // _StepShape_DefinitionalRepresentationAndShapeRepresentation_HeaderFile

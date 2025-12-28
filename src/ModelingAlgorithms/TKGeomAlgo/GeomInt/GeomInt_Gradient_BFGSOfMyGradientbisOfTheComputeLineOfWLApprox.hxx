@@ -39,10 +39,10 @@ public:
   Standard_EXPORT GeomInt_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfWLApprox(
     math_MultipleVarFunctionWithGradient& F,
     const math_Vector&                    StartingPoint,
-    const double                          Tolerance3d,
-    const double                          Tolerance2d,
-    const double                          Eps,
-    const int                             NbIterations = 200);
+    const double                   Tolerance3d,
+    const double                   Tolerance2d,
+    const double                   Eps,
+    const int                NbIterations = 200);
 
   Standard_EXPORT virtual bool IsSolutionReached(
     math_MultipleVarFunctionWithGradient& F) const override;

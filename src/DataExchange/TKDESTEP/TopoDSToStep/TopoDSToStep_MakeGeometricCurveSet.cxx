@@ -23,8 +23,10 @@
 #include <StepData_StepModel.hxx>
 #include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
+#include <StepShape_GeometricSetSelect.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDSToStep.hxx>
 #include <TopoDSToStep_MakeGeometricCurveSet.hxx>
 #include <TopoDSToStep_Tool.hxx>
@@ -35,13 +37,13 @@
 // Create a GeometricCurveSet of StepShape from a Shape of TopoDS
 //=============================================================================
 TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
-  const TopoDS_Shape&                        aShape,
+  const TopoDS_Shape&                   aShape,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors)
+  const StepData_Factors&               theLocalFactors)
 {
   done = false;
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> itemList;
-  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
+  NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher>     aMap;
   occ::handle<StepData_StepModel> aStepModel = occ::down_cast<StepData_StepModel>(FP->Model());
   TopoDSToStep_Tool aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_WireframeBuilder wirefB(aShape, aTool, theLocalFactors);
@@ -51,7 +53,7 @@ TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
   occ::handle<TCollection_HAsciiString>    empty  = new TCollection_HAsciiString("");
   if (wirefB.IsDone())
   {
-    itemList   = wirefB.Value();
+    itemList                = wirefB.Value();
     int nbItem = itemList->Length();
     if (nbItem > 0)
     {
@@ -78,8 +80,7 @@ const occ::handle<StepShape_GeometricCurveSet>& TopoDSToStep_MakeGeometricCurveS
   return theGeometricCurveSet;
 }
 
-// const occ::handle<StepShape_GeometricCurveSet>& TopoDSToStep_MakeGeometricCurveSet::Operator()
-// const
+// const occ::handle<StepShape_GeometricCurveSet>& TopoDSToStep_MakeGeometricCurveSet::Operator() const
 //{
 //   return Value();
 // }

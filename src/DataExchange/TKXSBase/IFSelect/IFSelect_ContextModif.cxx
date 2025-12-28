@@ -31,15 +31,15 @@
 
 IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
                                              const Interface_CopyTool& TC,
-                                             const char*               filename)
+                                             const char*    filename)
     : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
 {
   themap  = TC.Control();
   thesel  = false;
-  thecurr = thecurt                  = 0;
-  int                             nb = thelist.Length();
+  thecurr = thecurt             = 0;
+  int           nb = thelist.Length();
   occ::handle<Standard_Transient> newent;
   for (int i = 1; i <= nb; i++)
   {
@@ -50,14 +50,15 @@ IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
 
 //=================================================================================================
 
-IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph, const char* filename)
+IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph,
+                                             const char* filename)
     : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
 {
   thesel  = false;
-  thecurr = thecurt                  = 0;
-  int                             nb = thelist.Length();
+  thecurr = thecurt             = 0;
+  int           nb = thelist.Length();
   occ::handle<Standard_Transient> newent;
   for (int i = 1; i <= nb; i++)
     thelist.SetValue(i, '1');
@@ -67,14 +68,14 @@ IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph, const
 
 void IFSelect_ContextModif::Select(Interface_EntityIterator& list)
 {
-  thesel = true;
+  thesel              = true;
   int nb = thelist.Length();
   for (int i = 1; i <= nb; i++)
     thelist.SetValue(i, ' ');
   for (list.Start(); list.More(); list.Next())
   {
     occ::handle<Standard_Transient> start, newent;
-    start   = list.Value();
+    start                = list.Value();
     int num = thegraf.EntityNumber(start);
     if (num > nb || num < 0)
       num = 0;
@@ -185,7 +186,7 @@ bool IFSelect_ContextModif::IsSelected(const occ::handle<Standard_Transient>& en
 Interface_EntityIterator IFSelect_ContextModif::SelectedOriginal() const
 {
   Interface_EntityIterator list;
-  int                      nb = thelist.Length();
+  int         nb = thelist.Length();
   for (int i = 1; i <= nb; i++)
   {
     if (thelist.Value(i) != ' ')
@@ -199,7 +200,7 @@ Interface_EntityIterator IFSelect_ContextModif::SelectedOriginal() const
 Interface_EntityIterator IFSelect_ContextModif::SelectedResult() const
 {
   Interface_EntityIterator list;
-  int                      nb = thelist.Length();
+  int         nb = thelist.Length();
   for (int i = 1; i <= nb; i++)
   {
     occ::handle<Standard_Transient> newent;
@@ -337,7 +338,7 @@ void IFSelect_ContextModif::AddCheck(const occ::handle<Interface_Check>& check)
   if (check->NbFails() + check->NbWarnings() == 0)
     return;
   const occ::handle<Standard_Transient>& ent = check->Entity();
-  int                                    num = thegraf.EntityNumber(ent);
+  int                  num = thegraf.EntityNumber(ent);
   if (num == 0 && !ent.IsNull())
     num = -1; // force enregistrement
   thechek.Add(check, num);
@@ -346,8 +347,8 @@ void IFSelect_ContextModif::AddCheck(const occ::handle<Interface_Check>& check)
 //=================================================================================================
 
 void IFSelect_ContextModif::AddWarning(const occ::handle<Standard_Transient>& start,
-                                       const char*                            mess,
-                                       const char*                            orig)
+                                       const char*            mess,
+                                       const char*            orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddWarning(mess, orig);
 }
@@ -355,8 +356,8 @@ void IFSelect_ContextModif::AddWarning(const occ::handle<Standard_Transient>& st
 //=================================================================================================
 
 void IFSelect_ContextModif::AddFail(const occ::handle<Standard_Transient>& start,
-                                    const char*                            mess,
-                                    const char*                            orig)
+                                    const char*            mess,
+                                    const char*            orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddFail(mess, orig);
 }
@@ -373,8 +374,7 @@ occ::handle<Interface_Check> IFSelect_ContextModif::CCheck(const int num)
 
 //=================================================================================================
 
-occ::handle<Interface_Check> IFSelect_ContextModif::CCheck(
-  const occ::handle<Standard_Transient>& ent)
+occ::handle<Interface_Check> IFSelect_ContextModif::CCheck(const occ::handle<Standard_Transient>& ent)
 {
   int num = thegraf.EntityNumber(ent);
   if (num == 0)

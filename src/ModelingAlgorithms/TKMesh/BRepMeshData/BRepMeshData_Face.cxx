@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)
 
 //=================================================================================================
 
-BRepMeshData_Face::BRepMeshData_Face(const TopoDS_Face&                           theFace,
+BRepMeshData_Face::BRepMeshData_Face(const TopoDS_Face&                      theFace,
                                      const occ::handle<NCollection_IncAllocator>& theAllocator)
     : IMeshData_Face(theFace),
       myAllocator(theAllocator),
@@ -42,8 +42,8 @@ int BRepMeshData_Face::WiresNb() const
 
 //=================================================================================================
 
-const IMeshData::IWireHandle& BRepMeshData_Face::AddWire(const TopoDS_Wire& theWire,
-                                                         const int          theEdgeNb)
+const IMeshData::IWireHandle& BRepMeshData_Face::AddWire(const TopoDS_Wire&     theWire,
+                                                         const int theEdgeNb)
 {
   IMeshData::IWireHandle aWire(new (myAllocator)
                                  BRepMeshData_Wire(theWire, theEdgeNb, myAllocator));

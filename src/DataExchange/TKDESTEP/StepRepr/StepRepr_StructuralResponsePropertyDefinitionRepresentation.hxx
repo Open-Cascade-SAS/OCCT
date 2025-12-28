@@ -31,6 +31,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_StructuralResponsePropertyDefinitionRepresentation,
                           StepRepr_PropertyDefinitionRepresentation)
+
 };
 
 #endif // _StepRepr_StructuralResponsePropertyDefinitionRepresentation_HeaderFile

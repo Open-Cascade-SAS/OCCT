@@ -50,15 +50,15 @@ public:
   //! The tolerance required on this sum is given by Tol.
   //! The desired degree of the resulting curve is Deg.
   Standard_EXPORT GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox(
-    const GeomInt_TheMultiLineOfWLApprox&                                  SSP,
-    const int                                                              FirstPoint,
-    const int                                                              LastPoint,
+    const GeomInt_TheMultiLineOfWLApprox&                 SSP,
+    const int                                FirstPoint,
+    const int                                LastPoint,
     const occ::handle<NCollection_HArray1<AppParCurves_ConstraintCouple>>& TheConstraints,
-    math_Vector&                                                           Parameters,
-    const int                                                              Deg,
-    const double                                                           Tol3d,
-    const double                                                           Tol2d,
-    const int                                                              NbIterations = 200);
+    math_Vector&                                          Parameters,
+    const int                                Deg,
+    const double                                   Tol3d,
+    const double                                   Tol2d,
+    const int                                NbIterations = 200);
 
   //! returns True if all has been correctly done.
   Standard_EXPORT bool IsDone() const;
@@ -88,10 +88,10 @@ public:
 private:
   AppParCurves_MultiCurve SCU;
   math_Vector             ParError;
-  double                  AvError;
-  double                  MError3d;
-  double                  MError2d;
-  bool                    Done;
+  double           AvError;
+  double           MError3d;
+  double           MError2d;
+  bool        Done;
 };
 
 #endif // _GeomInt_MyGradientOfTheComputeLineBezierOfWLApprox_HeaderFile

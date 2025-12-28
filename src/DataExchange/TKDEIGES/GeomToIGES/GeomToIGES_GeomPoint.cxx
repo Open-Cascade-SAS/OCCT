@@ -65,8 +65,7 @@ occ::handle<IGESGeom_Point> GeomToIGES_GeomPoint::TransferPoint(const occ::handl
 // TranferPoint
 //=============================================================================
 
-occ::handle<IGESGeom_Point> GeomToIGES_GeomPoint::TransferPoint(
-  const occ::handle<Geom_CartesianPoint>& P)
+occ::handle<IGESGeom_Point> GeomToIGES_GeomPoint::TransferPoint(const occ::handle<Geom_CartesianPoint>& P)
 {
 
   occ::handle<IGESGeom_Point> Piges = new IGESGeom_Point;

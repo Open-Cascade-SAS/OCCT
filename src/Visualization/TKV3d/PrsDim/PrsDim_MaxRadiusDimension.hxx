@@ -30,17 +30,17 @@ public:
   //! Max Ellipse radius dimension
   //! Shape can be edge, planar face or cylindrical face
   Standard_EXPORT PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                            const double                      aVal,
+                                            const double               aVal,
                                             const TCollection_ExtendedString& aText);
 
   //! Max Ellipse radius dimension with position
   //! Shape can be edge, planar face or cylindrical face
   Standard_EXPORT PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                            const double                      aVal,
+                                            const double               aVal,
                                             const TCollection_ExtendedString& aText,
                                             const gp_Pnt&                     aPosition,
                                             const DsgPrs_ArrowSide            aSymbolPrs,
-                                            const double                      anArrowSize = 0.0);
+                                            const double               anArrowSize = 0.0);
 
 private:
   Standard_EXPORT virtual void Compute(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,

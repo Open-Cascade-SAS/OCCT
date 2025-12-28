@@ -44,7 +44,9 @@ public:
   }
 
   //! Creates a point with its three cartesian coordinates.
-  constexpr gp_Vec(const double theXv, const double theYv, const double theZv) noexcept
+  constexpr gp_Vec(const double theXv,
+                   const double theYv,
+                   const double theZv) noexcept
       : coord(theXv, theYv, theZv)
   {
   }
@@ -65,7 +67,9 @@ public:
 
   //! For this vector, assigns
   //! -   the values theXv, theYv and theZv to its three coordinates.
-  constexpr void SetCoord(const double theXv, const double theYv, const double theZv) noexcept
+  constexpr void SetCoord(const double theXv,
+                          const double theYv,
+                          const double theZv) noexcept
   {
     coord.SetX(theXv);
     coord.SetY(theYv);
@@ -89,10 +93,15 @@ public:
   //! theIndex = 2 => Y is returned
   //! theIndex = 3 => Z is returned
   //! Raised if theIndex != {1, 2, 3}.
-  constexpr double Coord(const int theIndex) const { return coord.Coord(theIndex); }
+  constexpr double Coord(const int theIndex) const
+  {
+    return coord.Coord(theIndex);
+  }
 
   //! For this vector returns its three coordinates theXv, theYv, and theZv inline
-  constexpr void Coord(double& theXv, double& theYv, double& theZv) const noexcept
+  constexpr void Coord(double& theXv,
+                       double& theYv,
+                       double& theZv) const noexcept
   {
     theXv = coord.X();
     theYv = coord.Y();
@@ -115,9 +124,9 @@ public:
   //! Returns True if the two vectors have the same magnitude value
   //! and the same direction. The precision values are theLinearTolerance
   //! for the magnitude and theAngularTolerance for the direction.
-  Standard_EXPORT bool IsEqual(const gp_Vec& theOther,
-                               const double  theLinearTolerance,
-                               const double  theAngularTolerance) const;
+  Standard_EXPORT bool IsEqual(const gp_Vec&       theOther,
+                                           const double theLinearTolerance,
+                                           const double theAngularTolerance) const;
 
   //! Returns True if abs(<me>.Angle(theOther) - PI/2.) <= theAngularTolerance
   //! Raises VectorWithNullMagnitude if <me>.Magnitude() <= Resolution or
@@ -290,7 +299,7 @@ public:
   //! Computes the triple vector product.
   //! <me> ^ (theV1 ^ theV2)
   [[nodiscard]] constexpr gp_Vec CrossCrossed(const gp_Vec& theV1,
-                                              const gp_Vec& theV2) const noexcept
+                                                   const gp_Vec& theV2) const noexcept
   {
     gp_Vec aV = *this;
     aV.coord.CrossCross(theV1.coord, theV2.coord);
@@ -298,7 +307,10 @@ public:
   }
 
   //! computes the scalar product
-  constexpr double Dot(const gp_Vec& theOther) const noexcept { return coord.Dot(theOther.coord); }
+  constexpr double Dot(const gp_Vec& theOther) const noexcept
+  {
+    return coord.Dot(theOther.coord);
+  }
 
   constexpr double operator*(const gp_Vec& theOther) const noexcept { return Dot(theOther); }
 
@@ -339,54 +351,54 @@ public:
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theA3 * theV3 + theV4
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_Vec& theV1,
-                               const double  theA2,
-                               const gp_Vec& theV2,
-                               const double  theA3,
-                               const gp_Vec& theV3,
-                               const gp_Vec& theV4) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_Vec&       theV1,
+                               const double theA2,
+                               const gp_Vec&       theV2,
+                               const double theA3,
+                               const gp_Vec&       theV3,
+                               const gp_Vec&       theV4) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theA3, theV3.coord, theV4.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theA3 * theV3
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_Vec& theV1,
-                               const double  theA2,
-                               const gp_Vec& theV2,
-                               const double  theA3,
-                               const gp_Vec& theV3) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_Vec&       theV1,
+                               const double theA2,
+                               const gp_Vec&       theV2,
+                               const double theA3,
+                               const gp_Vec&       theV3) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theA3, theV3.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2 + theV3
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_Vec& theV1,
-                               const double  theA2,
-                               const gp_Vec& theV2,
-                               const gp_Vec& theV3) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_Vec&       theV1,
+                               const double theA2,
+                               const gp_Vec&       theV2,
+                               const gp_Vec&       theV3) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord, theV3.coord);
   }
 
   //! <me> is set to the following linear form :
   //! theA1 * theV1 + theA2 * theV2
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_Vec& theV1,
-                               const double  theA2,
-                               const gp_Vec& theV2) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_Vec&       theV1,
+                               const double theA2,
+                               const gp_Vec&       theV2) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theA2, theV2.coord);
   }
 
   //! <me> is set to the following linear form : theA1 * theV1 + theV2
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_Vec& theV1,
-                               const gp_Vec& theV2) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_Vec&       theV1,
+                               const gp_Vec&       theV2) noexcept
   {
     coord.SetLinearForm(theA1, theV1.coord, theV2.coord);
   }
@@ -477,7 +489,8 @@ inline constexpr gp_Vec::gp_Vec(const gp_Pnt& theP1, const gp_Pnt& theP2)
 
 //=================================================================================================
 
-inline bool gp_Vec::IsNormal(const gp_Vec& theOther, const double theAngularTolerance) const
+inline bool gp_Vec::IsNormal(const gp_Vec&       theOther,
+                                         const double theAngularTolerance) const
 {
   const double anAng = std::abs(M_PI_2 - Angle(theOther));
   return anAng <= theAngularTolerance;

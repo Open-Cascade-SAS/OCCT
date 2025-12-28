@@ -66,12 +66,12 @@ public:
                           const char16_t a16b1,
                           const char16_t a16b2,
                           const char16_t a16b3,
-                          const uint8_t  a8b1,
-                          const uint8_t  a8b2,
-                          const uint8_t  a8b3,
-                          const uint8_t  a8b4,
-                          const uint8_t  a8b5,
-                          const uint8_t  a8b6) noexcept
+                          const uint8_t         a8b1,
+                          const uint8_t         a8b2,
+                          const uint8_t         a8b3,
+                          const uint8_t         a8b4,
+                          const uint8_t         a8b5,
+                          const uint8_t         a8b6) noexcept
       : my32b(a32b),
         my16b1(a16b1),
         my16b2(a16b2),
@@ -141,12 +141,21 @@ public:
            && my8b4 == uid.my8b4 && my8b5 == uid.my8b5 && my8b6 == uid.my8b6;
   }
 
-  constexpr bool operator==(const Standard_GUID& uid) const noexcept { return IsSame(uid); }
+  constexpr bool operator==(const Standard_GUID& uid) const noexcept
+  {
+    return IsSame(uid);
+  }
 
   //! Returns true if this GUID is not equal to uid.
-  constexpr bool IsNotSame(const Standard_GUID& uid) const noexcept { return !IsSame(uid); }
+  constexpr bool IsNotSame(const Standard_GUID& uid) const noexcept
+  {
+    return !IsSame(uid);
+  }
 
-  constexpr bool operator!=(const Standard_GUID& uid) const noexcept { return IsNotSame(uid); }
+  constexpr bool operator!=(const Standard_GUID& uid) const noexcept
+  {
+    return IsNotSame(uid);
+  }
 
   //! Assigns uid to this GUID.
   constexpr void Assign(const Standard_GUID& uid) noexcept
@@ -207,12 +216,12 @@ private:
   char16_t my16b1;
   char16_t my16b2;
   char16_t my16b3;
-  uint8_t  my8b1;
-  uint8_t  my8b2;
-  uint8_t  my8b3;
-  uint8_t  my8b4;
-  uint8_t  my8b5;
-  uint8_t  my8b6;
+  uint8_t         my8b1;
+  uint8_t         my8b2;
+  uint8_t         my8b3;
+  uint8_t         my8b4;
+  uint8_t         my8b5;
+  uint8_t         my8b6;
 };
 
 namespace std
@@ -228,12 +237,12 @@ struct hash<Standard_GUID>
       char16_t my16b1;
       char16_t my16b2;
       char16_t my16b3;
-      uint8_t  my8b1;
-      uint8_t  my8b2;
-      uint8_t  my8b3;
-      uint8_t  my8b4;
-      uint8_t  my8b5;
-      uint8_t  my8b6;
+      uint8_t         my8b1;
+      uint8_t         my8b2;
+      uint8_t         my8b3;
+      uint8_t         my8b4;
+      uint8_t         my8b5;
+      uint8_t         my8b6;
     };
 
     GUID aGUID{theGUID.my32b,

@@ -62,11 +62,11 @@ public:
 
 private:
   occ::handle<XSControl_WorkSession>    myWS;
-  IFSelect_ReturnStatus                 myLoadStatus;
-  bool                                  myTransferStatus;
-  IFSelect_ReturnStatus                 myWriteStatus;
+  IFSelect_ReturnStatus            myLoadStatus;
+  bool                 myTransferStatus;
+  IFSelect_ReturnStatus            myWriteStatus;
   occ::handle<TCollection_HAsciiString> myName;
-  TDF_Label                             myLabel;
+  TDF_Label                        myLabel;
 };
 
 #include <STEPCAFControl_ExternFile.lxx>

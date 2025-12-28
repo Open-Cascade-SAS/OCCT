@@ -21,10 +21,14 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_DataMap.hxx>
 #include <MeshVS_TwoColors.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
+#include <NCollection_DataMap.hxx>
 #include <MeshVS_DataSource.hxx>
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
 #include <MeshVS_ElementalColorPrsBuilder.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -33,11 +37,20 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Map.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -45,10 +58,10 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
 
 MeshVS_ElementalColorPrsBuilder::MeshVS_ElementalColorPrsBuilder(
   const occ::handle<MeshVS_Mesh>&       Parent,
-  const MeshVS_DisplayModeFlags&        Flags,
+  const MeshVS_DisplayModeFlags&   Flags,
   const occ::handle<MeshVS_DataSource>& DS,
-  const int                             Id,
-  const MeshVS_BuilderPriority&         Priority)
+  const int           Id,
+  const MeshVS_BuilderPriority&    Priority)
     : MeshVS_PrsBuilder(Parent, Flags, DS, Id, Priority)
 {
   SetExcluding(true);
@@ -57,10 +70,10 @@ MeshVS_ElementalColorPrsBuilder::MeshVS_ElementalColorPrsBuilder(
 //=================================================================================================
 
 void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
-                                            const TColStd_PackedMapOfInteger&      IDs,
-                                            TColStd_PackedMapOfInteger&            IDsToExclude,
-                                            const bool                             IsElement,
-                                            const int DisplayMode) const
+                                            const TColStd_PackedMapOfInteger& IDs,
+                                            TColStd_PackedMapOfInteger&       IDsToExclude,
+                                            const bool            IsElement,
+                                            const int            DisplayMode) const
 {
   occ::handle<MeshVS_DataSource> aSource = GetDataSource();
   occ::handle<MeshVS_Drawer>     aDrawer = GetDrawer();
@@ -72,18 +85,17 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   if (!aDrawer->GetInteger(MeshVS_DA_MaxFaceNodes, aMaxFaceNodes) && aMaxFaceNodes <= 0)
     return;
 
-  NCollection_DataMap<int, Quantity_Color>* anElemColorMap =
-    (NCollection_DataMap<int, Quantity_Color>*)&myElemColorMap1;
+  NCollection_DataMap<int, Quantity_Color>* anElemColorMap = (NCollection_DataMap<int, Quantity_Color>*)&myElemColorMap1;
   NCollection_DataMap<int, MeshVS_TwoColors>* anElemTwoColorsMap =
     (NCollection_DataMap<int, MeshVS_TwoColors>*)&myElemColorMap2;
 
-  NCollection_DataMap<Quantity_Color, NCollection_Map<int>>   aColorsOfElements;
+  NCollection_DataMap<Quantity_Color, NCollection_Map<int>>     aColorsOfElements;
   NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>> aTwoColorsOfElements;
 
-  MeshVS_Buffer              aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
+  MeshVS_Buffer        aCoordsBuf(3 * aMaxFaceNodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * aMaxFaceNodes);
-  int                        NbNodes;
-  MeshVS_EntityType          aType;
+  int     NbNodes;
+  MeshVS_EntityType    aType;
 
   if (!(DisplayMode & GetFlags()) || !IsElement
       || (myElemColorMap1.IsEmpty() && myElemColorMap2.IsEmpty()))
@@ -100,11 +112,10 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   // STEP 0: We looking for two colored elements, who has equal two colors and move it
   // to map of elements with one assigned color
   NCollection_List<int> aColorOne;
-  for (NCollection_DataMap<int, MeshVS_TwoColors>::Iterator anIter(*anElemTwoColorsMap);
-       anIter.More();
+  for (NCollection_DataMap<int, MeshVS_TwoColors>::Iterator anIter(*anElemTwoColorsMap); anIter.More();
        anIter.Next())
   {
-    int              aKey   = anIter.Key();
+    int aKey   = anIter.Key();
     MeshVS_TwoColors aValue = anIter.Value();
     Quantity_Color   aCol1, aCol2;
     ExtractColors(aValue, aCol1, aCol2);
@@ -126,8 +137,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     int aMKey = anIterM.Key();
     // The ID of current element
     bool IsExist = false;
-    for (NCollection_DataMap<Quantity_Color, NCollection_Map<int>>::Iterator anIterC(
-           aColorsOfElements);
+    for (NCollection_DataMap<Quantity_Color, NCollection_Map<int>>::Iterator anIterC(aColorsOfElements);
          anIterC.More() && !IsExist;
          anIterC.Next())
       if (anIterC.Key() == anIterM.Value())
@@ -153,8 +163,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     int aMKey = anIterM2.Key();
     // The ID of current element
     bool IsExist = false;
-    for (NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>>::Iterator anIterC2(
-           aTwoColorsOfElements);
+    for (NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>>::Iterator anIterC2(aTwoColorsOfElements);
          anIterC2.More() && !IsExist;
          anIterC2.Next())
       if (anIterC2.Key() == anIterM2.Value())
@@ -175,11 +184,12 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   // Now we are ready to draw faces with equal colors
   Aspect_TypeOfLine anEdgeType  = Aspect_TOL_SOLID;
   Aspect_TypeOfLine aLineType   = Aspect_TOL_SOLID;
-  double            anEdgeWidth = 1.0, aLineWidth = 1.0;
+  double     anEdgeWidth = 1.0, aLineWidth = 1.0;
   Quantity_Color    anInteriorColor;
   Quantity_Color    anEdgeColor, aLineColor;
-  bool              anEdgeOn = true, IsReflect = false, IsMeshSmoothShading = false;
-  bool              toSupressBackFaces = false;
+  bool  anEdgeOn = true, IsReflect = false,
+                   IsMeshSmoothShading = false;
+  bool toSupressBackFaces  = false;
 
   aDrawer->GetColor(MeshVS_DA_InteriorColor, anInteriorColor);
   aDrawer->GetColor(MeshVS_DA_EdgeColor, anEdgeColor);
@@ -200,8 +210,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aLineType = (Aspect_TypeOfLine)aLineInt;
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  int                          PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
+  TColStd_MapIteratorOfPackedMapOfInteger   it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();
@@ -275,8 +285,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aSGroup->SetGroupPrimitivesAspect(anEdgeAspect);
   }
 
-  for (NCollection_DataMap<Quantity_Color, NCollection_Map<int>>::Iterator aColIter(
-         aColorsOfElements);
+  for (NCollection_DataMap<Quantity_Color, NCollection_Map<int>>::Iterator aColIter(aColorsOfElements);
        aColIter.More();
        aColIter.Next())
   {
@@ -354,14 +363,13 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
     // OCC20644 NOTE: aColIter.Key() color is then scaled by TelUpdateMaterial() in OpenGl_attri.c
     // using the material reflection coefficients. This affects the visual result.
-    occ::handle<Graphic3d_AspectFillArea3d> aFillAspect =
-      new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
-                                     aColIter.Key(),
-                                     anEdgeColor,
-                                     anEdgeType,
-                                     anEdgeWidth,
-                                     aMaterial[0],
-                                     aMaterial[1]);
+    occ::handle<Graphic3d_AspectFillArea3d> aFillAspect = new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
+                                                                                    aColIter.Key(),
+                                                                                    anEdgeColor,
+                                                                                    anEdgeType,
+                                                                                    anEdgeWidth,
+                                                                                    aMaterial[0],
+                                                                                    aMaterial[1]);
 
     occ::handle<Graphic3d_AspectLine3d> aLinkAspect =
       new Graphic3d_AspectLine3d(aColIter.Key(), aLineType, aLineWidth);
@@ -422,7 +430,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
         {
           // Preparing normals
           occ::handle<NCollection_HArray1<double>> aNormals;
-          bool                                     aHasNormals =
+          bool              aHasNormals =
             IsReflect
             && aSource->GetNormalsByElement(aKey, IsMeshSmoothShading, aMaxFaceNodes, aNormals);
 
@@ -558,8 +566,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aGroup2->SetClosed(false); // ignore toSupressBackFaces
     aGroup2->SetGroupPrimitivesAspect(aGroupFillAspect2);
   }
-  for (NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>>::Iterator aColIter2(
-         aTwoColorsOfElements);
+  for (NCollection_DataMap<MeshVS_TwoColors, NCollection_Map<int>>::Iterator aColIter2(aTwoColorsOfElements);
        aColIter2.More();
        aColIter2.Next())
   {
@@ -605,12 +612,12 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     // OCC20644 NOTE: aMyIntColor color is then scaled by TelUpdateMaterial() in OpenGl_attri.c
     // using the material reflection coefficients. This affects the visual result.
     occ::handle<Graphic3d_AspectFillArea3d> anAsp = new Graphic3d_AspectFillArea3d(Aspect_IS_SOLID,
-                                                                                   aMyIntColor,
-                                                                                   anEdgeColor,
-                                                                                   anEdgeType,
-                                                                                   anEdgeWidth,
-                                                                                   aMaterial2[0],
-                                                                                   aMaterial2[1]);
+                                                                              aMyIntColor,
+                                                                              anEdgeColor,
+                                                                              anEdgeType,
+                                                                              anEdgeWidth,
+                                                                              aMaterial2[0],
+                                                                              aMaterial2[1]);
     anAsp->SetDistinguishOn();
     anAsp->SetInteriorColor(aMyIntColor);
     anAsp->SetBackInteriorColor(aMyBackColor);
@@ -692,8 +699,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
 //=================================================================================================
 
-void MeshVS_ElementalColorPrsBuilder::SetColors1(
-  const NCollection_DataMap<int, Quantity_Color>& theColorMap)
+void MeshVS_ElementalColorPrsBuilder::SetColors1(const NCollection_DataMap<int, Quantity_Color>& theColorMap)
 {
   myElemColorMap1 = theColorMap;
 }
@@ -714,7 +720,8 @@ bool MeshVS_ElementalColorPrsBuilder::HasColors1() const
 
 //=================================================================================================
 
-bool MeshVS_ElementalColorPrsBuilder::GetColor1(const int ID, Quantity_Color& theColor) const
+bool MeshVS_ElementalColorPrsBuilder::GetColor1(const int ID,
+                                                            Quantity_Color&        theColor) const
 {
   bool aRes = myElemColorMap1.IsBound(ID);
   if (aRes)
@@ -725,7 +732,8 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor1(const int ID, Quantity_Color& th
 
 //=================================================================================================
 
-void MeshVS_ElementalColorPrsBuilder::SetColor1(const int theID, const Quantity_Color& theCol)
+void MeshVS_ElementalColorPrsBuilder::SetColor1(const int theID,
+                                                const Quantity_Color&  theCol)
 {
   bool aRes = myElemColorMap1.IsBound(theID);
   if (aRes)
@@ -744,8 +752,7 @@ void MeshVS_ElementalColorPrsBuilder::SetColors2(
 
 //=================================================================================================
 
-const NCollection_DataMap<int, MeshVS_TwoColors>& MeshVS_ElementalColorPrsBuilder::GetColors2()
-  const
+const NCollection_DataMap<int, MeshVS_TwoColors>& MeshVS_ElementalColorPrsBuilder::GetColors2() const
 {
   return myElemColorMap2;
 }
@@ -759,7 +766,8 @@ bool MeshVS_ElementalColorPrsBuilder::HasColors2() const
 
 //=================================================================================================
 
-bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int ID, MeshVS_TwoColors& theColor) const
+bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int ID,
+                                                            MeshVS_TwoColors&      theColor) const
 {
   bool aRes = myElemColorMap2.IsBound(ID);
   if (aRes)
@@ -770,12 +778,12 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int ID, MeshVS_TwoColors& 
 
 //=================================================================================================
 
-bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int       ID,
-                                                Quantity_Color& theColor1,
-                                                Quantity_Color& theColor2) const
+bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int ID,
+                                                            Quantity_Color&        theColor1,
+                                                            Quantity_Color&        theColor2) const
 {
   MeshVS_TwoColors aTC;
-  bool             aRes = GetColor2(ID, aTC);
+  bool aRes = GetColor2(ID, aTC);
   if (aRes)
     ExtractColors(aTC, theColor1, theColor2);
   return aRes;
@@ -783,16 +791,17 @@ bool MeshVS_ElementalColorPrsBuilder::GetColor2(const int       ID,
 
 //=================================================================================================
 
-void MeshVS_ElementalColorPrsBuilder::SetColor2(const int             theID,
-                                                const Quantity_Color& theCol1,
-                                                const Quantity_Color& theCol2)
+void MeshVS_ElementalColorPrsBuilder::SetColor2(const int theID,
+                                                const Quantity_Color&  theCol1,
+                                                const Quantity_Color&  theCol2)
 {
   SetColor2(theID, BindTwoColors(theCol1, theCol2));
 }
 
 //=================================================================================================
 
-void MeshVS_ElementalColorPrsBuilder::SetColor2(const int theID, const MeshVS_TwoColors& theCol)
+void MeshVS_ElementalColorPrsBuilder::SetColor2(const int  theID,
+                                                const MeshVS_TwoColors& theCol)
 {
   bool aRes = myElemColorMap2.IsBound(theID);
   if (aRes)

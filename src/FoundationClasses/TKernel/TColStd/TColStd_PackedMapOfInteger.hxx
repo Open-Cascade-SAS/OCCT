@@ -88,7 +88,10 @@ private:
     bool HasValues() const { return (myData != 0); }
 
     //! Return TRUE if the given integer key is set within this packed node.
-    int HasValue(int theValue) const { return (myData & (1 << (theValue & MASK_LOW))); }
+    int HasValue(int theValue) const
+    {
+      return (myData & (1 << (theValue & MASK_LOW)));
+    }
 
     //! Add integer key to this packed node.
     //! @return TRUE if key has been added
@@ -130,10 +133,16 @@ private:
 
   public:
     //! Support of Map interface.
-    int HashCode(int theUpper) const { return (myMask >> 5) % theUpper + 1; }
+    int HashCode(int theUpper) const
+    {
+      return (myMask >> 5) % theUpper + 1;
+    }
 
     //! Support of Map interface.
-    bool IsEqual(int theOther) const { return ((myMask >> 5) == (unsigned)theOther); }
+    bool IsEqual(int theOther) const
+    {
+      return ((myMask >> 5) == (unsigned)theOther);
+    }
 
   private:
     TColStd_intMapNode* myNext;
@@ -245,11 +254,11 @@ public:
   private:
     TColStd_intMapNode** myBuckets;
     TColStd_intMapNode*  myNode;
-    int                  myNbBuckets;
-    int                  myBucket;
+    int     myNbBuckets;
+    int     myBucket;
 
-    unsigned int myIntMask; //!< all bits set above the iterated position
-    int          myKey;     //!< Currently iterated key
+    unsigned int     myIntMask; //!< all bits set above the iterated position
+    int myKey;     //!< Currently iterated key
   };
 
 public:
@@ -462,13 +471,15 @@ protected:
 private:
   //! Find the smallest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static int TColStd_intMapNode_findNext(const TColStd_intMapNode* theNode,
-                                                         unsigned int&             theMask);
+  Standard_EXPORT static int TColStd_intMapNode_findNext(
+    const TColStd_intMapNode* theNode,
+    unsigned int&             theMask);
 
   //! Find the highest non-zero bit under the given mask.
   //! Outputs the new mask that does not contain the detected bit.
-  Standard_EXPORT static int TColStd_intMapNode_findPrev(const TColStd_intMapNode* theNode,
-                                                         unsigned int&             theMask);
+  Standard_EXPORT static int TColStd_intMapNode_findPrev(
+    const TColStd_intMapNode* theNode,
+    unsigned int&             theMask);
 
   //! Compute the population (i.e., the number of non-zero bits) of the 32-bit word theData.
   //! The population is stored decremented as it is defined in TColStd_intMapNode.
@@ -487,8 +498,8 @@ private:
 
 private:
   TColStd_intMapNode** myData1;            //!< data array
-  int                  myNbBuckets;        //!< number of buckets (size of data array)
-  int                  myNbPackedMapNodes; //!< amount of packed map nodes
+  int     myNbBuckets;        //!< number of buckets (size of data array)
+  int     myNbPackedMapNodes; //!< amount of packed map nodes
   // clang-format off
   size_t        myExtent;           //!< extent of this map (number of unpacked integer keys)
   // clang-format on

@@ -23,6 +23,8 @@
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Interference;
 
@@ -35,9 +37,8 @@ public:
   Standard_EXPORT void Associate(const occ::handle<TopOpeBRepDS_Interference>& I,
                                  const occ::handle<TopOpeBRepDS_Interference>& K);
 
-  Standard_EXPORT void Associate(
-    const occ::handle<TopOpeBRepDS_Interference>&                   I,
-    const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>& LI);
+  Standard_EXPORT void Associate(const occ::handle<TopOpeBRepDS_Interference>& I,
+                                 const NCollection_List<occ::handle<TopOpeBRepDS_Interference>>&   LI);
 
   Standard_EXPORT bool HasAssociation(const occ::handle<TopOpeBRepDS_Interference>& I) const;
 
@@ -45,14 +46,12 @@ public:
     const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT bool AreAssociated(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                     const occ::handle<TopOpeBRepDS_Interference>& K) const;
+                                                 const occ::handle<TopOpeBRepDS_Interference>& K) const;
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_Association, Standard_Transient)
 
 private:
-  NCollection_DataMap<occ::handle<TopOpeBRepDS_Interference>,
-                      NCollection_List<occ::handle<TopOpeBRepDS_Interference>>>
-    myMap;
+  NCollection_DataMap<occ::handle<TopOpeBRepDS_Interference>, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>> myMap;
 };
 
 #endif // _TopOpeBRepDS_Association_HeaderFile

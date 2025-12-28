@@ -54,7 +54,8 @@ public:
   //! Can be used for adjusting parameters of projector
   Standard_EXPORT occ::handle<ShapeConstruct_ProjectCurveOnSurface> Projector();
 
-  Standard_EXPORT bool FixRemovePCurve(const TopoDS_Edge& edge, const TopoDS_Face& face);
+  Standard_EXPORT bool FixRemovePCurve(const TopoDS_Edge& edge,
+                                                   const TopoDS_Face& face);
 
   //! Removes the pcurve(s) of the edge if it does not match the
   //! vertices
@@ -64,9 +65,9 @@ public:
   //! Returns: True, if does not match, removed (status DONE)
   //! False, (status OK) if matches or (status FAIL) if no pcurve,
   //! nothing done
-  Standard_EXPORT bool FixRemovePCurve(const TopoDS_Edge&               edge,
-                                       const occ::handle<Geom_Surface>& surface,
-                                       const TopLoc_Location&           location);
+  Standard_EXPORT bool FixRemovePCurve(const TopoDS_Edge&          edge,
+                                                   const occ::handle<Geom_Surface>& surface,
+                                                   const TopLoc_Location&      location);
 
   //! Removes 3d curve of the edge if it does not match the vertices
   //! Returns: True, if does not match, removed (status DONE)
@@ -75,24 +76,24 @@ public:
   Standard_EXPORT bool FixRemoveCurve3d(const TopoDS_Edge& edge);
 
   //! See method below for information
-  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge& edge,
-                                    const TopoDS_Face& face,
-                                    const bool         isSeam,
-                                    const double       prec = 0.0);
+  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&     edge,
+                                                const TopoDS_Face&     face,
+                                                const bool isSeam,
+                                                const double    prec = 0.0);
 
   //! See method below for information
-  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&               edge,
-                                    const occ::handle<Geom_Surface>& surface,
-                                    const TopLoc_Location&           location,
-                                    const bool                       isSeam,
-                                    const double                     prec = 0.0);
+  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&          edge,
+                                                const occ::handle<Geom_Surface>& surface,
+                                                const TopLoc_Location&      location,
+                                                const bool      isSeam,
+                                                const double         prec = 0.0);
 
   //! See method below for information
-  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&                        edge,
-                                    const TopoDS_Face&                        face,
-                                    const bool                                isSeam,
-                                    const occ::handle<ShapeAnalysis_Surface>& surfana,
-                                    const double                              prec = 0.0);
+  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&                   edge,
+                                                const TopoDS_Face&                   face,
+                                                const bool               isSeam,
+                                                const occ::handle<ShapeAnalysis_Surface>& surfana,
+                                                const double                  prec = 0.0);
 
   //! Adds pcurve(s) of the edge if missing (by projecting 3d curve)
   //! Parameter isSeam indicates if the edge is a seam.
@@ -111,12 +112,12 @@ public:
   //! DONE2: specific case of pcurve going through degenerated point on
   //! sphere encountered during projection (see class
   //! ShapeConstruct_ProjectCurveOnSurface for more info)
-  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&                        edge,
-                                    const occ::handle<Geom_Surface>&          surface,
-                                    const TopLoc_Location&                    location,
-                                    const bool                                isSeam,
-                                    const occ::handle<ShapeAnalysis_Surface>& surfana,
-                                    const double                              prec = 0.0);
+  Standard_EXPORT bool FixAddPCurve(const TopoDS_Edge&                   edge,
+                                                const occ::handle<Geom_Surface>&          surface,
+                                                const TopLoc_Location&               location,
+                                                const bool               isSeam,
+                                                const occ::handle<ShapeAnalysis_Surface>& surfana,
+                                                const double                  prec = 0.0);
 
   //! Tries to build 3d curve of the edge if missing
   //! Use    : It is to be called after FixRemoveCurve3d (if removed) or in any
@@ -128,7 +129,8 @@ public:
   //! DONE1: 3d curve was added
   Standard_EXPORT bool FixAddCurve3d(const TopoDS_Edge& edge);
 
-  Standard_EXPORT bool FixVertexTolerance(const TopoDS_Edge& edge, const TopoDS_Face& face);
+  Standard_EXPORT bool FixVertexTolerance(const TopoDS_Edge& edge,
+                                                      const TopoDS_Face& face);
 
   //! Increases the tolerances of the edge vertices to comprise
   //! the ends of 3d curve and pcurve on the given face
@@ -153,9 +155,9 @@ public:
   //! FAIL1 - no pcurve
   //! FAIL2 - no 3d curve
   //! DONE1 - pcurve was reversed
-  Standard_EXPORT bool FixReversed2d(const TopoDS_Edge&               edge,
-                                     const occ::handle<Geom_Surface>& surface,
-                                     const TopLoc_Location&           location);
+  Standard_EXPORT bool FixReversed2d(const TopoDS_Edge&          edge,
+                                                 const occ::handle<Geom_Surface>& surface,
+                                                 const TopLoc_Location&      location);
 
   //! Tries to make edge SameParameter and sets corresponding
   //! tolerance and SameParameter flag.
@@ -190,7 +192,8 @@ public:
   //! DONE4 - not used anymore
   //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
   //! (only for edges with not set SameParameter)
-  Standard_EXPORT bool FixSameParameter(const TopoDS_Edge& edge, const double tolerance = 0.0);
+  Standard_EXPORT bool FixSameParameter(const TopoDS_Edge&  edge,
+                                                    const double tolerance = 0.0);
 
   //! Tries to make edge SameParameter and sets corresponding
   //! tolerance and SameParameter flag.
@@ -225,9 +228,9 @@ public:
   //! DONE4 - not used anymore
   //! DONE5 - if the edge resulting from BRepLib has been chosen, i.e. variant b. above
   //! (only for edges with not set SameParameter)
-  Standard_EXPORT bool FixSameParameter(const TopoDS_Edge& edge,
-                                        const TopoDS_Face& face,
-                                        const double       tolerance = 0.0);
+  Standard_EXPORT bool FixSameParameter(const TopoDS_Edge&  edge,
+                                                    const TopoDS_Face&  face,
+                                                    const double tolerance = 0.0);
 
   //! Returns the status (in the form of True/False) of last Fix
   Standard_EXPORT bool Status(const ShapeExtend_Status status) const;
@@ -242,8 +245,9 @@ public:
 
 protected:
   occ::handle<ShapeBuild_ReShape>                   myContext;
-  int                                               myStatus;
+  int                             myStatus;
   occ::handle<ShapeConstruct_ProjectCurveOnSurface> myProjector;
+
 };
 
 #endif // _ShapeFix_Edge_HeaderFile

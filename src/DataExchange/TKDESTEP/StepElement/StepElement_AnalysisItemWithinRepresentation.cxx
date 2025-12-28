@@ -61,8 +61,7 @@ void StepElement_AnalysisItemWithinRepresentation::SetName(
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> StepElement_AnalysisItemWithinRepresentation::Description()
-  const
+occ::handle<TCollection_HAsciiString> StepElement_AnalysisItemWithinRepresentation::Description() const
 {
   return theDescription;
 }

@@ -49,8 +49,8 @@ public:
   //! - aBottomPlane : Bottom plane of view volume
   //! - aBackPlane   : Back   plane of view volume
   //! - aFrontPlane  : Front  plane of view volume
-  Standard_EXPORT void Init(const int                          aViewNum,
-                            const double                       aScale,
+  Standard_EXPORT void Init(const int        aViewNum,
+                            const double           aScale,
                             const occ::handle<IGESGeom_Plane>& aLeftPlane,
                             const occ::handle<IGESGeom_Plane>& aTopPlane,
                             const occ::handle<IGESGeom_Plane>& aRightPlane,
@@ -65,7 +65,8 @@ public:
   Standard_EXPORT int NbViews() const override;
 
   //! For a single view, returns <me> whatever <num>
-  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int num) const override;
+  Standard_EXPORT occ::handle<IGESData_ViewKindEntity> ViewItem(const int num) const
+    override;
 
   //! returns integer number identifying view orientation
   Standard_EXPORT int ViewNumber() const;
@@ -119,8 +120,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDraw_View, IGESData_ViewKindEntity)
 
 private:
-  int                         theViewNumber;
-  double                      theScaleFactor;
+  int       theViewNumber;
+  double          theScaleFactor;
   occ::handle<IGESGeom_Plane> theLeftPlane;
   occ::handle<IGESGeom_Plane> theTopPlane;
   occ::handle<IGESGeom_Plane> theRightPlane;

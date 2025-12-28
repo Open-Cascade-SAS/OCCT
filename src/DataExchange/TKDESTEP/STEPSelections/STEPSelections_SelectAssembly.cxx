@@ -36,9 +36,9 @@ STEPSelections_SelectAssembly::STEPSelections_SelectAssembly()
 }
 
 bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
-                                            const occ::handle<Standard_Transient>& start,
-                                            const Interface_Graph&                 G,
-                                            Interface_EntityIterator&              explored) const
+                                                        const occ::handle<Standard_Transient>& start,
+                                                        const Interface_Graph&            G,
+                                                        Interface_EntityIterator& explored) const
 {
   if (start.IsNull())
     return false;
@@ -58,7 +58,7 @@ bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
   if (start->IsKind(STANDARD_TYPE(StepRepr_MappedItem)))
   {
     DeclareAndCast(StepRepr_MappedItem, mapped, start);
-    Interface_EntityIterator                   subs = G.Sharings(mapped);
+    Interface_EntityIterator              subs = G.Sharings(mapped);
     occ::handle<StepShape_ShapeRepresentation> shrep;
     for (subs.Start(); subs.More() && shrep.IsNull(); subs.Next())
       if (subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
@@ -74,8 +74,8 @@ bool STEPSelections_SelectAssembly::Explore(const int /*level*/,
     if (shdefrep.IsNull())
       return false;
 
-    occ::handle<StepRepr_ProductDefinitionShape> pds =
-      occ::down_cast<StepRepr_ProductDefinitionShape>(shdefrep->Definition().PropertyDefinition());
+    occ::handle<StepRepr_ProductDefinitionShape> pds = occ::down_cast<StepRepr_ProductDefinitionShape>(
+      shdefrep->Definition().PropertyDefinition());
     if (pds.IsNull())
       return false;
     occ::handle<Standard_Transient> ent = pds->Definition().ProductDefinitionRelationship();

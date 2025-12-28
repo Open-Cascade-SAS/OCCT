@@ -22,8 +22,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
 
 //=================================================================================================
 
-Graphic3d_CStructure::Graphic3d_CStructure(
-  const occ::handle<Graphic3d_StructureManager>& theManager)
+Graphic3d_CStructure::Graphic3d_CStructure(const occ::handle<Graphic3d_StructureManager>& theManager)
     : myGraphicDriver(theManager->GraphicDriver()),
       myId(-1),
       myZLayer(Graphic3d_ZLayerId_Default),
@@ -51,8 +50,7 @@ void Graphic3d_CStructure::DumpJson(Standard_OStream& theOStream, int theDepth) 
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
-  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator anIterator(myGroups);
-       anIterator.More();
+  for (NCollection_Sequence<occ::handle<Graphic3d_Group>>::Iterator anIterator(myGroups); anIterator.More();
        anIterator.Next())
   {
     const occ::handle<Graphic3d_Group>& aGroup = anIterator.Value();

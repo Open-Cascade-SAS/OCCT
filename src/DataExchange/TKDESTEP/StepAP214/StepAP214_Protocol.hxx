@@ -34,7 +34,8 @@ public:
   Standard_EXPORT StepAP214_Protocol();
 
   //! Returns a Case Number for each of the StepAP214 Entities
-  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const override;
+  Standard_EXPORT virtual int TypeNumber(const occ::handle<Standard_Type>& atype) const
+    override;
 
   Standard_EXPORT virtual const char* SchemaName(
     const occ::handle<Interface_InterfaceModel>& theModel) const override;
@@ -43,9 +44,11 @@ public:
   Standard_EXPORT virtual int NbResources() const override;
 
   //! Returns a Resource, given its rank (between 1 and NbResources)
-  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const override;
+  Standard_EXPORT virtual occ::handle<Interface_Protocol> Resource(const int num) const
+    override;
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_Protocol, StepData_Protocol)
+
 };
 
 #endif // _StepAP214_Protocol_HeaderFile

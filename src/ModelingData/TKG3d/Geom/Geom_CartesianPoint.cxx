@@ -37,7 +37,9 @@ Geom_CartesianPoint::Geom_CartesianPoint(const gp_Pnt& P)
 
 //=================================================================================================
 
-Geom_CartesianPoint::Geom_CartesianPoint(const double X, const double Y, const double Z)
+Geom_CartesianPoint::Geom_CartesianPoint(const double X,
+                                         const double Y,
+                                         const double Z)
     : gpPnt(X, Y, Z)
 {
 }
@@ -54,7 +56,9 @@ occ::handle<Geom_Geometry> Geom_CartesianPoint::Copy() const
 
 //=================================================================================================
 
-void Geom_CartesianPoint::SetCoord(const double X, const double Y, const double Z)
+void Geom_CartesianPoint::SetCoord(const double X,
+                                   const double Y,
+                                   const double Z)
 {
 
   gpPnt.SetCoord(X, Y, Z);

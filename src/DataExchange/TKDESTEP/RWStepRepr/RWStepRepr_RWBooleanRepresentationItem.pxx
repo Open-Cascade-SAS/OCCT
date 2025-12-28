@@ -32,14 +32,12 @@ public:
 
   Standard_HIDDEN RWStepRepr_RWBooleanRepresentationItem();
 
-  Standard_HIDDEN void ReadStep(
-    const occ::handle<StepData_StepReaderData>&            theData,
-    const int                                              theNum,
-    occ::handle<Interface_Check>&                          theAch,
-    const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const;
+  Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&            theData,
+                                const int                            theNum,
+                                occ::handle<Interface_Check>&                          theAch,
+                                const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const;
 
-  Standard_HIDDEN void WriteStep(
-    StepData_StepWriter&                                   theSW,
-    const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const;
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                              theSW,
+                                 const occ::handle<StepRepr_BooleanRepresentationItem>& theEnt) const;
 };
 #endif // _RWStepRepr_RWBooleanRepresentationItem_HeaderFile

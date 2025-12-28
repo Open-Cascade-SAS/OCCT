@@ -60,8 +60,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_Approval> Approval() const;
 
   //! returns Value as a (Null if another type)
-  Standard_EXPORT occ::handle<StepRepr_DescriptiveRepresentationItem>
-                  DescriptiveRepresentationItem() const;
+  Standard_EXPORT occ::handle<StepRepr_DescriptiveRepresentationItem> DescriptiveRepresentationItem()
+    const;
 
   //! returns Value as a MaterialDesignation (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_MaterialDesignation> MaterialDesignation() const;
@@ -70,8 +70,8 @@ public:
   Standard_EXPORT occ::handle<StepBasic_ProductDefinition> ProductDefinition() const;
 
   //! returns Value as aProductDefinitionRelationship (Null if another type)
-  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship>
-                  ProductDefinitionRelationship() const;
+  Standard_EXPORT occ::handle<StepBasic_ProductDefinitionRelationship> ProductDefinitionRelationship()
+    const;
 
   //! returns Value as a PropertyDefinition (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_PropertyDefinition> PropertyDefinition() const;
@@ -87,7 +87,7 @@ public:
 
   //! returns Value as a AppliedExternalIdentificationAssignment (Null if another type)
   Standard_EXPORT occ::handle<StepAP214_AppliedExternalIdentificationAssignment>
-                  AppliedExternalIdentificationAssignment() const;
+    AppliedExternalIdentificationAssignment() const;
 
   //! returns Value as a AssemblyComponentUsage (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_AssemblyComponentUsage> AssemblyComponentUsage() const;
@@ -118,6 +118,7 @@ public:
 
   //! returns Value as a RepresentationItem (Null if another type)
   Standard_EXPORT occ::handle<StepRepr_RepresentationItem> RepresentationItem() const;
+
 };
 
 #endif // _StepAP214_DocumentReferenceItem_HeaderFile

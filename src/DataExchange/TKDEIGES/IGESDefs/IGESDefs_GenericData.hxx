@@ -20,9 +20,12 @@
 #include <Standard.hxx>
 
 #include <Standard_Integer.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_Transient.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <Standard_Real.hxx>
 class TCollection_HAsciiString;
@@ -48,11 +51,10 @@ public:
   //! - aName     : Property Name
   //! - allTypes  : Property Types
   //! - allValues : Property Values
-  Standard_EXPORT void Init(
-    const int                                                                nbPropVal,
-    const occ::handle<TCollection_HAsciiString>&                             aName,
-    const occ::handle<NCollection_HArray1<int>>&                             allTypes,
-    const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& allValues);
+  Standard_EXPORT void Init(const int                    nbPropVal,
+                            const occ::handle<TCollection_HAsciiString>&   aName,
+                            const occ::handle<NCollection_HArray1<int>>&   allTypes,
+                            const occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>>& allValues);
 
   //! returns the number of property values
   Standard_EXPORT int NbPropertyValues() const;
@@ -82,7 +84,8 @@ public:
   Standard_EXPORT double ValueAsReal(const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Integer
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> ValueAsString(const int ValueNum) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ValueAsString(
+    const int ValueNum) const;
 
   //! Returns Attribute Value <AttrNum, rank ValueNum> as an Entity
   //! Error if Index out of Range, or not a Entity
@@ -95,9 +98,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESDefs_GenericData, IGESData_IGESEntity)
 
 private:
-  int                                                               theNbPropertyValues;
-  occ::handle<TCollection_HAsciiString>                             theName;
-  occ::handle<NCollection_HArray1<int>>                             theTypes;
+  int                   theNbPropertyValues;
+  occ::handle<TCollection_HAsciiString>   theName;
+  occ::handle<NCollection_HArray1<int>>   theTypes;
   occ::handle<NCollection_HArray1<occ::handle<Standard_Transient>>> theValues;
 };
 

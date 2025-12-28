@@ -32,9 +32,13 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(DNaming_FilletDriver, TFunction_Driver)
@@ -72,7 +76,7 @@ int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
   occ::handle<TFunction_Function> aPrevFun = DNaming::GetPrevFunction(aFunction);
   if (aPrevFun.IsNull())
     return -1;
-  const TDF_Label&                aLab = RESPOSITION(aPrevFun);
+  const TDF_Label&           aLab = RESPOSITION(aPrevFun);
   occ::handle<TNaming_NamedShape> aContextNS;
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty())
@@ -84,7 +88,7 @@ int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     return -1;
   }
 
-  const double             aRadius = DNaming::GetReal(aFunction, FILLET_RADIUS)->Get();
+  const double      aRadius = DNaming::GetReal(aFunction, FILLET_RADIUS)->Get();
   const ChFi3d_FilletShape aSurfaceType =
     (ChFi3d_FilletShape)DNaming::GetInteger(aFunction, FILLET_SURFTYPE)->Get();
 
@@ -119,7 +123,7 @@ int DNaming_FilletDriver::Execute(occ::handle<TFunction_Logbook>& theLog) const
     return -1;
   }
 
-  TopExp_Explorer                                        expl;
+  TopExp_Explorer     expl;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> View;
 
   BRepFilletAPI_MakeFillet aMkFillet(aCONTEXT, aSurfaceType);

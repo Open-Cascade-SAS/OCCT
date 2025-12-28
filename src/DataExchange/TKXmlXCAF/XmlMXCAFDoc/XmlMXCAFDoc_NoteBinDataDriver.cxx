@@ -43,9 +43,10 @@ occ::handle<TDF_Attribute> XmlMXCAFDoc_NoteBinDataDriver::NewEmpty() const
 
 //=================================================================================================
 
-bool XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                          const occ::handle<TDF_Attribute>& theTarget,
-                                          XmlObjMgt_RRelocationTable&       theRelocTable) const
+bool XmlMXCAFDoc_NoteBinDataDriver::Paste(
+  const XmlObjMgt_Persistent&  theSource,
+  const occ::handle<TDF_Attribute>& theTarget,
+  XmlObjMgt_RRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -84,8 +85,8 @@ bool XmlMXCAFDoc_NoteBinDataDriver::Paste(const XmlObjMgt_Persistent&       theS
 //=================================================================================================
 
 void XmlMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                          XmlObjMgt_Persistent&             theTarget,
-                                          XmlObjMgt_SRelocationTable&       theRelocTable) const
+                                          XmlObjMgt_Persistent&        theTarget,
+                                          XmlObjMgt_SRelocationTable&  theRelocTable) const
 {
   XmlMXCAFDoc_NoteDriver::Paste(theSource, theTarget, theRelocTable);
 
@@ -101,7 +102,7 @@ void XmlMXCAFDoc_NoteBinDataDriver::Paste(const occ::handle<TDF_Attribute>& theS
   if (aNote->Size() > 0)
   {
     const occ::handle<NCollection_HArray1<uint8_t>>& aData = aNote->Data();
-    LDOM_OSStream                                    anOSS(aNote->Size());
+    LDOM_OSStream                        anOSS(aNote->Size());
     for (int i = aData->Lower(); i <= aData->Upper(); ++i)
     {
       anOSS << std::hex << aData->Value(i);

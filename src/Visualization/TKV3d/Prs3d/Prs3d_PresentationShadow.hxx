@@ -31,21 +31,18 @@ public:
   inline int ParentId() const { return myParentStructId; }
 
   //! Returns view affinity of the parent presentation
-  inline const occ::handle<Graphic3d_ViewAffinity>& ParentAffinity() const
-  {
-    return myParentAffinity;
-  }
+  inline const occ::handle<Graphic3d_ViewAffinity>& ParentAffinity() const { return myParentAffinity; }
 
   //! Do nothing - axis-aligned bounding box should be initialized from parent structure.
   Standard_EXPORT virtual void CalculateBoundBox() override;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
-                                        int               theDepth = -1) const override;
+                                        int  theDepth = -1) const override;
 
 private:
   occ::handle<Graphic3d_ViewAffinity> myParentAffinity;
-  int                                 myParentStructId;
+  int               myParentStructId;
 };
 
 #endif // _Prs3d_PresentationShadow_HeaderFile

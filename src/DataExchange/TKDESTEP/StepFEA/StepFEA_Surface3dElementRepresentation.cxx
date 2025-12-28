@@ -32,12 +32,10 @@ StepFEA_Surface3dElementRepresentation::StepFEA_Surface3dElementRepresentation()
 //=================================================================================================
 
 void StepFEA_Surface3dElementRepresentation::Init(
-  const occ::handle<TCollection_HAsciiString>& aRepresentation_Name,
-  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&
-                                                     aRepresentation_Items,
-  const occ::handle<StepRepr_RepresentationContext>& aRepresentation_ContextOfItems,
-  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&
-                                                             aElementRepresentation_NodeList,
+  const occ::handle<TCollection_HAsciiString>&               aRepresentation_Name,
+  const occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>>&   aRepresentation_Items,
+  const occ::handle<StepRepr_RepresentationContext>&         aRepresentation_ContextOfItems,
+  const occ::handle<NCollection_HArray1<occ::handle<StepFEA_NodeRepresentation>>>&    aElementRepresentation_NodeList,
   const occ::handle<StepFEA_FeaModel3d>&                     aModelRef,
   const occ::handle<StepElement_Surface3dElementDescriptor>& aElementDescriptor,
   const occ::handle<StepElement_SurfaceElementProperty>&     aProperty,
@@ -90,8 +88,7 @@ void StepFEA_Surface3dElementRepresentation::SetElementDescriptor(
 
 //=================================================================================================
 
-occ::handle<StepElement_SurfaceElementProperty> StepFEA_Surface3dElementRepresentation::Property()
-  const
+occ::handle<StepElement_SurfaceElementProperty> StepFEA_Surface3dElementRepresentation::Property() const
 {
   return theProperty;
 }

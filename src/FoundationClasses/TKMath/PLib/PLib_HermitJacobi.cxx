@@ -98,7 +98,8 @@ inline const math_Matrix& GetHermiteMatrix(const int theNivConstr)
 
 //=================================================================================================
 
-PLib_HermitJacobi::PLib_HermitJacobi(const int WorkDegree, const GeomAbs_Shape ConstraintOrder)
+PLib_HermitJacobi::PLib_HermitJacobi(const int WorkDegree,
+                                     const GeomAbs_Shape    ConstraintOrder)
     : myJacobi(WorkDegree, ConstraintOrder)
 {
 }
@@ -106,20 +107,20 @@ PLib_HermitJacobi::PLib_HermitJacobi(const int WorkDegree, const GeomAbs_Shape C
 //=================================================================================================
 
 double PLib_HermitJacobi::MaxError(const int Dimension,
-                                   double&   HermJacCoeff,
-                                   const int NewDegree) const
+                                          double&         HermJacCoeff,
+                                          const int NewDegree) const
 {
   return myJacobi.MaxError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::ReduceDegree(const int    Dimension,
-                                     const int    MaxDegree,
-                                     const double Tol,
-                                     double&      HermJacCoeff,
-                                     int&         NewDegree,
-                                     double&      MaxError) const
+void PLib_HermitJacobi::ReduceDegree(const int Dimension,
+                                     const int MaxDegree,
+                                     const double    Tol,
+                                     double&         HermJacCoeff,
+                                     int&      NewDegree,
+                                     double&         MaxError) const
 {
   myJacobi.ReduceDegree(Dimension, MaxDegree, Tol, HermJacCoeff, NewDegree, MaxError);
 }
@@ -127,23 +128,23 @@ void PLib_HermitJacobi::ReduceDegree(const int    Dimension,
 //=================================================================================================
 
 double PLib_HermitJacobi::AverageError(const int Dimension,
-                                       double&   HermJacCoeff,
-                                       const int NewDegree) const
+                                              double&         HermJacCoeff,
+                                              const int NewDegree) const
 {
   return myJacobi.AverageError(Dimension, HermJacCoeff, NewDegree);
 }
 
 //=================================================================================================
 
-void PLib_HermitJacobi::ToCoefficients(const int                         Dimension,
-                                       const int                         Degree,
+void PLib_HermitJacobi::ToCoefficients(const int      Dimension,
+                                       const int      Degree,
                                        const NCollection_Array1<double>& HermJacCoeff,
                                        NCollection_Array1<double>&       Coefficients) const
 {
-  int    i, k, idim, i1, i2;
-  double h1, h2;
-  int    aNivConstr = this->NivConstr(), aDegreeH = 2 * aNivConstr + 1;
-  int    ibegHJC = HermJacCoeff.Lower(), kdim;
+  int i, k, idim, i1, i2;
+  double    h1, h2;
+  int aNivConstr = this->NivConstr(), aDegreeH = 2 * aNivConstr + 1;
+  int ibegHJC = HermJacCoeff.Lower(), kdim;
 
   const math_Matrix& aHermiteMatrix = GetHermiteMatrix(aNivConstr);
 
@@ -177,7 +178,7 @@ void PLib_HermitJacobi::ToCoefficients(const int                         Dimensi
   else
   {
     int ibegC = Coefficients.Lower();
-    kdim      = (Degree + 1) * Dimension;
+    kdim                   = (Degree + 1) * Dimension;
     for (k = 0; k < kdim; k++)
       Coefficients(ibegC + k) = AuxCoeff(k);
   }
@@ -188,12 +189,12 @@ void PLib_HermitJacobi::ToCoefficients(const int                         Dimensi
 // purpose  : common part of D0,D1,D2,D3 (FORTRAN subroutine MPOBAS)
 //=======================================================================
 
-void PLib_HermitJacobi::D0123(const int                   NDeriv,
-                              const double                U,
-                              NCollection_Array1<double>& BasisValue,
-                              NCollection_Array1<double>& BasisD1,
-                              NCollection_Array1<double>& BasisD2,
-                              NCollection_Array1<double>& BasisD3) const
+void PLib_HermitJacobi::D0123(const int NDeriv,
+                              const double    U,
+                              NCollection_Array1<double>&  BasisValue,
+                              NCollection_Array1<double>&  BasisD1,
+                              NCollection_Array1<double>&  BasisD2,
+                              NCollection_Array1<double>&  BasisD3) const
 {
   NCollection_LocalArray<double> jac0(4 * 20);
   NCollection_LocalArray<double> jac1(4 * 20);
@@ -203,11 +204,11 @@ void PLib_HermitJacobi::D0123(const int                   NDeriv,
 
   int i, j;
   int aNivConstr = this->NivConstr(), aWorkDegree = this->WorkDegree(),
-      aDegreeH = 2 * aNivConstr + 1;
+                   aDegreeH = 2 * aNivConstr + 1;
   int ibeg0 = BasisValue.Lower(), ibeg1 = BasisD1.Lower(), ibeg2 = BasisD2.Lower(),
-      ibeg3         = BasisD3.Lower();
-  int    aJacDegree = aWorkDegree - aDegreeH - 1;
-  double W0;
+                   ibeg3      = BasisD3.Lower();
+  int aJacDegree = aWorkDegree - aDegreeH - 1;
+  double    W0;
 
   const math_Matrix& aHermiteMatrix = GetHermiteMatrix(aNivConstr);
 
@@ -331,7 +332,7 @@ void PLib_HermitJacobi::D0(const double U, NCollection_Array1<double>& BasisValu
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D1(const double                U,
+void PLib_HermitJacobi::D1(const double   U,
                            NCollection_Array1<double>& BasisValue,
                            NCollection_Array1<double>& BasisD1) const
 {
@@ -340,7 +341,7 @@ void PLib_HermitJacobi::D1(const double                U,
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D2(const double                U,
+void PLib_HermitJacobi::D2(const double   U,
                            NCollection_Array1<double>& BasisValue,
                            NCollection_Array1<double>& BasisD1,
                            NCollection_Array1<double>& BasisD2) const
@@ -350,7 +351,7 @@ void PLib_HermitJacobi::D2(const double                U,
 
 //=================================================================================================
 
-void PLib_HermitJacobi::D3(const double                U,
+void PLib_HermitJacobi::D3(const double   U,
                            NCollection_Array1<double>& BasisValue,
                            NCollection_Array1<double>& BasisD1,
                            NCollection_Array1<double>& BasisD2,

@@ -74,13 +74,11 @@ public:
 
   //! Returns the Multiple Result, if it is defined (at least one
   //! Item). Else, returns a Null Handle
-  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-                  MultipleResult() const;
+  Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> MultipleResult() const;
 
   //! Defines a Binding with a Multiple Result, given as a Sequence
   //! Error if a Unique Result has yet been defined
-  Standard_EXPORT void SetMultipleResult(
-    const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& mulres);
+  Standard_EXPORT void SetMultipleResult(const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& mulres);
 
   DEFINE_STANDARD_RTTIEXT(Transfer_MultipleBinder, Transfer_Binder)
 

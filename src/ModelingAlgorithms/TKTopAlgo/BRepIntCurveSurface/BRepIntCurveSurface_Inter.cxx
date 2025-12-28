@@ -42,7 +42,7 @@ BRepIntCurveSurface_Inter::BRepIntCurveSurface_Inter()
 
 void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape&      theShape,
                                      const GeomAdaptor_Curve& theCurve,
-                                     const double             theTol)
+                                     const double      theTol)
 {
   Load(theShape, theTol);
   Init(theCurve);
@@ -52,11 +52,11 @@ void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape&      theShape,
 
 void BRepIntCurveSurface_Inter::Init(const TopoDS_Shape& theShape,
                                      const gp_Lin&       theLine,
-                                     const double        theTol)
+                                     const double theTol)
 {
 
   occ::handle<Geom_Line> geomline = new Geom_Line(theLine);
-  GeomAdaptor_Curve      aCurve(geomline);
+  GeomAdaptor_Curve aCurve(geomline);
   Load(theShape, theTol);
   Init(aCurve);
 }
@@ -94,7 +94,7 @@ void BRepIntCurveSurface_Inter::Init(const GeomAdaptor_Curve& theCurve)
   myCurveBox.SetVoid();
   double aFirst = theCurve.FirstParameter();
   double aLast  = theCurve.LastParameter();
-  myCurve       = new GeomAdaptor_Curve(theCurve);
+  myCurve              = new GeomAdaptor_Curve(theCurve);
   if (!Precision::IsInfinite(aFirst) && !Precision::IsInfinite(aLast))
   {
     BndLib_Add3dCurve::Add(*myCurve, 0., myCurveBox);
@@ -140,13 +140,13 @@ void BRepIntCurveSurface_Inter::Find()
       BRepBndLib::Add(aCurface, aFaceBox);
       aFaceBox.SetGap(myTolerance); // Precision::Confusion());
     }
-    bool isOut = (myCurve->GetType() == GeomAbs_Line
-                    ? aFaceBox.IsOut(myCurve->Line())
-                    : (!myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox) : false));
+    bool isOut =
+      (myCurve->GetType() == GeomAbs_Line
+         ? aFaceBox.IsOut(myCurve->Line())
+         : (!myCurveBox.IsVoid() ? aFaceBox.IsOut(myCurveBox) : false));
     if (isOut)
       continue;
-    occ::handle<BRepAdaptor_Surface> aSurfForFastClass =
-      new BRepAdaptor_Surface(TopoDS::Face(aCurface));
+    occ::handle<BRepAdaptor_Surface> aSurfForFastClass = new BRepAdaptor_Surface(TopoDS::Face(aCurface));
     myIntcs.Perform(myCurve, aSurfForFastClass);
     myCurrentnbpoints = myIntcs.NbPoints();
     if (!myCurrentnbpoints)

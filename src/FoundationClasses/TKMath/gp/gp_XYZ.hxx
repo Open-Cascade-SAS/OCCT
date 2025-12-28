@@ -42,7 +42,9 @@ public:
   }
 
   //! creates an XYZ with given coordinates
-  constexpr gp_XYZ(const double theX, const double theY, const double theZ) noexcept
+  constexpr gp_XYZ(const double theX,
+                   const double theY,
+                   const double theZ) noexcept
       : x(theX),
         y(theY),
         z(theZ)
@@ -51,7 +53,9 @@ public:
 
   //! For this XYZ object, assigns
   //! the values theX, theY and theZ to its three coordinates
-  constexpr void SetCoord(const double theX, const double theY, const double theZ) noexcept
+  constexpr void SetCoord(const double theX,
+                          const double theY,
+                          const double theZ) noexcept
   {
     x = theX;
     y = theY;
@@ -236,7 +240,7 @@ public:
   //! Triple vector product
   //! computes New = <me>.Cross(theCoord1.Cross(theCoord2))
   [[nodiscard]] constexpr gp_XYZ CrossCrossed(const gp_XYZ& theCoord1,
-                                              const gp_XYZ& theCoord2) const noexcept
+                                                   const gp_XYZ& theCoord2) const noexcept
   {
     gp_XYZ aCoord0 = *this;
     aCoord0.CrossCross(theCoord1, theCoord2);
@@ -422,13 +426,13 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3 + theXYZ4
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const double  theA3,
-                               const gp_XYZ& theXYZ3,
-                               const gp_XYZ& theXYZ4) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_XYZ&       theXYZ1,
+                               const double theA2,
+                               const gp_XYZ&       theXYZ2,
+                               const double theA3,
+                               const gp_XYZ&       theXYZ3,
+                               const gp_XYZ&       theXYZ4) noexcept
   {
     x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x + theXYZ4.x;
     y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y + theXYZ4.y;
@@ -439,12 +443,12 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theA3 * theXYZ3
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const double  theA3,
-                               const gp_XYZ& theXYZ3) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_XYZ&       theXYZ1,
+                               const double theA2,
+                               const gp_XYZ&       theXYZ2,
+                               const double theA3,
+                               const gp_XYZ&       theXYZ3) noexcept
   {
     x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theA3 * theXYZ3.x;
     y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theA3 * theXYZ3.y;
@@ -455,11 +459,11 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2 + theXYZ3
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2,
-                               const gp_XYZ& theXYZ3) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_XYZ&       theXYZ1,
+                               const double theA2,
+                               const gp_XYZ&       theXYZ2,
+                               const gp_XYZ&       theXYZ3) noexcept
   {
     x = theA1 * theXYZ1.x + theA2 * theXYZ2.x + theXYZ3.x;
     y = theA1 * theXYZ1.y + theA2 * theXYZ2.y + theXYZ3.y;
@@ -470,10 +474,10 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theA2 * theXYZ2
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const double  theA2,
-                               const gp_XYZ& theXYZ2) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_XYZ&       theXYZ1,
+                               const double theA2,
+                               const gp_XYZ&       theXYZ2) noexcept
   {
     x = theA1 * theXYZ1.x + theA2 * theXYZ2.x;
     y = theA1 * theXYZ1.y + theA2 * theXYZ2.y;
@@ -484,9 +488,9 @@ public:
   //! @code
   //! theA1 * theXYZ1 + theXYZ2
   //! @endcode
-  constexpr void SetLinearForm(const double  theA1,
-                               const gp_XYZ& theXYZ1,
-                               const gp_XYZ& theXYZ2) noexcept
+  constexpr void SetLinearForm(const double theA1,
+                               const gp_XYZ&       theXYZ1,
+                               const gp_XYZ&       theXYZ2) noexcept
   {
     x = theA1 * theXYZ1.x + theXYZ2.x;
     y = theA1 * theXYZ1.y + theXYZ2.y;
@@ -508,7 +512,8 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
 
   //! Inits the content of me from the stream
-  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream, int& theStreamPos);
+  Standard_EXPORT bool InitFromJson(const Standard_SStream& theSStream,
+                                                int&       theStreamPos);
 
 private:
   double x;
@@ -522,9 +527,9 @@ inline constexpr void gp_XYZ::Cross(const gp_XYZ& theRight) noexcept
 {
   const double aXresult = y * theRight.z - z * theRight.y;
   const double aYresult = z * theRight.x - x * theRight.z;
-  z                     = x * theRight.y - y * theRight.x;
-  x                     = aXresult;
-  y                     = aYresult;
+  z                            = x * theRight.y - y * theRight.x;
+  x                            = aXresult;
+  y                            = aYresult;
 }
 
 //=================================================================================================
@@ -565,7 +570,7 @@ inline constexpr void gp_XYZ::CrossCross(const gp_XYZ& theCoord1, const gp_XYZ& 
 //=================================================================================================
 
 inline constexpr double gp_XYZ::DotCross(const gp_XYZ& theCoord1,
-                                         const gp_XYZ& theCoord2) const noexcept
+                                                const gp_XYZ& theCoord2) const noexcept
 {
   const double aXresult  = theCoord1.y * theCoord2.z - theCoord1.z * theCoord2.y;
   const double anYresult = theCoord1.z * theCoord2.x - theCoord1.x * theCoord2.z;

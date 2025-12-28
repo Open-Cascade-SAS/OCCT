@@ -33,29 +33,29 @@ public:
 
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                       P,
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                  P,
                                    const occ::handle<GeomAdaptor_SurfaceOfRevolution>& S,
-                                   const double                                        Umin,
-                                   const double                                        Usup,
-                                   const double                                        Vmin,
-                                   const double                                        Vsup,
-                                   const double                                        TolU,
-                                   const double                                        TolV);
+                                   const double                            Umin,
+                                   const double                            Usup,
+                                   const double                            Vmin,
+                                   const double                            Vsup,
+                                   const double                            TolU,
+                                   const double                            TolV);
 
   //! It calculates all the distances between a point
   //! from gp and a SurfacePtr from Adaptor3d.
-  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                       P,
+  Standard_EXPORT Extrema_ExtPRevS(const gp_Pnt&                                  P,
                                    const occ::handle<GeomAdaptor_SurfaceOfRevolution>& S,
-                                   const double                                        TolU,
-                                   const double                                        TolV);
+                                   const double                            TolU,
+                                   const double                            TolV);
 
   Standard_EXPORT void Initialize(const occ::handle<GeomAdaptor_SurfaceOfRevolution>& S,
-                                  const double                                        Umin,
-                                  const double                                        Usup,
-                                  const double                                        Vmin,
-                                  const double                                        Vsup,
-                                  const double                                        TolU,
-                                  const double                                        TolV);
+                                  const double                            Umin,
+                                  const double                            Usup,
+                                  const double                            Vmin,
+                                  const double                            Vsup,
+                                  const double                            TolU,
+                                  const double                            TolV);
 
   Standard_EXPORT void Perform(const gp_Pnt& P);
 
@@ -75,16 +75,16 @@ public:
 
 private:
   occ::handle<GeomAdaptor_SurfaceOfRevolution> myS;
-  double                                       myvinf;
-  double                                       myvsup;
-  double                                       mytolv;
-  gp_Ax2                                       myPosition;
-  Extrema_GenExtPS                             myExtPS;
-  bool                                         myIsAnalyticallyComputable;
-  bool                                         myDone;
-  int                                          myNbExt;
-  double                                       mySqDist[8];
-  Extrema_POnSurf                              myPoint[8];
+  double                           myvinf;
+  double                           myvsup;
+  double                           mytolv;
+  gp_Ax2                                  myPosition;
+  Extrema_GenExtPS                        myExtPS;
+  bool                        myIsAnalyticallyComputable;
+  bool                        myDone;
+  int                        myNbExt;
+  double                           mySqDist[8];
+  Extrema_POnSurf                         myPoint[8];
 };
 
 #endif // _Extrema_ExtPRevS_HeaderFile

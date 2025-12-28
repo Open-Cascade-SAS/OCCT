@@ -44,16 +44,16 @@ class VrmlConverter_Projector : public Standard_Transient
 
 public:
   Standard_EXPORT VrmlConverter_Projector(
-    const NCollection_Array1<TopoDS_Shape>& Shapes,
-    const double                            Focus,
-    const double                            DX,
-    const double                            DY,
-    const double                            DZ,
-    const double                            XUp,
-    const double                            YUp,
-    const double                            ZUp,
-    const VrmlConverter_TypeOfCamera        Camera = VrmlConverter_NoCamera,
-    const VrmlConverter_TypeOfLight         Light  = VrmlConverter_NoLight);
+    const NCollection_Array1<TopoDS_Shape>&    Shapes,
+    const double              Focus,
+    const double              DX,
+    const double              DY,
+    const double              DZ,
+    const double              XUp,
+    const double              YUp,
+    const double              ZUp,
+    const VrmlConverter_TypeOfCamera Camera = VrmlConverter_NoCamera,
+    const VrmlConverter_TypeOfLight  Light  = VrmlConverter_NoLight);
 
   Standard_EXPORT void SetCamera(const VrmlConverter_TypeOfCamera aCamera);
 

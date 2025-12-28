@@ -38,17 +38,16 @@
 
 IGESDimen_ToolDiameterDimension::IGESDimen_ToolDiameterDimension() {}
 
-void IGESDimen_ToolDiameterDimension::ReadOwnParams(
-  const occ::handle<IGESDimen_DiameterDimension>& ent,
-  const occ::handle<IGESData_IGESReaderData>&     IR,
-  IGESData_ParamReader&                           PR) const
+void IGESDimen_ToolDiameterDimension::ReadOwnParams(const occ::handle<IGESDimen_DiameterDimension>& ent,
+                                                    const occ::handle<IGESData_IGESReaderData>&     IR,
+                                                    IGESData_ParamReader& PR) const
 {
   // bool st; //szv#4:S4163:12Mar99 not needed
 
   occ::handle<IGESDimen_GeneralNote> note;
   occ::handle<IGESDimen_LeaderArrow> firstLeader;
   occ::handle<IGESDimen_LeaderArrow> secondLeader;
-  gp_XY                              center;
+  gp_XY                         center;
 
   PR.ReadEntity(IR,
                 PR.Current(),
@@ -75,9 +74,8 @@ void IGESDimen_ToolDiameterDimension::ReadOwnParams(
   ent->Init(note, firstLeader, secondLeader, center);
 }
 
-void IGESDimen_ToolDiameterDimension::WriteOwnParams(
-  const occ::handle<IGESDimen_DiameterDimension>& ent,
-  IGESData_IGESWriter&                            IW) const
+void IGESDimen_ToolDiameterDimension::WriteOwnParams(const occ::handle<IGESDimen_DiameterDimension>& ent,
+                                                     IGESData_IGESWriter& IW) const
 {
   IW.Send(ent->Note());
   IW.Send(ent->FirstLeader());
@@ -94,10 +92,9 @@ void IGESDimen_ToolDiameterDimension::OwnShared(const occ::handle<IGESDimen_Diam
   iter.GetOneItem(ent->SecondLeader());
 }
 
-void IGESDimen_ToolDiameterDimension::OwnCopy(
-  const occ::handle<IGESDimen_DiameterDimension>& another,
-  const occ::handle<IGESDimen_DiameterDimension>& ent,
-  Interface_CopyTool&                             TC) const
+void IGESDimen_ToolDiameterDimension::OwnCopy(const occ::handle<IGESDimen_DiameterDimension>& another,
+                                              const occ::handle<IGESDimen_DiameterDimension>& ent,
+                                              Interface_CopyTool&                        TC) const
 {
   DeclareAndCast(IGESDimen_GeneralNote, note, TC.Transferred(another->Note()));
   DeclareAndCast(IGESDimen_LeaderArrow, firstLeader, TC.Transferred(another->FirstLeader()));
@@ -119,17 +116,16 @@ IGESData_DirChecker IGESDimen_ToolDiameterDimension::DirChecker(
   return DC;
 }
 
-void IGESDimen_ToolDiameterDimension::OwnCheck(
-  const occ::handle<IGESDimen_DiameterDimension>& /* ent */,
-  const Interface_ShareTool&,
-  occ::handle<Interface_Check>& /* ach */) const
+void IGESDimen_ToolDiameterDimension::OwnCheck(const occ::handle<IGESDimen_DiameterDimension>& /* ent */,
+                                               const Interface_ShareTool&,
+                                               occ::handle<Interface_Check>& /* ach */) const
 {
 }
 
 void IGESDimen_ToolDiameterDimension::OwnDump(const occ::handle<IGESDimen_DiameterDimension>& ent,
-                                              const IGESData_IGESDumper& dumper,
-                                              Standard_OStream&          S,
-                                              const int                  level) const
+                                              const IGESData_IGESDumper&                 dumper,
+                                              Standard_OStream&                          S,
+                                              const int level) const
 {
   int sublevel = (level > 4) ? 1 : 0;
 

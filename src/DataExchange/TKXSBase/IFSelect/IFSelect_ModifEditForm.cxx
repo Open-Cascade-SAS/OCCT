@@ -33,7 +33,7 @@ occ::handle<IFSelect_EditForm> IFSelect_ModifEditForm::EditForm() const
   return theedit;
 }
 
-void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                       ctx,
+void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                  ctx,
                                      const occ::handle<Interface_InterfaceModel>& target,
                                      const occ::handle<Interface_Protocol>& /*protocol*/,
                                      Interface_CopyTool& /*TC*/) const
@@ -50,7 +50,7 @@ void IFSelect_ModifEditForm::Perform(IFSelect_ContextModif&                     
 
 TCollection_AsciiString IFSelect_ModifEditForm::Label() const
 {
-  const char*             editlab = theedit->Label();
+  const char*        editlab = theedit->Label();
   TCollection_AsciiString lab("Apply EditForm");
   if (editlab && editlab[0] != '\0')
   {

@@ -51,13 +51,14 @@ public:
   //!
   //! If flag does not exist for the given name, returns an empty
   //! result, whatever the Direct/Reversed sense
-  Standard_EXPORT virtual Interface_EntityIterator RootResult(
-    const Interface_Graph& G) const override;
+  Standard_EXPORT virtual Interface_EntityIterator RootResult(const Interface_Graph& G) const
+    override;
 
   //! Returns always False because RootResult has done the work
-  Standard_EXPORT bool Sort(const int                                    rank,
-                            const occ::handle<Standard_Transient>&       ent,
-                            const occ::handle<Interface_InterfaceModel>& model) const override;
+  Standard_EXPORT bool
+    Sort(const int                  rank,
+         const occ::handle<Standard_Transient>&       ent,
+         const occ::handle<Interface_InterfaceModel>& model) const override;
 
   //! Returns a text defining the criterium, includes the flag name
   Standard_EXPORT TCollection_AsciiString ExtractLabel() const override;

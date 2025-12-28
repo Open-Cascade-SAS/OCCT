@@ -29,7 +29,7 @@ RWStepBasic_RWMassUnit::RWStepBasic_RWMassUnit() {}
 //=================================================================================================
 
 void RWStepBasic_RWMassUnit::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                      const int                                   num,
+                                      const int                 num,
                                       occ::handle<Interface_Check>&               ach,
                                       const occ::handle<StepBasic_MassUnit>&      ent) const
 {
@@ -53,7 +53,7 @@ void RWStepBasic_RWMassUnit::ReadStep(const occ::handle<StepData_StepReaderData>
 
 //=================================================================================================
 
-void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&                   SW,
+void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&              SW,
                                        const occ::handle<StepBasic_MassUnit>& ent) const
 {
 
@@ -65,7 +65,7 @@ void RWStepBasic_RWMassUnit::WriteStep(StepData_StepWriter&                   SW
 //=================================================================================================
 
 void RWStepBasic_RWMassUnit::Share(const occ::handle<StepBasic_MassUnit>& ent,
-                                   Interface_EntityIterator&              iter) const
+                                   Interface_EntityIterator&         iter) const
 {
 
   // Inherited fields of NamedUnit

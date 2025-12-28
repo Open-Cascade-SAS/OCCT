@@ -30,7 +30,7 @@ occ::handle<Graphic3d_GraphicDriver> D3DHost_GraphicDriverFactory::CreateDriver(
   const occ::handle<Aspect_DisplayConnection>&)
 {
   occ::handle<D3DHost_GraphicDriver> aDriver = new D3DHost_GraphicDriver();
-  aDriver->ChangeOptions()                   = *myDefaultCaps;
+  aDriver->ChangeOptions()              = *myDefaultCaps;
   aDriver->InitContext();
   return aDriver;
 }

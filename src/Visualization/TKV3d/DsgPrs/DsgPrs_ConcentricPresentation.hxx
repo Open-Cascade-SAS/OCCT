@@ -41,10 +41,11 @@ public:
   //! defined by the attribute manager aDrawer.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer,
-                                  const gp_Pnt&                          aCenter,
-                                  const double                           aRadius,
-                                  const gp_Dir&                          aNorm,
-                                  const gp_Pnt&                          aPoint);
+                                  const gp_Pnt&                     aCenter,
+                                  const double               aRadius,
+                                  const gp_Dir&                     aNorm,
+                                  const gp_Pnt&                     aPoint);
+
 };
 
 #endif // _DsgPrs_ConcentricPresentation_HeaderFile

@@ -57,9 +57,9 @@ public:
   //! <list>. If <list> is null, it is firstly created. Then it is
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
-  Standard_EXPORT static int MoreShapes(const occ::handle<XSControl_WorkSession>&         session,
-                                        occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                        const char*                                       name);
+  Standard_EXPORT static int MoreShapes(const occ::handle<XSControl_WorkSession>& session,
+                                                     occ::handle<NCollection_HSequence<TopoDS_Shape>>&   list,
+                                                     const char*               name);
 
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
@@ -73,11 +73,12 @@ public:
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
   Standard_EXPORT static bool FileAndVar(const occ::handle<XSControl_WorkSession>& session,
-                                         const char*                               file,
-                                         const char*                               var,
-                                         const char*                               def,
-                                         TCollection_AsciiString&                  resfile,
-                                         TCollection_AsciiString&                  resvar);
+                                                     const char*               file,
+                                                     const char*               var,
+                                                     const char*               def,
+                                                     TCollection_AsciiString&             resfile,
+                                                     TCollection_AsciiString&             resvar);
+
 };
 
 #endif // _XSControl_FuncShape_HeaderFile

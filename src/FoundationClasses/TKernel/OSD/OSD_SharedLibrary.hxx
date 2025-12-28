@@ -91,7 +91,7 @@ public:
   ~OSD_SharedLibrary() { Destroy(); }
 
 private:
-  void*               myHandle;
+  void*    myHandle;
   Standard_PCharacter myName;
 };
 

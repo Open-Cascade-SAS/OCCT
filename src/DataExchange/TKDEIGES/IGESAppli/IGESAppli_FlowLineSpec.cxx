@@ -25,8 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESAppli_FlowLineSpec, IGESData_IGESEntity)
 
 IGESAppli_FlowLineSpec::IGESAppli_FlowLineSpec() {}
 
-void IGESAppli_FlowLineSpec::Init(
-  const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties)
+void IGESAppli_FlowLineSpec::Init(const occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& allProperties)
 {
   if (allProperties->Lower() != 1)
     throw Standard_DimensionMismatch("IGESAppli_FlowLineSpec : Init");
@@ -44,7 +43,8 @@ occ::handle<TCollection_HAsciiString> IGESAppli_FlowLineSpec::FlowLineName() con
   return theNameAndModifiers->Value(1);
 }
 
-occ::handle<TCollection_HAsciiString> IGESAppli_FlowLineSpec::Modifier(const int Index) const
+occ::handle<TCollection_HAsciiString> IGESAppli_FlowLineSpec::Modifier(
+  const int Index) const
 {
   return theNameAndModifiers->Value(Index);
 }

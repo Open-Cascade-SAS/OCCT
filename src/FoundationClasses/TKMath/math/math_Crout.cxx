@@ -31,10 +31,10 @@
 math_Crout::math_Crout(const math_Matrix& A, const double MinPivot)
     : InvA(1, A.RowNumber(), 1, A.ColNumber())
 {
-  int    i, j, k;
-  int    Nctl = A.RowNumber();
-  int    lowr = A.LowerRow(), lowc = A.LowerCol();
-  double scale;
+  int i, j, k;
+  int Nctl = A.RowNumber();
+  int lowr = A.LowerRow(), lowc = A.LowerCol();
+  double    scale;
 
   math_Matrix L(1, Nctl, 1, Nctl);
   math_Vector Diag(1, Nctl);

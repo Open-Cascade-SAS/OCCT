@@ -29,5 +29,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(StepAP242_GeometricItemSpecificUsage,
                           StepAP242_ItemIdentifiedRepresentationUsage)
+
 };
 #endif // _StepAP242_GeometricItemSpecificUsage_HeaderFile

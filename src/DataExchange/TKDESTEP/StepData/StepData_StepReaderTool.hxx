@@ -59,14 +59,14 @@ public:
   //! Works only on data entities (skips header)
   //! <optimize : same as above
   Standard_EXPORT void Prepare(const occ::handle<StepData_FileRecognizer>& reco,
-                               const bool                                  optimize = true);
+                               const bool                 optimize = true);
 
   //! recognizes records, by asking either ReaderLib (default) or
   //! FileRecognizer (if defined) to do so. <ach> is to call
   //! RecognizeByLib
-  Standard_EXPORT bool Recognize(const int                        num,
-                                 occ::handle<Interface_Check>&    ach,
-                                 occ::handle<Standard_Transient>& ent) override;
+  Standard_EXPORT bool Recognize(const int      num,
+                                             occ::handle<Interface_Check>&    ach,
+                                             occ::handle<Standard_Transient>& ent) override;
 
   //! bounds empty entities and sub-lists to header records
   //! works like Prepare + SetEntityNumbers, but for header
@@ -83,19 +83,19 @@ public:
   //! fills an entity, given record no; works by using a ReaderLib
   //! to load each entity, which must be a Transient
   //! Actually, returned value is True if no fail, False else
-  Standard_EXPORT bool AnalyseRecord(const int                              num,
-                                     const occ::handle<Standard_Transient>& anent,
-                                     occ::handle<Interface_Check>&          acheck) override;
+  Standard_EXPORT bool AnalyseRecord(const int            num,
+                                                 const occ::handle<Standard_Transient>& anent,
+                                                 occ::handle<Interface_Check>& acheck) override;
 
   //! Ends file reading after reading all the entities
   //! Here, it binds in the model, Idents to Entities (for checks)
-  Standard_EXPORT virtual void EndRead(
-    const occ::handle<Interface_InterfaceModel>& amodel) override;
+  Standard_EXPORT virtual void EndRead(const occ::handle<Interface_InterfaceModel>& amodel)
+    override;
 
 private:
   occ::handle<StepData_FileRecognizer> thereco;
-  Interface_GeneralLib                 theglib;
-  Interface_ReaderLib                  therlib;
+  Interface_GeneralLib            theglib;
+  Interface_ReaderLib             therlib;
 };
 
 #endif // _StepData_StepReaderTool_HeaderFile

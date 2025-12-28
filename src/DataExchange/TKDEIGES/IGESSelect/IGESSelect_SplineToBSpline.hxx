@@ -55,10 +55,11 @@ public:
 
   //! Performs the transformation, if there is at least one Spline
   //! Curve (112) or Surface (126). Does nothing if there is none.
-  Standard_EXPORT bool Perform(const Interface_Graph&                 G,
-                               const occ::handle<Interface_Protocol>& protocol,
-                               Interface_CheckIterator&               checks,
-                               occ::handle<Interface_InterfaceModel>& newmod) override;
+  Standard_EXPORT bool Perform(const Interface_Graph&            G,
+                                           const occ::handle<Interface_Protocol>& protocol,
+                                           Interface_CheckIterator&          checks,
+                                           occ::handle<Interface_InterfaceModel>& newmod)
+    override;
 
   //! Returns the transformed entities.
   //! If original data contained no Spline Curve or Surface,
@@ -67,8 +68,9 @@ public:
   //! or Surface, it is a converted BSpline Curve or Surface. Else,
   //! it is the result of general service Copy (rebuilt as necessary
   //! by BSPlines replacing Splines).
-  Standard_EXPORT bool Updated(const occ::handle<Standard_Transient>& entfrom,
-                               occ::handle<Standard_Transient>&       entto) const override;
+  Standard_EXPORT bool
+    Updated(const occ::handle<Standard_Transient>& entfrom,
+            occ::handle<Standard_Transient>&       entto) const override;
 
   //! Returns a text which defines the way a Transformer works :
   //! "Conversion Spline to BSpline" and as opted,
@@ -78,8 +80,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SplineToBSpline, IFSelect_Transformer)
 
 private:
-  bool                               thetryc2;
-  bool                               thefound;
+  bool              thetryc2;
+  bool              thefound;
   occ::handle<Interface_CopyControl> themap;
 };
 

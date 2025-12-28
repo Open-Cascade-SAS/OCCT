@@ -157,7 +157,7 @@ void IGESData_IGESWriter::SendModel(const occ::handle<IGESData_Protocol>& protoc
 
     //  Actual sending of properly defined Parameters
     occ::handle<IGESData_ReadWriteModule> module;
-    int                                   CN;
+    int                 CN;
     //  Different cases
     if (lib.Select(cnt, module, CN))
       module->WriteOwnParams(CN, cnt, *this);
@@ -198,7 +198,7 @@ void IGESData_IGESWriter::SectionG(const IGESData_GlobalSection& header)
   //   Important : Parameters are output in their final form
   //   (i.e. Hollerith for Texts ...)
   occ::handle<Interface_ParamSet> gl = header.Params();
-  int                             nb = gl->NbParams();
+  int           nb = gl->NbParams();
   for (int i = 1; i <= nb; i++)
   {
     const Interface_FileParameter& FP = gl->Param(i);
@@ -233,9 +233,9 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
 {
   if (thesect != 3 && thestep != IGESData_ReadEnd)
     throw Interface_InterfaceError("IGESWriter : DirPart");
-  int  v[17];
+  int   v[17];
   char res1[9], res2[9], label[9], snum[9];
-  int  nument = themodel->Number(anent);
+  int   nument = themodel->Number(anent);
   if (nument == 0)
     return;
   IGESData_DirPart& DP = thedirs.ChangeValue(nument);
@@ -309,9 +309,9 @@ void IGESData_IGESWriter::DirPart(const occ::handle<IGESData_IGESEntity>& anent)
   }
   if (anent->HasSubScriptNumber())
   {
-    int sn  = anent->SubScriptNumber(); // -> cadres a droite
-    snum[7] = '0';
-    i       = 7;
+    int sn = anent->SubScriptNumber(); // -> cadres a droite
+    snum[7]             = '0';
+    i                   = 7;
     while (sn != 0)
     {
       snum[i] = (char)((sn % 10) + 48);
@@ -401,14 +401,16 @@ void IGESData_IGESWriter::EndEntity()
 //  ....                    Parameter feeding                    ....
 
 void IGESData_IGESWriter::AddString(const occ::handle<TCollection_HAsciiString>& val,
-                                    const int                                    more)
+                                    const int                  more)
 {
   if (val.IsNull())
     return;
   AddString(val->ToCString(), val->Length(), more);
 }
 
-void IGESData_IGESWriter::AddString(const char* val, const int lnval, const int more)
+void IGESData_IGESWriter::AddString(const char* val,
+                                    const int lnval,
+                                    const int more)
 {
   int lnstr = lnval;
   if (lnstr <= 0)
@@ -498,7 +500,8 @@ void IGESData_IGESWriter::Send(const occ::handle<TCollection_HAsciiString>& val)
   AddString(hol);
 }
 
-void IGESData_IGESWriter::Send(const occ::handle<IGESData_IGESEntity>& val, const bool negative)
+void IGESData_IGESWriter::Send(const occ::handle<IGESData_IGESEntity>& val,
+                               const bool             negative)
 {
   int num = 0;
   if (!val.IsNull())
@@ -529,8 +532,8 @@ void IGESData_IGESWriter::SendString(const occ::handle<TCollection_HAsciiString>
 
 //  ....                            Envoi final                            ....
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESData_IGESWriter::
-  SectionStrings(const int num) const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESData_IGESWriter::SectionStrings(
+  const int num) const
 {
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> res;
   if (num == 1)
@@ -571,8 +574,8 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
 #ifdef PATIENCELOG
   int lignespatience = 1000;
 #endif
-  char blancs[73];
-  int  i; // svv Jan11 2000 : porting on DEC
+  char             blancs[73];
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < MaxcarsG; i++)
     blancs[i] = ' ';
   blancs[MaxcarsG] = '\0';
@@ -586,7 +589,7 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
     throw Interface_InterfaceError("IGESWriter not ready for Print");
   //  Start Section (quite simple, all in all). Watch out for comments
   occ::handle<TCollection_HAsciiString> line;
-  int                                   nbs = 1;
+  int                 nbs = 1;
   if (thestar.IsNull())
   {
     if (fnes)
@@ -660,8 +663,8 @@ bool IGESData_IGESWriter::Print(Standard_OStream& S) const
 #endif
   for (i = 1; i <= nbd && isGood; i++)
   {
-    int  v[17];
-    char res1[9], res2[9], lab[9], num[9];
+    int v[17];
+    char             res1[9], res2[9], lab[9], num[9];
     thedirs.Value(i).Values(v[0],
                             v[1],
                             v[2],

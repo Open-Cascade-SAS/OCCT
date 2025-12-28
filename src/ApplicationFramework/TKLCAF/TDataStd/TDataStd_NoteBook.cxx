@@ -30,7 +30,7 @@ IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
 
 bool TDataStd_NoteBook::Find(const TDF_Label& current, occ::handle<TDataStd_NoteBook>& N)
 {
-  TDF_Label                      L = current;
+  TDF_Label                 L = current;
   occ::handle<TDataStd_NoteBook> NB;
   if (L.IsNull())
     return false;
@@ -82,16 +82,17 @@ TDataStd_NoteBook::TDataStd_NoteBook() {}
 
 occ::handle<TDataStd_Real> TDataStd_NoteBook::Append(const double value, const bool)
 {
-  TDF_Label                  newlabel = TDF_TagSource::NewChild(Label());
+  TDF_Label             newlabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Real> variable = TDataStd_Real::Set(newlabel, value);
   return variable;
 }
 
 //=================================================================================================
 
-occ::handle<TDataStd_Integer> TDataStd_NoteBook::Append(const int value, const bool)
+occ::handle<TDataStd_Integer> TDataStd_NoteBook::Append(const int value,
+                                                   const bool)
 {
-  TDF_Label                     newlabel = TDF_TagSource::NewChild(Label());
+  TDF_Label                newlabel = TDF_TagSource::NewChild(Label());
   occ::handle<TDataStd_Integer> variable = TDataStd_Integer::Set(newlabel, value);
   return variable;
 }

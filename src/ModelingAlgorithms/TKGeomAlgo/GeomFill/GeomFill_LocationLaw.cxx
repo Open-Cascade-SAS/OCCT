@@ -26,26 +26,26 @@
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_LocationLaw, Standard_Transient)
 
 bool GeomFill_LocationLaw::D1(const double,
-                              gp_Mat&,
-                              gp_Vec&,
-                              gp_Mat&,
-                              gp_Vec&,
-                              NCollection_Array1<gp_Pnt2d>&,
-                              NCollection_Array1<gp_Vec2d>&)
+                                          gp_Mat&,
+                                          gp_Vec&,
+                                          gp_Mat&,
+                                          gp_Vec&,
+                                          NCollection_Array1<gp_Pnt2d>&,
+                                          NCollection_Array1<gp_Vec2d>&)
 {
   throw Standard_NotImplemented("GeomFill_LocationLaw::D1");
 }
 
 bool GeomFill_LocationLaw::D2(const double,
-                              gp_Mat&,
-                              gp_Vec&,
-                              gp_Mat&,
-                              gp_Vec&,
-                              gp_Mat&,
-                              gp_Vec&,
-                              NCollection_Array1<gp_Pnt2d>&,
-                              NCollection_Array1<gp_Vec2d>&,
-                              NCollection_Array1<gp_Vec2d>&)
+                                          gp_Mat&,
+                                          gp_Vec&,
+                                          gp_Mat&,
+                                          gp_Vec&,
+                                          gp_Mat&,
+                                          gp_Vec&,
+                                          NCollection_Array1<gp_Pnt2d>&,
+                                          NCollection_Array1<gp_Vec2d>&,
+                                          NCollection_Array1<gp_Vec2d>&)
 {
   throw Standard_NotImplemented("GeomFill_LocationLaw::D2");
 }
@@ -85,7 +85,10 @@ GeomFill_PipeError GeomFill_LocationLaw::ErrorStatus() const
 
 // void GeomFill_LocationLaw::Resolution(const int Index,const double
 // Tol,double& TolU,double& TolV) const
-void GeomFill_LocationLaw::Resolution(const int, const double, double&, double&) const
+void GeomFill_LocationLaw::Resolution(const int,
+                                      const double,
+                                      double&,
+                                      double&) const
 {
   throw Standard_NotImplemented("GeomFill_LocationLaw::Resolution");
 }

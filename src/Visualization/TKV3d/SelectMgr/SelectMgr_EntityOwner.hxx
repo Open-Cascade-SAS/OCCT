@@ -39,12 +39,12 @@ public:
   //! Constructs a framework with the selectable object
   //! anSO being attributed the selection priority aPriority.
   Standard_EXPORT SelectMgr_EntityOwner(const occ::handle<SelectMgr_SelectableObject>& aSO,
-                                        const int aPriority = 0);
+                                        const int                    aPriority = 0);
 
   //! Constructs a framework from existing one
   //! anSO being attributed the selection priority aPriority.
   Standard_EXPORT SelectMgr_EntityOwner(const occ::handle<SelectMgr_EntityOwner>& theOwner,
-                                        const int                                 aPriority = 0);
+                                        const int               aPriority = 0);
 
   //! Return selection priority (within range [0-9]) for results with the same depth; 0 by default.
   //! Example - selection of shapes:
@@ -78,9 +78,9 @@ public:
   //! For all selection schemes, allowing to select an object,
   //! it's available
   virtual bool HandleMouseClick(const NCollection_Vec2<int>& thePoint,
-                                Aspect_VKeyMouse             theButton,
-                                Aspect_VKeyFlags             theModifiers,
-                                bool                         theIsDoubleClick)
+                                            Aspect_VKeyMouse       theButton,
+                                            Aspect_VKeyFlags       theModifiers,
+                                            bool                   theIsDoubleClick)
   {
     (void)thePoint;
     (void)theButton;
@@ -92,7 +92,7 @@ public:
   //! Returns true if the presentation manager highlights selections corresponding to the selection
   //! mode.
   virtual bool IsHilighted(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                           const int                                      theMode = 0) const
+                                       const int                    theMode = 0) const
   {
     return mySelectable != NULL && thePrsMgr->IsHighlighted(mySelectable, theMode);
   }
@@ -101,17 +101,16 @@ public:
   //! given highlight style. Also a check for auto-highlight is performed - if selectable object
   //! manages highlighting on its own, execution will be passed to
   //! SelectMgr_SelectableObject::HilightOwnerWithColor method.
-  Standard_EXPORT virtual void HilightWithColor(
-    const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-    const occ::handle<Prs3d_Drawer>&               theStyle,
-    const int                                      theMode = 0);
+  Standard_EXPORT virtual void HilightWithColor(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
+                                                const occ::handle<Prs3d_Drawer>&               theStyle,
+                                                const int theMode = 0);
 
   //! Removes highlighting from the owner of a detected selectable object in the presentation
   //! manager. This object could be the owner of a sensitive primitive.
   //! @param thePrsMgr presentation manager
   //! @param theMode   obsolete argument for compatibility, should be ignored by implementations
   virtual void Unhilight(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                         const int                                      theMode = 0)
+                         const int                    theMode = 0)
   {
     (void)theMode;
     if (mySelectable != NULL)
@@ -123,7 +122,7 @@ public:
   //! Clears the owners matching the value of the selection
   //! mode aMode from the presentation manager object aPM.
   virtual void Clear(const occ::handle<PrsMgr_PresentationManager>& thePrsMgr,
-                     const int                                      theMode = 0) /// TODO
+                     const int                    theMode = 0) /// TODO
   {
     (void)thePrsMgr;
     (void)theMode;
@@ -157,7 +156,7 @@ public:
   //! @param[in] theSelScheme  selection scheme
   //! @param[in] theIsDetected flag of object detection
   Standard_EXPORT bool Select(const AIS_SelectionScheme theSelScheme,
-                              const bool                theIsDetected) const;
+                                          const bool    theIsDetected) const;
 
   //! Returns selection state.
   Standard_DEPRECATED("Deprecated method - IsSelected() should be used instead")
@@ -185,7 +184,7 @@ public:
   //! highlight structure
   virtual void UpdateHighlightTrsf(const occ::handle<V3d_Viewer>&                 theViewer,
                                    const occ::handle<PrsMgr_PresentationManager>& theManager,
-                                   const int                                      theDispMode)
+                                   const int                    theDispMode)
   {
     if (mySelectable != NULL)
     {
@@ -209,7 +208,8 @@ public:
   }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream,
+                                        int  theDepth = -1) const;
 
 public:
   //! Sets the selectable object.

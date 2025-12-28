@@ -43,23 +43,24 @@ public:
                  const int theLowerCol,
                  const int theUpperCol)
       : myBuffer{},
-        myArray((theUpperRow - theLowerRow + 1) * (theUpperCol - theLowerCol + 1) <= THE_BUFFER_SIZE
-                  ? NCollection_Array2<double>(*myBuffer.data(),
-                                               theLowerRow,
-                                               theUpperRow,
-                                               theLowerCol,
-                                               theUpperCol)
-                  : NCollection_Array2<double>(theLowerRow, theUpperRow, theLowerCol, theUpperCol))
+        myArray(
+          (theUpperRow - theLowerRow + 1) * (theUpperCol - theLowerCol + 1) <= THE_BUFFER_SIZE
+            ? NCollection_Array2<double>(*myBuffer.data(),
+                                                theLowerRow,
+                                                theUpperRow,
+                                                theLowerCol,
+                                                theUpperCol)
+            : NCollection_Array2<double>(theLowerRow, theUpperRow, theLowerCol, theUpperCol))
   {
   }
 
 public:
   //! Constructor from external data array
   math_DoubleTab(void* const theTab,
-                 const int   theLowerRow,
-                 const int   theUpperRow,
-                 const int   theLowerCol,
-                 const int   theUpperCol)
+                 const int theLowerRow,
+                 const int theUpperRow,
+                 const int theLowerCol,
+                 const int theUpperCol)
       : myArray(*static_cast<const double*>(theTab),
                 theLowerRow,
                 theUpperRow,
@@ -84,14 +85,14 @@ public:
                   ? std::move(theOther.myArray)
                   : (theOther.NbRows() * theOther.NbColumns() <= THE_BUFFER_SIZE
                        ? NCollection_Array2<double>(*myBuffer.data(),
-                                                    theOther.LowerRow(),
-                                                    theOther.UpperRow(),
-                                                    theOther.LowerCol(),
-                                                    theOther.UpperCol())
+                                                           theOther.LowerRow(),
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())
                        : NCollection_Array2<double>(theOther.LowerRow(),
-                                                    theOther.UpperRow(),
-                                                    theOther.LowerCol(),
-                                                    theOther.UpperCol())))
+                                                           theOther.UpperRow(),
+                                                           theOther.LowerCol(),
+                                                           theOther.UpperCol())))
   {
     if (!theOther.myArray.IsEmpty())
     {
@@ -130,7 +131,8 @@ public:
   int NbColumns() const noexcept { return myArray.NbColumns(); }
 
   //! Access element at (theRowIndex, theColIndex)
-  const double& Value(const int theRowIndex, const int theColIndex) const
+  const double& Value(const int theRowIndex,
+                             const int theColIndex) const
   {
     return myArray.Value(theRowIndex, theColIndex);
   }
@@ -142,7 +144,8 @@ public:
   }
 
   //! Operator() - alias to Value
-  const double& operator()(const int theRowIndex, const int theColIndex) const
+  const double& operator()(const int theRowIndex,
+                                  const int theColIndex) const
   {
     return Value(theRowIndex, theColIndex);
   }

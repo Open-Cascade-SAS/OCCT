@@ -47,25 +47,21 @@ StepToTopoDS_Tool::StepToTopoDS_Tool()
 // Purpose : Constructor with a Map and a TransientProcess
 // ============================================================================
 
-StepToTopoDS_Tool::StepToTopoDS_Tool(
-  const NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape>&
-                                                Map,
-  const occ::handle<Transfer_TransientProcess>& TP)
+StepToTopoDS_Tool::StepToTopoDS_Tool(const NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape>&         Map,
+                                     const occ::handle<Transfer_TransientProcess>& TP)
 {
   Init(Map, TP);
 }
 
 //=================================================================================================
 
-void StepToTopoDS_Tool::Init(
-  const NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape>&
-                                                Map,
-  const occ::handle<Transfer_TransientProcess>& TP)
+void StepToTopoDS_Tool::Init(const NCollection_DataMap<occ::handle<StepShape_TopologicalRepresentationItem>, TopoDS_Shape>&         Map,
+                             const occ::handle<Transfer_TransientProcess>& TP)
 {
   myComputePC = false;
 
   NCollection_DataMap<occ::handle<StepGeom_CartesianPoint>, TopoDS_Vertex> aVertexMap;
-  NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge>                 aEdgeMap;
+  NCollection_DataMap<StepToTopoDS_PointPair, TopoDS_Edge>   aEdgeMap;
 
   myDataMap   = Map;
   myVertexMap = aVertexMap;
@@ -82,7 +78,8 @@ void StepToTopoDS_Tool::Init(
 // Purpose : Indicates weither a TRI is bound or not in the Map
 // ============================================================================
 
-bool StepToTopoDS_Tool::IsBound(const occ::handle<StepShape_TopologicalRepresentationItem>& TRI)
+bool StepToTopoDS_Tool::IsBound(
+  const occ::handle<StepShape_TopologicalRepresentationItem>& TRI)
 {
   return myDataMap.IsBound(TRI);
 }
@@ -93,7 +90,7 @@ bool StepToTopoDS_Tool::IsBound(const occ::handle<StepShape_TopologicalRepresent
 // ============================================================================
 
 void StepToTopoDS_Tool::Bind(const occ::handle<StepShape_TopologicalRepresentationItem>& TRI,
-                             const TopoDS_Shape&                                         S)
+                             const TopoDS_Shape&                                    S)
 {
   myDataMap.Bind(TRI, S);
   TransferBRep::SetShapeResult(myTransProc, TRI, S);
@@ -154,8 +151,7 @@ bool StepToTopoDS_Tool::IsVertexBound(const occ::handle<StepGeom_CartesianPoint>
 
 //=================================================================================================
 
-void StepToTopoDS_Tool::BindVertex(const occ::handle<StepGeom_CartesianPoint>& P,
-                                   const TopoDS_Vertex&                        V)
+void StepToTopoDS_Tool::BindVertex(const occ::handle<StepGeom_CartesianPoint>& P, const TopoDS_Vertex& V)
 {
   myVertexMap.Bind(P, V);
 #ifdef OCCT_DEBUG

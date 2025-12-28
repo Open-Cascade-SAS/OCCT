@@ -28,7 +28,7 @@ RWStepAP242_RWItemIdentifiedRepresentationUsage::RWStepAP242_RWItemIdentifiedRep
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
   const occ::handle<StepData_StepReaderData>&                     data,
-  const int                                                       num,
+  const int                                     num,
   occ::handle<Interface_Check>&                                   ach,
   const occ::handle<StepAP242_ItemIdentifiedRepresentationUsage>& ent) const
 {
@@ -67,9 +67,9 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
   // --- own field : identified_item
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> anItems;
-  occ::handle<StepRepr_RepresentationItem>                                   anEnt;
-  int                                                                        nbSub;
-  Interface_ParamType aType = data->ParamType(num, 5);
+  occ::handle<StepRepr_RepresentationItem>          anEnt;
+  int                             nbSub;
+  Interface_ParamType                          aType = data->ParamType(num, 5);
   if (aType == Interface_ParamIdent)
   {
     data->ReadEntity(num,
@@ -88,7 +88,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
                              nbSub))
   {
     int nbElements = data->NbParams(nbSub);
-    anItems = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nbElements);
+    anItems                     = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nbElements);
     for (int i = 1; i <= nbElements; i++)
     {
       if (data->ReadEntity(nbSub,
@@ -107,7 +107,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::ReadStep(
 }
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::WriteStep(
-  StepData_StepWriter&                                            SW,
+  StepData_StepWriter&                                       SW,
   const occ::handle<StepAP242_ItemIdentifiedRepresentationUsage>& ent) const
 {
 
@@ -144,7 +144,7 @@ void RWStepAP242_RWItemIdentifiedRepresentationUsage::WriteStep(
 
 void RWStepAP242_RWItemIdentifiedRepresentationUsage::Share(
   const occ::handle<StepAP242_ItemIdentifiedRepresentationUsage>& ent,
-  Interface_EntityIterator&                                       iter) const
+  Interface_EntityIterator&                                  iter) const
 {
   iter.AddItem(ent->Definition().Value());
   int i, nb = ent->NbIdentifiedItem();

@@ -27,7 +27,7 @@ RWStepRepr_RWConstructiveGeometryRepresentationRelationship::
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::ReadStep(
   const occ::handle<StepData_StepReaderData>&                                 data,
-  const int                                                                   num,
+  const int                                                 num,
   occ::handle<Interface_Check>&                                               ach,
   const occ::handle<StepRepr_ConstructiveGeometryRepresentationRelationship>& ent) const
 {
@@ -58,7 +58,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::ReadStep(
 }
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::WriteStep(
-  StepData_StepWriter&                                                        SW,
+  StepData_StepWriter&                                                   SW,
   const occ::handle<StepRepr_ConstructiveGeometryRepresentationRelationship>& ent) const
 {
   // Inherited field : name
@@ -76,7 +76,7 @@ void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::WriteStep(
 
 void RWStepRepr_RWConstructiveGeometryRepresentationRelationship::Share(
   const occ::handle<StepRepr_ConstructiveGeometryRepresentationRelationship>& ent,
-  Interface_EntityIterator&                                                   iter) const
+  Interface_EntityIterator&                                              iter) const
 {
   iter.GetOneItem(ent->Rep1());
   iter.GetOneItem(ent->Rep2());

@@ -32,6 +32,7 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
+#include <BOPDS_CommonBlock.hxx>
 #include <BOPDS_DS.hxx>
 
 //=================================================================================================
@@ -43,7 +44,7 @@ void BOPAlgo_PaveFiller::SetNonDestructive()
     return;
   }
   //
-  bool                                     bFlag;
+  bool                   bFlag;
   NCollection_List<TopoDS_Shape>::Iterator aItLS;
   //
   bFlag = false;
@@ -96,11 +97,12 @@ void BOPAlgo_PaveFiller::UpdateEdgeTolerance(const int nE, const double theTol)
 
 //=================================================================================================
 
-int BOPAlgo_PaveFiller::UpdateVertex(const int nV, const double aTolNew)
+int BOPAlgo_PaveFiller::UpdateVertex(const int nV,
+                                                  const double    aTolNew)
 {
-  int          nVNew;
-  double       aTolV;
-  BRep_Builder aBB;
+  int nVNew;
+  double    aTolV;
+  BRep_Builder     aBB;
 
   nVNew = nV;
   if (myDS->IsNewShape(nVNew) || myDS->HasShapeSD(nV, nVNew) || !myNonDestructive)
@@ -171,19 +173,18 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
   }
   int aNbPBP;
   //
-  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP =
-    myDS->ChangePaveBlocksPool();
-  aNbPBP = aPBP.Length();
+  NCollection_Vector<NCollection_List<occ::handle<BOPDS_PaveBlock>>>& aPBP = myDS->ChangePaveBlocksPool();
+  aNbPBP                              = aPBP.Length();
   if (!aNbPBP)
   {
     return;
   }
   //
-  int                                                      i, nV1, nV2;
-  double                                                   aTolV;
-  NCollection_Map<occ::handle<BOPDS_CommonBlock>>          aMCB;
+  int                    i, nV1, nV2;
+  double                       aTolV;
+  NCollection_Map<occ::handle<BOPDS_CommonBlock>>              aMCB;
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItPB;
-  occ::handle<BOPDS_PaveBlock>                             aPB;
+  occ::handle<BOPDS_PaveBlock>             aPB;
   //
   aTolV = Precision::Confusion();
   //
@@ -193,7 +194,7 @@ void BOPAlgo_PaveFiller::UpdateCommonBlocksWithSDVertices()
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next())
     {
-      aPB                                       = aItPB.Value();
+      aPB                                  = aItPB.Value();
       const occ::handle<BOPDS_CommonBlock>& aCB = myDS->CommonBlock(aPB);
       if (aCB.IsNull())
       {
@@ -221,8 +222,8 @@ void UpdateIntfsWithSDVertices(BOPDS_PDS theDS, NCollection_Vector<InterfType>& 
 {
   for (int i = 0; i < theInterfs.Length(); i++)
   {
-    InterfType& anIntf = theInterfs(i);
-    int         anInd;
+    InterfType&      anIntf = theInterfs(i);
+    int anInd;
     if (anIntf.HasIndexNew(anInd))
     {
       int anIndSD;

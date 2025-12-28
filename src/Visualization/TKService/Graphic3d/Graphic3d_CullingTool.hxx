@@ -71,13 +71,12 @@ public:
   //! @param[in] theCamera  camera definition
   //! @param[in] theModelWorld  optional object transformation for computing frustum in object local
   //! coordinate system
-  Standard_EXPORT void SetViewVolume(
-    const occ::handle<Graphic3d_Camera>& theCamera,
-    const NCollection_Mat4<double>&      theModelWorld = NCollection_Mat4<double>());
+  Standard_EXPORT void SetViewVolume(const occ::handle<Graphic3d_Camera>& theCamera,
+                                     const NCollection_Mat4<double>& theModelWorld = NCollection_Mat4<double>());
 
-  Standard_EXPORT void SetViewportSize(int    theViewportWidth,
-                                       int    theViewportHeight,
-                                       double theResolutionRatio);
+  Standard_EXPORT void SetViewportSize(int theViewportWidth,
+                                       int theViewportHeight,
+                                       double    theResolutionRatio);
 
   //! Setup distance culling.
   Standard_EXPORT void SetCullingDistance(CullingContext& theCtx, double theDistance) const;
@@ -97,10 +96,10 @@ public:
   //! to TRUE
   //! @return TRUE if AABB is completely outside of view frustum or culled by size/distance;
   //!         FALSE in case of partial or complete overlap (use theIsInside to distinguish)
-  bool IsCulled(const CullingContext&           theCtx,
+  bool IsCulled(const CullingContext&  theCtx,
                 const NCollection_Vec3<double>& theMinPnt,
                 const NCollection_Vec3<double>& theMaxPnt,
-                bool*                           theIsInside = NULL) const
+                bool*      theIsInside = NULL) const
   {
     return IsOutFrustum(theMinPnt, theMaxPnt, theIsInside)
            || IsTooDistant(theCtx, theMinPnt, theMaxPnt, theIsInside)
@@ -134,7 +133,7 @@ public:
   //! @param[in] theNormal  the plane's normal.
   //! @param[in] thePnt
   Standard_EXPORT double SignedPlanePointDistance(const NCollection_Vec4<double>& theNormal,
-                                                  const NCollection_Vec4<double>& thePnt);
+                                                         const NCollection_Vec4<double>& thePnt);
 
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
   //! @param[in] theMinPnt    maximum point of AABB
@@ -146,7 +145,7 @@ public:
   //! @sa SelectMgr_Frustum::hasOverlap()
   bool IsOutFrustum(const NCollection_Vec3<double>& theMinPnt,
                     const NCollection_Vec3<double>& theMaxPnt,
-                    bool*                           theIsInside = NULL) const
+                    bool*      theIsInside = NULL) const
   {
     //     E1
     //    |_ E0
@@ -177,8 +176,8 @@ public:
       // frustum normals
       const NCollection_Vec3<double>& anAxis = myClipPlanes[aPlaneIter].Normal;
       const NCollection_Vec3<double>  aPVertex(anAxis.x() > 0.0 ? theMaxPnt.x() : theMinPnt.x(),
-                                              anAxis.y() > 0.0 ? theMaxPnt.y() : theMinPnt.y(),
-                                              anAxis.z() > 0.0 ? theMaxPnt.z() : theMinPnt.z());
+                                     anAxis.y() > 0.0 ? theMaxPnt.y() : theMinPnt.y(),
+                                     anAxis.z() > 0.0 ? theMaxPnt.z() : theMinPnt.z());
       const double aPnt0 = aPVertex.Dot(anAxis);
       if (theIsInside == NULL && aPnt0 >= myMinClipProjectionPts[aPlaneIter]
           && aPnt0 <= myMaxClipProjectionPts[aPlaneIter])
@@ -187,8 +186,8 @@ public:
       }
 
       const NCollection_Vec3<double> aNVertex(anAxis.x() > 0.0 ? theMinPnt.x() : theMaxPnt.x(),
-                                              anAxis.y() > 0.0 ? theMinPnt.y() : theMaxPnt.y(),
-                                              anAxis.z() > 0.0 ? theMinPnt.z() : theMaxPnt.z());
+                                     anAxis.y() > 0.0 ? theMinPnt.y() : theMaxPnt.y(),
+                                     anAxis.z() > 0.0 ? theMinPnt.z() : theMaxPnt.z());
       const double aPnt1 = aNVertex.Dot(anAxis);
 
       const double aBoxProjMin = aPnt0 < aPnt1 ? aPnt0 : aPnt1;
@@ -215,10 +214,10 @@ public:
   //! to TRUE
   //! @return TRUE if AABB is completely behind culling distance;
   //!         FALSE in case of partial or complete overlap (use theIsInside to distinguish)
-  bool IsTooDistant(const CullingContext&           theCtx,
+  bool IsTooDistant(const CullingContext&  theCtx,
                     const NCollection_Vec3<double>& theMinPnt,
                     const NCollection_Vec3<double>& theMaxPnt,
-                    bool*                           theIsInside = NULL) const
+                    bool*      theIsInside = NULL) const
   {
     if (theCtx.DistCull <= 0.0)
     {
@@ -227,8 +226,8 @@ public:
 
     // check distance to the bounding sphere as fast approximation
     const NCollection_Vec3<double> aSphereCenter = (theMinPnt + theMaxPnt) * 0.5;
-    const double                   aSphereRadius = (theMaxPnt - theMinPnt).maxComp() * 0.5;
-    const double                   aDistToCenter = (aSphereCenter - myCamEye).Modulus();
+    const double   aSphereRadius = (theMaxPnt - theMinPnt).maxComp() * 0.5;
+    const double   aDistToCenter = (aSphereCenter - myCamEye).Modulus();
     if ((aDistToCenter - aSphereRadius) > theCtx.DistCull)
     {
       // clip if closest point is behind culling distance
@@ -243,7 +242,7 @@ public:
   }
 
   //! Returns TRUE if given AABB should be discarded by size culling criterion.
-  bool IsTooSmall(const CullingContext&           theCtx,
+  bool IsTooSmall(const CullingContext&  theCtx,
                   const NCollection_Vec3<double>& theMinPnt,
                   const NCollection_Vec3<double>& theMaxPnt) const
   {
@@ -261,7 +260,7 @@ public:
     // note that distances behind the Eye (aBndDist < 0) are not scaled correctly here,
     // but majority of such objects should be culled by frustum
     const NCollection_Vec3<double> aBndCenter = (theMinPnt + theMaxPnt) * 0.5;
-    const double                   aBndDist   = (aBndCenter - myCamEye).Dot(myCamDir);
+    const double   aBndDist   = (aBndCenter - myCamEye).Dot(myCamDir);
     return aBoxDiag2 < theCtx.SizeCull2 * aBndDist * aBndDist;
   }
 
@@ -279,7 +278,7 @@ protected:
   };
 
 protected:
-  Plane                                        myClipPlanes[PlanesNB]; //!< Planes
+  Plane                               myClipPlanes[PlanesNB]; //!< Planes
   NCollection_Array1<NCollection_Vec3<double>> myClipVerts;            //!< Vertices
 
   occ::handle<Graphic3d_Camera> myCamera; //!< camera definition
@@ -308,8 +307,8 @@ protected:
 
   NCollection_Vec3<double> myCamEye;    //!< camera eye position for distance culling
   NCollection_Vec3<double> myCamDir;    //!< camera direction for size culling
-  double                   myCamScale;  //!< camera scale for size culling
-  double                   myPixelSize; //!< pixel size for size culling
+  double   myCamScale;  //!< camera scale for size culling
+  double   myPixelSize; //!< pixel size for size culling
 };
 
 #endif // _Graphic3d_CullingTool_HeaderFile

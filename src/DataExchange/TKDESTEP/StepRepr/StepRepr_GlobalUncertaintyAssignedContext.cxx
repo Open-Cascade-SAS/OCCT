@@ -20,10 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_GlobalUncertaintyAssignedContext,
 StepRepr_GlobalUncertaintyAssignedContext::StepRepr_GlobalUncertaintyAssignedContext() {}
 
 void StepRepr_GlobalUncertaintyAssignedContext::Init(
-  const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
-  const occ::handle<TCollection_HAsciiString>& aContextType,
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
-    aUncertainty)
+  const occ::handle<TCollection_HAsciiString>&                      aContextIdentifier,
+  const occ::handle<TCollection_HAsciiString>&                      aContextType,
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty)
 {
   // --- classe own fields ---
   uncertainty = aUncertainty;
@@ -32,14 +31,13 @@ void StepRepr_GlobalUncertaintyAssignedContext::Init(
 }
 
 void StepRepr_GlobalUncertaintyAssignedContext::SetUncertainty(
-  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>&
-    aUncertainty)
+  const occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>& aUncertainty)
 {
   uncertainty = aUncertainty;
 }
 
-occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>>
-  StepRepr_GlobalUncertaintyAssignedContext::Uncertainty() const
+occ::handle<NCollection_HArray1<occ::handle<StepBasic_UncertaintyMeasureWithUnit>>> StepRepr_GlobalUncertaintyAssignedContext::
+  Uncertainty() const
 {
   return uncertainty;
 }

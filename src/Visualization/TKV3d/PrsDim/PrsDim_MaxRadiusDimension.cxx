@@ -45,7 +45,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PrsDim_MaxRadiusDimension, PrsDim_EllipseRadiusDimens
 //=================================================================================================
 
 PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                                     const double                      aVal,
+                                                     const double               aVal,
                                                      const TCollection_ExtendedString& aText)
     : PrsDim_EllipseRadiusDimension(aShape, aText)
 {
@@ -58,11 +58,11 @@ PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape&        
 //=================================================================================================
 
 PrsDim_MaxRadiusDimension::PrsDim_MaxRadiusDimension(const TopoDS_Shape&               aShape,
-                                                     const double                      aVal,
+                                                     const double               aVal,
                                                      const TCollection_ExtendedString& aText,
                                                      const gp_Pnt&                     aPosition,
                                                      const DsgPrs_ArrowSide            aSymbolPrs,
-                                                     const double                      anArrowSize)
+                                                     const double               anArrowSize)
     : PrsDim_EllipseRadiusDimension(aShape, aText)
 {
   myVal               = aVal;
@@ -109,7 +109,7 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const occ::handle<Prs3d_Presentat
   arr->SetLength(myArrowSize);
 
   double U; //,V;
-  gp_Pnt curPos, Center;
+  gp_Pnt        curPos, Center;
   Center = myEllipse.Location();
   if (myAutomaticPosition)
   {
@@ -148,8 +148,7 @@ void PrsDim_MaxRadiusDimension::ComputeEllipse(const occ::handle<Prs3d_Presentat
 
 //=================================================================================================
 
-void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
-  const occ::handle<Prs3d_Presentation>& aPresentation)
+void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(const occ::handle<Prs3d_Presentation>& aPresentation)
 {
 
   occ::handle<Prs3d_DimensionAspect> la  = myDrawer->DimensionAspect();
@@ -163,8 +162,8 @@ void PrsDim_MaxRadiusDimension::ComputeArcOfEllipse(
   arr->SetLength(myArrowSize);
 
   double par;
-  gp_Pnt curPos, Center;
-  Center          = myEllipse.Location();
+  gp_Pnt        curPos, Center;
+  Center                      = myEllipse.Location();
   bool IsInDomain = true;
   if (myAutomaticPosition)
   {
@@ -238,8 +237,8 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
                                                  const int /*aMode*/)
 {
 
-  gp_Pnt center          = myEllipse.Location();
-  gp_Pnt AttachmentPoint = myPosition;
+  gp_Pnt        center          = myEllipse.Location();
+  gp_Pnt        AttachmentPoint = myPosition;
   double dist            = center.Distance(AttachmentPoint);
   double aRadius         = myVal;
   // double inside  = false;
@@ -253,14 +252,14 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
   aSelection->Add(seg);
 
   // Text
-  double                             size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
+  double                 size(std::min(myVal / 100. + 1.e-6, myArrowSize + 1.e-6));
   occ::handle<Select3D_SensitiveBox> box = new Select3D_SensitiveBox(own,
-                                                                     AttachmentPoint.X(),
-                                                                     AttachmentPoint.Y(),
-                                                                     AttachmentPoint.Z(),
-                                                                     AttachmentPoint.X() + size,
-                                                                     AttachmentPoint.Y() + size,
-                                                                     AttachmentPoint.Z() + size);
+                                                                AttachmentPoint.X(),
+                                                                AttachmentPoint.Y(),
+                                                                AttachmentPoint.Z(),
+                                                                AttachmentPoint.X() + size,
+                                                                AttachmentPoint.Y() + size,
+                                                                AttachmentPoint.Z() + size);
   aSelection->Add(box);
 
   // Arc of Ellipse
@@ -291,12 +290,12 @@ void PrsDim_MaxRadiusDimension::ComputeSelection(const occ::handle<SelectMgr_Sel
       if (myIsOffset)
       {
         occ::handle<Geom_Curve> aCurve = myOffsetCurve;
-        TrimCurve                      = new Geom_TrimmedCurve(aCurve, parStart, parEnd);
+        TrimCurve                 = new Geom_TrimmedCurve(aCurve, parStart, parEnd);
       }
       else
       {
         occ::handle<Geom_Ellipse> Ellipse = new Geom_Ellipse(myEllipse);
-        TrimCurve                         = new Geom_TrimmedCurve(Ellipse, parStart, parEnd);
+        TrimCurve                    = new Geom_TrimmedCurve(Ellipse, parStart, parEnd);
       }
       occ::handle<Select3D_SensitiveCurve> SensArc;
       SensArc = new Select3D_SensitiveCurve(own, TrimCurve);

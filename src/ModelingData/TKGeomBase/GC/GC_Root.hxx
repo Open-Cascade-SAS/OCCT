@@ -45,6 +45,7 @@ public:
 
 protected:
   gce_ErrorType TheError;
+
 };
 
 #include <GC_Root.lxx>

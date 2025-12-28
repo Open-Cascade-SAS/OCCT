@@ -29,9 +29,9 @@
 namespace
 {
 // Helper function for comparing vectors with tolerance
-void checkVectorsEqual(const math_Vector& theV1,
-                       const math_Vector& theV2,
-                       const double       theTolerance = Precision::Confusion())
+void checkVectorsEqual(const math_Vector&  theV1,
+                       const math_Vector&  theV2,
+                       const double theTolerance = Precision::Confusion())
 {
   ASSERT_EQ(theV1.Length(), theV2.Length());
   ASSERT_EQ(theV1.Lower(), theV2.Lower());
@@ -65,8 +65,8 @@ TEST(MathVectorTest, Constructors)
   }
 
   // Test constructor with external array
-  double      anArray[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
-  math_Vector aVec3(anArray, 0, 4);
+  double anArray[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
+  math_Vector   aVec3(anArray, 0, 4);
   EXPECT_EQ(aVec3.Length(), 5);
   EXPECT_EQ(aVec3.Lower(), 0);
   EXPECT_EQ(aVec3.Upper(), 4);
@@ -646,8 +646,8 @@ TEST(MathVectorTest, MoveSemantics)
   // --- Move Constructor ---
 
   // Large vector (heap allocated)
-  int         aLen = 100;
-  math_Vector aVec1(1, aLen);
+  int aLen = 100;
+  math_Vector      aVec1(1, aLen);
   for (int i = 1; i <= aLen; ++i)
   {
     aVec1(i) = static_cast<double>(i);
@@ -665,8 +665,8 @@ TEST(MathVectorTest, MoveSemantics)
   EXPECT_EQ(aVec1.Length(), 0);
 
   // Small vector (buffer allocated)
-  int         aSmallLen = 10;
-  math_Vector aSmallVec1(1, aSmallLen);
+  int aSmallLen = 10;
+  math_Vector      aSmallVec1(1, aSmallLen);
   for (int i = 1; i <= aSmallLen; ++i)
   {
     aSmallVec1(i) = static_cast<double>(i);

@@ -23,8 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRBRep_AreaLimit, Standard_Transient)
 //=================================================================================================
 
 HLRBRep_AreaLimit::HLRBRep_AreaLimit(const HLRAlgo_Intersection& V,
-                                     const bool                  Boundary,
-                                     const bool                  Interference,
+                                     const bool      Boundary,
+                                     const bool      Interference,
                                      const TopAbs_State          StateBefore,
                                      const TopAbs_State          StateAfter,
                                      const TopAbs_State          EdgeBefore,

@@ -66,11 +66,11 @@ public:
   //! Constructor. If aClear is True, the allocated emmory will be
   //! nullified. For description of other parameters, see description
   //! of the class above.
-  Standard_EXPORT Standard_MMgrOpt(const bool   aClear     = true,
-                                   const bool   aMMap      = true,
-                                   const size_t aCellSize  = 200,
-                                   const int    aNbPages   = 10000,
-                                   const size_t aThreshold = 40000);
+  Standard_EXPORT Standard_MMgrOpt(const bool aClear     = true,
+                                   const bool aMMap      = true,
+                                   const size_t    aCellSize  = 200,
+                                   const int aNbPages   = 10000,
+                                   const size_t    aThreshold = 40000);
 
   //! Frees all free lists and pools allocated for small blocks
   Standard_EXPORT virtual ~Standard_MMgrOpt();
@@ -80,7 +80,8 @@ public:
 
   //! Reallocate previously allocated aPtr to a new size; new address is returned.
   //! In case that aPtr is null, the function behaves exactly as Allocate.
-  Standard_EXPORT virtual void* Reallocate(void* thePtr, const size_t theSize);
+  Standard_EXPORT virtual void* Reallocate(void*    thePtr,
+                                                      const size_t theSize);
 
   //! Free previously allocated block.
   //! Note that block can not all blocks are released to the OS by this
@@ -98,10 +99,10 @@ public:
   //! @param theRoundSize the real rounded size of the block
   //! @param theSize      the size of the block that was requested by application (this value is
   //! correct only if theIsAlloc is true)
-  typedef void (*TPCallBackFunc)(const bool   theIsAlloc,
-                                 void* const  theStorage,
-                                 const size_t theRoundSize,
-                                 const size_t theSize);
+  typedef void (*TPCallBackFunc)(const bool theIsAlloc,
+                                 void* const theStorage,
+                                 const size_t    theRoundSize,
+                                 const size_t    theSize);
 
   //! Set the callback function. You may pass 0 there to turn off the callback.
   //! The callback function, if set, will be automatically called from within
@@ -129,12 +130,12 @@ protected:
   size_t   myFreeListMax; //!< last allocated index in the free blocks list
   size_t** myFreeList;    //!< free blocks list
 
-  size_t  myCellSize;  //!< small blocks size
-  int     myNbPages;   //!< size (pages) for small block memory pools
-  size_t  myPageSize;  //!< system-dependent memory page size
-  size_t* myAllocList; //!< list of memory pools for small blocks
-  size_t* myNextAddr;  //!< next free address in the active memory pool
-  size_t* myEndBlock;  //!< end of the active memory pool
+  size_t    myCellSize;  //!< small blocks size
+  int myNbPages;   //!< size (pages) for small block memory pools
+  size_t    myPageSize;  //!< system-dependent memory page size
+  size_t*   myAllocList; //!< list of memory pools for small blocks
+  size_t*   myNextAddr;  //!< next free address in the active memory pool
+  size_t*   myEndBlock;  //!< end of the active memory pool
 
   // clang-format off
   int myMMap;          //!< non-null if using memory mapped files for allocation of large blocks

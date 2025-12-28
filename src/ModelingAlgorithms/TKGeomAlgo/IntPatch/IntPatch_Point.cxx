@@ -22,7 +22,9 @@
 
 #include <stdio.h>
 
-void IntPatch_Point::SetValue(const gp_Pnt& Pt, const double Tol, const bool Tangent)
+void IntPatch_Point::SetValue(const gp_Pnt&          Pt,
+                              const double    Tol,
+                              const bool Tangent)
 {
   onS1    = false;
   onS2    = false;
@@ -50,11 +52,11 @@ void IntPatch_Point::SetVertex(const bool OnFirst, const occ::handle<Adaptor3d_H
   }
 }
 
-void IntPatch_Point::SetArc(const bool                            OnFirst,
+void IntPatch_Point::SetArc(const bool           OnFirst,
                             const occ::handle<Adaptor2d_Curve2d>& A,
-                            const double                          Param,
-                            const IntSurf_Transition&             TLine,
-                            const IntSurf_Transition&             TArc)
+                            const double              Param,
+                            const IntSurf_Transition&        TLine,
+                            const IntSurf_Transition&        TArc)
 {
   if (OnFirst)
   {

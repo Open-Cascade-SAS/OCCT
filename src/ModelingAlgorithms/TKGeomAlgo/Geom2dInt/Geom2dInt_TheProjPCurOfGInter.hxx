@@ -42,8 +42,8 @@ public:
   //! the right parameter has to be made on the natural
   //! parametric domain of the curve.
   Standard_EXPORT static double FindParameter(const Adaptor2d_Curve2d& C,
-                                              const gp_Pnt2d&          Pnt,
-                                              const double             Tol);
+                                                     const gp_Pnt2d&          Pnt,
+                                                     const double      Tol);
 
   //! Returns the parameter V of the point on the
   //! parametric curve corresponding to the Point Pnt.
@@ -60,10 +60,11 @@ public:
   //! necessary to check that the returned value verifies
   //! LowParameter <= Value <= HighParameter.
   Standard_EXPORT static double FindParameter(const Adaptor2d_Curve2d& C,
-                                              const gp_Pnt2d&          Pnt,
-                                              const double             LowParameter,
-                                              const double             HighParameter,
-                                              const double             Tol);
+                                                     const gp_Pnt2d&          Pnt,
+                                                     const double      LowParameter,
+                                                     const double      HighParameter,
+                                                     const double      Tol);
+
 };
 
 #endif // _Geom2dInt_TheProjPCurOfGInter_HeaderFile

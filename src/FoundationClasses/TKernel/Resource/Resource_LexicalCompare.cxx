@@ -26,7 +26,7 @@ Resource_LexicalCompare::Resource_LexicalCompare() {}
 // -----------
 
 bool Resource_LexicalCompare::IsLower(const TCollection_AsciiString& Left,
-                                      const TCollection_AsciiString& Right) const
+                                                  const TCollection_AsciiString& Right) const
 {
   return Left.IsLess(Right);
 }

@@ -28,11 +28,10 @@ RWStepBasic_RWGroupRelationship::RWStepBasic_RWGroupRelationship() {}
 
 //=================================================================================================
 
-void RWStepBasic_RWGroupRelationship::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepBasic_GroupRelationship>& ent) const
+void RWStepBasic_RWGroupRelationship::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepBasic_GroupRelationship>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 4, ach, "group_relationship"))
@@ -44,7 +43,7 @@ void RWStepBasic_RWGroupRelationship::ReadStep(
   data->ReadString(num, 1, "name", ach, aName);
 
   occ::handle<TCollection_HAsciiString> aDescription;
-  bool                                  hasDescription = true;
+  bool                 hasDescription = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num, 2, "description", ach, aDescription);
@@ -67,7 +66,7 @@ void RWStepBasic_RWGroupRelationship::ReadStep(
 //=================================================================================================
 
 void RWStepBasic_RWGroupRelationship::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepBasic_GroupRelationship>& ent) const
 {
 
@@ -90,7 +89,7 @@ void RWStepBasic_RWGroupRelationship::WriteStep(
 //=================================================================================================
 
 void RWStepBasic_RWGroupRelationship::Share(const occ::handle<StepBasic_GroupRelationship>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   // Own fields of GroupRelationship

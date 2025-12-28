@@ -39,7 +39,11 @@ public:
   }
 
   //! Constructor
-  IntPolyh_Point(const double x, const double y, const double z, const double u, const double v)
+  IntPolyh_Point(const double x,
+                 const double y,
+                 const double z,
+                 const double u,
+                 const double v)
       : myX(x),
         myY(y),
         myZ(z),
@@ -69,12 +73,12 @@ public:
   int PartOfCommon() const { return myPOC; }
 
   //! Sets the point
-  void Set(const double x,
-           const double y,
-           const double z,
-           const double u,
-           const double v,
-           const int    II = 1)
+  void Set(const double    x,
+           const double    y,
+           const double    z,
+           const double    u,
+           const double    v,
+           const int II = 1)
   {
     myX   = x;
     myY   = y;
@@ -104,8 +108,8 @@ public:
 
   //! Creates middle point from P1 and P2 and stores it to this
   Standard_EXPORT void Middle(const occ::handle<Adaptor3d_Surface>& MySurface,
-                              const IntPolyh_Point&                 P1,
-                              const IntPolyh_Point&                 P2);
+                              const IntPolyh_Point&            P1,
+                              const IntPolyh_Point&            P2);
   //! Addition
   Standard_EXPORT IntPolyh_Point Add(const IntPolyh_Point& P1) const;
 
@@ -146,13 +150,13 @@ public:
   bool Degenerated() const { return myDegenerated; }
 
 private:
-  double myX;
-  double myY;
-  double myZ;
-  double myU;
-  double myV;
-  int    myPOC;
-  bool   myDegenerated;
+  double    myX;
+  double    myY;
+  double    myZ;
+  double    myU;
+  double    myV;
+  int myPOC;
+  bool myDegenerated;
 };
 
 #endif // _IntPolyh_Point_HeaderFile

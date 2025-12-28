@@ -146,8 +146,8 @@ math_Vector math_Matrix::Multiplied(const math_Vector& Right) const
 
   for (int I = aLowerRow; I <= anUpperRow; I++)
   {
-    Result(I) = 0.0;
-    int II    = Right.Lower();
+    Result(I)           = 0.0;
+    int II = Right.Lower();
     for (int J = aLowerCol; J <= anUpperCol; J++)
     {
       Result(I) = Result(I) + Array(I, J) * Right(II);

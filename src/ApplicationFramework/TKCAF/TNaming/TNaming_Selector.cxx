@@ -31,6 +31,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 
 // #define MDTV_DEB_SEL
@@ -90,6 +91,7 @@ static void Write(const TopoDS_Shape& shape, const char* filename)
 
 #define ORIENTATION_DSOPT
 #ifdef ORIENTATION_DSOPT
+  #include <TopoDS_Shape.hxx>
   #include <NCollection_Map.hxx>
   #include <TDF_ChildIDIterator.hxx>
   #include <TNaming_Tool.hxx>
@@ -126,7 +128,7 @@ static void BuildAtomicMap(const TopoDS_Shape& S, NCollection_Map<TopoDS_Shape>&
 static const occ::handle<TNaming_NamedShape> FindPrevNDS(const occ::handle<TNaming_NamedShape>& CNS)
 {
   occ::handle<TNaming_NamedShape> aNS;
-  TNaming_Iterator                it(CNS);
+  TNaming_Iterator           it(CNS);
   if (it.More())
   {
     if (!it.OldShape().IsNull())
@@ -144,7 +146,7 @@ static const occ::handle<TNaming_NamedShape> FindPrevNDS(const occ::handle<TNami
 //==========================================================================================
 static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
 {
-  bool                          isFound(false);
+  bool            isFound(false);
   NCollection_Map<TopoDS_Shape> shapesOfContext;
   MapOfOrientedShapes(Context, shapesOfContext);
   occ::handle<TNaming_NamedShape> CNS = TNaming_Tool::NamedShape(Context, F);
@@ -154,7 +156,7 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
   if (!CNS.IsNull())
   {
     NCollection_List<occ::handle<TNaming_NamedShape>> aLNS;
-    TDF_ChildIDIterator cit(CNS->Label(), TNaming_NamedShape::GetID(), false);
+    TDF_ChildIDIterator      cit(CNS->Label(), TNaming_NamedShape::GetID(), false);
     if (!cit.More())
     {
       // Naming data structure is empty - no sub-shapes under resulting shape
@@ -258,8 +260,8 @@ static bool IsSpecificCase2(const TDF_Label& F, const TopoDS_Shape& Selection)
 //=======================================================================
 
 static void FindGenerated(const occ::handle<TNaming_NamedShape>& NS,
-                          const TopoDS_Shape&                    S,
-                          NCollection_List<TopoDS_Shape>&        theList)
+                          const TopoDS_Shape&               S,
+                          NCollection_List<TopoDS_Shape>&             theList)
 
 {
   const TDF_Label& LabNS = NS->Label();
@@ -274,13 +276,13 @@ static void FindGenerated(const occ::handle<TNaming_NamedShape>& NS,
 
 //=================================================================================================
 
-bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
-                                    const TopoDS_Shape&              Selection,
-                                    occ::handle<TNaming_NamedShape>& NS,
-                                    const bool                       Geometry)
+bool TNaming_Selector::IsIdentified(const TDF_Label&            L,
+                                                const TopoDS_Shape&         Selection,
+                                                occ::handle<TNaming_NamedShape>& NS,
+                                                const bool      Geometry)
 {
   TopoDS_Shape       Context;
-  bool               OnlyOne = !Geometry;
+  bool   OnlyOne = !Geometry;
   TNaming_Identifier Ident(L, Selection, Context, OnlyOne);
   if (Ident.IsFeature())
   {
@@ -291,7 +293,7 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
       NS = Ident.FeatureArg();
 
       // mpv : external condition
-      NCollection_Map<TDF_Label>                                    Forbiden, Valid;
+      NCollection_Map<TDF_Label>               Forbiden, Valid;
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
       TNaming_NamingTool::CurrentShape(Valid, Forbiden, NS, MS);
       return (MS.Contains(Selection) && MS.Extent() == 1);
@@ -302,12 +304,12 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
     NS = Ident.NamedShapeOfGeneration();
     if (!NS.IsNull())
     {
-      NCollection_Map<TDF_Label>                                    Forbiden, Valid;
+      NCollection_Map<TDF_Label>               Forbiden, Valid;
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS;
       TNaming_NamingTool::CurrentShape(Valid, Forbiden, NS, MS);
       if (MS.Contains(Selection) && MS.Extent() == 1)
       {
-        const TopoDS_Shape&            aS = Ident.ShapeArg();
+        const TopoDS_Shape&  aS = Ident.ShapeArg();
         NCollection_List<TopoDS_Shape> aList;
         FindGenerated(NS, aS, aList);
         Ident.NextArg();
@@ -317,8 +319,8 @@ bool TNaming_Selector::IsIdentified(const TDF_Label&                 L,
           FindGenerated(NS, aShape, aList);
           Ident.NextArg();
         }
-        const TopoDS_Shape&                      aC = MS(1);
-        bool                                     isEq(false);
+        const TopoDS_Shape&                aC = MS(1);
+        bool                   isEq(false);
         NCollection_List<TopoDS_Shape>::Iterator itl(aList);
         for (; itl.More(); itl.Next())
         {
@@ -348,18 +350,19 @@ TNaming_Selector::TNaming_Selector(const TDF_Label& L)
 
 //=================================================================================================
 
-bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
-                              const TopoDS_Shape& Context,
-                              const bool          Geometry,
-                              const bool          KeepOrientation) const
+bool TNaming_Selector::Select(const TopoDS_Shape&    Selection,
+                                          const TopoDS_Shape&    Context,
+                                          const bool Geometry,
+                                          const bool KeepOrientation) const
 {
   myLabel.ForgetAllAttributes();
   occ::handle<TNaming_NamedShape> NS;
-  bool aKeepOrientation((Selection.ShapeType() == TopAbs_VERTEX) ? false : KeepOrientation);
+  bool aKeepOrientation((Selection.ShapeType() == TopAbs_VERTEX) ? false
+                                                                             : KeepOrientation);
   if (Selection.ShapeType() == TopAbs_COMPOUND)
   {
-    bool            isVertex(true);
-    TopoDS_Iterator it(Selection);
+    bool isVertex(true);
+    TopoDS_Iterator  it(Selection);
     for (; it.More(); it.Next())
       if (it.Value().ShapeType() != TopAbs_VERTEX)
       {
@@ -398,7 +401,8 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
   if (aKeepOrientation)
   {
 #ifdef ORIENTATION_DSOPT
-    const bool aBNproblem = IsSpecificCase(myLabel, Context) || IsSpecificCase2(myLabel, Selection);
+    const bool aBNproblem =
+      IsSpecificCase(myLabel, Context) || IsSpecificCase2(myLabel, Selection);
 
     NS = TNaming_Naming::Name(myLabel, Selection, Context, Geometry, aKeepOrientation, aBNproblem);
 #else
@@ -448,9 +452,9 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
 
 //=================================================================================================
 
-bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
-                              const bool          Geometry,
-                              const bool          KeepOrientation) const
+bool TNaming_Selector::Select(const TopoDS_Shape&    Selection,
+                                          const bool Geometry,
+                                          const bool KeepOrientation) const
 {
   // we give a Null shape. How to guess what is the good context ?
   TopoDS_Shape Context;

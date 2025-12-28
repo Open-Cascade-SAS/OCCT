@@ -29,11 +29,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDimen_FlagNote, IGESData_IGESEntity)
 
 IGESDimen_FlagNote::IGESDimen_FlagNote() {}
 
-void IGESDimen_FlagNote::Init(
-  const gp_XYZ&                                                               leftCorner,
-  const double                                                                anAngle,
-  const occ::handle<IGESDimen_GeneralNote>&                                   aNote,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
+void IGESDimen_FlagNote::Init(const gp_XYZ&                                 leftCorner,
+                              const double                           anAngle,
+                              const occ::handle<IGESDimen_GeneralNote>&          aNote,
+                              const occ::handle<NCollection_HArray1<occ::handle<IGESDimen_LeaderArrow>>>& someLeaders)
 {
   if (!someLeaders.IsNull())
     if (someLeaders->Lower() != 1)

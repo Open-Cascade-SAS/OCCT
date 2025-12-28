@@ -23,6 +23,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+#include <Standard_Integer.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -126,8 +127,9 @@ protected:
   TopAbs_ShapeEnum      myType;
   Bnd_Box               myBox;
   NCollection_List<int> mySubShapes;
-  int                   myReference;
-  int                   myFlag;
+  int      myReference;
+  int      myFlag;
+
 };
 
 #include <BOPDS_ShapeInfo.lxx>

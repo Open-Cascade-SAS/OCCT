@@ -20,6 +20,7 @@
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Sequence.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_Sequence.hxx>
 
 class Adaptor3d_Curve;
 class Adaptor2d_Curve2d;
@@ -47,16 +48,16 @@ public:
   //! @param[in] theDeflection  target deflection
   //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
-                                           const double           theDeflection,
-                                           const bool             theWithControl = true);
+                                           const double    theDeflection,
+                                           const bool theWithControl = true);
 
   //! Computes a uniform Deflection distribution of points on the curve.
   //! @param[in] theC  input 2D curve
   //! @param[in] theDeflection  target deflection
   //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC,
-                                           const double             theDeflection,
-                                           const bool               theWithControl = true);
+                                           const double      theDeflection,
+                                           const bool   theWithControl = true);
 
   //! Computes a Uniform Deflection distribution of points on a part of the curve.
   //! @param[in] theC  input 3D curve
@@ -65,10 +66,10 @@ public:
   //! @param[in] theU2  last  parameter on curve
   //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection(const Adaptor3d_Curve& theC,
-                                           const double           theDeflection,
-                                           const double           theU1,
-                                           const double           theU2,
-                                           const bool             theWithControl = true);
+                                           const double    theDeflection,
+                                           const double    theU1,
+                                           const double    theU2,
+                                           const bool theWithControl = true);
 
   //! Computes a Uniform Deflection distribution of points on a part of the curve.
   //! @param[in] theC  input 2D curve
@@ -77,27 +78,27 @@ public:
   //! @param[in] theU2  last  parameter on curve
   //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& theC,
-                                           const double             theDeflection,
-                                           const double             theU1,
-                                           const double             theU2,
-                                           const bool               theWithControl = true);
+                                           const double      theDeflection,
+                                           const double      theU1,
+                                           const double      theU2,
+                                           const bool   theWithControl = true);
 
   //! Initialize the algorithms with 3D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double           theDeflection,
-                                  const bool             theWithControl = true);
+                                  const double    theDeflection,
+                                  const bool theWithControl = true);
 
   //! Initialize the algorithms with 2D curve and deflection.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double             theDeflection,
-                                  const bool               theWithControl = true);
+                                  const double      theDeflection,
+                                  const bool   theWithControl = true);
 
   //! Initialize the algorithms with 3D curve, deflection, parameter range.
   Standard_EXPORT void Initialize(const Adaptor3d_Curve& theC,
-                                  const double           theDeflection,
-                                  const double           theU1,
-                                  const double           theU2,
-                                  const bool             theWithControl = true);
+                                  const double    theDeflection,
+                                  const double    theU1,
+                                  const double    theU2,
+                                  const bool theWithControl = true);
 
   //! Initialize the algorithms with curve, deflection, parameter range.
   //! This and the above methods initialize (or reinitialize) this algorithm and
@@ -138,10 +139,10 @@ public:
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
   Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theC,
-                                  const double             theDeflection,
-                                  const double             theU1,
-                                  const double             theU2,
-                                  const bool               theWithControl = true);
+                                  const double      theDeflection,
+                                  const double      theU1,
+                                  const double      theU2,
+                                  const bool   theWithControl = true);
 
   //! Returns true if the computation was successful.
   //! IsDone is a protection against:
@@ -205,17 +206,17 @@ public:
 private:
   //! Initialize the algorithm.
   template <class TheCurve>
-  void initialize(const TheCurve& theC,
+  void initialize(const TheCurve&        theC,
                   const double    theDeflection,
                   const double    theU1,
                   const double    theU2,
-                  const bool      theWithControl);
+                  const bool theWithControl);
 
 private:
-  bool                         myDone;
-  double                       myDeflection;
+  bool       myDone;
+  double          myDeflection;
   NCollection_Sequence<double> myParams;
-  NCollection_Sequence<gp_Pnt> myPoints;
+  NCollection_Sequence<gp_Pnt>   myPoints;
 };
 
 #endif // _GCPnts_UniformDeflection_HeaderFile

@@ -36,12 +36,13 @@ public:
   Standard_HIDDEN RWStepVisual_RWPreDefinedColour();
 
   Standard_HIDDEN void ReadStep(const occ::handle<StepData_StepReaderData>&     data,
-                                const int                                       num,
+                                const int                     num,
                                 occ::handle<Interface_Check>&                   ach,
                                 const occ::handle<StepVisual_PreDefinedColour>& ent) const;
 
-  Standard_HIDDEN void WriteStep(StepData_StepWriter&                            SW,
+  Standard_HIDDEN void WriteStep(StepData_StepWriter&                       SW,
                                  const occ::handle<StepVisual_PreDefinedColour>& ent) const;
+
 };
 
 #endif // _RWStepVisual_RWPreDefinedColour_HeaderFile

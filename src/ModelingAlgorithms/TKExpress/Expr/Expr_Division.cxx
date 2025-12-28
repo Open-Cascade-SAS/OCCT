@@ -68,8 +68,7 @@ bool Expr_Division::IsLinear() const
   return (myfirst->IsLinear() && mysecond->IsLinear());
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Division::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Division::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -140,7 +139,7 @@ occ::handle<Expr_GeneralExpression> Expr_Division::ShallowSimplified() const
 }
 
 double Expr_Division::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                               const NCollection_Array1<double>&                         vals) const
+                                      const NCollection_Array1<double>&      vals) const
 {
   double res = FirstOperand()->Evaluate(vars, vals);
   return res / SecondOperand()->Evaluate(vars, vals);
@@ -150,7 +149,7 @@ TCollection_AsciiString Expr_Division::String() const
 {
   occ::handle<Expr_GeneralExpression> op1 = FirstOperand();
   occ::handle<Expr_GeneralExpression> op2 = SecondOperand();
-  TCollection_AsciiString             str;
+  TCollection_AsciiString        str;
   if (op1->NbSubExpressions() > 1)
   {
     str = "(";

@@ -58,8 +58,10 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <BRep_GCurve.hxx>
 
 // modified by NIZNHY-PKV Fri Oct 17 14:13:29 2008f
@@ -88,7 +90,7 @@ const occ::handle<Geom_Surface>& BRep_Tool::Surface(const TopoDS_Face& F, TopLoc
 
 occ::handle<Geom_Surface> BRep_Tool::Surface(const TopoDS_Face& F)
 {
-  const BRep_TFace*                TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  const BRep_TFace*           TF = static_cast<const BRep_TFace*>(F.TShape().get());
   const occ::handle<Geom_Surface>& S  = TF->Surface();
 
   if (S.IsNull())
@@ -98,7 +100,7 @@ occ::handle<Geom_Surface> BRep_Tool::Surface(const TopoDS_Face& F)
   if (!L.IsIdentity())
   {
     occ::handle<Geom_Geometry> aCopy = S->Transformed(L.Transformation());
-    Geom_Surface*              aGS   = static_cast<Geom_Surface*>(aCopy.get());
+    Geom_Surface*         aGS   = static_cast<Geom_Surface*>(aCopy.get());
     return occ::handle<Geom_Surface>(aGS);
   }
   return S;
@@ -106,10 +108,9 @@ occ::handle<Geom_Surface> BRep_Tool::Surface(const TopoDS_Face& F)
 
 //=================================================================================================
 
-const occ::handle<Poly_Triangulation>& BRep_Tool::Triangulation(
-  const TopoDS_Face&     theFace,
-  TopLoc_Location&       theLocation,
-  const Poly_MeshPurpose theMeshPurpose)
+const occ::handle<Poly_Triangulation>& BRep_Tool::Triangulation(const TopoDS_Face&     theFace,
+                                                           TopLoc_Location&       theLocation,
+                                                           const Poly_MeshPurpose theMeshPurpose)
 {
   theLocation              = theFace.Location();
   const BRep_TFace* aTFace = static_cast<const BRep_TFace*>(theFace.TShape().get());
@@ -118,9 +119,8 @@ const occ::handle<Poly_Triangulation>& BRep_Tool::Triangulation(
 
 //=================================================================================================
 
-const NCollection_List<occ::handle<Poly_Triangulation>>& BRep_Tool::Triangulations(
-  const TopoDS_Face& theFace,
-  TopLoc_Location&   theLocation)
+const NCollection_List<occ::handle<Poly_Triangulation>>& BRep_Tool::Triangulations(const TopoDS_Face& theFace,
+                                                          TopLoc_Location&   theLocation)
 {
   theLocation              = theFace.Location();
   const BRep_TFace* aTFace = static_cast<const BRep_TFace*>(theFace.TShape().get());
@@ -134,9 +134,9 @@ const NCollection_List<occ::handle<Poly_Triangulation>>& BRep_Tool::Triangulatio
 
 double BRep_Tool::Tolerance(const TopoDS_Face& F)
 {
-  const BRep_TFace* TF   = static_cast<const BRep_TFace*>(F.TShape().get());
-  double            p    = TF->Tolerance();
-  constexpr double  pMin = Precision::Confusion();
+  const BRep_TFace*       TF   = static_cast<const BRep_TFace*>(F.TShape().get());
+  double           p    = TF->Tolerance();
+  constexpr double pMin = Precision::Confusion();
   if (p > pMin)
     return p;
   else
@@ -164,9 +164,9 @@ bool BRep_Tool::NaturalRestriction(const TopoDS_Face& F)
 static const occ::handle<Geom_Curve> nullCurve;
 
 const occ::handle<Geom_Curve>& BRep_Tool::Curve(const TopoDS_Edge& E,
-                                                TopLoc_Location&   L,
-                                                double&            First,
-                                                double&            Last)
+                                           TopLoc_Location&   L,
+                                           double&     First,
+                                           double&     Last)
 {
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -198,14 +198,14 @@ const occ::handle<Geom_Curve>& BRep_Tool::Curve(const TopoDS_Edge& E,
 
 occ::handle<Geom_Curve> BRep_Tool::Curve(const TopoDS_Edge& E, double& First, double& Last)
 {
-  TopLoc_Location                L;
+  TopLoc_Location           L;
   const occ::handle<Geom_Curve>& C = Curve(E, L, First, Last);
   if (!C.IsNull())
   {
     if (!L.IsIdentity())
     {
       occ::handle<Geom_Geometry> aCopy = C->Transformed(L.Transformation());
-      Geom_Curve*                aGC   = static_cast<Geom_Curve*>(aCopy.get());
+      Geom_Curve*           aGC   = static_cast<Geom_Curve*>(aCopy.get());
       return occ::handle<Geom_Curve>(aGC);
     }
   }
@@ -218,7 +218,7 @@ occ::handle<Geom_Curve> BRep_Tool::Curve(const TopoDS_Edge& E, double& First, do
 //=======================================================================
 bool BRep_Tool::IsGeometric(const TopoDS_Face& F)
 {
-  const BRep_TFace*                TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  const BRep_TFace*           TF = static_cast<const BRep_TFace*>(F.TShape().get());
   const occ::handle<Geom_Surface>& S  = TF->Surface();
   return !S.IsNull();
 }
@@ -289,14 +289,14 @@ const occ::handle<Poly_Polygon3D>& BRep_Tool::Polygon3D(const TopoDS_Edge& E, To
 //=======================================================================
 
 occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
-                                                    const TopoDS_Face& F,
-                                                    double&            First,
-                                                    double&            Last,
-                                                    bool*              theIsStored)
+                                               const TopoDS_Face& F,
+                                               double&     First,
+                                               double&     Last,
+                                               bool*  theIsStored)
 {
-  TopLoc_Location                  l;
+  TopLoc_Location             l;
   const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, l);
-  TopoDS_Edge                      aLocalEdge = E;
+  TopoDS_Edge                 aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
     aLocalEdge.Reverse();
@@ -314,15 +314,15 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge& E,
 
 static const occ::handle<Geom2d_Curve> nullPCurve;
 
-occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&               E,
-                                                    const occ::handle<Geom_Surface>& S,
-                                                    const TopLoc_Location&           L,
-                                                    double&                          First,
-                                                    double&                          Last,
-                                                    bool*                            theIsStored)
+occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&          E,
+                                               const occ::handle<Geom_Surface>& S,
+                                               const TopLoc_Location&      L,
+                                               double&              First,
+                                               double&              Last,
+                                               bool*           theIsStored)
 {
-  TopLoc_Location loc         = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location  loc         = L.Predivided(E.Location());
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
   if (theIsStored)
     *theIsStored = true;
 
@@ -355,11 +355,11 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&          
 // function : CurveOnPlane
 // purpose  : For planar surface returns projection of the edge on the plane
 //=======================================================================
-occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&               E,
-                                                  const occ::handle<Geom_Surface>& S,
-                                                  const TopLoc_Location&           L,
-                                                  double&                          First,
-                                                  double&                          Last)
+occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&          E,
+                                             const occ::handle<Geom_Surface>& S,
+                                             const TopLoc_Location&      L,
+                                             double&              First,
+                                             double&              Last)
 {
   First = Last = 0.;
 
@@ -377,8 +377,8 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
     return nullPCurve;
 
   // Check existence of 3d curve in edge
-  double                  f, l;
-  TopLoc_Location         aCurveLocation;
+  double      f, l;
+  TopLoc_Location    aCurveLocation;
   occ::handle<Geom_Curve> C3D = BRep_Tool::Curve(E, aCurveLocation, f, l);
 
   if (C3D.IsNull())
@@ -408,13 +408,13 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
   occ::handle<GeomAdaptor_Surface> HS = new GeomAdaptor_Surface(GP);
   occ::handle<GeomAdaptor_Curve>   HC = new GeomAdaptor_Curve(ProjOnPlane);
 
-  ProjLib_ProjectedCurve    Proj(HS, HC);
-  occ::handle<Geom2d_Curve> pc = Geom2dAdaptor::MakeCurve(Proj);
+  ProjLib_ProjectedCurve Proj(HS, HC);
+  occ::handle<Geom2d_Curve>   pc = Geom2dAdaptor::MakeCurve(Proj);
 
   if (pc->DynamicType() == STANDARD_TYPE(Geom2d_TrimmedCurve))
   {
     occ::handle<Geom2d_TrimmedCurve> TC = occ::down_cast<Geom2d_TrimmedCurve>(pc);
-    pc                                  = TC->BasisCurve();
+    pc                             = TC->BasisCurve();
   }
 
   return pc;
@@ -422,12 +422,12 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnPlane(const TopoDS_Edge&            
 
 //=================================================================================================
 
-void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
+void BRep_Tool::CurveOnSurface(const TopoDS_Edge&    E,
                                occ::handle<Geom2d_Curve>& C,
                                occ::handle<Geom_Surface>& S,
-                               TopLoc_Location&           L,
-                               double&                    First,
-                               double&                    Last)
+                               TopLoc_Location&      L,
+                               double&        First,
+                               double&        Last)
 {
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -456,13 +456,13 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
 
 //=================================================================================================
 
-void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
-                               occ::handle<Geom2d_Curve>& C,
-                               occ::handle<Geom_Surface>& S,
-                               TopLoc_Location&           L,
-                               double&                    First,
-                               double&                    Last,
-                               const int                  Index)
+void BRep_Tool::CurveOnSurface(const TopoDS_Edge&     E,
+                               occ::handle<Geom2d_Curve>&  C,
+                               occ::handle<Geom_Surface>&  S,
+                               TopLoc_Location&       L,
+                               double&         First,
+                               double&         Last,
+                               const int Index)
 {
   if (Index < 1)
     return;
@@ -509,9 +509,9 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
 
 occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  TopLoc_Location                  l;
+  TopLoc_Location             l;
   const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, l);
-  TopoDS_Edge                      aLocalEdge = E;
+  TopoDS_Edge                 aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
     aLocalEdge.Reverse();
@@ -532,12 +532,12 @@ occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge& E, co
 
 static const occ::handle<Poly_Polygon2D> nullPolygon2D;
 
-occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge&               E,
-                                                        const occ::handle<Geom_Surface>& S,
-                                                        const TopLoc_Location&           L)
+occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge&          E,
+                                                   const occ::handle<Geom_Surface>& S,
+                                                   const TopLoc_Location&      L)
 {
-  TopLoc_Location l           = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location  l           = L.Predivided(E.Location());
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -561,10 +561,10 @@ occ::handle<Poly_Polygon2D> BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      
 
 //=================================================================================================
 
-void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
+void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
                                  occ::handle<Poly_Polygon2D>& P,
                                  occ::handle<Geom_Surface>&   S,
-                                 TopLoc_Location&             L)
+                                 TopLoc_Location&        L)
 {
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -591,11 +591,11 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
 
 //=================================================================================================
 
-void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
+void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&      E,
                                  occ::handle<Poly_Polygon2D>& P,
                                  occ::handle<Geom_Surface>&   S,
-                                 TopLoc_Location&             L,
-                                 const int                    Index)
+                                 TopLoc_Location&        L,
+                                 const int  Index)
 {
   int i = 0;
 
@@ -638,12 +638,12 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
 static const occ::handle<Poly_PolygonOnTriangulation> nullArray;
 
 const occ::handle<Poly_PolygonOnTriangulation>& BRep_Tool::PolygonOnTriangulation(
-  const TopoDS_Edge&                     E,
+  const TopoDS_Edge&                E,
   const occ::handle<Poly_Triangulation>& T,
-  const TopLoc_Location&                 L)
+  const TopLoc_Location&            L)
 {
-  TopLoc_Location l           = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location  l           = L.Predivided(E.Location());
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -667,10 +667,10 @@ const occ::handle<Poly_PolygonOnTriangulation>& BRep_Tool::PolygonOnTriangulatio
 
 //=================================================================================================
 
-void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                        E,
+void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
                                        occ::handle<Poly_PolygonOnTriangulation>& P,
                                        occ::handle<Poly_Triangulation>&          T,
-                                       TopLoc_Location&                          L)
+                                       TopLoc_Location&                     L)
 {
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -698,11 +698,11 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
 //=================================================================================================
 
-void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                        E,
+void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                   E,
                                        occ::handle<Poly_PolygonOnTriangulation>& P,
                                        occ::handle<Poly_Triangulation>&          T,
-                                       TopLoc_Location&                          L,
-                                       const int                                 Index)
+                                       TopLoc_Location&                     L,
+                                       const int               Index)
 {
   int i = 0;
 
@@ -745,7 +745,7 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
 bool BRep_Tool::IsClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  TopLoc_Location                  l;
+  TopLoc_Location             l;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
   if (IsClosed(E, S, l))
     return true;
@@ -760,9 +760,9 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
 //           surface and <E> is on the closing curve.
 //=======================================================================
 
-bool BRep_Tool::IsClosed(const TopoDS_Edge&               E,
-                         const occ::handle<Geom_Surface>& S,
-                         const TopLoc_Location&           L)
+bool BRep_Tool::IsClosed(const TopoDS_Edge&          E,
+                                     const occ::handle<Geom_Surface>& S,
+                                     const TopLoc_Location&      L)
 {
   // modified by NIZNHY-PKV Fri Oct 17 12:16:58 2008f
   if (IsPlane(S))
@@ -793,9 +793,9 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge&               E,
 //           the triangulation <T>.
 //=======================================================================
 
-bool BRep_Tool::IsClosed(const TopoDS_Edge&                     E,
-                         const occ::handle<Poly_Triangulation>& T,
-                         const TopLoc_Location&                 L)
+bool BRep_Tool::IsClosed(const TopoDS_Edge&                E,
+                                     const occ::handle<Poly_Triangulation>& T,
+                                     const TopLoc_Location&            L)
 {
   if (T.IsNull())
   {
@@ -825,9 +825,9 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge&                     E,
 
 double BRep_Tool::Tolerance(const TopoDS_Edge& E)
 {
-  const BRep_TEdge* TE   = static_cast<const BRep_TEdge*>(E.TShape().get());
-  double            p    = TE->Tolerance();
-  constexpr double  pMin = Precision::Confusion();
+  const BRep_TEdge*       TE   = static_cast<const BRep_TEdge*>(E.TShape().get());
+  double           p    = TE->Tolerance();
+  constexpr double pMin = Precision::Confusion();
   if (p > pMin)
     return p;
   else
@@ -902,11 +902,11 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
 
 //=================================================================================================
 
-void BRep_Tool::Range(const TopoDS_Edge&               E,
+void BRep_Tool::Range(const TopoDS_Edge&          E,
                       const occ::handle<Geom_Surface>& S,
-                      const TopLoc_Location&           L,
-                      double&                          First,
-                      double&                          Last)
+                      const TopLoc_Location&      L,
+                      double&              First,
+                      double&              Last)
 {
   TopLoc_Location l = L.Predivided(E.Location());
 
@@ -934,23 +934,26 @@ void BRep_Tool::Range(const TopoDS_Edge&               E,
 
 //=================================================================================================
 
-void BRep_Tool::Range(const TopoDS_Edge& E, const TopoDS_Face& F, double& First, double& Last)
+void BRep_Tool::Range(const TopoDS_Edge& E,
+                      const TopoDS_Face& F,
+                      double&     First,
+                      double&     Last)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, L);
   Range(E, S, L, First, Last);
 }
 
 //=================================================================================================
 
-void BRep_Tool::UVPoints(const TopoDS_Edge&               E,
+void BRep_Tool::UVPoints(const TopoDS_Edge&          E,
                          const occ::handle<Geom_Surface>& S,
-                         const TopLoc_Location&           L,
-                         gp_Pnt2d&                        PFirst,
-                         gp_Pnt2d&                        PLast)
+                         const TopLoc_Location&      L,
+                         gp_Pnt2d&                   PFirst,
+                         gp_Pnt2d&                   PLast)
 {
-  TopLoc_Location l           = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location  l           = L.Predivided(E.Location());
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -997,7 +1000,7 @@ void BRep_Tool::UVPoints(const TopoDS_Edge&               E,
     Vf.Move(Linverted, false);
     Vl.Move(Linverted, false);
     double u, v;
-    gp_Pln pln = GP->Pln();
+    gp_Pln        pln = GP->Pln();
 
     u = v = 0.;
     if (!Vf.IsNull())
@@ -1029,9 +1032,9 @@ void BRep_Tool::UVPoints(const TopoDS_Edge& E,
                          gp_Pnt2d&          PFirst,
                          gp_Pnt2d&          PLast)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, L);
-  TopoDS_Edge                      aLocalEdge = E;
+  TopoDS_Edge                 aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
     aLocalEdge.Reverse();
@@ -1045,14 +1048,14 @@ void BRep_Tool::UVPoints(const TopoDS_Edge& E,
 
 //=================================================================================================
 
-void BRep_Tool::SetUVPoints(const TopoDS_Edge&               E,
+void BRep_Tool::SetUVPoints(const TopoDS_Edge&          E,
                             const occ::handle<Geom_Surface>& S,
-                            const TopLoc_Location&           L,
-                            const gp_Pnt2d&                  PFirst,
-                            const gp_Pnt2d&                  PLast)
+                            const TopLoc_Location&      L,
+                            const gp_Pnt2d&             PFirst,
+                            const gp_Pnt2d&             PLast)
 {
-  TopLoc_Location l           = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  TopLoc_Location  l           = L.Predivided(E.Location());
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
 
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
@@ -1085,9 +1088,9 @@ void BRep_Tool::SetUVPoints(const TopoDS_Edge& E,
                             const gp_Pnt2d&    PFirst,
                             const gp_Pnt2d&    PLast)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S          = BRep_Tool::Surface(F, L);
-  TopoDS_Edge                      aLocalEdge = E;
+  TopoDS_Edge                 aLocalEdge = E;
   if (F.Orientation() == TopAbs_REVERSED)
   {
     aLocalEdge.Reverse();
@@ -1104,9 +1107,11 @@ void BRep_Tool::SetUVPoints(const TopoDS_Edge& E,
 //           two faces.
 //=======================================================================
 
-bool BRep_Tool::HasContinuity(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2)
+bool BRep_Tool::HasContinuity(const TopoDS_Edge& E,
+                                          const TopoDS_Face& F1,
+                                          const TopoDS_Face& F2)
 {
-  TopLoc_Location                  l1, l2;
+  TopLoc_Location             l1, l2;
   const occ::handle<Geom_Surface>& S1 = BRep_Tool::Surface(F1, l1);
   const occ::handle<Geom_Surface>& S2 = BRep_Tool::Surface(F2, l2);
   return HasContinuity(E, S1, S2, l1, l2);
@@ -1121,7 +1126,7 @@ GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge& E,
                                     const TopoDS_Face& F1,
                                     const TopoDS_Face& F2)
 {
-  TopLoc_Location                  l1, l2;
+  TopLoc_Location             l1, l2;
   const occ::handle<Geom_Surface>& S1 = BRep_Tool::Surface(F1, l1);
   const occ::handle<Geom_Surface>& S2 = BRep_Tool::Surface(F2, l2);
   return Continuity(E, S1, S2, l1, l2);
@@ -1132,11 +1137,11 @@ GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge& E,
 // purpose  : Returns True if the edge is on the surfaces.
 //=======================================================================
 
-bool BRep_Tool::HasContinuity(const TopoDS_Edge&               E,
-                              const occ::handle<Geom_Surface>& S1,
-                              const occ::handle<Geom_Surface>& S2,
-                              const TopLoc_Location&           L1,
-                              const TopLoc_Location&           L2)
+bool BRep_Tool::HasContinuity(const TopoDS_Edge&          E,
+                                          const occ::handle<Geom_Surface>& S1,
+                                          const occ::handle<Geom_Surface>& S2,
+                                          const TopLoc_Location&      L1,
+                                          const TopLoc_Location&      L2)
 {
   const TopLoc_Location& Eloc = E.Location();
   TopLoc_Location        l1   = L1.Predivided(Eloc);
@@ -1161,11 +1166,11 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge&               E,
 // purpose  : Returns the continuity.
 //=======================================================================
 
-GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge&               E,
+GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge&          E,
                                     const occ::handle<Geom_Surface>& S1,
                                     const occ::handle<Geom_Surface>& S2,
-                                    const TopLoc_Location&           L1,
-                                    const TopLoc_Location&           L2)
+                                    const TopLoc_Location&      L1,
+                                    const TopLoc_Location&      L2)
 {
   TopLoc_Location l1 = L1.Predivided(E.Location());
   TopLoc_Location l2 = L2.Predivided(E.Location());
@@ -1273,11 +1278,13 @@ double BRep_Tool::Tolerance(const TopoDS_Vertex& V)
 // purpose  : Returns the parameter of <V> on <E>.
 //=======================================================================
 
-bool BRep_Tool::Parameter(const TopoDS_Vertex& theV, const TopoDS_Edge& theE, double& theParam)
+bool BRep_Tool::Parameter(const TopoDS_Vertex& theV,
+                                      const TopoDS_Edge&   theE,
+                                      double&       theParam)
 {
   // Search the vertex in the edge
 
-  bool               rev = false;
+  bool   rev = false;
   TopoDS_Shape       VF;
   TopAbs_Orientation orient = TopAbs_INTERNAL;
 
@@ -1334,9 +1341,9 @@ bool BRep_Tool::Parameter(const TopoDS_Vertex& theV, const TopoDS_Edge& theE, do
 
   else
   {
-    TopLoc_Location                L;
+    TopLoc_Location           L;
     const occ::handle<Geom_Curve>& C = BRep_Tool::Curve(theE, L, f, l);
-    L                                = L.Predivided(theV.Location());
+    L                           = L.Predivided(theV.Location());
     if (!C.IsNull() || BRep_Tool::Degenerated(theE))
     {
       const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(theV.TShape().get());
@@ -1362,8 +1369,8 @@ bool BRep_Tool::Parameter(const TopoDS_Vertex& theV, const TopoDS_Edge& theE, do
               theParam = pr->Parameter(); // p;
               return true;
             }
-            gp_Pnt Pf  = C->Value(f).Transformed(L.Transformation());
-            gp_Pnt Pl  = C->Value(l).Transformed(L.Transformation());
+            gp_Pnt        Pf  = C->Value(f).Transformed(L.Transformation());
+            gp_Pnt        Pl  = C->Value(l).Transformed(L.Transformation());
             double tol = BRep_Tool::Tolerance(theV);
             if (Pf.Distance(Pl) < tol)
             {
@@ -1440,9 +1447,11 @@ double BRep_Tool::Parameter(const TopoDS_Vertex& V, const TopoDS_Edge& E)
 //           pcurve of the edge on the face.
 //=======================================================================
 
-double BRep_Tool::Parameter(const TopoDS_Vertex& V, const TopoDS_Edge& E, const TopoDS_Face& F)
+double BRep_Tool::Parameter(const TopoDS_Vertex& V,
+                                   const TopoDS_Edge&   E,
+                                   const TopoDS_Face&   F)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, L);
   return BRep_Tool::Parameter(V, E, S, L);
 }
@@ -1453,16 +1462,16 @@ double BRep_Tool::Parameter(const TopoDS_Vertex& V, const TopoDS_Edge& E, const 
 //           pcurve of the edge on the surface.
 //=======================================================================
 
-double BRep_Tool::Parameter(const TopoDS_Vertex&             V,
-                            const TopoDS_Edge&               E,
-                            const occ::handle<Geom_Surface>& S,
-                            const TopLoc_Location&           L)
+double BRep_Tool::Parameter(const TopoDS_Vertex&        V,
+                                   const TopoDS_Edge&          E,
+                                   const occ::handle<Geom_Surface>& S,
+                                   const TopLoc_Location&      L)
 {
   // Search the vertex in the edge
 
-  bool            rev = false;
-  TopoDS_Shape    VF;
-  TopoDS_Iterator itv(E.Oriented(TopAbs_FORWARD));
+  bool rev = false;
+  TopoDS_Shape     VF;
+  TopoDS_Iterator  itv(E.Oriented(TopAbs_FORWARD));
 
   while (itv.More())
   {
@@ -1501,7 +1510,7 @@ double BRep_Tool::Parameter(const TopoDS_Vertex&             V,
   else
   {
     occ::handle<Geom2d_Curve> PC = BRep_Tool::CurveOnSurface(E, S, L, f, l);
-    const BRep_TVertex*       TV = static_cast<const BRep_TVertex*>(V.TShape().get());
+    const BRep_TVertex*  TV = static_cast<const BRep_TVertex*>(V.TShape().get());
     NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TV->Points());
 
     while (itpr.More())
@@ -1514,9 +1523,9 @@ double BRep_Tool::Parameter(const TopoDS_Vertex&             V,
 
   //----------------------------------------------------------
 
-  TopLoc_Location                L1;
+  TopLoc_Location           L1;
   const occ::handle<Geom_Curve>& C = BRep_Tool::Curve(E, L1, f, l);
-  L1                               = L1.Predivided(V.Location());
+  L1                          = L1.Predivided(V.Location());
   if (!C.IsNull() || Degenerated(E))
   {
     const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(V.TShape().get());
@@ -1536,8 +1545,8 @@ double BRep_Tool::Parameter(const TopoDS_Vertex&             V,
             return res;
           if (Precision::IsPositiveInfinite(l))
             return res;
-          gp_Pnt Pf  = C->Value(f).Transformed(L1.Transformation());
-          gp_Pnt Pl  = C->Value(l).Transformed(L1.Transformation());
+          gp_Pnt        Pf  = C->Value(f).Transformed(L1.Transformation());
+          gp_Pnt        Pl  = C->Value(l).Transformed(L1.Transformation());
           double tol = BRep_Tool::Tolerance(V);
           if (Pf.Distance(Pl) < tol)
           {
@@ -1568,10 +1577,10 @@ double BRep_Tool::Parameter(const TopoDS_Vertex&             V,
 
 gp_Pnt2d BRep_Tool::Parameters(const TopoDS_Vertex& V, const TopoDS_Face& F)
 {
-  TopLoc_Location                  L;
+  TopLoc_Location             L;
   const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, L);
-  L                                  = L.Predivided(V.Location());
-  const BRep_TVertex* TV             = static_cast<const BRep_TVertex*>(V.TShape().get());
+  L                             = L.Predivided(V.Location());
+  const BRep_TVertex* TV        = static_cast<const BRep_TVertex*>(V.TShape().get());
   NCollection_List<occ::handle<BRep_PointRepresentation>>::Iterator itpr(TV->Points());
 
   // It is checked if there is PointRepresentation (case non Manifold)
@@ -1613,8 +1622,8 @@ bool BRep_Tool::IsClosed(const TopoDS_Shape& theShape)
   if (theShape.ShapeType() == TopAbs_SHELL)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap(101, new NCollection_IncAllocator);
-    TopExp_Explorer exp(theShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-    bool            hasBound = false;
+    TopExp_Explorer  exp(theShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+    bool hasBound = false;
     for (; exp.More(); exp.Next())
     {
       const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
@@ -1630,8 +1639,8 @@ bool BRep_Tool::IsClosed(const TopoDS_Shape& theShape)
   else if (theShape.ShapeType() == TopAbs_WIRE)
   {
     NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMap(101, new NCollection_IncAllocator);
-    TopExp_Explorer exp(theShape.Oriented(TopAbs_FORWARD), TopAbs_VERTEX);
-    bool            hasBound = false;
+    TopExp_Explorer  exp(theShape.Oriented(TopAbs_FORWARD), TopAbs_VERTEX);
+    bool hasBound = false;
     for (; exp.More(); exp.Next())
     {
       const TopoDS_Shape& V = exp.Current();
@@ -1657,7 +1666,7 @@ bool BRep_Tool::IsClosed(const TopoDS_Shape& theShape)
 
 bool IsPlane(const occ::handle<Geom_Surface>& aS)
 {
-  bool                                        bRet;
+  bool                       bRet;
   occ::handle<Geom_Plane>                     aGP;
   occ::handle<Geom_RectangularTrimmedSurface> aGRTS;
   occ::handle<Geom_OffsetSurface>             aGOFS;
@@ -1685,7 +1694,8 @@ bool IsPlane(const occ::handle<Geom_Surface>& aS)
 
 //=================================================================================================
 
-double BRep_Tool::MaxTolerance(const TopoDS_Shape& theShape, const TopAbs_ShapeEnum theSubShape)
+double BRep_Tool::MaxTolerance(const TopoDS_Shape&    theShape,
+                                      const TopAbs_ShapeEnum theSubShape)
 {
   double aTol = 0.0;
 

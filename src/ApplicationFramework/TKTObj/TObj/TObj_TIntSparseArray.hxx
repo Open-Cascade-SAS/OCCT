@@ -96,12 +96,12 @@ public:
   Standard_EXPORT void BeforeCommitTransaction() override;
 
   //! Applies theDelta to this.
-  Standard_EXPORT void DeltaOnModification(
-    const occ::handle<TDF_DeltaOnModification>& theDelta) override;
+  Standard_EXPORT void DeltaOnModification(const occ::handle<TDF_DeltaOnModification>& theDelta)
+    override;
 
   //! Clears my modification delta; called after application of theDelta
   Standard_EXPORT bool AfterUndo(const occ::handle<TDF_AttributeDelta>& theDelta,
-                                 const bool                             toForce) override;
+                                             const bool toForce) override;
 
 public:
   //! Methods to handle the modification delta
@@ -121,11 +121,13 @@ private:
   };
 
   //! backup one value
-  void backupValue(const size_t theId, const int theCurrValue, const int theNewValue);
+  void backupValue(const size_t    theId,
+                   const int theCurrValue,
+                   const int theNewValue);
 
   NCollection_SparseArray<int> myVector;
   NCollection_SparseArray<int> myOldMap;
-  bool                         myDoBackup;
+  bool               myDoBackup;
 
 public:
   //! CASCADE RTTI

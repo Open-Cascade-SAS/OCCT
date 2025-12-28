@@ -29,13 +29,17 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepShape_Shell.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <StepShape_OpenShell.hxx>
+#include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -53,25 +57,25 @@
 // Create a ShellBasedSurfaceModel of StepShape from a Face of TopoDS
 //=============================================================================
 TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel(
-  const TopoDS_Face&                         aFace,
+  const TopoDS_Face&                    aFace,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   done = false;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
 
-  occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-  int                             aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
-  const int                       aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
+  occ::handle<StepData_StepModel> aStepModel       = occ::down_cast<StepData_StepModel>(FP->Model());
+  int           aWriteTessGeom   = aStepModel->InternalParameters.WriteTessellated;
+  const int     aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
   if (aWriteTessSchema != 5)
   {
-    aWriteTessGeom                                   = 0;
+    aWriteTessGeom                              = 0;
     occ::handle<TransferBRep_ShapeMapper> anErrShape = new TransferBRep_ShapeMapper(aFace);
     FP->AddWarning(anErrShape, " Tessellation can not be exported into not AP242");
   }
 
-  TopoDSToStep_Tool    aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
+  TopoDSToStep_Tool aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_Builder StepB(aFace, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
     return;
@@ -83,16 +87,14 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
     occ::handle<StepShape_FaceSurface> aFS = occ::down_cast<StepShape_FaceSurface>(StepB.Value());
     if (!aFS.IsNull())
     {
-      StepShape_Shell                  aShellSelect;
-      occ::handle<StepShape_OpenShell> aOpenShell = new StepShape_OpenShell();
-      occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aCfsFaces =
-        new NCollection_HArray1<occ::handle<StepShape_Face>>(1, 1);
+      StepShape_Shell                 aShellSelect;
+      occ::handle<StepShape_OpenShell>     aOpenShell = new StepShape_OpenShell();
+      occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aCfsFaces  = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, 1);
       aCfsFaces->SetValue(1, aFS);
       occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
       aOpenShell->Init(aName, aCfsFaces);
       aShellSelect.SetValue(aOpenShell);
-      occ::handle<NCollection_HArray1<StepShape_Shell>> aSbsmFaces =
-        new NCollection_HArray1<StepShape_Shell>(1, 1);
+      occ::handle<NCollection_HArray1<StepShape_Shell>> aSbsmFaces = new NCollection_HArray1<StepShape_Shell>(1, 1);
       aSbsmFaces->SetValue(1, aShellSelect);
       theShellBasedSurfaceModel = new StepShape_ShellBasedSurfaceModel();
       theShellBasedSurfaceModel->Init(aName, aSbsmFaces);
@@ -102,7 +104,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
   }
   else
   {
-    done                                           = false;
+    done                                      = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aFace);
     FP->AddWarning(errShape, " Single Face not mapped to ShellBasedSurfaceModel");
   }
@@ -112,29 +114,29 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
 // Create a ShellBasedSurfaceModel of StepShape from a Shell of TopoDS
 //=============================================================================
 TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel(
-  const TopoDS_Shell&                        aShell,
+  const TopoDS_Shell&                   aShell,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   done = false;
-  StepShape_Shell                                   aShellSelect;
+  StepShape_Shell                  aShellSelect;
   occ::handle<NCollection_HArray1<StepShape_Shell>> aSbsmBoundary;
-  occ::handle<StepShape_OpenShell>                  aOpenShell;
-  occ::handle<StepShape_ClosedShell>                aClosedShell;
+  occ::handle<StepShape_OpenShell>      aOpenShell;
+  occ::handle<StepShape_ClosedShell>    aClosedShell;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
 
-  occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-  int                             aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
-  const int                       aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
+  occ::handle<StepData_StepModel> aStepModel       = occ::down_cast<StepData_StepModel>(FP->Model());
+  int           aWriteTessGeom   = aStepModel->InternalParameters.WriteTessellated;
+  const int     aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
   if (aWriteTessSchema != 5)
   {
-    aWriteTessGeom                                   = 0;
+    aWriteTessGeom                              = 0;
     occ::handle<TransferBRep_ShapeMapper> anErrShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(anErrShape, " Tessellation can not be exported into not AP242");
   }
 
-  TopoDSToStep_Tool    aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
+  TopoDSToStep_Tool aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
     return;
@@ -156,7 +158,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
         aShellSelect.SetValue(aOpenShell);
       }
       aSbsmBoundary->SetValue(1, aShellSelect);
-      theShellBasedSurfaceModel                   = new StepShape_ShellBasedSurfaceModel();
+      theShellBasedSurfaceModel              = new StepShape_ShellBasedSurfaceModel();
       occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
       theShellBasedSurfaceModel->Init(aName, aSbsmBoundary);
       TopoDSToStep::AddResult(FP, aShell, theShellBasedSurfaceModel);
@@ -166,7 +168,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
   }
   else
   {
-    done                                           = false;
+    done                                      = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(errShape, " Shell not mapped to ShellBasedSurfaceModel");
   }
@@ -179,28 +181,28 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
 //=============================================================================
 
 TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel(
-  const TopoDS_Solid&                        aSolid,
+  const TopoDS_Solid&                   aSolid,
   const occ::handle<Transfer_FinderProcess>& FP,
-  const StepData_Factors&                    theLocalFactors,
-  const Message_ProgressRange&               theProgress)
+  const StepData_Factors&               theLocalFactors,
+  const Message_ProgressRange&          theProgress)
 {
   done = false;
-  StepShape_Shell                                   aShellSelect;
+  StepShape_Shell                  aShellSelect;
   occ::handle<NCollection_HArray1<StepShape_Shell>> aSbsmBoundary;
-  occ::handle<StepShape_OpenShell>                  aOpenShell;
-  occ::handle<StepShape_ClosedShell>                aClosedShell;
-  TopoDS_Iterator                                   It;
-  TopoDS_Shell                                      aShell;
+  occ::handle<StepShape_OpenShell>      aOpenShell;
+  occ::handle<StepShape_ClosedShell>    aClosedShell;
+  TopoDS_Iterator                  It;
+  TopoDS_Shell                     aShell;
   NCollection_DataMap<TopoDS_Shape, occ::handle<Standard_Transient>, TopTools_ShapeMapHasher> aMap;
-  NCollection_Sequence<occ::handle<Standard_Transient>>                                       S;
-  NCollection_Sequence<occ::handle<Standard_Transient>> aTessShells;
+  NCollection_Sequence<occ::handle<Standard_Transient>>      S;
+  NCollection_Sequence<occ::handle<Standard_Transient>>      aTessShells;
 
-  occ::handle<StepData_StepModel> aStepModel     = occ::down_cast<StepData_StepModel>(FP->Model());
-  int                             aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
-  const int                       aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
+  occ::handle<StepData_StepModel> aStepModel       = occ::down_cast<StepData_StepModel>(FP->Model());
+  int           aWriteTessGeom   = aStepModel->InternalParameters.WriteTessellated;
+  const int     aWriteTessSchema = aStepModel->InternalParameters.WriteSchema;
   if (aWriteTessSchema != 5)
   {
-    aWriteTessGeom                                   = 0;
+    aWriteTessGeom                              = 0;
     occ::handle<TransferBRep_ShapeMapper> anErrShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(anErrShape, " Tessellation can not be exported into not AP242");
   }
@@ -216,7 +218,9 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
     {
       aShell = TopoDS::Shell(It.Value());
 
-      TopoDSToStep_Tool    aTool(aMap, false, aStepModel->InternalParameters.WriteSurfaceCurMode);
+      TopoDSToStep_Tool    aTool(aMap,
+                              false,
+                              aStepModel->InternalParameters.WriteSurfaceCurMode);
       TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, aPS.Next());
       TopoDSToStep::AddResult(FP, aTool);
 
@@ -260,21 +264,18 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
       aSbsmBoundary->SetValue(i, aShellSelect);
     }
 
-    theShellBasedSurfaceModel                   = new StepShape_ShellBasedSurfaceModel();
+    theShellBasedSurfaceModel              = new StepShape_ShellBasedSurfaceModel();
     occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString("");
     theShellBasedSurfaceModel->Init(aName, aSbsmBoundary);
 
     if (!aTessShells.IsEmpty())
     {
-      occ::handle<StepVisual_TessellatedGeometricSet> aTessGS =
-        new StepVisual_TessellatedGeometricSet();
-      occ::handle<TCollection_HAsciiString> aTessName = new TCollection_HAsciiString("");
+      occ::handle<StepVisual_TessellatedGeometricSet> aTessGS = new StepVisual_TessellatedGeometricSet();
+      occ::handle<TCollection_HAsciiString>           aTessName = new TCollection_HAsciiString("");
       NCollection_Handle<NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>> anItems =
         new NCollection_Array1<occ::handle<StepVisual_TessellatedItem>>(1, aTessShells.Length());
       int i = 1;
-      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells);
-           anIt.More();
-           anIt.Next(), ++i)
+      for (NCollection_Sequence<occ::handle<Standard_Transient>>::Iterator anIt(aTessShells); anIt.More(); anIt.Next(), ++i)
       {
         occ::handle<StepVisual_TessellatedShell> aTessShell =
           occ::down_cast<StepVisual_TessellatedShell>(anIt.Value());
@@ -287,7 +288,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
   }
   else
   {
-    done                                           = false;
+    done                                      = false;
     occ::handle<TransferBRep_ShapeMapper> errShape = new TransferBRep_ShapeMapper(aSolid);
     FP->AddWarning(errShape, " Solid contains no Shell to be mapped to ShellBasedSurfaceModel");
   }
@@ -297,8 +298,8 @@ TopoDSToStep_MakeShellBasedSurfaceModel::TopoDSToStep_MakeShellBasedSurfaceModel
 // renvoi des valeurs
 //=============================================================================
 
-const occ::handle<StepShape_ShellBasedSurfaceModel>& TopoDSToStep_MakeShellBasedSurfaceModel::
-  Value() const
+const occ::handle<StepShape_ShellBasedSurfaceModel>& TopoDSToStep_MakeShellBasedSurfaceModel::Value()
+  const
 {
   StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeShellBasedSurfaceModel::Value() - no result");
   return theShellBasedSurfaceModel;

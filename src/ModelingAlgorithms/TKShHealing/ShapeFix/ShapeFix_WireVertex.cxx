@@ -26,6 +26,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 // ied_modif_for_compil_Nov-19-1998
 //=================================================================================================
@@ -86,11 +88,11 @@ int ShapeFix_WireVertex::FixSame()
   if (!myAnalyzer.IsDone())
     return 0;
 
-  int          nbfix = 0;
-  BRep_Builder B;
+  int nbfix = 0;
+  BRep_Builder     B;
 
   occ::handle<ShapeExtend_WireData> sbwd = myAnalyzer.WireData();
-  int                               i, nb = sbwd->NbEdges();
+  int             i, nb = sbwd->NbEdges();
 
   for (i = 1; i <= nb; i++)
   {
@@ -114,7 +116,7 @@ int ShapeFix_WireVertex::FixSame()
     {
       // OK mais en reprenant les tolerances
       occ::handle<Geom_Curve> crv;
-      double                  cf, cl;
+      double      cf, cl;
       sae.Curve3d(sbwd->Edge(i), crv, cf, cl);
       B.UpdateVertex(V1, cl, E1, myAnalyzer.Precision());
       sae.Curve3d(sbwd->Edge(j), crv, cf, cl);
@@ -166,8 +168,8 @@ int ShapeFix_WireVertex::Fix()
   occ::handle<NCollection_HArray1<TopoDS_Shape>> VI = new NCollection_HArray1<TopoDS_Shape>(1, nb);
   occ::handle<NCollection_HArray1<TopoDS_Shape>> VJ = new NCollection_HArray1<TopoDS_Shape>(1, nb);
   occ::handle<NCollection_HArray1<TopoDS_Shape>> EF = new NCollection_HArray1<TopoDS_Shape>(1, nb);
-  occ::handle<NCollection_HArray1<double>>       UI = new NCollection_HArray1<double>(1, nb);
-  occ::handle<NCollection_HArray1<double>>       UJ = new NCollection_HArray1<double>(1, nb);
+  occ::handle<NCollection_HArray1<double>>   UI = new NCollection_HArray1<double>(1, nb);
+  occ::handle<NCollection_HArray1<double>>   UJ = new NCollection_HArray1<double>(1, nb);
 
   for (i = 1; i <= nb; i++)
   {
@@ -192,7 +194,7 @@ int ShapeFix_WireVertex::Fix()
     double ufol = myAnalyzer.UFollowing(j);
 
     occ::handle<Geom_Curve> crv;
-    double                  cf, cl;
+    double      cf, cl;
     // szv#4:S4163:12Mar99 optimized
     if (stat < 4)
     {
@@ -242,8 +244,8 @@ int ShapeFix_WireVertex::Fix()
     TopoDS_Vertex V2   = TopoDS::Vertex(VJ->Value(j));
     TopoDS_Edge   E1   = TopoDS::Edge(EF->Value(i));
     TopoDS_Edge   E2   = TopoDS::Edge(EF->Value(j));
-    double        upre = UI->Value(i);
-    double        ufol = UJ->Value(j);
+    double upre = UI->Value(i);
+    double ufol = UJ->Value(j);
 
     if (stat > 2)
       B.UpdateVertex(V1, gp_Pnt(myAnalyzer.Position(i)), Prec);

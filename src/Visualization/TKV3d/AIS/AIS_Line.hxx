@@ -41,7 +41,10 @@ public:
   virtual int Signature() const override { return 5; }
 
   //! Returns the type Datum.
-  virtual AIS_KindOfInteractive Type() const override { return AIS_KindOfInteractive_Datum; }
+  virtual AIS_KindOfInteractive Type() const override
+  {
+    return AIS_KindOfInteractive_Datum;
+  }
 
   //! Constructs an infinite line.
   const occ::handle<Geom_Line>& Line() const { return myComponent; }
@@ -94,11 +97,9 @@ private:
 
   Standard_EXPORT void ComputeSegmentLine(const occ::handle<Prs3d_Presentation>& aPresentation);
 
-  Standard_EXPORT void ComputeInfiniteLineSelection(
-    const occ::handle<SelectMgr_Selection>& aSelection);
+  Standard_EXPORT void ComputeInfiniteLineSelection(const occ::handle<SelectMgr_Selection>& aSelection);
 
-  Standard_EXPORT void ComputeSegmentLineSelection(
-    const occ::handle<SelectMgr_Selection>& aSelection);
+  Standard_EXPORT void ComputeSegmentLineSelection(const occ::handle<SelectMgr_Selection>& aSelection);
   //! Replace aspects of already computed groups with the new value.
   void replaceWithNewLineAspect(const occ::handle<Prs3d_LineAspect>& theAspect);
 
@@ -106,7 +107,7 @@ private:
   occ::handle<Geom_Line>  myComponent;
   occ::handle<Geom_Point> myStartPoint;
   occ::handle<Geom_Point> myEndPoint;
-  bool                    myLineIsSegment;
+  bool   myLineIsSegment;
 };
 
 #endif // _AIS_Line_HeaderFile

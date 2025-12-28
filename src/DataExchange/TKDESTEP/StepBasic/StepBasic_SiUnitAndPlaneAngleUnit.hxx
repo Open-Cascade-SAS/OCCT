@@ -32,12 +32,11 @@ public:
   //! Returns a SiUnitAndPlaneAngleUnit
   Standard_EXPORT StepBasic_SiUnitAndPlaneAngleUnit();
 
-  Standard_EXPORT void Init(const bool                 hasAprefix,
+  Standard_EXPORT void Init(const bool     hasAprefix,
                             const StepBasic_SiPrefix   aPrefix,
                             const StepBasic_SiUnitName aName);
 
-  Standard_EXPORT void SetPlaneAngleUnit(
-    const occ::handle<StepBasic_PlaneAngleUnit>& aPlaneAngleUnit);
+  Standard_EXPORT void SetPlaneAngleUnit(const occ::handle<StepBasic_PlaneAngleUnit>& aPlaneAngleUnit);
 
   Standard_EXPORT occ::handle<StepBasic_PlaneAngleUnit> PlaneAngleUnit() const;
 

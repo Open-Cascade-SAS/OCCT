@@ -35,17 +35,15 @@ public:
   Standard_EXPORT StepAP203_CcDesignSpecificationReference();
 
   //! Initialize all fields (own and inherited)
-  Standard_EXPORT void Init(
-    const occ::handle<StepBasic_Document>&       aDocumentReference_AssignedDocument,
-    const occ::handle<TCollection_HAsciiString>& aDocumentReference_Source,
-    const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& aItems);
+  Standard_EXPORT void Init(const occ::handle<StepBasic_Document>& aDocumentReference_AssignedDocument,
+                            const occ::handle<TCollection_HAsciiString>& aDocumentReference_Source,
+                            const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& aItems);
 
   //! Returns field Items
   Standard_EXPORT occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>> Items() const;
 
   //! Set field Items
-  Standard_EXPORT void SetItems(
-    const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& Items);
+  Standard_EXPORT void SetItems(const occ::handle<NCollection_HArray1<StepAP203_SpecifiedItem>>& Items);
 
   DEFINE_STANDARD_RTTIEXT(StepAP203_CcDesignSpecificationReference, StepBasic_DocumentReference)
 

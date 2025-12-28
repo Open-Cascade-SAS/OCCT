@@ -22,7 +22,7 @@
 RWStepShape_RWBoxedHalfSpace::RWStepShape_RWBoxedHalfSpace() {}
 
 void RWStepShape_RWBoxedHalfSpace::ReadStep(const occ::handle<StepData_StepReaderData>&  data,
-                                            const int                                    num,
+                                            const int                  num,
                                             occ::handle<Interface_Check>&                ach,
                                             const occ::handle<StepShape_BoxedHalfSpace>& ent) const
 {
@@ -61,7 +61,7 @@ void RWStepShape_RWBoxedHalfSpace::ReadStep(const occ::handle<StepData_StepReade
   ent->Init(aName, aBaseSurface, aAgreementFlag, aEnclosure);
 }
 
-void RWStepShape_RWBoxedHalfSpace::WriteStep(StepData_StepWriter&                         SW,
+void RWStepShape_RWBoxedHalfSpace::WriteStep(StepData_StepWriter&                    SW,
                                              const occ::handle<StepShape_BoxedHalfSpace>& ent) const
 {
 
@@ -83,7 +83,7 @@ void RWStepShape_RWBoxedHalfSpace::WriteStep(StepData_StepWriter&               
 }
 
 void RWStepShape_RWBoxedHalfSpace::Share(const occ::handle<StepShape_BoxedHalfSpace>& ent,
-                                         Interface_EntityIterator&                    iter) const
+                                         Interface_EntityIterator&               iter) const
 {
 
   iter.GetOneItem(ent->BaseSurface());

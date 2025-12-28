@@ -68,12 +68,12 @@ struct Image_DDSParser::DDSFileHeader
 
 occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   const occ::handle<Image_SupportedFormats>& theSupported,
-  const TCollection_AsciiString&             theFile,
-  const int                                  theFaceIndex,
-  const int64_t                              theFileOffset)
+  const TCollection_AsciiString&        theFile,
+  const int                theFaceIndex,
+  const int64_t                         theFileOffset)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream>      aFile =
+  std::shared_ptr<std::istream> aFile =
     aFileSystem->OpenIStream(theFile, std::ios::in | std::ios::binary);
   char aHeader[128] = {};
   if (aFile.get() == NULL || !aFile->good())
@@ -138,15 +138,14 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
 occ::handle<Image_CompressedPixMap> Image_DDSParser::Load(
   const occ::handle<Image_SupportedFormats>& theSupported,
   const occ::handle<NCollection_Buffer>&     theBuffer,
-  const int                                  theFaceIndex)
+  const int                theFaceIndex)
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 128 || ::memcmp(theBuffer->Data(), "DDS ", 4) != 0)
   {
     return occ::handle<Image_CompressedPixMap>();
   }
 
-  occ::handle<Image_CompressedPixMap> aDef =
-    parseHeader(*(const DDSFileHeader*)(theBuffer->Data() + 4));
+  occ::handle<Image_CompressedPixMap> aDef = parseHeader(*(const DDSFileHeader*)(theBuffer->Data() + 4));
   if (aDef.IsNull())
   {
     return occ::handle<Image_CompressedPixMap>();
@@ -196,7 +195,7 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::parseHeader(const DDSFileHe
 
   Image_Format           aBaseFormat = Image_Format_UNKNOWN;
   Image_CompressedFormat aFormat     = Image_CompressedFormat_UNKNOWN;
-  int                    aBlockSize  = 8;
+  int       aBlockSize  = 8;
   const bool             hasAlpha    = (theHeader.PixelFormatDef.Flags & 0x1) != 0;
   if (::memcmp(&theHeader.PixelFormatDef.FourCC, "DXT5", 4) == 0)
   {
@@ -231,11 +230,12 @@ occ::handle<Image_CompressedPixMap> Image_DDSParser::parseHeader(const DDSFileHe
   const int aNbMipMaps = std::max((int)theHeader.MipMapCount, 1);
   aDef->ChangeMipMaps().Resize(0, aNbMipMaps - 1, false);
   {
-    size_t                aFaceSize = 0;
+    size_t                      aFaceSize = 0;
     NCollection_Vec2<int> aMipSizeXY(aDef->SizeX(), aDef->SizeY());
     for (int aMipIter = 0;; ++aMipIter)
     {
-      const int aMipLength = ((aMipSizeXY.x() + 3) / 4) * ((aMipSizeXY.y() + 3) / 4) * aBlockSize;
+      const int aMipLength =
+        ((aMipSizeXY.x() + 3) / 4) * ((aMipSizeXY.y() + 3) / 4) * aBlockSize;
       aFaceSize += aMipLength;
       aDef->ChangeMipMaps().SetValue(aMipIter, aMipLength);
       if (aMipIter + 1 >= aNbMipMaps)

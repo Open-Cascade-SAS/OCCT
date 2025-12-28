@@ -39,8 +39,7 @@ public:
   //! SelectedComponent
   //! - anEntity  : the Boolean tree entity
   //! - selectPnt : Point in or on the desired component
-  Standard_EXPORT void Init(const occ::handle<IGESSolid_BooleanTree>& anEntity,
-                            const gp_XYZ&                             selectPnt);
+  Standard_EXPORT void Init(const occ::handle<IGESSolid_BooleanTree>& anEntity, const gp_XYZ& selectPnt);
 
   //! returns the Boolean tree entity
   Standard_EXPORT occ::handle<IGESSolid_BooleanTree> Component() const;
@@ -56,7 +55,7 @@ public:
 
 private:
   occ::handle<IGESSolid_BooleanTree> theEntity;
-  gp_XYZ                             theSelectPoint;
+  gp_XYZ                        theSelectPoint;
 };
 
 #endif // _IGESSolid_SelectedComponent_HeaderFile

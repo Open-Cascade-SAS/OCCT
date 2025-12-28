@@ -18,6 +18,7 @@
 #include <Interface_MSG.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <Transfer_TransientProcess.hxx>
@@ -78,7 +79,7 @@ const Interface_Graph& Transfer_TransientProcess::Graph() const
 
 //=================================================================================================
 
-void Transfer_TransientProcess::SetContext(const char*                            name,
+void Transfer_TransientProcess::SetContext(const char*            name,
                                            const occ::handle<Standard_Transient>& ctx)
 {
   thectx.Bind(name, ctx);
@@ -86,9 +87,9 @@ void Transfer_TransientProcess::SetContext(const char*                          
 
 //=================================================================================================
 
-bool Transfer_TransientProcess::GetContext(const char*                       name,
-                                           const occ::handle<Standard_Type>& type,
-                                           occ::handle<Standard_Transient>&  ctx) const
+bool Transfer_TransientProcess::GetContext(const char*       name,
+                                                       const occ::handle<Standard_Type>& type,
+                                                       occ::handle<Standard_Transient>&  ctx) const
 {
   if (thectx.IsEmpty())
     return false;
@@ -115,7 +116,7 @@ NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>&
 //=================================================================================================
 
 void Transfer_TransientProcess::PrintTrace(const occ::handle<Standard_Transient>& start,
-                                           Standard_OStream&                      S) const
+                                           Standard_OStream&                 S) const
 {
   if (!start.IsNull())
   {
@@ -153,7 +154,8 @@ Interface_EntityIterator Transfer_TransientProcess::TypedSharings(
 
 //=================================================================================================
 
-bool Transfer_TransientProcess::IsDataLoaded(const occ::handle<Standard_Transient>& start) const
+bool Transfer_TransientProcess::IsDataLoaded(
+  const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
     return true;
@@ -167,7 +169,8 @@ bool Transfer_TransientProcess::IsDataLoaded(const occ::handle<Standard_Transien
 
 //=================================================================================================
 
-bool Transfer_TransientProcess::IsDataFail(const occ::handle<Standard_Transient>& start) const
+bool Transfer_TransientProcess::IsDataFail(
+  const occ::handle<Standard_Transient>& start) const
 {
   if (themodel.IsNull())
     return false;
@@ -182,7 +185,8 @@ bool Transfer_TransientProcess::IsDataFail(const occ::handle<Standard_Transient>
 
 //=================================================================================================
 
-void Transfer_TransientProcess::PrintStats(const int /*mode*/, Standard_OStream& S) const
+void Transfer_TransientProcess::PrintStats(const int /*mode*/,
+                                           Standard_OStream& S) const
 {
   S << "\n*******************************************************************\n";
   //  if (mode == 1) {    //  Basic statistics
@@ -204,7 +208,7 @@ void Transfer_TransientProcess::PrintStats(const int /*mode*/, Standard_OStream&
     if (binder.IsNull())
       continue;
     const occ::handle<Interface_Check> ach  = binder->Check();
-    Transfer_StatusExec                stat = binder->StatusExec();
+    Transfer_StatusExec           stat = binder->StatusExec();
     if (stat != Transfer_StatusInitial && stat != Transfer_StatusDone)
       nbe++;
     else
@@ -230,8 +234,7 @@ void Transfer_TransientProcess::PrintStats(const int /*mode*/, Standard_OStream&
 
 //=================================================================================================
 
-occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_TransientProcess::
-  RootsForTransfer()
+occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Transfer_TransientProcess::RootsForTransfer()
 {
   return thetrroots;
 }

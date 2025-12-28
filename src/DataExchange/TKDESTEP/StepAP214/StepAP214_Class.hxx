@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepAP214_Class();
 
   DEFINE_STANDARD_RTTIEXT(StepAP214_Class, StepBasic_Group)
+
 };
 
 #endif // _StepAP214_Class_HeaderFile

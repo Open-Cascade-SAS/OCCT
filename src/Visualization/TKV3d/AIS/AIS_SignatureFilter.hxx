@@ -60,12 +60,13 @@ public:
   //! specification, aGivenSignature, to that for type,
   //! aGivenKind, in AIS_TypeFilter.
   Standard_EXPORT AIS_SignatureFilter(const AIS_KindOfInteractive aGivenKind,
-                                      const int                   aGivenSignature);
+                                      const int      aGivenSignature);
 
   //! Returns False if the transient is not an AIS_InteractiveObject.
   //! Returns False if the signature of InteractiveObject
   //! is not the same as the stored one in the filter...
-  Standard_EXPORT bool IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
+  Standard_EXPORT bool
+    IsOk(const occ::handle<SelectMgr_EntityOwner>& anobj) const override;
 
   DEFINE_STANDARD_RTTIEXT(AIS_SignatureFilter, AIS_TypeFilter)
 

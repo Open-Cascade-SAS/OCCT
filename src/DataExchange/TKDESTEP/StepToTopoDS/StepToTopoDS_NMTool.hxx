@@ -24,6 +24,9 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TopoDS_Shape.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Boolean.hxx>
 class StepRepr_RepresentationItem;
@@ -39,13 +42,11 @@ public:
 
   Standard_EXPORT StepToTopoDS_NMTool();
 
-  Standard_EXPORT StepToTopoDS_NMTool(
-    const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>& MapOfRI,
-    const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames);
+  Standard_EXPORT StepToTopoDS_NMTool(const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>&      MapOfRI,
+                                      const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames);
 
-  Standard_EXPORT void Init(
-    const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>& MapOfRI,
-    const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames);
+  Standard_EXPORT void Init(const NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>&      MapOfRI,
+                            const NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>& MapOfRINames);
 
   Standard_EXPORT void SetActive(const bool isActive);
 
@@ -57,8 +58,7 @@ public:
 
   Standard_EXPORT bool IsBound(const TCollection_AsciiString& RIName);
 
-  Standard_EXPORT void Bind(const occ::handle<StepRepr_RepresentationItem>& RI,
-                            const TopoDS_Shape&                             S);
+  Standard_EXPORT void Bind(const occ::handle<StepRepr_RepresentationItem>& RI, const TopoDS_Shape& S);
 
   Standard_EXPORT void Bind(const TCollection_AsciiString& RIName, const TopoDS_Shape& S);
 
@@ -69,7 +69,7 @@ public:
   Standard_EXPORT void RegisterNMEdge(const TopoDS_Shape& Edge);
 
   Standard_EXPORT bool IsSuspectedAsClosing(const TopoDS_Shape& BaseShell,
-                                            const TopoDS_Shape& SuspectedShell);
+                                                        const TopoDS_Shape& SuspectedShell);
 
   Standard_EXPORT bool IsPureNMShell(const TopoDS_Shape& Shell);
 
@@ -80,13 +80,14 @@ public:
 private:
   Standard_EXPORT bool isEdgeRegisteredAsNM(const TopoDS_Shape& Edge);
 
-  Standard_EXPORT bool isAdjacentShell(const TopoDS_Shape& ShellA, const TopoDS_Shape& ShellB);
+  Standard_EXPORT bool isAdjacentShell(const TopoDS_Shape& ShellA,
+                                                   const TopoDS_Shape& ShellB);
 
-  NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape> myRIMap;
-  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>                  myRINamesMap;
-  NCollection_List<TopoDS_Shape>                                              myNMEdges;
-  bool                                                                        myIDEASCase;
-  bool                                                                        myActiveFlag;
+  NCollection_DataMap<occ::handle<StepRepr_RepresentationItem>, TopoDS_Shape>      myRIMap;
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> myRINamesMap;
+  NCollection_List<TopoDS_Shape>          myNMEdges;
+  bool              myIDEASCase;
+  bool              myActiveFlag;
 };
 
 #endif // _StepToTopoDS_NMTool_HeaderFile

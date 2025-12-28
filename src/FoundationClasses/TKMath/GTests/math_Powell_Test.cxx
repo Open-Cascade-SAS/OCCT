@@ -42,7 +42,7 @@ public:
   {
     double x = X(1) - 1.0;
     double y = X(2) - 2.0;
-    F        = x * x + y * y;
+    F               = x * x + y * y;
     return true;
   }
 };
@@ -62,7 +62,7 @@ public:
     double y     = X(2);
     double term1 = y - x * x;
     double term2 = 1.0 - x;
-    F            = 100.0 * term1 * term1 + term2 * term2;
+    F                   = 100.0 * term1 * term1 + term2 * term2;
     return true;
   }
 };
@@ -79,7 +79,7 @@ public:
   bool Value(const math_Vector& X, double& F) override
   {
     double x = X(1) - 3.0;
-    F        = x * x;
+    F               = x * x;
     return true;
   }
 };
@@ -132,7 +132,7 @@ TEST(MathPowellTest, SimpleQuadraticFunction)
   EXPECT_TRUE(aPowell.IsDone()) << "Powell should converge for simple quadratic function";
 
   const math_Vector& aLocation = aPowell.Location();
-  double             aMinimum  = aPowell.Minimum();
+  double      aMinimum  = aPowell.Minimum();
 
   EXPECT_NEAR(aLocation(1), 1.0, 1.0e-6) << "Optimal X coordinate";
   EXPECT_NEAR(aLocation(2), 2.0, 1.0e-6) << "Optimal Y coordinate";

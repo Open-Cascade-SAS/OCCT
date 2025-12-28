@@ -29,7 +29,7 @@ IGESSelect_ComputeStatus::IGESSelect_ComputeStatus()
 {
 }
 
-void IGESSelect_ComputeStatus::Performing(IFSelect_ContextModif&                 ctx,
+void IGESSelect_ComputeStatus::Performing(IFSelect_ContextModif&            ctx,
                                           const occ::handle<IGESData_IGESModel>& target,
                                           Interface_CopyTool&) const
 {

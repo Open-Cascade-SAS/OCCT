@@ -39,14 +39,14 @@ public:
   Standard_EXPORT HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter(
     const HLRBRep_CurvePtr& C1,
     const HLRBRep_CurvePtr& C2,
-    const double            Tol);
+    const double     Tol);
 
   Standard_EXPORT void Perform(const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly1,
                                const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& Poly2,
-                               int&                                                    NumSegOn1,
-                               int&                                                    NumSegOn2,
-                               double&                                                 ParamOnSeg1,
-                               double&                                                 ParamOnSeg2);
+                               int&                                       NumSegOn1,
+                               int&                                       NumSegOn2,
+                               double&                                          ParamOnSeg1,
+                               double&                                          ParamOnSeg2);
 
   Standard_EXPORT void Perform(const double Uo,
                                const double Vo,
@@ -64,16 +64,16 @@ public:
 private:
   Standard_EXPORT void MathPerform();
 
-  bool                                                      done;
-  int                                                       nbroots;
-  double                                                    myTol;
+  bool                                          done;
+  int                                          nbroots;
+  double                                             myTol;
   HLRBRep_TheDistBetweenPCurvesOfTheIntPCurvePCurveOfCInter FctDist;
   math_Vector                                               ToleranceVector;
   math_Vector                                               BInfVector;
   math_Vector                                               BSupVector;
   math_Vector                                               StartingPoint;
   math_Vector                                               Root;
-  bool                                                      anErrorOccurred;
+  bool                                          anErrorOccurred;
 };
 
 #endif // _HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter_HeaderFile

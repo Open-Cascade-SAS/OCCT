@@ -32,19 +32,16 @@ public:
   Standard_EXPORT StepVisual_CameraModelD3MultiClippingUnion();
 
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& theName,
-    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>&
-      theShapeClipping);
+    const occ::handle<TCollection_HAsciiString>&                                  theName,
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>& theShapeClipping);
 
   void SetShapeClipping(
-    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>&
-      theShapeClipping)
+    const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>& theShapeClipping)
   {
     myShapeClipping = theShapeClipping;
   }
 
-  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>
-    ShapeClipping()
+  const occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>> ShapeClipping()
   {
     return myShapeClipping;
   }
@@ -52,7 +49,6 @@ public:
                           StepGeom_GeometricRepresentationItem)
 
 private:
-  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>>
-    myShapeClipping;
+  occ::handle<NCollection_HArray1<StepVisual_CameraModelD3MultiClippingUnionSelect>> myShapeClipping;
 };
 #endif // _StepVisual_CameraModelD3MultiClippingUnion_HeaderFile

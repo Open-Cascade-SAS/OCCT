@@ -97,24 +97,24 @@ public:
 
 private:
   occ::handle<Adaptor3d_Surface> mySurf;
-  double                         myMean;
-  Contap_TFunction               myType;
-  gp_Dir                         myDir;
-  gp_Pnt                         myEye;
-  double                         myAng;
-  double                         myCosAng;
-  double                         tol;
-  gp_Pnt                         solpt;
-  double                         valf;
-  double                         Usol;
-  double                         Vsol;
-  double                         Fpu;
-  double                         Fpv;
-  gp_Dir2d                       d2d;
-  gp_Vec                         d3d;
-  bool                           tangent;
-  bool                           computed;
-  bool                           derived;
+  double             myMean;
+  Contap_TFunction          myType;
+  gp_Dir                    myDir;
+  gp_Pnt                    myEye;
+  double             myAng;
+  double             myCosAng;
+  double             tol;
+  gp_Pnt                    solpt;
+  double             valf;
+  double             Usol;
+  double             Vsol;
+  double             Fpu;
+  double             Fpv;
+  gp_Dir2d                  d2d;
+  gp_Vec                    d3d;
+  bool          tangent;
+  bool          computed;
+  bool          derived;
 };
 
 #include <Contap_SurfFunction.lxx>

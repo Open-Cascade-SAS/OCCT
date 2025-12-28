@@ -72,8 +72,7 @@ bool Expr_ArcSine::IsLinear() const
   return true;
 }
 
-occ::handle<Expr_GeneralExpression> Expr_ArcSine::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_ArcSine::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   if (!Contains(X))
   {
@@ -96,7 +95,7 @@ occ::handle<Expr_GeneralExpression> Expr_ArcSine::Derivative(
 }
 
 double Expr_ArcSine::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                              const NCollection_Array1<double>&                         vals) const
+                                     const NCollection_Array1<double>&      vals) const
 {
   return std::asin(Operand()->Evaluate(vars, vals));
 }

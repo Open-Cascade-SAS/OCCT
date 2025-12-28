@@ -29,11 +29,10 @@ RWStepVisual_RWDraughtingModel::RWStepVisual_RWDraughtingModel() {}
 
 //=================================================================================================
 
-void RWStepVisual_RWDraughtingModel::ReadStep(
-  const occ::handle<StepData_StepReaderData>&    data,
-  const int                                      num,
-  occ::handle<Interface_Check>&                  ach,
-  const occ::handle<StepVisual_DraughtingModel>& ent) const
+void RWStepVisual_RWDraughtingModel::ReadStep(const occ::handle<StepData_StepReaderData>&    data,
+                                              const int                    num,
+                                              occ::handle<Interface_Check>&                  ach,
+                                              const occ::handle<StepVisual_DraughtingModel>& ent) const
 {
   // Check number of parameters
   if (!data->CheckNbParams(num, 3, ach, "draughting_model"))
@@ -45,15 +44,14 @@ void RWStepVisual_RWDraughtingModel::ReadStep(
   data->ReadString(num, 1, "representation.name", ach, aRepresentation_Name);
 
   occ::handle<NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>> aRepresentation_Items;
-  int                                                                        sub2 = 0;
+  int                             sub2 = 0;
   if (data->ReadSubList(num, 2, "representation.items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
     if (nb0 > 0)
     {
-      aRepresentation_Items =
-        new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
+      aRepresentation_Items = new NCollection_HArray1<occ::handle<StepRepr_RepresentationItem>>(1, nb0);
       for (int i0 = 1; i0 <= nb0; i0++)
       {
         occ::handle<StepRepr_RepresentationItem> anIt0;
@@ -82,9 +80,8 @@ void RWStepVisual_RWDraughtingModel::ReadStep(
 
 //=================================================================================================
 
-void RWStepVisual_RWDraughtingModel::WriteStep(
-  StepData_StepWriter&                           SW,
-  const occ::handle<StepVisual_DraughtingModel>& ent) const
+void RWStepVisual_RWDraughtingModel::WriteStep(StepData_StepWriter&                      SW,
+                                               const occ::handle<StepVisual_DraughtingModel>& ent) const
 {
 
   // Inherited fields of Representation
@@ -94,8 +91,7 @@ void RWStepVisual_RWDraughtingModel::WriteStep(
   SW.OpenSub();
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     SW.Send(Var0);
   }
   SW.CloseSub();
@@ -106,15 +102,14 @@ void RWStepVisual_RWDraughtingModel::WriteStep(
 //=================================================================================================
 
 void RWStepVisual_RWDraughtingModel::Share(const occ::handle<StepVisual_DraughtingModel>& ent,
-                                           Interface_EntityIterator& iter) const
+                                           Interface_EntityIterator&                 iter) const
 {
 
   // Inherited fields of Representation
 
   for (int i1 = 1; i1 <= ent->StepRepr_Representation::NbItems(); i1++)
   {
-    occ::handle<StepRepr_RepresentationItem> Var0 =
-      ent->StepRepr_Representation::Items()->Value(i1);
+    occ::handle<StepRepr_RepresentationItem> Var0 = ent->StepRepr_Representation::Items()->Value(i1);
     iter.AddItem(Var0);
   }
 

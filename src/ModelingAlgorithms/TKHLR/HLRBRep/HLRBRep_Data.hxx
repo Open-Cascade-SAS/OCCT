@@ -26,6 +26,9 @@
 #include <HLRBRep_EdgeData.hxx>
 #include <NCollection_Array1.hxx>
 #include <HLRBRep_FaceData.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_ShortReal.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_CLProps.hxx>
@@ -41,8 +44,10 @@
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
 #include <BRepTopAdaptor_Tool.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_State.hxx>
+#include <HLRAlgo_Interference.hxx>
 #include <NCollection_List.hxx>
 class BRepTopAdaptor_TopolTool;
 class gp_Dir2d;
@@ -58,14 +63,16 @@ class HLRBRep_Data : public Standard_Transient
 public:
   //! Create an empty data structure of <NV> vertices,
   //! <NE> edges and <NF> faces.
-  Standard_EXPORT HLRBRep_Data(const int NV, const int NE, const int NF);
+  Standard_EXPORT HLRBRep_Data(const int NV,
+                               const int NE,
+                               const int NF);
 
   //! Write <DS> in me with a translation of
   //! <dv>,<de>,<df>.
   Standard_EXPORT void Write(const occ::handle<HLRBRep_Data>& DS,
-                             const int                        dv,
-                             const int                        de,
-                             const int                        df);
+                             const int      dv,
+                             const int      de,
+                             const int      df);
 
   NCollection_Array1<HLRBRep_EdgeData>& EDataArray();
 
@@ -97,14 +104,12 @@ public:
 
   //! to compare with only non rejected edges.
   Standard_EXPORT void InitBoundSort(const HLRAlgo_EdgesBlock::MinMaxIndices& MinMaxTot,
-                                     const int                                e1,
-                                     const int                                e2);
+                                     const int                   e1,
+                                     const int                   e2);
 
   //! Begin an iteration only on visible Edges
   //! crossing the face number <FI>.
-  Standard_EXPORT void InitEdge(
-    const int                                                                        FI,
-    NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST);
+  Standard_EXPORT void InitEdge(const int FI, NCollection_DataMap<TopoDS_Shape, BRepTopAdaptor_Tool, TopTools_ShapeMapHasher>& MST);
 
   Standard_EXPORT bool MoreEdge();
 
@@ -142,25 +147,25 @@ public:
   //! Returns the local description of the projection of
   //! the current LEdge at parameter <Param>.
   Standard_EXPORT void LocalLEGeometry2D(const double Param,
-                                         gp_Dir2d&    Tg,
-                                         gp_Dir2d&    Nm,
+                                         gp_Dir2d&           Tg,
+                                         gp_Dir2d&           Nm,
                                          double&      Cu);
 
   //! Returns the local description of the projection of
   //! the current FEdge at parameter <Param>.
-  Standard_EXPORT void LocalFEGeometry2D(const int    FE,
-                                         const double Param,
-                                         gp_Dir2d&    Tg,
-                                         gp_Dir2d&    Nm,
-                                         double&      Cu);
+  Standard_EXPORT void LocalFEGeometry2D(const int FE,
+                                         const double    Param,
+                                         gp_Dir2d&              Tg,
+                                         gp_Dir2d&              Nm,
+                                         double&         Cu);
 
   //! Returns the local 3D state of the intersection
   //! between the current edge and the current face at the
   //! <p1> and <p2> parameters.
-  Standard_EXPORT void EdgeState(const double  p1,
-                                 const double  p2,
-                                 TopAbs_State& stbef,
-                                 TopAbs_State& staf);
+  Standard_EXPORT void EdgeState(const double p1,
+                                 const double p2,
+                                 TopAbs_State&       stbef,
+                                 TopAbs_State&       staf);
 
   //! Returns the true if the Edge <ED> belongs to the
   //! Hiding Face.
@@ -170,9 +175,9 @@ public:
   //! the first point of the edge <ED>. The
   //! InterferenceList is given to compute far away of
   //! the Interferences and then come back.
-  Standard_EXPORT int HidingStartLevel(const int                                     E,
-                                       const HLRBRep_EdgeData&                       ED,
-                                       const NCollection_List<HLRAlgo_Interference>& IL);
+  Standard_EXPORT int HidingStartLevel(const int          E,
+                                                    const HLRBRep_EdgeData&         ED,
+                                                    const NCollection_List<HLRAlgo_Interference>& IL);
 
   //! Returns the state of the Edge <ED> after
   //! classification.
@@ -181,18 +186,18 @@ public:
   //! Simple classification of part of edge [p1, p2].
   //! Returns OUT if at least 1 of Nbp points of edge is out; otherwise returns IN.
   //! It is used to check "suspicion" hidden part of edge.
-  Standard_EXPORT TopAbs_State SimplClassify(const int               E,
+  Standard_EXPORT TopAbs_State SimplClassify(const int  E,
                                              const HLRBRep_EdgeData& ED,
-                                             const int               Nbp,
-                                             const double            p1,
-                                             const double            p2);
+                                             const int  Nbp,
+                                             const double     p1,
+                                             const double     p2);
 
   //! Classification of an edge.
-  Standard_EXPORT TopAbs_State Classify(const int               E,
+  Standard_EXPORT TopAbs_State Classify(const int  E,
                                         const HLRBRep_EdgeData& ED,
-                                        const bool              LevelFlag,
-                                        int&                    Level,
-                                        const double            param);
+                                        const bool  LevelFlag,
+                                        int&       Level,
+                                        const double     param);
 
   //! Returns true if the current face is bad.
   Standard_EXPORT bool IsBadFace() const;
@@ -215,73 +220,74 @@ private:
 
   //! Returns True if the intersection is rejected.
   Standard_EXPORT bool RejectedPoint(const IntRes2d_IntersectionPoint& PInter,
-                                     const TopAbs_Orientation          BoundOri,
-                                     const int                         NumSeg);
+                                                 const TopAbs_Orientation          BoundOri,
+                                                 const int            NumSeg);
 
   //! Returns True if there is a common vertex between
   //! myLE and myFE depending on <head1> and <head2>.
-  Standard_EXPORT bool SameVertex(const bool head1, const bool head2);
+  Standard_EXPORT bool SameVertex(const bool head1,
+                                              const bool head2);
 
 private:
-  int                                                           myNbVertices;
-  int                                                           myNbEdges;
-  int                                                           myNbFaces;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myEMap;
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myFMap;
-  NCollection_Array1<HLRBRep_EdgeData>                          myEData;
-  NCollection_Array1<HLRBRep_FaceData>                          myFData;
-  NCollection_Array1<int>                                       myEdgeIndices;
-  float                                                         myToler;
-  HLRAlgo_Projector                                             myProj;
-  HLRBRep_CLProps                                               myLLProps;
-  HLRBRep_CLProps                                               myFLProps;
-  HLRBRep_SLProps                                               mySLProps;
-  double                                                        myBigSize;
-  HLRBRep_FaceIterator                                          myFaceItr1;
-  HLRBRep_FaceIterator                                          myFaceItr2;
-  int                                                           iFace;
-  HLRBRep_FaceData*                                             iFaceData;
-  HLRBRep_Surface*                                              iFaceGeom;
-  HLRAlgo_EdgesBlock::MinMaxIndices*                            iFaceMinMax;
-  GeomAbs_SurfaceType                                           iFaceType;
-  bool                                                          iFaceBack;
-  bool                                                          iFaceSimp;
-  bool                                                          iFaceSmpl;
-  bool                                                          iFaceTest;
-  int                                                           myHideCount;
-  double                                                        myDeca[16];
-  double                                                        mySurD[16];
-  int                                                           myCurSortEd;
-  int                                                           myNbrSortEd;
-  int                                                           myLE;
-  bool                                                          myLEOutLine;
-  bool                                                          myLEInternal;
-  bool                                                          myLEDouble;
-  bool                                                          myLEIsoLine;
-  HLRBRep_EdgeData*                                             myLEData;
-  const HLRBRep_Curve*                                          myLEGeom;
-  HLRAlgo_EdgesBlock::MinMaxIndices*                            myLEMinMax;
-  GeomAbs_CurveType                                             myLEType;
-  float                                                         myLETol;
-  int                                                           myFE;
-  TopAbs_Orientation                                            myFEOri;
-  bool                                                          myFEOutLine;
-  bool                                                          myFEInternal;
-  bool                                                          myFEDouble;
-  HLRBRep_EdgeData*                                             myFEData;
-  HLRBRep_Curve*                                                myFEGeom;
-  GeomAbs_CurveType                                             myFEType;
-  float                                                         myFETol;
-  HLRBRep_Intersector                                           myIntersector;
-  occ::handle<BRepTopAdaptor_TopolTool>                         myClassifier;
-  bool                                                          mySameVertex;
-  bool                                                          myIntersected;
-  int                                                           myNbPoints;
-  int                                                           myNbSegments;
-  int                                                           iInterf;
-  HLRAlgo_Interference                                          myIntf;
-  bool                                                          myAboveIntf;
-  TableauRejection*                                             myReject;
+  int                   myNbVertices;
+  int                   myNbEdges;
+  int                   myNbFaces;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         myEMap;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>         myFMap;
+  NCollection_Array1<HLRBRep_EdgeData>              myEData;
+  NCollection_Array1<HLRBRep_FaceData>              myFData;
+  NCollection_Array1<int>            myEdgeIndices;
+  float                 myToler;
+  HLRAlgo_Projector                  myProj;
+  HLRBRep_CLProps                    myLLProps;
+  HLRBRep_CLProps                    myFLProps;
+  HLRBRep_SLProps                    mySLProps;
+  double                      myBigSize;
+  HLRBRep_FaceIterator               myFaceItr1;
+  HLRBRep_FaceIterator               myFaceItr2;
+  int                   iFace;
+  HLRBRep_FaceData*                  iFaceData;
+  HLRBRep_Surface*                   iFaceGeom;
+  HLRAlgo_EdgesBlock::MinMaxIndices* iFaceMinMax;
+  GeomAbs_SurfaceType                iFaceType;
+  bool                   iFaceBack;
+  bool                   iFaceSimp;
+  bool                   iFaceSmpl;
+  bool                   iFaceTest;
+  int                   myHideCount;
+  double                      myDeca[16];
+  double                      mySurD[16];
+  int                   myCurSortEd;
+  int                   myNbrSortEd;
+  int                   myLE;
+  bool                   myLEOutLine;
+  bool                   myLEInternal;
+  bool                   myLEDouble;
+  bool                   myLEIsoLine;
+  HLRBRep_EdgeData*                  myLEData;
+  const HLRBRep_Curve*               myLEGeom;
+  HLRAlgo_EdgesBlock::MinMaxIndices* myLEMinMax;
+  GeomAbs_CurveType                  myLEType;
+  float                 myLETol;
+  int                   myFE;
+  TopAbs_Orientation                 myFEOri;
+  bool                   myFEOutLine;
+  bool                   myFEInternal;
+  bool                   myFEDouble;
+  HLRBRep_EdgeData*                  myFEData;
+  HLRBRep_Curve*                     myFEGeom;
+  GeomAbs_CurveType                  myFEType;
+  float                 myFETol;
+  HLRBRep_Intersector                myIntersector;
+  occ::handle<BRepTopAdaptor_TopolTool>   myClassifier;
+  bool                   mySameVertex;
+  bool                   myIntersected;
+  int                   myNbPoints;
+  int                   myNbSegments;
+  int                   iInterf;
+  HLRAlgo_Interference               myIntf;
+  bool                   myAboveIntf;
+  TableauRejection*                  myReject;
 };
 
 #include <HLRBRep_Data.lxx>

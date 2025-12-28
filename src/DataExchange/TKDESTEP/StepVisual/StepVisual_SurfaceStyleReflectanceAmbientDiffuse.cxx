@@ -24,8 +24,9 @@ StepVisual_SurfaceStyleReflectanceAmbientDiffuse::StepVisual_SurfaceStyleReflect
 
 //=================================================================================================
 
-void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(const double theAmbientReflectance,
-                                                            const double theDiffuseReflectance)
+void StepVisual_SurfaceStyleReflectanceAmbientDiffuse::Init(
+  const double theAmbientReflectance,
+  const double theDiffuseReflectance)
 {
   StepVisual_SurfaceStyleReflectanceAmbient::Init(theAmbientReflectance);
   myDiffuseReflectance = theDiffuseReflectance;

@@ -40,12 +40,9 @@
 
 //=================================================================================================
 
-bool TopOpeBRepTool::RegularizeShells(
-  const TopoDS_Solid& theSolid,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    OldSheNewShe,
-  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>&
-    FSplits)
+bool TopOpeBRepTool::RegularizeShells(const TopoDS_Solid&                 theSolid,
+                                                  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& OldSheNewShe,
+                                                  NCollection_DataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>& FSplits)
 {
   OldSheNewShe.Clear();
   FSplits.Clear();

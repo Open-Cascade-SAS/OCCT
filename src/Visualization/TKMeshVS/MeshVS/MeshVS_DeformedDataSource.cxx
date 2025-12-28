@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DeformedDataSource, MeshVS_DataSource)
 
 MeshVS_DeformedDataSource::MeshVS_DeformedDataSource(
   const occ::handle<MeshVS_DataSource>& theNonDeformDS,
-  const double                          theMagnify)
+  const double              theMagnify)
 {
   myNonDeformedDataSource = theNonDeformDS;
   SetMagnify(theMagnify);
@@ -43,11 +43,11 @@ static inline void shiftCoord(NCollection_Array1<double>& Coords, int i, const g
 
 //=================================================================================================
 
-bool MeshVS_DeformedDataSource::GetGeom(const int                   ID,
-                                        const bool                  IsElement,
-                                        NCollection_Array1<double>& Coords,
-                                        int&                        NbNodes,
-                                        MeshVS_EntityType&          Type) const
+bool MeshVS_DeformedDataSource::GetGeom(const int ID,
+                                                    const bool IsElement,
+                                                    NCollection_Array1<double>&  Coords,
+                                                    int&      NbNodes,
+                                                    MeshVS_EntityType&     Type) const
 {
   if (myNonDeformedDataSource.IsNull()
       || !myNonDeformedDataSource->GetGeom(ID, IsElement, Coords, NbNodes, Type))
@@ -79,9 +79,9 @@ bool MeshVS_DeformedDataSource::GetGeom(const int                   ID,
 
 //=================================================================================================
 
-bool MeshVS_DeformedDataSource::GetGeomType(const int          ID,
-                                            const bool         IsElement,
-                                            MeshVS_EntityType& Type) const
+bool MeshVS_DeformedDataSource::GetGeomType(const int ID,
+                                                        const bool IsElement,
+                                                        MeshVS_EntityType&     Type) const
 {
   if (myNonDeformedDataSource.IsNull())
     return false;
@@ -92,8 +92,8 @@ bool MeshVS_DeformedDataSource::GetGeomType(const int          ID,
 //=================================================================================================
 
 bool MeshVS_DeformedDataSource::Get3DGeom(
-  const int                                                    ID,
-  int&                                                         NbNodes,
+  const int                     ID,
+  int&                          NbNodes,
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>>& Data) const
 {
   if (myNonDeformedDataSource.IsNull())
@@ -104,7 +104,8 @@ bool MeshVS_DeformedDataSource::Get3DGeom(
 
 //=================================================================================================
 
-void* MeshVS_DeformedDataSource::GetAddr(const int ID, const bool IsElement) const
+void* MeshVS_DeformedDataSource::GetAddr(const int ID,
+                                                    const bool IsElement) const
 {
   if (myNonDeformedDataSource.IsNull())
     return 0;
@@ -114,9 +115,9 @@ void* MeshVS_DeformedDataSource::GetAddr(const int ID, const bool IsElement) con
 
 //=================================================================================================
 
-bool MeshVS_DeformedDataSource::GetNodesByElement(const int                ID,
-                                                  NCollection_Array1<int>& NodeIDs,
-                                                  int&                     NbNodes) const
+bool MeshVS_DeformedDataSource::GetNodesByElement(const int   ID,
+                                                              NCollection_Array1<int>& NodeIDs,
+                                                              int& NbNodes) const
 {
   if (myNonDeformedDataSource.IsNull())
     return false;
@@ -181,8 +182,7 @@ void MeshVS_DeformedDataSource::SetVector(const int ID, const gp_Vec& Vect)
 
 //=================================================================================================
 
-void MeshVS_DeformedDataSource::SetNonDeformedDataSource(
-  const occ::handle<MeshVS_DataSource>& theDS)
+void MeshVS_DeformedDataSource::SetNonDeformedDataSource(const occ::handle<MeshVS_DataSource>& theDS)
 {
   myNonDeformedDataSource = theDS;
 }

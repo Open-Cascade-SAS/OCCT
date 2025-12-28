@@ -37,7 +37,8 @@ TopOpeBRep_VPointInterIterator::TopOpeBRep_VPointInterIterator(const TopOpeBRep_
 
 //=================================================================================================
 
-void TopOpeBRep_VPointInterIterator::Init(const TopOpeBRep_LineInter& LI, const bool checkkeep)
+void TopOpeBRep_VPointInterIterator::Init(const TopOpeBRep_LineInter& LI,
+                                          const bool      checkkeep)
 {
   myLineInter = (TopOpeBRep_LineInter*)&LI;
   mycheckkeep = checkkeep;

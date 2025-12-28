@@ -55,10 +55,17 @@
 #include <SWDRAW.hxx>
 #include <SWDRAW_ShapeUpgrade.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <Geom_Curve.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Geom_Surface.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TopoDS.hxx>
@@ -176,9 +183,9 @@ static int DT_ShapeConvertRev(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  int          c2d   = Draw::Atoi(a[3]);
-  int          c3d   = Draw::Atoi(a[4]);
-  TopoDS_Shape revsh = ShapeCustom::ConvertToRevolution(inputShape);
+  int c2d   = Draw::Atoi(a[3]);
+  int c3d   = Draw::Atoi(a[4]);
+  TopoDS_Shape     revsh = ShapeCustom::ConvertToRevolution(inputShape);
   if (revsh.IsNull())
   {
     di << "NO RESULT\n";
@@ -719,13 +726,12 @@ static int DT_SplitCurve(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  double                  Tol = Draw::Atof(a[2]);
+  double      Tol = Draw::Atof(a[2]);
   occ::handle<Geom_Curve> GC  = DrawTrSurf::GetCurve(a[1]);
   if (GC.IsNull())
     return 1;
-  int                                              Split = Draw::Atoi(a[3]);
-  occ::handle<ShapeUpgrade_SplitCurve3dContinuity> theTool =
-    new ShapeUpgrade_SplitCurve3dContinuity;
+  int                            Split   = Draw::Atoi(a[3]);
+  occ::handle<ShapeUpgrade_SplitCurve3dContinuity> theTool = new ShapeUpgrade_SplitCurve3dContinuity;
   theTool->Init(GC);
   theTool->SetTolerance(Tol);
   theTool->SetCriterion(GeomAbs_C1);
@@ -738,7 +744,7 @@ static int DT_SplitCurve(Draw_Interpretor& di, int n, const char** a)
   }
   theTool->Perform(true);
   occ::handle<NCollection_HArray1<occ::handle<Geom_Curve>>> theCurves = theTool->GetCurves();
-  int                                                       NbC       = theCurves->Length();
+  int                NbC       = theCurves->Length();
   for (int icurv = 1; icurv <= NbC; icurv++)
   {
     char name[100];
@@ -768,13 +774,12 @@ static int DT_SplitCurve2d(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  double                    Tol = Draw::Atof(a[2]);
+  double        Tol = Draw::Atof(a[2]);
   occ::handle<Geom2d_Curve> GC  = DrawTrSurf::GetCurve2d(a[1]);
   if (GC.IsNull())
     return 1;
-  int                                              Split = Draw::Atoi(a[3]);
-  occ::handle<ShapeUpgrade_SplitCurve2dContinuity> theTool =
-    new ShapeUpgrade_SplitCurve2dContinuity;
+  int                            Split   = Draw::Atoi(a[3]);
+  occ::handle<ShapeUpgrade_SplitCurve2dContinuity> theTool = new ShapeUpgrade_SplitCurve2dContinuity;
   theTool->Init(GC);
   theTool->SetTolerance(Tol);
   theTool->SetCriterion(GeomAbs_C1);
@@ -787,7 +792,7 @@ static int DT_SplitCurve2d(Draw_Interpretor& di, int n, const char** a)
   }
   theTool->Perform(true);
   occ::handle<NCollection_HArray1<occ::handle<Geom2d_Curve>>> theCurves = theTool->GetCurves();
-  int                                                         NbC       = theCurves->Length();
+  int                  NbC       = theCurves->Length();
   for (int icurv = 1; icurv <= NbC; icurv++)
   {
     char name[100];
@@ -915,8 +920,8 @@ static int DT_SplitSurface(Draw_Interpretor& di, int n, const char** a)
   occ::handle<ShapeUpgrade_SplitSurfaceContinuity> theTool = new ShapeUpgrade_SplitSurfaceContinuity;//S4137
   // clang-format on
 
-  double Tol   = Draw::Atof(a[3]);
-  int    Split = Draw::Atoi(a[4]);
+  double    Tol   = Draw::Atof(a[3]);
+  int Split = Draw::Atoi(a[4]);
   theTool->SetTolerance(Tol);
   theTool->SetCriterion(GeomAbs_C1);
   occ::handle<Geom_Surface> GS = DrawTrSurf::GetSurface(a[2]);
@@ -958,10 +963,10 @@ static int DT_SplitSurface(Draw_Interpretor& di, int n, const char** a)
 
   di << "appel a SplitSurface::GlobalU/VKnots\n";
   occ::handle<ShapeExtend_CompositeSurface> Grid    = theTool->ResSurfaces();
-  occ::handle<NCollection_HArray1<double>>  GlobalU = Grid->UJointValues();
-  occ::handle<NCollection_HArray1<double>>  GlobalV = Grid->VJointValues();
-  int                                       nbGlU   = GlobalU->Length();
-  int                                       nbGlV   = GlobalV->Length();
+  occ::handle<NCollection_HArray1<double>>        GlobalU = Grid->UJointValues();
+  occ::handle<NCollection_HArray1<double>>        GlobalV = Grid->VJointValues();
+  int                     nbGlU   = GlobalU->Length();
+  int                     nbGlV   = GlobalV->Length();
   di << "nb GlobalU ; nb GlobalV=" << nbGlU << " " << nbGlV;
   for (int iu = 1; iu <= nbGlU; iu++)
     di << " " << GlobalU->Value(iu);
@@ -994,7 +999,9 @@ static int DT_SplitSurface(Draw_Interpretor& di, int n, const char** a)
 //---------------gka
 //=================================================================================================
 
-static int offset2dcurve(Draw_Interpretor& di, int argc, const char** argv)
+static int offset2dcurve(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 4)
   {
@@ -1004,7 +1011,7 @@ static int offset2dcurve(Draw_Interpretor& di, int argc, const char** argv)
   }
   //  const char* arg1 = argv[1];
   //  const char* arg2 = argv[2];
-  double                    Offset = Draw::Atof(argv[3]);
+  double        Offset = Draw::Atof(argv[3]);
   occ::handle<Geom2d_Curve> GC     = DrawTrSurf::GetCurve2d(argv[2]);
   if (GC.IsNull())
     return 1;
@@ -1025,13 +1032,13 @@ static int offsetcurve(Draw_Interpretor& di, int argc, const char** argv)
   }
   //  const char* arg1 = argv[1];
   //  const char* arg2 = argv[2];
-  double                  Offset = Draw::Atof(argv[3]);
+  double      Offset = Draw::Atof(argv[3]);
   occ::handle<Geom_Curve> GC     = DrawTrSurf::GetCurve(argv[2]);
   if (GC.IsNull())
     return 1;
   gp_Pnt point;
   DrawTrSurf::GetPoint(argv[4], point);
-  gp_Dir                        dir(point.XYZ());
+  gp_Dir                   dir(point.XYZ());
   occ::handle<Geom_OffsetCurve> offcrv = new Geom_OffsetCurve(GC, Offset, dir);
   DrawTrSurf::Set(argv[1], offcrv);
   return 0;
@@ -1056,7 +1063,7 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   }
 
   occ::handle<Geom_Surface> S = BRep_Tool::Surface(face);
-  double                    Uf, Ul, Vf, Vl;
+  double        Uf, Ul, Vf, Vl;
   BRepTools::UVBounds(face, Uf, Ul, Vf, Vl);
   double Umin, Umax, Vmin, Vmax;
   S->Bounds(Umin, Umax, Vmin, Vmax);
@@ -1101,7 +1108,7 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   NCollection_Sequence<double> vval;
 
   bool byV = false;
-  int  i; // svv Jan11 2000 : porting on DEC
+  int i; // svv Jan11 2000 : porting on DEC
   for (i = 3; i < argc; i++)
   {
     if (argv[i][0] == 'u')
@@ -1110,7 +1117,7 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
       byV = true;
     else
     {
-      double                        val  = Draw::Atof(argv[i]);
+      double           val  = Draw::Atof(argv[i]);
       NCollection_Sequence<double>& vals = (byV ? vval : uval);
       if (vals.Length() > 0 && val - vals.Last() < Precision::PConfusion())
       {
@@ -1176,8 +1183,8 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
     double umax = (i < uval.Length() ? uval(i + 1) : Ul);
     for (int j = 0; j <= vval.Length(); j++)
     {
-      double                                      vmin = (j ? vval(j) : Vf);
-      double                                      vmax = (j < vval.Length() ? vval(j + 1) : Vl);
+      double                          vmin = (j ? vval(j) : Vf);
+      double                          vmax = (j < vval.Length() ? vval(j + 1) : Vl);
       occ::handle<Geom_RectangularTrimmedSurface> rect =
         new Geom_RectangularTrimmedSurface(S, umin, umax, vmin, vmax);
       AS->SetValue(i + 1, j + 1, rect);
@@ -1236,7 +1243,9 @@ static int splitface(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int converttobspline(Draw_Interpretor& di, int argc, const char** argv)
+static int converttobspline(Draw_Interpretor& di,
+                                         int  argc,
+                                         const char**      argv)
 {
   if (argc < 3)
   {
@@ -1323,7 +1332,9 @@ static int splitarea(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int splitbynumber(Draw_Interpretor& di, int argc, const char** argv)
+static int splitbynumber(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 4)
   {
@@ -1368,22 +1379,24 @@ static int splitbynumber(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int removeinternalwires(Draw_Interpretor& di, int argc, const char** argv)
+static int removeinternalwires(Draw_Interpretor& di,
+                                            int  argc,
+                                            const char**      argv)
 {
   if (argc < 4)
   {
     di << "bad number of arguments\n";
     return 1;
   }
-  double       aMinArea   = Draw::Atof(argv[2]);
-  TopoDS_Shape inputShape = DBRep::Get(argv[3]);
+  double aMinArea   = Draw::Atof(argv[2]);
+  TopoDS_Shape  inputShape = DBRep::Get(argv[3]);
   if (inputShape.IsNull())
   {
     di << "Unknown shape\n";
     return 1;
   }
   occ::handle<ShapeUpgrade_RemoveInternalWires> aTool;
-  NCollection_Sequence<TopoDS_Shape>            aSeqShapes;
+  NCollection_Sequence<TopoDS_Shape>                 aSeqShapes;
   if (inputShape.ShapeType() < TopAbs_WIRE)
     aTool = new ShapeUpgrade_RemoveInternalWires(inputShape);
   else
@@ -1392,7 +1405,7 @@ static int removeinternalwires(Draw_Interpretor& di, int argc, const char** argv
     return 1;
   }
 
-  int  k                = 4;
+  int k                = 4;
   bool isShape          = true;
   bool aModeRemoveFaces = true;
 
@@ -1493,14 +1506,14 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
     return 1;
 
   // default values
-  bool                                                   anUFaces        = true;
-  bool                                                   anUEdges        = true;
-  bool                                                   anConBS         = false;
-  bool                                                   isAllowInternal = false;
-  bool                                                   isSafeInputMode = true;
-  double                                                 aLinTol         = Precision::Confusion();
-  double                                                 aAngTol         = Precision::Angular();
-  TopoDS_Shape                                           aKeepShape;
+  bool    anUFaces        = true;
+  bool    anUEdges        = true;
+  bool    anConBS         = false;
+  bool    isAllowInternal = false;
+  bool    isSafeInputMode = true;
+  double       aLinTol         = Precision::Confusion();
+  double       aAngTol         = Precision::Angular();
+  TopoDS_Shape        aKeepShape;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aMapOfShapes;
 
   if (n > 3)
@@ -1557,7 +1570,9 @@ static int unifysamedom(Draw_Interpretor& di, int n, const char** a)
   return 0;
 }
 
-static int copytranslate(Draw_Interpretor& di, int argc, const char** argv)
+static int copytranslate(Draw_Interpretor& di,
+                                      int  argc,
+                                      const char**      argv)
 {
   if (argc < 6)
   {
@@ -1567,10 +1582,10 @@ static int copytranslate(Draw_Interpretor& di, int argc, const char** argv)
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
     return 1;
-  double  aDx = Draw::Atof(argv[3]);
-  double  aDy = Draw::Atof(argv[4]);
-  double  aDz = Draw::Atof(argv[5]);
-  gp_Trsf aTrsf;
+  double aDx = Draw::Atof(argv[3]);
+  double aDy = Draw::Atof(argv[4]);
+  double aDz = Draw::Atof(argv[5]);
+  gp_Trsf       aTrsf;
   aTrsf.SetTranslation(gp_Vec(aDx, aDy, aDz));
   BRepBuilderAPI_Transform builderTransform(aTrsf);
   builderTransform.Perform(aShape, true);
@@ -1579,7 +1594,9 @@ static int copytranslate(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-static int reshape(Draw_Interpretor& /*theDI*/, int theArgc, const char** theArgv)
+static int reshape(Draw_Interpretor& /*theDI*/,
+                                int theArgc,
+                                const char**     theArgv)
 {
   if (theArgc < 4)
   {
@@ -1601,7 +1618,7 @@ static int reshape(Draw_Interpretor& /*theDI*/, int theArgc, const char** theArg
   // Record the requested modifications
   for (int i = 3; i < theArgc; ++i)
   {
-    const char*             anArg = theArgv[i];
+    const char*        anArg = theArgv[i];
     TCollection_AsciiString anOpt(anArg);
     anOpt.LowerCase();
 
@@ -1654,7 +1671,7 @@ static int reshape(Draw_Interpretor& /*theDI*/, int theArgc, const char** theArg
         return 1;
       }
 
-      const char*             aLevelCStr = theArgv[++i];
+      const char*        aLevelCStr = theArgv[++i];
       TCollection_AsciiString aLevelStr(aLevelCStr);
       aLevelStr.LowerCase();
       if (aLevelStr == "compound" || aLevelStr == "cd")

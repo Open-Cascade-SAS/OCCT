@@ -54,7 +54,7 @@ public:
 
     //! Constructor with initialization.
     Iterator(const occ::handle<Graphic3d_LightSet>& theSet,
-             IterationFilter                        theFilter = IterationFilter_None)
+             IterationFilter                   theFilter = IterationFilter_None)
         : myFilter(theFilter)
     {
       if (!theSet.IsNull())
@@ -110,7 +110,7 @@ public:
 
   protected:
     NCollection_IndexedDataMap<occ::handle<Graphic3d_CLight>, size_t>::Iterator myIter;
-    int                                                                         myFilter;
+    int                                                              myFilter;
   };
 
 public:
@@ -148,7 +148,10 @@ public:
   Standard_EXPORT bool Remove(const occ::handle<Graphic3d_CLight>& theLight);
 
   //! Returns total amount of lights of specified type.
-  int NbLightsOfType(Graphic3d_TypeOfLightSource theType) const { return myLightTypes[theType]; }
+  int NbLightsOfType(Graphic3d_TypeOfLightSource theType) const
+  {
+    return myLightTypes[theType];
+  }
 
   //! @name cached state of lights set updated by UpdateRevision()
 public:

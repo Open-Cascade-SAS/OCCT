@@ -33,6 +33,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
 class Extrema_CurveTool
@@ -56,9 +57,7 @@ public:
   //! Stores in <T> the parameters bounding the intervals of continuity <S>.
   //! The array must provide enough room to accommodate for the parameters.
   //! i.e. T.Length() > NbIntervals()
-  static void Intervals(Adaptor3d_Curve&            theC,
-                        NCollection_Array1<double>& theT,
-                        const GeomAbs_Shape         theS)
+  static void Intervals(Adaptor3d_Curve& theC, NCollection_Array1<double>& theT, const GeomAbs_Shape theS)
   {
     theC.Intervals(theT, theS);
   }
@@ -135,10 +134,7 @@ public:
 
   static occ::handle<Geom_BezierCurve> Bezier(const Adaptor3d_Curve& theC) { return theC.Bezier(); }
 
-  static occ::handle<Geom_BSplineCurve> BSpline(const Adaptor3d_Curve& theC)
-  {
-    return theC.BSpline();
-  }
+  static occ::handle<Geom_BSplineCurve> BSpline(const Adaptor3d_Curve& theC) { return theC.BSpline(); }
 };
 
 #endif // _Extrema_CurveTool_HeaderFile

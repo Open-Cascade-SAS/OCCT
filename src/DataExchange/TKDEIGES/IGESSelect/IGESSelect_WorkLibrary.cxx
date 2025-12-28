@@ -45,7 +45,7 @@
 #include <errno.h>
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_WorkLibrary, IFSelect_WorkLibrary)
 
-static int                                deja = 0;
+static int                           deja = 0;
 static occ::handle<IGESData_FileProtocol> IGESProto;
 
 IGESSelect_WorkLibrary::IGESSelect_WorkLibrary(const bool modefnes)
@@ -58,7 +58,7 @@ IGESSelect_WorkLibrary::IGESSelect_WorkLibrary(const bool modefnes)
   if (!deja)
   {
     occ::handle<IGESSelect_Dumper> sesdump = new IGESSelect_Dumper; // ainsi,cestfait
-    deja                                   = 1;
+    deja                              = 1;
   }
   SetDumpLevels(4, 6);
   SetDumpHelp(0, "Only DNum");
@@ -70,16 +70,16 @@ IGESSelect_WorkLibrary::IGESSelect_WorkLibrary(const bool modefnes)
   SetDumpHelp(6, "Complete + Transformed data");
 }
 
-int IGESSelect_WorkLibrary::ReadFile(const char*                            name,
-                                     occ::handle<Interface_InterfaceModel>& model,
-                                     const occ::handle<Interface_Protocol>& protocol) const
+int IGESSelect_WorkLibrary::ReadFile(const char*            name,
+                                                  occ::handle<Interface_InterfaceModel>& model,
+                                                  const occ::handle<Interface_Protocol>& protocol) const
 {
   Message_Messenger::StreamBuffer sout    = Message::SendInfo();
-  occ::handle<IGESData_IGESModel> igesmod = new IGESData_IGESModel;
+  occ::handle<IGESData_IGESModel>      igesmod = new IGESData_IGESModel;
   DeclareAndCast(IGESData_Protocol, prot, protocol);
 
-  char* pname  = (char*)name;
-  int   status = IGESFile_Read(pname, igesmod, prot);
+  char*            pname  = (char*)name;
+  int status = IGESFile_Read(pname, igesmod, prot);
 
   if (status < 0)
     sout << "File not found : " << name << std::endl;
@@ -102,7 +102,7 @@ bool IGESSelect_WorkLibrary::WriteFile(IFSelect_ContextWrite& ctx) const
   if (igesmod.IsNull() || prot.IsNull())
     return false;
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      aStream =
+  std::shared_ptr<std::ostream> aStream =
     aFileSystem->OpenOStream(ctx.FileName(), std::ios::out | std::ios::binary);
   if (aStream.get() == NULL)
   {
@@ -165,8 +165,8 @@ occ::handle<IGESData_Protocol> IGESSelect_WorkLibrary::DefineProtocol()
 void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceModel>& model,
                                         const occ::handle<Interface_Protocol>&       protocol,
                                         const occ::handle<Standard_Transient>&       entity,
-                                        Standard_OStream&                            S,
-                                        const int                                    level) const
+                                        Standard_OStream&                       S,
+                                        const int                  level) const
 {
   DeclareAndCast(IGESData_IGESModel, igesmod, model);
   DeclareAndCast(IGESData_Protocol, igespro, protocol);
@@ -178,7 +178,7 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
     return;
 
   S << " --- Entity " << num;
-  bool                            iserr = model->IsRedefinedContent(num);
+  bool           iserr = model->IsRedefinedContent(num);
   occ::handle<Standard_Transient> con;
   if (iserr)
     con = model->ReportEntity(num)->Content();
@@ -199,7 +199,7 @@ void IGESSelect_WorkLibrary::DumpEntity(const occ::handle<Interface_InterfaceMod
     igesent = GetCasted(IGESData_IGESEntity, con);
     con.Nullify();
     occ::handle<Interface_Check> check = model->ReportEntity(num)->Check();
-    Interface_CheckIterator      chlist;
+    Interface_CheckIterator chlist;
     chlist.Add(check, num);
     chlist.Print(S, igesmod, false);
     if (igesent.IsNull())

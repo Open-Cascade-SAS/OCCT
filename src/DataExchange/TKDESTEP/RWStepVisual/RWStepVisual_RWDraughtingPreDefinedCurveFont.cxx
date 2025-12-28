@@ -20,7 +20,7 @@ RWStepVisual_RWDraughtingPreDefinedCurveFont::RWStepVisual_RWDraughtingPreDefine
 
 void RWStepVisual_RWDraughtingPreDefinedCurveFont::ReadStep(
   const occ::handle<StepData_StepReaderData>&                  data,
-  const int                                                    num,
+  const int                                  num,
   occ::handle<Interface_Check>&                                ach,
   const occ::handle<StepVisual_DraughtingPreDefinedCurveFont>& ent) const
 {
@@ -42,7 +42,7 @@ void RWStepVisual_RWDraughtingPreDefinedCurveFont::ReadStep(
 }
 
 void RWStepVisual_RWDraughtingPreDefinedCurveFont::WriteStep(
-  StepData_StepWriter&                                         SW,
+  StepData_StepWriter&                                    SW,
   const occ::handle<StepVisual_DraughtingPreDefinedCurveFont>& ent) const
 {
 

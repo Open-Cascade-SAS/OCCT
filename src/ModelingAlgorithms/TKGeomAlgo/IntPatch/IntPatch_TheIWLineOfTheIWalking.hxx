@@ -51,16 +51,20 @@ public:
 
   void AddStatusFirst(const bool Closed, const bool HasFirst);
 
-  void AddStatusFirst(const bool               Closed,
-                      const bool               HasLast,
-                      const int                Index,
+  void AddStatusFirst(const bool   Closed,
+                      const bool   HasLast,
+                      const int   Index,
                       const IntSurf_PathPoint& P);
 
-  void AddStatusFirstLast(const bool Closed, const bool HasFirst, const bool HasLast);
+  void AddStatusFirstLast(const bool Closed,
+                          const bool HasFirst,
+                          const bool HasLast);
 
   void AddStatusLast(const bool HasLast);
 
-  void AddStatusLast(const bool HasLast, const int Index, const IntSurf_PathPoint& P);
+  void AddStatusLast(const bool   HasLast,
+                     const int   Index,
+                     const IntSurf_PathPoint& P);
   //! associate the index of the point on the line with the index of the point
   //! passing through the starting iterator
   void AddIndexPassing(const int Index);
@@ -127,7 +131,9 @@ public:
   //! returns the index of the point belonging to the line which
   //! is associated to the passing point belonging to Pnts1
   //! an exception is raised if Index > NbPassingPoint()
-  void PassingPoint(const int Index, int& IndexLine, int& IndexPnts) const;
+  void PassingPoint(const int Index,
+                    int&      IndexLine,
+                    int&      IndexPnts) const;
 
   const gp_Vec& TangentVector(int& Index) const;
 
@@ -138,19 +144,19 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(IntPatch_TheIWLineOfTheIWalking, Standard_Transient)
 
 private:
-  occ::handle<IntSurf_LineOn2S>        line;
+  occ::handle<IntSurf_LineOn2S> line;
   NCollection_Sequence<IntSurf_Couple> couple;
-  bool                                 closed;
-  bool                                 hasFirst;
-  bool                                 hasLast;
-  int                                  firstIndex;
-  int                                  lastIndex;
-  IntSurf_PathPoint                    theFirstPoint;
-  IntSurf_PathPoint                    theLastPoint;
-  int                                  indextg;
-  gp_Vec                               vcttg;
-  bool                                 istgtbeg;
-  bool                                 istgtend;
+  bool         closed;
+  bool         hasFirst;
+  bool         hasLast;
+  int         firstIndex;
+  int         lastIndex;
+  IntSurf_PathPoint        theFirstPoint;
+  IntSurf_PathPoint        theLastPoint;
+  int         indextg;
+  gp_Vec                   vcttg;
+  bool         istgtbeg;
+  bool         istgtend;
 };
 
 //=================================================================================================
@@ -167,7 +173,8 @@ inline void IntPatch_TheIWLineOfTheIWalking::AddPoint(const IntSurf_PntOn2S& P)
   line->Add(P);
 }
 
-inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const bool Closed, const bool HasFirst)
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const bool Closed,
+                                                            const bool HasFirst)
 {
   closed   = Closed;
   hasFirst = HasFirst;
@@ -178,9 +185,9 @@ inline void IntPatch_TheIWLineOfTheIWalking::AddStatusLast(const bool HasLast)
   hasLast = HasLast;
 }
 
-inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const bool               Closed,
-                                                            const bool               HasFirst,
-                                                            const int                Index,
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const bool   Closed,
+                                                            const bool   HasFirst,
+                                                            const int   Index,
                                                             const IntSurf_PathPoint& P)
 {
   closed        = Closed;
@@ -189,8 +196,8 @@ inline void IntPatch_TheIWLineOfTheIWalking::AddStatusFirst(const bool          
   theFirstPoint = P;
 }
 
-inline void IntPatch_TheIWLineOfTheIWalking::AddStatusLast(const bool               HasLast,
-                                                           const int                Index,
+inline void IntPatch_TheIWLineOfTheIWalking::AddStatusLast(const bool   HasLast,
+                                                           const int   Index,
                                                            const IntSurf_PathPoint& P)
 {
   hasLast      = HasLast;
@@ -217,7 +224,8 @@ inline int IntPatch_TheIWLineOfTheIWalking::NbPoints() const
   return line->NbPoints();
 }
 
-inline const IntSurf_PntOn2S& IntPatch_TheIWLineOfTheIWalking::Value(const int Index) const
+inline const IntSurf_PntOn2S& IntPatch_TheIWLineOfTheIWalking::Value(
+  const int Index) const
 {
   return line->Value(Index);
 }
@@ -283,7 +291,8 @@ inline void IntPatch_TheIWLineOfTheIWalking::PassingPoint(const int Index,
   IndexPnts = couple(Index).Second();
 }
 
-inline void IntPatch_TheIWLineOfTheIWalking::SetTangentVector(const gp_Vec& V, const int Index)
+inline void IntPatch_TheIWLineOfTheIWalking::SetTangentVector(const gp_Vec&          V,
+                                                              const int Index)
 {
   indextg = Index;
   vcttg   = V;

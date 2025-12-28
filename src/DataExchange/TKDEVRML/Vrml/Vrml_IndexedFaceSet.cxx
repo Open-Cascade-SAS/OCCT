@@ -16,11 +16,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Vrml_IndexedFaceSet, Standard_Transient)
 
-Vrml_IndexedFaceSet::Vrml_IndexedFaceSet(
-  const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
-  const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
-  const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
-  const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex)
+Vrml_IndexedFaceSet::Vrml_IndexedFaceSet(const occ::handle<NCollection_HArray1<int>>& aCoordIndex,
+                                         const occ::handle<NCollection_HArray1<int>>& aMaterialIndex,
+                                         const occ::handle<NCollection_HArray1<int>>& aNormalIndex,
+                                         const occ::handle<NCollection_HArray1<int>>& aTextureCoordIndex)
 {
   myCoordIndex        = aCoordIndex;
   myMaterialIndex     = aMaterialIndex;
@@ -46,8 +45,7 @@ occ::handle<NCollection_HArray1<int>> Vrml_IndexedFaceSet::CoordIndex() const
   return myCoordIndex;
 }
 
-void Vrml_IndexedFaceSet::SetMaterialIndex(
-  const occ::handle<NCollection_HArray1<int>>& aMaterialIndex)
+void Vrml_IndexedFaceSet::SetMaterialIndex(const occ::handle<NCollection_HArray1<int>>& aMaterialIndex)
 {
   myMaterialIndex = aMaterialIndex;
 }

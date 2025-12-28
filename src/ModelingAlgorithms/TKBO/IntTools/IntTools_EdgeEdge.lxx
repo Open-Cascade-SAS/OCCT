@@ -62,12 +62,12 @@ inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
 
 //=================================================================================================
 
-inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge& theEdge1,
-                                            const double       aT11,
-                                            const double       aT12,
-                                            const TopoDS_Edge& theEdge2,
-                                            const double       aT21,
-                                            const double       aT22)
+inline IntTools_EdgeEdge::IntTools_EdgeEdge(const TopoDS_Edge&  theEdge1,
+                                            const double aT11,
+                                            const double aT12,
+                                            const TopoDS_Edge&  theEdge2,
+                                            const double aT21,
+                                            const double aT22)
     : myEdge1(theEdge1),
       myEdge2(theEdge2),
       myTol1(0.),
@@ -116,9 +116,9 @@ inline void IntTools_EdgeEdge::SetRange1(const double aT1, const double aT2)
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge& theEdge,
-                                        const double       aT1,
-                                        const double       aT2)
+inline void IntTools_EdgeEdge::SetEdge1(const TopoDS_Edge&  theEdge,
+                                        const double aT1,
+                                        const double aT2)
 {
   SetEdge1(theEdge);
   SetRange1(aT1, aT2);
@@ -148,9 +148,9 @@ inline void IntTools_EdgeEdge::SetRange2(const double aT1, const double aT2)
 
 //=================================================================================================
 
-inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge& theEdge,
-                                        const double       aT1,
-                                        const double       aT2)
+inline void IntTools_EdgeEdge::SetEdge2(const TopoDS_Edge&  theEdge,
+                                        const double aT1,
+                                        const double aT2)
 {
   SetEdge2(theEdge);
   SetRange2(aT1, aT2);

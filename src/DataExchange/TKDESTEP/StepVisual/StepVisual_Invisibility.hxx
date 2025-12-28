@@ -33,8 +33,7 @@ public:
   //! Returns a Invisibility
   Standard_EXPORT StepVisual_Invisibility();
 
-  Standard_EXPORT void Init(
-    const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems);
+  Standard_EXPORT void Init(const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems);
 
   Standard_EXPORT void SetInvisibleItems(
     const occ::handle<NCollection_HArray1<StepVisual_InvisibleItem>>& aInvisibleItems);

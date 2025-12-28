@@ -68,7 +68,7 @@ static void renderPlane(const occ::handle<OpenGl_Workspace>&            theWorks
                         const occ::handle<OpenGl_CappingPlaneResource>& thePlane)
 {
   const occ::handle<OpenGl_Context>& aContext       = theWorkspace->GetGlContext();
-  const bool                         wasCullAllowed = theWorkspace->SetAllowFaceCulling(true);
+  const bool                    wasCullAllowed = theWorkspace->SetAllowFaceCulling(true);
 
   // set identity model matrix
   aContext->ModelWorldState.Push();
@@ -84,16 +84,17 @@ static void renderPlane(const occ::handle<OpenGl_Workspace>&            theWorks
 }
 
 //! Render capping for specific structure.
-static void renderCappingForStructure(StencilTestSentry&                      theStencilSentry,
-                                      const occ::handle<OpenGl_Workspace>&    theWorkspace,
-                                      const OpenGl_Structure&                 theStructure,
-                                      const occ::handle<Graphic3d_ClipPlane>& theClipChain,
-                                      const int                               theSubPlaneIndex,
+static void renderCappingForStructure(StencilTestSentry&                         theStencilSentry,
+                                      const occ::handle<OpenGl_Workspace>&            theWorkspace,
+                                      const OpenGl_Structure&                    theStructure,
+                                      const occ::handle<Graphic3d_ClipPlane>&         theClipChain,
+                                      const int                     theSubPlaneIndex,
                                       const occ::handle<OpenGl_CappingPlaneResource>& thePlane)
 {
   const int aPrevFilter = theWorkspace->RenderFilter();
   const int anAnyFilter =
-    aPrevFilter & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
+    aPrevFilter
+    & ~(int)(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
 
   const occ::handle<OpenGl_Context>&      aContext     = theWorkspace->GetGlContext();
   const occ::handle<Graphic3d_ClipPlane>& aRenderPlane = thePlane->Plane();
@@ -210,7 +211,7 @@ static void renderCappingForStructure(StencilTestSentry&                      th
 //=================================================================================================
 
 void OpenGl_CappingAlgo::RenderCapping(const occ::handle<OpenGl_Workspace>& theWorkspace,
-                                       const OpenGl_Structure&              theStructure)
+                                       const OpenGl_Structure&         theStructure)
 {
   const occ::handle<OpenGl_Context>& aContext = theWorkspace->GetGlContext();
   if (!aContext->Clipping().IsCappingOn())
@@ -243,7 +244,7 @@ void OpenGl_CappingAlgo::RenderCapping(const occ::handle<OpenGl_Workspace>& theW
          aSubPlaneIter = aSubPlaneIter->ChainNextPlane().get(), ++aSubPlaneIndex)
     {
       // get resource for the plane
-      const TCollection_AsciiString&           aResId = aSubPlaneIter->GetId();
+      const TCollection_AsciiString&      aResId = aSubPlaneIter->GetId();
       occ::handle<OpenGl_CappingPlaneResource> aPlaneRes;
       if (!aContext->GetResource(aResId, aPlaneRes))
       {

@@ -38,8 +38,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Law_Interpol, Law_BSpFunc)
     #include <Draw_MarkerShape.hxx>
 
 static void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
-                            const gp_Vec2d&                 tra,
-                            const double                    scal)
+                            const gp_Vec2d&            tra,
+                            const double        scal)
 {
   NCollection_Array1<double> pol(1, bs->NbPoles());
   bs->Poles(pol);
@@ -51,7 +51,7 @@ static void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
   int nbk = knots.Length();
 
   occ::handle<Draw_Marker2D> mar;
-  gp_Pnt2d                   pp(knots(1), scal * bs->Value(knots(1)));
+  gp_Pnt2d              pp(knots(1), scal * bs->Value(knots(1)));
   pp.Translate(tra);
   gp_Pnt2d qq;
   mar = new Draw_Marker2D(pp, Draw_Square, Draw_cyan);
@@ -64,7 +64,7 @@ static void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
     for (int iu = 1; iu <= 30; iu++)
     {
       double uu = iu / 30.;
-      uu        = f + uu * (l - f);
+      uu               = f + uu * (l - f);
       qq.SetCoord(uu, scal * bs->Value(uu));
       qq.Translate(tra);
       seg = new Draw_Segment2D(pp, qq, Draw_jaune);
@@ -76,12 +76,12 @@ static void Law_draw1dcurve(const occ::handle<Law_BSpline>& bs,
   }
 }
 
-static void Law_draw1dcurve(const NCollection_Array1<double>& pol,
-                            const NCollection_Array1<double>& knots,
-                            const NCollection_Array1<int>&    mults,
-                            const int                         deg,
-                            const gp_Vec2d&                   tra,
-                            const double                      scal)
+static void Law_draw1dcurve(const NCollection_Array1<double>&    pol,
+                            const NCollection_Array1<double>&    knots,
+                            const NCollection_Array1<int>& mults,
+                            const int         deg,
+                            const gp_Vec2d&                tra,
+                            const double            scal)
 {
   occ::handle<Law_BSpline> bs = new Law_BSpline(pol, knots, mults, deg);
   Law_draw1dcurve(bs, tra, scal);
@@ -109,8 +109,8 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad, const bool
     rad = new NCollection_HArray1<double>(1, nbp - 1);
   else
     rad = new NCollection_HArray1<double>(1, nbp);
-  double x, y;
-  int    i;
+  double    x, y;
+  int i;
   for (i = 1; i <= nbp; i++)
   {
     ParAndRad(l + i - 1).Coord(x, y);
@@ -135,21 +135,21 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad, const bool
 //=================================================================================================
 
 void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                                 const double                        Ud,
-                                 const double                        Uf,
-                                 const bool                          Periodic)
+                                 const double         Ud,
+                                 const double         Uf,
+                                 const bool      Periodic)
 {
-  int                                      l = ParAndRad.Lower(), u = ParAndRad.Upper();
-  double                                   wd = ParAndRad(l).X(), wf = ParAndRad(u).X();
-  int                                      nbp = ParAndRad.Length();
+  int              l = ParAndRad.Lower(), u = ParAndRad.Upper();
+  double                 wd = ParAndRad(l).X(), wf = ParAndRad(u).X();
+  int              nbp = ParAndRad.Length();
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
     rad = new NCollection_HArray1<double>(1, nbp - 1);
   else
     rad = new NCollection_HArray1<double>(1, nbp);
-  double x, y;
-  int    i;
+  double    x, y;
+  int i;
   for (i = 1; i <= nbp; i++)
   {
     ParAndRad(l + i - 1).Coord(x, y);
@@ -174,9 +174,9 @@ void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
 //=================================================================================================
 
 void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                       const double                        Dd,
-                       const double                        Df,
-                       const bool                          Periodic)
+                       const double         Dd,
+                       const double         Df,
+                       const bool      Periodic)
 {
   int l   = ParAndRad.Lower();
   int nbp = ParAndRad.Length();
@@ -187,8 +187,8 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
     rad = new NCollection_HArray1<double>(1, nbp - 1);
   else
     rad = new NCollection_HArray1<double>(1, nbp);
-  double x, y;
-  int    i;
+  double    x, y;
+  int i;
   for (i = 1; i <= nbp; i++)
   {
     ParAndRad(l + i - 1).Coord(x, y);
@@ -205,23 +205,23 @@ void Law_Interpol::Set(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
 //=================================================================================================
 
 void Law_Interpol::SetInRelative(const NCollection_Array1<gp_Pnt2d>& ParAndRad,
-                                 const double                        Ud,
-                                 const double                        Uf,
-                                 const double                        Dd,
-                                 const double                        Df,
-                                 const bool                          Periodic)
+                                 const double         Ud,
+                                 const double         Uf,
+                                 const double         Dd,
+                                 const double         Df,
+                                 const bool      Periodic)
 {
-  int                                      l = ParAndRad.Lower(), u = ParAndRad.Upper();
-  double                                   wd = ParAndRad(l).X(), wf = ParAndRad(u).X();
-  int                                      nbp = ParAndRad.Length();
+  int              l = ParAndRad.Lower(), u = ParAndRad.Upper();
+  double                 wd = ParAndRad(l).X(), wf = ParAndRad(u).X();
+  int              nbp = ParAndRad.Length();
   occ::handle<NCollection_HArray1<double>> par = new NCollection_HArray1<double>(1, nbp);
   occ::handle<NCollection_HArray1<double>> rad;
   if (Periodic)
     rad = new NCollection_HArray1<double>(1, nbp - 1);
   else
     rad = new NCollection_HArray1<double>(1, nbp);
-  double x, y;
-  int    i;
+  double    x, y;
+  int i;
   for (i = 1; i <= nbp; i++)
   {
     ParAndRad(l + i - 1).Coord(x, y);

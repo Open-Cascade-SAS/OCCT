@@ -34,10 +34,9 @@ public:
 
   //! Initialize all fields (own and inherited)
   Standard_EXPORT void Init(
-    const occ::handle<TCollection_HAsciiString>& aName,
-    const occ::handle<TCollection_HAsciiString>& aDescription,
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>&
-      aElements);
+    const occ::handle<TCollection_HAsciiString>&                           aName,
+    const occ::handle<TCollection_HAsciiString>&                           aDescription,
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& aElements);
 
   //! Returns field Name
   Standard_EXPORT occ::handle<TCollection_HAsciiString> Name() const;
@@ -52,22 +51,18 @@ public:
   Standard_EXPORT void SetDescription(const occ::handle<TCollection_HAsciiString>& Description);
 
   //! Returns field Elements
-  Standard_EXPORT occ::handle<
-    NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>
-    Elements() const;
+  Standard_EXPORT occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> Elements() const;
 
   //! Set field Elements
   Standard_EXPORT void SetElements(
-    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>&
-      Elements);
+    const occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>& Elements);
 
   DEFINE_STANDARD_RTTIEXT(StepRepr_DataEnvironment, Standard_Transient)
 
 private:
-  occ::handle<TCollection_HAsciiString> theName;
-  occ::handle<TCollection_HAsciiString> theDescription;
-  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>>
-    theElements;
+  occ::handle<TCollection_HAsciiString>                           theName;
+  occ::handle<TCollection_HAsciiString>                           theDescription;
+  occ::handle<NCollection_HArray1<occ::handle<StepRepr_PropertyDefinitionRepresentation>>> theElements;
 };
 
 #endif // _StepRepr_DataEnvironment_HeaderFile

@@ -23,7 +23,7 @@ RWStepGeom_RWSurfaceOfLinearExtrusion::RWStepGeom_RWSurfaceOfLinearExtrusion() {
 
 void RWStepGeom_RWSurfaceOfLinearExtrusion::ReadStep(
   const occ::handle<StepData_StepReaderData>&           data,
-  const int                                             num,
+  const int                           num,
   occ::handle<Interface_Check>&                         ach,
   const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& ent) const
 {
@@ -57,7 +57,7 @@ void RWStepGeom_RWSurfaceOfLinearExtrusion::ReadStep(
 }
 
 void RWStepGeom_RWSurfaceOfLinearExtrusion::WriteStep(
-  StepData_StepWriter&                                  SW,
+  StepData_StepWriter&                             SW,
   const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& ent) const
 {
 
@@ -76,7 +76,7 @@ void RWStepGeom_RWSurfaceOfLinearExtrusion::WriteStep(
 
 void RWStepGeom_RWSurfaceOfLinearExtrusion::Share(
   const occ::handle<StepGeom_SurfaceOfLinearExtrusion>& ent,
-  Interface_EntityIterator&                             iter) const
+  Interface_EntityIterator&                        iter) const
 {
 
   iter.GetOneItem(ent->SweptCurve());

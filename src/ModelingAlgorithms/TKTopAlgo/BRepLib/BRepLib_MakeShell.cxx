@@ -27,6 +27,7 @@
 #include <StdFail_NotDone.hxx>
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -35,6 +36,7 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
@@ -55,11 +57,11 @@ BRepLib_MakeShell::BRepLib_MakeShell(const occ::handle<Geom_Surface>& S, const b
 //=================================================================================================
 
 BRepLib_MakeShell::BRepLib_MakeShell(const occ::handle<Geom_Surface>& S,
-                                     const double                     UMin,
-                                     const double                     UMax,
-                                     const double                     VMin,
-                                     const double                     VMax,
-                                     const bool                       Segment)
+                                     const double         UMin,
+                                     const double         UMax,
+                                     const double         VMin,
+                                     const double         VMax,
+                                     const bool      Segment)
 {
   Init(S, UMin, UMax, VMin, VMax, Segment);
 }
@@ -67,11 +69,11 @@ BRepLib_MakeShell::BRepLib_MakeShell(const occ::handle<Geom_Surface>& S,
 //=================================================================================================
 
 void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
-                             const double                     UMin,
-                             const double                     UMax,
-                             const double                     VMin,
-                             const double                     VMax,
-                             const bool                       Segment)
+                             const double         UMin,
+                             const double         UMax,
+                             const double         VMin,
+                             const double         VMax,
+                             const bool      Segment)
 {
   occ::handle<Geom_Surface> BS = S;
   if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface))
@@ -80,7 +82,7 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       occ::down_cast<Geom_RectangularTrimmedSurface>(S);
     BS = RTS->BasisSurface();
   }
-  myError              = BRepLib_EmptyShell;
+  myError                     = BRepLib_EmptyShell;
   constexpr double tol = Precision::Confusion();
 
   // Make a shell from a surface
@@ -96,8 +98,8 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
     return;
 
   // arrays of parameters and pcurves
-  NCollection_Array1<double>                    upars(1, nu + 1);
-  NCollection_Array1<double>                    vpars(1, nv + 1);
+  NCollection_Array1<double>     upars(1, nu + 1);
+  NCollection_Array1<double>     vpars(1, nv + 1);
   NCollection_Array1<occ::handle<Geom2d_Curve>> uisos(1, nu + 1);
   NCollection_Array1<occ::handle<Geom2d_Curve>> visos(1, nv + 1);
 
@@ -223,9 +225,9 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
       if (GS.GetType() == GeomAbs_BSplineSurface && Segment)
       {
         occ::down_cast<Geom_BSplineSurface>(SS)->Segment(upars(iu),
-                                                         upars(iu + 1),
-                                                         vpars(iv),
-                                                         vpars(iv + 1));
+                                                           upars(iu + 1),
+                                                           vpars(iv),
+                                                           vpars(iv + 1));
       }
       B.MakeFace(F, SS, tol);
 
@@ -380,16 +382,16 @@ void BRepLib_MakeShell::Init(const occ::handle<Geom_Surface>& S,
   myShape.Closed(BRep_Tool::IsClosed(myShape));
 
   // Additional checking for degenerated edges
-  bool             isDegenerated;
+  bool        isDegenerated;
   double           aFirst, aLast;
   constexpr double aTol = Precision::Confusion();
   double           anActTol;
-  TopExp_Explorer  anExp(myShape, TopAbs_EDGE);
+  TopExp_Explorer         anExp(myShape, TopAbs_EDGE);
   for (; anExp.More(); anExp.Next())
   {
-    const TopoDS_Edge&      anEdge = TopoDS::Edge(anExp.Current());
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
     occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
-    isDegenerated                  = BRepLib_MakeFace::IsDegenerated(aCurve, aTol, anActTol);
+    isDegenerated             = BRepLib_MakeFace::IsDegenerated(aCurve, aTol, anActTol);
     B.Degenerated(anEdge, isDegenerated);
   }
 

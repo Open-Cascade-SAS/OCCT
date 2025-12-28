@@ -48,10 +48,10 @@ public:
   //! numeric value of the dimension, <amove> is the gap,
   //! and <adimensions> is the dimension of the given word
   //! <aword>.
-  Standard_EXPORT Units_ShiftedToken(const char*                          aword,
-                                     const char*                          amean,
-                                     const double                         avalue,
-                                     const double                         amove,
+  Standard_EXPORT Units_ShiftedToken(const char*          aword,
+                                     const char*          amean,
+                                     const double             avalue,
+                                     const double             amove,
                                      const occ::handle<Units_Dimensions>& adimensions);
 
   //! Creates and returns a token, which is a ShiftedToken.
@@ -63,14 +63,16 @@ public:
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
-  Standard_EXPORT virtual double Multiplied(const double avalue) const override;
+  Standard_EXPORT virtual double Multiplied(const double avalue) const
+    override;
 
   //! This virtual method is called by the Measurement
   //! methods, to compute the measurement during a
   //! conversion.
   Standard_EXPORT virtual double Divided(const double avalue) const override;
 
-  Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const override;
+  Standard_EXPORT virtual void Dump(const int ashift,
+                                    const int alevel) const override;
 
   DEFINE_STANDARD_RTTIEXT(Units_ShiftedToken, Units_Token)
 

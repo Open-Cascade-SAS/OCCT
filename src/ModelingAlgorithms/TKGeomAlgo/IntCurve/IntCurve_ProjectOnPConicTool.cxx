@@ -20,10 +20,10 @@
 #include <IntCurve_ProjectOnPConicTool.hxx>
 
 double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
-                                                   const gp_Pnt2d&        P,
-                                                   const double           LowParameter,
-                                                   const double           HighParameter,
-                                                   const double)
+                                                          const gp_Pnt2d&        P,
+                                                          const double    LowParameter,
+                                                          const double    HighParameter,
+                                                          const double)
 {
 
   double ParamSup, ParamInf, Param = 0;
@@ -86,8 +86,8 @@ double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePCo
 }
 
 double IntCurve_ProjectOnPConicTool::FindParameter(const IntCurve_PConic& ThePConic,
-                                                   const gp_Pnt2d&        P,
-                                                   const double)
+                                                          const gp_Pnt2d&        P,
+                                                          const double)
 {
 
   // std::cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();

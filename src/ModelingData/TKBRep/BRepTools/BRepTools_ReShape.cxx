@@ -61,14 +61,13 @@ void Add(TMap& theMap, const TopoDS_Shape& theShape)
 // #include <BRepTools_Edge.hxx>
 static void CopyRanges(const TopoDS_Shape& toedge,
                        const TopoDS_Shape& fromedge,
-                       const double        alpha,
-                       const double        beta)
+                       const double alpha,
+                       const double beta)
 {
-  occ::handle<BRep_TEdge> aTEdgeFrom = occ::down_cast<BRep_TEdge>(fromedge.TShape());
-  occ::handle<BRep_TEdge> aTEdgeTo   = occ::down_cast<BRep_TEdge>(toedge.TShape());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>& tolist = aTEdgeTo->ChangeCurves();
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator fromitcr(
-    aTEdgeFrom->ChangeCurves());
+  occ::handle<BRep_TEdge>              aTEdgeFrom = occ::down_cast<BRep_TEdge>(fromedge.TShape());
+  occ::handle<BRep_TEdge>              aTEdgeTo   = occ::down_cast<BRep_TEdge>(toedge.TShape());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>& tolist     = aTEdgeTo->ChangeCurves();
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator fromitcr(aTEdgeFrom->ChangeCurves());
   for (; fromitcr.More(); fromitcr.Next())
   {
     occ::handle<BRep_GCurve> fromGC = occ::down_cast<BRep_GCurve>(fromitcr.Value());
@@ -91,7 +90,7 @@ static void CopyRanges(const TopoDS_Shape& toedge,
     // clang-format on
 
     occ::handle<Geom_Surface> surface;
-    TopLoc_Location           L;
+    TopLoc_Location      L;
     if (!isC3d)
     {
       surface = fromGC->Surface();
@@ -99,9 +98,7 @@ static void CopyRanges(const TopoDS_Shape& toedge,
     }
 
     occ::handle<BRep_GCurve> toGC;
-    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator toitcr(tolist);
-         toitcr.More();
-         toitcr.Next())
+    for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator toitcr(tolist); toitcr.More(); toitcr.Next())
     {
       toGC = occ::down_cast<BRep_GCurve>(toitcr.Value());
       if (toGC.IsNull())
@@ -251,7 +248,9 @@ TopoDS_Shape BRepTools_ReShape::Value(const TopoDS_Shape& ashape) const
 
 //=================================================================================================
 
-int BRepTools_ReShape::Status(const TopoDS_Shape& ashape, TopoDS_Shape& newsh, const bool last)
+int BRepTools_ReShape::Status(const TopoDS_Shape&    ashape,
+                                           TopoDS_Shape&          newsh,
+                                           const bool last)
 {
   int res = 0;
   if (ashape.IsNull())
@@ -412,7 +411,7 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
   TopAbs_Orientation orien  = shape.Orientation();
   result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
   bool modif     = false;
-  int  locStatus = myStatus;
+  int locStatus = myStatus;
 
   // apply recorded modifications to subshapes
   bool isEmpty = true;
@@ -505,14 +504,14 @@ TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV, const dou
 
 TopoDS_Vertex BRepTools_ReShape::CopyVertex(const TopoDS_Vertex& theV,
                                             const gp_Pnt&        theNewPos,
-                                            const double         theTol)
+                                            const double  theTol)
 {
-  TopoDS_Vertex aVertexCopy;
-  bool          isRecorded = IsRecorded(theV);
+  TopoDS_Vertex    aVertexCopy;
+  bool isRecorded = IsRecorded(theV);
   aVertexCopy = isRecorded ? TopoDS::Vertex(Apply(theV)) : TopoDS::Vertex(theV.EmptyCopied());
 
-  BRep_Builder B;
-  double       aNewTol = theTol > 0.0 ? theTol : BRep_Tool::Tolerance(theV);
+  BRep_Builder  B;
+  double aNewTol = theTol > 0.0 ? theTol : BRep_Tool::Tolerance(theV);
   B.UpdateVertex(aVertexCopy, theNewPos, aNewTol);
 
   if (!isRecorded)

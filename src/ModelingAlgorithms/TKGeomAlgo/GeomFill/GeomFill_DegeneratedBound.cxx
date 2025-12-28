@@ -23,11 +23,11 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_DegeneratedBound, GeomFill_Boundary)
 
 //=================================================================================================
 
-GeomFill_DegeneratedBound::GeomFill_DegeneratedBound(const gp_Pnt& Point,
-                                                     const double  First,
-                                                     const double  Last,
-                                                     const double  Tol3d,
-                                                     const double  Tolang)
+GeomFill_DegeneratedBound::GeomFill_DegeneratedBound(const gp_Pnt&       Point,
+                                                     const double First,
+                                                     const double Last,
+                                                     const double Tol3d,
+                                                     const double Tolang)
     : GeomFill_Boundary(Tol3d, Tolang),
       myPoint(Point),
       myFirst(First),

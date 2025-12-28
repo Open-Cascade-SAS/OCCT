@@ -32,7 +32,7 @@ public:
   Standard_EXPORT StepBasic_MeasureWithUnit();
 
   Standard_EXPORT void Init(const occ::handle<StepBasic_MeasureValueMember>& aValueComponent,
-                            const StepBasic_Unit&                            aUnitComponent);
+                            const StepBasic_Unit&                       aUnitComponent);
 
   Standard_EXPORT void SetValueComponent(const double aValueComponent);
 
@@ -40,8 +40,7 @@ public:
 
   Standard_EXPORT occ::handle<StepBasic_MeasureValueMember> ValueComponentMember() const;
 
-  Standard_EXPORT void SetValueComponentMember(
-    const occ::handle<StepBasic_MeasureValueMember>& val);
+  Standard_EXPORT void SetValueComponentMember(const occ::handle<StepBasic_MeasureValueMember>& val);
 
   Standard_EXPORT void SetUnitComponent(const StepBasic_Unit& aUnitComponent);
 
@@ -51,7 +50,7 @@ public:
 
 private:
   occ::handle<StepBasic_MeasureValueMember> valueComponent;
-  StepBasic_Unit                            unitComponent;
+  StepBasic_Unit                       unitComponent;
 };
 
 #endif // _StepBasic_MeasureWithUnit_HeaderFile

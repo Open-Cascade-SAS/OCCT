@@ -35,6 +35,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
 #include <Draw_ProgressIndicator.hxx>
 
@@ -44,9 +45,15 @@
 static BOPAlgo_PaveFiller* pPF = NULL;
 //
 
-static int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp);
+static int bopsmt(Draw_Interpretor&       di,
+                               int        n,
+                               const char**            a,
+                               const BOPAlgo_Operation aOp);
 //
-static int bsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp);
+static int bsmt(Draw_Interpretor&       di,
+                             int        n,
+                             const char**            a,
+                             const BOPAlgo_Operation aOp);
 //
 static int bop(Draw_Interpretor&, int, const char**);
 static int bopsection(Draw_Interpretor&, int, const char**);
@@ -113,9 +120,9 @@ void BOPTest::BOPCommands(Draw_Interpretor& theCommands)
 
 int bop(Draw_Interpretor& di, int n, const char** a)
 {
-  bool                           bRunParallel, bNonDestructive;
-  double                         aTol;
-  TopoDS_Shape                   aS1, aS2;
+  bool     bRunParallel, bNonDestructive;
+  double        aTol;
+  TopoDS_Shape         aS1, aS2;
   NCollection_List<TopoDS_Shape> aLC;
   //
   if (n != 3)
@@ -133,10 +140,10 @@ int bop(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  aTol                                          = BOPTest_Objects::FuzzyValue();
-  bRunParallel                                  = BOPTest_Objects::RunParallel();
-  bNonDestructive                               = BOPTest_Objects::NonDestructive();
-  BOPAlgo_GlueEnum                    aGlue     = BOPTest_Objects::Glue();
+  aTol                                     = BOPTest_Objects::FuzzyValue();
+  bRunParallel                             = BOPTest_Objects::RunParallel();
+  bNonDestructive                          = BOPTest_Objects::NonDestructive();
+  BOPAlgo_GlueEnum               aGlue     = BOPTest_Objects::Glue();
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   //
   aLC.Append(aS1);
@@ -148,7 +155,7 @@ int bop(Draw_Interpretor& di, int n, const char** a)
     pPF = NULL;
   }
   occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
-  pPF                                        = new BOPAlgo_PaveFiller(aAL);
+  pPF                                   = new BOPAlgo_PaveFiller(aAL);
   //
   pPF->SetArguments(aLC);
   pPF->SetFuzzyValue(aTol);
@@ -193,7 +200,10 @@ int boptuc(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp)
+int bopsmt(Draw_Interpretor&       di,
+                        int        n,
+                        const char**            a,
+                        const BOPAlgo_Operation aOp)
 {
   if (n < 2)
   {
@@ -213,19 +223,19 @@ int bopsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation 
     return 0;
   }
   //
-  bool        bRunParallel;
-  int         aNb;
-  BOPAlgo_BOP aBOP;
+  bool bRunParallel;
+  int aNb;
+  BOPAlgo_BOP      aBOP;
   //
   const NCollection_List<TopoDS_Shape>& aLC = pPF->Arguments();
-  aNb                                       = aLC.Extent();
+  aNb                             = aLC.Extent();
   if (aNb != 2)
   {
     di << " wrong number of arguments " << aNb << '\n';
     return 0;
   }
   //
-  bRunParallel                                  = BOPTest_Objects::RunParallel();
+  bRunParallel                             = BOPTest_Objects::RunParallel();
   occ::handle<Draw_ProgressIndicator> aProgress = new Draw_ProgressIndicator(di, 1);
   //
   const TopoDS_Shape& aS1 = aLC.First();
@@ -283,12 +293,12 @@ int bopsection(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  bool            bRunParallel;
-  int             aNb;
-  BOPAlgo_Section aBOP;
+  bool bRunParallel;
+  int aNb;
+  BOPAlgo_Section  aBOP;
   //
   const NCollection_List<TopoDS_Shape>& aLC = pPF->Arguments();
-  aNb                                       = aLC.Extent();
+  aNb                             = aLC.Extent();
   if (aNb != 2)
   {
     di << " wrong number of arguments " << aNb << '\n';
@@ -378,8 +388,8 @@ int bsection(Draw_Interpretor& di, int n, const char** a)
     return 0;
   }
   //
-  bool   bRunParallel, bNonDestructive, bApp, bPC1, bPC2;
-  double aTol;
+  bool bRunParallel, bNonDestructive, bApp, bPC1, bPC2;
+  double    aTol;
   //
   bApp                   = true;
   bPC1                   = true;
@@ -456,9 +466,12 @@ int bsection(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-int bsmt(Draw_Interpretor& di, int n, const char** a, const BOPAlgo_Operation aOp)
+int bsmt(Draw_Interpretor&       di,
+                      int        n,
+                      const char**            a,
+                      const BOPAlgo_Operation aOp)
 {
-  TopoDS_Shape                   aS1, aS2;
+  TopoDS_Shape         aS1, aS2;
   NCollection_List<TopoDS_Shape> aLC;
   //
   if (n != 4)
@@ -553,11 +566,11 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
   const TopoDS_Face& aF1 = *(TopoDS_Face*)(&S1);
   const TopoDS_Face& aF2 = *(TopoDS_Face*)(&S2);
   //
-  bool                              aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
-  int                               aNbCurves, aNbPoints;
-  double                            anAppTol;
-  NCollection_List<IntSurf_PntOn2S> aListOfPnts;
-  TCollection_AsciiString           aNm("c_"), aNp("p_");
+  bool        aToApproxC3d, aToApproxC2dOnS1, aToApproxC2dOnS2, anIsDone;
+  int        aNbCurves, aNbPoints;
+  double           anAppTol;
+  NCollection_List<IntSurf_PntOn2S>   aListOfPnts;
+  TCollection_AsciiString aNm("c_"), aNp("p_");
   //
   anAppTol         = 0.0000001;
   aToApproxC3d     = true;
@@ -583,11 +596,11 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
     }
     else if (!strcasecmp(a[i], "-p"))
     {
-      IntSurf_PntOn2S aPt;
-      const double    aU1 = Draw::Atof(a[++i]);
-      const double    aV1 = Draw::Atof(a[++i]);
-      const double    aU2 = Draw::Atof(a[++i]);
-      const double    aV2 = Draw::Atof(a[++i]);
+      IntSurf_PntOn2S     aPt;
+      const double aU1 = Draw::Atof(a[++i]);
+      const double aV1 = Draw::Atof(a[++i]);
+      const double aU2 = Draw::Atof(a[++i]);
+      const double aV2 = Draw::Atof(a[++i]);
 
       aPt.SetValue(aU1, aV1, aU2, aV2);
       aListOfPnts.Append(aPt);
@@ -622,7 +635,7 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
   }
   //
   aFF.PrepareLines3D(false);
-  const NCollection_Sequence<IntTools_Curve>&       aSCs = aFF.Lines();
+  const NCollection_Sequence<IntTools_Curve>&      aSCs = aFF.Lines();
   const NCollection_Sequence<IntTools_PntOn2Faces>& aSPs = aFF.Points();
   //
   aNbCurves = aSCs.Length();
@@ -684,7 +697,7 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
         if (!aPC1.IsNull())
         {
           TCollection_AsciiString pc1N("c2d1_"), pc1Nx;
-          pc1Nx                = pc1N + anIndx;
+          pc1Nx                     = pc1N + anIndx;
           const char* nameC2d1 = pc1Nx.ToCString();
           //
           DrawTrSurf::Set(nameC2d1, aPC1);
@@ -694,7 +707,7 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
         if (!aPC2.IsNull())
         {
           TCollection_AsciiString pc2N("c2d2_"), pc2Nx;
-          pc2Nx                = pc2N + anIndx;
+          pc2Nx                     = pc2N + anIndx;
           const char* nameC2d2 = pc2Nx.ToCString();
           //
           DrawTrSurf::Set(nameC2d2, aPC2);
@@ -732,7 +745,7 @@ int bopcurves(Draw_Interpretor& di, int n, const char** a)
       const gp_Pnt&               aP  = aPi.P1().Pnt();
       //
       TCollection_AsciiString anIndx(i), aNmx;
-      aNmx              = aNp + anIndx;
+      aNmx                   = aNp + anIndx;
       const char* nameP = aNmx.ToCString();
       //
       DrawTrSurf::Set(nameP, aP);
@@ -761,11 +774,11 @@ int mkvolume(Draw_Interpretor& di, int n, const char** a)
   //
   const char* usage = "Type mkvolume without arguments for the usage of the command.\n";
   //
-  bool                           bToIntersect, bRunParallel, bNonDestructive;
-  bool                           bCompounds, bAvoidInternal;
-  int                            i;
-  double                         aTol;
-  TopoDS_Shape                   aS;
+  bool     bToIntersect, bRunParallel, bNonDestructive;
+  bool     bCompounds, bAvoidInternal;
+  int     i;
+  double        aTol;
+  TopoDS_Shape         aS;
   NCollection_List<TopoDS_Shape> aLS;
   //
   aTol                   = BOPTest_Objects::FuzzyValue();
@@ -811,7 +824,7 @@ int mkvolume(Draw_Interpretor& di, int n, const char** a)
   // treat list of arguments for the case of compounds
   if (bToIntersect && bCompounds)
   {
-    NCollection_List<TopoDS_Shape>           aLSx;
+    NCollection_List<TopoDS_Shape>               aLSx;
     NCollection_List<TopoDS_Shape>::Iterator aItLS;
     //
     aItLS.Initialize(aLS);

@@ -20,11 +20,10 @@
 
 RWStepGeom_RWCylindricalSurface::RWStepGeom_RWCylindricalSurface() {}
 
-void RWStepGeom_RWCylindricalSurface::ReadStep(
-  const occ::handle<StepData_StepReaderData>&     data,
-  const int                                       num,
-  occ::handle<Interface_Check>&                   ach,
-  const occ::handle<StepGeom_CylindricalSurface>& ent) const
+void RWStepGeom_RWCylindricalSurface::ReadStep(const occ::handle<StepData_StepReaderData>&     data,
+                                               const int                     num,
+                                               occ::handle<Interface_Check>&                   ach,
+                                               const occ::handle<StepGeom_CylindricalSurface>& ent) const
 {
 
   // --- Number of Parameter Control ---
@@ -56,7 +55,7 @@ void RWStepGeom_RWCylindricalSurface::ReadStep(
 }
 
 void RWStepGeom_RWCylindricalSurface::WriteStep(
-  StepData_StepWriter&                            SW,
+  StepData_StepWriter&                       SW,
   const occ::handle<StepGeom_CylindricalSurface>& ent) const
 {
 
@@ -74,7 +73,7 @@ void RWStepGeom_RWCylindricalSurface::WriteStep(
 }
 
 void RWStepGeom_RWCylindricalSurface::Share(const occ::handle<StepGeom_CylindricalSurface>& ent,
-                                            Interface_EntityIterator& iter) const
+                                            Interface_EntityIterator&                  iter) const
 {
 
   iter.GetOneItem(ent->Position());

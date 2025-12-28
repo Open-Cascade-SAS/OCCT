@@ -22,7 +22,7 @@
 RWStepGeom_RWCartesianPoint::RWStepGeom_RWCartesianPoint() {}
 
 void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReaderData>& data,
-                                           const int                                   num,
+                                           const int                 num,
                                            occ::handle<Interface_Check>&               ach,
                                            const occ::handle<StepGeom_CartesianPoint>& ent) const
 {
@@ -47,9 +47,9 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReader
   //  OPTIMISED : X Y Z directly read and set
 
   //	occ::handle<NCollection_HArray1<double>> aCoordinates;
-  double aCoordinatesItem;
-  int    nsub2, nbcoord = 0;
-  double XYZ[3] = {0., 0., 0.};
+  double    aCoordinatesItem;
+  int nsub2, nbcoord = 0;
+  double    XYZ[3] = {0., 0., 0.};
   if (data->ReadSubList(num, 2, "coordinates", ach, nsub2))
   {
     int nb2 = data->NbParams(nsub2);
@@ -76,7 +76,7 @@ void RWStepGeom_RWCartesianPoint::ReadStep(const occ::handle<StepData_StepReader
     ent->Init2D(aName, XYZ[0], XYZ[1]);
 }
 
-void RWStepGeom_RWCartesianPoint::WriteStep(StepData_StepWriter&                        SW,
+void RWStepGeom_RWCartesianPoint::WriteStep(StepData_StepWriter&                   SW,
                                             const occ::handle<StepGeom_CartesianPoint>& ent) const
 {
 

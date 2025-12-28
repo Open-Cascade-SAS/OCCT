@@ -55,7 +55,7 @@ void TopOpeBRep_VPointInter::SetPoint(const IntPatch_Point& P)
 const TopoDS_Shape& TopOpeBRep_VPointInter::ArcOnS1() const
 {
   const occ::handle<Adaptor2d_Curve2d>& HAHC2  = myPPOI->ArcOnS1();
-  const BRepAdaptor_Curve2d&            BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
+  const BRepAdaptor_Curve2d&       BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
   return BRAC2P.Edge();
 }
 
@@ -64,7 +64,7 @@ const TopoDS_Shape& TopOpeBRep_VPointInter::ArcOnS1() const
 const TopoDS_Shape& TopOpeBRep_VPointInter::ArcOnS2() const
 {
   const occ::handle<Adaptor2d_Curve2d>& HAHC2  = myPPOI->ArcOnS2();
-  const BRepAdaptor_Curve2d&            BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
+  const BRepAdaptor_Curve2d&       BRAC2P = *((BRepAdaptor_Curve2d*)HAHC2.get());
   return BRAC2P.Edge();
 }
 
@@ -121,7 +121,9 @@ TopAbs_State TopOpeBRep_VPointInter::State(const int I) const
 
 //=================================================================================================
 
-void TopOpeBRep_VPointInter::EdgeON(const TopoDS_Shape& Eon, const double Par, const int I)
+void TopOpeBRep_VPointInter::EdgeON(const TopoDS_Shape&    Eon,
+                                    const double    Par,
+                                    const int I)
 {
   if (I == 1)
   {
@@ -254,15 +256,15 @@ void TopOpeBRep_VPointInter::UpdateKeep()
 //=======================================================================
 bool TopOpeBRep_VPointInter::EqualpP(const TopOpeBRep_VPointInter& VP) const
 {
-  double p1     = ParameterOnLine();
-  double p2     = VP.ParameterOnLine();
-  bool   pequal = fabs(p1 - p2) < Precision::PConfusion();
-  gp_Pnt P1     = Value();
-  gp_Pnt P2     = VP.Value();
-  double Ptol1 = Tolerance(), Ptol2 = VP.Tolerance();
-  double Ptol    = (Ptol1 > Ptol2) ? Ptol1 : Ptol2;
-  bool   Pequal  = P1.IsEqual(P2, Ptol);
-  bool   pPequal = (pequal && Pequal);
+  double    p1     = ParameterOnLine();
+  double    p2     = VP.ParameterOnLine();
+  bool pequal = fabs(p1 - p2) < Precision::PConfusion();
+  gp_Pnt           P1     = Value();
+  gp_Pnt           P2     = VP.Value();
+  double    Ptol1 = Tolerance(), Ptol2 = VP.Tolerance();
+  double    Ptol    = (Ptol1 > Ptol2) ? Ptol1 : Ptol2;
+  bool Pequal  = P1.IsEqual(P2, Ptol);
+  bool pPequal = (pequal && Pequal);
   return pPequal;
 }
 
@@ -307,9 +309,9 @@ bool TopOpeBRep_VPointInter::ParonE(const TopoDS_Edge& E, double& par) const
 
 //=================================================================================================
 
-Standard_OStream& TopOpeBRep_VPointInter::Dump(const int          I,
-                                               const TopoDS_Face& F,
-                                               Standard_OStream&  OS) const
+Standard_OStream& TopOpeBRep_VPointInter::Dump(const int I,
+                                               const TopoDS_Face&     F,
+                                               Standard_OStream&      OS) const
 {
   const TopoDS_Edge& E = TopoDS::Edge(Edge(I));
 #ifdef OCCT_DEBUG

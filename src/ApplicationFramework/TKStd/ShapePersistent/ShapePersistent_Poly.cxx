@@ -47,8 +47,7 @@ occ::handle<Poly_Polygon3D> ShapePersistent_Poly::pPolygon3D::Import() const
   if (myNodes.IsNull() || myParameters.IsNull())
     return NULL;
 
-  occ::handle<Poly_Polygon3D> aPolygon =
-    new Poly_Polygon3D(*myNodes->Array(), *myParameters->Array());
+  occ::handle<Poly_Polygon3D> aPolygon = new Poly_Polygon3D(*myNodes->Array(), *myParameters->Array());
   aPolygon->Deflection(myDeflection);
   return aPolygon;
 }
@@ -60,8 +59,7 @@ void ShapePersistent_Poly::pPolygonOnTriangulation::PChildren(
   theChildren.Append(myParameters);
 }
 
-occ::handle<Poly_PolygonOnTriangulation> ShapePersistent_Poly::pPolygonOnTriangulation::Import()
-  const
+occ::handle<Poly_PolygonOnTriangulation> ShapePersistent_Poly::pPolygonOnTriangulation::Import() const
 {
   occ::handle<Poly_PolygonOnTriangulation> aPolygon;
 
@@ -108,7 +106,7 @@ occ::handle<Poly_Triangulation> ShapePersistent_Poly::pTriangulation::Import() c
 }
 
 Handle(ShapePersistent_Poly::Polygon2D) ShapePersistent_Poly::Translate(
-  const occ::handle<Poly_Polygon2D>&                                                       thePoly,
+  const occ::handle<Poly_Polygon2D>&     thePoly,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   occ::handle<Polygon2D> aPP;
@@ -123,7 +121,7 @@ Handle(ShapePersistent_Poly::Polygon2D) ShapePersistent_Poly::Translate(
       aPP->myPersistent->myDeflection = thePoly->Deflection();
       aPP->myPersistent->myNodes =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt2d>>("PColgp_HArray1OfPnt2d",
-                                                                         thePoly->Nodes());
+                                                                 thePoly->Nodes());
       theMap.Bind(thePoly, aPP);
     }
   }
@@ -131,7 +129,7 @@ Handle(ShapePersistent_Poly::Polygon2D) ShapePersistent_Poly::Translate(
 }
 
 Handle(ShapePersistent_Poly::Polygon3D) ShapePersistent_Poly::Translate(
-  const occ::handle<Poly_Polygon3D>&                                                       thePoly,
+  const occ::handle<Poly_Polygon3D>&     thePoly,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
 {
   occ::handle<Polygon3D> aPP = new Polygon3D;
@@ -146,7 +144,7 @@ Handle(ShapePersistent_Poly::Polygon3D) ShapePersistent_Poly::Translate(
       aPP->myPersistent->myDeflection = thePoly->Deflection();
       aPP->myPersistent->myNodes =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt>>("PColgp_HArray1OfPnt",
-                                                                       thePoly->Nodes());
+                                                               thePoly->Nodes());
       if (thePoly->HasParameters())
       {
         aPP->myPersistent->myParameters =
@@ -160,7 +158,7 @@ Handle(ShapePersistent_Poly::Polygon3D) ShapePersistent_Poly::Translate(
 
 Handle(ShapePersistent_Poly::PolygonOnTriangulation) ShapePersistent_Poly::Translate(
   const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
-  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
+  NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>&          theMap)
 {
   occ::handle<PolygonOnTriangulation> aPPonT;
   if (!thePolyOnTriang.IsNull())
@@ -216,11 +214,10 @@ Handle(ShapePersistent_Poly::Triangulation) ShapePersistent_Poly::Translate(
 
       aPT->myPersistent->myNodes =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt>>("PColgp_HArray1OfPnt",
-                                                                       pArrayOfNodes);
+                                                               pArrayOfNodes);
       aPT->myPersistent->myTriangles =
-        StdLPersistent_HArray1::Translate<NCollection_HArray1<Poly_Triangle>>(
-          "PPoly_HArray1OfTriangle",
-          pArrayOfTriangles);
+        StdLPersistent_HArray1::Translate<NCollection_HArray1<Poly_Triangle>>("PPoly_HArray1OfTriangle",
+                                                                  pArrayOfTriangles);
       if (thePolyTriang->HasUVNodes())
       {
 
@@ -233,7 +230,7 @@ Handle(ShapePersistent_Poly::Triangulation) ShapePersistent_Poly::Translate(
 
         aPT->myPersistent->myUVNodes =
           StdLPersistent_HArray1::Translate<NCollection_HArray1<gp_Pnt2d>>("PColgp_HArray1OfPnt2d",
-                                                                           pArrayOfUVNodes);
+                                                                   pArrayOfUVNodes);
       }
       theMap.Bind(thePolyTriang, aPT);
     }

@@ -30,7 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 
 BRep_CurveOnSurface::BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
                                          const occ::handle<Geom_Surface>& S,
-                                         const TopLoc_Location&           L)
+                                         const TopLoc_Location&      L)
     : BRep_GCurve(L, PC->FirstParameter(), PC->LastParameter()),
       myPCurve(PC),
       mySurface(S)
@@ -57,7 +57,7 @@ bool BRep_CurveOnSurface::IsCurveOnSurface() const
 //=================================================================================================
 
 bool BRep_CurveOnSurface::IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
-                                           const TopLoc_Location&           L) const
+                                                       const TopLoc_Location&      L) const
 {
   return (S == mySurface) && (L == myLocation);
 }
@@ -99,10 +99,10 @@ occ::handle<BRep_CurveRepresentation> BRep_CurveOnSurface::Copy() const
 
 void BRep_CurveOnSurface::Update()
 {
-  double f     = First();
-  double l     = Last();
-  bool   isneg = Precision::IsNegativeInfinite(f);
-  bool   ispos = Precision::IsPositiveInfinite(l);
+  double    f     = First();
+  double    l     = Last();
+  bool isneg = Precision::IsNegativeInfinite(f);
+  bool ispos = Precision::IsPositiveInfinite(l);
   if (!isneg)
   {
     myPCurve->D0(f, myUV1);

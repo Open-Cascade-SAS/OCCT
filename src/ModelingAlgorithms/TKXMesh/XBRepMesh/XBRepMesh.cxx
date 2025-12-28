@@ -20,9 +20,9 @@
 //=================================================================================================
 
 int XBRepMesh::Discret(const TopoDS_Shape&    theShape,
-                       const double           theDeflection,
-                       const double           theAngle,
-                       BRepMesh_DiscretRoot*& theAlgo)
+                                    const double    theDeflection,
+                                    const double    theAngle,
+                                    BRepMesh_DiscretRoot*& theAlgo)
 {
   int iErr;
   //

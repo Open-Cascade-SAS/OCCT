@@ -30,6 +30,7 @@ public:
   Standard_EXPORT StepFEA_NodeWithVector();
 
   DEFINE_STANDARD_RTTIEXT(StepFEA_NodeWithVector, StepFEA_Node)
+
 };
 
 #endif // _StepFEA_NodeWithVector_HeaderFile

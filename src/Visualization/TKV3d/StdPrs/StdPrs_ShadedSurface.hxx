@@ -37,8 +37,9 @@ public:
   //! The surface object from Adaptor3d provides data
   //! from a Geom surface in order to use the surface in an algorithm.
   Standard_EXPORT static void Add(const occ::handle<Prs3d_Presentation>& aPresentation,
-                                  const Adaptor3d_Surface&               aSurface,
+                                  const Adaptor3d_Surface&          aSurface,
                                   const occ::handle<Prs3d_Drawer>&       aDrawer);
+
 };
 
 #endif // _StdPrs_ShadedSurface_HeaderFile

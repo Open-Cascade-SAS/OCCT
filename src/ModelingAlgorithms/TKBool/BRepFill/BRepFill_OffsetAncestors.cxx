@@ -42,7 +42,7 @@ void BRepFill_OffsetAncestors::Perform(BRepFill_OffsetWire& Paral)
 {
   TopoDS_Face Spine = Paral.Spine();
 
-  TopExp_Explorer                          Exp;
+  TopExp_Explorer                    Exp;
   NCollection_List<TopoDS_Shape>::Iterator it;
 
   // on itere sur les edges.

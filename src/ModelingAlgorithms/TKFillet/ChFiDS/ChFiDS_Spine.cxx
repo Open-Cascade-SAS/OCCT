@@ -123,8 +123,8 @@ occ::handle<ChFiDS_ElSpine> ChFiDS_Spine::ElSpine(const double W) const
     for (; It.More(); It.Next())
     {
       occ::handle<ChFiDS_ElSpine> cur = It.Value();
-      double                      uf  = cur->FirstParameter();
-      double                      ul  = cur->LastParameter();
+      double          uf  = cur->FirstParameter();
+      double          ul  = cur->LastParameter();
       if (uf <= W && W <= ul)
         return cur;
     }
@@ -385,7 +385,7 @@ bool ChFiDS_Spine::HasLastTgt() const
 
 void ChFiDS_Spine::SetReference(const double W)
 {
-  hasref     = true;
+  hasref            = true;
   double lll = abscissa->Value(abscissa->Upper());
   if (IsPeriodic())
     valref = ElCLib::InPeriod(W, 0., lll);
@@ -408,9 +408,9 @@ void ChFiDS_Spine::SetReference(const int I)
 
 int ChFiDS_Spine::Index(const double W, const bool Forward) const
 {
-  int    ind, len = abscissa->Length();
-  double par = W, last = abscissa->Value(abscissa->Upper());
-  double f = 0., l = 0., t = std::max(tolesp, Precision::Confusion());
+  int ind, len = abscissa->Length();
+  double    par = W, last = abscissa->Value(abscissa->Upper());
+  double    f = 0., l = 0., t = std::max(tolesp, Precision::Confusion());
 
   if (IsPeriodic() && std::abs(par) >= t && std::abs(par - last) >= t)
     par = ElCLib::InPeriod(par, 0., last);
@@ -462,9 +462,9 @@ void ChFiDS_Spine::Load()
     std::cout << "new load of CE" << std::endl;
 #endif
   }
-  int len   = spine.Length();
-  abscissa  = new NCollection_HArray1<double>(1, len);
-  double a1 = 0.;
+  int len = spine.Length();
+  abscissa             = new NCollection_HArray1<double>(1, len);
+  double a1     = 0.;
   for (int i = 1; i <= len; i++)
   {
     myCurve.Initialize(TopoDS::Edge(spine.Value(i)));
@@ -518,7 +518,9 @@ double ChFiDS_Spine::Absc(const double U, const int I)
 
 //=================================================================================================
 
-void ChFiDS_Spine::Parameter(const double AbsC, double& U, const bool Oriented)
+void ChFiDS_Spine::Parameter(const double    AbsC,
+                             double&         U,
+                             const bool Oriented)
 {
   int Index;
   for (Index = 1; Index < abscissa->Length(); Index++)
@@ -531,7 +533,10 @@ void ChFiDS_Spine::Parameter(const double AbsC, double& U, const bool Oriented)
 
 //=================================================================================================
 
-void ChFiDS_Spine::Parameter(const int Index, const double AbsC, double& U, const bool Oriented)
+void ChFiDS_Spine::Parameter(const int Index,
+                             const double    AbsC,
+                             double&         U,
+                             const bool Oriented)
 {
 
   if (Index != indexofcurve)
@@ -540,7 +545,7 @@ void ChFiDS_Spine::Parameter(const int Index, const double AbsC, double& U, cons
     ((ChFiDS_Spine*)p)->indexofcurve = Index;
     ((ChFiDS_Spine*)p)->myCurve.Initialize(TopoDS::Edge(spine.Value(Index)));
   }
-  double             L;
+  double      L;
   TopAbs_Orientation Or = spine.Value(Index).Orientation();
   if (Or == TopAbs_REVERSED)
   {
@@ -570,9 +575,9 @@ void ChFiDS_Spine::Parameter(const int Index, const double AbsC, double& U, cons
 
 void ChFiDS_Spine::Prepare(double& L, int& Ind) const
 {
-  double tol  = std::max(tolesp, Precision::Confusion());
-  double last = abscissa->Value(abscissa->Upper());
-  int    len  = abscissa->Length();
+  double    tol  = std::max(tolesp, Precision::Confusion());
+  double    last = abscissa->Value(abscissa->Upper());
+  int len  = abscissa->Length();
   if (IsPeriodic() && std::abs(L) >= tol && std::abs(L - last) >= tol)
     L = ElCLib::InPeriod(L, 0., last);
 
@@ -647,8 +652,8 @@ void ChFiDS_Spine::Prepare(double& L, int& Ind) const
 gp_Pnt ChFiDS_Spine::Value(const double AbsC)
 {
 
-  int    Index;
-  double L = AbsC;
+  int Index;
+  double    L = AbsC;
 
   Prepare(L, Index);
 
@@ -693,8 +698,8 @@ void ChFiDS_Spine::D0(const double AbsC, gp_Pnt& P)
 
 void ChFiDS_Spine::D1(const double AbsC, gp_Pnt& P, gp_Vec& V1)
 {
-  int    Index;
-  double L = AbsC;
+  int Index;
+  double    L = AbsC;
 
   Prepare(L, Index);
 
@@ -740,8 +745,8 @@ void ChFiDS_Spine::D1(const double AbsC, gp_Pnt& P, gp_Vec& V1)
 void ChFiDS_Spine::D2(const double AbsC, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
 {
 
-  int    Index;
-  double L = AbsC;
+  int Index;
+  double    L = AbsC;
 
   Prepare(L, Index);
 

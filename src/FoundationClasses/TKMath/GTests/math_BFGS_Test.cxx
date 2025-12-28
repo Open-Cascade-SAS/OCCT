@@ -42,7 +42,7 @@ public:
       return false;
     double dx = theX(1) - 1.0;
     double dy = theX(2) - 2.0;
-    theF      = dx * dx + dy * dy;
+    theF             = dx * dx + dy * dy;
     return true;
   }
 
@@ -77,7 +77,7 @@ public:
     double y  = theX(2);
     double t1 = y - x * x;
     double t2 = 1.0 - x;
-    theF      = 100.0 * t1 * t1 + t2 * t2;
+    theF             = 100.0 * t1 * t1 + t2 * t2;
     return true;
   }
 
@@ -87,8 +87,8 @@ public:
       return false;
     double x = theX(1);
     double y = theX(2);
-    theG(1)  = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
-    theG(2)  = 200.0 * (y - x * x);
+    theG(1)         = -400.0 * x * (y - x * x) - 2.0 * (1.0 - x);
+    theG(2)         = 200.0 * (y - x * x);
     return true;
   }
 
@@ -134,8 +134,8 @@ public:
 TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 {
   QuadraticFunction2D aFunc;
-  double              aTolerance     = 1.0e-8;
-  int                 aMaxIterations = 100;
+  double       aTolerance     = 1.0e-8;
+  int    aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -165,8 +165,8 @@ TEST(MathBFGSTest, QuadraticFunction2DOptimization)
 TEST(MathBFGSTest, RosenbrockFunctionOptimization)
 {
   RosenbrockFunction aFunc;
-  double             aTolerance     = 1.0e-6;
-  int                aMaxIterations = 1000; // Rosenbrock can be challenging
+  double      aTolerance     = 1.0e-6;
+  int   aMaxIterations = 1000; // Rosenbrock can be challenging
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -188,9 +188,9 @@ TEST(MathBFGSTest, RosenbrockFunctionOptimization)
 
 TEST(MathBFGSTest, Paraboloid3DOptimization)
 {
-  Paraboloid3D aFunc;
-  double       aTolerance     = 1.0e-8;
-  int          aMaxIterations = 100;
+  Paraboloid3D     aFunc;
+  double    aTolerance     = 1.0e-8;
+  int aMaxIterations = 100;
 
   math_BFGS anOptimizer(3, aTolerance, aMaxIterations);
 
@@ -215,8 +215,8 @@ TEST(MathBFGSTest, Paraboloid3DOptimization)
 TEST(MathBFGSTest, BoundaryConstraints)
 {
   QuadraticFunction2D aFunc;
-  double              aTolerance     = 1.0e-8;
-  int                 aMaxIterations = 100;
+  double       aTolerance     = 1.0e-8;
+  int    aMaxIterations = 100;
 
   math_BFGS anOptimizer(2, aTolerance, aMaxIterations);
 
@@ -307,8 +307,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 
   // Test with very tight tolerance
   {
-    double    aTightTolerance = 1.0e-12;
-    math_BFGS anOptimizer(2, aTightTolerance);
+    double aTightTolerance = 1.0e-12;
+    math_BFGS     anOptimizer(2, aTightTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 2.0;
@@ -325,8 +325,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 
   // Test with loose tolerance
   {
-    double    aLooseTolerance = 1.0e-3;
-    math_BFGS anOptimizer(2, aLooseTolerance);
+    double aLooseTolerance = 1.0e-3;
+    math_BFGS     anOptimizer(2, aLooseTolerance);
 
     math_Vector aStartPoint(1, 2);
     aStartPoint(1) = 10.0;
@@ -345,8 +345,8 @@ TEST(MathBFGSTest, DifferentTolerances)
 TEST(MathBFGSTest, MaxIterationsLimit)
 {
   RosenbrockFunction aFunc;                        // Challenging function
-  double             aTolerance         = 1.0e-12; // Very tight tolerance
-  int                aVeryFewIterations = 5;       // Very few iterations
+  double      aTolerance         = 1.0e-12; // Very tight tolerance
+  int   aVeryFewIterations = 5;       // Very few iterations
 
   math_BFGS anOptimizer(2, aTolerance, aVeryFewIterations);
 
@@ -459,9 +459,9 @@ TEST(MathBFGSTest, MultipleOptimizations)
 
   // Perform multiple optimizations with the same optimizer instance
   std::vector<std::pair<double, double>> aStartPoints = {{5.0, 7.0},
-                                                         {-3.0, -4.0},
-                                                         {0.5, 1.5},
-                                                         {10.0, -5.0}};
+                                                                       {-3.0, -4.0},
+                                                                       {0.5, 1.5},
+                                                                       {10.0, -5.0}};
 
   for (const auto& aStart : aStartPoints)
   {
@@ -490,7 +490,7 @@ public:
     if (theX.Length() != 1)
       return false;
     const double x = theX(1);
-    theF           = x * x;
+    theF                  = x * x;
     return true;
   }
 
@@ -499,7 +499,7 @@ public:
     if (theX.Length() != 1 || theG.Length() != 1)
       return false;
     const double x = theX(1);
-    theG(1)        = 2.0 * x;
+    theG(1)               = 2.0 * x;
     return true;
   }
 

@@ -36,15 +36,15 @@ public:
   //! Register factory for restoring drawable from stream (opposite to Draw_Drawable3D::Save()).
   //! @param[in] theType  class name
   //! @param[in] theFactory  factory function
-  Standard_EXPORT static void RegisterFactory(const char*              theType,
+  Standard_EXPORT static void RegisterFactory(const char*   theType,
                                               const FactoryFunction_t& theFactory);
 
   //! Restore drawable from stream (opposite to Draw_Drawable3D::Save()).
   //! @param[in] theType  class name
   //! @param[in] theStream  input stream
   //! @return restored drawable or NULL if factory is undefined for specified class
-  Standard_EXPORT static occ::handle<Draw_Drawable3D> Restore(const char*       theType,
-                                                              Standard_IStream& theStream);
+  Standard_EXPORT static occ::handle<Draw_Drawable3D> Restore(const char* theType,
+                                                         Standard_IStream&      theStream);
 
 //! @def Draw_Drawable3D_FACTORY
 //! Auxiliary macros defining Draw_Drawable3D restoration API to sub-class.
@@ -56,7 +56,9 @@ public:
   Standard_EXPORT virtual void DrawOn(Draw_Display& dis) const = 0;
 
   //! Returns True if the pick is outside the box
-  Standard_EXPORT virtual bool PickReject(const double X, const double Y, const double Prec) const;
+  Standard_EXPORT virtual bool PickReject(const double X,
+                                                      const double Y,
+                                                      const double Prec) const;
 
   //! For variable copy.
   Standard_EXPORT virtual occ::handle<Draw_Drawable3D> Copy() const;
@@ -87,7 +89,10 @@ public:
     myYmax = theYMax;
   }
 
-  void Bounds(double& theXMin, double& theXMax, double& theYMin, double& theYMax) const
+  void Bounds(double& theXMin,
+              double& theXMax,
+              double& theYMin,
+              double& theYMax) const
   {
     theXMin = myXmin;
     theXMax = myXmax;
@@ -111,13 +116,13 @@ protected:
   Standard_EXPORT Draw_Drawable3D();
 
 private:
-  double      myXmin;
-  double      myXmax;
-  double      myYmin;
-  double      myYmax;
+  double    myXmin;
+  double    myXmax;
+  double    myYmin;
+  double    myYmax;
   const char* myName;
-  bool        isVisible;
-  bool        isProtected;
+  bool isVisible;
+  bool isProtected;
 };
 
 #endif // _Draw_Drawable3D_HeaderFile

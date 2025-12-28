@@ -26,7 +26,7 @@ IFSelect_ListEditor::IFSelect_ListEditor()
 }
 
 IFSelect_ListEditor::IFSelect_ListEditor(const occ::handle<Interface_TypedValue>& def,
-                                         const int                                max)
+                                         const int              max)
     : themax(max),
       thedef(def),
       thetouc(0)
@@ -38,8 +38,7 @@ void IFSelect_ListEditor::LoadModel(const occ::handle<Interface_InterfaceModel>&
   themodl = model;
 }
 
-void IFSelect_ListEditor::LoadValues(
-  const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& vals)
+void IFSelect_ListEditor::LoadValues(const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& vals)
 {
   theorig = vals;
   ClearEdit();
@@ -68,8 +67,8 @@ void IFSelect_ListEditor::ClearEdit()
 //  ########    CHECK    ########
 
 static bool CheckValue(const occ::handle<TCollection_HAsciiString>& val,
-                       const occ::handle<Interface_InterfaceModel>& modl,
-                       const occ::handle<Interface_TypedValue>&     thedef)
+                                   const occ::handle<Interface_InterfaceModel>& modl,
+                                   const occ::handle<Interface_TypedValue>&     thedef)
 {
   if (val.IsNull() || modl.IsNull() || thedef.IsNull())
     return true;
@@ -117,7 +116,8 @@ bool IFSelect_ListEditor::LoadEdited(
   return true;
 }
 
-bool IFSelect_ListEditor::SetValue(const int num, const occ::handle<TCollection_HAsciiString>& val)
+bool IFSelect_ListEditor::SetValue(const int                  num,
+                                               const occ::handle<TCollection_HAsciiString>& val)
 {
   if (theedit.IsNull())
     return false;
@@ -136,7 +136,7 @@ bool IFSelect_ListEditor::SetValue(const int num, const occ::handle<TCollection_
 }
 
 bool IFSelect_ListEditor::AddValue(const occ::handle<TCollection_HAsciiString>& val,
-                                   const int                                    atnum)
+                                               const int                  atnum)
 {
   if (theedit.IsNull())
     return false;
@@ -158,7 +158,8 @@ bool IFSelect_ListEditor::AddValue(const occ::handle<TCollection_HAsciiString>& 
   return true;
 }
 
-bool IFSelect_ListEditor::Remove(const int num, const int howmany)
+bool IFSelect_ListEditor::Remove(const int num,
+                                             const int howmany)
 {
   if (theedit.IsNull())
     return false;
@@ -178,14 +179,12 @@ bool IFSelect_ListEditor::Remove(const int num, const int howmany)
 
 //  ########    QUERIES    ########
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::
-  OriginalValues() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::OriginalValues() const
 {
   return theorig;
 }
 
-occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::
-  EditedValues() const
+occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_ListEditor::EditedValues() const
 {
   return theedit;
 }
@@ -197,8 +196,8 @@ int IFSelect_ListEditor::NbValues(const bool edited) const
   return (theorig.IsNull() ? 0 : theorig->Length());
 }
 
-occ::handle<TCollection_HAsciiString> IFSelect_ListEditor::Value(const int  num,
-                                                                 const bool edited) const
+occ::handle<TCollection_HAsciiString> IFSelect_ListEditor::Value(const int num,
+                                                            const bool edited) const
 {
   occ::handle<TCollection_HAsciiString> val;
   if (edited)

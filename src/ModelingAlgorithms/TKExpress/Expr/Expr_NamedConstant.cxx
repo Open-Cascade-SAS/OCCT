@@ -24,13 +24,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Expr_NamedConstant, Expr_NamedExpression)
 
-Expr_NamedConstant::Expr_NamedConstant(const TCollection_AsciiString& name, const double value)
+Expr_NamedConstant::Expr_NamedConstant(const TCollection_AsciiString& name,
+                                       const double            value)
 {
   SetName(name);
   myValue = value;
 }
 
-const occ::handle<Expr_GeneralExpression>& Expr_NamedConstant::SubExpression(const int) const
+const occ::handle<Expr_GeneralExpression>& Expr_NamedConstant::SubExpression(
+  const int) const
 {
   throw Standard_OutOfRange();
 }
@@ -53,9 +55,8 @@ occ::handle<Expr_GeneralExpression> Expr_NamedConstant::Derivative(
   return aNumVal;
 }
 
-occ::handle<Expr_GeneralExpression> Expr_NamedConstant::NDerivative(
-  const occ::handle<Expr_NamedUnknown>&,
-  const int) const
+occ::handle<Expr_GeneralExpression> Expr_NamedConstant::NDerivative(const occ::handle<Expr_NamedUnknown>&,
+                                                               const int) const
 {
   return new Expr_NumericValue(0.0);
 }
@@ -67,7 +68,7 @@ occ::handle<Expr_GeneralExpression> Expr_NamedConstant::ShallowSimplified() cons
 }
 
 double Expr_NamedConstant::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>&,
-                                    const NCollection_Array1<double>&) const
+                                           const NCollection_Array1<double>&) const
 {
   return myValue;
 }

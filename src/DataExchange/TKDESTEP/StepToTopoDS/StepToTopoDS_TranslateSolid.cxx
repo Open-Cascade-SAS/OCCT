@@ -45,10 +45,10 @@ StepToTopoDS_TranslateSolid::StepToTopoDS_TranslateSolid()
 
 void StepToTopoDS_TranslateSolid::Init(const occ::handle<StepVisual_TessellatedSolid>& theTSo,
                                        const occ::handle<Transfer_TransientProcess>&   theTP,
-                                       StepToTopoDS_Tool&                              theTool,
-                                       StepToTopoDS_NMTool&                            theNMTool,
-                                       const bool              theReadTessellatedWhenNoBRepOnly,
-                                       bool&                   theHasGeom,
+                                       StepToTopoDS_Tool&                         theTool,
+                                       StepToTopoDS_NMTool&                       theNMTool,
+                                       const bool  theReadTessellatedWhenNoBRepOnly,
+                                       bool&       theHasGeom,
                                        const StepData_Factors& theLocalFactors,
                                        const Message_ProgressRange& theProgress)
 {
@@ -59,7 +59,7 @@ void StepToTopoDS_TranslateSolid::Init(const occ::handle<StepVisual_TessellatedS
   TopoDS_Shell aSh;
   TopoDS_Solid aSo;
 
-  int                   aNb = theTSo->NbItems();
+  int      aNb = theTSo->NbItems();
   Message_ProgressScope aPS(theProgress, "Face", aNb);
 
   if (theTSo->HasGeometricLink() && theTP->IsBound(theTSo->GeometricLink()))

@@ -23,8 +23,14 @@
 #include <GccEnt_Position.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
+#include <Standard_Integer.hxx>
 #include <gp_Circ2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array1.hxx>
+#include <GccEnt_Position.hxx>
 class GccEnt_QualifiedCirc;
 class GccEnt_QualifiedLin;
 class gp_Pnt2d;
@@ -62,8 +68,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                        const GccEnt_QualifiedCirc& Qualified2,
-                                       const double                Radius,
-                                       const double                Tolerance);
+                                       const double         Radius,
+                                       const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d circle and a 2d line
@@ -71,8 +77,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                        const GccEnt_QualifiedLin&  Qualified2,
-                                       const double                Radius,
-                                       const double                Tolerance);
+                                       const double         Radius,
+                                       const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d circle and a point
@@ -80,8 +86,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT GccAna_Circ2d2TanRad(const GccEnt_QualifiedCirc& Qualified1,
                                        const gp_Pnt2d&             Point2,
-                                       const double                Radius,
-                                       const double                Tolerance);
+                                       const double         Radius,
+                                       const double         Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to a 2d line and a point
@@ -89,8 +95,8 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                        const gp_Pnt2d&            Point2,
-                                       const double               Radius,
-                                       const double               Tolerance);
+                                       const double        Radius,
+                                       const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles TANgent to two 2d lines
@@ -98,17 +104,17 @@ public:
   //! It raises NegativeValue if Radius is lower than zero.
   Standard_EXPORT GccAna_Circ2d2TanRad(const GccEnt_QualifiedLin& Qualified1,
                                        const GccEnt_QualifiedLin& Qualified2,
-                                       const double               Radius,
-                                       const double               Tolerance);
+                                       const double        Radius,
+                                       const double        Tolerance);
 
   //! This method implements the algorithms used to
   //! create 2d circles passing through two points with a
   //! radius of Radius.
   //! It raises NegativeValue if Radius is lower than zero.
-  Standard_EXPORT GccAna_Circ2d2TanRad(const gp_Pnt2d& Point1,
-                                       const gp_Pnt2d& Point2,
-                                       const double    Radius,
-                                       const double    Tolerance);
+  Standard_EXPORT GccAna_Circ2d2TanRad(const gp_Pnt2d&     Point1,
+                                       const gp_Pnt2d&     Point2,
+                                       const double Radius,
+                                       const double Tolerance);
 
   //! This method returns True if the algorithm succeeded.
   //! Note: IsDone protects against a failure arising from a
@@ -134,9 +140,9 @@ public:
   //! It returns the real qualifiers (the qualifiers given to the
   //! constructor method in case of enclosed, enclosing and outside
   //! and the qualifiers computedin case of unqualified).
-  Standard_EXPORT void WhichQualifier(const int        Index,
-                                      GccEnt_Position& Qualif1,
-                                      GccEnt_Position& Qualif2) const;
+  Standard_EXPORT void WhichQualifier(const int Index,
+                                      GccEnt_Position&       Qualif1,
+                                      GccEnt_Position&       Qualif2) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the first argument.
@@ -146,9 +152,9 @@ public:
   //! of solutions.
   //! It raises NotDone if the construction algorithm did not succeed
   Standard_EXPORT void Tangency1(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns information about the tangency point between the
   //! result number Index and the second argument.
@@ -159,9 +165,9 @@ public:
   //! of solutions.
   //! It raises NotDone if the construction algorithm did not succeed.
   Standard_EXPORT void Tangency2(const int Index,
-                                 double&   ParSol,
-                                 double&   ParArg,
-                                 gp_Pnt2d& PntSol) const;
+                                 double&         ParSol,
+                                 double&         ParArg,
+                                 gp_Pnt2d&              PntSol) const;
 
   //! Returns True if the solution number Index is equal to
   //! the first argument. Raises OutOfRange if Index is greater than the number
@@ -177,19 +183,19 @@ public:
   Standard_EXPORT bool IsTheSame2(const int Index) const;
 
 private:
-  bool                                WellDone;
+  bool        WellDone;
   NCollection_Array1<GccEnt_Position> qualifier1;
   NCollection_Array1<GccEnt_Position> qualifier2;
-  NCollection_Array1<int>             TheSame1;
-  NCollection_Array1<int>             TheSame2;
-  int                                 NbrSol;
-  NCollection_Array1<gp_Circ2d>       cirsol;
-  NCollection_Array1<gp_Pnt2d>        pnttg1sol;
-  NCollection_Array1<gp_Pnt2d>        pnttg2sol;
-  NCollection_Array1<double>          par1sol;
-  NCollection_Array1<double>          par2sol;
-  NCollection_Array1<double>          pararg1;
-  NCollection_Array1<double>          pararg2;
+  NCollection_Array1<int> TheSame1;
+  NCollection_Array1<int> TheSame2;
+  int        NbrSol;
+  NCollection_Array1<gp_Circ2d>   cirsol;
+  NCollection_Array1<gp_Pnt2d>    pnttg1sol;
+  NCollection_Array1<gp_Pnt2d>    pnttg2sol;
+  NCollection_Array1<double>    par1sol;
+  NCollection_Array1<double>    par2sol;
+  NCollection_Array1<double>    pararg1;
+  NCollection_Array1<double>    pararg2;
 };
 
 #endif // _GccAna_Circ2d2TanRad_HeaderFile

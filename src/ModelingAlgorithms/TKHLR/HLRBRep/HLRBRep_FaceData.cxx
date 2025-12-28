@@ -33,8 +33,8 @@ HLRBRep_FaceData::HLRBRep_FaceData()
 
 void HLRBRep_FaceData::Set(const TopoDS_Face&       FG,
                            const TopAbs_Orientation Or,
-                           const bool               Cl,
-                           const int                NW)
+                           const bool   Cl,
+                           const int   NW)
 {
   Closed(Cl);
   Geometry().Surface(FG);
@@ -52,14 +52,14 @@ void HLRBRep_FaceData::SetWire(const int WI, const int NE)
 
 //=================================================================================================
 
-void HLRBRep_FaceData::SetWEdge(const int                WI,
-                                const int                EWI,
-                                const int                EI,
+void HLRBRep_FaceData::SetWEdge(const int   WI,
+                                const int   EWI,
+                                const int   EI,
                                 const TopAbs_Orientation Or,
-                                const bool               OutL,
-                                const bool               Inte,
-                                const bool               Dble,
-                                const bool               IsoL)
+                                const bool   OutL,
+                                const bool   Inte,
+                                const bool   Dble,
+                                const bool   IsoL)
 {
   Wires()->Wire(WI)->Edge(EWI, EI);
   Wires()->Wire(WI)->Orientation(EWI, Or);

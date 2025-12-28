@@ -29,8 +29,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
   iden = false;
   para = false;
   //
-  double   A, B, C0, d;
-  gp_Pnt2d aP2D, aP2D1, aP2D2;
+  double A, B, C0, d;
+  gp_Pnt2d      aP2D, aP2D1, aP2D2;
   //
   L.Coefficients(A, B, C0);
   d = A * C.Location().X() + B * C.Location().Y() + C0;

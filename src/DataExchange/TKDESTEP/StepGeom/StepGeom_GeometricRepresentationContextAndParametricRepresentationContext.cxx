@@ -43,7 +43,7 @@ void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::
 void StepGeom_GeometricRepresentationContextAndParametricRepresentationContext::Init(
   const occ::handle<TCollection_HAsciiString>& aContextIdentifier,
   const occ::handle<TCollection_HAsciiString>& aContextType,
-  const int                                    aCoordinateSpaceDimension)
+  const int                  aCoordinateSpaceDimension)
 {
   // --- classe inherited fields ---
 

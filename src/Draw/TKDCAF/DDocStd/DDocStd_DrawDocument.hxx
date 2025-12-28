@@ -32,8 +32,7 @@ class DDocStd_DrawDocument : public DDF_Data
 {
 
 public:
-  Standard_EXPORT static occ::handle<DDocStd_DrawDocument> Find(
-    const occ::handle<TDocStd_Document>& Doc);
+  Standard_EXPORT static occ::handle<DDocStd_DrawDocument> Find(const occ::handle<TDocStd_Document>& Doc);
 
   Standard_EXPORT DDocStd_DrawDocument(const occ::handle<TDocStd_Document>& Doc);
 

@@ -30,7 +30,7 @@ RWStepShape_RWDimensionalLocation::RWStepShape_RWDimensionalLocation() {}
 
 void RWStepShape_RWDimensionalLocation::ReadStep(
   const occ::handle<StepData_StepReaderData>&       data,
-  const int                                         num,
+  const int                       num,
   occ::handle<Interface_Check>&                     ach,
   const occ::handle<StepShape_DimensionalLocation>& ent) const
 {
@@ -44,7 +44,7 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
   data->ReadString(num, 1, "shape_aspect_relationship.name", ach, aShapeAspectRelationship_Name);
 
   occ::handle<TCollection_HAsciiString> aShapeAspectRelationship_Description;
-  bool                                  hasShapeAspectRelationship_Description = true;
+  bool                 hasShapeAspectRelationship_Description = true;
   if (data->IsParamDefined(num, 2))
   {
     data->ReadString(num,
@@ -85,7 +85,7 @@ void RWStepShape_RWDimensionalLocation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWDimensionalLocation::WriteStep(
-  StepData_StepWriter&                              SW,
+  StepData_StepWriter&                         SW,
   const occ::handle<StepShape_DimensionalLocation>& ent) const
 {
 

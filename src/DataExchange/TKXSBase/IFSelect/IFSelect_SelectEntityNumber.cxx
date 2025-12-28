@@ -36,7 +36,7 @@ occ::handle<IFSelect_IntParam> IFSelect_SelectEntityNumber::Number() const
 Interface_EntityIterator IFSelect_SelectEntityNumber::RootResult(const Interface_Graph& G) const
 {
   Interface_EntityIterator iter;
-  int                      num = 0;
+  int         num = 0;
   if (!thenum.IsNull())
     num = thenum->Value();
   if (num < 1)

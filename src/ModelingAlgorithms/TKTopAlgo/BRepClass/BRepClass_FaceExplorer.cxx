@@ -52,7 +52,7 @@ BRepClass_FaceExplorer::BRepClass_FaceExplorer(const TopoDS_Face& F)
 
 void BRepClass_FaceExplorer::ComputeFaceBounds()
 {
-  TopLoc_Location                  aLocation;
+  TopLoc_Location             aLocation;
   const occ::handle<Geom_Surface>& aSurface = BRep_Tool::Surface(myFace, aLocation);
   aSurface->Bounds(myUMin, myUMax, myVMin, myVMax);
   if (Precision::IsInfinite(myUMin) || Precision::IsInfinite(myUMax)
@@ -77,8 +77,8 @@ bool BRepClass_FaceExplorer::CheckPoint(gp_Pnt2d& thePoint)
     return true;
   }
 
-  gp_Pnt2d aCenterPnt((myUMin + myUMax) / 2, (myVMin + myVMax) / 2);
-  double   aDistance = aCenterPnt.Distance(thePoint);
+  gp_Pnt2d      aCenterPnt((myUMin + myUMax) / 2, (myVMin + myVMax) / 2);
+  double aDistance = aCenterPnt.Distance(thePoint);
   if (Precision::IsInfinite(aDistance))
   {
     thePoint.SetCoord(myUMin - (myUMax - myUMin), myVMin - (myVMax - myVMin));
@@ -118,16 +118,18 @@ bool BRepClass_FaceExplorer::Segment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par
 
 //=================================================================================================
 
-bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double& Par)
+bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
+                                                      gp_Lin2d&       L,
+                                                      double&  Par)
 {
-  TopExp_Explorer           anExpF(myFace, TopAbs_EDGE);
-  int                       i;
-  double                    aFPar;
-  double                    aLPar;
-  occ::handle<Geom2d_Curve> aC2d;
-  constexpr double          aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
-  gp_Pnt2d                  aPOnC;
-  double                    aParamIn;
+  TopExp_Explorer         anExpF(myFace, TopAbs_EDGE);
+  int        i;
+  double           aFPar;
+  double           aLPar;
+  occ::handle<Geom2d_Curve>    aC2d;
+  constexpr double aTolParConf2 = Precision::PConfusion() * Precision::PConfusion();
+  gp_Pnt2d                aPOnC;
+  double           aParamIn;
 
   for (i = 1; anExpF.More(); anExpF.Next(), i++)
   {
@@ -180,7 +182,7 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
             aTanVec /= std::sqrt(aTanMod);
             double       aSinA        = aTanVec.Crossed(aLinDir.XY());
             const double SmallAngle   = 0.001;
-            bool         isSmallAngle = false;
+            bool    isSmallAngle = false;
             if (std::abs(aSinA) < SmallAngle)
             {
               isSmallAngle = true;
@@ -212,10 +214,10 @@ bool BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P, gp_Lin2d& L, double
                   aProj.Init(P, aC2d, aFPar, aLPar);
                   if (aProj.NbPoints() > 0)
                   {
-                    gp_Pnt2d aLPOnC   = aPOnC;
-                    double   aFDist   = P.SquareDistance(aFPOnC);
-                    double   aLDist   = P.SquareDistance(aLPOnC);
-                    double   aMinDist = aProj.LowerDistance();
+                    gp_Pnt2d      aLPOnC   = aPOnC;
+                    double aFDist   = P.SquareDistance(aFPOnC);
+                    double aLDist   = P.SquareDistance(aLPOnC);
+                    double aMinDist = aProj.LowerDistance();
                     aMinDist *= aMinDist;
                     aPOnC = aProj.NearestPoint();
                     if (aMinDist > aFDist)

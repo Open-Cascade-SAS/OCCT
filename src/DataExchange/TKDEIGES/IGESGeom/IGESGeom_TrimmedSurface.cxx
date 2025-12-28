@@ -24,11 +24,10 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_TrimmedSurface, IGESData_IGESEntity)
 
 IGESGeom_TrimmedSurface::IGESGeom_TrimmedSurface() {}
 
-void IGESGeom_TrimmedSurface::Init(
-  const occ::handle<IGESData_IGESEntity>&                                       aSurface,
-  const int                                                                     aFlag,
-  const occ::handle<IGESGeom_CurveOnSurface>&                                   anOuter,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& anInner)
+void IGESGeom_TrimmedSurface::Init(const occ::handle<IGESData_IGESEntity>&              aSurface,
+                                   const int                          aFlag,
+                                   const occ::handle<IGESGeom_CurveOnSurface>&          anOuter,
+                                   const occ::handle<NCollection_HArray1<occ::handle<IGESGeom_CurveOnSurface>>>& anInner)
 {
   if (!anInner.IsNull())
     if (anInner->Lower() != 1)
@@ -66,7 +65,8 @@ int IGESGeom_TrimmedSurface::OuterBoundaryType() const
   return theFlag;
 }
 
-occ::handle<IGESGeom_CurveOnSurface> IGESGeom_TrimmedSurface::InnerContour(const int anIndex) const
+occ::handle<IGESGeom_CurveOnSurface> IGESGeom_TrimmedSurface::InnerContour(
+  const int anIndex) const
 {
   return (theInnerCurves->Value(anIndex));
   // Exception OutOfRange will be raises if anIndex <= 0 or

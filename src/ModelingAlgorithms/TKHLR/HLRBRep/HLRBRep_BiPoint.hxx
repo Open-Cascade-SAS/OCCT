@@ -39,17 +39,17 @@ public:
   {
   }
 
-  HLRBRep_BiPoint(const double        x1,
-                  const double        y1,
-                  const double        z1,
-                  const double        x2,
-                  const double        y2,
-                  const double        z2,
-                  const TopoDS_Shape& S,
-                  const bool          reg1,
-                  const bool          regn,
-                  const bool          outl,
-                  const bool          intl)
+  HLRBRep_BiPoint(const double    x1,
+                  const double    y1,
+                  const double    z1,
+                  const double    x2,
+                  const double    y2,
+                  const double    z2,
+                  const TopoDS_Shape&    S,
+                  const bool reg1,
+                  const bool regn,
+                  const bool outl,
+                  const bool intl)
       : myP1(x1, y1, z1),
         myP2(x2, y2, z2),
         myShape(S),
@@ -85,13 +85,13 @@ public:
   void IntLine(const bool B) { myIntLine = B; }
 
 private:
-  gp_Pnt       myP1;
-  gp_Pnt       myP2;
-  TopoDS_Shape myShape;
-  bool         myRg1Line;
-  bool         myRgNLine;
-  bool         myOutLine;
-  bool         myIntLine;
+  gp_Pnt           myP1;
+  gp_Pnt           myP2;
+  TopoDS_Shape     myShape;
+  bool myRg1Line;
+  bool myRgNLine;
+  bool myOutLine;
+  bool myIntLine;
 };
 
 #endif // _HLRBRep_BiPoint_HeaderFile

@@ -52,7 +52,7 @@ public:
 
 private:
   occ::handle<NCollection_Buffer> myPattern;   //!< Image bitmap with custom hatch pattern
-  int                             myHatchType; //!< Index of used style
+  int           myHatchType; //!< Index of used style
 };
 
 #endif // _Graphic3d_HatchStyle_HeaderFile

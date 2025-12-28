@@ -23,14 +23,14 @@ StepGeom_CartesianTransformationOperator3d::StepGeom_CartesianTransformationOper
 
 void StepGeom_CartesianTransformationOperator3d::Init(
   const occ::handle<TCollection_HAsciiString>& aName,
-  const bool                                   hasAaxis1,
+  const bool                  hasAaxis1,
   const occ::handle<StepGeom_Direction>&       aAxis1,
-  const bool                                   hasAaxis2,
+  const bool                  hasAaxis2,
   const occ::handle<StepGeom_Direction>&       aAxis2,
   const occ::handle<StepGeom_CartesianPoint>&  aLocalOrigin,
-  const bool                                   hasAscale,
-  const double                                 aScale,
-  const bool                                   hasAaxis3,
+  const bool                  hasAscale,
+  const double                     aScale,
+  const bool                  hasAaxis3,
   const occ::handle<StepGeom_Direction>&       aAxis3)
 {
   // --- classe own fields ---
@@ -47,8 +47,7 @@ void StepGeom_CartesianTransformationOperator3d::Init(
                                                  aScale);
 }
 
-void StepGeom_CartesianTransformationOperator3d::SetAxis3(
-  const occ::handle<StepGeom_Direction>& aAxis3)
+void StepGeom_CartesianTransformationOperator3d::SetAxis3(const occ::handle<StepGeom_Direction>& aAxis3)
 {
   axis3    = aAxis3;
   hasAxis3 = true;

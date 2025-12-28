@@ -33,9 +33,11 @@
 
 //=================================================================================================
 
-static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, const double theV)
+static gp_Dir getNormalOnFace(const TopoDS_Face&  theFace,
+                              const double theU,
+                              const double theV)
 {
-  double            aPrec = gp::Resolution();
+  double     aPrec = gp::Resolution();
   BRepLProp_SLProps aProps(BRepAdaptor_Surface(theFace), theU, theV, 2, aPrec);
   gp_Dir            aNormal = aProps.Normal();
   if (theFace.Orientation() == TopAbs_REVERSED)
@@ -49,9 +51,9 @@ static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, con
 //=======================================================================
 
 static bool getNormalFromEdge(const TopoDS_Shape& theShape,
-                              const TopoDS_Edge&  theEdge,
-                              const double        thePar,
-                              gp_Dir&             theNormal)
+                                          const TopoDS_Edge&  theEdge,
+                                          const double thePar,
+                                          gp_Dir&             theNormal)
 {
   gp_XYZ          aSum;
   TopExp_Explorer ex(theShape, TopAbs_FACE);
@@ -63,10 +65,10 @@ static bool getNormalFromEdge(const TopoDS_Shape& theShape,
     {
       if (ex1.Current().IsSame(theEdge))
       {
-        double                    f, l;
+        double        f, l;
         occ::handle<Geom2d_Curve> aC2d  = BRep_Tool::CurveOnSurface(theEdge, aF, f, l);
-        gp_Pnt2d                  aP2d  = aC2d->Value(thePar);
-        gp_Dir                    aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
+        gp_Pnt2d             aP2d  = aC2d->Value(thePar);
+        gp_Dir               aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
         aSum += aNorm.XYZ();
       }
     }
@@ -85,8 +87,8 @@ static bool getNormalFromEdge(const TopoDS_Shape& theShape,
 //=======================================================================
 
 static bool getNormalFromVertex(const TopoDS_Shape&  theShape,
-                                const TopoDS_Vertex& theVer,
-                                gp_Dir&              theNormal)
+                                            const TopoDS_Vertex& theVer,
+                                            gp_Dir&              theNormal)
 {
   gp_XYZ          aSum;
   TopExp_Explorer ex(theShape, TopAbs_FACE);
@@ -122,9 +124,9 @@ static bool getNormalFromVertex(const TopoDS_Shape&  theShape,
 //             - theNormal : The normal direction to the shape at projection point
 //=======================================================================
 static bool FindExtrema(const gp_Pnt&       thePnt,
-                        const TopoDS_Shape& theShape,
-                        gp_Pnt&             theMinPnt,
-                        gp_Dir&             theNormal)
+                                    const TopoDS_Shape& theShape,
+                                    gp_Pnt&             theMinPnt,
+                                    gp_Dir&             theNormal)
 {
   TopoDS_Vertex aRefVertex = BRepBuilderAPI_MakeVertex(thePnt);
 
@@ -174,9 +176,11 @@ static bool FindExtrema(const gp_Pnt&       thePnt,
 
 //=================================================================================================
 
-static bool isOutside(const gp_Pnt& thePnt, const gp_Pnt& thePonF, const gp_Dir& theNormal)
+static bool isOutside(const gp_Pnt& thePnt,
+                                  const gp_Pnt& thePonF,
+                                  const gp_Dir& theNormal)
 {
-  gp_Dir anOppRef(thePnt.XYZ() - thePonF.XYZ());
+  gp_Dir        anOppRef(thePnt.XYZ() - thePonF.XYZ());
   double aSca = theNormal * anOppRef;
   // outside if same directions
   return aSca > 0.;

@@ -40,21 +40,21 @@ public:
 
   //! Eisnew = true if E is a new edge built on edge I->Geometry()
   //! false if E is shape <=> I->Geometry()
-  Standard_EXPORT void Init(const TopoDS_Shape&                           FI,
-                            const TopoDS_Shape&                           E,
-                            const bool                                    Eisnew,
+  Standard_EXPORT void Init(const TopoDS_Shape&                      FI,
+                            const TopoDS_Shape&                      E,
+                            const bool                   Eisnew,
                             const occ::handle<TopOpeBRepDS_Interference>& I);
 
   //! Eisnew = true if E is a new edge built on edge I->Geometry()
   //! false if E is shape <=> I->Geometry()
-  Standard_EXPORT void Add(const TopoDS_Shape&                           FI,
-                           const TopoDS_Shape&                           F,
-                           const TopoDS_Shape&                           E,
-                           const bool                                    Eisnew,
+  Standard_EXPORT void Add(const TopoDS_Shape&                      FI,
+                           const TopoDS_Shape&                      F,
+                           const TopoDS_Shape&                      E,
+                           const bool                   Eisnew,
                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
-  Standard_EXPORT void Add(const TopoDS_Shape&                           E,
-                           const TopOpeBRepDS_Curve&                     C,
+  Standard_EXPORT void Add(const TopoDS_Shape&                      E,
+                           const TopOpeBRepDS_Curve&                C,
                            const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT void SetEdgePntPar(const gp_Pnt& P, const double par);
@@ -67,16 +67,16 @@ public:
 
 private:
   TopOpeBRepDS_PDataStructure myPBDS;
-  bool                        myrefdef;
+  bool            myrefdef;
   TopAbs_Orientation          myFaceOrientation;
-  int                         myFaceOriented;
+  int            myFaceOriented;
   TopTrans_SurfaceTransition  myTool;
   TopoDS_Shape                myEdge;
-  bool                        isLine;
+  bool            isLine;
   gp_Pnt                      myPntOnEd;
-  double                      myParOnEd;
-  bool                        myOnEdDef;
-  double                      myTole;
+  double               myParOnEd;
+  bool            myOnEdDef;
+  double               myTole;
 };
 
 #endif // _TopOpeBRepDS_FaceInterferenceTool_HeaderFile

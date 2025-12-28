@@ -38,10 +38,10 @@ public:
   //! abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                          const double                 Guess,
-                                          const double                 EpsX,
-                                          const double                 EpsF,
-                                          const int                    NbIterations = 100);
+                                          const double          Guess,
+                                          const double          EpsX,
+                                          const double          EpsF,
+                                          const int       NbIterations = 100);
 
   //! The Newton method is done to find the root of the function F
   //! from the initial guess Guess.
@@ -51,20 +51,20 @@ public:
   //! abs(Xi - Xi-1) <= EpsX and abs(F(Xi))<= EpsF
   //! The maximum number of iterations allowed is given by NbIterations.
   Standard_EXPORT math_NewtonFunctionRoot(math_FunctionWithDerivative& F,
-                                          const double                 Guess,
-                                          const double                 EpsX,
-                                          const double                 EpsF,
-                                          const double                 A,
-                                          const double                 B,
-                                          const int                    NbIterations = 100);
+                                          const double          Guess,
+                                          const double          EpsX,
+                                          const double          EpsF,
+                                          const double          A,
+                                          const double          B,
+                                          const int       NbIterations = 100);
 
   //! is used in a sub-class to initialize correctly all the fields
   //! of this class.
-  Standard_EXPORT math_NewtonFunctionRoot(const double A,
-                                          const double B,
-                                          const double EpsX,
-                                          const double EpsF,
-                                          const int    NbIterations = 100);
+  Standard_EXPORT math_NewtonFunctionRoot(const double    A,
+                                          const double    B,
+                                          const double    EpsX,
+                                          const double    EpsF,
+                                          const int NbIterations = 100);
 
   //! is used internally by the constructors.
   Standard_EXPORT void Perform(math_FunctionWithDerivative& F, const double Guess);
@@ -93,16 +93,16 @@ public:
   Standard_EXPORT void Dump(Standard_OStream& o) const;
 
 private:
-  bool   Done;
-  double X;
-  double Fx;
-  double DFx;
-  int    It;
-  double EpsilonX;
-  double EpsilonF;
-  int    Itermax;
-  double Binf;
-  double Bsup;
+  bool Done;
+  double    X;
+  double    Fx;
+  double    DFx;
+  int It;
+  double    EpsilonX;
+  double    EpsilonF;
+  int Itermax;
+  double    Binf;
+  double    Bsup;
 };
 
 #include <math_NewtonFunctionRoot.lxx>

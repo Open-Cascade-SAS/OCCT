@@ -23,7 +23,9 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_HArray2.hxx>
+#include <TopoDS_Shape.hxx>
 #include <NCollection_List.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Wire.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -39,20 +41,23 @@ class BRepFill_Draft
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepFill_Draft(const TopoDS_Shape& Shape, const gp_Dir& Dir, const double Angle);
+  Standard_EXPORT BRepFill_Draft(const TopoDS_Shape& Shape,
+                                 const gp_Dir&       Dir,
+                                 const double Angle);
 
   Standard_EXPORT void SetOptions(const BRepFill_TransitionStyle Style    = BRepFill_Right,
-                                  const double                   AngleMin = 0.01,
-                                  const double                   AngleMax = 3.0);
+                                  const double            AngleMin = 0.01,
+                                  const double            AngleMax = 3.0);
 
   Standard_EXPORT void SetDraft(const bool IsInternal = false);
 
   Standard_EXPORT void Perform(const double LengthMax);
 
   Standard_EXPORT void Perform(const occ::handle<Geom_Surface>& Surface,
-                               const bool                       KeepInsideSurface = true);
+                               const bool      KeepInsideSurface = true);
 
-  Standard_EXPORT void Perform(const TopoDS_Shape& StopShape, const bool KeepOutSide = true);
+  Standard_EXPORT void Perform(const TopoDS_Shape&    StopShape,
+                               const bool KeepOutSide = true);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -69,34 +74,34 @@ public:
 
 private:
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& Surf,
-                            const double                     Length,
-                            const Bnd_Box&                   Box);
+                            const double         Length,
+                            const Bnd_Box&              Box);
 
   Standard_EXPORT void BuildShell(const occ::handle<Geom_Surface>& Surf,
-                                  const bool                       KeepOutSide = false);
+                                  const bool      KeepOutSide = false);
 
   Standard_EXPORT bool Fuse(const TopoDS_Shape& S, const bool KeepOutSide);
 
   Standard_EXPORT bool Sewing();
 
-  gp_Dir                                         myDir;
-  double                                         myAngle;
-  double                                         angmin;
-  double                                         angmax;
-  double                                         myTol;
-  occ::handle<BRepFill_DraftLaw>                 myLoc;
-  occ::handle<BRepFill_SectionLaw>               mySec;
+  gp_Dir                          myDir;
+  double                   myAngle;
+  double                   angmin;
+  double                   angmax;
+  double                   myTol;
+  occ::handle<BRepFill_DraftLaw>       myLoc;
+  occ::handle<BRepFill_SectionLaw>     mySec;
   occ::handle<NCollection_HArray2<TopoDS_Shape>> mySections;
   occ::handle<NCollection_HArray2<TopoDS_Shape>> myFaces;
-  NCollection_List<TopoDS_Shape>                 myGenerated;
-  TopoDS_Shape                                   myShape;
-  TopoDS_Shape                                   myTop;
-  TopoDS_Shell                                   myShell;
-  TopoDS_Wire                                    myWire;
-  GeomAbs_Shape                                  myCont;
-  BRepFill_TransitionStyle                       myStyle;
-  bool                                           IsInternal;
-  bool                                           myDone;
+  NCollection_List<TopoDS_Shape>            myGenerated;
+  TopoDS_Shape                    myShape;
+  TopoDS_Shape                    myTop;
+  TopoDS_Shell                    myShell;
+  TopoDS_Wire                     myWire;
+  GeomAbs_Shape                   myCont;
+  BRepFill_TransitionStyle        myStyle;
+  bool                IsInternal;
+  bool                myDone;
 };
 
 #endif // _BRepFill_Draft_HeaderFile

@@ -69,14 +69,14 @@ public:
   //! Initialize algorithm by two images.
   //! @return false if images has different or unsupported pixel format.
   Standard_EXPORT bool Init(const occ::handle<Image_PixMap>& theImageRef,
-                            const occ::handle<Image_PixMap>& theImageNew,
-                            const bool                       theToBlackWhite = false);
+                                        const occ::handle<Image_PixMap>& theImageNew,
+                                        const bool theToBlackWhite = false);
 
   //! Initialize algorithm by two images (will be loaded from files).
   //! @return false if images couldn't be opened or their format is unsupported.
   Standard_EXPORT bool Init(const TCollection_AsciiString& theImgPathRef,
-                            const TCollection_AsciiString& theImgPathNew,
-                            const bool                     theToBlackWhite = false);
+                                        const TCollection_AsciiString& theImgPathNew,
+                                        const bool theToBlackWhite = false);
 
   //! Color tolerance for equality check. Should be within range 0..1:
   //! Corresponds to a difference between white and black colors (maximum difference).
@@ -129,20 +129,23 @@ protected:
   }
 
   //! Get pixel Y coordinate from 32-bit packed integer
-  static uint16_t UnpackY(int theXY) { return (uint16_t)((unsigned int)theXY & 0xffff); }
+  static uint16_t UnpackY(int theXY)
+  {
+    return (uint16_t)((unsigned int)theXY & 0xffff);
+  }
 
 protected:
-  occ::handle<Image_PixMap> myImageRef; //!< reference image to compare (from)
-  occ::handle<Image_PixMap> myImageNew; //!< new       image to compare (to)
-                                        // clang-format off
+  occ::handle<Image_PixMap> myImageRef;    //!< reference image to compare (from)
+  occ::handle<Image_PixMap> myImageNew;    //!< new       image to compare (to)
+                                      // clang-format off
   double                     myColorTolerance;     //!< tolerance for equality check (0..1, 0 - any not equal, 1 - opposite colors)
 
   bool                  myIsBorderFilterOn;   //!< perform algorithm with border effect filter
-                                        // clang-format on
+                                      // clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
-  NCollection_Vector<int>                                    myDiffPixels;
-  TColStd_PackedMapOfInteger                                 myLinearGroups;
+  NCollection_Vector<int>                  myDiffPixels;
+  TColStd_PackedMapOfInteger                            myLinearGroups;
   NCollection_List<occ::handle<TColStd_HPackedMapOfInteger>> myGroupsOfDiffPixels;
 
 public:

@@ -43,8 +43,7 @@ occ::handle<StepBasic_Action> StepBasic_ActionAssignment::AssignedAction() const
 
 //=================================================================================================
 
-void StepBasic_ActionAssignment::SetAssignedAction(
-  const occ::handle<StepBasic_Action>& aAssignedAction)
+void StepBasic_ActionAssignment::SetAssignedAction(const occ::handle<StepBasic_Action>& aAssignedAction)
 {
   theAssignedAction = aAssignedAction;
 }

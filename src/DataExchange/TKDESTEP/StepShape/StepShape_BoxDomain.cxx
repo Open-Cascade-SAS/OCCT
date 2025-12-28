@@ -20,9 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(StepShape_BoxDomain, Standard_Transient)
 StepShape_BoxDomain::StepShape_BoxDomain() {}
 
 void StepShape_BoxDomain::Init(const occ::handle<StepGeom_CartesianPoint>& aCorner,
-                               const double                                aXlength,
-                               const double                                aYlength,
-                               const double                                aZlength)
+                               const double                    aXlength,
+                               const double                    aYlength,
+                               const double                    aZlength)
 {
   // --- classe own fields ---
   corner  = aCorner;

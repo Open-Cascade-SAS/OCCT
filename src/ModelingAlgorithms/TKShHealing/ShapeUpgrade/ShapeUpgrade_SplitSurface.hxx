@@ -46,11 +46,11 @@ public:
 
   //! Initializes with single supporting surface with bounding parameters.
   Standard_EXPORT void Init(const occ::handle<Geom_Surface>& S,
-                            const double                     UFirst,
-                            const double                     ULast,
-                            const double                     VFirst,
-                            const double                     VLast,
-                            const double                     theArea = 0.);
+                            const double         UFirst,
+                            const double         ULast,
+                            const double         VFirst,
+                            const double         VLast,
+                            const double         theArea = 0.);
 
   //! Sets U parameters where splitting has to be done
   Standard_EXPORT void SetUSplitValues(const occ::handle<NCollection_HSequence<double>>& UValues);
@@ -98,16 +98,17 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurface, Standard_Transient)
 
 protected:
-  occ::handle<NCollection_HSequence<double>> myUSplitValues;
-  occ::handle<NCollection_HSequence<double>> myVSplitValues;
-  int                                        myNbResultingRow;
-  int                                        myNbResultingCol;
-  occ::handle<Geom_Surface>                  mySurface;
-  int                                        myStatus;
-  occ::handle<ShapeExtend_CompositeSurface>  myResSurfaces;
-  double                                     myArea;
-  double                                     myUsize;
-  double                                     myVsize;
+  occ::handle<NCollection_HSequence<double>>      myUSplitValues;
+  occ::handle<NCollection_HSequence<double>>      myVSplitValues;
+  int                     myNbResultingRow;
+  int                     myNbResultingCol;
+  occ::handle<Geom_Surface>                 mySurface;
+  int                     myStatus;
+  occ::handle<ShapeExtend_CompositeSurface> myResSurfaces;
+  double                        myArea;
+  double                        myUsize;
+  double                        myVsize;
+
 };
 
 #endif // _ShapeUpgrade_SplitSurface_HeaderFile

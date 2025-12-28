@@ -52,16 +52,16 @@ public:
   //! <Resolution> is the linear tolerance (it is used to test
   //! if a vector is null).
   Standard_EXPORT GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
-                                    const double                     U,
-                                    const double                     V,
-                                    const int                        N,
-                                    const double                     Resolution);
+                                    const double         U,
+                                    const double         V,
+                                    const int      N,
+                                    const double         Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V>.
   Standard_EXPORT GeomLProp_SLProps(const occ::handle<Geom_Surface>& S,
-                                    const int                        N,
-                                    const double                     Resolution);
+                                    const int      N,
+                                    const double         Resolution);
 
   //! idem as previous constructor but without setting the value
   //! of parameters <U> and <V> and the surface.
@@ -146,30 +146,30 @@ public:
 
 private:
   occ::handle<Geom_Surface> mySurf;
-  double                    myU;
-  double                    myV;
-  int                       myDerOrder;
-  int                       myCN;
-  double                    myLinTol;
-  gp_Pnt                    myPnt;
-  gp_Vec                    myD1u;
-  gp_Vec                    myD1v;
-  gp_Vec                    myD2u;
-  gp_Vec                    myD2v;
-  gp_Vec                    myDuv;
-  gp_Dir                    myNormal;
-  double                    myMinCurv;
-  double                    myMaxCurv;
-  gp_Dir                    myDirMinCurv;
-  gp_Dir                    myDirMaxCurv;
-  double                    myMeanCurv;
-  double                    myGausCurv;
-  int                       mySignificantFirstDerivativeOrderU;
-  int                       mySignificantFirstDerivativeOrderV;
-  LProp_Status              myUTangentStatus;
-  LProp_Status              myVTangentStatus;
-  LProp_Status              myNormalStatus;
-  LProp_Status              myCurvatureStatus;
+  double        myU;
+  double        myV;
+  int     myDerOrder;
+  int     myCN;
+  double        myLinTol;
+  gp_Pnt               myPnt;
+  gp_Vec               myD1u;
+  gp_Vec               myD1v;
+  gp_Vec               myD2u;
+  gp_Vec               myD2v;
+  gp_Vec               myDuv;
+  gp_Dir               myNormal;
+  double        myMinCurv;
+  double        myMaxCurv;
+  gp_Dir               myDirMinCurv;
+  gp_Dir               myDirMaxCurv;
+  double        myMeanCurv;
+  double        myGausCurv;
+  int     mySignificantFirstDerivativeOrderU;
+  int     mySignificantFirstDerivativeOrderV;
+  LProp_Status         myUTangentStatus;
+  LProp_Status         myVTangentStatus;
+  LProp_Status         myNormalStatus;
+  LProp_Status         myCurvatureStatus;
 };
 
 #endif // _GeomLProp_SLProps_HeaderFile

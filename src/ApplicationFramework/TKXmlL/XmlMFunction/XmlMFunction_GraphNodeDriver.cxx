@@ -44,13 +44,13 @@ occ::handle<TDF_Attribute> XmlMFunction_GraphNodeDriver::NewEmpty() const
 // function : Paste
 // purpose  : persistent -> transient (retrieve)
 //=======================================================================
-bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
-                                         const occ::handle<TDF_Attribute>& theTarget,
-                                         XmlObjMgt_RRelocationTable&) const
+bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&  theSource,
+                                                     const occ::handle<TDF_Attribute>& theTarget,
+                                                     XmlObjMgt_RRelocationTable&) const
 {
   occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(theTarget);
 
-  int                      aFirstIndPrev, aLastIndPrev, aFirstIndNext, aLastIndNext, aValue, ind;
+  int         aFirstIndPrev, aLastIndPrev, aFirstIndNext, aLastIndNext, aValue, ind;
   const XmlObjMgt_Element& anElement = theSource;
 
   // Previous
@@ -86,8 +86,7 @@ bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSo
   }
   else
   {
-    const char* aValueStr =
-      static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+    const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
     for (ind = aFirstIndPrev; ind <= aLastIndPrev; ind++)
     {
@@ -123,8 +122,7 @@ bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSo
   }
   aLastIndNext += aLastIndPrev;
 
-  const char* aValueStr =
-    static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
+  const char* aValueStr = static_cast<const char*>(XmlObjMgt::GetStringValue(anElement).GetString());
 
   for (ind = 1; ind <= aLastIndNext; ind++)
   {
@@ -162,7 +160,7 @@ bool XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&       theSo
 // purpose  : transient -> persistent (store)
 //=======================================================================
 void XmlMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
-                                         XmlObjMgt_Persistent&             theTarget,
+                                         XmlObjMgt_Persistent&        theTarget,
                                          XmlObjMgt_SRelocationTable&) const
 {
   occ::handle<TFunction_GraphNode> G = occ::down_cast<TFunction_GraphNode>(theSource);
@@ -172,7 +170,7 @@ void XmlMFunction_GraphNodeDriver::Paste(const occ::handle<TDF_Attribute>& theSo
 
   theTarget.Element().setAttribute(::LastPreviousIndex(), G->GetPrevious().Extent());
 
-  TCollection_AsciiString        aValueStr;
+  TCollection_AsciiString           aValueStr;
   NCollection_Map<int>::Iterator itrm(G->GetPrevious());
   for (; itrm.More(); itrm.Next())
   {

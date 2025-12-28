@@ -45,40 +45,36 @@
 
 VrmlAPI_Writer::VrmlAPI_Writer()
 {
-  myDrawer     = new VrmlConverter_Drawer;
-  myDeflection = -1;
-  occ::handle<NCollection_HArray1<Quantity_Color>> Col1 =
-    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
-  occ::handle<NCollection_HArray1<double>> kik1 = new NCollection_HArray1<double>(1, 1, 0.0);
-  occ::handle<NCollection_HArray1<double>> kik2 = new NCollection_HArray1<double>(1, 1, 0.1);
-  myFrontMaterial        = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myPointsMaterial       = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myUisoMaterial         = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myVisoMaterial         = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myLineMaterial         = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myWireMaterial         = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myFreeBoundsMaterial   = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  myUnfreeBoundsMaterial = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
-  DX                     = 1;
-  DY                     = -1;
-  DZ                     = 1;
-  XUp                    = 0;
-  YUp                    = 0;
-  ZUp                    = 1;
-  Focus                  = 6;
+  myDrawer                             = new VrmlConverter_Drawer;
+  myDeflection                         = -1;
+  occ::handle<NCollection_HArray1<Quantity_Color>> Col1 = new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
+  occ::handle<NCollection_HArray1<double>>   kik1 = new NCollection_HArray1<double>(1, 1, 0.0);
+  occ::handle<NCollection_HArray1<double>>   kik2 = new NCollection_HArray1<double>(1, 1, 0.1);
+  myFrontMaterial                      = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myPointsMaterial                     = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myUisoMaterial                       = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myVisoMaterial                       = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myLineMaterial                       = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myWireMaterial                       = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myFreeBoundsMaterial                 = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  myUnfreeBoundsMaterial               = new Vrml_Material(Col1, Col1, Col1, Col1, kik1, kik2);
+  DX                                   = 1;
+  DY                                   = -1;
+  DZ                                   = 1;
+  XUp                                  = 0;
+  YUp                                  = 0;
+  ZUp                                  = 1;
+  Focus                                = 6;
   ResetToDefaults();
 }
 
 void VrmlAPI_Writer::ResetToDefaults()
 {
-  myTransparency = 0.0;
-  myShininess    = 0.1;
-  occ::handle<NCollection_HArray1<double>> kik1 =
-    new NCollection_HArray1<double>(1, 1, myTransparency);
-  occ::handle<NCollection_HArray1<double>> kik2 =
-    new NCollection_HArray1<double>(1, 1, myShininess);
-  occ::handle<NCollection_HArray1<Quantity_Color>> Col =
-    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
+  myTransparency                       = 0.0;
+  myShininess                          = 0.1;
+  occ::handle<NCollection_HArray1<double>>   kik1 = new NCollection_HArray1<double>(1, 1, myTransparency);
+  occ::handle<NCollection_HArray1<double>>   kik2 = new NCollection_HArray1<double>(1, 1, myShininess);
+  occ::handle<NCollection_HArray1<Quantity_Color>> Col  = new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_NOC_BLACK);
   //
   myFrontMaterial->SetAmbientColor(Col);
   myFrontMaterial->SetTransparency(kik1);
@@ -107,27 +103,23 @@ void VrmlAPI_Writer::ResetToDefaults()
   //
   //
   occ::handle<NCollection_HArray1<Quantity_Color>> Col2 =
-    new NCollection_HArray1<Quantity_Color>(1,
-                                            1,
-                                            Quantity_Color(0.75, 0.75, 0.75, Quantity_TOC_sRGB));
+    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_Color(0.75, 0.75, 0.75, Quantity_TOC_sRGB));
   occ::handle<NCollection_HArray1<Quantity_Color>> Col3 =
-    new NCollection_HArray1<Quantity_Color>(1,
-                                            1,
-                                            Quantity_Color(0.82, 0.79, 0.42, Quantity_TOC_sRGB));
+    new NCollection_HArray1<Quantity_Color>(1, 1, Quantity_Color(0.82, 0.79, 0.42, Quantity_TOC_sRGB));
   myUisoMaterial->SetDiffuseColor(Col2);
   myVisoMaterial->SetDiffuseColor(Col2);
   myFreeBoundsMaterial->SetDiffuseColor(Col2);
   myUnfreeBoundsMaterial->SetDiffuseColor(Col2);
 
   //
-  //  occ::handle<NCollection_HArray1<Quantity_Color>> Col3 = new
-  //  NCollection_HArray1<Quantity_Color>(1,1); color.SetValues(Quantity_NOC_GOLD);
+  //  occ::handle<NCollection_HArray1<Quantity_Color>> Col3 = new NCollection_HArray1<Quantity_Color>(1,1);
+  //  color.SetValues(Quantity_NOC_GOLD);
   //  Col3->SetValue(1,color);
   myLineMaterial->SetDiffuseColor(Col2);
   myWireMaterial->SetDiffuseColor(Col2);
   //
-  //  occ::handle<NCollection_HArray1<Quantity_Color>> Col4 = new
-  //  NCollection_HArray1<Quantity_Color>(1,1); color.SetValues(Quantity_NOC_GOLD);
+  //  occ::handle<NCollection_HArray1<Quantity_Color>> Col4 = new NCollection_HArray1<Quantity_Color>(1,1);
+  //  color.SetValues(Quantity_NOC_GOLD);
   //  Col4->SetValue(1,color);
   myFrontMaterial->SetDiffuseColor(Col2);
   myPointsMaterial->SetDiffuseColor(Col2);
@@ -168,43 +160,39 @@ void VrmlAPI_Writer::SetRepresentation(const VrmlAPI_RepresentationOfShape aRep)
 }
 
 void VrmlAPI_Writer::SetTransparencyToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                               const double                aTransparency)
+                                               const double    aTransparency)
 {
   occ::handle<NCollection_HArray1<double>> t = new NCollection_HArray1<double>(1, 1, aTransparency);
   aMaterial->SetTransparency(t);
 }
 
 void VrmlAPI_Writer::SetShininessToMaterial(occ::handle<Vrml_Material>& aMaterial,
-                                            const double                aShininess)
+                                            const double    aShininess)
 {
   occ::handle<NCollection_HArray1<double>> s = new NCollection_HArray1<double>(1, 1, aShininess);
   aMaterial->SetShininess(s);
 }
 
-void VrmlAPI_Writer::SetAmbientColorToMaterial(
-  occ::handle<Vrml_Material>&                             aMaterial,
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
+void VrmlAPI_Writer::SetAmbientColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                               const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetAmbientColor(Color);
 }
 
-void VrmlAPI_Writer::SetDiffuseColorToMaterial(
-  occ::handle<Vrml_Material>&                             aMaterial,
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
+void VrmlAPI_Writer::SetDiffuseColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                               const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetDiffuseColor(Color);
 }
 
-void VrmlAPI_Writer::SetSpecularColorToMaterial(
-  occ::handle<Vrml_Material>&                             aMaterial,
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
+void VrmlAPI_Writer::SetSpecularColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetSpecularColor(Color);
 }
 
-void VrmlAPI_Writer::SetEmissiveColorToMaterial(
-  occ::handle<Vrml_Material>&                             aMaterial,
-  const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
+void VrmlAPI_Writer::SetEmissiveColorToMaterial(occ::handle<Vrml_Material>&                 aMaterial,
+                                                const occ::handle<NCollection_HArray1<Quantity_Color>>& Color)
 {
   aMaterial->SetEmissiveColor(Color);
 }
@@ -254,10 +242,12 @@ occ::handle<Vrml_Material> VrmlAPI_Writer::GetUnfreeBoundsMaterial() const
   return myUnfreeBoundsMaterial;
 }
 
-bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape, const char* aFile, const int aVersion) const
+bool VrmlAPI_Writer::Write(const TopoDS_Shape&    aShape,
+                                       const char* aFile,
+                                       const int aVersion) const
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      anOutStream =
+  std::shared_ptr<std::ostream> anOutStream =
     aFileSystem->OpenOStream(aFile, std::ios::out | std::ios::binary);
   if (anOutStream.get() == NULL)
   {
@@ -268,11 +258,11 @@ bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape, const char* aFile, const 
 }
 
 bool VrmlAPI_Writer::WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
-                              const char*                          theFile,
-                              const double                         theScale) const
+                                          const char*          theFile,
+                                          const double             theScale) const
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::ostream>      anOutStream =
+  std::shared_ptr<std::ostream> anOutStream =
     aFileSystem->OpenOStream(theFile, std::ios::out | std::ios::binary);
   if (anOutStream.get() == NULL)
   {
@@ -284,9 +274,9 @@ bool VrmlAPI_Writer::WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
 
 //=================================================================================================
 
-bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,
-                           Standard_OStream&   theOStream,
-                           const int           aVersion) const
+bool VrmlAPI_Writer::Write(const TopoDS_Shape&    aShape,
+                                       Standard_OStream&      theOStream,
+                                       const int aVersion) const
 {
   if (aVersion == 1)
     return write_v1(aShape, theOStream);
@@ -299,8 +289,8 @@ bool VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,
 //=================================================================================================
 
 bool VrmlAPI_Writer::WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
-                              Standard_OStream&                    theOStream,
-                              const double                         theScale) const
+                                          Standard_OStream&               theOStream,
+                                          const double             theScale) const
 {
   VrmlData_Scene        aScene;
   VrmlData_ShapeConvert aConv(aScene, theScale);
@@ -311,7 +301,8 @@ bool VrmlAPI_Writer::WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
   return theOStream.good();
 }
 
-bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const
+bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,
+                                          Standard_OStream&   theOStream) const
 {
   occ::handle<VrmlConverter_IsoAspect> ia  = new VrmlConverter_IsoAspect;
   occ::handle<VrmlConverter_IsoAspect> ia1 = new VrmlConverter_IsoAspect;
@@ -359,9 +350,9 @@ bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape, Standard_OStream& theO
   Shapes.SetValue(1, aShape);
 
   // Check shape tessellation
-  TopExp_Explorer anExp(aShape, TopAbs_FACE);
-  TopLoc_Location aLoc;
-  bool            hasTriangles = false;
+  TopExp_Explorer  anExp(aShape, TopAbs_FACE);
+  TopLoc_Location  aLoc;
+  bool hasTriangles = false;
   for (; anExp.More(); anExp.Next())
   {
     const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
@@ -380,8 +371,8 @@ bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape, Standard_OStream& theO
   //----  Definition of data for Projector
   //=========================================
 
-  VrmlConverter_TypeOfLight            Light  = VrmlConverter_NoLight;
-  VrmlConverter_TypeOfCamera           Camera = VrmlConverter_PerspectiveCamera;
+  VrmlConverter_TypeOfLight       Light  = VrmlConverter_NoLight;
+  VrmlConverter_TypeOfCamera      Camera = VrmlConverter_PerspectiveCamera;
   occ::handle<VrmlConverter_Projector> projector =
     new VrmlConverter_Projector(Shapes, Focus, DX, DY, DZ, XUp, YUp, ZUp, Camera, Light);
 
@@ -437,7 +428,8 @@ bool VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape, Standard_OStream& theO
   return theOStream.good();
 }
 
-bool VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape, Standard_OStream& theOStream) const
+bool VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,
+                                          Standard_OStream&   theOStream) const
 {
   bool anExtFace = false;
   if (myRepresentation == VrmlAPI_ShadedRepresentation

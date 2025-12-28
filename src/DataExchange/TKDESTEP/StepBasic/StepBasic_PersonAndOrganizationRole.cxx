@@ -24,8 +24,7 @@ void StepBasic_PersonAndOrganizationRole::Init(const occ::handle<TCollection_HAs
   name = aName;
 }
 
-void StepBasic_PersonAndOrganizationRole::SetName(
-  const occ::handle<TCollection_HAsciiString>& aName)
+void StepBasic_PersonAndOrganizationRole::SetName(const occ::handle<TCollection_HAsciiString>& aName)
 {
   name = aName;
 }

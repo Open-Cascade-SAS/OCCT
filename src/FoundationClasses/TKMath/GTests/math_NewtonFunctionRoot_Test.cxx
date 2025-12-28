@@ -42,7 +42,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = theX * theX - 4.0;
     theD = 2.0 * theX;
@@ -66,7 +68,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = theX * theX * theX - 6.0 * theX * theX + 11.0 * theX - 6.0;
     theD = 3.0 * theX * theX - 12.0 * theX + 11.0;
@@ -90,7 +94,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = sin(theX);
     theD = cos(theX);
@@ -114,7 +120,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = exp(theX) - 2.0;
     theD = exp(theX);
@@ -138,7 +146,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = theX * theX * theX;
     theD = 3.0 * theX * theX;
@@ -163,7 +173,9 @@ public:
     return true;
   }
 
-  bool Values(const double theX, double& theF, double& theD) override
+  bool Values(const double theX,
+                          double&      theF,
+                          double&      theD) override
   {
     theF = 2.0 * theX - 4.0;
     theD = 2.0;
@@ -209,8 +221,8 @@ TEST(MathNewtonFunctionRootTest, CubicRootFinding)
 
   EXPECT_TRUE(aSolver.IsDone()) << "Should find root for cubic function";
   // Newton's method may converge to any of the roots (1, 2, or 3) depending on initial guess
-  double aRoot = aSolver.Root();
-  bool   aFoundValidRoot =
+  double    aRoot = aSolver.Root();
+  bool aFoundValidRoot =
     (fabs(aRoot - 1.0) < 1.0e-6) || (fabs(aRoot - 2.0) < 1.0e-6) || (fabs(aRoot - 3.0) < 1.0e-6);
   EXPECT_TRUE(aFoundValidRoot) << "Root should be one of: 1, 2, or 3, found: " << aRoot;
   EXPECT_NEAR(aSolver.Value(), 0.0, 1.0e-10) << "Function value at root should be near 0";

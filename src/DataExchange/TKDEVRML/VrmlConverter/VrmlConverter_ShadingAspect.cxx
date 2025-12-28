@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect, Standard_Transient)
 VrmlConverter_ShadingAspect::VrmlConverter_ShadingAspect()
 {
   occ::handle<Vrml_Material> m = new Vrml_Material;
-  Vrml_ShapeHints            sh;
+  Vrml_ShapeHints       sh;
   myFrontMaterial = m;
   myShapeHints    = sh;
   myHasNormals    = false;

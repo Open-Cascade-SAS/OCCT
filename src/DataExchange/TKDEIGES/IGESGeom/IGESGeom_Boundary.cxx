@@ -27,12 +27,12 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_Boundary, IGESData_IGESEntity)
 IGESGeom_Boundary::IGESGeom_Boundary() {}
 
 void IGESGeom_Boundary::Init(
-  const int                                                                 aType,
-  const int                                                                 aPreference,
-  const occ::handle<IGESData_IGESEntity>&                                   aSurface,
-  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& allModelCurves,
-  const occ::handle<NCollection_HArray1<int>>&                              allSenses,
-  const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>&                allParameterCurves)
+  const int                                aType,
+  const int                                aPreference,
+  const occ::handle<IGESData_IGESEntity>&                    aSurface,
+  const occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>&           allModelCurves,
+  const occ::handle<NCollection_HArray1<int>>&               allSenses,
+  const occ::handle<IGESBasic_HArray1OfHArray1OfIGESEntity>& allParameterCurves)
 {
   int num1 = allSenses->Length();
   if (allSenses->Lower() != 1 || (allModelCurves->Lower() != 1 || allModelCurves->Length() != num1)
@@ -85,14 +85,14 @@ int IGESGeom_Boundary::NbParameterCurves(const int Index) const
   return theParameterCurves->Value(Index)->Length();
 }
 
-occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> IGESGeom_Boundary::
-  ParameterCurves(const int Index) const
+occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>> IGESGeom_Boundary::ParameterCurves(
+  const int Index) const
 {
   return theParameterCurves->Value(Index);
 }
 
 occ::handle<IGESData_IGESEntity> IGESGeom_Boundary::ParameterCurve(const int Index,
-                                                                   const int Num) const
+                                                              const int Num) const
 {
   return theParameterCurves->Value(Index)->Value(Num);
 }

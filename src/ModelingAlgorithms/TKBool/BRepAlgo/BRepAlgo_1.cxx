@@ -31,6 +31,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
@@ -45,17 +46,17 @@ bool BRepAlgo::IsValid(const TopoDS_Shape& S)
 //=================================================================================================
 
 bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
-                       const TopoDS_Shape&                   theResult,
-                       const bool                            closedSolid,
-                       const bool                            GeomCtrl)
+                                   const TopoDS_Shape&         theResult,
+                                   const bool      closedSolid,
+                                   const bool      GeomCtrl)
 {
   if (theResult.IsNull())
     return true;
   bool validate = false;
 
-  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> allFaces;
-  TopExp_Explorer                                        tEx;
-  NCollection_List<TopoDS_Shape>::Iterator               itLOS;
+  NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>                allFaces;
+  TopExp_Explorer                    tEx;
+  NCollection_List<TopoDS_Shape>::Iterator itLOS;
   for (itLOS.Initialize(theArgs); itLOS.More(); itLOS.Next())
   {
     if (itLOS.Value().IsSame(theResult))
@@ -106,7 +107,7 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
 
         // Check if the problem is not just BRepCheck_InvalidSameParameterFlag
         NCollection_List<BRepCheck_Status>::Iterator itl;
-        BRepCheck_Status                             sta;
+        BRepCheck_Status                     sta;
         for (tEx.Init(toCheck, TopAbs_FACE); tEx.More(); tEx.Next())
         {
           if (!ana.Result(tEx.Current()).IsNull())
@@ -118,7 +119,7 @@ bool BRepAlgo::IsValid(const NCollection_List<TopoDS_Shape>& theArgs,
               if (sta != BRepCheck_NoError)
               {
                 NCollection_List<BRepCheck_Status>::Iterator ilt;
-                TopExp_Explorer                              exp;
+                TopExp_Explorer                      exp;
                 for (exp.Init(tEx.Current(), TopAbs_EDGE); exp.More(); exp.Next())
                 {
                   const occ::handle<BRepCheck_Result>& res = ana.Result(exp.Current());

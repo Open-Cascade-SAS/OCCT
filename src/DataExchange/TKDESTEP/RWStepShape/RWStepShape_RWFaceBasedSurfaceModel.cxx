@@ -33,7 +33,7 @@ RWStepShape_RWFaceBasedSurfaceModel::RWStepShape_RWFaceBasedSurfaceModel() {}
 
 void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepShape_FaceBasedSurfaceModel>& ent) const
 {
@@ -49,12 +49,12 @@ void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
   // Own fields of FaceBasedSurfaceModel
 
   occ::handle<NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>> aFbsmFaces;
-  int                                                                       sub2 = 0;
+  int                            sub2 = 0;
   if (data->ReadSubList(num, 2, "fbsm_faces", ach, sub2))
   {
-    int num2   = sub2;
-    int nb0    = data->NbParams(num2);
-    aFbsmFaces = new NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>(1, nb0);
+    int num2 = sub2;
+    int nb0  = data->NbParams(num2);
+    aFbsmFaces            = new NCollection_HArray1<occ::handle<StepShape_ConnectedFaceSet>>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       occ::handle<StepShape_ConnectedFaceSet> anIt0;
@@ -71,7 +71,7 @@ void RWStepShape_RWFaceBasedSurfaceModel::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepShape_FaceBasedSurfaceModel>& ent) const
 {
 
@@ -92,9 +92,8 @@ void RWStepShape_RWFaceBasedSurfaceModel::WriteStep(
 
 //=================================================================================================
 
-void RWStepShape_RWFaceBasedSurfaceModel::Share(
-  const occ::handle<StepShape_FaceBasedSurfaceModel>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepShape_RWFaceBasedSurfaceModel::Share(const occ::handle<StepShape_FaceBasedSurfaceModel>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of RepresentationItem

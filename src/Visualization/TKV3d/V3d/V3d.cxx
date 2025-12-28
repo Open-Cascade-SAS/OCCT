@@ -32,17 +32,17 @@ static const char* V3d_Table_PrintTypeOfOrientation[26] = {
 }
 
 void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
-                        const double                        X0,
-                        const double                        Y0,
-                        const double                        Z0,
-                        const double                        Dx,
-                        const double                        Dy,
-                        const double                        Dz,
-                        const double                        Alpha,
-                        const double                        Lng)
+                        const double            X0,
+                        const double            Y0,
+                        const double            Z0,
+                        const double            Dx,
+                        const double            Dy,
+                        const double            Dz,
+                        const double            Alpha,
+                        const double            Lng)
 {
-  double    Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
-  double    Xn, Yn, Zn, X, Y, Z, X1 = 0., Y1 = 0., Z1 = 0., Norme;
+  double          Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
+  double          Xn, Yn, Zn, X, Y, Z, X1 = 0., Y1 = 0., Z1 = 0., Norme;
   const int NbPoints = 10;
 
   //      Centre du cercle base de la fleche :
@@ -75,7 +75,7 @@ void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
   occ::handle<Graphic3d_ArrayOfPolylines> aPrims =
     new Graphic3d_ArrayOfPolylines(3 * NbPoints, NbPoints);
 
-  int          i;
+  int    i;
   const double Tg = std::tan(Alpha);
   for (i = 1; i <= NbPoints; i++)
   {
@@ -102,13 +102,13 @@ void V3d::ArrowOfRadius(const occ::handle<Graphic3d_Group>& garrow,
 }
 
 void V3d::CircleInPlane(const occ::handle<Graphic3d_Group>& gcircle,
-                        const double                        X0,
-                        const double                        Y0,
-                        const double                        Z0,
-                        const double                        DX,
-                        const double                        DY,
-                        const double                        DZ,
-                        const double                        Rayon)
+                        const double            X0,
+                        const double            Y0,
+                        const double            Z0,
+                        const double            DX,
+                        const double            DY,
+                        const double            DZ,
+                        const double            Rayon)
 {
   double Norme = std::sqrt(DX * DX + DY * DY + DZ * DZ);
   if (Norme >= 0.0001)
@@ -140,10 +140,10 @@ void V3d::CircleInPlane(const occ::handle<Graphic3d_Group>& gcircle,
     Yj = VZ * Xi - VX * Zi;
     Zj = VX * Yi - VY * Xi;
 
-    const int                               NFACES = 30;
+    const int             NFACES = 30;
     occ::handle<Graphic3d_ArrayOfPolylines> aPrims = new Graphic3d_ArrayOfPolylines(NFACES + 1);
 
-    int          i      = 0;
+    int    i      = 0;
     double       Alpha  = 0.;
     const double Dalpha = 2. * M_PI / NFACES;
     for (; i <= NFACES; i++, Alpha += Dalpha)
@@ -179,7 +179,8 @@ const char* V3d::TypeOfOrientationToString(V3d_TypeOfOrientation theType)
 
 //=================================================================================================
 
-bool V3d::TypeOfOrientationFromString(const char* theTypeString, V3d_TypeOfOrientation& theType)
+bool V3d::TypeOfOrientationFromString(const char*       theTypeString,
+                                                  V3d_TypeOfOrientation& theType)
 {
   TCollection_AsciiString aName(theTypeString);
   aName.UpperCase();

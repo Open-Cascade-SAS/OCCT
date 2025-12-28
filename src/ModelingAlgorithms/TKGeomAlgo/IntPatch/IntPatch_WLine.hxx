@@ -51,16 +51,16 @@ public:
   //! Creates a WLine as an intersection when the
   //! transitions are In or Out.
   Standard_EXPORT IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
-                                 const bool                           Tang,
-                                 const IntSurf_TypeTrans              Trans1,
-                                 const IntSurf_TypeTrans              Trans2);
+                                 const bool          Tang,
+                                 const IntSurf_TypeTrans         Trans1,
+                                 const IntSurf_TypeTrans         Trans2);
 
   //! Creates a WLine as an intersection when the
   //! transitions are Touch.
   Standard_EXPORT IntPatch_WLine(const occ::handle<IntSurf_LineOn2S>& Line,
-                                 const bool                           Tang,
-                                 const IntSurf_Situation              Situ1,
-                                 const IntSurf_Situation              Situ2);
+                                 const bool          Tang,
+                                 const IntSurf_Situation         Situ1,
+                                 const IntSurf_Situation         Situ2);
 
   //! Creates a WLine as an intersection when the
   //! transitions are Undecided.
@@ -69,7 +69,8 @@ public:
   //! Adds a vertex in the list. If theIsPrepend == TRUE the new
   //! vertex will be added before the first element of vertices sequence.
   //! Otherwise, to the end of the sequence
-  virtual void AddVertex(const IntPatch_Point& Pnt, const bool theIsPrepend = false) override;
+  virtual void AddVertex(const IntPatch_Point&  Pnt,
+                         const bool theIsPrepend = false) override;
 
   //! Set the Point of index <Index> in the LineOn2S
   Standard_EXPORT void SetPoint(const int Index, const IntPatch_Point& Pnt);
@@ -134,14 +135,23 @@ public:
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 1st surface
-  bool IsOutSurf1Box(const gp_Pnt2d& theP) const override { return curv->IsOutSurf1Box(theP); }
+  bool IsOutSurf1Box(const gp_Pnt2d& theP) const override
+  {
+    return curv->IsOutSurf1Box(theP);
+  }
 
   //! Returns TRUE if theP is out of the box built from
   //! the points on 2nd surface
-  bool IsOutSurf2Box(const gp_Pnt2d& theP) const override { return curv->IsOutSurf2Box(theP); }
+  bool IsOutSurf2Box(const gp_Pnt2d& theP) const override
+  {
+    return curv->IsOutSurf2Box(theP);
+  }
 
   //! Returns TRUE if theP is out of the box built from 3D-points.
-  bool IsOutBox(const gp_Pnt& theP) const override { return curv->IsOutBox(theP); }
+  bool IsOutBox(const gp_Pnt& theP) const override
+  {
+    return curv->IsOutBox(theP);
+  }
 
   Standard_EXPORT void SetPeriod(const double pu1,
                                  const double pv1,
@@ -197,21 +207,21 @@ public:
   DEFINE_STANDARD_RTTIEXT(IntPatch_WLine, IntPatch_PointLine)
 
 private:
-  occ::handle<IntSurf_LineOn2S>        curv;
-  bool                                 fipt;
-  bool                                 lapt;
-  int                                  indf;
-  int                                  indl;
-  NCollection_Sequence<IntPatch_Point> svtx;
-  double                               u1period;
-  double                               v1period;
-  double                               u2period;
-  double                               v2period;
-  bool                                 hasArcOnS1;
-  occ::handle<Adaptor2d_Curve2d>       theArcOnS1;
-  bool                                 hasArcOnS2;
-  occ::handle<Adaptor2d_Curve2d>       theArcOnS2;
-  bool                                 myIsPurgerAllowed;
+  occ::handle<IntSurf_LineOn2S>  curv;
+  bool          fipt;
+  bool          lapt;
+  int          indf;
+  int          indl;
+  NCollection_Sequence<IntPatch_Point>  svtx;
+  double             u1period;
+  double             v1period;
+  double             u2period;
+  double             v2period;
+  bool          hasArcOnS1;
+  occ::handle<Adaptor2d_Curve2d> theArcOnS1;
+  bool          hasArcOnS2;
+  occ::handle<Adaptor2d_Curve2d> theArcOnS2;
+  bool          myIsPurgerAllowed;
 
   //! identifies the way of <*this> creation
   IntPatch_WLType myCreationWay;

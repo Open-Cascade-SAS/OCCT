@@ -21,6 +21,7 @@
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_FaceSurface.hxx>
+#include <StepShape_Face.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepShape_OpenShell.hxx>
@@ -46,10 +47,10 @@ TopoDSToStep_Builder::TopoDSToStep_Builder()
 
 //=================================================================================================
 
-TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                        aShape,
-                                           TopoDSToStep_Tool&                         aTool,
+TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                   aShape,
+                                           TopoDSToStep_Tool&                    aTool,
                                            const occ::handle<Transfer_FinderProcess>& FP,
-                                           const int                    theTessellatedGeomParam,
+                                           const int       theTessellatedGeomParam,
                                            const StepData_Factors&      theLocalFactors,
                                            const Message_ProgressRange& theProgress)
 {
@@ -59,12 +60,12 @@ TopoDSToStep_Builder::TopoDSToStep_Builder(const TopoDS_Shape&                  
 
 //=================================================================================================
 
-void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShape,
-                                TopoDSToStep_Tool&                         myTool,
+void TopoDSToStep_Builder::Init(const TopoDS_Shape&                   aShape,
+                                TopoDSToStep_Tool&                    myTool,
                                 const occ::handle<Transfer_FinderProcess>& FP,
-                                const int                                  theTessellatedGeomParam,
-                                const StepData_Factors&                    theLocalFactors,
-                                const Message_ProgressRange&               theProgress)
+                                const int                theTessellatedGeomParam,
+                                const StepData_Factors&               theLocalFactors,
+                                const Message_ProgressRange&          theProgress)
 {
 
   if (myTool.IsBound(aShape))
@@ -81,9 +82,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
       TopoDS_Shell myShell = TopoDS::Shell(aShape);
       myTool.SetCurrentShell(myShell);
 
-      occ::handle<StepShape_FaceSurface>                    FS;
-      occ::handle<StepShape_TopologicalRepresentationItem>  Fpms;
-      NCollection_Sequence<occ::handle<Standard_Transient>> mySeq;
+      occ::handle<StepShape_FaceSurface>                   FS;
+      occ::handle<StepShape_TopologicalRepresentationItem> Fpms;
+      NCollection_Sequence<occ::handle<Standard_Transient>>                     mySeq;
 
       //	const TopoDS_Shell ForwardShell =
       //	  TopoDS::Shell(myShell.Oriented(TopAbs_FORWARD));
@@ -137,8 +138,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape&                        aShap
       int nbFaces = mySeq.Length();
       if (nbFaces >= 1)
       {
-        occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aSet =
-          new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nbFaces);
+        occ::handle<NCollection_HArray1<occ::handle<StepShape_Face>>> aSet = new NCollection_HArray1<occ::handle<StepShape_Face>>(1, nbFaces);
         for (int i = 1; i <= nbFaces; i++)
         {
           aSet->SetValue(i, occ::down_cast<StepShape_Face>(mySeq.Value(i)));

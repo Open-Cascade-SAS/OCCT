@@ -52,8 +52,8 @@ Expr_Sum::Expr_Sum(const occ::handle<Expr_GeneralExpression>& exp1,
 occ::handle<Expr_GeneralExpression> Expr_Sum::Copy() const
 {
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> ops;
-  int                                                       i;
-  int                                                       max = NbOperands();
+  int                 i;
+  int                 max = NbOperands();
   for (i = 1; i <= max; i++)
   {
     ops.Append(Expr::CopyShare(Operand(i)));
@@ -69,15 +69,15 @@ bool Expr_Sum::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) con
   }
   occ::handle<Expr_Sum> me     = this;
   occ::handle<Expr_Sum> SOther = occ::down_cast<Expr_Sum>(Other);
-  int                   max    = NbOperands();
+  int max    = NbOperands();
   if (SOther->NbOperands() != max)
   {
     return false;
   }
   occ::handle<Expr_GeneralExpression> myop;
   occ::handle<Expr_GeneralExpression> hisop;
-  int                                 i = 1;
-  NCollection_Array1<int>             tab(1, max);
+  int               i = 1;
+  NCollection_Array1<int>        tab(1, max);
   for (int k = 1; k <= max; k++)
   {
     tab(k) = 0;
@@ -85,9 +85,9 @@ bool Expr_Sum::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) con
   bool ident = true;
   while ((i <= max) && (ident))
   {
-    int  j     = 1;
+    int j     = 1;
     bool found = false;
-    myop       = Operand(i);
+    myop                   = Operand(i);
     while ((j <= max) && (!found))
     {
       hisop = SOther->Operand(j);
@@ -108,8 +108,8 @@ bool Expr_Sum::IsIdentical(const occ::handle<Expr_GeneralExpression>& Other) con
 bool Expr_Sum::IsLinear() const
 {
   bool result = true;
-  int  i      = 1;
-  int  max    = NbOperands();
+  int i      = 1;
+  int max    = NbOperands();
   while ((i <= max) && result)
   {
     result = Operand(i)->IsLinear();
@@ -118,12 +118,11 @@ bool Expr_Sum::IsLinear() const
   return result;
 }
 
-occ::handle<Expr_GeneralExpression> Expr_Sum::Derivative(
-  const occ::handle<Expr_NamedUnknown>& X) const
+occ::handle<Expr_GeneralExpression> Expr_Sum::Derivative(const occ::handle<Expr_NamedUnknown>& X) const
 {
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> opsder;
-  int                                                       i;
-  int                                                       max = NbOperands();
+  int                 i;
+  int                 max = NbOperands();
   for (i = 1; i <= max; i++)
   {
     opsder.Append(Operand(i)->Derivative(X));
@@ -133,15 +132,15 @@ occ::handle<Expr_GeneralExpression> Expr_Sum::Derivative(
 }
 
 occ::handle<Expr_GeneralExpression> Expr_Sum::NDerivative(const occ::handle<Expr_NamedUnknown>& X,
-                                                          const int N) const
+                                                     const int           N) const
 {
   if (N <= 0)
   {
     throw Standard_OutOfRange();
   }
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> opsder;
-  int                                                       i;
-  int                                                       max = NbOperands();
+  int                 i;
+  int                 max = NbOperands();
   for (i = 1; i <= max; i++)
   {
     opsder.Append(Operand(i)->NDerivative(X, N));
@@ -152,12 +151,12 @@ occ::handle<Expr_GeneralExpression> Expr_Sum::NDerivative(const occ::handle<Expr
 
 occ::handle<Expr_GeneralExpression> Expr_Sum::ShallowSimplified() const
 {
-  int                                                       i;
-  int                                                       max    = NbOperands();
-  int                                                       nbvals = 0;
-  occ::handle<Expr_GeneralExpression>                       op;
+  int                 i;
+  int                 max    = NbOperands();
+  int                 nbvals = 0;
+  occ::handle<Expr_GeneralExpression>   op;
   NCollection_Sequence<occ::handle<Expr_GeneralExpression>> newops;
-  bool                                                      subsum = false;
+  bool                 subsum = false;
   for (i = 1; (i <= max) && !subsum; i++)
   {
     op     = Operand(i);
@@ -167,7 +166,7 @@ occ::handle<Expr_GeneralExpression> Expr_Sum::ShallowSimplified() const
   {
     occ::handle<Expr_GeneralExpression> other;
     occ::handle<Expr_Sum>               sumop;
-    int                                 nbssumop;
+    int               nbssumop;
     for (i = 1; i <= max; i++)
     {
       op = Operand(i);
@@ -189,8 +188,8 @@ occ::handle<Expr_GeneralExpression> Expr_Sum::ShallowSimplified() const
     sumop = new Expr_Sum(newops);
     return sumop->ShallowSimplified();
   }
-  double vals  = 0.;
-  bool   noone = true;
+  double    vals  = 0.;
+  bool noone = true;
   for (i = 1; i <= max; i++)
   {
     op = Operand(i);
@@ -243,10 +242,10 @@ occ::handle<Expr_GeneralExpression> Expr_Sum::ShallowSimplified() const
 }
 
 double Expr_Sum::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown>>& vars,
-                          const NCollection_Array1<double>&                         vals) const
+                                 const NCollection_Array1<double>&      vals) const
 {
-  int    max = NbOperands();
-  double res = 0.0;
+  int max = NbOperands();
+  double    res = 0.0;
   for (int i = 1; i <= max; i++)
   {
     res = res + Operand(i)->Evaluate(vars, vals);
@@ -257,8 +256,8 @@ double Expr_Sum::Evaluate(const NCollection_Array1<occ::handle<Expr_NamedUnknown
 TCollection_AsciiString Expr_Sum::String() const
 {
   occ::handle<Expr_GeneralExpression> op;
-  int                                 nbop = NbOperands();
-  op                                       = Operand(1);
+  int               nbop = NbOperands();
+  op                                  = Operand(1);
   TCollection_AsciiString str;
   if (op->NbSubExpressions() > 1)
   {

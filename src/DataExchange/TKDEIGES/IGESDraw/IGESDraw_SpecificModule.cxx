@@ -50,11 +50,11 @@ IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SpecificModule, IGESData_SpecificModule)
 //  the method TypeNumber from this Protocol
 IGESDraw_SpecificModule::IGESDraw_SpecificModule() {}
 
-void IGESDraw_SpecificModule::OwnDump(const int                               CN,
+void IGESDraw_SpecificModule::OwnDump(const int             CN,
                                       const occ::handle<IGESData_IGESEntity>& ent,
-                                      const IGESData_IGESDumper&              dumper,
-                                      Standard_OStream&                       S,
-                                      const int                               own) const
+                                      const IGESData_IGESDumper&         dumper,
+                                      Standard_OStream&                  S,
+                                      const int             own) const
 {
   switch (CN)
   {
@@ -175,8 +175,8 @@ void IGESDraw_SpecificModule::OwnDump(const int                               CN
   }
 }
 
-bool IGESDraw_SpecificModule::OwnCorrect(const int                               CN,
-                                         const occ::handle<IGESData_IGESEntity>& ent) const
+bool IGESDraw_SpecificModule::OwnCorrect(const int             CN,
+                                                     const occ::handle<IGESData_IGESEntity>& ent) const
 {
   //   Applies only on some types
   switch (CN)

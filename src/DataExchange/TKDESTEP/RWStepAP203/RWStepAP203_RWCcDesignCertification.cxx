@@ -21,6 +21,7 @@
 #include "RWStepAP203_RWCcDesignCertification.pxx"
 #include <StepAP203_CcDesignCertification.hxx>
 #include <StepAP203_CertifiedItem.hxx>
+#include <StepAP203_CertifiedItem.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <StepBasic_Certification.hxx>
@@ -35,7 +36,7 @@ RWStepAP203_RWCcDesignCertification::RWStepAP203_RWCcDesignCertification() {}
 
 void RWStepAP203_RWCcDesignCertification::ReadStep(
   const occ::handle<StepData_StepReaderData>&         data,
-  const int                                           num,
+  const int                         num,
   occ::handle<Interface_Check>&                       ach,
   const occ::handle<StepAP203_CcDesignCertification>& ent) const
 {
@@ -56,12 +57,12 @@ void RWStepAP203_RWCcDesignCertification::ReadStep(
   // Own fields of CcDesignCertification
 
   occ::handle<NCollection_HArray1<StepAP203_CertifiedItem>> aItems;
-  int                                                       sub2 = 0;
+  int                         sub2 = 0;
   if (data->ReadSubList(num, 2, "items", ach, sub2))
   {
     int num2 = sub2;
     int nb0  = data->NbParams(num2);
-    aItems   = new NCollection_HArray1<StepAP203_CertifiedItem>(1, nb0);
+    aItems                = new NCollection_HArray1<StepAP203_CertifiedItem>(1, nb0);
     for (int i0 = 1; i0 <= nb0; i0++)
     {
       StepAP203_CertifiedItem anIt0;
@@ -77,7 +78,7 @@ void RWStepAP203_RWCcDesignCertification::ReadStep(
 //=================================================================================================
 
 void RWStepAP203_RWCcDesignCertification::WriteStep(
-  StepData_StepWriter&                                SW,
+  StepData_StepWriter&                           SW,
   const occ::handle<StepAP203_CcDesignCertification>& ent) const
 {
 
@@ -98,9 +99,8 @@ void RWStepAP203_RWCcDesignCertification::WriteStep(
 
 //=================================================================================================
 
-void RWStepAP203_RWCcDesignCertification::Share(
-  const occ::handle<StepAP203_CcDesignCertification>& ent,
-  Interface_EntityIterator&                           iter) const
+void RWStepAP203_RWCcDesignCertification::Share(const occ::handle<StepAP203_CcDesignCertification>& ent,
+                                                Interface_EntityIterator& iter) const
 {
 
   // Inherited fields of CertificationAssignment

@@ -23,8 +23,10 @@
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Boolean.hxx>
 class gp_Pnt;
 
@@ -106,7 +108,8 @@ public:
   //! parametric direction, or
   //! -   VIndex is outside the bounds of the poles table in the v
   //! parametric direction.
-  Standard_EXPORT double Weight(const int UIndex, const int VIndex) const;
+  Standard_EXPORT double Weight(const int UIndex,
+                                       const int VIndex) const;
 
   //! Returns the U-knot of range UIndex.
   //! Raised if UIndex < 1 or UIndex > NbUKnots.
@@ -132,20 +135,21 @@ protected:
                                                             const int UDegree,
                                                             const int VDegree);
 
-  NCollection_Array2<gp_Pnt> poles;
-  NCollection_Array2<double> weights;
-  NCollection_Array1<double> uknots;
-  NCollection_Array1<int>    umults;
-  NCollection_Array1<double> vknots;
-  NCollection_Array1<int>    vmults;
-  int                        udegree;
-  int                        vdegree;
-  int                        nbUPoles;
-  int                        nbVPoles;
-  int                        nbUKnots;
-  int                        nbVKnots;
-  bool                       isuperiodic;
-  bool                       isvperiodic;
+  NCollection_Array2<gp_Pnt>      poles;
+  NCollection_Array2<double>    weights;
+  NCollection_Array1<double>    uknots;
+  NCollection_Array1<int> umults;
+  NCollection_Array1<double>    vknots;
+  NCollection_Array1<int> vmults;
+  int        udegree;
+  int        vdegree;
+  int        nbUPoles;
+  int        nbVPoles;
+  int        nbUKnots;
+  int        nbVKnots;
+  bool        isuperiodic;
+  bool        isvperiodic;
+
 };
 
 #endif // _Convert_ElementarySurfaceToBSplineSurface_HeaderFile

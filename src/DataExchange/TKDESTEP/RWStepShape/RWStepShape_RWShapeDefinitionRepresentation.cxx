@@ -31,7 +31,7 @@ RWStepShape_RWShapeDefinitionRepresentation::RWStepShape_RWShapeDefinitionRepres
 
 void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
   const occ::handle<StepData_StepReaderData>&                 data,
-  const int                                                   num,
+  const int                                 num,
   occ::handle<Interface_Check>&                               ach,
   const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent) const
 {
@@ -64,7 +64,7 @@ void RWStepShape_RWShapeDefinitionRepresentation::ReadStep(
 //=================================================================================================
 
 void RWStepShape_RWShapeDefinitionRepresentation::WriteStep(
-  StepData_StepWriter&                                        SW,
+  StepData_StepWriter&                                   SW,
   const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent) const
 {
 
@@ -79,7 +79,7 @@ void RWStepShape_RWShapeDefinitionRepresentation::WriteStep(
 
 void RWStepShape_RWShapeDefinitionRepresentation::Share(
   const occ::handle<StepShape_ShapeDefinitionRepresentation>& ent,
-  Interface_EntityIterator&                                   iter) const
+  Interface_EntityIterator&                              iter) const
 {
 
   // Inherited fields of PropertyDefinitionRepresentation

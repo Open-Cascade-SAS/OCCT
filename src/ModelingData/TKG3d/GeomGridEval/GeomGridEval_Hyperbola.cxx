@@ -228,7 +228,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Hyperbola::EvaluateGridD3
 
 NCollection_Array1<gp_Vec> GeomGridEval_Hyperbola::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,
-  int                               theN) const
+  int                         theN) const
 {
   if (myGeom.IsNull() || theParams.IsEmpty() || theN < 1)
   {

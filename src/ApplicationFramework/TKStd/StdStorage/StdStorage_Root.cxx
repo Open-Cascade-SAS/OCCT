@@ -23,7 +23,7 @@ StdStorage_Root::StdStorage_Root()
 {
 }
 
-StdStorage_Root::StdStorage_Root(const TCollection_AsciiString&           theName,
+StdStorage_Root::StdStorage_Root(const TCollection_AsciiString&      theName,
                                  const occ::handle<StdObjMgt_Persistent>& theObject)
     : myName(theName),
       myType(theObject->PName()),
@@ -33,7 +33,7 @@ StdStorage_Root::StdStorage_Root(const TCollection_AsciiString&           theNam
 }
 
 StdStorage_Root::StdStorage_Root(const TCollection_AsciiString& theName,
-                                 const int                      theRef,
+                                 const int         theRef,
                                  const TCollection_AsciiString& theType)
     : myName(theName),
       myType(theType),

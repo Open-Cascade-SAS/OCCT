@@ -110,7 +110,7 @@ void StepData_Simple::Shared(Interface_EntityIterator& list) const
   for (i = 1; i <= nb; i++)
   {
     const StepData_Field& fi = thefields.Field(i);
-    int                   j1, j2, l1, l2;
+    int      j1, j2, l1, l2;
     l1 = l2 = 1;
     if (fi.Arity() >= 1)
       l1 = fi.Length(1);

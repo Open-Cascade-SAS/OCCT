@@ -51,8 +51,8 @@ static int DFBrowse(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  occ::handle<DDF_Browser> NewDDFBrowser = new DDF_Browser(DF);
-  TCollection_AsciiString  name("browser_");
+  occ::handle<DDF_Browser>     NewDDFBrowser = new DDF_Browser(DF);
+  TCollection_AsciiString name("browser_");
   name += ((n == 3) ? a[2] : a[1]);
   Draw::Set(name.ToCString(), NewDDFBrowser);
 
@@ -115,7 +115,9 @@ static int DFOpenLabel(Draw_Interpretor& di, int n, const char** a)
 //  arg 2  : Label name
 //=======================================================================
 
-static int DFOpenAttributeList(Draw_Interpretor& di, int n, const char** a)
+static int DFOpenAttributeList(Draw_Interpretor& di,
+                                            int  n,
+                                            const char**      a)
 {
   if (n < 3)
     return 1;
@@ -157,7 +159,7 @@ static int DFOpenAttribute(Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
 
-  const int               index = Draw::Atoi(a[2]);
+  const int  index = Draw::Atoi(a[2]);
   TCollection_AsciiString list  = browser->OpenAttribute(index);
   di << list.ToCString();
   return 0;

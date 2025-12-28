@@ -24,8 +24,13 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>
+#include <TopOpeBRepDS_Interference.hxx>
+#include <NCollection_List.hxx>
+#include <Standard_Integer.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Curve;
@@ -51,34 +56,34 @@ public:
     const occ::handle<TopOpeBRepDS_Interference>& I);
 
   Standard_EXPORT bool Curve(const occ::handle<TopOpeBRepDS_Interference>& I,
-                             TopOpeBRepDS_Curve&                           C) const;
+                                         TopOpeBRepDS_Curve&                      C) const;
 
   Standard_EXPORT bool EdgeSupport(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                   TopoDS_Shape&                                 E) const;
+                                               TopoDS_Shape&                            E) const;
 
   //! Return les faces qui ont genere la section origine
   //! de I
   Standard_EXPORT bool FacesSupport(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                    TopoDS_Shape&                                 F1,
-                                    TopoDS_Shape&                                 F2) const;
+                                                TopoDS_Shape&                            F1,
+                                                TopoDS_Shape&                            F2) const;
 
   Standard_EXPORT bool ParameterOnEdge(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                       const TopoDS_Shape&                           E,
-                                       double&                                       U) const;
+                                                   const TopoDS_Shape&                      E,
+                                                   double& U) const;
 
   Standard_EXPORT void SetPoint(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                const int                                     IndexPoint);
+                                const int                   IndexPoint);
 
   Standard_EXPORT void SetParameterOnEdge(const occ::handle<TopOpeBRepDS_Interference>& I,
-                                          const TopoDS_Shape&                           E,
-                                          const double                                  U);
+                                          const TopoDS_Shape&                      E,
+                                          const double                      U);
 
   DEFINE_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool, Standard_Transient)
 
 private:
-  occ::handle<TopOpeBRepDS_HDataStructure>                                           myHDS;
+  occ::handle<TopOpeBRepDS_HDataStructure>             myHDS;
   NCollection_DataMap<int, NCollection_List<occ::handle<TopOpeBRepDS_Interference>>> myGToI;
-  NCollection_DataMap<occ::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>          myInterToShape;
+  NCollection_DataMap<occ::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>         myInterToShape;
 };
 
 #endif // _TopOpeBRepDS_GapTool_HeaderFile

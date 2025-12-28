@@ -46,9 +46,8 @@ public:
    */
 
   //! Creates an iterator an initialize it by sequence of objects.
-  Standard_EXPORT TObj_SequenceIterator(
-    const occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theObjects,
-    const occ::handle<Standard_Type>&                                   theType = NULL);
+  Standard_EXPORT TObj_SequenceIterator(const occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>>& theObjects,
+                                        const occ::handle<Standard_Type>&          theType = NULL);
 
 public:
   /**
@@ -68,8 +67,8 @@ protected:
   /**
    * Fields
    */
-  int                        myIndex; //!< current index of object in sequence
-  occ::handle<Standard_Type> myType;  //!< type of object
+  int               myIndex;   //!< current index of object in sequence
+  occ::handle<Standard_Type>          myType;    //!< type of object
   occ::handle<NCollection_HSequence<occ::handle<TObj_Object>>> myObjects; //!< sequence of objects
 
 public:

@@ -39,16 +39,20 @@
 #include <Standard_NoSuchObject.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array1.hxx>
+#include <gp_Pnt.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_Array1.hxx>
 
 //=================================================================================================
 
-GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts,
-  const int                                       NbBoundPoints,
-  const double                                    Tol,
-  const int                                       POption,
-  const int                                       NOption)
+GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts,
+                                                         const int NbBoundPoints,
+                                                         const double    Tol,
+                                                         const int POption,
+                                                         const int NOption)
     : myPts(Pts),
       myTol(Tol),
       myNbBoundPoints(NbBoundPoints)
@@ -72,11 +76,11 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
       gp_Ax3 triedre(myG, NDir, UDir);
       myPlane = new Geom_Plane(triedre);
     }
-    int    i, nb = myPts->Length();
-    gp_Pln P = myPlane->Pln();
+    int i, nb = myPts->Length();
+    gp_Pln           P = myPlane->Pln();
     ElSLib::Parameters(P, myG, myUmax, myVmax);
-    myUmin   = myUmax;
-    myVmin   = myVmax;
+    myUmin          = myUmax;
+    myVmin          = myVmax;
     double U = 0, V = 0;
     for (i = 1; i <= nb; i++)
     {
@@ -98,21 +102,20 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
   }
 }
 
-GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
-  const NCollection_Sequence<gp_Vec>&             Normals,
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts)
+GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(const NCollection_Sequence<gp_Vec>&        Normals,
+                                                         const occ::handle<NCollection_HArray1<gp_Pnt>>& Pts)
     : myPts(Pts)
 {
   int i, j, k, n, m;
 
-  gp_Vec BestVec;
-  int    NN = Normals.Length();
+  gp_Vec           BestVec;
+  int NN = Normals.Length();
 
   if (NN == 1)
     BestVec = Normals(1);
   else if (NN == 2)
   {
-    BestVec              = Normals(1) + Normals(2);
+    BestVec                     = Normals(1) + Normals(2);
     const double aSqMagn = BestVec.SquareMagnitude();
     if (aSqMagn < Precision::SquareConfusion())
     {
@@ -142,10 +145,10 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
     MaxAngle /= 2.;
     int Nint = 50;
 
-    NCollection_Array1<gp_Vec> OptVec(1, NN * (NN - 1) / 2);
+    NCollection_Array1<gp_Vec>   OptVec(1, NN * (NN - 1) / 2);
     NCollection_Array1<double> OptScal(1, NN * (NN - 1) / 2);
-    gp_Vec                     Vec, Vec1;
-    gp_Dir                     Cross1, Cross2;
+    gp_Vec               Vec, Vec1;
+    gp_Dir               Cross1, Cross2;
 
     k = 1;
     for (i = 1; i <= NN - 1; i++)
@@ -154,7 +157,7 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
         OptScal(k) = RealFirst();
 
         double Step = MaxAngle / Nint;
-        Vec         = Normals(i) + Normals(j);
+        Vec                = Normals(i) + Normals(j);
 
         const double aSqMagn = Vec.SquareMagnitude();
 
@@ -191,8 +194,8 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
       } // for i, for j
     // Find maximum among all maximums
 
-    double BestScal = RealFirst();
-    int    Index    = 0;
+    double    BestScal = RealFirst();
+    int Index    = 0;
     for (k = 1; k <= OptScal.Length(); k++)
       if (OptScal(k) > BestScal)
       {
@@ -203,8 +206,8 @@ GeomPlate_BuildAveragePlane::GeomPlate_BuildAveragePlane(
   }
 
   // Making the plane myPlane
-  gp_Ax2                     Axe;
-  bool                       IsSingular;
+  gp_Ax2             Axe;
+  bool   IsSingular;
   NCollection_Array1<gp_Pnt> PtsArray(1, myPts->Length());
   for (i = 1; i <= myPts->Length(); i++)
     PtsArray(i) = myPts->Value(i);
@@ -273,10 +276,10 @@ void GeomPlate_BuildAveragePlane::MinMaxBox(double& Umin,
 gp_Vec GeomPlate_BuildAveragePlane::DefPlan(const int NOption)
 {
 
-  gp_Pnt GB;
-  gp_Vec A, B, C, D;
-  gp_Vec OZ;
-  int    i, nb = myPts->Length();
+  gp_Pnt           GB;
+  gp_Vec           A, B, C, D;
+  gp_Vec           OZ;
+  int i, nb = myPts->Length();
   GB.SetCoord(0., 0., 0.);
   for (i = 1; i <= nb; i++)
   {
@@ -290,8 +293,8 @@ gp_Vec GeomPlate_BuildAveragePlane::DefPlan(const int NOption)
 
   if (NOption == 1)
   {
-    gp_Ax2 Axe;
-    bool   IsSingular;
+    gp_Ax2           Axe;
+    bool IsSingular;
     GeomLib::AxeOfInertia(myPts->Array1(), Axe, IsSingular, myTol);
 
     myOX = Axe.XDirection();
@@ -315,7 +318,7 @@ gp_Vec GeomPlate_BuildAveragePlane::DefPlan(const int NOption)
         A.SetCoord(2, A.Coord(2) + D.Coord(2));
         A.SetCoord(3, A.Coord(3) + D.Coord(3));
       }
-      gp_Vec OZ1      = A;
+      gp_Vec        OZ1      = A;
       double theAngle = OZ.Angle(OZ1);
       if (theAngle > M_PI / 2)
         theAngle = M_PI - theAngle;
@@ -351,9 +354,9 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
 {
   math_Matrix M(1, 3, 1, 3);
   M.Init(0.);
-  gp_Vec Proj;
-  int    i, nb = myPts->Length();
-  double scal;
+  gp_Vec           Proj;
+  int i, nb = myPts->Length();
+  double    scal;
 
   for (i = 1; i <= nb; i++)
   {
@@ -375,15 +378,15 @@ void GeomPlate_BuildAveragePlane::BasePlan(const gp_Vec& OZ)
   M(2, 1) = M(1, 2);
   M(3, 1) = M(1, 3);
   M(3, 2) = M(2, 3);
-  math_Jacobi J(M);
-  double      n1, n2, n3;
-  math_Vector V1(1, 3), V2(1, 3), V3(1, 3);
+  math_Jacobi   J(M);
+  double n1, n2, n3;
+  math_Vector   V1(1, 3), V2(1, 3), V3(1, 3);
   n1 = J.Value(1);
   n2 = J.Value(2);
   n3 = J.Value(3);
 
-  double r1 = std::min(std::min(n1, n2), n3), r2;
-  int    m1, m2, m3;
+  double    r1 = std::min(std::min(n1, n2), n3), r2;
+  int m1, m2, m3;
   if (r1 == n1)
   {
     m1 = 1;
@@ -482,23 +485,23 @@ bool GeomPlate_BuildAveragePlane::IsLine() const
     return false;
 }
 
-bool GeomPlate_BuildAveragePlane::HalfSpace(const NCollection_Sequence<gp_Vec>&  NewNormals,
-                                            NCollection_Sequence<gp_Vec>&        Normals,
-                                            NCollection_Sequence<GeomPlate_Aij>& Bset,
-                                            const double                         LinTol,
-                                            const double                         AngTol)
+bool GeomPlate_BuildAveragePlane::HalfSpace(const NCollection_Sequence<gp_Vec>& NewNormals,
+                                                        NCollection_Sequence<gp_Vec>&       Normals,
+                                                        NCollection_Sequence<GeomPlate_Aij>&    Bset,
+                                                        const double         LinTol,
+                                                        const double         AngTol)
 {
   double SquareTol = LinTol * LinTol;
 
-  NCollection_Sequence<gp_Vec>        SaveNormals;
+  NCollection_Sequence<gp_Vec>    SaveNormals;
   NCollection_Sequence<GeomPlate_Aij> SaveBset;
   // 1
   SaveNormals = Normals;
   SaveBset    = Bset;
 
-  gp_Vec                              Cross, NullVec(0, 0, 0);
+  gp_Vec                  Cross, NullVec(0, 0, 0);
   NCollection_Sequence<GeomPlate_Aij> B1set, B2set;
-  int                                 i, j, k;
+  int        i, j, k;
 
   i = 1;
   if (Normals.IsEmpty())
@@ -548,8 +551,8 @@ bool GeomPlate_BuildAveragePlane::HalfSpace(const NCollection_Sequence<gp_Vec>& 
         if (B2set(k).Vec.IsOpposite(-Cross,
                                     AngTol)) // if (B2set(k).Vec.IsEqual( Cross, LinTol, AngTol ))
         {
-          gp_Vec Cross1, Cross2;
-          int    ind1 = B2set(k).Ind1, ind2 = B2set(k).Ind2;
+          gp_Vec           Cross1, Cross2;
+          int ind1 = B2set(k).Ind1, ind2 = B2set(k).Ind2;
           if (ind1 == ii || ind2 == ii)
           {
             isNew = false;
@@ -595,8 +598,8 @@ bool GeomPlate_BuildAveragePlane::HalfSpace(const NCollection_Sequence<gp_Vec>& 
         if (B2set(k).Vec.IsOpposite(-Cross,
                                     AngTol)) // if (B2set(k).Vec.IsEqual( Cross, LinTol, AngTol ))
         {
-          gp_Vec Cross1, Cross2;
-          int    ind1 = B2set(k).Ind1, ind2 = B2set(k).Ind2;
+          gp_Vec           Cross1, Cross2;
+          int ind1 = B2set(k).Ind1, ind2 = B2set(k).Ind2;
           if (ind1 == ii || ind2 == ii)
           {
             isNew = false;

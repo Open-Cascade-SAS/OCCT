@@ -33,12 +33,12 @@ public:
 
   //! Adjusts the parameter <thePar> to the range [theParMin, theParMax]
   Standard_EXPORT static bool AdjustPeriodic(const double thePar,
-                                             const double theParMin,
-                                             const double theParMax,
-                                             const double thePeriod,
-                                             double&      theNewPar,
-                                             double&      theOffset,
-                                             const double theEps = 0.0);
+                                                         const double theParMin,
+                                                         const double theParMax,
+                                                         const double thePeriod,
+                                                         double&      theNewPar,
+                                                         double&      theOffset,
+                                                         const double theEps = 0.0);
 };
 
 #endif // _GeomInt_HeaderFile

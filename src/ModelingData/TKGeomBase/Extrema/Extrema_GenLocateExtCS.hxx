@@ -43,19 +43,19 @@ public:
   //! a zero near the close points.
   Standard_EXPORT Extrema_GenLocateExtCS(const Adaptor3d_Curve&   C,
                                          const Adaptor3d_Surface& S,
-                                         const double             T,
-                                         const double             U,
-                                         const double             V,
-                                         const double             Tol1,
-                                         const double             Tol2);
+                                         const double      T,
+                                         const double      U,
+                                         const double      V,
+                                         const double      Tol1,
+                                         const double      Tol2);
 
   Standard_EXPORT void Perform(const Adaptor3d_Curve&   C,
                                const Adaptor3d_Surface& S,
-                               const double             T,
-                               const double             U,
-                               const double             V,
-                               const double             Tol1,
-                               const double             Tol2);
+                               const double      T,
+                               const double      U,
+                               const double      V,
+                               const double      Tol1,
+                               const double      Tol2);
 
   //! Returns True if the distance is found.
   Standard_EXPORT bool IsDone() const;
@@ -70,10 +70,10 @@ public:
   Standard_EXPORT const Extrema_POnSurf& PointOnSurface() const;
 
 private:
-  bool            myDone;
-  double          mySqDist;
-  Extrema_POnCurv myPoint1;
-  Extrema_POnSurf myPoint2;
+  bool myDone;
+  double    mySqDist;
+  Extrema_POnCurv  myPoint1;
+  Extrema_POnSurf  myPoint2;
 };
 
 #endif // _Extrema_GenLocateExtCS_HeaderFile

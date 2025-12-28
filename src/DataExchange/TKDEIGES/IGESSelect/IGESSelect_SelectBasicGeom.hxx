@@ -57,10 +57,11 @@ public:
 
   //! Explores an entity, to take its contained Curves 3d
   //! Works recursively
-  Standard_EXPORT bool Explore(const int                              level,
-                               const occ::handle<Standard_Transient>& ent,
-                               const Interface_Graph&                 G,
-                               Interface_EntityIterator&              explored) const override;
+  Standard_EXPORT bool
+    Explore(const int            level,
+            const occ::handle<Standard_Transient>& ent,
+            const Interface_Graph&            G,
+            Interface_EntityIterator&         explored) const override;
 
   //! Returns a text defining the criterium : "Curves 3d" or
   //! "Basic Geometry"
@@ -72,7 +73,7 @@ public:
   //! Any Curve : explored is not filled but returned is True
   //! Other : returned is False
   Standard_EXPORT static bool SubCurves(const occ::handle<IGESData_IGESEntity>& ent,
-                                        Interface_EntityIterator&               explored);
+                                                    Interface_EntityIterator&          explored);
 
   DEFINE_STANDARD_RTTIEXT(IGESSelect_SelectBasicGeom, IFSelect_SelectExplore)
 

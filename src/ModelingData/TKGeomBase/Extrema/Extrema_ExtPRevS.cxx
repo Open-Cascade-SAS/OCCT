@@ -82,8 +82,8 @@ static bool HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S)
 {
 
   const occ::handle<Adaptor3d_Curve> C = S.BasisCurve();
-  gp_Dir                             N = S.AxeOfRevolution().Direction();
-  gp_Pnt                             P = S.AxeOfRevolution().Location();
+  gp_Dir                        N = S.AxeOfRevolution().Direction();
+  gp_Pnt                        P = S.AxeOfRevolution().Location();
 
   gp_Lin L(P, N);
 
@@ -102,10 +102,10 @@ static bool HasSingularity(const GeomAdaptor_SurfaceOfRevolution& S)
 
 //=============================================================================
 
-static void PerformExtPElC(Extrema_ExtPElC&                    E,
-                           const gp_Pnt&                       P,
+static void PerformExtPElC(Extrema_ExtPElC&               E,
+                           const gp_Pnt&                  P,
                            const occ::handle<Adaptor3d_Curve>& C,
-                           const double                        Tol)
+                           const double            Tol)
 {
   switch (C->GetType())
   {
@@ -132,8 +132,8 @@ static void PerformExtPElC(Extrema_ExtPElC&                    E,
 //=================================================================================================
 
 static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
-                                         const gp_Ax2&            theCurvePos,
-                                         const gp_Ax1&            AxeOfRevolution)
+                                                     const gp_Ax2&            theCurvePos,
+                                                     const gp_Ax1&            AxeOfRevolution)
 {
   // check type
   switch (theType)
@@ -148,11 +148,11 @@ static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
       return false;
   }
   //  the axe of revolution must be in the plane of the curve.
-  gp_Pln pl(theCurvePos.Location(), theCurvePos.Direction());
-  gp_Pnt p1   = AxeOfRevolution.Location();
+  gp_Pln        pl(theCurvePos.Location(), theCurvePos.Direction());
+  gp_Pnt        p1   = AxeOfRevolution.Location();
   double dist = 100., dist2 = dist * dist;
   double aThreshold = Precision::Angular() * Precision::Angular() * dist2;
-  gp_Pnt p2         = AxeOfRevolution.Location().XYZ() + dist * AxeOfRevolution.Direction().XYZ();
+  gp_Pnt        p2 = AxeOfRevolution.Location().XYZ() + dist * AxeOfRevolution.Direction().XYZ();
 
   if ((pl.SquareDistance(p1) < aThreshold) && (pl.SquareDistance(p2) < aThreshold))
     return true;
@@ -166,7 +166,9 @@ static bool IsCaseAnalyticallyComputable(const GeomAbs_CurveType& theType,
 
 //=================================================================================================
 
-static bool IsOriginalPnt(const gp_Pnt& P, const Extrema_POnSurf* Points, const int NbPoints)
+static bool IsOriginalPnt(const gp_Pnt&          P,
+                                      const Extrema_POnSurf* Points,
+                                      const int NbPoints)
 {
   for (int i = 1; i <= NbPoints; i++)
   {
@@ -180,14 +182,14 @@ static bool IsOriginalPnt(const gp_Pnt& P, const Extrema_POnSurf* Points, const 
 
 //=================================================================================================
 
-static bool IsExtremum(const double             U,
-                       const double             V,
-                       const gp_Pnt&            P,
-                       const Adaptor3d_Surface* S,
-                       gp_Pnt&                  E,
-                       double&                  Dist2,
-                       const bool               IsVSup,
-                       const bool               IsMin)
+static bool IsExtremum(const double      U,
+                                   const double      V,
+                                   const gp_Pnt&            P,
+                                   const Adaptor3d_Surface* S,
+                                   gp_Pnt&                  E,
+                                   double&           Dist2,
+                                   const bool   IsVSup,
+                                   const bool   IsMin)
 {
   E     = S->Value(U, V);
   Dist2 = P.SquareDistance(E);
@@ -219,14 +221,14 @@ Extrema_ExtPRevS::Extrema_ExtPRevS()
 
 //=================================================================================================
 
-Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                       theP,
+Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                  theP,
                                    const occ::handle<GeomAdaptor_SurfaceOfRevolution>& theS,
-                                   const double                                        theUmin,
-                                   const double                                        theUsup,
-                                   const double                                        theVmin,
-                                   const double                                        theVsup,
-                                   const double                                        theTolU,
-                                   const double                                        theTolV)
+                                   const double                            theUmin,
+                                   const double                            theUsup,
+                                   const double                            theVmin,
+                                   const double                            theVsup,
+                                   const double                            theTolU,
+                                   const double                            theTolV)
 {
   Initialize(theS, theUmin, theUsup, theVmin, theVsup, theTolU, theTolV);
 
@@ -235,10 +237,10 @@ Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                
 
 //=================================================================================================
 
-Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                       theP,
+Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                  theP,
                                    const occ::handle<GeomAdaptor_SurfaceOfRevolution>& theS,
-                                   const double                                        theTolU,
-                                   const double                                        theTolV)
+                                   const double                            theTolU,
+                                   const double                            theTolV)
 {
   Initialize(theS,
              theS->FirstUParameter(),
@@ -254,12 +256,12 @@ Extrema_ExtPRevS::Extrema_ExtPRevS(const gp_Pnt&                                
 //=================================================================================================
 
 void Extrema_ExtPRevS::Initialize(const occ::handle<GeomAdaptor_SurfaceOfRevolution>& theS,
-                                  const double                                        theUmin,
-                                  const double                                        theUsup,
-                                  const double                                        theVmin,
-                                  const double                                        theVsup,
-                                  const double                                        theTolU,
-                                  const double                                        theTolV)
+                                  const double                            theUmin,
+                                  const double                            theUsup,
+                                  const double                            theVmin,
+                                  const double                            theVsup,
+                                  const double                            theTolU,
+                                  const double                            theTolV)
 {
   myvinf = theVmin;
   myvsup = theVsup;
@@ -315,12 +317,12 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   gp_Pnt O = Ax.Location();
 
   double OPdir = gp_Vec(O, P).Dot(Dir);
-  gp_Pnt Pp    = P.Translated(Dir.Multiplied(-OPdir));
+  gp_Pnt        Pp    = P.Translated(Dir.Multiplied(-OPdir));
   if (O.IsEqual(Pp, Precision::Confusion())) // P is on the AxeOfRevolution
     return;
 
   double U, V;
-  gp_Pnt P1, Ppp;
+  gp_Pnt        P1, Ppp;
   double OPpz = gp_Vec(O, Pp).Dot(Z);
   if (std::abs(OPpz) <= gp::Resolution())
   {
@@ -351,9 +353,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
   T.SetRotation(Ax, -U);
   P1 = P.Transformed(T);
 
-  gp_Pnt E;
-  double Dist2;
-  int    i;
+  gp_Pnt           E;
+  double    Dist2;
+  int i;
 
   Extrema_ExtPElC anExt;
   PerformExtPElC(anExt, P1, anACurve, mytolv);

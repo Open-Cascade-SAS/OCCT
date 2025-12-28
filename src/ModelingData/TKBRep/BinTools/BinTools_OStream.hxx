@@ -67,7 +67,9 @@ public:
   Standard_EXPORT BinTools_OStream& operator<<(const NCollection_Vec3<float>& theValue);
 
   //! Writes 3 booleans as one byte to the stream.
-  Standard_EXPORT void PutBools(const bool theValue1, const bool theValue2, const bool theValue3);
+  Standard_EXPORT void PutBools(const bool theValue1,
+                                const bool theValue2,
+                                const bool theValue3);
 
   //! Writes 7 booleans as one byte to the stream.
   Standard_EXPORT void PutBools(const bool theValue1,
@@ -79,13 +81,13 @@ public:
                                 const bool theValue7);
 
 private:
-  Standard_OStream* myStream; ///< pointer to the stream
-                              // clang-format off
+  Standard_OStream* myStream;     ///< pointer to the stream
+                                  // clang-format off
   uint64_t myPosition; ///< the current position relatively to the OStream position at the moment of creation of this class instance
-                              // clang-format on
-  double myRealBuf[12];       ///< buffer for 12 reals storage
-  int    myIntBuf[3];         ///< buffer for 3 integers storage
-  float  myFloatBuf[3];       ///< buffer for 3 floats storage
+                                  // clang-format on
+  double    myRealBuf[12]; ///< buffer for 12 reals storage
+  int myIntBuf[3];   ///< buffer for 3 integers storage
+  float            myFloatBuf[3]; ///< buffer for 3 floats storage
 };
 
 #endif // _BinTools_OStream_HeaderFile

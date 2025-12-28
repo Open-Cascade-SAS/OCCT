@@ -30,7 +30,7 @@ StepBasic_Group::StepBasic_Group()
 //=================================================================================================
 
 void StepBasic_Group::Init(const occ::handle<TCollection_HAsciiString>& aName,
-                           const bool                                   hasDescription,
+                           const bool                  hasDescription,
                            const occ::handle<TCollection_HAsciiString>& aDescription)
 {
 

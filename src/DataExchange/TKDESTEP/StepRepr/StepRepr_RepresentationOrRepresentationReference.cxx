@@ -40,8 +40,8 @@ int StepRepr_RepresentationOrRepresentationReference::CaseNum(
 
 //=================================================================================================
 
-occ::handle<StepRepr_Representation> StepRepr_RepresentationOrRepresentationReference::
-  Representation() const
+occ::handle<StepRepr_Representation> StepRepr_RepresentationOrRepresentationReference::Representation()
+  const
 {
   return occ::down_cast<StepRepr_Representation>(Value());
 }

@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit, StepBasic_SiUnit)
 
 StepBasic_SiUnitAndPlaneAngleUnit::StepBasic_SiUnitAndPlaneAngleUnit() {}
 
-void StepBasic_SiUnitAndPlaneAngleUnit::Init(const bool                 hasAprefix,
+void StepBasic_SiUnitAndPlaneAngleUnit::Init(const bool     hasAprefix,
                                              const StepBasic_SiPrefix   aPrefix,
                                              const StepBasic_SiUnitName aName)
 {

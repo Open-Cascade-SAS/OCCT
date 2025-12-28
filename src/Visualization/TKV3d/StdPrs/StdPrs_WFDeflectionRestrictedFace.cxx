@@ -30,6 +30,7 @@
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_ToolRFace.hxx>
 #include <StdPrs_WFDeflectionRestrictedFace.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Sequence.hxx>
 
 #ifdef OCCT_DEBUG_MESH
@@ -40,18 +41,18 @@ extern OSD_Chronometer FFaceTimer1, FFaceTimer2, FFaceTimer3, FFaceTimer4;
 //=================================================================================================
 
 static void FindLimits(const Adaptor3d_Curve& aCurve,
-                       const double           aLimit,
-                       double&                First,
-                       double&                Last)
+                       const double    aLimit,
+                       double&         First,
+                       double&         Last)
 {
-  First         = std::max(aCurve.FirstParameter(), First);
-  Last          = std::min(aCurve.LastParameter(), Last);
+  First                     = std::max(aCurve.FirstParameter(), First);
+  Last                      = std::min(aCurve.LastParameter(), Last);
   bool firstInf = Precision::IsNegativeInfinite(First);
   bool lastInf  = Precision::IsPositiveInfinite(Last);
 
   if (firstInf || lastInf)
   {
-    gp_Pnt P1, P2;
+    gp_Pnt        P1, P2;
     double delta = 1;
     if (firstInf && lastInf)
     {
@@ -89,27 +90,26 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 
 //=================================================================================================
 
-void StdPrs_WFDeflectionRestrictedFace::Add(
-  const occ::handle<Prs3d_Presentation>&                        aPresentation,
-  const occ::handle<BRepAdaptor_Surface>&                       aFace,
-  const bool                                                    DrawUIso,
-  const bool                                                    DrawVIso,
-  const double                                                  Deflection,
-  const int                                                     NBUiso,
-  const int                                                     NBViso,
-  const occ::handle<Prs3d_Drawer>&                              aDrawer,
-  NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>& Curves)
+void StdPrs_WFDeflectionRestrictedFace::Add(const occ::handle<Prs3d_Presentation>&  aPresentation,
+                                            const occ::handle<BRepAdaptor_Surface>& aFace,
+                                            const bool             DrawUIso,
+                                            const bool             DrawVIso,
+                                            const double                Deflection,
+                                            const int             NBUiso,
+                                            const int             NBViso,
+                                            const occ::handle<Prs3d_Drawer>&        aDrawer,
+                                            NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>>&        Curves)
 {
 
 #ifdef OCCT_DEBUG_MESH
   FFaceTimer1.Start();
 #endif
 
-  StdPrs_ToolRFace ToolRst(aFace);
-  const double     UF = aFace->FirstUParameter();
-  const double     UL = aFace->LastUParameter();
-  const double     VF = aFace->FirstVParameter();
-  const double     VL = aFace->LastVParameter();
+  StdPrs_ToolRFace    ToolRst(aFace);
+  const double UF = aFace->FirstUParameter();
+  const double UL = aFace->LastUParameter();
+  const double VF = aFace->FirstVParameter();
+  const double VL = aFace->LastVParameter();
 
   const double aLimit = aDrawer->MaximalParameterValue();
 
@@ -120,12 +120,12 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
   double VMax = std::min(VL, aLimit);
 
   // update min max for the hatcher.
-  gp_Pnt2d P1, P2;
-  double   U1, U2;
-  gp_Pnt   dummypnt;
-  double   ddefle = std::max(UMax - UMin, VMax - VMin) * aDrawer->DeviationCoefficient();
+  gp_Pnt2d      P1, P2;
+  double U1, U2;
+  gp_Pnt        dummypnt;
+  double ddefle = std::max(UMax - UMin, VMax - VMin) * aDrawer->DeviationCoefficient();
   NCollection_Sequence<gp_Pnt2d> tabP;
-  double                         aHatchingTol = 1.e100;
+  double          aHatchingTol = 1.e100;
 
   UMin = VMin = 1.e100;
   UMax = VMax = -1.e100;
@@ -244,9 +244,9 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
   aHatchingTol = std::min(1.e-5, aHatchingTol);
 
   // load the isos
-  Hatch_Hatcher isobuild(aHatchingTol, ToolRst.IsOriented());
-  bool          isUClosed = aFace->IsUClosed();
-  bool          isVClosed = aFace->IsVClosed();
+  Hatch_Hatcher    isobuild(aHatchingTol, ToolRst.IsOriented());
+  bool isUClosed = aFace->IsUClosed();
+  bool isVClosed = aFace->IsVClosed();
   if (!isUClosed)
   {
     UMin = UMin + (UMax - UMin) / 1000.;
@@ -262,7 +262,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
   {
     if (NBUiso > 0)
     {
-      isUClosed = false; // En attendant un hatcher de course.
+      isUClosed        = false; // En attendant un hatcher de course.
       double du = isUClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
       for (int i = 1; i <= NBUiso; i++)
       {
@@ -274,7 +274,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
   {
     if (NBViso > 0)
     {
-      isVClosed = false;
+      isVClosed        = false;
       double dv = isVClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
       for (int i = 1; i <= NBViso; i++)
       {
@@ -303,7 +303,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
 
   Adaptor3d_IsoCurve anIso;
   anIso.Load(aFace);
-  occ::handle<Geom_Curve>    BC;
+  occ::handle<Geom_Curve>         BC;
   const BRepAdaptor_Surface& BS      = *aFace;
   GeomAbs_SurfaceType        thetype = aFace->GetType();
 
@@ -317,12 +317,12 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
     GB = BS.BSpline();
   }
 
-  const double anAngle        = aDrawer->DeviationAngle();
-  const int    aNumberOfLines = isobuild.NbLines();
+  const double    anAngle        = aDrawer->DeviationAngle();
+  const int aNumberOfLines = isobuild.NbLines();
   for (int i = 1; i <= aNumberOfLines; i++)
   {
-    int    NumberOfIntervals = isobuild.NbIntervals(i);
-    double Coord             = isobuild.Coordinate(i);
+    int NumberOfIntervals = isobuild.NbIntervals(i);
+    double    Coord             = isobuild.Coordinate(i);
     for (int j = 1; j <= NumberOfIntervals; j++)
     {
       double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
@@ -388,26 +388,26 @@ void StdPrs_WFDeflectionRestrictedFace::Add(
 
 //=================================================================================================
 
-bool StdPrs_WFDeflectionRestrictedFace::Match(const double                            X,
-                                              const double                            Y,
-                                              const double                            Z,
-                                              const double                            aDistance,
-                                              const occ::handle<BRepAdaptor_Surface>& aFace,
-                                              const occ::handle<Prs3d_Drawer>&        aDrawer,
-                                              const bool                              DrawUIso,
-                                              const bool                              DrawVIso,
-                                              const double                            Deflection,
-                                              const int                               NBUiso,
-                                              const int                               NBViso)
+bool StdPrs_WFDeflectionRestrictedFace::Match(const double X,
+                                                          const double Y,
+                                                          const double Z,
+                                                          const double aDistance,
+                                                          const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                          const occ::handle<Prs3d_Drawer>& aDrawer,
+                                                          const bool      DrawUIso,
+                                                          const bool      DrawVIso,
+                                                          const double         Deflection,
+                                                          const int      NBUiso,
+                                                          const int      NBViso)
 {
 
-  StdPrs_ToolRFace ToolRst(aFace);
-  const double     aLimit = aDrawer->MaximalParameterValue();
+  StdPrs_ToolRFace    ToolRst(aFace);
+  const double aLimit = aDrawer->MaximalParameterValue();
 
   // compute bounds of the restriction
-  double UMin, UMax, VMin, VMax;
-  double u, v, step;
-  int    i, nbPoints = 10;
+  double    UMin, UMax, VMin, VMax;
+  double    u, v, step;
+  int i, nbPoints = 10;
   UMin = VMin = RealLast();
   UMax = VMax = RealFirst();
 
@@ -433,9 +433,9 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
   }
 
   // load the isos
-  Hatch_Hatcher isobuild(1.e-5, ToolRst.IsOriented());
-  bool          UClosed = aFace->IsUClosed();
-  bool          VClosed = aFace->IsVClosed();
+  Hatch_Hatcher    isobuild(1.e-5, ToolRst.IsOriented());
+  bool UClosed = aFace->IsUClosed();
+  bool VClosed = aFace->IsVClosed();
 
   if (!UClosed)
   {
@@ -453,7 +453,7 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
   {
     if (NBUiso > 0)
     {
-      UClosed   = false; // En attendant un hatcher de course.
+      UClosed          = false; // En attendant un hatcher de course.
       double du = UClosed ? (UMax - UMin) / NBUiso : (UMax - UMin) / (1 + NBUiso);
       for (i = 1; i <= NBUiso; i++)
       {
@@ -465,7 +465,7 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
   {
     if (NBViso > 0)
     {
-      VClosed   = false;
+      VClosed          = false;
       double dv = VClosed ? (VMax - VMin) / NBViso : (VMax - VMin) / (1 + NBViso);
       for (i = 1; i <= NBViso; i++)
       {
@@ -513,13 +513,13 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
 
   Adaptor3d_IsoCurve anIso;
   anIso.Load(aFace);
-  int    NumberOfLines = isobuild.NbLines();
-  double anAngle       = aDrawer->DeviationAngle();
+  int NumberOfLines = isobuild.NbLines();
+  double    anAngle       = aDrawer->DeviationAngle();
 
   for (i = 1; i <= NumberOfLines; i++)
   {
-    int    NumberOfIntervals = isobuild.NbIntervals(i);
-    double Coord             = isobuild.Coordinate(i);
+    int NumberOfIntervals = isobuild.NbIntervals(i);
+    double    Coord             = isobuild.Coordinate(i);
     for (int j = 1; j <= NumberOfIntervals; j++)
     {
       double b1 = isobuild.Start(i, j), b2 = isobuild.End(i, j);
@@ -559,10 +559,9 @@ void StdPrs_WFDeflectionRestrictedFace::Add(const occ::handle<Prs3d_Presentation
 
 //=================================================================================================
 
-void StdPrs_WFDeflectionRestrictedFace::AddUIso(
-  const occ::handle<Prs3d_Presentation>&  aPresentation,
-  const occ::handle<BRepAdaptor_Surface>& aFace,
-  const occ::handle<Prs3d_Drawer>&        aDrawer)
+void StdPrs_WFDeflectionRestrictedFace::AddUIso(const occ::handle<Prs3d_Presentation>&  aPresentation,
+                                                const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                const occ::handle<Prs3d_Drawer>&        aDrawer)
 {
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> Curves;
   StdPrs_WFDeflectionRestrictedFace::Add(aPresentation,
@@ -578,10 +577,9 @@ void StdPrs_WFDeflectionRestrictedFace::AddUIso(
 
 //=================================================================================================
 
-void StdPrs_WFDeflectionRestrictedFace::AddVIso(
-  const occ::handle<Prs3d_Presentation>&  aPresentation,
-  const occ::handle<BRepAdaptor_Surface>& aFace,
-  const occ::handle<Prs3d_Drawer>&        aDrawer)
+void StdPrs_WFDeflectionRestrictedFace::AddVIso(const occ::handle<Prs3d_Presentation>&  aPresentation,
+                                                const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                const occ::handle<Prs3d_Drawer>&        aDrawer)
 {
   NCollection_List<occ::handle<NCollection_HSequence<gp_Pnt>>> Curves;
   StdPrs_WFDeflectionRestrictedFace::Add(aPresentation,
@@ -597,12 +595,12 @@ void StdPrs_WFDeflectionRestrictedFace::AddVIso(
 
 //=================================================================================================
 
-bool StdPrs_WFDeflectionRestrictedFace::Match(const double                            X,
-                                              const double                            Y,
-                                              const double                            Z,
-                                              const double                            aDistance,
-                                              const occ::handle<BRepAdaptor_Surface>& aFace,
-                                              const occ::handle<Prs3d_Drawer>&        aDrawer)
+bool StdPrs_WFDeflectionRestrictedFace::Match(const double X,
+                                                          const double Y,
+                                                          const double Z,
+                                                          const double aDistance,
+                                                          const occ::handle<BRepAdaptor_Surface>& aFace,
+                                                          const occ::handle<Prs3d_Drawer>& aDrawer)
 {
   return StdPrs_WFDeflectionRestrictedFace::Match(X,
                                                   Y,
@@ -619,12 +617,13 @@ bool StdPrs_WFDeflectionRestrictedFace::Match(const double                      
 
 //=================================================================================================
 
-bool StdPrs_WFDeflectionRestrictedFace::MatchUIso(const double                            X,
-                                                  const double                            Y,
-                                                  const double                            Z,
-                                                  const double                            aDistance,
-                                                  const occ::handle<BRepAdaptor_Surface>& aFace,
-                                                  const occ::handle<Prs3d_Drawer>&        aDrawer)
+bool StdPrs_WFDeflectionRestrictedFace::MatchUIso(
+  const double                X,
+  const double                Y,
+  const double                Z,
+  const double                aDistance,
+  const occ::handle<BRepAdaptor_Surface>& aFace,
+  const occ::handle<Prs3d_Drawer>&        aDrawer)
 {
   return StdPrs_WFDeflectionRestrictedFace::Match(X,
                                                   Y,
@@ -641,12 +640,13 @@ bool StdPrs_WFDeflectionRestrictedFace::MatchUIso(const double                  
 
 //=================================================================================================
 
-bool StdPrs_WFDeflectionRestrictedFace::MatchVIso(const double                            X,
-                                                  const double                            Y,
-                                                  const double                            Z,
-                                                  const double                            aDistance,
-                                                  const occ::handle<BRepAdaptor_Surface>& aFace,
-                                                  const occ::handle<Prs3d_Drawer>&        aDrawer)
+bool StdPrs_WFDeflectionRestrictedFace::MatchVIso(
+  const double                X,
+  const double                Y,
+  const double                Z,
+  const double                aDistance,
+  const occ::handle<BRepAdaptor_Surface>& aFace,
+  const occ::handle<Prs3d_Drawer>&        aDrawer)
 {
   return StdPrs_WFDeflectionRestrictedFace::Match(X,
                                                   Y,

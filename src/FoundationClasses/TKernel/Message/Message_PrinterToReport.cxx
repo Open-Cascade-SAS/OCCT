@@ -69,7 +69,7 @@ void Message_PrinterToReport::SendStringStream(const Standard_SStream& theStream
 //=================================================================================================
 
 void Message_PrinterToReport::SendObject(const occ::handle<Standard_Transient>& theObject,
-                                         const Message_Gravity                  theGravity) const
+                                         const Message_Gravity             theGravity) const
 {
   const occ::handle<Message_Report>& aReport = Report();
   if (!aReport->ActiveMetrics().IsEmpty())
