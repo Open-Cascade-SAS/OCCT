@@ -64,68 +64,75 @@ Standard_DEPRECATED("Standard_True is deprecated, use true directly")
 inline constexpr bool Standard_True = true;
 
 //! @deprecated Use 'int' directly instead.
-typedef int Standard_Integer [[deprecated("Standard_Integer is deprecated, use int directly")]];
+Standard_DEPRECATED("Standard_Integer is deprecated, use int directly")
+typedef int Standard_Integer;
 
 //! @deprecated Use 'unsigned int' directly instead.
-typedef unsigned int Standard_UInteger
-  [[deprecated("Standard_UInteger is deprecated, use unsigned int directly")]];
+Standard_DEPRECATED("Standard_UInteger is deprecated, use unsigned int directly")
+typedef unsigned int Standard_UInteger;
 
 //! @deprecated Use 'double' directly instead.
-typedef double Standard_Real [[deprecated("Standard_Real is deprecated, use double directly")]];
+Standard_DEPRECATED("Standard_Real is deprecated, use double directly")
+typedef double Standard_Real;
 
 //! @deprecated Use 'bool' directly instead.
-typedef bool Standard_Boolean [[deprecated("Standard_Boolean is deprecated, use bool directly")]];
+Standard_DEPRECATED("Standard_Boolean is deprecated, use bool directly")
+typedef bool Standard_Boolean;
 
 //! @deprecated Use 'float' directly instead.
-typedef float Standard_ShortReal
-  [[deprecated("Standard_ShortReal is deprecated, use float directly")]];
+Standard_DEPRECATED("Standard_ShortReal is deprecated, use float directly")
+typedef float Standard_ShortReal;
 
 //! @deprecated Use 'char' directly instead.
-typedef char Standard_Character
-  [[deprecated("Standard_Character is deprecated, use char directly")]];
+Standard_DEPRECATED("Standard_Character is deprecated, use char directly")
+typedef char Standard_Character;
 
 //! @deprecated Use 'uint8_t' directly instead.
-typedef uint8_t Standard_Byte [[deprecated("Standard_Byte is deprecated, use uint8_t directly")]];
+Standard_DEPRECATED("Standard_Byte is deprecated, use uint8_t directly")
+typedef uint8_t Standard_Byte;
 
 //! @deprecated Use 'void*' directly instead.
-typedef void* Standard_Address [[deprecated("Standard_Address is deprecated, use void* directly")]];
+Standard_DEPRECATED("Standard_Address is deprecated, use void* directly")
+typedef void* Standard_Address;
 
 //! @deprecated Use 'size_t' directly instead.
-typedef size_t Standard_Size [[deprecated("Standard_Size is deprecated, use size_t directly")]];
+Standard_DEPRECATED("Standard_Size is deprecated, use size_t directly")
+typedef size_t Standard_Size;
 
 //! @deprecated Use 'std::time_t' directly instead.
-typedef std::time_t Standard_Time
-  [[deprecated("Standard_Time is deprecated, use std::time_t directly")]];
+Standard_DEPRECATED("Standard_Time is deprecated, use std::time_t directly")
+typedef std::time_t Standard_Time;
 
 //! @deprecated Use 'char' directly instead.
-typedef char Standard_Utf8Char [[deprecated("Standard_Utf8Char is deprecated, use char directly")]];
+Standard_DEPRECATED("Standard_Utf8Char is deprecated, use char directly")
+typedef char Standard_Utf8Char;
 
 //! @deprecated Use 'unsigned char' directly instead.
-typedef unsigned char Standard_Utf8UChar
-  [[deprecated("Standard_Utf8UChar is deprecated, use unsigned char directly")]];
+Standard_DEPRECATED("Standard_Utf8UChar is deprecated, use unsigned char directly")
+typedef unsigned char Standard_Utf8UChar;
 
 //! @deprecated Use 'char16_t' directly instead.
-typedef char16_t Standard_ExtCharacter
-  [[deprecated("Standard_ExtCharacter is deprecated, use char16_t directly")]];
+Standard_DEPRECATED("Standard_ExtCharacter is deprecated, use char16_t directly")
+typedef char16_t Standard_ExtCharacter;
 
 //! @deprecated Use 'char16_t' directly instead.
-typedef char16_t Standard_Utf16Char
-  [[deprecated("Standard_Utf16Char is deprecated, use char16_t directly")]];
+Standard_DEPRECATED("Standard_Utf16Char is deprecated, use char16_t directly")
+typedef char16_t Standard_Utf16Char;
 
 //! @deprecated Use 'char32_t' directly instead.
-typedef char32_t Standard_Utf32Char
-  [[deprecated("Standard_Utf32Char is deprecated, use char32_t directly")]];
+Standard_DEPRECATED("Standard_Utf32Char is deprecated, use char32_t directly")
+typedef char32_t Standard_Utf32Char;
 
 //! @deprecated Use 'wchar_t' directly instead.
-typedef wchar_t Standard_WideChar
-  [[deprecated("Standard_WideChar is deprecated, use wchar_t directly")]];
+Standard_DEPRECATED("Standard_WideChar is deprecated, use wchar_t directly")
+typedef wchar_t Standard_WideChar;
 
 //! @deprecated Use 'const char*' directly instead.
-typedef const char* Standard_CString
-  [[deprecated("Standard_CString is deprecated, use const char* directly")]];
+Standard_DEPRECATED("Standard_CString is deprecated, use const char* directly")
+typedef const char* Standard_CString;
 
 //! @deprecated Use 'const char16_t*' directly instead.
-typedef const char16_t* Standard_ExtString
-  [[deprecated("Standard_ExtString is deprecated, use const char16_t* directly")]];
+Standard_DEPRECATED("Standard_ExtString is deprecated, use const char16_t* directly")
+typedef const char16_t* Standard_ExtString;
 
 #endif // _Standard_TypeDef_HeaderFile

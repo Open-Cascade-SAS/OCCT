@@ -246,17 +246,19 @@ if (BUILD_ENABLE_CLANG_TIDY)
       ",modernize-redundant-void-arg"       # Remove void from f(void) signatures
       ",modernize-use-bool-literals"        # Use true/false instead of 1/0
       ",modernize-use-noexcept"             # Replace throw() with noexcept
-      ",modernize-use-using"                # Replace typedef with using
       ",modernize-deprecated-headers"       # Use C++ headers instead of C headers
       ",readability-redundant-member-init"  # Remove redundant member initializers
       ",readability-redundant-string-init"  # Remove redundant string initialization
     )
     # NOTE: performance-unnecessary-value-param excluded - breaks function pointer compatibility
+    # NOTE: modernize-use-using excluded - corrupts function pointer typedefs (drops const)
     string(REPLACE ";" "" CLANG_TIDY_CHECKS "${CLANG_TIDY_CHECKS}")
+    # Header filter to also process .hxx files (matches OCCT source paths)
+    set(CLANG_TIDY_HEADER_FILTER ".*\\.(hxx|lxx)$")
     if (BUILD_CLANG_TIDY_FIX)
-      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--fix")
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--header-filter=${CLANG_TIDY_HEADER_FILTER};--fix")
     else()
-      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS}")
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=${CLANG_TIDY_CHECKS};--header-filter=${CLANG_TIDY_HEADER_FILTER}")
     endif()
   else()
     message(WARNING "clang-tidy not found, BUILD_ENABLE_CLANG_TIDY disabled")

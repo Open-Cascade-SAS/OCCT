@@ -57,8 +57,8 @@ public:
   //! this point will be deleted.
   Standard_EXPORT static void JoinWLines(NCollection_Sequence<occ::handle<IntPatch_Line>>& theSlin,
                                          NCollection_Sequence<IntPatch_Point>&             theSPnt,
-                                         occ::handle<Adaptor3d_Surface>                    theS1,
-                                         occ::handle<Adaptor3d_Surface>                    theS2,
+                                         const occ::handle<Adaptor3d_Surface>&                    theS1,
+                                         const occ::handle<Adaptor3d_Surface>&                    theS2,
                                          const double theTol3D);
 
   //! Extends every line from theSlin (if it is possible) to be started/finished
