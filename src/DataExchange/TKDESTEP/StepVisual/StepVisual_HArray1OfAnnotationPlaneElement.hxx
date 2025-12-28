@@ -17,8 +17,6 @@
 #define _StepVisual_HArray1OfAnnotationPlaneElement_HeaderFile
 
 #include <StepVisual_Array1OfAnnotationPlaneElement.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfAnnotationPlaneElement,
-               StepVisual_Array1OfAnnotationPlaneElement)
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement> StepVisual_HArray1OfAnnotationPlaneElement;
 #endif // _StepVisual_HArray1OfAnnotationPlaneElement_HeaderFile

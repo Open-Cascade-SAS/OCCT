@@ -19,8 +19,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TopTools_HArray1OfShape, TopTools_Array1OfShape)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TopoDS_Shape> TopTools_HArray1OfShape;
 #endif

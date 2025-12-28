@@ -18,8 +18,6 @@
 #define StepAP214_HArray1OfPresentedItemSelect_HeaderFile
 
 #include <StepAP214_Array1OfPresentedItemSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfPresentedItemSelect, StepAP214_Array1OfPresentedItemSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_PresentedItemSelect> StepAP214_HArray1OfPresentedItemSelect;
 #endif

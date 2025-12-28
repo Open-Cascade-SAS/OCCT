@@ -22,10 +22,10 @@
 #include <Standard_Handle.hxx>
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 class Standard_Transient;
 class StepKinematics_RotationAboutDirection;
-class TColStd_HArray1OfReal;
 
 //! Representation of STEP SELECT type SpatialRotation
 class StepKinematics_SpatialRotation : public StepData_SelectType

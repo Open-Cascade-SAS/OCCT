@@ -19,8 +19,6 @@
 
 #include <AppParCurves_MultiCurve.hxx>
 #include <AppParCurves_Array1OfMultiCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(AppParCurves_HArray1OfMultiCurve, AppParCurves_Array1OfMultiCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<AppParCurves_MultiCurve> AppParCurves_HArray1OfMultiCurve;
 #endif

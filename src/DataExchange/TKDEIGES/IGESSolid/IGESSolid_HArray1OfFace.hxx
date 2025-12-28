@@ -18,8 +18,6 @@
 #define IGESSolid_HArray1OfFace_HeaderFile
 
 #include <IGESSolid_Array1OfFace.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESSolid_HArray1OfFace, IGESSolid_Array1OfFace)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESSolid_Face)> IGESSolid_HArray1OfFace;
 #endif

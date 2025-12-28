@@ -18,8 +18,6 @@
 #define HLRAlgo_HArray1OfPINod_HeaderFile
 
 #include <HLRAlgo_Array1OfPINod.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(HLRAlgo_HArray1OfPINod, HLRAlgo_Array1OfPINod)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(HLRAlgo_PolyInternalNode)> HLRAlgo_HArray1OfPINod;
 #endif

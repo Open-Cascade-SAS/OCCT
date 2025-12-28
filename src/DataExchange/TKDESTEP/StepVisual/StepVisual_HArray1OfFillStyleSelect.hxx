@@ -18,8 +18,6 @@
 #define StepVisual_HArray1OfFillStyleSelect_HeaderFile
 
 #include <StepVisual_Array1OfFillStyleSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfFillStyleSelect, StepVisual_Array1OfFillStyleSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_FillStyleSelect> StepVisual_HArray1OfFillStyleSelect;
 #endif

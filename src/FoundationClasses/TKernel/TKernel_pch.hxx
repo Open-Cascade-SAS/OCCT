@@ -62,7 +62,7 @@
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_Buffer.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_DefineHArray1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_List.hxx>

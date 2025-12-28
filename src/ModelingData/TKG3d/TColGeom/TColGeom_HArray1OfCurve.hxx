@@ -18,8 +18,6 @@
 #define TColGeom_HArray1OfCurve_HeaderFile
 
 #include <TColGeom_Array1OfCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColGeom_HArray1OfCurve, TColGeom_Array1OfCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Geom_Curve)> TColGeom_HArray1OfCurve;
 #endif

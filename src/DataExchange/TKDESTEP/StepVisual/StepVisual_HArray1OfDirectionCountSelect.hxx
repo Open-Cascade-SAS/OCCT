@@ -18,8 +18,6 @@
 #define StepVisual_HArray1OfDirectionCountSelect_HeaderFile
 
 #include <StepVisual_Array1OfDirectionCountSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfDirectionCountSelect, StepVisual_Array1OfDirectionCountSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_DirectionCountSelect> StepVisual_HArray1OfDirectionCountSelect;
 #endif

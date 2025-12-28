@@ -18,8 +18,6 @@
 #define ProjLib_HSequenceOfHSequenceOfPnt_HeaderFile
 
 #include <ProjLib_SequenceOfHSequenceOfPnt.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(ProjLib_HSequenceOfHSequenceOfPnt, ProjLib_SequenceOfHSequenceOfPnt)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(TColgp_HSequenceOfPnt)> ProjLib_HSequenceOfHSequenceOfPnt;
 #endif

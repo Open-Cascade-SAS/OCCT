@@ -18,8 +18,6 @@
 #define StepVisual_HArray1OfStyleContextSelect_HeaderFile
 
 #include <StepVisual_Array1OfStyleContextSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfStyleContextSelect, StepVisual_Array1OfStyleContextSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_StyleContextSelect> StepVisual_HArray1OfStyleContextSelect;
 #endif

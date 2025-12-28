@@ -18,8 +18,6 @@
 #define Storage_HPArray_HeaderFile
 
 #include <Storage_PArray.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Storage_HPArray, Storage_PArray)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Standard_Persistent)> Storage_HPArray;
 #endif

@@ -18,8 +18,6 @@
 #define STEPSelections_HSequenceOfAssemblyLink_HeaderFile
 
 #include <STEPSelections_SequenceOfAssemblyLink.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(STEPSelections_HSequenceOfAssemblyLink, STEPSelections_SequenceOfAssemblyLink)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(STEPSelections_AssemblyLink)> STEPSelections_HSequenceOfAssemblyLink;
 #endif

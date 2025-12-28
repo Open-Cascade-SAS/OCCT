@@ -19,8 +19,6 @@
 
 #include <TDF_Label.hxx>
 #include <TDataStd_LabelArray1.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TDataStd_HLabelArray1, TDataStd_LabelArray1)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TDF_Label> TDataStd_HLabelArray1;
 #endif

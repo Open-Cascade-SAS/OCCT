@@ -18,8 +18,6 @@
 #define TColGeom_HArray2OfSurface_HeaderFile
 
 #include <TColGeom_Array2OfSurface.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColGeom_HArray2OfSurface, TColGeom_Array2OfSurface)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Handle(Geom_Surface)> TColGeom_HArray2OfSurface;
 #endif

@@ -15,9 +15,6 @@
 #define StepElement_HArray1OfCurveElementEndReleasePacket_HeaderFile
 
 #include <StepElement_Array1OfCurveElementEndReleasePacket.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepElement_HArray1OfCurveElementEndReleasePacket,
-               StepElement_Array1OfCurveElementEndReleasePacket)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepElement_CurveElementEndReleasePacket)> StepElement_HArray1OfCurveElementEndReleasePacket;
 #endif

@@ -21,8 +21,7 @@
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZoneDefinition.hxx>
 #include <Standard_Integer.hxx>
-
-class StepRepr_HArray1OfShapeAspect;
+#include <StepRepr_HArray1OfShapeAspect.hxx>
 
 class StepDimTol_RunoutZoneDefinition;
 DEFINE_STANDARD_HANDLE(StepDimTol_RunoutZoneDefinition, StepDimTol_ToleranceZoneDefinition)

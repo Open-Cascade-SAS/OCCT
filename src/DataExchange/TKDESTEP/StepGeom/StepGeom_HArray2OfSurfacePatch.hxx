@@ -18,8 +18,6 @@
 #define StepGeom_HArray2OfSurfacePatch_HeaderFile
 
 #include <StepGeom_Array2OfSurfacePatch.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(StepGeom_HArray2OfSurfacePatch, StepGeom_Array2OfSurfacePatch)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Handle(StepGeom_SurfacePatch)> StepGeom_HArray2OfSurfacePatch;
 #endif

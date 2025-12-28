@@ -17,8 +17,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColStd_HArray1OfAsciiString, TColStd_Array1OfAsciiString)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TCollection_AsciiString> TColStd_HArray1OfAsciiString;
 #endif

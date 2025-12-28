@@ -19,8 +19,6 @@
 
 #include <gp_Vec2d.hxx>
 #include <TColgp_Array1OfVec2d.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColgp_HArray1OfVec2d, TColgp_Array1OfVec2d)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<gp_Vec2d> TColgp_HArray1OfVec2d;
 #endif

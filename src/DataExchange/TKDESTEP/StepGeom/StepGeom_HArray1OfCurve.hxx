@@ -19,8 +19,6 @@
 
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_Array1OfCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepGeom_HArray1OfCurve, StepGeom_Array1OfCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepGeom_Curve)> StepGeom_HArray1OfCurve;
 #endif

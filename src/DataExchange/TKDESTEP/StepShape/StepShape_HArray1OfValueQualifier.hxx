@@ -18,8 +18,6 @@
 #define StepShape_HArray1OfValueQualifier_HeaderFile
 
 #include <StepShape_Array1OfValueQualifier.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepShape_HArray1OfValueQualifier, StepShape_Array1OfValueQualifier)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepShape_ValueQualifier> StepShape_HArray1OfValueQualifier;
 #endif

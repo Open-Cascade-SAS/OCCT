@@ -18,8 +18,6 @@
 #define Storage_HSeqOfRoot_HeaderFile
 
 #include <Storage_SeqOfRoot.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Storage_HSeqOfRoot, Storage_SeqOfRoot)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Storage_Root)> Storage_HSeqOfRoot;
 #endif

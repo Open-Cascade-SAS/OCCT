@@ -20,8 +20,8 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_CameraModelD3.hxx>
+#include <StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect.hxx>
 class StepGeom_Axis2Placement3d;
-class StepVisual_HArray1OfCameraModelD3MultiClippingInterectionSelect;
 class StepVisual_ViewVolume;
 class TCollection_HAsciiString;
 

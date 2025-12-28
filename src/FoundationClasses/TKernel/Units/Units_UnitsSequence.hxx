@@ -19,8 +19,6 @@
 
 #include <Units_Unit.hxx>
 #include <Units_UtsSequence.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Units_UnitsSequence, Units_UtsSequence)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Units_Unit)> Units_UnitsSequence;
 #endif

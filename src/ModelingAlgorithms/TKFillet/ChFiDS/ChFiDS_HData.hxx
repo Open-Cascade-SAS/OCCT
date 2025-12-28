@@ -18,8 +18,6 @@
 #define ChFiDS_HData_HeaderFile
 
 #include <ChFiDS_SequenceOfSurfData.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(ChFiDS_HData, ChFiDS_SequenceOfSurfData)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(ChFiDS_SurfData)> ChFiDS_HData;
 #endif

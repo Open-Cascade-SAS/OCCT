@@ -18,8 +18,6 @@
 #define StepAP214_HArray1OfAutoDesignGroupedItem_HeaderFile
 
 #include <StepAP214_Array1OfAutoDesignGroupedItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfAutoDesignGroupedItem, StepAP214_Array1OfAutoDesignGroupedItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_AutoDesignGroupedItem> StepAP214_HArray1OfAutoDesignGroupedItem;
 #endif

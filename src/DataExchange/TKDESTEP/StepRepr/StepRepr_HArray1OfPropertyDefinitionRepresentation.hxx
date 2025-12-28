@@ -18,9 +18,6 @@
 #define StepRepr_HArray1OfPropertyDefinitionRepresentation_HeaderFile
 
 #include <StepRepr_Array1OfPropertyDefinitionRepresentation.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepRepr_HArray1OfPropertyDefinitionRepresentation,
-               StepRepr_Array1OfPropertyDefinitionRepresentation)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepRepr_PropertyDefinitionRepresentation)> StepRepr_HArray1OfPropertyDefinitionRepresentation;
 #endif

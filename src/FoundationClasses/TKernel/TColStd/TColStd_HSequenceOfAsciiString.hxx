@@ -17,8 +17,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfAsciiString, TColStd_SequenceOfAsciiString)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<TCollection_AsciiString> TColStd_HSequenceOfAsciiString;
 #endif

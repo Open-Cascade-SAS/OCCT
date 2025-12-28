@@ -18,8 +18,6 @@
 #define StepBasic_HArray1OfOrganization_HeaderFile
 
 #include <StepBasic_Array1OfOrganization.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepBasic_HArray1OfOrganization, StepBasic_Array1OfOrganization)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepBasic_Organization)> StepBasic_HArray1OfOrganization;
 #endif

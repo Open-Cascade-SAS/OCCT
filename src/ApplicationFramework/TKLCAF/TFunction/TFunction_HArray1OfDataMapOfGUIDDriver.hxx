@@ -18,8 +18,6 @@
 #define TFunction_HArray1OfDataMapOfGUIDDriver_HeaderFile
 
 #include <TFunction_Array1OfDataMapOfGUIDDriver.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TFunction_HArray1OfDataMapOfGUIDDriver, TFunction_Array1OfDataMapOfGUIDDriver)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TFunction_DataMapOfGUIDDriver> TFunction_HArray1OfDataMapOfGUIDDriver;
 #endif

@@ -18,9 +18,6 @@
 #define StepAP214_HArray1OfSecurityClassificationItem_HeaderFile
 
 #include <StepAP214_Array1OfSecurityClassificationItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfSecurityClassificationItem,
-               StepAP214_Array1OfSecurityClassificationItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_SecurityClassificationItem> StepAP214_HArray1OfSecurityClassificationItem;
 #endif

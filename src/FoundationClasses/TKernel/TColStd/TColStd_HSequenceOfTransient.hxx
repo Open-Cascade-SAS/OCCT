@@ -17,8 +17,6 @@
 
 #include <Standard_Transient.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColStd_HSequenceOfTransient, TColStd_SequenceOfTransient)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Standard_Transient)> TColStd_HSequenceOfTransient;
 #endif

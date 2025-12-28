@@ -18,8 +18,6 @@
 #define TopOpeBRep_HArray1OfLineInter_HeaderFile
 
 #include <TopOpeBRep_Array1OfLineInter.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TopOpeBRep_HArray1OfLineInter, TopOpeBRep_Array1OfLineInter)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TopOpeBRep_LineInter> TopOpeBRep_HArray1OfLineInter;
 #endif

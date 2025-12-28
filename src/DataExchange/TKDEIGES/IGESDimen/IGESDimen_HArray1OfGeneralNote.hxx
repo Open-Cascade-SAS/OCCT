@@ -18,8 +18,6 @@
 #define IGESDimen_HArray1OfGeneralNote_HeaderFile
 
 #include <IGESDimen_Array1OfGeneralNote.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESDimen_HArray1OfGeneralNote, IGESDimen_Array1OfGeneralNote)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESDimen_GeneralNote)> IGESDimen_HArray1OfGeneralNote;
 #endif

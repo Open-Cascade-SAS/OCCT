@@ -15,8 +15,6 @@
 #define StepFEA_HArray1OfNodeRepresentation_HeaderFile
 
 #include <StepFEA_Array1OfNodeRepresentation.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepFEA_HArray1OfNodeRepresentation, StepFEA_Array1OfNodeRepresentation)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepFEA_NodeRepresentation)> StepFEA_HArray1OfNodeRepresentation;
 #endif

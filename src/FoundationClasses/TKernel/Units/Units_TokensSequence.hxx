@@ -18,8 +18,6 @@
 #define Units_TokensSequence_HeaderFile
 
 #include <Units_TksSequence.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Units_TokensSequence, Units_TksSequence)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Units_Token)> Units_TokensSequence;
 #endif

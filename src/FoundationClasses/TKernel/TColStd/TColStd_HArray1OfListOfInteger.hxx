@@ -16,8 +16,6 @@
 #define TColStd_HArray1OfListOfInteger_HeaderFile
 
 #include <TColStd_Array1OfListOfInteger.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColStd_HArray1OfListOfInteger, TColStd_Array1OfListOfInteger)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TColStd_ListOfInteger> TColStd_HArray1OfListOfInteger;
 #endif

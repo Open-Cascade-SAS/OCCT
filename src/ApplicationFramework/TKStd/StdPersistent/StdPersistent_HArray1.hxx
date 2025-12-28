@@ -17,9 +17,9 @@
 #include <StdLPersistent_HArray1.hxx>
 #include <StdObject_Shape.hxx>
 
-#include <NCollection_DefineHArray1.hxx>
+#include <NCollection_HArray1.hxx>
 
-DEFINE_HARRAY1(StdPersistent_HArray1OfShape1, NCollection_Array1<StdObject_Shape>)
+typedef NCollection_HArray1<StdObject_Shape> StdPersistent_HArray1OfShape1;
 
 class StdPersistent_HArray1 : private StdLPersistent_HArray1
 {

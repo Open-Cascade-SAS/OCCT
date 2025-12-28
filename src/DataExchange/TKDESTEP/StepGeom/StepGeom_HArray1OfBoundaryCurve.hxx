@@ -19,8 +19,6 @@
 
 #include <StepGeom_BoundaryCurve.hxx>
 #include <StepGeom_Array1OfBoundaryCurve.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepGeom_HArray1OfBoundaryCurve, StepGeom_Array1OfBoundaryCurve)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepGeom_BoundaryCurve)> StepGeom_HArray1OfBoundaryCurve;
 #endif

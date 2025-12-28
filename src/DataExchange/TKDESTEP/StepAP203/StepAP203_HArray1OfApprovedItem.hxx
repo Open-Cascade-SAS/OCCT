@@ -18,8 +18,6 @@
 #define StepAP203_HArray1OfApprovedItem_HeaderFile
 
 #include <StepAP203_Array1OfApprovedItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP203_HArray1OfApprovedItem, StepAP203_Array1OfApprovedItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP203_ApprovedItem> StepAP203_HArray1OfApprovedItem;
 #endif

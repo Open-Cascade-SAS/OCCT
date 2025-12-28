@@ -19,8 +19,6 @@
 
 #include <gp_Ax2.hxx>
 #include <GeomFill_SequenceOfAx2.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(GeomFill_HSequenceOfAx2, GeomFill_SequenceOfAx2)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<gp_Ax2> GeomFill_HSequenceOfAx2;
 #endif

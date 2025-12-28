@@ -18,8 +18,6 @@
 #define IGESSolid_HArray1OfVertexList_HeaderFile
 
 #include <IGESSolid_Array1OfVertexList.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESSolid_HArray1OfVertexList, IGESSolid_Array1OfVertexList)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESSolid_VertexList)> IGESSolid_HArray1OfVertexList;
 #endif

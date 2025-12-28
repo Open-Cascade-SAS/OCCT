@@ -18,8 +18,6 @@
 #define Transfer_HSequenceOfBinder_HeaderFile
 
 #include <Transfer_SequenceOfBinder.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(Transfer_HSequenceOfBinder, Transfer_SequenceOfBinder)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(Transfer_Binder)> Transfer_HSequenceOfBinder;
 #endif

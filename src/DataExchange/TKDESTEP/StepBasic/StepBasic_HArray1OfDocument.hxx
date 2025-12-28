@@ -18,8 +18,6 @@
 #define StepBasic_HArray1OfDocument_HeaderFile
 
 #include <StepBasic_Array1OfDocument.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepBasic_HArray1OfDocument, StepBasic_Array1OfDocument)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepBasic_Document)> StepBasic_HArray1OfDocument;
 #endif

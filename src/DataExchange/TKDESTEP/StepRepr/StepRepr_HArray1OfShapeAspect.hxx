@@ -17,7 +17,6 @@
 #define _StepRepr_HArray1OfShapeAspect_HeaderFile
 
 #include <StepRepr_Array1OfShapeAspect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepRepr_HArray1OfShapeAspect, StepRepr_Array1OfShapeAspect)
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepRepr_ShapeAspect)> StepRepr_HArray1OfShapeAspect;
 #endif // _StepRepr_HArray1OfShapeAspect_HeaderFile

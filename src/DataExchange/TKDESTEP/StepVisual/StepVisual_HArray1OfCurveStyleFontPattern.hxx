@@ -18,8 +18,6 @@
 #define StepVisual_HArray1OfCurveStyleFontPattern_HeaderFile
 
 #include <StepVisual_Array1OfCurveStyleFontPattern.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfCurveStyleFontPattern, StepVisual_Array1OfCurveStyleFontPattern)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepVisual_CurveStyleFontPattern)> StepVisual_HArray1OfCurveStyleFontPattern;
 #endif

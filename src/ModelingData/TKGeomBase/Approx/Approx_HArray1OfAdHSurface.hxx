@@ -19,8 +19,6 @@
 
 #include <Adaptor3d_Surface.hxx>
 #include <Approx_Array1OfAdHSurface.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(Approx_HArray1OfAdHSurface, Approx_Array1OfAdHSurface)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(Adaptor3d_Surface)> Approx_HArray1OfAdHSurface;
 #endif

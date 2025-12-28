@@ -19,8 +19,6 @@
 
 #include <gp_Dir.hxx>
 #include <TColgp_SequenceOfDir.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TColgp_HSequenceOfDir, TColgp_SequenceOfDir)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<gp_Dir> TColgp_HSequenceOfDir;
 #endif

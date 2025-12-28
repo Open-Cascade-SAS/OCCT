@@ -16,8 +16,6 @@
 #define TColStd_HArray2OfReal_HeaderFile
 
 #include <TColStd_Array2OfReal.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TColStd_HArray2OfReal, TColStd_Array2OfReal)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Standard_Real> TColStd_HArray2OfReal;
 #endif

@@ -17,8 +17,6 @@
 
 #include <Standard_ShortReal.hxx>
 #include <TShort_SequenceOfShortReal.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(TShort_HSequenceOfShortReal, TShort_SequenceOfShortReal)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Standard_ShortReal> TShort_HSequenceOfShortReal;
 #endif

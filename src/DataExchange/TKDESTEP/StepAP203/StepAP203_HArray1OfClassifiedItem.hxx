@@ -18,8 +18,6 @@
 #define StepAP203_HArray1OfClassifiedItem_HeaderFile
 
 #include <StepAP203_Array1OfClassifiedItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP203_HArray1OfClassifiedItem, StepAP203_Array1OfClassifiedItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP203_ClassifiedItem> StepAP203_HArray1OfClassifiedItem;
 #endif

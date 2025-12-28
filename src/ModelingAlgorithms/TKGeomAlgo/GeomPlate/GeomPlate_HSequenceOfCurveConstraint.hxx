@@ -19,8 +19,6 @@
 
 #include <GeomPlate_CurveConstraint.hxx>
 #include <GeomPlate_SequenceOfCurveConstraint.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(GeomPlate_HSequenceOfCurveConstraint, GeomPlate_SequenceOfCurveConstraint)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(GeomPlate_CurveConstraint)> GeomPlate_HSequenceOfCurveConstraint;
 #endif

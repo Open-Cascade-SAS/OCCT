@@ -16,8 +16,6 @@
 #define TColStd_HArray1OfBoolean_HeaderFile
 
 #include <TColStd_Array1OfBoolean.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColStd_HArray1OfBoolean, TColStd_Array1OfBoolean)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Standard_Boolean> TColStd_HArray1OfBoolean;
 #endif

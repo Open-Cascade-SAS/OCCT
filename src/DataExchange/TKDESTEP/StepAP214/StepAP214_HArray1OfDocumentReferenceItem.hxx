@@ -18,8 +18,6 @@
 #define StepAP214_HArray1OfDocumentReferenceItem_HeaderFile
 
 #include <StepAP214_Array1OfDocumentReferenceItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepAP214_HArray1OfDocumentReferenceItem, StepAP214_Array1OfDocumentReferenceItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepAP214_DocumentReferenceItem> StepAP214_HArray1OfDocumentReferenceItem;
 #endif

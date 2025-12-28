@@ -18,8 +18,6 @@
 #define StepShape_HArray1OfConnectedFaceSet_HeaderFile
 
 #include <StepShape_Array1OfConnectedFaceSet.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepShape_HArray1OfConnectedFaceSet, StepShape_Array1OfConnectedFaceSet)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepShape_ConnectedFaceSet)> StepShape_HArray1OfConnectedFaceSet;
 #endif

@@ -18,9 +18,6 @@
 #define StepVisual_HArray1OfSurfaceStyleElementSelect_HeaderFile
 
 #include <StepVisual_Array1OfSurfaceStyleElementSelect.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepVisual_HArray1OfSurfaceStyleElementSelect,
-               StepVisual_Array1OfSurfaceStyleElementSelect)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<StepVisual_SurfaceStyleElementSelect> StepVisual_HArray1OfSurfaceStyleElementSelect;
 #endif

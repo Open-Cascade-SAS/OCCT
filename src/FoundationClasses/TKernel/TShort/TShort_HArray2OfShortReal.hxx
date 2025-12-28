@@ -17,8 +17,6 @@
 
 #include <Standard_ShortReal.hxx>
 #include <TShort_Array2OfShortReal.hxx>
-#include <NCollection_DefineHArray2.hxx>
-
-DEFINE_HARRAY2(TShort_HArray2OfShortReal, TShort_Array2OfShortReal)
-
+#include <NCollection_HArray2.hxx>
+typedef NCollection_HArray2<Standard_ShortReal> TShort_HArray2OfShortReal;
 #endif

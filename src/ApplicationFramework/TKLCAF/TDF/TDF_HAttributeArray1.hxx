@@ -18,8 +18,6 @@
 
 #include <TDF_Attribute.hxx>
 #include <TDF_AttributeArray1.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TDF_HAttributeArray1, TDF_AttributeArray1)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(TDF_Attribute)> TDF_HAttributeArray1;
 #endif

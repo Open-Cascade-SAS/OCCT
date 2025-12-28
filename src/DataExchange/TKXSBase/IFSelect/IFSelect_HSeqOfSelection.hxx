@@ -18,8 +18,6 @@
 #define IFSelect_HSeqOfSelection_HeaderFile
 
 #include <IFSelect_TSeqOfSelection.hxx>
-#include <NCollection_DefineHSequence.hxx>
-
-DEFINE_HSEQUENCE(IFSelect_HSeqOfSelection, IFSelect_TSeqOfSelection)
-
+#include <NCollection_HSequence.hxx>
+typedef NCollection_HSequence<Handle(IFSelect_Selection)> IFSelect_HSeqOfSelection;
 #endif

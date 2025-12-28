@@ -18,8 +18,6 @@
 #define ChFiDS_SecHArray1_HeaderFile
 
 #include <ChFiDS_SecArray1.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(ChFiDS_SecHArray1, ChFiDS_SecArray1)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<ChFiDS_CircSection> ChFiDS_SecHArray1;
 #endif

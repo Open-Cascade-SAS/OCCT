@@ -18,8 +18,6 @@
 
 #include <gp_Trsf.hxx>
 #include <TDataXtd_Array1OfTrsf.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TDataXtd_HArray1OfTrsf, TDataXtd_Array1OfTrsf)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<gp_Trsf> TDataXtd_HArray1OfTrsf;
 #endif

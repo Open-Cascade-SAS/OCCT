@@ -17,8 +17,6 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_Array1OfExtendedString.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(TColStd_HArray1OfExtendedString, TColStd_Array1OfExtendedString)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<TCollection_ExtendedString> TColStd_HArray1OfExtendedString;
 #endif

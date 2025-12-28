@@ -18,8 +18,6 @@
 #define StepRepr_HArray1OfRepresentationItem_HeaderFile
 
 #include <StepRepr_Array1OfRepresentationItem.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepRepr_HArray1OfRepresentationItem, StepRepr_Array1OfRepresentationItem)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepRepr_RepresentationItem)> StepRepr_HArray1OfRepresentationItem;
 #endif

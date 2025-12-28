@@ -18,8 +18,6 @@
 #define IGESGeom_HArray1OfBoundary_HeaderFile
 
 #include <IGESGeom_Array1OfBoundary.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESGeom_HArray1OfBoundary, IGESGeom_Array1OfBoundary)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESGeom_Boundary)> IGESGeom_HArray1OfBoundary;
 #endif

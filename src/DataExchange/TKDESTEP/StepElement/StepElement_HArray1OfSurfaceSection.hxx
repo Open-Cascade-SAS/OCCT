@@ -15,8 +15,6 @@
 #define StepElement_HArray1OfSurfaceSection_HeaderFile
 
 #include <StepElement_Array1OfSurfaceSection.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepElement_HArray1OfSurfaceSection, StepElement_Array1OfSurfaceSection)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepElement_SurfaceSection)> StepElement_HArray1OfSurfaceSection;
 #endif

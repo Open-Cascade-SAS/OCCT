@@ -18,8 +18,6 @@
 #define StepBasic_HArray1OfDerivedUnitElement_HeaderFile
 
 #include <StepBasic_Array1OfDerivedUnitElement.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(StepBasic_HArray1OfDerivedUnitElement, StepBasic_Array1OfDerivedUnitElement)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(StepBasic_DerivedUnitElement)> StepBasic_HArray1OfDerivedUnitElement;
 #endif

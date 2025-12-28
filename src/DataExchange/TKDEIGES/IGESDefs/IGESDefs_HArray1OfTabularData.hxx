@@ -18,8 +18,6 @@
 #define IGESDefs_HArray1OfTabularData_HeaderFile
 
 #include <IGESDefs_Array1OfTabularData.hxx>
-#include <NCollection_DefineHArray1.hxx>
-
-DEFINE_HARRAY1(IGESDefs_HArray1OfTabularData, IGESDefs_Array1OfTabularData)
-
+#include <NCollection_HArray1.hxx>
+typedef NCollection_HArray1<Handle(IGESDefs_TabularData)> IGESDefs_HArray1OfTabularData;
 #endif
